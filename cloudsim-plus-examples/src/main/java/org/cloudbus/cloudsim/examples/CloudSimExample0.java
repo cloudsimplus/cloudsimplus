@@ -47,8 +47,6 @@ public class CloudSimExample0 {
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    private int numberOfCreatedHosts = 0;
-
     /**
      * Starts the example.
      * @param args
@@ -73,7 +71,7 @@ public class CloudSimExample0 {
         this.vmList = new ArrayList<>(VMS);
         this.cloudletList = new ArrayList<>(VMS);
 
-        /**
+        /*
          * Creates VMs and one Cloudlet for each VM.
          */
         for (int i = 0; i < VMS; i++) {

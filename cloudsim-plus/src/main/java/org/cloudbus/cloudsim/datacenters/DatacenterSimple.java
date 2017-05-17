@@ -54,7 +54,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /** @see #getSchedulingInterval() */
     private double schedulingInterval;
-    
+
     /**
      * Creates a Datacenter with the given parameters.
      *
@@ -451,7 +451,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (ack) {
             sendNow(vm.getBroker().getId(), CloudSimTags.VM_DESTROY_ACK, vm);
         }
-        Log.printFormatted("%.2f: %s: %s destroyed on %s\n", 
+        Log.printFormatted("%.2f: %s: %s destroyed on %s\n",
                 getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost());
     }
 
@@ -601,8 +601,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void processCloudletSubmit(SimEvent ev, boolean ack) {
-        updateCloudletProcessing();
-
         final Cloudlet cl = (Cloudlet) ev.getData();
         if (checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(cl, ack)) {
             return;
@@ -611,7 +609,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         // process this Cloudlet to this Datacenter
         cl.assignToDatacenter(this);
         submitCloudletToVm(cl, ack);
-        checkCloudletsCompletionForAllHosts();
     }
 
     /**
@@ -640,13 +637,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Gets the time when the next update of cloudlets has to be performed.
-     * This is the minimum value between the {@link #getSchedulingInterval()} and the given time 
-     * (if the scheduling interval is enable, i.e. if it's greater than 0), 
+     * This is the minimum value between the {@link #getSchedulingInterval()} and the given time
+     * (if the scheduling interval is enable, i.e. if it's greater than 0),
      * which represents when the next update of Cloudlets processing
      * has to be performed.
      *
      * @param nextFinishingCloudletTime the predicted completion time of the earliest finishing cloudlet
-     * (which is a relative delay from the current simulation time), 
+     * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @return next time cloudlets processing will be updated
      *
@@ -865,8 +862,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void checkCloudletsCompletionForAllHosts() {
-        List<? extends Host> list = getVmAllocationPolicy().getHostList();
-        list.forEach(this::checkCloudletsCompletionForGivenHost);
+        List<? extends Host> hosts = getVmAllocationPolicy().getHostList();
+        hosts.forEach(this::checkCloudletsCompletionForGivenHost);
     }
 
     protected void checkCloudletsCompletionForGivenHost(Host host) {

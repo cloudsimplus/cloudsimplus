@@ -32,7 +32,7 @@ getSimulation
 .. java:method::  Simulation getSimulation()
    :outertype: SimEntity
 
-   Gets the CloudSim instance that represents the simulation the Entity is related to.
+   Gets the CloudSim instance that represents the simulation to each the Entity is related to.
 
 isStarted
 ^^^^^^^^^

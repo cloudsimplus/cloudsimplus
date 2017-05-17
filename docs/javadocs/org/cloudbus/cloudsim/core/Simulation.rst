@@ -26,7 +26,7 @@ Simulation
 
 .. java:type:: public interface Simulation
 
-   An interface to be implemented by a class that manages simulation execution, controlling all the simulation lifecycle.
+   An interface to be implemented by a class that manages simulation execution, controlling all the simulation life cycle.
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
@@ -277,6 +277,17 @@ getNumEntities
 
    :return: The number of entities
 
+getNumberOfFutureEvents
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getNumberOfFutureEvents(Predicate<SimEvent> predicate)
+   :outertype: Simulation
+
+   Gets the number of events in the future queue which match a given predicate.
+
+   :param predicate: the predicate to filter the list of future events.
+   :return: the number of future events which match the predicate
+
 holdEntity
 ^^^^^^^^^^
 
@@ -478,7 +489,7 @@ start
    Starts the execution of CloudSim simulation and waits for complete
    execution of all entities, i.e. until all entities threads reach non-RUNNABLE state or there are no more events in the future event queue.
 
-   \ **Note**\ : This method should be called after all the entities have been setup and added.
+   \ **Note**\ : This method should be called just after all the entities have been setup and added.
 
    :throws RuntimeException: When the simulation already run once. If you paused the simulation and wants to resume it, you must use \ :java:ref:`resume()`\  instead of calling the current method.
    :return: the last clock time

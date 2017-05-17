@@ -14,7 +14,7 @@ CloudSimEntity
 
 .. java:type:: public abstract class CloudSimEntity implements SimEntity
 
-   This class represents a simulation entity. An entity handles events and can send events to other entities.
+   Represents a simulation entity. An entity handles events and can send events to other entities.
 
    :author: Marcos Dias de Assuncao
 
@@ -517,7 +517,7 @@ setName
 setSimulation
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEntity setSimulation(Simulation simulation)
+.. java:method:: @Override public final SimEntity setSimulation(Simulation simulation)
    :outertype: CloudSimEntity
 
 setStarted

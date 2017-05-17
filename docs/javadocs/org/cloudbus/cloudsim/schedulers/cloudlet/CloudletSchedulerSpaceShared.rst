@@ -1,3 +1,5 @@
+.. java:import:: java.util.stream Collectors
+
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
@@ -39,12 +41,6 @@ cloudletResume
 ^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double cloudletResume(int cloudletId)
-   :outertype: CloudletSchedulerSpaceShared
-
-getCurrentRequestedMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<Double> getCurrentRequestedMips()
    :outertype: CloudletSchedulerSpaceShared
 
 getTotalCurrentAvailableMipsForCloudlet

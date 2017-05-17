@@ -35,7 +35,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    private static final String CLOUDSIMPLUS_VERSION = "1.2.0";
+    public static final String VERSION = "1.2.0";
 
     /**
      * A constant to indicate that some entity was not found.
@@ -53,7 +53,7 @@ public class CloudSim implements Simulation {
      * <p>Such a structure is required because multiple events
      * can be received consecutively for the same simulation time.
      * </p>
-     * 
+     *
      * @see #notifyOnClockTickListenersIfClockChanged()
      */
     private final double[] circularClockTimesQueue;
@@ -179,7 +179,7 @@ public class CloudSim implements Simulation {
      * @post $none
      */
     public CloudSim(Calendar cal) {
-        Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.CLOUDSIMPLUS_VERSION);
+        Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.VERSION);
         this.entities = new ArrayList<>();
         this.entitiesByName = new LinkedHashMap<>();
         this.future = new FutureQueue();
@@ -231,7 +231,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public double start() {
-        Log.printConcatLine("Starting CloudSim Plus version ", CLOUDSIMPLUS_VERSION);
+        Log.printConcatLine("Starting CloudSim Plus version ", VERSION);
         return run();
     }
 
@@ -769,13 +769,13 @@ public class CloudSim implements Simulation {
 
         pauseAt = -1;
     }
-    
+
     @Override
     public long getNumberOfFutureEvents(Predicate<SimEvent> predicate){
         return future.stream()
                 .filter(predicate)
                 .count();
-    }   
+    }
 
     private boolean isThereFutureEvtsAndNextOneHappensAfterTimeToPause() {
         return !future.isEmpty() && clockTime <= pauseAt && isNextFutureEventHappeningAfterTimeToPause();

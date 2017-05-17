@@ -237,7 +237,7 @@ getCurrentMipsShare
 .. java:method::  List<Double> getCurrentMipsShare()
    :outertype: CloudletScheduler
 
-   Gets the list of current mips capacity from the VM that will be made available to the scheduler. This mips share will be allocated to Cloudlets as requested.
+   Gets a \ **read-only**\  list of current mips capacity from the VM that will be made available to the scheduler. This mips share will be allocated to Cloudlets as requested.
 
    :return: the current mips share list, where each item represents the MIPS capacity of a \ :java:ref:`Pe`\ . that is available to the scheduler.
 
@@ -257,7 +257,7 @@ getCurrentRequestedMips
 .. java:method::  List<Double> getCurrentRequestedMips()
    :outertype: CloudletScheduler
 
-   Gets the current requested MIPS.
+   Gets a \ **copy**\  of the list of current requested MIPS, avoiding the original list to be changed.
 
    :return: the current requested MIPS
 
@@ -410,8 +410,8 @@ setVm
    Sets the Vm that will use the scheduler. It is not required to manually set a Vm for the scheduler, since a \ :java:ref:`Vm`\  sets itself to the scheduler when the scheduler is assigned to the Vm.
 
    :param vm: the Vm to set
-   :throws NullPointerException: when the vm parameter is null
    :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
+   :throws NullPointerException: when the vm parameter is null
 
 updateVmProcessing
 ^^^^^^^^^^^^^^^^^^

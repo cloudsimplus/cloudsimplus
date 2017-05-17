@@ -120,13 +120,13 @@ public interface CloudletScheduler extends Serializable {
      * @return the cloudlet waiting list
      */
     List<CloudletExecutionInfo> getCloudletWaitingList();
-    
+
     /**
      * Gets a <b>read-only</b> List of all cloudlets which are either <b>waiting</b> or <b>executing</b> on the VM.
      *
      * @return the list of waiting and executing cloudlets
      */
-    List<Cloudlet> getCloudletList();    
+    List<Cloudlet> getCloudletList();
 
     /**
      * Gets a list of finished cloudlets.
@@ -146,7 +146,7 @@ public interface CloudletScheduler extends Serializable {
     int getCloudletStatus(int cloudletId);
 
     /**
-     * Gets the list of current mips capacity from the VM that will be
+     * Gets a <b>read-only</b> list of current mips capacity from the VM that will be
      * made available to the scheduler. This mips share will be allocated
      * to Cloudlets as requested.
      *
@@ -157,19 +157,20 @@ public interface CloudletScheduler extends Serializable {
     List<Double> getCurrentMipsShare();
 
     /**
-     * Gets the current requested MIPS.
+     * Gets a <b>copy</b> of the list of current requested MIPS,
+     * avoiding the original list to be changed.
      *
      * @return the current requested MIPS
      */
     List<Double> getCurrentRequestedMips();
-    
+
     /**
-     * Releases a given number of PEs from a VM. 
+     * Releases a given number of PEs from a VM.
      *
      * @param vm the vm to deallocate PEs from
      * @param pesToRemove number of PEs to deallocate
      */
-    void deallocatePesFromVm(Vm vm, int pesToRemove);      
+    void deallocatePesFromVm(Vm vm, int pesToRemove);
 
     /**
      /**

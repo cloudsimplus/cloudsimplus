@@ -104,27 +104,33 @@ public class BasicFirstExample {
      */
     private void createDatacenter() {
         for(int h = 0; h < HOSTS; h++) {
-            List<Pe> peList = new ArrayList<>(HOST_PES);
-            for (int p = 0; p < HOST_PES; p++) {
-                peList.add(new PeSimple(1000, new PeProvisionerSimple()));
-            }
-
-            final long ram = 2048; //in Megabytes
-            final long bw = 10000; //in Megabits/s
-            final long storage = 1000000; //in Megabytes
-            ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-            ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-            VmScheduler vmScheduler = new VmSchedulerTimeShared();
-            Host host =
-                new HostSimple(ram, bw, storage, peList)
-                    .setRamProvisioner(ramProvisioner)
-                    .setBwProvisioner(bwProvisioner)
-                    .setVmScheduler(vmScheduler);
+            Host host = createHost();
             hostList.add(host);
         }
 
         DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
         Datacenter dc0 = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+    }
+
+    private Host createHost() {
+        List<Pe> peList = new ArrayList<>(HOST_PES);
+        //List of Host's CPUs (Processing Elements, PEs)
+        for (int i = 0; i < HOST_PES; i++) {
+            peList.add(new PeSimple(1000, new PeProvisionerSimple()));
+        }
+
+        final long ram = 2048; //in Megabytes
+        final long bw = 10000; //in Megabits/s
+        final long storage = 1000000; //in Megabytes
+        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
+        VmScheduler vmScheduler = new VmSchedulerTimeShared();
+        Host host = new HostSimple(ram, bw, storage, peList);
+        host
+            .setRamProvisioner(ramProvisioner)
+            .setBwProvisioner(bwProvisioner)
+            .setVmScheduler(vmScheduler);
+        return host;
     }
 
     /**

@@ -19,7 +19,7 @@
     <licenses>
         <license>
             <name>GPLv3</name>
-            <url>http://www.gnu.org/licenses/lgpl-3.0.txt</url>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
         </license>
     </licenses>
 
@@ -133,6 +133,10 @@
              A profile used to execute all goals required to deploy
              the project to the Maven Central.
              To execute use: mvn clean deploy -P all
+
+             To check the deployed artifact and probably release it to maven central
+             you should visit https://oss.sonatype.org.
+             MAKE SURE YOU ARE LOGGED IN TO SEE YOUR DEPLOYMENTS.
              -->
             <id>all</id>
             <build>
@@ -212,6 +216,8 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <!--If the artifact will be automatically released to maven central
+                            after the upload to sonatype.-->
                             <autoReleaseAfterClose>false</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
@@ -223,6 +229,7 @@
     <!--
      URLs to deploy the project at the Maven Central (http://mvnrepository.com)
      using a Sonatype account (http://central.sonatype.org)
+     See the "all" profile in this pom for deployment information.
     -->
     <distributionManagement>
         <snapshotRepository>

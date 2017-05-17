@@ -246,7 +246,7 @@ getCurrentRequestedMips
 .. java:method::  List<Double> getCurrentRequestedMips()
    :outertype: Vm
 
-   Gets a list of current requested MIPS of each virtual \ :java:ref:`Pe`\ .
+   Gets a \ **copy**\  list of current requested MIPS of each virtual \ :java:ref:`Pe`\ , avoiding the original list to be changed.
 
    :return: the current requested MIPS of each Pe
 

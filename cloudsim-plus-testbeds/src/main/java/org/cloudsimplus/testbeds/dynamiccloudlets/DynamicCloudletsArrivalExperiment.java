@@ -37,7 +37,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * An experiment that shows how the dynamic arrival of Cloudlets and the policy
- * used to map Cloudlets to VMs impact the number of required VMs.
+ * used to map Cloudlets to VMs impact the number of required VMs and application completion time.
  *
  * @author Manoel Campos da Silva Filho
  */

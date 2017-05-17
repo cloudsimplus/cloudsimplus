@@ -130,8 +130,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
+    public List<Double> getCurrentRequestedMips() {
+        return new ArrayList<>(currentMipsShare);
+    }
+
+    @Override
     public List<Double> getCurrentMipsShare() {
-        return currentMipsShare;
+        return Collections.unmodifiableList(currentMipsShare);
     }
 
     /**
@@ -199,7 +204,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public List<CloudletExecutionInfo> getCloudletWaitingList() {
         return Collections.unmodifiableList(cloudletWaitingList);
     }
-    
+
     /**
      * Sorts the {@link #cloudletWaitingList} using a given {@link Comparator}.
      * @param comparator the {@link Comparator} to sort the Waiting Cloudlets List
@@ -538,13 +543,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Computes the length of a given cloudlet, in number
      * of Instructions (I), which has been executed since the last time cloudlet
      * processing was updated.
-     * 
+     *
      * <p>
      * This method considers the delay for actually starting the Cloudlet
      * execution due to the time to transfer
      * {@link Cloudlet#getRequiredFiles() required Cloudlet files} from the
      * Datacenter storage (such as a SAN) to the Vm running the Cloudlet.</p>
-     * 
+     *
      * <p>
      * During this transfer time, the method will always return 0 to indicate
      * that the Cloudlet was not processed in fact, it is just waiting the
@@ -671,7 +676,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the estimated time when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
-     * 
+     *
      * @param rcl         cloudlet to get the estimated finish time
      * @param currentTime current simulation time
      * @return the estimated finish time of the given cloudlet
@@ -695,13 +700,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * list in order to start executing them. While there is enough free PEs,
      * the method try to find a suitable Cloudlet in the list, until it reaches
      * the end of such a list.
-     * 
+     *
      * <p>
      * The method might also exchange some cloudlets in the execution list with
      * some in the waiting list. Thus, some running cloudlets may be preempted
      * to give opportunity to previously waiting cloudlets to run. This is a
      * process called
-     * <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>. 
+     * <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>.
      * However, each CloudletScheduler implementation decides how
      * such a process is implemented. For instance, Space-Shared schedulers may
      * just perform context switch just after currently running Cloudlets
@@ -954,11 +959,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public List<Cloudlet> getCloudletList() {
         return Collections.unmodifiableList(
                 Stream.concat(
-                        cloudletExecList.stream(), 
+                        cloudletExecList.stream(),
                         cloudletWaitingList.stream())
                       .map(CloudletExecutionInfo::getCloudlet)
                       .collect(toList()));
     }
-    
-    
+
+
 }

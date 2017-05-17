@@ -6,9 +6,13 @@
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
+.. java:import:: java.util ArrayList
+
 .. java:import:: java.util Collections
 
 .. java:import:: java.util List
+
+.. java:import:: java.util.stream Collectors
 
 CloudletSchedulerTimeShared
 ===========================
@@ -61,17 +65,11 @@ getCloudletWaitingList
 
    {@inheritDoc}
 
-   For time-shared schedulers, this list is always empty, once the VM PEs
+   For this scheduler, this list is always empty, once the VM PEs
    are shared across all Cloudlets running inside a VM. Each Cloudlet has
    the opportunity to use the PEs for a given timeslice.
 
    :return: {@inheritDoc}
-
-getCurrentRequestedMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<Double> getCurrentRequestedMips()
-   :outertype: CloudletSchedulerTimeShared
 
 getTotalCurrentAvailableMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

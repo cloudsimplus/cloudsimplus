@@ -26,8 +26,8 @@ UtilizationModelPlanetLab
 
    :param inputPath: The path of a PlanetLab Datacenter trace file.
    :param schedulingInterval: the scheduling interval that defines the time interval in which precise utilization is be got
-   :throws IOException: Signals that an I/O exception has occurred
    :throws NumberFormatException: the number format exception
+   :throws IOException: Signals that an I/O exception has occurred
 
    **See also:** :java:ref:`.getSchedulingInterval()`
 
@@ -42,8 +42,8 @@ UtilizationModelPlanetLab
    :param inputPath: The path of a PlanetLab Datacenter trace file.
    :param schedulingInterval: the scheduling interval that defines the time interval in which precise utilization is be got
    :param dataSamples: number of samples in the file
-   :throws IOException: Signals that an I/O exception has occurred.
    :throws NumberFormatException: the number format exception
+   :throws IOException: Signals that an I/O exception has occurred.
 
    **See also:** :java:ref:`.setSchedulingInterval(double)`
 

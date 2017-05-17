@@ -52,8 +52,8 @@ addPacket
 
    :param destinationCloudlet: destination cloudlet to send packets to
    :param dataLength: the number of data bytes of the packet to create
-   :throws RuntimeException: when a NetworkCloudlet was not assigned to the Task
    :throws IllegalArgumentException: when the source or destination Cloudlet doesn't have an assigned VM
+   :throws RuntimeException: when a NetworkCloudlet was not assigned to the Task
    :return: the created packet
 
 getPacketsToSend

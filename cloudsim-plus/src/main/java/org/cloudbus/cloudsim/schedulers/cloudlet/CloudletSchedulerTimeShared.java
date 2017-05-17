@@ -11,8 +11,10 @@ import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * CloudletSchedulerTimeShared implements a policy of scheduling performed by a
@@ -77,7 +79,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * {@inheritDoc}
      *
      * <p>
-     * <b>For time-shared schedulers, this list is always empty, once the VM PEs
+     * <b>For this scheduler, this list is always empty, once the VM PEs
      * are shared across all Cloudlets running inside a VM. Each Cloudlet has
      * the opportunity to use the PEs for a given timeslice.</b></p>
      *
@@ -108,11 +110,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
                 .findFirst()
                 .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
                 .orElse(0.0);
-    }
-
-    @Override
-    public List<Double> getCurrentRequestedMips() {
-        return Collections.unmodifiableList(getCurrentMipsShare());
     }
 
     /**

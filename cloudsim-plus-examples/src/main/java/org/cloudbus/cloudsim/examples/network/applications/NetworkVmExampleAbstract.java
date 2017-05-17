@@ -44,7 +44,7 @@ import org.cloudsimplus.builders.tables.TextTableBuilder;
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
  */
-public abstract class NetworkVmExampleAbstract {
+abstract class NetworkVmExampleAbstract {
     public static final int MAX_VMS_PER_HOST = 2;
 
     public static final double COST = 3.0; // the cost of using processing in this resource
@@ -96,7 +96,7 @@ public abstract class NetworkVmExampleAbstract {
     /**
      * Creates, starts, stops the simulation and shows results.
      */
-    public NetworkVmExampleAbstract() {
+    NetworkVmExampleAbstract() {
         Log.printFormattedLine("Starting %s...", this.getClass().getSimpleName());
         simulation = new CloudSim();
 

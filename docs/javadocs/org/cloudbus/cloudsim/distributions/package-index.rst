@@ -19,7 +19,7 @@ The most basic PRNG is the \ :java:ref:`org.cloudbus.cloudsim.distributions.Unif
    LomaxDistr
    NormalDistr
    ParetoDistr
-   PoissonProcess
+   PoissonDistr
    UniformDistr
    WeibullDistr
    ZipfDistr

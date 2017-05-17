@@ -101,7 +101,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
     /**
      * Optimize allocation of the VMs according to current utilization.
      *
-     * @param vmList the vm list
+     * @param vmList the list of VMs to be reallocated
      * @return the new vm placement map, where each key is a VM and each value is the host where such a Vm has to be placed
      *
      */
