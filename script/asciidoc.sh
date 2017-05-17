@@ -30,3 +30,5 @@ find "$SRC" -type f -name "*.java" > "$TMP/list.txt"
 
 #Extracts the javadocs from java files into AsciiDoc files
 javadoc -cp $DEPS -docletpath $DOCLETJAR -doclet org.asciidoctor.ExportDoclet -d $TMP -author -version @$TMP/list.txt
+echo ""
+echo "JavaDocs from java source files exported to AsciiDoc files into the $TMP directory."

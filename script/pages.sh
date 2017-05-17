@@ -9,6 +9,7 @@ SCRIPT_DIR=`dirname $0`
 if [ "$START_DIR" != "$SCRIPT_DIR" ]; then
     echo -e "\nEntering into the script's directory: $SCRIPT_DIR\n" 
     cd "$SCRIPT_DIR"
+    echo    "Current dir:                       `pwd`"
 fi
 
 GITHUB_PROFILE_CLONE_URL="git@github.com:manoelcampos"
@@ -16,9 +17,9 @@ GITHUB_REPO_NAME="cloudsim-plus"
 TMP_DIR="/tmp"
 
 TMP_REPO_DIR="$TMP_DIR/$RANDOM"
-SOURCE_DIR="$START_DIR/.."
+SOURCE_DIR="`pwd`/.."
 cd $TMP_DIR || exit -1
-echo -e "Start Dir:                         $START_DIR"
+echo    "Start Dir:                         $START_DIR"
 echo -e "Temp Repo Dir for gh-pages branch: $TMP_REPO_DIR (where the branch will be cloned for local update)\n"
 
 #Removes a temp dir given as parameter and kills the script due to an error.
