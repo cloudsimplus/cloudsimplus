@@ -21,15 +21,12 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.faultinjection;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -47,41 +44,118 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
 
 /**
- * Generates random failures for the {@link Pe}'s of {@link Host}s inside a
- * given {@link Datacenter}.
+ * Generates random failures for the {@link Pe}'s of {@link Host}s
+ * inside a given {@link Datacenter}.
  *
  * The events happens in the following order:
  * <ol>
- * <li>a is randomly selected to fail;</li>
- * <li>the number of PEs to fail is randomly generated;</li>
- * <li>failed physical PEs are removed from affected VMs;</li>
- * <li>another failure is scheduled for a future time.</li>
+ *  <li>a time to inject a Host failure is generated using a given Random Number Generator;</li>
+ *  <li>a Host is randomly selected to fail at that time using an internal Uniform Random Number Generator with the same seed of the given generator;</li>
+ *  <li>the number of Host PEs to fail is randomly generated using the internal generator;</li>
+ *  <li>failed physical PEs are removed from affected VMs, VMs with no remaining PEs and destroying and clones of them are submitted to the {@link DatacenterBroker} of the failed VMs;</li>
+ *  <li>another failure is scheduled for a future time using the given generator;</li>
+ *  <li>the process repeats until the end of the simulation.</li>
  * </ol>
+ *
+ * <p>
+ * When Host's PEs fail, if there are more available PEs
+ * than the required by its running VMs, no VM will be affected.
+ * </p>
+ *
+ * <p>
+ * Considering that X is the number of failed PEs and it is
+ * lower than the total available PEs.
+ * In this case, the X PEs will be removed cyclically, 1 by 1,
+ * from running VMs.
+ * This way, some VMs may continue running
+ * with less PEs than they requested initially.
+ * On the other hand, if after the failure the number of Host working PEs
+ * is lower than the required to run all VMs, some VMs will be
+ * destroyed.
+ * </p>
+ *
+ * <p>
+ * If all PEs are removed from a VM, it is automatically destroyed
+ * and a snapshot (clone) from it is taken and submitted
+ * to the broker, so that the clone can start executing
+ * into another host. In this case, all the cloudlets
+ * which were running inside the VM yet, will be
+ * cloned to and restart executing from the beginning.
+ * </p>
+ *
+ * <p>
+ * If a cloudlet running inside a VM which was affected by a PE failure
+ * requires Y PEs but the VMs doesn't have such PEs anymore,
+ * the Cloudlet will continue executing, but it will spend
+ * more time to finish.
+ * For instance, if a Cloudlet requires 2 PEs but after the failure
+ * the VM was left with just 1 PE, the Cloudlet will spend the double
+ * of the time to finish.
+ * </p>
+ *
+ * <p>
+ * <b>NOTES:</b>
+ * <ul>
+ *     <li>
+ *      Host PEs failures may happen after all its VMs have finished executing.
+ *      This way, the presented simulation results may show that the
+ *      number of PEs into a Host is lower than the required by its VMs.
+ *      In this case, the VMs shown in the results finished executing before
+ *      some failures have happened. Analysing the logs is easy to
+ *      confirm that.
+ *      </li>
+ *      <li>Failures inter-arrivals are defined in minutes, since seconds is a too
+ *      small time unit to define such value. Furthermore, it doesn't make sense to define
+ *      the number of failures per second. This way, the generator of failure arrival times
+ *      given to the constructor considers the time in minutes, despite the simulation
+ *      time unit is seconds. Since commonly Cloudlets just take some seconds to finish,
+ *      mainly in simulation examples, failures may happen just after the cloudlets
+ *      have finished. This way, one usually should make sure that Cloudlets' length
+ *      are large enough to allow failures to happen before they end.
+ *      </li>
+ * </ul>
+ * </p>
  *
  * @author raysaoliveira
  * @since CloudSim Plus 1.2.0
- * @see https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/
+ * @see <a href="https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/">SAP Blog: Availability vs Reliability</a>
  */
 public class HostFaultInjection extends CloudSimEntity {
-
-    private Datacenter datacenter;
-    /**
-     * A Pseudo Random Number Generator used to select a Host and the number of
-     * PEs to set as fail.
-     */
-    private ContinuousDistribution random;
-
     /**
      * @see #getLastFailedHost()
      */
     private Host lastFailedHost;
 
     /**
+     * @see #getDatacenter()
+     */
+    private Datacenter datacenter;
+
+    /**
+     * A Pseudo Random Number Generator used to select a Host
+     * and the number of PEs to set as fail.
+     */
+    private ContinuousDistribution random;
+    
+    /**
+     * A Pseudo Random Number Generator used to give a 
+     * recovery time for each vm that was failed.
+     */
+    private ContinuousDistribution randomRecoveryTimeVm;
+            
+    /**
+     * A Pseudo Random Number Generator used to give a 
+     * fault time for each vm failed.
+     */        
+    private ContinuousDistribution randomFaultTimeVm;
+
+    /**
      * @see #setVmCloner(java.util.function.UnaryOperator)
      *
-     * @todo The class has multiple responsibilities. The fault injection
-     * mechanism must be separated from the fault recovery. The cloner methods
-     * are fault recovery.
+     * @todo The class has multiple responsibilities.
+     * The fault injection mechanism must be separated from
+     * the fault recovery.
+     * The cloner methods are fault recovery.
      *
      */
     private UnaryOperator<Vm> vmCloner;
@@ -101,30 +175,53 @@ public class HostFaultInjection extends CloudSimEntity {
      * The attribute counts how many host failures the simulation had
      */
     private int numberOfHostFaults;
+   
+    /**
+     * Save the time it starts to fail
+     */
     private double clockStart = 0;
-    private double clockFinish = 0;
+    
+    /**
+     * Save failure recovery time
+     */
+    private double timeToRecovery = 0;
+    
+    private double timeFault = 0;
+    
+    /**
+     * A map to store the time each VM was recovered.
+     */
+    private Map<Vm, Double> timeHostRecoveryPerVm = new HashMap<>();
+    
+    /**
+     * A map to store the time each VM was failed.
+     */
+    private Map<Vm, Double> timeHostFaultPerVm = new HashMap<>();
+    
 
     /**
-     * Creates a fault injection mechanism for the Hosts of a given
-     * {@link Datacenter}. The failures are randomly injected according to the
-     * given mean of failures to be generated per <b>minute</b>, which is also
-     * called <b>event rate</b> or <b>rate parameter</b>.
+     * Creates a fault injection mechanism for the Hosts of a given {@link Datacenter}.
+     * The failures are randomly injected according to the given
+     * mean of failures to be generated per <b>minute</b>,
+     * which is also called <b>event rate</b> or <b>rate parameter</b>.
      *
-     * @param datacenter the Datacenter to which failures will be randomly
-     * injected for its Hosts
+     * @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
      *
-     * @param failureArrivalTimesGenerator a Pseudo Random Number Generator
-     * which generates the times that Hosts failures will occur.
-     * <b>The values returned by the generator will be considered to be
-     * minutes</b>. Frequently it is used a {@link PoissonDistr} to generate
-     * failure arrivals, but any {@link ContinuousDistribution} can be used.
+     * @param failureArrivalTimesGenerator a Pseudo Random Number Generator which generates the
+     * times that Hosts failures will occur.
+     * <b>The values returned by the generator will be considered to be minutes</b>.
+     * Frequently it is used a
+     * {@link PoissonDistr} to generate failure arrivals, but any {@link ContinuousDistribution}
+     * can be used.
      */
     public HostFaultInjection(Datacenter datacenter, ContinuousDistribution failureArrivalTimesGenerator) {
         super(datacenter.getSimulation());
         this.setDatacenter(datacenter);
         this.lastFailedHost = Host.NULL;
         this.failureArrivalTimesGenerator = failureArrivalTimesGenerator;
-        this.random = new UniformDistr(failureArrivalTimesGenerator.getSeed());
+        this.random = new UniformDistr(failureArrivalTimesGenerator.getSeed()+1);
+        this.randomRecoveryTimeVm = new UniformDistr(1, 20, failureArrivalTimesGenerator.getSeed()+2);
+        this.randomFaultTimeVm = new UniformDistr(1, 20, failureArrivalTimesGenerator.getSeed()+3);
 
         /*Sets a default vmCloner which in fact doesn't
         clone a VM, just returns the Vm.NULL object.
@@ -134,14 +231,14 @@ public class HostFaultInjection extends CloudSimEntity {
         A similar thing is made to the cloudletsCloner below.*/
         this.vmCloner = vm -> {
             Log.printFormattedLine(
-                    "%s: You should define a VM Cloner Function to enable creating a new instance of a VM when it is destroyed due to a Host failure.",
-                    getClass().getSimpleName());
+                "%s: You should define a VM Cloner Function to enable creating a new instance of a VM when it is destroyed due to a Host failure.",
+                getClass().getSimpleName());
             return Vm.NULL;
         };
         this.cloudletsCloner = vm -> {
             Log.printFormattedLine(
-                    "%s: You should define a Cloudlets Cloner Function to re-create the List of running Cloudlets from a faulty VM into the Cloned VM when there is a Host failure",
-                    getClass().getSimpleName());
+                "%s: You should define a Cloudlets Cloner Function to re-create the List of running Cloudlets from a faulty VM into the Cloned VM when there is a Host failure",
+                getClass().getSimpleName());
             return Collections.EMPTY_LIST;
         };
     }
@@ -152,24 +249,28 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Schedules a message to be processed internally to inject a Host PEs
-     * failure.
+     * Schedules a message to be processed internally
+     * to inject a Host PEs failure.
      */
     private void scheduleFailureInjection() {
-        final long numOfOtherEvents
-                = getSimulation()
+        final long numOfOtherEvents =
+                getSimulation()
                         .getNumberOfFutureEvents(
-                                evt -> evt.getTag() != CloudSimTags.HOST_FAILURE);
-        if (numOfOtherEvents > 0) {
+                            evt -> evt.getTag() != CloudSimTags.HOST_FAILURE);
+        /*
+        Just re-schedule more failures if there are other events to be processed.
+        Otherwise, the simulation has finished and no more failures should be scheduled.
+        */
+        if(numOfOtherEvents > 0) {
             schedule(getId(), getTimeDelayForNextFailure(), CloudSimTags.HOST_FAILURE);
         }
     }
 
     /**
-     * Gets the time delay in seconds, from the current simulation time, that
-     * the next failure will be injected. Since the values returned by the
-     * {@link #failureArrivalTimesGenerator} are considered to be in minutes,
-     * such values are converted to seconds.
+     * Gets the time delay in seconds, from the current simulation time,
+     * that the next failure will be injected.
+     * Since the values returned by the {@link #failureArrivalTimesGenerator}
+     * are considered to be in minutes, such values are converted to seconds.
      *
      * @return the next failure injection delay in seconds
      */
@@ -190,8 +291,8 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Generates a failure for a specific number of PEs from a randomly selected
-     * Host.
+     * Generates a failure for a specific number of PEs from a
+     * randomly selected Host.
      */
     private void generateHostFailure() {
         try {
@@ -200,6 +301,8 @@ public class HostFaultInjection extends CloudSimEntity {
                 return;
             }
 
+            numberOfHostFaults++;
+        
             final int numberOfFailedPes = generateHostPesFailures();
             final long hostWorkingPes = lastFailedHost.getNumberOfWorkingPes();
             final long vmsRequiredPes = getPesSumOfWorkingVms();
@@ -214,7 +317,11 @@ public class HostFaultInjection extends CloudSimEntity {
 
             if (hostWorkingPes == 0) {
                 clockStart = getSimulation().clock();
-                System.out.println("\t # Fault started at the time: " + clockStart);
+                timeToRecovery = randomRecoveryTimeVm.sample();
+                timeFault = randomFaultTimeVm.sample();
+                Log.printFormattedLine("\t # Fault started at the time: %.2f " , clockStart);
+                Log.printFormattedLine("\t # Time to recovery the fault: %.2f ", timeToRecovery);    
+                Log.printFormattedLine("\t # Fault Time : %.2f ", timeFault);
                 setAllVmsToFailed();
 
             } else if (hostWorkingPes >= vmsRequiredPes) {
@@ -273,10 +380,11 @@ public class HostFaultInjection extends CloudSimEntity {
      * {@link #getLastFailedHost() last failed Host} from affected VMs.
      */
     private void deallocateFailedHostPesFromVms() {
-        final int hostWorkingPes = (int) lastFailedHost.getNumberOfWorkingPes();
-        final int vmsRequiredPes = (int) getPesSumOfWorkingVms();
+        final int hostWorkingPes = (int)lastFailedHost.getNumberOfWorkingPes();
+        final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
 
-        int failedPesToRemoveFromVms = vmsRequiredPes - hostWorkingPes;
+        int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
+
         final int affectedVms = Math.min(lastFailedHost.getVmList().size(), failedPesToRemoveFromVms);
         Log.printFormattedLine("\t%d PEs failed, from a total of %d PEs. There are %d PEs working.",
                 lastFailedHost.getNumberOfFailedPes(),
@@ -290,9 +398,10 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Removes one physical failed PE from one affected VM at a time. Affected
-     * VMs are dealt as a circular list, visiting one VM at a time to remove 1
-     * PE from it, until all the failed PEs are removed.
+     * Removes one physical failed PE from one affected VM at a time.
+     * Affected VMs are dealt as a circular list, visiting
+     * one VM at a time to remove 1 PE from it,
+     * until all the failed PEs are removed.
      *
      * @param failedPesToRemoveFromVms number of physical PEs to remove
      * @param affectedVms number of VMs affected by PEs failures
@@ -315,26 +424,13 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Sets to failed all VMs that have all their PEs removed due to Host PEs
-     * failures.
+     * Sets to failed all VMs that have all their PEs removed due to
+     * Host PEs failures.
      */
     private void setVmsToFailed() {
         lastFailedHost.getVmList().stream()
                 .filter(vm -> vm.getNumberOfPes() == 0)
                 .forEach(this::setVmToFailedAndCreateClone);
-    }
-
-    /**
-     * Gets the number of VMs that are completely failed (which all their PEs
-     * were removed due to Host PEs failure).
-     *
-     * @return
-     */
-    public long getFailedVmsCount() {
-        return lastFailedHost.getVmList()
-                .stream()
-                .filter(Vm::isFailed)
-                .count();
     }
 
     /**
@@ -349,9 +445,13 @@ public class HostFaultInjection extends CloudSimEntity {
         if (Host.NULL.equals(lastFailedHost)) {
             return;
         }
-
-        int faults = numberOfHostFaults + 1;
-        setNumberOfHostFaults(faults);
+        
+        putRecoveryTimeInMap(vm);  
+        sumRecoveyTimes();
+        
+        putFaultTimeInMap(vm);
+        sumFaultTimes();
+        
         final DatacenterBroker broker = vm.getBroker();
         final Vm clone = vmCloner.apply(vm);
 
@@ -367,15 +467,28 @@ public class HostFaultInjection extends CloudSimEntity {
 
         broker.submitVm(clone);
         broker.submitCloudletList(cloudlets, clone);
-        clockFinish = getSimulation().clock();
-        System.out.println("\t # Fault finished at the time: " + clockFinish);
-
     }
 
+    public double sumRecoveyTimes() {
+        return timeHostRecoveryPerVm.values().stream().reduce(0.0, Double::sum);
+    }
+
+    private void putRecoveryTimeInMap(Vm vm) {
+        timeHostRecoveryPerVm.put(vm, timeToRecovery);
+    }
+    
+    public double sumFaultTimes() {
+        return timeHostFaultPerVm.values().stream().reduce(0.0, Double::sum);
+    }
+    
+    private void putFaultTimeInMap(Vm vm) {
+        timeHostFaultPerVm.put(vm, timeFault);
+    }
+    
     /**
      * Generates random failures for the PEs from the
-     * {@link #getLastFailedHost() last failed Host}. The minimum number of PEs
-     * to fail is 1.
+     * {@link #getLastFailedHost() last failed Host}.
+     * The minimum number of PEs to fail is 1.
      *
      * @return the number of failed PEs for the Host
      */
@@ -389,7 +502,6 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /**
      * Gets the total number of PEs from all working VMs.
-     *
      * @return
      */
     private long getPesSumOfWorkingVms() {
@@ -403,8 +515,8 @@ public class HostFaultInjection extends CloudSimEntity {
      * Randomly generates a number of PEs which will fail for the datacenter.
      * The minimum number of PEs to fail is 1.
      *
-     * @return the generated number of failed PEs for the datacenter, between [1
-     * and Number of PEs].
+     * @return the generated number of failed PEs for the datacenter,
+     * between [1 and Number of PEs].
      *
      */
     private int randomNumberOfFailedPes() {
@@ -434,16 +546,16 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Sets a {@link UnaryOperator} that creates a clone of a {@link Vm} when
-     * all Host PEs fail or all VM's PEs are deallocated because they have
-     * failed.
+     * Sets a {@link UnaryOperator} that creates a clone of a {@link Vm}
+     * when all Host PEs fail or all VM's PEs are deallocated
+     * because they have failed.
      *
-     * <p>
-     * The {@link UnaryOperator} is a {@link Function} that receives a
-     * {@link Vm} and returns a clone of it. When all PEs of the VM fail, this
-     * vmCloner {@link Function} is used to create a copy of the VM to be
-     * submitted to another Host. It is like a VM snapshot in a real cloud
-     * infrastructure, which will be started into another datacenter in order to
+     * <p>The {@link UnaryOperator} is a {@link Function} that
+     * receives a {@link Vm} and returns a clone of it.
+     * When all PEs of the VM fail, this vmCloner {@link Function}
+     * is used to create a copy of the VM to be submitted to another Host.
+     * It is like a VM snapshot in a real cloud infrastructure,
+     * which will be started into another datacenter in order to
      * recovery from a failure.
      * </p>
      *
@@ -456,16 +568,17 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Sets a {@link Function} that creates a clone of all Cloudlets which were
-     * running inside a given failed {@link Vm}.
+     * Sets a {@link Function} that creates a clone of all Cloudlets
+     * which were running inside a given failed {@link Vm}.
      *
-     * <p>
-     * Such a Function is used to re-create and re-submit those Cloudlets to a
-     * clone of the failed VM. In this case, all the Cloudlets are recreated
-     * from scratch into the cloned VM, re-starting their execution from the
-     * beginning. Since a snapshot (clone) of the failed VM will be started into
-     * another Host, the Cloudlets Cloner Function will recreated all Cloudlets,
-     * simulating the restart of applications into this new VM instance.</p>
+     * <p>Such a Function is used to re-create and re-submit those Cloudlets
+     * to a clone of the failed VM. In this case, all the Cloudlets are
+     * recreated from scratch into the cloned VM,
+     * re-starting their execution from the beginning.
+     * Since a snapshot (clone) of the failed VM will be started
+     * into another Host, the Cloudlets Cloner Function will recreated
+     * all Cloudlets, simulating the restart of applications
+     * into this new VM instance.</p>
      *
      * @param cloudletsCloner the cloudlets cloner {@link Function} to set
      * @see #setVmCloner(java.util.function.UnaryOperator)
@@ -486,20 +599,13 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     @Override
-    public void shutdownEntity() {/**/
-    }
+    public void shutdownEntity() {/**/}
 
     /**
-     * @return the numberOfHostFaults
+     * Gets the total number of failed hosts.
+     * @return 
      */
     public int getNumberOfHostFaults() {
         return numberOfHostFaults;
-    }
-
-    /**
-     * @param numberOfHostFaults the numberOfHostFaults to set
-     */
-    public void setNumberOfHostFaults(int numberOfHostFaults) {
-        this.numberOfHostFaults = numberOfHostFaults;
     }
 }

@@ -71,7 +71,7 @@ public final class HostFaultInjectionExample1 {
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int HOST_MIPS_BY_PE = 1000;
-    private static final int HOST_PES = 6;
+    private static final int HOST_PES = 4;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -98,10 +98,10 @@ public final class HostFaultInjectionExample1 {
      * Number of Hosts to create for each Datacenter. The number of elements in
      * this array defines the number of Datacenters to be created.
      */
-    private static final int HOSTS = 3;
-    private static final int VMS = 4;
+    private static final int HOSTS = 25;
+    private static final int VMS = 27;
 
-    private static final int CLOUDLETS = 4;
+    private static final int CLOUDLETS = 27;
 
     private final List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
@@ -117,6 +117,10 @@ public final class HostFaultInjectionExample1 {
     public static void main(String[] args) {
         new HostFaultInjectionExample1();
     }
+    private final double finalSimulationTimeInHours;
+    private final int totalFaults;
+    private double mttr;
+    private double mtbf;
 
     public HostFaultInjectionExample1() {
         Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
@@ -132,16 +136,37 @@ public final class HostFaultInjectionExample1 {
 
         simulation.start();
 
+        totalFaults = fault.getNumberOfHostFaults();
+        System.out.println("\n----------------------------------------------- \n"
+                + "# Number of host faults: " + totalFaults);
+        finalSimulationTimeInHours = (simulation.clock() % 3600);
+        Log.printFormattedLine("# Time that the simulations finished: %.2f ", finalSimulationTimeInHours);
+        calculateMTTR();
+        calculateMTBF();
+        availability();
+
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
-        if (!simulation.isRunning()) {
-            System.out.println("\n# Number of host faults: " + fault.getNumberOfHostFaults());
-
-        }
-
     }
 
+    private void calculateMTTR() {
+        double sumRecoveryInHours = fault.sumRecoveyTimes() % 3600;
+        mttr = sumRecoveryInHours / totalFaults;
+        Log.printFormattedLine("# MTTR: %f ", mttr);
+    }
+
+    private void calculateMTBF() {
+        double sumFaultInHours = fault.sumFaultTimes() % 3600;
+        mtbf = (finalSimulationTimeInHours - sumFaultInHours) / totalFaults;
+        Log.printFormattedLine("# MTBF: %f ", mtbf);
+    }
+    
+    private void availability(){
+        double availability = (mtbf / (mtbf + mttr)) * 100;
+        Log.printFormattedLine("# Availability: %.2f %% ", availability);
+    }
+    
     public void createAndSubmitVms() {
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
@@ -239,10 +264,10 @@ public final class HostFaultInjectionExample1 {
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
         //final long seed = System.currentTimeMillis();
-        long seed = 3412125;
+        long seed = System.currentTimeMillis();
         /*The average number of failures expected to happen each minute
         in a Poisson Process, which is also called event rate or rate parameter.*/
-        final double meanFailureNumberPerMinute = 0.01;
+        final double meanFailureNumberPerMinute = 0.2;
         PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, seed);
 
         fault = new HostFaultInjection(datacenter, poisson);
