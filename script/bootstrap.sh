@@ -1,7 +1,7 @@
 #!/bin/bash
 echo ""
-echo "This script allows you to build CloudSim Plus and to execute its examples."
-echo "It requires maven to build all sources and to create the JAR packages. Thus, make sure you have it installed."
+echo "This script allows you to build CloudSim Plus and execute its examples."
+echo "It requires maven to build all sources and create the JAR packages. Thus, make sure you have it installed."
 echo "http://cloudsimplus.org"
 echo ""
 

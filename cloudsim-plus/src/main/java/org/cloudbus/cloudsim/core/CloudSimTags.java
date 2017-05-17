@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.core;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
@@ -244,7 +245,13 @@ public final class CloudSimTags {
 
     /**
      * Denotes an internal event generated in a {@link Datacenter}
-     * to notify it to update the processing of VM's cloudlets.
+     * to notify itself to update the processing of cloudlets.
+     * When an event of this type is sent, the {@link SimEvent#getData()}
+     * can be a {@link Host} object to indicate that just the Cloudlets
+     * running in VMs inside such a Host must be updated.
+     * The Host is an optional parameter which if omitted,
+     * means that all Hosts from the Datacenter will have
+     * its cloudlets updated.
      */
     public static final int VM_UPDATE_CLOUDLET_PROCESSING_EVENT = BASE + 41;
 
