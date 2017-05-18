@@ -51,7 +51,7 @@ public final class RandomRunner extends RunnerAbstract {
 	}
 
 	@Override
-	protected void init(String inputFolder) {
+	protected void init(final String inputFolder) {
 		try {
             super.init(inputFolder);
 

@@ -78,16 +78,10 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      */
     protected void redistributeMipsDueToOverSubscription() {
         // First, we calculate the scaling factor - the MIPS allocation for all VMs will be scaled proportionally
-        final Map<Vm, List<Double>> mipsMapRequestedReduced = newTotalRequiredMipsByAllVms();
-        final double totalRequiredMipsByAllVms =
-                mipsMapRequestedReduced.values()
-                    .stream()
-                    .flatMap(list -> list.stream())
-                    .mapToDouble(mips -> mips)
-                    .sum();
+        final Map<Vm, List<Double>> mipsMapRequestedReduced = getNewTotalRequestedMipsByAllVms();
 
         //the factor that will be used to reduce the amount of MIPS allocated to each vPE
-        final double scalingFactor = getHost().getTotalMipsCapacity() / totalRequiredMipsByAllVms;
+        final double scalingFactor = getHost().getTotalMipsCapacity() / getTotalMipsToAllocateForAllVms(mipsMapRequestedReduced);
 
         getMipsMapAllocated().clear();
         for (final Entry<Vm, List<Double>> entry : mipsMapRequestedReduced.entrySet()) {
@@ -99,14 +93,14 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
     }
 
     /**
-     * Generate a new Map containing the list of required MIPS by all VMs,
+     * Generate a new Map containing the list of requested MIPS by all VMs,
      * ensuring the MIPS requested for each vPE doesn't exceeds
      * the capacity of each Physical PE.
      *
      * @return the new map of requested MIPS for all VMs
      * @see #getMipsMapRequested()
      */
-    private Map<Vm, List<Double>> newTotalRequiredMipsByAllVms() {
+    private Map<Vm, List<Double>> getNewTotalRequestedMipsByAllVms() {
         final Map<Vm, List<Double>> mipsMapRequestedReduced = new HashMap<>(getMipsMapRequested().entrySet().size());
         for (final Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             final Vm vm = entry.getKey();
@@ -115,5 +109,49 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         }
 
         return mipsMapRequestedReduced;
+    }
+
+    /**
+     * Gets the total MIPS that will be allocated to all VMs.
+     * For VMs that are migrating into the Host,
+     * just the {@link #getVmMigrationCpuOverhead()}
+     * will be allocated, representing just the CPU migration overhead
+     * while the VM is in migration process.
+     *
+     * @param mipsMapRequestedReduced the map of MIPS requested by each VM, after being
+     *                                adjusted to avoid allocating more MIPS for a vPE
+     *                                than there is in the physical PE
+     * @return the total MIPS to be allocated for all VMs, considering the
+     * VMs migrating into the Host.
+     * @see #getMipsShareRequestedReduced(List)
+     */
+    private double getTotalMipsToAllocateForAllVms(final Map<Vm, List<Double>> mipsMapRequestedReduced){
+        return mipsMapRequestedReduced.entrySet()
+            .stream()
+            .mapToDouble(this::getMipsToBeAllocatedForVmPes)
+            .sum();
+    }
+
+    /**
+     * Gets the total MIPS to be allocated to a VM (across all vPEs),
+     * considering if the VM is migrating into the Host.
+     * In this case, just a percentage of the total required MIPS will
+     * be in fact allocated to representing the CPU migration overhead.
+     * @param entry a Map entry containing a VM and the List of MIPS required by its vPEs
+     * @return the sum of required MIPS by all vPEs, considering the VMs
+     * in migration process to the Host.
+     */
+    private double getMipsToBeAllocatedForVmPes(final Map.Entry<Vm, List<Double>> entry){
+        final double requiredMipsByThisVm = entry.getValue().stream().reduce(0.0, Double::sum);
+        if (getHost().getVmsMigratingIn().contains(entry.getKey())) {
+            /*
+            the destination host only experiences a percentage of the migrating VM's MIPS
+            which is the migration CPU overhead.
+            */
+            return requiredMipsByThisVm * getVmMigrationCpuOverhead();
+        }
+
+        return requiredMipsByThisVm;
+
     }
 }

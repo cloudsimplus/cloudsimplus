@@ -41,7 +41,8 @@ public final class PlanetLabRunner extends RunnerAbstract {
 			String workload,
 			String vmAllocationPolicy,
 			String vmSelectionPolicy,
-			double safetyParameterOrUtilizationThreshold) {
+			double safetyParameterOrUtilizationThreshold)
+    {
 		super(
 				enableOutput,
 				outputToFile,
@@ -54,7 +55,7 @@ public final class PlanetLabRunner extends RunnerAbstract {
 	}
 
 	@Override
-	protected void init(String inputFolder) {
+	protected void init(final String inputFolder) {
 		try {
 		    super.init(inputFolder);
 			broker = Helper.createBroker(getSimulation());

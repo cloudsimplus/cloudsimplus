@@ -118,7 +118,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         final String hostSelectionStr = "optimizeAllocationHostSelection";
         ExecutionTimeMeasurer.start(hostSelectionStr);
         final List<PowerHostUtilizationHistory> overUtilizedHosts = getOverUtilizedHosts();
-        getExecutionTimeHistoryHostSelection().add(
+        executionTimeHistoryHostSelection.add(
                 ExecutionTimeMeasurer.end(hostSelectionStr));
 
         printOverUtilizedHosts(overUtilizedHosts);
@@ -128,7 +128,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         final String vmSelectionStr = "optimizeAllocationVmSelection";
         ExecutionTimeMeasurer.start(vmSelectionStr);
         final List<Vm> vmsToMigrate = getVmsToMigrateFromHosts(overUtilizedHosts);
-        getExecutionTimeHistoryVmSelection().add(ExecutionTimeMeasurer.end(vmSelectionStr));
+        executionTimeHistoryVmSelection.add(ExecutionTimeMeasurer.end(vmSelectionStr));
 
         Map<Vm, Host> migrationMap = new HashMap<>();
         if(!overUtilizedHosts.isEmpty()){
@@ -137,14 +137,14 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
             ExecutionTimeMeasurer.start(vmReallocationStr);
             migrationMap =
                     getNewVmPlacement(vmsToMigrate, new HashSet<>(overUtilizedHosts));
-            getExecutionTimeHistoryVmReallocation().add(
+            executionTimeHistoryVmReallocation.add(
                     ExecutionTimeMeasurer.end(vmReallocationStr));
             Log.printLine();
         }
 
         migrationMap.putAll(getMigrationMapFromUnderUtilizedHosts(overUtilizedHosts));
         restoreAllocation();
-        getExecutionTimeHistoryTotal().add(ExecutionTimeMeasurer.end(allocationTotalStr));
+        executionTimeHistoryTotal.add(ExecutionTimeMeasurer.end(allocationTotalStr));
         return migrationMap;
     }
 
@@ -564,15 +564,15 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param metric the metric to be added to the metric history map
      */
     protected void addHistoryEntryIfAbsent(PowerHost host, double metric) {
-        getTimeHistory().putIfAbsent(host, new LinkedList<>());
-        getUtilizationHistory().putIfAbsent(host, new LinkedList<>());
-        getMetricHistory().putIfAbsent(host, new LinkedList<>());
+        timeHistory.putIfAbsent(host, new LinkedList<>());
+        utilizationHistory.putIfAbsent(host, new LinkedList<>());
+        metricHistory.putIfAbsent(host, new LinkedList<>());
 
         final Simulation simulation = host.getSimulation();
-        if (!getTimeHistory().get(host).contains(simulation.clock())) {
-            getTimeHistory().get(host).add(simulation.clock());
-            getUtilizationHistory().get(host).add(host.getUtilizationOfCpu());
-            getMetricHistory().get(host).add(metric);
+        if (!timeHistory.get(host).contains(simulation.clock())) {
+            timeHistory.get(host).add(simulation.clock());
+            utilizationHistory.get(host).add(host.getUtilizationOfCpu());
+            metricHistory.get(host).add(metric);
         }
     }
 

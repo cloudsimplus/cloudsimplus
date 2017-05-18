@@ -541,31 +541,27 @@ public class VmSimple implements Vm {
         this.created = created;
     }
 
-    /**
-     * Gets the history of MIPS capacity allocated to the VM.
-     *
-     * @todo Instead of using a list, this attribute would be a map, where the
-     * key can be the history time and the value the history itself. By this
-     * way, if one wants to get the history for a given time, he/she doesn't
-     * have to iterate over the entire list to find the desired entry.
-     *
-     * @return the state history
-     */
     @Override
     public List<VmStateHistoryEntry> getStateHistory() {
-        return stateHistory;
+        /*
+         * @todo Instead of using a list, this attribute would be a map, where the
+         * key can be the history time and the value the history itself. This
+         * way, if one wants to get the history for a given time, he/she doesn't
+         * have to iterate over the entire list to find the desired entry.
+         */
+        return Collections.unmodifiableList(stateHistory);
     }
 
     @Override
     public void addStateHistoryEntry(VmStateHistoryEntry entry) {
-        if (!getStateHistory().isEmpty()) {
-            final VmStateHistoryEntry previousState = getStateHistory().get(getStateHistory().size() - 1);
+        if (!stateHistory.isEmpty()) {
+            final VmStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
             if (previousState.getTime() == entry.getTime()) {
-                getStateHistory().set(getStateHistory().size() - 1, entry);
+                stateHistory.set(stateHistory.size() - 1, entry);
                 return;
             }
         }
-        getStateHistory().add(entry);
+        stateHistory.add(entry);
     }
 
     @Override

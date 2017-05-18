@@ -25,7 +25,6 @@ import java.io.IOException;
  * @since Jan 5, 2012
  */
 public class IqrMc {
-
 	/**
 	 * The main method.
 	 *
@@ -33,11 +32,11 @@ public class IqrMc {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		String inputFolder =  ResourceLoader.getResourcePath(IqrMc.class,"workload/planetlab");
-		String outputFolder = "output";
-		String workload = "20110303"; // PlanetLab workload
-		String vmAllocationPolicy = "iqr"; // Inter Quartile Range (IQR) VM allocation policy
-		String vmSelectionPolicy = "mc"; // Maximum Correlation (MC) VM selection policy
+		final String inputFolder =  ResourceLoader.getResourcePath(IqrMc.class,"workload/planetlab");
+        final String outputFolder = "output";
+        final String workload = "20110303"; // PlanetLab workload
+        final String vmAllocationPolicy = "iqr"; // Inter Quartile Range (IQR) VM allocation policy
+        final String vmSelectionPolicy = "mc"; // Maximum Correlation (MC) VM selection policy
 		double safetyParameter = 1.5;
 
 		new PlanetLabRunner(

@@ -70,7 +70,8 @@ public abstract class RunnerAbstract {
         String workload,
         String vmAllocationPolicy,
         String vmSelectionPolicy,
-        double safetyParameterOrUtilizationThreshold) {
+        double safetyParameterOrUtilizationThreshold)
+    {
         try {
             initLogOutput(
                 enableOutput,
@@ -115,7 +116,8 @@ public abstract class RunnerAbstract {
         String workload,
         String vmAllocationPolicy,
         String vmSelectionPolicy,
-        double safetyParameterOrUtilizationThreshold) throws IOException {
+        double safetyParameterOrUtilizationThreshold) throws IOException
+    {
         setEnableOutput(enableOutput);
         Log.setDisabled(!isEnableOutput());
         if (isEnableOutput() && outputToFile) {
@@ -142,7 +144,7 @@ public abstract class RunnerAbstract {
      *
      * @param inputFolder the input folder
      */
-    protected void init(String inputFolder){
+    protected void init(final String inputFolder){
         this.simulation = new CloudSim();
     }
 
@@ -153,12 +155,12 @@ public abstract class RunnerAbstract {
      * @param outputFolder       the output folder
      * @param vmAllocationPolicy the vm allocation policy
      */
-    protected void start(String experimentName, String outputFolder, VmAllocationPolicy vmAllocationPolicy) {
+    protected void start(final String experimentName, final String outputFolder, VmAllocationPolicy vmAllocationPolicy) {
         System.out.println("Starting " + experimentName);
 
         try {
-            PowerDatacenter datacenter = (PowerDatacenter) Helper.createDatacenter(
-                simulation,
+            Helper helper = new Helper(simulation, experimentName, Constants.OUTPUT_CSV, outputFolder);
+            PowerDatacenter datacenter = (PowerDatacenter) helper.createDatacenter(
                 PowerDatacenter.class,
                 hostList,
                 vmAllocationPolicy);
@@ -174,14 +176,7 @@ public abstract class RunnerAbstract {
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             Log.printLine("Received " + newList.size() + " cloudlets");
 
-            Helper.printResults(
-                datacenter,
-                vmList,
-                lastClock,
-                experimentName,
-                Constants.OUTPUT_CSV,
-                outputFolder);
-
+            helper.printResults(datacenter, vmList, lastClock);
         } catch (Exception e) {
             e.printStackTrace();
             Log.printLine("The simulation has been terminated due to an unexpected error");

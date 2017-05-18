@@ -222,7 +222,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * considering the {@link #getVmMigrationCpuOverhead() CPU migration overhead}.
      * @return the max percentage of CPU usage during migration (in scale from [0 to 1], where 1 is 100%)
      */
-    private double getMaxCpuUsagePercentDuringMigration() {
+    public double getMaxCpuUsagePercentDuringMigration() {
         return 1 - getVmMigrationCpuOverhead();
     }
 
