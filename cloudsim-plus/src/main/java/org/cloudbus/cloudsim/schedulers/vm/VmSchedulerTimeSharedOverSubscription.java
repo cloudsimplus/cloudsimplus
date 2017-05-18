@@ -95,7 +95,8 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * Gets the factor that will be used to reduce the amount of MIPS allocated to each vPE.
      * When the total amount of MIPS requested by all VMs is greater than the total
      * MIPS capacity of the Host, the MIPS requested by VMs is reduced to fit
-     * into the Host.
+     * into the Host. Otherwise, the method returns 1 (100%) to indicate the
+     * MIPS requested will not be changed.
      *
      * @param mipsMapRequestedReduced the map of MIPS requested by each VM, after being
      *                                adjusted to avoid allocating more MIPS for a vPE
@@ -106,7 +107,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
     private double getVmsMipsScalingFactor(Map<Vm, List<Double>> mipsMapRequestedReduced) {
         final double totalMipsCapacity = getHost().getTotalMipsCapacity();
         final double totalMipsToAllocateForAllVms = getTotalMipsToAllocateForAllVms(mipsMapRequestedReduced);
-        return totalMipsCapacity / totalMipsToAllocateForAllVms;
+        return Math.min(1, totalMipsCapacity / totalMipsToAllocateForAllVms);
     }
 
     /**
