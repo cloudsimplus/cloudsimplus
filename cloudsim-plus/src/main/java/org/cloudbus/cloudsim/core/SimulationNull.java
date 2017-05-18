@@ -25,9 +25,9 @@ final class SimulationNull implements Simulation {
     @Override public boolean cancelAll(int src, Predicate<SimEvent> p) {
         return false;
     }
-    @Override public double clock() {
-        return 0;
-    }
+    @Override public double clock() { return 0.0; } 
+    @Override public double clockInMinutes() { return 0.0; }    
+    @Override public double clockInHours() { return 0.0; }    
     @Override public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
         return SimEvent.NULL;
     }

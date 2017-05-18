@@ -59,7 +59,9 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
             throw new IllegalArgumentException("The number of PEs to remove cannot be negative.");
         }
         if(capacityToRemove > this.getCapacity()){
-            throw new IllegalArgumentException("The number of PEs to remove cannot be higher than the number of existing PEs.");
+            throw new IllegalArgumentException(
+                "The number of PEs to remove cannot be higher than the number of existing PEs. "+
+                "Requested to remove: " + capacityToRemove + " PEs. Existing: " + this.getCapacity() + " PEs.");
         }
         return setCapacity(getCapacity()-capacityToRemove);
     }

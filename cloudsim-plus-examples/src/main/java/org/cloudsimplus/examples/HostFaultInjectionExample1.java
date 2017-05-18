@@ -40,7 +40,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -71,7 +70,7 @@ public final class HostFaultInjectionExample1 {
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int HOST_MIPS_BY_PE = 1000;
-    private static final int HOST_PES = 4;
+    private static final int HOST_PES = 6;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -90,7 +89,7 @@ public final class HostFaultInjectionExample1 {
     private static final int VM_PES = 2; //number of cpus
 
     private static final int CLOUDLET_PES = 2;
-    private static final long CLOUDLET_LENGHT = 20_000_000;
+    private static final long CLOUDLET_LENGHT = 50_000_000;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
 
@@ -117,11 +116,7 @@ public final class HostFaultInjectionExample1 {
     public static void main(String[] args) {
         new HostFaultInjectionExample1();
     }
-    private final double finalSimulationTimeInHours;
-    private final int totalFaults;
-    private double mttr;
-    private double mtbf;
-
+   
     public HostFaultInjectionExample1() {
         Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
 
@@ -135,36 +130,18 @@ public final class HostFaultInjectionExample1 {
         createAndSubmitCloudlets();
 
         simulation.start();
-
-        totalFaults = fault.getNumberOfHostFaults();
-        System.out.println("\n----------------------------------------------- \n"
-                + "# Number of host faults: " + totalFaults);
-        finalSimulationTimeInHours = (simulation.clock() % 3600);
-        Log.printFormattedLine("# Time that the simulations finished: %.2f ", finalSimulationTimeInHours);
-        calculateMTTR();
-        calculateMTBF();
-        availability();
-
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
+        System.out.println("\n# Number of Host faults: " + fault.getNumberOfHostFaults());
+        System.out.println("# Number of VM faults (VMs destroyed): " + fault.getNumberOfDestroyedVms());
+        Log.printFormattedLine("# Time that the simulations finished: %.2f minutes", simulation.clockInMinutes());
+        Log.printFormattedLine("# VMs MTTR: %.2f minutes", fault.meanTimeToRepairVmFaultsInMinutes());
+        Log.printFormattedLine("# VMs MTBF: %.2f minutes", fault.meanTimeBetweenVmFaultsInMinutes());
+        Log.printFormattedLine("# Hosts MTBF: %.2f minutes", fault.meanTimeBetweenHostFaultsInMinutes());
+        Log.printFormattedLine("# Availability: %.2f%%", fault.availability()*100);
+
+        
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
-    }
-
-    private void calculateMTTR() {
-        double sumRecoveryInHours = fault.sumRecoveyTimes() % 3600;
-        mttr = sumRecoveryInHours / totalFaults;
-        Log.printFormattedLine("# MTTR: %f ", mttr);
-    }
-
-    private void calculateMTBF() {
-        double sumFaultInHours = fault.sumFaultTimes() % 3600;
-        mtbf = (finalSimulationTimeInHours - sumFaultInHours) / totalFaults;
-        Log.printFormattedLine("# MTBF: %f ", mtbf);
-    }
-    
-    private void availability(){
-        double availability = (mtbf / (mtbf + mttr)) * 100;
-        Log.printFormattedLine("# Availability: %.2f %% ", availability);
     }
     
     public void createAndSubmitVms() {
@@ -267,7 +244,7 @@ public final class HostFaultInjectionExample1 {
         long seed = System.currentTimeMillis();
         /*The average number of failures expected to happen each minute
         in a Poisson Process, which is also called event rate or rate parameter.*/
-        final double meanFailureNumberPerMinute = 0.2;
+        final double meanFailureNumberPerMinute = 0.006;
         PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, seed);
 
         fault = new HostFaultInjection(datacenter, poisson);
