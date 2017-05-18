@@ -47,7 +47,7 @@ import org.cloudbus.cloudsim.util.Log;
 public class PowerDatacenter extends DatacenterSimple {
 
     /**
-     * The Datacenter consumed power.
+     * @see #getPower()
      */
     private double power;
 
@@ -128,7 +128,7 @@ public class PowerDatacenter extends DatacenterSimple {
         if (!isMigrationsEnabled()) {
             return;
         }
-        
+
         Map<Vm, Host> migrationMap =
                 getVmAllocationPolicy().optimizeAllocation(getVmList());
         final double currentTime = getSimulation().clock();
@@ -186,12 +186,12 @@ public class PowerDatacenter extends DatacenterSimple {
 
         return nextCloudletFinishTime;
     }
-    
+
     /**
-     * Gets the total power consumed by all Hosts of the Datacenter since the last time the processing
+     * Gets the total power consumed (in Watts/sec) by all Hosts of the Datacenter since the last time the processing
      * of Cloudlets in this Host was updated.
      *
-     * @return the total power consumed by all Hosts in the elapsed time span
+     * @return the total power consumed (in Watts/sec) by all Hosts in the elapsed time span
      */
     private double getDatacenterPowerUsageForTimeSpan() {
         double datacenterPowerUsageForTimeSpan = 0;
@@ -207,8 +207,8 @@ public class PowerDatacenter extends DatacenterSimple {
             for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
                 final double previousUseOfCpu = host.getPreviousUtilizationOfCpu();
                 final double utilizationOfCpu = host.getUtilizationOfCpu();
-                final double timeFrameHostEnergy = host.getEnergyLinearInterpolation(
-                        previousUseOfCpu, utilizationOfCpu, timeSpan);
+                final double timeFrameHostEnergy =
+                    host.getEnergyLinearInterpolation(previousUseOfCpu, utilizationOfCpu, timeSpan);
                 datacenterPowerUsageForTimeSpan += timeFrameHostEnergy;
 
                 println(String.format(
@@ -239,7 +239,7 @@ public class PowerDatacenter extends DatacenterSimple {
             for (Vm vm : host.getFinishedVms()) {
                 getVmAllocationPolicy().deallocateHostForVm(vm);
                 Log.printFormattedLine(
-                        String.format("%.2f: %s has been deallocated from %s", 
+                        String.format("%.2f: %s has been deallocated from %s",
                                getSimulation().clock(), vm, host));
             }
         }
@@ -250,7 +250,7 @@ public class PowerDatacenter extends DatacenterSimple {
         if (getSimulation().clock() <= getLastProcessTime()) {
             return;
         }
-        
+
         super.updateVmsProcessingOfAllHosts();
         super.processVmMigrate(ev, ack);
         SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
@@ -266,18 +266,27 @@ public class PowerDatacenter extends DatacenterSimple {
     }
 
     /**
-     * Gets the power.
+     * Gets the Datacenter power consumption (in Watts/Second).
      *
-     * @return the power
+     * @return the power consumption (in Watts/Second)
      */
     public double getPower() {
         return power;
     }
 
     /**
-     * Sets the power.
+     * Gets the Datacenter power consumption (in Kilo Watts/Hour).
      *
-     * @param power the new power
+     * @return the power consumption (in Kilo Watts/Hour)
+     */
+    public double getPowerInKWattsHour() {
+        return getPower() / (3600 * 1000);
+    }
+
+    /**
+     * Sets the power consumption.
+     *
+     * @param power the new power consumption
      */
     protected final void setPower(double power) {
         this.power = power;
@@ -305,7 +314,7 @@ public class PowerDatacenter extends DatacenterSimple {
      * Enable or disable migrations.
      *
      * @param enable true to enable migrations; false to disable
-     * @return 
+     * @return
      */
     public final PowerDatacenter setMigrationsEnabled(boolean enable) {
         this.migrationsEnabled = enable;

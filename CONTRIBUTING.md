@@ -1,12 +1,12 @@
 # Contribution Guide
 
 Contributions are always welcome and they speed up the simulator evolution. You can contribute in different ways that are going to be described below.
-However, in order to maintain a high project quality, there are a few guidelines that we need contributors to follow so that we can have a chance of keeping on top of things.
+However, to maintain a high project quality, there are a few guidelines we need contributors to follow. This way we can have a chance of keeping on top of things.
 These guidelines are mainly relevant when you are planning to contribute to the project's source code, so that code quality is preserved and [software rot](https://en.wikipedia.org/wiki/Software_rot) is avoided.
 
 # Ways You Can Contribute
 
-1. Clicking on the "Star" button at the top of the project's GitHub page, so that we can get more visibility.
+1. Clicking on the "Star" button at the top of the project's GitHub page, giving us more visibility.
 1. Using CloudSim Plus at your academic work and citing us in your publications. See the [Publications Section](#publications) for more information.
 1. Promoting CloudSim Plus at your social networks and research groups.
 1. Participating on the [Google Groups Forum](https://groups.google.com/group/cloudsim-plus) by reporting your experiences using the framework, answering other users' questions or simply participating in the discussions. Just make sure you read the forum policies at its home page before posting there.
@@ -28,9 +28,9 @@ If you want to contribute in some of the 3 last ways presented above, please fol
 
 If you just want to request a feature or report an issue, look if the issue/feature you want to report/request hasn't been reported/requested yet at the [issues page](https://github.com/manoelcampos/cloudsim-plus/issues). Try checking the existing issues/features and search using some keywords before creating a new ticket. You can also check the [Google Groups Forum](https://groups.google.com/group/cloudsim-plus) to see if there is any discussion about the subject. If the issue/feature has not been created in the issues page yet, feel free to create a ticket there.
 
-If you are planing to fix an issue or implement a feature, after reporting it, we recommend you to firstly discuss the subject at the [Google Groups Forum](https://groups.google.com/group/cloudsim-plus) and your proposed implementation. This is important to make other uses and the CloudSim Plus team to know what you are planning to do and avoid simultaneous work on the same issues/features.
+If you are planing to fix an issue or implement a feature, after reporting it, we recommend you to firstly discuss the subject at the [Google Groups Forum](https://groups.google.com/group/cloudsim-plus) and your proposed implementation. This is important to make other users and the CloudSim Plus team to know what you are planning to do and to avoid simultaneous work on the same issues/features.
 
-Finally, when submitting a ticket, please read carefully the information at the submission form and make sure that each issue is related to a single bug/feature.
+Finally, when submitting a ticket, please read carefully the information at the submission form and make sure each issue is related to a single bug/feature.
 
 ## Fixing a Bug or Implementing a New Feature
 
@@ -41,7 +41,7 @@ Before fixing a bug of implementing a new feature, you have to first fork the re
 Create a topic branch from where you want to base your work.
   * This is usually the master branch.
   * Only target specific release branches (such as a branch named "cloudsim-plus-1.0.1") if you are certain that your fix must be on that branch.
-  * To quickly create a topic branch based on master: `git checkout -b fix/master/my_contribution master`. 
+  * To quickly create a topic branch based on master: `git checkout master -b my_contribution`. 
     Please avoid working directly on the `master` branch.
 
 ### 2. Follow These Code Quality Guidelines
@@ -71,7 +71,7 @@ The last step before you start coding is to follow the guidelines below, so that
 - Code formatting also matters, really. We care about code organization and indentation to be applied uniformly throughout the code. 
   An untidy code is difficult to read and the lack of formating standards makes the code ugly. 
   By this way, the project includes a [.editorconfig](.editorconfig) file that can be read by your IDE to auto format the code, 
-  by means of [EditorConfig project](http://editorconfig.org). 
+  by means of [EditorConfig IDE Plugins](http://editorconfig.org). 
   You are not required to use it, but at least, use the "auto format" option of your IDE to tidy the code after you finish working.  
 
 ### 3. Commit Your Changes
@@ -95,7 +95,7 @@ The last step before you start coding is to follow the guidelines below, so that
 
 ### 4. Submit Your Changes
 
-* [Rebase your changes on top of CloudSim Plus master branch at the official repository](https://robots.thoughtbot.com/git-interactive-rebase-squash-amend-rewriting-history#rebase-on-top-of-master) so that you wil get the most recent development version and perform any merge conflicts that may happen.
+* [Rebase your changes on top of CloudSim Plus master branch at the official repository](https://robots.thoughtbot.com/git-interactive-rebase-squash-amend-rewriting-history#rebase-on-top-of-master) so that you will get the most recent development version and perform any merge conflicts that may happen.
 * [Commit the final changes including something such as "Closes #NUMBER_OF_THE_ISSUE" or "Fixes #NUMBER_OF_THE_ISSUE"](https://help.github.com/articles/closing-issues-via-commit-messages/) in order to reference the issue in which you were working on.
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the official CloudSim Plus repository.

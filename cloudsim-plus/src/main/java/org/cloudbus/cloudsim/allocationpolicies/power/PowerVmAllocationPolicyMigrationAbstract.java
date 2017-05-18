@@ -65,49 +65,37 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     private final Map<Host, List<Double>> utilizationHistory = new HashMap<>();
 
     /**
-     * The metric history.
-     *
-     * @TODO the map stores different data. Sometimes it stores the upper
-     * threshold, other it stores utilization threshold or predicted
-     * utilization, that is very confusing.
+     * @see #getMetricHistory()
      */
     private final Map<Host, List<Double>> metricHistory = new HashMap<>();
 
     /**
-     * The time when entries in each history list was added. All history lists
-     * are updated at the same time.
+     * @see #getTimeHistory()
      */
     private final Map<Host, List<Double>> timeHistory = new HashMap<>();
 
     /**
-     * The history of time spent in VM selection every time the optimization of
-     * VM allocation method is called.
      *
-     * @see #optimizeAllocation(java.util.List)
+     *
+     * @see #getExecutionTimeHistoryVmSelection()
      */
     private final List<Double> executionTimeHistoryVmSelection = new LinkedList<>();
 
     /**
-     * The history of time spent in host selection every time the optimization
-     * of VM allocation method is called.
      *
-     * @see #optimizeAllocation(java.util.List)
+     * @see #getExecutionTimeHistoryHostSelection()
      */
     private final List<Double> executionTimeHistoryHostSelection = new LinkedList<>();
 
     /**
-     * The history of time spent in VM reallocation every time the optimization
-     * of VM allocation method is called.
      *
-     * @see #optimizeAllocation(java.util.List)
+     * @see #getExecutionTimeHistoryVmReallocation()
      */
     private final List<Double> executionTimeHistoryVmReallocation = new LinkedList<>();
 
     /**
-     * The history of total time spent in every call of the optimization of VM
-     * allocation method.
      *
-     * @see #optimizeAllocation(java.util.List)
+     * @see #getExecutionTimeHistoryTotal()
      */
     private final List<Double> executionTimeHistoryTotal = new LinkedList<>();
 
@@ -615,67 +603,39 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         return vmSelectionPolicy;
     }
 
-    /**
-     * Gets the utilization history.
-     *
-     * @return the utilization history
-     */
+    @Override
     public Map<Host, List<Double>> getUtilizationHistory() {
-        return utilizationHistory;
+        return Collections.unmodifiableMap(utilizationHistory);
     }
 
-    /**
-     * Gets the metric history.
-     *
-     * @return the metric history
-     */
+    @Override
     public Map<Host, List<Double>> getMetricHistory() {
-        return metricHistory;
+        return Collections.unmodifiableMap(metricHistory);
     }
 
-    /**
-     * Gets the time history.
-     *
-     * @return the time history
-     */
+    @Override
     public Map<Host, List<Double>> getTimeHistory() {
-        return timeHistory;
+        return Collections.unmodifiableMap(timeHistory);
     }
 
-    /**
-     * Gets the execution time history vm selection.
-     *
-     * @return the execution time history vm selection
-     */
+    @Override
     public List<Double> getExecutionTimeHistoryVmSelection() {
-        return executionTimeHistoryVmSelection;
+        return Collections.unmodifiableList(executionTimeHistoryVmSelection);
     }
 
-    /**
-     * Gets the execution time history host selection.
-     *
-     * @return the execution time history host selection
-     */
+    @Override
     public List<Double> getExecutionTimeHistoryHostSelection() {
-        return executionTimeHistoryHostSelection;
+        return Collections.unmodifiableList(executionTimeHistoryHostSelection);
     }
 
-    /**
-     * Gets the execution time history vm reallocation.
-     *
-     * @return the execution time history vm reallocation
-     */
+    @Override
     public List<Double> getExecutionTimeHistoryVmReallocation() {
-        return executionTimeHistoryVmReallocation;
+        return Collections.unmodifiableList(executionTimeHistoryVmReallocation);
     }
 
-    /**
-     * Gets the execution time history total.
-     *
-     * @return the execution time history total
-     */
+    @Override
     public List<Double> getExecutionTimeHistoryTotal() {
-        return executionTimeHistoryTotal;
+        return Collections.unmodifiableList(executionTimeHistoryTotal);
     }
 
     /**
