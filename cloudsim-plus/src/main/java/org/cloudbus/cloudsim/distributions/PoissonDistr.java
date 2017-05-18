@@ -133,7 +133,7 @@ public class PoissonDistr implements ContinuousDistribution {
      */
     public boolean eventsHappened(){
         final double r = rand.sample();
-        return r < eventsArrivalProbability();
+        return r <= eventsArrivalProbability();
     }
     
     /**

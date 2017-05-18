@@ -86,12 +86,28 @@ public interface Simulation {
     boolean cancelAll(int src, Predicate<SimEvent> p);
 
     /**
-     * Gets the current simulation time.
+     * Gets the current simulation time in seconds.
      *
      * @return
      * @see #isRunning()
      */
     double clock();
+    
+    /**
+     * Gets the current simulation time in minutes.
+     *
+     * @return
+     * @see #isRunning()
+     */
+    double clockInMinutes();   
+
+    /**
+     * Gets the current simulation time in hours.
+     *
+     * @return
+     * @see #isRunning()
+     */
+    double clockInHours();    
 
     /**
      * Find first deferred event matching a predicate.

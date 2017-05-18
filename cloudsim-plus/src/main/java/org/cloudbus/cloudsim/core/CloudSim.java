@@ -281,6 +281,16 @@ public class CloudSim implements Simulation {
         return clockTime;
     }
 
+    @Override
+    public double clockInMinutes() {
+        return clock()/60.0;
+    }
+
+    @Override
+    public double clockInHours() {
+        return clock()/3600.0;
+    }
+
     /**
      * Updates the simulation clock
      * @param newTime simulation time to set
