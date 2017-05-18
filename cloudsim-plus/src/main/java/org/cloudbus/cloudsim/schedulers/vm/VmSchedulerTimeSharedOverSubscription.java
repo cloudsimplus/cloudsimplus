@@ -80,8 +80,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         // First, we calculate the scaling factor - the MIPS allocation for all VMs will be scaled proportionally
         final Map<Vm, List<Double>> mipsMapRequestedReduced = getNewTotalRequestedMipsByAllVms();
 
-        //the factor that will be used to reduce the amount of MIPS allocated to each vPE
-        final double scalingFactor = getHost().getTotalMipsCapacity() / getTotalMipsToAllocateForAllVms(mipsMapRequestedReduced);
+        final double scalingFactor = getVmMipsScalingFactor(mipsMapRequestedReduced);
 
         getMipsMapAllocated().clear();
         for (final Entry<Vm, List<Double>> entry : mipsMapRequestedReduced.entrySet()) {
@@ -90,6 +89,24 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
             updatedMipsAllocation = getMipsShareToAllocate(updatedMipsAllocation, vm, scalingFactor);
             getMipsMapAllocated().put(vm, updatedMipsAllocation);
         }
+    }
+
+    /**
+     * Gets the factor that will be used to reduce the amount of MIPS allocated to each vPE.
+     * When the total amount of MIPS requested by all VMs is greater than the total
+     * MIPS capacity of the Host, the MIPS requested by VMs is reduced to fit
+     * into the Host.
+     *
+     * @param mipsMapRequestedReduced the map of MIPS requested by each VM, after being
+     *                                adjusted to avoid allocating more MIPS for a vPE
+     *                                than there is in the physical PE
+     * @return the scaling factor to apply for VMs requested MIPS (a percentage value in scale from 0 to 1)
+     * @see #getMipsShareRequestedReduced(List)
+     */
+    private double getVmMipsScalingFactor(Map<Vm, List<Double>> mipsMapRequestedReduced) {
+        final double totalMipsCapacity = getHost().getTotalMipsCapacity();
+        final double totalMipsToAllocateForAllVms = getTotalMipsToAllocateForAllVms(mipsMapRequestedReduced);
+        return totalMipsCapacity / totalMipsToAllocateForAllVms;
     }
 
     /**
