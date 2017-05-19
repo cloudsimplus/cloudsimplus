@@ -74,7 +74,7 @@ setCloudletList
 setPrinter
 ^^^^^^^^^^
 
-.. java:method:: public final CloudletsTableBuilder setPrinter(TableBuilder printer)
+.. java:method:: public final CloudletsTableBuilder setPrinter(TableBuilder table)
    :outertype: CloudletsTableBuilder
 
 setTitle

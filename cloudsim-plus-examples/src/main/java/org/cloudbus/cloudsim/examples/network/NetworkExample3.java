@@ -38,8 +38,6 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A simple example showing how to create 2 datacenters with 1 host each and run
@@ -170,10 +168,10 @@ public class NetworkExample3 {
         List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
 
         new CloudletsTableBuilder(newList1)
-                .setPrinter(new TextTableBuilder("Broker " + broker1))
+                .setTable(new TextTableBuilder("Broker " + broker1))
                 .build();
         new CloudletsTableBuilder(newList2)
-                .setPrinter(new TextTableBuilder("Broker " + broker2))
+                .setTable(new TextTableBuilder("Broker " + broker2))
                 .build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }

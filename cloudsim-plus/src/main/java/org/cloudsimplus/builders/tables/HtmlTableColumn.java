@@ -31,23 +31,34 @@ package org.cloudsimplus.builders.tables;
  * @since CloudSim Plus 1.0
  */
 public class HtmlTableColumn extends AbstractTableColumn {
+    public HtmlTableColumn(final String title, final String subTitle) {
+        this(null, title, subTitle);
+    }
 
-    public HtmlTableColumn(TableBuilder table, String title) {
+    public HtmlTableColumn(final String title) {
+        this(null, title, "");
+    }
+
+    public HtmlTableColumn(final TableBuilder table, final String title) {
         super(table, title);
     }
 
-    private String identLine(int columnIndex) {
+    public HtmlTableColumn(final TableBuilder table, final String title,  final String subTitle) {
+        super(table, title, subTitle);
+    }
+
+    private String identLine(final int columnIndex) {
         return columnIndex == 0 ? "    " : "";
     }
 
     @Override
-    protected String generateHeader(String title) {
+    protected String generateHeader(final String str) {
         final int index = getTable().getColumns().indexOf(this);
-        return String.format("%s<th>%s</th>", identLine(index), title);
+        return String.format("%s<th>%s</th>", identLine(index), str);
     }
 
     @Override
-    public String generateData(Object data) {
+    public String generateData(final Object data) {
         final int index = getTable().getColumns().indexOf(this);
         return String.format("%s<td>%s</td>", identLine(index), super.generateData(data));
     }

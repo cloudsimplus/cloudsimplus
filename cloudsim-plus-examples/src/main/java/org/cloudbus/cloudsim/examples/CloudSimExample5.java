@@ -34,8 +34,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudsimplus.builders.tables.TextTableBuilder;
 
 /**
@@ -147,10 +145,10 @@ public class CloudSimExample5 {
         List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
 
         new CloudletsTableBuilder(newList1)
-                .setPrinter(new TextTableBuilder(broker1.getName()))
+                .setTable(new TextTableBuilder(broker1.getName()))
                 .build();
         new CloudletsTableBuilder(newList2)
-                .setPrinter(new TextTableBuilder(broker2.getName()))
+                .setTable(new TextTableBuilder(broker2.getName()))
                 .build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }

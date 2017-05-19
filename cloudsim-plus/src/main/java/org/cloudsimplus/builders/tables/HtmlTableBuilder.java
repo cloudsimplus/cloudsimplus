@@ -70,9 +70,9 @@ public class HtmlTableBuilder extends AbstractTableBuilder {
     }
 
     @Override
-    public TableColumn addColumn(String columnTitle) {
-        TableColumn col = new HtmlTableColumn(this, columnTitle);
-        getColumns().add(col);
+    public TableColumn addColumn(int index, String columnTitle) {
+        final TableColumn col = new HtmlTableColumn(this, columnTitle);
+        getColumns().add(index, col);
         return col;
     }
 }

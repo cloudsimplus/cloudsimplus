@@ -283,7 +283,7 @@ public final class Helper {
         addStringToBuffer("Number of VM migrations", "%d", datacenter.getMigrationCount());
 
         addStringToBuffer("SLA violations", "%.5f%%", slaViolationsPercent * 100);
-        addStringToBuffer("SLA perf degradation due to migration", "%.5f%%", percentSlaDegradationDueMigration * 100);
+        addStringToBuffer("SLA performance degradation due to migration", "%.5f%%", percentSlaDegradationDueMigration * 100);
         addStringToBuffer("SLA violation time for active hosts", "%.5f%%", percentSlaViolationTimeForActiveHosts * 100);
         addStringToBuffer("Overall SLA violation", "%.5f%%", overallSlaViolationPercent * 100);
         addStringToBuffer("Average SLA violation", "%.5f%%", averageSlaViolationPercent * 100);
@@ -303,7 +303,7 @@ public final class Helper {
             addStringToBuffer("Execution time - VM reallocation mean", "%.5f", MathUtil.mean(vap.getExecutionTimeHistoryVmReallocation()), "sec");
             addStringToBuffer("Execution time - VM reallocation stDev", "%.5f", MathUtil.stDev(vap.getExecutionTimeHistoryVmReallocation()), "sec");
             addStringToBuffer("Execution time - total mean", "%.5f", MathUtil.mean(vap.getExecutionTimeHistoryTotal()), "sec");
-            addStringToBuffer("Execution time - total stDev", "%.5f", MathUtil.stDev(vap.getExecutionTimeHistoryTotal()), "sec");
+            addStringToBuffer("Execution time - total StDev", "%.5f", MathUtil.stDev(vap.getExecutionTimeHistoryTotal()), "sec");
         }
         buffer.append("\n");
 

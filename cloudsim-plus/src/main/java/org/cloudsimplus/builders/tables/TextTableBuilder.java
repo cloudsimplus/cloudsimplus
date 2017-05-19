@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.util.Log;
  */
 public class TextTableBuilder extends CsvTableBuilder {
     public TextTableBuilder() {
-        super();
+        this("");
     }
 
     /**
@@ -42,6 +42,7 @@ public class TextTableBuilder extends CsvTableBuilder {
      */
     public TextTableBuilder(final String title) {
         super(title);
+        setColumnSeparator("|");
     }
 
     @Override
@@ -111,10 +112,8 @@ public class TextTableBuilder extends CsvTableBuilder {
     }
 
     @Override
-    public TableColumn addColumn(String columnTitle) {
-        TableColumn col = new TextTableColumn(this, columnTitle);
-        getColumns().add(col);
-        return col;
+    public TableColumn addColumn(final int index, final String columnTitle) {
+        return addColumn(new TextTableColumn(this, columnTitle));
     }
 
 

@@ -107,7 +107,7 @@ html_static_path = ['_static']
 
 # -- Options for HTMLHelp output ------------------------------------------
 
-# Output file base name for HTML help builder.
+# Output file base name for HTML help table.
 htmlhelp_basename = 'CloudSimPlusdoc'
 
 

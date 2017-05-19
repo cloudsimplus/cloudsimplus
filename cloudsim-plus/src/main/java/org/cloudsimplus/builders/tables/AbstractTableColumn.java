@@ -49,21 +49,33 @@ public abstract class AbstractTableColumn implements TableColumn {
     private TableBuilder table;
 
     /**
-     * @see #getColumnSeparator()
-     */
-    private String columnSeparator;
-
-    /**
      * Creates a column with a specific title.
      * @param table The table that the column belongs to.
      * @param title The column title.
      */
-    public AbstractTableColumn(TableBuilder table, final String title) {
+    public AbstractTableColumn(final TableBuilder table, final String title) {
+        this(table, title, "");
+    }
+
+    /**
+     * Creates a column with a specific title and sub-title.
+     * @param title The column title.
+     * @param subTitle The column sub-title.
+     */
+    public AbstractTableColumn(final String title, final String subTitle) {
+        this(null, title, subTitle);
+    }
+
+    /**
+     * Creates a column with a specific title and sub-title for a given table.
+     * @param title The column title.
+     * @param subTitle The column sub-title.
+     */
+    public AbstractTableColumn(final TableBuilder table, final String title, final String subTitle) {
         this.table = table;
         this.title = title;
         this.setFormat("");
-        this.subTitle = "";
-        this.columnSeparator = "";
+        this.subTitle = subTitle;
     }
 
     /**
@@ -150,10 +162,10 @@ public abstract class AbstractTableColumn implements TableColumn {
     /**
      * Generates a header for the column, either for the title or subtitle header.
      *
-     * @param title header title or subtitle
+     * @param str header title or subtitle
      * @return the generated header string
      */
-    protected abstract String generateHeader(String title);
+    protected abstract String generateHeader(String str);
 
     @Override
     public String generateTitleHeader() {
@@ -165,24 +177,13 @@ public abstract class AbstractTableColumn implements TableColumn {
         return generateHeader(subTitle);
     }
 
-    @Override
-    public String getColumnSeparator(){
-        return columnSeparator;
-    }
-
-    @Override
-    public final TableColumn setColumnSeparator(String columnSeparator) {
-        this.columnSeparator = columnSeparator;
-        return this;
-    }
-
     /**
      *
      * @return The index of the current column into the
      * column list of the {@link #getTable() TableBuilder}.
      */
     protected int getIndex() {
-        return getTable().getColumns().indexOf(this);
+        return table.getColumns().indexOf(this);
     }
 
     /**

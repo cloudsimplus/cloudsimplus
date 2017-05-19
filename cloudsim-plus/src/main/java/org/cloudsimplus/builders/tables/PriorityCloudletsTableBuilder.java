@@ -41,7 +41,7 @@ public class PriorityCloudletsTableBuilder extends CloudletsTableBuilder {
     @Override
     protected void createTableColumns() {
         super.createTableColumns();
-        getPrinter().addColumn("Priority");
+        getTable().addColumn("Priority");
     }
 
     @Override
