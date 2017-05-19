@@ -72,13 +72,14 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
     }
 
     @Override
-    protected void allocateMipsShareForVm(Vm vm, List<Double> mipsShareRequestedReduced) {
+    protected void allocateMipsShareForVm(Vm vm, final List<Double> mipsShareRequestedReduced) {
         final double totalRequestedMips = mipsShareRequestedReduced.stream().reduce(0.0, Double::sum);
         if (getAvailableMips() >= totalRequestedMips) {
             super.allocateMipsShareForVm(vm, mipsShareRequestedReduced);
-        } else {
-            redistributeMipsDueToOverSubscription();
+            return;
         }
+
+        redistributeMipsDueToOverSubscription();
     }
 
     /**
@@ -188,6 +189,5 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         }
 
         return requiredMipsByThisVm;
-
     }
 }

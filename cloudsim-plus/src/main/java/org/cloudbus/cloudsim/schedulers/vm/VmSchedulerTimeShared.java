@@ -52,11 +52,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     /**
-     * @see #getMipsMapRequested()
-     */
-    private Map<Vm, List<Double>> mipsMapRequested;
-
-    /**
      * The number of host's PEs in use.
      */
     private long pesInUse;
@@ -81,15 +76,31 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested) {
-        if (!vm.isInMigration() && getHost().getVmsMigratingOut().contains(vm)) {
-           getHost().removeVmMigratingOut(vm);
-        }
+    public boolean allocatePesForVmInternal(Vm vm, final List<Double> mipsShareRequested) {
         if(!allocateMipsShareForVmInternal(vm, mipsShareRequested)) {
             return false;
         }
 
         updatePesAllocationForAllVms();
+        return true;
+    }
+
+    /**
+     * Try to allocate the MIPS requested by a VM
+     * and update the {@link #getMipsMapRequested()}.
+     *
+     * @param vm the VM
+     * @param mipsShareRequested the list of mips share requested by the vm
+     * @return true if successful, false otherwise
+     */
+    protected boolean allocateMipsShareForVmInternal(Vm vm, List<Double> mipsShareRequested) {
+        if (!isAllowedToAllocateMips(mipsShareRequested)) {
+            return false;
+        }
+
+        setPesInUse(getPesInUse() + mipsShareRequested.size());
+        allocateMipsShareForVm(vm, getMipsShareRequestedReduced(mipsShareRequested));
+
         return true;
     }
 
@@ -264,27 +275,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
-     * Try to allocate the MIPS requested by a VM
-     * and update the {@link #getMipsMapRequested()}.
-     *
-     * @param vm the VM
-     * @param mipsShareRequested the list of mips share requested by the vm
-     * @return true if successful, false otherwise
-     */
-    protected boolean allocateMipsShareForVmInternal(Vm vm, List<Double> mipsShareRequested) {
-        if (!isAllowedToAllocateMips(mipsShareRequested)) {
-            return false;
-        }
-
-        mipsMapRequested.put(vm, mipsShareRequested);
-        setPesInUse(getPesInUse() + mipsShareRequested.size());
-
-        allocateMipsShareForVm(vm, getMipsShareRequestedReduced(mipsShareRequested));
-
-        return true;
-    }
-
-    /**
      * Performs the allocation of a MIPS List to a given VM.
      * The actual MIPS to be allocated to the VM may be reduced
      * if the VM is in migration, due to migration overhead.
@@ -294,7 +284,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * after it being adjusted by the {@link #getMipsShareRequestedReduced(List)} method.
      * @see #getMipsShareRequestedReduced(java.util.List)
      */
-    protected void allocateMipsShareForVm(Vm vm, List<Double> mipsShareRequestedReduced) {
+    protected void allocateMipsShareForVm(Vm vm, final List<Double> mipsShareRequestedReduced) {
         final List<Double> mipsShare = getMipsShareToAllocate(mipsShareRequestedReduced, vm);
         getMipsMapAllocated().put(vm, mipsShare);
     }
@@ -348,11 +338,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     @Override
     protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {
-        final int removedPes = removePesFromMap(vm, mipsMapRequested, pesToRemove);
+        final int removedPes = removePesFromMap(vm, getMipsMapRequested(), pesToRemove);
         setPesInUse(pesInUse - removedPes);
         removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
 
-        for (final Map.Entry<Vm, List<Double>> entry : mipsMapRequested.entrySet()) {
+        for (final Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             allocateMipsShareForVmInternal(entry.getKey(), entry.getValue());
         }
 
@@ -368,7 +358,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     @Override
     public void deallocatePesForAllVms() {
         super.deallocatePesForAllVms();
-        mipsMapRequested.clear();
+        getMipsMapRequested().clear();
         setPesInUse(0);
     }
 
@@ -388,16 +378,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     protected long getPesInUse() {
         return pesInUse;
-    }
-
-    /**
-     * Gets the map of mips requested by each VM, where each key is a VM and each value is a
-     * list of MIPS requested by that VM.
-     *
-     * @return
-     */
-    protected Map<Vm, List<Double>> getMipsMapRequested() {
-        return mipsMapRequested;
     }
 
     /**

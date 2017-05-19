@@ -64,7 +64,6 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         setFreePesList(new ArrayList<>());
     }
 
-
     @Override
     public VmScheduler setHost(Host host) {
         super.setHost(host);
@@ -86,12 +85,12 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      */
     protected List<Pe> getTotalCapacityToBeAllocatedToVm(List<Double> vmRequestedMipsShare) {
         // if there is no enough free PEs, fails
-        if (getFreePesList().size() < vmRequestedMipsShare.size()) {
+        if (freePesList.size() < vmRequestedMipsShare.size()) {
             return Collections.EMPTY_LIST;
         }
 
         List<Pe> selectedPes = new ArrayList<>();
-        Iterator<Pe> peIterator = getFreePesList().iterator();
+        Iterator<Pe> peIterator = freePesList.iterator();
         Pe pe = peIterator.next();
         for (double mips : vmRequestedMipsShare) {
             if (mips <= pe.getCapacity()) {
@@ -111,25 +110,25 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested) {
-        List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
+    public boolean allocatePesForVmInternal(Vm vm, final List<Double> mipsShareRequested) {
+        final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
         if(selectedPes.isEmpty()){
             return false;
         }
 
         final double totalMips = mipsShareRequested.stream().mapToDouble(m -> m).sum();
 
-        getFreePesList().removeAll(selectedPes);
+        freePesList.removeAll(selectedPes);
 
-        getPeAllocationMap().put(vm, selectedPes);
+        peAllocationMap.put(vm, selectedPes);
         getMipsMapAllocated().put(vm, mipsShareRequested);
         return true;
     }
 
     @Override
     protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {
-        getFreePesList().addAll(getAllocatedWorkingPesForVm(vm));
-        removePesFromMap(vm, getPeAllocationMap(),  pesToRemove);
+        freePesList.addAll(getAllocatedWorkingPesForVm(vm));
+        removePesFromMap(vm, peAllocationMap,  pesToRemove);
         removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
     }
 

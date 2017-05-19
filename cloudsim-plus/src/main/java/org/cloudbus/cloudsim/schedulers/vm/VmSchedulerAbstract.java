@@ -31,6 +31,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @see #getVmMigrationCpuOverhead()
      */
     public static final double DEFAULT_VM_MIGRATION_CPU_OVERHEAD = 0.1;
+    /**
+     * @see #getMipsMapRequested()
+     */
+    protected Map<Vm, List<Double>> mipsMapRequested;
 
     /**
      * @see #getHost()
@@ -81,13 +85,25 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public boolean allocatePesForVm(Vm vm) {
-        final List<Double> mipsList =
+    public final boolean allocatePesForVm(Vm vm) {
+        final List<Double> mipsShareRequested =
                 LongStream.range(0, vm.getNumberOfPes())
                         .mapToObj(i -> vm.getMips())
                         .collect(toList());
-        return allocatePesForVm(vm, mipsList);
+        return allocatePesForVm(vm, mipsShareRequested);
     }
+
+    @Override
+    public final boolean allocatePesForVm(Vm vm, final List<Double> mipsShareRequested) {
+        if (!vm.isInMigration() && host.getVmsMigratingOut().contains(vm)) {
+            host.removeVmMigratingOut(vm);
+        }
+
+        mipsMapRequested.put(vm, mipsShareRequested);
+        return allocatePesForVmInternal(vm, mipsShareRequested);
+    }
+
+    protected abstract boolean allocatePesForVmInternal(Vm vm, final List<Double> mipsShareRequested);
 
     @Override
     public void deallocatePesFromVm(Vm vm) {
@@ -173,6 +189,21 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public final List<Pe> getWorkingPeList() {
         return host.getWorkingPeList();
+    }
+
+    /**
+     * Gets a <b>read-only</b> map of MIPS requested by each VM, where each key is a VM and each value is a
+     * list of MIPS requested by that VM.
+     *
+     * @return
+     */
+    protected Map<Vm, List<Double>> getMipsMapRequested() {
+        return mipsMapRequested;
+    }
+
+    @Override
+    public List<Double> getMipsRequested(Vm vm) {
+        return mipsMapRequested.getOrDefault(vm, new ArrayList<>());
     }
 
     /**
@@ -273,11 +304,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         this.peMap = peMap;
     }
 
+
     @Override
     public Host getHost() {
         return host;
     }
-
 
     @Override
     public VmScheduler setHost(Host host) {

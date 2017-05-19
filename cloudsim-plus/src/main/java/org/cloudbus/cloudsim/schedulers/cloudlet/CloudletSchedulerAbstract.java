@@ -131,7 +131,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public List<Double> getCurrentRequestedMips() {
-        return new ArrayList<>(currentMipsShare);
+        return new ArrayList<>(vm.getHost().getVmScheduler().getMipsRequested(vm));
     }
 
     @Override

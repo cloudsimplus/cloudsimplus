@@ -129,6 +129,14 @@ public interface VmScheduler {
     double getAvailableMips();
 
     /**
+     * Gets a <b>read-only</b> List of MIPS requested by a V.
+     *
+     * @param vm the VM to get the List of requested MIPS
+     * @return
+     */
+    List<Double> getMipsRequested(Vm vm);
+
+    /**
      * Checks if the PM using this scheduler has enough MIPS capacity
      * to host a given VM.
      *
