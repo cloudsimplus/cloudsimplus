@@ -274,7 +274,7 @@ public final class Helper {
         Log.enable();
         Log.printLine();
         final String delimiter = ",";
-        buffer = new StringBuilder();
+        this.buffer = new StringBuilder();
         addStringToBuffer("Experiment name", "%s", experimentName);
         addStringToBuffer("Number of Hosts", "%d", hosts.size());
         addStringToBuffer("Number of VMs", "%d", vmList.size());
@@ -305,20 +305,20 @@ public final class Helper {
             addStringToBuffer("Execution time - total mean", "%.5f", MathUtil.mean(vap.getExecutionTimeHistoryTotal()), "sec");
             addStringToBuffer("Execution time - total StDev", "%.5f", MathUtil.stDev(vap.getExecutionTimeHistoryTotal()), "sec");
         }
-        buffer.append("\n");
+        this.buffer.append("\n");
 
         if (outputInCsv) {
             if (!PowerVmAllocationPolicyMigration.NULL.equals(vap)) {
-                writeMetricHistory(hosts, vap, outputFolder + "/metrics/" + experimentName + "_metric");
+                writeMetricHistoryToFile(hosts, vap, outputFolder + "/metrics/" + experimentName + "_metric");
             }
 
-            writeDataRow(buffer.toString(), outputFolder + "/stats/" + experimentName + "_stats.csv");
-            writeDataColumn(timeBeforeHostShutdown, outputFolder + "/time_before_host_shutdown/"
+            writeBufferToFile(outputFolder + "/stats/" + experimentName + "_stats.csv");
+            writeDataToFile(timeBeforeHostShutdown, outputFolder + "/time_before_host_shutdown/"
                 + experimentName + "_time_before_host_shutdown.csv");
-            writeDataColumn(timeBeforeVmMigration, outputFolder + "/time_before_vm_migration/"
+            writeDataToFile(timeBeforeVmMigration, outputFolder + "/time_before_vm_migration/"
                 + experimentName + "_time_before_vm_migration.csv");
         } else Log.print(buffer.toString());
-        buffer = null;
+        this.buffer = null;
 
         Log.printLine();
         Log.disable();
@@ -408,7 +408,7 @@ public final class Helper {
         double totalHostsSlaViolationTime = 0;
 
         for (HostSimple host : hosts) {
-            HostSlaData sla = new HostSlaData((HostDynamicWorkload) host);
+            HostSlaMetrics sla = new HostSlaMetrics((HostDynamicWorkload) host);
             totalHostsActiveTime += sla.totalActiveTime;
             totalHostsSlaViolationTime += sla.totalSlaViolationTime;
         }
@@ -430,7 +430,7 @@ public final class Helper {
         double totalUnderAllocatedMipsDueToMigration = 0;
 
         for (Vm vm : vms) {
-            VmSlaData sla = new VmSlaData(vm);
+            VmSlaMetrics sla = new VmSlaMetrics(vm);
             slaViolation.addAll(sla.slaViolation);
             totalAllocatedMips += sla.totalAllocatedMips;
             totalRequestedMips += sla.totalRequestedMips;
@@ -445,12 +445,13 @@ public final class Helper {
     }
 
     /**
-     * Write data column.
+     * Write the data from a given list of numbers to a file,
+     * one value per line.
      *
-     * @param data       the data
-     * @param outputPath the output path
+     * @param data       the list of numbers to be saved to the file
+     * @param outputPath the path of the file to save the data
      */
-    public void writeDataColumn(List<? extends Number> data, String outputPath) {
+    public void writeDataToFile(List<? extends Number> data, String outputPath) {
         File file = new File(outputPath);
         try {
             file.createNewFile();
@@ -472,12 +473,11 @@ public final class Helper {
     }
 
     /**
-     * Write data row.
+     * Write the data from the {@link #buffer} to a file
      *
-     * @param data       the data
-     * @param outputPath the output path
+     * @param outputPath the path of the file to save the data
      */
-    public void writeDataRow(String data, String outputPath) {
+    public void writeBufferToFile(String outputPath) {
         File file = new File(outputPath);
         try {
             file.createNewFile();
@@ -487,7 +487,7 @@ public final class Helper {
         }
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.write(data);
+            writer.write(buffer.toString());
             writer.close();
             System.out.format("File %s created.\n", outputPath);
         } catch (IOException e) {
@@ -503,7 +503,7 @@ public final class Helper {
      * @param vmAllocationPolicy the vm allocation policy
      * @param outputPath         the output path
      */
-    public void writeMetricHistory(
+    public void writeMetricHistoryToFile(
         List<? extends HostSimple> hosts,
         PowerVmAllocationPolicyMigration vmAllocationPolicy,
         String outputPath) {
@@ -607,7 +607,7 @@ public final class Helper {
      * An inner class to store data related to a given VM
      * which is used to compute SLA metrics.
      */
-    private class VmSlaData {
+    private class VmSlaMetrics {
         Vm vm;
         double totalAllocatedMips;
         double totalRequestedMips;
@@ -618,18 +618,18 @@ public final class Helper {
         boolean previousIsInMigration;
         final List<Double> slaViolation;
 
-        VmSlaData(Vm vm) {
+        VmSlaMetrics(Vm vm) {
             this.vm = vm;
             previousTime = -1;
             slaViolation = new ArrayList<>();
-            computeSlaMetrics();
+            compute();
         }
 
         /**
          * Computes some SLA metrics for the VM, based on
          * its MIPS history.
          */
-        private void computeSlaMetrics() {
+        private void compute() {
             for (final VmStateHistoryEntry entry : vm.getStateHistory()) {
                 if (previousTime != -1) {
                     double timeDiff = entry.getTime() - previousTime;
@@ -657,7 +657,7 @@ public final class Helper {
      * An inner class to store data related to a given Host
      * which is used to compute SLA metrics.
      */
-    private class HostSlaData {
+    private class HostSlaMetrics {
         HostDynamicWorkload host;
         private double previousTime;
         double previousAllocatedMips;
@@ -670,18 +670,18 @@ public final class Helper {
          * Creates a Host SLA Object to compute SLA metrics for the given Host.
          * @param host the Host to compute SLA metrics.
          */
-        HostSlaData(HostDynamicWorkload host) {
+        HostSlaMetrics(HostDynamicWorkload host) {
             this.host = host;
             previousTime = -1;
             previousIsActive = true;
-            computeSlaMetrics();
+            compute();
         }
 
         /**
          * Computes some SLA metrics for the Host, based on its MIPS history,
          * considering just the times when the Host was active.
          */
-        private void computeSlaMetrics() {
+        private void compute() {
             for (HostStateHistoryEntry entry : host.getStateHistory()) {
                 if (previousTime != -1 && previousIsActive) {
                     final double timeDiff = entry.getTime() - previousTime;

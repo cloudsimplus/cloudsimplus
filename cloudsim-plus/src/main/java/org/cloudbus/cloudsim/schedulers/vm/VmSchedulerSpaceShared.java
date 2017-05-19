@@ -45,14 +45,25 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     private List<Pe> freePesList;
 
     /**
-     * Instantiates a new vm space-shared scheduler.
+     * Creates a space-shared VM scheduler.
      *
      */
     public VmSchedulerSpaceShared() {
-        super();
+        this(DEFAULT_VM_MIGRATION_CPU_OVERHEAD);
+    }
+
+    /**
+     * Creates a space-shared VM scheduler, defining a CPU overhead for VM migration.
+     *
+     * @param vmMigrationCpuOverhead the percentage of Host's CPU usage increase when a
+     * VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
+     */
+    public VmSchedulerSpaceShared(final double vmMigrationCpuOverhead){
+        super(vmMigrationCpuOverhead);
         setPeAllocationMap(new HashMap<>());
         setFreePesList(new ArrayList<>());
     }
+
 
     @Override
     public VmScheduler setHost(Host host) {
@@ -116,17 +127,17 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {        
+    protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {
         getFreePesList().addAll(getAllocatedWorkingPesForVm(vm));
         removePesFromMap(vm, getPeAllocationMap(),  pesToRemove);
         removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
-    }    
+    }
 
     /**
-     * Gets a list or working PEs (non-failed) which are allocated to a 
+     * Gets a list or working PEs (non-failed) which are allocated to a
      * given VM.
      * @param vm the VM to get the list of allocated working PEs
-     * @return 
+     * @return
      */
     private List<Pe> getAllocatedWorkingPesForVm(Vm vm) {
         return peAllocationMap
@@ -171,11 +182,5 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     protected final List<Pe> getFreePesList() {
         return freePesList;
     }
-
-    @Override
-    public double getVmMigrationCpuOverhead() {
-        return 0;
-    }
-
 
 }

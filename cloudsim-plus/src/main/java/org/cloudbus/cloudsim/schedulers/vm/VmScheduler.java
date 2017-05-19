@@ -198,6 +198,16 @@ public interface VmScheduler {
     double getTotalAllocatedMipsForVm(Vm vm);
 
     /**
+     * Gets the max percentage of CPU a VM migrating out of this Host can use.
+     * Since there may be an overhead associated to the migration process
+     * (if the {@link #getVmMigrationCpuOverhead() CPU overhead for VM migration} is greater than 0),
+     * during the migration, the amount of MIPS the VM can use is reduced due to this overhead.
+     *
+     * @return the max percentage of CPU usage during migration (in scale from [0 to 1], where 1 is 100%)
+     */
+    double getMaxCpuUsagePercentDuringOutMigration();
+
+    /**
      * Defines the percentage of Host's CPU usage increase when a
      * VM is migrating in or out of the Host.
      * The value is in scale from 0 to 1 (where 1 is 100%).

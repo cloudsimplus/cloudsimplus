@@ -44,6 +44,7 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }
+    @Override public double getMaxCpuUsagePercentDuringOutMigration() { return 0; }
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }

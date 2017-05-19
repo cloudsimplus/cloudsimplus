@@ -34,6 +34,7 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
@@ -41,11 +42,8 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeSharedOverSubscription;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -57,33 +55,51 @@ import java.util.List;
 
 /**
  * An example showing the usage of the {@link VmSchedulerTimeSharedOverSubscription}
- * which allows oversubscription of Host's PEs.
+ * which allows over-subscription of Host's PEs.
  * When running VMs request more MIPS than available into a Host,
  * they will be allowed to run but with a reduced amount of MIPS.
+ *
+ * <p>Using other {@code VmSchedulers} such as the {@link VmSchedulerTimeShared},
+ * if the Host doesn't have the MIPS capacity required by a VM, the VM is not allowed
+ * to execute into this Host.</p>
+ *
+ * <p>This example has just 1 Host with 1 PE of 500 MIPS.
+ * However, there are 2 VMs with 1 PE of 1000 MIPS.
+ * There are 2 Cloudlets, each one executed into one VM,
+ * requiring 1 PE and having a length of 10000 MI.
+ *
+ * If each Cloudlet had one exclusive PE to execute,
+ * they would finish in 10 seconds.
+ * But since their VMs are sharing the same physical PE,
+ * the time doubles to 20.
+ * But since the Host PE has just half of the MIPS required
+ * by the VMs' PEs, the time doubles again to 40 seconds,
+ * as can be seen in the results.
+ * </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public class VmSchedulerTimeSharedOverSubscriptionExample {
     private static final int HOSTS     = 1;
-    private static final int VMS       = 2;
-    private static final int CLOUDLETS = 2;
+    private static final int VMS       = HOSTS*2;
+    private static final int CLOUDLETS = VMS;
 
-    private static final int HOST_PES     = 4;
-    private static final int VM_PES       = 2;
-    private static final int CLOUDLET_PES = 2;
+    private static final int HOST_PES     = 1;
+    private static final int VM_PES       = HOST_PES;
+    private static final int CLOUDLET_PES = VM_PES;
 
-    private static final int HOST_MIPS = 1000;
-    private static final int VM_MIPS   = 2000;
+    private static final int HOST_MIPS = 500;
+    private static final int VM_MIPS   = HOST_MIPS*2;
 
-    private static final int CLOUDLET_LENGTH = 20000;
+    private static final int CLOUDLET_LENGTH = VM_MIPS*10;
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Host> hostList;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
-    private static final int SCHEDULING_INTERVAL = 1;
+    private static final int SCHEDULING_INTERVAL = 10;
 
     public static void main(String[] args) {
         new VmSchedulerTimeSharedOverSubscriptionExample();
@@ -108,10 +124,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
 
         simulation.start();
 
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
-        new CloudletsTableBuilder(finishedCloudlets)
-            .addColumn(7, new TextTableColumn("VM MIPS  ","requested"), c -> c.getVm().getMips())
-            .build();
+        new CloudletsTableBuilder(broker0.getCloudletsFinishedList()).build();
     }
 
     /**
@@ -140,12 +153,11 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
         final long storage = 1000000; //in Megabytes
         ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
         ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeSharedOverSubscription();
-        Host host = new HostSimple(ram, bw, storage, peList);
+        Host host = new HostDynamicWorkloadSimple(ram, bw, storage, peList);
         host
             .setRamProvisioner(ramProvisioner)
             .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+            .setVmScheduler(new VmSchedulerTimeSharedOverSubscription());
         return host;
     }
 

@@ -65,11 +65,21 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     private long pesInUse;
 
     /**
-     * Creates a vm time-shared scheduler.
+     * Creates a time-shared VM scheduler.
      *
      */
     public VmSchedulerTimeShared() {
-        super();
+        this(DEFAULT_VM_MIGRATION_CPU_OVERHEAD);
+    }
+
+    /**
+     * Creates a time-shared VM scheduler, defining a CPU overhead for VM migration.
+     *
+     * @param vmMigrationCpuOverhead the percentage of Host's CPU usage increase when a
+     * VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
+     */
+    public VmSchedulerTimeShared(final double vmMigrationCpuOverhead){
+        super(vmMigrationCpuOverhead);
         setMipsMapRequested(new HashMap<>());
     }
 
@@ -402,8 +412,4 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         this.mipsMapRequested = mipsMapRequested;
     }
 
-    @Override
-    public double getVmMigrationCpuOverhead() {
-        return 0.1;
-    }
 }

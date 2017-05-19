@@ -14,9 +14,10 @@ import java.util.Map.Entry;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * A Time-Shared VM Scheduler, which allows over-subscription. In other
- * words, the scheduler still allows the allocation of VMs which require more CPU
- * capacity than is available.
+ * A Time-Shared VM Scheduler which allows over-subscription. In other
+ * words, the scheduler still enables allocating into a Host, VMs which require more CPU
+ * MIPS than there is available. If the Host has at least the number of PEs a VM
+ * requires, the VM will be allowed to run into it.
  *
  * <p>The scheduler doesn't in fact allocates more MIPS for Virtual PEs (vPEs)
  * than there is in the physical PEs. It just reduces the allocated
@@ -31,6 +32,23 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Toolkit 3.0
  */
 public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared {
+    /**
+     * Creates a time-shared over-subscription VM scheduler.
+     */
+    public VmSchedulerTimeSharedOverSubscription(){
+        this(DEFAULT_VM_MIGRATION_CPU_OVERHEAD);
+    }
+
+    /**
+     * Creates a time-shared over-subscription VM scheduler, defining a CPU overhead for VM migration.
+     *
+     * @param vmMigrationCpuOverhead the percentage of Host's CPU usage increase when a
+     * VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
+     */
+    public VmSchedulerTimeSharedOverSubscription(final double vmMigrationCpuOverhead){
+        super(vmMigrationCpuOverhead);
+    }
+
     /**
      * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
      * When there isn't the amount of requested MIPS available, this {@code VmScheduler}
