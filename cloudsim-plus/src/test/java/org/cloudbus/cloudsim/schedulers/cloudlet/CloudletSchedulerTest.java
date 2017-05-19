@@ -35,7 +35,7 @@ public class CloudletSchedulerTest {
         assertFalse(instance.hasFinishedCloudlets());
         assertEquals(Cloudlet.NULL, instance.getCloudletToMigrate());
         assertEquals(0, instance.runningCloudletsNumber());
-        assertEquals(0, instance.updateVmProcessing(0, null), 0);
+        assertEquals(0, instance.updateProcessing(0, null), 0);
     }
 
 }

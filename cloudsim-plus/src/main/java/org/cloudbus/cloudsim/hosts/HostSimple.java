@@ -255,7 +255,7 @@ public class HostSimple implements Host {
         if (!getVmScheduler().isSuitableForVm(vm)) {
             Log.printFormattedLine(
                     "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs.\n\t  "+
-                    "Required %d PEs of %.0f MIPS (%.0f MIPS) but there are just %d PEs of %.0f MIPS, with a total of %.0f MIPS available.",
+                    "Required %d PEs of %.0f MIPS (%.0f MIPS) but there are just %d PEs of %.0f MIPS, only a total of %.0f MIPS available.",
                     getSimulation().clock(), getClass().getSimpleName(), msg, vm, this,
                     vm.getNumberOfPes(), vm.getMips(), vm.getTotalMipsCapacity(),
                     vmScheduler.getWorkingPeList().size(), getMips(), vmScheduler.getAvailableMips());

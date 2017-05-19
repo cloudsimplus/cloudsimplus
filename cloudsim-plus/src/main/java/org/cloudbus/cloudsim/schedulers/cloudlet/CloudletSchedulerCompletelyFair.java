@@ -355,8 +355,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * the time of the next expiring Cloudlet, enabling the preemption process), or Double.MAX_VALUE if there is no next events
      */
     @Override
-    public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
-        super.updateVmProcessing(currentTime, mipsShare);
+    public double updateProcessing(double currentTime, List<Double> mipsShare) {
+        super.updateProcessing(currentTime, mipsShare);
         return getCloudletExecList().stream()
                 .mapToDouble(CloudletExecutionInfo::getTimeSlice)
                 .min().orElse(Double.MAX_VALUE);

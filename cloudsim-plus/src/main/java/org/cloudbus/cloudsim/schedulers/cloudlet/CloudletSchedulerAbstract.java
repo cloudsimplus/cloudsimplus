@@ -449,7 +449,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
+    public double updateProcessing(double currentTime, List<Double> mipsShare) {
         setCurrentMipsShare(mipsShare);
 
         // no more cloudlets in this scheduler
@@ -714,7 +714,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * <p>
      * <p>
      * This method is called internally by the
-     * {@link CloudletScheduler#updateVmProcessing(double, List)} one.</p>
+     * {@link CloudletScheduler#updateProcessing(double, List)} one.</p>
      *
      * @pre currentTime >= 0
      * @post $none
@@ -762,7 +762,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * represent the last CPU capacity assigned to the scheduler.
      *
      * @return
-     * @see CloudletScheduler#updateVmProcessing(double, List)
+     * @see CloudletScheduler#updateProcessing(double, List)
      */
     protected Processor getProcessor() {
         return processor;

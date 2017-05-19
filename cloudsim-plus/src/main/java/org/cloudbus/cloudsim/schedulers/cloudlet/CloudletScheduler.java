@@ -317,7 +317,7 @@ public interface CloudletScheduler extends Serializable {
      * @pre currentTime >= 0
      * @post $none
      */
-    double updateVmProcessing(double currentTime, List<Double> mipsShare);
+    double updateProcessing(double currentTime, List<Double> mipsShare);
 
     /**
      * Gets the Vm that uses the scheduler.

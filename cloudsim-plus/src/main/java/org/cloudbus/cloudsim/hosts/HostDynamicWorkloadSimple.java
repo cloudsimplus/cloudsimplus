@@ -91,7 +91,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
 
             showVmResourceUsageOnHost(vm);
-            final double totalAllocatedMips = addVmResourceUsageToHistoryIfNotInMigration(currentTime, vm);
+            final double totalAllocatedMips = addVmResourceUseToHistoryIfNotMigratingIn(vm, currentTime);
 
             hostTotalRequestedMips += totalRequestedMips;
         }
@@ -101,7 +101,13 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         return smallerTime;
     }
 
-    private double addVmResourceUsageToHistoryIfNotInMigration(double currentTime, Vm vm) {
+    /**
+     * Adds the VM resource usage to the History if the VM is not migrating into the Host.
+     * @param vm the VM to add its usage to the history
+     * @param currentTime the current simulation time
+     * @return the total allocated MIPS for the given VM
+     */
+    private double addVmResourceUseToHistoryIfNotMigratingIn(Vm vm, double currentTime) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (getVmsMigratingIn().contains(vm)) {
             Log.printFormattedLine("%.2f: [" + this + "] " + vm
@@ -119,7 +125,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                 currentTime,
                 totalAllocatedMips,
                 totalRequestedMips,
-                (vm.isInMigration() && !getVmsMigratingIn().contains(vm)));
+                vm.isInMigration() && !getVmsMigratingIn().contains(vm));
         vm.addStateHistoryEntry(entry);
 
         if (vm.isInMigration()) {
@@ -160,7 +166,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                     vm.getMips(),
                     totalRequestedMips / vm.getMips() * 100));
 
-            final List<Pe> pes = getVmScheduler().getPesAllocatedForVM(vm);
+            final List<Pe> pes = getVmScheduler().getPesAllocatedForVm(vm);
             final StringBuilder pesString = new StringBuilder();
             pes.forEach(pe ->
                 pesString.append(

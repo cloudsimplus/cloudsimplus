@@ -24,7 +24,6 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
-import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -262,7 +261,7 @@ public class VmSimple implements Vm {
             return Double.MAX_VALUE;
         }
 
-        final double nextSimulationTime = getCloudletScheduler().updateVmProcessing(currentTime, mipsShare);
+        final double nextSimulationTime = getCloudletScheduler().updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
         return nextSimulationTime;
     }

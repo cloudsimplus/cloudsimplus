@@ -143,7 +143,6 @@ public interface VmScheduler {
      * to host a given VM.
      *
      * @param vmMipsList a List with the MIPS capacity required by each VM PE
-     *
      * @return true, if it is possible to allocate the the VM into the host; false otherwise
      */
     boolean isSuitableForVm(List<Double> vmMipsList);
@@ -180,7 +179,7 @@ public interface VmScheduler {
      * @param vm the VM to get the allocated PEs
      * @return
      */
-    List<Pe> getPesAllocatedForVM(Vm vm);
+    List<Pe> getPesAllocatedForVm(Vm vm);
 
     /**
      * Gets the actual total allocated MIPS for a VM along all its allocated PEs.

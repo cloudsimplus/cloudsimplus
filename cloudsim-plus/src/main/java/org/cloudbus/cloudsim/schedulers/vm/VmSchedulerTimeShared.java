@@ -6,11 +6,8 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 import static java.util.stream.Collectors.toList;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -279,7 +276,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             return false;
         }
 
-        getMipsMapRequested().put(vm, mipsShareRequested);
+        mipsMapRequested.put(vm, mipsShareRequested);
         setPesInUse(getPesInUse() + mipsShareRequested.size());
 
         allocateMipsShareForVm(vm, getMipsShareRequestedReduced(mipsShareRequested));
@@ -351,11 +348,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     @Override
     protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {
-        final int removedPes = removePesFromMap(vm, getMipsMapRequested(), pesToRemove);
+        final int removedPes = removePesFromMap(vm, mipsMapRequested, pesToRemove);
         setPesInUse(pesInUse - removedPes);
         removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
 
-        for (final Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
+        for (final Map.Entry<Vm, List<Double>> entry : mipsMapRequested.entrySet()) {
             allocateMipsShareForVmInternal(entry.getKey(), entry.getValue());
         }
 
@@ -371,7 +368,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     @Override
     public void deallocatePesForAllVms() {
         super.deallocatePesForAllVms();
-        getMipsMapRequested().clear();
+        mipsMapRequested.clear();
         setPesInUse(0);
     }
 

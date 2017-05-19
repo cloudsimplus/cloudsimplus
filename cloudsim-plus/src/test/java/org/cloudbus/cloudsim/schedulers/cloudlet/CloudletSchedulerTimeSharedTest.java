@@ -128,7 +128,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(schedulerPes, schedulerMips);
         instance.cloudletSubmit(cloudlet0);
         final double time0 = 0;
-        instance.updateVmProcessing(time0, instance.getCurrentMipsShare());
+        instance.updateProcessing(time0, instance.getCurrentMipsShare());
         assertTrue(instance.isThereEnoughFreePesForCloudlet(new CloudletExecutionInfo(cloudlet0)));
     }
 
@@ -337,11 +337,11 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfCloudlets, numberOfCloudlets);
 
         final double time0 = 0.5;
-        instance.updateVmProcessing(time0, instance.getCurrentMipsShare());
+        instance.updateProcessing(time0, instance.getCurrentMipsShare());
         assertEquals(2, instance.getCloudletExecList().size());
 
         final double time1 = 1.0;
-        instance.updateVmProcessing(time1, instance.getCurrentMipsShare());
+        instance.updateProcessing(time1, instance.getCurrentMipsShare());
         assertTrue(instance.getCloudletExecList().isEmpty());
     }
 
@@ -361,11 +361,11 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, 1, numberOfCloudlets);
 
         final double time1 = 1;
-        instance.updateVmProcessing(time1, instance.getCurrentMipsShare());
+        instance.updateProcessing(time1, instance.getCurrentMipsShare());
         assertEquals(2, instance.getCloudletExecList().size());
 
         final double time2 = 2;
-        instance.updateVmProcessing(time2, instance.getCurrentMipsShare());
+        instance.updateProcessing(time2, instance.getCurrentMipsShare());
         assertTrue(instance.getCloudletExecList().isEmpty());
     }
 

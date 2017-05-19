@@ -143,7 +143,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public List<Pe> getPesAllocatedForVM(Vm vm) {
+    public List<Pe> getPesAllocatedForVm(Vm vm) {
         return getPeMap().getOrDefault(vm, new ArrayList<>());
     }
 

@@ -7,7 +7,6 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import static org.easymock.EasyMock.expect;
@@ -128,7 +127,7 @@ public class VmSimpleTest {
     public static VmSimple createVm(final int vmId, long capacity) {
         return createVm(vmId, capacity, 1, capacity, capacity, capacity, CloudletScheduler.NULL);
     }
-    
+
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
             final long ram, final long bw, final long storage)
@@ -141,7 +140,7 @@ public class VmSimpleTest {
                 .setCloudletScheduler(CloudletScheduler.NULL)
                 .setBroker(broker);
         return vm;
-    }    
+    }
 
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
@@ -157,7 +156,7 @@ public class VmSimpleTest {
                 .setBroker(broker);
         return vm;
     }
-    
+
 
     /**
      * Creates a VM with the given numberOfPes for a given user and default
@@ -344,7 +343,7 @@ public class VmSimpleTest {
         final List<Double> mipsShare2 = new ArrayList<>(1);
         mipsShare1.add(1.0);
         mipsShare2.add(1.0);
-        assertEquals(vmScheduler.updateVmProcessing(0, mipsShare1), vm.updateProcessing(0, mipsShare2), 0);
+        assertEquals(vmScheduler.updateProcessing(0, mipsShare1), vm.updateProcessing(0, mipsShare2), 0);
     }
 
     @Test

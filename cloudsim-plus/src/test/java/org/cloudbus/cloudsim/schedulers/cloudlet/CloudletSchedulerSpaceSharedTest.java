@@ -56,7 +56,7 @@ public class CloudletSchedulerSpaceSharedTest {
 
         final Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, cloudletLen, 1);
         instance.cloudletSubmit(cloudlet);
-        instance.updateVmProcessing(2, mipsList);
+        instance.updateProcessing(2, mipsList);
         assertEquals(cloudletLen, cloudlet.getLength());
         instance.cloudletPause(cloudlet.getId());
         instance.cloudletResume(cloudlet.getId());
