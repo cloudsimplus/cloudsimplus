@@ -129,7 +129,8 @@ public interface VmScheduler {
     double getAvailableMips();
 
     /**
-     * Gets a <b>read-only</b> List of MIPS requested by a V.
+     * Gets a <b>copy</b> of the List of MIPS requested by a VM,
+     * avoiding the original list to be changed.
      *
      * @param vm the VM to get the List of requested MIPS
      * @return

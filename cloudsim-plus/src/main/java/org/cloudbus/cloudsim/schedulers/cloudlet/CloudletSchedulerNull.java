@@ -42,7 +42,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public List<Double> getCurrentMipsShare() {
         return Collections.emptyList();
     }
-    @Override public List<Double> getCurrentRequestedMips() {
+    public List<Double> getCurrentRequestedMips() {
         return Collections.emptyList();
     }
     @Override public double getCurrentRequestedBwPercentUtilization() {

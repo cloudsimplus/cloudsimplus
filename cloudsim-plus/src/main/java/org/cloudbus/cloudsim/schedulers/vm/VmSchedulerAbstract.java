@@ -34,7 +34,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
      * @see #getMipsMapRequested()
      */
-    protected Map<Vm, List<Double>> mipsMapRequested;
+    private Map<Vm, List<Double>> mipsMapRequested;
 
     /**
      * @see #getHost()
@@ -77,6 +77,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         setHost(Host.NULL);
         this.vmMigrationCpuOverhead = vmMigrationCpuOverhead;
+        this.mipsMapRequested = new HashMap<>();
     }
 
     @Override
@@ -192,7 +193,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     /**
-     * Gets a <b>read-only</b> map of MIPS requested by each VM, where each key is a VM and each value is a
+     * Gets a map of MIPS requested by each VM, where each key is a VM and each value is a
      * list of MIPS requested by that VM.
      *
      * @return
@@ -203,7 +204,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public List<Double> getMipsRequested(Vm vm) {
-        return mipsMapRequested.getOrDefault(vm, new ArrayList<>());
+        return new ArrayList<>(mipsMapRequested.getOrDefault(vm, Collections.EMPTY_LIST));
     }
 
     /**

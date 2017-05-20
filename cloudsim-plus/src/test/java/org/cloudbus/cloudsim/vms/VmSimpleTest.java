@@ -353,25 +353,6 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetCurrentRequestedMips_WhenVmWasCreatedInsideHost() {
-        final List<Double> expectedCurrentMips = new ArrayList<>();
-        expectedCurrentMips.add(MIPS / 2);
-        expectedCurrentMips.add(MIPS / 2);
-
-        final CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
-        cloudletScheduler.setVm(EasyMock.anyObject());
-        EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(expectedCurrentMips);
-        replay(cloudletScheduler);
-
-        final Vm vm = VmSimpleTest.createVm(cloudletScheduler);
-        vm.setCreated(true);
-        assertEquals(expectedCurrentMips, vm.getCurrentRequestedMips());
-
-        verify(cloudletScheduler);
-    }
-
-    @Test
     public void testGetCurrentRequestedBw_WhenVmWasCreatedInsideHost() {
         final double currentBwUsagePercent = 0.5;
 
@@ -431,21 +412,5 @@ public class VmSimpleTest {
         vm.setCreated(true);
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
-    }
-    @Test
-    public void testGetCurrentRequestedTotalMips() {
-        final List<Double> currentMips = new ArrayList<>();
-        currentMips.add(MIPS);
-        currentMips.add(MIPS);
-
-        final CloudletSchedulerTimeShared cloudletScheduler = createMock(CloudletSchedulerTimeShared.class);
-        cloudletScheduler.setVm(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(currentMips).anyTimes();
-        replay(cloudletScheduler);
-
-        final Vm vm = VmSimpleTest.createVm(cloudletScheduler);
-        assertEquals(MIPS * 2, vm.getCurrentRequestedTotalMips(), 0);
-        verify(cloudletScheduler);
     }
 }

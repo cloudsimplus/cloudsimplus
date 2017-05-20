@@ -294,7 +294,7 @@ public class VmSimple implements Vm {
     @Override
     public List<Double> getCurrentRequestedMips() {
         if (isCreated()) {
-            return getCloudletScheduler().getCurrentRequestedMips();
+            return host.getVmScheduler().getMipsRequested(this);
         }
 
         return LongStream.range(0, getNumberOfPes())

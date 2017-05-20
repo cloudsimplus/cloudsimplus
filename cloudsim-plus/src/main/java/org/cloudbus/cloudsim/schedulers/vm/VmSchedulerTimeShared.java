@@ -72,7 +72,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     public VmSchedulerTimeShared(final double vmMigrationCpuOverhead){
         super(vmMigrationCpuOverhead);
-        setMipsMapRequested(new HashMap<>());
     }
 
     @Override
@@ -378,15 +377,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     protected long getPesInUse() {
         return pesInUse;
-    }
-
-    /**
-     * Sets the mips map requested.
-     *
-     * @param mipsMapRequested the mips map requested
-     */
-    protected final void setMipsMapRequested(Map<Vm, List<Double>> mipsMapRequested) {
-        this.mipsMapRequested = mipsMapRequested;
     }
 
 }

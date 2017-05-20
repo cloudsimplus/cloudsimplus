@@ -177,7 +177,7 @@ public class PowerDatacenter extends DatacenterSimple {
         setPower(getPower() + datacenterPowerUsageForTimeSpan);
         this.getHostList().forEach(host ->
             println(String.format(
-                    "%.2f: [%s] utilization is %.2f%%",
+                    "%.2f: [%s] utilization is %6.2f%%",
                     currentTime,
                     host,
                     host.getUtilizationOfCpu() * 100))

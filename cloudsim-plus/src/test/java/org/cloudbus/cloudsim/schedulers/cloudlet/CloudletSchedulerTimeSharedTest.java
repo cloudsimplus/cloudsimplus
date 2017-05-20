@@ -132,13 +132,6 @@ public class CloudletSchedulerTimeSharedTest {
         assertTrue(instance.isThereEnoughFreePesForCloudlet(new CloudletExecutionInfo(cloudlet0)));
     }
 
-    @Test @Ignore("The test is being ignored because the tested method, in fact, is always returning an empty list. It doesn't have an actual implementation.")
-    public void testGetCurrentRequestedMips() {
-        final CloudletSchedulerTimeShared instance = new CloudletSchedulerTimeShared();
-        final List<Double> result = instance.getCurrentRequestedMips();
-        assertTrue(result.isEmpty());
-    }
-
     @Test
     public void testGetTotalCurrentAvailableMipsForCloudlet_OneCloudlet() {
         final long mips = 1000;

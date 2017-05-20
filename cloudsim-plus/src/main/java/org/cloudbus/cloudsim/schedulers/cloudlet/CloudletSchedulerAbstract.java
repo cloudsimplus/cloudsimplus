@@ -130,11 +130,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public List<Double> getCurrentRequestedMips() {
-        return new ArrayList<>(vm.getHost().getVmScheduler().getMipsRequested(vm));
-    }
-
-    @Override
     public List<Double> getCurrentMipsShare() {
         return Collections.unmodifiableList(currentMipsShare);
     }
@@ -964,6 +959,4 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                       .map(CloudletExecutionInfo::getCloudlet)
                       .collect(toList()));
     }
-
-
 }

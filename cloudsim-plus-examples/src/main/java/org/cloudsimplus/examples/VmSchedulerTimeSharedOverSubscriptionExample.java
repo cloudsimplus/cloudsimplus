@@ -47,10 +47,12 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeSharedOverSubscription
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -73,7 +75,7 @@ import java.util.List;
  * But since their VMs are sharing the same physical PE,
  * the time doubles to 20.
  * But since the Host PE has just half of the MIPS required
- * by the VMs' PEs, the time doubles again to 40 seconds,
+ * by the VMs' PEs, the time doubles again, to 40 seconds,
  * as can be seen in the results.
  * </p>
  *
@@ -124,7 +126,19 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
 
         simulation.start();
 
-        new CloudletsTableBuilder(broker0.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker0.getCloudletsFinishedList())
+            .addColumn(5, new TextTableColumn("Host MIPS"), c -> c.getVm().getHost().getMips())
+            .addColumn(8, new TextTableColumn("VM MIPS  ", "requested"), c -> c.getVm().getMips())
+            .addColumn(9, new TextTableColumn("VM MIPS  ", "allocated"), this::getVmAllocatedMips)
+            .build();
+    }
+
+    private double getVmAllocatedMips(Cloudlet c) {
+        if(c.getVm().getStateHistory().isEmpty()){
+            return 0;
+        }
+
+        return c.getVm().getStateHistory().get(c.getVm().getStateHistory().size()-1).getAllocatedMips();
     }
 
     /**

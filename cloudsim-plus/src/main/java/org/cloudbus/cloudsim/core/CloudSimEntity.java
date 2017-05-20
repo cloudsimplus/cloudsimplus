@@ -27,7 +27,7 @@ public abstract class CloudSimEntity implements SimEntity {
     private boolean started;
 
     /**
-     * @see #getSimulation() 
+     * @see #getSimulation()
      */
     private Simulation simulation;
 
@@ -47,8 +47,8 @@ public abstract class CloudSimEntity implements SimEntity {
      * The entity's current state.
      */
     private State state;
-    
-    private boolean log;    
+
+    private boolean log;
 
     /**
      * Creates a new entity.
@@ -63,6 +63,7 @@ public abstract class CloudSimEntity implements SimEntity {
         name = String.format("%s%d", getClass().getSimpleName(), this.simulation.getNumEntities());
         this.simulation.addEntity(this);
         this.started = false;
+        this.log = true;
     }
 
     /**
@@ -735,16 +736,16 @@ public abstract class CloudSimEntity implements SimEntity {
         result = 31 * result + id;
         return result;
     }
-    
+
     @Override
     public void setLog(boolean log) {
         this.log = log;
-    }    
-    
+    }
+
     @Override
     public void println(String msg){
         if(log){
             Log.printLine(msg);
         }
-    }    
+    }
 }

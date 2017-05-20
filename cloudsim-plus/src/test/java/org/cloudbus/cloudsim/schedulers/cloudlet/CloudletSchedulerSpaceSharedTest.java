@@ -302,26 +302,6 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expResult, instance.getUsedPes());
     }
 
-    @Test @Ignore("See the todo inside the getCurrentRequestedMips method body")
-    public void testGetCurrentRequestedMips() {
-        final int schedulerPes = 1;
-        final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        final List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
-        instance.setCurrentMipsShare(expResult);
-        final List<Double> result = instance.getCurrentRequestedMips();
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void testGetCurrentRequestedMips_CheckItWasReturnedOneCopyOfTheList() {
-        final int schedulerPes = 1;
-        final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        final List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
-        instance.setCurrentMipsShare(expResult);
-        //if the lists are not same, it was returned a copy of the given list as expected
-        assertNotSame(expResult, instance.getCurrentRequestedMips());
-    }
-
     @Test
     public void testGetCloudletExecList_ReturnEmptyList() {
         final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
