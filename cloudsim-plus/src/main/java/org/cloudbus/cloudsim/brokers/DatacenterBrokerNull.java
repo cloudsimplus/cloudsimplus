@@ -6,6 +6,8 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -77,14 +79,12 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {/**/}
     @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {/**/}
     @Override public Set<Cloudlet> getCloudletsCreatedList() { return Collections.EMPTY_SET; }
+    @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
+    @Override public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
     @Override public void setVmComparator(Comparator<Vm> comparator) {/**/}
     @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
     @Override public void setLog(boolean log) {}
     @Override public void println(String msg) {}
     @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm) {}
-
-    @Override
-    public void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay) {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
+    @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay) {}
 }

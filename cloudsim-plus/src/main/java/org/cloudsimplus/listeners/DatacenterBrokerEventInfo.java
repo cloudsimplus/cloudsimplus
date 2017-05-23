@@ -23,38 +23,34 @@
  */
 package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 
 /**
- * An interface that represents data to be passed
+ * An interface that represent data to be passed
  * to {@link EventListener} objects that are registered to be notified
- * after a Host updates the processing of its VMs.
+ * when some events happen for a given {@link DatacenterBroker}.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
- *
- * @see Host#removeOnUpdateProcessingListener(EventListener)
  */
-public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
-    /**
-     * Gets the expected completion time of the next finishing cloudlet.
-     * @return
-     */
-    double getNextCloudletCompletionTime();
+public interface DatacenterBrokerEventInfo extends EventInfo {
 
     /**
-     * Gets a {@code HostUpdatesVmsProcessingEventInfo} instance from the given parameters.
-     *
-     * @param host the {@link Host} where the event happened
-     * @param nextCloudletCompletionTime the expected time for completion of the next {@link Cloudlet}
+     * Gets the {@link DatacenterBroker} for which the event happened.
+     * @return
      */
-    static HostUpdatesVmsProcessingEventInfo of(Host host, double nextCloudletCompletionTime) {
-        final double time = host.getSimulation().clock();
-        return new HostUpdatesVmsProcessingEventInfo() {
-            @Override public double getNextCloudletCompletionTime() { return nextCloudletCompletionTime; }
-            @Override public Host getHost() { return host; }
+    DatacenterBroker getDatacenterBroker();
+
+    /**
+     * Gets a {@code DatacenterBrokerEventInfo} instance from the given parameters.
+     *
+     * @param broker the {@link DatacenterBroker} where the event happened
+     */
+    static DatacenterBrokerEventInfo of(DatacenterBroker broker) {
+        final double time = broker.getSimulation().clock();
+        return new DatacenterBrokerEventInfo() {
             @Override public double getTime() { return time; }
+            @Override public DatacenterBroker getDatacenterBroker() { return broker; }
         };
     }
 }

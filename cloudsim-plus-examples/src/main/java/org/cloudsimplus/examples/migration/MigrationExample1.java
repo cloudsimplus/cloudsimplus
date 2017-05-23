@@ -114,7 +114,7 @@ public final class MigrationExample1 {
      * it starts executing (in scale from 0 to 1, where 1 is 100%).
      * For each cloudlet create, this value is used
      * as a base to define CPU usage.
-     * @see #createAndSubmitCloudlets(DatacenterBroker)
+     * @see #createAndSubmitCloudlets(DatacenterBroker, List)
      */
     private static final double CLOUDLET_INITIAL_CPU_PERCENTAGE = 0.8;
 
@@ -126,9 +126,12 @@ public final class MigrationExample1 {
      */
     private static final double CLOUDLET_CPU_INCREMENT_PER_SECOND = 0.1;
 
-    private static final int HOSTS = 6;
+    private static final int HOSTS = 10;
     private static final int VMS = 3;
 
+    /**
+     * List of all created VMs.
+     */
     private final List<Vm> vmList = new ArrayList<>();
     private CloudSim simulation;
 
@@ -148,8 +151,14 @@ public final class MigrationExample1 {
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
-        createAndSubmitVms(broker);
-        createAndSubmitCloudlets(broker);
+        createAndSubmitCloudlets(broker, createAndSubmitVms(broker));
+
+        //Set all inactive Hosts to active after all VMs were submitted
+        broker.addOneTimeOnVmsCreatedListener(evt -> {
+            datacenter0.getHostList().forEach(h -> h.setActive(true));
+            Log.printFormattedLine("\t#All VMs created at time %.2f. Activating remaining Hosts and submitting more VMs and Cloudlets", evt.getTime());
+            createAndSubmitCloudlets(broker, createAndSubmitVms(broker));
+        });
 
         simulation.start();
 
@@ -161,15 +170,14 @@ public final class MigrationExample1 {
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
-    public void createAndSubmitCloudlets(DatacenterBroker broker) {
+    public void createAndSubmitCloudlets(DatacenterBroker broker, List<Vm> vms) {
         double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_PERCENTAGE;
         final List<Cloudlet> list = new ArrayList<>(VMS -1);
         Cloudlet cloudlet = Cloudlet.NULL;
         int id = 0;
         UtilizationModelDynamic um = createCpuUtilizationModel(initialCloudletCpuUtilizationPercentage, 1);
-        for(Vm vm: vmList){
-            cloudlet = createCloudlet(id++, vm, broker, um);
-            Log.printFormattedLine("#Created Cloudlet %d for VM %d: Initial CPU Usage %.2f%%", cloudlet.getId(), vm.getId(), um.getUtilization()*100);
+        for(Vm vm: vms){
+            cloudlet = createCloudlet(vm, broker, um);
             list.add(cloudlet);
         }
 
@@ -187,10 +195,10 @@ public final class MigrationExample1 {
      * @param cpuUtilizationModel the CPU UtilizationModel for the Cloudlet
      * @return the created Cloudlets
      */
-    public Cloudlet createCloudlet(int id, Vm vm, DatacenterBroker broker, UtilizationModel cpuUtilizationModel) {
+    public Cloudlet createCloudlet(Vm vm, DatacenterBroker broker, UtilizationModel cpuUtilizationModel) {
         UtilizationModel utilizationModelFull = new UtilizationModelFull();
         final Cloudlet cloudlet =
-            new CloudletSimple(id, CLOUDLET_LENGHT, vm.getNumberOfPes())
+            new CloudletSimple(CLOUDLET_LENGHT, (int)vm.getNumberOfPes())
                 .setFileSize(CLOUDLET_FILESIZE)
                 .setOutputSize(CLOUDLET_OUTPUTSIZE)
                 .setUtilizationModelCpu(cpuUtilizationModel)
@@ -200,23 +208,23 @@ public final class MigrationExample1 {
         return cloudlet;
     }
 
-    public void createAndSubmitVms(DatacenterBroker broker) {
+    public List<Vm> createAndSubmitVms(DatacenterBroker broker) {
+        List<Vm> list = new ArrayList<>(VMS);
         for(int i = 0; i < VMS; i++){
-            PowerVm vm = createVm(i, broker, VM_PES);
-            vmList.add(vm);
+            PowerVm vm = createVm(broker, VM_PES);
+            list.add(vm);
         }
-        broker.submitVmList(vmList);
+
+        broker.submitVmList(list);
+        vmList.addAll(list);
+        return list;
     }
 
-    public PowerVm createVm(int id, DatacenterBroker broker, int pes) {
-        PowerVm vm = new PowerVm(vmList.size(), VM_MIPS, pes);
+    public PowerVm createVm(DatacenterBroker broker, int pes) {
+        PowerVm vm = new PowerVm(VM_MIPS, pes);
         vm
           .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-          .setCloudletScheduler(new CloudletSchedulerTimeShared())
-          .setId(id);
-
-        Log.printConcatLine(
-                "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES);
+          .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
 

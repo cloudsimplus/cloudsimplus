@@ -16,6 +16,8 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 /**
  * Represents a broker acting on behalf of a cloud customer.
@@ -255,4 +257,27 @@ public interface DatacenterBroker extends SimEntity {
      * @return the list of created Cloudlets
      */
     Set<Cloudlet> getCloudletsCreatedList();
+
+    /**
+     * Adds a {@link EventListener} that will be notified every time when
+     * VMs in the waiting list are all created.
+     * @param listener the Listener that will be notified
+     * @return
+     * @see #getVmsWaitingList()
+     */
+    DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener);
+
+    /**
+     * Adds a {@link EventListener} that will be notified <b>just once</b> when
+     * VMs in the waiting list are all created.
+     * After the first notification, the Listener is removed from the registered Listeners
+     * and no further notifications will be sent to that specific Listener.
+     *
+     * @param listener the Listener that will be notified
+     * @return
+     * @see #getVmsWaitingList()
+     * @see #addOnVmsCreatedListener(EventListener)
+     */
+    DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener);
+
 }
