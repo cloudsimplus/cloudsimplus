@@ -51,7 +51,7 @@ public final class PlanetLabRunner extends RunnerAbstract {
 				workload,
 				vmAllocationPolicy,
 				vmSelectionPolicy,
-            safetyParameterOrUtilizationThreshold);
+                safetyParameterOrUtilizationThreshold);
 	}
 
 	@Override
@@ -59,7 +59,6 @@ public final class PlanetLabRunner extends RunnerAbstract {
 		try {
 		    super.init(inputFolder);
 			broker = Helper.createBroker(getSimulation());
-
 			cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
 			vmList = Helper.createVmList(broker, cloudletList.size());
 			hostList = Helper.createHostList(NUMBER_OF_HOSTS);

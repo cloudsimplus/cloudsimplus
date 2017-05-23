@@ -78,13 +78,13 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
     @Override
     public void deallocateHostForVm(Vm vm) {
         Host host = getVmHostMap().remove(vm);
-        if (!Objects.isNull(host)) {
+        if (host != null) {
             host.destroyVm(vm);
         }
     }
 
     /**
-     * Gets the map where each key is a VM UID and
+     * Gets the map where each key is a VM and
      * each value is the host where the VM is placed.
      *
      * @return

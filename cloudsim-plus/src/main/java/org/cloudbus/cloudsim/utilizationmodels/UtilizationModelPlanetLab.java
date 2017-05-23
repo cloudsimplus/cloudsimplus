@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.utilizationmodels;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.stream.IntStream;
 
 /**
  * Defines the resource utilization model based on a
@@ -32,19 +33,10 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @throws IOException Signals that an I/O exception has occurred
      * @see #getSchedulingInterval()
      */
-    public UtilizationModelPlanetLab(String inputPath, double schedulingInterval)
+    public UtilizationModelPlanetLab(final String inputPath, final double schedulingInterval)
             throws NumberFormatException, IOException
     {
-        super();
-        data = new double[289];
-        setSchedulingInterval(schedulingInterval);
-        try (BufferedReader input = new BufferedReader(new FileReader(inputPath))) {
-            final int n = data.length;
-            for (int i = 0; i < n - 1; i++) {
-                data[i] = Integer.valueOf(input.readLine()) / 100.0;
-            }
-            data[n - 1] = data[n - 2];
-        }
+        this(inputPath, schedulingInterval, 289);
     }
 
     /**
@@ -53,7 +45,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * @param inputPath The path of a PlanetLab Datacenter trace file.
      * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
-     * @param dataSamples number of samples in the file
+     * @param dataSamples number of samples to read from the workload file
      * @throws NumberFormatException the number format exception
      * @throws IOException Signals that an I/O exception has occurred.
      * @see #setSchedulingInterval(double)
@@ -63,14 +55,45 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     {
         super();
         setSchedulingInterval(schedulingInterval);
-        data = new double[dataSamples];
+        data = readWorkloadFile(inputPath, dataSamples);
+    }
+
+    /**
+     * Reads the planet lab workload file in which each one of its lines
+     * is a resource utilization percentage to be used for a different simulation time.
+     * The number of the line represents the simulation time to which
+     * the value in such a line will be used as a resource utilization percentage.
+     * For instance, the line 0 represents a resource utilization percentage for
+     * simulation time 0.
+     *
+     * @param inputPath the path to the workload file
+     * @param dataSamples the number of lines to read
+     * @return an array containing the lines read from the file
+     * @throws IOException
+     */
+    private double[] readWorkloadFile(final String inputPath, int dataSamples) throws IOException {
+        dataSamples = Math.max(2, dataSamples);
+        double[] data = createEmptyArray(dataSamples);
+
         try (BufferedReader input = new BufferedReader(new FileReader(inputPath))) {
             final int n = data.length;
-            for (int i = 0; i < n - 1; i++) {
-                data[i] = Integer.valueOf(input.readLine()) / 100.0;
+            int i = 0;
+            String line;
+            while((line=input.readLine())!=null && i < n){
+                data[i++] = Integer.valueOf(line) / 100.0;
             }
             data[n - 1] = data[n - 2];
         }
+
+        return data;
+    }
+
+    private double[] createEmptyArray(int size) {
+        double[] data = new double[size];
+        for (int i = 0; i < size; i++) {
+            data[i]=0;
+        }
+        return data;
     }
 
     @Override
@@ -88,14 +111,13 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the scheduling interval that defines the time interval in which precise utilization is be got.
+     * Gets the scheduling interval that defines the time interval in which precise utilization is to be got.
      * <p>That means if the {@link #getUtilization(double)} is called
      * passing any time that is multiple of this scheduling interval,
      * the utilization returned will be the value stored for that
-     * specific time. Otherwise, the value will be a mean
+     * specific time. Otherwise, the value will be an arithmetic mean
      * of the beginning and the ending of the interval in which
      * the given time is.</p>
-     *
      *
      * @return the scheduling interval
      */

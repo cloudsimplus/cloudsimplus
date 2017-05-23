@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
+import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -194,41 +195,48 @@ public class PowerDatacenter extends DatacenterSimple {
      * @return the total power consumed (in Watts/sec) by all Hosts in the elapsed time span
      */
     private double getDatacenterPowerUsageForTimeSpan() {
-        double datacenterPowerUsageForTimeSpan = 0;
         final double currentTime = getSimulation().clock();
         final double timeSpan = currentTime - getLastProcessTime();
-        if (timeSpan > 0) {
-            println(String.format(
-                    "\nDatacenter %d energy consumption for the last time frame from %.2f to %.2f:",
-                    getId(),
+        if (timeSpan == 0) {
+            return 0;
+        }
+
+        double datacenterPowerUsageForTimeSpan = 0;
+        StringBuilder sb = new StringBuilder(this.<PowerHostSimple>getHostList().size()*100);
+        for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
+            final double previousUseOfCpu = host.getPreviousUtilizationOfCpu();
+            final double utilizationOfCpu = host.getUtilizationOfCpu();
+            final double timeFrameHostEnergy =
+                host.getEnergyLinearInterpolation(previousUseOfCpu, utilizationOfCpu, timeSpan);
+            datacenterPowerUsageForTimeSpan += timeFrameHostEnergy;
+
+            sb.append(String.format(
+                    "%.2f: [%s] utilization at %.2f was %.2f%%, now is %.2f%%",
+                    currentTime,
+                    host,
                     getLastProcessTime(),
-                    currentTime));
-
-            for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
-                final double previousUseOfCpu = host.getPreviousUtilizationOfCpu();
-                final double utilizationOfCpu = host.getUtilizationOfCpu();
-                final double timeFrameHostEnergy =
-                    host.getEnergyLinearInterpolation(previousUseOfCpu, utilizationOfCpu, timeSpan);
-                datacenterPowerUsageForTimeSpan += timeFrameHostEnergy;
-
-                println(String.format(
-                        "\n%.2f: [%s] utilization at %.2f was %.2f%%, now is %.2f%%",
-                        currentTime,
-                        host,
-                        getLastProcessTime(),
-                        previousUseOfCpu * 100,
-                        utilizationOfCpu * 100));
-                println(String.format(
-                        "%.2f: [%s] energy is %.2f Watts/sec",
-                        currentTime,
-                        host,
-                        timeFrameHostEnergy));
+                    previousUseOfCpu * 100,
+                    utilizationOfCpu * 100));
+            if(host.getPowerModel() != PowerModel.NULL) {
+                sb.append(String.format(
+                    "%.2f: [%s] energy is %.2f Watts/sec",
+                    currentTime,
+                    host,
+                    timeFrameHostEnergy));
             }
+        }
 
+        if(datacenterPowerUsageForTimeSpan > 0) {
             println(String.format(
-                    "\n%.2f: Datacenter %d energy is %.2f Watts/sec\n",
-                    currentTime, getId(),
-                    datacenterPowerUsageForTimeSpan));
+                "\nDatacenter %d energy consumption for the last time frame from %.2f to %.2f:",
+                getId(),
+                getLastProcessTime(),
+                currentTime));
+            println(sb.toString());
+            println(String.format(
+                "\n%.2f: Datacenter %d energy is %.2f Watts/sec\n",
+                currentTime, getId(),
+                datacenterPowerUsageForTimeSpan));
         }
 
         return datacenterPowerUsageForTimeSpan;

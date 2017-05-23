@@ -89,7 +89,7 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
     /**
      * Checks if host is over utilized.
      *
-     * @param host the host
+     * @param host the host to check
      * @return true, if the host is over utilized; false otherwise
      */
     boolean isHostOverUtilized(PowerHost host);

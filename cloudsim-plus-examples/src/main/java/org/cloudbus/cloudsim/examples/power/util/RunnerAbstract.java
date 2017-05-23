@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
+import org.cloudbus.cloudsim.allocationpolicies.power.*;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -13,13 +14,6 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationAbstract;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationInterQuartileRange;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationLocalRegression;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationLocalRegressionRobust;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationStaticThreshold;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicySimple;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMaximumCorrelation;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumMigrationTime;
@@ -48,6 +42,9 @@ public abstract class RunnerAbstract {
     protected static List<PowerHost> hostList;
     private CloudSim simulation;
 
+    private final long startTime;
+    private long finishTime;
+
     /**
      * Run.
      *
@@ -72,19 +69,10 @@ public abstract class RunnerAbstract {
         String vmSelectionPolicy,
         double safetyParameterOrUtilizationThreshold)
     {
-        try {
-            initLogOutput(
-                enableOutput,
-                outputToFile,
-                outputFolder,
-                workload,
-                vmAllocationPolicy,
-                vmSelectionPolicy,
-                safetyParameterOrUtilizationThreshold);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
+        this.startTime = System.currentTimeMillis()/1000;
+        initLogOutput(
+            enableOutput, outputToFile, outputFolder, workload,
+            vmAllocationPolicy, vmSelectionPolicy, safetyParameterOrUtilizationThreshold);
 
         init(inputFolder + "/" + workload);
         start(
@@ -93,6 +81,8 @@ public abstract class RunnerAbstract {
                 String.valueOf(safetyParameterOrUtilizationThreshold)),
             outputFolder,
             getVmAllocationPolicy(vmAllocationPolicy, vmSelectionPolicy, safetyParameterOrUtilizationThreshold));
+        this.finishTime = System.currentTimeMillis()/1000;
+        System.out.printf("Total execution time: %.2f minutes\n", getActualExecutionTimeInMinutes());
     }
 
     /**
@@ -107,7 +97,6 @@ public abstract class RunnerAbstract {
      * @param safetyParameterOrUtilizationThreshold a double value to be passed to the specific
      *                               PowerVmSelectionPolicy being created, which the meaning depends
      *                               on that policy.
-     * @throws IOException
      */
     protected void initLogOutput(
         boolean enableOutput,
@@ -116,26 +105,31 @@ public abstract class RunnerAbstract {
         String workload,
         String vmAllocationPolicy,
         String vmSelectionPolicy,
-        double safetyParameterOrUtilizationThreshold) throws IOException
+        double safetyParameterOrUtilizationThreshold)
     {
-        setEnableOutput(enableOutput);
-        Log.setDisabled(!isEnableOutput());
-        if (isEnableOutput() && outputToFile) {
-            File folder = new File(outputFolder);
-            if (!folder.exists()) {
-                folder.mkdir();
-            }
+        try{
+            setEnableOutput(enableOutput);
+            Log.setDisabled(!isEnableOutput());
+            if (isEnableOutput() && outputToFile) {
+                File folder = new File(outputFolder);
+                if (!folder.exists()) {
+                    folder.mkdir();
+                }
 
-            File folder2 = new File(outputFolder + "/log");
-            if (!folder2.exists()) {
-                folder2.mkdir();
-            }
+                File folder2 = new File(outputFolder + "/log");
+                if (!folder2.exists()) {
+                    folder2.mkdir();
+                }
 
-            File file = new File(outputFolder + "/log/"
-                + getExperimentName(workload, vmAllocationPolicy, vmSelectionPolicy,
-                String.valueOf(safetyParameterOrUtilizationThreshold)) + ".txt");
-            file.createNewFile();
-            Log.setOutput(new FileOutputStream(file));
+                File file = new File(outputFolder + "/log/"
+                    + getExperimentName(workload, vmAllocationPolicy, vmSelectionPolicy,
+                    String.valueOf(safetyParameterOrUtilizationThreshold)) + ".txt");
+                file.createNewFile();
+                Log.setOutput(new FileOutputStream(file));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.exit(0);
         }
     }
 
@@ -228,7 +222,7 @@ public abstract class RunnerAbstract {
 
         switch (vmAllocationPolicyName) {
             case "iqr": {
-                PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
+                PowerVmAllocationPolicyMigration fallbackVmSelectionPolicy =
                     new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy, 0.7);
                 vmAllocationPolicy = new PowerVmAllocationPolicyMigrationInterQuartileRange(
                     vmSelectionPolicy,
@@ -237,7 +231,7 @@ public abstract class RunnerAbstract {
                 break;
             }
             case "mad": {
-                PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
+                PowerVmAllocationPolicyMigration fallbackVmSelectionPolicy =
                     new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy, 0.7);
                 vmAllocationPolicy = new PowerVmAllocationPolicyMigrationMedianAbsoluteDeviation(
                     vmSelectionPolicy,
@@ -246,7 +240,7 @@ public abstract class RunnerAbstract {
                 break;
             }
             case "lr": {
-                PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
+                PowerVmAllocationPolicyMigration fallbackVmSelectionPolicy =
                     new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy, 0.7);
                 vmAllocationPolicy = new PowerVmAllocationPolicyMigrationLocalRegression(
                     vmSelectionPolicy,
@@ -256,7 +250,7 @@ public abstract class RunnerAbstract {
                 break;
             }
             case "lrr": {
-                PowerVmAllocationPolicyMigrationAbstract fallbackVmSelectionPolicy =
+                PowerVmAllocationPolicyMigration fallbackVmSelectionPolicy =
                     new PowerVmAllocationPolicyMigrationStaticThreshold(vmSelectionPolicy, 0.7);
                 vmAllocationPolicy = new PowerVmAllocationPolicyMigrationLocalRegressionRobust(
                     vmSelectionPolicy,
@@ -330,5 +324,29 @@ public abstract class RunnerAbstract {
 
     public CloudSim getSimulation() {
         return simulation;
+    }
+
+    /**
+     * Gets the time the  experiment started executing.
+     * It isn't the simulation start time, but the actual
+     * computer time (in seconds).
+     * @return
+     */
+    public long getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * Gets the time the  experiment spent executing.
+     * It isn't the total simulation time, but the actual
+     * time the experiment spent running (in seconds).
+     * For instance, we can simulate a cloud scenario
+     * for applications running in a time interval of 24 hours,
+     * however, this simulation may take just few seconds or minutes
+     * to run in CloudSim Plus. This is the time this function returns.
+     * @return
+     */
+    public double getActualExecutionTimeInMinutes(){
+        return (finishTime - startTime)/60;
     }
 }

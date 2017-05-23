@@ -58,8 +58,8 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
      * Checks if a host is over utilized based on the CPU over utilization threshold computed using
      * the statistical method defined in {@link #computeHostUtilizationMeasure(PowerHostUtilizationHistory)}.
      *
-     * @param host the host
-     * @return true, if the host is over utilized; false otherwise
+     * @param host {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     public boolean isHostOverUtilized(PowerHost host) {
@@ -98,8 +98,9 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
     protected final void setSafetyParameter(double safetyParameter) {
         if (safetyParameter < 0) {
             throw new IllegalArgumentException(
-                "The safety parameter must be a positive value. It is a percentage value in scale from 0 to 1, where for instance 1 means 100% and 1.5 means 150%.");
+                "The safety parameter must be a positive value. It is a percentage value in scale from 0 to 1 where, for instance, 1 means 100% and 1.5 means 150%.");
         }
+
         this.safetyParameter = safetyParameter;
     }
 
@@ -110,11 +111,7 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
 
     @Override
     public void setFallbackVmAllocationPolicy(PowerVmAllocationPolicyMigration fallbackPolicy) {
-        if(Objects.isNull(fallbackPolicy)){
-            fallbackPolicy = PowerVmAllocationPolicyMigration.NULL;
-        }
-
-        this.fallbackVmAllocationPolicy = fallbackPolicy;
+        this.fallbackVmAllocationPolicy = Objects.isNull(fallbackPolicy) ? PowerVmAllocationPolicyMigration.NULL : fallbackPolicy;
     }
 
     @Override

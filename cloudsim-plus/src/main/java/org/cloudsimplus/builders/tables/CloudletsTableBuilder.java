@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 /**
  * Builds a table for printing simulation results from a list of Cloudlets.
- * It defines a set of default columns but new columns can be added
+ * It defines a set of default columns but new ones can be added
  * dynamically using the {@code addColumn()} methods.
  *
  * <p>The basic usage of the class is by calling its constructor,

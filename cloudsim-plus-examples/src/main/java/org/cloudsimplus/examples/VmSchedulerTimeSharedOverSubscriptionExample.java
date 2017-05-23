@@ -33,9 +33,12 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.hosts.HostSimple;
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
+import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -48,6 +51,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
+import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
 
@@ -83,8 +87,8 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public class VmSchedulerTimeSharedOverSubscriptionExample {
-    private static final int HOSTS     = 1;
-    private static final int VMS       = HOSTS*2;
+    private static final int HOSTS     = 2;
+    private static final int VMS       = 2;
     private static final int CLOUDLETS = VMS;
 
     private static final int HOST_PES     = 1;
@@ -98,7 +102,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
-    private List<Host> hostList;
+    private List<PowerHost> hostList;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
     private static final int SCHEDULING_INTERVAL = 10;
@@ -131,6 +135,13 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
             .addColumn(8, new TextTableColumn("VM MIPS  ", "requested"), c -> c.getVm().getMips())
             .addColumn(9, new TextTableColumn("VM MIPS  ", "allocated"), this::getVmAllocatedMips)
             .build();
+
+        hostList.forEach(this::printHostHistory);
+    }
+
+    private void printHostHistory(PowerHost h) {
+        System.out.printf("Host: %d\n", h.getId());
+        h.getStateHistory().stream().forEach(System.out::print);
     }
 
     private double getVmAllocatedMips(Cloudlet c) {
@@ -146,16 +157,16 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
      */
     private void createDatacenter() {
         for(int h = 0; h < HOSTS; h++) {
-            Host host = createHost();
+            PowerHost host = createHost();
             hostList.add(host);
         }
 
         DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        Datacenter dc0 = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        Datacenter dc0 = new PowerDatacenter(simulation, characteristics, new VmAllocationPolicySimple());
         dc0.setSchedulingInterval(SCHEDULING_INTERVAL);
     }
 
-    private Host createHost() {
+    private PowerHost createHost() {
         List<Pe> peList = new ArrayList<>(HOST_PES);
         //List of Host's CPUs (Processing Elements, PEs)
         for (int i = 0; i < HOST_PES; i++) {
@@ -167,7 +178,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
         final long storage = 1000000; //in Megabytes
         ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
         ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        Host host = new HostDynamicWorkloadSimple(ram, bw, storage, peList);
+        PowerHost host = new PowerHostUtilizationHistory(ram, bw, storage, peList);
         host
             .setRamProvisioner(ramProvisioner)
             .setBwProvisioner(bwProvisioner)
@@ -181,7 +192,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
     private void createVms() {
         for (int i = 0; i < VMS; i++) {
             Vm vm =
-                new VmSimple(VM_MIPS, VM_PES)
+                new PowerVm(VM_MIPS, VM_PES)
                     .setRam(512).setBw(1000).setSize(10000)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
             vmList.add(vm);

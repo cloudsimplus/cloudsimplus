@@ -36,13 +36,11 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
-import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.util.Log;
@@ -54,22 +52,23 @@ import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
  * <p>An example showing how to create 1 Datacenter with 3 hosts,
- * 1 VM by host and 1 cloudlet by VM and perform VM migration based on
- * a custom VmAllocationPolicy that migrates VMs based on
+ * 1 VM by host and 1 cloudlet by VM and perform VM migration using
+ * a custom VmAllocationPolicy. Such a policy migrates VMs based on
  * {@link PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
  * static host CPU utilization threshold}. </p>
  *
  * <p>The created {@link PowerVmAllocationPolicyMigrationWorstFitStaticThreshold policy}
  * allows the definition of static under and over CPU utilization thresholds to
  * enable VM migration.
- * The example uses a custom UtilizationModel to define CPU usage of cloudlets that
+ * The example uses a custom UtilizationModel to define CPU usage of cloudlets which
  * {@link UtilizationModelDynamic increases along the simulation time}.</p>
  *
- * It is used a lot of constants to create simulation objects such as
+ * It is used some constants to create simulation objects such as
  * {@link  PowerDatacenter}, {@link  PowerHost} and {@link  PowerVm}.
  * The values of these constants were careful and accordingly chosen to allow
  * migration of VMs due to either under and overloaded hosts and
@@ -79,22 +78,17 @@ import java.util.List;
  * hosts CPU capacity and number of PEs, VMs and cloudlets requirements
  * and even Vm bandwidth (that defines the VM migration time).
  *
- * By this way, if you desire to change these values you must
+ * <p>This way, if you want to change these values, you must
  * define new appropriated ones to allow the simulation
- * to run correctly.
- *
+ * to run correctly.</p>
  *
  * @author Manoel Campos da Silva Filho
  */
 public final class MigrationExample1 {
-    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
-    private static final double DATACENTER_COST_PER_CPU = 3.0;
-    private static final double DATACENTER_COST_PER_RAM = 0.05;
-    private static final double DATACENTER_COST_PER_STORAGE = 0.001;
-    private static final double DATACENTER_COST_PER_BW = 0.0;
+    private static final int    SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
+    private static final int    HOST_MIPS = 1000; //for each PE
 
-    private static final int    HOST_MIPS_BY_PE = 1000;
-    private static final int    HOST_NUMBER_OF_PES = 2;
+    private static final int    HOST_PES = 5;
     private static final long   HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long   HOST_STORAGE = 1000000; //host storage
     private static final long   HOST_BW = 100000000L;
@@ -105,13 +99,13 @@ public final class MigrationExample1 {
      */
     private static final double HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION = 0.7;
 
-    private static final int    VM_MIPS = 1000;
+    private static final int    VM_MIPS = 1000; //for each PE
     private static final long   VM_SIZE = 1000; //image size (MEGABYTE)
     private static final int    VM_RAM = 10000; //vm memory (MEGABYTE)
     private static final long   VM_BW = 100000;
-    private static final int    VM_PES_NUM = 1; //number of cpus
+    private static final int    VM_PES = 2;
 
-    private static final long   CLOUDLET_LENGHT = 20000;
+    private static final long   CLOUDLET_LENGHT = 200000;
     private static final long   CLOUDLET_FILESIZE = 300;
     private static final long   CLOUDLET_OUTPUTSIZE = 300;
 
@@ -122,21 +116,20 @@ public final class MigrationExample1 {
      * as a base to define CPU usage.
      * @see #createAndSubmitCloudlets(DatacenterBroker)
      */
-    private static final double CLOUDLET_INITIAL_CPU_UTILIZATION_PERCENTAGE = 0.6;
+    private static final double CLOUDLET_INITIAL_CPU_PERCENTAGE = 0.8;
 
     /**
      * Defines the speed (in percentage) that CPU usage of a cloudlet
-     * will increase during the simulation tie.
+     * will increase during the simulation execution.
      * (in scale from 0 to 1, where 1 is 100%).
-     * @see #createAndSubmitCloudletsWithDynamicCpuUtilization(double, double, Vm, DatacenterBroker)
+     * @see #createCpuUtilizationModel(double, double)
      */
-    public static final double CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND = 0.05;
+    private static final double CLOUDLET_CPU_INCREMENT_PER_SECOND = 0.1;
 
-    private static final int   NUMBER_OF_HOSTS_TO_CREATE = 3;
-    private static final int   NUMBER_OF_VMS_TO_CREATE = NUMBER_OF_HOSTS_TO_CREATE + 4;
-    private static final int   NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM = 1;
+    private static final int HOSTS = 6;
+    private static final int VMS = 3;
 
-    private final List<Vm> vmlist = new ArrayList<>();
+    private final List<Vm> vmList = new ArrayList<>();
     private CloudSim simulation;
 
     /**
@@ -149,167 +142,164 @@ public final class MigrationExample1 {
     }
 
     public MigrationExample1(){
-        Log.printConcatLine("Starting ", MigrationExample1.class.getSimpleName(), "...");
-
+        Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
         simulation = new CloudSim();
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
-
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
-
         createAndSubmitCloudlets(broker);
 
         simulation.start();
 
-        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
-
-        Log.printConcatLine(MigrationExample1.class.getSimpleName(), " finished!");
+        final List<Cloudlet> finishedList = broker.getCloudletsFinishedList();
+        finishedList.sort(
+            Comparator.comparingInt((Cloudlet c) -> c.getVm().getHost().getId())
+                      .thenComparingInt(c -> c.getVm().getId()));
+        new CloudletsTableBuilder(finishedList).build();
+        Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
-        double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_UTILIZATION_PERCENTAGE;
-        final int numberOfCloudlets = NUMBER_OF_VMS_TO_CREATE-1;
-        for(int i = 0; i < numberOfCloudlets; i++){
-            createAndSubmitCloudletsWithStaticCpuUtilization(
-                    initialCloudletCpuUtilizationPercentage, vmlist.get(i), broker);
-            initialCloudletCpuUtilizationPercentage += 0.15;
+        double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_PERCENTAGE;
+        final List<Cloudlet> list = new ArrayList<>(VMS -1);
+        Cloudlet cloudlet = Cloudlet.NULL;
+        int id = 0;
+        UtilizationModelDynamic um = createCpuUtilizationModel(initialCloudletCpuUtilizationPercentage, 1);
+        for(Vm vm: vmList){
+            cloudlet = createCloudlet(id++, vm, broker, um);
+            Log.printFormattedLine("#Created Cloudlet %d for VM %d: Initial CPU Usage %.2f%%", cloudlet.getId(), vm.getId(), um.getUtilization()*100);
+            list.add(cloudlet);
         }
-        //Create one last cloudlet which CPU usage increases dynamically
-        Vm lastVm = vmlist.get(vmlist.size()-1);
-        createAndSubmitCloudletsWithDynamicCpuUtilization(0.2, 1, lastVm, broker);
-    }
 
-    public void createAndSubmitVms(DatacenterBroker broker) {
-        for(int i = 0; i < NUMBER_OF_VMS_TO_CREATE; i++){
-            PowerVm vm = createVm(broker);
-            vmlist.add(vm);
-        }
-        broker.submitVmList(vmlist);
+        //Changes the CPU usage of the last cloudlet to increase dynamically
+        cloudlet.setUtilizationModelCpu(createCpuUtilizationModel(0.2, 1));
+
+        broker.submitCloudletList(list);
     }
 
     /**
+     * Creates a Cloudlet.
      *
-     * @param broker
-     * @return
-     *
-     * @todo @author manoelcampos The use of other CloudletScheduler instead
-     * of CloudletSchedulerDynamicWorkload makes the Host CPU usage
-     * not be updated (and maybe VM CPU usage too).
+     * @param vm the VM that will run the Cloudlets
+     * @param broker the broker that the created Cloudlets belong to
+     * @param cpuUtilizationModel the CPU UtilizationModel for the Cloudlet
+     * @return the created Cloudlets
      */
-    public PowerVm createVm(DatacenterBroker broker) {
-        PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
+    public Cloudlet createCloudlet(int id, Vm vm, DatacenterBroker broker, UtilizationModel cpuUtilizationModel) {
+        UtilizationModel utilizationModelFull = new UtilizationModelFull();
+        final Cloudlet cloudlet =
+            new CloudletSimple(id, CLOUDLET_LENGHT, vm.getNumberOfPes())
+                .setFileSize(CLOUDLET_FILESIZE)
+                .setOutputSize(CLOUDLET_OUTPUTSIZE)
+                .setUtilizationModelCpu(cpuUtilizationModel)
+                .setUtilizationModelRam(utilizationModelFull)
+                .setUtilizationModelBw(utilizationModelFull);
+        broker.bindCloudletToVm(cloudlet, vm);
+        return cloudlet;
+    }
+
+    public void createAndSubmitVms(DatacenterBroker broker) {
+        for(int i = 0; i < VMS; i++){
+            PowerVm vm = createVm(i, broker, VM_PES);
+            vmList.add(vm);
+        }
+        broker.submitVmList(vmList);
+    }
+
+    public PowerVm createVm(int id, DatacenterBroker broker, int pes) {
+        PowerVm vm = new PowerVm(vmList.size(), VM_MIPS, pes);
         vm
           .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-          .setCloudletScheduler(new CloudletSchedulerTimeShared());
+          .setCloudletScheduler(new CloudletSchedulerTimeShared())
+          .setId(id);
 
         Log.printConcatLine(
-                "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES_NUM);
+                "#Requested creation of VM ", vm.getId(), " with ", VM_MIPS, " MIPS x ", VM_PES);
         return vm;
     }
 
     /**
-     * Creates the number of Cloudlets defined in {@link #NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM}
-     * and submits them to the given broker.
+     * Creates a CPU UtilizationModel for a Cloudlet
+     * which will always use the given initial CPU usage percentage.
+     * This way, the usage will not change over the time,
+     * since the max usage will be the initial usage.
      *
-     * @param cloudletInitialCpuUsagePercent the percentage of CPU utilization
+     * @param initialCpuUsagePercent the percentage of CPU utilization
      * that created Cloudlets will use when they start to execute.
      * If this value is greater than 1 (100%), it will be changed to 1.
-     * @param maxCloudletCpuUtilizationPercentage the maximum percentage of
+     * @return
+     */
+    private UtilizationModelDynamic createCpuUtilizationModel(double initialCpuUsagePercent) {
+        return createCpuUtilizationModel(initialCpuUsagePercent, initialCpuUsagePercent);
+    }
+
+    /**
+     * Creates a CPU UtilizationModel for a Cloudlet.
+     * If the initial usage is lower than the max usage, the usage will
+     * be dynamically incremented along the time, according to the
+     * {@link #getCpuUsageIncrement(org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic)}
+     * function. Otherwise, the CPU usage will be static, according to the
+     * defined initial usage.
+     *
+     * @param initialCpuUsagePercent the percentage of CPU utilization
+     * that created Cloudlets will use when they start to execute.
+     * If this value is greater than 1 (100%), it will be changed to 1.
+     * @param maxCpuUsagePercentage the maximum percentage of
      * CPU utilization that created Cloudlets are allowed to use.
      * If this value is greater than 1 (100%), it will be changed to 1.
-     * @param hostingVm the VM that will run the Cloudlets
-     * @param broker the broker that the created Cloudlets belong to
-     * @param progressiveCpuUsage if the CPU usage of created Cloudlets
-     * have to change along the execution time or not,
-     * according to the {@link #getCpuUtilizationIncrement(org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic)}
-     * @return the List of created Cloudlets
+     * It must be equal or greater than the initial CPU usage.
+     * @return
      */
-    public List<Cloudlet> createAndSubmitCloudlets(
-            double cloudletInitialCpuUsagePercent,
-            double maxCloudletCpuUtilizationPercentage,
-            Vm hostingVm,
-            DatacenterBroker broker,
-            boolean progressiveCpuUsage) {
-        cloudletInitialCpuUsagePercent = Math.min(cloudletInitialCpuUsagePercent, 1);
-        maxCloudletCpuUtilizationPercentage = Math.min(maxCloudletCpuUtilizationPercentage, 1);
-        final List<Cloudlet> list = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
-        UtilizationModel utilizationModelFull = new UtilizationModelFull();
-        int cloudletId;
-        for(int i = 0; i < NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM; i++){
-            cloudletId = hostingVm.getId() + i;
-            UtilizationModelDynamic cpuUtilizationModel;
-            if (progressiveCpuUsage) {
-                cpuUtilizationModel
-                    = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent)
-                    .setUtilizationUpdateFunction(this::getCpuUtilizationIncrement);
-            } else {
-                cpuUtilizationModel = new UtilizationModelDynamic(cloudletInitialCpuUsagePercent);
-            }
-            cpuUtilizationModel.setMaxResourceUtilization(maxCloudletCpuUtilizationPercentage);
-
-            Cloudlet c =
-                new CloudletSimple(
-                    cloudletId, CLOUDLET_LENGHT, VM_PES_NUM)
-                    .setFileSize(CLOUDLET_FILESIZE)
-                    .setOutputSize(CLOUDLET_OUTPUTSIZE)
-                    .setUtilizationModelCpu(cpuUtilizationModel)
-                    .setUtilizationModelRam(utilizationModelFull)
-                    .setUtilizationModelBw(utilizationModelFull);
-            list.add(c);
+    private UtilizationModelDynamic createCpuUtilizationModel(double initialCpuUsagePercent, double maxCpuUsagePercentage) {
+        if(maxCpuUsagePercentage < initialCpuUsagePercent){
+            throw new IllegalArgumentException("Max CPU usage must be equal or greater than the initial CPU usage.");
         }
 
-        broker.submitCloudletList(list);
-        for(Cloudlet c: list) {
-            broker.bindCloudletToVm(c, hostingVm);
+        initialCpuUsagePercent = Math.min(initialCpuUsagePercent, 1);
+        maxCpuUsagePercentage = Math.min(maxCpuUsagePercentage, 1);
+        UtilizationModelDynamic um;
+        if (initialCpuUsagePercent < maxCpuUsagePercentage) {
+            um = new UtilizationModelDynamic(initialCpuUsagePercent)
+                        .setUtilizationUpdateFunction(this::getCpuUsageIncrement);
+        } else {
+            um = new UtilizationModelDynamic(initialCpuUsagePercent);
         }
 
-        return list;
+        um.setMaxResourceUtilization(maxCpuUsagePercentage);
+        return um;
     }
 
     /**
      * Increments the CPU resource utilization, that is defined in percentage values.
      * @return the new resource utilization after the increment
      */
-    private double getCpuUtilizationIncrement(UtilizationModelDynamic um){
-        return  um.getUtilization() + um.getTimeSpan()*CLOUDLET_CPU_USAGE_INCREMENT_PER_SECOND;
+    private double getCpuUsageIncrement(UtilizationModelDynamic um){
+        return  um.getUtilization() + um.getTimeSpan()* CLOUDLET_CPU_INCREMENT_PER_SECOND;
     }
 
-    public List<Cloudlet> createAndSubmitCloudletsWithDynamicCpuUtilization (
-            double initialCloudletCpuUtilizationPercentage,
-            double maxCloudletCpuUtilizationPercentage,
-            Vm hostingVm,
-            DatacenterBroker broker) {
-        return createAndSubmitCloudlets(
-                initialCloudletCpuUtilizationPercentage,
-                maxCloudletCpuUtilizationPercentage, hostingVm, broker, true);
-    }
-
-    public List<Cloudlet> createAndSubmitCloudletsWithStaticCpuUtilization(
-            double initialCloudletCpuUtilizationPercentage,
-            Vm hostingVm,
-            DatacenterBroker broker) {
-        return createAndSubmitCloudlets(
-                initialCloudletCpuUtilizationPercentage,
-                initialCloudletCpuUtilizationPercentage,
-                hostingVm, broker, false);
-    }
-
+    /**
+     * Creates a Datacenter with number of Hosts defined by {@link #HOSTS},
+     * but only some of these Hosts will be active (powered on) initially.
+     *
+     * @return
+     */
     private Datacenter createDatacenter() {
         ArrayList<PowerHost> hostList = new ArrayList<>();
-        for(int i = 0; i < NUMBER_OF_HOSTS_TO_CREATE; i++){
-            hostList.add(createHost(i, HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
-            Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_NUMBER_OF_PES);
+        for(int i = 0; i < HOSTS; i++){
+            PowerHostUtilizationHistory host = createHost(HOST_PES, HOST_MIPS);
+            host.setActive(false);
+            hostList.add(host);
+            Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS, " mips x ", HOST_PES);
         }
         Log.printLine();
 
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(DATACENTER_COST_PER_CPU)
-                .setCostPerMem(DATACENTER_COST_PER_RAM)
-                .setCostPerStorage(DATACENTER_COST_PER_STORAGE)
-                .setCostPerBw(DATACENTER_COST_PER_BW);
+        for(int i = 0; i < 2; i++){
+            hostList.get(i).setActive(true);
+        }
+
+        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
 
         PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy =
             new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
@@ -317,30 +307,17 @@ public final class MigrationExample1 {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
-        dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
+        dc.setMigrationsEnabled(true)
+          .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
+          .setLog(true);
         return dc;
     }
 
-    /**
-     *
-     * @param id
-     * @param numberOfPes
-     * @param mipsByPe
-     * @return
-     *
-     * @todo @author manoelcampos Using the {@link VmSchedulerSpaceShared} its getting NullPointerException,
-     * probably due to lack of CPU for all VMs. It has to be created
-     * an IT test to check this problem.
-     *
-     * @todo @author manoelcampos The method {@link DatacenterBroker#getCloudletsFinishedList()}
-     * returns an empty list when using  {@link PowerDatacenter},
-     * {@link PowerHost} and {@link PowerVm}.
-     */
-    public PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
+    public PowerHostUtilizationHistory createHost(int numberOfPes, long mipsByPe) {
             List<Pe> peList = createPeList(numberOfPes, mipsByPe);
             PowerHostUtilizationHistory host =
                 new PowerHostUtilizationHistory(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
-            host.setPowerModel(new PowerModelLinear(1000, 0.7))
+            host
                 .setRamProvisioner(new ResourceProvisionerSimple())
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());

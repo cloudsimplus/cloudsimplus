@@ -16,7 +16,6 @@ import org.cloudbus.cloudsim.power.models.PowerModelSpecPowerHpProLiantMl110G5Xe
  * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012
  * </p>
  * @author Anton Beloglazov
- * @since Jan 6, 2012
  */
 public final class Constants {
 

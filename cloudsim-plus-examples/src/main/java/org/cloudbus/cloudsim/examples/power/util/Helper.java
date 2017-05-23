@@ -71,6 +71,7 @@ public final class Helper {
     private final boolean outputInCsv;
     private final String outputFolder;
     private final Simulation simulation;
+
     /**
      * Stores data to be printed to the console or outputed to a CSV file.
      */
@@ -102,7 +103,7 @@ public final class Helper {
         List<Vm> vms = new ArrayList<>(vmsNumber);
         for (int i = 0; i < vmsNumber; i++) {
             int vmType = i / (int) Math.ceil((double) vmsNumber / Constants.VM_TYPES);
-            CloudletScheduler scheduler = new CloudletSchedulerTimeShared(); //Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]
+            CloudletScheduler scheduler = new CloudletSchedulerTimeShared();
 
             PowerVm vm = new PowerVm(i, Constants.VM_MIPS[vmType], Constants.VM_PES[vmType]);
             vm.setRam(Constants.VM_RAM[vmType])
@@ -148,14 +149,7 @@ public final class Helper {
      * @return the Datacenter broker
      */
     public static DatacenterBroker createBroker(CloudSim simulation) {
-        DatacenterBroker broker = null;
-        try {
-            broker = new PowerDatacenterBroker(simulation);
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.exit(0);
-        }
-        return broker;
+       return new PowerDatacenterBroker(simulation);
     }
 
     /**
@@ -245,12 +239,9 @@ public final class Helper {
      *
      * @param datacenter the Datacenter
      * @param vmList     the List of VMs to get results from
-     * @param lastClock  the last clock
+     * @param lastClock  the clock at the end of the simulation
      */
-    public void printResults(
-        final PowerDatacenter datacenter,
-        final List<Vm> vmList,
-        final double lastClock) {
+    public void printResults(final PowerDatacenter datacenter, final List<Vm> vmList, final double lastClock) {
         Log.enable();
         final List<HostSimple> hosts = datacenter.getHostList();
         final Map<String, Double> slaMetrics = getSlaMetrics(vmList);
@@ -278,7 +269,7 @@ public final class Helper {
         addStringToBuffer("Experiment name", "%s", experimentName);
         addStringToBuffer("Number of Hosts", "%d", hosts.size());
         addStringToBuffer("Number of VMs", "%d", vmList.size());
-        addStringToBuffer("Total simulation time", "%.2f", lastClock, "sec");
+        addStringToBuffer("Total simulation time", "%.2f", lastClock, "sec ("+lastClock/60+" min)");
         addStringToBuffer("Energy consumption", "%.2f", datacenter.getPowerInKWattsHour(), "kWh");
         addStringToBuffer("Number of VM migrations", "%d", datacenter.getMigrationCount());
 

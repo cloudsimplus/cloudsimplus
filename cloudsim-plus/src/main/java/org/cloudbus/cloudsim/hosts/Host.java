@@ -58,13 +58,32 @@ public interface Host extends Machine, Comparable<Host> {
     void setDatacenter(Datacenter datacenter);
 
     /**
-     * Checks if the host is suitable for vm. If it has enough resources
+     * Checks if the host active and is suitable for vm. If it has enough resources
      * to attend the VM.
      *
      * @param vm the vm
      * @return true, if is suitable for vm
      */
     boolean isSuitableForVm(Vm vm);
+
+    /**
+     * Checks if the Host is powered-on or not.
+     * @return true if the Host is powered-on, false otherwise.
+     */
+    boolean isActive();
+
+    /**
+     * Sets the powered state of the Host, to indicate if it's powered on or off.
+     * When a Host is powered off, no VMs will be submitted to it.
+     *
+     * <p>If it is set to powered off while VMs are running inside it,
+     * it is simulated a scheduled shutdown, so that, all running
+     * VMs will finish, but not more VMs will be submitted to this Host.</p>
+     *
+     * @param active true to set the Host as powered on, false as powered off
+     * @return
+     */
+    Host setActive(boolean active);
 
     /**
      * Gets the list of VMs migrating into this host.
@@ -399,14 +418,16 @@ public interface Host extends Machine, Comparable<Host> {
     ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
 
     /**
-     * Gets current utilization of CPU in percentage (between [0 and 1]).
+     * Gets current utilization of CPU in percentage (between [0 and 1]),
+     * considering the usage of all its PEs..
      *
      * @return
      */
     double getUtilizationOfCpu();
 
     /**
-     * Gets the current utilization of CPU in MIPS.
+     * Gets the current total utilization of CPU in MIPS,
+     * considering the usage of all its PEs.
      *
      * @return
      */

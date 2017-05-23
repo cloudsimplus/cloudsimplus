@@ -49,21 +49,8 @@ public class PowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends Pow
      */
     @Override
     public <T extends Host> List<T> getHostList() {
-        super.<PowerHost>getHostList().sort(this::compareHosts);
+        super.<PowerHost>getHostList().sort(Comparator.comparingDouble(this::getUtilizationOfCpuMips));
         return (List<T>) super.<PowerHostSimple>getHostList();
-    }
-
-    /**
-     * Compares two hosts. The host with the most available CPU MIPS
-     * is considered to be greater than the other one. Thus, in a sort operation,
-     * the host will be sorted in increasing order of available CPU MIPS.
-     *
-     * @param host1 the first host to be compared
-     * @param host2 the second host to be compared
-     * @return
-     */
-    private int compareHosts(PowerHost host1, PowerHost host2) {
-        return Double.compare(getUtilizationOfCpuMips(host1), getUtilizationOfCpuMips(host2));
     }
 
     /**
@@ -102,7 +89,7 @@ public class PowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends Pow
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
             .filter(h -> h.getUtilizationOfCpu() < getUnderUtilizationThreshold())
-            .filter(h -> isNotAllVmsMigratingOutNorVmsAreMigratingIn(h))
+            .filter(h -> isNotAllVmsMigratingOutNeitherAreVmsMigratingIn(h))
             .min(Comparator.comparingDouble(HostDynamicWorkload::getUtilizationOfCpu))
             .orElse(PowerHost.NULL);
     }

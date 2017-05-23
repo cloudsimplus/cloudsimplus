@@ -419,7 +419,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         boolean vmCreated = false;
         vmCreationAcks++;
 
-        //if the VM was sucessfully created in the requested Datacenter
+        //if the VM was successfully created in the requested Datacenter
         if (vm.isCreated()) {
             processSuccessVmCreationInDatacenter(vm, vm.getHost().getDatacenter());
             vmCreated = true;
@@ -520,7 +520,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void processCloudletReturn(SimEvent ev) {
         final Cloudlet cloudlet = (Cloudlet) ev.getData();
-        getCloudletsFinishedList().add(cloudlet);
+        cloudletsFinishedList.add(cloudlet);
         Log.printFormattedLine("%.2f: %s: %s %d finished and returned to broker.",
             getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId());
         cloudletsCreated--;
@@ -701,7 +701,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public <T extends Cloudlet> List<T> getCloudletsFinishedList() {
-        return (List<T>) cloudletsFinishedList;
+        return (List<T>) new ArrayList<>(cloudletsFinishedList);
     }
 
     @Override

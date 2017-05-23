@@ -9,13 +9,11 @@ package org.cloudbus.cloudsim.hosts.power;
 
 import org.cloudbus.cloudsim.hosts.HostDynamicWorkload;
 import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.resources.Pe;
 
 /**
- * An interface to be implemented by power-aware Host classes.
- * The interface implements the Null Object
- * Design Pattern in order to start avoiding {@link NullPointerException} when
- * using the {@link PowerHost#NULL} object instead of attributing {@code null} to
- * {@link PowerHost} variables.
+ * An interface to be implemented by power-aware Host classes,
+ * defining power consumption based on a {@link PowerModel}.
  *
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
@@ -46,14 +44,16 @@ public interface PowerHost extends HostDynamicWorkload {
     double getMaxPower();
 
     /**
-     * Gets the power consumption of the host. For this moment it only computes the power consumed by PEs.
+     * Gets the current power consumption of the host. For this moment, it only computes the power consumed by
+     * {@link Pe}s.
      *
      * @return the power consumption
      */
     double getPower();
 
     /**
-     * Gets the power model.
+     * Gets the power model used by the host
+     * to define how it consumes power.
      *
      * @return the power model
      */

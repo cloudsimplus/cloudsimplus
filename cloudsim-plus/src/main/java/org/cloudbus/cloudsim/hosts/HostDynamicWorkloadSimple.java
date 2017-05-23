@@ -96,7 +96,7 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
             hostTotalRequestedMips += totalRequestedMips;
         }
 
-        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips, getUtilizationOfCpuMips() > 0);
+        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips,getUtilizationOfCpuMips() > 0);
 
         return smallerTime;
     }
@@ -153,34 +153,37 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
     }
 
     private void showVmResourceUsageOnHost(Vm vm) {
+        if (Log.isDisabled() || vm.getHost() == Host.NULL) {
+            return;
+        }
+
         final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
         final double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
-        if (!Log.isDisabled() && vm.getHost() != Host.NULL) {
-            getDatacenter().println(String.format(
-                    "%.2f: [" + this + "] Total allocated MIPS for " + vm
-                    + " (" + vm.getHost()
-                    + ") is %.2f, was requested %.2f out of total %.2f (%.2f%%)",
-                    getSimulation().clock(),
-                    totalAllocatedMips,
-                    totalRequestedMips,
-                    vm.getMips(),
-                    totalRequestedMips / vm.getMips() * 100));
 
-            final List<Pe> pes = getVmScheduler().getPesAllocatedForVm(vm);
-            final StringBuilder pesString = new StringBuilder();
-            pes.forEach(pe ->
-                pesString.append(
-                        String.format(" PE #%d: %d.",
-                                pe.getId(),
-                                pe.getPeProvisioner().getAllocatedResourceForVm(vm)))
-            );
+        getDatacenter().println(String.format(
+                "%.2f: [" + this + "] Total allocated MIPS for " + vm
+                + " (" + vm.getHost()
+                + ") is %.2f. Vm requested %.2f out of its total %.2f MIPS (%.2f%%)",
+                getSimulation().clock(),
+                totalAllocatedMips,
+                totalRequestedMips,
+                vm.getMips(),
+                totalRequestedMips / vm.getMips() * 100));
 
-            getDatacenter().println(String.format(
-                    "%.2f: [" + this + "] MIPS for " + vm + " by working PEs ("
-                    + getNumberOfWorkingPes()+ " * " + getVmScheduler().getPeCapacity() + ")."
-                    + pesString,
-                    getSimulation().clock()));
-        }
+        final List<Pe> pes = getVmScheduler().getPesAllocatedForVm(vm);
+        final StringBuilder pesString = new StringBuilder();
+        pes.forEach(pe ->
+            pesString.append(
+                    String.format(" PE #%d: %d.",
+                            pe.getId(),
+                            pe.getPeProvisioner().getAllocatedResourceForVm(vm)))
+        );
+
+        getDatacenter().println(String.format(
+                "%.2f: [" + this + "] MIPS for " + vm + " working PEs ("
+                + getNumberOfWorkingPes()+ " * " + getVmScheduler().getPeCapacity() + "): "
+                + pesString,
+                getSimulation().clock()));
     }
 
     @Override

@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.hosts.power;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -16,18 +17,22 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
- * PowerHost class enables simulation of power-aware hosts.
+ * A power-aware host which defines power consumption
+ * based on a {@link PowerModel}.
  *
  * <p>If you are using any algorithms, policies or workload included in the
  * power package please cite the following paper:</p>
  *
  * <ul>
- * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and
- * Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
- * Heuristics for Energy and Performance Efficient Dynamic Consolidation of
- * Virtual Machines in Cloud Data Centers", Concurrency and Computation:
- * Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John
- * Wiley & Sons, Ltd, New York, USA, 2012</a>
+ *  <li>
+ *      <a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and
+ *      Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
+ *      Heuristics for Energy and Performance Efficient Dynamic Consolidation of
+ *      Virtual Machines in Cloud Data Centers", Concurrency and Computation:
+ *      Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John
+ *      Wiley & Sons, Ltd, New York, USA, 2012
+ *      </a>
+ *  </li>
  * </ul>
  *
  * @author Anton Beloglazov
@@ -36,12 +41,13 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerHost {
 
     /**
-     * The power model used by the host.
+     * @see #getPowerModel()
      */
     private PowerModel powerModel;
 
     /**
      * Creates a PowerHost with the given parameters.
+     *
      * @param ram the RAM capacity in Megabytes
      * @param bw the Bandwidth (BW) capacity in Megabits/s
      * @param storage the storage capacity in Megabytes
@@ -91,7 +97,8 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     }
 
     /**
-     * Gets the power consumption of the host. For this moment it only computes the power consumed by PEs.
+     * Gets the amount of power the Host consumes considering a given
+     * utilization percentage. For this moment it only computes the power consumed by PEs.
      *
      * @param utilization the utilization percentage (between [0 and 1]) of a
      * resource that is critical for power consumption
@@ -108,7 +115,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     /**
      * Gets the max power that can be consumed by the host.
      *
-     * @return the max power
+     * @return the max consumption power
      */
     @Override
     public double getMaxPower() {
@@ -140,7 +147,9 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
 
     @Override
     public final PowerHost setPowerModel(PowerModel powerModel) {
+        Objects.requireNonNull(powerModel);
         this.powerModel = powerModel;
+        this.powerModel.setHost(this);
         return this;
     }
 
@@ -148,5 +157,5 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
     public PowerModel getPowerModel() {
         return powerModel;
     }
-   
+
 }
