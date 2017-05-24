@@ -136,12 +136,14 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
             .addColumn(9, new TextTableColumn("VM MIPS  ", "allocated"), this::getVmAllocatedMips)
             .build();
 
+        System.out.println("\nHosts CPU usage History");
         hostList.forEach(this::printHostHistory);
     }
 
     private void printHostHistory(PowerHost h) {
         System.out.printf("Host: %d\n", h.getId());
         h.getStateHistory().stream().forEach(System.out::print);
+        System.out.println();
     }
 
     private double getVmAllocatedMips(Cloudlet c) {

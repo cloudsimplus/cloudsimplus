@@ -24,7 +24,8 @@
  */
 package org.cloudsimplus.examples.migration;
 
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
+import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigration;
+import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationBestFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -59,10 +60,10 @@ import java.util.List;
  * <p>An example showing how to create 1 Datacenter with 3 hosts,
  * 1 VM by host and 1 cloudlet by VM and perform VM migration using
  * a custom VmAllocationPolicy. Such a policy migrates VMs based on
- * {@link PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
+ * {@link PowerVmAllocationPolicyMigrationBestFitStaticThreshold
  * static host CPU utilization threshold}. </p>
  *
- * <p>The created {@link PowerVmAllocationPolicyMigrationWorstFitStaticThreshold policy}
+ * <p>The created {@link PowerVmAllocationPolicyMigrationBestFitStaticThreshold policy}
  * allows the definition of static under and over CPU utilization thresholds to
  * enable VM migration.
  * The example uses a custom UtilizationModel to define CPU usage of cloudlets which
@@ -88,7 +89,7 @@ public final class MigrationExample1 {
     private static final int    SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
     private static final int    HOST_MIPS = 1000; //for each PE
 
-    private static final int    HOST_PES = 5;
+    private static final int    HOST_INITIAL_PES = 4;
     private static final long   HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long   HOST_STORAGE = 1000000; //host storage
     private static final long   HOST_BW = 100000000L;
@@ -114,7 +115,7 @@ public final class MigrationExample1 {
      * it starts executing (in scale from 0 to 1, where 1 is 100%).
      * For each cloudlet create, this value is used
      * as a base to define CPU usage.
-     * @see #createAndSubmitCloudlets(DatacenterBroker, List)
+     * @see #createAndSubmitCloudlets(DatacenterBroker)
      */
     private static final double CLOUDLET_INITIAL_CPU_PERCENTAGE = 0.8;
 
@@ -126,14 +127,17 @@ public final class MigrationExample1 {
      */
     private static final double CLOUDLET_CPU_INCREMENT_PER_SECOND = 0.1;
 
-    private static final int HOSTS = 10;
+    private static final int HOSTS = 5;
     private static final int VMS = 3;
 
     /**
      * List of all created VMs.
      */
     private final List<Vm> vmList = new ArrayList<>();
+
     private CloudSim simulation;
+    private PowerVmAllocationPolicyMigrationBestFitStaticThreshold allocationPolicy;
+    private List<PowerHost> hostList;
 
     /**
      * Starts the example.
@@ -151,14 +155,14 @@ public final class MigrationExample1 {
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
-        createAndSubmitCloudlets(broker, createAndSubmitVms(broker));
+        createAndSubmitVms(broker);
+        createAndSubmitCloudlets(broker);
 
-        //Set all inactive Hosts to active after all VMs were submitted
-        broker.addOneTimeOnVmsCreatedListener(evt -> {
-            datacenter0.getHostList().forEach(h -> h.setActive(true));
-            Log.printFormattedLine("\t#All VMs created at time %.2f. Activating remaining Hosts and submitting more VMs and Cloudlets", evt.getTime());
-            createAndSubmitCloudlets(broker, createAndSubmitVms(broker));
-        });
+        /*
+        After all VMs are created, sets the allocation policy to the default value
+        so that some Hosts will be overloaded with the placed VMs and migration will be fired.
+        */
+        broker.addOneTimeOnVmsCreatedListener(evt -> allocationPolicy.setOverUtilizationThreshold(HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION));
 
         simulation.start();
 
@@ -170,13 +174,13 @@ public final class MigrationExample1 {
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
-    public void createAndSubmitCloudlets(DatacenterBroker broker, List<Vm> vms) {
+    public void createAndSubmitCloudlets(DatacenterBroker broker) {
         double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_PERCENTAGE;
         final List<Cloudlet> list = new ArrayList<>(VMS -1);
         Cloudlet cloudlet = Cloudlet.NULL;
         int id = 0;
         UtilizationModelDynamic um = createCpuUtilizationModel(initialCloudletCpuUtilizationPercentage, 1);
-        for(Vm vm: vms){
+        for(Vm vm: vmList){
             cloudlet = createCloudlet(vm, broker, um);
             list.add(cloudlet);
         }
@@ -208,16 +212,15 @@ public final class MigrationExample1 {
         return cloudlet;
     }
 
-    public List<Vm> createAndSubmitVms(DatacenterBroker broker) {
+    public void createAndSubmitVms(DatacenterBroker broker) {
         List<Vm> list = new ArrayList<>(VMS);
         for(int i = 0; i < VMS; i++){
             PowerVm vm = createVm(broker, VM_PES);
             list.add(vm);
         }
 
-        broker.submitVmList(list);
         vmList.addAll(list);
-        return list;
+        broker.submitVmList(list);
     }
 
     public PowerVm createVm(DatacenterBroker broker, int pes) {
@@ -294,25 +297,29 @@ public final class MigrationExample1 {
      * @return
      */
     private Datacenter createDatacenter() {
-        ArrayList<PowerHost> hostList = new ArrayList<>();
+        this.hostList = new ArrayList<>();
         for(int i = 0; i < HOSTS; i++){
-            PowerHostUtilizationHistory host = createHost(HOST_PES, HOST_MIPS);
-            host.setActive(false);
+            final int pes = HOST_INITIAL_PES + i;
+            PowerHostUtilizationHistory host = createHost(pes, HOST_MIPS);
             hostList.add(host);
-            Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS, " mips x ", HOST_PES);
+            Log.printFormattedLine("#Created host %d with %d MIPS x %2d PEs. Powered on: %s", i, HOST_MIPS, pes, host.isActive());
         }
         Log.printLine();
 
-        for(int i = 0; i < 2; i++){
-            hostList.get(i).setActive(true);
-        }
-
         DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
 
-        PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy =
-            new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
+        /*Sets an upper utilization threshold that is higher than the defined
+        * value to enable placing VMs that will use more PEs than
+        * the defined by the default migration threshold.
+        * After VMs are all submitted to Hosts, the threshold is changed
+        * to the default value.
+        * This is used to  place VMs into a Host that will
+        * become overloaded, what will trigger the migration.
+        * */
+        this.allocationPolicy =
+            new PowerVmAllocationPolicyMigrationBestFitStaticThreshold(
                 new PowerVmSelectionPolicyMinimumUtilization(),
-                HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
+                HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2);
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
         dc.setMigrationsEnabled(true)

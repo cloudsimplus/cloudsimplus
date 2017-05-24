@@ -8,7 +8,9 @@
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostDynamicWorkload;
@@ -25,6 +27,8 @@ import org.cloudbus.cloudsim.util.ExecutionTimeMeasurer;
 /**
  * An abstract power-aware VM allocation policy that dynamically optimizes the
  * VM allocation (placement) using migration.
+ * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
+ * Such a behaviour can be overridden by sub-classes.
  *
  * <p>If you are using any algorithms, policies or workload included in the
  * power package please cite the following paper:
@@ -139,7 +143,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
         Map<Vm, Host> migrationMap = new HashMap<>();
         if(!overUtilizedHosts.isEmpty()){
-            Log.printLine("Reallocation of VMs from the over-utilized hosts: ");
+            Log.printLine("\tReallocation of VMs from the overloaded hosts: ");
             final String vmReallocationStr = "optimizeAllocationVmReallocation";
             ExecutionTimeMeasurer.start(vmReallocationStr);
             migrationMap =
@@ -190,14 +194,14 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                 break;
             }
 
-            Log.printConcatLine("Under-utilized Host: ", underUtilizedHost, "\n");
+            Log.printConcatLine("Underloaded Host: ", underUtilizedHost);
 
             excludedHostsFromUnderUsedSearch.add(underUtilizedHost);
             excludedHostsForFindingNewVmPlacement.add(underUtilizedHost);
 
             List<? extends Vm> vmsToMigrateFromUnderUsedHost = getVmsToMigrateFromUnderUtilizedHost(underUtilizedHost);
             if (!vmsToMigrateFromUnderUsedHost.isEmpty()) {
-                Log.printFormatted("VMs to be reallocated from the under-utilized Host %d: ", underUtilizedHost.getId());
+                Log.printFormatted("\tVMs to be reallocated from the underloaded Host %d: ", underUtilizedHost.getId());
                 printVmIds(vmsToMigrateFromUnderUsedHost);
 
                 final Map<Vm, Host> newVmPlacement = getNewVmPlacementFromUnderUtilizedHost(
@@ -227,9 +231,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      */
     protected void printOverUtilizedHosts(List<PowerHostUtilizationHistory> overUtilizedHosts) {
         if (!Log.isDisabled() && !overUtilizedHosts.isEmpty()) {
-            Log.printLine("Over-utilized hosts:");
-            overUtilizedHosts.forEach(host -> Log.printConcatLine("Host #", host.getId()));
-            Log.printLine();
+            Log.printConcatLine("Overloaded hosts: ", overUtilizedHosts);
         }
     }
 
@@ -259,7 +261,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return true, if the host will be over utilized after VM placement; false
      * otherwise
      */
-    protected boolean isHostNotOverusedAfterAllocation(PowerHost host, Vm vm) {
+    protected boolean isNotHostOverusedAfterAllocation(PowerHost host, Vm vm) {
         boolean isHostOverUsedAfterAllocation = true;
         if (host.vmCreate(vm)) {
             isHostOverUsedAfterAllocation = isHostOverUtilized(host);
@@ -276,25 +278,59 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     }
 
     /**
-     * Finds a PM that has enough resources to host a given VM and that will not
-     * be overloaded after placing the VM on it. The selected host will be that
+     * Finds a Host that has enough resources to place a given VM and that will not
+     * be overloaded after the placement. The selected Host will be that
      * one with most efficient power usage for the given VM.
+     *
+     * <p>This method performs the basic filtering and delegates additional ones
+     * and the final selection of the Host to other method.</p>
      *
      * @param vm the VM
      * @param excludedHosts the excluded hosts
      * @return the PM found to host the VM or {@link PowerHost#NULL} if not found
+     * @see #findHostForVmInternal(Vm, Stream)
      */
     public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts) {
+        final Stream<PowerHost> stream = this.<PowerHost>getHostList().stream()
+            .filter(h -> !excludedHosts.contains(h))
+            .filter(h -> h.isSuitableForVm(vm))
+            .filter(h -> isNotHostOverusedAfterAllocation(h, vm));
+
+        return findHostForVmInternal(vm, stream).orElse(PowerHost.NULL);
+    }
+
+    /**
+     * Applies additional filters to the Hosts Stream and performs the actual Host selection.
+     * This method is a Stream's final operation, that it, it closes the Stream and returns an {@link Optional} value.
+     *
+     * <p>This method can be overridden by sub-classes to change the method used to select the Host for the given VM.</p>
+     *
+     * @param vm the VM to find a Host to be placed into
+     * @param hostStream a {@link Stream} containing the Hosts after passing the basic filtering
+     * @return an {@link Optional} that may or may not contain the Host to place the VM
+     * @see #findHostForVm(Vm, Set)
+     * @see #additionalHostFilters(Vm, Stream)
+     */
+    protected Optional<PowerHost> findHostForVmInternal(Vm vm, Stream<PowerHost> hostStream){
         final Comparator<PowerHost> hostPowerConsumptionComparator =
             Comparator.comparingDouble(h -> getPowerAfterAllocationDifference(h, vm));
 
-        return this.<PowerHost>getHostList().stream()
-            .filter(h -> !excludedHosts.contains(h))
-            .filter(h -> h.isSuitableForVm(vm))
-            .filter(h -> isHostNotOverusedAfterAllocation(h, vm))
-            .filter(h -> getPowerAfterAllocation(h, vm) > 0)
-            .min(hostPowerConsumptionComparator)
-            .orElse(PowerHost.NULL);
+        return additionalHostFilters(vm, hostStream).min(hostPowerConsumptionComparator);
+    }
+
+    /**
+     * Applies additional filters to select a Host to place a given VM.
+     * This implementation filters the stream of Hosts to get those ones
+     * that the placement of the VM impacts its power usage.
+     *
+     * <p>This method can be overridden by sub-classes to change filtering.</p>
+     *
+     * @param vm the VM to find a Host to be placed into
+     * @param hostStream a {@link Stream} containing the Hosts after passing the basic filtering
+     * @return the Hosts {@link Stream} after applying the additional filters
+     */
+    protected Stream<PowerHost> additionalHostFilters(Vm vm, Stream<PowerHost> hostStream){
+        return hostStream.filter(h -> getPowerAfterAllocation(h, vm) > 0);
     }
 
     /**
@@ -326,7 +362,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
             final PowerHost allocatedHost = findHostForVm(vm, excludedHosts);
             if (allocatedHost != PowerHost.NULL) {
                 allocatedHost.vmCreate(vm);
-                Log.printConcatLine("VM #", vm.getId(), " allocated to host #", allocatedHost.getId());
+                Log.printConcatLine("\tVM #", vm.getId(), " allocated to host #", allocatedHost.getId());
 
                 migrationMap.put(vm, allocatedHost);
             }
@@ -355,10 +391,9 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                 Log.printConcatLine("VM #", vm.getId(), " allocated to host #", allocatedHost.getId());
                 migrationMap.put(vm, allocatedHost);
             } else {
-                Log.printLine("Not all VMs can be reallocated from the host, reallocation cancelled");
+                Log.printFormattedLine("\tA new suitable Host couldn't be found for %s. Reallocation cancelled.", vm);
                 migrationMap.entrySet().forEach(e -> e.getValue().destroyVm(e.getKey()));
-                migrationMap.clear();
-                break;
+                return new HashMap<>();
             }
         }
 
@@ -428,16 +463,57 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * Gets the most under utilized Host.
      *
      * @param excludedHosts the Hosts that have to be disconsidering when looking for the under utilized Host
-     * @return the most under utilized host or {@link PowerHost#NULL}
-     * if no Host was found
+     * @return the most under utilized host or {@link PowerHost#NULL} if no Host is found
      */
-    protected PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
+    private PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
-            .filter(h -> isNotAllVmsMigratingOutNeitherAreVmsMigratingIn(h))
+            .filter(this::isHostUnderUtilized)
+            .filter(h -> areNotAllVmsMigratingOutNeitherAreVmsMigratingIn(h))
             .min(Comparator.comparingDouble(HostDynamicWorkload::getUtilizationOfCpu))
             .orElse(PowerHost.NULL);
+    }
+
+    /**
+     * Checks if a host is under utilized, based on current CPU usage.
+     *
+     * @param host the host
+     * @return true, if the host is under utilized; false otherwise
+     */
+    @Override
+    public boolean isHostUnderUtilized(PowerHost host) {
+        return getHostCpuUtilizationPercentage(host) < getUnderUtilizationThreshold();
+    }
+
+    /**
+     * {@inheritDoc}
+     * It's based on current CPU usage.
+     *
+     * @param host {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public boolean isHostOverUtilized(PowerHost host) {
+        final double upperThreshold = getOverUtilizationThreshold(host);
+        addHistoryEntryIfAbsent(host, upperThreshold);
+
+        return getHostCpuUtilizationPercentage(host) > upperThreshold;
+    }
+
+    private double getHostCpuUtilizationPercentage(PowerHost host) {
+        return getHostTotalRequestedMips(host) / host.getTotalMipsCapacity();
+    }
+
+    /**
+     * Gets the total MIPS that is currently being used by all VMs inside the Host.
+     * @param host
+     * @return
+     */
+    private double getHostTotalRequestedMips(PowerHost host) {
+        return host.getVmList().stream()
+            .mapToDouble(Vm::getCurrentRequestedTotalMips)
+            .sum();
     }
 
     /**
@@ -448,7 +524,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param host the host to check
      * @return
      */
-    protected boolean isNotAllVmsMigratingOutNeitherAreVmsMigratingIn(PowerHost host) {
+    protected boolean areNotAllVmsMigratingOutNeitherAreVmsMigratingIn(PowerHost host) {
         for (final PowerVm vm : host.<PowerVm>getVmList()) {
             if (!vm.isInMigration()) { //VM is not in migration process (in or out)
                 //there is at least one VM that is not migrating anywhere (nor ir or out)
@@ -643,48 +719,6 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     @Override
     public List<Double> getExecutionTimeHistoryTotal() {
         return Collections.unmodifiableList(executionTimeHistoryTotal);
-    }
-
-    /**
-     * {@inheritDoc}
-     * It's based on current CPU usage.
-     *
-     * @param host {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public boolean isHostOverUtilized(PowerHost host) {
-        final double upperThreshold = getOverUtilizationThreshold(host);
-        addHistoryEntryIfAbsent(host, upperThreshold);
-
-        return getHostCpuUtilizationPercentage(host) > upperThreshold;
-    }
-
-    private double getHostCpuUtilizationPercentage(PowerHost host) {
-        return getHostTotalRequestedMips(host) / host.getTotalMipsCapacity();
-    }
-
-    /**
-     * Gets the total MIPS that is currently being used by all VMs inside the Host.
-     * @param host
-     * @return
-     */
-    private double getHostTotalRequestedMips(PowerHost host) {
-        return host.getVmList().stream()
-            .mapToDouble(Vm::getCurrentRequestedTotalMips)
-            .sum();
-    }
-
-    /**
-     * Checks if a host is under utilized, based on current CPU usage.
-     *
-     * @param host the host
-     * @return true, if the host is under utilized; false otherwise
-     */
-    @Override
-    public boolean isHostUnderUtilized(PowerHost host) {
-        final double underThreshold = getUnderUtilizationThreshold();
-        return getHostCpuUtilizationPercentage(host) < underThreshold;
     }
 
     @Override

@@ -7,8 +7,10 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import java.util.Objects;
 
 /**
- * An abstract class that is the base for implementation of Power-aware VM allocation policies that use
+ * An abstract class that is the base for implementation of Power-aware VM allocation policies which use
  * a dynamic over utilization threshold.
+ * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
+ * Such a behaviour can be overridden by sub-classes.
  *
  * @author Manoel Campos da Silva Filho
  */

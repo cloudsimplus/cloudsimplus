@@ -1,6 +1,11 @@
 package org.cloudbus.cloudsim.power.models;
 
 import java.util.stream.IntStream;
+
+import org.cloudbus.cloudsim.hosts.power.PowerHost;
+import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
+import org.cloudbus.cloudsim.hosts.power.PowerHostTest;
+import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
@@ -23,6 +28,12 @@ public class PowerModelTest {
                     EXPECTED_POWER, instance.getPower(utilization), 0.0);
         });
 
+    }
+
+    static PowerHost createHostWithOneVm(){
+        final PowerHost host = PowerHostTest.createPowerHost(0, 10);
+        host.vmCreate(new PowerVm(0, 1000, 1));
+        return host;
     }
 
 

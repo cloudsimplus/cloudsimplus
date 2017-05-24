@@ -18,6 +18,8 @@ import org.cloudbus.cloudsim.util.MathUtil;
 /**
  * A VM allocation policy that uses Local Regression (LR) to predict host utilization (load)
  * and define if a host is overloaded or not.
+ * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
+ * Such a behaviour can be overridden by sub-classes.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:
@@ -154,7 +156,7 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
      * Sets the scheduling interval that defines the periodicity of VM migrations.
      *
      * @param schedulingInterval the new scheduling interval
-     * @return 
+     * @return
      */
     public final PowerVmAllocationPolicyMigrationLocalRegression setSchedulingInterval(double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;

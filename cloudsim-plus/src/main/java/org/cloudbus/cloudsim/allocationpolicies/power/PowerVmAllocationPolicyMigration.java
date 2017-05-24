@@ -127,5 +127,4 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
      * @param underUtilizationThreshold the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
      */
     void setUnderUtilizationThreshold(double underUtilizationThreshold);
-
 }

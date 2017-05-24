@@ -167,8 +167,8 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
                 getSimulation().clock(),
                 totalAllocatedMips,
                 totalRequestedMips,
-                vm.getMips(),
-                totalRequestedMips / vm.getMips() * 100));
+                vm.getTotalMipsCapacity(),
+                totalRequestedMips / vm.getTotalMipsCapacity() * 100));
 
         final List<Pe> pes = getVmScheduler().getPesAllocatedForVm(vm);
         final StringBuilder pesString = new StringBuilder();
