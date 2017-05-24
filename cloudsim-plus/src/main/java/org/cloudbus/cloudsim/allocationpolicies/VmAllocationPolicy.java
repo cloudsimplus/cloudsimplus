@@ -40,7 +40,6 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
     /**
      * Sets the Datacenter associated to the Allocation Policy
      * @param datacenter the Datacenter to set
-     * @return
      */
     void setDatacenter(Datacenter datacenter);
 

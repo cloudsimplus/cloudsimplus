@@ -112,12 +112,26 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * @return an Entry where the key is the Host and the value is
      * the number of used PEs if a Host is found, or an Entry with a {@link Host#NULL}
      * key if not found
+     * @todo sorting the Host list may degrade performance
+     * for large scale simulations. The number of free PEs
+     * may be taken directly from each Host in a List,
+     * avoiding the use of Maps that doesn't ensure order.
+     * The entries are being sorted just to ensure that
+     * the results are always the same for a specific static simulation.
+     * Without the sort, usually the allocation of Hosts to VMs
+     * is different during debug, because of the unsorted
+     * nature of the Map.
      */
     private Map.Entry<Host, Long> getHostWithLessUsedPes(List<Host> ignoredHosts) {
-        return getHostFreePesMap().entrySet().stream()
-            .filter(entry -> !ignoredHosts.contains(entry.getKey()))
-            .max(Comparator.comparing(Map.Entry::getValue))
-            .orElseGet(() -> new TreeMap.SimpleEntry<>(Host.NULL, 0L));
+        final Map<Host, Long> map = getHostFreePesMap();
+        final Host host = map.keySet()
+                .stream()
+                .filter(h -> !ignoredHosts.contains(h))
+                .sorted(Comparator.comparingInt(Host::getId))
+                .max(Comparator.comparingLong(h -> map.get(h)))
+                .orElseGet(() -> Host.NULL);
+        
+        return new TreeMap.SimpleEntry<>(host, map.getOrDefault(host, 0L)); 
     }
 
     @Override

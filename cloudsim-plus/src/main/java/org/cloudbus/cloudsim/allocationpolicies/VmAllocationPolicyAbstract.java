@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * @see #getVmHostMap()
      */
-    private Map<Vm, Host> vmTable;
+    private Map<Vm, Host> vmHostMap;
 
     /**
      * @see #getDatacenter()
@@ -73,13 +74,24 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * Gets the map between a VM and its allocated host. The map key is a VM UID
+     * Gets a <b>read-only</b> map between a VM and its allocated host. The map key is a VM
      * and the value is the allocated host for that VM.
      *
      * @return the VM map
+     * @todo after CloudSim Plus created the relationship between objects,
+     * allowing calls such as cloudlet.getVm().getHost(),
+     * this map may be unnecessary.
      */
     protected Map<Vm, Host> getVmHostMap() {
-        return vmTable;
+        return Collections.unmodifiableMap(vmHostMap);
+    }
+    
+    protected void addVmToHostMap(Vm vm, Host host){
+        vmHostMap.put(vm, host);
+    }
+    
+    protected Host removeVmFromHostMap(Vm vm){
+        return vmHostMap.remove(vm);
     }
 
     /**
@@ -88,7 +100,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param vmTable the vm table
      */
     protected final void setVmTable(Map<Vm, Host> vmTable) {
-        this.vmTable = vmTable;
+        this.vmHostMap = vmTable;
     }
 
     /**
@@ -103,7 +115,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return;
         }
 
-        getVmHostMap().put(vm, host);
+        addVmToHostMap(vm, host);
     }
 
     /**
@@ -120,7 +132,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return Host.NULL;
         }
 
-        Host host = getVmHostMap().remove(vm);
+        Host host = removeVmFromHostMap(vm);
         if(Objects.isNull(host)) {
             return Host.NULL;
         }
@@ -148,8 +160,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * Gets the number of PEs from each Host in the {@link #getHostList() host list}
-     * and adds these number of PEs to the {@link #getHostFreePesMap() list of free PEs}.
+     * Gets the number of working PEs from each Host in the {@link #getHostList() host list}
+     * and adds these numbers to the {@link #getHostFreePesMap() list of free PEs}.
      * <b>The method expects that the {@link #datacenter} is already set.</b>
      *
      */
@@ -157,7 +169,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         setHostFreePesMap(new HashMap<>(getHostList().size()));
         setVmTable(new HashMap<>());
         setUsedPes(new HashMap<>());
-        getHostList().forEach(host -> hostFreePesMap.put(host, host.getNumberOfPes()));
+        getHostList().forEach(host -> hostFreePesMap.put(host, host.getNumberOfWorkingPes()));
     }
 
     /**

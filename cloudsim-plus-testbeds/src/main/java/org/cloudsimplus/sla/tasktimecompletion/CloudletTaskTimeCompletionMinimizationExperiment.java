@@ -128,8 +128,8 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
             cpu.checkCpuUtilizationSlaContract();
             cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 
-            // getCloudsim().addOnClockTickListener(this::createNewCloudlets);
-            getCloudsim().addOnClockTickListener(this::printVmsCpuUsage);
+            // getCloudSim().addOnClockTickListener(this::createNewCloudlets);
+            getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
 
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
@@ -316,7 +316,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     @Override
     protected DatacenterBroker createBroker() {
         DatacenterBroker broker0;
-        broker0 = new DatacenterBrokerSimple(getCloudsim());
+        broker0 = new DatacenterBrokerSimple(getCloudSim());
         broker0.setVmMapper(this::selectVmForCloudlet);
         broker0.setCloudletComparator(sortCloudletsByLengthReversed);
         return broker0;

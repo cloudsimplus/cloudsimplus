@@ -48,6 +48,10 @@ import org.cloudbus.cloudsim.distributions.PoissonDistr;
 /**
  * Generates random failures for the {@link Pe}'s of {@link Host}s
  * inside a given {@link Datacenter}.
+ * A Fault Injection object
+ * usually has to be created after the VMs are created,
+ * to make it easier to define a function to be used
+ * to clone failed VMs.
  *
  * The events happens in the following order:
  * <ol>
@@ -121,6 +125,10 @@ import org.cloudbus.cloudsim.distributions.PoissonDistr;
  * @author raysaoliveira
  * @since CloudSim Plus 1.2.0
  * @see <a href="https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/">SAP Blog: Availability vs Reliability</a>
+ *
+ * @todo The class has multiple responsibilities.
+ * The fault injection mechanism must be separated from
+ * the fault recovery. The cloner methods are fault recovery.
  */
 public class HostFaultInjection extends CloudSimEntity {
     /**
@@ -138,23 +146,15 @@ public class HostFaultInjection extends CloudSimEntity {
      * and the number of PEs to set as fail.
      */
     private ContinuousDistribution random;
-    
-    /**
-     * A Pseudo Random Number Generator used to give a 
-     * recovery time for each vm that was failed.
-     */
-    private ContinuousDistribution randomRecoveryTimeForVm;
 
     /**
-     * @see #setVmCloner(java.util.function.UnaryOperator)
+     * A map that stores a {@link Function} to be used to clone
+     * a VM. If a VM isn't in this map, it will not
+     * be cloned in case of failure.
      *
-     * @todo The class has multiple responsibilities.
-     * The fault injection mechanism must be separated from
-     * the fault recovery.
-     * The cloner methods are fault recovery.
-     *
+     * @see #setVmCloner(org.cloudbus.cloudsim.vms.Vm, java.util.function.UnaryOperator)
      */
-    private UnaryOperator<Vm> vmCloner;
+    private Map<Vm, UnaryOperator<Vm>> vmClonerMap;
 
     /**
      * @see #setCloudletsCloner(java.util.function.Function)
@@ -171,13 +171,13 @@ public class HostFaultInjection extends CloudSimEntity {
      * The attribute counts how many host failures the simulation had
      */
     private int numberOfHostFaults;
-    
+
     /**
      * A map to store the time (in seconds) each failed VM took to be recovered.
      * It also means the failure time for each Vm.
      */
     private final Map<Vm, Double> vmRecoveryTimeMap;
-    
+
     /**
      * A map to store the times (in seconds) for each Host failure.
      */
@@ -185,16 +185,24 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /**
      * A function that in fact doesn't clone any VM.
-     * The {@link #vmCloner} is initialized with this function to avoid {@code NullPointerException}
-     * if the attribute is not set.
-     */
-    private static final Function<Vm, List<Cloudlet>> CLOUDLETS_CLONER_NULL = vm -> Collections.EMPTY_LIST;
-    /**
-     * A function that in fact doesn't clone cloudlets.
      * The {@link #cloudletsCloner} is initialized with this function to avoid {@code NullPointerException}
      * if the attribute is not set.
      */
+    private static final Function<Vm, List<Cloudlet>> CLOUDLETS_CLONER_NULL = vm -> Collections.EMPTY_LIST;
+
+    /**
+     * A function that in fact doesn't clone VMs.
+     * It's used as the default value when a VM doesn't have a cloner function.
+     */
     private static final UnaryOperator<Vm> VM_CLONER_NULL = vm -> Vm.NULL;
+
+    /**
+     * Maximum number of seconds for a VM to recovery from a failure,
+     * which is randomly selected based on this value.
+     * The recovery time is the delay that will be set
+     * to start a clone from a failed VM.
+     */
+    private static final int MAX_VM_RECOVERY_TIME_SECS = 1800;
 
     /**
      * Creates a fault injection mechanism for the Hosts of a given {@link Datacenter}.
@@ -217,17 +225,16 @@ public class HostFaultInjection extends CloudSimEntity {
         this.lastFailedHost = Host.NULL;
         this.faultArrivalTimesGenerator = faultArrivalTimesGenerator;
         this.random = new UniformDistr(faultArrivalTimesGenerator.getSeed()+1);
-        this.randomRecoveryTimeForVm = new UniformDistr(1, 1800, faultArrivalTimesGenerator.getSeed()+2);
         this.vmRecoveryTimeMap = new HashMap<>();
         this.hostFaultsTimeMap = new HashMap<>();
 
-        /*Sets a default vmCloner which in fact doesn't
-        clone a VM, just returns the Vm.NULL object.
-        This is used just to ensure that if a vmClone
+        this.vmClonerMap = new HashMap<>();
+
+        /*Sets a default cloudletCloner which in fact doesn't
+        clone anything, just returns an empty List.
+        This is used just to ensure that if a clone function
         is not set, it wont be thrown a NullPointerException
-        and no VM will be cloned.
-        A similar thing is made to the cloudletsCloner below.*/
-        this.vmCloner = VM_CLONER_NULL;
+        when trying to use it.*/
         this.cloudletsCloner = CLOUDLETS_CLONER_NULL;
     }
 
@@ -291,7 +298,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
             numberOfHostFaults++;
             registerHostFaultTime();
-        
+
             final int numberOfPesToFail = generateHostPesFaults();
             final long hostWorkingPes = lastFailedHost.getNumberOfWorkingPes();
             final long vmsRequiredPes = getPesSumOfWorkingVms();
@@ -334,7 +341,10 @@ public class HostFaultInjection extends CloudSimEntity {
         if (datacenter.getHostList().isEmpty()) {
             return Host.NULL;
         }
-        return datacenter.getHost((int) (random.sample() * datacenter.getHostList().size()));
+
+        final int i = (int) (random.sample() * datacenter.getHostList().size());
+        System.out.printf("\t\t#%.2f: Random Host: %s Position: %d\n", getSimulation().clock(), datacenter.getHost(i), i);
+        return datacenter.getHost(i);
     }
 
     /**
@@ -381,7 +391,7 @@ public class HostFaultInjection extends CloudSimEntity {
         final int hostWorkingPes = (int)lastFailedHost.getNumberOfWorkingPes();
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
         int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
-        
+
         return failedPesToRemoveFromVms;
     }
 
@@ -396,7 +406,7 @@ public class HostFaultInjection extends CloudSimEntity {
         int failedPesToRemoveFromVms = numberOfFailedPesToRemoveFromVms();
         List<Vm> vmsWithPes = getVmsWithPEsFromFailedHost();
         final int affectedVms = Math.min(vmsWithPes.size(), failedPesToRemoveFromVms);
-        
+
         Log.printFormattedLine("\t%d VMs affected from a total of %d. %d PEs are going to be removed from VMs",
                 affectedVms, lastFailedHost.getVmList().size(), failedPesToRemoveFromVms);
         int i = 0;
@@ -418,7 +428,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /**
      * Gets a List of VMs that have any PE from the {@link #lastFailedHost}.
-     * @return 
+     * @return
      */
     private List<Vm> getVmsWithPEsFromFailedHost() {
         return lastFailedHost
@@ -450,16 +460,20 @@ public class HostFaultInjection extends CloudSimEntity {
         if (Host.NULL.equals(lastFailedHost)) {
             return;
         }
-        
-        final double recoveryTime = randomRecoveryTimeForVm.sample();
-        Log.printFormattedLine("\t# Time to recovery the fault: %.2f minutes", recoveryTime/60);    
 
-        vmRecoveryTimeMap.put(vm, recoveryTime);
-        
         final DatacenterBroker broker = vm.getBroker();
-        final Vm clone = vmCloner.apply(vm);
+        if(isVmClonerSet(vm)){
+            final double recoveryTime = getRandomRecoveryTimeForVm();
+            Log.printFormattedLine("\t# Time to recovery the fault: %.2f minutes", recoveryTime/60);
+            vmRecoveryTimeMap.put(vm, recoveryTime);
 
-        List<Cloudlet> cloudlets = cloudletsCloner.apply(vm);
+            final Vm vmClone = cloneVm(vm);
+            final List<Cloudlet> cloudletsClone = cloudletsCloner.apply(vm);
+
+            vmClone.setSubmissionDelay(recoveryTime);
+            broker.submitVm(vmClone);
+            broker.submitCloudletList(cloudletsClone, vmClone, recoveryTime);
+        }
         vm.setFailed(true);
 
         /*
@@ -467,84 +481,99 @@ public class HostFaultInjection extends CloudSimEntity {
          it is set here as the sender of the vm destroy request.
          */
         getSimulation().sendNow(
-                vm.getBroker().getId(), datacenter.getId(),
+                broker.getId(), datacenter.getId(),
                 CloudSimTags.VM_DESTROY, vm);
+        Log.printFormattedLine("\n\t\t\t #VM %d destroyd. But not clone\n", vm.getId());
 
-        broker.submitVm(clone);
-        broker.submitCloudletList(cloudlets, clone);
     }
-    
+
+    private boolean isVmClonerSet(Vm vm) {
+        final UnaryOperator<Vm> cloner = vmClonerMap.getOrDefault(vm, VM_CLONER_NULL);
+        return !VM_CLONER_NULL.equals(cloner);
+    }
+
+    /**
+     * Clones a given VM using it's cloner {@link Function} if it was in fact set.
+     *
+     * @param vm the VM to clone
+     * @return the cloned VM or {@link Vm#NULL}
+     * if no cloner function was set
+     */
+    private Vm cloneVm(Vm vm) {
+       return vmClonerMap.getOrDefault(vm, VM_CLONER_NULL).apply(vm);
+    }
+
     /**
      * Gets the total number of faults happened for VMs,
-     * which means the total number of VMs that 
+     * which means the total number of VMs that
      * were destroyed due to failure in Host PEs.
-     * @return 
+     * @return
      */
     public int getNumberOfDestroyedVms() {
         return vmRecoveryTimeMap.size();
-    }    
+    }
 
     /**
      * Gets the total number of faults happened for existing hosts.
      * This isn't the total number of failed hosts because one
      * host may fail multiple times.
-     * @return 
+     * @return
      */
     public int getNumberOfHostFaults() {
         return numberOfHostFaults;
-    }    
+    }
 
     /**
      * Gets the Datacenter's availability as a percentage value between 0 to 1,
      * based on VMs' downtime (the times VMs took to be repaired).
-     * @return 
+     * @return
      */
     public double availability() {
         //no failures means 100% availability
         if(meanTimeBetweenVmFaultsInMinutes() == 0){
             return 1;
         }
-        
+
         return (meanTimeBetweenVmFaultsInMinutes()/(meanTimeBetweenVmFaultsInMinutes() + meanTimeToRepairVmFaultsInMinutes()));
-    }    
-    
+    }
+
     /**
      * Computes the current mean time (in minutes) between Host failures (MTBF).
      * It uses a straightforward way to compute the MTBF.
      * Since it's stored the VM recovery times, it's possible
      * to use such values to make easier the MTBF computation,
      * different from the Hosts MTBF.
-     * 
+     *
      * @return the current mean time (in minutes) between Host failures (MTBF)
      * or zero if no VM was destroyed due to Host failure
-     * @see #meanTimeBetweenHostFaultsInMinutes() 
+     * @see #meanTimeBetweenHostFaultsInMinutes()
      */
     public double meanTimeBetweenVmFaultsInMinutes() {
         if(getNumberOfDestroyedVms() == 0){
             return 0;
         }
-        
+
         return (getSimulation().clockInMinutes() - totalVmsRecoveryTimeInMinutes()) / getNumberOfDestroyedVms();
-    }    
-    
+    }
+
     /**
      * Gets the total time (in minutes) every failed VM took to recovery
-     * from failure. 
-     * @return 
+     * from failure.
+     * @return
      */
     private double totalVmsRecoveryTimeInMinutes() {
         return vmRecoveryTimeMap.values().stream().reduce(0.0, Double::sum) / 60.0;
-    }   
-    
+    }
+
     /**
      * Computes the current mean time (in minutes) between Host failures (MTBF).
      * Since Hosts don't actually recover from failures,
      * there aren't recovery time to make easier the computation
      * of MTBF for Host as it is directly computed for VMs.
-     * 
+     *
      * @return the current mean time (in minutes) between Host failures (MTBF)
      * or zero if no failures have happened yet
-     * @see #meanTimeBetweenVmFaultsInMinutes() 
+     * @see #meanTimeBetweenVmFaultsInMinutes()
      */
     public double meanTimeBetweenHostFaultsInMinutes() {
         final List<Double> values = hostFaultsTimeMap
@@ -556,17 +585,17 @@ public class HostFaultInjection extends CloudSimEntity {
         if(values.isEmpty()){
             return 0;
         }
-        
+
         //computes the differences between failure times t2 - t1
         double sum=0, previous=values.get(0);
         for(Double v: values) {
             sum += (v - previous);
             previous = v;
         }
-        
+
         return (sum/values.size())/60.0;
     }
-    
+
     /**
      * Computes the current mean time (in minutes) to repair VM failures (MTTR).
      * @return the current mean time (in minutes) to repair VM failures (MTTR)
@@ -577,8 +606,8 @@ public class HostFaultInjection extends CloudSimEntity {
             return 0;
         }
         return totalVmsRecoveryTimeInMinutes() / getNumberOfDestroyedVms();
-    }    
-    
+    }
+
     /**
      * Generates random failures for the PEs from the
      * {@link #getLastFailedHost() last failed Host}.
@@ -611,7 +640,6 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @return the generated number of failed PEs for the datacenter,
      * between [1 and Number of PEs].
-     *
      */
     private int randomNumberOfFailedPes() {
         /*the random generator return values from [0 to 1]
@@ -643,7 +671,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * Sets a {@link UnaryOperator} that creates a clone of a {@link Vm}
      * when all Host PEs fail or all VM's PEs are deallocated
      * because they have failed.
-     * 
+     *
      * <p>This is optional. If a cloner function is not set,
      * VMs will not be recovered from failures.</p>
      *
@@ -656,22 +684,26 @@ public class HostFaultInjection extends CloudSimEntity {
      * recovery from a failure.
      * </p>
      *
-     * @param vmCloner the VM cloner {@link Function} to set
+     * @param vm the source VM to be cloned using the given cloning function
+     * @param clonerFunction the VM cloner {@link Function} to set
      * @see #setCloudletsCloner(java.util.function.Function)
      */
-    public void setVmCloner(UnaryOperator<Vm> vmCloner) {
-        Objects.requireNonNull(vmCloner);
-        this.vmCloner = vmCloner;
+    public void setVmCloner(Vm vm, UnaryOperator<Vm> clonerFunction) {
+        Objects.requireNonNull(clonerFunction);
+        Objects.requireNonNull(vm);
+        this.vmClonerMap.put(vm, clonerFunction);
     }
 
     /**
-     * Sets a {@link Function} that creates a clone of all Cloudlets
-     * which were running inside a given failed {@link Vm}.
+     * Sets a {@link Function} that will create a clone of all Cloudlets
+     * which were running inside a {@link Vm} after a fail.
+     * The same function is used to clone the cloudlets
+     * of any cloned VM.
      *
      * <p>If a Vm cloner function is not set, setting a cloudlet's cloner function is optional.
      * Since VMs will not be recovered from failures
      * in this situation, cloudlets inside failed VM will not be recovered too.</p>
-     * 
+     *
      * <p>Such a Function is used to re-create and re-submit those Cloudlets
      * to a clone of the failed VM. In this case, all the Cloudlets are
      * recreated from scratch into the cloned VM,
@@ -682,12 +714,9 @@ public class HostFaultInjection extends CloudSimEntity {
      * into this new VM instance.</p>
      *
      * @param cloudletsCloner the cloudlets cloner {@link Function} to set
-     * @see #setVmCloner(java.util.function.UnaryOperator)
+     * @see #setVmCloner(Vm, UnaryOperator)
      */
     public void setCloudletsCloner(Function<Vm, List<Cloudlet>> cloudletsCloner) {
-        if(vmCloner == null || VM_CLONER_NULL.equals(vmCloner)){
-            throw new IllegalArgumentException("A VM Cloner function must be set before setting a Cloudlets Cloner.");
-        }
         Objects.requireNonNull(cloudletsCloner);
         this.cloudletsCloner = cloudletsCloner;
     }
@@ -704,5 +733,14 @@ public class HostFaultInjection extends CloudSimEntity {
 
     @Override
     public void shutdownEntity() {/**/}
+
+    /**
+     * Gets a Pseudo Random Number used to give a
+     * recovery time (in seconds) for each VM that was failed.
+     * @return
+     */
+    public double getRandomRecoveryTimeForVm() {
+        return random.sample()*MAX_VM_RECOVERY_TIME_SECS + 1;
+    }
 
 }

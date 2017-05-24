@@ -278,7 +278,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     @Override
     protected DatacenterBroker createBroker() {
         DatacenterBroker broker0;
-        broker0 = new DatacenterBrokerSimple(getCloudsim());
+        broker0 = new DatacenterBrokerSimple(getCloudSim());
         broker0.setVmMapper(this::selectVmForCloudlet);
         broker0.setCloudletComparator(sortCloudletsByLengthReversed);
         return broker0;

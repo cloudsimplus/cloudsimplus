@@ -118,8 +118,8 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
             cpu.checkCpuUtilizationSlaContract();
             cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 
-            //  getCloudsim().addOnClockTickListener(this::createNewCloudlets);
-            getCloudsim().addOnClockTickListener(this::printVmsCpuUsage);
+            //  getCloudSim().addOnClockTickListener(this::createNewCloudlets);
+            getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
@@ -274,7 +274,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     @Override
     protected DatacenterBroker createBroker() {
         DatacenterBroker broker0;
-        broker0 = new DatacenterBrokerSimple(getCloudsim());
+        broker0 = new DatacenterBrokerSimple(getCloudSim());
         return broker0;
     }
 

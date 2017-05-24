@@ -507,7 +507,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                         "Couldn't restore VM #%d on host #%d",
                         vm.getId(), host.getId()));
             }
-            getVmHostMap().put(vm, host);
+            addVmToHostMap(vm, host);
         }
     }
 

@@ -37,11 +37,6 @@ import org.cloudbus.cloudsim.core.Simulation;
  */
 public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicyAbstract implements PowerVmAllocationPolicy {
 
-    /**
-     * @see #getVmHostMap()
-     */
-    private final Map<Vm, Host> vmHostMap = new HashMap<>();
-
     @Override
     public boolean allocateHostForVm(Vm vm) {
         return allocateHostForVm(vm, findHostForVm(vm));
@@ -56,7 +51,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
         }
 
         if (host.vmCreate(vm)) { // if vm has been successfully created in the host
-            getVmHostMap().put(vm, host);
+            addVmToHostMap(vm, host);
             Log.printFormattedLine(
                 "%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
                 simulation.clock());
@@ -70,27 +65,20 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 
     @Override
     public PowerHost findHostForVm(Vm vm) {
-        return this.<PowerHost>getHostList().stream()
-            .filter(h -> h.isSuitableForVm(vm))
-            .findFirst().orElse(PowerHost.NULL);
+        return this.<PowerHost>getHostList()
+                .stream()
+                .sorted()
+                .filter(h -> h.isSuitableForVm(vm))
+                .findFirst().orElse(PowerHost.NULL);
     }
 
     @Override
     public void deallocateHostForVm(Vm vm) {
-        Host host = getVmHostMap().remove(vm);
+        Host host = removeVmFromHostMap(vm);
         if (!Objects.isNull(host)) {
             host.destroyVm(vm);
         }
     }
 
-    /**
-     * Gets the map where each key is a VM UID and
-     * each value is the host where the VM is placed.
-     *
-     * @return
-     */
-    public Map<Vm, Host> getVmHostMap() {
-        return vmHostMap;
-    }
-
+    
 }

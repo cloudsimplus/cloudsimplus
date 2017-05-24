@@ -212,7 +212,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     @Override
     protected DatacenterBroker createBroker() {
         DatacenterBroker broker0;
-        broker0 = new DatacenterBrokerSimple(getCloudsim());
+        broker0 = new DatacenterBrokerSimple(getCloudSim());
         return broker0;
     }
 

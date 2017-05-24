@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 /**
  * A base class to implement simulation experiments.
@@ -47,10 +48,11 @@ import java.util.function.Consumer;
 public abstract class SimulationExperiment implements Runnable {
 
     private final ExperimentRunner runner;
-    private final List<Cloudlet> cloudletList;
+    public final List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private List<Host> hostList;
     private List<DatacenterBroker> brokerList;
+    private int numBrokersToCreate;
 
     private final int index;
     private boolean verbose;
@@ -58,6 +60,7 @@ public abstract class SimulationExperiment implements Runnable {
     private CloudSim cloudsim;
     private Consumer<? extends SimulationExperiment> afterExperimentFinish;
     private Consumer<? extends SimulationExperiment> afterScenarioBuild;
+    private DatacenterSimple datacenter0;
 
     /**
      * Creates a simulation experiment that is not attached to
@@ -78,6 +81,7 @@ public abstract class SimulationExperiment implements Runnable {
      * statistical analysis.
      */
     public SimulationExperiment(int index, ExperimentRunner runner) {
+        this.numBrokersToCreate = 1;
         this.verbose = false;
         this.cloudsim = new CloudSim();
         this.vmList = new ArrayList<>();
@@ -181,10 +185,15 @@ public abstract class SimulationExperiment implements Runnable {
      * Creates the simulation scenario to run the experiment.
      */
     protected final void buildScenario() {
-        Datacenter datacenter0 = createDatacenter();
-        DatacenterBroker broker0 = createBrokerAndAddToList();
-        createAndSubmitVmsInternal(broker0);
-        createAndSubmitCloudletsInternal(broker0);
+        datacenter0 = createDatacenter();
+        IntStream
+            .range(0, numBrokersToCreate)
+            .forEach(i -> {
+                DatacenterBroker broker = createBrokerAndAddToList();
+                createAndSubmitVmsInternal(broker);
+                createAndSubmitCloudletsInternal(broker);
+            });
+
         getAfterScenarioBuild().accept(this);
     }
 
@@ -312,7 +321,7 @@ public abstract class SimulationExperiment implements Runnable {
         return (Consumer<T>)this.afterScenarioBuild;
     }
 
-    public final CloudSim getCloudsim() {
+    public final CloudSim getCloudSim() {
         return cloudsim;
     }
 
@@ -321,6 +330,27 @@ public abstract class SimulationExperiment implements Runnable {
      */
     public List<Host> getHostList() {
         return Collections.unmodifiableList(hostList);
+    }
+
+    /**
+     * @return the numBrokersToCreate
+     */
+    public int getNumBrokersToCreate() {
+        return numBrokersToCreate;
+    }
+
+    /**
+     * @param numBrokersToCreate the numBrokersToCreate to set
+     */
+    public void setNumBrokersToCreate(int numBrokersToCreate) {
+        this.numBrokersToCreate = numBrokersToCreate;
+    }
+
+    /**
+     * @return the datacenter0
+     */
+    public DatacenterSimple getDatacenter0() {
+        return datacenter0;
     }
 
 }
