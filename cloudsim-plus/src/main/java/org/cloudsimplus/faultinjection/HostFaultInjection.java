@@ -202,6 +202,8 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private static final int MAX_VM_RECOVERY_TIME_SECS = 1800;
 
+    private double maxTimeToGenerateFailure;
+
     /**
      * Creates a fault injection mechanism for the Hosts of a given {@link Datacenter}.
      * The failures are randomly injected according to the given
@@ -227,6 +229,7 @@ public class HostFaultInjection extends CloudSimEntity {
         this.hostFaultsTimeMap = new HashMap<>();
         this.vmClonerMap = new HashMap<>();
         this.cloudletsClonerMap = new HashMap<>();
+        this.maxTimeToGenerateFailure = Double.MAX_VALUE;
     }
 
     @Override
@@ -247,7 +250,8 @@ public class HostFaultInjection extends CloudSimEntity {
         Just re-schedule more failures if there are other events to be processed.
         Otherwise, the simulation has finished and no more failures should be scheduled.
         */
-        if (numOfOtherEvents > 0) {
+
+        if (numOfOtherEvents > 0 || getSimulation().clock() < maxTimeToGenerateFailure) {
             schedule(getId(), getTimeDelayForNextFault(), CloudSimTags.HOST_FAILURE);
         }
     }
@@ -378,14 +382,6 @@ public class HostFaultInjection extends CloudSimEntity {
         setVmsWithoutPesToFailed();
     }
 
-    private int numberOfFailedPesToRemoveFromVms() {
-        final int hostWorkingPes = (int)lastFailedHost.getNumberOfWorkingPes();
-        final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
-        int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
-
-        return failedPesToRemoveFromVms;
-    }
-
     /**
      * Removes one physical failed PE from one affected VM at a time.
      * Affected VMs are dealt as a circular list, visiting
@@ -409,12 +405,21 @@ public class HostFaultInjection extends CloudSimEntity {
             vm.getCloudletScheduler().deallocatePesFromVm(vm, 1);
             //remove 1 failed PE from the VM
             vm.getProcessor().removeCapacity(1);
+
             Log.printFormattedLine(
                     "\tRemoving 1 PE from VM %d due to Host PE failure. New VM PEs Number: %d\n",
                     vm.getId(), vm.getNumberOfPes());
             i++;
             vmsWithPes = getVmsWithPEsFromFailedHost();
         }
+    }
+
+    private int numberOfFailedPesToRemoveFromVms() {
+        final int hostWorkingPes = (int)lastFailedHost.getNumberOfWorkingPes();
+        final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
+        int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
+
+        return failedPesToRemoveFromVms;
     }
 
     /**
@@ -455,6 +460,7 @@ public class HostFaultInjection extends CloudSimEntity {
         vm.setFailed(true);
         final DatacenterBroker broker = vm.getBroker();
         if(isVmClonerSet(broker) && isAllVmsFailed(broker)){
+
             final double recoveryTime = getRandomRecoveryTimeForVm();
             Log.printFormattedLine("\t# Time to recovery the fault: %.2f minutes", recoveryTime/60);
             vmRecoveryTimeMap.put(vm, recoveryTime);
@@ -751,4 +757,14 @@ public class HostFaultInjection extends CloudSimEntity {
         return random.sample()*MAX_VM_RECOVERY_TIME_SECS + 1;
     }
 
+    /**
+     * Get the max time to generate a failure
+     */
+    public double getMaxTimeToGenerateFailure() {
+        return maxTimeToGenerateFailure;
+    }
+
+    public void setMaxTimeToGenerateFailure(double maxTimeToGenerateFailure) {
+        this.maxTimeToGenerateFailure = maxTimeToGenerateFailure;
+    }
 }

@@ -63,6 +63,8 @@ import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner.VM_PES;
+
+import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
@@ -85,8 +87,6 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    private final ContinuousDistribution randCloudlet, randVm;
-
     private int createdCloudlets;
     private int createsVms;
 
@@ -96,11 +96,20 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment.class, "SlaMetrics.json");
     private double cpuUtilizationSlaContract;
     private double taskTimeCompletionSlaContract;
+    private ContinuousDistribution randCloudlet, randVm;
 
-    public CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
-        super();
-        this.randCloudlet = randCloudlet;
-        this.randVm = randVm;
+    private CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(final long seed) {
+        this(0, null, seed);
+    }
+
+    CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(final int index, final ExperimentRunner runner) {
+        this(index, runner, -1);
+    }
+
+    private CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
+        super(index, runner, seed);
+        this.randCloudlet = new UniformDistr(getSeed());
+        this.randVm = new UniformDistr(getSeed()+1);
         try {
             SlaReader slaReader = new SlaReader(METRICS_FILE);
             TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
@@ -304,10 +313,8 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         final long seed = System.currentTimeMillis();
-        ContinuousDistribution randCloudlet = new UniformDistr(seed);
-        ContinuousDistribution randVm = new UniformDistr(seed);
         CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(randCloudlet, randVm);
+                = new CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(1);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsTaskTimeCompletionAverage();

@@ -28,7 +28,7 @@ public interface ResourceManageable extends Resource {
      * Try to set the {@link #getCapacity() resource capacity}.
      *
      * @param newCapacity the new resource capacity
-     * @return true if capacity > 0 and capacity >= current allocated resource,
+     * @return true if capacity >= 0 and capacity >= current allocated resource,
      * false otherwise
      * @see #getAllocatedResource()
      */

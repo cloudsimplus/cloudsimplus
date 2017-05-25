@@ -60,7 +60,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationRunner extends Experim
      * experiments.
      */
     private List<Double> percentageOfCloudletsMeetingTaskTimesCompletion;
-    
+
     /**
      * Amount of cloudlet PE per PE of vm.
      */
@@ -70,7 +70,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationRunner extends Experim
      * Average of the cost total
      */
     private List<Double> averageTotalCostSimulation;
-    
+
     /**
      * Indicates if each experiment will output execution logs or not.
      */
@@ -78,22 +78,20 @@ public class CloudletTaskTimeCompletionWithoutMinimizationRunner extends Experim
 
     /**
      * Starts the execution of the experiments the number of times defines in
-     * {@link #numberOfSimulationRuns}.
+     * {@link #getSimulationRuns()}.
      *
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletTaskTimeCompletionWithoutMinimizationRunner()
+        new CloudletTaskTimeCompletionWithoutMinimizationRunner(true, 1475098589732L)
                 .setSimulationRuns(300)
-                .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
-                .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L
                 .setVerbose(true)
                 .run();
     }
 
-    CloudletTaskTimeCompletionWithoutMinimizationRunner() {
-        super();
+    CloudletTaskTimeCompletionWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+        super(applyAntitheticVariatesTechnique, baseSeed);
         cloudletTaskTimesCompletion = new ArrayList<>();
         percentageOfCloudletsMeetingTaskTimesCompletion = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
@@ -102,10 +100,10 @@ public class CloudletTaskTimeCompletionWithoutMinimizationRunner extends Experim
 
     @Override
     protected CloudletTaskTimeCompletionWithoutMinimizationExperiment createExperiment(int i) {
-        ContinuousDistribution randCloudlet = createRandomGenAndAddSeedToList(i);
-        ContinuousDistribution randVm = createRandomGenAndAddSeedToList(i);
+        ContinuousDistribution randCloudlet = createRandomGen(i);
+        ContinuousDistribution randVm = createRandomGen(i);
         CloudletTaskTimeCompletionWithoutMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWithoutMinimizationExperiment(randCloudlet, randVm);
+                = new CloudletTaskTimeCompletionWithoutMinimizationExperiment(i, this);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
@@ -136,7 +134,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationRunner extends Experim
         map.put("Percentage Of Cloudlets Meeting TaskTimesCompletion", percentageOfCloudletsMeetingTaskTimesCompletion);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
         map.put("Average of Total Cost of simulation", averageTotalCostSimulation);
-       
+
         return map;
     }
 

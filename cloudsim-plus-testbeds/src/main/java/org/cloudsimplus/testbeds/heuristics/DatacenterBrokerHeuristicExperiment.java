@@ -104,11 +104,11 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
     /**
      * Instantiates the simulation experiment.
      *
+     * @param index a number the identifies the current experiment being run
      * @param runner the runner that will be in charge to setup and run the
      * experiment
-     * @param index a number the identifies the current experiment being run
      */
-    DatacenterBrokerHeuristicExperiment(DatacenterBrokerHeuristicRunner runner, int index) {
+    DatacenterBrokerHeuristicExperiment(int index, DatacenterBrokerHeuristicRunner runner) {
         super(index, runner);
         this.randomGen = new UniformDistr(0, 1);
         createSimulatedAnnealingHeuristic();

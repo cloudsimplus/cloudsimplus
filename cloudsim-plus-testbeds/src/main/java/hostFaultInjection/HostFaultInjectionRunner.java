@@ -19,8 +19,8 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final int VMS = 4;
-    static final int CLOUDLETS = 4;
+    static final int VMS = 25;
+    static final int CLOUDLETS = 25;
 
     /**
      * Average of the cost total
@@ -41,25 +41,22 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new HostFaultInjectionRunner()
+        new HostFaultInjectionRunner(true, 1475098589732L)
                 .setSimulationRuns(300)
-                .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
-                .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L
                 .setVerbose(true)
                 .run();
     }
 
-    HostFaultInjectionRunner() {
-        super();
+    HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+        super(applyAntitheticVariatesTechnique, baseSeed);
         availability = new ArrayList<>();
         ratioVmsPerHost = new ArrayList<>();
     }
 
     @Override
     protected HostFaultInjectionExperiment createExperiment(int i) {
-        HostFaultInjectionExperiment exp
-                = new HostFaultInjectionExperiment();
+        HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(i, this);
         exp.setVerbose(experimentVerbose)
                 .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
@@ -73,14 +70,11 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * @param exp the finished experiment
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
-
         availability.add(exp.getAvailability());
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
     }
 
-    @Override
-    protected void setup() {/**/
-    }
+    @Override protected void setup() {/**/}
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {

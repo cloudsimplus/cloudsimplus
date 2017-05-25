@@ -69,6 +69,8 @@ import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletion
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.CLOUDLET_LENGTHS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.VM_PES;
+
+import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
@@ -103,10 +105,18 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     private double cpuUtilizationSlaContract;
     private double taskTimeCompletionSlaContract;
 
-    public CloudletTaskTimeCompletionWithoutMinimizationExperiment(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
-        super();
-        this.randCloudlet = randCloudlet;
-        this.randVm = randVm;
+    private CloudletTaskTimeCompletionWithoutMinimizationExperiment(final long seed) {
+        this(0, null, seed);
+    }
+
+    CloudletTaskTimeCompletionWithoutMinimizationExperiment(final int index, final ExperimentRunner runner) {
+        this(index, runner, -1);
+    }
+
+    private CloudletTaskTimeCompletionWithoutMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
+        super(index, runner, seed);
+        randCloudlet = new UniformDistr(getSeed());
+        randVm = new UniformDistr(getSeed()+1);
         try {
 
             SlaReader slaReader = new SlaReader(METRICS_FILE);
@@ -348,7 +358,6 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
      * Calculates the cost price of resources (processing, bw, memory, storage)
      * of each or all of the Datacenter VMs()
      *
-     * @param vmList
      */
     double getTotalCostPrice() {
         VmCost vmCost;
@@ -374,10 +383,8 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         final long seed = System.currentTimeMillis();
-        ContinuousDistribution randCloudlet = new UniformDistr(seed);
-        ContinuousDistribution randVm = new UniformDistr(seed);
         CloudletTaskTimeCompletionWithoutMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWithoutMinimizationExperiment(randCloudlet, randVm);
+                = new CloudletTaskTimeCompletionWithoutMinimizationExperiment(1);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsTaskTimeCompletionAverage();

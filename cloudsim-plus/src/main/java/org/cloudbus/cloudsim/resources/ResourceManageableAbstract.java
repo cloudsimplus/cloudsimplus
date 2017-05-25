@@ -34,7 +34,7 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
 
     @Override
     public boolean setCapacity(long newCapacity){
-        if(newCapacity <= 0 || getAllocatedResource() > newCapacity) {
+        if(newCapacity < 0 || getAllocatedResource() > newCapacity) {
             return false;
         }
 

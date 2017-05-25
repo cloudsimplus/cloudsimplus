@@ -64,8 +64,6 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
      * this class.
      */
     CloudletSchedulerRunner() {
-        super();
-
         /*
 	    Values used for CloudSim Plus Paper:
 	        NumberOfSimulationRuns: 1200
@@ -73,10 +71,10 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
 	        NumberOfBatches: 6
 	        BaseSeed: 1475098589732L
          */
+        super(false,1475098589732L);
+
         this.setSimulationRuns(1200)
-                .setApplyAntitheticVariatesTechnique(false)
                 //.setNumberOfBatches(6) //Comment this or set to 0 to disable the "Batch Means Method"
-                .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed
                 .setVerbose(true);
     }
 

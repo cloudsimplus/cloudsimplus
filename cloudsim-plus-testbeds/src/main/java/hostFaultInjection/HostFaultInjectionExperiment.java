@@ -32,6 +32,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
@@ -55,7 +56,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     private static final int VM_PES = 2; //number of cpus
 
     private static final int CLOUDLET_PES = 2;
-    private static final long CLOUDLET_LENGHT = 4800_000_000L;
+    private static final long CLOUDLET_LENGHT = 2800_000_000L;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
 
@@ -63,16 +64,22 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Number of Hosts to create for each Datacenter. The number of elements in
      * this array defines the number of Datacenters to be created.
      */
-    private static final int HOSTS = 10;
+    private static final int HOSTS = 25;
     private static final int BROKERS = 2;
 
 
     private HostFaultInjection fault;
 
-    private DatacenterBrokerSimple broker;
+    private HostFaultInjectionExperiment(final long seed) {
+        this(0, null, seed);
+    }
 
-    public HostFaultInjectionExperiment() {
-        super();
+    HostFaultInjectionExperiment(int index, ExperimentRunner runner) {
+        this(index, runner, -1);
+    }
+
+    private HostFaultInjectionExperiment(int index, ExperimentRunner runner, long seed) {
+        super(index, runner, seed);
         setNumBrokersToCreate(BROKERS);
         setAfterScenarioBuild(exp -> createFaultInjectionForHosts(getDatacenter0()));
     }
@@ -87,7 +94,6 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final int id = getVmList().size();
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm(id+i);
-            vm.setBroker(broker);
             list.add(vm);
         }
         return list;
@@ -97,9 +103,8 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     public Vm createVm(int id) {
         Vm vm = new VmSimple(id, VM_MIPS, VM_PES);
         vm
-                .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setBroker(broker)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
 
@@ -107,16 +112,14 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Creates the number of Cloudlets defined in {@link HostFaultInjectionRunner#CLOUDLETS} and submits
      * them to the given broker.
      *
-     * @param broker the broker to submit cloudlets to
      * @return the List of created Cloudlets
      */
-    public Cloudlet createCloudlet(int id, DatacenterBroker broker) {
+    public Cloudlet createCloudlet(int id) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         Cloudlet c
                 = new CloudletSimple(id, CLOUDLET_LENGHT, CLOUDLET_PES)
                         .setFileSize(CLOUDLET_FILESIZE)
                         .setOutputSize(CLOUDLET_OUTPUTSIZE)
-                        .setBroker(broker)
                         .setUtilizationModel(utilizationModel);
         return c;
     }
@@ -126,7 +129,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
         final int id = getCloudletList().size();
         for (int i = 0; i < CLOUDLETS; i++) {
-            list.add(createCloudlet(id+i, broker));
+            list.add(createCloudlet(id+i));
         }
 
         return list;
@@ -183,14 +186,14 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param datacenter
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
-        //final long seed = System.currentTimeMillis();
-        final long seed = 83787384734L;
         /*The average number of failures expected to happen each minute
         in a Poisson Process, which is also called event rate or rate parameter.*/
         final double meanFailureNumberPerMinute = 0.0009;
-        PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, seed);
+        //System.out.printf("Experiment %d seed: %d\n", getIndex(), getSeed());
+        PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, getSeed());
 
         fault = new HostFaultInjection(datacenter, poisson);
+        fault.setMaxTimeToGenerateFailure(500000);
 
         for (DatacenterBroker broker : getBrokerList()) {
             Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmsWaitingList().size() - 1);
@@ -304,10 +307,10 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @throws IOException
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        HostFaultInjectionExperiment exp
-                = new HostFaultInjectionExperiment();
-        exp.setVerbose(true);
-        exp.run();
+        Log.disable();
+        HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(1475098589748L);
+        exp.getBrokerList().stream().forEach(b -> b.setLog(false));
+        exp.setVerbose(false).run();
         System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());
         System.out.println("\n# Number of Host faults: " + exp.fault.getNumberOfHostFaults());
         System.out.println("# Number of VM faults (VMs destroyed): " + exp.fault.getNumberOfDestroyedVms());

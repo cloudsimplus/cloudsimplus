@@ -63,6 +63,8 @@ import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.SlaReader;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.VM_PES;
+
+import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
@@ -85,8 +87,6 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    private final ContinuousDistribution randCloudlet, randVm;
-
     private int createsVms;
 
     /**
@@ -102,12 +102,20 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
      * ones.
      */
     private final Comparator<Cloudlet> sortCloudletsByLengthReversed = Comparator.comparingDouble((Cloudlet c) -> c.getLength()).reversed();
+    private ContinuousDistribution randCloudlet, randVm;
 
+    private CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(final long seed) {
+        this(0, null, seed);
+    }
 
-    public CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
-        super();
-        this.randCloudlet = randCloudlet;
-        this.randVm = randVm;
+    CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(final int index, final ExperimentRunner runner) {
+        this(index, runner, -1);
+    }
+
+    private CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
+        super(index, runner, seed);
+        randCloudlet = new UniformDistr(getSeed());
+        randVm = new UniformDistr(getSeed()+1);
         try {
             SlaReader slaReader = new SlaReader(METRICS_FILE);
             TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
@@ -374,10 +382,8 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         final long seed = System.currentTimeMillis();
-        ContinuousDistribution randCloudlet = new UniformDistr(seed);
-        ContinuousDistribution randVm = new UniformDistr(seed);
         CloudletTaskTimeCompletionWorkLoadMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(randCloudlet, randVm);
+            = new CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(1);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsTaskTimeCompletionAverage();

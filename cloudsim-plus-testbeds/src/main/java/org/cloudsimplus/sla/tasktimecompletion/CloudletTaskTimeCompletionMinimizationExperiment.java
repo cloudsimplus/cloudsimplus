@@ -70,6 +70,8 @@ import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletion
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLET_LENGTHS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VM_PES;
+
+import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
@@ -82,11 +84,6 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
 public final class CloudletTaskTimeCompletionMinimizationExperiment extends SimulationExperiment {
 
     private static final int SCHEDULING_INTERVAL = 5;
-
-    /**
-     * The interval to request the creation of new Cloudlets.
-     */
-    private static final int CLOUDLETS_CREATION_INTERVAL = SCHEDULING_INTERVAL * 3;
 
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
@@ -112,12 +109,20 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
      * Cloudlets with larger length will be mapped for a VM first than lower
      * ones.
      */
-    private final Comparator<Cloudlet> sortCloudletsByLengthReversed = Comparator.comparingDouble((Cloudlet c) -> c.getLength()).reversed();
+    private final Comparator<Cloudlet> sortCloudletsByLengthReversed = Comparator.comparingDouble(Cloudlet::getLength).reversed();
 
-    public CloudletTaskTimeCompletionMinimizationExperiment(ContinuousDistribution randCloudlet, ContinuousDistribution randVm) {
-        super();
-        this.randCloudlet = randCloudlet;
-        this.randVm = randVm;
+    private CloudletTaskTimeCompletionMinimizationExperiment(final long seed) {
+        this(0, null, seed);
+    }
+
+    CloudletTaskTimeCompletionMinimizationExperiment(int index, ExperimentRunner runner) {
+        this(index, runner, -1);
+    }
+
+    private CloudletTaskTimeCompletionMinimizationExperiment(int index, ExperimentRunner runner, long seed) {
+        super(index, runner, seed);
+        this.randCloudlet = new UniformDistr(getSeed());
+        this.randVm = new UniformDistr(getSeed());
         try {
             SlaReader slaReader = new SlaReader(METRICS_FILE);
             TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
@@ -130,7 +135,6 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
 
             // getCloudSim().addOnClockTickListener(this::createNewCloudlets);
             getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
-
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
@@ -390,8 +394,6 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     /**
      * Calculates the cost price of resources (processing, bw, memory, storage)
      * of each or all of the Datacenter VMs()
-     *
-     * @param vmList
      */
     double getTotalCostPrice() {
         VmCost vmCost;
@@ -431,10 +433,8 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         final long seed = System.currentTimeMillis();
-        ContinuousDistribution randCloudlet = new UniformDistr(seed);
-        ContinuousDistribution randVm = new UniformDistr(seed);
-        CloudletTaskTimeCompletionMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionMinimizationExperiment(randCloudlet, randVm);
+        CloudletTaskTimeCompletionMinimizationExperiment exp =
+            new CloudletTaskTimeCompletionMinimizationExperiment(1475098589739L);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsTaskTimeCompletionAverage();

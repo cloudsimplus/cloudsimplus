@@ -27,7 +27,6 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -37,6 +36,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -49,6 +49,7 @@ public abstract class SimulationExperiment implements Runnable {
 
     private final ExperimentRunner runner;
     public final List<Cloudlet> cloudletList;
+    private final long seed;
     private List<Vm> vmList;
     private List<Host> hostList;
     private List<DatacenterBroker> brokerList;
@@ -63,13 +64,12 @@ public abstract class SimulationExperiment implements Runnable {
     private DatacenterSimple datacenter0;
 
     /**
-     * Creates a simulation experiment that is not attached to
-     * a {@link ExperimentRunner}. By this way, the experiment
-     * must be started manually by calling the {@link #run()} method.
+     * Creates a simulation experiment that is not linked to a runner,
+     * to enable it to execute just one run.
      *
      */
-    public SimulationExperiment() {
-        this(-1, null);
+    public SimulationExperiment(final long seed) {
+        this(0, null, seed);
     }
 
     /**
@@ -80,7 +80,24 @@ public abstract class SimulationExperiment implements Runnable {
      * this experiment a defined number of times and to collect data for
      * statistical analysis.
      */
-    public SimulationExperiment(int index, ExperimentRunner runner) {
+    public SimulationExperiment(final int index, final ExperimentRunner runner) {
+        //the seed will be generate from the Runner base seed
+        this(index, runner, -1);
+    }
+
+    /**
+     * Creates a simulation experiment.
+     *
+     * @param index the index that identifies the current experiment run.
+     * @param runner The {@link ExperimentRunner} to execute the experiment.
+     *               If omitted, it means the experiment is independent and may be run just once
+     * @param seed the seed to be set. If a runner is given, this value is ignored
+     *             and the seed is generated from the runner base seed.
+     */
+    protected SimulationExperiment(final int index, final ExperimentRunner runner, long seed) {
+        if(seed == -1){
+            Objects.requireNonNull(runner);
+        }
         this.numBrokersToCreate = 1;
         this.verbose = false;
         this.cloudsim = new CloudSim();
@@ -94,6 +111,24 @@ public abstract class SimulationExperiment implements Runnable {
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
         afterExperimentFinish = exp -> {};
         afterScenarioBuild = exp -> {};
+
+        this.seed = validateSeed(seed);
+    }
+
+    private long validateSeed(long seed) {
+        if(runner == null){
+            return seed;
+        }
+
+        if (runner.isToReuseSeedFromFirstHalfOfExperiments(index)) {
+            final int previousExperiment = index - runner.halfSimulationRuns();
+            seed = runner.getSeed(previousExperiment);
+        } else {
+            seed = runner.getBaseSeed() + index;
+        }
+
+        runner.addSeed(seed);
+        return seed;
     }
 
     public final List<Cloudlet> getCloudletList() {
@@ -186,10 +221,12 @@ public abstract class SimulationExperiment implements Runnable {
      */
     protected final void buildScenario() {
         datacenter0 = createDatacenter();
+        datacenter0.setLog(verbose);
         IntStream
             .range(0, numBrokersToCreate)
             .forEach(i -> {
                 DatacenterBroker broker = createBrokerAndAddToList();
+                broker.setLog(verbose);
                 createAndSubmitVmsInternal(broker);
                 createAndSubmitCloudletsInternal(broker);
             });
@@ -351,6 +388,10 @@ public abstract class SimulationExperiment implements Runnable {
      */
     public DatacenterSimple getDatacenter0() {
         return datacenter0;
+    }
+
+    public long getSeed(){
+        return seed;
     }
 
 }
