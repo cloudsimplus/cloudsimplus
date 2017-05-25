@@ -149,17 +149,16 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /**
      * A map that stores a {@link Function} to be used to clone
-     * a VM. If a VM isn't in this map, it will not
-     * be cloned in case of failure.
+     * the VMs belonging to a broker.
      *
-     * @see #setVmCloner(org.cloudbus.cloudsim.vms.Vm, java.util.function.UnaryOperator)
+     * @see #addVmCloner(DatacenterBroker, UnaryOperator)
      */
-    private Map<Vm, UnaryOperator<Vm>> vmClonerMap;
+    private Map<DatacenterBroker, UnaryOperator<Vm>> vmClonerMap;
 
     /**
-     * @see #setCloudletsCloner(java.util.function.Function)
+     * @see #addCloudletsCloner(DatacenterBroker, Function)
      */
-    private Function<Vm, List<Cloudlet>> cloudletsCloner;
+    private Map<DatacenterBroker, Function<Vm, List<Cloudlet>>> cloudletsClonerMap;
 
     /**
      * A Pseudo Random Number Generator which generates the times (in minutes)
@@ -184,17 +183,16 @@ public class HostFaultInjection extends CloudSimEntity {
     private final Map<Host, List<Double>> hostFaultsTimeMap;
 
     /**
-     * A function that in fact doesn't clone any VM.
-     * The {@link #cloudletsCloner} is initialized with this function to avoid {@code NullPointerException}
-     * if the attribute is not set.
-     */
-    private static final Function<Vm, List<Cloudlet>> CLOUDLETS_CLONER_NULL = vm -> Collections.EMPTY_LIST;
-
-    /**
      * A function that in fact doesn't clone VMs.
-     * It's used as the default value when a VM doesn't have a cloner function.
+     * It's used as the default value when a broker doesn't have a VM' cloner Function.
      */
     private static final UnaryOperator<Vm> VM_CLONER_NULL = vm -> Vm.NULL;
+
+    /**
+     * A function that in fact doesn't clone any VM.
+     * It's used as the default value when a broker doesn't have a Cloudlet' cloner Function.
+     */
+    private static final Function<Vm, List<Cloudlet>> CLOUDLETS_CLONER_NULL = vm -> Collections.EMPTY_LIST;
 
     /**
      * Maximum number of seconds for a VM to recovery from a failure,
@@ -227,15 +225,8 @@ public class HostFaultInjection extends CloudSimEntity {
         this.random = new UniformDistr(faultArrivalTimesGenerator.getSeed()+1);
         this.vmRecoveryTimeMap = new HashMap<>();
         this.hostFaultsTimeMap = new HashMap<>();
-
         this.vmClonerMap = new HashMap<>();
-
-        /*Sets a default cloudletCloner which in fact doesn't
-        clone anything, just returns an empty List.
-        This is used just to ensure that if a clone function
-        is not set, it wont be thrown a NullPointerException
-        when trying to use it.*/
-        this.cloudletsCloner = CLOUDLETS_CLONER_NULL;
+        this.cloudletsClonerMap = new HashMap<>();
     }
 
     @Override
@@ -249,14 +240,14 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private void scheduleFaultInjection() {
         final long numOfOtherEvents =
-                getSimulation()
-                        .getNumberOfFutureEvents(
-                            evt -> evt.getTag() != CloudSimTags.HOST_FAILURE);
+            getSimulation()
+                .getNumberOfFutureEvents(
+                    evt -> evt.getTag() != CloudSimTags.HOST_FAILURE);
         /*
         Just re-schedule more failures if there are other events to be processed.
         Otherwise, the simulation has finished and no more failures should be scheduled.
         */
-        if(numOfOtherEvents > 0) {
+        if (numOfOtherEvents > 0) {
             schedule(getId(), getTimeDelayForNextFault(), CloudSimTags.HOST_FAILURE);
         }
     }
@@ -343,7 +334,7 @@ public class HostFaultInjection extends CloudSimEntity {
         }
 
         final int i = (int) (random.sample() * datacenter.getHostList().size());
-        System.out.printf("\t\t#%.2f: Random Host: %s Position: %d\n", getSimulation().clock(), datacenter.getHost(i), i);
+     //   System.out.printf("\t\t#%.2f: Random Host: %s Position: %d\n", getSimulation().clock(), datacenter.getHost(i), i);
         return datacenter.getHost(i);
     }
 
@@ -461,20 +452,24 @@ public class HostFaultInjection extends CloudSimEntity {
             return;
         }
 
+        vm.setFailed(true);
         final DatacenterBroker broker = vm.getBroker();
-        if(isVmClonerSet(vm)){
+        if(isVmClonerSet(broker) && isAllVmsFailed(broker)){
             final double recoveryTime = getRandomRecoveryTimeForVm();
             Log.printFormattedLine("\t# Time to recovery the fault: %.2f minutes", recoveryTime/60);
             vmRecoveryTimeMap.put(vm, recoveryTime);
 
-            final Vm vmClone = cloneVm(vm);
-            final List<Cloudlet> cloudletsClone = cloudletsCloner.apply(vm);
+            final Vm vmClone = cloneVm(broker, vm);
+            final List<Cloudlet> cloudletsClone = cloneCloudlets(broker, vm);
 
             vmClone.setSubmissionDelay(recoveryTime);
             broker.submitVm(vmClone);
             broker.submitCloudletList(cloudletsClone, vmClone, recoveryTime);
+        } else {
+            Log.printFormattedLine(
+                "\n\t\t\t #VM %d destroyed but not cloned, since there are VMs for the broker %d yet\n",
+                vm.getId(), broker.getId());
         }
-        vm.setFailed(true);
 
         /*
          As the broker is expected to request vm creation and destruction,
@@ -483,24 +478,35 @@ public class HostFaultInjection extends CloudSimEntity {
         getSimulation().sendNow(
                 broker.getId(), datacenter.getId(),
                 CloudSimTags.VM_DESTROY, vm);
-        Log.printFormattedLine("\n\t\t\t #VM %d destroyd. But not clone\n", vm.getId());
-
-    }
-
-    private boolean isVmClonerSet(Vm vm) {
-        final UnaryOperator<Vm> cloner = vmClonerMap.getOrDefault(vm, VM_CLONER_NULL);
-        return !VM_CLONER_NULL.equals(cloner);
     }
 
     /**
      * Clones a given VM using it's cloner {@link Function} if it was in fact set.
      *
+     * @param broker the broker the VM belongs to
      * @param vm the VM to clone
-     * @return the cloned VM or {@link Vm#NULL}
-     * if no cloner function was set
+     * @return the cloned VM or {@link Vm#NULL} if no cloner Function was set
      */
-    private Vm cloneVm(Vm vm) {
-       return vmClonerMap.getOrDefault(vm, VM_CLONER_NULL).apply(vm);
+    private Vm cloneVm(DatacenterBroker broker, Vm vm) {
+        return vmClonerMap.getOrDefault(broker, VM_CLONER_NULL).apply(vm);
+    }
+
+    private List<Cloudlet> cloneCloudlets(DatacenterBroker broker, Vm vm) {
+        return cloudletsClonerMap.getOrDefault(broker, CLOUDLETS_CLONER_NULL).apply(vm);
+    }
+
+    private boolean isAllVmsFailed(DatacenterBroker broker) {
+        return broker.getVmsCreatedList().stream().allMatch(Vm::isFailed);
+    }
+
+    /**
+     * Checks if a VM cloner Function is set to a given broker.
+     * @param broker broker to check if it has a VM cloner Function.
+     * @return true if the broker has a VM cloner Function, false otherwise
+     */
+    private boolean isVmClonerSet(DatacenterBroker broker) {
+        final UnaryOperator<Vm> cloner = vmClonerMap.getOrDefault(broker, VM_CLONER_NULL);
+        return !VM_CLONER_NULL.equals(cloner);
     }
 
     /**
@@ -668,7 +674,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Sets a {@link UnaryOperator} that creates a clone of a {@link Vm}
+     * Adds a {@link UnaryOperator} that creates a clone of {@link Vm}s belonging to a given broker.
      * when all Host PEs fail or all VM's PEs are deallocated
      * because they have failed.
      *
@@ -681,44 +687,46 @@ public class HostFaultInjection extends CloudSimEntity {
      * is used to create a copy of the VM to be submitted to another Host.
      * It is like a VM snapshot in a real cloud infrastructure,
      * which will be started into another datacenter in order to
-     * recovery from a failure.
-     * </p>
+     * recovery from a failure.</p>
      *
-     * @param vm the source VM to be cloned using the given cloning function
+     * @param broker the broker to set the VM cloner Function to
      * @param clonerFunction the VM cloner {@link Function} to set
-     * @see #setCloudletsCloner(java.util.function.Function)
+     * @see #addCloudletsCloner(DatacenterBroker, Function)
      */
-    public void setVmCloner(Vm vm, UnaryOperator<Vm> clonerFunction) {
+    public void addVmCloner(DatacenterBroker broker, UnaryOperator<Vm> clonerFunction) {
+        Objects.requireNonNull(broker);
         Objects.requireNonNull(clonerFunction);
-        Objects.requireNonNull(vm);
-        this.vmClonerMap.put(vm, clonerFunction);
+        this.vmClonerMap.put(broker, clonerFunction);
     }
 
     /**
-     * Sets a {@link Function} that will create a clone of all Cloudlets
-     * which were running inside a {@link Vm} after a fail.
-     * The same function is used to clone the cloudlets
-     * of any cloned VM.
+     * Adds a {@link Function} that will create a clone of all Cloudlets
+     * which were running inside a {@link Vm}, belonging to a given broker, after a failure.
+     * The same function is used to clone the cloudlets of any cloned VM.
      *
-     * <p>If a Vm cloner function is not set, setting a cloudlet's cloner function is optional.
-     * Since VMs will not be recovered from failures
-     * in this situation, cloudlets inside failed VM will not be recovered too.</p>
+     * <p>If a Vm cloner Function is not set, setting a Cloudlet's cloner function is optional.
+     * Since in this situation VMs will not be recovered from failures,
+     * Cloudlets inside failed VMs will not be recovered too.</p>
      *
-     * <p>Such a Function is used to re-create and re-submit those Cloudlets
+     * <p>Such a Function is used to recreate and re-submit those Cloudlets
      * to a clone of the failed VM. In this case, all the Cloudlets are
      * recreated from scratch into the cloned VM,
      * re-starting their execution from the beginning.
-     * Since a snapshot (clone) of the failed VM will be started
-     * into another Host, the Cloudlets Cloner Function will recreated
+     * </p>
+     *
+     * <p>Since a snapshot (clone) of the failed VM will be started
+     * into another Host, the Cloudlets cloner Function will recreated
      * all Cloudlets, simulating the restart of applications
      * into this new VM instance.</p>
      *
+     * @param broker the broker to set the Cloudlets cloner Function to
      * @param cloudletsCloner the cloudlets cloner {@link Function} to set
-     * @see #setVmCloner(Vm, UnaryOperator)
+     * @see #addVmCloner(DatacenterBroker, UnaryOperator)
      */
-    public void setCloudletsCloner(Function<Vm, List<Cloudlet>> cloudletsCloner) {
+    public void addCloudletsCloner(DatacenterBroker broker, Function<Vm, List<Cloudlet>> cloudletsCloner) {
+        Objects.requireNonNull(broker);
         Objects.requireNonNull(cloudletsCloner);
-        this.cloudletsCloner = cloudletsCloner;
+        this.cloudletsClonerMap.put(broker, cloudletsCloner);
     }
 
     /**

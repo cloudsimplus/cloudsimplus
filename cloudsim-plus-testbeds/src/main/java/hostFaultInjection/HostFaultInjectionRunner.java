@@ -19,13 +19,15 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final int VMS = 3;
-    static final int CLOUDLETS = 3;
+    static final int VMS = 4;
+    static final int CLOUDLETS = 4;
 
     /**
      * Average of the cost total
      */
     private List<Double> availability;
+
+    private List<Double> ratioVmsPerHost;
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -51,7 +53,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     HostFaultInjectionRunner() {
         super();
         availability = new ArrayList<>();
-
+        ratioVmsPerHost = new ArrayList<>();
     }
 
     @Override
@@ -71,7 +73,9 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * @param exp the finished experiment
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
+
         availability.add(exp.getAvailability());
+        ratioVmsPerHost.add(exp.getRatioVmsPerHost());
     }
 
     @Override
@@ -82,6 +86,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
         map.put("Average of Total Availability of simulation", availability);
+        map.put("Ratio VMS per HOST: ", ratioVmsPerHost);
         return map;
     }
 

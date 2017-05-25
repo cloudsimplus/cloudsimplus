@@ -249,8 +249,8 @@ public final class HostFaultInjectionExample1 {
         PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, seed);
 
         fault = new HostFaultInjection(datacenter, poisson);
-        this.vmlist.stream().forEach(vm -> fault.setVmCloner(vm, this::cloneVm));
-        fault.setCloudletsCloner(this::cloneCloudlets);
+        this.vmlist.stream().forEach(vm -> fault.addVmCloner(broker, this::cloneVm));
+        fault.addCloudletsCloner(broker, this::cloneCloudlets);
 
         Log.printFormattedLine(
                 "\tFault Injection created for %s.\n\tMean Number of Failures per Minute: %.6f (1 failure expected at each %.2f minutes).",

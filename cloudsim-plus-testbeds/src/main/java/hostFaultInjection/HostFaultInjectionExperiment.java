@@ -40,9 +40,9 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  */
 public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
-    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 3;
+    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 300;
 
-    private static final int HOST_PES = 4;
+    private static final int HOST_PES = 8;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -55,7 +55,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     private static final int VM_PES = 2; //number of cpus
 
     private static final int CLOUDLET_PES = 2;
-    private static final long CLOUDLET_LENGHT = 990_000_000L;
+    private static final long CLOUDLET_LENGHT = 4800_000_000L;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
 
@@ -194,8 +194,8 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
         for (DatacenterBroker broker : getBrokerList()) {
             Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmsWaitingList().size() - 1);
-            fault.setVmCloner(lastVmFromBroker, this::cloneVm);
-            fault.setCloudletsCloner(this::cloneCloudlets);
+            fault.addVmCloner(broker, this::cloneVm);
+            fault.addCloudletsCloner(broker, this::cloneCloudlets);
         }
 
         Log.printFormattedLine(
@@ -249,7 +249,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final List<Cloudlet> sourceVmCloudlets = sourceVm.getCloudletScheduler().getCloudletList();
         final List<Cloudlet> clonedCloudlets = new ArrayList<>(sourceVmCloudlets.size());
         for (Cloudlet cl : sourceVmCloudlets) {
-            clonedCloudlets.add(cloneCloudlet(cl));
+            clonedCloudlets.add(cloneCloudlet(cl, cl.getLength()-cl.getFinishedLengthSoFar()));
         }
 
         return clonedCloudlets;
@@ -259,13 +259,12 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Creates a clone from a given Cloudlet.
      *
      * @param source the Cloudlet to be cloned.
+     * @param length
      * @return the cloned (new) cloudlet
      */
-    private Cloudlet cloneCloudlet(Cloudlet source) {
+    private Cloudlet cloneCloudlet(Cloudlet source, long length) {
         Cloudlet clone
-                = new CloudletSimple(
-                        source.getLength(),
-                        (int) source.getNumberOfPes());
+                = new CloudletSimple(length, (int) source.getNumberOfPes());
         /*It' not required to set an ID for the clone.
         It is being set here just to make it easy to
         relate the ID of the cloudlet to its clone,
@@ -291,6 +290,12 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         return new DatacenterBrokerSimple(getCloudSim());
     }
 
+    public double getRatioVmsPerHost(){
+        double vmsize = getVmList().size();
+        double hostsize = getHostList().size();
+        return vmsize / hostsize;
+    }
+
     /**
      * A main method just for test purposes.
      *
@@ -303,7 +308,14 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
                 = new HostFaultInjectionExperiment();
         exp.setVerbose(true);
         exp.run();
-        System.out.println("\t\t brozer size: " + exp.getBrokerList().size());
+        System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());
+        System.out.println("\n# Number of Host faults: " + exp.fault.getNumberOfHostFaults());
+        System.out.println("# Number of VM faults (VMs destroyed): " + exp.fault.getNumberOfDestroyedVms());
+        Log.printFormattedLine("# Time that the simulations finished: %.2f minutes", exp.getCloudSim().clockInMinutes());
+        Log.printFormattedLine("# VMs MTTR: %.2f minutes", exp.fault.meanTimeToRepairVmFaultsInMinutes());
+        Log.printFormattedLine("# VMs MTBF: %.2f minutes", exp.fault.meanTimeBetweenVmFaultsInMinutes());
+        Log.printFormattedLine("# Hosts MTBF: %.2f minutes", exp.fault.meanTimeBetweenHostFaultsInMinutes());
+        Log.printFormattedLine("# Availability: %.2f%%", exp.fault.availability()*100);
 
     }
 }
