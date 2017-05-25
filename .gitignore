@@ -8,7 +8,7 @@
 /distribution/target/
 /target/
 dependency-reduced-pom.xml
-
+/cloudsim-plus-examples/output/
 #Ignore IntelliJ IDEA project files
 .idea/
 *.uml

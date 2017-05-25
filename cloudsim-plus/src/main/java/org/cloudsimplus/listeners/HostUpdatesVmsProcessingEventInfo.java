@@ -44,8 +44,7 @@ public interface HostUpdatesVmsProcessingEventInfo extends HostEventInfo  {
     double getNextCloudletCompletionTime();
 
     /**
-     * Gets a HostUpdatesVmsProcessingEventInfo instance from the given parameters.
-     * The {@link #getTime()} is the current simulation time.
+     * Gets a {@code HostUpdatesVmsProcessingEventInfo} instance from the given parameters.
      *
      * @param host the {@link Host} where the event happened
      * @param nextCloudletCompletionTime the expected time for completion of the next {@link Cloudlet}

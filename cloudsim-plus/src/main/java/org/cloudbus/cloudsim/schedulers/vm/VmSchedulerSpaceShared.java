@@ -45,11 +45,21 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     private List<Pe> freePesList;
 
     /**
-     * Instantiates a new vm space-shared scheduler.
+     * Creates a space-shared VM scheduler.
      *
      */
     public VmSchedulerSpaceShared() {
-        super();
+        this(DEFAULT_VM_MIGRATION_CPU_OVERHEAD);
+    }
+
+    /**
+     * Creates a space-shared VM scheduler, defining a CPU overhead for VM migration.
+     *
+     * @param vmMigrationCpuOverhead the percentage of Host's CPU usage increase when a
+     * VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
+     */
+    public VmSchedulerSpaceShared(final double vmMigrationCpuOverhead){
+        super(vmMigrationCpuOverhead);
         setPeAllocationMap(new HashMap<>());
         setFreePesList(new ArrayList<>());
     }
@@ -75,12 +85,12 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      */
     protected List<Pe> getTotalCapacityToBeAllocatedToVm(List<Double> vmRequestedMipsShare) {
         // if there is no enough free PEs, fails
-        if (getFreePesList().size() < vmRequestedMipsShare.size()) {
+        if (freePesList.size() < vmRequestedMipsShare.size()) {
             return Collections.EMPTY_LIST;
         }
 
         List<Pe> selectedPes = new ArrayList<>();
-        Iterator<Pe> peIterator = getFreePesList().iterator();
+        Iterator<Pe> peIterator = freePesList.iterator();
         Pe pe = peIterator.next();
         for (double mips : vmRequestedMipsShare) {
             if (mips <= pe.getCapacity()) {
@@ -100,33 +110,33 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested) {
-        List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
+    public boolean allocatePesForVmInternal(Vm vm, final List<Double> mipsShareRequested) {
+        final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
         if(selectedPes.isEmpty()){
             return false;
         }
 
         final double totalMips = mipsShareRequested.stream().mapToDouble(m -> m).sum();
 
-        getFreePesList().removeAll(selectedPes);
+        freePesList.removeAll(selectedPes);
 
-        getPeAllocationMap().put(vm, selectedPes);
+        peAllocationMap.put(vm, selectedPes);
         getMipsMapAllocated().put(vm, mipsShareRequested);
         return true;
     }
 
     @Override
-    protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {        
-        getFreePesList().addAll(getAllocatedWorkingPesForVm(vm));
-        removePesFromMap(vm, getPeAllocationMap(),  pesToRemove);
+    protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {
+        freePesList.addAll(getAllocatedWorkingPesForVm(vm));
+        removePesFromMap(vm, peAllocationMap,  pesToRemove);
         removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
-    }    
+    }
 
     /**
-     * Gets a list or working PEs (non-failed) which are allocated to a 
+     * Gets a list or working PEs (non-failed) which are allocated to a
      * given VM.
      * @param vm the VM to get the list of allocated working PEs
-     * @return 
+     * @return
      */
     private List<Pe> getAllocatedWorkingPesForVm(Vm vm) {
         return peAllocationMap
@@ -171,11 +181,5 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     protected final List<Pe> getFreePesList() {
         return freePesList;
     }
-
-    @Override
-    public double getVmMigrationCpuOverhead() {
-        return 0;
-    }
-
 
 }

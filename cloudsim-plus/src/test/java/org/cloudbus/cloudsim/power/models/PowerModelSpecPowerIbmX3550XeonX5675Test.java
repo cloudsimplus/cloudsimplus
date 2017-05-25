@@ -23,6 +23,7 @@ public class PowerModelSpecPowerIbmX3550XeonX5675Test {
     @Before
     public void setUp() throws Exception {
         powerModel = new PowerModelSpecPowerIbmX3550XeonX5675();
+        powerModel.setHost(PowerModelTest.createHostWithOneVm());
     }
 
     @Test(expected = IllegalArgumentException.class)

@@ -21,32 +21,36 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.builders.tables;
+package org.cloudsimplus.listeners;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-
-import java.util.List;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 
 /**
- * A helper class to print cloudlets results as a table, including the Cloudlet priority value.
+ * An interface that represent data to be passed
+ * to {@link EventListener} objects that are registered to be notified
+ * when some events happen for a given {@link DatacenterBroker}.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class PriorityCloudletsTableBuilder extends CloudletsTableBuilder {
-    public PriorityCloudletsTableBuilder(List<? extends Cloudlet> list) {
-        super(list);
-    }
+public interface DatacenterBrokerEventInfo extends EventInfo {
 
-    @Override
-    protected void createTableColumns() {
-        super.createTableColumns();
-        getTable().addColumn("Priority");
-    }
+    /**
+     * Gets the {@link DatacenterBroker} for which the event happened.
+     * @return
+     */
+    DatacenterBroker getDatacenterBroker();
 
-    @Override
-    protected void addDataToRow(Cloudlet cloudlet, List<Object> row) {
-        super.addDataToRow(cloudlet, row);
-        row.add(cloudlet.getPriority());
+    /**
+     * Gets a {@code DatacenterBrokerEventInfo} instance from the given parameters.
+     *
+     * @param broker the {@link DatacenterBroker} where the event happened
+     */
+    static DatacenterBrokerEventInfo of(DatacenterBroker broker) {
+        final double time = broker.getSimulation().clock();
+        return new DatacenterBrokerEventInfo() {
+            @Override public double getTime() { return time; }
+            @Override public DatacenterBroker getDatacenterBroker() { return broker; }
+        };
     }
 }

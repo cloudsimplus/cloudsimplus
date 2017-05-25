@@ -171,7 +171,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 
     public void printCloudletsExecutionResults() {
         new CloudletsTableBuilder(broker.getCloudletsFinishedList())
-                .setPrinter(new TextTableBuilder(broker.getName()))
+                .setTable(new TextTableBuilder(broker.getName()))
                 .build();
     }
 

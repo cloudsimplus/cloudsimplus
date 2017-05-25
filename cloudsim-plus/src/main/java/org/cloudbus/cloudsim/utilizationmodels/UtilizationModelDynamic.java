@@ -68,7 +68,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * unit defined in {@link Unit#PERCENTAGE}.
      *
      * <p><b>The utilization will not be dynamically incremented
-     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
+     * until an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
+     * @see #setUtilizationUpdateFunction(Function)
      */
     public UtilizationModelDynamic() {
         this(Unit.PERCENTAGE, 0);
@@ -229,21 +230,21 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     /**
      * Sets the function that defines how the resource utilization will be incremented or decremented along the time.
      *
-     * <p>Such a function must be one with 1 {@link UtilizationModelDynamic} parameter, that when called internally by this UtilizationModel
-     * will receive a read-only UtilizationModelDynamic instance and allow the developer using this UtilizationModel to
+     * <p>Such a function must require one {@link UtilizationModelDynamic} parameter and returns the new resource utilization.
+     * When this function is called internally by this {@code UtilizationModel},
+     * it receives a read-only {@link UtilizationModelDynamic} instance and allow the developer using this {@code UtilizationModel} to
      * define how the utilization must be updated. For instance, to define an arithmetic increment, a Lambda function
      * to be given to this setter could be defined as below:
      * </p>
      *
-     * <p>{@code (um) -> um.getUtilization() + um.getTimeSpan()*0.1}
-     * </p>
+     * <p>{@code um -> um.getUtilization() + um.getTimeSpan()*0.1}</p>
      *
-     * <p>Considering that the UtilizationModel {@link Unit} was defined in {@link Unit#PERCENTAGE},
+     * <p>Considering the {@code UtilizationModel} {@link Unit} was defined in {@link Unit#PERCENTAGE},
      * such a Lambda Expression will increment the usage in 10% for each second that has passed
      * since the last time the utilization was computed.</p>
      *
      * <p>The value returned by the given Lambda Expression will be automatically validated
-     * to avoid negative utilization or utilization over 100% (when the UtilizationModel {@link #getUnit() unit}
+     * to avoid negative utilization or utilization over 100% (when the {@code UtilizationModel} {@link #getUnit() unit}
      * is defined in percentage). The function would be defined to decrement the utilization along the time,
      * by just changing the plus to a minus signal.</p>
      *

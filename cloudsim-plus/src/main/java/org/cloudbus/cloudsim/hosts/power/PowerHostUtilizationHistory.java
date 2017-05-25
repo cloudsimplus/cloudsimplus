@@ -19,7 +19,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
- * A host that stores its CPU utilization percentage history. The history is used by VM allocation
+ * A {@link PowerHost} that stores its CPU utilization percentage history. The history is used by VM allocation
  * and selection policies.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
@@ -81,12 +81,12 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
     }
 
 	/**
-	 * Gets the host CPU utilization percentage history.
-     * @return 
+	 * Gets the host CPU utilization percentage history (between [0 and 1], where 1 is 100%).
+     * @return
 	 */
 	public double[] getUtilizationHistory() {
-		double[] utilizationHistory = new double[PowerVm.MAX_HISTORY_ENTRIES];
-		double hostMips = getTotalMipsCapacity();
+		final double[] utilizationHistory = new double[PowerVm.MAX_HISTORY_ENTRIES];
+		final double hostMips = getTotalMipsCapacity();
 		for (final PowerVm vm : this.<PowerVm>getVmList()) {
 			for (int i = 0; i < vm.getUtilizationHistory().size(); i++) {
 				utilizationHistory[i] += vm.getUtilizationHistory().get(i) * vm.getMips() / hostMips;

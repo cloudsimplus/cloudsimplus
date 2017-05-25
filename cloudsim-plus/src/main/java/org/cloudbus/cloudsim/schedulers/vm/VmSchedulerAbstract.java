@@ -26,6 +26,17 @@ import java.util.stream.IntStream;
  */
 public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
+     * The default percentage to define the CPU overhead of VM migration
+     * if one is not explicitly set.
+     * @see #getVmMigrationCpuOverhead()
+     */
+    public static final double DEFAULT_VM_MIGRATION_CPU_OVERHEAD = 0.1;
+    /**
+     * @see #getMipsMapRequested()
+     */
+    private Map<Vm, List<Double>> mipsMapRequested;
+
+    /**
      * @see #getHost()
      */
     private Host host;
@@ -41,12 +52,32 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     private Map<Vm, List<Double>> mipsMapAllocated;
 
     /**
+     * @see #getVmMigrationCpuOverhead()
+     */
+    private final double vmMigrationCpuOverhead;
+
+    /**
      * Creates a VmScheduler.
      *
      * @post $none
      */
     public VmSchedulerAbstract() {
+        this(DEFAULT_VM_MIGRATION_CPU_OVERHEAD);
+    }
+
+    /**
+     * Creates a VmScheduler, defining a CPU overhead for VM migration.
+     * @param vmMigrationCpuOverhead the percentage of Host's CPU usage increase when a
+     * VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
+     */
+    public VmSchedulerAbstract(final double vmMigrationCpuOverhead){
+        if(vmMigrationCpuOverhead < 0 || vmMigrationCpuOverhead >= 1){
+            throw new IllegalArgumentException("vmMigrationCpuOverhead must be a percentage value between [0 and 1[");
+        }
+
         setHost(Host.NULL);
+        this.vmMigrationCpuOverhead = vmMigrationCpuOverhead;
+        this.mipsMapRequested = new HashMap<>();
     }
 
     @Override
@@ -55,13 +86,25 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public boolean allocatePesForVm(Vm vm) {
-        final List<Double> mipsList =
+    public final boolean allocatePesForVm(Vm vm) {
+        final List<Double> mipsShareRequested =
                 LongStream.range(0, vm.getNumberOfPes())
                         .mapToObj(i -> vm.getMips())
                         .collect(toList());
-        return allocatePesForVm(vm, mipsList);
+        return allocatePesForVm(vm, mipsShareRequested);
     }
+
+    @Override
+    public final boolean allocatePesForVm(Vm vm, final List<Double> mipsShareRequested) {
+        if (!vm.isInMigration() && host.getVmsMigratingOut().contains(vm)) {
+            host.removeVmMigratingOut(vm);
+        }
+
+        mipsMapRequested.put(vm, mipsShareRequested);
+        return allocatePesForVmInternal(vm, mipsShareRequested);
+    }
+
+    protected abstract boolean allocatePesForVmInternal(Vm vm, final List<Double> mipsShareRequested);
 
     @Override
     public void deallocatePesFromVm(Vm vm) {
@@ -117,7 +160,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public List<Pe> getPesAllocatedForVM(Vm vm) {
+    public List<Pe> getPesAllocatedForVm(Vm vm) {
         return getPeMap().getOrDefault(vm, new ArrayList<>());
     }
 
@@ -147,6 +190,21 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public final List<Pe> getWorkingPeList() {
         return host.getWorkingPeList();
+    }
+
+    /**
+     * Gets a map of MIPS requested by each VM, where each key is a VM and each value is a
+     * list of MIPS requested by that VM.
+     *
+     * @return
+     */
+    protected Map<Vm, List<Double>> getMipsMapRequested() {
+        return mipsMapRequested;
+    }
+
+    @Override
+    public List<Double> getMipsRequested(Vm vm) {
+        return new ArrayList<>(mipsMapRequested.getOrDefault(vm, Collections.EMPTY_LIST));
     }
 
     /**
@@ -217,13 +275,14 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return totalVmRequestedMips / percentOfMipsToRequest(vm);
     }
 
-    /**
-     * Gets the max percentage of CPU a VM migrating into this Host can use,
-     * considering the {@link #getVmMigrationCpuOverhead() CPU migration overhead}.
-     * @return the max percentage of CPU usage during migration (in scale from [0 to 1], where 1 is 100%)
-     */
-    private double getMaxCpuUsagePercentDuringMigration() {
+    @Override
+    public double getMaxCpuUsagePercentDuringOutMigration() {
         return 1 - getVmMigrationCpuOverhead();
+    }
+
+    @Override
+    public double getVmMigrationCpuOverhead() {
+        return vmMigrationCpuOverhead;
     }
 
     /**
@@ -246,6 +305,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         this.peMap = peMap;
     }
 
+
     @Override
     public Host getHost() {
         return host;
@@ -266,7 +326,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         return this;
     }
-
 
     /**
      * Checks if the {@link VmScheduler} has a {@link Host} assigned that is
@@ -314,7 +373,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
             experiences a performance degradation.
             Thus, the allocated MIPS for that VM is reduced according to the CPU migration
             overhead.*/
-            return getMaxCpuUsagePercentDuringMigration();
+            return getMaxCpuUsagePercentDuringOutMigration();
         }
 
         //VM is not migrating, thus 100% of its requested MIPS will be requested to the Host.

@@ -33,7 +33,6 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see VmDatacenterEventInfo
  */
 public interface DatacenterEventInfo extends EventInfo {
 

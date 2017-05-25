@@ -31,24 +31,38 @@ package org.cloudsimplus.builders.tables;
  * @since CloudSim Plus 1.0
  */
 public class CsvTableColumn extends AbstractTableColumn {
+    public CsvTableColumn(final String title, final String subTitle) {
+        this(null, title, subTitle);
+    }
+
+    public CsvTableColumn(final String title) {
+        this(null, title, "");
+    }
+
+    public CsvTableColumn(final TableBuilder table, final String title,  final String subTitle) {
+        super(table, title, subTitle);
+    }
 
     public CsvTableColumn(TableBuilder table, String title) {
         super(table, title);
-        this.setColumnSeparator(";");
     }
 
     @Override
-    protected String generateHeader(String title) {
-        if(isLastColumn())
-            return title;
-        return String.format("%s%s", title, getColumnSeparator());
+    protected String generateHeader(String str) {
+        if(isLastColumn()) {
+            return str;
+        }
+
+        return String.format("%s%s", str, getTable().getColumnSeparator());
     }
 
     @Override
     public String generateData(Object data) {
-        if(isLastColumn())
+        if(isLastColumn()) {
             return super.generateData(data);
-        return String.format("%s%s", super.generateData(data), getColumnSeparator());
+        }
+
+        return String.format("%s%s", super.generateData(data), getTable().getColumnSeparator());
     }
 
 

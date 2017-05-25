@@ -16,6 +16,8 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 /**
  * Represents a broker acting on behalf of a cloud customer.
@@ -61,7 +63,8 @@ public interface DatacenterBroker extends SimEntity {
     <T extends Cloudlet> List<T> getCloudletsWaitingList();
 
     /**
-     * Gets the list of cloudlets that have finished executing.
+     * Gets a <b>copy</b> of the list of cloudlets that have finished executing,
+     * to avoid the original list to be changed.
      *
      * @param <T> the class of Cloudlets inside the list
      * @return the list of finished cloudlets
@@ -102,7 +105,7 @@ public interface DatacenterBroker extends SimEntity {
     void submitCloudlet(Cloudlet cloudlet);
 
     /**
-     * Sends a list of cloudlets to the broker so that it requests their 
+     * Sends a list of cloudlets to the broker so that it requests their
      * creation inside some VM, following the submission delay
      * specified in each cloudlet (if any).
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
@@ -115,7 +118,7 @@ public interface DatacenterBroker extends SimEntity {
     void submitCloudletList(List<? extends Cloudlet> list);
 
     /**
-     * Sends a list of cloudlets to the broker so that it requests their creation 
+     * Sends a list of cloudlets to the broker so that it requests their creation
      * inside some VM just after a given delay.
      * Just the Cloudlets that don't have a delay already assigned will have its submission delay changed.
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
@@ -129,9 +132,9 @@ public interface DatacenterBroker extends SimEntity {
      * @see Cloudlet#getSubmissionDelay()
      */
     void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay);
-    
+
     /**
-     * Sends a list of cloudlets to the broker so that it requests their creation inside 
+     * Sends a list of cloudlets to the broker so that it requests their creation inside
      * a specific VM, following the submission delay
      * specified in each cloudlet (if any).
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
@@ -142,10 +145,10 @@ public interface DatacenterBroker extends SimEntity {
      * @post $none
      * @see #submitCloudletList(java.util.List, double)
      */
-    void submitCloudletList(List<? extends Cloudlet> list, Vm vm);    
+    void submitCloudletList(List<? extends Cloudlet> list, Vm vm);
 
  /**
-     * Sends a list of cloudlets to the broker so that it requests their creation 
+     * Sends a list of cloudlets to the broker so that it requests their creation
      * inside a specific VM just after a given delay.
      * Just the Cloudlets that don't have a delay already assigned will have its submission delay changed.
      * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
@@ -160,7 +163,7 @@ public interface DatacenterBroker extends SimEntity {
      * @see Cloudlet#getSubmissionDelay()
      */
     void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay);
-    
+
     /**
      * Sends to the broker a list with VMs that their creation inside a Host will be requested to some
      * {@link Datacenter}. The Datacenter that will be chosen to place a VM is
@@ -254,4 +257,57 @@ public interface DatacenterBroker extends SimEntity {
      * @return the list of created Cloudlets
      */
     Set<Cloudlet> getCloudletsCreatedList();
+
+    /**
+     * Adds an {@link EventListener} that will be notified every time
+     * VMs in the waiting list are all created.
+     *
+     * <p>Events are fired according to the following conditions:
+     * <ul>
+     *     <li>if all VMs are submitted before the simulation start and all those VMs are created after starting,
+     *     then the event will be fired just once, during all simulation execution, for every registered Listener;
+     *     </li>
+     *     <li>if all VMs submitted at a given time cannot be created due to lack of suitable Hosts,
+     *     the event will not be fired for that submission;
+     *     </li>
+     *     <li>if new VMs are submitted during simulation execution, the event may be fired multiple times.
+     *     For instance, consider new VMs are submitted during simulation execution at times 10 and 20.
+     *     If for every submission time, all VMs could be created, then every Listener will be notified 2 times
+     *     (one for VMs submitted at time 10 and other for those at time 20).
+     *     </li>
+     * </ul>
+     * </p>
+     * @param listener the Listener that will be notified
+     * @return
+     * @see #getVmsWaitingList()
+     * @see #addOneTimeOnVmsCreatedListener(EventListener)
+     */
+    DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener);
+
+    /**
+     * Adds an {@link EventListener} that will be notified <b>just once</b>
+     * when VMs in the waiting list are all created.
+     * After the first notification, the Listener is removed from the registered Listeners
+     * and no further notifications will be sent to that specific Listener.
+     *
+     * <p>Even if VMs were submitted at different simulation times and
+     * all of them are created successfully (which means notifications are
+     * expected at different times), this Listener will be notified just
+     * when the first list of VMs is created and no subsequent notifications
+     * will be sent when other List of VMs is created.</p>
+     *
+     * <p>For instance, consider new VMs are submitted during simulation execution at times 10 and 20.
+     * If for every submission time, all VMs could be created, then this specific Listener is expected to be
+     * notified 2 times (one for VMs submitted at time 10 and other for those at time 20).
+     * However, after VMs submitted at time 10 are all created, the Listener is notified and
+     * unregistered, so that it will get no next notifications.
+     * </p>
+     *
+     * @param listener the Listener that will be notified
+     * @return
+     * @see #getVmsWaitingList()
+     * @see #addOnVmsCreatedListener(EventListener)
+     */
+    DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener);
+
 }

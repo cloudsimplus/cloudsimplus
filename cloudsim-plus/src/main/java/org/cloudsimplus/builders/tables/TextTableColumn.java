@@ -31,10 +31,20 @@ package org.cloudsimplus.builders.tables;
  * @since CloudSim Plus 1.0
  */
 public class TextTableColumn extends CsvTableColumn {
+    public TextTableColumn(final String title, final String subTitle) {
+        this(null, title, subTitle);
+    }
+
+    public TextTableColumn(final String title) {
+        this(null, title, "");
+    }
+
+    public TextTableColumn(final TableBuilder table, final String title,  final String subTitle) {
+        super(table, title, subTitle);
+    }
 
     public TextTableColumn(TableBuilder table, String title) {
         super(table, title);
-        setColumnSeparator("|");
     }
 
     @Override

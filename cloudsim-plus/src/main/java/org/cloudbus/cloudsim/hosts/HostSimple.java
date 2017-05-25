@@ -114,6 +114,7 @@ public class HostSimple implements Host {
      */
     private List<ResourceManageable> resources;
     private List<ResourceProvisioner> provisioners;
+    private boolean active;
 
     /**
      * Creates a Host without a pre-defined ID.
@@ -128,6 +129,7 @@ public class HostSimple implements Host {
      */
     public HostSimple(long ram, long bw, long storage, List<Pe> peList) {
         this.setId(-1);
+        this.setActive(true);
         this.setSimulation(Simulation.NULL);
 
         this.ram = new Ram(ram);
@@ -254,10 +256,11 @@ public class HostSimple implements Host {
 
         if (!getVmScheduler().isSuitableForVm(vm)) {
             Log.printFormattedLine(
-                    "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs.\n\t Required %.0f MIPS (%d PEs * %.0f MIPS) but there is just %.0f MIPS available.",
+                    "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs.\n\t  "+
+                    "Required %d PEs of %.0f MIPS (%.0f MIPS) but there are just %d PEs of %.0f MIPS, only a total of %.0f MIPS available.",
                     getSimulation().clock(), getClass().getSimpleName(), msg, vm, this,
-                    vm.getTotalMipsCapacity(), vm.getNumberOfPes(), vm.getMips(),
-                    vmScheduler.getAvailableMips());
+                    vm.getNumberOfPes(), vm.getMips(), vm.getTotalMipsCapacity(),
+                    vmScheduler.getWorkingPeList().size(), getMips(), vmScheduler.getAvailableMips());
             return false;
         }
 
@@ -285,10 +288,21 @@ public class HostSimple implements Host {
 
     @Override
     public boolean isSuitableForVm(Vm vm) {
-        return (getVmScheduler().getPeCapacity() >= vm.getCurrentRequestedMaxMips()
+        return active && (getVmScheduler().getPeCapacity() >= vm.getCurrentRequestedMaxMips()
                 && getVmScheduler().getAvailableMips() >= vm.getCurrentRequestedTotalMips()
                 && getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())
                 && getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw()));
+    }
+
+    @Override
+    public boolean isActive() {
+        return this.active;
+    }
+
+    @Override
+    public final Host setActive(boolean active) {
+        this.active = active;
+        return this;
     }
 
     @Override

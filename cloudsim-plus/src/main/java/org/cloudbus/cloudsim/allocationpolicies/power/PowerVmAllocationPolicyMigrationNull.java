@@ -41,6 +41,13 @@ final class PowerVmAllocationPolicyMigrationNull implements PowerVmAllocationPol
     @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
         return Collections.emptyMap();
     }
+    @Override public Map<Host, List<Double>> getUtilizationHistory() { return Collections.EMPTY_MAP; }
+    @Override public Map<Host, List<Double>> getMetricHistory() { return Collections.EMPTY_MAP; }
+    @Override public Map<Host, List<Double>> getTimeHistory() { return Collections.EMPTY_MAP; }
+    @Override public List<Double> getExecutionTimeHistoryVmSelection() { return Collections.EMPTY_LIST; }
+    @Override public List<Double> getExecutionTimeHistoryHostSelection() { return Collections.EMPTY_LIST; }
+    @Override public List<Double> getExecutionTimeHistoryVmReallocation() { return Collections.EMPTY_LIST; }
+    @Override public List<Double> getExecutionTimeHistoryTotal() { return Collections.EMPTY_LIST; }
     @Override public boolean isHostOverUtilized(PowerHost host) {
         return false;
     }

@@ -24,10 +24,8 @@ import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.switches.RootSwitch;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableBuilder;
@@ -123,7 +121,7 @@ abstract class NetworkVmExampleAbstract {
             List<Cloudlet> newList = broker.getCloudletsFinishedList();
             String caption = broker.getName() + " - Application " + broker.getId();
             new CloudletsTableBuilder(newList)
-                    .setPrinter(new TextTableBuilder(caption))
+                    .setTable(new TextTableBuilder(caption))
                     .build();
             Log.printFormattedLine(
                 "Number of NetworkCloudlets for Application %s: %d", broker.getId(), newList.size());

@@ -56,7 +56,7 @@ public class CloudletSchedulerSpaceSharedTest {
 
         final Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, cloudletLen, 1);
         instance.cloudletSubmit(cloudlet);
-        instance.updateVmProcessing(2, mipsList);
+        instance.updateProcessing(2, mipsList);
         assertEquals(cloudletLen, cloudlet.getLength());
         instance.cloudletPause(cloudlet.getId());
         instance.cloudletResume(cloudlet.getId());
@@ -300,26 +300,6 @@ public class CloudletSchedulerSpaceSharedTest {
         final int expResult = 1;
         instance.getCloudletToMigrate();
         assertEquals(expResult, instance.getUsedPes());
-    }
-
-    @Test @Ignore("See the todo inside the getCurrentRequestedMips method body")
-    public void testGetCurrentRequestedMips() {
-        final int schedulerPes = 1;
-        final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        final List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
-        instance.setCurrentMipsShare(expResult);
-        final List<Double> result = instance.getCurrentRequestedMips();
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void testGetCurrentRequestedMips_CheckItWasReturnedOneCopyOfTheList() {
-        final int schedulerPes = 1;
-        final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        final List<Double> expResult = CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
-        instance.setCurrentMipsShare(expResult);
-        //if the lists are not same, it was returned a copy of the given list as expected
-        assertNotSame(expResult, instance.getCurrentRequestedMips());
     }
 
     @Test

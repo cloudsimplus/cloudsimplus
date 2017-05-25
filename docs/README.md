@@ -1,11 +1,11 @@
 # CloudSim Plus Documentation
 
 This directory contains several different kinds of CloudSim Plus documentation, including a:
-- FAQs, guides and [JavaDocs](javadocs) in [reStructuredText (rst)](https://en.wikipedia.org/wiki/ReStructuredText) format to be published at [ReadTheDocs site](http://cloudsimplus.readthedocs.io);
+- FAQs, guides and [JavaDocs](javadocs) in [reStructuredText (rst)](https://en.wikipedia.org/wiki/ReStructuredText) format to be published at [ReadTheDocs site](http://cloudsimplus.rtfd.io);
 - [StarUML](http://staruml.io) project containing [UML diagrams](cloudsim-plus.staruml.mdj); 
-- [Side-by-Side comparison between CloudSim and CloudSim Plus java simulation scenarios](CloudSim-and-CloudSimPlus-Comparison.html);
+- [Side-by-Side comparison between CloudSim and CloudSim Plus java simulation scenarios](CloudSim-and-CloudSimPlus-Comparison.html) (online version available [here](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html));
 - [White Paper](cloudsim-plus-white-paper.pdf) published at the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu).
-- [Web Slides](presentation/index.html) presenting CloudSim Plus.
+- [Web Slides](presentation/index.html) presenting CloudSim Plus (online version available [here](http://cloudsimplus.org/presentation/)).
 
 ## Building the reStructuredText files for the Documentation Site
 To generate the Sphinx documentation to publish at the [ReadTheDocs](http://cloudsimplus.rtfd.io) or to read locally, considering you have python installed, you can execute the commands below to install the additional tools:

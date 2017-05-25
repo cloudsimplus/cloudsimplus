@@ -765,7 +765,7 @@ These notifications can be about the change in state of CloudSim entities.
 	(e.g: Hosts have to be created before a `Datacenter`). The constructor of these objects are complex and the creation of multiple objects
     of the same class is a repetitive task that can lead to code redundancy.
 
-	- The builder classes were introduced to reduce complexity when creating these objects.
+	- The table classes were introduced to reduce complexity when creating these objects.
     They help setting values to be used when creating such objects, by providing default values for each object property.
     Once these values are set, just one method needs to be called to create as many copies of the object as desired.
     For instance, if you want to create 2 hosts with the same configuration,

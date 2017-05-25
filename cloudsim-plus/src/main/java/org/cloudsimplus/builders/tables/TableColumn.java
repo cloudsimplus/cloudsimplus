@@ -85,12 +85,4 @@ public interface TableColumn {
     TableColumn setTable(TableBuilder table);
 
     TableColumn setTitle(String title);
-
-    /**
-     * @return The string used to separate one column from another (optional).
-     */
-    String getColumnSeparator();
-
-    TableColumn setColumnSeparator(String columnSeparator);
-
 }

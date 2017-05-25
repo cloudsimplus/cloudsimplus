@@ -27,12 +27,11 @@ import static java.util.stream.Collectors.toList;
 /**
  * An abstract class that represents the policy
  * used by a {@link Datacenter} to choose a {@link Host} to place or migrate
- * or migrate a given {@link Vm}. It supports two-stage commit of reservation of
- * hosts: first, we reserve the host and, once committed by the user, it is
- * effectively allocated to he/she.
+ * a given {@link Vm}. It supports two-stage commit of reservation of
+ * hosts: first, we reserve the Host and, once committed by the customer, the VM is
+ * effectively allocated to that Host.
  *
- * <p>Each {@link Datacenter} has to have its own instance of a class that extends
- * this class.</p>
+ * <p>Each {@link Datacenter} must to have its own instance of a {@link VmAllocationPolicy}.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -69,7 +68,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     @Override
-    public <T extends Host> List<T> getHostList() {
+    public final <T extends Host> List<T> getHostList() {
         return (List<T>) getDatacenter().getHostList();
     }
 

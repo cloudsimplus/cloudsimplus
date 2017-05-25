@@ -19,6 +19,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.cloudsimplus.listeners.*;
+import org.cloudsimplus.listeners.EventListener;
 
 /**
  * An abstract class to be used as base for implementing a {@link DatacenterBroker}.
@@ -28,6 +30,16 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
+    /**
+     * A map of registered event listeners for the onCreationOfWaitingVmsFinish event
+     * that the key is the Listener itself and the value indicates if it's a one
+     * time listener (which is removed from the list after being notified for the first time).
+     *
+     * @see #addOnVmsCreatedListener(EventListener)
+     * @see #addOneTimeOnVmsCreatedListener(EventListener)
+     */
+    private Map<EventListener<DatacenterBrokerEventInfo>, Boolean> onVmsCreatedListeners;
+
     /**
      * @see #getLastSelectedVm()
      */
@@ -116,7 +128,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     public DatacenterBrokerAbstract(CloudSim simulation) {
         super(simulation);
-
+        this.onVmsCreatedListeners = new HashMap<>();
         this.lastSubmittedCloudlet = Cloudlet.NULL;
         this.lastSubmittedVm = Vm.NULL;
         this.lastSelectedVm = Vm.NULL;
@@ -297,6 +309,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if(getVmsWaitingList().isEmpty()){
             Log.printLine(" Cloudlets creation request sent to Datacenter.");
             requestDatacentersToCreateWaitingCloudlets();
+            notifyOnCreationOfWaitingVmsFinishListeners();
         } else
             Log.printFormattedLine(
                     " Waiting creation of %d VMs to send Cloudlets creation request to Datacenter.",
@@ -419,7 +432,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         boolean vmCreated = false;
         vmCreationAcks++;
 
-        //if the VM was sucessfully created in the requested Datacenter
+        //if the VM was successfully created in the requested Datacenter
         if (vm.isCreated()) {
             processSuccessVmCreationInDatacenter(vm, vm.getHost().getDatacenter());
             vmCreated = true;
@@ -430,11 +443,29 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         // all the requested VMs have been created
         if (getVmsWaitingList().isEmpty()) {
             requestDatacentersToCreateWaitingCloudlets();
+            notifyOnCreationOfWaitingVmsFinishListeners();
         } else if (getVmCreationRequests() == getVmCreationAcks()) {
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
 
         return vmCreated;
+    }
+
+    private void notifyOnCreationOfWaitingVmsFinishListeners(){
+        onVmsCreatedListeners.entrySet().forEach(entry -> entry.getKey().update(DatacenterBrokerEventInfo.of(this)));
+        onVmsCreatedListeners.entrySet().removeIf(this::isOneTimeListener);
+    }
+
+    /**
+     * Checks if an EventListener from the {@link #onVmsCreatedListeners}
+     * is a one-time listener, that after being notified for the first time,
+     * must be removed from the map of registered listeners.
+     *
+     * @param eventListenerBooleanEntry the entry for the listener to check
+     * @return true if it is a one-time listener, false otherwise
+     */
+    private boolean isOneTimeListener(Map.Entry<EventListener<DatacenterBrokerEventInfo>, Boolean> eventListenerBooleanEntry) {
+        return eventListenerBooleanEntry.getValue();
     }
 
     /**
@@ -520,7 +551,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void processCloudletReturn(SimEvent ev) {
         final Cloudlet cloudlet = (Cloudlet) ev.getData();
-        getCloudletsFinishedList().add(cloudlet);
+        cloudletsFinishedList.add(cloudlet);
         Log.printFormattedLine("%.2f: %s: %s %d finished and returned to broker.",
             getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId());
         cloudletsCreated--;
@@ -701,7 +732,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public <T extends Cloudlet> List<T> getCloudletsFinishedList() {
-        return (List<T>) cloudletsFinishedList;
+        return (List<T>) new ArrayList<>(cloudletsFinishedList);
     }
 
     @Override
@@ -827,4 +858,19 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.cloudletComparator = comparator;
     }
 
+    @Override
+    public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) {
+        return addOneTimeOnCreationOfWaitingVmsFinishListener(listener, false);
+    }
+
+    @Override
+    public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) {
+        return addOneTimeOnCreationOfWaitingVmsFinishListener(listener, true);
+    }
+
+    public DatacenterBroker addOneTimeOnCreationOfWaitingVmsFinishListener(final EventListener<DatacenterBrokerEventInfo> listener, final Boolean oneTimeListener) {
+        Objects.requireNonNull(listener);
+        this.onVmsCreatedListeners.put(listener, oneTimeListener);
+        return this;
+    }
 }

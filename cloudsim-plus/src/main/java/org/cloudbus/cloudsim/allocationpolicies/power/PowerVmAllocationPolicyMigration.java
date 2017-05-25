@@ -7,7 +7,11 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * An interface to be implemented by VM allocation policy for power-aware VMs
@@ -25,9 +29,67 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
     PowerVmAllocationPolicyMigration NULL = new PowerVmAllocationPolicyMigrationNull();
 
     /**
+     * Gets a <b>read-only</b> map of the utilization history for each Host.
+     *
+     * @return the utilization history
+     */
+    Map<Host, List<Double>> getUtilizationHistory();
+
+    /**
+     * Gets a <b>read-only</b> map of metric history.
+     *
+     * @TODO the map stores different data. Sometimes it stores the upper
+     * threshold, other it stores utilization threshold or predicted
+     * utilization, that is very confusing.
+     *
+     * @return the metric history
+     */
+    Map<Host, List<Double>> getMetricHistory();
+
+    /**
+     * Gets a <b>read-only</b> map of times when entries in each history list was added for each Host.
+     * All history lists are updated at the same time.
+     *
+     * @return the time history
+     */
+    Map<Host, List<Double>> getTimeHistory();
+
+    /**
+     * Gets a <b>read-only</b> list of history of times spent in VM selection,
+     * for every time the optimization of VM allocation method is called.
+     *
+     * @return the execution time history vm selection
+     */
+    List<Double> getExecutionTimeHistoryVmSelection();
+
+    /**
+     * Gets a <b>read-only</b> list of history of times spent in host selection,
+     * for every time the optimization of VM allocation method is called.
+     *
+     * @return the execution time history host selection
+     */
+    List<Double> getExecutionTimeHistoryHostSelection();
+
+    /**
+     * Gets a <b>read-only</b> list of history of times spent in VM reallocation,
+     * for every time the optimization of VM allocation method is called.
+     *
+     * @return the execution time history vm reallocation
+     */
+    List<Double> getExecutionTimeHistoryVmReallocation();
+
+    /**
+     * Gets a <b>read-only</b> list of history of total times spent in every call of the optimization of
+     * VM allocation method.
+     *
+     * @return the execution time history total
+     */
+    List<Double> getExecutionTimeHistoryTotal();
+
+    /**
      * Checks if host is over utilized.
      *
-     * @param host the host
+     * @param host the host to check
      * @return true, if the host is over utilized; false otherwise
      */
     boolean isHostOverUtilized(PowerHost host);
@@ -65,5 +127,4 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
      * @param underUtilizationThreshold the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
      */
     void setUnderUtilizationThreshold(double underUtilizationThreshold);
-
 }

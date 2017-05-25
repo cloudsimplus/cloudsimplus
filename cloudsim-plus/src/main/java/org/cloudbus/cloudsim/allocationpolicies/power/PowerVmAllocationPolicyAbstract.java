@@ -21,6 +21,8 @@ import org.cloudbus.cloudsim.core.Simulation;
 
 /**
  * An abstract power-aware VM allocation policy.
+ * <b>It's a First Fit policy which finds the first Host having suitable resources to place a given VM.</b>
+ * Such a behaviour can be overridden by sub-classes.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:
@@ -75,10 +77,10 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
     @Override
     public void deallocateHostForVm(Vm vm) {
         Host host = removeVmFromHostMap(vm);
-        if (!Objects.isNull(host)) {
+        if (host != null) {
             host.destroyVm(vm);
         }
     }
 
-    
+
 }

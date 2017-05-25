@@ -25,7 +25,10 @@ package org.cloudsimplus.builders.tables;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.cloudbus.cloudsim.util.Log;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * An abstract base class for implementing table builders.
@@ -41,6 +44,11 @@ public abstract class AbstractTableBuilder implements TableBuilder {
 
     /** @see #getRows() */
     private final List<List<Object>> rows;
+
+    /**
+     * @see #getColumnSeparator()
+     */
+    private String columnSeparator;
 
     public AbstractTableBuilder(){
         this("");
@@ -75,6 +83,17 @@ public abstract class AbstractTableBuilder implements TableBuilder {
         return this;
     }
 
+    @Override
+    public String getColumnSeparator(){
+        return columnSeparator;
+    }
+
+    @Override
+    public final TableBuilder setColumnSeparator(String columnSeparator) {
+        this.columnSeparator = columnSeparator;
+        return this;
+    }
+
     /**
      * @return The data to be printed, where each row contains
      * a list of data columns.
@@ -96,13 +115,19 @@ public abstract class AbstractTableBuilder implements TableBuilder {
      * has a subtitle.
      */
     private boolean isThereAnySubtitledColumn(){
-        return getColumns().stream().anyMatch(col -> !col.getSubTitle().trim().isEmpty());
+        return columns.stream().anyMatch(col -> !col.getSubTitle().trim().isEmpty());
     }
 
     private void printRow(final List<Object> row) {
         printRowOpening();
-        for(int i = 0; i < Math.min(getColumns().size(), row.size()); i++){
-            Log.print(getColumns().get(i).generateData(row.get(i)));
+        final List<TableColumn> cols =
+            columns.stream()
+                .limit( Math.min(columns.size(), row.size()))
+                .collect(toList());
+
+        int i = 0;
+        for(TableColumn col: cols){
+            Log.print(col.generateData(row.get(i++)));
         }
         printRowClosing();
     }
@@ -112,17 +137,17 @@ public abstract class AbstractTableBuilder implements TableBuilder {
         printTableOpening();
         printTitle();
         printColumnHeaders();
-        getRows().forEach(this::printRow);
+        rows.forEach(this::printRow);
         printTableClosing();
     }
 
     protected void printColumnHeaders(){
         printRowOpening();
-        getColumns().forEach(col -> Log.print(col.generateTitleHeader()));
+        columns.forEach(col -> Log.print(col.generateTitleHeader()));
         printRowClosing();
         if(isThereAnySubtitledColumn()){
             printRowOpening();
-            getColumns().forEach(col -> Log.print(col.generateSubtitleHeader()));
+            columns.forEach(col -> Log.print(col.generateSubtitleHeader()));
             printRowClosing();
         }
     }
@@ -153,11 +178,31 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     protected abstract void printTableClosing();
 
     @Override
-    public TableBuilder addColumnList(String... columnTitles) {
+    public final TableBuilder addColumnList(final String... columnTitles) {
         for(String column: columnTitles){
             addColumn(column);
         }
         return this;
     }
 
+    @Override
+    public final TableColumn addColumn(final String columnTitle) {
+        return addColumn(getColumns().size(), columnTitle);
+    }
+
+    @Override
+    public final TableColumn addColumn(String columnTitle, String columnSubTitle) {
+        return addColumn(columnTitle).setSubTitle(columnSubTitle);
+    }
+
+    @Override
+    public final TableColumn addColumn(int index, TableColumn column) {
+        columns.add(index, column);
+        return column;
+    }
+
+    @Override
+    public final TableColumn addColumn(TableColumn column) {
+        return addColumn(columns.size(), column);
+    }
 }

@@ -32,16 +32,21 @@ import org.cloudbus.cloudsim.hosts.power.PowerHost;
  *
  * @author Anton Beloglazov
  *
- * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
  */
 public interface PowerModel {
+    PowerHost getHost();
+    void setHost(PowerHost host);
 
     /**
      * A property that implements the Null Object Design Pattern for {@link PowerHost}
      * objects.
      */
-    PowerModel NULL = (utilization) -> 0;
+    PowerModel NULL = new PowerModel() {
+        @Override public PowerHost getHost() { return PowerHost.NULL; }
+        @Override public void setHost(PowerHost host) {}
+        @Override public double getPower(double utilization) throws IllegalArgumentException { return 0; }
+    };
 
     /**
      * Gets power consumption of the Power Model, according to the utilization

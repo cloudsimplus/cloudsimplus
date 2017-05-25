@@ -29,6 +29,7 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public double getAvailableMips() {
         return 0.0;
     }
+    @Override public List<Double> getMipsRequested(Vm vm) { return Collections.EMPTY_LIST; }
     @Override public double getMaxAvailableMips() {
         return 0.0;
     }
@@ -38,12 +39,13 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public <T extends Pe> List<T> getWorkingPeList() {
         return Collections.emptyList();
     }
-    @Override public List<Pe> getPesAllocatedForVM(Vm vm) {
+    @Override public List<Pe> getPesAllocatedForVm(Vm vm) {
         return Collections.emptyList();
     }
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }
+    @Override public double getMaxCpuUsagePercentDuringOutMigration() { return 0; }
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }

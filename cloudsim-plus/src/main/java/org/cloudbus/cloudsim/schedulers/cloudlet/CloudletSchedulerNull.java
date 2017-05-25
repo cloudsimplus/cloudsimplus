@@ -42,7 +42,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public List<Double> getCurrentMipsShare() {
         return Collections.emptyList();
     }
-    @Override public List<Double> getCurrentRequestedMips() {
+    public List<Double> getCurrentRequestedMips() {
         return Collections.emptyList();
     }
     @Override public double getCurrentRequestedBwPercentUtilization() {
@@ -78,7 +78,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public int runningCloudletsNumber() {
         return 0;
     }
-    @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare) {
+    @Override public double updateProcessing(double currentTime, List<Double> mipsShare) {
         return 0.0;
     }
     @Override public Vm getVm() {

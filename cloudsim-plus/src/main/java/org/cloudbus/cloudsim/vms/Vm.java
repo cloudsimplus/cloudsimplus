@@ -291,7 +291,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     Resource getStorage();
 
     /**
-     * Gets the history of MIPS capacity allocated to the VM.
+     * Gets a <b>read-only</b> list with the history of requests and allocation of MIPS for this VM.
      *
      * @return the state history
      */

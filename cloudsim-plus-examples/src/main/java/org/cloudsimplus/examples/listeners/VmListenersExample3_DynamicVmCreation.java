@@ -57,9 +57,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 
@@ -190,7 +188,7 @@ public class VmListenersExample3_DynamicVmCreation {
             cloudlets = broker.getCloudletsFinishedList();
             title = broker.getName() + (cloudlets.size() > 0 ? "" : " (for the failed VM)");
             new CloudletsTableBuilder(cloudlets)
-                    .setPrinter(new TextTableBuilder(title))
+                    .setTable(new TextTableBuilder(title))
                     .build();
         }
     }

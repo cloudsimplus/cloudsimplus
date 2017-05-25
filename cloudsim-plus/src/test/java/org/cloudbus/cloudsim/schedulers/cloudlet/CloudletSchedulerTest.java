@@ -24,7 +24,6 @@ public class CloudletSchedulerTest {
         assertEquals(0, instance.getCloudletStatus(0));
         assertTrue(instance.getCloudletFinishedList().isEmpty());
         assertTrue(instance.getCurrentMipsShare().isEmpty());
-        assertTrue(instance.getCurrentRequestedMips().isEmpty());
         assertEquals(0, instance.getCurrentRequestedBwPercentUtilization(), 0);
         assertEquals(0, instance.getCurrentRequestedRamPercentUtilization(), 0);
         assertEquals(0, instance.getPreviousTime(), 0);
@@ -35,7 +34,7 @@ public class CloudletSchedulerTest {
         assertFalse(instance.hasFinishedCloudlets());
         assertEquals(Cloudlet.NULL, instance.getCloudletToMigrate());
         assertEquals(0, instance.runningCloudletsNumber());
-        assertEquals(0, instance.updateVmProcessing(0, null), 0);
+        assertEquals(0, instance.updateProcessing(0, null), 0);
     }
 
 }

@@ -7,7 +7,6 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import static org.easymock.EasyMock.expect;
@@ -128,7 +127,7 @@ public class VmSimpleTest {
     public static VmSimple createVm(final int vmId, long capacity) {
         return createVm(vmId, capacity, 1, capacity, capacity, capacity, CloudletScheduler.NULL);
     }
-    
+
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
             final long ram, final long bw, final long storage)
@@ -141,7 +140,7 @@ public class VmSimpleTest {
                 .setCloudletScheduler(CloudletScheduler.NULL)
                 .setBroker(broker);
         return vm;
-    }    
+    }
 
     public static VmSimple createVm(final int vmId,
             final double mips, final int numberOfPes,
@@ -157,7 +156,7 @@ public class VmSimpleTest {
                 .setBroker(broker);
         return vm;
     }
-    
+
 
     /**
      * Creates a VM with the given numberOfPes for a given user and default
@@ -344,32 +343,13 @@ public class VmSimpleTest {
         final List<Double> mipsShare2 = new ArrayList<>(1);
         mipsShare1.add(1.0);
         mipsShare2.add(1.0);
-        assertEquals(vmScheduler.updateVmProcessing(0, mipsShare1), vm.updateProcessing(0, mipsShare2), 0);
+        assertEquals(vmScheduler.updateProcessing(0, mipsShare1), vm.updateProcessing(0, mipsShare2), 0);
     }
 
     @Test
     public void testIsCreated() {
         vm.setCreated(true);
         assertTrue(vm.isCreated());
-    }
-
-    @Test
-    public void testGetCurrentRequestedMips_WhenVmWasCreatedInsideHost() {
-        final List<Double> expectedCurrentMips = new ArrayList<>();
-        expectedCurrentMips.add(MIPS / 2);
-        expectedCurrentMips.add(MIPS / 2);
-
-        final CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
-        cloudletScheduler.setVm(EasyMock.anyObject());
-        EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(expectedCurrentMips);
-        replay(cloudletScheduler);
-
-        final Vm vm = VmSimpleTest.createVm(cloudletScheduler);
-        vm.setCreated(true);
-        assertEquals(expectedCurrentMips, vm.getCurrentRequestedMips());
-
-        verify(cloudletScheduler);
     }
 
     @Test
@@ -432,21 +412,5 @@ public class VmSimpleTest {
         vm.setCreated(true);
 
         assertTrue(vm.getCurrentRequestedMips().isEmpty());
-    }
-    @Test
-    public void testGetCurrentRequestedTotalMips() {
-        final List<Double> currentMips = new ArrayList<>();
-        currentMips.add(MIPS);
-        currentMips.add(MIPS);
-
-        final CloudletSchedulerTimeShared cloudletScheduler = createMock(CloudletSchedulerTimeShared.class);
-        cloudletScheduler.setVm(EasyMock.anyObject());
-        EasyMock.expectLastCall().anyTimes();
-        expect(cloudletScheduler.getCurrentRequestedMips()).andReturn(currentMips).anyTimes();
-        replay(cloudletScheduler);
-
-        final Vm vm = VmSimpleTest.createVm(cloudletScheduler);
-        assertEquals(MIPS * 2, vm.getCurrentRequestedTotalMips(), 0);
-        verify(cloudletScheduler);
     }
 }

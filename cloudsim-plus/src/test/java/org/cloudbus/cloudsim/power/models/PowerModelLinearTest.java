@@ -27,6 +27,7 @@ public class PowerModelLinearTest {
     @Before
     public void setUp() throws Exception {
         powerModel = new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT);
+        powerModel.setHost(PowerModelTest.createHostWithOneVm());
     }
 
     @Test

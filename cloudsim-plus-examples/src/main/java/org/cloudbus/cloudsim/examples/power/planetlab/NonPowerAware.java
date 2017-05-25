@@ -48,8 +48,8 @@ public class NonPowerAware {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		String experimentName = "planetlab_npa";
-		String outputFolder = "output";
+		final String experimentName = "planetlab_npa";
+		final String outputFolder = "output";
         String inputFolder =  ResourceLoader.getResourcePath(NonPowerAware.class,"workload/planetlab/20110303");
         if(Objects.isNull(inputFolder)){
             inputFolder = "";
@@ -60,15 +60,15 @@ public class NonPowerAware {
 
 		try {
             simulation = new CloudSim();
+            Helper helper = new Helper(simulation, experimentName, Constants.OUTPUT_CSV, outputFolder);
 
-			DatacenterBroker broker = Helper.createBroker(simulation);
+			DatacenterBroker broker = helper.createBroker(simulation);
 
 			List<Cloudlet> cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
-			List<Vm> vmList = Helper.createVmList(broker, cloudletList.size());
-			List<PowerHost> hostList = Helper.createHostList(NUMBER_OF_HOSTS);
+			List<Vm> vmList = helper.createVmList(broker, cloudletList.size());
+			List<PowerHost> hostList = helper.createHostList(NUMBER_OF_HOSTS);
 
-			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) Helper.createDatacenter(
-			    simulation,
+			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) helper.createDatacenter(
                 PowerDatacenterNonPowerAware.class, hostList,
                 new PowerVmAllocationPolicySimple());
 
@@ -83,14 +83,7 @@ public class NonPowerAware {
 			List<Cloudlet> newList = broker.getCloudletsFinishedList();
 			Log.printLine("Received " + newList.size() + " cloudlets");
 
-			Helper.printResults(
-					datacenter,
-					vmList,
-					lastClock,
-					experimentName,
-					Constants.OUTPUT_CSV,
-					outputFolder);
-
+            helper.printResults(datacenter, vmList, lastClock);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.printLine("The simulation has been terminated due to an unexpected error");

@@ -17,6 +17,7 @@ import java.util.Map;
 /**
  * A simple VM allocation policy that does <b>not</b> perform any optimization
  * on VM allocation.
+ * <b>It's a First Fit policy which finds the first Host having suitable resources to place a given VM.</b>
  *
  * <p>If you are using any algorithms, policies or workload included in the
  * power package please cite the following paper:</p>

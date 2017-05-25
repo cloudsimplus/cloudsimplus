@@ -27,6 +27,16 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLab;
  * @since Jan 5, 2012
  */
 public final class PlanetLabHelper {
+    /**
+     * The input folder given to the constructor constains lots of
+     * planet lab workload files. One cloudlet is created
+     * for each file into this directory.
+     * Each file is used as input to the cloudlet's CPU UtilizationModel.
+     * This constant limits the number of files to read,
+     * limiting the number of cloudlets to create.
+     * The value {@link Double#MAX_VALUE} indicates no limit.
+     */
+    private final static int MAX_NUMBER_OF_WORLOAD_FILES_TO_READ = 4;
 
 	/**
 	 * Creates the cloudlet list planet lab.
@@ -36,19 +46,18 @@ public final class PlanetLabHelper {
 	 * @return the list
 	 */
 	public static List<Cloudlet> createCloudletListPlanetLab(DatacenterBroker broker, String inputFolderName) {
-		List<Cloudlet> list = new ArrayList<>();
+        final long fileSize = 300;
+		final long outputSize = 300;
 
-		long fileSize = 300;
-		long outputSize = 300;
-		UtilizationModel utilizationModelNull = UtilizationModel.NULL;
-
-		File inputFolder = new File(inputFolderName);
-		File[] files = inputFolder.listFiles();
+        final File inputFolder = new File(inputFolderName);
+        final File[] files = inputFolder.listFiles();
         if(Objects.isNull(files)) {
-            return list;
+            return new ArrayList<>();
         }
 
-		for (int i = 0; i < files.length; i++) {
+        final int filesToRead = Math.min(files.length, MAX_NUMBER_OF_WORLOAD_FILES_TO_READ);
+        final List<Cloudlet> list = new ArrayList<>(filesToRead);
+		for (int i = 0; i < filesToRead; i++) {
 			try {
                 UtilizationModel utilizationModelCPU =
                         new UtilizationModelPlanetLab(
@@ -58,9 +67,7 @@ public final class PlanetLabHelper {
                         i, Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
 				cloudlet.setFileSize(fileSize)
                         .setOutputSize(outputSize)
-						.setUtilizationModelCpu(utilizationModelCPU)
-                        .setUtilizationModelRam(utilizationModelNull)
-                        .setUtilizationModelBw(utilizationModelNull);
+						.setUtilizationModelCpu(utilizationModelCPU);
                 //cloudlet.setVm(i);
                 list.add(cloudlet);
 			} catch (Exception e) {

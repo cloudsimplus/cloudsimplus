@@ -23,37 +23,53 @@
  */
 package org.cloudsimplus.builders.tables;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * A class to build a table for printing simulation results from a list of cloudlets.
+ * Builds a table for printing simulation results from a list of Cloudlets.
+ * It defines a set of default columns but new ones can be added
+ * dynamically using the {@code addColumn()} methods.
+ *
+ * <p>The basic usage of the class is by calling its constructor,
+ * giving a list of Cloudlets to be printed, and then
+ * calling the {@link #build()} method.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public class CloudletsTableBuilder {
     private static final String SECONDS = "Seconds";
-    private TableBuilder printer;
+    private TableBuilder table;
     private List<? extends Cloudlet> cloudletList;
+    /**
+     * A Map containing a function that receives a Cloudlet and returns
+     * the data to be printed from that Cloudlet to the associated column
+     * of the table to be printed.
+     */
+    private Map<TableColumn, Function<Cloudlet, Object>> columnsDataFunctions;
 
     /**
      * Creates new helper object to print the list of cloudlets using the a
      * default {@link TextTableBuilder}.
      * To use a different {@link TableBuilder}, use the
-     * {@link #setPrinter(TableBuilder)} method.
+     * {@link #setTable(TableBuilder)} method.
      *
      * @param list the list of Cloudlets that the data will be included into the table to be printed
      */
     public CloudletsTableBuilder(final List<? extends Cloudlet> list){
-        this.setPrinter(new TextTableBuilder()).setCloudletList(list);
+        this.setTable(new TextTableBuilder()).setCloudletList(list);
+        columnsDataFunctions = new HashMap<>();
+        createTableColumns();
     }
 
     public CloudletsTableBuilder setTitle(String title){
-        printer.setTitle(title);
+        table.setTitle(title);
         return this;
     }
 
@@ -61,30 +77,65 @@ public class CloudletsTableBuilder {
      * Builds the table with the data of the Cloudlet list and shows the results.
      */
     public void build(){
-        if(printer.getTitle().isEmpty()){
-            printer.setTitle("SIMULATION RESULTS");
+        if(table.getTitle().isEmpty()){
+            table.setTitle("SIMULATION RESULTS");
         }
 
-        createTableColumns();
-        cloudletList.forEach(cloudlet -> addDataToRow(cloudlet, printer.newRow()));
-        printer.print();
+        cloudletList.forEach(cloudlet -> addDataToRow(cloudlet, table.newRow()));
+        table.print();
     }
 
+    /**
+     * Dynamically adds a column to a specific position into the table to be built.
+     * @param index the position to insert the column.
+     * @param col the column to add
+     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
+     * @return
+     */
+    public CloudletsTableBuilder addColumn(final int index, final TableColumn col, Function<Cloudlet, Object> dataFunction){
+        Objects.requireNonNull(col);
+        Objects.requireNonNull(dataFunction);
 
+        col.setTable(table);
+        table.addColumn(index, col);
+        columnsDataFunctions.put(col, dataFunction);
+        return this;
+    }
+
+    /**
+     * Dynamically adds a column to the end of the table to be built.
+     * @param col the column to add
+     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
+     * @return
+     */
+    public CloudletsTableBuilder addColumn(final TableColumn col, Function<Cloudlet, Object> dataFunction){
+        return addColumn(table.getColumns().size(), col, dataFunction);
+    }
+
+    /**
+     * Creates the columns of the table and define how the data for those columns
+     * will be got from a Cloudlet.
+     */
     protected void createTableColumns() {
         final String ID = "ID";
-        printer.addColumn("Cloudlet").setSubTitle(ID);
-        printer.addColumn("Status ");
-        printer.addColumn("DC").setSubTitle(ID);
-        printer.addColumn("Host").setSubTitle(ID);
-        printer.addColumn("Host PEs ").setSubTitle("CPU cores");
-        printer.addColumn("VM").setSubTitle(ID);
-        printer.addColumn("VM PEs   ").setSubTitle("CPU cores");
-        printer.addColumn("CloudletLen").setSubTitle("MI");
-        printer.addColumn("CloudletPEs").setSubTitle("CPU cores");
-        printer.addColumn("StartTime").setFormat("%d").setSubTitle(SECONDS);
-        printer.addColumn("FinishTime").setFormat("%d").setSubTitle(SECONDS);
-        printer.addColumn("ExecTime").setFormat("%.0f").setSubTitle(SECONDS);
+        columnsDataFunctions.put(table.addColumn("Cloudlet", ID), c -> c.getId());
+        columnsDataFunctions.put(table.addColumn("Status "), c -> c.getStatus().name());
+        columnsDataFunctions.put(table.addColumn("DC", ID), c -> c.getVm().getHost().getDatacenter().getId());
+        columnsDataFunctions.put(table.addColumn("Host", ID), c -> c.getVm().getHost().getId());
+        columnsDataFunctions.put(table.addColumn("Host PEs ", "CPU cores"), c -> c.getVm().getHost().getNumberOfWorkingPes());
+        columnsDataFunctions.put(table.addColumn("VM", ID), c -> c.getVm().getId());
+        columnsDataFunctions.put(table.addColumn("VM PEs   ", "CPU cores"), c -> c.getVm().getNumberOfPes());
+        columnsDataFunctions.put(table.addColumn("CloudletLen", "MI"), c -> c.getLength());
+        columnsDataFunctions.put(table.addColumn("CloudletPEs", "CPU cores"), c -> c.getNumberOfPes());
+
+        TableColumn col = table.addColumn("StartTime", SECONDS).setFormat("%d");
+        columnsDataFunctions.put(col, c -> (long)c.getExecStartTime());
+
+        col = table.addColumn("FinishTime", SECONDS).setFormat("%d");
+        columnsDataFunctions.put(col, c -> (long)c.getFinishTime());
+
+        col = table.addColumn("ExecTime", SECONDS).setFormat("%d");
+        columnsDataFunctions.put(col, c -> (long)c.getActualCpuTime());
     }
 
     /**
@@ -93,26 +144,13 @@ public class CloudletsTableBuilder {
      * @param row The row to be added the data to
      */
     protected void addDataToRow(Cloudlet cloudlet, List<Object> row) {
-        Vm vm = cloudlet.getVm();
-        Host host = vm.getHost();
-        Datacenter datacenter = host.getDatacenter();
-
-        row.add(cloudlet.getId());
-        row.add(cloudlet.getStatus().name());
-        row.add(datacenter.getId());
-        row.add(host.getId());
-        row.add(host.getNumberOfWorkingPes());
-        row.add(vm.getId());
-        row.add(vm.getNumberOfPes());
-        row.add(cloudlet.getLength());
-        row.add(cloudlet.getNumberOfPes());
-        row.add((int)cloudlet.getExecStartTime());
-        row.add((int)cloudlet.getFinishTime());
-        row.add(cloudlet.getActualCpuTime());
+        table.getColumns()
+            .stream()
+            .forEach(col -> row.add(columnsDataFunctions.get(col).apply(cloudlet)));
     }
 
-    public final CloudletsTableBuilder setPrinter(TableBuilder printer) {
-        this.printer = printer;
+    public final CloudletsTableBuilder setTable(TableBuilder table) {
+        this.table = table;
         return this;
     }
 
@@ -121,7 +159,7 @@ public class CloudletsTableBuilder {
         return this;
     }
 
-    protected TableBuilder getPrinter() {
-        return printer;
+    protected TableBuilder getTable() {
+        return table;
     }
 }

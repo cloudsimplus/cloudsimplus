@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 /**
  * A VM allocation policy that uses a static CPU utilization threshold to detect
  * host over utilization.
+ * <b>It's a First Fit policy which selects the first found Host with most efficient power usage to place a given VM.</b>
  *
  * <p>
  * If you are using any algorithms, policies or workload included in the power

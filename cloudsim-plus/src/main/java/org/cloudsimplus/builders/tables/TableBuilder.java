@@ -40,7 +40,7 @@ public interface TableBuilder {
     List<Object> newRow();
 
     /**
-     * Adds a column to the table to be printed.
+     * Adds a column with a given to the end of the table's columns to be printed.
      *
      * @param columnTitle The title of the column to be added.
      * @return The created column.
@@ -48,11 +48,47 @@ public interface TableBuilder {
     TableColumn addColumn(final String columnTitle);
 
     /**
-     * Adds a list of columns to the table to be printed, where the column data
+     * Adds a column with a given title to the end of the table's columns to be printed.
+     *
+     * @param index the position to insert the column into the column's list
+     * @param columnTitle The title of the column to be added.
+     * @return the created column
+     */
+    TableColumn addColumn(final int index, final String columnTitle);
+
+    /**
+     * Adds a column with a given title and sub-title to the end of the table's columns to be printed.
+     *
+     * @param columnTitle The title of the column to be added.
+     * @param columnSubTitle The sub-title of the column to be added.
+     * @return the created column
+     */
+    TableColumn addColumn(final String columnTitle, final String columnSubTitle);
+
+    /**
+     * Adds a column object to a specific position of the table's columns to be printed.
+     *
+     * @param index the position to insert the column into the column's list
+     * @param column The column to be added.
+     * @return the created column
+     */
+    TableColumn addColumn(final int index, final TableColumn column);
+
+    /**
+     * Adds a column object to the end of the table's columns to be printed.
+     *
+     * @param column The column to be added.
+     * @return the created column
+     */
+    TableColumn addColumn(final TableColumn column);
+
+    /**
+     * Adds a list of columns (with given titles) to the end of the
+     * table's columns to be printed, where the column data
      * will be printed without a specific format.
      *
      * @param columnTitles The titles of the columns
-     * @return The {@link TableBuilder} instance.
+     * @return the {@link TableBuilder} instance.
      * @see #addColumn(String)
      */
     TableBuilder addColumnList(final String... columnTitles);
@@ -76,9 +112,20 @@ public interface TableBuilder {
     List<TableColumn> getColumns();
 
     /**
+     * Gets the string used to separate one column from another (optional).
+     * @return
+     */
+    String getColumnSeparator();
+
+    /**
+     * Sets the string used to separate one column from another (optional).
+     * @param columnSeparator the separator to set
+     * @return
+     */
+    TableBuilder setColumnSeparator(String columnSeparator);
+
+    /**
      * Builds and prints the table.
      */
     void print();
-
-
 }

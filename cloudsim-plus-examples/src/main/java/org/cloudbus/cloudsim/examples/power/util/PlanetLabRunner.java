@@ -41,7 +41,8 @@ public final class PlanetLabRunner extends RunnerAbstract {
 			String workload,
 			String vmAllocationPolicy,
 			String vmSelectionPolicy,
-			double safetyParameterOrUtilizationThreshold) {
+			double safetyParameterOrUtilizationThreshold)
+    {
 		super(
 				enableOutput,
 				outputToFile,
@@ -50,15 +51,14 @@ public final class PlanetLabRunner extends RunnerAbstract {
 				workload,
 				vmAllocationPolicy,
 				vmSelectionPolicy,
-            safetyParameterOrUtilizationThreshold);
+                safetyParameterOrUtilizationThreshold);
 	}
 
 	@Override
-	protected void init(String inputFolder) {
+	protected void init(final String inputFolder) {
 		try {
 		    super.init(inputFolder);
 			broker = Helper.createBroker(getSimulation());
-
 			cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
 			vmList = Helper.createVmList(broker, cloudletList.size());
 			hostList = Helper.createHostList(NUMBER_OF_HOSTS);

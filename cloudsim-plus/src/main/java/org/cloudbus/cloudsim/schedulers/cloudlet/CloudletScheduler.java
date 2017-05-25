@@ -157,14 +157,6 @@ public interface CloudletScheduler extends Serializable {
     List<Double> getCurrentMipsShare();
 
     /**
-     * Gets a <b>copy</b> of the list of current requested MIPS,
-     * avoiding the original list to be changed.
-     *
-     * @return the current requested MIPS
-     */
-    List<Double> getCurrentRequestedMips();
-
-    /**
      * Releases a given number of PEs from a VM.
      *
      * @param vm the vm to deallocate PEs from
@@ -317,7 +309,7 @@ public interface CloudletScheduler extends Serializable {
      * @pre currentTime >= 0
      * @post $none
      */
-    double updateVmProcessing(double currentTime, List<Double> mipsShare);
+    double updateProcessing(double currentTime, List<Double> mipsShare);
 
     /**
      * Gets the Vm that uses the scheduler.

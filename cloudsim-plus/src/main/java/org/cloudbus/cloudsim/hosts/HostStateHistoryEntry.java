@@ -9,112 +9,86 @@
 package org.cloudbus.cloudsim.hosts;
 
 /**
- * Stores historic data about a host.
+ * Keeps historic CPU utilization data about a host.
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.1.2
  */
-public class HostStateHistoryEntry {
+public final class HostStateHistoryEntry {
 
-	/** The time. */
-	private double time;
+    /**
+     * @see #getTime()
+     */
+    private final double time;
 
-	/** The allocated mips. */
-	private double allocatedMips;
+    /**
+     * @see #getAllocatedMips()
+     */
+    private final double allocatedMips;
 
-	/** The requested mips. */
-	private double requestedMips;
+    /**
+     * @see #getRequestedMips()
+     */
+    private final double requestedMips;
 
-	/** Indicates if the host was active in the indicated time.
-         * @see #time
-         */
-	private boolean isActive;
+    /**
+     * @see #isActive()
+     */
+    private final boolean active;
 
-	/**
-	 * Instantiates a new host state history entry.
-	 *
-	 * @param time the time
-	 * @param allocatedMips the allocated mips
-	 * @param requestedMips the requested mips
-	 * @param isActive the is active
-	 */
-	public HostStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive) {
-		setTime(time);
-		setAllocatedMips(allocatedMips);
-		setRequestedMips(requestedMips);
-		setActive(isActive);
-	}
+    /**
+     * Instantiates a host state history entry.
+     *
+     * @param time          the time the data in this history entry is related to
+     * @param allocatedMips the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time
+     * @param requestedMips the total MIPS requested by running VMs to all PEs of the Host at the recorded time
+     * @param active        if the Host is active at the given time
+     */
+    public HostStateHistoryEntry(final double time, final double allocatedMips, final double requestedMips, final boolean active) {
+        this.time = time;
+        this.allocatedMips = allocatedMips;
+        this.requestedMips = requestedMips;
+        this.active = active;
+    }
 
-	/**
-	 * Sets the time.
-	 *
-	 * @param time the new time
-	 */
-	protected void setTime(double time) {
-		this.time = time;
-	}
+    /**
+     * Gets the time the data in this history entry is related to.
+     *
+     * @return
+     */
+    public double getTime() {
+        return time;
+    }
 
-	/**
-	 * Gets the time.
-	 *
-	 * @return the time
-	 */
-	public double getTime() {
-		return time;
-	}
+    /**
+     * Gets the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time.
+     *
+     * @return the allocated mips
+     */
+    public double getAllocatedMips() {
+        return allocatedMips;
+    }
 
-	/**
-	 * Sets the allocated mips.
-	 *
-	 * @param allocatedMips the new allocated mips
-	 */
-	protected void setAllocatedMips(double allocatedMips) {
-		this.allocatedMips = allocatedMips;
-	}
+    /**
+     * Gets the total MIPS requested by running VMs to all PEs of the Host at the recorded time.
+     *
+     * @return the requested mips
+     */
+    public double getRequestedMips() {
+        return requestedMips;
+    }
 
-	/**
-	 * Gets the allocated mips.
-	 *
-	 * @return the allocated mips
-	 */
-	public double getAllocatedMips() {
-		return allocatedMips;
-	}
+    /**
+     * Checks if the Host is/was active at the recorded time.
+     *
+     * @return true if is active, false otherwise
+     */
+    public boolean isActive() {
+        return active;
+    }
 
-	/**
-	 * Sets the requested mips.
-	 *
-	 * @param requestedMips the new requested mips
-	 */
-	protected void setRequestedMips(double requestedMips) {
-		this.requestedMips = requestedMips;
-	}
-
-	/**
-	 * Gets the requested mips.
-	 *
-	 * @return the requested mips
-	 */
-	public double getRequestedMips() {
-		return requestedMips;
-	}
-
-	/**
-	 * Sets the active.
-	 *
-	 * @param isActive the new active
-	 */
-	public void setActive(boolean isActive) {
-		this.isActive = isActive;
-	}
-
-	/**
-	 * Checks if is active.
-	 *
-	 * @return true, if is active
-	 */
-	public boolean isActive() {
-		return isActive;
-	}
-
+    @Override
+    public String toString() {
+        return String.format("Time: %6.0f | Requested: %10.0f MIPS | Allocated: %10.0f MIPS | Host Active: %s\n", time, requestedMips, allocatedMips, active);
+    }
 }

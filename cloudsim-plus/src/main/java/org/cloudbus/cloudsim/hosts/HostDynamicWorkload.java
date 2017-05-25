@@ -27,7 +27,7 @@ public interface HostDynamicWorkload extends Host {
      * @return the state history
      */
     List<HostStateHistoryEntry> getStateHistory();
-    
+
     /**
      * Adds a host state history entry.
      *
@@ -46,7 +46,7 @@ public interface HostDynamicWorkload extends Host {
     List<Vm> getFinishedVms();
 
     /**
-     * Gets the max utilization percentage among (between [0 and 1]) by all PEs.
+     * Gets the max utilization percentage among (between [0 and 1], where 1 is 100%) by all PEs.
      *
      * @return the max utilization percentage (between [0 and 1])
      */
@@ -59,14 +59,14 @@ public interface HostDynamicWorkload extends Host {
      * @return the max utilization percentage (between [0 and 1])
      */
     double getMaxUtilizationAmongVmsPes(Vm vm);
-    
+
     /**
      * Gets the previous utilization of CPU in percentage (between [0 and 1]).
      *
      * @return
      */
-    double getPreviousUtilizationOfCpu();    
-    
+    double getPreviousUtilizationOfCpu();
+
     /**
      * Gets the previous utilization of CPU in MIPS.
      *

@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
 /**
  * A VM allocation policy that uses Median Absolute Deviation (MAD) to compute
  * a dynamic threshold in order to detect host over utilization.
+ * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:

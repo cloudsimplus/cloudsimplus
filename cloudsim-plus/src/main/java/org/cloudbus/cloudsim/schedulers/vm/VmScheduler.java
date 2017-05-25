@@ -129,6 +129,15 @@ public interface VmScheduler {
     double getAvailableMips();
 
     /**
+     * Gets a <b>copy</b> of the List of MIPS requested by a VM,
+     * avoiding the original list to be changed.
+     *
+     * @param vm the VM to get the List of requested MIPS
+     * @return
+     */
+    List<Double> getMipsRequested(Vm vm);
+
+    /**
      * Checks if the PM using this scheduler has enough MIPS capacity
      * to host a given VM.
      *
@@ -143,7 +152,6 @@ public interface VmScheduler {
      * to host a given VM.
      *
      * @param vmMipsList a List with the MIPS capacity required by each VM PE
-     *
      * @return true, if it is possible to allocate the the VM into the host; false otherwise
      */
     boolean isSuitableForVm(List<Double> vmMipsList);
@@ -180,7 +188,7 @@ public interface VmScheduler {
      * @param vm the VM to get the allocated PEs
      * @return
      */
-    List<Pe> getPesAllocatedForVM(Vm vm);
+    List<Pe> getPesAllocatedForVm(Vm vm);
 
     /**
      * Gets the actual total allocated MIPS for a VM along all its allocated PEs.
@@ -196,6 +204,16 @@ public interface VmScheduler {
      * @see #getVmMigrationCpuOverhead()
      */
     double getTotalAllocatedMipsForVm(Vm vm);
+
+    /**
+     * Gets the max percentage of CPU a VM migrating out of this Host can use.
+     * Since there may be an overhead associated to the migration process
+     * (if the {@link #getVmMigrationCpuOverhead() CPU overhead for VM migration} is greater than 0),
+     * during the migration, the amount of MIPS the VM can use is reduced due to this overhead.
+     *
+     * @return the max percentage of CPU usage during migration (in scale from [0 to 1], where 1 is 100%)
+     */
+    double getMaxCpuUsagePercentDuringOutMigration();
 
     /**
      * Defines the percentage of Host's CPU usage increase when a

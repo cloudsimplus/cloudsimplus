@@ -41,24 +41,24 @@ public class NonPowerAware {
 	 * @throws IOException
 	 */
 	public static void main(String[] args) throws IOException {
-		String experimentName = "random_npa";
-		String outputFolder = "output";
+		final String experimentName = "random_npa";
+		final String outputFolder = "output";
 
 		Log.setDisabled(!Constants.ENABLE_OUTPUT);
 		Log.printLine("Starting " + experimentName);
 
 		try {
             CloudSim simulation = new CloudSim();
-
-			DatacenterBroker broker = Helper.createBroker(simulation);
+            Helper helper = new Helper(simulation, experimentName, Constants.OUTPUT_CSV, outputFolder);
+			DatacenterBroker broker = helper.createBroker(simulation);
 
 			List<Cloudlet> cloudletList = RandomHelper.createCloudletList(
 					broker, RandomConstants.NUMBER_OF_VMS);
-			List<Vm> vmList = Helper.createVmList(broker, cloudletList.size());
-			List<PowerHost> hostList = Helper.createHostList(RandomConstants.NUMBER_OF_HOSTS);
+			List<Vm> vmList = helper.createVmList(broker, cloudletList.size());
+			List<PowerHost> hostList = helper.createHostList(RandomConstants.NUMBER_OF_HOSTS);
 
-			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) Helper.createDatacenter(
-                simulation, PowerDatacenterNonPowerAware.class, hostList,
+			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) helper.createDatacenter(
+                PowerDatacenterNonPowerAware.class, hostList,
                 new PowerVmAllocationPolicySimple());
 
 			datacenter.setMigrationsEnabled(false);
@@ -72,14 +72,7 @@ public class NonPowerAware {
 			List<Cloudlet> newList = broker.getCloudletsFinishedList();
 			Log.printLine("Received " + newList.size() + " cloudlets");
 
-			Helper.printResults(
-					datacenter,
-					vmList,
-					lastClock,
-					experimentName,
-					Constants.OUTPUT_CSV,
-					outputFolder);
-
+			helper.printResults(datacenter, vmList, lastClock);
 		} catch (Exception e) {
 			e.printStackTrace();
 			Log.printLine("The simulation has been terminated due to an unexpected error");

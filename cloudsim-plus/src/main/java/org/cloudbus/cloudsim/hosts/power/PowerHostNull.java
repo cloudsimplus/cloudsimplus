@@ -82,27 +82,18 @@ final class PowerHostNull implements PowerHost {
     @Override public boolean addMigratingInVm(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean removeVmMigratingIn(Vm vm) {
+    @Override public boolean removeVmMigratingIn(Vm vm) {
         return false;
     }
-
-    @Override
-    public Set<Vm> getVmsMigratingOut() {
+    @Override public Set<Vm> getVmsMigratingOut() {
         return Collections.EMPTY_SET;
     }
-
-    @Override
-    public boolean addVmMigratingOut(Vm vm) {
+    @Override public boolean addVmMigratingOut(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean removeVmMigratingOut(Vm vm) {
+    @Override public boolean removeVmMigratingOut(Vm vm) {
         return false;
     }
-
     @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return false;
     }
@@ -177,6 +168,8 @@ final class PowerHostNull implements PowerHost {
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
+    @Override public boolean isActive() { return false; }
+    @Override public Host setActive(boolean active) { return this; }
     @Override public void reallocateMigratingInVms() {/**/}
     @Override public void removeMigratingInVm(Vm vm) {/**/}
     @Override public void setDatacenter(Datacenter datacenter) {/**/}

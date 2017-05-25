@@ -71,10 +71,10 @@ public class PowerVm extends VmSimple {
     public PowerVm(int id, long mipsCapacity, int numberOfPes) {
         super(id, mipsCapacity, numberOfPes);
     }
-    
+
     /**
-     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 
-     * 1024 MEGABYTE of Storage Size and no ID (which will be defined when the 
+     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and
+     * 1024 MEGABYTE of Storage Size and no ID (which will be defined when the
      * VM is submitted to a {@link DatacenterBroker}).
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
@@ -88,7 +88,7 @@ public class PowerVm extends VmSimple {
      */
     public PowerVm(long mipsCapacity, int numberOfPes) {
         this(-1, mipsCapacity, numberOfPes);
-    }    
+    }
 
     /**
      * Instantiates a new PowerVm.
@@ -147,7 +147,7 @@ public class PowerVm extends VmSimple {
 
     /**
      * Gets the utilization Median Absolute Deviation (MAD) in MIPS.
-     * @return 
+     * @return
      */
     public double getUtilizationMad() {
         if (!getUtilizationHistory().isEmpty()) {
@@ -165,7 +165,7 @@ public class PowerVm extends VmSimple {
 
     /**
      * Gets the utilization mean in MIPS.
-     * @return 
+     * @return
      */
     public double getUtilizationMean() {
         if (!getUtilizationHistory().isEmpty()) {
@@ -215,9 +215,9 @@ public class PowerVm extends VmSimple {
     }
 
     /**
-     * Gets a <b>read-only</b> CPU utilization percentage history.
+     * Gets a <b>read-only</b> CPU utilization percentage history (between [0 and 1], where 1 is 100%).
      *
-     * @return 
+     * @return
      */
     public List<Double> getUtilizationHistory() {
 	    return Collections.unmodifiableList(utilizationHistory);
@@ -226,7 +226,7 @@ public class PowerVm extends VmSimple {
     /**
      * Gets the previous time that cloudlets were processed.
      *
-     * @return 
+     * @return
      */
     public double getPreviousTime() {
         return previousTime;
