@@ -59,6 +59,7 @@ final class PeNull implements Pe {
     @Override public boolean deallocateResource(long amountToDeallocate) {
         return false;
     }
+    @Override public boolean deallocateAndRemoveResource(long amountToDeallocate) { return false; }
     @Override public long deallocateAllResources() {
         return 0;
     }

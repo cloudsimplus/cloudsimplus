@@ -3,6 +3,7 @@
 package hostFaultInjection;
 
 import static hostFaultInjection.HostFaultInjectionRunner.CLOUDLETS;
+import static hostFaultInjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
 import static hostFaultInjection.HostFaultInjectionRunner.VMS;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +15,9 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -35,15 +38,19 @@ import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
+import javax.sound.midi.SysexMessage;
+
 /**
+ * An experiment using a {@link HostFaultInjection} which it set a VM cloner
+ * linked to Broker when all VMs associated with it are destroyed.
  *
  * @author raysaoliveira
  */
 public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
-    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 300;
+    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 300; // (5 seconds * 60 (1 minute))
 
-    private static final int HOST_PES = 8;
+    private static final int HOST_PES = 6;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
@@ -56,7 +63,6 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     private static final int VM_PES = 2; //number of cpus
 
     private static final int CLOUDLET_PES = 2;
-    private static final long CLOUDLET_LENGHT = 2800_000_000L;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
 
@@ -64,11 +70,12 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Number of Hosts to create for each Datacenter. The number of elements in
      * this array defines the number of Datacenters to be created.
      */
-    private static final int HOSTS = 25;
-    private static final int BROKERS = 2;
+    private static final int HOSTS = 20;
+    private static final int BROKERS = 6;
 
 
     private HostFaultInjection fault;
+    private final ContinuousDistribution randCloudlet;
 
     private HostFaultInjectionExperiment(final long seed) {
         this(0, null, seed);
@@ -80,8 +87,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     private HostFaultInjectionExperiment(int index, ExperimentRunner runner, long seed) {
         super(index, runner, seed);
+        System.out.println("\n\t #Seed: " + getSeed());
         setNumBrokersToCreate(BROKERS);
         setAfterScenarioBuild(exp -> createFaultInjectionForHosts(getDatacenter0()));
+        this.randCloudlet = new UniformDistr(this.getSeed());
+
     }
 
     public double getAvailability() {
@@ -92,7 +102,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     protected List<Vm> createVms() {
         List<Vm> list = new ArrayList<>(VMS);
         final int id = getVmList().size();
-        for (int i = 0; i < VMS; i++) {
+        for (int i = 1; i <= VMS; i++) {
             Vm vm = createVm(id+i);
             list.add(vm);
         }
@@ -115,9 +125,12 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return the List of created Cloudlets
      */
     public Cloudlet createCloudlet(int id) {
+        final int i = (int) (randCloudlet .sample() * CLOUDLET_LENGTHS.length);
+        final long length = CLOUDLET_LENGTHS[i];
+
         UtilizationModel utilizationModel = new UtilizationModelFull();
         Cloudlet c
-                = new CloudletSimple(id, CLOUDLET_LENGHT, CLOUDLET_PES)
+                = new CloudletSimple(id, length, CLOUDLET_PES)
                         .setFileSize(CLOUDLET_FILESIZE)
                         .setOutputSize(CLOUDLET_OUTPUTSIZE)
                         .setUtilizationModel(utilizationModel);
@@ -191,9 +204,10 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final double meanFailureNumberPerMinute = 0.0009;
         //System.out.printf("Experiment %d seed: %d\n", getIndex(), getSeed());
         PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, getSeed());
+        //System.out.println("\n\t seed: " + getSeed());
 
         fault = new HostFaultInjection(datacenter, poisson);
-        fault.setMaxTimeToGenerateFailure(500000);
+        fault.setMaxTimeToGenerateFailure(999_000L);
 
         for (DatacenterBroker broker : getBrokerList()) {
             Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmsWaitingList().size() - 1);
@@ -307,10 +321,15 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @throws IOException
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        Log.disable();
-        HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(1475098589748L);
-        exp.getBrokerList().stream().forEach(b -> b.setLog(false));
-        exp.setVerbose(false).run();
+        HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(1475098589750L);
+
+        /*exp.getBrokerList().stream().forEach(b -> b.setLog(false));
+        exp.setAfterScenarioBuild(e -> {
+            e.getBrokerList().stream().forEach(b -> b.setLog(false));
+            e.getDatacenter0().setLog(false);
+        });*/
+
+        exp.setVerbose(true).run();
         System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());
         System.out.println("\n# Number of Host faults: " + exp.fault.getNumberOfHostFaults());
         System.out.println("# Number of VM faults (VMs destroyed): " + exp.fault.getNumberOfDestroyedVms());

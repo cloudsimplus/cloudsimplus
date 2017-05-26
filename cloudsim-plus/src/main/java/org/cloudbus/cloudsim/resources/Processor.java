@@ -192,7 +192,7 @@ public final class Processor extends ResourceManageableAbstract {
     /**
      * Sets the number of {@link Pe}s of the Processor
      * @param numberOfPes the number of PEs to set
-     * @return 
+     * @return
      */
     @Override
     public final boolean setCapacity(long numberOfPes) {
@@ -260,11 +260,6 @@ public final class Processor extends ResourceManageableAbstract {
     @Override
     public boolean allocateResource(long amountToAllocate) {
         throw new UnsupportedOperationException("The allocateResource method is not supported for the Processor because this is controlled by the CloudletScheduler.");
-    }
-
-    @Override
-    public boolean deallocateResource(long amountToDeallocate) {
-        throw new UnsupportedOperationException("The deallocateResource method is not supported for the Processor because this is controlled by the CloudletScheduler.");
     }
 
     @Override

@@ -89,7 +89,7 @@ public final class HostFaultInjectionExample1 {
     private static final int VM_PES = 2; //number of cpus
 
     private static final int CLOUDLET_PES = 2;
-    private static final long CLOUDLET_LENGHT = 1000_000_000L;
+    private static final long CLOUDLET_LENGHT = 2800_000_000L;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
 
@@ -98,9 +98,9 @@ public final class HostFaultInjectionExample1 {
      * this array defines the number of Datacenters to be created.
      */
     private static final int HOSTS = 15;
-    private static final int VMS = 10;
+    private static final int VMS = 6;
 
-    private static final int CLOUDLETS = 16;
+    private static final int CLOUDLETS = 6;
 
     private final List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
@@ -242,13 +242,15 @@ public final class HostFaultInjectionExample1 {
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
         //final long seed = System.currentTimeMillis();
-        long seed = 83787384734L;
+        long seed = 87384734L;
         /*The average number of failures expected to happen each minute
         in a Poisson Process, which is also called event rate or rate parameter.*/
         final double meanFailureNumberPerMinute = 0.0009;
         PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, seed);
 
         fault = new HostFaultInjection(datacenter, poisson);
+        fault.setMaxTimeToGenerateFailure(500_000L);
+
         this.vmlist.stream().forEach(vm -> fault.addVmCloner(broker, this::cloneVm));
         fault.addCloudletsCloner(broker, this::cloneCloudlets);
 

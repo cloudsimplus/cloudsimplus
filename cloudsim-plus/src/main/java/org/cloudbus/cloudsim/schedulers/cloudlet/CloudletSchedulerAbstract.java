@@ -24,6 +24,7 @@ import org.cloudbus.cloudsim.util.Conversion;
 
 import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Processor;
@@ -142,6 +143,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #getCurrentMipsShare()
      */
     protected void setCurrentMipsShare(List<Double> currentMipsShare) {
+        if(currentMipsShare.size() > vm.getNumberOfPes()){
+            Log.printFormattedLine("Requested %d PEs but %s has just %d", currentMipsShare.size(), vm, vm.getNumberOfPes());
+        }
         this.currentMipsShare = currentMipsShare;
         processor = Processor.fromMipsList(vm, currentMipsShare, getCloudletExecList());
     }
@@ -149,10 +153,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public List<CloudletExecutionInfo> getCloudletExecList() {
         return Collections.unmodifiableList(cloudletExecList);
-    }
-
-    protected final void setCloudletExecList(List<CloudletExecutionInfo> cloudletExecList) {
-        this.cloudletExecList = cloudletExecList;
     }
 
     protected void addCloudletToWaitingList(CloudletExecutionInfo cloudlet) {
@@ -206,10 +206,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void sortCloudletWaitingList(Comparator<CloudletExecutionInfo> comparator){
         cloudletWaitingList.sort(comparator);
-    }
-
-    protected final void setCloudletWaitingList(List<CloudletExecutionInfo> cloudletWaitingList) {
-        this.cloudletWaitingList = cloudletWaitingList;
     }
 
     @Override
@@ -829,7 +825,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *                        PEs
      */
     private void removeUsedPes(long usedPesToRemove) {
-        this.usedPes -= usedPesToRemove;
+        this.usedPes = (int)Math.max(0, this.usedPes-usedPesToRemove);
     }
 
     @Override
@@ -946,8 +942,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public void deallocatePesFromVm(Vm vm, int pesToRemove) {
-        processor.removeCapacity(pesToRemove);
         removeUsedPes(pesToRemove);
+        processor.deallocateAndRemoveResource(pesToRemove);
     }
 
     @Override

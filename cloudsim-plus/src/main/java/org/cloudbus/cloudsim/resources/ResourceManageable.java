@@ -120,6 +120,20 @@ public interface ResourceManageable extends Resource {
     boolean deallocateResource(long amountToDeallocate);
 
     /**
+     * Try to deallocate a given amount of the resource and then
+     * remove such amount from the total capacity.
+     * If the given amount is greater than the total allocated resource,
+     * all the resource will be deallocated and that amount
+     * will be removed from the total capacity.
+     *
+     * @param amountToDeallocate the amount of resource to be deallocated and then removed from
+     *                           the total capacity
+     * @return true if amountToDeallocate > 0 and there is enough resource to
+     * deallocate, false otherwise
+     */
+    boolean deallocateAndRemoveResource(long amountToDeallocate);
+
+    /**
      * Try to deallocate all the capacity of the given resource from this resource.
      * This method is commonly used to deallocate a specific
      * amount of a physical resource (this Resource instance)

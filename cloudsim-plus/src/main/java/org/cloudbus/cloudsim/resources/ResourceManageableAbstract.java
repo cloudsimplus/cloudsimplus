@@ -121,6 +121,19 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     }
 
     @Override
+    public boolean deallocateAndRemoveResource(long amountToDeallocate) {
+        final long amountToRemoveFromSize = amountToDeallocate;
+        //cannot deallocate more than it's allocated
+        amountToDeallocate = Math.min(amountToDeallocate, this.getAllocatedResource());
+        if(amountToDeallocate != 0 && !deallocateResource(amountToDeallocate)){
+            return false;
+        }
+
+        return removeCapacity(amountToRemoveFromSize);
+
+    }
+
+    @Override
     public boolean deallocateResource(final long amountToDeallocate) {
         if(amountToDeallocate <= 0 || !isResourceAmountBeingUsed(amountToDeallocate)) {
             return false;
@@ -132,7 +145,7 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
 
     @Override
     public long deallocateAllResources() {
-        final Long previousAllocated = getAllocatedResource();
+        final long previousAllocated = getAllocatedResource();
         setAvailableResource(getCapacity());
         return previousAllocated;
     }

@@ -7,9 +7,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
+ ** Runs the {@link HostFaultInjectionExperiment} the number of
+ * times defines by {@link #getSimulationRuns()} and compute statistics.
  *
  * @author raysaoliveira
  */
@@ -19,8 +22,9 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final int VMS = 25;
-    static final int CLOUDLETS = 25;
+    static final long[] CLOUDLET_LENGTHS = {2800_000_000L, 3800_000_000L, 4800_000_000L};
+    static final int VMS = 2;
+    static final int CLOUDLETS = 4;
 
     /**
      * Average of the cost total
@@ -42,7 +46,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     public static void main(String[] args) {
         new HostFaultInjectionRunner(true, 1475098589732L)
-                .setSimulationRuns(300)
+                .setSimulationRuns(100)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
@@ -79,8 +83,8 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
-        map.put("Average of Total Availability of simulation", availability);
-        map.put("Ratio VMS per HOST: ", ratioVmsPerHost);
+        map.put("Average of Total Availability of Simulation", availability);
+        map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
         return map;
     }
 
@@ -115,9 +119,9 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         double lower = stats.getMean() - intervalSize;
         double upper = stats.getMean() + intervalSize;
         System.out.printf(
-                "\tTaskTimeCompletion mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
+                "\tTaskTimeCompletion mean 95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]\n",
                 stats.getMean(), intervalSize, lower, upper);
-        System.out.printf("\tStandard Deviation: %.2f \n", stats.getStandardDeviation());
+        System.out.printf("\tStandard Deviation: %.4f \n", stats.getStandardDeviation());
     }
 
 }

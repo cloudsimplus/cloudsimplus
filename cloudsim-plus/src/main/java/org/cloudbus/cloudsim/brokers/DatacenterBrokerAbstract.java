@@ -191,9 +191,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         vmsWaitingList.addAll(list);
 
         if (isStarted() && !list.isEmpty()) {
-            Log.printFormattedLine(
+            println(String.format(
                 "%.2f: %s: List of %d VMs submitted to the broker during simulation execution.\n\t VMs creation request sent to Datacenter.",
-                getSimulation().clock(), getName(), list.size());
+                getSimulation().clock(), getName(), list.size()));
             requestDatacenterToCreateWaitingVms();
         }
     }
@@ -301,19 +301,19 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
-        Log.printFormattedLine(
+        println(String.format(
             "%.2f: %s: List of %d Cloudlets submitted to the broker during simulation execution.",
-            getSimulation().clock(), getName(), list.size());
+            getSimulation().clock(), getName(), list.size()));
 
         //If there aren't more VMs to be created, then request Cloudlets creation
         if(getVmsWaitingList().isEmpty()){
-            Log.printLine(" Cloudlets creation request sent to Datacenter.");
+            println(" Cloudlets creation request sent to Datacenter.");
             requestDatacentersToCreateWaitingCloudlets();
             notifyOnCreationOfWaitingVmsFinishListeners();
         } else
-            Log.printFormattedLine(
+            println(String.format(
                     " Waiting creation of %d VMs to send Cloudlets creation request to Datacenter.",
-                    getVmsWaitingList().size());
+                    getVmsWaitingList().size()));
     }
 
     private void sortCloudletsIfComparatorIsSet(List<? extends Cloudlet> list) {
@@ -412,9 +412,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void processDatacenterListRequest(SimEvent ev) {
         setDatacenterList((Set<Datacenter>) ev.getData());
-        Log.printFormattedLine(
+        println(String.format(
             "%.2f: %s: List of Datacenters received with %d datacenters(s).",
-            getSimulation().clock(), getName(), getDatacenterList().size());
+            getSimulation().clock(), getName(), getDatacenterList().size()));
         requestDatacenterToCreateWaitingVms();
     }
 
@@ -487,8 +487,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         /* If it gets here, it means that all datacenters were already queried
          * and not all VMs could be created, but some of them could. */
         if (getVmsCreatedList().isEmpty()) {
-            Log.printFormattedLine("%.2f: %s: %s", getSimulation().clock(), getName(),
-                "none of the required VMs could be created. Aborting");
+            println(String.format("%.2f: %s: %s", getSimulation().clock(), getName(),
+                "none of the required VMs could be created. Aborting"));
             finishExecution();
             return;
         }
@@ -523,9 +523,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         getVmsToDatacentersMap().put(vm, datacenter);
         vmsWaitingList.remove(vm);
         getVmsCreatedList().add(vm);
-        Log.printFormattedLine(
+        println(String.format(
             "%.2f: %s: %s has been created in %s.",
-            getSimulation().clock(), getName(), vm, vm.getHost());
+            getSimulation().clock(), getName(), vm, vm.getHost()));
     }
 
     /**
@@ -537,9 +537,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void processFailedVmCreationInDatacenter(Vm vm, Datacenter datacenter) {
         vm.notifyOnCreationFailureListeners(datacenter);
-        Log.printFormattedLine(
+        println(String.format(
             "%.2f: %s: Creation of %s failed in Datacenter #%s",
-            getSimulation().clock(), getName(), vm, datacenter.getId());
+            getSimulation().clock(), getName(), vm, datacenter.getId()));
     }
 
     /**
@@ -552,14 +552,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     protected void processCloudletReturn(SimEvent ev) {
         final Cloudlet cloudlet = (Cloudlet) ev.getData();
         cloudletsFinishedList.add(cloudlet);
-        Log.printFormattedLine("%.2f: %s: %s %d finished and returned to broker.",
-            getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId());
+        println(String.format("%.2f: %s: %s %d finished and returned to broker.",
+            getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId()));
         cloudletsCreated--;
         if (getCloudletsWaitingList().isEmpty() && cloudletsCreated == 0) {
             // all cloudlets executed
-            Log.printFormattedLine(
+            println(String.format(
                 "%.2f: %s: All Cloudlets executed. Finishing...",
-                getSimulation().clock(), getName());
+                getSimulation().clock(), getName()));
             destroyVms();
             finishExecution();
         } else if (hasMoreCloudletsToBeExecuted()) {
@@ -586,10 +586,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void processOtherEvent(SimEvent ev) {
         if (Objects.isNull(ev)) {
-            Log.printConcatLine(getName(), ".processOtherEvent(): ", "Error - an event is null.");
+            println(String.format("%s.processOtherEvent(): Error - an event is null.", getName()));
             return;
         }
-        Log.printConcatLine(getName(), ".processOtherEvent(): Error - event unknown by this DatacenterBroker.");
+        println(String.format("%s.processOtherEvent(): Error - event unknown by this DatacenterBroker.", getName()));
     }
 
     /**
@@ -619,9 +619,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         int requestedVms = 0;
         for (final Vm vm : getVmsWaitingList()) {
             if (!vmsToDatacentersMap.containsKey(vm) && !vmCreationRequestsMap.containsKey(vm)) {
-                Log.printFormattedLine(
+                println(String.format(
                     "%.2f: %s: Trying to Create %s in %s",
-                    getSimulation().clock(), getName(), vm, datacenter.getName());
+                    getSimulation().clock(), getName(), vm, datacenter.getName()));
                 sendNow(datacenter.getId(), CloudSimTags.VM_CREATE_ACK, vm);
                 vmCreationRequestsMap.put(vm, datacenter);
                 requestedVms++;
@@ -657,15 +657,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             lastSelectedVm = vmMapper.apply(cloudlet);
             if (lastSelectedVm == Vm.NULL) {
                 // vm was not created
-                Log.printFormattedLine(
+                println(String.format(
                     "%.2f: %s: : Postponing execution of cloudlet %d: bind VM not available.",
-                    getSimulation().clock(), getName(), cloudlet.getId());
+                    getSimulation().clock(), getName(), cloudlet.getId()));
                 continue;
             }
-            Log.printFormattedLine(
+            println(String.format(
                 "%.2f: %s: Sending %s %d to %s in %s.",
                 getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(),
-                lastSelectedVm, lastSelectedVm.getHost());
+                lastSelectedVm, lastSelectedVm.getHost()));
             cloudlet.setVm(lastSelectedVm);
             send(getVmDatacenter(lastSelectedVm).getId(),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
@@ -685,7 +685,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void destroyVms() {
         for (final Vm vm : getVmsCreatedList()) {
-            Log.printFormattedLine("%.2f: %s: Destroying %s", getSimulation().clock(), getName(), vm);
+            println(String.format("%.2f: %s: Destroying %s", getSimulation().clock(), getName(), vm));
             sendNow(getVmDatacenter(vm).getId(), CloudSimTags.VM_DESTROY, vm);
         }
         getVmsCreatedList().clear();
@@ -703,12 +703,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void shutdownEntity() {
-        Log.printConcatLine(getName(), " is shutting down...");
+        println(String.format("%s is shutting down...", getName()));
     }
 
     @Override
     public void startEntity() {
-        Log.printConcatLine(getName(), " is starting...");
+        println(String.format("%s is starting...", getName()));
         schedule(getSimulation().getCloudInfoServiceEntityId(), 0, CloudSimTags.DATACENTER_LIST_REQUEST);
     }
 
