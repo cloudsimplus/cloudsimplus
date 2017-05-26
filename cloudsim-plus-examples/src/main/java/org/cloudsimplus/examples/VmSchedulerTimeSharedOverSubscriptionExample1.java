@@ -32,11 +32,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
-import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -49,14 +45,11 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -86,7 +79,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class VmSchedulerTimeSharedOverSubscriptionExample {
+public class VmSchedulerTimeSharedOverSubscriptionExample1 {
     private static final int HOSTS     = 2;
     private static final int VMS       = 2;
     private static final int CLOUDLETS = VMS;
@@ -108,10 +101,10 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
     private static final int SCHEDULING_INTERVAL = 10;
 
     public static void main(String[] args) {
-        new VmSchedulerTimeSharedOverSubscriptionExample();
+        new VmSchedulerTimeSharedOverSubscriptionExample1();
     }
 
-    public VmSchedulerTimeSharedOverSubscriptionExample() {
+    public VmSchedulerTimeSharedOverSubscriptionExample1() {
         hostList = new ArrayList<>(HOSTS);
         vmList = new ArrayList<>(VMS);
         cloudletList = new ArrayList<>(CLOUDLETS);
@@ -131,9 +124,10 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
         simulation.start();
 
         new CloudletsTableBuilder(broker0.getCloudletsFinishedList())
-            .addColumn(5, new TextTableColumn("Host MIPS"), c -> c.getVm().getHost().getMips())
-            .addColumn(8, new TextTableColumn("VM MIPS  ", "requested"), c -> c.getVm().getMips())
-            .addColumn(9, new TextTableColumn("VM MIPS  ", "allocated"), this::getVmAllocatedMips)
+            .addColumn(5, new TextTableColumn("Host MIPS", "total"), c -> c.getVm().getHost().getTotalMipsCapacity())
+            .addColumn(8, new TextTableColumn("VM MIPS", "total"), c -> c.getVm().getTotalMipsCapacity())
+            .addColumn(9, new TextTableColumn("  VM MIPS", "requested"), this::getVmRequestedMips)
+            .addColumn(10, new TextTableColumn("  VM MIPS", "allocated"), this::getVmAllocatedMips)
             .build();
 
         System.out.println("\nHosts CPU usage History");
@@ -142,8 +136,17 @@ public class VmSchedulerTimeSharedOverSubscriptionExample {
 
     private void printHostHistory(PowerHost h) {
         System.out.printf("Host: %d\n", h.getId());
+        System.out.println("------------------------------------------------------------------------------------------");
         h.getStateHistory().stream().forEach(System.out::print);
         System.out.println();
+    }
+
+    private double getVmRequestedMips(Cloudlet c) {
+        if(c.getVm().getStateHistory().isEmpty()){
+            return 0;
+        }
+
+        return c.getVm().getStateHistory().get(c.getVm().getStateHistory().size()-1).getRequestedMips();
     }
 
     private double getVmAllocatedMips(Cloudlet c) {

@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
+ * @todo This class is confusing is just appears to be duplicating code with the {@link PowerHostUtilizationHistory}.
+ * It appears to be a non-power aware Host that just stores usage store,
+ * while the other Host has these two behaviors.
  */
 public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamicWorkload {
 
