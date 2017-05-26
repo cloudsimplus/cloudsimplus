@@ -84,22 +84,13 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     protected Map<Vm, Host> getVmHostMap() {
         return Collections.unmodifiableMap(vmHostMap);
     }
-    
+
     protected void addVmToHostMap(Vm vm, Host host){
         vmHostMap.put(vm, host);
     }
-    
+
     protected Host removeVmFromHostMap(Vm vm){
         return vmHostMap.remove(vm);
-    }
-
-    /**
-     * Sets the vm table.
-     *
-     * @param vmTable the vm table
-     */
-    protected final void setVmTable(Map<Vm, Host> vmTable) {
-        this.vmHostMap = vmTable;
     }
 
     /**
@@ -166,7 +157,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private void addPesFromHostsToFreePesList() {
         setHostFreePesMap(new HashMap<>(getHostList().size()));
-        setVmTable(new HashMap<>());
+        vmHostMap = new HashMap<>();
         setUsedPes(new HashMap<>());
         getHostList().forEach(host -> hostFreePesMap.put(host, host.getNumberOfWorkingPes()));
     }

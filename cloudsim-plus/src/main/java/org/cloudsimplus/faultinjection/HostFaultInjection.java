@@ -177,8 +177,13 @@ public class HostFaultInjection extends CloudSimEntity {
     private int numberOfHostFaults;
 
     /**
-     * A map to store the time (in seconds) each failed VM took to be recovered.
-     * It also means the failure time for each Vm.
+     * A map to store the time (in seconds) VM failures took to be recovered,
+     * which is when a clone from the last failed VM for a given broker is created.
+     * Since a broker just creates a VM clone when all its VMs have failed,
+     * only at that time the failure is in fact recovered.
+     *
+     * It means the time period failure of all VMs persisted
+     * before a clone was created.
      */
     private final Map<Vm, Double> vmRecoveryTimeMap;
 
@@ -484,7 +489,6 @@ public class HostFaultInjection extends CloudSimEntity {
         vm.setFailed(true);
         final DatacenterBroker broker = vm.getBroker();
         if(isVmClonerSet(broker) && isAllVmsFailed(broker)){
-
             final double recoveryTime = getRandomRecoveryTimeForVm();
             Log.printFormattedLine("\t# Time to recovery the fault: %.2f minutes", recoveryTime/60);
             vmRecoveryTimeMap.put(vm, recoveryTime);

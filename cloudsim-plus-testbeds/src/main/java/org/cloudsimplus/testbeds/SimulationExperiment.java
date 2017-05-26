@@ -48,7 +48,7 @@ import java.util.stream.IntStream;
 public abstract class SimulationExperiment implements Runnable {
 
     private final ExperimentRunner runner;
-    public final List<Cloudlet> cloudletList;
+    private final List<Cloudlet> cloudletList;
     private final long seed;
     private List<Vm> vmList;
     private List<Host> hostList;
