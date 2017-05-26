@@ -42,7 +42,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * Runs the {@link DatacenterBrokerHeuristicExperiment} the number of times
- * defines by {@link #numberOfSimulationRuns} and compute statistics.
+ * defines by {@link #getSimulationRuns()} and compute statistics.
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -102,8 +102,8 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      */
     private final boolean experimentVerbose = false;
 
-    DatacenterBrokerHeuristicRunner() {
-        super();
+    DatacenterBrokerHeuristicRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+        super(applyAntitheticVariatesTechnique, baseSeed);
         experimentCosts = new ArrayList<>();
         runtimeStats = new SummaryStatistics();
         vmPesArray = new int[0];
@@ -112,7 +112,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     /**
      * Starts the execution of the experiments the number of times defines in
-     * {@link #numberOfSimulationRuns}.
+     * {@link #getSimulationRuns()}.
      *
      * @param args command line arguments
      */
@@ -124,11 +124,9 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
             NumberOfBatches: 6
             BaseSeed: 1475098589732L
          */
-        new DatacenterBrokerHeuristicRunner()
+        new DatacenterBrokerHeuristicRunner(true, 1475098589732L)
                 .setSimulationRuns(1200)
-                .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(6) //Comment this or set to 0 to disable the "Batch Means Method"
-                .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed
                 .setVerbose(true)
                 .run();
     }
@@ -194,9 +192,9 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected DatacenterBrokerHeuristicExperiment createExperiment(int i) {
-        final ContinuousDistribution prng = createRandomGenAndAddSeedToList(i, 0, 1);
+        final ContinuousDistribution prng = createRandomGen(i, 0, 1);
         final DatacenterBrokerHeuristicExperiment exp
-                = new DatacenterBrokerHeuristicExperiment(this, i)
+                = new DatacenterBrokerHeuristicExperiment(i, this)
                         .setRandomGen(prng)
                         .setCloudletPesArray(cloudletPesArray)
                         .setVmPesArray(vmPesArray);

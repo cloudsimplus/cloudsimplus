@@ -89,7 +89,7 @@ public final class HostFaultInjectionExample1 {
     private static final int VM_PES = 2; //number of cpus
 
     private static final int CLOUDLET_PES = 2;
-    private static final long CLOUDLET_LENGHT = 50_000_000;
+    private static final long CLOUDLET_LENGHT = 2800_000_000L;
     private static final long CLOUDLET_FILESIZE = 300;
     private static final long CLOUDLET_OUTPUTSIZE = 300;
 
@@ -97,10 +97,10 @@ public final class HostFaultInjectionExample1 {
      * Number of Hosts to create for each Datacenter. The number of elements in
      * this array defines the number of Datacenters to be created.
      */
-    private static final int HOSTS = 25;
-    private static final int VMS = 27;
+    private static final int HOSTS = 15;
+    private static final int VMS = 6;
 
-    private static final int CLOUDLETS = 27;
+    private static final int CLOUDLETS = 6;
 
     private final List<Vm> vmlist = new ArrayList<>();
     private CloudSim simulation;
@@ -116,18 +116,18 @@ public final class HostFaultInjectionExample1 {
     public static void main(String[] args) {
         new HostFaultInjectionExample1();
     }
-   
+
     public HostFaultInjectionExample1() {
         Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
 
         simulation = new CloudSim();
 
         Datacenter datacenter = createDatacenter(HOSTS);
-        createFaultInjectionForHosts(datacenter);
 
         broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms();
         createAndSubmitCloudlets();
+        createFaultInjectionForHosts(datacenter);
 
         simulation.start();
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
@@ -140,13 +140,14 @@ public final class HostFaultInjectionExample1 {
         Log.printFormattedLine("# Hosts MTBF: %.2f minutes", fault.meanTimeBetweenHostFaultsInMinutes());
         Log.printFormattedLine("# Availability: %.2f%%", fault.availability()*100);
 
-        
+
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
-    
+
     public void createAndSubmitVms() {
-        for (int i = 0; i < VMS; i++) {
+        for (int i = 1; i <= VMS; i++) {
             Vm vm = createVm();
+            vm.setId(i);
             vmlist.add(vm);
         }
         broker.submitVmList(vmlist);
@@ -241,17 +242,20 @@ public final class HostFaultInjectionExample1 {
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
         //final long seed = System.currentTimeMillis();
-        long seed = System.currentTimeMillis();
+        long seed = 87384734L;
         /*The average number of failures expected to happen each minute
         in a Poisson Process, which is also called event rate or rate parameter.*/
-        final double meanFailureNumberPerMinute = 0.006;
+        final double meanFailureNumberPerMinute = 0.0009;
         PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, seed);
 
         fault = new HostFaultInjection(datacenter, poisson);
-        fault.setVmCloner(this::cloneVm);
-        fault.setCloudletsCloner(this::cloneCloudlets);
+        fault.setMaxTimeToGenerateFailure(500_000L);
+
+        this.vmlist.stream().forEach(vm -> fault.addVmCloner(broker, this::cloneVm));
+        fault.addCloudletsCloner(broker, this::cloneCloudlets);
+
         Log.printFormattedLine(
-                "\tFault Injection created for %s.\n\tMean Number of Failures per Minute: %.2f (1 failure expected at each %.2f minutes).",
+                "\tFault Injection created for %s.\n\tMean Number of Failures per Minute: %.6f (1 failure expected at each %.2f minutes).",
                 datacenter, meanFailureNumberPerMinute, poisson.getInterarrivalMeanTime());
     }
 
@@ -268,7 +272,7 @@ public final class HostFaultInjectionExample1 {
     private Vm cloneVm(Vm vm) {
         Vm clone = new VmSimple((long) vm.getMips(), (int) vm.getNumberOfPes());
         /*It' not required to set an ID for the clone.
-        It is being set here just to make it easy to 
+        It is being set here just to make it easy to
         relate the ID of the vm to its clone,
         since the clone ID will be 10 times the id of its
         source VM.*/
@@ -318,7 +322,7 @@ public final class HostFaultInjectionExample1 {
                         source.getLength(),
                         (int) source.getNumberOfPes());
         /*It' not required to set an ID for the clone.
-        It is being set here just to make it easy to 
+        It is being set here just to make it easy to
         relate the ID of the cloudlet to its clone,
         since the clone ID will be 10 times the id of its
         source cloudlet.*/

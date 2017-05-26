@@ -132,22 +132,6 @@ public class CloudletSchedulerTimeSharedTest {
         assertTrue(instance.isThereEnoughFreePesForCloudlet(new CloudletExecutionInfo(cloudlet0)));
     }
 
-    @Test
-    public void testGetTotalCurrentAvailableMipsForCloudlet_OneCloudlet() {
-        final long mips = 1000;
-        final int cloudletPes = 2;
-        final int schedulerPes = 4;
-        final CloudletExecutionInfo cloudlet =
-                new CloudletExecutionInfo(
-                        CloudletSimpleTest.createCloudlet0(mips, cloudletPes));
-        final CloudletSchedulerTimeShared instance =
-                createCloudletSchedulerWithMipsList(schedulerPes, mips);
-        final List<Double> mipsList = instance.getCurrentMipsShare();
-
-        final double result = instance.getTotalCurrentAvailableMipsForCloudlet(cloudlet, mipsList);
-        assertEquals((double) mips, result, 0.0);
-    }
-
     @Test @Ignore("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
     public void testGetTotalCurrentAllocatedMipsForCloudlet() {
         final CloudletExecutionInfo rcl = new CloudletExecutionInfo(Cloudlet.NULL);

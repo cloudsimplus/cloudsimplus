@@ -30,6 +30,7 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -83,11 +84,22 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Creates an experiment runner, setting the
      * {@link #getBaseSeed() base seed} as the current time.
+     * @param antitheticVariatesTechnique indicates if it's to be applied the <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
      */
-    public ExperimentRunner() {
+    public ExperimentRunner(final boolean antitheticVariatesTechnique) {
+        this(antitheticVariatesTechnique, System.currentTimeMillis());
+    }
+
+    /**
+     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}.
+     * @param antitheticVariatesTechnique indicates if it's to be applied the <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
+     * @param baseSeed the seed to be used as base for each experiment seed
+     */
+    public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
         seeds = new ArrayList<>();
-        setBaseSeed(System.currentTimeMillis());
+        setBaseSeed(baseSeed);
         setNumberOfBatches(0);
+        setApplyAntitheticVariatesTechnique(antitheticVariatesTechnique);
     }
 
     /**
@@ -331,7 +343,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         return this;
     }
 
-    public ExperimentRunner setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
+    private final ExperimentRunner setApplyAntitheticVariatesTechnique(final boolean applyAntitheticVariatesTechnique) {
         this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
         return this;
     }
@@ -360,32 +372,23 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     }
 
     /**
-     * Gets the base seed used for pseudo random number generators. This seed is
-     * used for generation of random values used across all experiment runs. For
-     * each different experiment run, a different seed based on this one is
-     * used.
+     * Gets the seed to be used for the first executed experiment.
+     * The seed for each subsequent experiment is this seed plus the index
+     * of the experiment.
      *
      * @return
-     * @see #getSeeds()
      */
     public long getBaseSeed() {
         return baseSeed;
     }
 
-    /**
-     * Gets the seeds used to run each experiment.
-     *
-     * @return
-     * @see #createRandomGenAndAddSeedToList(int, double, double)
-     */
-    public List<Long> getSeeds() {
-        return seeds;
+    long getSeed(final int experimentIndex) {
+        return seeds.get(experimentIndex);
     }
 
     /**
      * Creates a pseudo random number generator (PRNG) for a experiment run that
-     * generates uniform values between [min and max[. Adds the PRNG seed to the
-     * {@link #getSeeds()} list. If it is to apply the
+     * generates uniform values between [min and max[. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
      * to reduce results variance, the second half of experiments will use the
      * seeds from the first half.
@@ -397,27 +400,25 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * @see UniformDistr#isApplyAntitheticVariatesTechnique()
      */
-    public ContinuousDistribution createRandomGenAndAddSeedToList(int experimentIndex, double minValue, double maxValue) {
+    public ContinuousDistribution createRandomGen(int experimentIndex, double minValue, double maxValue) {
         UniformDistr prng;
-        if (isApplyAntitheticVariatesTechnique()
-                && simulationRuns > 1 && experimentIndex >= halfSimulationRuns()) {
-            final int previousExperiment = experimentIndex - halfSimulationRuns();
-
-            prng = new UniformDistr(minValue, maxValue, seeds.get(previousExperiment))
+        if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
+            final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
+            return new UniformDistr(minValue, maxValue, seeds.get(expIndexFromFirstHalf))
                     .setApplyAntitheticVariatesTechnique(true);
-        } else {
-            final long experimentSeed = getBaseSeed() + experimentIndex + 1;
-            prng = new UniformDistr(minValue, maxValue, experimentSeed);
         }
 
-        addSeed(prng.getSeed());
-        return prng;
+        return new UniformDistr(minValue, maxValue, seeds.get(experimentIndex));
     }
 
-     /**
+    public boolean isToReuseSeedFromFirstHalfOfExperiments(int currentExperimentIndex) {
+        return isApplyAntitheticVariatesTechnique() &&
+        simulationRuns > 1 && currentExperimentIndex >= halfSimulationRuns();
+    }
+
+    /**
      * Creates a pseudo random number generator (PRNG) for a experiment run that
-     * generates uniform values between [0 and 1[. Adds the PRNG seed to the
-     * {@link #getSeeds()} list. If it is to apply the
+     * generates uniform values between [0 and 1[. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
      * to reduce results variance, the second half of experiments will used the
      * seeds from the first half.
@@ -427,8 +428,8 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * @see UniformDistr#isApplyAntitheticVariatesTechnique()
      */
-    public ContinuousDistribution createRandomGenAndAddSeedToList(int experimentIndex) {
-        return createRandomGenAndAddSeedToList(experimentIndex, 0, 1);
+    public ContinuousDistribution createRandomGen(int experimentIndex) {
+        return createRandomGen(experimentIndex, 0, 1);
     }
 
     /**
@@ -436,7 +437,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * @param seed seed of the current experiment to add to the list
      */
-    protected void addSeed(long seed) {
+    void addSeed(long seed) {
         if(!seeds.contains(seed)){
             seeds.add(seed);
         }
@@ -445,7 +446,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * @return the half of {@link #getSimulationRuns()}
      */
-    private int halfSimulationRuns() {
+    public int halfSimulationRuns() {
         return simulationRuns / 2;
     }
 
@@ -534,7 +535,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * "Antithetic Variates Technique" is to be applied, otherwise return the
      * same given samples list.
      *
-     * @see #createRandomGenAndAddSeedToList(int, double, double)
+     * @see #createRandomGen(int, double, double)
      */
     protected List<Double> computeAntitheticMeans(List<Double> samples) {
         if (!isApplyAntitheticVariatesTechnique()) {

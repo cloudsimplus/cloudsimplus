@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.toList;
+
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -24,6 +26,7 @@ import org.cloudbus.cloudsim.util.Conversion;
 
 import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Processor;
@@ -57,10 +60,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #getPacketScheduler()
      */
     private PacketScheduler packetScheduler;
-    /**
-     * @see #getProcessor()
-     */
-    private Processor processor;
     /**
      * @see #getUsedPes()
      */
@@ -101,7 +100,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     public CloudletSchedulerAbstract() {
         setPreviousTime(0.0);
-        processor = new Processor();
         usedPes = 0;
         vm = Vm.NULL;
         cloudletExecList = new ArrayList<>();
@@ -142,17 +140,63 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #getCurrentMipsShare()
      */
     protected void setCurrentMipsShare(List<Double> currentMipsShare) {
+        if(currentMipsShare.size() > vm.getNumberOfPes()){
+            Log.printFormattedLine("Requested %d PEs but %s has just %d", currentMipsShare.size(), vm, vm.getNumberOfPes());
+        }
         this.currentMipsShare = currentMipsShare;
-        processor = Processor.fromMipsList(vm, currentMipsShare, getCloudletExecList());
+    }
+
+
+    /**
+     * Gets the amount of MIPS available (free) for each Processor PE,
+     * considering the currently executing cloudlets in this processor
+     * and the number of PEs these cloudlets require.
+     * This is the amount of MIPS that each Cloudlet is allowed to used,
+     * considering that the processor is shared among all executing
+     * cloudlets.
+     *
+     * <p>In the case of space shared schedulers,
+     * there is no concurrency for PEs because some cloudlets
+     * may wait in a queue until there is available PEs to be used
+     * exclusively by them.</p>
+     *
+     * @return the amount of available MIPS for each Processor PE.
+     * @TODO Splitting the capacity of a CPU core among different applications
+     * is not in fact possible. This was just an oversimplification
+     * performed by the CloudletSchedulerTimeShared that may affect
+     * other schedulers such as the CloudletSchedulerCompletelyFair
+     * that in fact performs tasks preemption.
+     */
+    public double getAvailableMipsByPe(){
+        final long totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
+        if(totalPesOfAllExecCloudlets > currentMipsShare.size()) {
+            return getTotalMipsShare() / totalPesOfAllExecCloudlets;
+        }
+
+        return getPeCapacity();
+    }
+
+    private Double getPeCapacity() {
+        return currentMipsShare.stream().findFirst().orElse(0.0);
+    }
+
+    /**
+     * Gets the total number of PEs of all cloudlets currently executing in this processor.
+     * @return
+     */
+    private long totalPesOfAllExecCloudlets() {
+        return cloudletExecList.stream()
+            .map(CloudletExecutionInfo::getCloudlet)
+            .mapToLong(Cloudlet::getNumberOfPes).sum();
+    }
+
+    private double getTotalMipsShare(){
+        return currentMipsShare.stream().reduce(0.0, Double::sum);
     }
 
     @Override
     public List<CloudletExecutionInfo> getCloudletExecList() {
         return Collections.unmodifiableList(cloudletExecList);
-    }
-
-    protected final void setCloudletExecList(List<CloudletExecutionInfo> cloudletExecList) {
-        this.cloudletExecList = cloudletExecList;
     }
 
     protected void addCloudletToWaitingList(CloudletExecutionInfo cloudlet) {
@@ -208,10 +252,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudletWaitingList.sort(comparator);
     }
 
-    protected final void setCloudletWaitingList(List<CloudletExecutionInfo> cloudletWaitingList) {
-        this.cloudletWaitingList = cloudletWaitingList;
-    }
-
     @Override
     public double cloudletSubmit(Cloudlet cloudlet) {
         return cloudletSubmit(cloudlet, 0.0);
@@ -241,7 +281,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             rcl.setCloudletStatus(Status.INEXEC);
             rcl.setFileTransferTime(fileTransferTime);
             addCloudletToExecList(rcl);
-            return fileTransferTime + (rcl.getCloudletLength() / getProcessor().getMips());
+            return fileTransferTime + (rcl.getCloudletLength() / getPeCapacity());
         }
 
         // No enough free PEs, then add Cloudlet to the waiting queue
@@ -475,35 +515,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Updates the VM usage of RAM, based on the current utilization of all
-     * its running Cloudlets, that depends on the {@link Cloudlet#getUtilizationModelRam()}.
-     */
-    private void updateVmRamAbsoluteUtilization() {
-        final ResourceManageable ram = vm.getResource(Ram.class);
-        final double totalUsedRam = getCloudletExecList().stream()
-            .map(CloudletExecutionInfo::getCloudlet)
-            .mapToDouble(this::getCloudletRamAbsoluteUtilization)
-            .sum();
-
-        ram.setAllocatedResource(totalUsedRam);
-    }
-
-    /**
-     * Gets the absolute value of RAM utilization for a given Cloudlet
-     *
-     * @param cloudlet the Cloudlet to get the absolute value of RAM utilization
-     * @return the Cloudlet RAM utilization in absolute value
-     */
-    private double getCloudletRamAbsoluteUtilization(Cloudlet cloudlet) {
-        final ResourceManageable ram = vm.getResource(Ram.class);
-        final UtilizationModel um = cloudlet.getUtilizationModelRam();
-        final double utilization = um.getUnit() == Unit.ABSOLUTE ?
-            Math.min(um.getUtilization(), vm.getRam().getCapacity()) :
-            um.getUtilization() * ram.getCapacity();
-        return utilization;
-    }
-
-    /**
      * Updates the processing of a specific cloudlet of the Vm using this
      * scheduler and packets that such a Cloudlet has to send or to receive
      * (if the CloudletScheduler has a {@link PacketScheduler} assigned to it).
@@ -532,6 +543,35 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         if (executedInstructions > 0) {
             rcl.setLastProcessingTime(currentTime);
         }
+    }
+
+    /**
+     * Updates the VM usage of RAM, based on the current utilization of all
+     * its running Cloudlets, that depends on the {@link Cloudlet#getUtilizationModelRam()}.
+     */
+    private void updateVmRamAbsoluteUtilization() {
+        final ResourceManageable ram = vm.getResource(Ram.class);
+        final double totalUsedRam = getCloudletExecList().stream()
+            .map(CloudletExecutionInfo::getCloudlet)
+            .mapToDouble(this::getCloudletRamAbsoluteUtilization)
+            .sum();
+
+        ram.setAllocatedResource(totalUsedRam);
+    }
+
+    /**
+     * Gets the absolute value of RAM utilization for a given Cloudlet
+     *
+     * @param cloudlet the Cloudlet to get the absolute value of RAM utilization
+     * @return the Cloudlet RAM utilization in absolute value
+     */
+    private double getCloudletRamAbsoluteUtilization(Cloudlet cloudlet) {
+        final ResourceManageable ram = vm.getResource(Ram.class);
+        final UtilizationModel um = cloudlet.getUtilizationModelRam();
+        final double utilization = um.getUnit() == Unit.ABSOLUTE ?
+            Math.min(um.getUtilization(), vm.getRam().getCapacity()) :
+            um.getUtilization() * ram.getCapacity();
+        return utilization;
     }
 
     /**
@@ -571,7 +611,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double actualProcessingTime = (hasCloudletFileTransferTimePassed(rcl, currentTime) ? timeSpan(currentTime) : 0);
         final double cloudletUsedMips =
             getAbsoluteCloudletResourceUtilization(rcl.getCloudlet().getUtilizationModelCpu(),
-                currentTime, processor.getAvailableMipsByPe());
+                currentTime, getAvailableMipsByPe());
         return (long) (cloudletUsedMips * actualProcessingTime * Conversion.MILLION);
     }
 
@@ -680,7 +720,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected double getEstimatedFinishTimeOfCloudlet(CloudletExecutionInfo rcl, double currentTime) {
         final double cloudletUsedMips =
             getAbsoluteCloudletResourceUtilization(rcl.getCloudlet().getUtilizationModelCpu(),
-                currentTime, processor.getAvailableMipsByPe());
+                currentTime, getAvailableMipsByPe());
         double estimatedFinishTime = rcl.getRemainingCloudletLength() / cloudletUsedMips;
 
         if (estimatedFinishTime < getVm().getSimulation().getMinTimeBetweenEvents()) {
@@ -727,7 +767,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return true if there is the amount of free PEs, false otherwise
      */
     protected boolean isThereEnoughFreePesForCloudlet(CloudletExecutionInfo c) {
-        return processor.getCapacity() - usedPes >= c.getNumberOfPes();
+        return currentMipsShare.size() - usedPes >= c.getNumberOfPes();
     }
 
     /**
@@ -750,17 +790,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         c.setCloudletStatus(Status.INEXEC);
         removeCloudletFromWaitingList(c);
         return c;
-    }
-
-    /**
-     * Processor object created every time the processing of VMs is executed. It
-     * represent the last CPU capacity assigned to the scheduler.
-     *
-     * @return
-     * @see CloudletScheduler#updateProcessing(double, List)
-     */
-    protected Processor getProcessor() {
-        return processor;
     }
 
     @Override
@@ -810,7 +839,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     @Override
     public long getFreePes() {
-        return getProcessor().getCapacity() - getUsedPes();
+        return currentMipsShare.size() - getUsedPes();
     }
 
     /**
@@ -829,7 +858,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *                        PEs
      */
     private void removeUsedPes(long usedPesToRemove) {
-        this.usedPes -= usedPesToRemove;
+        this.usedPes = (int)Math.max(0, this.usedPes-usedPesToRemove);
     }
 
     @Override
@@ -867,7 +896,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private double getAbsoluteCloudletCpuUtilizationForAllPes(double time, Cloudlet cloudlet) {
         final double cloudletCpuUsageForOnePe =
             getAbsoluteCloudletResourceUtilization(
-                cloudlet.getUtilizationModelCpu(), time, processor.getAvailableMipsByPe());
+                cloudlet.getUtilizationModelCpu(), time, getAvailableMipsByPe());
 
         return cloudletCpuUsageForOnePe * cloudlet.getNumberOfPes();
     }
@@ -879,7 +908,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
-        return getAbsoluteCloudletResourceUtilization(rcl.getCloudlet().getUtilizationModelCpu(), time, getProcessor().getAvailableMipsByPe());
+        return getAbsoluteCloudletResourceUtilization(rcl.getCloudlet().getUtilizationModelCpu(), time, getAvailableMipsByPe());
     }
 
     @Override
@@ -946,8 +975,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public void deallocatePesFromVm(Vm vm, int pesToRemove) {
-        processor.removeCapacity(pesToRemove);
         removeUsedPes(pesToRemove);
+        deallocatePesFromMipsShare(pesToRemove);
+    }
+
+    private void deallocatePesFromMipsShare(int pesToRemove) {
+        pesToRemove = Math.min(pesToRemove, currentMipsShare.size());
+        IntStream.range(0, pesToRemove).forEach(i -> currentMipsShare.remove(0));
     }
 
     @Override
