@@ -42,9 +42,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public List<Double> getCurrentMipsShare() {
         return Collections.emptyList();
     }
-    public List<Double> getCurrentRequestedMips() {
-        return Collections.emptyList();
-    }
     @Override public double getCurrentRequestedBwPercentUtilization() {
         return 0.0;
     }
@@ -57,7 +54,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         return 0.0;
     }
-    @Override public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) { return 0.0; }
     @Override public double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time) {
         return 0.0;
     }

@@ -42,24 +42,13 @@ import org.cloudbus.cloudsim.vms.Vm;
  */
 public final class Processor extends ResourceManageableAbstract {
     public static final Processor NULL = new Processor();
-
     private Vm vm;
 
     /** @see #getMips() */
     private double mips;
 
-    /** @see #getCloudletExecList() */
-    private List<CloudletExecutionInfo> cloudletExecList;
-
     /**
-     * Instantiates a Processor with zero capacity (zero PEs).
-     */
-    public Processor(){
-        this(Vm.NULL, 0, 0);
-    }
-
-    /**
-     * Instantiates a Processor.
+     * Instantiates a Processor for a given VM.
      *
      * @param vm the {@link Vm} the processor will belong to
      * @param pesMips MIPS of each {@link Pe}
@@ -68,64 +57,11 @@ public final class Processor extends ResourceManageableAbstract {
     public Processor(Vm vm, double pesMips, long numberOfPes) {
         super(numberOfPes);
         this.vm = vm;
-        cloudletExecList = new ArrayList<>();
         setMips(pesMips);
     }
 
-    /**
-     * Instantiates a new Processor from a given MIPS list,
-     * ignoring all elements having zero capacity.
-     *
-     * @param vm the {@link Vm} the processor will belong to
-     * @param mipsList a list of {@link Pe Processing Elements (cores)} capacity
-     * where all elements have the same capacity. This list represents
-     * the capacity of each processor core.
-     * @param cloudletExecList list of cloudlets currently executing in this processor.
-     *
-     * @return the new Processor
-     */
-    public static Processor fromMipsList(Vm vm, List<Double> mipsList,
-                                         List<CloudletExecutionInfo> cloudletExecList) {
-        if(Objects.isNull(mipsList)){
-            throw new IllegalArgumentException("The mipsList cannot be null.");
-        }
-
-        mipsList = getNonZeroMipsElements(mipsList);
-
-        double peMips = 0;
-        if(!mipsList.isEmpty()){
-            peMips = mipsList.get(0);
-
-            if(mipsList.stream().distinct().count() > 1){
-                throw new IllegalArgumentException(
-                    String.format(
-                        "mipsShare list doesn't have all elements with %.2f MIPS",
-                        peMips));
-            }
-        }
-
-        Processor p = new Processor(vm, peMips, mipsList.size());
-        p.cloudletExecList = cloudletExecList;
-        return p;
-    }
-
-    /**
-     * Instantiates a new Processor from a given MIPS list,
-     * ignoring all elements having zero capacity.
-     *
-     * @param vm the {@link Vm} the processor will belong to
-     * @param mipsList a list of {@link Pe Processing Elements (cores)} capacity
-     * where all elements have the same capacity. This list represents
-     * the capacity of each processor core.
-     *
-     * @return the new Processor
-     */
-    public static Processor fromMipsList(Vm vm, List<Double> mipsList) {
-        return Processor.fromMipsList(vm, mipsList, Collections.EMPTY_LIST);
-    }
-
-    private static List<Double> getNonZeroMipsElements(List<Double> mipsList) {
-        return mipsList.stream().filter(mips -> mips > 0).collect(Collectors.toList());
+    private Processor(){
+        super(0);
     }
 
     /**
@@ -172,7 +108,7 @@ public final class Processor extends ResourceManageableAbstract {
      */
     @Override
     public long getAvailableResource() {
-        return vm.getCloudletScheduler().getFreePes();
+        return super.getAvailableResource();
     }
 
     /**
@@ -181,12 +117,7 @@ public final class Processor extends ResourceManageableAbstract {
      */
     @Override
     public long getAllocatedResource() {
-        return vm.getCloudletScheduler().getUsedPes();
-    }
-
-    @Override
-    public double getPercentUtilization() {
-        return vm.getCloudletScheduler().getRequestedCpuPercentUtilization(vm.getSimulation().clock());
+        return super.getAllocatedResource();
     }
 
     /**
@@ -203,67 +134,10 @@ public final class Processor extends ResourceManageableAbstract {
     }
 
     /**
-     * Gets the amount of MIPS available (free) for each Processor PE,
-     * considering the currently executing cloudlets in this processor
-     * and the number of PEs these cloudlets require.
-     * This is the amount of MIPS that each Cloudlet is allowed to used,
-     * considering that the processor is shared among all executing
-     * cloudlets.
-     *
-     * <p>In the case of space shared schedulers,
-     * there is no concurrency for PEs because some cloudlets
-     * may wait in a queue until there is available PEs to be used
-     * exclusively by them.</p>
-     *
-     * @return the amount of available MIPS for each Processor PE.
-     * @TODO Splitting the capacity of a CPU core among different applications
-     * is not in fact possible. This was just an oversimplification
-     * performed by the CloudletSchedulerTimeShared that may affect
-     * other schedulers such as the CloudletSchedulerCompletelyFair
-     * that in fact performs tasks preemption.
-     */
-    public double getAvailableMipsByPe(){
-        final long totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
-        if(totalPesOfAllExecCloudlets > getCapacity()) {
-            return getTotalMips() / totalPesOfAllExecCloudlets;
-        }
-
-        return getMips();
-    }
-
-    /**
-     * Gets the total number of PEs of all cloudlets currently executing in this processor.
-     * @return
-     */
-    private long totalPesOfAllExecCloudlets() {
-        return cloudletExecList.stream()
-            .map(CloudletExecutionInfo::getCloudlet)
-            .mapToLong(Cloudlet::getNumberOfPes).sum();
-    }
-
-    /**
-     * Gets a read-only list of cloudlets currently executing in this processor.
-     * @return
-     */
-    public List<CloudletExecutionInfo> getCloudletExecList() {
-        return Collections.unmodifiableList(cloudletExecList);
-    }
-
-    /**
      * Gets the {@link Vm} the processor belongs to.
      * @return
      */
     public Vm getVm() {
         return vm;
-    }
-
-    @Override
-    public boolean allocateResource(long amountToAllocate) {
-        throw new UnsupportedOperationException("The allocateResource method is not supported for the Processor because this is controlled by the CloudletScheduler.");
-    }
-
-    @Override
-    public long deallocateAllResources() {
-        throw new UnsupportedOperationException("The deallocateAllResources method is not supported for the Processor  because this is controlled by the CloudletScheduler.");
     }
 }

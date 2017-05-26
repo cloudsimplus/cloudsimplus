@@ -113,25 +113,6 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     }
 
     /**
-     * {@inheritDoc} It in fact doesn't consider the parameters given because in
-     * the Time Shared Scheduler, the CPU capacity from the VM that is managed
-     * by the scheduler is shared between all running cloudlets.
-     *
-     * @todo if there is 2 cloudlets requiring 1 PE and there is just 1 PE, the
-     * MIPS capacity of this PE is split between the 2 cloudlets, but the method
-     * seen to always return the entire capacity. New test cases have to be
-     * created to check this.
-     *
-     * @param rcl {@inheritDoc}
-     * @param mipsShare {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
-        return Processor.fromMipsList(getVm(), mipsShare).getMips();
-    }
-
-    /**
      * This time-shared scheduler shares the CPU time between all executing
      * cloudlets, giving the same CPU timeslice for each Cloudlet to execute. It
      * always allow any submitted Cloudlets to be immediately added to the

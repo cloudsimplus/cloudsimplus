@@ -346,18 +346,6 @@ public class CloudletSchedulerSpaceSharedTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    public void testGetTotalCurrentAvailableMipsForCloudlet() {
-        final CloudletExecutionInfo rcl = new CloudletExecutionInfo(Cloudlet.NULL);
-        final int schedulerPes = 2;
-        final List<Double> mipsShare =
-                CloudletSchedulerUtil.createMipsList(schedulerPes, SCHEDULER_MIPS);
-        final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        final double expResult = SCHEDULER_MIPS;
-        final double result = instance.getTotalCurrentAvailableMipsForCloudlet(rcl, mipsShare);
-        assertEquals(expResult, result, 0.0);
-    }
-
     @Test @Ignore("See the todo inside the tested method")
     public void testGetTotalCurrentAllocatedMipsForCloudlet() {
         final CloudletExecutionInfo rcl = new CloudletExecutionInfo(Cloudlet.NULL);
