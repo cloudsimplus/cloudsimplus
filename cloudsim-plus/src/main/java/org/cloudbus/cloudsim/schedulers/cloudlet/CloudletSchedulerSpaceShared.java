@@ -81,21 +81,6 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     }
 
     /**
-     * {@inheritDoc}
-     * <p>
-     * It doesn't consider the given Cloudlet because the scheduler ensures that
-     * the Cloudlet will use all required PEs until it finishes executing. </p>
-     *
-     * @param rcl {@inheritDoc}
-     * @param mipsShare {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare) {
-        return Processor.fromMipsList(getVm(), mipsShare).getMips();
-    }
-
-    /**
      * The space-shared scheduler <b>does not</b> share the CPU time between
      * executing cloudlets. Each CPU ({@link Pe}) is used by another Cloudlet
      * just when the previous Cloudlet using it has finished executing

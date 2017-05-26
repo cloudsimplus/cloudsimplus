@@ -35,7 +35,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * Runs the {@link CloudletTaskTimeCompletionMinimizationExperiment} the number of
- * times defines by {@link #numberOfSimulationRuns} and compute statistics.
+ * times defines by {@link #getSimulationRuns()} and compute statistics.
  *
  * @author raysaoliveira
  */
@@ -64,7 +64,7 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
      * Amount of cloudlet PE per PE of vm.
      */
     private List<Double> ratioOfVmPesToRequiredCloudletPesList;
-    
+
     /**
      * Average of the cost total
      */
@@ -77,22 +77,20 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
 
     /**
      * Starts the execution of the experiments the number of times defines in
-     * {@link #numberOfSimulationRuns}.
+     * {@link #getSimulationRuns()}.
      *
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletTaskTimeCompletionMinimizationRunner()
+        new CloudletTaskTimeCompletionMinimizationRunner(true, 1475098589732L)
                 .setSimulationRuns(300)
-                .setApplyAntitheticVariatesTechnique(true)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
-                .setBaseSeed(1475098589732L) //Comment this to use the current time as base seed 1475098589732L
                 .setVerbose(true)
                 .run();
     }
 
-    CloudletTaskTimeCompletionMinimizationRunner() {
-        super();
+    CloudletTaskTimeCompletionMinimizationRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
+        super(antitheticVariatesTechnique, baseSeed);
         cloudletTaskTimeCompletion = new ArrayList<>();
         percentageOfCloudletsMeetingTaskTimeCompletion = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
@@ -102,10 +100,10 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
 
     @Override
     protected CloudletTaskTimeCompletionMinimizationExperiment createExperiment(int i) {
-        ContinuousDistribution randCloudlet = createRandomGenAndAddSeedToList(i);
-        ContinuousDistribution randVm = createRandomGenAndAddSeedToList(i);
+        ContinuousDistribution randCloudlet = createRandomGen(i);
+        ContinuousDistribution randVm = createRandomGen(i);
         CloudletTaskTimeCompletionMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionMinimizationExperiment(randCloudlet, randVm);
+                = new CloudletTaskTimeCompletionMinimizationExperiment(i, this);
         exp.setVerbose(experimentVerbose)
                 .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;

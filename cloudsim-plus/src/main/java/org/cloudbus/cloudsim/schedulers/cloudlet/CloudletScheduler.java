@@ -197,17 +197,6 @@ public interface CloudletScheduler extends Serializable {
     double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
 
     /**
-     * Gets the total current mips that a Cloudlet can use for each PE
-     * it requires. Thus, the value returned by the method indicates the
-     * amount of MIPS each Cloudlet PE can use.
-     *
-     * @param rcl the rcl
-     * @param mipsShare the mips share
-     * @return the total current mips available for each Cloudlet PE
-     */
-    double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare);
-
-    /**
      * Gets the current requested MIPS for a given cloudlet.
      *
      * @param rcl the rcl

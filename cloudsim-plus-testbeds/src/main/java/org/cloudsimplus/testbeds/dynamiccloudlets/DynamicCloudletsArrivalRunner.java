@@ -36,7 +36,15 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  * @author Manoel Campos da Silva Filho
  */
 final class DynamicCloudletsArrivalRunner extends ExperimentRunner<DynamicCloudletsArrivalExperiment> {
-	@Override
+    public DynamicCloudletsArrivalRunner(boolean antitheticVariatesTechnique) {
+        super(antitheticVariatesTechnique);
+    }
+
+    public DynamicCloudletsArrivalRunner(boolean antitheticVariatesTechnique, long baseSeed){
+        super(antitheticVariatesTechnique, baseSeed);
+    }
+
+    @Override
 	protected void setup() {}
 
     @Override

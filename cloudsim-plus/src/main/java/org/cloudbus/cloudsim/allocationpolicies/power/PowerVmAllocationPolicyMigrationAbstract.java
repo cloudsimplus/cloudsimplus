@@ -578,7 +578,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                         vm.getId(), host.getId());
                 return;
             }
-            getVmHostMap().put(vm, host);
+            addVmToHostMap(vm, host);
         }
     }
 

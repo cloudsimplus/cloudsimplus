@@ -59,31 +59,24 @@ public class RamTest {
         assertEquals(CAPACITY, instance.getCapacity());
 
         //reduce the capacity
-        long newCapacity = HALF_CAPACITY;
-        assertTrue(instance.setCapacity(newCapacity));
+        assertTrue(instance.setCapacity(HALF_CAPACITY));
+
+        assertTrue(instance.setCapacity(0));
 
         //try an invalid capacity
-        newCapacity = -1;
-        assertFalse(instance.setCapacity(newCapacity));
-
-        //try an invalid capacity
-        newCapacity = 0;
-        assertFalse(instance.setCapacity(newCapacity));
+        assertFalse(instance.setCapacity(-1));
 
         //restore the original capacity
-        newCapacity = CAPACITY;
-        assertTrue(instance.setCapacity(newCapacity));
+        assertTrue(instance.setCapacity(CAPACITY));
 
         //allocate resource and try to reduce the capacity below to the amount allocated
         final long allocated = HALF_CAPACITY;
         instance.allocateResource(allocated);
         assertEquals(allocated, instance.getAllocatedResource());
-        newCapacity = QUARTER_CAPACITY;
-        assertFalse(instance.setCapacity(newCapacity));
+        assertFalse(instance.setCapacity(QUARTER_CAPACITY));
 
         //try to increase the resource capacity
-        newCapacity = DOUBLE_CAPACITY;
-        assertTrue(instance.setCapacity(newCapacity));
+        assertTrue(instance.setCapacity(DOUBLE_CAPACITY));
     }
 
     @Test

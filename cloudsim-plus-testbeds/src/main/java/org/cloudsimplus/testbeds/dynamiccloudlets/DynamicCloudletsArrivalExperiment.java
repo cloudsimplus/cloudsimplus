@@ -45,6 +45,10 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 
     public static final int HOSTS_TO_CREATE = 100;
 
+    private DynamicCloudletsArrivalExperiment(final long seed) {
+        this(0, null, seed);
+    }
+
     /**
      * Creates a simulation experiment.
      *
@@ -54,7 +58,11 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
      * statistical analysis.
      */
     DynamicCloudletsArrivalExperiment(int index, DynamicCloudletsArrivalRunner runner) {
-        super(index, runner);
+        this(index, runner, -1);
+    }
+
+    private DynamicCloudletsArrivalExperiment(int index, DynamicCloudletsArrivalRunner runner, long seed) {
+        super(index, runner, seed);
     }
 
     @Override
@@ -66,7 +74,7 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 
     @Override
     protected DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(getCloudsim());
+        return new DatacenterBrokerSimple(getCloudSim());
     }
 
     @Override
@@ -93,7 +101,7 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
      * @param args
      */
     public static void main(String[] args) {
-        DynamicCloudletsArrivalExperiment exp = new DynamicCloudletsArrivalExperiment(0, null);
+        DynamicCloudletsArrivalExperiment exp = new DynamicCloudletsArrivalExperiment(1);
         exp.run();
     }
 

@@ -28,7 +28,7 @@ public interface ResourceManageable extends Resource {
      * Try to set the {@link #getCapacity() resource capacity}.
      *
      * @param newCapacity the new resource capacity
-     * @return true if capacity > 0 and capacity >= current allocated resource,
+     * @return true if capacity >= 0 and capacity >= current allocated resource,
      * false otherwise
      * @see #getAllocatedResource()
      */
@@ -118,6 +118,20 @@ public interface ResourceManageable extends Resource {
      * deallocate, false otherwise
      */
     boolean deallocateResource(long amountToDeallocate);
+
+    /**
+     * Try to deallocate a given amount of the resource and then
+     * remove such amount from the total capacity.
+     * If the given amount is greater than the total allocated resource,
+     * all the resource will be deallocated and that amount
+     * will be removed from the total capacity.
+     *
+     * @param amountToDeallocate the amount of resource to be deallocated and then removed from
+     *                           the total capacity
+     * @return true if amountToDeallocate > 0 and there is enough resource to
+     * deallocate, false otherwise
+     */
+    boolean deallocateAndRemoveResource(long amountToDeallocate);
 
     /**
      * Try to deallocate all the capacity of the given resource from this resource.
