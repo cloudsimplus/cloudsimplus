@@ -350,7 +350,8 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     void setCreated(boolean created);
 
     /**
-     * Checks if the VM is in migration process or not.
+     * Checks if the VM is in migration process or not,
+     * that is, if it is migrating in or out of a Host.
      *
      * @return
      */

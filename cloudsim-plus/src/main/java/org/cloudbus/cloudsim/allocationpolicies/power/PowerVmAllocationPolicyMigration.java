@@ -78,7 +78,7 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
      * @param host the host
      * @return true, if the host is under utilized; false otherwise
      */
-    boolean isHostUnderUtilized(PowerHost host);
+    boolean isHostUnderloaded(PowerHost host);
 
     /**
      * Gets the percentage of total CPU utilization

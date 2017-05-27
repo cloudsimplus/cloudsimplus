@@ -104,8 +104,8 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         getMipsMapAllocated().clear();
         for (final Entry<Vm, List<Double>> entry : mipsMapRequestedReduced.entrySet()) {
             final Vm vm = entry.getKey();
-            List<Double> updatedMipsAllocation = getMipsShareToAllocate(entry.getValue(), vm);
-            updatedMipsAllocation = getMipsShareToAllocate(updatedMipsAllocation, vm, scalingFactor);
+            List<Double> updatedMipsAllocation = getMipsShareToAllocate(vm, entry.getValue());
+            updatedMipsAllocation = getMipsShareToAllocate(vm, updatedMipsAllocation, scalingFactor);
             getMipsMapAllocated().put(vm, updatedMipsAllocation);
         }
     }
@@ -121,7 +121,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      *                                adjusted to avoid allocating more MIPS for a vPE
      *                                than there is in the physical PE
      * @return the scaling factor to apply for VMs requested MIPS (a percentage value in scale from 0 to 1)
-     * @see #getMipsShareRequestedReduced(List)
+     * @see #getMipsShareRequestedReduced(Vm, List)
      */
     private double getVmsMipsScalingFactor(Map<Vm, List<Double>> mipsMapRequestedReduced) {
         final double totalMipsCapacity = getHost().getTotalMipsCapacity();
@@ -141,7 +141,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         final Map<Vm, List<Double>> mipsMapRequestedReduced = new HashMap<>(getMipsMapRequested().entrySet().size());
         for (final Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
             final Vm vm = entry.getKey();
-            final List<Double> mipsShareRequestedReduced = getMipsShareRequestedReduced(entry.getValue());
+            final List<Double> mipsShareRequestedReduced = getMipsShareRequestedReduced(entry.getKey(), entry.getValue());
             mipsMapRequestedReduced.put(vm, mipsShareRequestedReduced);
         }
 
@@ -160,7 +160,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      *                                than there is in the physical PE
      * @return the total MIPS to be allocated for all VMs, considering the
      * VMs migrating into the Host.
-     * @see #getMipsShareRequestedReduced(List)
+     * @see #getMipsShareRequestedReduced(Vm, List)
      */
     private double getTotalMipsToAllocateForAllVms(final Map<Vm, List<Double>> mipsMapRequestedReduced){
         return mipsMapRequestedReduced.entrySet()

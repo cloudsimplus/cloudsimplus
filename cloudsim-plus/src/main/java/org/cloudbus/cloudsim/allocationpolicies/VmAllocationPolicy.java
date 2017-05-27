@@ -105,5 +105,4 @@ public interface VmAllocationPolicy {
      *
      */
     Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList);
-
 }

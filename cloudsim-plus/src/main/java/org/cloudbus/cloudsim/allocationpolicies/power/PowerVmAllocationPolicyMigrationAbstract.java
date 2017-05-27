@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -18,9 +19,12 @@ import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Simulation;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 /**
  * An abstract power-aware VM allocation policy that dynamically optimizes the
@@ -65,7 +69,16 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * each key is a hos and each value is the CPU utilization percentage history.
      *
      * @todo this value is duplicated from
-     * such as the {@link PowerHostUtilizationHistory}.
+     * such as the {@link PowerHostUtilizationHistory},
+     * however, there is inconsistence between these data.
+     * Into the Host, it is stored the actual utilization for the given time.
+     * Here it is stored the utilization as it was computed
+     * by the VmAllocationPolicy implementation.
+     * For instance, the {@link PowerVmAllocationPolicyMigrationLocalRegression}
+     * used Local Regression to predict Host utilization
+     * and such value will be stored in this map.
+     * However, these duplicate and inconsistent data
+     * are confusing and error prone.
      */
     private final Map<Host, List<Double>> utilizationHistory;
 
@@ -96,72 +109,78 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
     @Override
     public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
-        final List<PowerHostUtilizationHistory> overloadedHosts = getOverloadedHosts();
+        //@todo See https://github.com/manoelcampos/cloudsim-plus/issues/94
+        final Set<PowerHostUtilizationHistory> overloadedHosts = getOverloadedHosts();
         printOverUtilizedHosts(overloadedHosts);
         saveAllocation();
-        final List<Vm> vmsToMigrate = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
-        final Map<Vm, Host> migrationMap = getMigrationMapFromOverloadedHosts(vmsToMigrate, new HashSet<>(overloadedHosts));
-        migrationMap.putAll(getMigrationMapFromUnderloadedHosts(overloadedHosts));
+
+        final Map<Vm, Host> migrationMap = getMigrationMapFromOverloadedHosts(overloadedHosts);
+        updateMigrationMapFromUnderloadedHosts(overloadedHosts, migrationMap);
         restoreAllocation();
         return migrationMap;
     }
 
     /**
-     * Gets the migration map from under utilized hosts.
+     * Updates the  map of VMs that will be migrated from under utilized hosts.
      *
-     * @param overUtilizedHosts the over utilized hosts
-     * @return the migration map from under utilized hosts
+     * @param overloadedHosts the List of over utilized hosts
+     * @param migrationMap current migration map that will be updated
      */
-    protected Map<Vm, Host> getMigrationMapFromUnderloadedHosts(
-            List<PowerHostUtilizationHistory> overUtilizedHosts) {
-        final Map<Vm, Host> migrationMap = new HashMap<>();
+    private void updateMigrationMapFromUnderloadedHosts(Set<PowerHostUtilizationHistory> overloadedHosts, final Map<Vm, Host> migrationMap) {
         final List<PowerHost> switchedOffHosts = getSwitchedOffHosts();
 
         // over-utilized hosts + hosts that are selected to migrate VMs to from over-utilized hosts
-        final Set<Host> excludedHostsFromUnderUsedSearch = new HashSet<>();
-        excludedHostsFromUnderUsedSearch.addAll(overUtilizedHosts);
-        excludedHostsFromUnderUsedSearch.addAll(switchedOffHosts);
-        excludedHostsFromUnderUsedSearch.addAll(
-                extractHostListFromMigrationMap(migrationMap));
+        final Set<Host> excludedHostsFromUnderloadSearch = new HashSet<>();
+        excludedHostsFromUnderloadSearch.addAll(overloadedHosts);
+        excludedHostsFromUnderloadSearch.addAll(switchedOffHosts);
+        /*
+        During the computation of the new placement for VMs
+        the current VM placement is changed temporarily, before the actual migration of VMs.
+        If VMs are being migrated from overloaded Hosts, they in fact already were removed
+        from such Hosts and moved to destination ones.
+        The target Host that maybe were shut down, might become underloaded too.
+        This way, such Hosts are added to be ignored when
+        looking for underloaded Hosts.
+        See https://github.com/manoelcampos/cloudsim-plus/issues/94
+         */
+        excludedHostsFromUnderloadSearch.addAll(migrationMap.values());
 
         // over-utilized + under-utilized hosts
         final Set<PowerHost> excludedHostsForFindingNewVmPlacement = new HashSet<>();
-        excludedHostsForFindingNewVmPlacement.addAll(overUtilizedHosts);
+        excludedHostsForFindingNewVmPlacement.addAll(overloadedHosts);
         excludedHostsForFindingNewVmPlacement.addAll(switchedOffHosts);
 
         final int numberOfHosts = getHostList().size();
 
         while (true) {
-            if (numberOfHosts == excludedHostsFromUnderUsedSearch.size()) {
+            if (numberOfHosts == excludedHostsFromUnderloadSearch.size()) {
                 break;
             }
 
-            final PowerHost underUtilizedHost = getUnderUtilizedHost(excludedHostsFromUnderUsedSearch);
-            if (underUtilizedHost == PowerHost.NULL) {
+            final PowerHost underloadedHost = getUnderloadedHost(excludedHostsFromUnderloadSearch);
+            if (underloadedHost == PowerHost.NULL) {
                 break;
             }
 
-            Log.printFormattedLine("%.2f: PowerVmAllocationPolicy: Underloaded hosts: %s", getDatacenter().getSimulation().clock(),  underUtilizedHost);
+            Log.printFormattedLine("%.2f: PowerVmAllocationPolicy: Underloaded hosts: %s", getDatacenter().getSimulation().clock(),  underloadedHost);
 
-            excludedHostsFromUnderUsedSearch.add(underUtilizedHost);
-            excludedHostsForFindingNewVmPlacement.add(underUtilizedHost);
+            excludedHostsFromUnderloadSearch.add(underloadedHost);
+            excludedHostsForFindingNewVmPlacement.add(underloadedHost);
 
-            List<? extends Vm> vmsToMigrateFromUnderUsedHost = getVmsToMigrateFromUnderUtilizedHost(underUtilizedHost);
-            if (!vmsToMigrateFromUnderUsedHost.isEmpty()) {
-                Log.printFormatted("\tVMs to be reallocated from the underloaded Host %d: ", underUtilizedHost.getId());
-                printVmIds(vmsToMigrateFromUnderUsedHost);
+            List<? extends Vm> vmsToMigrateFromUnderloadedHost = getVmsToMigrateFromUnderUtilizedHost(underloadedHost);
+            if (!vmsToMigrateFromUnderloadedHost.isEmpty()) {
+                Log.printFormatted("\tVMs to be reallocated from the underloaded Host %d: ", underloadedHost.getId());
+                printVmIds(vmsToMigrateFromUnderloadedHost);
 
-                final Map<Vm, Host> newVmPlacement = getNewVmPlacementFromUnderUtilizedHost(
-                        vmsToMigrateFromUnderUsedHost,
+                final Map<Vm, Host> newVmPlacement = getNewVmPlacementFromUnderloadedHost(
+                        vmsToMigrateFromUnderloadedHost,
                         excludedHostsForFindingNewVmPlacement);
 
-                excludedHostsFromUnderUsedSearch.addAll(extractHostListFromMigrationMap(newVmPlacement));
+                excludedHostsFromUnderloadSearch.addAll(extractHostListFromMigrationMap(newVmPlacement));
                 migrationMap.putAll(newVmPlacement);
                 Log.printLine();
             }
         }
-
-        return migrationMap;
     }
 
     private void printVmIds(List<? extends Vm> vmList) {
@@ -176,9 +195,11 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @param overloadedHosts the over utilized hosts
      */
-    protected void printOverUtilizedHosts(List<PowerHostUtilizationHistory> overloadedHosts) {
+    private void printOverUtilizedHosts(Set<PowerHostUtilizationHistory> overloadedHosts) {
         if (!Log.isDisabled() && !overloadedHosts.isEmpty()) {
-            Log.printFormattedLine("%.2f: PowerVmAllocationPolicy: Overloaded hosts: %s", getDatacenter().getSimulation().clock(), overloadedHosts);
+            Log.printFormattedLine("%.2f: PowerVmAllocationPolicy: Overloaded hosts in %s: %s",
+                getDatacenter().getSimulation().clock(), getDatacenter(),
+                overloadedHosts.stream().map(h -> String.valueOf(h.getId())).collect(joining(",")));
         }
     }
 
@@ -208,11 +229,11 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return true, if the host will be over utilized after VM placement; false
      * otherwise
      */
-    protected boolean isNotHostOverusedAfterAllocation(PowerHost host, Vm vm) {
+    protected boolean isNotHostOverloadedAfterAllocation(PowerHost host, Vm vm) {
         boolean isHostOverUsedAfterAllocation = true;
-        if (host.vmCreate(vm)) {
+        if (host.createTemporaryVm(vm)) {
             isHostOverUsedAfterAllocation = isHostOverloaded(host);
-            host.destroyVm(vm);
+            host.destroyTemporaryVm(vm);
         }
         return !isHostOverUsedAfterAllocation;
     }
@@ -238,10 +259,32 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @see #findHostForVmInternal(Vm, Stream)
      */
     public PowerHost findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts) {
+        /*The predicate also returns true to indicate that in fact it is not
+        applying any additional filter.*/
+        return findHostForVm(vm, excludedHosts, host -> true);
+    }
+
+    /**
+     * Finds a Host that has enough resources to place a given VM and that will not
+     * be overloaded after the placement. The selected Host will be that
+     * one with most efficient power usage for the given VM.
+     *
+     * <p>This method performs the basic filtering and delegates additional ones
+     * and the final selection of the Host to other method.</p>
+     *
+     * @param vm the VM
+     * @param excludedHosts the excluded hosts
+     * @param predicate an additional {@link Predicate} to be used to filter
+     *                  the Host to place the VM
+     * @return the PM found to host the VM or {@link PowerHost#NULL} if not found
+     * @see #findHostForVmInternal(Vm, Stream)
+     */
+    public PowerHost findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts, Predicate<PowerHost> predicate) {
         final Stream<PowerHost> stream = this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.isSuitableForVm(vm))
-            .filter(h -> isNotHostOverusedAfterAllocation(h, vm));
+            .filter(h -> isNotHostOverloadedAfterAllocation(h, vm))
+            .filter(predicate);
 
         return findHostForVmInternal(vm, stream).orElse(PowerHost.NULL);
     }
@@ -289,21 +332,19 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     protected List<Host> extractHostListFromMigrationMap(Map<Vm, Host> migrationMap) {
         return migrationMap.entrySet().stream()
                 .map(Map.Entry::getValue)
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     /**
      * Gets a new VM placement considering the list of VM to migrate
      * from overloaded Hosts.
      *
-     * @param vmsToMigrate the list of VMs to migrate from overloaded Hosts.
      * @param overloadedHosts the list of overloaded Hosts
      * @return the new VM placement map where each key is a VM
      * and each value is the Host to place it.
      */
-    protected Map<Vm, Host> getMigrationMapFromOverloadedHosts(
-        final List<Vm> vmsToMigrate, final Set<Host> overloadedHosts)
-    {
+    protected Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<PowerHostUtilizationHistory> overloadedHosts) {
+        final List<Vm> vmsToMigrate = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
         final Map<Vm, Host> migrationMap = new HashMap<>();
         if(overloadedHosts.isEmpty()) {
             return migrationMap;
@@ -312,11 +353,15 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         Log.printLine("\tReallocation of VMs from overloaded hosts: ");
         VmList.sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (final Vm vm : vmsToMigrate) {
-            final PowerHost allocatedHost = findHostForVm(vm, overloadedHosts);
-            if (allocatedHost != PowerHost.NULL) {
-                vm.getHost().destroyVm(vm);
-                Log.printConcatLine("\tVM #", vm.getId(), " will be migrated to host #", allocatedHost.getId());
-                migrationMap.put(vm, allocatedHost);
+            final PowerHost targetHost = findHostForVm(vm, overloadedHosts);
+            if (targetHost != PowerHost.NULL) {
+                /* Temporarily creates the VM to be migrated from the overloaded Host into
+                 * the selected target Host so that when the a Host is selected for
+                 * the next VM, if the current selected Host doesn't fit another VM,
+                 * it will not be selected anymore. */
+                targetHost.createTemporaryVm(vm);
+                Log.printConcatLine("\tVM #", vm.getId(), " will be migrated to host #", targetHost.getId());
+                migrationMap.put(vm, targetHost);
             }
         }
         Log.printLine();
@@ -325,29 +370,37 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     }
 
     /**
-     * Gets the new vm placement from under utilized host.
+     * Gets a new placement for VMs from an underloaded host.
      *
-     * @param vmsToMigrate the list of VMs to migrate
+     * @param vmsToMigrate the list of VMs to migrate from the underloaded Host
      * @param excludedHosts the list of hosts that aren't selected as
      * destination hosts
-     * @return the new vm placement from under utilized host
+     * @return the new vm placement for the given VMs
      */
-    protected Map<Vm, Host> getNewVmPlacementFromUnderUtilizedHost(
+    protected Map<Vm, Host> getNewVmPlacementFromUnderloadedHost(
             final List<? extends Vm> vmsToMigrate,
             final Set<? extends Host> excludedHosts)
     {
         final Map<Vm, Host> migrationMap = new HashMap<>();
         VmList.sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (final Vm vm : vmsToMigrate) {
-            final PowerHost allocatedHost = findHostForVm(vm, excludedHosts);
-            if (!PowerHost.NULL.equals(allocatedHost )) {
-                allocatedHost.vmCreate(vm);
-                Log.printConcatLine("VM #", vm.getId(), " allocated to host #", allocatedHost.getId());
-                migrationMap.put(vm, allocatedHost);
-            } else {
-                Log.printFormattedLine("\tA new suitable Host couldn't be found for %s. Reallocation cancelled.", vm);
-                migrationMap.entrySet().forEach(e -> e.getValue().destroyVm(e.getKey()));
+            //try to find a target Host to place a VM from an underloaded Host that is not underloaded too
+            final PowerHost targetHost = findHostForVm(vm, excludedHosts, host -> !isHostUnderloaded(host));
+            if (PowerHost.NULL == targetHost) {
+                Log.printFormattedLine("\tA new Host, which isn't also underloaded or won't be overloaded, couldn't be found to migrate %s.", vm);
+                Log.printFormattedLine("\tMigration of VMs from the underloaded %s cancelled.", vm.getHost());
                 return new HashMap<>();
+            } else {
+                /*
+                Temporarily creates the Host into the target Host so that
+                when the next VM is got to be migrated, if the same Host
+                is selected as destination, the resource to be
+                used by the previous VM will be considering when
+                assessing the suitability of such a Host for the next VM.
+                 */
+                targetHost.createTemporaryVm(vm);
+                Log.printConcatLine("\tVM #", vm.getId(), " will be allocated to host #", targetHost.getId());
+                migrationMap.put(vm, targetHost);
             }
         }
 
@@ -360,18 +413,28 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @param overloadedHosts the List of overloaded Hosts
      * @return the VMs to migrate from hosts
      */
-    protected List<Vm> getVmsToMigrateFromOverloadedHosts(List<PowerHostUtilizationHistory> overloadedHosts) {
+    protected List<Vm> getVmsToMigrateFromOverloadedHosts(Set<PowerHostUtilizationHistory> overloadedHosts) {
         final List<Vm> vmsToMigrate = new LinkedList<>();
         for (final PowerHostUtilizationHistory host : overloadedHosts) {
-            while (true) {
-                final Vm vm = getVmSelectionPolicy().getVmToMigrate(host);
-                if (Vm.NULL.equals(vm)) {
-                    break;
-                }
-                vmsToMigrate.add(vm);
-                if (!isHostOverloaded(host)) {
-                    break;
-                }
+            vmsToMigrate.addAll(getVmsToMigrateFromOverloadedHost(host));
+        }
+
+        return vmsToMigrate;
+    }
+
+    private List<Vm> getVmsToMigrateFromOverloadedHost(PowerHostUtilizationHistory host) {
+        final List<Vm> vmsToMigrate = new LinkedList<>();
+        while (true) {
+            final Vm vm = getVmSelectionPolicy().getVmToMigrate(host);
+            if (Vm.NULL == vm) {
+                break;
+            }
+            vmsToMigrate.add(vm);
+            /*Temporarily destroys the selected VM into the overloaded Host so that
+            the loop gets VMs from such a Host until it is not overloaded anymore.*/
+            host.destroyTemporaryVm(vm);
+            if (!isHostOverloaded(host)) {
+                break;
             }
         }
 
@@ -391,39 +454,52 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     }
 
     /**
-     * Gets the over utilized hosts.
-     *
-     * @return the over utilized hosts
-     */
-    protected List<PowerHostUtilizationHistory> getOverloadedHosts() {
-        return this.<PowerHostUtilizationHistory>getHostList().stream()
-            .filter(this::isHostOverloaded)
-            .collect(Collectors.toCollection(LinkedList::new));
-    }
-
-    /**
      * Gets the switched off hosts.
      *
      * @return the switched off hosts
      */
     protected List<PowerHost> getSwitchedOffHosts() {
         return this.<PowerHost>getHostList().stream()
-            .filter(host -> host.getUtilizationOfCpu() == 0)
-            .collect(Collectors.toCollection(LinkedList::new));
+            .filter(host -> !host.isActive() || host.isFailed())
+            .collect(toList());
     }
 
     /**
-     * Gets the most under utilized Host.
+     * Gets the List of overloaded hosts.
+     * If a Host is overloaded but it has VMs migrating out,
+     * then it's not included in the returned List
+     * because the VMs to be migrated to move the Host from
+     * the overload state already are in migration.
      *
-     * @param excludedHosts the Hosts that have to be disconsidering when looking for the under utilized Host
+     * @return the over utilized hosts
+     */
+    protected Set<PowerHostUtilizationHistory> getOverloadedHosts() {
+        return this.<PowerHostUtilizationHistory>getHostList().stream()
+            .filter(this::isHostOverloaded)
+            .filter(h -> h.getVmsMigratingOut().isEmpty())
+            .collect(toSet());
+    }
+
+    /**
+     * Gets the most underloaded Host.
+     * If a Host is underloaded but it has VMs migrating in,
+     * then it's not included in the returned List
+     * because the VMs to be migrated to move the Host from
+     * the underload state already are in migration to it.
+     * Likewise, if all VMs are migrating out, nothing has to be
+     * done anymore. It just has to wait the VMs to finish
+     * the migration.
+     *
+     * @param excludedHosts the Hosts that have to be ignored when looking for the under utilized Host
      * @return the most under utilized host or {@link PowerHost#NULL} if no Host is found
      */
-    private PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts) {
+    private PowerHost getUnderloadedHost(Set<? extends Host> excludedHosts) {
         return this.<PowerHost>getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
             .filter(h -> h.getUtilizationOfCpu() > 0)
-            .filter(this::isHostUnderUtilized)
-            .filter(h -> areNotAllVmsMigratingOutNeitherAreVmsMigratingIn(h))
+            .filter(this::isHostUnderloaded)
+            .filter(h -> h.getVmsMigratingIn().isEmpty())
+            .filter(this::isNotAllVmsMigratingOut)
             .min(Comparator.comparingDouble(HostDynamicWorkload::getUtilizationOfCpu))
             .orElse(PowerHost.NULL);
     }
@@ -435,7 +511,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @return true, if the host is under utilized; false otherwise
      */
     @Override
-    public boolean isHostUnderUtilized(PowerHost host) {
+    public boolean isHostUnderloaded(PowerHost host) {
         return getHostCpuUtilizationPercentage(host) < getUnderUtilizationThreshold();
     }
 
@@ -470,34 +546,18 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     }
 
     /**
-     * Checks if all VMs of a Host are <b>NOT</b> migrating out neither there are VMs migrating in.
-     * If all VMs are migrating out or there is at least
-     * one VM migrating in, the given Host will not be selected as an underutilized Host at the current moment.
+     * Checks if all VMs of a Host are <b>NOT</b> migrating out.
+     * In this case, the given Host will not be selected as an underloaded Host at the current moment.
      *
      * @param host the host to check
      * @return
      */
-    protected boolean areNotAllVmsMigratingOutNeitherAreVmsMigratingIn(PowerHost host) {
-        for (final PowerVm vm : host.<PowerVm>getVmList()) {
-            if (!vm.isInMigration()) { //VM is not in migration process (in or out)
-                //there is at least one VM that is not migrating anywhere (nor ir or out)
-                return true;
-            }
-
-            //If the VM is in migration process, checks if it is migrating into the host.
-            //If it is not contained into the migratingIn list, it is migrating out.
-            if (host.getVmsMigratingIn().contains(vm)) {
-                //there is at least one VM migrating into the host
-                return false;
-            }
-        }
-
-        //all VMs are migrating out
-        return false;
+    protected boolean isNotAllVmsMigratingOut(PowerHost host) {
+        return host.getVmList().stream().anyMatch(vm -> !vm.isInMigration());
     }
 
     /**
-     * Updates the list of maps between a VM and the host where it is place.
+     * Saves the current map between a VM and the host where it is place.
      *
      * @see #savedAllocation
      */
@@ -523,15 +583,14 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
             host.reallocateMigratingInVms();
         }
 
-        for (final Vm vm : getSavedAllocation().keySet()) {
-            final PowerHost host = (PowerHost) getSavedAllocation().get(vm);
-            if (!host.vmCreate(vm)) {
+        for (final Vm vm : savedAllocation.keySet()) {
+            final PowerHost host = (PowerHost) savedAllocation.get(vm);
+            if (!host.createTemporaryVm(vm)) {
                 Log.printFormattedLine(
-                        "Couldn't restore VM #%d on host #%d",
+                        "Couldn't restore VM #%d on Host #%d",
                         vm.getId(), host.getId());
                 return;
             }
-            addVmToHostMap(vm, host);
         }
     }
 

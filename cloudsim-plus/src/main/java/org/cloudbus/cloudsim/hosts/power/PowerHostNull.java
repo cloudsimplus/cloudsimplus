@@ -186,10 +186,12 @@ final class PowerHostNull implements PowerHost {
     @Override public boolean setPeStatus(int peId, Pe.Status status) {
         return false;
     }
-    @Override public boolean vmCreate(Vm vm) {
+    @Override public boolean createVm(Vm vm) {
         return false;
     }
     @Override public void destroyVm(Vm vm) {/**/}
+    @Override public boolean createTemporaryVm(Vm vm) { return false; }
+    @Override public void destroyTemporaryVm(Vm vm) {}
     @Override public void destroyAllVms() {/**/}
     @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return false; }
     @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return Host.NULL; }

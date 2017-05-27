@@ -166,7 +166,30 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public List<Double> getAllocatedMips(Vm vm) {
-        return mipsMapAllocated.getOrDefault(vm, new ArrayList<>());
+        final List<Double> list = mipsMapAllocated.getOrDefault(vm, new ArrayList<>());
+        /*
+        When a VM is migrating out of the source Host, its allocated MIPS
+        is reduced due to migration overhead.
+        When it is migrating into the target Host, it also
+        experience overhead, but for the first time the VM is allocated into
+        the target Host, the allocated MIPS is stored already considering this overhead.
+         */
+        return host.getVmsMigratingOut().contains(vm) ? getMipsShareRequestedReduced(vm, list) : list;
+    }
+
+    /**
+     * Gets an adjusted List of MIPS requested by a VM, reducing every MIPS which is higher
+     * than the {@link #getPeCapacity() capacity of each physical PE} to that value.
+     *
+     * @param vm the VM to get the MIPS requested
+     * @param mipsShareRequested the VM requested MIPS List
+     * @return the VM requested MIPS List without MIPS higher than the PE capacity.
+     */
+    protected List<Double> getMipsShareRequestedReduced(Vm vm, List<Double> mipsShareRequested){
+        final double peMips = getPeCapacity();
+        return mipsShareRequested.stream()
+            .map(mips -> Math.min(mips, peMips)*percentOfMipsToRequest(vm))
+            .collect(toList());
     }
 
     @Override
@@ -213,6 +236,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * the MIPS capacity is get are defined in the {@link #peMap}.
      *
      * @return the mips map
+     * @see #getAllocatedMips(Vm)
      */
     protected Map<Vm, List<Double>> getMipsMapAllocated() {
         return mipsMapAllocated;
@@ -275,69 +299,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return totalVmRequestedMips / percentOfMipsToRequest(vm);
     }
 
-    @Override
-    public double getMaxCpuUsagePercentDuringOutMigration() {
-        return 1 - getVmMigrationCpuOverhead();
-    }
-
-    @Override
-    public double getVmMigrationCpuOverhead() {
-        return vmMigrationCpuOverhead;
-    }
-
-    /**
-     * Gets the map of VMs to PEs, where each key is a VM and each value is a list
-     * of PEs allocated to that VM.
-     *
-     * @return
-     */
-    protected Map<Vm, List<Pe>> getPeMap() {
-        return peMap;
-    }
-
-    /**
-     * Sets the map of VMs to PEs, where each key is a VM and each value is a list
-     * of PEs allocated to that VM.
-     *
-     * @param peMap the pe map
-     */
-    protected final void setPeMap(Map<Vm, List<Pe>> peMap) {
-        this.peMap = peMap;
-    }
-
-
-    @Override
-    public Host getHost() {
-        return host;
-    }
-
-    @Override
-    public VmScheduler setHost(Host host) {
-        Objects.requireNonNull(host);
-
-        if(isOtherHostAssigned(host)){
-            throw new IllegalArgumentException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
-        }
-
-        this.host = host;
-
-        setPeMap(new HashMap<>());
-        setMipsMapAllocated(new HashMap<>());
-
-        return this;
-    }
-
-    /**
-     * Checks if the {@link VmScheduler} has a {@link Host} assigned that is
-     * different from the given one
-     *
-     * @param host the Host to check if assigned scheduler's Host is different from
-     * @return
-     */
-    private boolean isOtherHostAssigned(Host host) {
-        return !Objects.isNull(this.host) && this.host != Host.NULL && !host.equals(this.host);
-    }
-
     /**
      * Gets the percentage of the MIPS requested by a VM
      * that will be in fact requested to the Host, according to the VM migration
@@ -378,6 +339,69 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         //VM is not migrating, thus 100% of its requested MIPS will be requested to the Host.
         return 1;
+    }
+
+    @Override
+    public double getMaxCpuUsagePercentDuringOutMigration() {
+        return 1 - getVmMigrationCpuOverhead();
+    }
+
+    @Override
+    public double getVmMigrationCpuOverhead() {
+        return vmMigrationCpuOverhead;
+    }
+
+    /**
+     * Gets the map of VMs to PEs, where each key is a VM and each value is a list
+     * of PEs allocated to that VM.
+     *
+     * @return
+     */
+    protected Map<Vm, List<Pe>> getPeMap() {
+        return peMap;
+    }
+
+
+    /**
+     * Sets the map of VMs to PEs, where each key is a VM and each value is a list
+     * of PEs allocated to that VM.
+     *
+     * @param peMap the pe map
+     */
+    protected final void setPeMap(Map<Vm, List<Pe>> peMap) {
+        this.peMap = peMap;
+    }
+
+    @Override
+    public Host getHost() {
+        return host;
+    }
+
+    @Override
+    public VmScheduler setHost(Host host) {
+        Objects.requireNonNull(host);
+
+        if(isOtherHostAssigned(host)){
+            throw new IllegalArgumentException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
+        }
+
+        this.host = host;
+
+        setPeMap(new HashMap<>());
+        setMipsMapAllocated(new HashMap<>());
+
+        return this;
+    }
+
+    /**
+     * Checks if the {@link VmScheduler} has a {@link Host} assigned that is
+     * different from the given one
+     *
+     * @param host the Host to check if assigned scheduler's Host is different from
+     * @return
+     */
+    private boolean isOtherHostAssigned(Host host) {
+        return !Objects.isNull(this.host) && this.host != Host.NULL && !host.equals(this.host);
     }
 
     /**

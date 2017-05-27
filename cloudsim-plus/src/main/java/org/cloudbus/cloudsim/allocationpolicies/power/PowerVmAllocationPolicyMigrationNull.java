@@ -47,7 +47,7 @@ final class PowerVmAllocationPolicyMigrationNull implements PowerVmAllocationPol
     @Override public boolean isHostOverloaded(PowerHost host) {
         return false;
     }
-    @Override public boolean isHostUnderUtilized(PowerHost host) {
+    @Override public boolean isHostUnderloaded(PowerHost host) {
         return false;
     }
     @Override public double getOverUtilizationThreshold(PowerHost host) {

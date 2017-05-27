@@ -40,11 +40,6 @@ import static java.util.stream.Collectors.toList;
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
-     * @see #getVmHostMap()
-     */
-    private Map<Vm, Host> vmHostMap;
-
-    /**
      * @see #getDatacenter()
      */
     private Datacenter datacenter;
@@ -70,64 +65,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public final <T extends Host> List<T> getHostList() {
         return (List<T>) datacenter.getHostList();
-    }
-
-    /**
-     * Gets a <b>read-only</b> map between a VM and its allocated host. The map key is a VM
-     * and the value is the allocated host for that VM.
-     *
-     * @return the VM map
-     * @todo after CloudSim Plus created the relationship between objects,
-     * allowing calls such as cloudlet.getVm().getHost(),
-     * this map may be unnecessary.
-     */
-    protected Map<Vm, Host> getVmHostMap() {
-        return Collections.unmodifiableMap(vmHostMap);
-    }
-
-    protected void addVmToHostMap(Vm vm, Host host){
-        vmHostMap.put(vm, host);
-    }
-
-    protected Host removeVmFromHostMap(Vm vm){
-        return vmHostMap.remove(vm);
-    }
-
-    /**
-     * Register the allocation of a given Host to a Vm. It maps the placement of
-     * the Vm into the given Host.
-     *
-     * @param vm the placed Vm
-     * @param host the Host where the Vm has just been placed
-     */
-    protected void mapVmToPm(Vm vm, Host host) {
-        if(Objects.isNull(vm) || Objects.isNull(host)) {
-            return;
-        }
-
-        addVmToHostMap(vm, host);
-    }
-
-    /**
-     * Unregister the allocation of a Host to a given Vm, unmapping the Vm to
-     * the Host where it was. The method has to be called when a Vm is
-     * moved/removed from a Host.
-     *
-     * @param vm the moved/removed Vm
-     * @return the Host where the Vm was removed/moved from or {@link Host#NULL}
-     * if the Vm wasn't associated to a Host
-     */
-    protected Host unmapVmFromPm(Vm vm) {
-        if(Objects.isNull(vm)) {
-            return Host.NULL;
-        }
-
-        Host host = removeVmFromHostMap(vm);
-        if(Objects.isNull(host)) {
-            return Host.NULL;
-        }
-
-        return host;
     }
 
     @Override
@@ -157,7 +94,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private void addPesFromHostsToFreePesList() {
         setHostFreePesMap(new HashMap<>(getHostList().size()));
-        vmHostMap = new HashMap<>();
         setUsedPes(new HashMap<>());
         getHostList().forEach(host -> hostFreePesMap.put(host, host.getNumberOfWorkingPes()));
     }

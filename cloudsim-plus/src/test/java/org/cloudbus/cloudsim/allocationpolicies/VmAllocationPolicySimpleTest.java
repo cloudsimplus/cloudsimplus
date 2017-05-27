@@ -63,7 +63,7 @@ public class VmAllocationPolicySimpleTest {
         final Vm vm = VmSimpleTest.createVm(0, 1000, 2);
         assertTrue(policy.allocateHostForVm(vm));
 
-        final Host allocatedHostForVm = policy.getVmHostMap().get(vm);
+        final Host allocatedHostForVm = vm.getHost();
         final Host hostWithLessPes = policy.getDatacenter().getHostList().get(2);
         assertEquals(hostWithLessPes, allocatedHostForVm);
     }
@@ -76,7 +76,7 @@ public class VmAllocationPolicySimpleTest {
             secondHostWithLessPes.getStorage().getCapacity(), CloudletScheduler.NULL);
         assertTrue(policy.allocateHostForVm(vm));
 
-        final Host allocatedHostForVm = policy.getVmHostMap().get(vm);
+        final Host allocatedHostForVm = vm.getHost();
         assertEquals(secondHostWithLessPes, allocatedHostForVm);
     }
 

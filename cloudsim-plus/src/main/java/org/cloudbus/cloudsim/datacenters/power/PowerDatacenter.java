@@ -134,30 +134,41 @@ public class PowerDatacenter extends DatacenterSimple {
             return;
         }
 
-        final Map<Vm, Host> migrationMap =
-                getVmAllocationPolicy().optimizeAllocation(getVmList());
-        final double currentTime = getSimulation().clock();
+        final Map<Vm, Host> migrationMap = getVmAllocationPolicy().optimizeAllocation(getVmList());
         for (Entry<Vm, Host> entry : migrationMap.entrySet()) {
-            final Host targetHost = entry.getValue();
-            final Host oldHost = entry.getKey().getHost();
-
-            if (oldHost == Host.NULL) {
-                println(String.format(
-                        "%.2f: Migration of %s to %s is started",
-                        currentTime, entry.getKey(), targetHost));
-            } else {
-                println(String.format(
-                        "%.2f: Migration of %s from %s to %s is started",
-                        currentTime, entry.getKey(),
-                        oldHost, targetHost));
-            }
-
-            targetHost.addMigratingInVm(entry.getKey());
-            incrementMigrationCount();
-
-            final double delay = timeToMigrateVm(entry.getKey(), targetHost);
-            send(getId(), delay, CloudSimTags.VM_MIGRATE, entry);
+            startVmMigration(entry);
         }
+    }
+
+    /**
+     * Actually fires the event that starts the VM migration
+     * @param entry a Map Entry that indicate to which Host a VM must be migrated
+     */
+    private void startVmMigration(Entry<Vm, Host> entry) {
+        final double currentTime = getSimulation().clock();
+        final Host sourceHost = entry.getKey().getHost();
+        final Host targetHost = entry.getValue();
+
+        final double delay = timeToMigrateVm(entry.getKey(), targetHost);
+        if (sourceHost == Host.NULL) {
+            Log.printFormattedLine(
+                    "%.2f: Migration of %s to %s is started.",
+                    currentTime, entry.getKey(), targetHost);
+        } else {
+            Log.printFormattedLine(
+                    "%.2f: Migration of %s from %s to %s is started.",
+                    currentTime, entry.getKey(), sourceHost, targetHost);
+        }
+        Log.printFormattedLine(
+            "\tIt's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.",
+            delay, getBandwidthForMigrationPercent()*100);
+
+
+        sourceHost.addVmMigratingOut(entry.getKey());
+        targetHost.addMigratingInVm(entry.getKey());
+        incrementMigrationCount();
+
+        send(getId(), delay, CloudSimTags.VM_MIGRATE, entry);
     }
 
     /**

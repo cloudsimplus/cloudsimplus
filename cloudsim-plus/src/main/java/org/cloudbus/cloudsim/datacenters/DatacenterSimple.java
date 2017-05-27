@@ -839,9 +839,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
     protected double updateHostsProcessing() {
-        final List<? extends Host> list = getVmAllocationPolicy().getHostList();
         double nextSimulationTime = Double.MAX_VALUE;
-        for (final Host host : list) {
+        for (final Host host : getHostList()) {
             final double time = host.updateProcessing(getSimulation().clock());
             nextSimulationTime = Math.min(time, nextSimulationTime);
         }
@@ -988,7 +987,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public <T extends Host> List<T> getHostList() {
-        return getCharacteristics().getHostList();
+        return characteristics.getHostList();
     }
 
     @Override

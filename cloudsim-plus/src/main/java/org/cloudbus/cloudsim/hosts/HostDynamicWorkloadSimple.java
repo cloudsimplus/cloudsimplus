@@ -121,8 +121,11 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
         final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
-            Log.printFormattedLine("%.2f: [" + this + "] MIPS not allocated for " + vm
-                    + " due to capacity unavailability: %.2f", getSimulation().clock(), totalRequestedMips - totalAllocatedMips);
+            final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
+            final double notAllocatedMipsByPe = (totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes();
+            Log.printFormattedLine(
+                "%.2f: [%s] %.0f MIPS not allocated for each one of the %d PEs from %s due to %s.",
+                getSimulation().clock(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
         }
 
         final VmStateHistoryEntry entry = new VmStateHistoryEntry(
