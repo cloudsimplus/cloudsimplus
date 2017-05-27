@@ -69,7 +69,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public final <T extends Host> List<T> getHostList() {
-        return (List<T>) getDatacenter().getHostList();
+        return (List<T>) datacenter.getHostList();
     }
 
     /**

@@ -96,7 +96,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
 
     @Override
     public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
-        final List<PowerHostUtilizationHistory> overloadedHosts = getOverUtilizedHosts();
+        final List<PowerHostUtilizationHistory> overloadedHosts = getOverloadedHosts();
         printOverUtilizedHosts(overloadedHosts);
         saveAllocation();
         final List<Vm> vmsToMigrate = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
@@ -314,7 +314,8 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         for (final Vm vm : vmsToMigrate) {
             final PowerHost allocatedHost = findHostForVm(vm, overloadedHosts);
             if (allocatedHost != PowerHost.NULL) {
-                Log.printConcatLine("\tVM #", vm.getId(), " allocated to host #", allocatedHost.getId());
+                vm.getHost().destroyVm(vm);
+                Log.printConcatLine("\tVM #", vm.getId(), " will be migrated to host #", allocatedHost.getId());
                 migrationMap.put(vm, allocatedHost);
             }
         }
@@ -354,8 +355,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
     }
 
     /**
-     * Gets the VMs to migrate from Hosts
-     * and destroys such VMs into these Hosts.
+     * Gets the VMs to migrate from Hosts.
      *
      * @param overloadedHosts the List of overloaded Hosts
      * @return the VMs to migrate from hosts
@@ -369,7 +369,6 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                     break;
                 }
                 vmsToMigrate.add(vm);
-                host.destroyVm(vm);
                 if (!isHostOverloaded(host)) {
                     break;
                 }
@@ -396,7 +395,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      *
      * @return the over utilized hosts
      */
-    protected List<PowerHostUtilizationHistory> getOverUtilizedHosts() {
+    protected List<PowerHostUtilizationHistory> getOverloadedHosts() {
         return this.<PowerHostUtilizationHistory>getHostList().stream()
             .filter(this::isHostOverloaded)
             .collect(Collectors.toCollection(LinkedList::new));
@@ -503,11 +502,11 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @see #savedAllocation
      */
     protected void saveAllocation() {
-        getSavedAllocation().clear();
+        savedAllocation.clear();
         for (final Host host : getHostList()) {
             for (final Vm vm : host.getVmList()) {
                 if (!host.getVmsMigratingIn().contains(vm)) {
-                    getSavedAllocation().put(vm, host);
+                    savedAllocation.put(vm, host);
                 }
             }
         }
