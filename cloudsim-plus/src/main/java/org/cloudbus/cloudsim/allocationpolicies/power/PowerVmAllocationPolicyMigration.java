@@ -55,44 +55,12 @@ public interface PowerVmAllocationPolicyMigration extends PowerVmAllocationPolic
     Map<Host, List<Double>> getTimeHistory();
 
     /**
-     * Gets a <b>read-only</b> list of history of times spent in VM selection,
-     * for every time the optimization of VM allocation method is called.
-     *
-     * @return the execution time history vm selection
-     */
-    List<Double> getExecutionTimeHistoryVmSelection();
-
-    /**
-     * Gets a <b>read-only</b> list of history of times spent in host selection,
-     * for every time the optimization of VM allocation method is called.
-     *
-     * @return the execution time history host selection
-     */
-    List<Double> getExecutionTimeHistoryHostSelection();
-
-    /**
-     * Gets a <b>read-only</b> list of history of times spent in VM reallocation,
-     * for every time the optimization of VM allocation method is called.
-     *
-     * @return the execution time history vm reallocation
-     */
-    List<Double> getExecutionTimeHistoryVmReallocation();
-
-    /**
-     * Gets a <b>read-only</b> list of history of total times spent in every call of the optimization of
-     * VM allocation method.
-     *
-     * @return the execution time history total
-     */
-    List<Double> getExecutionTimeHistoryTotal();
-
-    /**
      * Checks if host is over utilized.
      *
      * @param host the host to check
      * @return true, if the host is over utilized; false otherwise
      */
-    boolean isHostOverUtilized(PowerHost host);
+    boolean isHostOverloaded(PowerHost host);
 
     /**
      * Gets the host CPU utilization threshold to detect over utilization.

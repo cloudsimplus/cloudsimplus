@@ -29,11 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.util.Comparator.comparingInt;
 import static org.junit.Assert.*;
 
 /**
@@ -259,7 +257,7 @@ public class HostSimpleTest {
         });
 
         final VmScheduler vmScheduler = EasyMock.createMock(VmScheduler.class);
-        EasyMock.expect(vmScheduler.getAllocatedMipsForVm(EasyMock.anyObject()))
+        EasyMock.expect(vmScheduler.getAllocatedMips(EasyMock.anyObject()))
                 .andReturn(mipsShare)
                 .times(numberOfVms);
         EasyMock.expect(vmScheduler.setHost(EasyMock.anyObject()))

@@ -115,7 +115,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
             setLastProcessTime(currentTime);
             return nextCloudletFinishTime;
         }
-        
+
         return Double.MAX_VALUE;
     }
 
@@ -164,11 +164,8 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
                 targetHost.addMigratingInVm(entry.getKey());
                 incrementMigrationCount();
 
-                //VM migration delay = RAM / bandwidth + C (C = 10 sec)
-                send(
-                    getId(),
-                    entry.getKey().getRam().getCapacity() / ((double) entry.getKey().getBw().getCapacity() / 8000) + 10,
-                    CloudSimTags.VM_MIGRATE, entry);
+                final double delay = timeToMigrateVm(entry.getKey(), targetHost);
+                send(getId(), delay, CloudSimTags.VM_MIGRATE, entry);
             }
         }
     }

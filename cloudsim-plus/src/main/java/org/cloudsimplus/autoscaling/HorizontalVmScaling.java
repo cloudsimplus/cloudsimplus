@@ -27,7 +27,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -121,7 +120,7 @@ public interface HorizontalVmScaling extends VmScaling {
      *                  The predicate receives the Vm to allow the it
      *                  to define the over utilization condition.
      *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}
+     *                  based on Vm's {@link Vm#getCpuPercentUsage(double)} CPU usage}
      *                  and/or any other VM resource usage.
      * @return
      */
@@ -147,7 +146,7 @@ public interface HorizontalVmScaling extends VmScaling {
      *                  The predicate receives the Vm to allow the it
      *                  to define the over utilization condition.
      *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUse(double)} CPU usage}
+     *                  based on Vm's {@link Vm#getCpuPercentUsage(double)} CPU usage}
      *                  and/or any other VM resource usage.
      * @return
      */

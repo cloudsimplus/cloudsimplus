@@ -155,7 +155,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public void deallocatePesForAllVms() {
-        getMipsMapAllocated().clear();
+        mipsMapAllocated.clear();
         getWorkingPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
     }
 
@@ -165,13 +165,13 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public List<Double> getAllocatedMipsForVm(Vm vm) {
-        return getMipsMapAllocated().getOrDefault(vm, new ArrayList<>());
+    public List<Double> getAllocatedMips(Vm vm) {
+        return mipsMapAllocated.getOrDefault(vm, new ArrayList<>());
     }
 
     @Override
     public double getTotalAllocatedMipsForVm(Vm vm) {
-        return getAllocatedMipsForVm(vm).stream().mapToDouble(v -> v).sum();
+        return getAllocatedMips(vm).stream().mapToDouble(v -> v).sum();
     }
 
     @Override
@@ -203,7 +203,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public List<Double> getMipsRequested(Vm vm) {
+    public List<Double> getRequestedMips(Vm vm) {
         return new ArrayList<>(mipsMapRequested.getOrDefault(vm, Collections.EMPTY_LIST));
     }
 

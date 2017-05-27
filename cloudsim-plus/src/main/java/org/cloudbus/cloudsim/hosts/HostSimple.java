@@ -191,7 +191,7 @@ public class HostSimple implements Host {
     public double updateProcessing(double currentTime) {
         final double nextSimulationTime =
             vmList.stream()
-                .mapToDouble(vm -> vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm)))
+                .mapToDouble(vm -> vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMips(vm)))
                 .min()
                 .orElse(Double.MAX_VALUE);
 
@@ -257,7 +257,7 @@ public class HostSimple implements Host {
         if (!getVmScheduler().isSuitableForVm(vm)) {
             Log.printFormattedLine(
                     "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs.\n\t  "+
-                    "Required %d PEs of %.0f MIPS (%.0f MIPS) but there are just %d PEs of %.0f MIPS, only a total of %.0f MIPS available.",
+                    "Required %d PEs of %.0f MIPS (%.0f MIPS total). However, there are just %d working PEs of %.0f MIPS, from which %.0f MIPS are available.",
                     getSimulation().clock(), getClass().getSimpleName(), msg, vm, this,
                     vm.getNumberOfPes(), vm.getMips(), vm.getTotalMipsCapacity(),
                     vmScheduler.getWorkingPeList().size(), getMips(), vmScheduler.getAvailableMips());
@@ -383,7 +383,7 @@ public class HostSimple implements Host {
 
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
-        return getVmScheduler().getAllocatedMipsForVm(vm);
+        return getVmScheduler().getAllocatedMips(vm);
     }
 
     @Override

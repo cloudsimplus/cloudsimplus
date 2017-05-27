@@ -105,13 +105,13 @@ final class VmNull implements Vm {
     @Override public List<VmStateHistoryEntry> getStateHistory() {
         return Collections.emptyList();
     }
-    @Override public double getCpuPercentUse(double time) {
+    @Override public double getCpuPercentUsage(double time) {
         return 0.0;
     }
-    @Override public double getCurrentCpuPercentUse() {
+    @Override public double getCpuPercentUsage() {
         return 0;
     }
-    @Override public double getTotalUtilizationOfCpuMips(double time) {
+    @Override public double getTotalCpuMipsUsage(double time) {
         return 0.0;
     }
     @Override public String getUid() {

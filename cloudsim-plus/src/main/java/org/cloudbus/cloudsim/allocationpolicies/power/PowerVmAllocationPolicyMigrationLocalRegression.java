@@ -76,10 +76,10 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
      * @return true, if is host over utilized; false otherwise
      */
     @Override
-    public boolean isHostOverUtilized(PowerHost host) {
+    public boolean isHostOverloaded(PowerHost host) {
         final double predictedUsageThreshold = getOverUtilizationThreshold(host);
         if(predictedUsageThreshold == Double.MAX_VALUE){
-            return getFallbackVmAllocationPolicy().isHostOverUtilized(host);
+            return getFallbackVmAllocationPolicy().isHostOverloaded(host);
         }
 
         addHistoryEntryIfAbsent(host, predictedUsageThreshold);

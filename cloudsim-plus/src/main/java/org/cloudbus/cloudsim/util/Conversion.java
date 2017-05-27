@@ -62,7 +62,7 @@ public final class Conversion {
 
     /**
      * Converts any value in bytes to bits,
-     * doesn't matter if the unit is Kilobytes (KILOBYTE), Megabytes (MEGABYTE), Gigabytes (GB), etc.
+     * doesn't matter if the unit is Kilobytes (KB), Megabytes (MB), Gigabytes (GB), etc.
      *
      * @param bytes the value in bytes, KB, MB, GB, etc
      * @return the value in bites, Kbits, Mbits, Gbits and so on, according to the given value
@@ -70,5 +70,17 @@ public final class Conversion {
     public static double bytesToBites(double bytes){
         return bytes * 8;
     }
+
+    /**
+     * Converts any value in bits to bytes,
+     * doesn't matter if the unit is Kilobites (Kb), Megabites (Mb), Gigabites (Gb), etc.
+     *
+     * @param bits the value in bites, Kb, Mb, Gb, etc
+     * @return the value in bites, Kbytes, Mbytes, Gbytes and so on, according to the given value
+     */
+    public static double bitesToBytes(double bits){
+        return bits / 8.0;
+    }
+
 
 }

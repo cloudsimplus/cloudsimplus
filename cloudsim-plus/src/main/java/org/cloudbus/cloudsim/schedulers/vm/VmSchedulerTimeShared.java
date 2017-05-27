@@ -104,6 +104,21 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
+     * Performs the allocation of a MIPS List to a given VM.
+     * The actual MIPS to be allocated to the VM may be reduced
+     * if the VM is in migration, due to migration overhead.
+     *
+     * @param vm the VM to allocate MIPS to
+     * @param mipsShareRequestedReduced the list of MIPS to allocate to the VM,
+     * after it being adjusted by the {@link #getMipsShareRequestedReduced(List)} method.
+     * @see #getMipsShareRequestedReduced(java.util.List)
+     */
+    protected void allocateMipsShareForVm(Vm vm, final List<Double> mipsShareRequestedReduced) {
+        final List<Double> mipsShare = getMipsShareToAllocate(mipsShareRequestedReduced, vm);
+        getMipsMapAllocated().put(vm, mipsShare);
+    }
+
+    /**
      * Update allocation of Host PEs for all VMs.
      */
     private void updatePesAllocationForAllVms() {
@@ -271,21 +286,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     @Override
     public boolean isSuitableForVm(List<Double> vmMipsList) {
         return isAllowedToAllocateMips(vmMipsList);
-    }
-
-    /**
-     * Performs the allocation of a MIPS List to a given VM.
-     * The actual MIPS to be allocated to the VM may be reduced
-     * if the VM is in migration, due to migration overhead.
-     *
-     * @param vm the VM to allocate MIPS to
-     * @param mipsShareRequestedReduced the list of MIPS to allocate to the VM,
-     * after it being adjusted by the {@link #getMipsShareRequestedReduced(List)} method.
-     * @see #getMipsShareRequestedReduced(java.util.List)
-     */
-    protected void allocateMipsShareForVm(Vm vm, final List<Double> mipsShareRequestedReduced) {
-        final List<Double> mipsShare = getMipsShareToAllocate(mipsShareRequestedReduced, vm);
-        getMipsMapAllocated().put(vm, mipsShare);
     }
 
     /**

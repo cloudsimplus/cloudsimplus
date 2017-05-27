@@ -75,7 +75,7 @@ public final class VmList {
      */
     public static void sortByCpuUtilization(List<? extends Vm> vmList, double currentSimulationTime) {
         Comparator<Vm> comparator =
-            Comparator.comparingDouble(vm -> vm.getTotalUtilizationOfCpuMips(currentSimulationTime));
+            Comparator.comparingDouble(vm -> vm.getTotalCpuMipsUsage(currentSimulationTime));
         vmList.sort(comparator.reversed());
     }
 

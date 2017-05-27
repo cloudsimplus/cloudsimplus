@@ -24,7 +24,6 @@
  */
 package org.cloudsimplus.examples.migration;
 
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationBestFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -86,7 +85,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public final class MigrationExample1 {
-    private static final int    SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
+    private static final int    SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 1;
     private static final int    HOST_MIPS = 1000; //for each PE
 
     private static final int    HOST_INITIAL_PES = 4;
@@ -154,6 +153,7 @@ public final class MigrationExample1 {
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
+        datacenter0.setLog(false);
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
         createAndSubmitCloudlets(broker);

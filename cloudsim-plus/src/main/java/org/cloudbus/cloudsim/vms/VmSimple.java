@@ -261,24 +261,24 @@ public class VmSimple implements Vm {
             return Double.MAX_VALUE;
         }
 
-        final double nextSimulationTime = getCloudletScheduler().updateProcessing(currentTime, mipsShare);
+        final double nextSimulationTime = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
         return nextSimulationTime;
     }
 
     @Override
-    public double getCurrentCpuPercentUse() {
-        return getCpuPercentUse(getSimulation().clock());
+    public double getCpuPercentUsage() {
+        return getCpuPercentUsage(getSimulation().clock());
     }
 
     @Override
-    public double getCpuPercentUse(double time) {
-        return getCloudletScheduler().getRequestedCpuPercentUtilization(time);
+    public double getCpuPercentUsage(double time) {
+        return cloudletScheduler.getRequestedCpuPercentUtilization(time);
     }
 
     @Override
-    public double getTotalUtilizationOfCpuMips(double time) {
-        return getCpuPercentUse(time) * getTotalMipsCapacity();
+    public double getTotalCpuMipsUsage(double time) {
+        return getCpuPercentUsage(time) * getTotalMipsCapacity();
     }
 
     @Override
@@ -294,7 +294,7 @@ public class VmSimple implements Vm {
     @Override
     public List<Double> getCurrentRequestedMips() {
         if (isCreated()) {
-            return host.getVmScheduler().getMipsRequested(this);
+            return host.getVmScheduler().getRequestedMips(this);
         }
 
         return LongStream.range(0, getNumberOfPes())

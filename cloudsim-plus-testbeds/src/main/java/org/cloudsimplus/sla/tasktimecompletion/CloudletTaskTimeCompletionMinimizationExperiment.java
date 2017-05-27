@@ -152,7 +152,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
         broker0.getVmsCreatedList().forEach(vm
                 -> Log.printFormattedLine("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
-                        vm.getCurrentCpuPercentUse(), cpuUtilizationSlaContract)
+                        vm.getCpuPercentUsage(), cpuUtilizationSlaContract)
         );
     }
 

@@ -17,6 +17,7 @@ import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -46,7 +47,10 @@ import org.cloudbus.cloudsim.util.Log;
  * @since CloudSim Toolkit 2.0
  */
 public class PowerDatacenter extends DatacenterSimple {
-
+    /**
+     * @see #getBandwidthForMigrationPercent()
+     */
+    private double bandwidthForMigrationPercent;
     /**
      * @see #getPower()
      */
@@ -85,6 +89,7 @@ public class PowerDatacenter extends DatacenterSimple {
         setMigrationsEnabled(true);
         setLastCloudletProcessingTime(-1);
         setMigrationCount(0);
+        bandwidthForMigrationPercent = 0.5;
     }
 
     /**
@@ -121,7 +126,6 @@ public class PowerDatacenter extends DatacenterSimple {
         }
 
         executeVmMigrations();
-
         return nextSimulationTime;
     }
 
@@ -130,49 +134,52 @@ public class PowerDatacenter extends DatacenterSimple {
             return;
         }
 
-        Map<Vm, Host> migrationMap =
+        final Map<Vm, Host> migrationMap =
                 getVmAllocationPolicy().optimizeAllocation(getVmList());
         final double currentTime = getSimulation().clock();
-        for (Entry<Vm, Host> migrate : migrationMap.entrySet()) {
-            Host targetHost = migrate.getValue();
-            Host oldHost = migrate.getKey().getHost();
+        for (Entry<Vm, Host> entry : migrationMap.entrySet()) {
+            final Host targetHost = entry.getValue();
+            final Host oldHost = entry.getKey().getHost();
 
             if (oldHost == Host.NULL) {
                 println(String.format(
                         "%.2f: Migration of %s to %s is started",
-                        currentTime, migrate.getKey(), targetHost));
+                        currentTime, entry.getKey(), targetHost));
             } else {
                 println(String.format(
                         "%.2f: Migration of %s from %s to %s is started",
-                        currentTime, migrate.getKey(),
+                        currentTime, entry.getKey(),
                         oldHost, targetHost));
             }
 
-            targetHost.addMigratingInVm(migrate.getKey());
+            targetHost.addMigratingInVm(entry.getKey());
             incrementMigrationCount();
 
-            //VM migration delay = RAM / bandwidth
-            /*
-            We use BW / 2 to model BW available for migration purposes, the other
-            half of BW is for VM communication
-            around 16 seconds for 1024 MEGABYTE using 1 Gbit/s network
-            */
-            //@todo this computation is different from PowerDatacenterNonPowerAware and probably is duplicated with other Datacenters
-            send(
-                    getId(),
-                    migrate.getKey().getRam().getCapacity() / ((double) targetHost.getBw().getCapacity() / (2 * 8000)),
-                    CloudSimTags.VM_MIGRATE, migrate);
+            final double delay = timeToMigrateVm(entry.getKey(), targetHost);
+            send(getId(), delay, CloudSimTags.VM_MIGRATE, entry);
         }
     }
 
+    /**
+     * Computes the expected time to migrate a VM to a given Host.
+     * It is computed as: VM RAM (MB)/Target Host Bandwidth (Mb/s).
+     *
+     * @param vm the VM to migrate.
+     * @param targetHost the Host where tto migrate the VM
+     * @return the time (in seconds) that is expected to migrate the VM
+     */
+    protected double timeToMigrateVm(Vm vm, Host targetHost) {
+        return vm.getRam().getCapacity() / Conversion.bitesToBytes(targetHost.getBw().getCapacity() * bandwidthForMigrationPercent);
+    }
+
     @Override
-    protected double updateVmsProcessingOfAllHosts() {
+    protected double updateHostsProcessing() {
         final double currentTime = getSimulation().clock();
 
         println("\n--------------------------------------------------------------\n");
-        println(String.format("New resource usage of Datacenter %d for the time frame starting at %.2f:", getId(), currentTime));
+        println(String.format("New resource usage of %s for the time frame starting at %.2f:", getName(), currentTime));
 
-        final double nextCloudletFinishTime = super.updateVmsProcessingOfAllHosts();
+        final double nextCloudletFinishTime = super.updateHostsProcessing();
         final double datacenterPowerUsageForTimeSpan = getDatacenterPowerUsageForTimeSpan();
 
         setPower(getPower() + datacenterPowerUsageForTimeSpan);
@@ -259,11 +266,11 @@ public class PowerDatacenter extends DatacenterSimple {
             return;
         }
 
-        super.updateVmsProcessingOfAllHosts();
+        super.updateHostsProcessing();
         super.processVmMigrate(ev, ack);
         SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
         if (Objects.isNull(event) || event.eventTime() > getSimulation().clock()) {
-            super.updateVmsProcessingOfAllHosts();
+            super.updateHostsProcessing();
         }
     }
 
@@ -357,6 +364,36 @@ public class PowerDatacenter extends DatacenterSimple {
     }
 
     /**
+     * Gets the percentage of the bandwidth allocated to a Host to
+     * migrate VMs. It's a value between [0 and 1] (where 1 is 100%).
+     * The default value is 0.5, meaning only 50% of the bandwidth
+     * will be allowed for migration, while the remaining
+     * will be used for VM services.
+     *
+     * @return
+     */
+    public double getBandwidthForMigrationPercent() {
+        return bandwidthForMigrationPercent;
+    }
+
+    /**
+     * Sets the percentage of the bandwidth allocated to a Host to
+     * migrate VMs. It's a value between [0 and 1] (where 1 is 100%).
+     * The default value is 0.5, meaning only 50% of the bandwidth
+     * will be allowed for migration, while the remaining
+     * will be used for VM services.
+     *
+     * @param bandwidthForMigrationPercent the bandwidth migration percentage to set
+     */
+    public void setBandwidthForMigrationPercent(double bandwidthForMigrationPercent) {
+        if(bandwidthForMigrationPercent <= 0){
+            throw new IllegalArgumentException("The bandwidth migration percentage must be greater than 0.");
+        }
+
+        this.bandwidthForMigrationPercent = bandwidthForMigrationPercent;
+    }
+
+    /**
      * Sets the migration count.
      *
      * @param migrationCount the new migration count
@@ -371,5 +408,4 @@ public class PowerDatacenter extends DatacenterSimple {
     protected void incrementMigrationCount() {
         setMigrationCount(getMigrationCount() + 1);
     }
-
 }

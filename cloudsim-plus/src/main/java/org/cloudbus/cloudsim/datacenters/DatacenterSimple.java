@@ -425,7 +425,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 vm.setCreated(true);
             }
 
-            final List<Double> mipsList = vm.getHost().getVmScheduler().getAllocatedMipsForVm(vm);
+            final List<Double> mipsList = vm.getHost().getVmScheduler().getAllocatedMips(vm);
             vm.updateProcessing(getSimulation().clock(), mipsList);
         }
 
@@ -456,8 +456,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Process the event for a Broker thta wants to migrate a VM. This
-     * DatacenterSimple will then send the status back to the Broker.
+     * Process the event from the Datacenter to migrate a VM.
      *
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
@@ -471,26 +470,28 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             throw new ClassCastException("The data object must be Map.Entry<Vm, Host>");
         }
 
-        final Map.Entry<Vm, Host> migrate = (Map.Entry<Vm, Host>) ev.getData();
+        final Map.Entry<Vm, Host> entry = (Map.Entry<Vm, Host>) ev.getData();
 
-        final Vm vm = migrate.getKey();
-        final Host host = migrate.getValue();
+        final Vm vm = entry.getKey();
+        final Host targetHost = entry.getValue();
 
-        getVmAllocationPolicy().deallocateHostForVm(vm);
-        host.removeMigratingInVm(vm);
-        final boolean result = getVmAllocationPolicy().allocateHostForVm(vm, host);
-        if (!result) {
-            Log.printFormattedLine("[Datacenter.processVmMigrate] VM %d allocation to the destination host failed", vm.getId());
-        }
+        vmAllocationPolicy.deallocateHostForVm(vm);
+        targetHost.removeMigratingInVm(vm);
+        final boolean result = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
 
         if (ack) {
             sendNow(ev.getSource(), CloudSimTags.VM_CREATE_ACK, vm);
         }
 
         vm.setInMigration(false);
-        Log.printFormattedLine(
-            "%.2f: Migration of VM #%d to Host #%d is completed",
-            getSimulation().clock(), vm.getId(), host.getId());
+        if (result) {
+            Log.printFormattedLine(
+                "%.2f: Migration of VM #%d to Host #%d is completed",
+                getSimulation().clock(), vm.getId(), targetHost.getId());
+        } else {
+            Log.printFormattedLine("[Datacenter] VM %d allocation to the destination host failed!", vm.getId());
+
+        }
     }
 
     /**
@@ -790,8 +791,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Updates processing of each cloudlet running in this DatacenterSimple
-     * and schedules the next processing update.
+     * Updates processing of each Host, that fires the update of VMs,
+     * which in turn updates cloudlets running in this Datacenter.
+     * After that, the method schedules the next processing update.
      * It is necessary because Hosts and VMs are simple objects, not
      * entities. So, they don't receive events and updating cloudlets inside
      * them must be called from the outside.
@@ -808,7 +810,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return Double.MAX_VALUE;
         }
 
-        double nextSimulationTime = updateVmsProcessingOfAllHosts();
+        double nextSimulationTime = updateHostsProcessing();
         if (nextSimulationTime != Double.MAX_VALUE) {
             nextSimulationTime = getCloudletProcessingUpdateInterval(nextSimulationTime);
             schedule(getId(),
@@ -828,14 +830,15 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Updates the processing of VMs inside all active hosts,
-     * that makes the processing of cloudlets inside such VMs to be updated.
+     * Updates the processing of all Hosts, that means
+     * that makes the processing of VMs running inside such hosts to be updated.
+     * Finally, the processing of Cloudlets running inside such VMs is updated.
      *
      * @return the predicted completion time of the earliest finishing cloudlet
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
-    protected double updateVmsProcessingOfAllHosts() {
+    protected double updateHostsProcessing() {
         final List<? extends Host> list = getVmAllocationPolicy().getHostList();
         double nextSimulationTime = Double.MAX_VALUE;
         for (final Host host : list) {
