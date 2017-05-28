@@ -15,7 +15,25 @@ Constructors
 HtmlTableColumn
 ^^^^^^^^^^^^^^^
 
+.. java:constructor:: public HtmlTableColumn(String title, String subTitle)
+   :outertype: HtmlTableColumn
+
+HtmlTableColumn
+^^^^^^^^^^^^^^^
+
+.. java:constructor:: public HtmlTableColumn(String title)
+   :outertype: HtmlTableColumn
+
+HtmlTableColumn
+^^^^^^^^^^^^^^^
+
 .. java:constructor:: public HtmlTableColumn(TableBuilder table, String title)
+   :outertype: HtmlTableColumn
+
+HtmlTableColumn
+^^^^^^^^^^^^^^^
+
+.. java:constructor:: public HtmlTableColumn(TableBuilder table, String title, String subTitle)
    :outertype: HtmlTableColumn
 
 Methods
@@ -29,6 +47,6 @@ generateData
 generateHeader
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected String generateHeader(String title)
+.. java:method:: @Override protected String generateHeader(String str)
    :outertype: HtmlTableColumn
 

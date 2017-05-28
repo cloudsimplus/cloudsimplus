@@ -1,4 +1,10 @@
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
 .. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Map
 
 PowerVmAllocationPolicyMigration
 ================================
@@ -24,6 +30,16 @@ NULL
 
 Methods
 -------
+getMetricHistory
+^^^^^^^^^^^^^^^^
+
+.. java:method::  Map<Host, List<Double>> getMetricHistory()
+   :outertype: PowerVmAllocationPolicyMigration
+
+   Gets a \ **read-only**\  map of metric history.
+
+   :return: the metric history
+
 getOverUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -35,6 +51,16 @@ getOverUtilizationThreshold
    :param host: the host to get the over utilization threshold
    :return: the over utilization threshold
 
+getTimeHistory
+^^^^^^^^^^^^^^
+
+.. java:method::  Map<Host, List<Double>> getTimeHistory()
+   :outertype: PowerVmAllocationPolicyMigration
+
+   Gets a \ **read-only**\  map of times when entries in each history list was added for each Host. All history lists are updated at the same time.
+
+   :return: the time history
+
 getUnderUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -45,21 +71,31 @@ getUnderUtilizationThreshold
 
    :return: the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
 
-isHostOverUtilized
-^^^^^^^^^^^^^^^^^^
+getUtilizationHistory
+^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean isHostOverUtilized(PowerHost host)
+.. java:method::  Map<Host, List<Double>> getUtilizationHistory()
+   :outertype: PowerVmAllocationPolicyMigration
+
+   Gets a \ **read-only**\  map of the utilization history for each Host.
+
+   :return: the utilization history
+
+isHostOverloaded
+^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isHostOverloaded(PowerHost host)
    :outertype: PowerVmAllocationPolicyMigration
 
    Checks if host is over utilized.
 
-   :param host: the host
+   :param host: the host to check
    :return: true, if the host is over utilized; false otherwise
 
-isHostUnderUtilized
-^^^^^^^^^^^^^^^^^^^
+isHostUnderloaded
+^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean isHostUnderUtilized(PowerHost host)
+.. java:method::  boolean isHostUnderloaded(PowerHost host)
    :outertype: PowerVmAllocationPolicyMigration
 
    Checks if host is under utilized.

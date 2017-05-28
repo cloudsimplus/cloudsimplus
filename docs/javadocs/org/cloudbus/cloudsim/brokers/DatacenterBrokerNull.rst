@@ -10,6 +10,10 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.listeners DatacenterBrokerEventInfo
+
+.. java:import:: org.cloudsimplus.listeners EventListener
+
 .. java:import:: java.util Collections
 
 .. java:import:: java.util Comparator
@@ -38,6 +42,18 @@ DatacenterBrokerNull
 
 Methods
 -------
+addOnVmsCreatedListener
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener)
+   :outertype: DatacenterBrokerNull
+
+addOneTimeOnVmsCreatedListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener)
+   :outertype: DatacenterBrokerNull
+
 bindCloudletToVm
 ^^^^^^^^^^^^^^^^
 

@@ -15,6 +15,24 @@ Constructors
 TextTableColumn
 ^^^^^^^^^^^^^^^
 
+.. java:constructor:: public TextTableColumn(String title, String subTitle)
+   :outertype: TextTableColumn
+
+TextTableColumn
+^^^^^^^^^^^^^^^
+
+.. java:constructor:: public TextTableColumn(String title)
+   :outertype: TextTableColumn
+
+TextTableColumn
+^^^^^^^^^^^^^^^
+
+.. java:constructor:: public TextTableColumn(TableBuilder table, String title, String subTitle)
+   :outertype: TextTableColumn
+
+TextTableColumn
+^^^^^^^^^^^^^^^
+
 .. java:constructor:: public TextTableColumn(TableBuilder table, String title)
    :outertype: TextTableColumn
 

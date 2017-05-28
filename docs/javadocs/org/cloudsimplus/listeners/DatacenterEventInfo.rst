@@ -12,8 +12,6 @@ DatacenterEventInfo
 
    :author: Manoel Campos da Silva Filho
 
-   **See also:** :java:ref:`VmDatacenterEventInfo`
-
 Methods
 -------
 getDatacenter

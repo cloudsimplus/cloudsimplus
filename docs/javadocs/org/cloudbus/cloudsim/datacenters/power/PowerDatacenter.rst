@@ -14,6 +14,10 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts.power PowerHostSimple
 
+.. java:import:: org.cloudbus.cloudsim.power.models PowerModel
+
+.. java:import:: org.cloudbus.cloudsim.util Conversion
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
@@ -76,6 +80,14 @@ PowerDatacenter
 
 Methods
 -------
+getBandwidthForMigrationPercent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double getBandwidthForMigrationPercent()
+   :outertype: PowerDatacenter
+
+   Gets the percentage of the bandwidth allocated to a Host to migrate VMs. It's a value between [0 and 1] (where 1 is 100%). The default value is 0.5, meaning only 50% of the bandwidth will be allowed for migration, while the remaining will be used for VM services.
+
 getLastCloudletProcessingTime
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -102,9 +114,19 @@ getPower
 .. java:method:: public double getPower()
    :outertype: PowerDatacenter
 
-   Gets the power.
+   Gets the Datacenter power consumption (in Watts/Second).
 
-   :return: the power
+   :return: the power consumption (in Watts/Second)
+
+getPowerInKWattsHour
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double getPowerInKWattsHour()
+   :outertype: PowerDatacenter
+
+   Gets the Datacenter power consumption (in Kilo Watts/Hour).
+
+   :return: the power consumption (in Kilo Watts/Hour)
 
 incrementMigrationCount
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -150,6 +172,16 @@ removeFinishedVmsFromEveryHost
 .. java:method:: protected void removeFinishedVmsFromEveryHost()
    :outertype: PowerDatacenter
 
+setBandwidthForMigrationPercent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void setBandwidthForMigrationPercent(double bandwidthForMigrationPercent)
+   :outertype: PowerDatacenter
+
+   Sets the percentage of the bandwidth allocated to a Host to migrate VMs. It's a value between [0 and 1] (where 1 is 100%). The default value is 0.5, meaning only 50% of the bandwidth will be allowed for migration, while the remaining will be used for VM services.
+
+   :param bandwidthForMigrationPercent: the bandwidth migration percentage to set
+
 setLastCloudletProcessingTime
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -186,9 +218,21 @@ setPower
 .. java:method:: protected final void setPower(double power)
    :outertype: PowerDatacenter
 
-   Sets the power.
+   Sets the power consumption.
 
-   :param power: the new power
+   :param power: the new power consumption
+
+timeToMigrateVm
+^^^^^^^^^^^^^^^
+
+.. java:method:: protected double timeToMigrateVm(Vm vm, Host targetHost)
+   :outertype: PowerDatacenter
+
+   Computes the expected time to migrate a VM to a given Host. It is computed as: VM RAM (MB)/Target Host Bandwidth (Mb/s).
+
+   :param vm: the VM to migrate.
+   :param targetHost: the Host where tto migrate the VM
+   :return: the time (in seconds) that is expected to migrate the VM
 
 updateCloudletProcessing
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -196,9 +240,9 @@ updateCloudletProcessing
 .. java:method:: @Override protected double updateCloudletProcessing()
    :outertype: PowerDatacenter
 
-updateVmsProcessingOfAllHosts
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+updateHostsProcessing
+^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected double updateVmsProcessingOfAllHosts()
+.. java:method:: @Override protected double updateHostsProcessing()
    :outertype: PowerDatacenter
 

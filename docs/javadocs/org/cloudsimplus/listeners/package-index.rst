@@ -25,6 +25,7 @@ Listeners allow developers to perform specific tasks when different events happe
 
    CloudletEventInfo
    CloudletVmEventInfo
+   DatacenterBrokerEventInfo
    DatacenterEventInfo
    EventInfo
    EventListener

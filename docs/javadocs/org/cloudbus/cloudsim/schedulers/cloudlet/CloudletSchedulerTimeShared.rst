@@ -71,15 +71,3 @@ getCloudletWaitingList
 
    :return: {@inheritDoc}
 
-getTotalCurrentAvailableMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare)
-   :outertype: CloudletSchedulerTimeShared
-
-   {@inheritDoc} It in fact doesn't consider the parameters given because in the Time Shared Scheduler, the CPU capacity from the VM that is managed by the scheduler is shared between all running cloudlets.
-
-   :param rcl: {@inheritDoc}
-   :param mipsShare: {@inheritDoc}
-   :return: {@inheritDoc}
-

@@ -4,8 +4,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: java.util.function Function
-
 .. java:import:: java.util.function Predicate
 
 .. java:import:: java.util.function Supplier
@@ -98,7 +96,7 @@ setOverloadPredicate
 
    Sets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is overloaded or not, that will make the Vm's \ :java:ref:`DatacenterBroker`\  to up scale the VM. The up scaling is performed by creating new VMs to attend new arrived Cloudlets and then balance the load.
 
-   :param predicate: a predicate that checks certain conditions to define that the \ :java:ref:`Vm <getVm()>`\  is over utilized. The predicate receives the Vm to allow the it to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUse(double)`\  CPU usage} and/or any other VM resource usage.
+   :param predicate: a predicate that checks certain conditions to define that the \ :java:ref:`Vm <getVm()>`\  is over utilized. The predicate receives the Vm to allow the it to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUsage(double)`\  CPU usage} and/or any other VM resource usage.
 
 setUnderloadPredicate
 ^^^^^^^^^^^^^^^^^^^^^
@@ -108,7 +106,7 @@ setUnderloadPredicate
 
    Sets a \ :java:ref:`Predicate`\  that defines when \ :java:ref:`Vm <getVm()>`\  is underloaded or not, that will make the Vm's \ :java:ref:`DatacenterBroker`\  to down scale Vm. The down scaling is performed by destroying idle VMs.
 
-   :param predicate: a predicate that checks certain conditions to define that the \ :java:ref:`Vm <getVm()>`\  is under utilized. The predicate receives the Vm to allow the it to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUse(double)`\  CPU usage} and/or any other VM resource usage.
+   :param predicate: a predicate that checks certain conditions to define that the \ :java:ref:`Vm <getVm()>`\  is under utilized. The predicate receives the Vm to allow the it to define the over utilization condition. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUsage(double)`\  CPU usage} and/or any other VM resource usage.
 
 setVmSupplier
 ^^^^^^^^^^^^^

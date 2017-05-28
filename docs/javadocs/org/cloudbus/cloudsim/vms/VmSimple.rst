@@ -180,10 +180,16 @@ getCloudletScheduler
 .. java:method:: @Override public CloudletScheduler getCloudletScheduler()
    :outertype: VmSimple
 
-getCpuPercentUse
-^^^^^^^^^^^^^^^^
+getCpuPercentUsage
+^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getCpuPercentUse(double time)
+.. java:method:: @Override public double getCpuPercentUsage()
+   :outertype: VmSimple
+
+getCpuPercentUsage
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCpuPercentUsage(double time)
    :outertype: VmSimple
 
 getCurrentAllocatedBw
@@ -209,12 +215,6 @@ getCurrentAllocatedSize
    :return: the current allocated size
 
    **See also:** :java:ref:`Vm.getStorage()`
-
-getCurrentCpuPercentUse
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getCurrentCpuPercentUse()
-   :outertype: VmSimple
 
 getCurrentRequestedBw
 ^^^^^^^^^^^^^^^^^^^^^
@@ -324,10 +324,6 @@ getStateHistory
 .. java:method:: @Override public List<VmStateHistoryEntry> getStateHistory()
    :outertype: VmSimple
 
-   Gets the history of MIPS capacity allocated to the VM.
-
-   :return: the state history
-
 getStorage
 ^^^^^^^^^^
 
@@ -340,16 +336,16 @@ getSubmissionDelay
 .. java:method:: @Override public double getSubmissionDelay()
    :outertype: VmSimple
 
+getTotalCpuMipsUsage
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalCpuMipsUsage(double time)
+   :outertype: VmSimple
+
 getTotalMipsCapacity
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getTotalMipsCapacity()
-   :outertype: VmSimple
-
-getTotalUtilizationOfCpuMips
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalUtilizationOfCpuMips(double time)
    :outertype: VmSimple
 
 getUid

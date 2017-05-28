@@ -1,3 +1,5 @@
+.. java:import:: java.util Collections
+
 .. java:import:: java.util HashMap
 
 .. java:import:: java.util List
@@ -28,9 +30,9 @@ VmAllocationPolicyAbstract
 
 .. java:type:: public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy
 
-   An abstract class that represents the policy used by a \ :java:ref:`Datacenter`\  to choose a \ :java:ref:`Host`\  to place or migrate or migrate a given \ :java:ref:`Vm`\ . It supports two-stage commit of reservation of hosts: first, we reserve the host and, once committed by the user, it is effectively allocated to he/she.
+   An abstract class that represents the policy used by a \ :java:ref:`Datacenter`\  to choose a \ :java:ref:`Host`\  to place or migrate a given \ :java:ref:`Vm`\ . It supports two-stage commit of reservation of hosts: first, we reserve the Host and, once committed by the customer, the VM is effectively allocated to that Host.
 
-   Each \ :java:ref:`Datacenter`\  has to have its own instance of a class that extends this class.
+   Each \ :java:ref:`Datacenter`\  must to have its own instance of a \ :java:ref:`VmAllocationPolicy`\ .
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov
 
@@ -75,7 +77,7 @@ getHostFreePesMap
 getHostList
 ^^^^^^^^^^^
 
-.. java:method:: @Override public <T extends Host> List<T> getHostList()
+.. java:method:: @Override public final <T extends Host> List<T> getHostList()
    :outertype: VmAllocationPolicyAbstract
 
 getUsedPes
@@ -87,27 +89,6 @@ getUsedPes
    Gets the map between each VM and the number of PEs used. The map key is a VM and the value is the number of used Pes for that VM.
 
    :return: the used PEs map
-
-getVmHostMap
-^^^^^^^^^^^^
-
-.. java:method:: protected Map<Vm, Host> getVmHostMap()
-   :outertype: VmAllocationPolicyAbstract
-
-   Gets the map between a VM and its allocated host. The map key is a VM UID and the value is the allocated host for that VM.
-
-   :return: the VM map
-
-mapVmToPm
-^^^^^^^^^
-
-.. java:method:: protected void mapVmToPm(Vm vm, Host host)
-   :outertype: VmAllocationPolicyAbstract
-
-   Register the allocation of a given Host to a Vm. It maps the placement of the Vm into the given Host.
-
-   :param vm: the placed Vm
-   :param host: the Host where the Vm has just been placed
 
 removeUsedPes
 ^^^^^^^^^^^^^
@@ -155,25 +136,4 @@ setUsedPes
    Sets the used pes.
 
    :param usedPes: the used pes
-
-setVmTable
-^^^^^^^^^^
-
-.. java:method:: protected final void setVmTable(Map<Vm, Host> vmTable)
-   :outertype: VmAllocationPolicyAbstract
-
-   Sets the vm table.
-
-   :param vmTable: the vm table
-
-unmapVmFromPm
-^^^^^^^^^^^^^
-
-.. java:method:: protected Host unmapVmFromPm(Vm vm)
-   :outertype: VmAllocationPolicyAbstract
-
-   Unregister the allocation of a Host to a given Vm, unmapping the Vm to the Host where it was. The method has to be called when a Vm is moved/removed from a Host.
-
-   :param vm: the moved/removed Vm
-   :return: the Host where the Vm was removed/moved from or \ :java:ref:`Host.NULL`\  if the Vm wasn't associated to a Host
 

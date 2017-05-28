@@ -251,16 +251,6 @@ getCurrentRequestedBwPercentUtilization
 
    :return: the BW utilization percentage from 0 to 1 (where 1 is 100%)
 
-getCurrentRequestedMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  List<Double> getCurrentRequestedMips()
-   :outertype: CloudletScheduler
-
-   Gets a \ **copy**\  of the list of current requested MIPS, avoiding the original list to be changed.
-
-   :return: the current requested MIPS
-
 getCurrentRequestedRamPercentUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -321,18 +311,6 @@ getRequestedMipsForCloudlet
    :param rcl: the rcl
    :param time: the time
    :return: the current requested mips for the given cloudlet
-
-getTotalCurrentAvailableMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare)
-   :outertype: CloudletScheduler
-
-   Gets the total current mips that a Cloudlet can use for each PE it requires. Thus, the value returned by the method indicates the amount of MIPS each Cloudlet PE can use.
-
-   :param rcl: the rcl
-   :param mipsShare: the mips share
-   :return: the total current mips available for each Cloudlet PE
 
 getUsedPes
 ^^^^^^^^^^
@@ -410,13 +388,13 @@ setVm
    Sets the Vm that will use the scheduler. It is not required to manually set a Vm for the scheduler, since a \ :java:ref:`Vm`\  sets itself to the scheduler when the scheduler is assigned to the Vm.
 
    :param vm: the Vm to set
-   :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
    :throws NullPointerException: when the vm parameter is null
+   :throws IllegalArgumentException: when the scheduler already is assigned to another Vm, since each Vm must have its own scheduler
 
-updateVmProcessing
-^^^^^^^^^^^^^^^^^^
+updateProcessing
+^^^^^^^^^^^^^^^^
 
-.. java:method::  double updateVmProcessing(double currentTime, List<Double> mipsShare)
+.. java:method::  double updateProcessing(double currentTime, List<Double> mipsShare)
    :outertype: CloudletScheduler
 
    Updates the processing of cloudlets inside the Vm running under management of this scheduler.

@@ -1,3 +1,7 @@
+.. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
+
+.. java:import:: java.util Objects
+
 PowerModelAbstract
 ==================
 
@@ -12,6 +16,12 @@ PowerModelAbstract
 
 Methods
 -------
+getHost
+^^^^^^^
+
+.. java:method:: @Override public PowerHost getHost()
+   :outertype: PowerModelAbstract
+
 getPower
 ^^^^^^^^
 
@@ -31,4 +41,10 @@ getPowerInternal
    :param utilization: the utilization percentage (between [0 and 1]) of a resource that is critical for power consumption.
    :throws IllegalArgumentException: when the utilization percentage is not between [0 and 1]
    :return: the power consumption
+
+setHost
+^^^^^^^
+
+.. java:method:: @Override public final void setHost(PowerHost host)
+   :outertype: PowerModelAbstract
 

@@ -1,5 +1,7 @@
 .. java:import:: java.util List
 
+.. java:import:: org.cloudbus.cloudsim.hosts HostDynamicWorkloadSimple
+
 .. java:import:: org.cloudbus.cloudsim.vms.power PowerVm
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
@@ -20,7 +22,7 @@ PowerHostUtilizationHistory
 
 .. java:type:: public class PowerHostUtilizationHistory extends PowerHostSimple
 
-   A host that stores its CPU utilization percentage history. The history is used by VM allocation and selection policies.
+   A \ :java:ref:`PowerHost`\  that stores its CPU utilization percentage history. The history is used by VM allocation and selection policies.
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
@@ -69,5 +71,5 @@ getUtilizationHistory
 .. java:method:: public double[] getUtilizationHistory()
    :outertype: PowerHostUtilizationHistory
 
-   Gets the host CPU utilization percentage history.
+   Gets the host CPU utilization percentage history (between [0 and 1], where 1 is 100%).
 

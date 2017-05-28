@@ -16,7 +16,7 @@ PowerVmAllocationPolicySimple
 
 .. java:type:: public class PowerVmAllocationPolicySimple extends PowerVmAllocationPolicyAbstract
 
-   A simple VM allocation policy that does \ **not**\  perform any optimization on VM allocation.
+   A simple VM allocation policy that does \ **not**\  perform any optimization on VM allocation. \ **It's a First Fit policy which finds the first Host having suitable resources to place a given VM.**\
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 

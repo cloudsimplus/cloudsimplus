@@ -1,9 +1,3 @@
-.. java:import:: java.util HashMap
-
-.. java:import:: java.util Map
-
-.. java:import:: java.util Objects
-
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
@@ -24,7 +18,7 @@ PowerVmAllocationPolicyAbstract
 
 .. java:type:: public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicyAbstract implements PowerVmAllocationPolicy
 
-   An abstract power-aware VM allocation policy.
+   An abstract power-aware VM allocation policy. \ **It's a First Fit policy which finds the first Host having suitable resources to place a given VM.**\  Such a behaviour can be overridden by sub-classes.
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
@@ -59,12 +53,4 @@ findHostForVm
 
 .. java:method:: @Override public PowerHost findHostForVm(Vm vm)
    :outertype: PowerVmAllocationPolicyAbstract
-
-getVmHostMap
-^^^^^^^^^^^^
-
-.. java:method:: public Map<Vm, Host> getVmHostMap()
-   :outertype: PowerVmAllocationPolicyAbstract
-
-   Gets the map where each key is a VM UID and each value is the host where the VM is placed.
 

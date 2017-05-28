@@ -389,12 +389,12 @@ selectEvent
 send
 ^^^^
 
-.. java:method:: protected void send(int entityId, double delay, int cloudSimTag, Object data)
+.. java:method:: protected void send(int destEntityId, double delay, int cloudSimTag, Object data)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
 
-   :param entityId: the id number of the destination entity
+   :param destEntityId: the id number of the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
    :param cloudSimTag: an user-defined number representing the type of an event/message
    :param data: A reference to data to be sent with the event
@@ -402,24 +402,24 @@ send
 send
 ^^^^
 
-.. java:method:: protected void send(int entityId, double delay, int cloudSimTag)
+.. java:method:: protected void send(int destEntityId, double delay, int cloudSimTag)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
 
-   :param entityId: the id number of the destination entity
+   :param destEntityId: the id number of the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
    :param cloudSimTag: an user-defined number representing the type of an event/message
 
 send
 ^^^^
 
-.. java:method:: protected void send(String entityName, double delay, int cloudSimTag, Object data)
+.. java:method:: protected void send(String destEntityName, double delay, int cloudSimTag, Object data)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
 
-   :param entityName: the name of the destination entity
+   :param destEntityName: the name of the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
    :param cloudSimTag: an user-defined number representing the type of an event/message
    :param data: A reference to data to be sent with the event
@@ -427,59 +427,59 @@ send
 send
 ^^^^
 
-.. java:method:: protected void send(String entityName, double delay, int cloudSimTag)
+.. java:method:: protected void send(String destEntityName, double delay, int cloudSimTag)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
 
-   :param entityName: the name of the destination entity
+   :param destEntityName: the name of the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
    :param cloudSimTag: an user-defined number representing the type of an event/message
 
 sendNow
 ^^^^^^^
 
-.. java:method:: protected void sendNow(int entityId, int cloudSimTag, Object data)
+.. java:method:: protected void sendNow(int destEntityId, int cloudSimTag, Object data)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity, with a tag representing the event type.
 
-   :param entityId: the id number of the destination entity
+   :param destEntityId: the id number of the destination entity
    :param cloudSimTag: an user-defined number representing the type of an event/message
    :param data: A reference to data to be sent with the event
 
 sendNow
 ^^^^^^^
 
-.. java:method:: protected void sendNow(int entityId, int cloudSimTag)
+.. java:method:: protected void sendNow(int destEntityId, int cloudSimTag)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity, with a tag representing the event type.
 
-   :param entityId: the id number of the destination entity
+   :param destEntityId: the id number of the destination entity
    :param cloudSimTag: an user-defined number representing the type of an event/message
 
 sendNow
 ^^^^^^^
 
-.. java:method:: protected void sendNow(String entityName, int cloudSimTag, Object data)
+.. java:method:: protected void sendNow(String destEntityName, int cloudSimTag, Object data)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity, with a tag representing the event type.
 
-   :param entityName: the name of the destination entity
+   :param destEntityName: the name of the destination entity
    :param cloudSimTag: an user-defined number representing the type of an event/message
    :param data: A reference to data to be sent with the event
 
 sendNow
 ^^^^^^^
 
-.. java:method:: protected void sendNow(String entityName, int cloudSimTag)
+.. java:method:: protected void sendNow(String destEntityName, int cloudSimTag)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity, with a tag representing the event type.
 
-   :param entityName: the name of the destination entity
+   :param destEntityName: the name of the destination entity
    :param cloudSimTag: an user-defined number representing the type of an event/message
 
 setEventBuffer

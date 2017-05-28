@@ -32,7 +32,7 @@ of
 .. java:method:: static HostUpdatesVmsProcessingEventInfo of(Host host, double nextCloudletCompletionTime)
    :outertype: HostUpdatesVmsProcessingEventInfo
 
-   Gets a HostUpdatesVmsProcessingEventInfo instance from the given parameters. The \ :java:ref:`getTime()`\  is the current simulation time.
+   Gets a \ ``HostUpdatesVmsProcessingEventInfo``\  instance from the given parameters.
 
    :param host: the \ :java:ref:`Host`\  where the event happened
    :param nextCloudletCompletionTime: the expected time for completion of the next \ :java:ref:`Cloudlet`\

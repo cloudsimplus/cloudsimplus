@@ -12,7 +12,7 @@ SimulationScenarioBuilder
 
 .. java:type:: public class SimulationScenarioBuilder
 
-   An table to help getting instance of other CloudSim object builders.
+   An builder to help getting instance of other CloudSim object builders.
 
    :author: Manoel Campos da Silva Filho
 

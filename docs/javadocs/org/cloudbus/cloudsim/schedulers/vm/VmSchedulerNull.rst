@@ -58,10 +58,10 @@ deallocatePesFromVm
 .. java:method:: @Override public void deallocatePesFromVm(Vm vm, int pesToRemove)
    :outertype: VmSchedulerNull
 
-getAllocatedMipsForVm
-^^^^^^^^^^^^^^^^^^^^^
+getAllocatedMips
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Double> getAllocatedMipsForVm(Vm vm)
+.. java:method:: @Override public List<Double> getAllocatedMips(Vm vm)
    :outertype: VmSchedulerNull
 
 getAvailableMips
@@ -82,16 +82,28 @@ getMaxAvailableMips
 .. java:method:: @Override public double getMaxAvailableMips()
    :outertype: VmSchedulerNull
 
+getMaxCpuUsagePercentDuringOutMigration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getMaxCpuUsagePercentDuringOutMigration()
+   :outertype: VmSchedulerNull
+
 getPeCapacity
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public long getPeCapacity()
    :outertype: VmSchedulerNull
 
-getPesAllocatedForVM
+getPesAllocatedForVm
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Pe> getPesAllocatedForVM(Vm vm)
+.. java:method:: @Override public List<Pe> getPesAllocatedForVm(Vm vm)
+   :outertype: VmSchedulerNull
+
+getRequestedMips
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Double> getRequestedMips(Vm vm)
    :outertype: VmSchedulerNull
 
 getTotalAllocatedMipsForVm

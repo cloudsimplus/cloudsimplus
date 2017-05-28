@@ -4,8 +4,6 @@
 
 .. java:import:: org.cloudsimplus.autoscaling HorizontalVmScaling
 
-.. java:import:: org.cloudbus.cloudsim.core Delayable
-
 .. java:import:: org.cloudbus.cloudsim.core UniquelyIdentificable
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -167,16 +165,26 @@ getCloudletScheduler
 
    :return: the cloudlet scheduler
 
-getCpuPercentUse
-^^^^^^^^^^^^^^^^
+getCpuPercentUsage
+^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getCpuPercentUse(double time)
+.. java:method::  double getCpuPercentUsage(double time)
    :outertype: Vm
 
    Gets the CPU utilization percentage of all Clouddlets running on this VM at the given time.
 
    :param time: the time
    :return: total utilization percentage
+
+getCpuPercentUsage
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getCpuPercentUsage()
+   :outertype: Vm
+
+   Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this VM.
+
+   :return: total utilization percentage for the current time, in scale from 0 to 1
 
 getCurrentAllocatedBw
 ^^^^^^^^^^^^^^^^^^^^^
@@ -209,16 +217,6 @@ getCurrentAllocatedSize
    :return: the current allocated size
 
    **See also:** :java:ref:`.getStorage()`
-
-getCurrentCpuPercentUse
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getCurrentCpuPercentUse()
-   :outertype: Vm
-
-   Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this VM.
-
-   :return: total utilization percentage for the current time, in scale from 0 to 1
 
 getCurrentRequestedBw
 ^^^^^^^^^^^^^^^^^^^^^
@@ -353,7 +351,7 @@ getStateHistory
 .. java:method::  List<VmStateHistoryEntry> getStateHistory()
    :outertype: Vm
 
-   Gets the history of MIPS capacity allocated to the VM.
+   Gets a \ **read-only**\  list with the history of requests and allocation of MIPS for this VM.
 
    :return: the state history
 
@@ -367,10 +365,10 @@ getStorage
 
    :return: the storage resource
 
-getTotalUtilizationOfCpuMips
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getTotalCpuMipsUsage
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getTotalUtilizationOfCpuMips(double time)
+.. java:method::  double getTotalCpuMipsUsage(double time)
    :outertype: Vm
 
    Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the given time.
@@ -378,7 +376,7 @@ getTotalUtilizationOfCpuMips
    :param time: the time to get the utilization
    :return: total CPU utilization in MIPS
 
-   **See also:** :java:ref:`.getCpuPercentUse(double)`
+   **See also:** :java:ref:`.getCpuPercentUsage(double)`
 
 getVmm
 ^^^^^^
@@ -414,7 +412,7 @@ isInMigration
 .. java:method::  boolean isInMigration()
    :outertype: Vm
 
-   Checks if the VM is in migration process or not.
+   Checks if the VM is in migration process or not, that is, if it is migrating in or out of a Host.
 
 notifyOnCreationFailureListeners
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

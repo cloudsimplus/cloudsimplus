@@ -43,17 +43,3 @@ cloudletResume
 .. java:method:: @Override public double cloudletResume(int cloudletId)
    :outertype: CloudletSchedulerSpaceShared
 
-getTotalCurrentAvailableMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare)
-   :outertype: CloudletSchedulerSpaceShared
-
-   {@inheritDoc}
-
-   It doesn't consider the given Cloudlet because the scheduler ensures that the Cloudlet will use all required PEs until it finishes executing.
-
-   :param rcl: {@inheritDoc}
-   :param mipsShare: {@inheritDoc}
-   :return: {@inheritDoc}
-

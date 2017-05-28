@@ -10,7 +10,7 @@ PowerVmAllocationPolicyMigrationStaticThreshold
 
 .. java:type:: public class PowerVmAllocationPolicyMigrationStaticThreshold extends PowerVmAllocationPolicyMigrationAbstract
 
-   A VM allocation policy that uses a static CPU utilization threshold to detect host over utilization.
+   A VM allocation policy that uses a static CPU utilization threshold to detect host over utilization. \ **It's a First Fit policy which selects the first found Host with most efficient power usage to place a given VM.**\
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 

@@ -4,6 +4,8 @@
 
 .. java:import:: java.util.stream Collectors
 
+.. java:import:: java.util.stream IntStream
+
 .. java:import:: java.util.stream Stream
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
@@ -19,6 +21,8 @@
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketScheduler
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion
+
+.. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
@@ -171,6 +175,18 @@ getAllocatedMipsForCloudlet
 .. java:method:: @Override public double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
    :outertype: CloudletSchedulerAbstract
 
+getAvailableMipsByPe
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double getAvailableMipsByPe()
+   :outertype: CloudletSchedulerAbstract
+
+   Gets the amount of MIPS available (free) for each Processor PE, considering the currently executing cloudlets in this processor and the number of PEs these cloudlets require. This is the amount of MIPS that each Cloudlet is allowed to used, considering that the processor is shared among all executing cloudlets.
+
+   In the case of space shared schedulers, there is no concurrency for PEs because some cloudlets may wait in a queue until there is available PEs to be used exclusively by them.
+
+   :return: the amount of available MIPS for each Processor PE.
+
 getCloudletExecList
 ^^^^^^^^^^^^^^^^^^^
 
@@ -249,12 +265,6 @@ getCurrentRequestedBwPercentUtilization
 .. java:method:: @Override public double getCurrentRequestedBwPercentUtilization()
    :outertype: CloudletSchedulerAbstract
 
-getCurrentRequestedMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<Double> getCurrentRequestedMips()
-   :outertype: CloudletSchedulerAbstract
-
 getCurrentRequestedRamPercentUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -303,16 +313,6 @@ getPreviousTime
 
 .. java:method:: @Override public double getPreviousTime()
    :outertype: CloudletSchedulerAbstract
-
-getProcessor
-^^^^^^^^^^^^
-
-.. java:method:: protected Processor getProcessor()
-   :outertype: CloudletSchedulerAbstract
-
-   Processor object created every time the processing of VMs is executed. It represent the last CPU capacity assigned to the scheduler.
-
-   **See also:** :java:ref:`CloudletScheduler.updateVmProcessing(double,List)`
 
 getRequestedCpuPercentUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -377,7 +377,7 @@ moveNextCloudletsFromWaitingToExecList
 
    The method might also exchange some cloudlets in the execution list with some in the waiting list. Thus, some running cloudlets may be preempted to give opportunity to previously waiting cloudlets to run. This is a process called \ `context switch <https://en.wikipedia.org/wiki/Context_switch>`_\ . However, each CloudletScheduler implementation decides how such a process is implemented. For instance, Space-Shared schedulers may just perform context switch just after currently running Cloudlets completely finish executing.
 
-   This method is called internally by the \ :java:ref:`CloudletScheduler.updateVmProcessing(double,List)`\  one.
+   This method is called internally by the \ :java:ref:`CloudletScheduler.updateProcessing(double,List)`\  one.
 
 processCloudletSubmit
 ^^^^^^^^^^^^^^^^^^^^^
@@ -412,18 +412,6 @@ runningCloudletsNumber
 ^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public int runningCloudletsNumber()
-   :outertype: CloudletSchedulerAbstract
-
-setCloudletExecList
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected final void setCloudletExecList(List<CloudletExecutionInfo> cloudletExecList)
-   :outertype: CloudletSchedulerAbstract
-
-setCloudletWaitingList
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected final void setCloudletWaitingList(List<CloudletExecutionInfo> cloudletWaitingList)
    :outertype: CloudletSchedulerAbstract
 
 setCurrentMipsShare
@@ -491,9 +479,9 @@ updateCloudletProcessing
    :param rcl: The cloudlet to be its processing updated
    :param currentTime: current simulation time
 
-updateVmProcessing
-^^^^^^^^^^^^^^^^^^
+updateProcessing
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare)
+.. java:method:: @Override public double updateProcessing(double currentTime, List<Double> mipsShare)
    :outertype: CloudletSchedulerAbstract
 

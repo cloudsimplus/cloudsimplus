@@ -16,6 +16,8 @@
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
+.. java:import:: org.cloudsimplus.listeners EventListener
+
 DatacenterBrokerAbstract
 ========================
 
@@ -42,6 +44,24 @@ DatacenterBrokerAbstract
 
 Methods
 -------
+addOnVmsCreatedListener
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener)
+   :outertype: DatacenterBrokerAbstract
+
+addOneTimeOnCreationOfWaitingVmsFinishListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public DatacenterBroker addOneTimeOnCreationOfWaitingVmsFinishListener(EventListener<DatacenterBrokerEventInfo> listener, Boolean oneTimeListener)
+   :outertype: DatacenterBrokerAbstract
+
+addOneTimeOnVmsCreatedListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener)
+   :outertype: DatacenterBrokerAbstract
+
 bindCloudletToVm
 ^^^^^^^^^^^^^^^^
 

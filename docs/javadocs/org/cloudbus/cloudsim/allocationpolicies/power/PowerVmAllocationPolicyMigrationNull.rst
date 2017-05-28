@@ -66,10 +66,22 @@ getHostList
 .. java:method:: @Override public <T extends Host> List<T> getHostList()
    :outertype: PowerVmAllocationPolicyMigrationNull
 
+getMetricHistory
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Map<Host, List<Double>> getMetricHistory()
+   :outertype: PowerVmAllocationPolicyMigrationNull
+
 getOverUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getOverUtilizationThreshold(PowerHost host)
+   :outertype: PowerVmAllocationPolicyMigrationNull
+
+getTimeHistory
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Map<Host, List<Double>> getTimeHistory()
    :outertype: PowerVmAllocationPolicyMigrationNull
 
 getUnderUtilizationThreshold
@@ -78,16 +90,22 @@ getUnderUtilizationThreshold
 .. java:method:: @Override public double getUnderUtilizationThreshold()
    :outertype: PowerVmAllocationPolicyMigrationNull
 
-isHostOverUtilized
-^^^^^^^^^^^^^^^^^^
+getUtilizationHistory
+^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isHostOverUtilized(PowerHost host)
+.. java:method:: @Override public Map<Host, List<Double>> getUtilizationHistory()
    :outertype: PowerVmAllocationPolicyMigrationNull
 
-isHostUnderUtilized
-^^^^^^^^^^^^^^^^^^^
+isHostOverloaded
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isHostUnderUtilized(PowerHost host)
+.. java:method:: @Override public boolean isHostOverloaded(PowerHost host)
+   :outertype: PowerVmAllocationPolicyMigrationNull
+
+isHostUnderloaded
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isHostUnderloaded(PowerHost host)
    :outertype: PowerVmAllocationPolicyMigrationNull
 
 optimizeAllocation

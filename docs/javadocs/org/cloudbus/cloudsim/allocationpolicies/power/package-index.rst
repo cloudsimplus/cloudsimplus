@@ -14,6 +14,7 @@ Provides power-aware \ :java:ref:`org.cloudbus.cloudsim.allocationpolicies.VmAll
    PowerVmAllocationPolicyAbstract
    PowerVmAllocationPolicyMigration
    PowerVmAllocationPolicyMigrationAbstract
+   PowerVmAllocationPolicyMigrationBestFitStaticThreshold
    PowerVmAllocationPolicyMigrationDynamicUpperThreshold
    PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract
    PowerVmAllocationPolicyMigrationInterQuartileRange

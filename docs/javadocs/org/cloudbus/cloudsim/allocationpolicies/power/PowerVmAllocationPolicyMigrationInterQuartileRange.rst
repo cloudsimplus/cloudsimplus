@@ -12,7 +12,7 @@ PowerVmAllocationPolicyMigrationInterQuartileRange
 
 .. java:type:: public class PowerVmAllocationPolicyMigrationInterQuartileRange extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract
 
-   A VM allocation policy that uses Inter Quartile Range (IQR) to compute a dynamic threshold in order to detect host over utilization.
+   A VM allocation policy that uses Inter Quartile Range (IQR) to compute a dynamic threshold in order to detect host over utilization. \ **It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.**\
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 

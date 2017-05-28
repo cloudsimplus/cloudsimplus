@@ -109,6 +109,18 @@ computeCpuUtilizationPercent
 .. java:method:: protected double computeCpuUtilizationPercent(double mipsUsage)
    :outertype: HostSimple
 
+createTemporaryVm
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean createTemporaryVm(Vm vm)
+   :outertype: HostSimple
+
+createVm
+^^^^^^^^
+
+.. java:method:: @Override public boolean createVm(Vm vm)
+   :outertype: HostSimple
+
 deallocatePesForVm
 ^^^^^^^^^^^^^^^^^^
 
@@ -137,6 +149,12 @@ destroyAllVms
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public void destroyAllVms()
+   :outertype: HostSimple
+
+destroyTemporaryVm
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void destroyTemporaryVm(Vm vm)
    :outertype: HostSimple
 
 destroyVm
@@ -355,6 +373,12 @@ hashCode
 .. java:method:: @Override public int hashCode()
    :outertype: HostSimple
 
+isActive
+^^^^^^^^
+
+.. java:method:: @Override public boolean isActive()
+   :outertype: HostSimple
+
 isFailed
 ^^^^^^^^
 
@@ -401,6 +425,12 @@ removeVmMigratingOut
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean removeVmMigratingOut(Vm vm)
+   :outertype: HostSimple
+
+setActive
+^^^^^^^^^
+
+.. java:method:: @Override public final Host setActive(boolean active)
    :outertype: HostSimple
 
 setBwProvisioner
@@ -471,11 +501,5 @@ updateProcessing
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double updateProcessing(double currentTime)
-   :outertype: HostSimple
-
-vmCreate
-^^^^^^^^
-
-.. java:method:: @Override public boolean vmCreate(Vm vm)
    :outertype: HostSimple
 

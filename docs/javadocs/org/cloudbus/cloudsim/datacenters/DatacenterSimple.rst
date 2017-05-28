@@ -366,7 +366,7 @@ processVmMigrate
 .. java:method:: protected void processVmMigrate(SimEvent ev, boolean ack)
    :outertype: DatacenterSimple
 
-   Process the event for a Broker thta wants to migrate a VM. This DatacenterSimple will then send the status back to the Broker.
+   Process the event from the Datacenter to migrate a VM.
 
    :param ev: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
@@ -451,17 +451,17 @@ updateCloudletProcessing
 .. java:method:: protected double updateCloudletProcessing()
    :outertype: DatacenterSimple
 
-   Updates processing of each cloudlet running in this DatacenterSimple and schedules the next processing update. It is necessary because Hosts and VMs are simple objects, not entities. So, they don't receive events and updating cloudlets inside them must be called from the outside.
+   Updates processing of each Host, that fires the update of VMs, which in turn updates cloudlets running in this Datacenter. After that, the method schedules the next processing update. It is necessary because Hosts and VMs are simple objects, not entities. So, they don't receive events and updating cloudlets inside them must be called from the outside.
 
    :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute or it isn't time to update the cloudlets
 
-updateVmsProcessingOfAllHosts
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+updateHostsProcessing
+^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double updateVmsProcessingOfAllHosts()
+.. java:method:: protected double updateHostsProcessing()
    :outertype: DatacenterSimple
 
-   Updates the processing of VMs inside all active hosts, that makes the processing of cloudlets inside such VMs to be updated.
+   Updates the processing of all Hosts, that means that makes the processing of VMs running inside such hosts to be updated. Finally, the processing of Cloudlets running inside such VMs is updated.
 
    :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
 

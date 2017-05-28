@@ -1,13 +1,3 @@
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util HashMap
-
-.. java:import:: java.util Iterator
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Map
-
 .. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
@@ -43,7 +33,17 @@ VmSchedulerTimeShared
 .. java:constructor:: public VmSchedulerTimeShared()
    :outertype: VmSchedulerTimeShared
 
-   Creates a vm time-shared scheduler.
+   Creates a time-shared VM scheduler.
+
+VmSchedulerTimeShared
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public VmSchedulerTimeShared(double vmMigrationCpuOverhead)
+   :outertype: VmSchedulerTimeShared
+
+   Creates a time-shared VM scheduler, defining a CPU overhead for VM migration.
+
+   :param vmMigrationCpuOverhead: the percentage of Host's CPU usage increase when a VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
 
 Methods
 -------
@@ -56,9 +56,9 @@ allocateMipsShareForVm
    Performs the allocation of a MIPS List to a given VM. The actual MIPS to be allocated to the VM may be reduced if the VM is in migration, due to migration overhead.
 
    :param vm: the VM to allocate MIPS to
-   :param mipsShareRequestedReduced: the list of MIPS to allocate to the VM, after it being adjusted by the \ :java:ref:`getMipsShareRequestedReduced(List)`\  method.
+   :param mipsShareRequestedReduced: the list of MIPS to allocate to the VM, after it being adjusted by the \ :java:ref:`getMipsShareRequestedReduced(Vm,List)`\  method.
 
-   **See also:** :java:ref:`.getMipsShareRequestedReduced(java.util.List)`
+   **See also:** :java:ref:`.getMipsShareRequestedReduced(Vm,List)`
 
 allocateMipsShareForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -72,10 +72,10 @@ allocateMipsShareForVmInternal
    :param mipsShareRequested: the list of mips share requested by the vm
    :return: true if successful, false otherwise
 
-allocatePesForVm
-^^^^^^^^^^^^^^^^
+allocatePesForVmInternal
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested)
+.. java:method:: @Override public boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested)
    :outertype: VmSchedulerTimeShared
 
 deallocatePesForAllVms
@@ -92,47 +92,28 @@ deallocatePesFromVmInternal
 .. java:method:: @Override protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove)
    :outertype: VmSchedulerTimeShared
 
-getMipsMapRequested
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected Map<Vm, List<Double>> getMipsMapRequested()
-   :outertype: VmSchedulerTimeShared
-
-   Gets the map of mips requested by each VM, where each key is a VM and each value is a list of MIPS requested by that VM.
-
-getMipsShareRequestedReduced
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected List<Double> getMipsShareRequestedReduced(List<Double> mipsShareRequested)
-   :outertype: VmSchedulerTimeShared
-
-   Adjusts a List of MIPS requested by a VM, reducing every MIPS which is higher than the \ :java:ref:`capacity of each physical PE <getPeCapacity()>`\  to that value.
-
-   :param mipsShareRequested: the VM requested MIPS List
-   :return: the VM requested MIPS List without MIPS higher than the PE capacity.
-
 getMipsShareToAllocate
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected List<Double> getMipsShareToAllocate(List<Double> mipsShareRequested, Vm vm)
+.. java:method:: protected List<Double> getMipsShareToAllocate(Vm vm, List<Double> mipsShareRequested)
    :outertype: VmSchedulerTimeShared
 
    Gets the actual MIPS that will be allocated to each vPE (Virtual PE), considering the VM migration status. If the VM is in migration, this will cause overhead, reducing the amount of MIPS allocated to the VM.
 
-   :param mipsShareRequested: the list of MIPS requested for each vPE
    :param vm: the VM requesting allocation of MIPS
+   :param mipsShareRequested: the list of MIPS requested for each vPE
    :return: the List of MIPS allocated to the VM
 
 getMipsShareToAllocate
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected List<Double> getMipsShareToAllocate(List<Double> mipsShareRequested, Vm vm, double scalingFactor)
+.. java:method:: protected List<Double> getMipsShareToAllocate(Vm vm, List<Double> mipsShareRequested, double scalingFactor)
    :outertype: VmSchedulerTimeShared
 
    Gets the actual MIPS that will be allocated to each vPE (Virtual PE), considering the VM migration status. If the VM is in migration, this will cause overhead, reducing the amount of MIPS allocated to the VM.
 
-   :param mipsShareRequested: the list of MIPS requested for each vPE
    :param vm: the VM requesting allocation of MIPS
+   :param mipsShareRequested: the list of MIPS requested for each vPE
    :param scalingFactor: the factor that will be used to reduce the amount of MIPS allocated to each vPE (which is a percentage value between [0 .. 1])
    :return: the List of MIPS allocated to the VM
 
@@ -146,27 +127,11 @@ getPesInUse
 
    :return: the pes in use
 
-getVmMigrationCpuOverhead
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getVmMigrationCpuOverhead()
-   :outertype: VmSchedulerTimeShared
-
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isSuitableForVm(List<Double> vmMipsList)
    :outertype: VmSchedulerTimeShared
-
-setMipsMapRequested
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected final void setMipsMapRequested(Map<Vm, List<Double>> mipsMapRequested)
-   :outertype: VmSchedulerTimeShared
-
-   Sets the mips map requested.
-
-   :param mipsMapRequested: the mips map requested
 
 setPesInUse
 ^^^^^^^^^^^
