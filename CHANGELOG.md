@@ -12,11 +12,11 @@ Lists the main changes in the project.
   using a Best Fit policy, that is, it selects the Host with less available resources
   that is enough to place a given VM.
 - `EventListener` to notify subscribers when all VMs in the `DatacenterBroker` waiting list were created ([#92](https://github.com/manoelcampos/cloudsim-plus/issues/92)).
-- Enable Hosts to be powered on and off ([#89](https://github.com/manoelcampos/cloudsim-plus/issues/89)).
+- Enables Hosts to be powered on and off ([#89](https://github.com/manoelcampos/cloudsim-plus/issues/89)).
 - Enables changing the CPU migration overhead for any VmScheduler.
   A new constructor was added to these schedulers to enable setting this value once 
   ([#88](https://github.com/manoelcampos/cloudsim-plus/issues/88)).
-- Enable dynamically adding new columns to the simulation results table  ([#87](https://github.com/manoelcampos/cloudsim-plus/issues/87)).
+- Enables dynamically adding new columns to the simulation results table  ([#87](https://github.com/manoelcampos/cloudsim-plus/issues/87)).
 
 ### Fixed
 - Bug fixes ([#95](https://github.com/manoelcampos/cloudsim-plus/issues/95)) 
