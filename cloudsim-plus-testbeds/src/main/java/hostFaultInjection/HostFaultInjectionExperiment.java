@@ -38,8 +38,6 @@ import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
-import javax.sound.midi.SysexMessage;
-
 /**
  * An experiment using a {@link HostFaultInjection} which it set a VM cloner
  * linked to Broker when all VMs associated with it are destroyed.
@@ -74,7 +72,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     private static final int BROKERS = 6;
 
 
-    private HostFaultInjection fault;
+    private HostFaultInjection faultInjection;
     private final ContinuousDistribution randCloudlet;
 
     private HostFaultInjectionExperiment(final long seed) {
@@ -87,15 +85,10 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     private HostFaultInjectionExperiment(int index, ExperimentRunner runner, long seed) {
         super(index, runner, seed);
-        System.out.println("\n\t #Seed: " + getSeed());
         setNumBrokersToCreate(BROKERS);
         setAfterScenarioBuild(exp -> createFaultInjectionForHosts(getDatacenter0()));
         this.randCloudlet = new UniformDistr(this.getSeed());
 
-    }
-
-    public double getAvailability() {
-        return fault.availability() * 100;
     }
 
     @Override
@@ -206,13 +199,13 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, getSeed());
         //System.out.println("\n\t seed: " + getSeed());
 
-        fault = new HostFaultInjection(datacenter, poisson);
-        fault.setMaxTimeToGenerateFailure(999_000L);
+        faultInjection = new HostFaultInjection(datacenter, poisson);
+        getFaultInjection().setMaxTimeToGenerateFailure(999_000L);
 
         for (DatacenterBroker broker : getBrokerList()) {
             Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmsWaitingList().size() - 1);
-            fault.addVmCloner(broker, this::cloneVm);
-            fault.addCloudletsCloner(broker, this::cloneCloudlets);
+            getFaultInjection().addVmCloner(broker, this::cloneVm);
+            getFaultInjection().addCloudletsCloner(broker, this::cloneCloudlets);
         }
 
         Log.printFormattedLine(
@@ -330,14 +323,18 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         });*/
 
         exp.setVerbose(true).run();
+        System.out.printf("Datacenter %d availability: %.2f\n", exp.getDatacenter0().getId(), exp.getFaultInjection().availability());
+        exp.getBrokerList().stream().forEach(b -> System.out.printf("%s availability: %.2f\n", b, exp.getFaultInjection().availability(b)));
         System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());
-        System.out.println("\n# Number of Host faults: " + exp.fault.getNumberOfHostFaults());
-        System.out.println("# Number of VM faults (VMs destroyed): " + exp.fault.getNumberOfDestroyedVms());
+        System.out.println("\n# Number of Host faults: " + exp.getFaultInjection().getNumberOfHostFaults());
+        System.out.println("# Number of VM faults (VMs destroyed): " + exp.getFaultInjection().getNumberOfDestroyedVms());
         Log.printFormattedLine("# Time that the simulations finished: %.2f minutes", exp.getCloudSim().clockInMinutes());
-        Log.printFormattedLine("# VMs MTTR: %.2f minutes", exp.fault.meanTimeToRepairVmFaultsInMinutes());
-        Log.printFormattedLine("# VMs MTBF: %.2f minutes", exp.fault.meanTimeBetweenVmFaultsInMinutes());
-        Log.printFormattedLine("# Hosts MTBF: %.2f minutes", exp.fault.meanTimeBetweenHostFaultsInMinutes());
-        Log.printFormattedLine("# Availability: %.2f%%", exp.fault.availability()*100);
+        Log.printFormattedLine("# VMs MTBF: %.2f minutes", exp.getFaultInjection().meanTimeBetweenVmFaultsInMinutes());
+        Log.printFormattedLine("# Hosts MTBF: %.2f minutes", exp.getFaultInjection().meanTimeBetweenHostFaultsInMinutes());
 
+    }
+
+    public HostFaultInjection getFaultInjection() {
+        return faultInjection;
     }
 }

@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.faultinjection;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -31,11 +32,15 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Stream;
+
 import static java.util.stream.Collectors.toList;
+
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
@@ -425,8 +430,6 @@ public class HostFaultInjection extends CloudSimEntity {
         while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms-- > 0) {
             i = i % vmsWithPes.size();
             Vm vm = vmsWithPes.get(i);
-            System.out.printf("\t\t#Removing 1 PE from %s\n", vm);
-
             lastFailedHost.getVmScheduler().deallocatePesFromVm(vm, 1);
             vm.getCloudletScheduler()
                 .deallocatePesFromVm(vm, 1);
@@ -440,7 +443,6 @@ public class HostFaultInjection extends CloudSimEntity {
             i++;
             vmsWithPes = getVmsWithPEsFromFailedHost();
         }
-        System.out.println("---------------------");
     }
 
     private int numberOfFailedPesToRemoveFromVms() {
@@ -545,16 +547,6 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the total number of faults happened for VMs,
-     * which means the total number of VMs that
-     * were destroyed due to failure in Host PEs.
-     * @return
-     */
-    public int getNumberOfDestroyedVms() {
-        return vmRecoveryTimeMap.size();
-    }
-
-    /**
      * Gets the total number of faults happened for existing hosts.
      * This isn't the total number of failed hosts because one
      * host may fail multiple times.
@@ -570,16 +562,28 @@ public class HostFaultInjection extends CloudSimEntity {
      * @return
      */
     public double availability() {
+        return availability(null);
+    }
+
+    /**
+     * Gets the availability for a given broker as a percentage value between 0 to 1,
+     * based on VMs' downtime (the times VMs took to be repaired).
+     * @param broker the broker to get the availability of its VMs
+     * @return
+     */
+    public double availability(DatacenterBroker broker) {
         //no failures means 100% availability
         if(meanTimeBetweenVmFaultsInMinutes() == 0){
             return 1;
         }
 
-        return (meanTimeBetweenVmFaultsInMinutes()/(meanTimeBetweenVmFaultsInMinutes() + meanTimeToRepairVmFaultsInMinutes()));
+        return meanTimeBetweenVmFaultsInMinutes()/
+            (meanTimeBetweenVmFaultsInMinutes() + meanTimeToRepairVmFaultsInMinutes(broker));
     }
 
     /**
-     * Computes the current mean time (in minutes) between Host failures (MTBF).
+     * Computes the current Mean Time Between host Failures (MTBF) in minutes
+     * for the entire Datacenter.
      * It uses a straightforward way to compute the MTBF.
      * Since it's stored the VM recovery times, it's possible
      * to use such values to make easier the MTBF computation,
@@ -590,20 +594,81 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #meanTimeBetweenHostFaultsInMinutes()
      */
     public double meanTimeBetweenVmFaultsInMinutes() {
-        if(getNumberOfDestroyedVms() == 0){
-            return 0;
-        }
-
-        return (getSimulation().clockInMinutes() - totalVmsRecoveryTimeInMinutes()) / getNumberOfDestroyedVms();
+        return meanTimeBetweenVmFaultsInMinutes(null);
     }
 
     /**
-     * Gets the total time (in minutes) every failed VM took to recovery
+     * Computes the current Mean Time Between host Failures (MTBF) in minutes
+     * for a given broker, considering only its VMs which are affected by failures.
+     * It uses a straightforward way to compute the MTBF.
+     * Since it's stored the VM recovery times, it's possible
+     * to use such values to make easier the MTBF computation,
+     * different from the Hosts MTBF.
+     *
+     * @param broker the broker to get the MTBF for
+     * @return the current mean time (in minutes) between Host failures (MTBF)
+     * or zero if no VM was destroyed due to Host failure
+     * @see #meanTimeBetweenHostFaultsInMinutes()
+     */
+    public double meanTimeBetweenVmFaultsInMinutes(DatacenterBroker broker) {
+        if(getNumberOfDestroyedVms(broker) == 0){
+            return 0;
+        }
+
+        return (getSimulation().clockInMinutes() - totalVmsRecoveryTimeInMinutes(broker)) /
+                getNumberOfDestroyedVms(broker);
+    }
+
+    /**
+     * Gets the total number of faults happened for all VMs in the Datacenter,
+     * which means the total number of VMs that
+     * were destroyed due to failure in Host PEs.
+     * @return
+     */
+    public long getNumberOfDestroyedVms() {
+        return vmRecoveryTimeMap.size();
+    }
+
+    /**
+     * Gets the total number of faults happened for VMs of a given broker,
+     * which means the total number of VMs that
+     * were destroyed due to failure in Host PEs.
+     * @param broker the broker to get the number of VMs faults
+     * @return
+     */
+    public long getNumberOfDestroyedVms(DatacenterBroker broker) {
+        if(broker == null){
+            return getNumberOfDestroyedVms();
+        }
+
+        return vmRecoveryTimeMap.keySet()
+            .stream()
+            .map(Vm::getBroker)
+            .filter(broker::equals)
+            .count();
+    }
+
+    /**
+     * Gets the total time (in minutes) all failed VM took to recovery
      * from failure.
      * @return
      */
     private double totalVmsRecoveryTimeInMinutes() {
-        return vmRecoveryTimeMap.values().stream().reduce(0.0, Double::sum) / 60.0;
+        return totalVmsRecoveryTimeInMinutes(null);
+    }
+
+    /**
+     * Gets the total time (in minutes) all failed VM belonging to a broker took to recovery
+     * from failure.
+     * @return
+     */
+    private double totalVmsRecoveryTimeInMinutes(DatacenterBroker broker) {
+        final Stream<Double> stream = broker == null ?
+                vmRecoveryTimeMap.values().stream() :
+                vmRecoveryTimeMap.values().stream().filter(broker::equals);
+
+        final double seconds = stream.reduce(0.0, Double::sum);
+        return Duration.ofSeconds((long)seconds).toMinutes();
     }
 
     /**
@@ -617,36 +682,51 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #meanTimeBetweenVmFaultsInMinutes()
      */
     public double meanTimeBetweenHostFaultsInMinutes() {
-        final List<Double> values = hostFaultsTimeMap
+        final List<Double> faultTimes = hostFaultsTimeMap
                 .values()
                 .stream()
                 .flatMap(list -> list.stream())
                 .sorted()
                 .collect(toList());
-        if(values.isEmpty()){
+        if(faultTimes.isEmpty()){
             return 0;
         }
 
         //computes the differences between failure times t2 - t1
-        double sum=0, previous=values.get(0);
-        for(Double v: values) {
+        double sum=0, previous=faultTimes.get(0);
+        for(Double v: faultTimes) {
             sum += (v - previous);
             previous = v;
         }
 
-        return (sum/values.size())/60.0;
+        final double seconds = sum/faultTimes.size();
+        return Duration.ofSeconds((long)seconds).toMinutes();
     }
 
     /**
-     * Computes the current mean time (in minutes) to repair VM failures (MTTR).
+     * Computes the current mean time (in minutes) to repair failures of VMs (MTTR)
+     * in the Datacenter.
+     *
      * @return the current mean time (in minutes) to repair VM failures (MTTR)
      * or zero if no VM was destroyed due to Host failure
      */
     public double meanTimeToRepairVmFaultsInMinutes() {
-        if(getNumberOfDestroyedVms() == 0){
+        return meanTimeToRepairVmFaultsInMinutes(null);
+    }
+
+    /**
+     * Computes the current mean time (in minutes) to repair failures of VMs (MTTR)
+     * belonging to given broker.
+     *
+     * @param broker the broker to get the MTTR for
+     * @return the current mean time (in minutes) to repair VM failures (MTTR)
+     * or zero if no VM was destroyed due to Host failure
+     */
+    public double meanTimeToRepairVmFaultsInMinutes(DatacenterBroker broker) {
+        if(getNumberOfDestroyedVms(broker) == 0){
             return 0;
         }
-        return totalVmsRecoveryTimeInMinutes() / getNumberOfDestroyedVms();
+        return totalVmsRecoveryTimeInMinutes(broker) / getNumberOfDestroyedVms(broker);
     }
 
     /**

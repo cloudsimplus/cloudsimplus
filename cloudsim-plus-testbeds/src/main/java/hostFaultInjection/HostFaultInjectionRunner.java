@@ -7,7 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
@@ -27,7 +26,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     static final int CLOUDLETS = 4;
 
     /**
-     * Average of the cost total
+     * Datacenter availability for each experiment.
      */
     private List<Double> availability;
 
@@ -46,7 +45,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     public static void main(String[] args) {
         new HostFaultInjectionRunner(true, 1475098589732L)
-                .setSimulationRuns(100)
+                .setSimulationRuns(300)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
@@ -74,7 +73,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * @param exp the finished experiment
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
-        availability.add(exp.getAvailability());
+        availability.add(exp.getFaultInjection().availability());
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
     }
 

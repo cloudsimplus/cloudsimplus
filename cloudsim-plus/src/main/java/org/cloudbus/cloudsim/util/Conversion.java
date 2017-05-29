@@ -47,7 +47,7 @@ public final class Conversion {
      * @param bytes the value in bytes
      * @return the value in MegaBytes (MB)
      */
-    public static double bytesToMegaBytes(double bytes){
+    public static double bytesToMegaBytes(final double bytes){
         return bytes / MEGABYTE;
     }
 
@@ -56,7 +56,7 @@ public final class Conversion {
      * @param bytes the value in bytes
      * @return the value in Megabites (Mb)
      */
-    public static double bytesToMegaBites(double bytes){
+    public static double bytesToMegaBites(final double bytes){
         return bytesToBites(bytesToMegaBytes(bytes));
     }
 
@@ -67,7 +67,7 @@ public final class Conversion {
      * @param bytes the value in bytes, KB, MB, GB, etc
      * @return the value in bites, Kbits, Mbits, Gbits and so on, according to the given value
      */
-    public static double bytesToBites(double bytes){
+    public static double bytesToBites(final double bytes){
         return bytes * 8;
     }
 
