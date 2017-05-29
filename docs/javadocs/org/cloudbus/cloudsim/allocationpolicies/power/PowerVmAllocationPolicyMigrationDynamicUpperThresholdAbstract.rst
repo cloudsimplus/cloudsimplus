@@ -14,7 +14,7 @@ PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract
 
 .. java:type:: public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract extends PowerVmAllocationPolicyMigrationAbstract implements PowerVmAllocationPolicyMigrationDynamicUpperThreshold
 
-   An abstract class that is the base for implementation of Power-aware VM allocation policies that use a dynamic over utilization threshold.
+   An abstract class that is the base for implementation of Power-aware VM allocation policies which use a dynamic over utilization threshold. \ **It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.**\  Such a behaviour can be overridden by sub-classes.
 
    :author: Manoel Campos da Silva Filho
 
@@ -69,16 +69,16 @@ getSafetyParameter
 .. java:method:: @Override public double getSafetyParameter()
    :outertype: PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract
 
-isHostOverUtilized
-^^^^^^^^^^^^^^^^^^
+isHostOverloaded
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isHostOverUtilized(PowerHost host)
+.. java:method:: @Override public boolean isHostOverloaded(PowerHost host)
    :outertype: PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract
 
    Checks if a host is over utilized based on the CPU over utilization threshold computed using the statistical method defined in \ :java:ref:`computeHostUtilizationMeasure(PowerHostUtilizationHistory)`\ .
 
-   :param host: the host
-   :return: true, if the host is over utilized; false otherwise
+   :param host: {@inheritDoc}
+   :return: {@inheritDoc}
 
 setFallbackVmAllocationPolicy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

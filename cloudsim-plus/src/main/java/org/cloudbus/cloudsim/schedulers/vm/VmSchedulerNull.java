@@ -23,13 +23,13 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public boolean allocatePesForVm(Vm vm) { return false; }
     @Override public void deallocatePesForAllVms() {/**/}
     @Override public void deallocatePesFromVm(Vm vm) {/**/}
-    @Override public List<Double> getAllocatedMipsForVm(Vm vm) {
+    @Override public List<Double> getAllocatedMips(Vm vm) {
         return Collections.emptyList();
     }
     @Override public double getAvailableMips() {
         return 0.0;
     }
-    @Override public List<Double> getMipsRequested(Vm vm) { return Collections.EMPTY_LIST; }
+    @Override public List<Double> getRequestedMips(Vm vm) { return Collections.EMPTY_LIST; }
     @Override public double getMaxAvailableMips() {
         return 0.0;
     }

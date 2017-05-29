@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.hosts.power;
 
 import java.util.List;
 
+import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 import org.cloudbus.cloudsim.resources.Pe;
 
@@ -34,6 +35,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
+ * @todo See the TODO in the {@link HostDynamicWorkloadSimple} class documentation.
  */
 public class PowerHostUtilizationHistory extends PowerHostSimple {
     /**

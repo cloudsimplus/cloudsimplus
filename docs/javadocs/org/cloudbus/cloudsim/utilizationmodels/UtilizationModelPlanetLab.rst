@@ -4,6 +4,8 @@
 
 .. java:import:: java.io IOException
 
+.. java:import:: java.util.stream IntStream
+
 UtilizationModelPlanetLab
 =========================
 
@@ -41,7 +43,7 @@ UtilizationModelPlanetLab
 
    :param inputPath: The path of a PlanetLab Datacenter trace file.
    :param schedulingInterval: the scheduling interval that defines the time interval in which precise utilization is be got
-   :param dataSamples: number of samples in the file
+   :param dataSamples: number of samples to read from the workload file
    :throws NumberFormatException: the number format exception
    :throws IOException: Signals that an I/O exception has occurred.
 
@@ -55,9 +57,9 @@ getSchedulingInterval
 .. java:method:: public double getSchedulingInterval()
    :outertype: UtilizationModelPlanetLab
 
-   Gets the scheduling interval that defines the time interval in which precise utilization is be got.
+   Gets the scheduling interval that defines the time interval in which precise utilization is to be got.
 
-   That means if the \ :java:ref:`getUtilization(double)`\  is called passing any time that is multiple of this scheduling interval, the utilization returned will be the value stored for that specific time. Otherwise, the value will be a mean of the beginning and the ending of the interval in which the given time is.
+   That means if the \ :java:ref:`getUtilization(double)`\  is called passing any time that is multiple of this scheduling interval, the utilization returned will be the value stored for that specific time. Otherwise, the value will be an arithmetic mean of the beginning and the ending of the interval in which the given time is.
 
    :return: the scheduling interval
 

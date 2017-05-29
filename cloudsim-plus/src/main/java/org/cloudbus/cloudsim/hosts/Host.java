@@ -106,13 +106,6 @@ public interface Host extends Machine, Comparable<Host> {
     boolean addMigratingInVm(Vm vm);
 
     /**
-     * Adds a {@link Vm} to the list of VMs migrating into the Host.
-     * @param vm the vm to be added
-     * @return
-     */
-    boolean removeVmMigratingIn(Vm vm);
-
-    /**
      * Gets a <b>read-only</b> list of VMs migrating out from the Host.
      *
      * @return
@@ -125,6 +118,13 @@ public interface Host extends Machine, Comparable<Host> {
      * @return true if the VM wasn't into the list and was added, false otherwise
      */
     boolean addVmMigratingOut(Vm vm);
+
+    /**
+     * Adds a {@link Vm} to the list of VMs migrating into the Host.
+     * @param vm the vm to be added
+     * @return
+     */
+    boolean removeVmMigratingIn(Vm vm);
 
     /**
      * Adds a {@link Vm} to the list of VMs migrating out from the Host.
@@ -363,7 +363,7 @@ public interface Host extends Machine, Comparable<Host> {
      * @pre $none
      * @post $none
      */
-    boolean vmCreate(Vm vm);
+    boolean createVm(Vm vm);
 
     /**
      * Destroys a VM running in the host and removes it from the {@link #getVmList()}.
@@ -373,6 +373,36 @@ public interface Host extends Machine, Comparable<Host> {
      * @post $none
      */
     void destroyVm(Vm vm);
+
+    /**
+     * Try to allocate resources to a new temporary VM in the Host.
+     * The method is used only to book resources for a given VM.
+     * For instance, if is being chosen Hosts to migrate a set of VMs,
+     * when a Host is selected for a given VM, using this method,
+     * the resources are reserved and then, when the next
+     * VM is selected for the same Host, the
+     * reserved resources already were reduced from the available
+     * amount. This way, it it was possible to place just one Vm into that Host,
+     * with the booking, no other VM will be selected to that Host.
+     *
+     * @param vm Vm being started
+     * @return $true if the VM could be started in the host; $false otherwise
+     * @pre $none
+     * @post $none
+     * @todo https://github.com/manoelcampos/cloudsim-plus/issues/94
+     */
+    boolean createTemporaryVm(Vm vm);
+
+    /**
+     * Destroys a temporary VM created into the Host to book resources.
+     *
+     * @param vm the VM
+     * @pre $none
+     * @post $none
+     * @see #createTemporaryVm(Vm)
+     * @todo https://github.com/manoelcampos/cloudsim-plus/issues/94
+     */
+    void destroyTemporaryVm(Vm vm);
 
     /**
      * Destroys all VMs running in the host and remove them from the {@link #getVmList()}.

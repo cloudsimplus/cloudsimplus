@@ -29,7 +29,7 @@ Constructors
 BrokerBuilderDecorator
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public BrokerBuilderDecorator(BrokerBuilder table, DatacenterBrokerSimple broker)
+.. java:constructor:: public BrokerBuilderDecorator(BrokerBuilder builder, DatacenterBrokerSimple broker)
    :outertype: BrokerBuilderDecorator
 
 Methods

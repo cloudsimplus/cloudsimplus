@@ -194,7 +194,7 @@ public class NetworkHost extends HostSimple {
         if (!pktsToSendForLocalVms.isEmpty()) {
             for (final Vm vm : getVmList()) {
                 vm.updateProcessing(
-                    getSimulation().clock(), getVmScheduler().getAllocatedMipsForVm(vm));
+                    getSimulation().clock(), getVmScheduler().getAllocatedMips(vm));
             }
         }
 
@@ -244,8 +244,8 @@ public class NetworkHost extends HostSimple {
      * @return {@inheritDoc}
      */
     @Override
-    public boolean vmCreate(Vm vm) {
-        final boolean isVmCreated = super.vmCreate(vm);
+    public boolean createVm(Vm vm) {
+        final boolean isVmCreated = super.createVm(vm);
         setPacketScheduler(vm);
         return isVmCreated;
     }

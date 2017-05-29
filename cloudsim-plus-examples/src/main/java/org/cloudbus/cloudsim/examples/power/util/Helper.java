@@ -286,16 +286,6 @@ public final class Helper {
         addStringToBuffer("StDev time before a VM migration", "%.2f", stDevTimeBeforeVmMigration, "sec");
 
         PowerVmAllocationPolicyMigration vap = getPowerVmAllocationPolicy(datacenter);
-        if (!PowerVmAllocationPolicyMigration.NULL.equals(vap)) {
-            addStringToBuffer("Execution time - VM selection mean", "%.5f", MathUtil.mean(vap.getExecutionTimeHistoryVmSelection()), "sec");
-            addStringToBuffer("Execution time - VM selection stDev", "%.5f", MathUtil.stDev(vap.getExecutionTimeHistoryVmSelection()), "sec");
-            addStringToBuffer("Execution time - host selection mean", "%.5f", MathUtil.mean(vap.getExecutionTimeHistoryHostSelection()), "sec");
-            addStringToBuffer("Execution time - host selection stDev", "%.5f", MathUtil.stDev(vap.getExecutionTimeHistoryHostSelection()), "sec");
-            addStringToBuffer("Execution time - VM reallocation mean", "%.5f", MathUtil.mean(vap.getExecutionTimeHistoryVmReallocation()), "sec");
-            addStringToBuffer("Execution time - VM reallocation stDev", "%.5f", MathUtil.stDev(vap.getExecutionTimeHistoryVmReallocation()), "sec");
-            addStringToBuffer("Execution time - total mean", "%.5f", MathUtil.mean(vap.getExecutionTimeHistoryTotal()), "sec");
-            addStringToBuffer("Execution time - total StDev", "%.5f", MathUtil.stDev(vap.getExecutionTimeHistoryTotal()), "sec");
-        }
         this.buffer.append("\n");
 
         if (outputInCsv) {
@@ -682,8 +672,8 @@ public final class Helper {
                     }
                 }
 
-                previousAllocatedMips = entry.getAllocatedMips();
                 previousRequestedMips = entry.getRequestedMips();
+                previousAllocatedMips = entry.getAllocatedMips();
                 previousTime = entry.getTime();
                 previousIsActive = entry.isActive();
             }

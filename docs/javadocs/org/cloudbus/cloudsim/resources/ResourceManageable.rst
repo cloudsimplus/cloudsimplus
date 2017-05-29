@@ -69,6 +69,17 @@ deallocateAllResources
 
    :return: the amount of resource freed
 
+deallocateAndRemoveResource
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean deallocateAndRemoveResource(long amountToDeallocate)
+   :outertype: ResourceManageable
+
+   Try to deallocate a given amount of the resource and then remove such amount from the total capacity. If the given amount is greater than the total allocated resource, all the resource will be deallocated and that amount will be removed from the total capacity.
+
+   :param amountToDeallocate: the amount of resource to be deallocated and then removed from the total capacity
+   :return: true if amountToDeallocate > 0 and there is enough resource to deallocate, false otherwise
+
 deallocateResource
 ^^^^^^^^^^^^^^^^^^
 
@@ -161,7 +172,7 @@ setCapacity
    Try to set the \ :java:ref:`resource capacity <getCapacity()>`\ .
 
    :param newCapacity: the new resource capacity
-   :return: true if capacity > 0 and capacity >= current allocated resource, false otherwise
+   :return: true if capacity >= 0 and capacity >= current allocated resource, false otherwise
 
    **See also:** :java:ref:`.getAllocatedResource()`
 

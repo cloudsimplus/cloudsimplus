@@ -134,9 +134,11 @@ final class HostNull implements Host {
     @Override public double updateProcessing(double currentTime) {
         return 0.0;
     }
-    @Override public boolean vmCreate(Vm vm) {
+    @Override public boolean createVm(Vm vm) {
         return false;
     }
+    @Override public boolean createTemporaryVm(Vm vm) { return false; }
+    @Override public void destroyTemporaryVm(Vm vm) {}
     @Override public void destroyVm(Vm vm) {/**/}
     @Override public void destroyAllVms() {/**/}
     @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return false; }

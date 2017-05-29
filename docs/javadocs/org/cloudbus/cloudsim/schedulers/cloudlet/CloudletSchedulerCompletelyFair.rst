@@ -219,10 +219,10 @@ updateCloudletProcessing
 .. java:method:: @Override public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime)
    :outertype: CloudletSchedulerCompletelyFair
 
-updateVmProcessing
-^^^^^^^^^^^^^^^^^^
+updateProcessing
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare)
+.. java:method:: @Override public double updateProcessing(double currentTime, List<Double> mipsShare)
    :outertype: CloudletSchedulerCompletelyFair
 
    {@inheritDoc}

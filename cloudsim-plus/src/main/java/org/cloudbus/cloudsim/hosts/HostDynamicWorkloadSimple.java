@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
 import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
+ * @todo This class is confusing is just appears to be duplicating code with the {@link PowerHostUtilizationHistory}.
+ * It appears to be a non-power aware Host that just stores usage store,
+ * while the other Host has these two behaviors.
  */
 public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamicWorkload {
 
@@ -117,8 +121,11 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
         final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
-            Log.printFormattedLine("%.2f: [" + this + "] MIPS not allocated for " + vm
-                    + " due to capacity unavailability: %.2f", getSimulation().clock(), totalRequestedMips - totalAllocatedMips);
+            final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
+            final double notAllocatedMipsByPe = (totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes();
+            Log.printFormattedLine(
+                "%.2f: [%s] %.0f MIPS not allocated for each one of the %d PEs from %s due to %s.",
+                getSimulation().clock(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
         }
 
         final VmStateHistoryEntry entry = new VmStateHistoryEntry(

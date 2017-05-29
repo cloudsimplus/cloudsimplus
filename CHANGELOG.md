@@ -5,6 +5,27 @@ Lists the main changes in the project.
 ## [Current Development Version]
 - xxxxxx
 
+## [1.2.1] - 2017-05-28
+
+### Added
+- `PowerVmAllocationPolicyMigrationBestFitStaticThreshold` to select the Host to place or migrate a VM
+  using a Best Fit policy, that is, it selects the Host with less available resources
+  that is enough to place a given VM.
+- `EventListener` to notify subscribers when all VMs in the `DatacenterBroker` waiting list were created ([#92](https://github.com/manoelcampos/cloudsim-plus/issues/92)).
+- Enables Hosts to be powered on and off ([#89](https://github.com/manoelcampos/cloudsim-plus/issues/89)).
+- Enables changing the CPU migration overhead for any VmScheduler.
+  A new constructor was added to these schedulers to enable setting this value once 
+  ([#88](https://github.com/manoelcampos/cloudsim-plus/issues/88)).
+- Enables dynamically adding new columns to the simulation results table  ([#87](https://github.com/manoelcampos/cloudsim-plus/issues/87)).
+
+### Fixed
+- Bug fixes ([#95](https://github.com/manoelcampos/cloudsim-plus/issues/95)) 
+
+### Changed
+- Updates the Host Fault Injection Mechanism to allow creating a snapshot of a VM
+  when all VMs belonging to a broker have failed ([#93](https://github.com/manoelcampos/cloudsim-plus/pull/93)).
+
+
 ## [1.2.0] - 2017-05-17
 
 ### Added

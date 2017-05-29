@@ -87,12 +87,32 @@ import java.util.List;
  */
 public final class MigrationExample1 {
     private static final int    SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
+
+    private static final int HOSTS = 5;
+    private static final int VMS = 3;
+
     private static final int    HOST_MIPS = 1000; //for each PE
 
     private static final int    HOST_INITIAL_PES = 4;
-    private static final long   HOST_RAM = 500000; //host memory (MEGABYTE)
+    private static final long   HOST_RAM = 500000; //host memory (MB)
     private static final long   HOST_STORAGE = 1000000; //host storage
-    private static final long   HOST_BW = 100000000L;
+
+    /**
+     * The time spent during VM migration depend on the
+     * bandwidth of the target Host.
+     * By default, a {@link PowerVmAllocationPolicyMigration}
+     * uses only 50% of the BW to migrate VMs, while the
+     * remaining capacity is used for VM communication.
+     * This can be changed by calling
+     * {@link PowerDatacenter#setBandwidthForMigrationPercent(double)}.
+     *
+     * <p>The 16000 Mb/s is equal to 2000 MB/s. Since just half of this capacity
+     * is used for VM migration, only 1000 MB/s will be available for this process.
+     * The time that take to migrate a Vm depend on the VM RAM capacity.
+     * Since VMs in this example are creates with 2000 MB, any migration
+     * will take 2 seconds to finish, as can be seen in the logs.
+     */
+    private static final long   HOST_BW = 16000L; //Mb/s
 
     /**
      * The percentage of host CPU usage that trigger VM migration
@@ -101,12 +121,12 @@ public final class MigrationExample1 {
     private static final double HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION = 0.7;
 
     private static final int    VM_MIPS = 1000; //for each PE
-    private static final long   VM_SIZE = 1000; //image size (MEGABYTE)
-    private static final int    VM_RAM = 10000; //vm memory (MEGABYTE)
-    private static final long   VM_BW = 100000;
+    private static final long   VM_SIZE = 1000; //image size (MB)
+    private static final int    VM_RAM = 10000; //VM memory (MB)
+    private static final double VM_BW = HOST_BW/(double)VMS;
     private static final int    VM_PES = 2;
 
-    private static final long   CLOUDLET_LENGHT = 200000;
+    private static final long   CLOUDLET_LENGHT = 20000;
     private static final long   CLOUDLET_FILESIZE = 300;
     private static final long   CLOUDLET_OUTPUTSIZE = 300;
 
@@ -127,9 +147,6 @@ public final class MigrationExample1 {
      */
     private static final double CLOUDLET_CPU_INCREMENT_PER_SECOND = 0.1;
 
-    private static final int HOSTS = 5;
-    private static final int VMS = 3;
-
     /**
      * List of all created VMs.
      */
@@ -137,7 +154,7 @@ public final class MigrationExample1 {
 
     private CloudSim simulation;
     private PowerVmAllocationPolicyMigrationBestFitStaticThreshold allocationPolicy;
-    private List<PowerHost> hostList;
+    private List<PowerHostUtilizationHistory> hostList;
 
     /**
      * Starts the example.
@@ -154,6 +171,7 @@ public final class MigrationExample1 {
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
+        datacenter0.setLog(false);
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
         createAndSubmitCloudlets(broker);
@@ -171,7 +189,17 @@ public final class MigrationExample1 {
             Comparator.comparingInt((Cloudlet c) -> c.getVm().getHost().getId())
                       .thenComparingInt(c -> c.getVm().getId()));
         new CloudletsTableBuilder(finishedList).build();
+        System.out.println("\nHosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)");
+
+        hostList.stream().filter(h -> h.getId() <= 2).forEach(this::printHostHistory);
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
+    }
+
+    private void printHostHistory(PowerHost h) {
+        System.out.printf("Host: %d\n", h.getId());
+        System.out.println("------------------------------------------------------------------------------------------");
+        h.getStateHistory().stream().forEach(System.out::print);
+        System.out.println();
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
@@ -226,7 +254,7 @@ public final class MigrationExample1 {
     public PowerVm createVm(DatacenterBroker broker, int pes) {
         PowerVm vm = new PowerVm(VM_MIPS, pes);
         vm
-          .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+          .setRam(VM_RAM).setBw((long)VM_BW).setSize(VM_SIZE)
           .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }

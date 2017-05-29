@@ -159,7 +159,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         broker0.getVmsCreatedList().forEach(vm
                 -> System.out.printf("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
-                        vm.getCurrentCpuPercentUse(), cpuUtilizationSlaContract)
+                        vm.getCpuPercentUsage(), cpuUtilizationSlaContract)
         );
         System.out.println();
     }
@@ -287,7 +287,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      * @see #createHorizontalVmScaling(Vm)
      */
     private boolean isVmOverloaded(Vm vm) {
-        return vm.getCurrentCpuPercentUse() > cpuUtilizationSlaContract;
+        return vm.getCpuPercentUsage() > cpuUtilizationSlaContract;
     }
 
 

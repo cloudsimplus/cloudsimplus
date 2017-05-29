@@ -22,6 +22,18 @@ VmSchedulerAbstract
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov
 
+Fields
+------
+DEFAULT_VM_MIGRATION_CPU_OVERHEAD
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:field:: public static final double DEFAULT_VM_MIGRATION_CPU_OVERHEAD
+   :outertype: VmSchedulerAbstract
+
+   The default percentage to define the CPU overhead of VM migration if one is not explicitly set.
+
+   **See also:** :java:ref:`.getVmMigrationCpuOverhead()`
+
 Constructors
 ------------
 VmSchedulerAbstract
@@ -32,12 +44,34 @@ VmSchedulerAbstract
 
    Creates a VmScheduler.
 
+VmSchedulerAbstract
+^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public VmSchedulerAbstract(double vmMigrationCpuOverhead)
+   :outertype: VmSchedulerAbstract
+
+   Creates a VmScheduler, defining a CPU overhead for VM migration.
+
+   :param vmMigrationCpuOverhead: the percentage of Host's CPU usage increase when a VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
+
 Methods
 -------
 allocatePesForVm
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean allocatePesForVm(Vm vm)
+.. java:method:: @Override public final boolean allocatePesForVm(Vm vm)
+   :outertype: VmSchedulerAbstract
+
+allocatePesForVm
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested)
+   :outertype: VmSchedulerAbstract
+
+allocatePesForVmInternal
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected abstract boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested)
    :outertype: VmSchedulerAbstract
 
 deallocatePesForAllVms
@@ -64,10 +98,10 @@ deallocatePesFromVmInternal
 .. java:method:: protected abstract void deallocatePesFromVmInternal(Vm vm, int pesToRemove)
    :outertype: VmSchedulerAbstract
 
-getAllocatedMipsForVm
-^^^^^^^^^^^^^^^^^^^^^
+getAllocatedMips
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Double> getAllocatedMipsForVm(Vm vm)
+.. java:method:: @Override public List<Double> getAllocatedMips(Vm vm)
    :outertype: VmSchedulerAbstract
 
 getAvailableMips
@@ -88,6 +122,12 @@ getMaxAvailableMips
 .. java:method:: @Override public double getMaxAvailableMips()
    :outertype: VmSchedulerAbstract
 
+getMaxCpuUsagePercentDuringOutMigration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getMaxCpuUsagePercentDuringOutMigration()
+   :outertype: VmSchedulerAbstract
+
 getMipsMapAllocated
 ^^^^^^^^^^^^^^^^^^^
 
@@ -97,6 +137,28 @@ getMipsMapAllocated
    Gets the map of VMs to MIPS, were each key is a VM and each value is the currently allocated MIPS from the respective PE to that VM. The PEs where the MIPS capacity is get are defined in the \ :java:ref:`peMap`\ .
 
    :return: the mips map
+
+   **See also:** :java:ref:`.getAllocatedMips(Vm)`
+
+getMipsMapRequested
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected Map<Vm, List<Double>> getMipsMapRequested()
+   :outertype: VmSchedulerAbstract
+
+   Gets a map of MIPS requested by each VM, where each key is a VM and each value is a list of MIPS requested by that VM.
+
+getMipsShareRequestedReduced
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected List<Double> getMipsShareRequestedReduced(Vm vm, List<Double> mipsShareRequested)
+   :outertype: VmSchedulerAbstract
+
+   Gets an adjusted List of MIPS requested by a VM, reducing every MIPS which is higher than the \ :java:ref:`capacity of each physical PE <getPeCapacity()>`\  to that value.
+
+   :param vm: the VM to get the MIPS requested
+   :param mipsShareRequested: the VM requested MIPS List
+   :return: the VM requested MIPS List without MIPS higher than the PE capacity.
 
 getPeCapacity
 ^^^^^^^^^^^^^
@@ -112,16 +174,28 @@ getPeMap
 
    Gets the map of VMs to PEs, where each key is a VM and each value is a list of PEs allocated to that VM.
 
-getPesAllocatedForVM
+getPesAllocatedForVm
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Pe> getPesAllocatedForVM(Vm vm)
+.. java:method:: @Override public List<Pe> getPesAllocatedForVm(Vm vm)
+   :outertype: VmSchedulerAbstract
+
+getRequestedMips
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Double> getRequestedMips(Vm vm)
    :outertype: VmSchedulerAbstract
 
 getTotalAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getTotalAllocatedMipsForVm(Vm vm)
+   :outertype: VmSchedulerAbstract
+
+getVmMigrationCpuOverhead
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getVmMigrationCpuOverhead()
    :outertype: VmSchedulerAbstract
 
 getWorkingPeList

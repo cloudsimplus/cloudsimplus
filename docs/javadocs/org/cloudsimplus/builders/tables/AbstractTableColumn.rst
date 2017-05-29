@@ -23,6 +23,28 @@ AbstractTableColumn
    :param table: The table that the column belongs to.
    :param title: The column title.
 
+AbstractTableColumn
+^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public AbstractTableColumn(String title, String subTitle)
+   :outertype: AbstractTableColumn
+
+   Creates a column with a specific title and sub-title.
+
+   :param title: The column title.
+   :param subTitle: The column sub-title.
+
+AbstractTableColumn
+^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public AbstractTableColumn(TableBuilder table, String title, String subTitle)
+   :outertype: AbstractTableColumn
+
+   Creates a column with a specific title and sub-title for a given table.
+
+   :param title: The column title.
+   :param subTitle: The column sub-title.
+
 Methods
 -------
 generateData
@@ -39,12 +61,12 @@ generateData
 generateHeader
 ^^^^^^^^^^^^^^
 
-.. java:method:: protected abstract String generateHeader(String title)
+.. java:method:: protected abstract String generateHeader(String str)
    :outertype: AbstractTableColumn
 
    Generates a header for the column, either for the title or subtitle header.
 
-   :param title: header title or subtitle
+   :param str: header title or subtitle
    :return: the generated header string
 
 generateSubtitleHeader
@@ -57,12 +79,6 @@ generateTitleHeader
 ^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public String generateTitleHeader()
-   :outertype: AbstractTableColumn
-
-getColumnSeparator
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public String getColumnSeparator()
    :outertype: AbstractTableColumn
 
 getFormat
@@ -114,12 +130,6 @@ isLastColumn
    Indicates if the current column is the last one in the column list of the \ :java:ref:`TableBuilder <getTable()>`\ .
 
    :return: true if it is the last column, false otherwise.
-
-setColumnSeparator
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public final TableColumn setColumnSeparator(String columnSeparator)
-   :outertype: AbstractTableColumn
 
 setFormat
 ^^^^^^^^^

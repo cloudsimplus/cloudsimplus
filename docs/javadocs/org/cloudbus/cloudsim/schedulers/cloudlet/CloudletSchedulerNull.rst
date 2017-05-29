@@ -142,12 +142,6 @@ getCurrentRequestedBwPercentUtilization
 .. java:method:: @Override public double getCurrentRequestedBwPercentUtilization()
    :outertype: CloudletSchedulerNull
 
-getCurrentRequestedMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<Double> getCurrentRequestedMips()
-   :outertype: CloudletSchedulerNull
-
 getCurrentRequestedRamPercentUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -182,12 +176,6 @@ getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
-   :outertype: CloudletSchedulerNull
-
-getTotalCurrentAvailableMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalCurrentAvailableMipsForCloudlet(CloudletExecutionInfo rcl, List<Double> mipsShare)
    :outertype: CloudletSchedulerNull
 
 getUsedPes
@@ -238,9 +226,9 @@ setVm
 .. java:method:: @Override public void setVm(Vm vm)
    :outertype: CloudletSchedulerNull
 
-updateVmProcessing
-^^^^^^^^^^^^^^^^^^
+updateProcessing
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double updateVmProcessing(double currentTime, List<Double> mipsShare)
+.. java:method:: @Override public double updateProcessing(double currentTime, List<Double> mipsShare)
    :outertype: CloudletSchedulerNull
 

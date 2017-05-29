@@ -35,7 +35,7 @@ Methods
 addColumn
 ^^^^^^^^^
 
-.. java:method:: @Override public TableColumn addColumn(String columnTitle)
+.. java:method:: @Override public TableColumn addColumn(int index, String columnTitle)
    :outertype: HtmlTableBuilder
 
 printRowClosing

@@ -29,11 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static java.util.Comparator.comparingInt;
 import static org.junit.Assert.*;
 
 /**
@@ -259,7 +257,7 @@ public class HostSimpleTest {
         });
 
         final VmScheduler vmScheduler = EasyMock.createMock(VmScheduler.class);
-        EasyMock.expect(vmScheduler.getAllocatedMipsForVm(EasyMock.anyObject()))
+        EasyMock.expect(vmScheduler.getAllocatedMips(EasyMock.anyObject()))
                 .andReturn(mipsShare)
                 .times(numberOfVms);
         EasyMock.expect(vmScheduler.setHost(EasyMock.anyObject()))
@@ -297,19 +295,19 @@ public class HostSimpleTest {
     public void testVmCreate() {
         final VmSimple vm0 = VmSimpleTest.createVm(0, MIPS / 2, 1, RAM / 2, BW / 2,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-        assertTrue(host.vmCreate(vm0));
+        assertTrue(host.createVm(vm0));
 
         final VmSimple vm1 = VmSimpleTest.createVm(1, MIPS, 1, RAM, BW,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-        assertFalse(host.vmCreate(vm1));
+        assertFalse(host.createVm(vm1));
 
         final VmSimple vm2 = VmSimpleTest.createVm(2, MIPS * 2, 1, RAM, BW,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-        assertFalse(host.vmCreate(vm2));
+        assertFalse(host.createVm(vm2));
 
         final VmSimple vm3 = VmSimpleTest.createVm(3, MIPS / 2, 2, RAM / 2, BW / 2,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-        assertTrue(host.vmCreate(vm3));
+        assertTrue(host.createVm(vm3));
     }
 
     @Test
@@ -319,7 +317,7 @@ public class HostSimpleTest {
                 VmSimpleTest.createVm(
                         0, MIPS, 1, RAM, BW, STORAGE*2,
                         CloudletScheduler.NULL);
-        assertFalse(host.vmCreate(vm));
+        assertFalse(host.createVm(vm));
     }
 
     @Test
@@ -329,7 +327,7 @@ public class HostSimpleTest {
                 VmSimpleTest.createVm(
                         0, MIPS, 1, RAM, BW*2, STORAGE,
                         CloudletScheduler.NULL);
-        assertFalse(host.vmCreate(vm));
+        assertFalse(host.createVm(vm));
     }
 
     @Test
@@ -422,7 +420,7 @@ public class HostSimpleTest {
                 VmSimpleTest.createVm(
                         0, MIPS, 1, RAM*2, BW, STORAGE,
                         CloudletScheduler.NULL);
-        assertFalse(host.vmCreate(vm));
+        assertFalse(host.createVm(vm));
     }
 
     @Test
@@ -432,7 +430,7 @@ public class HostSimpleTest {
                 VmSimpleTest.createVm(
                         0, MIPS*2, 1, RAM, BW, STORAGE,
                         CloudletScheduler.NULL);
-        assertFalse(host.vmCreate(vm));
+        assertFalse(host.createVm(vm));
     }
 
     @Test
@@ -444,7 +442,7 @@ public class HostSimpleTest {
                 new CloudletSchedulerTimeShared());
         vm.setBroker(broker);
 
-        assertTrue(host.vmCreate(vm));
+        assertTrue(host.createVm(vm));
         assertSame(vm, host.getVm(0, 0));
         assertEquals(MIPS, host.getVmScheduler().getAvailableMips(), 0);
 
@@ -467,11 +465,11 @@ public class HostSimpleTest {
                 new CloudletSchedulerTimeShared());
         vm1.setBroker(broker);
 
-        assertTrue(host.vmCreate(vm0));
+        assertTrue(host.createVm(vm0));
         assertSame(vm0, host.getVm(0, 0));
         assertEquals(MIPS, host.getVmScheduler().getAvailableMips(), 0);
 
-        assertTrue(host.vmCreate(vm1));
+        assertTrue(host.createVm(vm1));
         assertSame(vm1, host.getVm(1, 0));
         assertEquals(0, host.getVmScheduler().getAvailableMips(), 0);
 

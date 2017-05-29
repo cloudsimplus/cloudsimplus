@@ -4,9 +4,9 @@ HostStateHistoryEntry
 .. java:package:: org.cloudbus.cloudsim.hosts
    :noindex:
 
-.. java:type:: public class HostStateHistoryEntry
+.. java:type:: public final class HostStateHistoryEntry
 
-   Stores historic data about a host.
+   Keeps historic CPU utilization data about a host.
 
    :author: Anton Beloglazov
 
@@ -15,15 +15,15 @@ Constructors
 HostStateHistoryEntry
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public HostStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean isActive)
+.. java:constructor:: public HostStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean active)
    :outertype: HostStateHistoryEntry
 
-   Instantiates a new host state history entry.
+   Instantiates a host state history entry.
 
-   :param time: the time
-   :param allocatedMips: the allocated mips
-   :param requestedMips: the requested mips
-   :param isActive: the is active
+   :param time: the time the data in this history entry is related to
+   :param allocatedMips: the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time
+   :param requestedMips: the total MIPS requested by running VMs to all PEs of the Host at the recorded time
+   :param active: if the Host is active at the given time
 
 Methods
 -------
@@ -33,7 +33,7 @@ getAllocatedMips
 .. java:method:: public double getAllocatedMips()
    :outertype: HostStateHistoryEntry
 
-   Gets the allocated mips.
+   Gets the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time.
 
    :return: the allocated mips
 
@@ -43,7 +43,7 @@ getRequestedMips
 .. java:method:: public double getRequestedMips()
    :outertype: HostStateHistoryEntry
 
-   Gets the requested mips.
+   Gets the total MIPS requested by running VMs to all PEs of the Host at the recorded time.
 
    :return: the requested mips
 
@@ -53,9 +53,7 @@ getTime
 .. java:method:: public double getTime()
    :outertype: HostStateHistoryEntry
 
-   Gets the time.
-
-   :return: the time
+   Gets the time the data in this history entry is related to.
 
 isActive
 ^^^^^^^^
@@ -63,47 +61,13 @@ isActive
 .. java:method:: public boolean isActive()
    :outertype: HostStateHistoryEntry
 
-   Checks if is active.
+   Checks if the Host is/was active at the recorded time.
 
-   :return: true, if is active
+   :return: true if is active, false otherwise
 
-setActive
-^^^^^^^^^
+toString
+^^^^^^^^
 
-.. java:method:: public void setActive(boolean isActive)
+.. java:method:: @Override public String toString()
    :outertype: HostStateHistoryEntry
-
-   Sets the active.
-
-   :param isActive: the new active
-
-setAllocatedMips
-^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void setAllocatedMips(double allocatedMips)
-   :outertype: HostStateHistoryEntry
-
-   Sets the allocated mips.
-
-   :param allocatedMips: the new allocated mips
-
-setRequestedMips
-^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void setRequestedMips(double requestedMips)
-   :outertype: HostStateHistoryEntry
-
-   Sets the requested mips.
-
-   :param requestedMips: the new requested mips
-
-setTime
-^^^^^^^
-
-.. java:method:: protected void setTime(double time)
-   :outertype: HostStateHistoryEntry
-
-   Sets the time.
-
-   :param time: the new time
 

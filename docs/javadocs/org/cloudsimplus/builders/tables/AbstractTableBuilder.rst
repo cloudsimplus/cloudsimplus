@@ -36,10 +36,40 @@ AbstractTableBuilder
 
 Methods
 -------
+addColumn
+^^^^^^^^^
+
+.. java:method:: @Override public final TableColumn addColumn(String columnTitle)
+   :outertype: AbstractTableBuilder
+
+addColumn
+^^^^^^^^^
+
+.. java:method:: @Override public final TableColumn addColumn(String columnTitle, String columnSubTitle)
+   :outertype: AbstractTableBuilder
+
+addColumn
+^^^^^^^^^
+
+.. java:method:: @Override public final TableColumn addColumn(int index, TableColumn column)
+   :outertype: AbstractTableBuilder
+
+addColumn
+^^^^^^^^^
+
+.. java:method:: @Override public final TableColumn addColumn(TableColumn column)
+   :outertype: AbstractTableBuilder
+
 addColumnList
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public TableBuilder addColumnList(String... columnTitles)
+.. java:method:: @Override public final TableBuilder addColumnList(String... columnTitles)
+   :outertype: AbstractTableBuilder
+
+getColumnSeparator
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public String getColumnSeparator()
    :outertype: AbstractTableBuilder
 
 getColumns
@@ -121,6 +151,12 @@ printTitle
    :outertype: AbstractTableBuilder
 
    Prints the table title.
+
+setColumnSeparator
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final TableBuilder setColumnSeparator(String columnSeparator)
+   :outertype: AbstractTableBuilder
 
 setTitle
 ^^^^^^^^

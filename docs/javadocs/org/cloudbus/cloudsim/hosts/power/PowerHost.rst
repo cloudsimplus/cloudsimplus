@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.power.models PowerModel
 
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
 PowerHost
 =========
 
@@ -10,7 +12,7 @@ PowerHost
 
 .. java:type:: public interface PowerHost extends HostDynamicWorkload
 
-   An interface to be implemented by power-aware Host classes. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`PowerHost.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`PowerHost`\  variables.
+   An interface to be implemented by power-aware Host classes, defining power consumption based on a \ :java:ref:`PowerModel`\ .
 
    :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
@@ -55,7 +57,7 @@ getPower
 .. java:method::  double getPower()
    :outertype: PowerHost
 
-   Gets the power consumption of the host. For this moment it only computes the power consumed by PEs.
+   Gets the current power consumption of the host. For this moment, it only computes the power consumed by \ :java:ref:`Pe`\ s.
 
    :return: the power consumption
 
@@ -65,7 +67,7 @@ getPowerModel
 .. java:method::  PowerModel getPowerModel()
    :outertype: PowerHost
 
-   Gets the power model.
+   Gets the power model used by the host to define how it consumes power.
 
    :return: the power model
 

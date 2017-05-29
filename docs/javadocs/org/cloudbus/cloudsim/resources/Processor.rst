@@ -39,18 +39,10 @@ Constructors
 Processor
 ^^^^^^^^^
 
-.. java:constructor:: public Processor()
-   :outertype: Processor
-
-   Instantiates a Processor with zero capacity (zero PEs).
-
-Processor
-^^^^^^^^^
-
 .. java:constructor:: public Processor(Vm vm, double pesMips, long numberOfPes)
    :outertype: Processor
 
-   Instantiates a Processor.
+   Instantiates a Processor for a given VM.
 
    :param vm: the \ :java:ref:`Vm`\  the processor will belong to
    :param pesMips: MIPS of each \ :java:ref:`Pe`\
@@ -58,49 +50,6 @@ Processor
 
 Methods
 -------
-allocateResource
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean allocateResource(long amountToAllocate)
-   :outertype: Processor
-
-deallocateAllResources
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long deallocateAllResources()
-   :outertype: Processor
-
-deallocateResource
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean deallocateResource(long amountToDeallocate)
-   :outertype: Processor
-
-fromMipsList
-^^^^^^^^^^^^
-
-.. java:method:: public static Processor fromMipsList(Vm vm, List<Double> mipsList, List<CloudletExecutionInfo> cloudletExecList)
-   :outertype: Processor
-
-   Instantiates a new Processor from a given MIPS list, ignoring all elements having zero capacity.
-
-   :param vm: the \ :java:ref:`Vm`\  the processor will belong to
-   :param mipsList: a list of \ :java:ref:`Processing Elements (cores) <Pe>`\  capacity where all elements have the same capacity. This list represents the capacity of each processor core.
-   :param cloudletExecList: list of cloudlets currently executing in this processor.
-   :return: the new Processor
-
-fromMipsList
-^^^^^^^^^^^^
-
-.. java:method:: public static Processor fromMipsList(Vm vm, List<Double> mipsList)
-   :outertype: Processor
-
-   Instantiates a new Processor from a given MIPS list, ignoring all elements having zero capacity.
-
-   :param vm: the \ :java:ref:`Vm`\  the processor will belong to
-   :param mipsList: a list of \ :java:ref:`Processing Elements (cores) <Pe>`\  capacity where all elements have the same capacity. This list represents the capacity of each processor core.
-   :return: the new Processor
-
 getAllocatedResource
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -108,18 +57,6 @@ getAllocatedResource
    :outertype: Processor
 
    Gets the number of used PEs.
-
-getAvailableMipsByPe
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public double getAvailableMipsByPe()
-   :outertype: Processor
-
-   Gets the amount of MIPS available (free) for each Processor PE, considering the currently executing cloudlets in this processor and the number of PEs these cloudlets require. This is the amount of MIPS that each Cloudlet is allowed to used, considering that the processor is shared among all executing cloudlets.
-
-   In the case of space shared schedulers, there is no concurrency for PEs because some cloudlets may wait in a queue until there is available PEs to be used exclusively by them.
-
-   :return: the amount of available MIPS for each Processor PE.
 
 getAvailableResource
 ^^^^^^^^^^^^^^^^^^^^
@@ -137,14 +74,6 @@ getCapacity
 
    Gets the number of \ :java:ref:`Pe`\ s of the Processor
 
-getCloudletExecList
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public List<CloudletExecutionInfo> getCloudletExecList()
-   :outertype: Processor
-
-   Gets a read-only list of cloudlets currently executing in this processor.
-
 getMips
 ^^^^^^^
 
@@ -152,12 +81,6 @@ getMips
    :outertype: Processor
 
    Gets the individual MIPS of each \ :java:ref:`Pe`\ .
-
-getPercentUtilization
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getPercentUtilization()
-   :outertype: Processor
 
 getTotalMips
 ^^^^^^^^^^^^

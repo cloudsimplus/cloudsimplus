@@ -24,3 +24,4 @@ javadoc:
 
 clean:
 	rm -rf $(BUILDDIR)
+	rm -rf javadocs/org

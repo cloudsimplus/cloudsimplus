@@ -1,17 +1,14 @@
 language: java
-install: mvn clean install -B -V -Dintegration-tests=true -pl cloudsim-plus,cloudsim-plus-examples
-script: mvn clean package
-after_success:
-  - mvn clean test -Dintegration-tests=true jacoco:report
-  - cd cloudsim-plus && mvn versioneye:update 
+install: mvn clean install -B -V -Dintegration-tests=true
+script:
+  - cd cloudsim-plus && mvn versioneye:update; cd ..
+  - cd cloudsim-plus && mvn clean test -Dintegration-tests=true jacoco:report; cd ..
 cache:
   directories:
   - $HOME/.m2
 jdk:
   - oraclejdk8 
-
-test:
-  post:
+after_script:
     - cd cloudsim-plus && mvn jacoco:report; cd ..
     - curl http://www.jpm4j.org/install/script -k > jpmInstall.sh
     - sudo sh jpmInstall.sh

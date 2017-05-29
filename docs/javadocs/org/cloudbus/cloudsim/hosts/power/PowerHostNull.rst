@@ -82,6 +82,18 @@ compareTo
 .. java:method:: @Override public int compareTo(Host o)
    :outertype: PowerHostNull
 
+createTemporaryVm
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean createTemporaryVm(Vm vm)
+   :outertype: PowerHostNull
+
+createVm
+^^^^^^^^
+
+.. java:method:: @Override public boolean createVm(Vm vm)
+   :outertype: PowerHostNull
+
 deallocatePesForVm
 ^^^^^^^^^^^^^^^^^^
 
@@ -92,6 +104,12 @@ destroyAllVms
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public void destroyAllVms()
+   :outertype: PowerHostNull
+
+destroyTemporaryVm
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void destroyTemporaryVm(Vm vm)
    :outertype: PowerHostNull
 
 destroyVm
@@ -352,6 +370,12 @@ getWorkingPeList
 .. java:method:: @Override public List<Pe> getWorkingPeList()
    :outertype: PowerHostNull
 
+isActive
+^^^^^^^^
+
+.. java:method:: @Override public boolean isActive()
+   :outertype: PowerHostNull
+
 isFailed
 ^^^^^^^^
 
@@ -392,6 +416,12 @@ removeVmMigratingOut
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean removeVmMigratingOut(Vm vm)
+   :outertype: PowerHostNull
+
+setActive
+^^^^^^^^^
+
+.. java:method:: @Override public Host setActive(boolean active)
    :outertype: PowerHostNull
 
 setBwProvisioner
@@ -452,11 +482,5 @@ updateProcessing
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double updateProcessing(double currentTime)
-   :outertype: PowerHostNull
-
-vmCreate
-^^^^^^^^
-
-.. java:method:: @Override public boolean vmCreate(Vm vm)
    :outertype: PowerHostNull
 

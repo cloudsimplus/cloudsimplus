@@ -2,7 +2,11 @@
 
 .. java:import:: java.util List
 
+.. java:import:: java.util Optional
+
 .. java:import:: java.util Set
+
+.. java:import:: java.util.stream Stream
 
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
 
@@ -26,7 +30,9 @@ PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
 
 .. java:type:: public class PowerVmAllocationPolicyMigrationWorstFitStaticThreshold extends PowerVmAllocationPolicyMigrationStaticThreshold
 
-   A \ :java:ref:`VmAllocationPolicy`\  that uses a Static CPU utilization Threshold (THR) to detect host \ :java:ref:`under <getUnderUtilizationThreshold()>`\  and \ :java:ref:`getOverUtilizationThreshold(PowerHost)`\  over} utilization. It selects as the host to place a VM, that one having the least used amount of CPU MIPS (Worst Fit policy), \ **disregarding energy consumption**\ .
+   A \ :java:ref:`VmAllocationPolicy`\  that uses a Static CPU utilization Threshold (THR) to detect host \ :java:ref:`under <getUnderUtilizationThreshold()>`\  and \ :java:ref:`getOverUtilizationThreshold(PowerHost)`\  over} utilization.
+
+   It's a Worst Fit policy which selects the Host having the least used amount of CPU MIPS to place a given VM, \ **disregarding energy consumption**\ .
 
    :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
@@ -40,39 +46,17 @@ PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
 
 Methods
 -------
-findHostForVm
-^^^^^^^^^^^^^
+findHostForVmInternal
+^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts)
+.. java:method:: @Override protected Optional<PowerHost> findHostForVmInternal(Vm vm, Stream<PowerHost> hostStream)
    :outertype: PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
 
-   Gets the first PM that has enough resources to host a given VM, which has the most available capacity and will not be overloaded after the placement.
+   Gets the Host having the most available MIPS capacity (min used MIPS).
 
-   :param vm: The VM to find a host to
-   :param excludedHosts: A list of hosts to be ignored
-   :return: a PM to host the given VM or null if there isn't any suitable one.
+   This method is ignoring the additional filtering performed by the super class. This way, Host selection is performed ignoring energy consumption. However, all the basic filters defined in the super class are ensured, since this method is called just after they are applied.
 
-getHostList
-^^^^^^^^^^^
-
-.. java:method:: @Override public <T extends Host> List<T> getHostList()
-   :outertype: PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
-
-   Gets an ascending sorted list of hosts based on CPU utilization, providing a Worst Fit host allocation policy for VMs.
-
-   :param <T>: The generic type.
-   :return: The sorted list of hosts.
-
-   **See also:** :java:ref:`.findHostForVm(Vm,java.util.Set)`
-
-getUnderUtilizedHost
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override protected PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts)
-   :outertype: PowerVmAllocationPolicyMigrationWorstFitStaticThreshold
-
-   Gets the first under utilized host based on the \ :java:ref:`getUnderUtilizationThreshold()`\ .
-
-   :param excludedHosts: the list of hosts to ignore
-   :return: the first under utilized host or null if there isn't any one
+   :param vm: {@inheritDoc}
+   :param hostStream: {@inheritDoc}
+   :return: {@inheritDoc}
 

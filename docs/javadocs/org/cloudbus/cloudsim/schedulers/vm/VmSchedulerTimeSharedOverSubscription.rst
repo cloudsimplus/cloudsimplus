@@ -16,11 +16,31 @@ VmSchedulerTimeSharedOverSubscription
 
 .. java:type:: public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
 
-   A Time-Shared VM Scheduler, which allows over-subscription. In other words, the scheduler still allows the allocation of VMs which require more CPU capacity than is available.
+   A Time-Shared VM Scheduler which allows over-subscription. In other words, the scheduler still enables allocating into a Host, VMs which require more CPU MIPS than there is available. If the Host has at least the number of PEs a VM requires, the VM will be allowed to run into it.
 
    The scheduler doesn't in fact allocates more MIPS for Virtual PEs (vPEs) than there is in the physical PEs. It just reduces the allocated amount according to the available MIPS. This is an oversubscription, resulting in performance degradation because less MIPS may be allocated than the required by a VM.
 
    :author: Anton Beloglazov, Rodrigo N. Calheiros, Manoel Campos da Silva Filho
+
+Constructors
+------------
+VmSchedulerTimeSharedOverSubscription
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public VmSchedulerTimeSharedOverSubscription()
+   :outertype: VmSchedulerTimeSharedOverSubscription
+
+   Creates a time-shared over-subscription VM scheduler.
+
+VmSchedulerTimeSharedOverSubscription
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public VmSchedulerTimeSharedOverSubscription(double vmMigrationCpuOverhead)
+   :outertype: VmSchedulerTimeSharedOverSubscription
+
+   Creates a time-shared over-subscription VM scheduler, defining a CPU overhead for VM migration.
+
+   :param vmMigrationCpuOverhead: the percentage of Host's CPU usage increase when a VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
 
 Methods
 -------

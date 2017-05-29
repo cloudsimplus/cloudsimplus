@@ -6,7 +6,7 @@ VmStateHistoryEntry
 
 .. java:type:: public class VmStateHistoryEntry
 
-   Stores historic data about a VM.
+   Historic data about requests and allocation of MIPS for a given VM over the time.
 
    :author: Anton Beloglazov
 

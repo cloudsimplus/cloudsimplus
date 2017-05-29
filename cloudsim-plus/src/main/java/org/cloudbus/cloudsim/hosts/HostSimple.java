@@ -191,7 +191,7 @@ public class HostSimple implements Host {
     public double updateProcessing(double currentTime) {
         final double nextSimulationTime =
             vmList.stream()
-                .mapToDouble(vm -> vm.updateProcessing(currentTime, getVmScheduler().getAllocatedMipsForVm(vm)))
+                .mapToDouble(vm -> vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm)))
                 .min()
                 .orElse(Double.MAX_VALUE);
 
@@ -210,14 +210,27 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean vmCreate(Vm vm) {
+    public boolean createVm(Vm vm) {
+        final boolean result = createVmInternal(vm);
+        if(result) {
+            vm.setHost(this);
+            vm.notifyOnHostAllocationListeners();
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean createTemporaryVm(Vm vm) {
+        return createVmInternal(vm);
+    }
+
+    private boolean createVmInternal(Vm vm) {
         if(!allocateResourcesForVm(vm, false)){
             return false;
         }
 
         vmList.add(vm);
-        vm.setHost(this);
-        vm.notifyOnHostAllocationListeners();
         return true;
     }
 
@@ -233,31 +246,31 @@ public class HostSimple implements Host {
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
             Log.printFormattedLine(
                 "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of storage. Required %d but there is just %d MB available.",
-                getSimulation().clock(), getClass().getSimpleName(),
+                simulation.clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getStorage().getCapacity(), storage.getAvailableResource());
             return false;
         }
 
-        if (!getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
+        if (!ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
             Log.printFormattedLine(
                 "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of RAM. Required %d but there is just %d MB available.",
-                getSimulation().clock(), getClass().getSimpleName(),
+                simulation.clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getRam().getCapacity(), ram.getAvailableResource());
             return false;
         }
 
-        if (!getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
+        if (!bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
             Log.printFormattedLine(
                 "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of BW. Required %d but there is just %d Mbps available.",
-                getSimulation().clock(), getClass().getSimpleName(),
+                simulation.clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getBw().getCapacity(), bw.getAvailableResource());
             return false;
         }
 
-        if (!getVmScheduler().isSuitableForVm(vm)) {
+        if (!vmScheduler.isSuitableForVm(vm)) {
             Log.printFormattedLine(
                     "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs.\n\t  "+
-                    "Required %d PEs of %.0f MIPS (%.0f MIPS) but there are just %d PEs of %.0f MIPS, only a total of %.0f MIPS available.",
+                    "Required %d PEs of %.0f MIPS (%.0f MIPS total). However, there are just %d working PEs of %.0f MIPS, from which %.0f MIPS are available.",
                     getSimulation().clock(), getClass().getSimpleName(), msg, vm, this,
                     vm.getNumberOfPes(), vm.getMips(), vm.getTotalMipsCapacity(),
                     vmScheduler.getWorkingPeList().size(), getMips(), vmScheduler.getAvailableMips());
@@ -266,9 +279,9 @@ public class HostSimple implements Host {
 
         vm.setInMigration(inMigration);
         storage.allocateResource(vm.getStorage());
-        getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam());
-        getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw());
-        getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips());
+        ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
+        bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
+        vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
 
         return true;
     }
@@ -307,10 +320,19 @@ public class HostSimple implements Host {
 
     @Override
     public void destroyVm(Vm vm) {
+        destroyVmInternal(vm);
+        vm.notifyOnHostDeallocationListeners(this);
+    }
+
+    @Override
+    public void destroyTemporaryVm(Vm vm) {
+        destroyVmInternal(vm);
+    }
+
+    private void destroyVmInternal(Vm vm) {
         if (!Objects.isNull(vm)) {
             deallocateResourcesOfVm(vm);
             vmList.remove(vm);
-            vm.notifyOnHostDeallocationListeners(this);
         }
     }
 
@@ -383,17 +405,17 @@ public class HostSimple implements Host {
 
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
-        return getVmScheduler().getAllocatedMipsForVm(vm);
+        return getVmScheduler().getAllocatedMips(vm);
     }
 
     @Override
     public double getTotalAllocatedMipsForVm(Vm vm) {
-        return getVmScheduler().getTotalAllocatedMipsForVm(vm);
+        return vmScheduler.getTotalAllocatedMipsForVm(vm);
     }
 
     @Override
     public double getMaxAvailableMips() {
-        return getVmScheduler().getMaxAvailableMips();
+        return vmScheduler.getMaxAvailableMips();
     }
 
     @Override
@@ -403,17 +425,17 @@ public class HostSimple implements Host {
 
     @Override
     public double getAvailableMips() {
-        return getVmScheduler().getAvailableMips();
+        return vmScheduler.getAvailableMips();
     }
 
     @Override
     public Resource getBw() {
-        return getBwProvisioner().getResource();
+        return bwProvisioner.getResource();
     }
 
     @Override
     public Resource getRam() {
-        return getRamProvisioner().getResource();
+        return ramProvisioner.getResource();
     }
 
     @Override
@@ -542,7 +564,7 @@ public class HostSimple implements Host {
 
     @Override
     public boolean addMigratingInVm(Vm vm) {
-        if (getVmsMigratingIn().contains(vm)) {
+        if (vmsMigratingIn.contains(vm)) {
             return false;
         }
 

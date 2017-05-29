@@ -116,7 +116,7 @@ public interface VmScheduler {
      * @pre $none
      * @post $none
      */
-    List<Double> getAllocatedMipsForVm(Vm vm);
+    List<Double> getAllocatedMips(Vm vm);
 
     /**
      * Gets the total amount of MIPS that is currently free.
@@ -135,7 +135,7 @@ public interface VmScheduler {
      * @param vm the VM to get the List of requested MIPS
      * @return
      */
-    List<Double> getMipsRequested(Vm vm);
+    List<Double> getRequestedMips(Vm vm);
 
     /**
      * Checks if the PM using this scheduler has enough MIPS capacity

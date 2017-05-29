@@ -36,6 +36,12 @@ deallocateAllResources
 .. java:method:: @Override public long deallocateAllResources()
    :outertype: PeNull
 
+deallocateAndRemoveResource
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean deallocateAndRemoveResource(long amountToDeallocate)
+   :outertype: PeNull
+
 deallocateResource
 ^^^^^^^^^^^^^^^^^^
 

@@ -7,7 +7,7 @@ import java.util.Objects;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.examples.power.util.PlanetLabHelper;
+import org.cloudbus.cloudsim.examples.power.util.PlanetLabRunner;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -64,7 +64,7 @@ public class NonPowerAware {
 
 			DatacenterBroker broker = helper.createBroker(simulation);
 
-			List<Cloudlet> cloudletList = PlanetLabHelper.createCloudletListPlanetLab(broker, inputFolder);
+			List<Cloudlet> cloudletList = PlanetLabRunner.createCloudletListPlanetLab(broker, inputFolder);
 			List<Vm> vmList = helper.createVmList(broker, cloudletList.size());
 			List<PowerHost> hostList = helper.createHostList(NUMBER_OF_HOSTS);
 

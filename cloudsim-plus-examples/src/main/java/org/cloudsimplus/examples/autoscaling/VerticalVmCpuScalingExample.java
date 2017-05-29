@@ -156,7 +156,7 @@ public class VerticalVmCpuScalingExample {
     private void onClockTickListener(EventInfo evt) {
         vmList.forEach(vm -> {
             Log.printFormatted("\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%d)\n",
-                evt.getTime(), vm.getId(), vm.getCurrentCpuPercentUse()*100.0,
+                evt.getTime(), vm.getId(), vm.getCpuPercentUsage()*100.0,
                 vm.getNumberOfPes(), vm.getCloudletScheduler().getCloudletExecList().size());
         });
     }

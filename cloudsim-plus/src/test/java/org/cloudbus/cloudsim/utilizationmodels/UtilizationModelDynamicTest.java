@@ -143,9 +143,10 @@ public class UtilizationModelDynamicTest {
         new UtilizationModelDynamic(-1.1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
     public void testConstructor_UtilizationPercentageIncrementGreaterThan1() {
-        new UtilizationModelDynamic(1.1);
+        final double initialUtilizationPercent = 1.1;
+        UtilizationModelDynamic um = new UtilizationModelDynamic(initialUtilizationPercent);
+        assertEquals(initialUtilizationPercent, um.getUtilization(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -153,9 +154,10 @@ public class UtilizationModelDynamicTest {
         new UtilizationModelDynamic(Unit.PERCENTAGE, -1.1);
     }
 
-    @Test(expected = IllegalArgumentException.class)
     public void constructor_InitialValueGreaterThan1() {
-        new UtilizationModelDynamic(Unit.PERCENTAGE, 2);
+        final int initialUtilization = 2;
+        UtilizationModelDynamic um = new UtilizationModelDynamic(Unit.PERCENTAGE, initialUtilization);
+        assertEquals(initialUtilization, um.getUtilization(), 0);
     }
 
     @Test
@@ -178,10 +180,11 @@ public class UtilizationModelDynamicTest {
 
     }
 
-    @Test(expected = IllegalArgumentException.class)
     public void testSetMaxResourceUsagePercentage_valueGreaterThanOne() {
         final UtilizationModelDynamic instance = new UtilizationModelDynamic();
-        instance.setMaxResourceUtilization(1.1);
+        final double maxResourceUsagePercentage = 1.1;
+        instance.setMaxResourceUtilization(maxResourceUsagePercentage);
+        assertEquals(maxResourceUsagePercentage, instance.getMaxResourceUtilization());
     }
 
     @Test(expected = IllegalArgumentException.class)

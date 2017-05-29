@@ -35,7 +35,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "1.2.0";
+    public static final String VERSION = "1.2.1";
 
     /**
      * A constant to indicate that some entity was not found.
@@ -179,7 +179,6 @@ public class CloudSim implements Simulation {
      * @post $none
      */
     public CloudSim(Calendar cal) {
-        Log.printFormattedLine("Initialising CloudSim Plus %s...", CloudSim.VERSION);
         this.entities = new ArrayList<>();
         this.entitiesByName = new LinkedHashMap<>();
         this.future = new FutureQueue();
@@ -231,7 +230,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public double start() {
-        Log.printConcatLine("Starting CloudSim Plus version ", VERSION);
+        Log.printConcatLine("Starting CloudSim Plus ", VERSION);
         return run();
     }
 

@@ -10,7 +10,7 @@ PowerVmAllocationPolicyMigrationLocalRegressionRobust
 
 .. java:type:: public class PowerVmAllocationPolicyMigrationLocalRegressionRobust extends PowerVmAllocationPolicyMigrationLocalRegression
 
-   A VM allocation policy that uses Local Regression Robust (LRR) to predict host utilization (load) and define if a host is overloaded or not.
+   A VM allocation policy that uses Local Regression Robust (LRR) to predict host utilization (load) and define if a host is overloaded or not. \ **It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.**\
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 

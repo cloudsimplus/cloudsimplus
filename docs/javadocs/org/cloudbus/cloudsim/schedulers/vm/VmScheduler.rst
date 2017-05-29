@@ -90,10 +90,10 @@ deallocatePesFromVm
    :param vm: the vm to deallocate PEs from
    :param pesToRemove: number of PEs to deallocate
 
-getAllocatedMipsForVm
-^^^^^^^^^^^^^^^^^^^^^
+getAllocatedMips
+^^^^^^^^^^^^^^^^
 
-.. java:method::  List<Double> getAllocatedMipsForVm(Vm vm)
+.. java:method::  List<Double> getAllocatedMips(Vm vm)
    :outertype: VmScheduler
 
    Gets the MIPS share of each host's Pe that is allocated to a given VM.
@@ -124,6 +124,16 @@ getMaxAvailableMips
 
    Gets the maximum available MIPS among all the host's PEs.
 
+getMaxCpuUsagePercentDuringOutMigration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getMaxCpuUsagePercentDuringOutMigration()
+   :outertype: VmScheduler
+
+   Gets the max percentage of CPU a VM migrating out of this Host can use. Since there may be an overhead associated to the migration process (if the \ :java:ref:`CPU overhead for VM migration <getVmMigrationCpuOverhead()>`\  is greater than 0), during the migration, the amount of MIPS the VM can use is reduced due to this overhead.
+
+   :return: the max percentage of CPU usage during migration (in scale from [0 to 1], where 1 is 100%)
+
 getPeCapacity
 ^^^^^^^^^^^^^
 
@@ -132,15 +142,25 @@ getPeCapacity
 
    Gets PE capacity in MIPS.
 
-getPesAllocatedForVM
+getPesAllocatedForVm
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  List<Pe> getPesAllocatedForVM(Vm vm)
+.. java:method::  List<Pe> getPesAllocatedForVm(Vm vm)
    :outertype: VmScheduler
 
    Gets the list of PEs allocated for a VM.
 
    :param vm: the VM to get the allocated PEs
+
+getRequestedMips
+^^^^^^^^^^^^^^^^
+
+.. java:method::  List<Double> getRequestedMips(Vm vm)
+   :outertype: VmScheduler
+
+   Gets a \ **copy**\  of the List of MIPS requested by a VM, avoiding the original list to be changed.
+
+   :param vm: the VM to get the List of requested MIPS
 
 getTotalAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -223,6 +243,6 @@ setHost
    Sets the host that the VmScheduler get the list of PEs to allocate to VMs. A host for the VmScheduler is set when the VmScheduler is set to a given host. Thus, the host is in charge to set itself to a VmScheduler.
 
    :param host: the host to be set
-   :throws IllegalArgumentException: when the scheduler already is assigned to another Host, since each Host must have its own scheduler
    :throws NullPointerException: when the host parameter is null
+   :throws IllegalArgumentException: when the scheduler already is assigned to another Host, since each Host must have its own scheduler
 

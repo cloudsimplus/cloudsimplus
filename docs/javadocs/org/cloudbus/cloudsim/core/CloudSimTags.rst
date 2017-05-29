@@ -300,7 +300,7 @@ VM_MIGRATE
 .. java:field:: public static final int VM_MIGRATE
    :outertype: CloudSimTags
 
-   Denotes a request to migrate a new VM in a \ :java:ref:`Datacenter`\ .
+   Denotes a request to migrate a new VM in a \ :java:ref:`Datacenter`\ . When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ ``Map.Entry<Vm, Host>``\  representing to which Host a VM must be migrated.
 
 VM_MIGRATE_ACK
 ^^^^^^^^^^^^^^
@@ -308,7 +308,7 @@ VM_MIGRATE_ACK
 .. java:field:: public static final int VM_MIGRATE_ACK
    :outertype: CloudSimTags
 
-   Denotes a request to migrate a new VM in a \ :java:ref:`Datacenter`\  with acknowledgement information sent by the Datacener.
+   Denotes a request to migrate a new VM in a \ :java:ref:`Datacenter`\  with acknowledgement information sent by the Datacenter. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ ``Map.Entry<Vm, Host>``\  representing to which Host a VM must be migrated.
 
 VM_UPDATE_CLOUDLET_PROCESSING_EVENT
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

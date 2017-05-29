@@ -90,6 +90,28 @@ allocatePesForVm
    :param mipsShare: the list of MIPS share to be allocated to the VM
    :return: $true if this policy allows a new VM in the host, $false otherwise
 
+createTemporaryVm
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean createTemporaryVm(Vm vm)
+   :outertype: Host
+
+   Try to allocate resources to a new temporary VM in the Host. The method is used only to book resources for a given VM. For instance, if is being chosen Hosts to migrate a set of VMs, when a Host is selected for a given VM, using this method, the resources are reserved and then, when the next VM is selected for the same Host, the reserved resources already were reduced from the available amount. This way, it it was possible to place just one Vm into that Host, with the booking, no other VM will be selected to that Host.
+
+   :param vm: Vm being started
+   :return: $true if the VM could be started in the host; $false otherwise
+
+createVm
+^^^^^^^^
+
+.. java:method::  boolean createVm(Vm vm)
+   :outertype: Host
+
+   Try to allocate resources to a new VM in the Host.
+
+   :param vm: Vm being started
+   :return: $true if the VM could be started in the host; $false otherwise
+
 deallocatePesForVm
 ^^^^^^^^^^^^^^^^^^
 
@@ -107,6 +129,18 @@ destroyAllVms
    :outertype: Host
 
    Destroys all VMs running in the host and remove them from the \ :java:ref:`getVmList()`\ .
+
+destroyTemporaryVm
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void destroyTemporaryVm(Vm vm)
+   :outertype: Host
+
+   Destroys a temporary VM created into the Host to book resources.
+
+   :param vm: the VM
+
+   **See also:** :java:ref:`.createTemporaryVm(Vm)`
 
 destroyVm
 ^^^^^^^^^
@@ -277,7 +311,7 @@ getUtilizationOfCpu
 .. java:method::  double getUtilizationOfCpu()
    :outertype: Host
 
-   Gets current utilization of CPU in percentage (between [0 and 1]).
+   Gets current utilization of CPU in percentage (between [0 and 1]), considering the usage of all its PEs..
 
 getUtilizationOfCpuMips
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -285,7 +319,7 @@ getUtilizationOfCpuMips
 .. java:method::  double getUtilizationOfCpuMips()
    :outertype: Host
 
-   Gets the current utilization of CPU in MIPS.
+   Gets the current total utilization of CPU in MIPS, considering the usage of all its PEs.
 
 getUtilizationOfRam
 ^^^^^^^^^^^^^^^^^^^
@@ -357,6 +391,16 @@ getWorkingPeList
 
    :return: the list working (non-failed) Host PEs
 
+isActive
+^^^^^^^^
+
+.. java:method::  boolean isActive()
+   :outertype: Host
+
+   Checks if the Host is powered-on or not.
+
+   :return: true if the Host is powered-on, false otherwise.
+
 isFailed
 ^^^^^^^^
 
@@ -373,7 +417,7 @@ isSuitableForVm
 .. java:method::  boolean isSuitableForVm(Vm vm)
    :outertype: Host
 
-   Checks if the host is suitable for vm. If it has enough resources to attend the VM.
+   Checks if the host active and is suitable for vm. If it has enough resources to attend the VM.
 
    :param vm: the vm
    :return: true, if is suitable for vm
@@ -428,6 +472,18 @@ removeVmMigratingOut
    Adds a \ :java:ref:`Vm`\  to the list of VMs migrating out from the Host.
 
    :param vm: the vm to be added
+
+setActive
+^^^^^^^^^
+
+.. java:method::  Host setActive(boolean active)
+   :outertype: Host
+
+   Sets the powered state of the Host, to indicate if it's powered on or off. When a Host is powered off, no VMs will be submitted to it.
+
+   If it is set to powered off while VMs are running inside it, it is simulated a scheduled shutdown, so that, all running VMs will finish, but not more VMs will be submitted to this Host.
+
+   :param active: true to set the Host as powered on, false as powered off
 
 setBwProvisioner
 ^^^^^^^^^^^^^^^^
@@ -512,15 +568,4 @@ updateProcessing
 
    :param currentTime: the current time
    :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
-
-vmCreate
-^^^^^^^^
-
-.. java:method::  boolean vmCreate(Vm vm)
-   :outertype: Host
-
-   Try to allocate resources to a new VM in the Host.
-
-   :param vm: Vm being started
-   :return: $true if the VM could be started in the host; $false otherwise
 

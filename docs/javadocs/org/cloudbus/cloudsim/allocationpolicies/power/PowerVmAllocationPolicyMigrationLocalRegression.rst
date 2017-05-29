@@ -18,7 +18,7 @@ PowerVmAllocationPolicyMigrationLocalRegression
 
 .. java:type:: public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstract
 
-   A VM allocation policy that uses Local Regression (LR) to predict host utilization (load) and define if a host is overloaded or not.
+   A VM allocation policy that uses Local Regression (LR) to predict host utilization (load) and define if a host is overloaded or not. \ **It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.**\  Such a behaviour can be overridden by sub-classes.
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
@@ -109,10 +109,10 @@ getSchedulingInterval
 
    :return: the scheduling interval
 
-isHostOverUtilized
-^^^^^^^^^^^^^^^^^^
+isHostOverloaded
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isHostOverUtilized(PowerHost host)
+.. java:method:: @Override public boolean isHostOverloaded(PowerHost host)
    :outertype: PowerVmAllocationPolicyMigrationLocalRegression
 
    Checks if a host is over utilized based on estimation of CPU over utilization threshold computed using Local Regression.

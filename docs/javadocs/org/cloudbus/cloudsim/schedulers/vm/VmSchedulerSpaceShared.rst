@@ -36,14 +36,24 @@ VmSchedulerSpaceShared
 .. java:constructor:: public VmSchedulerSpaceShared()
    :outertype: VmSchedulerSpaceShared
 
-   Instantiates a new vm space-shared scheduler.
+   Creates a space-shared VM scheduler.
+
+VmSchedulerSpaceShared
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public VmSchedulerSpaceShared(double vmMigrationCpuOverhead)
+   :outertype: VmSchedulerSpaceShared
+
+   Creates a space-shared VM scheduler, defining a CPU overhead for VM migration.
+
+   :param vmMigrationCpuOverhead: the percentage of Host's CPU usage increase when a VM is migrating in or out of the Host. The value is in scale from 0 to 1 (where 1 is 100%).
 
 Methods
 -------
-allocatePesForVm
-^^^^^^^^^^^^^^^^
+allocatePesForVmInternal
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested)
+.. java:method:: @Override public boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested)
    :outertype: VmSchedulerSpaceShared
 
 deallocatePesFromVmInternal
@@ -82,12 +92,6 @@ getTotalCapacityToBeAllocatedToVm
 
    :param vmRequestedMipsShare: a VM's list of requested MIPS
    :return: the list of PEs that can be allocated to the VM or an empty list if there isn't enough capacity that can be allocated
-
-getVmMigrationCpuOverhead
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getVmMigrationCpuOverhead()
-   :outertype: VmSchedulerSpaceShared
 
 isSuitableForVm
 ^^^^^^^^^^^^^^^

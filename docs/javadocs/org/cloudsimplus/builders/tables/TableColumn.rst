@@ -43,14 +43,6 @@ generateTitleHeader
 
    :return: the generated header string
 
-getColumnSeparator
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  String getColumnSeparator()
-   :outertype: TableColumn
-
-   :return: The string used to separate one column from another (optional).
-
 getFormat
 ^^^^^^^^^
 
@@ -82,12 +74,6 @@ getTitle
    :outertype: TableColumn
 
    :return: The title to be displayed at the top of the column.
-
-setColumnSeparator
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  TableColumn setColumnSeparator(String columnSeparator)
-   :outertype: TableColumn
 
 setFormat
 ^^^^^^^^^

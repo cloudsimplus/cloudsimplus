@@ -54,8 +54,8 @@ public class VmTest {
         assertEquals(0, instance.getCurrentRequestedTotalMips(), 0);
         assertEquals(0, instance.getMips(), 0);
         assertEquals(0, instance.getNumberOfPes());
-        assertEquals(0, instance.getCpuPercentUse(0), 0);
-        assertEquals(0, instance.getTotalUtilizationOfCpuMips(0), 0);
+        assertEquals(0, instance.getCpuPercentUsage(0), 0);
+        assertEquals(0, instance.getTotalCpuMipsUsage(0), 0);
         assertEquals(0, instance.getBw().getCapacity());
         assertEquals(0, instance.getCurrentAllocatedBw());
         assertEquals(0, instance.getCurrentRequestedBw());

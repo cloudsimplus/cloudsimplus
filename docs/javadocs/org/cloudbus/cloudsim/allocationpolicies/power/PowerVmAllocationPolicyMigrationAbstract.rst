@@ -1,4 +1,8 @@
+.. java:import:: java.util.function Predicate
+
 .. java:import:: java.util.stream Collectors
+
+.. java:import:: java.util.stream Stream
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
@@ -14,13 +18,9 @@
 
 .. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
 
-.. java:import:: org.cloudbus.cloudsim.vms.power PowerVm
-
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
-
-.. java:import:: org.cloudbus.cloudsim.util ExecutionTimeMeasurer
 
 PowerVmAllocationPolicyMigrationAbstract
 ========================================
@@ -30,7 +30,7 @@ PowerVmAllocationPolicyMigrationAbstract
 
 .. java:type:: public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAllocationPolicyAbstract implements PowerVmAllocationPolicyMigration
 
-   An abstract power-aware VM allocation policy that dynamically optimizes the VM allocation (placement) using migration.
+   An abstract power-aware VM allocation policy that dynamically optimizes the VM allocation (placement) using migration. \ **It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.**\  Such a behaviour can be overridden by sub-classes.
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
@@ -65,6 +65,20 @@ addHistoryEntryIfAbsent
    :param host: the host to add metric history entries
    :param metric: the metric to be added to the metric history map
 
+additionalHostFilters
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected Stream<PowerHost> additionalHostFilters(Vm vm, Stream<PowerHost> hostStream)
+   :outertype: PowerVmAllocationPolicyMigrationAbstract
+
+   Applies additional filters to select a Host to place a given VM. This implementation filters the stream of Hosts to get those ones that the placement of the VM impacts its power usage.
+
+   This method can be overridden by sub-classes to change filtering.
+
+   :param vm: the VM to find a Host to be placed into
+   :param hostStream: a \ :java:ref:`Stream`\  containing the Hosts after passing the basic filtering
+   :return: the Hosts \ :java:ref:`Stream`\  after applying the additional filters
+
 extractHostListFromMigrationMap
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -88,51 +102,48 @@ findHostForVm
 .. java:method:: public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts)
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Finds a PM that has enough resources to host a given VM and that will not be overloaded after placing the VM on it. The selected host will be that one with most efficient power usage for the given VM.
+   Finds a Host that has enough resources to place a given VM and that will not be overloaded after the placement. The selected Host will be that one with most efficient power usage for the given VM.
+
+   This method performs the basic filtering and delegates additional ones and the final selection of the Host to other method.
 
    :param vm: the VM
    :param excludedHosts: the excluded hosts
    :return: the PM found to host the VM or \ :java:ref:`PowerHost.NULL`\  if not found
 
-getExecutionTimeHistoryHostSelection
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   **See also:** :java:ref:`.findHostForVmInternal(Vm,Stream)`
 
-.. java:method:: public List<Double> getExecutionTimeHistoryHostSelection()
+findHostForVm
+^^^^^^^^^^^^^
+
+.. java:method:: public PowerHost findHostForVm(Vm vm, Set<? extends Host> excludedHosts, Predicate<PowerHost> predicate)
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Gets the execution time history host selection.
+   Finds a Host that has enough resources to place a given VM and that will not be overloaded after the placement. The selected Host will be that one with most efficient power usage for the given VM.
 
-   :return: the execution time history host selection
+   This method performs the basic filtering and delegates additional ones and the final selection of the Host to other method.
 
-getExecutionTimeHistoryTotal
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   :param vm: the VM
+   :param excludedHosts: the excluded hosts
+   :param predicate: an additional \ :java:ref:`Predicate`\  to be used to filter the Host to place the VM
+   :return: the PM found to host the VM or \ :java:ref:`PowerHost.NULL`\  if not found
 
-.. java:method:: public List<Double> getExecutionTimeHistoryTotal()
+   **See also:** :java:ref:`.findHostForVmInternal(Vm,Stream)`
+
+findHostForVmInternal
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected Optional<PowerHost> findHostForVmInternal(Vm vm, Stream<PowerHost> hostStream)
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Gets the execution time history total.
+   Applies additional filters to the Hosts Stream and performs the actual Host selection. This method is a Stream's final operation, that it, it closes the Stream and returns an \ :java:ref:`Optional`\  value.
 
-   :return: the execution time history total
+   This method can be overridden by sub-classes to change the method used to select the Host for the given VM.
 
-getExecutionTimeHistoryVmReallocation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   :param vm: the VM to find a Host to be placed into
+   :param hostStream: a \ :java:ref:`Stream`\  containing the Hosts after passing the basic filtering
+   :return: an \ :java:ref:`Optional`\  that may or may not contain the Host to place the VM
 
-.. java:method:: public List<Double> getExecutionTimeHistoryVmReallocation()
-   :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Gets the execution time history vm reallocation.
-
-   :return: the execution time history vm reallocation
-
-getExecutionTimeHistoryVmSelection
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public List<Double> getExecutionTimeHistoryVmSelection()
-   :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Gets the execution time history vm selection.
-
-   :return: the execution time history vm selection
+   **See also:** :java:ref:`.findHostForVm(Vm,Set)`, :java:ref:`.additionalHostFilters(Vm,Stream)`
 
 getMaxUtilizationAfterAllocation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -149,55 +160,39 @@ getMaxUtilizationAfterAllocation
 getMetricHistory
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: public Map<Host, List<Double>> getMetricHistory()
+.. java:method:: @Override public Map<Host, List<Double>> getMetricHistory()
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Gets the metric history.
+getMigrationMapFromOverloadedHosts
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-   :return: the metric history
-
-getMigrationMapFromUnderUtilizedHosts
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected Map<Vm, Host> getMigrationMapFromUnderUtilizedHosts(List<PowerHostUtilizationHistory> overUtilizedHosts)
+.. java:method:: protected Map<Vm, Host> getMigrationMapFromOverloadedHosts(Set<PowerHostUtilizationHistory> overloadedHosts)
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Gets the migration map from under utilized hosts.
+   Gets a new VM placement considering the list of VM to migrate from overloaded Hosts.
 
-   :param overUtilizedHosts: the over utilized hosts
-   :return: the migration map from under utilized hosts
+   :param overloadedHosts: the list of overloaded Hosts
+   :return: the new VM placement map where each key is a VM and each value is the Host to place it.
 
-getNewVmPlacement
-^^^^^^^^^^^^^^^^^
+getNewVmPlacementFromUnderloadedHost
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected Map<Vm, Host> getNewVmPlacement(List<Vm> vmsToMigrate, Set<Host> excludedHosts)
+.. java:method:: protected Map<Vm, Host> getNewVmPlacementFromUnderloadedHost(List<? extends Vm> vmsToMigrate, Set<? extends Host> excludedHosts)
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Gets a new vm placement considering the list of VM to migrate.
+   Gets a new placement for VMs from an underloaded host.
 
-   :param vmsToMigrate: the list of VMs to migrate
+   :param vmsToMigrate: the list of VMs to migrate from the underloaded Host
    :param excludedHosts: the list of hosts that aren't selected as destination hosts
-   :return: the new vm placement map where each key is a Vm and each value is the host to place it.
+   :return: the new vm placement for the given VMs
 
-getNewVmPlacementFromUnderUtilizedHost
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getOverloadedHosts
+^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected Map<Vm, Host> getNewVmPlacementFromUnderUtilizedHost(List<? extends Vm> vmsToMigrate, Set<? extends Host> excludedHosts)
+.. java:method:: protected Set<PowerHostUtilizationHistory> getOverloadedHosts()
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Gets the new vm placement from under utilized host.
-
-   :param vmsToMigrate: the list of VMs to migrate
-   :param excludedHosts: the list of hosts that aren't selected as destination hosts
-   :return: the new vm placement from under utilized host
-
-getOverUtilizedHosts
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected List<PowerHostUtilizationHistory> getOverUtilizedHosts()
-   :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Gets the over utilized hosts.
+   Gets the List of overloaded hosts. If a Host is overloaded but it has VMs migrating out, then it's not included in the returned List because the VMs to be migrated to move the Host from the overload state already are in migration.
 
    :return: the over utilized hosts
 
@@ -248,12 +243,8 @@ getSwitchedOffHosts
 getTimeHistory
 ^^^^^^^^^^^^^^
 
-.. java:method:: public Map<Host, List<Double>> getTimeHistory()
+.. java:method:: @Override public Map<Host, List<Double>> getTimeHistory()
    :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Gets the time history.
-
-   :return: the time history
 
 getUnderUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -261,26 +252,11 @@ getUnderUtilizationThreshold
 .. java:method:: @Override public double getUnderUtilizationThreshold()
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-getUnderUtilizedHost
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected PowerHost getUnderUtilizedHost(Set<? extends Host> excludedHosts)
-   :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Gets the most under utilized Host.
-
-   :param excludedHosts: the Hosts that have to be disconsidering when looking for the under utilized Host
-   :return: the most under utilized host or \ :java:ref:`PowerHost.NULL`\  if no Host was found
-
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public Map<Host, List<Double>> getUtilizationHistory()
+.. java:method:: @Override public Map<Host, List<Double>> getUtilizationHistory()
    :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Gets the utilization history.
-
-   :return: the utilization history
 
 getUtilizationOfCpuMips
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -303,15 +279,15 @@ getVmSelectionPolicy
 
    :return: the vm selection policy
 
-getVmsToMigrateFromHosts
-^^^^^^^^^^^^^^^^^^^^^^^^
+getVmsToMigrateFromOverloadedHosts
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected List<Vm> getVmsToMigrateFromHosts(List<PowerHostUtilizationHistory> overUtilizedHosts)
+.. java:method:: protected List<Vm> getVmsToMigrateFromOverloadedHosts(Set<PowerHostUtilizationHistory> overloadedHosts)
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Gets the VMs to migrate from hosts.
+   Gets the VMs to migrate from Hosts.
 
-   :param overUtilizedHosts: the over utilized hosts
+   :param overloadedHosts: the List of overloaded Hosts
    :return: the VMs to migrate from hosts
 
 getVmsToMigrateFromUnderUtilizedHost
@@ -325,10 +301,42 @@ getVmsToMigrateFromUnderUtilizedHost
    :param host: the host
    :return: the vms to migrate from under utilized host
 
-isHostNotOverusedAfterAllocation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+isHostOverloaded
+^^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean isHostNotOverusedAfterAllocation(PowerHost host, Vm vm)
+.. java:method:: @Override public boolean isHostOverloaded(PowerHost host)
+   :outertype: PowerVmAllocationPolicyMigrationAbstract
+
+   {@inheritDoc} It's based on current CPU usage.
+
+   :param host: {@inheritDoc}
+   :return: {@inheritDoc}
+
+isHostUnderloaded
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isHostUnderloaded(PowerHost host)
+   :outertype: PowerVmAllocationPolicyMigrationAbstract
+
+   Checks if a host is under utilized, based on current CPU usage.
+
+   :param host: the host
+   :return: true, if the host is under utilized; false otherwise
+
+isNotAllVmsMigratingOut
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected boolean isNotAllVmsMigratingOut(PowerHost host)
+   :outertype: PowerVmAllocationPolicyMigrationAbstract
+
+   Checks if all VMs of a Host are \ **NOT**\  migrating out. In this case, the given Host will not be selected as an underloaded Host at the current moment.
+
+   :param host: the host to check
+
+isNotHostOverloadedAfterAllocation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected boolean isNotHostOverloadedAfterAllocation(PowerHost host, Vm vm)
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
    Checks if a host will be over utilized after placing of a candidate VM.
@@ -337,53 +345,11 @@ isHostNotOverusedAfterAllocation
    :param vm: the candidate vm
    :return: true, if the host will be over utilized after VM placement; false otherwise
 
-isHostOverUtilized
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isHostOverUtilized(PowerHost host)
-   :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Checks if a host is over utilized, based on current CPU usage.
-
-   :param host: the host
-   :return: true, if the host is over utilized; false otherwise
-
-isHostUnderUtilized
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isHostUnderUtilized(PowerHost host)
-   :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Checks if a host is under utilized, based on current CPU usage.
-
-   :param host: the host
-   :return: true, if the host is under utilized; false otherwise
-
-isNotAllVmsMigratingOutNorVmsAreMigratingIn
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected boolean isNotAllVmsMigratingOutNorVmsAreMigratingIn(PowerHost host)
-   :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Checks if all VMs of a Host are \ **NOT**\  migrating out nor there are VMs migrating in. If all VMs are migrating out or there is at least one VM migrating in, the given Host will not be selected as an underutilized Host at the current moment.
-
-   :param host: the host to check
-
 optimizeAllocation
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList)
    :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-printOverUtilizedHosts
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void printOverUtilizedHosts(List<PowerHostUtilizationHistory> overUtilizedHosts)
-   :outertype: PowerVmAllocationPolicyMigrationAbstract
-
-   Prints the over utilized hosts.
-
-   :param overUtilizedHosts: the over utilized hosts
 
 restoreAllocation
 ^^^^^^^^^^^^^^^^^
@@ -401,7 +367,7 @@ saveAllocation
 .. java:method:: protected void saveAllocation()
    :outertype: PowerVmAllocationPolicyMigrationAbstract
 
-   Updates the list of maps between a VM and the host where it is place.
+   Saves the current map between a VM and the host where it is place.
 
    **See also:** :java:ref:`.savedAllocation`
 

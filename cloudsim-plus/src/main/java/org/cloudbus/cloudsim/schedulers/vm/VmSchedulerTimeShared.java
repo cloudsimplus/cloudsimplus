@@ -98,9 +98,24 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         }
 
         setPesInUse(getPesInUse() + mipsShareRequested.size());
-        allocateMipsShareForVm(vm, getMipsShareRequestedReduced(mipsShareRequested));
+        allocateMipsShareForVm(vm, mipsShareRequested);
 
         return true;
+    }
+
+    /**
+     * Performs the allocation of a MIPS List to a given VM.
+     * The actual MIPS to be allocated to the VM may be reduced
+     * if the VM is in migration, due to migration overhead.
+     *
+     * @param vm the VM to allocate MIPS to
+     * @param mipsShareRequestedReduced the list of MIPS to allocate to the VM,
+     * after it being adjusted by the {@link #getMipsShareRequestedReduced(Vm, List)} method.
+     * @see #getMipsShareRequestedReduced(Vm, List)
+     */
+    protected void allocateMipsShareForVm(Vm vm, final List<Double> mipsShareRequestedReduced) {
+        final List<Double> mipsShare = getMipsShareToAllocate(vm, mipsShareRequestedReduced);
+        getMipsMapAllocated().put(vm, mipsShare);
     }
 
     /**
@@ -274,46 +289,17 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
-     * Performs the allocation of a MIPS List to a given VM.
-     * The actual MIPS to be allocated to the VM may be reduced
-     * if the VM is in migration, due to migration overhead.
-     *
-     * @param vm the VM to allocate MIPS to
-     * @param mipsShareRequestedReduced the list of MIPS to allocate to the VM,
-     * after it being adjusted by the {@link #getMipsShareRequestedReduced(List)} method.
-     * @see #getMipsShareRequestedReduced(java.util.List)
-     */
-    protected void allocateMipsShareForVm(Vm vm, final List<Double> mipsShareRequestedReduced) {
-        final List<Double> mipsShare = getMipsShareToAllocate(mipsShareRequestedReduced, vm);
-        getMipsMapAllocated().put(vm, mipsShare);
-    }
-
-    /**
-     * Adjusts a List of MIPS requested by a VM, reducing every MIPS which is higher
-     * than the {@link #getPeCapacity() capacity of each physical PE} to that value.
-     *
-     * @param mipsShareRequested the VM requested MIPS List
-     * @return the VM requested MIPS List without MIPS higher than the PE capacity.
-     */
-    protected List<Double> getMipsShareRequestedReduced(List<Double> mipsShareRequested){
-        final double peMips = getPeCapacity();
-        return mipsShareRequested.stream()
-                .map(mips -> Math.min(mips, peMips))
-                .collect(toList());
-    }
-
-    /**
      * Gets the actual MIPS that will be allocated to each vPE (Virtual PE),
      * considering the VM migration status.
      * If the VM is in migration, this will cause overhead, reducing
      * the amount of MIPS allocated to the VM.
      *
-     * @param mipsShareRequested the list of MIPS requested for each vPE
      * @param vm the VM requesting allocation of MIPS
+     * @param mipsShareRequested the list of MIPS requested for each vPE
      * @return the List of MIPS allocated to the VM
      */
-    protected List<Double> getMipsShareToAllocate(List<Double> mipsShareRequested, Vm vm) {
-        return getMipsShareToAllocate(mipsShareRequested, vm, percentOfMipsToRequest(vm));
+    protected List<Double> getMipsShareToAllocate(Vm vm, List<Double> mipsShareRequested) {
+        return getMipsShareToAllocate(vm, mipsShareRequested, percentOfMipsToRequest(vm));
     }
 
     /**
@@ -322,13 +308,13 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * If the VM is in migration, this will cause overhead, reducing
      * the amount of MIPS allocated to the VM.
      *
-     * @param mipsShareRequested the list of MIPS requested for each vPE
      * @param vm the VM requesting allocation of MIPS
+     * @param mipsShareRequested the list of MIPS requested for each vPE
      * @param scalingFactor the factor that will be used to reduce the amount of MIPS
      * allocated to each vPE (which is a percentage value between [0 .. 1])
      * @return the List of MIPS allocated to the VM
      */
-    protected List<Double> getMipsShareToAllocate(List<Double> mipsShareRequested, Vm vm, double scalingFactor) {
+    protected List<Double> getMipsShareToAllocate(Vm vm, List<Double> mipsShareRequested, double scalingFactor) {
         return mipsShareRequested
                 .stream()
                 .map(mips -> mips*scalingFactor)

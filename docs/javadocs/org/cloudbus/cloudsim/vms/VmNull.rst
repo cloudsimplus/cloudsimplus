@@ -116,10 +116,16 @@ getCloudletScheduler
 .. java:method:: @Override public CloudletScheduler getCloudletScheduler()
    :outertype: VmNull
 
-getCpuPercentUse
-^^^^^^^^^^^^^^^^
+getCpuPercentUsage
+^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getCpuPercentUse(double time)
+.. java:method:: @Override public double getCpuPercentUsage(double time)
+   :outertype: VmNull
+
+getCpuPercentUsage
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCpuPercentUsage()
    :outertype: VmNull
 
 getCurrentAllocatedBw
@@ -138,12 +144,6 @@ getCurrentAllocatedSize
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public long getCurrentAllocatedSize()
-   :outertype: VmNull
-
-getCurrentCpuPercentUse
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getCurrentCpuPercentUse()
    :outertype: VmNull
 
 getCurrentRequestedBw
@@ -266,16 +266,16 @@ getSubmissionDelay
 .. java:method:: @Override public double getSubmissionDelay()
    :outertype: VmNull
 
+getTotalCpuMipsUsage
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalCpuMipsUsage(double time)
+   :outertype: VmNull
+
 getTotalMipsCapacity
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getTotalMipsCapacity()
-   :outertype: VmNull
-
-getTotalUtilizationOfCpuMips
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getTotalUtilizationOfCpuMips(double time)
    :outertype: VmNull
 
 getUid

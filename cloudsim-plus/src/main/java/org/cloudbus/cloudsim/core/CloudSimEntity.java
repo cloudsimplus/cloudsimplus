@@ -528,7 +528,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * simulation time from the current time, with a tag representing the event
      * type.
      *
-     * @param entityId    the id number of the destination entity
+     * @param destEntityId    the id number of the destination entity
      * @param delay       How many seconds after the current simulation time the event should be sent.
      *                    If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
@@ -539,8 +539,8 @@ public abstract class CloudSimEntity implements SimEntity {
      * @pre data != null
      * @post $none
      */
-    protected void send(int entityId, double delay, int cloudSimTag, Object data) {
-        if (entityId < 0) {
+    protected void send(int destEntityId, double delay, int cloudSimTag, Object data) {
+        if (destEntityId < 0) {
             return;
         }
 
@@ -553,17 +553,17 @@ public abstract class CloudSimEntity implements SimEntity {
             throw new IllegalArgumentException("The specified delay is infinite value");
         }
 
-        if (entityId < 0) {
-            Log.printConcatLine(getName(), ".send(): Error - " + "invalid entity id ", entityId);
+        if (destEntityId < 0) {
+            Log.printConcatLine(getName(), ".send(): Error - " + "invalid entity id ", destEntityId);
             return;
         }
 
         final int srcId = getId();
-        if (entityId != srcId) {// only delay messages between different entities
-            delay += getNetworkDelay(srcId, entityId);
+        if (destEntityId != srcId) {// only delay messages between different entities
+            delay += getNetworkDelay(srcId, destEntityId);
         }
 
-        schedule(entityId, delay, cloudSimTag, data);
+        schedule(destEntityId, delay, cloudSimTag, data);
     }
 
     /**
@@ -571,7 +571,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * simulation time from the current time, with a tag representing the event
      * type.
      *
-     * @param entityId    the id number of the destination entity
+     * @param destEntityId    the id number of the destination entity
      * @param delay       How many seconds after the current simulation time the event should be sent.
      *                    If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
@@ -580,8 +580,8 @@ public abstract class CloudSimEntity implements SimEntity {
      * @pre delay >= 0.0
      * @post $none
      */
-    protected void send(int entityId, double delay, int cloudSimTag) {
-        send(entityId, delay, cloudSimTag, null);
+    protected void send(int destEntityId, double delay, int cloudSimTag) {
+        send(destEntityId, delay, cloudSimTag, null);
     }
 
     /**
@@ -589,7 +589,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * simulation time from the current time, with a tag representing the event
      * type.
      *
-     * @param entityName  the name of the destination entity
+     * @param destEntityName  the name of the destination entity
      * @param delay       How many seconds after the current simulation time the event should be sent.
      *                    If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
@@ -600,8 +600,8 @@ public abstract class CloudSimEntity implements SimEntity {
      * @pre data != null
      * @post $none
      */
-    protected void send(String entityName, double delay, int cloudSimTag, Object data) {
-        send(simulation.getEntityId(entityName), delay, cloudSimTag, data);
+    protected void send(String destEntityName, double delay, int cloudSimTag, Object data) {
+        send(simulation.getEntityId(destEntityName), delay, cloudSimTag, data);
     }
 
     /**
@@ -609,7 +609,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * simulation time from the current time, with a tag representing the event
      * type.
      *
-     * @param entityName  the name of the destination entity
+     * @param destEntityName  the name of the destination entity
      * @param delay       How many seconds after the current simulation time the event should be sent.
      *                    If delay is a negative number, then it will be changed to 0
      * @param cloudSimTag an user-defined number representing the type of an
@@ -618,15 +618,15 @@ public abstract class CloudSimEntity implements SimEntity {
      * @pre delay >= 0.0
      * @post $none
      */
-    protected void send(String entityName, double delay, int cloudSimTag) {
-        send(entityName, delay, cloudSimTag, null);
+    protected void send(String destEntityName, double delay, int cloudSimTag) {
+        send(destEntityName, delay, cloudSimTag, null);
     }
 
     /**
      * Sends an event/message to another entity, with a tag representing the
      * event type.
      *
-     * @param entityId    the id number of the destination entity
+     * @param destEntityId    the id number of the destination entity
      * @param cloudSimTag an user-defined number representing the type of an
      *                    event/message
      * @param data        A reference to data to be sent with the event
@@ -635,30 +635,30 @@ public abstract class CloudSimEntity implements SimEntity {
      * @pre data != null
      * @post $none
      */
-    protected void sendNow(int entityId, int cloudSimTag, Object data) {
-        send(entityId, 0, cloudSimTag, data);
+    protected void sendNow(int destEntityId, int cloudSimTag, Object data) {
+        send(destEntityId, 0, cloudSimTag, data);
     }
 
     /**
      * Sends an event/message to another entity, with a tag representing the
      * event type.
      *
-     * @param entityId    the id number of the destination entity
+     * @param destEntityId    the id number of the destination entity
      * @param cloudSimTag an user-defined number representing the type of an
      *                    event/message
      * @pre entityID > 0
      * @pre delay >= 0.0
      * @post $none
      */
-    protected void sendNow(int entityId, int cloudSimTag) {
-        send(entityId, 0, cloudSimTag, null);
+    protected void sendNow(int destEntityId, int cloudSimTag) {
+        send(destEntityId, 0, cloudSimTag, null);
     }
 
     /**
      * Sends an event/message to another entity, with a tag representing the
      * event type.
      *
-     * @param entityName  the name of the destination entity
+     * @param destEntityName  the name of the destination entity
      * @param cloudSimTag an user-defined number representing the type of an
      *                    event/message
      * @param data        A reference to data to be sent with the event
@@ -667,23 +667,23 @@ public abstract class CloudSimEntity implements SimEntity {
      * @pre data != null
      * @post $none
      */
-    protected void sendNow(String entityName, int cloudSimTag, Object data) {
-        send(simulation.getEntityId(entityName), 0, cloudSimTag, data);
+    protected void sendNow(String destEntityName, int cloudSimTag, Object data) {
+        send(simulation.getEntityId(destEntityName), 0, cloudSimTag, data);
     }
 
     /**
      * Sends an event/message to another entity, with a tag representing the
      * event type.
      *
-     * @param entityName  the name of the destination entity
+     * @param destEntityName  the name of the destination entity
      * @param cloudSimTag an user-defined number representing the type of an
      *                    event/message
      * @pre entityName != null
      * @pre delay >= 0.0
      * @post $none
      */
-    protected void sendNow(String entityName, int cloudSimTag) {
-        send(entityName, 0, cloudSimTag, null);
+    protected void sendNow(String destEntityName, int cloudSimTag) {
+        send(destEntityName, 0, cloudSimTag, null);
     }
 
     /**

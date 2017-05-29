@@ -134,6 +134,18 @@ clock
 .. java:method:: @Override public double clock()
    :outertype: CloudSim
 
+clockInHours
+^^^^^^^^^^^^
+
+.. java:method:: @Override public double clockInHours()
+   :outertype: CloudSim
+
+clockInMinutes
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double clockInMinutes()
+   :outertype: CloudSim
+
 doPause
 ^^^^^^^
 

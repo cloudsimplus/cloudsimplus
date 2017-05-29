@@ -4,13 +4,10 @@ import java.io.IOException;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.examples.power.util.RandomConstants;
-import org.cloudbus.cloudsim.examples.power.util.RandomHelper;
+import org.cloudbus.cloudsim.examples.power.util.*;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.examples.power.util.Constants;
-import org.cloudbus.cloudsim.examples.power.util.Helper;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenterNonPowerAware;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicySimple;
@@ -52,10 +49,10 @@ public class NonPowerAware {
             Helper helper = new Helper(simulation, experimentName, Constants.OUTPUT_CSV, outputFolder);
 			DatacenterBroker broker = helper.createBroker(simulation);
 
-			List<Cloudlet> cloudletList = RandomHelper.createCloudletList(
-					broker, RandomConstants.NUMBER_OF_VMS);
+			List<Cloudlet> cloudletList = RandomRunner.createCloudletList(
+					broker, RandomRunner.NUMBER_OF_VMS);
 			List<Vm> vmList = helper.createVmList(broker, cloudletList.size());
-			List<PowerHost> hostList = helper.createHostList(RandomConstants.NUMBER_OF_HOSTS);
+			List<PowerHost> hostList = helper.createHostList(RandomRunner.NUMBER_OF_HOSTS);
 
 			PowerDatacenterNonPowerAware datacenter = (PowerDatacenterNonPowerAware) helper.createDatacenter(
                 PowerDatacenterNonPowerAware.class, hostList,

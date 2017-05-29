@@ -64,12 +64,12 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
      * @return {@inheritDoc}
      */
     @Override
-    public boolean isHostOverUtilized(PowerHost host) {
+    public boolean isHostOverloaded(PowerHost host) {
         if(getOverUtilizationThreshold(host) == Double.MAX_VALUE) {
-            return getFallbackVmAllocationPolicy().isHostOverUtilized(host);
+            return getFallbackVmAllocationPolicy().isHostOverloaded(host);
         }
 
-        return super.isHostOverUtilized(host);
+        return super.isHostOverloaded(host);
     }
 
 

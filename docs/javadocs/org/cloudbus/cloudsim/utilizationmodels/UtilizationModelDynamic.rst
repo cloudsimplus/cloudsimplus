@@ -29,7 +29,9 @@ UtilizationModelDynamic
    Creates a UtilizationModelDynamic with no initial utilization and resource utilization unit defined in \ :java:ref:`Unit.PERCENTAGE`\ .
 
    The utilization will not be dynamically incremented
-   until that an increment function is defined by the .
+   until an increment function is defined by the .
+
+   **See also:** :java:ref:`.setUtilizationUpdateFunction(Function)`
 
 UtilizationModelDynamic
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -142,13 +144,13 @@ setUtilizationUpdateFunction
 
    Sets the function that defines how the resource utilization will be incremented or decremented along the time.
 
-   Such a function must be one with 1 \ :java:ref:`UtilizationModelDynamic`\  parameter, that when called internally by this UtilizationModel will receive a read-only UtilizationModelDynamic instance and allow the developer using this UtilizationModel to define how the utilization must be updated. For instance, to define an arithmetic increment, a Lambda function to be given to this setter could be defined as below:
+   Such a function must require one \ :java:ref:`UtilizationModelDynamic`\  parameter and returns the new resource utilization. When this function is called internally by this \ ``UtilizationModel``\ , it receives a read-only \ :java:ref:`UtilizationModelDynamic`\  instance and allow the developer using this \ ``UtilizationModel``\  to define how the utilization must be updated. For instance, to define an arithmetic increment, a Lambda function to be given to this setter could be defined as below:
 
-   \ ``(um) -> um.getUtilization() + um.getTimeSpan()*0.1``\
+   \ ``um -> um.getUtilization() + um.getTimeSpan()*0.1``\
 
-   Considering that the UtilizationModel \ :java:ref:`Unit`\  was defined in \ :java:ref:`Unit.PERCENTAGE`\ , such a Lambda Expression will increment the usage in 10% for each second that has passed since the last time the utilization was computed.
+   Considering the \ ``UtilizationModel``\  \ :java:ref:`Unit`\  was defined in \ :java:ref:`Unit.PERCENTAGE`\ , such a Lambda Expression will increment the usage in 10% for each second that has passed since the last time the utilization was computed.
 
-   The value returned by the given Lambda Expression will be automatically validated to avoid negative utilization or utilization over 100% (when the UtilizationModel \ :java:ref:`unit <getUnit()>`\  is defined in percentage). The function would be defined to decrement the utilization along the time, by just changing the plus to a minus signal.
+   The value returned by the given Lambda Expression will be automatically validated to avoid negative utilization or utilization over 100% (when the \ ``UtilizationModel``\  \ :java:ref:`unit <getUnit()>`\  is defined in percentage). The function would be defined to decrement the utilization along the time, by just changing the plus to a minus signal.
 
    Defining a geometric progression for the resource utilization is as simple as changing the plus signal to a multiplication signal.
 

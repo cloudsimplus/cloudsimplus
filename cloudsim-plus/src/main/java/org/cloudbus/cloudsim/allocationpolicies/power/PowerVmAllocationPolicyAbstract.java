@@ -8,10 +8,6 @@
 
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.util.Log;
@@ -52,8 +48,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
             return false;
         }
 
-        if (host.vmCreate(vm)) { // if vm has been successfully created in the host
-            addVmToHostMap(vm, host);
+        if (host.createVm(vm)) { // if vm has been successfully created in the host
             Log.printFormattedLine(
                 "%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
                 simulation.clock());
@@ -76,11 +71,6 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 
     @Override
     public void deallocateHostForVm(Vm vm) {
-        Host host = removeVmFromHostMap(vm);
-        if (host != null) {
-            host.destroyVm(vm);
-        }
+        vm.getHost().destroyVm(vm);
     }
-
-
 }

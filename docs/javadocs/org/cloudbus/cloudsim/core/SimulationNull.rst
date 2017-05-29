@@ -74,6 +74,18 @@ clock
 .. java:method:: @Override public double clock()
    :outertype: SimulationNull
 
+clockInHours
+^^^^^^^^^^^^
+
+.. java:method:: @Override public double clockInHours()
+   :outertype: SimulationNull
+
+clockInMinutes
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double clockInMinutes()
+   :outertype: SimulationNull
+
 findFirstDeferred
 ^^^^^^^^^^^^^^^^^
 

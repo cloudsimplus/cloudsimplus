@@ -1,6 +1,12 @@
+.. java:import:: java.util ArrayList
+
 .. java:import:: java.util Collections
 
+.. java:import:: java.util HashMap
+
 .. java:import:: java.util List
+
+.. java:import:: java.util Map
 
 .. java:import:: java.util Objects
 
@@ -38,7 +44,7 @@ HostFaultInjection
 
 .. java:type:: public class HostFaultInjection extends CloudSimEntity
 
-   Generates random failures for the \ :java:ref:`Pe`\ 's of \ :java:ref:`Host`\ s inside a given \ :java:ref:`Datacenter`\ . The events happens in the following order:
+   Generates random failures for the \ :java:ref:`Pe`\ 's of \ :java:ref:`Host`\ s inside a given \ :java:ref:`Datacenter`\ . A Fault Injection object usually has to be created after the VMs are created, to make it easier to define a function to be used to clone failed VMs. The events happens in the following order:
 
    ..
 
@@ -73,16 +79,60 @@ Constructors
 HostFaultInjection
 ^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public HostFaultInjection(Datacenter datacenter, ContinuousDistribution failureArrivalTimesGenerator)
+.. java:constructor:: public HostFaultInjection(Datacenter datacenter, ContinuousDistribution faultArrivalTimesGenerator)
    :outertype: HostFaultInjection
 
    Creates a fault injection mechanism for the Hosts of a given \ :java:ref:`Datacenter`\ . The failures are randomly injected according to the given mean of failures to be generated per \ **minute**\ , which is also called \ **event rate**\  or \ **rate parameter**\ .
 
    :param datacenter: the Datacenter to which failures will be randomly injected for its Hosts
-   :param failureArrivalTimesGenerator: a Pseudo Random Number Generator which generates the times that Hosts failures will occur. \ **The values returned by the generator will be considered to be minutes**\ . Frequently it is used a \ :java:ref:`PoissonDistr`\  to generate failure arrivals, but any \ :java:ref:`ContinuousDistribution`\  can be used.
+   :param faultArrivalTimesGenerator: a Pseudo Random Number Generator which generates the times that Hosts failures will occur. \ **The values returned by the generator will be considered to be minutes**\ . Frequently it is used a \ :java:ref:`PoissonDistr`\  to generate failure arrivals, but any \ :java:ref:`ContinuousDistribution`\  can be used.
 
 Methods
 -------
+addCloudletsCloner
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void addCloudletsCloner(DatacenterBroker broker, Function<Vm, List<Cloudlet>> cloudletsCloner)
+   :outertype: HostFaultInjection
+
+   Adds a \ :java:ref:`Function`\  that will create a clone of all Cloudlets which were running inside a \ :java:ref:`Vm`\ , belonging to a given broker, after a failure. The same function is used to clone the cloudlets of any cloned VM.
+
+   If a Vm cloner Function is not set, setting a Cloudlet's cloner function is optional. Since in this situation VMs will not be recovered from failures, Cloudlets inside failed VMs will not be recovered too.
+
+   Such a Function is used to recreate and re-submit those Cloudlets to a clone of the failed VM. In this case, all the Cloudlets are recreated from scratch into the cloned VM, re-starting their execution from the beginning.
+
+   Since a snapshot (clone) of the failed VM will be started into another Host, the Cloudlets cloner Function will recreated all Cloudlets, simulating the restart of applications into this new VM instance.
+
+   :param broker: the broker to set the Cloudlets cloner Function to
+   :param cloudletsCloner: the cloudlets cloner \ :java:ref:`Function`\  to set
+
+   **See also:** :java:ref:`.addVmCloner(DatacenterBroker,UnaryOperator)`
+
+addVmCloner
+^^^^^^^^^^^
+
+.. java:method:: public void addVmCloner(DatacenterBroker broker, UnaryOperator<Vm> clonerFunction)
+   :outertype: HostFaultInjection
+
+   Adds a \ :java:ref:`UnaryOperator`\  that creates a clone of \ :java:ref:`Vm`\ s belonging to a given broker. when all Host PEs fail or all VM's PEs are deallocated because they have failed.
+
+   This is optional. If a cloner function is not set, VMs will not be recovered from failures.
+
+   The \ :java:ref:`UnaryOperator`\  is a \ :java:ref:`Function`\  that receives a \ :java:ref:`Vm`\  and returns a clone of it. When all PEs of the VM fail, this vmCloner \ :java:ref:`Function`\  is used to create a copy of the VM to be submitted to another Host. It is like a VM snapshot in a real cloud infrastructure, which will be started into another datacenter in order to recovery from a failure.
+
+   :param broker: the broker to set the VM cloner Function to
+   :param clonerFunction: the VM cloner \ :java:ref:`Function`\  to set
+
+   **See also:** :java:ref:`.addCloudletsCloner(DatacenterBroker,Function)`
+
+availability
+^^^^^^^^^^^^
+
+.. java:method:: public double availability()
+   :outertype: HostFaultInjection
+
+   Gets the Datacenter's availability as a percentage value between 0 to 1, based on VMs' downtime (the times VMs took to be repaired).
+
 getDatacenter
 ^^^^^^^^^^^^^
 
@@ -101,25 +151,77 @@ getLastFailedHost
 
    :return: the last failed Host or \ :java:ref:`Host.NULL`\  if not Host has failed yet.
 
+getMaxTimeToGenerateFailure
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double getMaxTimeToGenerateFailure()
+   :outertype: HostFaultInjection
+
+   Get the max time to generate a failure
+
+getNumberOfDestroyedVms
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public int getNumberOfDestroyedVms()
+   :outertype: HostFaultInjection
+
+   Gets the total number of faults happened for VMs, which means the total number of VMs that were destroyed due to failure in Host PEs.
+
+getNumberOfHostFaults
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public int getNumberOfHostFaults()
+   :outertype: HostFaultInjection
+
+   Gets the total number of faults happened for existing hosts. This isn't the total number of failed hosts because one host may fail multiple times.
+
+getRandomRecoveryTimeForVm
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double getRandomRecoveryTimeForVm()
+   :outertype: HostFaultInjection
+
+   Gets a Pseudo Random Number used to give a recovery time (in seconds) for each VM that was failed.
+
+meanTimeBetweenHostFaultsInMinutes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double meanTimeBetweenHostFaultsInMinutes()
+   :outertype: HostFaultInjection
+
+   Computes the current mean time (in minutes) between Host failures (MTBF). Since Hosts don't actually recover from failures, there aren't recovery time to make easier the computation of MTBF for Host as it is directly computed for VMs.
+
+   :return: the current mean time (in minutes) between Host failures (MTBF) or zero if no failures have happened yet
+
+   **See also:** :java:ref:`.meanTimeBetweenVmFaultsInMinutes()`
+
+meanTimeBetweenVmFaultsInMinutes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double meanTimeBetweenVmFaultsInMinutes()
+   :outertype: HostFaultInjection
+
+   Computes the current mean time (in minutes) between Host failures (MTBF). It uses a straightforward way to compute the MTBF. Since it's stored the VM recovery times, it's possible to use such values to make easier the MTBF computation, different from the Hosts MTBF.
+
+   :return: the current mean time (in minutes) between Host failures (MTBF) or zero if no VM was destroyed due to Host failure
+
+   **See also:** :java:ref:`.meanTimeBetweenHostFaultsInMinutes()`
+
+meanTimeToRepairVmFaultsInMinutes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double meanTimeToRepairVmFaultsInMinutes()
+   :outertype: HostFaultInjection
+
+   Computes the current mean time (in minutes) to repair VM failures (MTTR).
+
+   :return: the current mean time (in minutes) to repair VM failures (MTTR) or zero if no VM was destroyed due to Host failure
+
 processEvent
 ^^^^^^^^^^^^
 
 .. java:method:: @Override public void processEvent(SimEvent ev)
    :outertype: HostFaultInjection
-
-setCloudletsCloner
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public void setCloudletsCloner(Function<Vm, List<Cloudlet>> cloudletsCloner)
-   :outertype: HostFaultInjection
-
-   Sets a \ :java:ref:`Function`\  that creates a clone of all Cloudlets which were running inside a given failed \ :java:ref:`Vm`\ .
-
-   Such a Function is used to re-create and re-submit those Cloudlets to a clone of the failed VM. In this case, all the Cloudlets are recreated from scratch into the cloned VM, re-starting their execution from the beginning. Since a snapshot (clone) of the failed VM will be started into another Host, the Cloudlets Cloner Function will recreated all Cloudlets, simulating the restart of applications into this new VM instance.
-
-   :param cloudletsCloner: the cloudlets cloner \ :java:ref:`Function`\  to set
-
-   **See also:** :java:ref:`.setVmCloner(java.util.function.UnaryOperator)`
 
 setDatacenter
 ^^^^^^^^^^^^^
@@ -131,19 +233,11 @@ setDatacenter
 
    :param datacenter: the datacenter to set
 
-setVmCloner
-^^^^^^^^^^^
+setMaxTimeToGenerateFailure
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public void setVmCloner(UnaryOperator<Vm> vmCloner)
+.. java:method:: public void setMaxTimeToGenerateFailure(double maxTimeToGenerateFailure)
    :outertype: HostFaultInjection
-
-   Sets a \ :java:ref:`UnaryOperator`\  that creates a clone of a \ :java:ref:`Vm`\  when all Host PEs fail or all VM's PEs are deallocated because they have failed.
-
-   The \ :java:ref:`UnaryOperator`\  is a \ :java:ref:`Function`\  that receives a \ :java:ref:`Vm`\  and returns a clone of it. When all PEs of the VM fail, this vmCloner \ :java:ref:`Function`\  is used to create a copy of the VM to be submitted to another Host. It is like a VM snapshot in a real cloud infrastructure, which will be started into another datacenter in order to recovery from a failure.
-
-   :param vmCloner: the VM cloner \ :java:ref:`Function`\  to set
-
-   **See also:** :java:ref:`.setCloudletsCloner(java.util.function.Function)`
 
 shutdownEntity
 ^^^^^^^^^^^^^^

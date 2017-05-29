@@ -15,6 +15,24 @@ Constructors
 CsvTableColumn
 ^^^^^^^^^^^^^^
 
+.. java:constructor:: public CsvTableColumn(String title, String subTitle)
+   :outertype: CsvTableColumn
+
+CsvTableColumn
+^^^^^^^^^^^^^^
+
+.. java:constructor:: public CsvTableColumn(String title)
+   :outertype: CsvTableColumn
+
+CsvTableColumn
+^^^^^^^^^^^^^^
+
+.. java:constructor:: public CsvTableColumn(TableBuilder table, String title, String subTitle)
+   :outertype: CsvTableColumn
+
+CsvTableColumn
+^^^^^^^^^^^^^^
+
 .. java:constructor:: public CsvTableColumn(TableBuilder table, String title)
    :outertype: CsvTableColumn
 
@@ -29,6 +47,6 @@ generateData
 generateHeader
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected String generateHeader(String title)
+.. java:method:: @Override protected String generateHeader(String str)
    :outertype: CsvTableColumn
 

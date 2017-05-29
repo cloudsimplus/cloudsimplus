@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.vms;
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
-import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -304,7 +303,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * @param time the time
      * @return total utilization percentage
      */
-    double getCpuPercentUse(double time);
+    double getCpuPercentUsage(double time);
 
     /**
      * Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this
@@ -312,7 +311,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      *
      * @return total utilization percentage for the current time, in scale from 0 to 1
      */
-    double getCurrentCpuPercentUse();
+    double getCpuPercentUsage();
 
     /**
      * Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the
@@ -320,10 +319,10 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      *
      * @param time the time to get the utilization
      * @return total CPU utilization in MIPS
-     * @see #getCpuPercentUse(double)
+     * @see #getCpuPercentUsage(double)
      *
      */
-    double getTotalUtilizationOfCpuMips(double time);
+    double getTotalCpuMipsUsage(double time);
 
     /**
      * Gets the Virtual Machine Monitor (VMM) that manages the VM.
@@ -351,7 +350,8 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     void setCreated(boolean created);
 
     /**
-     * Checks if the VM is in migration process or not.
+     * Checks if the VM is in migration process or not,
+     * that is, if it is migrating in or out of a Host.
      *
      * @return
      */

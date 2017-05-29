@@ -113,7 +113,7 @@ getUtilizationHistory
 .. java:method:: public List<Double> getUtilizationHistory()
    :outertype: PowerVm
 
-   Gets a \ **read-only**\  CPU utilization percentage history.
+   Gets a \ **read-only**\  CPU utilization percentage history (between [0 and 1], where 1 is 100%).
 
 getUtilizationMad
 ^^^^^^^^^^^^^^^^^

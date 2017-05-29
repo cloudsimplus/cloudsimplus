@@ -54,8 +54,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             return false;
         }
 
-        // if this vm was already created
-        if (getVmHostMap().containsKey(vm)) {
+        if (vm.isCreated()) {
             return false;
         }
 
@@ -65,13 +64,12 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             Map.Entry<Host, Long> entry = getHostWithLessUsedPes(hostsWhereVmCreationFailed);
             Host host = entry.getKey();
             final long hostFreePes = entry.getValue();
-            if (host.vmCreate(vm)) {
-                mapVmToPm(vm, host);
+            if (host.createVm(vm)) {
                 addUsedPes(vm);
                 getHostFreePesMap().put(host, hostFreePes - vm.getNumberOfPes());
                 if(!hostsWhereVmCreationFailed.isEmpty()){
                     Log.printFormattedLine(
-                            "%.2f: %s: %s was successfully allocated to %s", 
+                            "%.2f: %s: %s was successfully allocated to %s",
                              vm.getSimulation().clock(), getClass().getSimpleName(), vm, host);
                 }
                 return true;
@@ -85,11 +83,10 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     @Override
     public boolean allocateHostForVm(Vm vm, Host host) {
-        if (!host.vmCreate(vm)) {
+        if (!host.createVm(vm)) {
             return false;
         }
 
-        mapVmToPm(vm, host);
         final long requiredPes = vm.getNumberOfPes();
         addUsedPes(vm);
         getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
@@ -130,13 +127,13 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
                 .sorted(Comparator.comparingInt(Host::getId))
                 .max(Comparator.comparingLong(h -> map.get(h)))
                 .orElseGet(() -> Host.NULL);
-        
-        return new TreeMap.SimpleEntry<>(host, map.getOrDefault(host, 0L)); 
+
+        return new TreeMap.SimpleEntry<>(host, map.getOrDefault(host, 0L));
     }
 
     @Override
     public void deallocateHostForVm(Vm vm) {
-        final Host host = unmapVmFromPm(vm);
+        final Host host = vm.getHost();
         final long pes = removeUsedPes(vm);
         if (host != Host.NULL) {
             host.destroyVm(vm);

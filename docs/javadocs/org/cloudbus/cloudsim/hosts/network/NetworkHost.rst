@@ -96,6 +96,20 @@ addReceivedNetworkPacket
 
    :param hostPacket: received network packet
 
+createVm
+^^^^^^^^
+
+.. java:method:: @Override public boolean createVm(Vm vm)
+   :outertype: NetworkHost
+
+   {@inheritDoc}
+
+   It also creates and sets a  for each
+   Vm that doesn't have one already.
+
+   :param vm: {@inheritDoc}
+   :return: {@inheritDoc}
+
 getBandwidth
 ^^^^^^^^^^^^
 
@@ -148,18 +162,4 @@ updateProcessing
 
 .. java:method:: @Override public double updateProcessing(double currentTime)
    :outertype: NetworkHost
-
-vmCreate
-^^^^^^^^
-
-.. java:method:: @Override public boolean vmCreate(Vm vm)
-   :outertype: NetworkHost
-
-   {@inheritDoc}
-
-   It also creates and sets a  for each
-   Vm that doesn't have one already.
-
-   :param vm: {@inheritDoc}
-   :return: {@inheritDoc}
 

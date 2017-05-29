@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.hosts.power PowerHostUtilizationHistory
+
 .. java:import:: org.cloudbus.cloudsim.lists PeList
 
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner

@@ -143,7 +143,27 @@ clock
 .. java:method::  double clock()
    :outertype: Simulation
 
-   Gets the current simulation time.
+   Gets the current simulation time in seconds.
+
+   **See also:** :java:ref:`.isRunning()`
+
+clockInHours
+^^^^^^^^^^^^
+
+.. java:method::  double clockInHours()
+   :outertype: Simulation
+
+   Gets the current simulation time in hours.
+
+   **See also:** :java:ref:`.isRunning()`
+
+clockInMinutes
+^^^^^^^^^^^^^^
+
+.. java:method::  double clockInMinutes()
+   :outertype: Simulation
+
+   Gets the current simulation time in minutes.
 
    **See also:** :java:ref:`.isRunning()`
 
