@@ -119,7 +119,7 @@ public class CloudletsTableBuilder {
      * Creates the columns of the table and define how the data for those columns
      * will be got from a Cloudlet.
      */
-    protected final void createTableColumns() {
+    protected void createTableColumns() {
         final String ID = "ID";
         columnsDataFunctions.put(table.addColumn("Cloudlet", ID), c -> c.getId());
         columnsDataFunctions.put(table.addColumn("Status "), c -> c.getStatus().name());

@@ -1108,7 +1108,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public final Datacenter setSchedulingInterval(double schedulingInterval) {
-        this.schedulingInterval = schedulingInterval;
+        this.schedulingInterval = Math.max(schedulingInterval, 0);
         return this;
     }
 
