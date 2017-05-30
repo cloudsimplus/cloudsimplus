@@ -63,12 +63,15 @@ public class CloudletsTableBuilder {
      * @param list the list of Cloudlets that the data will be included into the table to be printed
      */
     public CloudletsTableBuilder(final List<? extends Cloudlet> list){
-        this.setTable(new TextTableBuilder()).setCloudletList(list);
+        Objects.requireNonNull(list);
+        setTable(new TextTableBuilder());
+        setCloudletList(list);
         columnsDataFunctions = new HashMap<>();
         createTableColumns();
     }
 
     public CloudletsTableBuilder setTitle(String title){
+        Objects.requireNonNull(title);
         table.setTitle(title);
         return this;
     }
@@ -83,6 +86,16 @@ public class CloudletsTableBuilder {
 
         cloudletList.forEach(cloudlet -> addDataToRow(cloudlet, table.newRow()));
         table.print();
+    }
+
+    /**
+     * Dynamically adds a column to the end of the table to be built.
+     * @param col the column to add
+     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
+     * @return
+     */
+    public CloudletsTableBuilder addColumn(final TableColumn col, Function<Cloudlet, Object> dataFunction){
+        return addColumn(table.getColumns().size(), col, dataFunction);
     }
 
     /**
@@ -103,20 +116,10 @@ public class CloudletsTableBuilder {
     }
 
     /**
-     * Dynamically adds a column to the end of the table to be built.
-     * @param col the column to add
-     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
-     * @return
-     */
-    public CloudletsTableBuilder addColumn(final TableColumn col, Function<Cloudlet, Object> dataFunction){
-        return addColumn(table.getColumns().size(), col, dataFunction);
-    }
-
-    /**
      * Creates the columns of the table and define how the data for those columns
      * will be got from a Cloudlet.
      */
-    protected void createTableColumns() {
+    protected final void createTableColumns() {
         final String ID = "ID";
         columnsDataFunctions.put(table.addColumn("Cloudlet", ID), c -> c.getId());
         columnsDataFunctions.put(table.addColumn("Status "), c -> c.getStatus().name());
@@ -149,12 +152,20 @@ public class CloudletsTableBuilder {
             .forEach(col -> row.add(columnsDataFunctions.get(col).apply(cloudlet)));
     }
 
+    /**
+     * Sets the {@link TableBuilder} used to build the table with Cloudlet Data.
+     * The default table builder is {@link TextTableBuilder}.
+     * @param table the  {@link TableBuilder} to set
+     * @return
+     */
     public final CloudletsTableBuilder setTable(TableBuilder table) {
+        Objects.requireNonNull(table);
         this.table = table;
         return this;
     }
 
-    protected CloudletsTableBuilder setCloudletList(List<? extends Cloudlet> cloudletList) {
+    protected final CloudletsTableBuilder setCloudletList(List<? extends Cloudlet> cloudletList) {
+        Objects.requireNonNull(cloudletList);
         this.cloudletList = cloudletList;
         return this;
     }
