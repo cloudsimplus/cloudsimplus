@@ -38,10 +38,8 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -56,60 +54,67 @@ import java.util.List;
 
 /**
  * A minimal but organized, structured and re-usable CloudSim Plus example
- * that even shows good coding practices for creating simulation scenarios.
+ * which shows good coding practices for creating simulation scenarios.
+ *
+ * <p>It defines a set of constants that enable a developer
+ * to change the number of Hosts, VMs and Cloudlets to create
+ * and the number of {@link Pe}s for Hosts, VMs and Cloudlets.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public class BasicFirstExample {
     private static final int HOSTS = 2;
-    private static final int HOST_PES = 2;
+    private static final int HOST_PES = 4;
+
     private static final int VMS = 2;
+    private static final int VM_PES = 2;
+
     private static final int CLOUDLETS = 10;
+    private static final int CLOUDLET_PES = 2;
+    private static final int CLOUDLET_LENGTH = 10000;
+
     private final CloudSim simulation;
     private DatacenterBroker broker0;
-    private List<Host> hostList;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
+    private Datacenter datacenter0;
 
     public static void main(String[] args) {
         new BasicFirstExample();
     }
 
     public BasicFirstExample() {
-        hostList = new ArrayList<>(HOSTS);
-        vmList = new ArrayList<>(VMS);
-        cloudletList = new ArrayList<>(CLOUDLETS);
-
         simulation = new CloudSim();
-
-        createDatacenter();
+        datacenter0 = createDatacenter();
 
         //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
         broker0 = new DatacenterBrokerSimple(simulation);
 
-        createVms();
-        createCloudlets();
+        vmList = createVms();
+        cloudletList = createCloudlets();
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
         simulation.start();
 
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
     /**
      * Creates a Datacenter and its Hosts.
      */
-    private void createDatacenter() {
+    private Datacenter createDatacenter() {
+        final List<Host> hostList = new ArrayList<>(HOSTS);
         for(int h = 0; h < HOSTS; h++) {
             Host host = createHost();
             hostList.add(host);
         }
 
         DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        Datacenter dc0 = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        final Datacenter dc = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        return dc;
     }
 
     private Host createHost() {
@@ -134,31 +139,37 @@ public class BasicFirstExample {
     }
 
     /**
-     * Creates a list of VMs for the {@link #broker0}.
+     * Creates a list of VMs.
      */
-    private void createVms() {
+    private List<Vm> createVms() {
+        final List<Vm> list = new ArrayList<>(VMS);
         for (int v = 0; v < VMS; v++) {
             Vm vm =
-                new VmSimple(v, 1000, 1)
+                new VmSimple(v, 1000, VM_PES)
                     .setRam(512).setBw(1000).setSize(10000)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
-            vmList.add(vm);
+            list.add(vm);
         }
+
+        return list;
     }
 
     /**
-     * Creates a list of Cloudlets for the {@link #broker0}.
+     * Creates a list of Cloudlets.
      */
-    private void createCloudlets() {
+    private List<Cloudlet> createCloudlets() {
+        final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
         UtilizationModel utilization = new UtilizationModelFull();
         for (int c = 0; c < CLOUDLETS; c++) {
             Cloudlet cloudlet =
-                new CloudletSimple(c, 10000, 2)
+                new CloudletSimple(c, CLOUDLET_LENGTH, CLOUDLET_PES)
                     .setFileSize(1024)
                     .setOutputSize(1024)
                     .setUtilizationModel(utilization);
-            cloudletList.add(cloudlet);
+            list.add(cloudlet);
         }
+
+        return list;
     }
 }

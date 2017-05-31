@@ -38,9 +38,10 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A simple example showing how to create a Datacenter with 1 host and run 2
- * cloudlets on it. The cloudlets run in VMs with the same MIPS requirements.
- * The cloudlets will take the same time to complete the execution.
+ * A simple example showing how to create a Datacenter with 1 host.
+ * It creates 2 VMs and run 1 cloudlet in each one.
+ * The cloudlets run in VMs with the same MIPS requirements.
+ * They will take the same time to complete the execution.
  */
 public class CloudSimExample2 {
     private List<Cloudlet> cloudletList;

@@ -37,8 +37,9 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudsimplus.builders.tables.TextTableBuilder;
 
 /**
- * A simple example showing how to create 2 datacenters with 1 host each and run
- * cloudlets of 2 users on them.
+ * A simple example showing how to create 2 datacenters with 1 host each one.
+ * It creates 2 VMs, each one belonging to a different customer.
+ * Then it runs 1 cloudlet in each customer's VM.
  */
 public class CloudSimExample5 {
     private List<Cloudlet> cloudletList1;
@@ -144,12 +145,8 @@ public class CloudSimExample5 {
         List<Cloudlet> newList1 = broker1.getCloudletsFinishedList();
         List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
 
-        new CloudletsTableBuilder(newList1)
-                .setTable(new TextTableBuilder(broker1.getName()))
-                .build();
-        new CloudletsTableBuilder(newList2)
-                .setTable(new TextTableBuilder(broker2.getName()))
-                .build();
+        new CloudletsTableBuilder(newList1).setTitle(broker1.getName()).build();
+        new CloudletsTableBuilder(newList2).setTitle(broker2.getName()).build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 

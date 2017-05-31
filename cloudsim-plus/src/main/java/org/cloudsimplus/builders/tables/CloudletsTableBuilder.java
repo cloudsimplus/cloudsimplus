@@ -67,7 +67,6 @@ public class CloudletsTableBuilder {
         setTable(new TextTableBuilder());
         setCloudletList(list);
         columnsDataFunctions = new HashMap<>();
-        createTableColumns();
     }
 
     public CloudletsTableBuilder setTitle(String title){
@@ -84,6 +83,7 @@ public class CloudletsTableBuilder {
             table.setTitle("SIMULATION RESULTS");
         }
 
+        createTableColumns();
         cloudletList.forEach(cloudlet -> addDataToRow(cloudlet, table.newRow()));
         table.print();
     }

@@ -34,11 +34,9 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * An example creating a simulation with an greater number of VMs and Cloudlets.
+ * An example creating a simulation with a higher number of VMs and Cloudlets.
  */
 public class CloudSimExample6 {
     private List<Cloudlet> cloudletList;
@@ -73,8 +71,8 @@ public class CloudSimExample6 {
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
         //Fourth step: Create VMs and Cloudlets and send them to broker
-        vmlist = createVm(broker, 20); //creating 20 vms
-        cloudletList = createCloudlet(broker, 40); // creating 40 cloudlets
+        vmlist = createVms(broker, 20); //creating 20 vms
+        cloudletList = createCloudlets(broker, 40); // creating 40 cloudlets
 
         broker.submitVmList(vmlist);
         broker.submitCloudletList(cloudletList);
@@ -89,7 +87,7 @@ public class CloudSimExample6 {
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
-    private List<Vm> createVm(DatacenterBroker broker, int vms) {
+    private List<Vm> createVms(DatacenterBroker broker, int vms) {
         //Creates a container to store VMs. This list is passed to the broker later
         List<Vm> list = new ArrayList<>(vms);
 
@@ -115,8 +113,7 @@ public class CloudSimExample6 {
         return list;
     }
 
-    private List<Cloudlet> createCloudlet(DatacenterBroker broker, int cloudlets) {
-        // Creates a container to store Cloudlets
+    private List<Cloudlet> createCloudlets(DatacenterBroker broker, int cloudlets) {
         List<Cloudlet> list = new ArrayList<>(cloudlets);
 
         //cloudlet parameters
