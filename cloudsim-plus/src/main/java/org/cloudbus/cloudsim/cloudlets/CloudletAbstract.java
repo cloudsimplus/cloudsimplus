@@ -52,7 +52,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     /**
      * @see #getLength()
      */
-    private long cloudletLength;
+    private long length;
     /**
      * @see #getNumberOfPes()
      */
@@ -141,10 +141,10 @@ public abstract class CloudletAbstract implements Cloudlet {
     /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
      *  @param cloudletId     id of the Cloudlet
-     * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      * @param pesNumber      number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final int cloudletId, final long cloudletLength, final long pesNumber) {
+    public CloudletAbstract(final int cloudletId, final long length, final long pesNumber) {
         /*
         Normally, a Cloudlet is only executed on a Datacenter without being
         migrated to others. Hence, to reduce memory consumption, set the
@@ -169,7 +169,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         setFinishTime(NOT_ASSIGNED);    // meaning this Cloudlet hasn't finished yet
         setVm(Vm.NULL);
 
-        this.setLength(cloudletLength);
+        this.setLength(length);
         this.setFileSize(1);
         this.setOutputSize(1);
 
@@ -188,11 +188,11 @@ public abstract class CloudletAbstract implements Cloudlet {
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
-     * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      * @param pesNumber      number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final long cloudletLength, final int pesNumber) {
-        this(-1, cloudletLength, pesNumber);
+    public CloudletAbstract(final long length, final int pesNumber) {
+        this(-1, length, pesNumber);
     }
 
     protected int getLastExecutedDatacenterIdx() {
@@ -247,7 +247,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             throw new IllegalArgumentException("Cloudlet length has to be greater than zero.");
         }
 
-        this.cloudletLength = length;
+        this.length = length;
         return this;
     }
 
@@ -440,12 +440,12 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public long getLength() {
-        return cloudletLength;
+        return length;
     }
 
     @Override
     public long getTotalLength() {
-        return getLength() * getNumberOfPes();
+        return length * numberOfPes;
     }
 
     @Override
@@ -474,7 +474,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             return NOT_ASSIGNED;
         }
 
-        return getFinishTime() - getExecStartTime();
+        return finishTime - execStartTime;
     }
 
     @Override
@@ -610,10 +610,10 @@ public abstract class CloudletAbstract implements Cloudlet {
         double totalCost = getTotalCpuCostForAllDatacenters();
 
         // ... plus input data transfer cost...
-        totalCost += getAccumulatedBwCost();
+        totalCost += accumulatedBwCost;
 
         // ... plus output cost
-        totalCost += getCostPerBw() * getOutputSize();
+        totalCost += costPerBw * outputSize;
         return totalCost;
     }
 
@@ -652,7 +652,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             return false;
         }
 
-        getRequiredFiles().add(fileName);
+        requiredFiles.add(fileName);
         return true;
     }
 
@@ -668,10 +668,10 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public boolean deleteRequiredFile(final String filename) {
         for (int i = 0; i < getRequiredFiles().size(); i++) {
-            final String temp = getRequiredFiles().get(i);
+            final String temp = requiredFiles.get(i);
 
             if (temp.equals(filename)) {
-                getRequiredFiles().remove(i);
+                requiredFiles.remove(i);
                 return true;
             }
         }
@@ -862,7 +862,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         setLastExecutedDatacenterIdx(getLastExecutedDatacenterIdx() + 1);
 
         this.setCostPerBw(datacenter.getCharacteristics().getCostPerBw());
-        setAccumulatedBwCost(this.costPerBw * getFileSize());
+        setAccumulatedBwCost(this.costPerBw * fileSize);
     }
 
     @Override

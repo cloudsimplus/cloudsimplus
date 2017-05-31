@@ -292,19 +292,19 @@ public class HostSimple implements Host {
             if (!vmList.contains(vm)) {
                 vmList.add(vm);
             }
-            getRamProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedRam());
-            getBwProvisioner().allocateResourceForVm(vm, vm.getCurrentRequestedBw());
-            getVmScheduler().allocatePesForVm(vm, vm.getCurrentRequestedMips());
+            ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
+            bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
+            vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
             storage.allocateResource(vm.getStorage());
         }
     }
 
     @Override
     public boolean isSuitableForVm(Vm vm) {
-        return active && (getVmScheduler().getPeCapacity() >= vm.getCurrentRequestedMaxMips()
-                && getVmScheduler().getAvailableMips() >= vm.getCurrentRequestedTotalMips()
-                && getRamProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedRam())
-                && getBwProvisioner().isSuitableForVm(vm, vm.getCurrentRequestedBw()));
+        return active && (vmScheduler.getPeCapacity() >= vm.getCurrentRequestedMaxMips()
+                && vmScheduler.getAvailableMips() >= vm.getCurrentRequestedTotalMips()
+                && ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam())
+                && bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()));
     }
 
     @Override
@@ -343,9 +343,9 @@ public class HostSimple implements Host {
      */
     protected void deallocateResourcesOfVm(Vm vm) {
         vm.setCreated(false);
-        getRamProvisioner().deallocateResourceForVm(vm);
-        getBwProvisioner().deallocateResourceForVm(vm);
-        getVmScheduler().deallocatePesFromVm(vm);
+        ramProvisioner.deallocateResourceForVm(vm);
+        bwProvisioner.deallocateResourceForVm(vm);
+        vmScheduler.deallocatePesFromVm(vm);
         storage.deallocateResource(vm.getStorage());
     }
 
@@ -364,9 +364,9 @@ public class HostSimple implements Host {
      * Deallocate all resources that all VMs were using.
      */
     protected void deallocateResourcesOfAllVms() {
-        getRamProvisioner().deallocateResourceForAllVms();
-        getBwProvisioner().deallocateResourceForAllVms();
-        getVmScheduler().deallocatePesForAllVms();
+        ramProvisioner.deallocateResourceForAllVms();
+        bwProvisioner.deallocateResourceForAllVms();
+        vmScheduler.deallocatePesForAllVms();
     }
 
     @Override
@@ -385,7 +385,7 @@ public class HostSimple implements Host {
      */
     @Override
     public long getNumberOfPes() {
-        return getPeList().size();
+        return peList.size();
     }
 
     @Override
@@ -395,17 +395,17 @@ public class HostSimple implements Host {
 
     @Override
     public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
-        return getVmScheduler().allocatePesForVm(vm, mipsShare);
+        return vmScheduler.allocatePesForVm(vm, mipsShare);
     }
 
     @Override
     public void deallocatePesForVm(Vm vm) {
-        getVmScheduler().deallocatePesFromVm(vm);
+        vmScheduler.deallocatePesFromVm(vm);
     }
 
     @Override
     public List<Double> getAllocatedMipsForVm(Vm vm) {
-        return getVmScheduler().getAllocatedMips(vm);
+        return vmScheduler.getAllocatedMips(vm);
     }
 
     @Override
@@ -548,13 +548,13 @@ public class HostSimple implements Host {
     @Override
     public final boolean setFailed(boolean failed) {
         this.failed = failed;
-        PeList.setStatusFailed(getPeList(), getId(), failed);
+        PeList.setStatusFailed(peList, getId(), failed);
         return true;
     }
 
     @Override
     public boolean setPeStatus(int peId, Pe.Status status) {
-        return PeList.setPeStatus(getPeList(), peId, status);
+        return PeList.setPeStatus(peList, peId, status);
     }
 
     @Override
@@ -636,17 +636,17 @@ public class HostSimple implements Host {
 
     @Override
     public long getAvailableStorage() {
-        return getStorage().getAvailableResource();
+        return storage.getAvailableResource();
     }
 
     @Override
     public long getNumberOfWorkingPes() {
-        return getPeList().size() - getNumberOfFailedPes();
+        return peList.size() - getNumberOfFailedPes();
     }
 
     @Override
     public long getNumberOfFailedPes() {
-        return getPeList().stream()
+        return peList.stream()
                 .filter(Pe::isFailed)
                 .count();
     }
@@ -741,17 +741,17 @@ public class HostSimple implements Host {
     @Override
     public double getUtilizationOfCpuMips() {
         return vmList.stream()
-                .mapToDouble(vm -> getVmScheduler().getTotalAllocatedMipsForVm(vm))
+                .mapToDouble(vm -> vmScheduler.getTotalAllocatedMipsForVm(vm))
                 .sum();
     }
 
     @Override
     public long getUtilizationOfRam() {
-        return getRamProvisioner().getTotalAllocatedResource();
+        return ramProvisioner.getTotalAllocatedResource();
     }
 
     @Override
     public long getUtilizationOfBw() {
-        return getBwProvisioner().getTotalAllocatedResource();
+        return bwProvisioner.getTotalAllocatedResource();
     }
 }

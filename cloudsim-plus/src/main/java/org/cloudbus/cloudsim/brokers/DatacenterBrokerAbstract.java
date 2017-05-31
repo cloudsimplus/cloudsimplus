@@ -295,7 +295,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
         setSimulationForCloudletUtilizationModels(list);
-        getCloudletsWaitingList().addAll(list);
+        cloudletsWaitingList.addAll(list);
 
         if (!isStarted()) {
             return;
@@ -313,7 +313,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         } else
             println(String.format(
                     " Waiting creation of %d VMs to send Cloudlets creation request to Datacenter.",
-                    getVmsWaitingList().size()));
+                    vmsWaitingList.size()));
     }
 
     private void sortCloudletsIfComparatorIsSet(List<? extends Cloudlet> list) {
@@ -414,7 +414,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         setDatacenterList((Set<Datacenter>) ev.getData());
         println(String.format(
             "%.2f: %s: List of Datacenters received with %d datacenters(s).",
-            getSimulation().clock(), getName(), getDatacenterList().size()));
+            getSimulation().clock(), getName(), datacenterList.size()));
         requestDatacenterToCreateWaitingVms();
     }
 
@@ -520,9 +520,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *                   the Vm succeeded
      */
     protected void processSuccessVmCreationInDatacenter(Vm vm, Datacenter datacenter) {
-        getVmsToDatacentersMap().put(vm, datacenter);
+        vmsToDatacentersMap.put(vm, datacenter);
         vmsWaitingList.remove(vm);
-        getVmsCreatedList().add(vm);
+        vmsCreatedList.add(vm);
         println(String.format(
             "%.2f: %s: %s has been created in %s.",
             getSimulation().clock(), getName(), vm, vm.getHost()));
@@ -572,7 +572,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public boolean hasMoreCloudletsToBeExecuted() {
-        return !getCloudletsWaitingList().isEmpty() && cloudletsCreated == 0;
+        return !cloudletsWaitingList.isEmpty() && cloudletsCreated == 0;
     }
 
     /**
@@ -627,7 +627,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 requestedVms++;
             }
         }
-        getDatacenterRequestedList().add(datacenter);
+        datacenterRequestedList.add(datacenter);
         this.vmCreationRequests += requestedVms;
     }
 
@@ -674,7 +674,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             successfullySubmitted.add(cloudlet);
         }
         // remove created cloudlets from waiting list
-        getCloudletsWaitingList().removeAll(successfullySubmitted);
+        cloudletsWaitingList.removeAll(successfullySubmitted);
     }
 
     /**
@@ -688,7 +688,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             println(String.format("%.2f: %s: Destroying %s", getSimulation().clock(), getName(), vm));
             sendNow(getVmDatacenter(vm).getId(), CloudSimTags.VM_DESTROY, vm);
         }
-        getVmsCreatedList().clear();
+        vmsCreatedList.clear();
     }
 
     /**

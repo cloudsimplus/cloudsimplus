@@ -128,7 +128,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private void assignHostsToCurrentDatacenter() {
-        getCharacteristics().getHostList().forEach(host -> host.setDatacenter(this));
+        characteristics.getHostList().forEach(host -> host.setDatacenter(this));
     }
 
     @Override
@@ -236,7 +236,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return false;
         }
 
-        return getVmAllocationPolicy().scaleVmVertically((VerticalVmScaling)ev.getData());
+        return vmAllocationPolicy.scaleVmVertically((VerticalVmScaling)ev.getData());
     }
 
     private int processCloudletEvents(SimEvent ev) {
@@ -414,7 +414,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     protected boolean processVmCreate(SimEvent ev, boolean ackRequested) {
         final Vm vm = (Vm) ev.getData();
 
-        final boolean hostAllocatedForVm = getVmAllocationPolicy().allocateHostForVm(vm);
+        final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm);
 
         if (ackRequested) {
             send(vm.getBroker().getId(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
@@ -446,7 +446,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected void processVmDestroy(SimEvent ev, boolean ack) {
         Vm vm = (Vm) ev.getData();
-        getVmAllocationPolicy().deallocateHostForVm(vm);
+        vmAllocationPolicy.deallocateHostForVm(vm);
 
         if (ack) {
             sendNow(vm.getBroker().getId(), CloudSimTags.VM_DESTROY_ACK, vm);
@@ -770,7 +770,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @pre $none
      * @post $none
      */
-    protected void processCloudletPause(Cloudlet cloudlet, boolean ack) {
+    protected void processCloudletPause(Cloudlet cloudlet, final boolean ack) {
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet.getId());
 
         if (ack) {
@@ -826,7 +826,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
         return getSimulation().clock() < 0.111 ||
-               getSimulation().clock() >= getLastProcessTime() + getSimulation().getMinTimeBetweenEvents();
+               getSimulation().clock() >= lastProcessTime + getSimulation().getMinTimeBetweenEvents();
     }
 
     /**
@@ -864,7 +864,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void checkCloudletsCompletionForAllHosts() {
-        List<? extends Host> hosts = getVmAllocationPolicy().getHostList();
+        List<? extends Host> hosts = vmAllocationPolicy.getHostList();
         hosts.forEach(this::checkCloudletsCompletionForGivenHost);
     }
 
@@ -942,7 +942,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return false;
         }
 
-        return getStorageList().stream().anyMatch(storage -> storage.contains(fileName));
+        return storageList.stream().anyMatch(storage -> storage.contains(fileName));
     }
 
     /**
