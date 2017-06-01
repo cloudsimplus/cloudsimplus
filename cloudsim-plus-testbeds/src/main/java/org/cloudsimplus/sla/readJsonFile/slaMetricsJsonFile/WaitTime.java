@@ -26,76 +26,82 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.readJsonFile;
+package org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile;
+
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaMetric;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
- * This class takes the cpu utilization metric threshold in the sla contract.
- * 
+ * This class takes the wait time metric threshold in the sla contract
+ *
  * @author raysaoliveira
  */
-public class CpuUtilization {
+public class WaitTime {
 
-    private double minValueCpuUtilization;
-    private double maxValueCpuUtilization;
+    private double minValueWaitTime;
+    private double maxValueWaitTime;
     private SlaReader reader;
 
-    public CpuUtilization(SlaReader reader) {
+
+    public WaitTime(SlaReader reader) {
         this.reader = reader;
     }
 
-    public void checkCpuUtilizationSlaContract() throws FileNotFoundException {
+    public void checkSlaViolations() throws FileNotFoundException {
         List<SlaMetric> metrics = reader.getContract().getMetrics();
         metrics.stream()
-                .filter(m -> m.isCpuUtilization())
+                .filter(m -> m.isWaitTime())
                 .findFirst()
-                .ifPresent(this::cpuUtilizationThreshold);
+                .ifPresent(this::waitTimeThreshold);
     }
 
-    private void cpuUtilizationThreshold(SlaMetric metric) {
+    private void waitTimeThreshold(SlaMetric metric) {
         double minValue = metric.getDimensions().stream()
                 .filter(d -> d.isValueMin())
                 .map(d -> d.getValue())
                 .findFirst().orElse(Double.MIN_VALUE);
 
-        double maxValue
-                = metric.getDimensions().stream()
-                .filter(d -> d.isValueMax())
-                .map(d -> d.getValue())
-                .findFirst().orElse(Double.MAX_VALUE);
+        double maxValue =
+                metric.getDimensions().stream()
+                    .filter(d -> d.isValueMax())
+                    .map(d -> d.getValue())
+                    .findFirst().orElse(Double.MAX_VALUE);
 
-        minValueCpuUtilization = minValue / 100;
-        maxValueCpuUtilization = maxValue / 100;
+        minValueWaitTime = minValue;
+        maxValueWaitTime = maxValue;
+    }
+
+
+    /**
+     * @return the minValueWaitTime
+     */
+    public double getMinValueWaitTime() {
+        return minValueWaitTime;
     }
 
     /**
-     * @return the minValueCpuUtilization
+     * @param minValueWaitTime the minValueWaitTime to set
      */
-    public double getMinValueCpuUtilization() {
-        return minValueCpuUtilization;
+    public void setMinValueWaitTime(double minValueWaitTime) {
+        this.minValueWaitTime = minValueWaitTime;
     }
 
     /**
-     * @param minValueCpuUtilization the minValueCpuUtilization to set
+     * @return the maxValueWaitTime
      */
-    public void setMinValueCpuUtilization(double minValueCpuUtilization) {
-        this.minValueCpuUtilization = minValueCpuUtilization;
+    public double getMaxValueWaitTime() {
+        return maxValueWaitTime;
     }
 
     /**
-     * @return the maxValueCpuUtilization
+     * @param maxValueWaitTime the maxValueWaitTime to set
      */
-    public double getMaxValueCpuUtilization() {
-        return maxValueCpuUtilization;
+    public void setMaxValueWaitTime(double maxValueWaitTime) {
+        this.maxValueWaitTime = maxValueWaitTime;
     }
 
-    /**
-     * @param maxValueCpuUtilization the maxValueCpuUtilization to set
-     */
-    public void setMaxValueCpuUtilization(double maxValueCpuUtilization) {
-        this.maxValueCpuUtilization = maxValueCpuUtilization;
-    }
 
 }

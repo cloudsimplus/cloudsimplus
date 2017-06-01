@@ -26,79 +26,79 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.readJsonFile;
+package org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile;
+
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaMetric;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
 
 import java.io.FileNotFoundException;
 import java.util.List;
 
 /**
- * This class takes the wait time metric threshold in the sla contract
- * 
+ * This class takes the TaskTimeCompletion metric threshold in the sla contract
+ *
  * @author raysaoliveira
  */
-public class WaitTime {
-    
-    private double minValueWaitTime;
-    private double maxValueWaitTime;
+public class TaskTimeCompletion {
     private SlaReader reader;
-    
-    
-    public WaitTime(SlaReader reader) {
+    private double minValueTaskTimeCompletion;
+    private double maxValueTaskTimeCompletion;
+
+    public TaskTimeCompletion(SlaReader reader) {
         this.reader = reader;
     }
 
-    public void checkSlaViolations() throws FileNotFoundException {
+    public void checkTaskTimeCompletionSlaContract() throws FileNotFoundException {
         List<SlaMetric> metrics = reader.getContract().getMetrics();
         metrics.stream()
-                .filter(m -> m.isWaitTime())
+                .filter(m -> m.isTaskTimeCompletion())
                 .findFirst()
-                .ifPresent(this::waitTimeThreshold);
+                .ifPresent(this::taskTimeCompletionThreshold);
+
     }
 
-    private void waitTimeThreshold(SlaMetric metric) {
-        double minValue = metric.getDimensions().stream()
-                .filter(d -> d.isValueMin())
-                .map(d -> d.getValue())
-                .findFirst().orElse(Double.MIN_VALUE);
-
+    private void taskTimeCompletionThreshold(SlaMetric metric) {
+        double minValue =
+                metric.getDimensions().stream()
+                    .filter(d -> d.isValueMin())
+                    .map(d -> d.getValue())
+                    .findFirst().orElse(Double.MIN_VALUE);
         double maxValue =
                 metric.getDimensions().stream()
                     .filter(d -> d.isValueMax())
                     .map(d -> d.getValue())
                     .findFirst().orElse(Double.MAX_VALUE);
-        
-        minValueWaitTime = minValue;
-        maxValueWaitTime = maxValue;
-    }
 
-    
-    /**
-     * @return the minValueWaitTime
-     */
-    public double getMinValueWaitTime() {
-        return minValueWaitTime;
+        minValueTaskTimeCompletion = minValue;
+        maxValueTaskTimeCompletion = maxValue;
     }
 
     /**
-     * @param minValueWaitTime the minValueWaitTime to set
+     * @return the minValueTaskTimeCompletion
      */
-    public void setMinValueWaitTime(double minValueWaitTime) {
-        this.minValueWaitTime = minValueWaitTime;
+    public double getMinValueTaskTimeCompletion() {
+        return minValueTaskTimeCompletion;
     }
 
     /**
-     * @return the maxValueWaitTime
+     * @param minValueTaskTimeCompletion the minValueTaskTimeCompletion to set
      */
-    public double getMaxValueWaitTime() {
-        return maxValueWaitTime;
+    public void setMinValueTaskTimeCompletion(double minValueTaskTimeCompletion) {
+        this.minValueTaskTimeCompletion = minValueTaskTimeCompletion;
     }
 
     /**
-     * @param maxValueWaitTime the maxValueWaitTime to set
+     * @return the maxValueTaskTimeCompletion
      */
-    public void setMaxValueWaitTime(double maxValueWaitTime) {
-        this.maxValueWaitTime = maxValueWaitTime;
+    public double getMaxValueTaskTimeCompletion() {
+        return maxValueTaskTimeCompletion;
     }
-    
-    
+
+    /**
+     * @param maxValueTaskTimeCompletion the maxValueTaskTimeCompletion to set
+     */
+    public void setMaxValueTaskTimeCompletion(double maxValueTaskTimeCompletion) {
+        this.maxValueTaskTimeCompletion = maxValueTaskTimeCompletion;
+    }
+
 }

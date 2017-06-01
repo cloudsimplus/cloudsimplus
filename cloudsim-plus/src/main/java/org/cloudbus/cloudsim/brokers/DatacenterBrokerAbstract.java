@@ -873,4 +873,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.onVmsCreatedListeners.put(listener, oneTimeListener);
         return this;
     }
+
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

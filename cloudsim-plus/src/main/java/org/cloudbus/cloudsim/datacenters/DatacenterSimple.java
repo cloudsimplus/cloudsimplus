@@ -446,13 +446,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected void processVmDestroy(SimEvent ev, boolean ack) {
         Vm vm = (Vm) ev.getData();
-        getVmAllocationPolicy().deallocateHostForVm(vm);
+        final int cloudlets = vm.getCloudletScheduler().getCloudletList().size();
+        vmAllocationPolicy.deallocateHostForVm(vm);
 
         if (ack) {
             sendNow(vm.getBroker().getId(), CloudSimTags.VM_DESTROY_ACK, vm);
         }
-        Log.printFormatted("%.2f: %s: %s destroyed on %s\n",
-                getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost());
+
+        final String msg = cloudlets > 0 ?
+            String.format("It had a total of %d cloudlets (running + waiting).", cloudlets) :
+            "It had no running or waiting cloudlets.";
+        Log.printFormatted("%.2f: %s: %s destroyed on %s. %s\n",
+                getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), msg);
     }
 
     /**

@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.sla.readJsonFile;
+package org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile;
 
 import com.google.gson.Gson;
 import java.io.FileNotFoundException;
@@ -31,19 +31,19 @@ import org.cloudsimplus.migration.VmMigrationWhenCpuMetricIsViolatedExample;
 
 /**
  * This class read the sla agreements in json format.
- * 
- * The sla agreements is in the {@link SlaMetricDimension}. This class 
- * contains the name of the metric, the minimum and maximum 
- * acceptable value, and the metric unit. 
- * The minimum and maximum values will be used to check 
+ *
+ * The sla agreements is in the {@link SlaMetricDimension}. This class
+ * contains the name of the metric, the minimum and maximum
+ * acceptable value, and the metric unit.
+ * The minimum and maximum values will be used to check
  * the violation of the metric. If the simulation metric is
  * not within these limits, it is violated and actions taken.
- * 
+ *
  *
  * @author raysaoliveira
  */
 public class SlaReader {
-    
+
     private final SlaContract contract;
 
 
@@ -52,14 +52,14 @@ public class SlaReader {
         this.contract = gson.fromJson(
                 new FileReader(slaFileName), SlaContract.class);
     }
-    
+
     public static void main(String[] args) throws FileNotFoundException {
         final String file = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
         SlaReader reader = new SlaReader(file);
         for(SlaMetric m: reader.getContract().getMetrics()){
             System.out.println(m);
         }
-        
+
         if(reader.getContract().getMetrics().isEmpty()){
             System.out.println("No metrics found");
         }
@@ -71,7 +71,7 @@ public class SlaReader {
     public SlaContract getContract() {
         return contract;
     }
-    
+
 
 
 }

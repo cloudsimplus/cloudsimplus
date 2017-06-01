@@ -26,21 +26,21 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.readJsonFile;
+package org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile;
 
 /**
  * Represents the values for a specific metrics of a SLA contract.
- * 
- * Each dimension contains the name of the metric, the minimum and maximum 
- * acceptable value, and the metric unit. 
+ *
+ * Each dimension contains the name of the metric, the minimum and maximum
+ * acceptable value, and the metric unit.
  * See: <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>
- * 
+ *
  * @author raysaoliveira
  */
 public final class SlaMetricDimension {
     public static final String VALUE_MAX_NAME="valueMax";
     public static final String VALUE_MIN_NAME="valueMin";
-    
+
     private String name;
     private double value;
 
@@ -74,11 +74,11 @@ public final class SlaMetricDimension {
         }
         this.value = value;
     }
-    
+
     /**
      * Checks if this is a max value dimension.
      *
-     * @return 
+     * @return
      */
     public boolean isValueMax(){
         return this.name.trim().equals(VALUE_MAX_NAME);
@@ -87,7 +87,7 @@ public final class SlaMetricDimension {
     /**
      * Checks if this is a min value dimension.
      *
-     * @return 
+     * @return
      */
     public boolean isValueMin(){
         return this.name.trim().equals(VALUE_MIN_NAME);
@@ -97,8 +97,8 @@ public final class SlaMetricDimension {
     public String toString() {
         return String.format("Dimension{name = %s, value = %.2f}", name, value);
     }
-    
-    
-    
-    
-}   
+
+
+
+
+}

@@ -66,11 +66,6 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
     private List<Double> ratioOfVmPesToRequiredCloudletPesList;
 
     /**
-     * Average of the cost total
-     */
-    private List<Double> averageTotalCostSimulation;
-
-    /**
      * Indicates if each experiment will output execution logs or not.
      */
     private final boolean experimentVerbose = false;
@@ -94,8 +89,6 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
         cloudletTaskTimeCompletion = new ArrayList<>();
         percentageOfCloudletsMeetingTaskTimeCompletion = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
-        averageTotalCostSimulation = new ArrayList<>();
-
     }
 
     @Override
@@ -121,7 +114,6 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
         percentageOfCloudletsMeetingTaskTimeCompletion.add(
                 exp.getPercentageOfCloudletsMeetingTaskTimeCompletion());
         ratioOfVmPesToRequiredCloudletPesList.add(exp.getRatioOfExistingVmPesToRequiredCloudletPes());
-        averageTotalCostSimulation.add(exp.getTotalCostPrice());
     }
 
     @Override
@@ -134,7 +126,6 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
         map.put("Cloudlet Task Time Completion", cloudletTaskTimeCompletion);
         map.put("Percentage Of Cloudlets Meeting the Task Time Completion", percentageOfCloudletsMeetingTaskTimeCompletion);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
-        map.put("Average of Total Cost of simulation", averageTotalCostSimulation);
         return map;
     }
 

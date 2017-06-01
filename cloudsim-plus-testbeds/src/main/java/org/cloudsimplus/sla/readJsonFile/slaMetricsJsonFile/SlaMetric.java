@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.readJsonFile;
+package org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile;
 
 import java.util.List;
 
@@ -40,9 +40,10 @@ import java.util.List;
  */
 public class SlaMetric {
 
-    public static final String TASK_TIME_COMPLETION_NAME = "TaskTimeCompletion";
-    public static final String CPU_UTILIZATION_NAME = "CpuUtilization";
-    public static final String WAIT_TIME_NAME = "WaitTime";
+    private static final String TASK_TIME_COMPLETION_NAME = "TaskTimeCompletion";
+    private static final String CPU_UTILIZATION_NAME = "CpuUtilization";
+    private static final String WAIT_TIME_NAME = "WaitTime";
+    private static final String AVAILABILITY = "Availability";
 
     private List<SlaMetricDimension> dimensions;
     private String metricName;
@@ -100,6 +101,15 @@ public class SlaMetric {
      */
     public boolean isWaitTime() {
         return this.metricName.trim().equals(WAIT_TIME_NAME);
+    }
+
+    /**
+     * Checks if this is a availability metric.
+     *
+     * @return
+     */
+    public boolean isAvailability() {
+        return this.metricName.trim().equals(AVAILABILITY);
     }
 
     @Override

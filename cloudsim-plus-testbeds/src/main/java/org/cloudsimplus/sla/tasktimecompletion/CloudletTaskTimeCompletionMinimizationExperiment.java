@@ -62,15 +62,14 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.sla.VmCost;
-import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.TaskTimeCompletion;
-import org.cloudsimplus.sla.readJsonFile.SlaReader;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.TaskTimeCompletion;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLETS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLET_LENGTHS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VM_PES;
 
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
@@ -129,7 +128,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
             rt.checkTaskTimeCompletionSlaContract();
             taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
 
-            CpuUtilization cpu = new CpuUtilization(slaReader);
+            Availability.CpuUtilization cpu = new Availability.CpuUtilization(slaReader);
             cpu.checkCpuUtilizationSlaContract();
             cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 
@@ -392,39 +391,6 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     }
 
     /**
-     * Calculates the cost price of resources (processing, bw, memory, storage)
-     * of each or all of the Datacenter VMs()
-     */
-    double getTotalCostPrice() {
-        VmCost vmCost;
-        double totalCost = 0;
-        for (Vm vm : vmList) {
-            if (vm.getCloudletScheduler().hasFinishedCloudlets()) {
-                vmCost = new VmCost(vm);
-                totalCost += vmCost.getTotalCost();
-            } else {
-                Log.printFormattedLine(
-                        "\tVm %d didn't execute any Cloudlet.", vm.getId());
-            }
-        }
-        return totalCost;
-    }
-
-    /**
-     * Shows the wait time of cloudlets
-     *
-     * @param cloudlet list of cloudlets
-     */
-    public void waitTimeAverage(List<Cloudlet> cloudlet) {
-        double waitTime = 0, quant = 0;
-        for (Cloudlet cloudlets : cloudlet) {
-            waitTime += cloudlets.getWaitingTime();
-            quant++;
-        }
-        System.out.println("\n# The wait time is: " + waitTime / quant);
-    }
-
-    /**
      * A main method just for test purposes.
      *
      * @param args
@@ -439,7 +405,5 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
         exp.run();
         exp.getCloudletsTaskTimeCompletionAverage();
         exp.getPercentageOfCloudletsMeetingTaskTimeCompletion();
-        double totalCost = exp.getTotalCostPrice();
-        exp.waitTimeAverage(exp.getCloudletList());
     }
 }

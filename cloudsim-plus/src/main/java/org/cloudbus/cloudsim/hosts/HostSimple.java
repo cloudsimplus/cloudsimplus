@@ -343,9 +343,9 @@ public class HostSimple implements Host {
      */
     protected void deallocateResourcesOfVm(Vm vm) {
         vm.setCreated(false);
-        getRamProvisioner().deallocateResourceForVm(vm);
-        getBwProvisioner().deallocateResourceForVm(vm);
-        getVmScheduler().deallocatePesFromVm(vm);
+        ramProvisioner.deallocateResourceForVm(vm);
+        bwProvisioner.deallocateResourceForVm(vm);
+        vmScheduler.deallocatePesFromVm(vm);
         storage.deallocateResource(vm.getStorage());
     }
 

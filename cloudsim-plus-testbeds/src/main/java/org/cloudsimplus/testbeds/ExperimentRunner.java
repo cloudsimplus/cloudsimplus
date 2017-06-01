@@ -52,9 +52,6 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      */
     private long baseSeed;
 
-    /**
-     * @see #getSeeds()
-     */
     private List<Long> seeds;
     /**
      * @see #getSimulationRuns()
@@ -132,7 +129,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * implemented by child classes.
      */
     private void setupInternal() {
-        if (isApplyBatchMeansMethod()) {
+        if (isApplyBatchMeansMethod() || isApplyAntitheticVariatesTechnique()) {
             setSimulationRunsAndBatchesToEvenNumber();
         }
 

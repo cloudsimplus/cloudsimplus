@@ -1,0 +1,48 @@
+  {
+    "instance": [
+      {
+        "instanceName": "t2.nano",
+        "vCPU":1,
+        "memoryInMB":512,
+        "pricePerHour":0.0082
+      },
+      {
+        "instanceName": "t2.micro",
+        "vCPU":1,
+        "memoryInMB":1024,
+        "pricePerHour":0.017
+      },
+      {
+        "instanceName": "t2.medium",
+        "vCPU":2,
+        "memoryInMB":4096,
+        "pricePerHour":0.065
+      },
+      {
+        "instanceName": "t2.large",
+        "vCPU":2,
+        "memoryInMB":8192,
+        "pricePerHour":0.122
+      },
+      {
+        "instanceName": "m4.large",
+        "vCPU":2,
+        "memoryInMB":8192,
+        "pricePerHour":0.192
+      },
+      {
+        "instanceName": "m4.2xlarge",
+        "vCPU":8,
+        "memoryInMB":32768,
+        "pricePerHour":0.768
+      },
+      {
+        "instanceName": "p2.xlarge",
+        "vCPU":4,
+        "memoryInMB":62464,
+        "pricePerHour":1.084
+      }
+    ]
+  }
+
+

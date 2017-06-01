@@ -55,8 +55,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
-import org.cloudsimplus.sla.readJsonFile.SlaMetric;
-import org.cloudsimplus.sla.readJsonFile.SlaReader;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaMetric;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 /**

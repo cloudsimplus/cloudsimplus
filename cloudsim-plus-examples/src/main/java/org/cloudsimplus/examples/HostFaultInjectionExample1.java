@@ -133,7 +133,7 @@ public final class HostFaultInjectionExample1 {
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
         System.out.println("\n# Number of Host faults: " + fault.getNumberOfHostFaults());
-        System.out.println("# Number of VM faults (VMs destroyed): " + fault.getNumberOfDestroyedVms());
+        System.out.println("# Number of VM faults (VMs destroyed): " + fault.getNumberOfFaults());
         Log.printFormattedLine("# Time that the simulations finished: %.2f minutes", simulation.clockInMinutes());
         Log.printFormattedLine("# VMs MTTR: %.2f minutes", fault.meanTimeToRepairVmFaultsInMinutes());
         Log.printFormattedLine("# VMs MTBF: %.2f minutes", fault.meanTimeBetweenVmFaultsInMinutes());

@@ -64,8 +64,8 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.sla.readJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.SlaReader;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
 
 /**
  * Example of dynamic creation of VMS at runtime, respecting the CPU usage limit
@@ -129,7 +129,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         // Reading the sla contract and taking the metric values
         SlaReader slaReader = new SlaReader(METRICS_FILE);
 
-        CpuUtilization cpu = new CpuUtilization(slaReader);
+        Availability.CpuUtilization cpu = new Availability.CpuUtilization(slaReader);
         cpu.checkCpuUtilizationSlaContract();
         cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 

@@ -1,79 +1,94 @@
 {
-    "metrics" : [
-   
+  "metrics": [
     {
-        "metricName": "TaskTimeCompletion",
-        "dimensions": [
-            {
-                "name": "valueMin",
-                "value": 0,
-                "unit" : "Milliseconds"
-            },
-            {
-                "name": "valueMax",
-                "value": 30,
-                "unit" : "Milliseconds"
-            }]
+      "metricName": "TaskTimeCompletion",
+      "dimensions": [
+        {
+          "name": "valueMin",
+          "value": 0,
+          "unit": "Milliseconds"
+        },
+        {
+          "name": "valueMax",
+          "value": 30,
+          "unit": "Milliseconds"
+        }
+      ]
     },
     {
-        "metricName": "CpuUtilization",
-        "dimensions": [
-            {
-                "name": "valueMin",
-                "value": 30,
-                "unit" : "Percent"
-                
-            },
-            {
-                "name": "valueMax",
-                "value": 90,
-                "unit" : "Percent"
-            }
-        ]
+      "metricName": "CpuUtilization",
+      "dimensions": [
+        {
+          "name": "valueMin",
+          "value": 30,
+          "unit": "Percent"
+        },
+        {
+          "name": "valueMax",
+          "value": 90,
+          "unit": "Percent"
+        }
+      ]
     },
     {
-        "metricName": "WaitTime",
-        "dimensions": [
-            {
-                "name": "valueMin",
-                "value": 0,
-                "unit" : "Milliseconds"
-            },
-            {
-                "name": "valueMax",
-                "value": 10,
-                "unit" : "Milliseconds"
-            }
-        ]
+      "metricName": "Availability",
+      "dimensions": [
+        {
+          "name": "valueMin",
+          "value": 99.90,
+          "unit": "%"
+        },
+        {
+          "name": "valueMax",
+          "value": 100.00,
+          "unit": "%"
+        }
+      ]
     },
     {
-        "metricName": "Throughput",
-        "dimensions": [
-            {
-                "name": "valueMin",
-                "value": 10,
-                "unit" : "Bits/Second"
-            },
-            {
-                "name": "valueMax",
-                "value": 500,
-                "unit" : "Bits/Second"
-            }
-        ]
+      "metricName": "WaitTime",
+      "dimensions": [
+        {
+          "name": "valueMin",
+          "value": 0,
+          "unit": "Milliseconds"
+        },
+        {
+          "name": "valueMax",
+          "value": 10,
+          "unit": "Milliseconds"
+        }
+      ]
     },
     {
-        "metricName": "CostPrice",
-        "dimensions": [
-            {
-                "name": "valueMin",
-                "value": 250
-            },
-            {
-                "name": "valueMax",
-                "value": 500
-            }
-        ]
-    }  
- ]}    
+      "metricName": "Throughput",
+      "dimensions": [
+        {
+          "name": "valueMin",
+          "value": 10,
+          "unit": "Bits/Second"
+        },
+        {
+          "name": "valueMax",
+          "value": 500,
+          "unit": "Bits/Second"
+        }
+      ]
+    },
+    {
+      "metricName": "CostPrice",
+      "dimensions": [
+        {
+          "name": "valueMin",
+          "value": 250
+        },
+        {
+          "name": "valueMax",
+          "value": 500
+        }
+      ]
+    }
+  ]
+}
 
   

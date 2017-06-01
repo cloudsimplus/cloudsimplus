@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.readJsonFile;
+package org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +34,10 @@ import java.util.List;
 /**
  * This class represents the SLA Contract.
  * Has a list of metrics.
- * 
- * Follows the standard used by Amazon Cloudwatch as in: 
+ *
+ * Follows the standard used by Amazon Cloudwatch as in:
  * <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>
- * 
+ *
  * @author raysaoliveira
  */
 public class SlaContract {
@@ -46,7 +46,7 @@ public class SlaContract {
     public SlaContract() {
         this.metrics = new ArrayList<>();
     }
-    
+
     /**
      * @return the metrics
      */

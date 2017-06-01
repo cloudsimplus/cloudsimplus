@@ -6,31 +6,40 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
- ** Runs the {@link HostFaultInjectionExperiment} the number of
+ * * Runs the {@link HostFaultInjectionExperiment} the number of
  * times defines by {@link #getSimulationRuns()} and compute statistics.
  *
  * @author raysaoliveira
  */
-class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment>{
-
-
+class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment> {
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final long[] CLOUDLET_LENGTHS = {2800_000_000L, 3800_000_000L, 4800_000_000L};
-    static final int VMS = 2;
-    static final int CLOUDLETS = 4;
+    static final long[] CLOUDLET_LENGTHS = {1000_000_000L, 1800_000_000L, 2800_000_000L};
+    static final int VMS = 3;
+    static final int CLOUDLETS = 6;
 
     /**
      * Datacenter availability for each experiment.
      */
     private List<Double> availability;
 
+    /**
+     * The percentage of brokers meeting Availability average for all the
+     * experiments.
+     */
+    private List<Double> percentageOfBrokersMeetingAvailability;
+
     private List<Double> ratioVmsPerHost;
+
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -45,15 +54,16 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     public static void main(String[] args) {
         new HostFaultInjectionRunner(true, 1475098589732L)
-                .setSimulationRuns(300)
-                .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
-                .setVerbose(true)
-                .run();
+            .setSimulationRuns(300)
+            .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
+            .setVerbose(true)
+            .run();
     }
 
     HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
         availability = new ArrayList<>();
+        percentageOfBrokersMeetingAvailability = new ArrayList<>();
         ratioVmsPerHost = new ArrayList<>();
     }
 
@@ -61,7 +71,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     protected HostFaultInjectionExperiment createExperiment(int i) {
         HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(i, this);
         exp.setVerbose(experimentVerbose)
-                .setAfterExperimentFinish(this::afterExperimentFinish);
+            .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 
@@ -73,16 +83,19 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * @param exp the finished experiment
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
-        availability.add(exp.getFaultInjection().availability());
+        availability.add(exp.getFaultInjection().availability() * 100);
+        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityThatMeetingTheSla());
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
     }
 
-    @Override protected void setup() {/**/}
+    @Override
+    protected void setup() {/**/}
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
         map.put("Average of Total Availability of Simulation", availability);
+        map.put(" Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
         map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
         return map;
     }
@@ -118,8 +131,8 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         double lower = stats.getMean() - intervalSize;
         double upper = stats.getMean() + intervalSize;
         System.out.printf(
-                "\tTaskTimeCompletion mean 95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]\n",
-                stats.getMean(), intervalSize, lower, upper);
+            "\t This METRIC Rmean 95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]\n",
+            stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.4f \n", stats.getStandardDeviation());
     }
 
