@@ -62,6 +62,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.sla.VmCost;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.CLOUDLETS;
@@ -124,7 +125,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
             rt.checkTaskTimeCompletionSlaContract();
             taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
 
-            Availability.CpuUtilization cpu = new Availability.CpuUtilization(slaReader);
+            CpuUtilization cpu = new CpuUtilization(slaReader);
             cpu.checkCpuUtilizationSlaContract();
             cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 

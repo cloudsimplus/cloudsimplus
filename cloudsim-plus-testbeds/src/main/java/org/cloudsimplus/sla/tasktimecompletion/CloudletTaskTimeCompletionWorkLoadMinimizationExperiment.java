@@ -58,6 +58,7 @@ import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.TaskTimeCompletion;
 import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.VMS;
@@ -122,7 +123,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
             rt.checkTaskTimeCompletionSlaContract();
             taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
 
-            Availability.CpuUtilization cpu = new Availability.CpuUtilization(slaReader);
+            CpuUtilization cpu = new CpuUtilization(slaReader);
             cpu.checkCpuUtilizationSlaContract();
             cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 

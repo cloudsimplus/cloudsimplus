@@ -1,0 +1,6 @@
+{
+  "instanceName": "t2.medium",
+  "vCPU":2,
+  "memoryInMB":4096,
+  "pricePerHour":0.065
+}

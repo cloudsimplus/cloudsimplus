@@ -64,6 +64,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CpuUtilization;
 import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
 import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
 
@@ -129,7 +130,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         // Reading the sla contract and taking the metric values
         SlaReader slaReader = new SlaReader(METRICS_FILE);
 
-        Availability.CpuUtilization cpu = new Availability.CpuUtilization(slaReader);
+        CpuUtilization cpu = new CpuUtilization(slaReader);
         cpu.checkCpuUtilizationSlaContract();
         cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
 

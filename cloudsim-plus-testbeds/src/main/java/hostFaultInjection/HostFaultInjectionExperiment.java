@@ -324,6 +324,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         return vmsize / hostsize;
     }
 
+    /**
+     * Computes the percentage of customers for whom the availability stated
+     * in the SLA was met (in scale from 0 to 1, where 1 is 100%).
+     * @return
+     */
     public double getPercentageOfAvailabilityThatMeetingTheSla() {
         double total = 0;
         double totalOfAvailabilitySatisfied = getBrokerList()
@@ -331,8 +336,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
             .map(b -> faultInjection.availability(b) * 100)
             .filter(a -> a >= availabilitySlaContract)
             .count();
-       // System.out.println("\n\n The availability sla: " + availabilitySlaContract);
-        total = (totalOfAvailabilitySatisfied * 100 ) / BROKERS;
+        total = totalOfAvailabilitySatisfied / BROKERS;
 
         return total;
     }
@@ -356,7 +360,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         exp.setVerbose(true).run();
         exp.getBrokerList().stream().forEach(b -> System.out.printf("%s - Availability %%: %.4f\n", b, exp.getFaultInjection().availability(b) * 100));
 
-        System.out.println("Percentagem of Brokers that meeting the Availability Metric in SLA: " + exp.getPercentageOfAvailabilityThatMeetingTheSla());
+        System.out.println("Percentagem of Brokers that meeting the Availability Metric in SLA: " + exp.getPercentageOfAvailabilityThatMeetingTheSla() * 100);
         System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());
         System.out.println("\n# Number of Host faults: " + exp.getFaultInjection().getNumberOfHostFaults());
         System.out.println("# Number of VM faults (VMs destroyed): " + exp.getFaultInjection().getNumberOfFaults());

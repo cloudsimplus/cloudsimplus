@@ -1,0 +1,6 @@
+{
+  "instanceName": "m4.2xlarge",
+  "vCPU":8,
+  "memoryInMB":32768,
+  "pricePerHour":0.768
+}

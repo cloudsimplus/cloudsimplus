@@ -10,7 +10,7 @@ import java.util.List;
  */
 public class AwsInstancesConfigurations {
 
-    private List<InstancesAws> instances;
+    private List<AwsEC2Instance> instances;
 
     public AwsInstancesConfigurations() {
         this.instances = new ArrayList<>();
@@ -19,14 +19,14 @@ public class AwsInstancesConfigurations {
     /**
      * @return the instances
      */
-    public List<InstancesAws> getInstances() {
+    public List<AwsEC2Instance> getInstances() {
         return instances;
     }
 
     /**
      * @param instances the instances to set
      */
-    public void setInstances(List<InstancesAws> instances) {
+    public void setInstances(List<AwsEC2Instance> instances) {
         if(instances == null){
             instances = new ArrayList<>();
         }

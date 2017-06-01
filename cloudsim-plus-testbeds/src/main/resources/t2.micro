@@ -1,0 +1,6 @@
+{
+  "instanceName": "t2.micro",
+  "vCPU":1,
+  "memoryInMB":1024,
+  "pricePerHour":0.017
+}
