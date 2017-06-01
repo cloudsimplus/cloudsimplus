@@ -234,9 +234,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @return {@inheritDoc}
      */
     @Override
-    protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudletToStartExecutingAndRemoveIt() {
+    protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudlet() {
         sortCloudletWaitingList(this::waitingCloudletsComparator);
-        return super.findSuitableWaitingCloudletToStartExecutingAndRemoveIt();
+        return super.findSuitableWaitingCloudlet();
     }
 
 	/**

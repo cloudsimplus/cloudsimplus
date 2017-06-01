@@ -339,9 +339,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         getLastExecutionInDatacenterInfo().setFinishedSoFar(Math.min(length, this.getLength()));
-
         write("Set the length's finished so far to %d", length);
-
         notifyListenersIfCloudletIsFinished();
         return true;
     }

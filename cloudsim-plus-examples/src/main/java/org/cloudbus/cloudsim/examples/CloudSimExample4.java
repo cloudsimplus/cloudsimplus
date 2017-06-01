@@ -39,7 +39,7 @@ import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A simple example showing how to create 2 datacenters with 1 host each one.
- * It creates 2 VMs and run 1 cloudlet in each one.
+ * It creates 2 VMs and runs 1 cloudlet in each one.
  */
 public class CloudSimExample4 {
     private List<Cloudlet> cloudletList;

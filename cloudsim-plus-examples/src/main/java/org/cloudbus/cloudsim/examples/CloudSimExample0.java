@@ -31,7 +31,8 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 
 /**
- * A minimal example showing how to create a data center with 2 {@link Host} with 2 {@link Vm} run 2
+ * A minimal example showing how to create a data center with 2 {@link Host}.
+ * It creates 2 {@link Vm} and runs 2
  * {@link Cloudlet}, inside each Vm. Each created Vm will use a {@link CloudletSchedulerTimeShared}
  * scheduler to allow sharing CPU time between its Cloudlets.
  *

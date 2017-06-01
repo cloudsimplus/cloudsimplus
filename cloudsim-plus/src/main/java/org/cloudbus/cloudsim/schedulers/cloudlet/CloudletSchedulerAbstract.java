@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -31,7 +30,6 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * Implements the basic features of a {@link CloudletScheduler}, representing
@@ -210,9 +208,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudletWaitingList.add(cloudlet);
     }
 
-    protected boolean removeCloudletFromWaitingList(CloudletExecutionInfo cloudlet) {
-        return cloudletWaitingList.remove(cloudlet);
-    }
 
     /**
      * Gets the list of paused cloudlets.
@@ -657,7 +652,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final List<CloudletExecutionInfo> finishedCloudlets
             = cloudletExecList.stream()
             .filter(c -> c.getCloudlet().isFinished())
-            .collect(Collectors.toList());
+            .collect(toList());
 
         for (final CloudletExecutionInfo c : finishedCloudlets) {
             removeCloudletFromExecListAndAddToFinishedList(c);
@@ -756,9 +751,24 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @post $none
      */
     protected void moveNextCloudletsFromWaitingToExecList() {
-        for (int i = 0; i < cloudletWaitingList.size() && getFreePes() > 0; i++) {
-            findSuitableWaitingCloudletToStartExecutingAndRemoveIt().ifPresent(this::addCloudletToExecList);
+        Optional<CloudletExecutionInfo> optional = Optional.of(CloudletExecutionInfo.NULL);
+        while (!cloudletWaitingList.isEmpty() && optional.isPresent() && getFreePes() > 0) {
+            optional = findSuitableWaitingCloudlet();
+            optional.ifPresent(this::addWaitingCloudletToExecList);
         }
+    }
+
+    /**
+     * Try to find the first Cloudlet in the waiting list which the number of
+     * required PEs is not higher than the number of free PEs.
+     *
+     * @return an {@link Optional} containing the found Cloudlet or an empty
+     * Optional otherwise
+     */
+    protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudlet() {
+        return cloudletWaitingList.stream()
+            .filter(this::isThereEnoughFreePesForCloudlet)
+            .findFirst();
     }
 
     /**
@@ -772,25 +782,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Try to find the first Cloudlet in the waiting list that the number of
-     * required PEs is not higher than the number of free PEs. If a Cloudlet is
-     * found, sets its status to {@link Status#INEXEC} and returns it, removing
-     * such Cloudlet from the waiting list.
-     *
-     * @return an {@link Optional} containing the found Cloudlet or an empty
-     * Optional otherwise
+     * Removes a Cloudlet from waiting list and adds it to the exec list.
+     * @param cloudlet the cloudlet to add to to exec list
+     * @return the given cloudlet
      */
-    protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudletToStartExecutingAndRemoveIt() {
-        return cloudletWaitingList.stream()
-            .filter(this::isThereEnoughFreePesForCloudlet)
-            .findFirst()
-            .map(this::changeCloudletStatusToExecAndRemoveFromWaitingList);
-    }
-
-    private CloudletExecutionInfo changeCloudletStatusToExecAndRemoveFromWaitingList(CloudletExecutionInfo c){
-        c.setCloudletStatus(Status.INEXEC);
-        removeCloudletFromWaitingList(c);
-        return c;
+    protected CloudletExecutionInfo addWaitingCloudletToExecList(CloudletExecutionInfo cloudlet) {
+        /*If the Cloudlet is not found in the waiting List, there is no problem.
+        * Just add it to the exec List.*/
+        cloudletWaitingList.remove(cloudlet);
+        addCloudletToExecList(cloudlet);
+        return cloudlet;
     }
 
     @Override

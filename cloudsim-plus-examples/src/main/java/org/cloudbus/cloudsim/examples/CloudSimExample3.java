@@ -40,7 +40,7 @@ import org.cloudbus.cloudsim.resources.Ram;
 
 /**
  * A simple example showing how to create a Datacenter with 2 hosts.
- * It creates 2 VMs and run 1 cloudlet in each one.
+ * It creates 2 VMs and runs 1 cloudlet in each one.
  * The cloudlets run in VMs with different MIPS requirements.
  * Therefore, they will take different times to complete the execution.
  */

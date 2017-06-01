@@ -248,15 +248,12 @@ public class CloudletExecutionInfo {
         final double wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
-        long finishedLenAcrossAllPes;
-        //if (cloudlet.getCloudletTotalLength() * Consts.MILLION < instructionsFinishedSoFar) {
-        if (cloudlet.getStatus() == Cloudlet.Status.SUCCESS) {
-            finishedLenAcrossAllPes = cloudlet.getLength();
-        } else {
-            finishedLenAcrossAllPes = instructionsFinishedSoFar / Conversion.MILLION;
-        }
+        final long finishedLength =
+            cloudlet.getStatus() == Cloudlet.Status.SUCCESS ?
+                cloudlet.getLength() :
+                instructionsFinishedSoFar / Conversion.MILLION;
 
-        cloudlet.setFinishedLengthSoFar(finishedLenAcrossAllPes);
+        cloudlet.setFinishedLengthSoFar(finishedLength);
     }
 
     /**
@@ -407,7 +404,7 @@ public class CloudletExecutionInfo {
         if(timeToAdd >= 0) {
             setVirtualRuntime(virtualRuntime + timeToAdd);
         }
-        return getVirtualRuntime();
+        return virtualRuntime;
 
     }
 
