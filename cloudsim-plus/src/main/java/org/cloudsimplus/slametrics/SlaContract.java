@@ -43,7 +43,7 @@ import java.util.List;
  *
  * <p>Instances of this class can be created from a JSON file
  * using the {@link #getInstance(String)} or
- * {@link #getInstanceFromResourcesDir(String)} methods.
+ * {@link #getInstance(String)} methods.
  * This way, one doesn't need to create instances
  * of this class using its default constructor.
  * This one is just used by the JSON parsing library.</p>
@@ -80,12 +80,16 @@ public class SlaContract {
 
     /**
      * Gets an {@link SlaContract} from a JSON file inside the application's resource directory.
+     * @param klass a class from the project which will be used just to assist in getting the path
+     *              of the given resource. It can can any class inside the project
+     *              where a resource you are trying to get from the resources directory
      * @param jsonFilePath the relative path to the JSON file representing the SLA contract to read
      * @return a {@link SlaContract} read from the JSON file
      */
-    public static SlaContract getInstanceFromResourcesDir(final String jsonFilePath) throws FileNotFoundException {
-        return getInstance(ResourceLoader.getResourcePath(SlaContract.class, jsonFilePath));
+    public static SlaContract getInstanceFromResourcesDir(final Class klass, final String jsonFilePath) throws FileNotFoundException {
+        return getInstance(ResourceLoader.getResourcePath(klass, jsonFilePath));
     }
+
 
     /**
      * @return the metrics
@@ -103,7 +107,7 @@ public class SlaContract {
 
     private SlaMetric getSlaMetric(final String metricName) {
         return this.metrics.stream()
-            .filter(m -> metricName.equals(m.getMetricName()))
+            .filter(m -> metricName.equals(m.getName()))
             .findFirst()
             .orElse(SlaMetric.NULL);
     }
@@ -138,8 +142,8 @@ public class SlaContract {
      * @param args
      */
     public static void main(String[] args) throws FileNotFoundException {
-        final String file = "SlaCustomer1.json";
-        SlaContract contract = SlaContract.getInstanceFromResourcesDir(file);
+        final String file = "/Users/raysaoliveira/Desktop/Mestrado/cloudsim-plus/cloudsim-plus-testbeds/src/main/resources/SlaCustomer1.json";
+        SlaContract contract = SlaContract.getInstance(file);
         System.out.println("Contract file: " + file);
         System.out.println(contract);
         System.out.println("Minimum Price Metric Value: " + contract.getPriceMetric().getMinDimension());

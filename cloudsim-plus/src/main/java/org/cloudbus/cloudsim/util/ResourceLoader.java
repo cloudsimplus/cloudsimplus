@@ -20,7 +20,9 @@ public final class ResourceLoader {
     /**
      * Gets the absolute path of a resource (a file or sub-directory) inside the resources directory.
      *
-     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
+     * @param klass a class from the project which will be used just to assist in getting the path
+     *              of the given resource. It can can any class inside the project
+     *              where a resource you are trying to get from the resources directory
      * @param name the name of the resource to get its path
      *             (that can be a file or a sub-directory inside the resources directory)
      * @return the absolute path of the resource

@@ -132,7 +132,7 @@ public class TestWithoutAlgorithmExample {
         simulation = new CloudSim();
 
         // Reading the sla contract and taking the metric values
-        this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
+        this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
 
         //       simulation.addOnClockTickListener(this::createNewCloudlets);
         simulation.addOnClockTickListener(this::printVmsCpuUsage);

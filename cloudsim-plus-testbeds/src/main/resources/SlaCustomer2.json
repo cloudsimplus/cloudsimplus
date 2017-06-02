@@ -1,7 +1,7 @@
 {
   "metrics": [
     {
-      "metricName": "TaskTimeCompletion",
+      "name": "TaskTimeCompletion",
       "dimensions": [
         {
           "name": "valueMin",
@@ -16,7 +16,7 @@
       ]
     },
     {
-      "metricName": "CpuUtilization",
+      "name": "CpuUtilization",
       "dimensions": [
         {
           "name": "valueMin",
@@ -31,7 +31,7 @@
       ]
     },
     {
-      "metricName": "Availability",
+      "name": "Availability",
       "dimensions": [
         {
           "name": "valueMin",
@@ -46,7 +46,7 @@
       ]
     },
     {
-      "metricName": "WaitTime",
+      "name": "WaitTime",
       "dimensions": [
         {
           "name": "valueMin",
@@ -61,7 +61,7 @@
       ]
     },
     {
-      "metricName": "Throughput",
+      "name": "Throughput",
       "dimensions": [
         {
           "name": "valueMin",
@@ -76,7 +76,7 @@
       ]
     },
     {
-      "metricName": "Price",
+      "name": "Price",
       "dimensions": [
         {
           "name": "valueMax",

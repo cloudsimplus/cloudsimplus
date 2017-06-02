@@ -109,7 +109,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         randCloudlet = new UniformDistr(getSeed());
         randVm = new UniformDistr(getSeed()+1);
         try {
-            this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
+            this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
             getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);

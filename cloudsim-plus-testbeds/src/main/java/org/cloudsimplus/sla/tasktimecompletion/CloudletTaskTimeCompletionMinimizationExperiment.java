@@ -122,7 +122,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
         this.randCloudlet = new UniformDistr(getSeed());
         this.randVm = new UniformDistr(getSeed());
         try {
-            this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
+            this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
             getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);

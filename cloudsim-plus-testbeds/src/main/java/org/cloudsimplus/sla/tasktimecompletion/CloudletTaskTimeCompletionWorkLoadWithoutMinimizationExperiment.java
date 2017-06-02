@@ -102,7 +102,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         this.randCloudlet = new UniformDistr(getSeed());
         this.randVm = new UniformDistr(getSeed()+1);
         try {
-            this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
+            this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);

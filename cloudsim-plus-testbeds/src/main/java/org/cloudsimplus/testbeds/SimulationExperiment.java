@@ -222,16 +222,23 @@ public abstract class SimulationExperiment implements Runnable {
     protected final void buildScenario() {
         datacenter0 = createDatacenter();
         datacenter0.setLog(verbose);
+        createBrokers();
+
+        brokerList.forEach(b -> {
+                createAndSubmitVmsInternal(b);
+                createAndSubmitCloudletsInternal(b);
+        });
+
+        getAfterScenarioBuild().accept(this);
+    }
+
+    protected void createBrokers() {
         IntStream
             .range(0, numBrokersToCreate)
             .forEach(i -> {
                 DatacenterBroker broker = createBrokerAndAddToList();
                 broker.setLog(verbose);
-                createAndSubmitVmsInternal(broker);
-                createAndSubmitCloudletsInternal(broker);
             });
-
-        getAfterScenarioBuild().accept(this);
     }
 
     /**

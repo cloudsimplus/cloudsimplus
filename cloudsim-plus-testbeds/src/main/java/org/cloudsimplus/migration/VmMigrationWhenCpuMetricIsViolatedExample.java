@@ -126,7 +126,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
         simulation = new CloudSim();
 
-        this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
+        this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
         cloudletList = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
 
         @SuppressWarnings("unused")

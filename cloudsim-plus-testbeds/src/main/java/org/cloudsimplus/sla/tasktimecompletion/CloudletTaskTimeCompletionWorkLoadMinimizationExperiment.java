@@ -53,6 +53,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -114,7 +115,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
         randCloudlet = new UniformDistr(getSeed());
         randVm = new UniformDistr(getSeed()+1);
         try {
-            this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
+            this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWorkLoadMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);

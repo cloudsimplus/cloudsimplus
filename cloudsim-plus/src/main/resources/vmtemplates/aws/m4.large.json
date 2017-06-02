@@ -1,6 +1,6 @@
 {
-  "instanceName": "m4.large",
-  "vCPU":2,
+  "name": "m4.large",
+  "cpus":2,
   "memoryInMB":8192,
   "pricePerHour":0.192
 }

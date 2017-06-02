@@ -45,14 +45,14 @@ public class SlaMetric {
     private static final SlaMetricDimension DEFAULT_MAX_DIMENSION = new SlaMetricDimension(Double.MAX_VALUE);
 
     private List<SlaMetricDimension> dimensions;
-    private String metricName;
+    private String name;
 
     public SlaMetric(){
         this("");
     }
 
     public SlaMetric(final String name){
-        this.metricName = name;
+        this.name = name;
         this.dimensions = new ArrayList<>();
     }
 
@@ -65,18 +65,18 @@ public class SlaMetric {
         return this;
     }
 
-    public String getMetricName() {
-        return metricName;
+    public String getName() {
+        return name;
     }
 
-    public SlaMetric setMetricName(String metricName) {
-        this.metricName = metricName == null ? "" : metricName;
+    public SlaMetric setName(String name) {
+        this.name = name == null ? "" : name;
         return this;
     }
 
     @Override
     public String toString() {
-        return "Metric{name = " + metricName + ",  dimensions = " + dimensions + '}';
+        return "Metric{name = " + name + ",  dimensions = " + dimensions + '}';
     }
 
     /**

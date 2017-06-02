@@ -104,11 +104,6 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         this.randCloudlet = new UniformDistr(this.getSeed());
         contractsMap = new HashMap<>();
         templatesMap = new HashMap<>();
-        try {
-            readTheSlaContracts();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -119,8 +114,8 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final List<AwsEc2Template> all = readAllAvailableAwsEc2Instances();
         try (BufferedReader br = slaContractsListReader()) {
             while (br.ready() || brokerIterator.hasNext()) {
-                final String file = br.readLine();
-                SlaContract contract = SlaContract.getInstanceFromResourcesDir(file);
+                final String file =  br.readLine();
+                SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
                 DatacenterBroker b = brokerIterator.next();
                 contractsMap.put(b, contract);
                 templatesMap.put(b, getSuitableAwsEc2InstanceTemplate(b, all));
@@ -164,7 +159,10 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
             .orElseThrow(() -> new RuntimeException("No AWS EC2 Instance found with price lower or equal to " + maxPrice));
 
         final AwsEc2Template selected = new AwsEc2Template(template);
-        selected.setMaxNumberOfVmsForCustomer(getMaxNumberOfVmsForCustomerExpectedPrice(broker, template));
+        selected.setMaxNumberOfVmsForCustomer(getMaxNumberOfVmsForCustomerExpectedPrice(broker, selected));
+        System.out.println(
+            "AWS EC2 Template selected for broker " + broker + ": " + selected + " maxNumberOfVMs: " +
+            selected.getMaxNumberOfVmsForCustomer());
         return selected;
     }
 
@@ -197,7 +195,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         try (BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instances-files.txt")) {
             while (br.ready()) {
                 final String file = br.readLine();
-                final AwsEc2Template instance = AwsEc2Template.getInstanceFromResourcesDir(file);
+                final AwsEc2Template instance = AwsEc2Template.getInstanceFromResourcesDir("vmtemplates/aws/"+file);
                 instances.add(instance);
             }
         }
@@ -218,7 +216,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     public Vm createVm(DatacenterBroker broker, int id, AwsEc2Template template) {
-        Vm vm = new VmSimple(id, VM_MIPS, template.getvCPU());
+        Vm vm = new VmSimple(id, VM_MIPS, template.getCpus());
         vm
             .setRam(template.getMemoryInMB()).setBw(VM_BW).setSize(VM_SIZE)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
@@ -403,6 +401,17 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     public void printResults() {
         for (DatacenterBroker broker : getBrokerList()) {
             new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
+        }
+    }
+
+    @Override
+    protected void createBrokers() {
+        super.createBrokers();
+
+        try {
+            readTheSlaContracts();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 

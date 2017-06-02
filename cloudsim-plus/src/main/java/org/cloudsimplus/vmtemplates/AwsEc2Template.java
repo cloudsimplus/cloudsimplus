@@ -17,8 +17,8 @@ import java.io.FileReader;
  * @see #getInstance(String)
  */
 public class AwsEc2Template {
-    private String instanceName;
-    private int vCPU;
+    private String name;
+    private int cpus;
     private int memoryInMB;
     private double pricePerHour;
     private double maxNumberOfVmsForCustomer;
@@ -37,8 +37,8 @@ public class AwsEc2Template {
      * @param source the {@link AwsEc2Template} to be cloned
      */
     public AwsEc2Template(AwsEc2Template source){
-        this.instanceName = source.instanceName;
-        this.vCPU = source.vCPU;
+        this.name = source.name;
+        this.cpus = source.cpus;
         this.memoryInMB = source.memoryInMB;
         this.pricePerHour = source.pricePerHour;
         this.maxNumberOfVmsForCustomer = source.maxNumberOfVmsForCustomer;
@@ -65,18 +65,18 @@ public class AwsEc2Template {
         return getInstance(ResourceLoader.getResourcePath(AwsEc2Template.class, jsonFilePath));
     }
 
-    public String getName() {return instanceName; }
+    public String getName() {return name; }
 
-    public void setInstanceName(String instanceName) {
-        this.instanceName = instanceName;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public int getvCPU() {
-        return vCPU;
+    public int getCpus() {
+        return cpus;
     }
 
-    public void setvCPU(int vCPU) {
-        this.vCPU = vCPU;
+    public void setCpus(int cpus) {
+        this.cpus = cpus;
     }
 
     public int getMemoryInMB() {
@@ -124,5 +124,22 @@ public class AwsEc2Template {
     public AwsEc2Template setMaxNumberOfVmsForCustomer(double maxNumberOfVmsForCustomer) {
         this.maxNumberOfVmsForCustomer = maxNumberOfVmsForCustomer;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return "AwsEc2Template{name = " + name +
+               ",  cpus = " + cpus +
+               ",  memoryInMB = " + memoryInMB +
+               ",  pricePerHour = " + pricePerHour +'}';
+    }
+
+    /**
+     * A main method just to try the class implementation.
+     * @param args
+     */
+    public static void main(String[] args) throws FileNotFoundException {
+        final AwsEc2Template template = AwsEc2Template.getInstanceFromResourcesDir("vmtemplates/aws/t2.nano.json");
+        System.out.println(template);
     }
 }
