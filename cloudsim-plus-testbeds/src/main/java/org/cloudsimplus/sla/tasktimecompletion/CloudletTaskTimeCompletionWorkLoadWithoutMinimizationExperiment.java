@@ -53,7 +53,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -62,7 +61,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner.VM_PES;
 
-import org.cloudsimplus.sla.metrics.SlaContract;
+import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 

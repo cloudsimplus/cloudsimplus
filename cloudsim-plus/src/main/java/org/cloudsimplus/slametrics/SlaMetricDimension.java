@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.metrics;
+package org.cloudsimplus.slametrics;
 
 /**
  * Represents the values for a specific metrics of a SLA contract.

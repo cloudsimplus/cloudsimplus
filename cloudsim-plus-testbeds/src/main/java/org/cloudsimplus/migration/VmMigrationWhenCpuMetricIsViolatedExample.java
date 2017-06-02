@@ -54,7 +54,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
-import org.cloudsimplus.sla.metrics.SlaContract;
+import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 /**

@@ -55,7 +55,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -65,7 +64,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.sla.metrics.SlaContract;
+import org.cloudsimplus.slametrics.SlaContract;
 
 /**
  * Example of dynamic creation of VMS at runtime, respecting the CPU usage limit

@@ -61,7 +61,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.VM_PES;
 
-import org.cloudsimplus.sla.metrics.SlaContract;
+import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 

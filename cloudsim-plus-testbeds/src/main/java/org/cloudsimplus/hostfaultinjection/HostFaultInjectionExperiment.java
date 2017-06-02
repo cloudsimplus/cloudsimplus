@@ -40,8 +40,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
-import org.cloudsimplus.sla.awstemplates.AwsEc2InstanceTemplate;
-import org.cloudsimplus.sla.metrics.SlaContract;
+import org.cloudsimplus.vmtemplates.AwsEc2Template;
+import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
@@ -87,7 +87,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     /**
      * A map of AWS EC2 Template to be used for each customer.
      */
-    private Map<DatacenterBroker, AwsEc2InstanceTemplate> templatesMap;
+    private Map<DatacenterBroker, AwsEc2Template> templatesMap;
 
     private HostFaultInjectionExperiment(final long seed) {
         this(0, null, seed);
@@ -116,7 +116,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      */
     private void readTheSlaContracts() throws IOException {
         Iterator<DatacenterBroker> brokerIterator = getBrokerList().iterator();
-        final List<AwsEc2InstanceTemplate> all = readAllAvailableAwsEc2Instances();
+        final List<AwsEc2Template> all = readAllAvailableAwsEc2Instances();
         try (BufferedReader br = slaContractsListReader()) {
             while (br.ready() || brokerIterator.hasNext()) {
                 final String file = br.readLine();
@@ -141,29 +141,29 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     /**
-     * Gets a suitable {@link AwsEc2InstanceTemplate}
+     * Gets a suitable {@link AwsEc2Template}
      * for which it will be possible for
      * the customer to get the maximum number of VMs,
      * considering the price he/she expects to pay.
      *
-     * @param broker the broker representing a customer to get a suitable {@link AwsEc2InstanceTemplate}
+     * @param broker the broker representing a customer to get a suitable {@link AwsEc2Template}
      *               which maximizes the number of VMs for the customer's expected price
-     * @param all the list of all existing {@link AwsEc2InstanceTemplate}s
-     * @return the selected {@link AwsEc2InstanceTemplate} which will allow the customer
+     * @param all the list of all existing {@link AwsEc2Template}s
+     * @return the selected {@link AwsEc2Template} which will allow the customer
      * to run the maximum number of VMs
      */
-    private AwsEc2InstanceTemplate getSuitableAwsEc2InstanceTemplate(DatacenterBroker broker, List<AwsEc2InstanceTemplate> all) throws IOException {
-        final List<AwsEc2InstanceTemplate> suitableTemplates = all.stream()
+    private AwsEc2Template getSuitableAwsEc2InstanceTemplate(DatacenterBroker broker, List<AwsEc2Template> all) throws IOException {
+        final List<AwsEc2Template> suitableTemplates = all.stream()
             .filter(t -> t.getPricePerHour() <= getCustomerMaxPrice(broker))
             .collect(toList());
 
         final double maxPrice = getCustomerMaxPrice(broker);
-        final AwsEc2InstanceTemplate template = suitableTemplates
+        final AwsEc2Template template = suitableTemplates
             .stream()
             .max(comparingDouble(t -> getMaxNumberOfVmsForCustomerExpectedPrice(broker, t)))
             .orElseThrow(() -> new RuntimeException("No AWS EC2 Instance found with price lower or equal to " + maxPrice));
 
-        final AwsEc2InstanceTemplate selected = new AwsEc2InstanceTemplate(template);
+        final AwsEc2Template selected = new AwsEc2Template(template);
         selected.setMaxNumberOfVmsForCustomer(getMaxNumberOfVmsForCustomerExpectedPrice(broker, template));
         return selected;
     }
@@ -179,25 +179,25 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     /**
      * Gets the maximum number of VMs which can be created from
-     * a given {@link AwsEc2InstanceTemplate}, considering
+     * a given {@link AwsEc2Template}, considering
      * the price the customer expects to pay.
      *
      * @param broker the broker to get the maximum number of VMs which can be created from a given template
-     * @param template an {@link AwsEc2InstanceTemplate}
+     * @param template an {@link AwsEc2Template}
      * @return the maxinum number of VMs which can be created from the given
-     * {@link AwsEc2InstanceTemplate} for the customer's expected price
+     * {@link AwsEc2Template} for the customer's expected price
      */
-    private double getMaxNumberOfVmsForCustomerExpectedPrice(DatacenterBroker broker, AwsEc2InstanceTemplate template) {
+    private double getMaxNumberOfVmsForCustomerExpectedPrice(DatacenterBroker broker, AwsEc2Template template) {
         return getCustomerMaxPrice(broker) / template.getPricePerHour();
     }
 
-    private List<AwsEc2InstanceTemplate> readAllAvailableAwsEc2Instances() throws IOException {
-        List<AwsEc2InstanceTemplate> instances = new ArrayList<>();
+    private List<AwsEc2Template> readAllAvailableAwsEc2Instances() throws IOException {
+        List<AwsEc2Template> instances = new ArrayList<>();
         //Lists the files into the given directory
         try (BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instances-files.txt")) {
             while (br.ready()) {
                 final String file = br.readLine();
-                final AwsEc2InstanceTemplate instance = AwsEc2InstanceTemplate.getInstanceFromResourcesDir(file);
+                final AwsEc2Template instance = AwsEc2Template.getInstanceFromResourcesDir(file);
                 instances.add(instance);
             }
         }
@@ -217,7 +217,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     }
 
-    public Vm createVm(DatacenterBroker broker, int id, AwsEc2InstanceTemplate template) {
+    public Vm createVm(DatacenterBroker broker, int id, AwsEc2Template template) {
         Vm vm = new VmSimple(id, VM_MIPS, template.getvCPU());
         vm
             .setRam(template.getMemoryInMB()).setBw(VM_BW).setSize(VM_SIZE)

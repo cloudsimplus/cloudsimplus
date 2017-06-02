@@ -1,4 +1,4 @@
-package org.cloudsimplus.sla.awstemplates;
+package org.cloudsimplus.vmtemplates;
 
 import com.google.gson.Gson;
 import org.cloudbus.cloudsim.util.ResourceLoader;
@@ -7,29 +7,36 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 
 /**
- * Represents a JSON template file containing the configurations for an
- * <a href="http://aws.amazon.com/ec2/"> Amazon EC2 Instance </a>, which is
- * a Virtual Machine with specific configurations available
- * in <a href="http://aws.amazon.com/">Amazon Web Services</a>.
+ * Represents an
+ * <a href="http://aws.amazon.com/ec2/">Amazon EC2 Instance</a> template.
+ * This template contains actual configurations for VMs
+ * available in <a href="http://aws.amazon.com/">Amazon Web Services</a>,
+ * which is read from a JSON file.
  *
  * @author raysaoliveira
  * @see #getInstance(String)
  */
-public class AwsEc2InstanceTemplate {
+public class AwsEc2Template {
     private String instanceName;
     private int vCPU;
     private int memoryInMB;
     private double pricePerHour;
     private double maxNumberOfVmsForCustomer;
 
-    public AwsEc2InstanceTemplate(){}
+    /**
+     * Default constructor used to create an {@link AwsEc2Template} instance.
+     * If you want to get a template from a JSON file,
+     * you shouldn't call the constructor directly.
+     * Instead, use some methods such as the {@link #getInstance(String)}.
+     */
+    public AwsEc2Template(){}
 
     /**
-     * A clone constructor which receives an {@link AwsEc2InstanceTemplate}
+     * A clone constructor which receives an {@link AwsEc2Template}
      * and creates a clone of it.
-     * @param source the {@link AwsEc2InstanceTemplate} to be cloned
+     * @param source the {@link AwsEc2Template} to be cloned
      */
-    public AwsEc2InstanceTemplate(AwsEc2InstanceTemplate source){
+    public AwsEc2Template(AwsEc2Template source){
         this.instanceName = source.instanceName;
         this.vCPU = source.vCPU;
         this.memoryInMB = source.memoryInMB;
@@ -43,10 +50,9 @@ public class AwsEc2InstanceTemplate {
      *                     configurations for an AWS EC2 Instance
      * @return the AWS EC2 Instance from the JSON file
      */
-    public static AwsEc2InstanceTemplate getInstance(final String jsonTemplateFilePath) throws FileNotFoundException {
+    public static AwsEc2Template getInstance(final String jsonTemplateFilePath) throws FileNotFoundException {
         final FileReader fileReader = new FileReader(jsonTemplateFilePath);
-        return new Gson().fromJson(fileReader, AwsEc2InstanceTemplate.class);
-
+        return new Gson().fromJson(fileReader, AwsEc2Template.class);
     }
 
     /**
@@ -55,8 +61,8 @@ public class AwsEc2InstanceTemplate {
      *                     configurations for an AWS EC2 Instance
      * @return the AWS EC2 Instance from the JSON file
      */
-    public static AwsEc2InstanceTemplate getInstanceFromResourcesDir(final String jsonFilePath) throws FileNotFoundException {
-        return getInstance(ResourceLoader.getResourcePath(AwsEc2InstanceTemplate.class, jsonFilePath));
+    public static AwsEc2Template getInstanceFromResourcesDir(final String jsonFilePath) throws FileNotFoundException {
+        return getInstance(ResourceLoader.getResourcePath(AwsEc2Template.class, jsonFilePath));
     }
 
     public String getName() {return instanceName; }
@@ -115,7 +121,7 @@ public class AwsEc2InstanceTemplate {
      * It's usage is optional and it's default value is zero.</p>
      * @param maxNumberOfVmsForCustomer  the maximum number of VMs to set
      */
-    public AwsEc2InstanceTemplate setMaxNumberOfVmsForCustomer(double maxNumberOfVmsForCustomer) {
+    public AwsEc2Template setMaxNumberOfVmsForCustomer(double maxNumberOfVmsForCustomer) {
         this.maxNumberOfVmsForCustomer = maxNumberOfVmsForCustomer;
         return this;
     }
