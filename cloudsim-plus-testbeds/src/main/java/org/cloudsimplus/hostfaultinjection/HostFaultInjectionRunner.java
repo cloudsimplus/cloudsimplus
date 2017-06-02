@@ -34,6 +34,9 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     private List<Double> percentageOfBrokersMeetingAvailability;
 
+    /**
+     * Average number of VMs for each existing Host.
+     */
     private List<Double> ratioVmsPerHost;
 
 
