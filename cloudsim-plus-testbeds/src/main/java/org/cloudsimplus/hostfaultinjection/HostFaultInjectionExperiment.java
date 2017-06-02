@@ -306,13 +306,13 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     private void createFaultInjectionForHosts(Datacenter datacenter) {
         /*The average number of failures expected to happen each minute
         in a Poisson Process, which is also called event rate or rate parameter.*/
-        final double meanFailureNumberPerMinute = 0.02;
+        final double meanFailureNumberPerMinute = 0.009;
         //System.out.printf("Experiment %d seed: %d\n", getIndex(), getSeed());
         PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, getSeed());
         //System.out.println("\n\t seed: " + getSeed());
 
         faultInjection = new HostFaultInjection(datacenter, poisson);
-        getFaultInjection().setMaxTimeToGenerateFailure(1000_000L);
+        getFaultInjection().setMaxTimeToGenerateFailure(100_000L);
 
         for (DatacenterBroker broker : getBrokerList()) {
             Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmsWaitingList().size() - 1);
@@ -407,7 +407,6 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     @Override
     protected void createBrokers() {
         super.createBrokers();
-
         try {
             readTheSlaContracts();
         } catch (IOException e) {
@@ -452,13 +451,18 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * of each or all of the Datacenter VMs()
      */
     double getTotalCost(DatacenterBroker broker) {
+        double convertMonth = 0;
 
-        for (Vm vm : broker.getVmsCreatedList()) {
-
-
+        final List<Vm> vmList = broker.getVmsCreatedList();
+        for (Vm vm : vmList) {
+            double price = templatesMap.get(broker).getPricePerHour();
+            double priceVm = price * vmList.size(); //price * vms allocated for this broker
+            convertMonth = priceVm * 744; //price * a month
+            double time = (getCloudSim().clockInHours()) / 24;
+            System.out.println(" price VM " + vm.getId() + " = " + price + " clock: " + time);
         }
 
-        return 0;
+        return convertMonth;
     }
 
     /**
@@ -482,6 +486,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         Log.printFormattedLine("# Time that the simulations finished: %.2f minutes", exp.getCloudSim().clockInMinutes());
         Log.printFormattedLine("# Hosts MTBF: %.2f minutes", exp.getFaultInjection().meanTimeBetweenHostFaultsInMinutes());
         Log.printFormattedLine("\n# If the hosts are showing in the result equal to 0, it was because the vms ended before the failure was set.\n");
+
+        for(DatacenterBroker b: exp.getBrokerList()){
+            System.out.println(" VM COST :  " + exp.getTotalCost(b));
+
+        }
     }
 
     public HostFaultInjection getFaultInjection() {

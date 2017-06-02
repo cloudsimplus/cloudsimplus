@@ -20,7 +20,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final long[] CLOUDLET_LENGTHS = {1000_000_000L, 1800_000_000L, 2800_000_000L};
+    static final long[] CLOUDLET_LENGTHS = {10000_000_000L, 9800_00_000L, 990000_000L};
     static final int CLOUDLETS = 6;
 
     /**
