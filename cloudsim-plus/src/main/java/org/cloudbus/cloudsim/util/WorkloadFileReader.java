@@ -156,7 +156,7 @@ public class WorkloadFileReader implements WorkloadReader {
     /**
      * Create a new WorkloadFileReader object.
      *
-     * @param fileName the workload trace filename in one of the following
+     * @param fileName the workload trace full filename in one of the following
      *                 formats:
      *                 <i>ASCII text, zip, gz.</i>
      * @param rating   the cloudlet's PE rating (in MIPS), considering that all
@@ -185,6 +185,28 @@ public class WorkloadFileReader implements WorkloadReader {
         this.jobs = new ArrayList<>();
         this.rating = rating;
         this.maxLinesToRead = -1;
+    }
+
+    /**
+     * Gets a {@link WorkloadFileReader} object from a workload file
+     * inside the application's resource directory.
+     *
+     * @param fileName the workload trace relative filename in one of the following
+     *                 formats:
+     *                 <i>ASCII text, zip, gz.</i>
+     * @param rating   the cloudlet's PE rating (in MIPS), considering that all
+     *                 PEs of a cloudlet have the same rate
+     * @throws FileNotFoundException
+     * @throws IllegalArgumentException This happens for the following
+     *                                  conditions:
+     *                                  <ul>
+     *                                  <li>the workload trace file name is null or empty
+     *                                  <li>the resource PE rating <= 0 </ul> @pre fileName != null
+     * @pre rating > 0
+     * @post $none
+     */
+    public static WorkloadFileReader getInstanceFromResourcesDir(final String fileName, final int rating) throws FileNotFoundException {
+        return new WorkloadFileReader(ResourceLoader.getResourcePath(WorkloadFileReader.class, fileName), rating);
     }
 
     @Override

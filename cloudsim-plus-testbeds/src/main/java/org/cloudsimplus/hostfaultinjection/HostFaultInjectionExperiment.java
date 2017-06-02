@@ -1,16 +1,17 @@
 /*
  */
-package hostFaultInjection;
+package org.cloudsimplus.hostfaultinjection;
 
-import static hostFaultInjection.HostFaultInjectionRunner.CLOUDLETS;
-import static hostFaultInjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
-import static hostFaultInjection.HostFaultInjectionRunner.VMS;
+import static org.cloudsimplus.hostfaultinjection.HostFaultInjectionRunner.CLOUDLETS;
+import static org.cloudsimplus.hostfaultinjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
+import static java.util.Comparator.comparingDouble;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -39,11 +40,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
-import org.cloudsimplus.sla.VmCost;
-import org.cloudsimplus.sla.readJsonFile.instancesConfigurationsJsonFile.AwsEc2Instance;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CostPrice;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
+import org.cloudsimplus.sla.awstemplates.AwsEc2InstanceTemplate;
+import org.cloudsimplus.sla.metrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
@@ -54,20 +52,16 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  * @author raysaoliveira
  */
 public final class HostFaultInjectionExperiment extends SimulationExperiment {
-
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 300; // (5 seconds * 60 (1 minute))
 
     private static final int HOST_PES = 4;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
-    private List<Host> hostList;
 
     private static final int VM_MIPS = 1000;
     private static final long VM_SIZE = 1000; //image size (MEGABYTE)
-    private static final int VM_RAM = 512; //vm memory (MEGABYTE)
     private static final long VM_BW = 100000;
-    private static final int VM_PES = 2; //number of cpus
 
     private static final int CLOUDLET_PES = 2;
     private static final long CLOUDLET_FILESIZE = 300;
@@ -78,18 +72,22 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * this array defines the number of Datacenters to be created.
      */
     private static final int HOSTS = 50;
-    private static final int BROKERS = 6;
+    public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
 
+    private List<Host> hostList;
 
     private HostFaultInjection faultInjection;
+
     private final ContinuousDistribution randCloudlet;
     /**
-     * The file containing the SLA Contract in JSON format.
+     * A map containing the {@link SlaContract} associated to each
+     * {@link DatacenterBroker} representing a customer.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(HostFaultInjectionExperiment.class, "SlaMetrics.json");
-    private double availabilitySlaContract;
-    private double costPriceSlaContract;
-
+    private Map<DatacenterBroker, SlaContract> contractsMap;
+    /**
+     * A map of AWS EC2 Template to be used for each customer.
+     */
+    private Map<DatacenterBroker, AwsEc2InstanceTemplate> templatesMap;
 
     private HostFaultInjectionExperiment(final long seed) {
         this(0, null, seed);
@@ -101,92 +99,128 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     private HostFaultInjectionExperiment(int index, ExperimentRunner runner, long seed) {
         super(index, runner, seed);
-        setNumBrokersToCreate(BROKERS);
+        setNumBrokersToCreate((int)numberSlaContracts());
         setAfterScenarioBuild(exp -> createFaultInjectionForHosts(getDatacenter0()));
         this.randCloudlet = new UniformDistr(this.getSeed());
+        contractsMap = new HashMap<>();
+        templatesMap = new HashMap<>();
         try {
-            readTheSlaContract(METRICS_FILE);
-            readAwsEc2InstanceFiles();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            readTheSlaContracts();
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     /**
-     * Reads all aws instances configurations for verify which is the
-     * more appropriate for the price that the customer wants.
+     * Read all SLA contracts registered in the {@link #SLA_CONTRACTS_LIST}.
      */
-    private int readAwsEc2InstanceFiles() throws IOException {
-        String file = "";
-        //Lists the files into the given directory
-
-        BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instancesFiles");
-        try {
-            while (br.ready()) {
-                file = br.readLine();
-                final AwsEc2Instance instance = AwsEc2Instance.getInstanceFromResourcesDir(file);
-                if (isCostPriceContractMinorThanPriceInstance(instance, instance.getPricePerHour())) {
-                    return 0;
-                }
+    private void readTheSlaContracts() throws IOException {
+        Iterator<DatacenterBroker> brokerIterator = getBrokerList().iterator();
+        final List<AwsEc2InstanceTemplate> all = readAllAvailableAwsEc2Instances();
+        try (BufferedReader br = slaContractsListReader()) {
+            while (br.ready() || brokerIterator.hasNext()) {
+                final String file = br.readLine();
+                SlaContract contract = SlaContract.getInstanceFromResourcesDir(file);
+                DatacenterBroker b = brokerIterator.next();
+                contractsMap.put(b, contract);
+                templatesMap.put(b, getSuitableAwsEc2InstanceTemplate(b, all));
             }
-            br.close();
-        } catch (IOException ioe) {
-            ioe.printStackTrace();
         }
-        return 0;
+    }
+
+    private BufferedReader slaContractsListReader() throws FileNotFoundException {
+        return ResourceLoader.getBufferedReader(getClass(), SLA_CONTRACTS_LIST);
+    }
+
+    private long numberSlaContracts()  {
+        try {
+            return slaContractsListReader().lines().count();
+        } catch (FileNotFoundException e) {
+            return 0;
+        }
     }
 
     /**
-     * Checks if the instance's price is greater than customer's price or not.
-     * @param instance is the instance
-     * @param price the price of the instance
-     * @return true if the price is greater than customer's price, and false otherwise.
+     * Gets a suitable {@link AwsEc2InstanceTemplate}
+     * for which it will be possible for
+     * the customer to get the maximum number of VMs,
+     * considering the price he/she expects to pay.
+     *
+     * @param broker the broker representing a customer to get a suitable {@link AwsEc2InstanceTemplate}
+     *               which maximizes the number of VMs for the customer's expected price
+     * @param all the list of all existing {@link AwsEc2InstanceTemplate}s
+     * @return the selected {@link AwsEc2InstanceTemplate} which will allow the customer
+     * to run the maximum number of VMs
      */
-    private boolean isCostPriceContractMinorThanPriceInstance(AwsEc2Instance instance, double price) {
-        if(price <= costPriceSlaContract  ){
-            System.out.println("\n\t ----> Cost price contract: " + costPriceSlaContract);
-            System.out.println("\n\t ----> Name instance: " + instance.getName() +
-                " memory: " + instance.getMemoryInMB() + " pes : " + instance.getvCPU() + " price: " + price + "\n");
-            return true;
-        }
+    private AwsEc2InstanceTemplate getSuitableAwsEc2InstanceTemplate(DatacenterBroker broker, List<AwsEc2InstanceTemplate> all) throws IOException {
+        final List<AwsEc2InstanceTemplate> suitableTemplates = all.stream()
+            .filter(t -> t.getPricePerHour() <= getCustomerMaxPrice(broker))
+            .collect(toList());
 
-        return false;
+        final double maxPrice = getCustomerMaxPrice(broker);
+        final AwsEc2InstanceTemplate template = suitableTemplates
+            .stream()
+            .max(comparingDouble(t -> getMaxNumberOfVmsForCustomerExpectedPrice(broker, t)))
+            .orElseThrow(() -> new RuntimeException("No AWS EC2 Instance found with price lower or equal to " + maxPrice));
+
+        final AwsEc2InstanceTemplate selected = new AwsEc2InstanceTemplate(template);
+        selected.setMaxNumberOfVmsForCustomer(getMaxNumberOfVmsForCustomerExpectedPrice(broker, template));
+        return selected;
     }
 
     /**
-     * Read the Sla contract passing the file containing the metrics.
+     * The maximum price a customer expects to pay hourly for his/her running VMs.
+     * @param broker
+     * @return
      */
-    private void readTheSlaContract(String file) throws FileNotFoundException {
+    private double getCustomerMaxPrice(DatacenterBroker broker) {
+        return contractsMap.get(broker).getPriceMetric().getMaxDimension().getValue();
+    }
 
-        SlaReader slaReader = new SlaReader(file);
-        Availability availability = new Availability(slaReader);
-        availability.checkAvailabilitySlaContract();
-        availabilitySlaContract = availability.getMinValueAvailability();
+    /**
+     * Gets the maximum number of VMs which can be created from
+     * a given {@link AwsEc2InstanceTemplate}, considering
+     * the price the customer expects to pay.
+     *
+     * @param broker the broker to get the maximum number of VMs which can be created from a given template
+     * @param template an {@link AwsEc2InstanceTemplate}
+     * @return the maxinum number of VMs which can be created from the given
+     * {@link AwsEc2InstanceTemplate} for the customer's expected price
+     */
+    private double getMaxNumberOfVmsForCustomerExpectedPrice(DatacenterBroker broker, AwsEc2InstanceTemplate template) {
+        return getCustomerMaxPrice(broker) / template.getPricePerHour();
+    }
 
-        CostPrice costPrice = new CostPrice(slaReader);
-        costPrice.checkCostPriceSlaContract();
-        costPriceSlaContract = costPrice.getMaxValueCostPrice();
-
+    private List<AwsEc2InstanceTemplate> readAllAvailableAwsEc2Instances() throws IOException {
+        List<AwsEc2InstanceTemplate> instances = new ArrayList<>();
+        //Lists the files into the given directory
+        try (BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instances-files.txt")) {
+            while (br.ready()) {
+                final String file = br.readLine();
+                final AwsEc2InstanceTemplate instance = AwsEc2InstanceTemplate.getInstanceFromResourcesDir(file);
+                instances.add(instance);
+            }
+        }
+        return instances;
     }
 
     @Override
-    protected List<Vm> createVms() {
-        List<Vm> list = new ArrayList<>(VMS);
+    protected List<Vm> createVms(DatacenterBroker broker) {
+        final int numVms = (int)templatesMap.get(broker).getMaxNumberOfVmsForCustomer();
+        List<Vm> list = new ArrayList<>(numVms);
         final int id = getVmList().size();
-        for (int i = 1; i <= VMS; i++) {
-            Vm vm = createVm(id + i);
+        for (int i = 0; i < numVms; i++) {
+            Vm vm = createVm(broker, id + i, templatesMap.get(broker));
             list.add(vm);
         }
         return list;
 
     }
 
-    public Vm createVm(int id) {
-        Vm vm = new VmSimple(id, VM_MIPS, VM_PES);
+    public Vm createVm(DatacenterBroker broker, int id, AwsEc2InstanceTemplate template) {
+        Vm vm = new VmSimple(id, VM_MIPS, template.getvCPU());
         vm
-            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+            .setRam(template.getMemoryInMB()).setBw(VM_BW).setSize(VM_SIZE)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
@@ -389,36 +423,33 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      *
      * @return
      */
-    public double getPercentageOfAvailabilityThatMeetingTheSla() {
+    public double getPercentageOfAvailabilityMeetingSla() {
         double total = 0;
         double totalOfAvailabilitySatisfied = getBrokerList()
             .stream()
-            .map(b -> faultInjection.availability(b) * 100)
-            .filter(a -> a >= availabilitySlaContract)
+            .filter(b -> faultInjection.availability(b) >= getCustomerMinAvailability(b))
             .count();
-        total = totalOfAvailabilitySatisfied / BROKERS;
+        total = totalOfAvailabilitySatisfied / getBrokerList().size();
 
         return total;
+    }
+
+    private double getCustomerMinAvailability(DatacenterBroker b) {
+        return contractsMap.get(b).getAvailabilityMetric().getMinDimension().getValue();
     }
 
     /**
      * Calculates the cost price of resources (processing, bw, memory, storage)
      * of each or all of the Datacenter VMs()
-     *
      */
-    double getTotalCostPrice() {
-        VmCost vmCost;
-        double totalCost = 0.0;
-        for (Vm vm : getVmList()) {
-            if (vm.getCloudletScheduler().hasFinishedCloudlets()) {
-                vmCost = new VmCost(vm);
-                totalCost += vmCost.getTotalCost();
-            } else {
-                Log.printFormattedLine(
-                    "\tVm %d didn't execute any Cloudlet.", vm.getId());
-            }
+    double getTotalCost(DatacenterBroker broker) {
+
+        for (Vm vm : broker.getVmsCreatedList()) {
+
+
         }
-        return totalCost;
+
+        return 0;
     }
 
     /**
@@ -434,7 +465,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         exp.setVerbose(true).run();
         exp.getBrokerList().stream().forEach(b -> System.out.printf("%s - Availability %%: %.4f\n", b, exp.getFaultInjection().availability(b) * 100));
 
-        System.out.println("Percentagem of Brokers that meeting the Availability Metric in SLA: " + exp.getPercentageOfAvailabilityThatMeetingTheSla() * 100);
+        System.out.println("Percentagem of Brokers that meeting the Availability Metric in SLA: " + exp.getPercentageOfAvailabilityMeetingSla() * 100);
         System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());
         System.out.println("\n# Number of Host faults: " + exp.getFaultInjection().getNumberOfHostFaults());
         System.out.println("# Number of VM faults (VMs destroyed): " + exp.getFaultInjection().getNumberOfFaults());
@@ -447,4 +478,5 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     public HostFaultInjection getFaultInjection() {
         return faultInjection;
     }
+
 }

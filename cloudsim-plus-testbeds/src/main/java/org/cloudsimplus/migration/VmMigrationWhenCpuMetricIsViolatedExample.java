@@ -49,14 +49,12 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaMetric;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
+import org.cloudsimplus.sla.metrics.SlaContract;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 /**
@@ -115,14 +113,9 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(VmMigrationWhenCpuMetricIsViolatedExample.class, "SlaMetrics.json");
+    public static final String METRICS_FILE = "SlaMetrics.json";
 
-    /**
-     * Attributes with minimum and maximum values of the CPU Utilization metric
-     * to be set for allocation policy.
-     */
-    private double underCpuUtilizationThreshold;
-    private double overCpuUtilizationThreshold;
+    private SlaContract contract;
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         new VmMigrationWhenCpuMetricIsViolatedExample();
@@ -133,7 +126,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
         simulation = new CloudSim();
 
-        searchCpuUtilizationMetricInSlaContract();
+        this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
         cloudletList = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
 
         @SuppressWarnings("unused")
@@ -276,8 +269,8 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
                 = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                         new PowerVmSelectionPolicyMinimumUtilization(),
-                        overCpuUtilizationThreshold);
-        allocationPolicy.setUnderUtilizationThreshold(underCpuUtilizationThreshold);
+                        contract.getCpuUtilizationMetric().getMaxDimension().getValue());
+        allocationPolicy.setUnderUtilizationThreshold(contract.getCpuUtilizationMetric().getMinDimension().getValue());
 
         PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
         dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
@@ -316,33 +309,6 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
             list.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return list;
-    }
-
-    private void searchCpuUtilizationMetricInSlaContract() throws FileNotFoundException {
-        SlaReader reader = new SlaReader(METRICS_FILE);
-        List<SlaMetric> metrics = reader.getContract().getMetrics();
-        metrics.stream()
-                .filter(m -> m.isCpuUtilization())
-                .findFirst()
-                .ifPresent(this::getCpuUtilizationThreshold);
-
-    }
-
-    private void getCpuUtilizationThreshold(SlaMetric metric) {
-        double minValue
-                = metric.getDimensions().stream()
-                        .filter(d -> d.isValueMin())
-                        .map(d -> d.getValue())
-                        .findFirst().orElse(Double.MIN_VALUE);
-
-        double maxValue
-                = metric.getDimensions().stream()
-                        .filter(d -> d.isValueMax())
-                        .map(d -> d.getValue())
-                        .findFirst().orElse(Double.MAX_VALUE);
-
-        underCpuUtilizationThreshold = minValue / 100;
-        overCpuUtilizationThreshold = maxValue / 100;
     }
 
     /**

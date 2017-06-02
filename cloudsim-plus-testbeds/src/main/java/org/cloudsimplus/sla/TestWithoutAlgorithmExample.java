@@ -70,10 +70,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.TaskTimeCompletion;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
+import org.cloudsimplus.sla.metrics.SlaContract;
 
 /**
  *
@@ -94,6 +91,7 @@ public class TestWithoutAlgorithmExample {
     private static final int VMS = 3;
     private static final int CLOUDLETS = 6;
     private static final long VM_MIPS = 2000;
+    private final SlaContract contract;
 
     private DatacenterBroker broker0;
     private List<Host> hostList;
@@ -113,9 +111,7 @@ public class TestWithoutAlgorithmExample {
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(TestWithoutAlgorithmExample.class, "SlaMetrics.json");
-    private final double cpuUtilizationSlaContract;
-    private double taskTimeCompletionSlaContract;
+    public static final String METRICS_FILE = "SlaMetrics.json";
 
     private int totalOfcloudletSlaSatisfied;
     private List<Double> taskTimesCompletion;
@@ -137,16 +133,9 @@ public class TestWithoutAlgorithmExample {
         simulation = new CloudSim();
 
         // Reading the sla contract and taking the metric values
-        SlaReader slaReader = new SlaReader(METRICS_FILE);
-        TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
-        rt.checkTaskTimeCompletionSlaContract();
-        taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
+        this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
 
-        CpuUtilization cpu = new CpuUtilization(slaReader);
-        cpu.checkCpuUtilizationSlaContract();
-        cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
-
-//       simulation.addOnClockTickListener(this::createNewCloudlets);
+        //       simulation.addOnClockTickListener(this::createNewCloudlets);
         simulation.addOnClockTickListener(this::printVmsCpuUsage);
 
         createDatacenter();
@@ -177,9 +166,13 @@ public class TestWithoutAlgorithmExample {
         broker0.getVmsCreatedList().forEach(vm
                 -> System.out.printf("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
-                        vm.getCpuPercentUsage(), cpuUtilizationSlaContract)
+                        vm.getCpuPercentUsage(), getCustomerMaxCpuUtilization())
         );
         System.out.println();
+    }
+
+    private double getCustomerMaxCpuUtilization() {
+        return contract.getCpuUtilizationMetric().getMaxDimension().getValue();
     }
 
     /**
@@ -326,7 +319,7 @@ public class TestWithoutAlgorithmExample {
      * @see #createHorizontalVmScaling(Vm)
      */
     private boolean isVmOverloaded(Vm vm) {
-        return vm.getCpuPercentUsage() > cpuUtilizationSlaContract;
+        return vm.getCpuPercentUsage() > getCustomerMaxCpuUtilization();
     }
 
     private void printSimulationResults() {
@@ -346,14 +339,18 @@ public class TestWithoutAlgorithmExample {
             taskTimesCompletion.add(taskTimeCompletion);
             average = taskTimeCompletionCloudletAverage(broker, taskTimesCompletion);
 
-            if (taskTimeCompletion <= taskTimeCompletionSlaContract) {
+            if (taskTimeCompletion <= getCustomerMaxTaskCompletionTime()) {
                 totalOfcloudletSlaSatisfied++;
             }
         }
 
         System.out.printf("\t\t\n TaskTimeCompletion simulation (average) : %.2f \n TaskTimeCompletion contrato SLA: %.2f "
                 + "\n Total of cloudlets SLA satisfied: %d",
-                average, taskTimeCompletionSlaContract, totalOfcloudletSlaSatisfied);
+                average, getCustomerMaxTaskCompletionTime(), totalOfcloudletSlaSatisfied);
+    }
+
+    private double getCustomerMaxTaskCompletionTime() {
+        return contract.getTaskCompletionTimeMetric().getMaxDimension().getValue();
     }
 
     private double taskTimeCompletionCloudletAverage(DatacenterBroker broker, List<Double> taskTimesCompletion) {

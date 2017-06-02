@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import static java.util.Comparator.comparingDouble;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -64,9 +65,7 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
+import org.cloudsimplus.sla.metrics.SlaContract;
 
 /**
  * Example of dynamic creation of VMS at runtime, respecting the CPU usage limit
@@ -89,6 +88,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
     private static final int VMS = 5;
+    private final SlaContract contract;
 
     private DatacenterBroker broker0;
     private List<Host> hostList;
@@ -107,8 +107,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(DynamicVmCreationByCpuUtilizationAndFreePesOfVm.class, "SlaMetrics.json");
-    private final double cpuUtilizationSlaContract;
+    public static final String METRICS_FILE = "SlaMetrics.json";
 
     public static void main(String[] args) throws FileNotFoundException, IOException {
         Log.printFormattedLine(" Starting... ");
@@ -128,11 +127,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         simulation = new CloudSim();
 
         // Reading the sla contract and taking the metric values
-        SlaReader slaReader = new SlaReader(METRICS_FILE);
-
-        CpuUtilization cpu = new CpuUtilization(slaReader);
-        cpu.checkCpuUtilizationSlaContract();
-        cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
+        this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
 
         simulation.addOnClockTickListener(this::createNewCloudlets);
         simulation.addOnClockTickListener(this::printVmsCpuUsage);
@@ -160,12 +155,16 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
         broker0.getVmsCreatedList().forEach(vm
                 -> System.out.printf("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
-                        vm.getCpuPercentUsage(), cpuUtilizationSlaContract)
+                        vm.getCpuPercentUsage(), getCustomerMaxCpuUtilization())
         );
         System.out.println();
     }
 
-     private Cloudlet createCloudlet() {
+    private double getCustomerMaxCpuUtilization() {
+        return contract.getCpuUtilizationMetric().getMaxDimension().getValue();
+    }
+
+    private Cloudlet createCloudlet() {
         final int id = createdCloudlets++;
         //randomly selects a length for the cloudlet
         final long length = CLOUDLET_LENGTHS[(int) randCloudlet.sample()];
@@ -288,7 +287,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
      * @see #createHorizontalVmScaling(Vm)
      */
     private boolean isVmOverloaded(Vm vm) {
-        return vm.getCpuPercentUsage() > cpuUtilizationSlaContract;
+        return vm.getCpuPercentUsage() > getCustomerMaxCpuUtilization();
     }
 
 
@@ -323,11 +322,10 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
       /**
      * Shows the cpu utilization
      *
-     * @param cloudlet to calculate the utilization
+     * @param eventInfo the {@link EventInfo} containing the data about the generated event
      * @return cpuUtilization
      */
     private void cpuUtilization(EventInfo eventInfo) {
-
         double cpuTime = 0;
         for (Cloudlet cloudlets : cloudletList) {
             cpuTime += cloudlets.getActualCpuTime();

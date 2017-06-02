@@ -62,15 +62,13 @@ import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.sla.VmCost;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.TaskTimeCompletion;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
+
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.CLOUDLETS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.CLOUDLET_LENGTHS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.VM_PES;
 
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
+import org.cloudsimplus.sla.metrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
@@ -79,16 +77,11 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  * @author raysaoliveira
  */
 public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends SimulationExperiment {
-
     private static final int SCHEDULING_INTERVAL = 5;
-
-    /**
-     * The interval to request the creation of new Cloudlets.
-     */
-    private static final int CLOUDLETS_CREATION_INTERVAL = SCHEDULING_INTERVAL * 3;
 
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
+    private final SlaContract contract;
 
     private List<Host> hostList;
     private List<Vm> vmList;
@@ -102,9 +95,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletTaskTimeCompletionWithoutMinimizationExperiment.class, "SlaMetrics.json");
-    private double cpuUtilizationSlaContract;
-    private double taskTimeCompletionSlaContract;
+    public static final String METRICS_FILE = "SlaMetrics.json";
 
     private CloudletTaskTimeCompletionWithoutMinimizationExperiment(final long seed) {
         this(0, null, seed);
@@ -119,17 +110,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         randCloudlet = new UniformDistr(getSeed());
         randVm = new UniformDistr(getSeed()+1);
         try {
-
-            SlaReader slaReader = new SlaReader(METRICS_FILE);
-            TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
-            rt.checkTaskTimeCompletionSlaContract();
-            taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
-
-            CpuUtilization cpu = new CpuUtilization(slaReader);
-            cpu.checkCpuUtilizationSlaContract();
-            cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
-
-            //  getCloudSim().addOnClockTickListener(this::createNewCloudlets);
+            this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
             getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
@@ -148,8 +129,12 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         broker0.getVmsCreatedList().forEach(vm
                 -> Log.printFormattedLine("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
-                        vm.getCpuPercentUsage(), cpuUtilizationSlaContract)
+                        vm.getCpuPercentUsage(), getCustomerMaxCpuUtilization())
         );
+    }
+
+    private double getCustomerMaxCpuUtilization() {
+        return contract.getCpuUtilizationMetric().getMaxDimension().getValue();
     }
 
     @Override
@@ -204,7 +189,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     }
 
     @Override
-    protected List<Vm> createVms() {
+    protected List<Vm> createVms(DatacenterBroker broker) {
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
@@ -254,7 +239,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
      * @see #createHorizontalVmScaling(Vm)
      */
     private boolean isVmOverloaded(Vm vm) {
-        return vm.getCpuPercentUsage() > cpuUtilizationSlaContract;
+        return vm.getCpuPercentUsage() > getCustomerMaxCpuUtilization();
     }
 
     @Override
@@ -306,8 +291,12 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
 
         Log.printFormattedLine(
                 "\t\t\n TaskTimeCompletion simulation: %.2f \n TaskTimeCompletion contrato SLA: %.2f \n",
-                cloudletTaskTimeCompletion.getMean(), taskTimeCompletionSlaContract);
+                cloudletTaskTimeCompletion.getMean(), getCustomerMaxTaskCompletionTime());
         return cloudletTaskTimeCompletion.getMean();
+    }
+
+    private double getCustomerMaxTaskCompletionTime() {
+        return contract.getTaskCompletionTimeMetric().getMaxDimension().getValue();
     }
 
     double getPercentageOfCloudletsMeetingTaskTimeCompletion() {
@@ -317,7 +306,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
 
         double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .filter(rt -> rt <= taskTimeCompletionSlaContract)
+                .filter(rt -> rt <= getCustomerMaxTaskCompletionTime())
                 .count();
 
         System.out.printf("\n ** Percentage of cloudlets that complied with "

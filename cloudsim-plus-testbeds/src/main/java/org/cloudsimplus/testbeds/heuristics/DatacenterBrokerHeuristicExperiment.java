@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.testbeds.heuristics;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -157,7 +158,7 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
     }
 
     @Override
-    protected List<Vm> createVms() {
+    protected List<Vm> createVms(DatacenterBroker broker) {
         final List<Vm> list = new ArrayList<>(vmPesArray.length);
         for (final int pes : vmPesArray) {
             list.add(createVm(pes));

@@ -62,15 +62,13 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.TaskTimeCompletion;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
+
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLETS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLET_LENGTHS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VM_PES;
 
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
+import org.cloudsimplus.sla.metrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
@@ -87,6 +85,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
 
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
+    private final SlaContract contract;
 
     private List<Host> hostList;
     private static List<Vm> vmList;
@@ -100,7 +99,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletTaskTimeCompletionMinimizationExperiment.class, "SlaMetrics.json");
+    public static final String METRICS_FILE = "SlaMetrics.json";
     private double cpuUtilizationSlaContract;
     private double taskTimeCompletionSlaContract;
 
@@ -124,16 +123,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
         this.randCloudlet = new UniformDistr(getSeed());
         this.randVm = new UniformDistr(getSeed());
         try {
-            SlaReader slaReader = new SlaReader(METRICS_FILE);
-            TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
-            rt.checkTaskTimeCompletionSlaContract();
-            taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
-
-            CpuUtilization cpu = new CpuUtilization(slaReader);
-            cpu.checkCpuUtilizationSlaContract();
-            cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
-
-            // getCloudSim().addOnClockTickListener(this::createNewCloudlets);
+            this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
             getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
@@ -265,7 +255,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     }
 
     @Override
-    protected List<Vm> createVms() {
+    protected List<Vm> createVms(DatacenterBroker broker) {
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();

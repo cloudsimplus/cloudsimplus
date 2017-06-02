@@ -53,18 +53,15 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CpuUtilization;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.TaskTimeCompletion;
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
+
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.VMS;
 import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.VM_PES;
 
-import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
+import org.cloudsimplus.sla.metrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
@@ -83,6 +80,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
 
     private static final int HOSTS = 100;
     private static final int HOST_PES = 70;
+    private final SlaContract contract;
 
     private List<Host> hostList;
     private List<Vm> vmList;
@@ -93,9 +91,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = ResourceLoader.getResourcePath(CloudletTaskTimeCompletionWorkLoadMinimizationExperiment.class, "SlaMetrics.json");
-    private double cpuUtilizationSlaContract;
-    private double taskTimeCompletionSlaContract;
+    public static final String METRICS_FILE = "SlaMetrics.json";
 
     /**
      * Sorts the Cloudlets before submitting them to the Broker, so that
@@ -118,16 +114,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
         randCloudlet = new UniformDistr(getSeed());
         randVm = new UniformDistr(getSeed()+1);
         try {
-            SlaReader slaReader = new SlaReader(METRICS_FILE);
-            TaskTimeCompletion rt = new TaskTimeCompletion(slaReader);
-            rt.checkTaskTimeCompletionSlaContract();
-            taskTimeCompletionSlaContract = rt.getMaxValueTaskTimeCompletion();
-
-            CpuUtilization cpu = new CpuUtilization(slaReader);
-            cpu.checkCpuUtilizationSlaContract();
-            cpuUtilizationSlaContract = cpu.getMaxValueCpuUtilization();
-
-
+            this.contract = SlaContract.getInstanceFromResourcesDir(METRICS_FILE);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWorkLoadMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
@@ -187,7 +174,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
 
         Vm selectedVm = createdVms.stream()
                 .filter(vm -> getExpectedNumberOfFreeVmPes(vm) >= cloudlet.getNumberOfPes())
-                .filter(vm -> getExpectedCloudletTaskTimeCompletion(cloudlet, vm) <= taskTimeCompletionSlaContract)
+                .filter(vm -> getExpectedCloudletTaskTimeCompletion(cloudlet, vm) <= getMaxTaskCompletionTime())
                 .findFirst().orElse(mostFreePesVm);
 
         return selectedVm;
@@ -231,7 +218,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     }
 
     @Override
-    protected List<Vm> createVms() {
+    protected List<Vm> createVms(DatacenterBroker broker) {
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
@@ -321,7 +308,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
 
         double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .filter(rt -> rt <= taskTimeCompletionSlaContract)
+                .filter(rt -> rt <= getMaxTaskCompletionTime())
                 .count();
     /*    System.out.printf("\n ** Percentage of cloudlets that complied with "
                 + "the SLA Agreement:  %.2f %%",
@@ -330,7 +317,11 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
         return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
     }
 
-      double getSumPesVms() {
+    private double getMaxTaskCompletionTime() {
+        return contract.getTaskCompletionTimeMetric().getMaxDimension().getValue();
+    }
+
+    double getSumPesVms() {
         return vmList.stream()
                 .mapToDouble(vm -> vm.getNumberOfPes())
                 .sum();

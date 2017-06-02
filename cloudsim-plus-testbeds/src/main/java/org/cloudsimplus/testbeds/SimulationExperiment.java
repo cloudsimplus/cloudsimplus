@@ -253,8 +253,9 @@ public abstract class SimulationExperiment implements Runnable {
      * Creates the Vms to be used by the experiment.
      *
      * @return the List of created VMs
+     * @param broker
      */
-    protected abstract List<Vm> createVms();
+    protected abstract List<Vm> createVms(DatacenterBroker broker);
 
     /**
      * Creates a DatacenterBroker and adds it to the
@@ -287,7 +288,7 @@ public abstract class SimulationExperiment implements Runnable {
      * @param broker broker to submit VMs to
      */
     private void createAndSubmitVmsInternal(DatacenterBroker broker) {
-        List<Vm> list = createVms();
+        List<Vm> list = createVms(broker);
         vmList.addAll(list);
         broker.submitVmList(list);
     }

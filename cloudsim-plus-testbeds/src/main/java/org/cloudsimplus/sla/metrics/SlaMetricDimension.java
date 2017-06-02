@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile;
+package org.cloudsimplus.sla.metrics;
 
 /**
  * Represents the values for a specific metrics of a SLA contract.
@@ -38,59 +38,66 @@ package org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile;
  * @author raysaoliveira
  */
 public final class SlaMetricDimension {
-    public static final String VALUE_MAX_NAME="valueMax";
-    public static final String VALUE_MIN_NAME="valueMin";
+    private static final String VALUE_MAX_NAME="valueMax";
+    private static final String VALUE_MIN_NAME="valueMin";
 
     private String name;
+    private String unit;
     private double value;
 
-    /**
-     * @return the name
-     */
+    public SlaMetricDimension(){
+        this(0);
+    }
+
+    public SlaMetricDimension(final double value){
+        this.name = "";
+        this.unit = "";
+        setValue(value);
+    }
+
     public String getName() {
         return name;
     }
 
-    /**
-     * @param name the name to set
-     */
-    public void setName(String name) {
+    public SlaMetricDimension setName(String name) {
         this.name = name;
+        return this;
     }
 
     /**
-     * @return the value
-     */
-    public double getValue() {
-        return value;
-    }
-
-    /**
-     * @param value the value to set
-     */
-    public void setValue(double value) {
-        if(value < 0){
-            throw new IllegalArgumentException("Metric value cannot be negative");
-        }
-        this.value = value;
-    }
-
-    /**
-     * Checks if this is a max value dimension.
+     * Gets the value of the dimension,
+     * in absolute or percentage, according to the
+     * {@link #getUnit()}.
      *
+     * <p>When the unit is "Percent", the values are defined
+     * in scale from 0 to 100%, but they are stored in this class
+     * in scale from 0 to 1, because everywhere percentage values
+     * are defined in this scale.</p>
      * @return
      */
+    public double getValue() {
+        return isPercent() ? value/100.0 : value;
+    }
+
+    public final SlaMetricDimension setValue(final double value) {
+        this.value = value;
+        return this;
+    }
+
     public boolean isValueMax(){
         return this.name.trim().equals(VALUE_MAX_NAME);
     }
 
-    /**
-     * Checks if this is a min value dimension.
-     *
-     * @return
-     */
     public boolean isValueMin(){
         return this.name.trim().equals(VALUE_MIN_NAME);
+    }
+
+    /**
+     * Checks if the unit is defined in percentage values.
+     * @return
+     */
+    public boolean isPercent() {
+        return "Percent".equalsIgnoreCase(unit);
     }
 
     @Override
@@ -99,6 +106,20 @@ public final class SlaMetricDimension {
     }
 
 
+    /**
+     * Gets the unit of the dimension, if "Percent" or "Absolute".
+     * When the unit is "Percent", the values are defined
+     * in scale from 0 to 100%, but they are stored in this class
+     * in scale from 0 to 1, because everywhere percentage values
+     * are defined in this scale.
+     * @return
+     */
+    public String getUnit() {
+        return unit;
+    }
 
-
+    public SlaMetricDimension setUnit(String unit) {
+        this.unit = unit;
+        return this;
+    }
 }

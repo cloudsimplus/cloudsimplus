@@ -1,6 +1,6 @@
 /*
  */
-package hostFaultInjection;
+package org.cloudsimplus.hostfaultinjection;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,9 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
@@ -24,7 +21,6 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     static final long[] CLOUDLET_LENGTHS = {1000_000_000L, 1800_000_000L, 2800_000_000L};
-    static final int VMS = 3;
     static final int CLOUDLETS = 6;
 
     /**
@@ -84,7 +80,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
         availability.add(exp.getFaultInjection().availability() * 100);
-        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityThatMeetingTheSla());
+        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla());
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
     }
 
@@ -104,7 +100,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     protected void printSimulationParameters() {
         System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getSimulationRuns());
         System.out.println("Experiments configurations:");
-        System.out.printf("\tBase seed: %d | Number of VMs: %d | Number of Cloudlets: %d\n", getBaseSeed(), VMS, CLOUDLETS);
+        System.out.printf("\tBase seed: %d | Number of Cloudlets: %d\n", getBaseSeed(), CLOUDLETS);
         System.out.printf("\tApply Antithetic Variates Technique: %b\n", isApplyAntitheticVariatesTechnique());
         if (isApplyBatchMeansMethod()) {
             System.out.println("\tApply Batch Means Method to reduce simulation results correlation: true");

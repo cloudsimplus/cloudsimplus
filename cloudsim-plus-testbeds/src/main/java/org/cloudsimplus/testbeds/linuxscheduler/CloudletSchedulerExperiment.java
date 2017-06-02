@@ -139,10 +139,10 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected List<Vm> createVms() {
+    protected List<Vm> createVms(DatacenterBroker broker) {
         final List<Vm> list = new ArrayList<>(VMS_TO_CREATE);
         for(int i = 0; i < VMS_TO_CREATE; i++) {
-            list.add(createVm());
+            list.add(createVm(broker));
         }
         return list;
     }
@@ -151,8 +151,9 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
      * Gets a {@link Supplier} function that is able to create a new Vm.
      *
      * @return the Supplier function that can create a Vm when requested
+     * @param broker
      */
-    protected abstract Vm createVm();
+    protected abstract Vm createVm(DatacenterBroker broker);
 
     @Override
     protected List<Cloudlet> createCloudlets() {
