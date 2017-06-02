@@ -121,6 +121,8 @@ public class VmSimple implements Vm {
     private VerticalVmScaling peVerticalScaling;
 
     private String description;
+    private double startTime;
+    private double stopTime;
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -143,6 +145,8 @@ public class VmSimple implements Vm {
         setCloudletScheduler(CloudletScheduler.NULL);
         this.processor = new Processor(this, mipsCapacity, numberOfPes);
         this.description = "";
+        this.startTime = -1;
+        this.stopTime = -1;
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -349,6 +353,28 @@ public class VmSimple implements Vm {
     @Override
     public final Vm setBroker(DatacenterBroker broker) {
         this.broker = Objects.isNull(broker) ? DatacenterBroker.NULL : broker;
+        return this;
+    }
+
+    @Override
+    public double getStartTime() {
+        return this.startTime;
+    }
+
+    @Override
+    public Vm setStartTime(final double startTime) {
+        this.startTime = Math.max(startTime, -1);
+        return this;
+    }
+
+    @Override
+    public double getStopTime() {
+        return this.stopTime;
+    }
+
+    @Override
+    public Vm setStopTime(final double stopTime) {
+        this.stopTime = Math.max(stopTime, -1);
         return this;
     }
 

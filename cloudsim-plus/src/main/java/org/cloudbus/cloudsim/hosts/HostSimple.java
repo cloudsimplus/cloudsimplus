@@ -215,6 +215,9 @@ public class HostSimple implements Host {
         if(result) {
             vm.setHost(this);
             vm.notifyOnHostAllocationListeners();
+            if(vm.getStartTime() < 0) {
+               vm.setStartTime(getSimulation().clock());
+            }
         }
 
         return result;
@@ -322,6 +325,7 @@ public class HostSimple implements Host {
     public void destroyVm(Vm vm) {
         destroyVmInternal(vm);
         vm.notifyOnHostDeallocationListeners(this);
+        vm.setStopTime(getSimulation().clock());
     }
 
     @Override
