@@ -64,13 +64,13 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public class BasicFirstExample {
-    private static final int HOSTS = 2;
-    private static final int HOST_PES = 4;
+    private static final int HOSTS = 1;
+    private static final int HOST_PES = 8;
 
     private static final int VMS = 2;
-    private static final int VM_PES = 2;
+    private static final int VM_PES = 4;
 
-    private static final int CLOUDLETS = 10;
+    private static final int CLOUDLETS = 4;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 10000;
 
@@ -107,7 +107,7 @@ public class BasicFirstExample {
      */
     private Datacenter createDatacenter() {
         final List<Host> hostList = new ArrayList<>(HOSTS);
-        for(int h = 0; h < HOSTS; h++) {
+        for(int i = 0; i < HOSTS; i++) {
             Host host = createHost();
             hostList.add(host);
         }
@@ -143,9 +143,9 @@ public class BasicFirstExample {
      */
     private List<Vm> createVms() {
         final List<Vm> list = new ArrayList<>(VMS);
-        for (int v = 0; v < VMS; v++) {
+        for (int i = 0; i < VMS; i++) {
             Vm vm =
-                new VmSimple(v, 1000, VM_PES)
+                new VmSimple(i, 1000, VM_PES)
                     .setRam(512).setBw(1000).setSize(10000)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
@@ -161,9 +161,9 @@ public class BasicFirstExample {
     private List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
         UtilizationModel utilization = new UtilizationModelFull();
-        for (int c = 0; c < CLOUDLETS; c++) {
+        for (int i = 0; i < CLOUDLETS; i++) {
             Cloudlet cloudlet =
-                new CloudletSimple(c, CLOUDLET_LENGTH, CLOUDLET_PES)
+                new CloudletSimple(i, CLOUDLET_LENGTH, CLOUDLET_PES)
                     .setFileSize(1024)
                     .setOutputSize(1024)
                     .setUtilizationModel(utilization);

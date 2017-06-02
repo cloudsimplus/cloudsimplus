@@ -565,4 +565,42 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     @Override
     Vm setBroker(DatacenterBroker broker);
 
+    /**
+     * Gets the time the VM was created into some Host for the first time (in seconds).
+     * The value -1 means the VM was not created yet.
+     *
+     * @return
+     */
+    double getStartTime();
+
+    /**
+     * Sets the time the VM was created into some Host for the first time.
+     * The value -1 means the VM was not created yet.
+     *
+     * @param startTime the start time to set (in seconds)
+     * @return
+     */
+    Vm setStartTime(final double startTime);
+
+    /**
+     * Gets the time the VM was destroyed into the last Host it executed (in seconds).
+     * The value -1 means the VM has not stopped or has not even
+     * started yet.
+     *
+     * @return
+     * @see #isCreated()
+     */
+    double getStopTime();
+
+    /**
+     * Sets the time the VM was destroyed into the last Host it executed (in seconds).
+     * The value -1 means the VM has not stopped or has not even
+     * started yet.
+     *
+     * @param stopTime the stop time to set (in seconds)
+     * @return
+     * @see #isCreated()
+     */
+    Vm setStopTime(final double stopTime);
+
  }
