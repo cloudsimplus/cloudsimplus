@@ -379,6 +379,15 @@ public class VmSimple implements Vm {
     }
 
     @Override
+    public double getTotalExecutionTime() {
+        if(startTime < 0) {
+            return 0;
+        }
+
+        return stopTime < 0 ? getSimulation().clock() - startTime : stopTime - startTime;
+    }
+
+    @Override
     public DatacenterBroker getBroker() {
         return broker;
     }

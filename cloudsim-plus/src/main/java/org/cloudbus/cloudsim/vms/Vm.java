@@ -593,6 +593,17 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     double getStopTime();
 
     /**
+     * Gets the total time (in seconds) the Vm spent executing.
+     * It considers the entire VM execution even if in different Hosts
+     * it has possibly migrated.
+     *
+     * @return the VM total execution time if the VM has stopped,
+     *         the time executed so far if the VM is running yet,
+     *         or 0 if it hasn't started.
+     */
+    double getTotalExecutionTime();
+
+    /**
      * Sets the time the VM was destroyed into the last Host it executed (in seconds).
      * The value -1 means the VM has not stopped or has not even
      * started yet.
