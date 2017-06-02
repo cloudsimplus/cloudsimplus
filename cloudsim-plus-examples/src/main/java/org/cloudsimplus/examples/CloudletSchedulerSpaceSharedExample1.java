@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -53,24 +54,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A minimal but organized, structured and re-usable CloudSim Plus example
- * which shows good coding practices for creating simulation scenarios.
- *
- * <p>It defines a set of constants that enable a developer
- * to change the number of Hosts, VMs and Cloudlets to create
- * and the number of {@link Pe}s for Hosts, VMs and Cloudlets.</p>
+ * An example that runs 4 Cloudlets into a VM where its number
+ * of PEs is just half of the total PEs required by all Cloudlets.
+ * The Vm uses a {@link CloudletSchedulerSpaceShared}, which
+ * makes half of the Cloudlets to run first, while the other half
+ * waits their finalization.
+ * This way, the execution time of all cloudlets is the same,
+ * but the start time of the second half is equal to
+ * finish time of the first half.
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
+ * @since CloudSim Plus 1.2.1
  */
-public class BasicFirstExample {
-    private static final int HOSTS = 2;
+public class CloudletSchedulerSpaceSharedExample1 {
+    private static final int HOSTS = 1;
     private static final int HOST_PES = 4;
 
-    private static final int VMS = 2;
-    private static final int VM_PES = 2;
+    private static final int VMS = 1;
+    private static final int VM_PES = 4;
 
-    private static final int CLOUDLETS = 10;
+    private static final int CLOUDLETS = 4;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 10000;
 
@@ -81,10 +84,10 @@ public class BasicFirstExample {
     private Datacenter datacenter0;
 
     public static void main(String[] args) {
-        new BasicFirstExample();
+        new CloudletSchedulerSpaceSharedExample1();
     }
 
-    public BasicFirstExample() {
+    public CloudletSchedulerSpaceSharedExample1() {
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
 
@@ -147,7 +150,7 @@ public class BasicFirstExample {
             Vm vm =
                 new VmSimple(v, 1000, VM_PES)
                     .setRam(512).setBw(1000).setSize(10000)
-                    .setCloudletScheduler(new CloudletSchedulerTimeShared());
+                    .setCloudletScheduler(new CloudletSchedulerSpaceShared());
 
             list.add(vm);
         }

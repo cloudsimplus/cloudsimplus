@@ -53,24 +53,28 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A minimal but organized, structured and re-usable CloudSim Plus example
- * which shows good coding practices for creating simulation scenarios.
- *
- * <p>It defines a set of constants that enable a developer
- * to change the number of Hosts, VMs and Cloudlets to create
- * and the number of {@link Pe}s for Hosts, VMs and Cloudlets.</p>
+ * An example that runs 2 Cloudlets into a VM where its number
+ * of PEs is just half of the total PEs required by all Cloudlets.
+ * The Vm uses a {@link CloudletSchedulerTimeShared}.
+ * Since there are enough PEs for all Cloudlets, this scheduler
+ * shares existing PEs among all Cloudlets, so that there aren't
+ * waiting Cloudlets.
+ * They start at the same time and also considering they have the same length,
+ * they finish together too.
+ * However, each Cloudlet will take the double of the time
+ * it would take if there were enough PEs for all of them.
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
+ * @since CloudSim Plus 1.2.1
  */
-public class BasicFirstExample {
-    private static final int HOSTS = 2;
+public class CloudletSchedulerTimeSharedExample1 {
+    private static final int HOSTS = 1;
     private static final int HOST_PES = 4;
 
-    private static final int VMS = 2;
+    private static final int VMS = 1;
     private static final int VM_PES = 2;
 
-    private static final int CLOUDLETS = 10;
+    private static final int CLOUDLETS = 2;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 10000;
 
@@ -81,10 +85,10 @@ public class BasicFirstExample {
     private Datacenter datacenter0;
 
     public static void main(String[] args) {
-        new BasicFirstExample();
+        new CloudletSchedulerTimeSharedExample1();
     }
 
-    public BasicFirstExample() {
+    public CloudletSchedulerTimeSharedExample1() {
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
 

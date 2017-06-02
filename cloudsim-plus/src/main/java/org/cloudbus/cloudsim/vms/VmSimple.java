@@ -305,10 +305,10 @@ public class VmSimple implements Vm {
     @Override
     public long getCurrentRequestedBw() {
         if (!isCreated()) {
-            return getBw().getCapacity();
+            return bw.getCapacity();
         }
 
-        return (long) (getCloudletScheduler().getCurrentRequestedBwPercentUtilization() * getBw().getCapacity());
+        return (long) (cloudletScheduler.getCurrentRequestedBwPercentUtilization() * bw.getCapacity());
     }
 
     @Override
@@ -319,10 +319,10 @@ public class VmSimple implements Vm {
     @Override
     public long getCurrentRequestedRam() {
         if (!isCreated()) {
-            return getRam().getCapacity();
+            return ram.getCapacity();
         }
 
-        return (long) (getCloudletScheduler().getCurrentRequestedRamPercentUtilization() * getRam().getCapacity());
+        return (long) (cloudletScheduler.getCurrentRequestedRamPercentUtilization() * ram.getCapacity());
     }
 
     @Override

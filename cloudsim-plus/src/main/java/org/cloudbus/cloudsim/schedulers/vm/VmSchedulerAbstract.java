@@ -112,7 +112,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public void deallocatePesFromVm(Vm vm, int pesToRemove) {
+    public void deallocatePesFromVm(Vm vm, final int pesToRemove) {
         if(pesToRemove <= 0 || vm.getNumberOfPes() == 0){
             return;
         }
@@ -151,7 +151,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return pesToRemove;
     }
 
-    protected abstract void deallocatePesFromVmInternal(Vm vm, int pesToRemove);
+    protected abstract void deallocatePesFromVmInternal(Vm vm, final int pesToRemove);
 
     @Override
     public void deallocatePesForAllVms() {
@@ -161,7 +161,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public List<Pe> getPesAllocatedForVm(Vm vm) {
-        return getPeMap().getOrDefault(vm, new ArrayList<>());
+        return peMap.getOrDefault(vm, new ArrayList<>());
     }
 
     @Override
@@ -256,7 +256,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public double getAvailableMips() {
         final double totalAllocatedMips =
-            getMipsMapAllocated().keySet()
+            mipsMapAllocated.keySet()
                 .stream()
                 .mapToDouble(this::actualVmTotalRequestedMips)
                 .sum();
@@ -326,7 +326,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
             the destination host only increases CPU usage according
             to the CPU migration overhead.
              */
-            return getVmMigrationCpuOverhead();
+            return vmMigrationCpuOverhead;
         }
 
         if (host.getVmsMigratingOut().contains(vm)) {
@@ -343,7 +343,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getMaxCpuUsagePercentDuringOutMigration() {
-        return 1 - getVmMigrationCpuOverhead();
+        return 1 - vmMigrationCpuOverhead;
     }
 
     @Override
