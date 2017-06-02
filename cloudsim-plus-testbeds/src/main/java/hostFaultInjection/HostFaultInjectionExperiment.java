@@ -6,6 +6,7 @@ import static hostFaultInjection.HostFaultInjectionRunner.CLOUDLETS;
 import static hostFaultInjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
 import static hostFaultInjection.HostFaultInjectionRunner.VMS;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,7 +39,10 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudsimplus.sla.VmCost;
+import org.cloudsimplus.sla.readJsonFile.instancesConfigurationsJsonFile.AwsEc2Instance;
 import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.Availability;
+import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.CostPrice;
 import org.cloudsimplus.sla.readJsonFile.slaMetricsJsonFile.SlaReader;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
@@ -84,6 +88,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      */
     public static final String METRICS_FILE = ResourceLoader.getResourcePath(HostFaultInjectionExperiment.class, "SlaMetrics.json");
     private double availabilitySlaContract;
+    private double costPriceSlaContract;
 
 
     private HostFaultInjectionExperiment(final long seed) {
@@ -100,15 +105,69 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         setAfterScenarioBuild(exp -> createFaultInjectionForHosts(getDatacenter0()));
         this.randCloudlet = new UniformDistr(this.getSeed());
         try {
-            SlaReader slaReader = new SlaReader(METRICS_FILE);
-            Availability availability = new Availability(slaReader);
-            availability.checkAvailabilitySlaContract();
-            availabilitySlaContract = availability.getMinValueAvailability();
-
+            readTheSlaContract(METRICS_FILE);
+            readAwsEc2InstanceFiles();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Reads all aws instances configurations for verify which is the
+     * more appropriate for the price that the customer wants.
+     */
+    private int readAwsEc2InstanceFiles() throws IOException {
+        String file = "";
+        //Lists the files into the given directory
+
+        BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instancesFiles");
+        try {
+            while (br.ready()) {
+                file = br.readLine();
+                final AwsEc2Instance instance = AwsEc2Instance.getInstanceFromResourcesDir(file);
+                if (isCostPriceContractMinorThanPriceInstance(instance, instance.getPricePerHour())) {
+                    return 0;
+                }
+            }
+            br.close();
+        } catch (IOException ioe) {
+            ioe.printStackTrace();
+        }
+        return 0;
+    }
+
+    /**
+     * Checks if the instance's price is greater than customer's price or not.
+     * @param instance is the instance
+     * @param price the price of the instance
+     * @return true if the price is greater than customer's price, and false otherwise.
+     */
+    private boolean isCostPriceContractMinorThanPriceInstance(AwsEc2Instance instance, double price) {
+        if(price <= costPriceSlaContract  ){
+            System.out.println("\n\t ----> Cost price contract: " + costPriceSlaContract);
+            System.out.println("\n\t ----> Name instance: " + instance.getName() +
+                " memory: " + instance.getMemoryInMB() + " pes : " + instance.getvCPU() + " price: " + price + "\n");
+            return true;
         }
 
+        return false;
+    }
+
+    /**
+     * Read the Sla contract passing the file containing the metrics.
+     */
+    private void readTheSlaContract(String file) throws FileNotFoundException {
+
+        SlaReader slaReader = new SlaReader(file);
+        Availability availability = new Availability(slaReader);
+        availability.checkAvailabilitySlaContract();
+        availabilitySlaContract = availability.getMinValueAvailability();
+
+        CostPrice costPrice = new CostPrice(slaReader);
+        costPrice.checkCostPriceSlaContract();
+        costPriceSlaContract = costPrice.getMaxValueCostPrice();
 
     }
 
@@ -327,6 +386,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     /**
      * Computes the percentage of customers for whom the availability stated
      * in the SLA was met (in scale from 0 to 1, where 1 is 100%).
+     *
      * @return
      */
     public double getPercentageOfAvailabilityThatMeetingTheSla() {
@@ -342,6 +402,26 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     /**
+     * Calculates the cost price of resources (processing, bw, memory, storage)
+     * of each or all of the Datacenter VMs()
+     *
+     */
+    double getTotalCostPrice() {
+        VmCost vmCost;
+        double totalCost = 0.0;
+        for (Vm vm : getVmList()) {
+            if (vm.getCloudletScheduler().hasFinishedCloudlets()) {
+                vmCost = new VmCost(vm);
+                totalCost += vmCost.getTotalCost();
+            } else {
+                Log.printFormattedLine(
+                    "\tVm %d didn't execute any Cloudlet.", vm.getId());
+            }
+        }
+        return totalCost;
+    }
+
+    /**
      * A main method just for test purposes.
      *
      * @param args
@@ -350,12 +430,6 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
         HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(System.currentTimeMillis());
-
-        /*exp.getBrokerList().stream().forEach(b -> b.setLog(false));
-        exp.setAfterScenarioBuild(e -> {
-            e.getBrokerList().stream().forEach(b -> b.setLog(false));
-            e.getDatacenter0().setLog(false);
-        });*/
 
         exp.setVerbose(true).run();
         exp.getBrokerList().stream().forEach(b -> System.out.printf("%s - Availability %%: %.4f\n", b, exp.getFaultInjection().availability(b) * 100));

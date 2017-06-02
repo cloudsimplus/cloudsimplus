@@ -1,5 +1,8 @@
 package org.cloudbus.cloudsim.util;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.net.URL;
 
 /**
@@ -26,6 +29,32 @@ public final class ResourceLoader {
         final URL resource = klass.getClassLoader().getResource(name);
         final String folder = (resource == null ? "" : resource.getPath());
         return (folder == null ? "" : folder);
+    }
+
+    /**
+     * Gets a {@link FileReader} to read a resource (a file or sub-directory inside the resources directory)
+     * from its absolute path.
+     *
+     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
+     * @param resourceName the name of the resource to get a {@link FileReader} for it
+     * @return a {@link FileReader} to read the resource
+     * @throws FileNotFoundException when the file doesn't exist
+     */
+    public static FileReader getFileReader(Class klass, String resourceName) throws FileNotFoundException {
+        return new FileReader(ResourceLoader.getResourcePath(klass, resourceName));
+    }
+
+    /**
+     * Gets a {@link BufferedReader} to read a resource (a file or sub-directory inside the resources directory)
+     * from its absolute path.
+     *
+     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
+     * @param resourceName the name of the resource to get a {@link BufferedReader} for it
+     * @return a {@link BufferedReader} to read the resource
+     * @throws FileNotFoundException when the file doesn't exist
+     */
+    public static BufferedReader getBufferedReader(Class klass, String resourceName) throws FileNotFoundException {
+        return new BufferedReader(getFileReader(klass, resourceName));
     }
 
 }

@@ -79,12 +79,8 @@
       "metricName": "CostPrice",
       "dimensions": [
         {
-          "name": "valueMin",
-          "value": 250
-        },
-        {
           "name": "valueMax",
-          "value": 500
+          "value": 0.017
         }
       ]
     }

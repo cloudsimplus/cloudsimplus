@@ -44,6 +44,7 @@ public class SlaMetric {
     private static final String CPU_UTILIZATION_NAME = "CpuUtilization";
     private static final String WAIT_TIME_NAME = "WaitTime";
     private static final String AVAILABILITY = "Availability";
+    private static final String COST_PRICE = "CostPrice";
 
     private List<SlaMetricDimension> dimensions;
     private String metricName;
@@ -110,6 +111,15 @@ public class SlaMetric {
      */
     public boolean isAvailability() {
         return this.metricName.trim().equals(AVAILABILITY);
+    }
+
+    /**
+     * Checks if this is a cost price metric.
+     *
+     * @return
+     */
+    public boolean isCostPrice() {
+        return this.metricName.trim().equals(COST_PRICE);
     }
 
     @Override
