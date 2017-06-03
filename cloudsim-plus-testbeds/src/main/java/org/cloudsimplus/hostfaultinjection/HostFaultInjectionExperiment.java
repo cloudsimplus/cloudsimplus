@@ -444,25 +444,30 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     /**
-     * Calculates the cost of vms in the cloud
+     * Calculates the cost of vms on each broker in the cloud
      */
     double getTotalCost(DatacenterBroker broker) {
-        double pricePerBroker = 0;
-
+        double pricePerBroker = 0, simulationTime = 0, priceTemplate = 0;
+        int days;
         final List<Vm> vmList = broker.getVmsCreatedList();
         for (Vm vm : vmList) {
-            double price = getTemplatesMap().get(broker).getPricePerHour();
-            double priceVm = price * vmList.size(); //price * vms allocated for this broker
-
-            double simulationTime = getCloudSim().clockInHours();
-            double days = simulationTime / 24;
-            double daysToHour = days * 24;
-            pricePerBroker = priceVm * daysToHour;
-
-            System.out.println(" Price VM " + vm.getId() + " = " + price + " clock: " +simulationTime);
+            System.out.println(" size: " + vmList.size());
+            priceTemplate += getTemplatesMap().get(broker).getPricePerHour();
+            simulationTime += (vm.getTotalExecutionTime() / 3600.0); //seconds to hours
         }
+        days = (int) (simulationTime / 24);
+        double daysToHour = days * 24;
+        pricePerBroker =+ priceTemplate * daysToHour;
+        System.out.println("Days: " + days);
 
         return pricePerBroker;
+    }
+
+    /**
+     * A map of AWS EC2 Template to be used for each customer.
+     */
+    public Map<DatacenterBroker, AwsEc2Template> getTemplatesMap() {
+        return templatesMap;
     }
 
     /**
@@ -496,10 +501,4 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         return faultInjection;
     }
 
-    /**
-     * A map of AWS EC2 Template to be used for each customer.
-     */
-    public Map<DatacenterBroker, AwsEc2Template> getTemplatesMap() {
-        return templatesMap;
-    }
 }

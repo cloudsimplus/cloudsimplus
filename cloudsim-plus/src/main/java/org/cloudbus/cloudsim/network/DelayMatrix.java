@@ -11,8 +11,6 @@ package org.cloudbus.cloudsim.network;
 import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
 import org.cloudbus.cloudsim.network.topologies.TopologicalLink;
 
-import java.util.Iterator;
-
 /**
  * This class represents a delay matrix between every pair or nodes
  * inside a network topology, storing every distance between connected nodes.

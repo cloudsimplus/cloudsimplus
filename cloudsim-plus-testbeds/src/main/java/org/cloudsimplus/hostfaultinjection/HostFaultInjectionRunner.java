@@ -5,7 +5,6 @@ package org.cloudsimplus.hostfaultinjection;
 import java.util.*;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import javax.swing.text.html.HTMLDocument;

@@ -25,8 +25,6 @@ package org.cloudsimplus.autoscaling;
 
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.function.Function;
-
 /**
  * A class that implements the Null Object Design Pattern for {@link VmScaling} class.
  *

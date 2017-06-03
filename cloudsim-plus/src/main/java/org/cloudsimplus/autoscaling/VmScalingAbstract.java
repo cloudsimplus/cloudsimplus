@@ -26,7 +26,6 @@ package org.cloudsimplus.autoscaling;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Objects;
-import java.util.function.Function;
 
 /**
  * A base class for implementing {@link HorizontalVmScaling} and

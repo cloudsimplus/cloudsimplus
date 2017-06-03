@@ -589,12 +589,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
+        final Function<Vm, Double> func = vmDestructionDelayFunction.apply(c.getVm()) < 0 ? vm -> 0.0 : vmDestructionDelayFunction;
         //If gets here, all running cloudlets have finished and returned to the broker.
         if (cloudletsWaitingList.isEmpty()) {
             println(String.format(
                 "%.2f: %s: All submitted Cloudlets finished executing. Destroying VMs and requesting broker shutdown...",
                 getSimulation().clock(), getName()));
-            destroyVms(vm -> 0.0);
+            destroyVms(func);
             requestShutDown();
             return;
         }
@@ -607,7 +608,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         defines one which always return 0 to indicate
         that in this situation, idle VMs must be destroyed immediately.
         */
-        Function<Vm, Double> func = vmDestructionDelayFunction.apply(c.getVm()) < 0 ? vm -> 0.0 : vmDestructionDelayFunction;
         destroyVms(func);
         requestDatacenterToCreateWaitingVms();
     }

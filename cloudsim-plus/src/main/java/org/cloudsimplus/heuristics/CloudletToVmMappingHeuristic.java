@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.heuristics;
 
-import java.util.Collections;
 import java.util.List;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;

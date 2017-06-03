@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.mocks;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 import org.cloudbus.cloudsim.core.CloudSim;

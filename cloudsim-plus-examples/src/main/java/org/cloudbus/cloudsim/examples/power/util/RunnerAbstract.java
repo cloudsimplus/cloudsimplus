@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.examples.power.util;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.List;
 
 import org.cloudbus.cloudsim.allocationpolicies.power.*;
