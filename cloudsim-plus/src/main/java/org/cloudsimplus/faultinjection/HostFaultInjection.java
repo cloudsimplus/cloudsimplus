@@ -815,7 +815,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Adds a {@link UnaryOperator} that creates a clone of {@link Vm}s belonging to a given broker.
+     * Adds a {@link UnaryOperator} that creates a clone of a {@link Vm} belonging to a given broker.
      * when all Host PEs fail or all VM's PEs are deallocated
      * because they have failed.
      *
