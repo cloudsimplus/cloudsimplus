@@ -9,9 +9,8 @@ import java.io.FileReader;
 /**
  * Represents an
  * <a href="http://aws.amazon.com/ec2/">Amazon EC2 Instance</a> template.
- * This template contains actual configurations for VMs
- * available in <a href="http://aws.amazon.com/">Amazon Web Services</a>,
- * which is read from a JSON file.
+ * This class enables reading a template from a JSON file, containing actual configurations for VMs
+ * available in <a href="http://aws.amazon.com/">Amazon Web Services</a>.
  *
  * @author raysaoliveira
  * @see #getInstance(String)
