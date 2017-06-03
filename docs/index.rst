@@ -14,7 +14,7 @@ Welcome to CloudSim Plus's documentation!
    FAQ.rst
    publications.rst
    syncing-you-fork-or-clone.rst
-   http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html
+   http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html
 
 Indices and tables
 ==================
