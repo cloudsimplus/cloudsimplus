@@ -21,19 +21,15 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.slametrics;
 
 /**
- * Represents the values for a specific metrics of a SLA contract.
+ * Represents the values for a specific metric of a SLA contract,
+ * following the format defined by the
+ * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">AWS CloudWatch</a>.
  *
- * Each dimension contains the name of the metric, the minimum and maximum
- * acceptable value, and the metric unit.
- * See: <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>
+ * <p>Each dimension contains the name of the metric, the minimum and maximum
+ * acceptable values, and the metric unit.</p>
  *
  * @author raysaoliveira
  */
@@ -106,7 +102,6 @@ public final class SlaMetricDimension {
                     "Dimension{name = %s, value = %s}", name,
                     value == Double.MAX_VALUE ? "Double.MAX_VALUE" : value);
     }
-
 
     /**
      * Gets the unit of the dimension, if "Percent" or "Absolute".
