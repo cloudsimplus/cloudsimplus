@@ -33,24 +33,24 @@ Constructors
 CloudletAbstract
 ^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletAbstract(int cloudletId, long cloudletLength, long pesNumber)
+.. java:constructor:: public CloudletAbstract(int cloudletId, long length, long pesNumber)
    :outertype: CloudletAbstract
 
    Creates a Cloudlet with no priority and file size and output size equal to 1.
 
    :param cloudletId: id of the Cloudlet
-   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM
    :param pesNumber: number of PEs that Cloudlet will require
 
 CloudletAbstract
 ^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletAbstract(long cloudletLength, int pesNumber)
+.. java:constructor:: public CloudletAbstract(long length, int pesNumber)
    :outertype: CloudletAbstract
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
 
-   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM
    :param pesNumber: number of PEs that Cloudlet will require
 
 Methods

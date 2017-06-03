@@ -1,12 +1,8 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
-.. java:import:: org.cloudbus.cloudsim.resources Resource
-
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.listeners EventListener
-
-.. java:import:: java.util.function Function
 
 VmScaling
 =========

@@ -1,7 +1,5 @@
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: java.util.function Function
-
 .. java:import:: java.util.function Predicate
 
 .. java:import:: java.util.function Supplier

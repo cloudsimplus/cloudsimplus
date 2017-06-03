@@ -202,6 +202,12 @@ isCloudletReturned
 .. java:method:: @Override public boolean isCloudletReturned(Cloudlet cloudlet)
    :outertype: CloudletSchedulerNull
 
+isEmpty
+^^^^^^^
+
+.. java:method:: @Override public boolean isEmpty()
+   :outertype: CloudletSchedulerNull
+
 isTherePacketScheduler
 ^^^^^^^^^^^^^^^^^^^^^^
 

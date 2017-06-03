@@ -2,17 +2,9 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
 
-.. java:import:: org.cloudbus.cloudsim.resources Processor
-
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util Collections
-
 .. java:import:: java.util List
-
-.. java:import:: java.util.stream Collectors
 
 CloudletSchedulerTimeShared
 ===========================

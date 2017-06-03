@@ -8,10 +8,6 @@
 
 .. java:import:: java.util List
 
-.. java:import:: java.util Map
-
-.. java:import:: java.util Set
-
 VmSchedulerNull
 ===============
 

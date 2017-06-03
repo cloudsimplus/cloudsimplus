@@ -76,10 +76,10 @@ computeCloudletTimeSlice
 
    **See also:** :java:ref:`.getCloudletWeight(CloudletExecutionInfo)`, :java:ref:`.getWeightSumOfRunningCloudlets()`
 
-findSuitableWaitingCloudletToStartExecutingAndRemoveIt
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+findSuitableWaitingCloudlet
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudletToStartExecutingAndRemoveIt()
+.. java:method:: @Override protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudlet()
    :outertype: CloudletSchedulerCompletelyFair
 
    {@inheritDoc} The cloudlet waiting list (runqueue) is sorted according to the virtual runtime (vruntime or VRT), which indicates the amount of time the Cloudlet has run. This runtime increases as the Cloudlet executes.

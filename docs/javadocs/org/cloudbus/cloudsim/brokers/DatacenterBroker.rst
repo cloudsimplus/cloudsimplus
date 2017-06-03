@@ -36,6 +36,21 @@ DatacenterBroker
 
 Fields
 ------
+DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:field::  Function<Vm, Double> DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION
+   :outertype: DatacenterBroker
+
+   A default \ :java:ref:`Function`\  which always returns -1 to indicate that a VM should not be immediately destroyed after it becomes idle. This way, it has to wait until either:
+
+   ..
+
+   * all submitted Cloudlets from all VMs of the broker are finished and there are no waiting Cloudlets;
+   * all running Cloudlets are finished and there are some of them waiting their VMs to be created.
+
+   **See also:** :java:ref:`.setVmDestructionDelayFunction(Function)`
+
 NULL
 ^^^^
 
@@ -126,6 +141,16 @@ getCloudletsWaitingList
    :param <T>: the class of Cloudlets inside the list
    :return: the cloudlet waiting list
 
+getVmDestructionDelayFunction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Function<Vm, Double> getVmDestructionDelayFunction()
+   :outertype: DatacenterBroker
+
+   Gets a \ :java:ref:`Function`\  which defines when an idle VM should be destroyed. The Function receives a \ :java:ref:`Vm`\  and returns the delay to wait (in seconds), after the VM become idle, to destruct it.
+
+   **See also:** :java:ref:`.DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION`, :java:ref:`Vm.getIdleInterval()`
+
 getVmsCreatedList
 ^^^^^^^^^^^^^^^^^
 
@@ -154,10 +179,10 @@ getWaitingVm
 .. java:method::  Vm getWaitingVm(int index)
    :outertype: DatacenterBroker
 
-hasMoreCloudletsToBeExecuted
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+isThereWaitingCloudlets
+^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean hasMoreCloudletsToBeExecuted()
+.. java:method::  boolean isThereWaitingCloudlets()
    :outertype: DatacenterBroker
 
    Indicates if there are more cloudlets waiting to be executed yet.
@@ -207,6 +232,18 @@ setVmComparator
    Sets a \ :java:ref:`Comparator`\  that will be used to sort every list of submitted VMs before requesting the creation of such VMs in some Datacenter. After sorting, the VM creation requests will be sent in the order of the sorted VM list.
 
    :param comparator: the VM Comparator to set
+
+setVmDestructionDelayFunction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function)
+   :outertype: DatacenterBroker
+
+   Sets a \ :java:ref:`Function`\  to define when an idle VM should be destroyed. The Function receives a \ :java:ref:`Vm`\  and returns the delay to wait (in seconds), after the VM become idle, to destruct it.
+
+   :param function: the \ :java:ref:`Function`\  to set (if null is given, it sets the default Function)
+
+   **See also:** :java:ref:`.DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION`, :java:ref:`Vm.getIdleInterval()`
 
 setVmMapper
 ^^^^^^^^^^^

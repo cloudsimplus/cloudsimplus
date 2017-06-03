@@ -1,12 +1,6 @@
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util List
-
 .. java:import:: java.util Objects
 
 .. java:import:: org.cloudbus.cloudsim.core CloudSim
-
-.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
@@ -17,8 +11,6 @@
 .. java:import:: org.cloudbus.cloudsim.hosts.network NetworkHost
 
 .. java:import:: org.cloudbus.cloudsim.network HostPacket
-
-.. java:import:: org.cloudbus.cloudsim.util Conversion
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 

@@ -1,5 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.core Simulation
-
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe

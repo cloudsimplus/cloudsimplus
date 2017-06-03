@@ -73,7 +73,7 @@ WorkloadFileReader
 
    Create a new WorkloadFileReader object.
 
-   :param fileName: the workload trace filename in one of the following formats: \ *ASCII text, zip, gz.*\
+   :param fileName: the workload trace full filename in one of the following formats: \ *ASCII text, zip, gz.*\
    :param rating: the cloudlet's PE rating (in MIPS), considering that all PEs of a cloudlet have the same rate
    :throws IllegalArgumentException: This happens for the following conditions:
 
@@ -92,6 +92,26 @@ generateWorkload
 
 .. java:method:: @Override public List<Cloudlet> generateWorkload() throws IOException
    :outertype: WorkloadFileReader
+
+getInstanceFromResourcesDir
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static WorkloadFileReader getInstanceFromResourcesDir(String fileName, int rating) throws FileNotFoundException
+   :outertype: WorkloadFileReader
+
+   Gets a \ :java:ref:`WorkloadFileReader`\  object from a workload file inside the application's resource directory.
+
+   :param fileName: the workload trace relative filename in one of the following formats: \ *ASCII text, zip, gz.*\
+   :param rating: the cloudlet's PE rating (in MIPS), considering that all PEs of a cloudlet have the same rate
+   :throws IllegalArgumentException: This happens for the following conditions:
+
+   ..
+
+   * the workload trace file name is null or empty
+   * the resource PE rating <= 0
+
+   @pre fileName != null
+   :throws FileNotFoundException:
 
 getMaxLinesToRead
 ^^^^^^^^^^^^^^^^^

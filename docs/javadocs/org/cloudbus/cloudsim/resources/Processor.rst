@@ -1,17 +1,3 @@
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util Collections
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Objects
-
-.. java:import:: java.util.stream Collectors
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
-
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 Processor

@@ -1,12 +1,8 @@
-.. java:import:: java.util.stream Collectors
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
-
-.. java:import:: org.cloudbus.cloudsim.resources Processor
 
 CloudletSchedulerSpaceShared
 ============================

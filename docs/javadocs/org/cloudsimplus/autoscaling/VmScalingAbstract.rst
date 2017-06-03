@@ -2,8 +2,6 @@
 
 .. java:import:: java.util Objects
 
-.. java:import:: java.util.function Function
-
 VmScalingAbstract
 =================
 

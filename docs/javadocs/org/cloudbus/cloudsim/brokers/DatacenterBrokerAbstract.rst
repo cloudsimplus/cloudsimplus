@@ -8,8 +8,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -38,9 +36,9 @@ DatacenterBrokerAbstract
 .. java:constructor:: public DatacenterBrokerAbstract(CloudSim simulation)
    :outertype: DatacenterBrokerAbstract
 
-   Creates a new DatacenterBroker object.
+   Creates a DatacenterBroker object.
 
-   :param simulation: The CloudSim instance that represents the simulation the Entity is related to
+   :param simulation: the CloudSim instance that represents the simulation the Entity is related to
 
 Methods
 -------
@@ -71,18 +69,14 @@ bindCloudletToVm
 destroyVms
 ^^^^^^^^^^
 
-.. java:method:: protected void destroyVms()
+.. java:method:: protected void destroyVms(Function<Vm, Double> vmDestructionDelayFunction)
    :outertype: DatacenterBrokerAbstract
 
-   Destroy all created broker's VMs.
+   Try to destroy all created broker's VMs at the time defined by a delay \ :java:ref:`Function`\ .
 
-finishExecution
-^^^^^^^^^^^^^^^
+   :param vmDestructionDelayFunction: a \ :java:ref:`Function`\  which indicates to time the VM will wait before being destructed
 
-.. java:method:: protected void finishExecution()
-   :outertype: DatacenterBrokerAbstract
-
-   Send an internal event communicating the end of the simulation.
+   **See also:** :java:ref:`.getVmDestructionDelayFunction()`
 
 getCloudletsCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -158,6 +152,12 @@ getVmDatacenter
 
    :param vm: the VM to get its Datacenter
 
+getVmDestructionDelayFunction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Function<Vm, Double> getVmDestructionDelayFunction()
+   :outertype: DatacenterBrokerAbstract
+
 getVmFromCreatedList
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -175,16 +175,6 @@ getVmsCreatedList
 .. java:method:: @Override public <T extends Vm> List<T> getVmsCreatedList()
    :outertype: DatacenterBrokerAbstract
 
-getVmsToDatacentersMap
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected Map<Vm, Datacenter> getVmsToDatacentersMap()
-   :outertype: DatacenterBrokerAbstract
-
-   Gets the VM to Datacenter map, where each key is a VM and each value is the Datacenter where the VM is placed.
-
-   :return: the VM to Datacenter map
-
 getVmsWaitingList
 ^^^^^^^^^^^^^^^^^
 
@@ -197,10 +187,10 @@ getWaitingVm
 .. java:method:: @Override public Vm getWaitingVm(int index)
    :outertype: DatacenterBrokerAbstract
 
-hasMoreCloudletsToBeExecuted
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+isThereWaitingCloudlets
+^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean hasMoreCloudletsToBeExecuted()
+.. java:method:: @Override public boolean isThereWaitingCloudlets()
    :outertype: DatacenterBrokerAbstract
 
 processCloudletReturn
@@ -211,7 +201,7 @@ processCloudletReturn
 
    Processes the end of execution of a given cloudlet inside a Vm.
 
-   :param ev: The cloudlet that has just finished to execute
+   :param ev: the cloudlet that has just finished to execute and was returned to the broker
 
 processDatacenterListRequest
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -219,7 +209,7 @@ processDatacenterListRequest
 .. java:method:: protected void processDatacenterListRequest(SimEvent ev)
    :outertype: DatacenterBrokerAbstract
 
-   Process a request for the list of all Datacenters registered in the Cloud Information Service (CIS) of the \ :java:ref:`simulation <getSimulation()>`\ .
+   Process a request to get the list of all Datacenters registered in the Cloud Information Service (CIS) of the \ :java:ref:`simulation <getSimulation()>`\ .
 
    :param ev: a CloudSimEvent object
 
@@ -239,16 +229,6 @@ processFailedVmCreationInDatacenter
 
    :param vm: id of the Vm that failed to be created inside the Datacenter
    :param datacenter: id of the Datacenter where the request to create
-
-processOtherEvent
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processOtherEvent(SimEvent ev)
-   :outertype: DatacenterBrokerAbstract
-
-   Process non-default received events that aren't processed by the \ :java:ref:`processEvent(SimEvent)`\  method. This method should be overridden by subclasses if they really want to process new defined events.
-
-   :param ev: a CloudSimEvent object
 
 processSuccessVmCreationInDatacenter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -314,6 +294,14 @@ requestDatacentersToCreateWaitingCloudlets
 
    **See also:** :java:ref:`.submitCloudletList(java.util.List)`
 
+requestShutDown
+^^^^^^^^^^^^^^^
+
+.. java:method:: protected void requestShutDown()
+   :outertype: DatacenterBrokerAbstract
+
+   Send an internal event to the broker itself, communicating there is not more events to process (no more VMs to create or Cloudlets to execute).
+
 setCloudletComparator
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -346,6 +334,12 @@ setVmComparator
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setVmComparator(Comparator<Vm> comparator)
+   :outertype: DatacenterBrokerAbstract
+
+setVmDestructionDelayFunction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function)
    :outertype: DatacenterBrokerAbstract
 
 setVmMapper
@@ -427,4 +421,10 @@ submitVmList
    If the entity already started (the simulation is running), the creation of previously submitted VMs already was requested by the \ :java:ref:`start()`\  method that is called just once. By this way, this method will immediately request the creation of these just submitted VMs in order to allow VM creation after the simulation has started. This avoid the developer to dynamically create brokers just to create VMs or Cloudlets during simulation execution.
 
    :param list: {@inheritDoc}
+
+toString
+^^^^^^^^
+
+.. java:method:: @Override public String toString()
+   :outertype: DatacenterBrokerAbstract
 
