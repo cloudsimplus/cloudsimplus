@@ -88,20 +88,13 @@ CloudSim Plus has a simpler structure to make it ease to use and understand. It 
 
 ![CloudSim Plus Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
 
-- [cloudsim-plus](/cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
-  It is the main module that contains the simulation framework implementation and is the only
-  one you need to write your cloud simulations. 
+- [cloudsim-plus](/cloudsim-plus): the CloudSim Plus cloud simulation framework API, which is used by all other modules. 
+  It is the main and only required module you need to write cloud simulations. 
 - [cloudsim-plus-examples](/cloudsim-plus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
   CloudSim Plus features, to complex scenarios using workloads from trace files or Vm migration examples. This is an excellent starting point for learning how to build cloud simulations using CloudSim Plus.
-- [cloudsim-plus-testbeds](/cloudsim-plus-testbeds): a new module that implements some simulation testbeds in a repeatable manner, 
+- [cloudsim-plus-testbeds](/cloudsim-plus-testbeds): enables implementation of simulation testbeds in a repeatable manner, 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach. 
-  It represents real testbeds implemented to assess CloudSim Plus features, providing relevant results. The module provides a set of class which 
-  can be used by other researchers to implement their own comprehensive testbeds. Different from the examples module that aims just
-  to show how to use CloudSim Plus features, this module includes more complex simulation scenarios concerned in providing
-  scientifically valid results. 
-- [cloudsim-plus-benchmarks](/cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks using the 
-  [Java Microbenchmark Harness framework (JMH)](http://openjdk.java.net/projects/code-tools/jmh/) to enable measuring critical methods of the 
-  CloudSim Plus API that have a high impact in the simulation framework performance.
+- [cloudsim-plus-benchmarks](/cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks to assess framework performance.
 
 It also has a better package organization, improving [Separation of Concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns) and making it easy to know where a desired class is and what is inside each package. The figure below presents the new package organization. The dark yellow packages are new in CloudSim Plus and include its exclusive interfaces and classes. The light yellow ones were introduced just to better organize existing CloudSim classes and interfaces. 
 
