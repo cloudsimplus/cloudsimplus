@@ -38,8 +38,8 @@ package org.cloudsimplus.slametrics;
  * @author raysaoliveira
  */
 public final class SlaMetricDimension {
-    private static final String VALUE_MAX_NAME="valueMax";
-    private static final String VALUE_MIN_NAME="valueMin";
+    private static final String MAX_VALUE_NAME ="maxValue";
+    private static final String MIN_VALUE_NAME ="minValue";
 
     private String name;
     private String unit;
@@ -84,12 +84,12 @@ public final class SlaMetricDimension {
         return this;
     }
 
-    public boolean isValueMax(){
-        return this.name.trim().equals(VALUE_MAX_NAME);
+    public boolean isMaxValue(){
+        return this.name.trim().equals(MAX_VALUE_NAME);
     }
 
-    public boolean isValueMin(){
-        return this.name.trim().equals(VALUE_MIN_NAME);
+    public boolean isMinValue(){
+        return this.name.trim().equals(MIN_VALUE_NAME);
     }
 
     /**

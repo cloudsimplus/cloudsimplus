@@ -84,9 +84,6 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * {@link DatacenterBroker} representing a customer.
      */
     private Map<DatacenterBroker, SlaContract> contractsMap;
-    /**
-     * A map of AWS EC2 Template to be used for each customer.
-     */
     private Map<DatacenterBroker, AwsEc2Template> templatesMap;
 
     private HostFaultInjectionExperiment(final long seed) {
@@ -118,7 +115,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
                 SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
                 DatacenterBroker b = brokerIterator.next();
                 contractsMap.put(b, contract);
-                templatesMap.put(b, getSuitableAwsEc2InstanceTemplate(b, all));
+                getTemplatesMap().put(b, getSuitableAwsEc2InstanceTemplate(b, all));
             }
         }
     }
@@ -192,7 +189,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     private List<AwsEc2Template> readAllAvailableAwsEc2Instances() throws IOException {
         List<AwsEc2Template> instances = new ArrayList<>();
         //Lists the files into the given directory
-        try (BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instances-files.txt")) {
+        try (BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instance-files.txt")) {
             while (br.ready()) {
                 final String file = br.readLine();
                 final AwsEc2Template instance = AwsEc2Template.getInstanceFromResourcesDir("vmtemplates/aws/"+file);
@@ -204,11 +201,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     @Override
     protected List<Vm> createVms(DatacenterBroker broker) {
-        final int numVms = (int)templatesMap.get(broker).getMaxNumberOfVmsForCustomer();
+        final int numVms = (int) getTemplatesMap().get(broker).getMaxNumberOfVmsForCustomer();
         List<Vm> list = new ArrayList<>(numVms);
         final int id = getVmList().size();
         for (int i = 0; i < numVms; i++) {
-            Vm vm = createVm(broker, id + i, templatesMap.get(broker));
+            Vm vm = createVm(broker, id + i, getTemplatesMap().get(broker));
             list.add(vm);
         }
         return list;
@@ -447,22 +444,25 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     /**
-     * Calculates the cost price of resources (processing, bw, memory, storage)
-     * of each or all of the Datacenter VMs()
+     * Calculates the cost of vms in the cloud
      */
     double getTotalCost(DatacenterBroker broker) {
-        double convertMonth = 0;
+        double pricePerBroker = 0;
 
         final List<Vm> vmList = broker.getVmsCreatedList();
         for (Vm vm : vmList) {
-            double price = templatesMap.get(broker).getPricePerHour();
+            double price = getTemplatesMap().get(broker).getPricePerHour();
             double priceVm = price * vmList.size(); //price * vms allocated for this broker
-            convertMonth = priceVm * 744; //price * a month
-            double time = (getCloudSim().clockInHours()) / 24;
-            System.out.println(" price VM " + vm.getId() + " = " + price + " clock: " + time);
+            
+            double simulationTime = getCloudSim().clockInHours();
+            double days = simulationTime / 24;
+            double daysToHour = days * 24;
+            pricePerBroker = priceVm * daysToHour;
+
+            System.out.println(" Price VM " + vm.getId() + " = " + price + " clock: " +simulationTime);
         }
 
-        return convertMonth;
+        return pricePerBroker;
     }
 
     /**
@@ -487,9 +487,8 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         Log.printFormattedLine("# Hosts MTBF: %.2f minutes", exp.getFaultInjection().meanTimeBetweenHostFaultsInMinutes());
         Log.printFormattedLine("\n# If the hosts are showing in the result equal to 0, it was because the vms ended before the failure was set.\n");
 
-        for(DatacenterBroker b: exp.getBrokerList()){
+        for (DatacenterBroker b : exp.getBrokerList()) {
             System.out.println(" VM COST :  " + exp.getTotalCost(b));
-
         }
     }
 
@@ -497,4 +496,10 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         return faultInjection;
     }
 
+    /**
+     * A map of AWS EC2 Template to be used for each customer.
+     */
+    public Map<DatacenterBroker, AwsEc2Template> getTemplatesMap() {
+        return templatesMap;
+    }
 }

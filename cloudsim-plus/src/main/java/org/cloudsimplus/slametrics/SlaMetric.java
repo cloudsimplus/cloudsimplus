@@ -88,7 +88,7 @@ public class SlaMetric {
     public SlaMetricDimension getMinDimension() {
         System.out.println(DEFAULT_MIN_DIMENSION);
         return dimensions.stream()
-            .filter(d -> d.isValueMin())
+            .filter(d -> d.isMinValue())
             .findFirst().orElse(DEFAULT_MIN_DIMENSION);
     }
 
@@ -100,7 +100,7 @@ public class SlaMetric {
      */
     public SlaMetricDimension getMaxDimension() {
         return dimensions.stream()
-            .filter(d -> d.isValueMax())
+            .filter(d -> d.isMaxValue())
             .findFirst().orElse(DEFAULT_MAX_DIMENSION);
     }
 }

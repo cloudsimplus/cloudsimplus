@@ -2,13 +2,13 @@
  */
 package org.cloudsimplus.hostfaultinjection;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.testbeds.ExperimentRunner;
+
+import javax.swing.text.html.HTMLDocument;
 
 /**
  * * Runs the {@link HostFaultInjectionExperiment} the number of
@@ -39,7 +39,6 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     private List<Double> ratioVmsPerHost;
 
-
     /**
      * Indicates if each experiment will output execution logs or not.
      */
@@ -53,7 +52,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     public static void main(String[] args) {
         new HostFaultInjectionRunner(true, 1475098589732L)
-            .setSimulationRuns(300)
+            .setSimulationRuns(10)
             .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
             .setVerbose(true)
             .run();
@@ -85,6 +84,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         availability.add(exp.getFaultInjection().availability() * 100);
         percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla());
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
+
     }
 
     @Override
@@ -94,8 +94,9 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
         map.put("Average of Total Availability of Simulation", availability);
-        map.put(" Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
+        map.put("Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
         map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
+
         return map;
     }
 
