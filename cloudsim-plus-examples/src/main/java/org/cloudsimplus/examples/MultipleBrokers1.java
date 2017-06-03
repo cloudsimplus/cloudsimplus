@@ -119,24 +119,23 @@ public class MultipleBrokers1 {
 
     /**
      * Creates VMs and Cloudlets for each DatacenterBroker.
+     * It enables you to define when a broker should destroy
+     * an idle VM, according to a given
+     * {@link DatacenterBroker#setVmDestructionDelayFunction(Function) VM Destruction Delay Function}.
+     *
+     * <p>See <a href="https://github.com/manoelcampos/cloudsim-plus/issues/99">Issue #99</a> for more details.</p>
+     *
+     * @see DatacenterBroker#setVmDestructionDelayFunction(Function)
+     * @see DatacenterBroker#DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION
      */
     private void createVmsAndCloudlets() {
         int i = 0;
         for (DatacenterBroker broker : brokers) {
-            /**
-             * Indicates that when a VM become empty, it will always be immediately destroyed.
-             * Comment all these two instructions below to use the default behaviour.
-             * Check {@link DatacenterBroker#DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION}
-             * to see the default behaviour.
+            /*
+             * You can use one of these two instructions below or
+             * none of them at all to accept the default behavior.
              */
             //broker.setVmDestructionDelayFunction(vm -> 0.0);
-
-            /*
-             * Indicates that when a VM become empty, it will be waited
-             * to seconds. After that, if it is idle yet, then it will be destroyed.
-             * Comment all these two instructions below to use the default behaviour.
-             * See comment above.
-             */
             broker.setVmDestructionDelayFunction(vm -> 2.0);
 
             vmList.addAll(createAndSubmitVms(broker));
@@ -153,7 +152,7 @@ public class MultipleBrokers1 {
 
         System.out.println();
         for (Vm vm : vmList) {
-            System.out.printf("Vm %d Broker %d -> Start Time: %.0f Stop Time: %.0f Total Execution Time: %.2f\n",
+            System.out.printf("Vm %d Broker %d -> Start Time: %.0f Stop Time: %.0f Total Execution Time: %.0f\n",
                 vm.getId(), vm.getBroker().getId(),
                 vm.getStartTime(), vm.getStopTime(), vm.getTotalExecutionTime());
         }
