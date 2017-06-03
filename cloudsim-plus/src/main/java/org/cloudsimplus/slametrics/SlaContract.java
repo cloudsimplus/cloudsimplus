@@ -85,7 +85,6 @@ public class SlaContract {
         return getInstance(ResourceLoader.getResourcePath(klass, jsonFilePath));
     }
 
-
     /**
      * @return the metrics
      */
