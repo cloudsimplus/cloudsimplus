@@ -614,4 +614,16 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      */
     Vm setStopTime(final double stopTime);
 
+    /**
+     * Gets the last time the VM was running some Cloudlet.
+     * @return the last buzy time (in seconds)
+     */
+    double getLastBuzyTime();
+
+    /**
+     * Gets the last interval the VM was idle (without running any Cloudlet).
+     * @return the last idle time interval (in seconds)
+     */
+    double getIdleInterval();
+
  }

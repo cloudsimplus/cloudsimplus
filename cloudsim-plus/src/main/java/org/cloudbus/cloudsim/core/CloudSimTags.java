@@ -195,7 +195,7 @@ public final class CloudSimTags {
     public static final int VM_CREATE_ACK = BASE + 32;
 
     /**
-     * Denotes a request to destroy a new VM in a {@link Datacenter}.
+     * Denotes a request to destroy a VM in a {@link Datacenter}.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Vm} object.
      */

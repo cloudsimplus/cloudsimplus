@@ -40,6 +40,19 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker NULL = new DatacenterBrokerNull();
 
     /**
+     * A default {@link Function} which always returns -1 to indicate that a VM should not be
+     * immediately destroyed after it becomes idle.
+     * This way, it has to wait until either:
+     * <ul>
+     * <li>all submitted Cloudlets from all VMs of the broker are finished and there are no waiting Cloudlets;</li>
+     * <li>all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
+     * </ul>
+     *
+     * @see #setVmDestructionDelayFunction(Function)
+     */
+    Function<Vm, Double> DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION = vm -> -1.0;
+
+    /**
      * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletsWaitingList() waiting list},
      * must run in a specific virtual machine.
      *
@@ -196,7 +209,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @return true if there are waiting cloudlets, false otherwise
      */
-    boolean hasMoreCloudletsToBeExecuted();
+    boolean isThereWaitingCloudlets();
 
     /**
      * Sets the {@link Supplier} that selects and returns a Datacenter
@@ -309,5 +322,28 @@ public interface DatacenterBroker extends SimEntity {
      * @see #addOnVmsCreatedListener(EventListener)
      */
     DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener);
+
+    /**
+     * Gets a {@link Function} which defines when an idle VM should be destroyed.
+     * The Function receives a {@link Vm} and returns the delay to wait (in seconds),
+     * after the VM become idle, to destruct it.
+     *
+     * @return
+     * @see #DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION
+     * @see Vm#getIdleInterval()
+     */
+    Function<Vm, Double> getVmDestructionDelayFunction();
+
+    /**
+     * Sets a {@link Function} to define when an idle VM should be destroyed.
+     * The Function receives a {@link Vm} and returns the delay to wait (in seconds),
+     * after the VM become idle, to destruct it.
+     *
+     * @param function the {@link Function} to set (if null is given, it sets the default Function)
+     * @return
+     * @see #DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION
+     * @see Vm#getIdleInterval()
+     */
+    DatacenterBroker setVmDestructionDelayFunction(final Function<Vm, Double> function);
 
 }

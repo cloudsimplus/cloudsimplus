@@ -128,6 +128,8 @@ final class VmNull implements Vm {
     @Override public double getStopTime() { return 0; }
     @Override public double getTotalExecutionTime() { return 0; }
     @Override public Vm setStopTime(double stopTime) { return this; }
+    @Override public double getLastBuzyTime() { return 0; }
+    @Override public double getIdleInterval() { return 0; }
     @Override public String getVmm() {
         return "";
     }

@@ -36,12 +36,6 @@ import static java.util.stream.Collectors.toList;
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
- *
- * @TODO @author manoelcampos Instead of having the methods getRam, getUsedRam,
- * getAvailableRam (and the same for other resources), it would be returned the
- * ResourceManageable object for each different kind of resource, in order to
- * allow the user to get the resource capacity, used and available capacity
- * without defining a specific method for each one.
  */
 public class VmSimple implements Vm {
     private HorizontalVmScaling horizontalScaling;
@@ -123,6 +117,7 @@ public class VmSimple implements Vm {
     private String description;
     private double startTime;
     private double stopTime;
+    private double lastBuzyTime;
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -147,6 +142,7 @@ public class VmSimple implements Vm {
         this.description = "";
         this.startTime = -1;
         this.stopTime = -1;
+        this.lastBuzyTime = 0;
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -265,6 +261,9 @@ public class VmSimple implements Vm {
             return Double.MAX_VALUE;
         }
 
+        if(!cloudletScheduler.getCloudletExecList().isEmpty()){
+            this.lastBuzyTime = getSimulation().clock();
+        }
         final double nextSimulationTime = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
         return nextSimulationTime;
@@ -376,6 +375,16 @@ public class VmSimple implements Vm {
     public Vm setStopTime(final double stopTime) {
         this.stopTime = Math.max(stopTime, -1);
         return this;
+    }
+
+    @Override
+    public double getLastBuzyTime() {
+        return this.lastBuzyTime;
+    }
+
+    @Override
+    public double getIdleInterval() {
+        return getSimulation().clock() - lastBuzyTime;
     }
 
     @Override
