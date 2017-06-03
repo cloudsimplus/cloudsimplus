@@ -21,21 +21,15 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.slametrics;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class represents the metrics of a SLA contract.
- *
- * Follows the standard used by Amazon Cloudwatch as at in:
- * <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>
+ * Represents a metric of a SLA contract.
+ * Follows the standard defined by 
+ * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">AWS Cloudwatch</a>.
  *
  * @author raysaoliveira
  */
