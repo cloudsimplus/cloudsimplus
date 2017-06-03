@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents an SLA Contract containing a list of metrics.
+ * Represents a SLA Contract containing a list of metrics.
  * It follows the standard used by
  * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">Amazon Cloudwatch</a>.
  *
