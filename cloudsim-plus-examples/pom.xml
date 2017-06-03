@@ -112,7 +112,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Inherited from the parent pom. See the plugin there for more details. -->
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
@@ -128,6 +127,8 @@
                     <excludes>
                         <exclude>**/src/main/resources/**</exclude>
                         <exclude>**/src/main/java/org/cloudbus/**</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>**/*.brite</exclude>
                     </excludes>
                 </configuration>
             </plugin>

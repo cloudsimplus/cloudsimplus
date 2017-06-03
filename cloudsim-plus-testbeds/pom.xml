@@ -108,6 +108,10 @@
                     <header>${license.dir}/COPYRIGHT</header>
                     <strictCheck>true</strictCheck>
                     <failIfMissing>false</failIfMissing>
+                    <excludes>
+                        <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/*.md</exclude>
+                    </excludes>
                 </configuration>
             </plugin>
 

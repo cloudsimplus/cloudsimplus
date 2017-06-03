@@ -408,14 +408,13 @@
                         <exclude>**/src/test/resources/**</exclude>
                         <exclude>**/src/main/resources/**</exclude>
                         <exclude>**/*.md</exclude>
-                        <exclude>**/LICENSE</exclude>
                         <exclude>**/*.swf</exclude>
                         <exclude>**/*.brite</exclude>
                         <exclude>**/*.json</exclude>
                         <exclude>**/*.properties</exclude>
                         <exclude>**/*.uml</exclude>
                         <exclude>**/*.iml</exclude>
-                        <exclude>**/nbactions.xml</exclude>
+                        <exclude>**/*.xml</exclude>
                         <exclude>**/src/main/resources/**</exclude>
                     </excludes>
                 </configuration>
