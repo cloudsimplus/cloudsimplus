@@ -992,4 +992,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                      .map(CloudletExecutionInfo::getCloudlet)
                      .collect(collectingAndThen(toList(), Collections::unmodifiableList));
     }
+
+    @Override
+    public boolean isEmpty() {
+        return getCloudletList().isEmpty();
+    }
 }

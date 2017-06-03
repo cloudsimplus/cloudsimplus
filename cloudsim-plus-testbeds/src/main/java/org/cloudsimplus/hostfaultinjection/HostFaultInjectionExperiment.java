@@ -453,7 +453,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         for (Vm vm : vmList) {
             double price = getTemplatesMap().get(broker).getPricePerHour();
             double priceVm = price * vmList.size(); //price * vms allocated for this broker
-            
+
             double simulationTime = getCloudSim().clockInHours();
             double days = simulationTime / 24;
             double daysToHour = days * 24;

@@ -124,8 +124,8 @@ public final class CloudSimEvent implements SimEvent {
 
     @Override
     public String toString() {
-        return "Event tag = " + tag + " source = " + simulation.getEntity(src).getName() + " destination = "
-                + simulation.getEntity(dest).getName();
+        return "Event tag = " + tag + " source = " + simulation.getEntity(src).getName() + " target = "
+                + simulation.getEntity(dest).getName() + " time = " + time;
     }
 
     @Override

@@ -70,9 +70,7 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {/**/}
     @Override public void submitVmList(List<? extends Vm> list) {/**/}
     @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {/**/}
-    @Override public boolean hasMoreCloudletsToBeExecuted() {
-        return false;
-    }
+    @Override public boolean isThereWaitingCloudlets() { return false; }
     @Override public void shutdownEntity() {/**/}
     @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {/**/}
@@ -81,6 +79,8 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public Set<Cloudlet> getCloudletsCreatedList() { return Collections.EMPTY_SET; }
     @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
     @Override public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
+    @Override public Function<Vm, Double> getVmDestructionDelayFunction() { return vm -> 0.0; }
+    @Override public DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function) { return this; }
     @Override public void setVmComparator(Comparator<Vm> comparator) {/**/}
     @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
     @Override public void setLog(boolean log) {}

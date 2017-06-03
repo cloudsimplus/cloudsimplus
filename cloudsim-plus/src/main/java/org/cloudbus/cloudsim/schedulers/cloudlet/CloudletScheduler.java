@@ -136,6 +136,13 @@ public interface CloudletScheduler extends Serializable {
     List<CloudletExecutionInfo> getCloudletFinishedList();
 
     /**
+     * Checks if there <b>aren't</b> cloudlets <b>waiting</b> or <b>executing</b> inside the Vm.
+     *
+     * @return true if there aren't <b>waiting</b> or <b>executing</b> Cloudlets, false otherwise.
+     */
+    boolean isEmpty();
+
+    /**
      * Gets the status of a cloudlet with a given id.
      *
      * @param cloudletId ID of the cloudlet to get the status
