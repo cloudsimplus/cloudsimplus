@@ -38,8 +38,6 @@ import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
-import javax.sound.midi.SysexMessage;
-
 /**
  * An experiment using a {@link HostFaultInjection} which it set a VM cloner
  * linked to Broker when all VMs associated with it are destroyed.

@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.resources;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;

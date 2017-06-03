@@ -7,14 +7,10 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.Processor;
 
 /**
  * CloudletSchedulerSpaceShared implements a policy of scheduling performed by a

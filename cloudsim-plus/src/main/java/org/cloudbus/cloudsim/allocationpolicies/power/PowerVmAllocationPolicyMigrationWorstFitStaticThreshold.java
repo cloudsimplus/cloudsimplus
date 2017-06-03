@@ -8,17 +8,12 @@
 package org.cloudbus.cloudsim.allocationpolicies.power;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostDynamicWorkload;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.hosts.power.PowerHostSimple;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 
 /**

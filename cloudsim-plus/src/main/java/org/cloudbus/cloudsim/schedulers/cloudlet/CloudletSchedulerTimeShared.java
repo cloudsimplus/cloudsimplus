@@ -8,13 +8,9 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
-import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * CloudletSchedulerTimeShared implements a policy of scheduling performed by a

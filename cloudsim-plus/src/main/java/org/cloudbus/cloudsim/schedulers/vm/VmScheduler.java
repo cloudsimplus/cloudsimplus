@@ -8,8 +8,6 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;

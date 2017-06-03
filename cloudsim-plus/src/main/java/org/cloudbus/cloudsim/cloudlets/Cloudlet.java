@@ -6,8 +6,6 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
-import org.cloudbus.cloudsim.core.ChangeableId;
-import org.cloudbus.cloudsim.core.Delayable;
 import org.cloudbus.cloudsim.core.UniquelyIdentificable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;

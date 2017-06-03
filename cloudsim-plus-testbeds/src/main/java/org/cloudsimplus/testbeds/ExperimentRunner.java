@@ -30,7 +30,6 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;

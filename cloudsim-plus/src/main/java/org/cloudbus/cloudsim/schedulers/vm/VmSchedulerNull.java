@@ -6,8 +6,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link VmScheduler}

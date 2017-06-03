@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
 import java.util.List;
-import java.util.Random;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
