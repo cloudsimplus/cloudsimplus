@@ -38,7 +38,7 @@ import java.util.List;
  *
  * <p>Instances of this class can be created from a JSON file
  * using the {@link #getInstance(String)} or
- * {@link #getInstance(String)} methods.
+ * {@link #getInstanceFromResourcesDir(Class, String)} methods.
  * This way, one doesn't need to create instances
  * of this class using its default constructor.
  * This one is just used by the JSON parsing library.</p>
