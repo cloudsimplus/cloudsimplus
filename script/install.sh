@@ -10,6 +10,6 @@ if [ "$START_DIR" != "$SCRIPT_DIR" ]; then
 fi
 
 cd ..
-mvn install -Dintegration-tests=true
+mvn clean install -Dintegration-tests=true
 #mvn install -pl cloudsim-plus,cloudsim-plus-examples -DskipTests=true -Dmaven.javadoc.skip=true
 cd "$START_DIR"
