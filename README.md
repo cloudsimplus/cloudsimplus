@@ -80,7 +80,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
     - selection of a VM to run each Cloudlet ([#25](https://github.com/manoelcampos/cloudsim-plus/issues/25));
     - definition of the time when an idle VM should be destroyed ([#99](https://github.com/manoelcampos/cloudsim-plus/issues/99));
     - sorting of requests to create submitted VMs and Cloudlets, defining priorities to create such objects ([#102](https://github.com/manoelcampos/cloudsim-plus/issues/102)). 
-1. [Host Fault Injection Mechanism](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/HostFaultInjectionExample1.java) to enable injection of random failures into Hosts PEs: it injects failures into Host PEs and reallocates working PEs to running VMs. When all PEs from a Host fail, it starts clones of failed VMs to recovery from failure. This way, it is simulated the instantiation of VM snapshots into different Hosts ([#93](https://github.com/manoelcampos/cloudsim-plus/issues/93)).
+1. [Host Fault Injection Mechanism](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/HostFaultInjectionExample1.java) to enable injection of random failures into Hosts PEs: it injects failures into Host PEs and reallocates working PEs to running VMs. When all PEs from a Host fail, it starts clones of failed VMs to recovery from failure. This way, it is simulated the instantiation of VM snapshots into different Hosts ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
 
 # Project's Structure
 

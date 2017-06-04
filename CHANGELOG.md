@@ -13,7 +13,7 @@ Lists the main changes in the project.
 -  Allow a VM belonging to a broker to be destroyed after all its Cloudlets have finished, independently of the state of other running VMs and according to a given delay ([#99](https://github.com/manoelcampos/cloudsim-plus/issues/99)).
 
 ### Changed
-- Host Fault Injection Mechanism ([#93](https://github.com/manoelcampos/cloudsim-plus/pull/93)).
+- Host Fault Injection Mechanism ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
 
 ### Fixed
 - Cloudlets executed with `CloudletSchedulerSpaceShared` were giving incorrect results ([#96](https://github.com/manoelcampos/cloudsim-plus/issues/96)).
