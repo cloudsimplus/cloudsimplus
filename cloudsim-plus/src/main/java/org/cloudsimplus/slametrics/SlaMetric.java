@@ -28,7 +28,7 @@ import java.util.List;
 
 /**
  * Represents a metric of a SLA contract.
- * Follows the standard defined by 
+ * Follows the standard defined by
  * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">AWS Cloudwatch</a>.
  *
  * @author raysaoliveira
@@ -80,7 +80,6 @@ public class SlaMetric {
      * @return
      */
     public SlaMetricDimension getMinDimension() {
-        System.out.println(DEFAULT_MIN_DIMENSION);
         return dimensions.stream()
             .filter(d -> d.isMinValue())
             .findFirst().orElse(DEFAULT_MIN_DIMENSION);

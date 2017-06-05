@@ -232,6 +232,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void submitVm(Vm vm) {
+        if(vm == null || vm == Vm.NULL){
+            return;
+        }
         final List<Vm> newList = new ArrayList<>(1);
         newList.add(vm);
         submitVmList(newList);
@@ -239,6 +242,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void submitCloudlet(Cloudlet cloudlet) {
+        if(cloudlet == null || cloudlet == Cloudlet.NULL){
+            return;
+        }
+
         final List<Cloudlet> newList = new ArrayList<>(1);
         newList.add(cloudlet);
         submitCloudletList(newList);
@@ -441,7 +448,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     protected void processDatacenterListRequest(SimEvent ev) {
         setDatacenterList((Set<Datacenter>) ev.getData());
         println(String.format(
-            "%.2f: %s: List of Datacenters received with %d datacenters(s).",
+            "\n%.2f: %s: List of Datacenters received with %d datacenters(s).",
             getSimulation().clock(), getName(), datacenterList.size()));
         requestDatacenterToCreateWaitingVms();
     }

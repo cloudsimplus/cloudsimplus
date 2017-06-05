@@ -40,6 +40,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudsimplus.faultinjection.VmClonerSimple;
+import org.cloudsimplus.slametrics.SlaMetricDimension;
 import org.cloudsimplus.vmtemplates.AwsEc2Template;
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -74,6 +76,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     private static final int HOSTS = 50;
     public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
 
+    /*The average number of failures expected to happen each hour
+    in a Poisson Process, which is also called event rate or rate parameter.*/
+    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.02;
+    public static final int MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS = 800;
+
     private List<Host> hostList;
 
     private HostFaultInjection faultInjection;
@@ -85,6 +92,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      */
     private Map<DatacenterBroker, SlaContract> contractsMap;
     private Map<DatacenterBroker, AwsEc2Template> templatesMap;
+    private int numVms = 0;
 
     private HostFaultInjectionExperiment(final long seed) {
         this(0, null, seed);
@@ -105,31 +113,34 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     /**
      * Read all SLA contracts registered in the {@link #SLA_CONTRACTS_LIST}.
+     * When the brokers are created, it is ensured the number of brokers
+     * is equals to the number of SLA contracts in the {@link #SLA_CONTRACTS_LIST}.
      */
     private void readTheSlaContracts() throws IOException {
         Iterator<DatacenterBroker> brokerIterator = getBrokerList().iterator();
         final List<AwsEc2Template> all = readAllAvailableAwsEc2Instances();
-        try (BufferedReader br = slaContractsListReader()) {
-            while (br.ready() || brokerIterator.hasNext()) {
-                final String file =  br.readLine();
-                SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
-                DatacenterBroker b = brokerIterator.next();
-                contractsMap.put(b, contract);
-                getTemplatesMap().put(b, getSuitableAwsEc2InstanceTemplate(b, all));
-            }
+        for (final String file: readContractList()) {
+            SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
+            DatacenterBroker b = brokerIterator.next();
+            contractsMap.put(b, contract);
+            templatesMap.put(b, getSuitableAwsEc2InstanceTemplate(b, all));
         }
-    }
-
-    private BufferedReader slaContractsListReader() throws FileNotFoundException {
-        return ResourceLoader.getBufferedReader(getClass(), SLA_CONTRACTS_LIST);
     }
 
     private long numberSlaContracts()  {
         try {
-            return slaContractsListReader().lines().count();
+            return readContractList().size();
         } catch (FileNotFoundException e) {
             return 0;
         }
+    }
+
+    private List<String> readContractList() throws FileNotFoundException {
+        return ResourceLoader
+            .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
+            .lines()
+            .filter(l -> !l.startsWith("#"))
+            .collect(toList());
     }
 
     /**
@@ -145,45 +156,91 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * to run the maximum number of VMs
      */
     private AwsEc2Template getSuitableAwsEc2InstanceTemplate(DatacenterBroker broker, List<AwsEc2Template> all) throws IOException {
-        final List<AwsEc2Template> suitableTemplates = all.stream()
-            .filter(t -> t.getPricePerHour() <= getCustomerMaxPrice(broker))
-            .collect(toList());
+        if(all.isEmpty()){
+            throw new RuntimeException("There aren't VM templates to create VMs for customer " + broker.getId());
+        }
 
-        final double maxPrice = getCustomerMaxPrice(broker);
-        final AwsEc2Template template = suitableTemplates
-            .stream()
-            .max(comparingDouble(t -> getMaxNumberOfVmsForCustomerExpectedPrice(broker, t)))
-            .orElseThrow(() -> new RuntimeException("No AWS EC2 Instance found with price lower or equal to " + maxPrice));
+        final SlaContract contract = getContract(broker);
+        AwsEc2Template selected = getMostPowerfulVmTemplateForCustomerPrice(contract, all);
+        if (selected != AwsEc2Template.NULL) {
+            return selected;
+        }
 
-        final AwsEc2Template selected = new AwsEc2Template(template);
-        selected.setMaxNumberOfVmsForCustomer(getMaxNumberOfVmsForCustomerExpectedPrice(broker, selected));
+        selected = getCheaperVmTemplate(broker, all);
+
         System.out.println(
-            "AWS EC2 Template selected for broker " + broker + ": " + selected + " maxNumberOfVMs: " +
-            selected.getMaxNumberOfVmsForCustomer());
+            "AWS EC2 Template selected for broker " + broker + ": " + selected + ". Number of VMs to create (fault tolerance level): " +
+            contract.getMinFaultToleranceLevel());
         return selected;
     }
 
     /**
-     * The maximum price a customer expects to pay hourly for his/her running VMs.
-     * @param broker
-     * @return
+     * Try to find the most powerful VM which, running a number of instances equal to the
+     * customer fault tolerance level, the total cost is lower or equal to
+     * the maximum price the customer is willing to pay.
+     * @return the most powerful VM according to customer contract or {@link AwsEc2Template#NULL}
+     *         if a suitable template could not be found
      */
-    private double getCustomerMaxPrice(DatacenterBroker broker) {
-        return contractsMap.get(broker).getPriceMetric().getMaxDimension().getValue();
+    private AwsEc2Template getMostPowerfulVmTemplateForCustomerPrice(SlaContract contract, List<AwsEc2Template> all) {
+        final Comparator<AwsEc2Template> comparator = Comparator.naturalOrder();
+        return all.stream()
+            .filter(t -> getActualPriceForAllVms(contract, t) <= contract.getMaxPrice())
+            .max(comparator)
+            .orElse(AwsEc2Template.NULL);
     }
 
     /**
-     * Gets the maximum number of VMs which can be created from
-     * a given {@link AwsEc2Template}, considering
-     * the price the customer expects to pay.
+     * If a VM template matching the customer contract cannot be found,
+     * gets the cheaper VM from the entire list and
+     * computes the new k-fault-tolerance level which is possible using such a VM.
+     * That is, computes the k number of VMs which can be created
+     * from that template, that will not exceed the total price the customer
+     * is willing to pay.
      *
-     * @param broker the broker to get the maximum number of VMs which can be created from a given template
-     * @param template an {@link AwsEc2Template}
-     * @return the maxinum number of VMs which can be created from the given
-     * {@link AwsEc2Template} for the customer's expected price
+     * At the end, updates the customer contract.
+     *
+     * @return the cheaper VM template
      */
-    private double getMaxNumberOfVmsForCustomerExpectedPrice(DatacenterBroker broker, AwsEc2Template template) {
-        return getCustomerMaxPrice(broker) / template.getPricePerHour();
+    private AwsEc2Template getCheaperVmTemplate(DatacenterBroker broker, List<AwsEc2Template> all) {
+        final SlaContract contract = getContract(broker);
+        final AwsEc2Template instance =
+            all.stream()
+                .min(comparingDouble(AwsEc2Template::getPricePerHour))
+                .orElseThrow(() ->
+                    new RuntimeException(
+                        "A VM template matching customer "+broker.getId() +
+                        " contract could not be found and there isn't any cheaper one available."));
+
+        final int faultToleranceLevel = getFaultToleranceLevelForTemplate(contract, instance);
+        Log.printFormattedLine(
+            "# There isn't any available VM template having an individual price of $%.2f, ", contract.getExpectedMaxPriceForSingleVm());
+        Log.printFormattedLine(
+            "  which enables meeting the %d-fault-tolerance level defined by broker %d.",
+            contract.getMinFaultToleranceLevel(), broker.getId());
+        Log.printFormattedLine(
+            "  The fault-tolerance level was reduced to %d (enabling %d VMs to run simultaneously).", faultToleranceLevel, faultToleranceLevel);
+        /*
+        After the k fault tolerance level was reduced because there isn't any VM that it's individual
+        price multiplied by the k is lower or equal to the total price the customer is willing to pay.
+        */
+        contract.getFaultToleranceLevel().getMinDimension().setValue(faultToleranceLevel);
+        return instance;
+    }
+
+    /**
+     * Computes the fault-tolerance achieved by using of a given template,
+     * considering the max price a customers is willing to pay for all VMs.
+     * @param contract the customer contract
+     * @param instance the instance type to compute the k-fault-tolerance level
+     * @return the computed k-fault-tolerance level, where the minimum value for k will be 1
+     */
+    private int getFaultToleranceLevelForTemplate(SlaContract contract, AwsEc2Template instance) {
+        final int faultToleranceLevel = (int)Math.floor(contract.getMaxPrice() / instance.getPricePerHour());
+        return Math.max(faultToleranceLevel, 1);
+    }
+
+    private SlaContract getContract(DatacenterBroker broker){
+        return contractsMap.get(broker);
     }
 
     private List<AwsEc2Template> readAllAvailableAwsEc2Instances() throws IOException {
@@ -201,11 +258,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     @Override
     protected List<Vm> createVms(DatacenterBroker broker) {
-        final int numVms = (int) getTemplatesMap().get(broker).getMaxNumberOfVmsForCustomer();
+        numVms = getContract(broker).getMinFaultToleranceLevel();
         List<Vm> list = new ArrayList<>(numVms);
         final int id = getVmList().size();
         for (int i = 0; i < numVms; i++) {
-            Vm vm = createVm(broker, id + i, getTemplatesMap().get(broker));
+            Vm vm = createVm(broker, id + i, templatesMap.get(broker));
             list.add(vm);
         }
         return list;
@@ -216,7 +273,8 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         Vm vm = new VmSimple(id, VM_MIPS, template.getCpus());
         vm
             .setRam(template.getMemoryInMB()).setBw(VM_BW).setSize(VM_SIZE)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+            .setCloudletScheduler(new CloudletSchedulerTimeShared())
+            .setDescription(template.getName());
         return vm;
     }
 
@@ -301,25 +359,22 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param datacenter
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
-        /*The average number of failures expected to happen each minute
-        in a Poisson Process, which is also called event rate or rate parameter.*/
-        final double meanFailureNumberPerMinute = 0.009;
         //System.out.printf("Experiment %d seed: %d\n", getIndex(), getSeed());
-        PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, getSeed());
+        PoissonDistr poisson = new PoissonDistr(MEAN_FAILURE_NUMBER_PER_HOUR, getSeed());
         //System.out.println("\n\t seed: " + getSeed());
 
         faultInjection = new HostFaultInjection(datacenter, poisson);
-        getFaultInjection().setMaxTimeToGenerateFailure(100_000L);
+        getFaultInjection().setMaxTimeToGenerateFailureInHours(MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS);
 
         for (DatacenterBroker broker : getBrokerList()) {
             Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmsWaitingList().size() - 1);
-            getFaultInjection().addVmCloner(broker, this::cloneVm);
-            getFaultInjection().addCloudletsCloner(broker, this::cloneCloudlets);
+            getFaultInjection().addVmCloner (broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets));
+
         }
 
         Log.printFormattedLine(
             "\tFault Injection created for %s.\n\tMean Number of Failures per Minute: %.6f (1 failure expected at each %.2f minutes).",
-            datacenter, meanFailureNumberPerMinute, poisson.getInterarrivalMeanTime());
+            datacenter, MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterarrivalMeanTime());
     }
 
     /**
@@ -439,28 +494,89 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         return total;
     }
 
-    private double getCustomerMinAvailability(DatacenterBroker b) {
-        return contractsMap.get(b).getAvailabilityMetric().getMinDimension().getValue();
+    /**
+     * Takes minimum customer availability.
+     * @param broker
+     * @return minimum customer availability
+     */
+    private double getCustomerMinAvailability(DatacenterBroker broker) {
+        return contractsMap.get(broker).getAvailabilityMetric().getMinDimension().getValue();
     }
 
     /**
-     * Calculates the cost of vms on each broker in the cloud
+     * Calculates the total cost of all VMs a given broker executed,
+     * for the entire simulation time.
      */
-    double getTotalCost(DatacenterBroker broker) {
-        double pricePerBroker = 0, simulationTime = 0, priceTemplate = 0;
-        int days;
-        final List<Vm> vmList = broker.getVmsCreatedList();
-        for (Vm vm : vmList) {
-            System.out.println(" size: " + vmList.size());
-            priceTemplate += getTemplatesMap().get(broker).getPricePerHour();
-            simulationTime += (vm.getTotalExecutionTime() / 3600.0); //seconds to hours
-        }
-        days = (int) (simulationTime / 24);
-        double daysToHour = days * 24;
-        pricePerBroker =+ priceTemplate * daysToHour;
-        System.out.println("Days: " + days);
+    private double getTotalCost(DatacenterBroker broker) {
+        final SlaContract contract = getContract(broker);
+        final SlaMetricDimension customerExpectedPricePerHour = contract.getPriceMetric().getMaxDimension();
 
-        return pricePerBroker;
+        final AwsEc2Template template = templatesMap.get(broker);
+        final double totalPriceForVmsInOneHour = getActualPriceForAllVms(contract, template);
+        final double totalExecutionTimeForVmsInHours = getTotalExecutionTimeForVmsInHours(broker);
+
+        final double days = totalExecutionTimeForVmsInHours / 24.0;
+        final double totalPriceForAllVms = totalPriceForVmsInOneHour * totalExecutionTimeForVmsInHours;
+
+        System.out.println("\nCustomer: " + broker.getId());
+        System.out.println("Created Vms: " + broker.getVmsCreatedList().size());
+        System.out.printf("VMs execution Hours: %.4f\n", totalExecutionTimeForVmsInHours);
+        System.out.printf("VMs execution Days: %.8f\n", days);
+        System.out.println("Customer's VMs Template: " + template);
+        System.out.println("Customer's expected mean VMs Price Per Hour: " + customerExpectedPricePerHour);
+
+        return totalPriceForAllVms;
+    }
+
+    /**
+     * Gets the actual total price if a given VM template is used for a given customer.
+     * @param contract the contract of the customer
+     * @param template the template to compute the total price for that contract
+     * @return
+     */
+    private double getActualPriceForAllVms(SlaContract contract, AwsEc2Template template) {
+        return template.getPricePerHour()*contract.getMinFaultToleranceLevel();
+    }
+
+    /**
+     * Gets the actual price of all customers VMs per hour, considering the entire simulation time.
+     * It's the total VMs cost mean.
+     * @param broker
+     * @return
+     */
+    private double getCustomerActualPricePerHour(DatacenterBroker broker) {
+        final double customerActualPricePerHour = getTotalCost(broker)/getTotalExecutionTimeForVmsInHours(broker);
+        System.out.println("Customer's actual mean VMs Price Per Hour: " + customerActualPricePerHour);
+        return customerActualPricePerHour;
+    }
+
+    /**
+     * Gets the total time all VMs from a given broker executed during the simulation (in hours).
+     * @param broker
+     * @return
+     */
+    private double getTotalExecutionTimeForVmsInHours(DatacenterBroker broker) {
+        return broker.getVmsCreatedList().stream().mapToDouble(vm -> vm.getTotalExecutionTime()).sum()/3600.0;
+    }
+
+    /**
+     * Computes the percentage of customers for whom the availability stated
+     * in the SLA was met (in scale from 0 to 1, where 1 is 100%).
+     *
+     * @return
+     */
+    public double getPercentageOfCostMeetingSla() {
+        double total = 0;
+        double totalOfCostSatisfied = getBrokerList()
+            .stream()
+            .filter(b -> getCustomerActualPricePerHour(b) <= contractsMap.get(b).getPriceMetric().getMaxDimension().getValue())
+            .count();
+
+        total = totalOfCostSatisfied / getBrokerList().size();
+        System.out.println("Percentage of cost meeting sla: " + total * 100 + " %");
+
+
+        return total;
     }
 
     /**
@@ -483,22 +599,34 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         exp.setVerbose(true).run();
         exp.getBrokerList().stream().forEach(b -> System.out.printf("%s - Availability %%: %.4f\n", b, exp.getFaultInjection().availability(b) * 100));
 
-        System.out.println("Percentagem of Brokers that meeting the Availability Metric in SLA: " + exp.getPercentageOfAvailabilityMeetingSla() * 100);
+        System.out.println("Percentage of Brokers meeting the Availability Metric in SLA: " + exp.getPercentageOfAvailabilityMeetingSla() * 100);
         System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());
         System.out.println("\n# Number of Host faults: " + exp.getFaultInjection().getNumberOfHostFaults());
         System.out.println("# Number of VM faults (VMs destroyed): " + exp.getFaultInjection().getNumberOfFaults());
         System.out.printf("# VMs MTBF average: %.2f minutes\n", exp.getFaultInjection().meanTimeBetweenVmFaultsInMinutes());
-        Log.printFormattedLine("# Time that the simulations finished: %.2f minutes", exp.getCloudSim().clockInMinutes());
+        Log.printFormattedLine("# Time the simulations finished: %.2f minutes", exp.getCloudSim().clockInMinutes());
         Log.printFormattedLine("# Hosts MTBF: %.2f minutes", exp.getFaultInjection().meanTimeBetweenHostFaultsInMinutes());
         Log.printFormattedLine("\n# If the hosts are showing in the result equal to 0, it was because the vms ended before the failure was set.\n");
 
         for (DatacenterBroker b : exp.getBrokerList()) {
-            System.out.println(" VM COST :  " + exp.getTotalCost(b));
+            System.out.printf("Customer %d VMs execution time:\n", b.getId());
+            final double totalVmsExecutionHours = b.getVmsCreatedList().stream()
+                .peek(vm ->
+                    System.out.printf("\tVm %2d - Start Time: %5.0f Finish Time: %5.0f Total: %5.2f hours\n",
+                        vm.getId(), vm.getStartTime() / 3600, vm.getStopTime() / 3600,
+                        vm.getTotalExecutionTime() / 3600))
+                .mapToDouble(Vm::getTotalExecutionTime)
+                .map(t -> t / 3600.0)
+                .sum();
+
+            final int vms = b.getVmsCreatedList().size();
+
+            System.out.printf("Total execution time for %d VMs: %.2f hours\n", vms, totalVmsExecutionHours);
         }
+        exp.getPercentageOfCostMeetingSla();
     }
 
     public HostFaultInjection getFaultInjection() {
         return faultInjection;
     }
-
 }

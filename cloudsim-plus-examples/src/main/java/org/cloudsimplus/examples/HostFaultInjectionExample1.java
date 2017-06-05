@@ -53,6 +53,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudsimplus.faultinjection.VmClonerSimple;
 
 /**
  * Example which shows how to inject random {@link Pe} faults into Hosts using
@@ -63,17 +64,20 @@ import org.cloudsimplus.faultinjection.HostFaultInjection;
  */
 public final class HostFaultInjectionExample1 {
 
-    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
+    private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 0;
     private static final double DATACENTER_COST_PER_CPU = 3.0;
     private static final double DATACENTER_COST_PER_RAM = 0.05;
     private static final double DATACENTER_COST_PER_STORAGE = 0.001;
     private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int HOST_MIPS_BY_PE = 1000;
-    private static final int HOST_PES = 6;
+    private static final int HOST_PES = 4;
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
+    /*The average number of failures expected to happen each hour
+    in a Poisson Process, which is also called event rate or rate parameter.*/
+    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.02;
     private List<Host> hostList;
 
     /**
@@ -97,16 +101,21 @@ public final class HostFaultInjectionExample1 {
      * Number of Hosts to create for each Datacenter. The number of elements in
      * this array defines the number of Datacenters to be created.
      */
-    private static final int HOSTS = 15;
-    private static final int VMS = 6;
+    private static final int HOSTS = 10;
+    private static final int VMS = 2;
 
     private static final int CLOUDLETS = 6;
 
-    private final List<Vm> vmlist = new ArrayList<>();
+    private final List<Vm> vmList = new ArrayList<>(VMS);
+    private final List<Cloudlet> cloudletList = new ArrayList<>(CLOUDLETS);
     private CloudSim simulation;
     private final DatacenterBroker broker;
 
     HostFaultInjection fault;
+    /**
+     * The Poisson Random Number Generator used to generate failure times (in hours).
+     */
+    private PoissonDistr poisson;
 
     /**
      * Starts the example.
@@ -121,7 +130,6 @@ public final class HostFaultInjectionExample1 {
         Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
 
         simulation = new CloudSim();
-
         Datacenter datacenter = createDatacenter(HOSTS);
 
         broker = new DatacenterBrokerSimple(simulation);
@@ -132,29 +140,31 @@ public final class HostFaultInjectionExample1 {
         simulation.start();
         new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
 
-        System.out.println("\n# Number of Host faults: " + fault.getNumberOfHostFaults());
-        System.out.println("# Number of VM faults (VMs destroyed): " + fault.getNumberOfFaults());
-        Log.printFormattedLine("# Time that the simulations finished: %.2f minutes", simulation.clockInMinutes());
-        Log.printFormattedLine("# VMs MTTR: %.2f minutes", fault.meanTimeToRepairVmFaultsInMinutes());
-        Log.printFormattedLine("# VMs MTBF: %.2f minutes", fault.meanTimeBetweenVmFaultsInMinutes());
-        Log.printFormattedLine("# Hosts MTBF: %.2f minutes", fault.meanTimeBetweenHostFaultsInMinutes());
-        Log.printFormattedLine("# Availability: %.2f%%", fault.availability()*100);
+        System.out.printf(
+            "Mean Number of Failures per Hour: %.3f (1 failure expected at each %.2f hours).\n",
+            MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterarrivalMeanTime());
+        System.out.printf("# Number of Host faults: %d\n", fault.getNumberOfHostFaults());
+        System.out.printf("# Number of VM faults (VMs destroyed): %d\n", fault.getNumberOfFaults());
+        System.out.printf("# Time the simulations finished: %.4f hours\n", simulation.clockInHours());
+        System.out.printf("# Mean Time To Repair Failures of VMs in minutes (MTTR): %.2f minute\n", fault.meanTimeToRepairVmFaultsInMinutes());
+        System.out.printf("# Mean Time Between Failures (MTBF) affecting all VMs in minutes: %.2f minutes\n", fault.meanTimeBetweenVmFaultsInMinutes());
+        System.out.printf("# Hosts MTBF: %.2f minutes\n", fault.meanTimeBetweenHostFaultsInMinutes());
+        System.out.printf("# Availability: %.2f%%\n", fault.availability()*100);
 
 
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
     public void createAndSubmitVms() {
-        for (int i = 1; i <= VMS; i++) {
+        for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
-            vm.setId(i);
-            vmlist.add(vm);
+            vmList.add(vm);
         }
-        broker.submitVmList(vmlist);
+        broker.submitVmList(vmList);
     }
 
     public Vm createVm() {
-        Vm vm = new VmSimple(vmlist.size(), VM_MIPS, VM_PES);
+        Vm vm = new VmSimple(vmList.size()+1, VM_MIPS, VM_PES);
         vm
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
@@ -165,23 +175,19 @@ public final class HostFaultInjectionExample1 {
      * Creates the number of Cloudlets defined in {@link #CLOUDLETS} and submits
      * them to the created broker.
      *
-     * @return the List of created Cloudlets
      */
-    public List<Cloudlet> createAndSubmitCloudlets() {
-        final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
+    public void createAndSubmitCloudlets() {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         for (int i = 0; i < CLOUDLETS; i++) {
             Cloudlet c
-                    = new CloudletSimple(CLOUDLET_LENGHT, CLOUDLET_PES)
+                    = new CloudletSimple(cloudletList.size()+1, CLOUDLET_LENGHT, CLOUDLET_PES)
                             .setFileSize(CLOUDLET_FILESIZE)
                             .setOutputSize(CLOUDLET_OUTPUTSIZE)
                             .setUtilizationModel(utilizationModel);
-            list.add(c);
+            cloudletList.add(c);
         }
 
-        broker.submitCloudletList(list);
-
-        return list;
+        broker.submitCloudletList(cloudletList);
     }
 
     private Datacenter createDatacenter(int numberOfHosts) {
@@ -242,21 +248,13 @@ public final class HostFaultInjectionExample1 {
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
         //final long seed = System.currentTimeMillis();
-        long seed = 87384734L;
-        /*The average number of failures expected to happen each minute
-        in a Poisson Process, which is also called event rate or rate parameter.*/
-        final double meanFailureNumberPerMinute = 0.0009;
-        PoissonDistr poisson = new PoissonDistr(meanFailureNumberPerMinute, seed);
+        final long seed = 112717613L;
+        this.poisson = new PoissonDistr(MEAN_FAILURE_NUMBER_PER_HOUR, seed);
 
         fault = new HostFaultInjection(datacenter, poisson);
-        fault.setMaxTimeToGenerateFailure(500_000L);
+        fault.setMaxTimeToGenerateFailureInHours(800);
 
-        this.vmlist.stream().forEach(vm -> fault.addVmCloner(broker, this::cloneVm));
-        fault.addCloudletsCloner(broker, this::cloneCloudlets);
-
-        Log.printFormattedLine(
-                "\tFault Injection created for %s.\n\tMean Number of Failures per Minute: %.6f (1 failure expected at each %.2f minutes).",
-                datacenter, meanFailureNumberPerMinute, poisson.getInterarrivalMeanTime());
+        this.vmList.stream().forEach(vm -> fault.addVmCloner(broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets)));
     }
 
     /**
@@ -304,7 +302,9 @@ public final class HostFaultInjectionExample1 {
         final List<Cloudlet> sourceVmCloudlets = sourceVm.getCloudletScheduler().getCloudletList();
         final List<Cloudlet> clonedCloudlets = new ArrayList<>(sourceVmCloudlets.size());
         for (Cloudlet cl : sourceVmCloudlets) {
-            clonedCloudlets.add(cloneCloudlet(cl));
+            Cloudlet clone = cloneCloudlet(cl);
+            clonedCloudlets.add(clone);
+            Log.printFormattedLine("#Created Cloudlet Clone for VM %d (Cloudlet Clone Id: %d)", sourceVm.getId(), clone.getId());
         }
 
         return clonedCloudlets;

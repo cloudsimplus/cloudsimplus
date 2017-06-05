@@ -25,6 +25,7 @@ package org.cloudsimplus.slametrics;
 
 import com.google.gson.Gson;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudsimplus.vmtemplates.AwsEc2Template;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -51,6 +52,8 @@ public class SlaContract {
     private static final String CPU_UTILIZATION = "CpuUtilization";
     private static final String WAIT_TIME = "WaitTime";
     private static final String PRICE = "Price";
+    private static final String FAULT_TOLERANCE_LEVEL = "FaultToleranceLevel";
+
 
     private List<SlaMetric> metrics;
 
@@ -124,6 +127,33 @@ public class SlaContract {
 
     public SlaMetric getTaskCompletionTimeMetric() {
         return getSlaMetric(TASK_COMPLETION_TIME);
+    }
+
+    public SlaMetric getFaultToleranceLevel() {
+        return getSlaMetric(FAULT_TOLERANCE_LEVEL);
+    }
+
+    /**
+     * Gets the maximum price a customer expects to pay hourly for all his/her running VMs.
+     * @return
+     */
+    public double getMaxPrice() {
+        return getPriceMetric().getMaxDimension().getValue();
+    }
+
+    /**
+     * Gets the expected maximum price a single VM can cost, considering
+     * the {@link #getMinFaultToleranceLevel() Fault Tolerance Level}.
+     *
+     * @return the expected maximum price a single VM can cost for the given customer
+     * {@link AwsEc2Template} for the customer's expected price
+     */
+    public double getExpectedMaxPriceForSingleVm() {
+        return getMaxPrice() / getFaultToleranceLevel().getMinDimension().getValue();
+    }
+
+    public int getMinFaultToleranceLevel() {
+        return (int)Math.floor(getFaultToleranceLevel().getMinDimension().getValue());
     }
 
     @Override

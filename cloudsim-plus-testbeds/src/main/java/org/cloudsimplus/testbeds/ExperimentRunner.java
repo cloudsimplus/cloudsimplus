@@ -496,10 +496,11 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Creates a Map adding a List of values for each metric to be computed.
      * The computation of final experiments results are performed on this map.
-     * Each key is the name of metric and each value is a List of Double
+     *
+     * <p>Each key is the name of metric and each value is a List of Double
      * containing the values collected for that metric, for each experiment run.
      * These values will be then summarized to compute the final value
-     * for each metric.
+     * for each metric.</p>
      * @return the populated metricsMap
      */
     protected abstract Map<String, List<Double>> createMetricsMap();

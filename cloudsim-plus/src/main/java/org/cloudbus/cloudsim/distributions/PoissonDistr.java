@@ -45,7 +45,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * internally to generate Poisson numbers.
      */
     private UniformDistr rand;
-    
+
     /**
      * @see #getLambda()
      */
@@ -62,39 +62,41 @@ public class PoissonDistr implements ContinuousDistribution {
      * interval.
      *
      * @param lambda the average number of events that happen at each 1 time unit.
+     *               If one considers the unit as minute, this value means the average number of arrivals
+     *               at each minute.
      * @param seed the seed to initialize the uniform random number generator
      * @see #setK(int)
-     * @see #setLambda(double) 
+     * @see #setLambda(double)
      */
     public PoissonDistr(double lambda, long seed){
         this.rand = new UniformDistr(seed);
         this.k = 1;
         this.setLambda(lambda);
     }
-    
+
     /**
      * Creates a new Poisson process that considers you want to check
      * the probability of 1 event ({@link #getK() k}) to happen at each time.
      *
      * @param lambda average number of events by interval.
-     * For instance, if it was defined 1 event to be expected at 
+     * For instance, if it was defined 1 event to be expected at
      * each 2.5 minutes, it means that 0.4 event is expected
      * at each minute (1/2.5).
-     * 
+     *
      * @see #setK(int)
      */
     public PoissonDistr(double lambda){
         this(lambda, -1);
-    }    
+    }
 
     /**
      * Gets the average number of events that are expected to happen at each 1 time unit.
-     * It is the expected number of events to happen each time, 
+     * It is the expected number of events to happen each time,
      * also called the <b>event rate</b> or <b>rate parameter</b>.
      *
      * <p>If the unit is minute, this value means the average number of arrivals
      * at each minute. It's the inverse of the {@link #getInterarrivalMeanTime()}.</p>
-     * @return 
+     * @return
      */
     public double getLambda(){
         return lambda;
@@ -102,10 +104,10 @@ public class PoissonDistr implements ContinuousDistribution {
 
     /**
      * Sets the average number of events that are expected to happen at each 1 time unit.
-     * It is the expected number of events to happen each time, 
+     * It is the expected number of events to happen each time,
      * also called the <b>event rate</b> or <b>rate parameter</b>.
      *
-     * <p>If the unit is minute, this value means the average number of arrivals
+     * <p>If one considers the unit as minute, this value means the average number of arrivals
      * at each minute. It's the inverse of the {@link #getInterarrivalMeanTime()}.</p>
      * @param lambda the value to set
      */
@@ -117,7 +119,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * Gets the probability to arrive {@link #getK() K} events in the current time,
      * considering the expected average arrival time {@link #getLambda() lambda}.
      * It computes the Probability Mass Function (PMF) of the Poisson distribution.
-     * @return 
+     * @return
      * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>
      */
     public double eventsArrivalProbability(){
@@ -126,7 +128,7 @@ public class PoissonDistr implements ContinuousDistribution {
 
     /**
      * Checks if at the current time, {@link #getK() K} events have happened,
-     * considering the {@link #eventsArrivalProbability() probability of these K events} 
+     * considering the {@link #eventsArrivalProbability() probability of these K events}
      * to happen in a time interval.
      *
      * @return true if the K events have happened at current time, false otherwise
@@ -135,11 +137,11 @@ public class PoissonDistr implements ContinuousDistribution {
         final double r = rand.sample();
         return r <= eventsArrivalProbability();
     }
-    
+
     /**
      * Gets a random number that represents the next time for an event to happen,
      * considering the {@link #getLambda() events arrival rate (lambda)}.
-     * @return 
+     * @return
      */
     @Override
     public double sample() {
@@ -150,11 +152,11 @@ public class PoissonDistr implements ContinuousDistribution {
     public long getSeed() {
         return rand.getSeed();
     }
-    
+
     /**
      * Gets the number of events to check the probability for them to happen
      * in a time interval (default 1).
-     * @return 
+     * @return
      */
     public int getK() {
         return k;
@@ -172,10 +174,10 @@ public class PoissonDistr implements ContinuousDistribution {
     /**
      * Gets the mean time between arrival of two events,
      * which is the inverse of lambda.
-     * What is the time unit (if seconds, minutes, hours, etc)
-     * doesn't matter for the Poisson Process computations.
-     * Therefore, it can be considered any time unit wanted.
-     * @return 
+     * The time unit (if seconds, minutes, hours, etc) is the same
+     * considered when setting a value to the {@link #getLambda() lambda}
+     * parameter.
+     * @return
      */
     public double getInterarrivalMeanTime(){
         return 1.0/lambda;
@@ -200,7 +202,7 @@ public class PoissonDistr implements ContinuousDistribution {
          * Time length of each simulation in minutes.
         */
         final int SIMULATION_TIME_LENGHT = 25;
-        
+
         //If the arrival of each customers must be shown.
         final boolean showCustomerArrivals = true;
 
@@ -208,7 +210,7 @@ public class PoissonDistr implements ContinuousDistribution {
          * Number of simulations to run.
          */
         final int NUMBER_OF_SIMULATIONS = 100;
-        
+
         BiConsumer<PoissonDistr, Integer> printArrivals = (poisson, minute) -> {
             if(showCustomerArrivals)
                 System.out.printf("%d customers arrived at minute %d\n", poisson.getK(), minute);
@@ -224,7 +226,7 @@ public class PoissonDistr implements ContinuousDistribution {
         Function<PoissonDistr, Integer> runSimulation = poisson -> {
             /*We want to check the probability of 1 customer to arrive at each
             single minute. The default k value is 1, so we dont need to set it.*/
-            final int totalArrivedCustomers = 
+            final int totalArrivedCustomers =
                 IntStream.range(0, SIMULATION_TIME_LENGHT)
                     .filter(i -> poisson.eventsHappened())
                     .peek(i -> printArrivals.accept(poisson, i))
@@ -237,7 +239,7 @@ public class PoissonDistr implements ContinuousDistribution {
                     poisson.getLambda(), poisson.getInterarrivalMeanTime());
 
             return totalArrivedCustomers;
-        };      
+        };
 
         double customersArrivedInAllSimulations = 0;
         PoissonDistr poisson = null;

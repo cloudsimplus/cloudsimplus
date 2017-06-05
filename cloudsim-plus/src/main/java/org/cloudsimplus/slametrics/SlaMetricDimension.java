@@ -100,7 +100,7 @@ public final class SlaMetricDimension {
     public String toString() {
         return String.format(
                     "Dimension{name = %s, value = %s}", name,
-                    value == Double.MAX_VALUE ? "Double.MAX_VALUE" : value);
+                    value == Double.MAX_VALUE ? "Double.MAX_VALUE" : String.format("%.4f", value));
     }
 
     /**

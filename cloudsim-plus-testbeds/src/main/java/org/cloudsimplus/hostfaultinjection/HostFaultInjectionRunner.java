@@ -20,7 +20,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     static final long[] CLOUDLET_LENGTHS = {10000_000_000L, 9800_00_000L, 990000_000L};
-    static final int CLOUDLETS = 6;
+    static final int CLOUDLETS = 12;
 
     /**
      * Datacenter availability for each experiment.
@@ -37,6 +37,14 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * Average number of VMs for each existing Host.
      */
     private List<Double> ratioVmsPerHost;
+
+
+    /**
+     * The percentage of brokers meeting Cost average for all the
+     * experiments.
+     */
+    private List<Double> percentageOfBrokersMeetingCost;
+
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -62,6 +70,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         availability = new ArrayList<>();
         percentageOfBrokersMeetingAvailability = new ArrayList<>();
         ratioVmsPerHost = new ArrayList<>();
+        percentageOfBrokersMeetingCost = new ArrayList<>();
     }
 
     @Override
@@ -81,8 +90,9 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
         availability.add(exp.getFaultInjection().availability() * 100);
-        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla());
+        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla() * 100);
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
+        percentageOfBrokersMeetingCost.add(exp.getPercentageOfCostMeetingSla() * 100);
 
     }
 
@@ -95,6 +105,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         map.put("Average of Total Availability of Simulation", availability);
         map.put("Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
         map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
+        map.put("Percentagem of brokers meeting the Cost: ", percentageOfBrokersMeetingCost);
 
         return map;
     }
@@ -130,7 +141,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         double lower = stats.getMean() - intervalSize;
         double upper = stats.getMean() + intervalSize;
         System.out.printf(
-            "\t This METRIC Rmean 95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]\n",
+            "\t This METRIC mean 95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]\n",
             stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.4f \n", stats.getStandardDeviation());
     }

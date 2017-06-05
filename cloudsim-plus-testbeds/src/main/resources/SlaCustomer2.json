@@ -80,7 +80,16 @@
       "dimensions": [
         {
           "name": "maxValue",
-          "value": 0.040
+          "value": 0.070
+        }
+      ]
+    },
+    {
+      "name": "FaultToleranceLevel",
+      "dimensions": [
+        {
+          "name": "minValue",
+          "value": 3
         }
       ]
     }

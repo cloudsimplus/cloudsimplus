@@ -224,7 +224,7 @@ public abstract class SimulationExperiment implements Runnable {
         datacenter0.setLog(verbose);
         createBrokers();
 
-        brokerList.forEach(b -> {
+        brokerList.stream().sorted().forEach(b -> {
                 createAndSubmitVmsInternal(b);
                 createAndSubmitCloudletsInternal(b);
         });
