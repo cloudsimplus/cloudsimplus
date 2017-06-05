@@ -115,7 +115,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         availability.add(exp.getFaultInjection().availability() * 100);
         percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla() * 100);
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
-        percentageOfBrokersMeetingCost.add(exp.getPercentageOfCostMeetingSla() * 100);
+        percentageOfBrokersMeetingCost.add(exp.getPercentageOfBrokersMeetingCost() * 100);
 
     }
 
