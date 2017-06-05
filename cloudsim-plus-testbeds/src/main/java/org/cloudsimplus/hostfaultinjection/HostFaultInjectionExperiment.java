@@ -322,9 +322,10 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     @Override
     protected List<Cloudlet> createCloudlets() {
-        final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
+        int cloudlets = numVms * 2;
+        final List<Cloudlet> list = new ArrayList<>(cloudlets);
         final int id = getCloudletList().size();
-        for (int i = 0; i < CLOUDLETS; i++) {
+        for (int i = 0; i < cloudlets; i++) {
             list.add(createCloudlet(id + i));
         }
 
@@ -588,12 +589,13 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      *
      * @return
      */
-    public double getPercentageOfCostMeetingSla() {
+    public double getPercentageOfBrokersMeetingCost() {
         double total = 0;
         double totalOfCostSatisfied = getBrokerList()
             .stream()
             .filter(b -> getCustomerActualPricePerHour(b) <= contractsMap.get(b).getPriceMetric().getMaxDimension().getValue())
             .count();
+
 
         total = totalOfCostSatisfied / getBrokerList().size();
         System.out.println("Percentage of cost meeting sla: " + total * 100 + " %");
@@ -646,7 +648,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
             System.out.printf("Total execution time for %d VMs: %.2f hours\n", vms, totalVmsExecutionHours);
         }
-        exp.getPercentageOfCostMeetingSla();
+        exp.getPercentageOfBrokersMeetingCost();
     }
 
     public HostFaultInjection getFaultInjection() {

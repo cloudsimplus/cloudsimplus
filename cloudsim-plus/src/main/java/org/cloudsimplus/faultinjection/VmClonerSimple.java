@@ -23,7 +23,7 @@ public class VmClonerSimple implements VmCloner {
     private int clonedVmsNumber;
 
     /**
-     * Creates a {@link Vm} cloner which creates the maximum of 1 clone.
+     * Creates a {@link Vm} cloner which makes the maximum of 1 Vm clone.
      *
      * @param vmClonerFunction the {@link UnaryOperator} to be used to clone {@link Vm}s.
      * @param cloudletsClonerFunction the {@link Function} to be used to clone Vm's {@link Cloudlet}s.
