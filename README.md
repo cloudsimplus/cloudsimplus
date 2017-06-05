@@ -35,6 +35,8 @@
 
 # Overview
 
+[![Join the chat at https://gitter.im/cloudsim-plus/Lobby](https://badges.gitter.im/cloudsim-plus/Lobby.svg)](https://gitter.im/cloudsim-plus/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 CloudSim Plus is a full-featured, highly extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing infrastructures and application services. It allows users to focus on specific system design issues to be investigated, without the concern of the low level details related to Cloud-based infrastructures and services.
  
 Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, and scalable computational services. For assurance of such characteristics in cloud systems under development, it is required timely, repeatable, and controllable methodologies for evaluation of new cloud applications and policies, before actual development of cloud products. Because utilization of real testbeds limits the experiments to the scale of the testbed and makes the reproduction of results cumbersome, computer-base simulation may constitute an interesting tool. This project is suitable to quickly develop such simulation scenarios and run them quickly, in a typical PC. 
