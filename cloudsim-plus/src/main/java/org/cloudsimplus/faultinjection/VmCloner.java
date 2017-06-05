@@ -19,7 +19,7 @@ import java.util.function.UnaryOperator;
  * inside the failed VM.
  *
  * @author raysaoliveira
- * @since CloudSim Plus 1.2.2
+ * @since CloudSim Plus 1.2.3
  */
 public interface VmCloner {
     VmCloner NULL = new VmCloner() {
@@ -61,7 +61,7 @@ public interface VmCloner {
 
     /**
      * Gets the {@link Function} to be used to clone Vm's {@link Cloudlet}s.
-     * It is a Function which, when called, creates a clone of cloudlets
+     * When the given Function is called, creates a clone of cloudlets
      * which were running inside a specific Vm.
      *
      * <p>Such a Function is used to recreate those Cloudlets
@@ -80,8 +80,8 @@ public interface VmCloner {
      * Gets the maximum number of Vm clones to create.
      * For instance, if this value is equal to 2,
      * it means if all VMs from a given broker are destroyed multiple times,
-     * a clone will be created only 2 times. For the 3rd time all VMs are destroyed again,
-     * no clone will be created.
+     * a clone will be created only 2 times. If all VMs are destroyed again
+     * for the 3rd time, no clone will be created.
      * The default value is 1.
      *
      * @return
