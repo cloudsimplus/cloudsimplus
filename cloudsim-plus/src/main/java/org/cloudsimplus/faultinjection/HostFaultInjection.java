@@ -810,24 +810,14 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Adds a {@link UnaryOperator} that creates a clone for the last failed {@link Vm} belonging to a given broker,
+     * Adds a {@link VmCloner} that creates a clone for the last failed {@link Vm} belonging to a given broker,
      * when all VMs of that broker have failed.
      *
-     * <p>This is optional. If a cloner Function is not set,
+     * <p>This is optional. If a {@link VmCloner} is not set,
      * VMs will not be recovered from failures.</p>
      *
-     * <p>The {@link UnaryOperator} is a {@link Function} that
-     * receives a {@link Vm} and returns a clone of it.
-     * When the Function is called after all Vms from a broker have failed,
-     * it will receive the last failed Vm and clone it.
-     * The vmCloner {@link Function}
-     * is used to create a copy of the VM to be submitted to another Host.
-     * It is like a VM snapshot in a real cloud infrastructure,
-     * which will be started into another Host in order to
-     * recovery from a failure.</p>
-     *
      * @param broker the broker to set the VM cloner Function to
-     * @param cloner the VM cloner {@link Function} to set
+     * @param cloner the {@link VmCloner} to set
      */
     public void addVmCloner(DatacenterBroker broker, VmCloner cloner) {
         Objects.requireNonNull(broker);
