@@ -129,6 +129,13 @@ public interface CloudletScheduler extends Serializable {
     List<Cloudlet> getCloudletList();
 
     /**
+     * Gets a <b>read-only</b> list of Cloudlets that finished executing and were returned the their broker.
+     * A Cloudlet is returned to to notify the broker about the end of its execution.
+     * @return
+     */
+    Set<Cloudlet> getCloudletReturnedList();
+
+    /**
      * Gets a list of finished cloudlets.
      *
      * @return the cloudlet finished list
@@ -361,13 +368,6 @@ public interface CloudletScheduler extends Serializable {
 	 * @return true if the Cloudlet can be added to the execution list, false otherwise
 	 */
 	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);
-
-    /**
-     * Gets a <b>read-only</b> list of Cloudlets that finished executing and were returned the their broker.
-     * A Cloudlet is returned to to notify the broker about the end of its execution.
-     * @return
-     */
-	Set<Cloudlet> getCloudletReturnedList();
 
     /**
      * Checks if a Cloudlet has finished and was returned to its {@link DatacenterBroker}.

@@ -121,12 +121,12 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
      */
     protected void afterExperimentFinish(T experiment) {
         final Consumer<DatacenterBroker> addExperimentStatsToLists = broker -> {
-            Double average = broker.getCloudletsFinishedList().stream()
+            Double average = broker.getCloudletFinishedList().stream()
                     .mapToDouble(Cloudlet::getActualCpuTime)
                     .average()
                     .orElse(0.0);
             cloudletsCompletionTimeMeans.add(average);
-            cloudletsNumber.add((double)broker.getCloudletsFinishedList().size());
+            cloudletsNumber.add((double)broker.getCloudletFinishedList().size());
         };
 
         experiment.getBrokerList().stream().findFirst().ifPresent(addExperimentStatsToLists);

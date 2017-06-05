@@ -123,9 +123,9 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
 
     private void printVmsCpuUsage(EventInfo eventInfo) {
         DatacenterBroker broker0 = getFirstBroker();
-        broker0.getVmsCreatedList().sort(Comparator.comparingInt(Vm::getId));
+        broker0.getVmExecList().sort(Comparator.comparingInt(Vm::getId));
 
-        broker0.getVmsCreatedList().forEach(vm
+        broker0.getVmExecList().forEach(vm
                 -> Log.printFormattedLine("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
                         vm.getCpuPercentUsage(), getCustomerMaxCpuUtilization())
@@ -139,7 +139,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     @Override
     public final void printResults() {
         DatacenterBroker broker0 = getFirstBroker();
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
         Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
@@ -284,7 +284,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
-        broker.getCloudletsFinishedList().stream()
+        broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .forEach(cloudletTaskTimeCompletion::addValue);
 
@@ -303,16 +303,16 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
 
-        double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
+        double totalOfcloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= getCustomerMaxTaskCompletionTime())
                 .count();
 
         System.out.printf("\n ** Percentage of cloudlets that complied with "
                 + "the SLA Agreement:  %.2f %%",
-                ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size()));
-        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());
-        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
+                ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size()));
+        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletFinishedList().size());
+        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
     }
 
     double getSumPesVms() {

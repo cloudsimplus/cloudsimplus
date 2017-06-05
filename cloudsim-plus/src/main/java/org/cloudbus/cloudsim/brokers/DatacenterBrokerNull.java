@@ -49,21 +49,22 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {
         return false;
     }
-    @Override public <T extends Cloudlet> List<T> getCloudletsWaitingList() {
+    @Override public <T extends Cloudlet> List<T> getCloudletWaitingList() {
         return Collections.emptyList();
     }
-    @Override public <T extends Cloudlet> List<T> getCloudletsFinishedList() {
+    @Override public <T extends Cloudlet> List<T> getCloudletFinishedList() {
         return Collections.emptyList();
     }
     @Override public Vm getWaitingVm(int index) {
         return Vm.NULL;
     }
-    @Override public <T extends Vm> List<T> getVmsWaitingList() {
+    @Override public <T extends Vm> List<T> getVmWaitingList() {
         return Collections.emptyList();
     }
-    @Override public <T extends Vm> List<T> getVmsCreatedList() {
+    @Override public <T extends Vm> List<T> getVmExecList() {
         return Collections.emptyList();
     }
+    @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.EMPTY_LIST; }
     @Override public void submitVm(Vm vm) {/**/}
     @Override public void submitCloudlet(Cloudlet cloudlet) {/**/}
     @Override public void submitCloudletList(List<? extends Cloudlet> list) {/**/}
@@ -76,7 +77,7 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {/**/}
     @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {/**/}
     @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {/**/}
-    @Override public Set<Cloudlet> getCloudletsCreatedList() { return Collections.EMPTY_SET; }
+    @Override public Set<Cloudlet> getCloudletCreatedList() { return Collections.EMPTY_SET; }
     @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
     @Override public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
     @Override public Function<Vm, Double> getVmDestructionDelayFunction() { return vm -> 0.0; }

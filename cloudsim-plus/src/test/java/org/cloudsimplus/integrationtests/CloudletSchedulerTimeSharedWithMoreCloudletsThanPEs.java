@@ -100,7 +100,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
         printCloudletsExecutionResults(broker);
 
         final double time = 20;
-        for(Cloudlet c: broker.getCloudletsFinishedList()){
+        for(Cloudlet c: broker.getCloudletFinishedList()){
             assertEquals(String.format(
                 "Cloudlet %d doesn't have the expected finish time.",
                 c.getId(), time),
@@ -114,7 +114,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {
-        new CloudletsTableBuilder(broker.getCloudletsFinishedList())
+        new CloudletsTableBuilder(broker.getCloudletFinishedList())
                 .setTable(new TextTableBuilder(broker.getName()))
                 .build();
     }

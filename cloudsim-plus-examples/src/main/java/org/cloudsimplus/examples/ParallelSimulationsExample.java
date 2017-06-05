@@ -259,7 +259,7 @@ public class ParallelSimulationsExample implements Runnable {
         /*Starts the simulation and waits all cloudlets to be executed*/
         simulation.start();
 
-        this.finishedCloudletList = broker.getCloudletsFinishedList();
+        this.finishedCloudletList = broker.getCloudletFinishedList();
     }
 
     public int getCloudletsToCreate() {

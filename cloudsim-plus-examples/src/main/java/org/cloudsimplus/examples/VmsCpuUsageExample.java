@@ -108,8 +108,7 @@ public class VmsCpuUsageExample {
 
         final double finishTime = simulation.start();
 
-        List<Cloudlet> newList = broker.getCloudletsFinishedList();
-        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
 
         showCpuUtilizationForAllVms(finishTime);
 

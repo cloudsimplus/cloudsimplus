@@ -25,7 +25,6 @@
  */
 package org.cloudsimplus.hostfaultinjection;
 
-import static org.cloudsimplus.hostfaultinjection.HostFaultInjectionRunner.CLOUDLETS;
 import static org.cloudsimplus.hostfaultinjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.toList;
@@ -96,7 +95,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Number of Hosts to create for each Datacenter. The number of elements in
      * this array defines the number of Datacenters to be created.
      */
-    private static final int HOSTS = 50;
+    private static final int HOSTS = 10;
     public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
 
     /*The average number of failures expected to happen each hour
@@ -391,13 +390,13 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         getFaultInjection().setMaxTimeToGenerateFailureInHours(MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS);
 
         for (DatacenterBroker broker : getBrokerList()) {
-            Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmsWaitingList().size() - 1);
+            Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmWaitingList().size() - 1);
             getFaultInjection().addVmCloner (broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets));
 
         }
 
         Log.printFormattedLine(
-            "\tFault Injection created for %s.\n\tMean Number of Failures per Minute: %.6f (1 failure expected at each %.2f minutes).",
+            "\tFault Injection created for %s.\n\tMean Number of Failures per hour: %.6f (1 failure expected at each %.4f hours).",
             datacenter, MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterarrivalMeanTime());
     }
 
@@ -476,7 +475,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     @Override
     public void printResults() {
         for (DatacenterBroker broker : getBrokerList()) {
-            new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
+            new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
         }
     }
 
@@ -543,7 +542,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final double totalPriceForAllVms = totalPriceForVmsInOneHour * totalExecutionTimeForVmsInHours;
 
         System.out.println("\nCustomer: " + broker.getId());
-        System.out.println("Created Vms: " + broker.getVmsCreatedList().size());
+        System.out.println("Created Vms: " + broker.getVmCreatedList().size());
         System.out.printf("VMs execution Hours: %.4f\n", totalExecutionTimeForVmsInHours);
         System.out.printf("VMs execution Days: %.8f\n", days);
         System.out.println("Customer's VMs Template: " + template);
@@ -580,7 +579,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return
      */
     private double getTotalExecutionTimeForVmsInHours(DatacenterBroker broker) {
-        return broker.getVmsCreatedList().stream().mapToDouble(vm -> vm.getTotalExecutionTime()).sum()/3600.0;
+        return broker.getVmCreatedList().stream().mapToDouble(vm -> vm.getTotalExecutionTime()).sum()/3600.0;
     }
 
     /**
@@ -635,7 +634,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
         for (DatacenterBroker b : exp.getBrokerList()) {
             System.out.printf("Customer %d VMs execution time:\n", b.getId());
-            final double totalVmsExecutionHours = b.getVmsCreatedList().stream()
+            final double totalVmsExecutionHours = b.getVmCreatedList().stream()
                 .peek(vm ->
                     System.out.printf("\tVm %2d - Start Time: %5.0f Finish Time: %5.0f Total: %5.2f hours\n",
                         vm.getId(), vm.getStartTime() / 3600, vm.getStopTime() / 3600,
@@ -644,9 +643,9 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
                 .map(t -> t / 3600.0)
                 .sum();
 
-            final int vms = b.getVmsCreatedList().size();
-
-            System.out.printf("Total execution time for %d VMs: %.2f hours\n", vms, totalVmsExecutionHours);
+            System.out.printf(
+                "Total execution time for %d VMs: %.2f hours\n",
+                b.getVmCreatedList().size(), totalVmsExecutionHours);
         }
         exp.getPercentageOfBrokersMeetingCost();
     }

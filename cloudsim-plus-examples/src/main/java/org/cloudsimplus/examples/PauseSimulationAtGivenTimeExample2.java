@@ -189,7 +189,7 @@ public class PauseSimulationAtGivenTimeExample2 {
 
     private void printsListOfFinishedCloudlets(String title) {
         //Gets the list of cloudlets finished so far a prints
-        new CloudletsTableBuilder(broker.getCloudletsFinishedList())
+        new CloudletsTableBuilder(broker.getCloudletFinishedList())
             .setTitle(title)
             .build();
     }

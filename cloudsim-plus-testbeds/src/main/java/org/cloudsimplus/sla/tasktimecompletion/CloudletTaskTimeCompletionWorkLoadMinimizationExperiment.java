@@ -53,7 +53,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -129,7 +128,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     @Override
     public final void printResults() {
         DatacenterBroker broker0 = getFirstBroker();
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
         Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
@@ -161,7 +160,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
      * @return the selected Vm
      */
     private Vm selectVmForCloudlet(Cloudlet cloudlet) {
-        List<Vm> createdVms = cloudlet.getBroker().getVmsCreatedList();
+        List<Vm> createdVms = cloudlet.getBroker().getVmExecList();
     //    Log.printLine("\t\tCreated VMs: " + createdVms);
         Comparator<Vm> sortByNumberOfFreePes
                 = Comparator.comparingLong(vm -> getExpectedNumberOfFreeVmPes(vm));
@@ -196,7 +195,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
      */
     private long getExpectedNumberOfFreeVmPes(Vm vm) {
         final long totalPesNumberForCloudletsOfVm
-                = vm.getBroker().getCloudletsCreatedList().stream()
+                = vm.getBroker().getCloudletCreatedList().stream()
                         .filter(c -> c.getVm().equals(vm))
                         .mapToLong(Cloudlet::getNumberOfPes)
                         .sum();
@@ -292,7 +291,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
-        broker.getCloudletsFinishedList().stream()
+        broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .forEach(cloudletTaskTimeCompletion::addValue);
 
@@ -307,15 +306,15 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
 
-        double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
+        double totalOfcloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= getMaxTaskCompletionTime())
                 .count();
     /*    System.out.printf("\n ** Percentage of cloudlets that complied with "
                 + "the SLA Agreement:  %.2f %%",
-                ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size()));
-        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletsFinishedList().size());*/
-        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
+                ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size()));
+        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletFinishedList().size());*/
+        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
     }
 
     private double getMaxTaskCompletionTime() {

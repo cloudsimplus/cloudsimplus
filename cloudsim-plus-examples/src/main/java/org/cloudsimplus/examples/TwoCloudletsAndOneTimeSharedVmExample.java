@@ -143,7 +143,7 @@ public class TwoCloudletsAndOneTimeSharedVmExample {
         simulation.start();
 
         //Final step: Print results when simulation is over
-        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }

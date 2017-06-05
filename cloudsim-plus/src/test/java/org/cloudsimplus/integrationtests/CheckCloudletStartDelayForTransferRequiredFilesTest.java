@@ -152,7 +152,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	@Test
     public void integrationTest() {
         simulation.start();
-		List<Cloudlet> cloudlets = broker.getCloudletsFinishedList();
+		List<Cloudlet> cloudlets = broker.getCloudletFinishedList();
 		/* The expected finish time considers the delay to transfer the Cloudlet
 		 * required files and the actual execution time.*/
 		final long expectedFinishTime = 7;
@@ -170,7 +170,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
     }
 
     public void printCloudletsExecutionResults() {
-        new CloudletsTableBuilder(broker.getCloudletsFinishedList())
+        new CloudletsTableBuilder(broker.getCloudletFinishedList())
                 .setTable(new TextTableBuilder(broker.getName()))
                 .build();
     }

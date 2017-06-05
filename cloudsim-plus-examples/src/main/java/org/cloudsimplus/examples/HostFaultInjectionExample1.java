@@ -138,7 +138,7 @@ public final class HostFaultInjectionExample1 {
         createFaultInjectionForHosts(datacenter);
 
         simulation.start();
-        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
 
         System.out.printf(
             "Mean Number of Failures per Hour: %.3f (1 failure expected at each %.2f hours).\n",

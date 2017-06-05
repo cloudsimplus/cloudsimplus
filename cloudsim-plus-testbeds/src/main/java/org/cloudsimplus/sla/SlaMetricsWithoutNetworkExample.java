@@ -301,7 +301,7 @@ public final class SlaMetricsWithoutNetworkExample {
         System.out.println("________________________________________________________________");
 
         //Final step: Print results when simulation is over
-        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
 
         Log.printFormattedLine("... finished!");

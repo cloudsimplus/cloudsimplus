@@ -24,8 +24,6 @@
 package org.cloudsimplus.faultinjection;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -553,11 +551,11 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     private boolean isAllVmsFailed(DatacenterBroker broker) {
-        return broker.getVmsCreatedList().stream().allMatch(Vm::isFailed);
+        return broker.getVmExecList().stream().allMatch(Vm::isFailed);
     }
 
     private long getRunningVmsNumber(DatacenterBroker broker) {
-        return broker.getVmsCreatedList().stream().filter(vm -> !vm.isFailed()).count();
+        return broker.getVmExecList().stream().filter(vm -> !vm.isFailed()).count();
     }
 
     /**
@@ -724,10 +722,10 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Computes the current Mean Time To Repair Failures of VMs in minutes (MTTR)
+     * Computes the current Mean Time To Repair failures of VMs in minutes (MTTR)
      * in the Datacenter.
      *
-     * @return the Mean Time to Repair Failures of VMs in minutes (MTTR)
+     * @return the Mean Time to Repair failures of VMs in minutes (MTTR)
      * or zero if no VM was destroyed due to Host failure
      */
     public double meanTimeToRepairVmFaultsInMinutes() {

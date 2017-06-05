@@ -134,7 +134,7 @@ public class CloudletBuilder extends Builder {
     }
 
     public Cloudlet getCloudletById(final int id) {
-        return broker.getCloudletsWaitingList().stream()
+        return broker.getCloudletWaitingList().stream()
             .filter(cloudlet -> cloudlet.getId() == id)
             .findFirst()
             .orElse(Cloudlet.NULL);

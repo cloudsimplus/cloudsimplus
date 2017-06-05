@@ -112,7 +112,7 @@ public class LinuxCompletelyFairSchedulerExample {
 
         simulation.start();
 
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new PriorityCloudletsTableBuilder(finishedCloudlets).build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }

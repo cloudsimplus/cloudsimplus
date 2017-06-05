@@ -53,7 +53,7 @@ public interface DatacenterBroker extends SimEntity {
     Function<Vm, Double> DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION = vm -> -1.0;
 
     /**
-     * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletsWaitingList() waiting list},
+     * Specifies that an already submitted cloudlet, which is in the {@link #getCloudletWaitingList() waiting list},
      * must run in a specific virtual machine.
      *
      * @param cloudlet the cloudlet to be bind to a given Vm
@@ -73,7 +73,7 @@ public interface DatacenterBroker extends SimEntity {
      * @param <T> the class of Cloudlets inside the list
      * @return the cloudlet waiting list
      */
-    <T extends Cloudlet> List<T> getCloudletsWaitingList();
+    <T extends Cloudlet> List<T> getCloudletWaitingList();
 
     /**
      * Gets a <b>copy</b> of the list of cloudlets that have finished executing,
@@ -82,7 +82,7 @@ public interface DatacenterBroker extends SimEntity {
      * @param <T> the class of Cloudlets inside the list
      * @return the list of finished cloudlets
      */
-    <T extends Cloudlet> List<T> getCloudletsFinishedList();
+    <T extends Cloudlet> List<T> getCloudletFinishedList();
 
     Vm getWaitingVm(int index);
 
@@ -93,15 +93,29 @@ public interface DatacenterBroker extends SimEntity {
      * @param <T> the class of VMs inside the list
      * @return the list of waiting VMs
      */
-    <T extends Vm> List<T> getVmsWaitingList();
+    <T extends Vm> List<T> getVmWaitingList();
 
     /**
-     * Gets the list of VMs created by the broker.
+     * Gets the list of VMs in execution, if they are running Cloudlets or not.
+     * These VMs can receive new submitted Cloudlets.
+     *
+     * @param <T> the class of VMs inside the list
+     * @return the list of running VMs
+     * @see #getVmCreatedList()
+     */
+    <T extends Vm> List<T> getVmExecList();
+
+    /**
+     * Gets the list of all VMs created so far,
+     * independently if they are running yet or were already destroyed.
+     * This can be used at the end of the simulation to know
+     * which VMs have executed.
      *
      * @param <T> the class of VMs inside the list
      * @return the list of created VMs
+     * @see #getVmExecList()
      */
-    <T extends Vm> List<T> getVmsCreatedList();
+    <T extends Vm> List<T> getVmCreatedList();
 
     /**
      * Submits a single {@link Vm} to the broker.
@@ -121,7 +135,7 @@ public interface DatacenterBroker extends SimEntity {
      * Sends a list of cloudlets to the broker so that it requests their
      * creation inside some VM, following the submission delay
      * specified in each cloudlet (if any).
-     * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
+     * All cloudlets will be added to the {@link #getCloudletWaitingList()}.
      *
      * @param list the list of Cloudlets to request the creation
      * @pre list !=null
@@ -134,7 +148,7 @@ public interface DatacenterBroker extends SimEntity {
      * Sends a list of cloudlets to the broker so that it requests their creation
      * inside some VM just after a given delay.
      * Just the Cloudlets that don't have a delay already assigned will have its submission delay changed.
-     * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
+     * All cloudlets will be added to the {@link #getCloudletWaitingList()},
      * setting their submission delay to the specified value.
      *
      * @param list            the list of Cloudlets to request the creation
@@ -150,7 +164,7 @@ public interface DatacenterBroker extends SimEntity {
      * Sends a list of cloudlets to the broker so that it requests their creation inside
      * a specific VM, following the submission delay
      * specified in each cloudlet (if any).
-     * All cloudlets will be added to the {@link #getCloudletsWaitingList()}.
+     * All cloudlets will be added to the {@link #getCloudletWaitingList()}.
      *
      * @param list the list of Cloudlets to request the creation
      * @param vm the VM to which all Cloudlets will be bound to
@@ -164,7 +178,7 @@ public interface DatacenterBroker extends SimEntity {
      * Sends a list of cloudlets to the broker so that it requests their creation
      * inside a specific VM just after a given delay.
      * Just the Cloudlets that don't have a delay already assigned will have its submission delay changed.
-     * All cloudlets will be added to the {@link #getCloudletsWaitingList()},
+     * All cloudlets will be added to the {@link #getCloudletWaitingList()},
      * setting their submission delay to the specified value.
      *
      * @param list the list of Cloudlets to request the creation
@@ -189,9 +203,9 @@ public interface DatacenterBroker extends SimEntity {
     void submitVmList(List<? extends Vm> list);
 
     /**
-     * Sends a list of VMs for the broker that their creation inside some Host will be requested just after a given delay.
+     * Sends a list of VMs for the broker so that their creation inside some Host will be requested just after a given delay.
      * Just the VMs that don't have a delay already assigned will have its submission delay changed.
-     * All VMs will be added to the {@link #getVmsWaitingList()},
+     * All VMs will be added to the {@link #getVmWaitingList()},
      * setting their submission delay to the specified value.
      *
      * @param list            the list of VMs to request the creation
@@ -269,7 +283,7 @@ public interface DatacenterBroker extends SimEntity {
      * Gets a <b>read-only</b> list of cloudlets created inside some Vm.
      * @return the list of created Cloudlets
      */
-    Set<Cloudlet> getCloudletsCreatedList();
+    Set<Cloudlet> getCloudletCreatedList();
 
     /**
      * Adds an {@link EventListener} that will be notified every time
@@ -292,7 +306,7 @@ public interface DatacenterBroker extends SimEntity {
      * </p>
      * @param listener the Listener that will be notified
      * @return
-     * @see #getVmsWaitingList()
+     * @see #getVmWaitingList()
      * @see #addOneTimeOnVmsCreatedListener(EventListener)
      */
     DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener);
@@ -318,7 +332,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param listener the Listener that will be notified
      * @return
-     * @see #getVmsWaitingList()
+     * @see #getVmWaitingList()
      * @see #addOnVmsCreatedListener(EventListener)
      */
     DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener);

@@ -123,7 +123,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample1 {
 
         simulation.start();
 
-        new CloudletsTableBuilder(broker0.getCloudletsFinishedList())
+        new CloudletsTableBuilder(broker0.getCloudletFinishedList())
             .addColumn(5, new TextTableColumn("Host MIPS", "total"), c -> c.getVm().getHost().getTotalMipsCapacity())
             .addColumn(8, new TextTableColumn("VM MIPS", "total"), c -> c.getVm().getTotalMipsCapacity())
             .addColumn(9, new TextTableColumn("  VM MIPS", "requested"), this::getVmRequestedMips)

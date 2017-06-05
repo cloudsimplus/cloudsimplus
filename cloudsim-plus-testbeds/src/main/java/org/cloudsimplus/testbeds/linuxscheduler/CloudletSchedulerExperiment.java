@@ -102,7 +102,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         try {
             System.out.printf("\nCloudlets: %d\n", numCloudletsToCreate);
             final DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
-            new PriorityCloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
+            new PriorityCloudletsTableBuilder(broker.getCloudletFinishedList()).build();
         } finally {
             Log.disable();
         }
