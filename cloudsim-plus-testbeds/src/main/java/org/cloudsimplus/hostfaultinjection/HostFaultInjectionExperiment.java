@@ -100,7 +100,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     /*The average number of failures expected to happen each hour
     in a Poisson Process, which is also called event rate or rate parameter.*/
+<<<<<<< HEAD
     public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.01;
+=======
+    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.02;
+>>>>>>> upstream/master
     public static final int MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS = 800;
 
     private List<Host> hostList;
@@ -390,13 +394,21 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         getFaultInjection().setMaxTimeToGenerateFailureInHours(MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS);
 
         for (DatacenterBroker broker : getBrokerList()) {
+<<<<<<< HEAD
             Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmWaitingList().size() - 1);
+=======
+            Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmsWaitingList().size() - 1);
+>>>>>>> upstream/master
             getFaultInjection().addVmCloner (broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets));
 
         }
 
         Log.printFormattedLine(
+<<<<<<< HEAD
             "\tFault Injection created for %s.\n\tMean Number of Failures per hour: %.6f (1 failure expected at each %.4f hours).",
+=======
+            "\tFault Injection created for %s.\n\tMean Number of Failures per Minute: %.6f (1 failure expected at each %.2f minutes).",
+>>>>>>> upstream/master
             datacenter, MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterarrivalMeanTime());
     }
 
@@ -534,7 +546,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final SlaContract contract = getContract(broker);
         final SlaMetricDimension customerExpectedPricePerHour = contract.getPriceMetric().getMaxDimension();
 
+<<<<<<< HEAD
          final AwsEc2Template template = templatesMap.get(broker);
+=======
+        final AwsEc2Template template = templatesMap.get(broker);
+>>>>>>> upstream/master
         final double totalPriceForVmsInOneHour = getActualPriceForAllVms(contract, template);
         final double totalExecutionTimeForVmsInHours = getTotalExecutionTimeForVmsInHours(broker);
 
@@ -542,7 +558,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final double totalPriceForAllVms = totalPriceForVmsInOneHour * totalExecutionTimeForVmsInHours;
 
         System.out.println("\nCustomer: " + broker.getId());
+<<<<<<< HEAD
         System.out.println("Created Vms: " + broker.getVmCreatedList().size());
+=======
+        System.out.println("Created Vms: " + broker.getVmsCreatedList().size());
+>>>>>>> upstream/master
         System.out.printf("VMs execution Hours: %.4f\n", totalExecutionTimeForVmsInHours);
         System.out.printf("VMs execution Days: %.8f\n", days);
         System.out.println("Customer's VMs Template: " + template);
@@ -579,7 +599,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return
      */
     private double getTotalExecutionTimeForVmsInHours(DatacenterBroker broker) {
+<<<<<<< HEAD
         return broker.getVmCreatedList().stream().mapToDouble(vm -> vm.getTotalExecutionTime()).sum()/3600.0;
+=======
+        return broker.getVmsCreatedList().stream().mapToDouble(vm -> vm.getTotalExecutionTime()).sum()/3600.0;
+>>>>>>> upstream/master
     }
 
     /**
@@ -634,7 +658,11 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
         for (DatacenterBroker b : exp.getBrokerList()) {
             System.out.printf("Customer %d VMs execution time:\n", b.getId());
+<<<<<<< HEAD
             final double totalVmsExecutionHours = b.getVmCreatedList().stream()
+=======
+            final double totalVmsExecutionHours = b.getVmsCreatedList().stream()
+>>>>>>> upstream/master
                 .peek(vm ->
                     System.out.printf("\tVm %2d - Start Time: %5.0f Finish Time: %5.0f Total: %5.2f hours\n",
                         vm.getId(), vm.getStartTime() / 3600, vm.getStopTime() / 3600,
@@ -643,9 +671,15 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
                 .map(t -> t / 3600.0)
                 .sum();
 
+<<<<<<< HEAD
             System.out.printf(
                 "Total execution time for %d VMs: %.2f hours\n",
                 b.getVmCreatedList().size(), totalVmsExecutionHours);
+=======
+            final int vms = b.getVmsCreatedList().size();
+
+            System.out.printf("Total execution time for %d VMs: %.2f hours\n", vms, totalVmsExecutionHours);
+>>>>>>> upstream/master
         }
         exp.getPercentageOfBrokersMeetingCost();
     }

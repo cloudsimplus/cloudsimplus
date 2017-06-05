@@ -5,6 +5,11 @@ Lists the main changes in the project.
 ## [Current Development Version]
 - xxx
 
+## [1.2.3] - 2017-06-05
+
+### Changed
+- Updates Host Fault Injection Mechanism ([#105](https://github.com/manoelcampos/cloudsim-plus/pull/105)).
+
 ## [1.2.2] - 2017-06-03
 
 ### Added 

@@ -722,10 +722,10 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Computes the current Mean Time To Repair Failures of VMs in minutes (MTTR)
+     * Computes the current Mean Time To Repair failures of VMs in minutes (MTTR)
      * in the Datacenter.
      *
-     * @return the Mean Time to Repair Failures of VMs in minutes (MTTR)
+     * @return the Mean Time to Repair failures of VMs in minutes (MTTR)
      * or zero if no VM was destroyed due to Host failure
      */
     public double meanTimeToRepairVmFaultsInMinutes() {
