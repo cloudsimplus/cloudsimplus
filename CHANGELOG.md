@@ -7,6 +7,16 @@ Lists the main changes in the project.
 
 ## [1.2.3] - 2017-06-05
 
+### Added / Changed
+- Renamed the `DatacenterBroker` `getVmsCreatedList()` method to `getVmCreatedList()`
+  and added a `getVmExecList()` one ([#100](https://github.com/manoelcampos/cloudsim-plus/issues/100)).
+  Now the `getVmExecList()` method is the one which stores the list of all currently running VMs.
+  These VMs may or may not be running Cloudlets, but they are available
+  for new submitted Cloudlets to be placed into them.
+  The old `getVmCreatedList()` stores all created VMs for the broker
+  along the entire simulation time.
+  This way, the list of all created VMs can be queried after the simulation finishes.
+
 ### Changed
 - Updates Host Fault Injection Mechanism ([#105](https://github.com/manoelcampos/cloudsim-plus/pull/105)).
 
