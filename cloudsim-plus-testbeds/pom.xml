@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-testbeds</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>CloudSim Plus Testbeds</name>
     <description>
         A set of more complex and comprehensive CloudSim Plus testbeds used to assess
@@ -108,6 +108,19 @@
                     <header>${license.dir}/COPYRIGHT</header>
                     <strictCheck>true</strictCheck>
                     <failIfMissing>false</failIfMissing>
+                    <excludes>
+                        <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/*.md</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

@@ -2,8 +2,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies TopologicalLink
 
-.. java:import:: java.util Iterator
-
 DelayMatrix
 ===========
 

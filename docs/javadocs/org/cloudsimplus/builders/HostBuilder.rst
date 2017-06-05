@@ -26,10 +26,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisionerSimple
 
-.. java:import:: org.cloudbus.cloudsim.resources Bandwidth
-
-.. java:import:: org.cloudbus.cloudsim.resources Ram
-
 HostBuilder
 ===========
 

@@ -301,6 +301,26 @@ getHost
 
    **See also:** :java:ref:`.isCreated()`
 
+getIdleInterval
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getIdleInterval()
+   :outertype: Vm
+
+   Gets the last interval the VM was idle (without running any Cloudlet).
+
+   :return: the last idle time interval (in seconds)
+
+getLastBuzyTime
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getLastBuzyTime()
+   :outertype: Vm
+
+   Gets the last time the VM was running some Cloudlet.
+
+   :return: the last buzy time (in seconds)
+
 getPeVerticalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -345,6 +365,14 @@ getResources
 
    :return: {@inheritDoc}
 
+getStartTime
+^^^^^^^^^^^^
+
+.. java:method::  double getStartTime()
+   :outertype: Vm
+
+   Gets the time the VM was created into some Host for the first time (in seconds). The value -1 means the VM was not created yet.
+
 getStateHistory
 ^^^^^^^^^^^^^^^
 
@@ -354,6 +382,16 @@ getStateHistory
    Gets a \ **read-only**\  list with the history of requests and allocation of MIPS for this VM.
 
    :return: the state history
+
+getStopTime
+^^^^^^^^^^^
+
+.. java:method::  double getStopTime()
+   :outertype: Vm
+
+   Gets the time the VM was destroyed into the last Host it executed (in seconds). The value -1 means the VM has not stopped or has not even started yet.
+
+   **See also:** :java:ref:`.isCreated()`
 
 getStorage
 ^^^^^^^^^^
@@ -377,6 +415,16 @@ getTotalCpuMipsUsage
    :return: total CPU utilization in MIPS
 
    **See also:** :java:ref:`.getCpuPercentUsage(double)`
+
+getTotalExecutionTime
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getTotalExecutionTime()
+   :outertype: Vm
+
+   Gets the total time (in seconds) the Vm spent executing. It considers the entire VM execution even if in different Hosts it has possibly migrated.
+
+   :return: the VM total execution time if the VM has stopped, the time executed so far if the VM is running yet, or 0 if it hasn't started.
 
 getVmm
 ^^^^^^
@@ -639,6 +687,28 @@ setSize
    Sets the storage size (capacity) of the VM image in Megabytes.
 
    :param size: new storage size
+
+setStartTime
+^^^^^^^^^^^^
+
+.. java:method::  Vm setStartTime(double startTime)
+   :outertype: Vm
+
+   Sets the time the VM was created into some Host for the first time. The value -1 means the VM was not created yet.
+
+   :param startTime: the start time to set (in seconds)
+
+setStopTime
+^^^^^^^^^^^
+
+.. java:method::  Vm setStopTime(double stopTime)
+   :outertype: Vm
+
+   Sets the time the VM was destroyed into the last Host it executed (in seconds). The value -1 means the VM has not stopped or has not even started yet.
+
+   :param stopTime: the stop time to set (in seconds)
+
+   **See also:** :java:ref:`.isCreated()`
 
 updateProcessing
 ^^^^^^^^^^^^^^^^

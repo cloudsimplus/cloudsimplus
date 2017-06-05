@@ -315,8 +315,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * @return
      * @see
-     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic
-     * variates</a>
+     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic variates</a>
      */
     public boolean isApplyAntitheticVariatesTechnique() {
         return applyAntitheticVariatesTechnique;

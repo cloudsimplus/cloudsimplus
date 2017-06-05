@@ -284,7 +284,7 @@ VM_DESTROY
 .. java:field:: public static final int VM_DESTROY
    :outertype: CloudSimTags
 
-   Denotes a request to destroy a new VM in a \ :java:ref:`Datacenter`\ . When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Vm`\  object.
+   Denotes a request to destroy a VM in a \ :java:ref:`Datacenter`\ . When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Vm`\  object.
 
 VM_DESTROY_ACK
 ^^^^^^^^^^^^^^

@@ -2,8 +2,6 @@
 
 .. java:import:: java.util.function Function
 
-.. java:import:: java.util.stream Collectors
-
 .. java:import:: java.util.stream IntStream
 
 .. java:import:: java.util.stream Stream
@@ -27,8 +25,6 @@
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
-
-.. java:import:: org.cloudbus.cloudsim.resources Processor
 
 CloudletSchedulerAbstract
 =========================
@@ -81,6 +77,17 @@ addCloudletToWaitingList
 
 .. java:method:: protected void addCloudletToWaitingList(CloudletExecutionInfo cloudlet)
    :outertype: CloudletSchedulerAbstract
+
+addWaitingCloudletToExecList
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected CloudletExecutionInfo addWaitingCloudletToExecList(CloudletExecutionInfo cloudlet)
+   :outertype: CloudletSchedulerAbstract
+
+   Removes a Cloudlet from waiting list and adds it to the exec list.
+
+   :param cloudlet: the cloudlet to add to to exec list
+   :return: the given cloudlet
 
 cloudletCancel
 ^^^^^^^^^^^^^^
@@ -159,13 +166,13 @@ findCloudletInList
    :param list: the list to search the Cloudlet into
    :return: an \ :java:ref:`Optional`\  value that is able to indicate if the Cloudlet was found or not
 
-findSuitableWaitingCloudletToStartExecutingAndRemoveIt
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+findSuitableWaitingCloudlet
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudletToStartExecutingAndRemoveIt()
+.. java:method:: protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudlet()
    :outertype: CloudletSchedulerAbstract
 
-   Try to find the first Cloudlet in the waiting list that the number of required PEs is not higher than the number of free PEs. If a Cloudlet is found, sets its status to \ :java:ref:`Status.INEXEC`\  and returns it, removing such Cloudlet from the waiting list.
+   Try to find the first Cloudlet in the waiting list which the number of required PEs is not higher than the number of free PEs.
 
    :return: an \ :java:ref:`Optional`\  containing the found Cloudlet or an empty Optional otherwise
 
@@ -350,6 +357,12 @@ isCloudletReturned
 .. java:method:: @Override public boolean isCloudletReturned(Cloudlet cloudlet)
    :outertype: CloudletSchedulerAbstract
 
+isEmpty
+^^^^^^^
+
+.. java:method:: @Override public boolean isEmpty()
+   :outertype: CloudletSchedulerAbstract
+
 isThereEnoughFreePesForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -401,12 +414,6 @@ removeCloudletFromExecList
 
    :param cloudlet: the Cloudlet to be removed
    :return: the removed Cloudlet or \ :java:ref:`CloudletExecutionInfo.NULL`\  if not found
-
-removeCloudletFromWaitingList
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected boolean removeCloudletFromWaitingList(CloudletExecutionInfo cloudlet)
-   :outertype: CloudletSchedulerAbstract
 
 runningCloudletsNumber
 ^^^^^^^^^^^^^^^^^^^^^^

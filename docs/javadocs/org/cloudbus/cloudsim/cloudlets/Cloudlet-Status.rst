@@ -1,7 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.core ChangeableId
-
-.. java:import:: org.cloudbus.cloudsim.core Delayable
-
 .. java:import:: org.cloudbus.cloudsim.core UniquelyIdentificable
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter

@@ -1,5 +1,3 @@
-.. java:import:: java.util Collections
-
 .. java:import:: java.util List
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet

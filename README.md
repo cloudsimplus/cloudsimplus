@@ -56,13 +56,13 @@ The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is develop
 CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that enable building simple simulations, to advanced features for simulating more realistic cloud scenarios: 
 
 1. It is easier to use. A complete and easy-to-understand simulation scenario can be built in few lines of code. Check the [Examples Section](#a-minimal-and-complete-simulation-example); 
-1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/) that performs on-demand up and down allocation of VM resources such as Ram, Bandwidth and PEs (CPUs) ([#7](https://github.com/manoelcampos/cloudsim-plus/issues/7));
+1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/VerticalVmCpuScalingExample.java) that performs on-demand up and down allocation of VM resources such as Ram, Bandwidth and PEs (CPUs) ([#7](https://github.com/manoelcampos/cloudsim-plus/issues/7));
 1. [Horizontal VM scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/LoadBalancerByHorizontalVmScalingExample.java), allowing dynamic creation of VMs according to an overload condition. Such a condition is defined by a predicate that checks different VM resources usage such as CPU, RAM or BW ([#41](https://github.com/manoelcampos/cloudsim-plus/issues/41));
 1. [Parallel execution of simulations](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer ([#38](https://github.com/manoelcampos/cloudsim-plus/issues/38));
 1. Delay creation of submitted VMs and [Cloudlets](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCloudletsArrival1.java), enabling simulation of dynamic arrival of tasks ([#11](https://github.com/manoelcampos/cloudsim-plus/issues/11), [#23](https://github.com/manoelcampos/cloudsim-plus/issues/23)); 
 1. [Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCreationOfVmsAndCloudletsExample.java), enabling VMs to be created on-demand according to arrived cloudlets ([#43](https://github.com/manoelcampos/cloudsim-plus/issues/43));
-1. [Listeners](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/listeners/) to enable simulation monitoring and creation of VMs and Cloudlets at runtime;
-1. [Builders](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/) to enable creating multiple simulation objects with same configuration;
+1. [Listeners](/cloudsim-plus/src/main/java/org/cloudsimplus/listeners/EventListener.java) to enable simulation monitoring and creation of VMs and Cloudlets at runtime;
+1. [Builders](/cloudsim-plus/src/main/java/org/cloudsimplus/builders/SimulationScenarioBuilder.java) to enable creating multiple simulation objects with same configuration;
 1. It is a strongly object-oriented framework that creates relationships among classes and allows chained calls such as `cloudlet.getVm().getHost().getDatacenter()`. And guess what? You don't even have to worry about `NullPointerException` when making such a chained call because CloudSim Plus uses the [Null Object Design Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to avoid that ([#10](https://github.com/manoelcampos/cloudsim-plus/issues/10));
 1. Classes and interfaces to allow implementation of [heuristics](http://en.wikipedia.org/wiki/Heuristic) such as [Tabu Search](http://en.wikipedia.org/wiki/Tabu_search), [Simulated Annealing](http://en.wikipedia.org/wiki/Simulated_annealing), [Ant Colony Systems](http://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms) and so on. See an [example using Simulated Annealing here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DatacenterBrokerHeuristicExample.java);
 1. [Implementation of the Completely Fair Scheduler](https://en.wikipedia.org/wiki/Completely_Fair_Scheduler) used in recent versions of the Linux Kernel. See an example [here](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/LinuxCompletelyFairSchedulerExample.java) ([#58](https://github.com/manoelcampos/cloudsim-plus/issues/58));
@@ -73,10 +73,14 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
 1. Throughout documentation update, improvement and extension;
 1. Improved class hierarchy, modules and package structure that is easier to understand and follows the [Separation of Concerns principle (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns);
 1. As it is usual to extend framework classes to provide some specific behaviors for your simulations, you will find a totally refactored code that follows clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. This way, it will be easier to understand the code and implement the feature you want;
-1. [Integration Tests](https://github.com/manoelcampos/cloudsim-plus/tree/master/cloudsim-plus/src/test/java/org/cloudsimplus/integrationtests) to increase framework accuracy by testing entire simulation scenarios;
+1. Integration Tests to increase framework accuracy by testing entire simulation scenarios;
 1. Updated to Java 8 to provide some [Functional Programming](https://en.wikipedia.org/wiki/Functional_programming) features (such as the next one), using [Lambda Expressions](http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html) and [Streams API](http://www.oracle.com/technetwork/articles/java/ma14-java-se-8-streams-2177646.html) to improve efficiency and make the code cleaner and easier to maintain;
-1. <a id="exclusive-features-broker"></a> A [Functional](https://en.wikipedia.org/wiki/Functional_programming) `DatacenterBrokerSimple` class that enables changing, at runtime, the policies to select: a Datacenter to place waiting VMs; a fallback Datacenter when a previous selected one fails in finding a suitable Host for a VM; and a VM to run each Cloudlet. This dynamic behavior allows implementing specific policies, without requiring the creation of new `DatacenterBroker` classes. Consider *P* the number of policies and *I* the number of implementations for each policy. For *P = 3* and *I = 2*, if you want to try all possible combinations of policies and implementations, without CloudSim Plus, it would be required to create 12 `DatacenterBroker` classes (*P* * *I^(P-1)*), instead of just using the existing one.  ([#25](https://github.com/manoelcampos/cloudsim-plus/issues/25), [#28](https://github.com/manoelcampos/cloudsim-plus/issues/28));
-1. [Host Fault Injection Mechanism (under development)](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/HostFaultInjectionExample1.java) to enable injection of random failures into Hosts PEs: it injects failures into Host PEs and reallocates working PEs to running VMs. When all PEs from a Host fail, it starts clones of failed VMs to recovery from failure. This way, it is simulated the instantiation of VM snapshots into different Hosts ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
+1. <a id="exclusive-features-broker"></a> A [Functional](https://en.wikipedia.org/wiki/Functional_programming) `DatacenterBrokerSimple` class that enables changing, at runtime, policies for different goals. This dynamic behavior allows implementing specific policies, without requiring the creation of new `DatacenterBroker` classes. Consider *P* the number of policies and *I* the number of implementations for each policy. For *P = 3* and *I = 2*, if you want to try all possible combinations of policies and implementations, without CloudSim Plus, it would be required to create 12 `DatacenterBroker` classes (*P* * *I^(P-1)*), instead of just using the existing one. Some of these behaviors which can be changed are:
+    - selection of a Datacenter to place waiting VMs and a fallback Datacenter when a previous selected one fails in finding a suitable Host for a VM ([#28](https://github.com/manoelcampos/cloudsim-plus/issues/28)); 
+    - selection of a VM to run each Cloudlet ([#25](https://github.com/manoelcampos/cloudsim-plus/issues/25));
+    - definition of the time when an idle VM should be destroyed ([#99](https://github.com/manoelcampos/cloudsim-plus/issues/99));
+    - sorting of requests to create submitted VMs and Cloudlets, defining priorities to create such objects ([#102](https://github.com/manoelcampos/cloudsim-plus/issues/102)). 
+1. [Host Fault Injection Mechanism](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/HostFaultInjectionExample1.java) to enable injection of random failures into Hosts PEs: it injects failures into Host PEs and reallocates working PEs to running VMs. When all PEs from a Host fail, it starts clones of failed VMs to recovery from failure. This way, it is simulated the instantiation of VM snapshots into different Hosts ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
 
 # Project's Structure
 
@@ -84,20 +88,13 @@ CloudSim Plus has a simpler structure to make it ease to use and understand. It 
 
 ![CloudSim Plus Modules](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/modules.png)
 
-- [cloudsim-plus](/cloudsim-plus): the CloudSim Plus cloud simulation framework API that is used by all other modules. 
-  It is the main module that contains the simulation framework implementation and is the only
-  one you need to write your cloud simulations. 
+- [cloudsim-plus](/cloudsim-plus): the CloudSim Plus cloud simulation framework API, which is used by all other modules. 
+  It is the main and only required module you need to write cloud simulations. 
 - [cloudsim-plus-examples](/cloudsim-plus-examples): includes a series of different examples, since minimal simulation scenarios using basic 
   CloudSim Plus features, to complex scenarios using workloads from trace files or Vm migration examples. This is an excellent starting point for learning how to build cloud simulations using CloudSim Plus.
-- [cloudsim-plus-testbeds](/cloudsim-plus-testbeds): a new module that implements some simulation testbeds in a repeatable manner, 
+- [cloudsim-plus-testbeds](/cloudsim-plus-testbeds): enables implementation of simulation testbeds in a repeatable manner, 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach. 
-  It represents real testbeds implemented to assess CloudSim Plus features, providing relevant results. The module provides a set of class which 
-  can be used by other researchers to implement their own comprehensive testbeds. Different from the examples module that aims just
-  to show how to use CloudSim Plus features, this module includes more complex simulation scenarios concerned in providing
-  scientifically valid results. 
-- [cloudsim-plus-benchmarks](/cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks using the 
-  [Java Microbenchmark Harness framework (JMH)](http://openjdk.java.net/projects/code-tools/jmh/) to enable measuring critical methods of the 
-  CloudSim Plus API that have a high impact in the simulation framework performance.
+- [cloudsim-plus-benchmarks](/cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks to assess framework performance.
 
 It also has a better package organization, improving [Separation of Concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns) and making it easy to know where a desired class is and what is inside each package. The figure below presents the new package organization. The dark yellow packages are new in CloudSim Plus and include its exclusive interfaces and classes. The light yellow ones were introduced just to better organize existing CloudSim classes and interfaces. 
 
@@ -156,7 +153,7 @@ as presened below (check if the informed version is the latest one). This way yo
 <dependency>
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
 </dependency>
 ```
 
@@ -281,7 +278,7 @@ before the changes proposed here being merged to the official repository. This w
 
 # What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations to use CloudSim Plus?
 
-It's much easier to use CloudSim Plus. A complete, side-by-side [comparison between CloudSim and CloudSim Plus Java simulation scenarios is available here](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html).
+It's much easier to use CloudSim Plus. A complete, side-by-side [comparison between CloudSim and CloudSim Plus Java simulation scenarios is available here](http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html).
 
 To update your simulations to use the CloudSim Plus you have to change the way that some objects are instantiated, because some new interfaces were introduced to follow the "program to an interface, not an implementation" recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). 
 These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to try avoiding `NullPointerException`s.
@@ -356,7 +353,7 @@ Additionally, the interface `Storage` was renamed to `FileStorage` and its imple
 
 # CloudSim Plus Publications
 
-  1. This paper was accepted for publication and will be available at IEEExplore soon. If you are using CloudSim Plus in your research, please make sure you cite it: [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](http://im2017.ieee-im.org/mini-conference).
+  1. This paper was accepted for publication and will be available at IEEExplore soon. If you are using CloudSim Plus in your research, please make sure you cite it: [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](http://im2017.ieee-im.org/mini-conference). You can check the paper presentation [here](http://cloudsimplus.org/docs/presentation/).
   2. White Paper ["CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services"](https://github.com/manoelcampos/cloudsim-plus/blob/master/docs/cloudsim-plus-white-paper.pdf)
   
 <p align="right"><a href="#top">:arrow_up:</a></p>

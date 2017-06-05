@@ -1,24 +1,14 @@
 .. java:import:: java.util Comparator
 
-.. java:import:: java.util List
-
 .. java:import:: java.util Optional
-
-.. java:import:: java.util Set
 
 .. java:import:: java.util.stream Stream
 
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
 
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
-.. java:import:: org.cloudbus.cloudsim.hosts HostDynamicWorkload
-
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
-
-.. java:import:: org.cloudbus.cloudsim.hosts.power PowerHostSimple
 
 .. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
 

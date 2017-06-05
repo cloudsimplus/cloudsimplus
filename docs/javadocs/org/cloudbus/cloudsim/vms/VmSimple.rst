@@ -270,6 +270,18 @@ getId
 .. java:method:: @Override public int getId()
    :outertype: VmSimple
 
+getIdleInterval
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getIdleInterval()
+   :outertype: VmSimple
+
+getLastBuzyTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getLastBuzyTime()
+   :outertype: VmSimple
+
 getMips
 ^^^^^^^
 
@@ -318,10 +330,22 @@ getSimulation
 .. java:method:: @Override public Simulation getSimulation()
    :outertype: VmSimple
 
+getStartTime
+^^^^^^^^^^^^
+
+.. java:method:: @Override public double getStartTime()
+   :outertype: VmSimple
+
 getStateHistory
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<VmStateHistoryEntry> getStateHistory()
+   :outertype: VmSimple
+
+getStopTime
+^^^^^^^^^^^
+
+.. java:method:: @Override public double getStopTime()
    :outertype: VmSimple
 
 getStorage
@@ -340,6 +364,12 @@ getTotalCpuMipsUsage
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getTotalCpuMipsUsage(double time)
+   :outertype: VmSimple
+
+getTotalExecutionTime
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalExecutionTime()
    :outertype: VmSimple
 
 getTotalMipsCapacity
@@ -536,6 +566,18 @@ setSize
 ^^^^^^^
 
 .. java:method:: @Override public final Vm setSize(long size)
+   :outertype: VmSimple
+
+setStartTime
+^^^^^^^^^^^^
+
+.. java:method:: @Override public Vm setStartTime(double startTime)
+   :outertype: VmSimple
+
+setStopTime
+^^^^^^^^^^^
+
+.. java:method:: @Override public Vm setStopTime(double stopTime)
    :outertype: VmSimple
 
 setSubmissionDelay

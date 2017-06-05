@@ -4,8 +4,6 @@
 
 .. java:import:: java.io IOException
 
-.. java:import:: java.util.stream IntStream
-
 UtilizationModelPlanetLab
 =========================
 

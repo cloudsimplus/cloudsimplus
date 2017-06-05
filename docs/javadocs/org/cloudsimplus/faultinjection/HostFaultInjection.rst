@@ -1,18 +1,10 @@
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util Collections
-
-.. java:import:: java.util HashMap
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Map
-
-.. java:import:: java.util Objects
+.. java:import:: java.time Duration
 
 .. java:import:: java.util.function Function
 
 .. java:import:: java.util.function UnaryOperator
+
+.. java:import:: java.util.stream Stream
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
@@ -114,7 +106,7 @@ addVmCloner
 .. java:method:: public void addVmCloner(DatacenterBroker broker, UnaryOperator<Vm> clonerFunction)
    :outertype: HostFaultInjection
 
-   Adds a \ :java:ref:`UnaryOperator`\  that creates a clone of \ :java:ref:`Vm`\ s belonging to a given broker. when all Host PEs fail or all VM's PEs are deallocated because they have failed.
+   Adds a \ :java:ref:`UnaryOperator`\  that creates a clone of a \ :java:ref:`Vm`\  belonging to a given broker. when all Host PEs fail or all VM's PEs are deallocated because they have failed.
 
    This is optional. If a cloner function is not set, VMs will not be recovered from failures.
 
@@ -132,6 +124,16 @@ availability
    :outertype: HostFaultInjection
 
    Gets the Datacenter's availability as a percentage value between 0 to 1, based on VMs' downtime (the times VMs took to be repaired).
+
+availability
+^^^^^^^^^^^^
+
+.. java:method:: public double availability(DatacenterBroker broker)
+   :outertype: HostFaultInjection
+
+   Gets the availability for a given broker as a percentage value between 0 to 1, based on VMs' downtime (the times VMs took to be repaired).
+
+   :param broker: the broker to get the availability of its VMs
 
 getDatacenter
 ^^^^^^^^^^^^^
@@ -159,13 +161,23 @@ getMaxTimeToGenerateFailure
 
    Get the max time to generate a failure
 
-getNumberOfDestroyedVms
-^^^^^^^^^^^^^^^^^^^^^^^
+getNumberOfFaults
+^^^^^^^^^^^^^^^^^
 
-.. java:method:: public int getNumberOfDestroyedVms()
+.. java:method:: public long getNumberOfFaults()
    :outertype: HostFaultInjection
 
-   Gets the total number of faults happened for VMs, which means the total number of VMs that were destroyed due to failure in Host PEs.
+   Gets the total number of faults which affected all VMs from any broker.
+
+getNumberOfFaults
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public long getNumberOfFaults(DatacenterBroker broker)
+   :outertype: HostFaultInjection
+
+   Gets the total number of faults which affected all VMs from a given broker.
+
+   :param broker: the broker to get the number of faults for
 
 getNumberOfHostFaults
 ^^^^^^^^^^^^^^^^^^^^^
@@ -201,8 +213,21 @@ meanTimeBetweenVmFaultsInMinutes
 .. java:method:: public double meanTimeBetweenVmFaultsInMinutes()
    :outertype: HostFaultInjection
 
-   Computes the current mean time (in minutes) between Host failures (MTBF). It uses a straightforward way to compute the MTBF. Since it's stored the VM recovery times, it's possible to use such values to make easier the MTBF computation, different from the Hosts MTBF.
+   Computes the current Mean Time Between host Failures (MTBF) in minutes for the entire Datacenter. It uses a straightforward way to compute the MTBF. Since it's stored the VM recovery times, it's possible to use such values to make easier the MTBF computation, different from the Hosts MTBF.
 
+   :return: the current mean time (in minutes) between Host failures (MTBF) or zero if no VM was destroyed due to Host failure
+
+   **See also:** :java:ref:`.meanTimeBetweenHostFaultsInMinutes()`
+
+meanTimeBetweenVmFaultsInMinutes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double meanTimeBetweenVmFaultsInMinutes(DatacenterBroker broker)
+   :outertype: HostFaultInjection
+
+   Computes the current Mean Time Between host Failures (MTBF) in minutes for a given broker, considering only its VMs which are affected by failures. It uses a straightforward way to compute the MTBF. Since it's stored the VM recovery times, it's possible to use such values to make easier the MTBF computation, different from the Hosts MTBF.
+
+   :param broker: the broker to get the MTBF for
    :return: the current mean time (in minutes) between Host failures (MTBF) or zero if no VM was destroyed due to Host failure
 
    **See also:** :java:ref:`.meanTimeBetweenHostFaultsInMinutes()`
@@ -213,8 +238,19 @@ meanTimeToRepairVmFaultsInMinutes
 .. java:method:: public double meanTimeToRepairVmFaultsInMinutes()
    :outertype: HostFaultInjection
 
-   Computes the current mean time (in minutes) to repair VM failures (MTTR).
+   Computes the current mean time (in minutes) to repair failures of VMs (MTTR) in the Datacenter.
 
+   :return: the current mean time (in minutes) to repair VM failures (MTTR) or zero if no VM was destroyed due to Host failure
+
+meanTimeToRepairVmFaultsInMinutes
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double meanTimeToRepairVmFaultsInMinutes(DatacenterBroker broker)
+   :outertype: HostFaultInjection
+
+   Computes the current mean time (in minutes) to repair failures of VMs (MTTR) belonging to given broker.
+
+   :param broker: the broker to get the MTTR for
    :return: the current mean time (in minutes) to repair VM failures (MTTR) or zero if no VM was destroyed due to Host failure
 
 processEvent

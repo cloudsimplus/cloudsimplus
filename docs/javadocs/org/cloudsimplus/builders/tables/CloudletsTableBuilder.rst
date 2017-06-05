@@ -41,23 +41,23 @@ Methods
 addColumn
 ^^^^^^^^^
 
-.. java:method:: public CloudletsTableBuilder addColumn(int index, TableColumn col, Function<Cloudlet, Object> dataFunction)
+.. java:method:: public CloudletsTableBuilder addColumn(TableColumn col, Function<Cloudlet, Object> dataFunction)
    :outertype: CloudletsTableBuilder
 
-   Dynamically adds a column to a specific position into the table to be built.
+   Dynamically adds a column to the end of the table to be built.
 
-   :param index: the position to insert the column.
    :param col: the column to add
    :param dataFunction: a function that receives a Cloudlet and returns the data to be printed for the added column
 
 addColumn
 ^^^^^^^^^
 
-.. java:method:: public CloudletsTableBuilder addColumn(TableColumn col, Function<Cloudlet, Object> dataFunction)
+.. java:method:: public CloudletsTableBuilder addColumn(int index, TableColumn col, Function<Cloudlet, Object> dataFunction)
    :outertype: CloudletsTableBuilder
 
-   Dynamically adds a column to the end of the table to be built.
+   Dynamically adds a column to a specific position into the table to be built.
 
+   :param index: the position to insert the column.
    :param col: the column to add
    :param dataFunction: a function that receives a Cloudlet and returns the data to be printed for the added column
 
@@ -97,7 +97,7 @@ getTable
 setCloudletList
 ^^^^^^^^^^^^^^^
 
-.. java:method:: protected CloudletsTableBuilder setCloudletList(List<? extends Cloudlet> cloudletList)
+.. java:method:: protected final CloudletsTableBuilder setCloudletList(List<? extends Cloudlet> cloudletList)
    :outertype: CloudletsTableBuilder
 
 setTable
@@ -105,6 +105,10 @@ setTable
 
 .. java:method:: public final CloudletsTableBuilder setTable(TableBuilder table)
    :outertype: CloudletsTableBuilder
+
+   Sets the \ :java:ref:`TableBuilder`\  used to build the table with Cloudlet Data. The default table builder is \ :java:ref:`TextTableBuilder`\ .
+
+   :param table: the \ :java:ref:`TableBuilder`\  to set
 
 setTitle
 ^^^^^^^^

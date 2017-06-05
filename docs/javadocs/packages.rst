@@ -45,4 +45,6 @@ JavaDocs
    org/cloudsimplus/faultinjection/package-index
    org/cloudsimplus/heuristics/package-index
    org/cloudsimplus/listeners/package-index
+   org/cloudsimplus/slametrics/package-index
+   org/cloudsimplus/vmtemplates/package-index
 

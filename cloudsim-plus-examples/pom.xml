@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-examples</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>CloudSim Plus Examples</name>
     <description>
         Ready-to-run examples of how to use CloudSim Plus API.
@@ -53,7 +53,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
         <license.dir>..</license.dir>
-        <version>1.2.0</version>
     </properties>
 
     <build>
@@ -113,7 +112,6 @@
                 </configuration>
             </plugin>
 
-            <!-- Inherited from the parent pom. See the plugin there for more details. -->
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>
                 <artifactId>maven-license-plugin</artifactId>
@@ -129,7 +127,18 @@
                     <excludes>
                         <exclude>**/src/main/resources/**</exclude>
                         <exclude>**/src/main/java/org/cloudbus/**</exclude>
+                        <exclude>**/*.md</exclude>
+                        <exclude>**/*.brite</exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
                 </configuration>
             </plugin>
         </plugins>

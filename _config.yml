@@ -1,0 +1,14 @@
+title: "CloudSim Plus" 
+description: "CloudSim Plus: A modern, full-featured, highly extensible and easier-to-use Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services" 
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-architect
+encoding: utf-8
+
+gems:
+  - jekyll-mentions
+  - jemoji
+
+webrick:
+  headers:
+    keywords: "CloudSim Plus,CloudSim,Cloud Computing,Simulation,Framework,IaaS,PaaS,SaaS,Java 8,Maven,Maven Central"

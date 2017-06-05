@@ -1,7 +1,5 @@
 .. java:import:: java.util List
 
-.. java:import:: java.util Random
-
 .. java:import:: org.cloudbus.cloudsim.distributions ContinuousDistribution
 
 .. java:import:: org.cloudbus.cloudsim.distributions UniformDistr

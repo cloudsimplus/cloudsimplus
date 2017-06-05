@@ -151,7 +151,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private ContinuousDistribution random;
 
     /**
-     * A map that stores {@link VmClonerSimple} objects to be used to clone
+     * A map that stores {@link VmCloner} objects to be used to clone
      * the VMs belonging to a broker.
      *
      * @see #addVmCloner(DatacenterBroker, VmCloner)
@@ -159,7 +159,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private Map<DatacenterBroker, VmCloner> vmClonerMap;
 
     /**
-     * A Pseudo Random Number Generator which generates the times (in minutes)
+     * A Pseudo Random Number Generator which generates the times (in hours)
      * that Hosts failures will occur.
      */
     private ContinuousDistribution faultArrivalTimesGeneratorInHours;
@@ -810,7 +810,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Adds a {@link UnaryOperator} that creates a clone for the last failed {@link Vm}s belonging to a given broker,
+     * Adds a {@link UnaryOperator} that creates a clone for the last failed {@link Vm} belonging to a given broker,
      * when all VMs of that broker have failed.
      *
      * <p>This is optional. If a cloner Function is not set,

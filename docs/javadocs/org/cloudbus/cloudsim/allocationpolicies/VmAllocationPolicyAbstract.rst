@@ -1,5 +1,3 @@
-.. java:import:: java.util Collections
-
 .. java:import:: java.util HashMap
 
 .. java:import:: java.util List

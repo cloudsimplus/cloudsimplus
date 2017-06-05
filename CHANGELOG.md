@@ -3,7 +3,20 @@
 Lists the main changes in the project.
 
 ## [Current Development Version]
-- xxxxxx
+- xxx
+
+## [1.2.2] - 2017-06-03
+
+### Added 
+- [Amazon EC2](http://aws.amazon.com/ec2/) instance templates in JSON format ([#97](https://github.com/manoelcampos/cloudsim-plus/pull/97)).
+- `Vm.getStartTime()`, `Vm.getStopTime()` and `Vm.getTotalExecutionTime()` methods to, respectively: get the time a VM started running for the first time; the time it was destroyed in the last Host it executed; and the total execution time across all Hosts the VM possibly have migrated across ([#98](https://github.com/manoelcampos/cloudsim-plus/issues/98)).
+-  Allow a VM belonging to a broker to be destroyed after all its Cloudlets have finished, independently of the state of other running VMs and according to a given delay ([#99](https://github.com/manoelcampos/cloudsim-plus/issues/99)).
+
+### Changed
+- Host Fault Injection Mechanism ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
+
+### Fixed
+- Cloudlets executed with `CloudletSchedulerSpaceShared` were giving incorrect results ([#96](https://github.com/manoelcampos/cloudsim-plus/issues/96)).
 
 ## [1.2.1] - 2017-05-28
 
@@ -11,20 +24,19 @@ Lists the main changes in the project.
 - `PowerVmAllocationPolicyMigrationBestFitStaticThreshold` to select the Host to place or migrate a VM
   using a Best Fit policy, that is, it selects the Host with less available resources
   that is enough to place a given VM.
-- `EventListener` to notify subscribers when all VMs in the `DatacenterBroker` waiting list were created ([#92](https://github.com/manoelcampos/cloudsim-plus/issues/92)).
-- Enables Hosts to be powered on and off ([#89](https://github.com/manoelcampos/cloudsim-plus/issues/89)).
+- Enables dynamically adding new columns to the simulation results table  ([#87](https://github.com/manoelcampos/cloudsim-plus/issues/87)).
 - Enables changing the CPU migration overhead for any VmScheduler.
   A new constructor was added to these schedulers to enable setting this value once 
   ([#88](https://github.com/manoelcampos/cloudsim-plus/issues/88)).
-- Enables dynamically adding new columns to the simulation results table  ([#87](https://github.com/manoelcampos/cloudsim-plus/issues/87)).
-
-### Fixed
-- Bug fixes ([#95](https://github.com/manoelcampos/cloudsim-plus/issues/95)) 
+- Enables Hosts to be powered on and off ([#89](https://github.com/manoelcampos/cloudsim-plus/issues/89)).
+- `EventListener` to notify subscribers when all VMs in the `DatacenterBroker` waiting list were created ([#92](https://github.com/manoelcampos/cloudsim-plus/issues/92)).
 
 ### Changed
 - Updates the Host Fault Injection Mechanism to allow creating a snapshot of a VM
   when all VMs belonging to a broker have failed ([#93](https://github.com/manoelcampos/cloudsim-plus/pull/93)).
 
+### Fixed
+- Allocated MIPS for VM was not being reduced during VM migration ([#95](https://github.com/manoelcampos/cloudsim-plus/issues/95)) 
 
 ## [1.2.0] - 2017-05-17
 

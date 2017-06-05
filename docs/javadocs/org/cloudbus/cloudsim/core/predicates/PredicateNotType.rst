@@ -10,8 +10,6 @@
 
 .. java:import:: java.util.stream Collectors
 
-.. java:import:: java.util.stream IntStream
-
 PredicateNotType
 ================
 

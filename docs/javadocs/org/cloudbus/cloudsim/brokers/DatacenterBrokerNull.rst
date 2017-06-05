@@ -102,6 +102,12 @@ getSimulation
 .. java:method:: @Override public Simulation getSimulation()
    :outertype: DatacenterBrokerNull
 
+getVmDestructionDelayFunction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Function<Vm, Double> getVmDestructionDelayFunction()
+   :outertype: DatacenterBrokerNull
+
 getVmsCreatedList
 ^^^^^^^^^^^^^^^^^
 
@@ -120,16 +126,16 @@ getWaitingVm
 .. java:method:: @Override public Vm getWaitingVm(int index)
    :outertype: DatacenterBrokerNull
 
-hasMoreCloudletsToBeExecuted
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean hasMoreCloudletsToBeExecuted()
-   :outertype: DatacenterBrokerNull
-
 isStarted
 ^^^^^^^^^
 
 .. java:method:: @Override public boolean isStarted()
+   :outertype: DatacenterBrokerNull
+
+isThereWaitingCloudlets
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isThereWaitingCloudlets()
    :outertype: DatacenterBrokerNull
 
 println
@@ -196,6 +202,12 @@ setVmComparator
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setVmComparator(Comparator<Vm> comparator)
+   :outertype: DatacenterBrokerNull
+
+setVmDestructionDelayFunction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function)
    :outertype: DatacenterBrokerNull
 
 setVmMapper
