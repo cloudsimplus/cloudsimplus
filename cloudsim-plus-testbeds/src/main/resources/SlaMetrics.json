@@ -83,6 +83,15 @@
           "value": 0.017
         }
       ]
+    },
+    {
+      "name": "FaultToleranceLevel",
+      "dimensions": [
+        {
+          "name": "minValue",
+          "value": 3
+        }
+      ]
     }
   ]
 }

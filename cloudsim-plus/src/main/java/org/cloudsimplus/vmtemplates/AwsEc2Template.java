@@ -28,6 +28,8 @@ import org.cloudbus.cloudsim.util.ResourceLoader;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * Represents an
@@ -38,12 +40,14 @@ import java.io.FileReader;
  * @author raysaoliveira
  * @see #getInstance(String)
  */
-public class AwsEc2Template {
+public class AwsEc2Template implements Comparable<AwsEc2Template> {
+    public static final AwsEc2Template NULL = new AwsEc2Template();
+
     private String name;
+    private Path path;
     private int cpus;
     private int memoryInMB;
     private double pricePerHour;
-    private double maxNumberOfVmsForCustomer;
 
     /**
      * Default constructor used to create an {@link AwsEc2Template} instance.
@@ -51,7 +55,8 @@ public class AwsEc2Template {
      * you shouldn't call the constructor directly.
      * Instead, use some methods such as the {@link #getInstance(String)}.
      */
-    public AwsEc2Template(){}
+    public AwsEc2Template(){
+    }
 
     /**
      * A clone constructor which receives an {@link AwsEc2Template}
@@ -63,7 +68,7 @@ public class AwsEc2Template {
         this.cpus = source.cpus;
         this.memoryInMB = source.memoryInMB;
         this.pricePerHour = source.pricePerHour;
-        this.maxNumberOfVmsForCustomer = source.maxNumberOfVmsForCustomer;
+        this.path = Paths.get(source.path.toUri());
     }
 
     /**
@@ -74,7 +79,9 @@ public class AwsEc2Template {
      */
     public static AwsEc2Template getInstance(final String jsonTemplateFilePath) throws FileNotFoundException {
         final FileReader fileReader = new FileReader(jsonTemplateFilePath);
-        return new Gson().fromJson(fileReader, AwsEc2Template.class);
+        final AwsEc2Template template = new Gson().fromJson(fileReader, AwsEc2Template.class);
+        template.path = Paths.get(jsonTemplateFilePath);
+        return template;
     }
 
     /**
@@ -109,6 +116,10 @@ public class AwsEc2Template {
         this.memoryInMB = memoryInMB;
     }
 
+    /**
+     * Gets the price per hour of a VM created from this template
+     * @return
+     */
     public double getPricePerHour() {
         return pricePerHour;
     }
@@ -117,40 +128,9 @@ public class AwsEc2Template {
         this.pricePerHour = pricePerHour;
     }
 
-    /**
-     * Gets the maximum number of VMs which can be created with this configuration
-     * for a specific customer, considering the maximum price
-     * the customer expects to pay hourly for all his/her running VMs.
-     *
-     * <p>This is not a field inside the JSON file and doesn't in fact represent
-     * a AWS EC2 Instance attribute. It's a value which may be computed
-     * externally and assigned to the attribute.
-     * It's usage is optional and it's default value is zero.</p>
-     * @return
-     */
-    public double getMaxNumberOfVmsForCustomer() {
-        return maxNumberOfVmsForCustomer;
-    }
-
-    /**
-     * Sets the maximum number of VMs which can be created with this configuration
-     * for a specific customer, considering the maximum price
-     * the customer expects to pay hourly for all his/her running VMs.
-     *
-     * <p>This is not a field inside the JSON file and doesn't in fact represent
-     * a AWS EC2 Instance attribute. It's a value which may be computed
-     * externally and assigned to the attribute.
-     * It's usage is optional and it's default value is zero.</p>
-     * @param maxNumberOfVmsForCustomer  the maximum number of VMs to set
-     */
-    public AwsEc2Template setMaxNumberOfVmsForCustomer(double maxNumberOfVmsForCustomer) {
-        this.maxNumberOfVmsForCustomer = maxNumberOfVmsForCustomer;
-        return this;
-    }
-
     @Override
     public String toString() {
-        return "AwsEc2Template{name = " + name +
+        return "AwsEc2Template {name = " + name +
                ",  cpus = " + cpus +
                ",  memoryInMB = " + memoryInMB +
                ",  pricePerHour = " + pricePerHour +'}';
@@ -163,5 +143,39 @@ public class AwsEc2Template {
     public static void main(String[] args) throws FileNotFoundException {
         final AwsEc2Template template = AwsEc2Template.getInstanceFromResourcesDir("vmtemplates/aws/t2.nano.json");
         System.out.println(template);
+    }
+
+    /**
+     * Gets the full path to the JSON template file used to create this template.
+     * @return
+     */
+    public String getFilePath() {
+        return path.toAbsolutePath().toString();
+    }
+
+    /**
+     * Gets only the name of the JSON template file used to create this template,
+     * without the path.
+     * @return
+     */
+    public String getFileName(){
+        return path.getFileName().toString();
+    }
+
+
+    @Override
+    public int compareTo(AwsEc2Template o) {
+        int comparison = Double.compare(this.cpus, o.cpus);
+        if(comparison != 0){
+            return comparison;
+        }
+
+        comparison = Double.compare(this.memoryInMB, o.memoryInMB);
+        if(comparison != 0){
+            return comparison;
+        }
+
+        comparison = Double.compare(this.pricePerHour, o.pricePerHour);
+        return comparison;
     }
 }
