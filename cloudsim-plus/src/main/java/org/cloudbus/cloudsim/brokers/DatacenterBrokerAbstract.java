@@ -324,7 +324,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             getSimulation().clock(), getName(), list.size()));
 
         //If there aren't more VMs to be created, then request Cloudlets creation
-        if(getVmWaitingList().isEmpty()){
+        if(vmWaitingList.isEmpty()){
             println(" Cloudlets creation request sent to Datacenter.");
             requestDatacentersToCreateWaitingCloudlets();
             notifyOnCreationOfWaitingVmsFinishListeners();
@@ -377,7 +377,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {
-        if (!getCloudletWaitingList().contains(cloudlet)) {
+        if (!cloudletWaitingList.contains(cloudlet)) {
             return false;
         }
 
@@ -483,7 +483,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         // all the requested VMs have been created
-        if (getVmWaitingList().isEmpty()) {
+        if (vmWaitingList.isEmpty()) {
             requestDatacentersToCreateWaitingCloudlets();
             notifyOnCreationOfWaitingVmsFinishListeners();
         } else if (getVmCreationRequests() == getVmCreationAcks()) {
@@ -732,7 +732,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void requestDatacenterToCreateWaitingVms(Datacenter datacenter) {
         int requestedVms = 0;
-        for (final Vm vm : getVmWaitingList()) {
+        for (final Vm vm :vmWaitingList) {
             if (!vmsToDatacentersMap.containsKey(vm) && !vmCreationRequestsMap.containsKey(vm)) {
                 println(String.format(
                     "%.2f: %s: Trying to Create %s in %s",
@@ -763,7 +763,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void requestDatacentersToCreateWaitingCloudlets() {
         final List<Cloudlet> successfullySubmitted = new ArrayList<>();
-        for (final Cloudlet cloudlet : getCloudletWaitingList()) {
+        for (final Cloudlet cloudlet : cloudletWaitingList) {
             if (cloudletCreationRequestsMap.containsKey(cloudlet)) {
                 continue;
             }

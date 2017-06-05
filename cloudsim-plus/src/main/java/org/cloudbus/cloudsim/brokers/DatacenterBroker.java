@@ -53,7 +53,7 @@ public interface DatacenterBroker extends SimEntity {
     Function<Vm, Double> DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION = vm -> -1.0;
 
     /**
-     * Specifies that an already submitted cloudlet, that is in the {@link #getCloudletWaitingList() waiting list},
+     * Specifies that an already submitted cloudlet, which is in the {@link #getCloudletWaitingList() waiting list},
      * must run in a specific virtual machine.
      *
      * @param cloudlet the cloudlet to be bind to a given Vm
@@ -203,7 +203,7 @@ public interface DatacenterBroker extends SimEntity {
     void submitVmList(List<? extends Vm> list);
 
     /**
-     * Sends a list of VMs for the broker that their creation inside some Host will be requested just after a given delay.
+     * Sends a list of VMs for the broker so that their creation inside some Host will be requested just after a given delay.
      * Just the VMs that don't have a delay already assigned will have its submission delay changed.
      * All VMs will be added to the {@link #getVmWaitingList()},
      * setting their submission delay to the specified value.
