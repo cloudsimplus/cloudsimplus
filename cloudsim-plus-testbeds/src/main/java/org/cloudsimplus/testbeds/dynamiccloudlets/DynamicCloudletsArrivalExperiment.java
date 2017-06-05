@@ -68,7 +68,7 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
     @Override
     public void printResults() {
         DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
-        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
     }
 

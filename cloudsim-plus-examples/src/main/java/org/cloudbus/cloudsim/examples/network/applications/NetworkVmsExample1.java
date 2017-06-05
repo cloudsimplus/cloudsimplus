@@ -95,7 +95,7 @@ public class NetworkVmsExample1 {
     }
 
     private void showSimulationResults() {
-        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {

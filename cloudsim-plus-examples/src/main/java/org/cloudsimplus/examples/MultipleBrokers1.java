@@ -145,7 +145,7 @@ public class MultipleBrokers1 {
 
     private void printResults() {
         for (DatacenterBroker broker : brokers) {
-            new CloudletsTableBuilder(broker.getCloudletsFinishedList())
+            new CloudletsTableBuilder(broker.getCloudletFinishedList())
                 .setTitle(broker.getName())
                 .build();
         }

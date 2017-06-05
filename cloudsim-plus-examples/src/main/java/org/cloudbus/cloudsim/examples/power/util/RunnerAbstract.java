@@ -166,7 +166,7 @@ public abstract class RunnerAbstract {
             simulation.terminateAt(Constants.SIMULATION_LIMIT);
             double lastClock = simulation.start();
 
-            List<Cloudlet> newList = broker.getCloudletsFinishedList();
+            List<Cloudlet> newList = broker.getCloudletFinishedList();
             Log.printLine("Received " + newList.size() + " cloudlets");
 
             helper.printResults(datacenter, vmList, lastClock);

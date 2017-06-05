@@ -141,8 +141,8 @@ public class CloudSimExample5 {
         simulation.start();
 
         // Final step: Print results when simulation is over
-        List<Cloudlet> newList1 = broker1.getCloudletsFinishedList();
-        List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
+        List<Cloudlet> newList1 = broker1.getCloudletFinishedList();
+        List<Cloudlet> newList2 = broker2.getCloudletFinishedList();
 
         new CloudletsTableBuilder(newList1).setTitle(broker1.getName()).build();
         new CloudletsTableBuilder(newList2).setTitle(broker2.getName()).build();

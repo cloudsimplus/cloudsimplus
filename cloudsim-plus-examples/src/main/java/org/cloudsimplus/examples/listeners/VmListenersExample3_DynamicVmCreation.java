@@ -185,7 +185,7 @@ public class VmListenersExample3_DynamicVmCreation {
         List<Cloudlet> cloudlets;
         String title;
         for(DatacenterBroker broker: brokerList){
-            cloudlets = broker.getCloudletsFinishedList();
+            cloudlets = broker.getCloudletFinishedList();
             title = broker.getName() + (cloudlets.size() > 0 ? "" : " (for the failed VM)");
             new CloudletsTableBuilder(cloudlets)
                     .setTable(new TextTableBuilder(title))

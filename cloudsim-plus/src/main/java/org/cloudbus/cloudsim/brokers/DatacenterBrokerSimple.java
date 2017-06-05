@@ -79,7 +79,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * no suitable VM was found
      */
     protected Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) {
-        if (cloudlet.isBindToVm() && getVmsCreatedList().contains(cloudlet.getVm())) {
+        if (cloudlet.isBindToVm() && getVmExecList().contains(cloudlet.getVm())) {
             return cloudlet.getVm();
         }
 
@@ -96,12 +96,12 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * @return the index of the next VM to bind a cloudlet to
      */
     private int getNextVmIndex() {
-        if (getVmsCreatedList().isEmpty()) {
+        if (getVmExecList().isEmpty()) {
             return -1;
         }
 
-        final int vmIndex = getVmsCreatedList().indexOf(getLastSelectedVm());
-        return (vmIndex + 1) % getVmsCreatedList().size();
+        final int vmIndex = getVmExecList().indexOf(getLastSelectedVm());
+        return (vmIndex + 1) % getVmExecList().size();
     }
 
 }

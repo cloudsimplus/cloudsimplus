@@ -148,10 +148,10 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     }
 
     private void printVmsCpuUsage(EventInfo eventInfo) {
-        broker0.getVmsCreatedList().sort(Comparator.comparingInt(Vm::getId));
+        broker0.getVmExecList().sort(Comparator.comparingInt(Vm::getId));
 
         System.out.println();
-        broker0.getVmsCreatedList().forEach(vm
+        broker0.getVmExecList().forEach(vm
                 -> System.out.printf("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
                         vm.getCpuPercentUsage(), getCustomerMaxCpuUtilization())
@@ -310,7 +310,7 @@ public class DynamicVmCreationByCpuUtilizationAndFreePesOfVm {
     }
 
     private void printSimulationResults() {
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
         Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));

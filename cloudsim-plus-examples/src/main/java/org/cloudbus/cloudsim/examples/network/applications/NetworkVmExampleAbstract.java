@@ -118,7 +118,7 @@ abstract class NetworkVmExampleAbstract {
         DatacenterBroker broker;
         for(int i = 0; i < NUMBER_OF_APPS; i++){
             broker = brokerList.get(i);
-            List<Cloudlet> newList = broker.getCloudletsFinishedList();
+            List<Cloudlet> newList = broker.getCloudletFinishedList();
             String caption = broker.getName() + " - Application " + broker.getId();
             new CloudletsTableBuilder(newList)
                     .setTable(new TextTableBuilder(caption))

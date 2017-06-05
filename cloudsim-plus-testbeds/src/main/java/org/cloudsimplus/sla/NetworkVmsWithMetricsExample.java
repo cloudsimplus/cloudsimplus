@@ -101,7 +101,7 @@ public class NetworkVmsWithMetricsExample {
         }
 
         cloudsim.start();
-        List<Cloudlet> newList = broker0.getCloudletsFinishedList();
+        List<Cloudlet> newList = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
 
         final double throughput = getThroughput(datacenter0);

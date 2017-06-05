@@ -159,10 +159,10 @@ public class TestWithoutAlgorithmExample {
     }
 
     private void printVmsCpuUsage(EventInfo eventInfo) {
-        broker0.getVmsCreatedList().sort(Comparator.comparingInt(Vm::getId));
+        broker0.getVmExecList().sort(Comparator.comparingInt(Vm::getId));
 
         System.out.println();
-        broker0.getVmsCreatedList().forEach(vm
+        broker0.getVmExecList().forEach(vm
                 -> System.out.printf("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
                         vm.getCpuPercentUsage(), getCustomerMaxCpuUtilization())
@@ -322,7 +322,7 @@ public class TestWithoutAlgorithmExample {
     }
 
     private void printSimulationResults() {
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
         Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
@@ -333,7 +333,7 @@ public class TestWithoutAlgorithmExample {
     private void taskTimeCompletionCloudletSimulation(DatacenterBroker broker) throws IOException {
         double average = 0;
         taskTimesCompletion = new ArrayList<>();
-        for (Cloudlet c : broker.getCloudletsFinishedList()) {
+        for (Cloudlet c : broker.getCloudletFinishedList()) {
             double taskTimeCompletion = c.getFinishTime() - c.getLastDatacenterArrivalTime();
             taskTimesCompletion.add(taskTimeCompletion);
             average = taskTimeCompletionCloudletAverage(broker, taskTimesCompletion);
@@ -353,7 +353,7 @@ public class TestWithoutAlgorithmExample {
     }
 
     private double taskTimeCompletionCloudletAverage(DatacenterBroker broker, List<Double> taskTimesCompletion) {
-        int totalCloudlets = broker.getCloudletsFinishedList().size();
+        int totalCloudlets = broker.getCloudletFinishedList().size();
         double sum = 0;
         sum = taskTimesCompletion.stream()
                 .map((taskTimeCompletion) -> taskTimeCompletion)

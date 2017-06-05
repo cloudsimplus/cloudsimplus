@@ -115,7 +115,7 @@ public class HostsCpuUsageExample {
 
         final double finishTime = simulation.start();
 
-        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
 
         showCpuUtilizationForAllHosts();

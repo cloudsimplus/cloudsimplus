@@ -136,7 +136,7 @@ public class VmBuilder {
     }
 
     public Vm getVmById(final int id) {
-        return broker.getVmsWaitingList().stream()
+        return broker.getVmWaitingList().stream()
             .filter(vm -> vm.getId() == id)
             .findFirst().orElse(Vm.NULL);
     }
@@ -146,7 +146,7 @@ public class VmBuilder {
     }
 
     public List<Vm> getVms() {
-        return broker.getVmsWaitingList();
+        return broker.getVmWaitingList();
     }
 
     public long getRam() {

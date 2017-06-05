@@ -114,7 +114,7 @@ public class PerformanceTestbed1 {
 
         simulation.start();
 
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         Log.enable();
         //new CloudletsTableBuilder(finishedCloudlets).build();
         System.out.printf("Execution time: %.2f seconds\n", (System.currentTimeMillis()-startTime)/1000);

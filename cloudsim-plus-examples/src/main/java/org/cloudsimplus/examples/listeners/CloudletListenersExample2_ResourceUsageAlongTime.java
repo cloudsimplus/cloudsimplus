@@ -151,7 +151,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
     private void runSimulationAndPrintResults() {
         simulation.start();
 
-        List<Cloudlet> finishedCloudlets = broker.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 

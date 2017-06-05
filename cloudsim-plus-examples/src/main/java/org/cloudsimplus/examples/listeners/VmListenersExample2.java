@@ -283,7 +283,7 @@ public class VmListenersExample2 {
     private void runSimulationAndPrintResults() {
         simulation.start();
 
-        List<Cloudlet> newList = broker.getCloudletsFinishedList();
+        List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
     }
 }

@@ -100,7 +100,7 @@ public class CloudletSchedulerSpaceSharedExample1 {
 
         simulation.start();
 
-        final List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 

@@ -121,7 +121,7 @@ class ReducedExample {
 
         /*Prints results when the simulation is over (one can use his/her own code
         here to print what he/she wants from this cloudlet list)*/
-        new CloudletsTableBuilder(broker0.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
         //end::cloudsim-plus-reduced-example[]
     }
 }

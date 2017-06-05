@@ -141,7 +141,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         simulation.start();
         cpuUtilization(cloudletList);
 
-        new CloudletsTableBuilder(broker.getCloudletsFinishedList()).build();
+        new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
 
         Log.printConcatLine(VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), " finished!");
     }
@@ -289,7 +289,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      * has to be created an IT test to check this problem.
      *
      * @todo @author manoelcampos The method
-     * {@link DatacenterBroker#getCloudletsFinishedList()} returns an empty list
+     * {@link DatacenterBroker#getCloudletFinishedList()} returns an empty list
      * when using null null null null null     {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */

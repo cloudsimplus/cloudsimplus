@@ -184,7 +184,7 @@ public final class MigrationExample1 {
 
         simulation.start();
 
-        final List<Cloudlet> finishedList = broker.getCloudletsFinishedList();
+        final List<Cloudlet> finishedList = broker.getCloudletFinishedList();
         finishedList.sort(
             Comparator.comparingInt((Cloudlet c) -> c.getVm().getHost().getId())
                       .thenComparingInt(c -> c.getVm().getId()));

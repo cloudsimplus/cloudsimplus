@@ -164,8 +164,8 @@ public class NetworkExample3 {
         simulation.start();
 
         // Final step: Print results when simulation is over
-        List<Cloudlet> newList1 = broker1.getCloudletsFinishedList();
-        List<Cloudlet> newList2 = broker2.getCloudletsFinishedList();
+        List<Cloudlet> newList1 = broker1.getCloudletFinishedList();
+        List<Cloudlet> newList2 = broker2.getCloudletFinishedList();
 
         new CloudletsTableBuilder(newList1)
                 .setTable(new TextTableBuilder("Broker " + broker1))

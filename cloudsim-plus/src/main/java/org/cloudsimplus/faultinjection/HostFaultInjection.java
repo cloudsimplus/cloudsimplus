@@ -24,8 +24,6 @@
 package org.cloudsimplus.faultinjection;
 
 import java.util.*;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -553,11 +551,11 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     private boolean isAllVmsFailed(DatacenterBroker broker) {
-        return broker.getVmsCreatedList().stream().allMatch(Vm::isFailed);
+        return broker.getVmExecList().stream().allMatch(Vm::isFailed);
     }
 
     private long getRunningVmsNumber(DatacenterBroker broker) {
-        return broker.getVmsCreatedList().stream().filter(vm -> !vm.isFailed()).count();
+        return broker.getVmExecList().stream().filter(vm -> !vm.isFailed()).count();
     }
 
     /**

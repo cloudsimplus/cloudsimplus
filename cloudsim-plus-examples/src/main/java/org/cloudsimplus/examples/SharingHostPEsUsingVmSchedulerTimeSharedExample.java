@@ -137,7 +137,7 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
 
         /*Prints results when the simulation is over
         (you can use your own code here to print what you want from this cloudlet list)*/
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }

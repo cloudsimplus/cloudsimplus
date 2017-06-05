@@ -116,7 +116,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     @Override
     public final void printResults() {
         DatacenterBroker broker0 = getFirstBroker();
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletsFinishedList();
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
         Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
@@ -220,7 +220,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
-        broker.getCloudletsFinishedList().stream()
+        broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .forEach(cloudletTaskTimeCompletion::addValue);
 
@@ -232,11 +232,11 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
 
-        double totalOfcloudletSlaSatisfied = broker.getCloudletsFinishedList().stream()
+        double totalOfcloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= getCustomerMaxTaskCompletionTime())
                 .count();
-        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletsFinishedList().size();
+        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
     }
 
     private double getCustomerMaxTaskCompletionTime() {

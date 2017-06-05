@@ -151,7 +151,7 @@ public class SwfWorkloadFormatExample1 {
 
             simulation.start();
 
-            List<Cloudlet> newList = broker.getCloudletsFinishedList();
+            List<Cloudlet> newList = broker.getCloudletFinishedList();
             printCloudletList(newList);
 
             Log.printConcatLine(SwfWorkloadFormatExample1.class.getSimpleName(), " finished!");

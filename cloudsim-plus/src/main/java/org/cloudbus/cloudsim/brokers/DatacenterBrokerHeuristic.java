@@ -45,13 +45,12 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
     }
 
     /**
-     * Setup the heuristic parameters that the Broker are in charge of
-     * and start the heuristic to find a suboptimal mapping for Cloudlets and Vm's.
+     * Setups the heuristic parameters and starts the heuristic to find a suboptimal mapping for Cloudlets and Vm's.
      */
     private void setupAndStartHeuristic() {
-        heuristic.setVmList(getVmsCreatedList());
+        heuristic.setVmList(getVmExecList());
         heuristic.setCloudletList(
-	        getCloudletsWaitingList().stream()
+	        getCloudletWaitingList().stream()
                         .filter(c-> !c.isBindToVm())
                         .collect(Collectors.toList()));
         /*
