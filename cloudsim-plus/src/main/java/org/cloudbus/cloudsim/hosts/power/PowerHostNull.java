@@ -153,6 +153,7 @@ final class PowerHostNull implements PowerHost {
     @Override public <T extends Vm> List<T> getVmList() {
         return Collections.EMPTY_LIST;
     }
+    @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.EMPTY_LIST; }
     @Override public VmScheduler getVmScheduler() {
         return VmScheduler.NULL;
     }

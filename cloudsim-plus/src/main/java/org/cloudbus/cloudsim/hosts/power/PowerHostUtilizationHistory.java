@@ -8,16 +8,19 @@
 
 package org.cloudbus.cloudsim.hosts.power;
 
-import java.util.List;
-
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
-import org.cloudbus.cloudsim.resources.Pe;
-
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.util.MathUtil;
+import org.cloudbus.cloudsim.vms.power.PowerVm;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * A {@link PowerHost} that stores its CPU utilization percentage history. The history is used by VM allocation
@@ -79,22 +82,23 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
         setBwProvisioner(bwProvisioner);
         setVmScheduler(vmScheduler);
         setPowerModel(powerModel);
-
     }
 
 	/**
 	 * Gets the host CPU utilization percentage history (between [0 and 1], where 1 is 100%).
+     * Each value into the returned array is the CPU utilization percentage for
+     * a time interval equal to the {@link Datacenter#getSchedulingInterval()}.
      * @return
 	 */
-	public double[] getUtilizationHistory() {
-		final double[] utilizationHistory = new double[PowerVm.MAX_HISTORY_ENTRIES];
-		final double hostMips = getTotalMipsCapacity();
-		for (final PowerVm vm : this.<PowerVm>getVmList()) {
-			for (int i = 0; i < vm.getUtilizationHistory().size(); i++) {
-				utilizationHistory[i] += vm.getUtilizationHistory().get(i) * vm.getMips() / hostMips;
-			}
-		}
-		return MathUtil.trimZeroTail(utilizationHistory);
-	}
+    public double[] getUtilizationHistory() {
+        final double[] utilizationHistory = new double[PowerVm.MAX_HISTORY_ENTRIES];
+        final double totalMipsCapacity = getTotalMipsCapacity();
+        for (final PowerVm vm : this.<PowerVm>getVmCreatedList()) {
+            for (int i = 0; i < vm.getUtilizationHistory().size(); i++) {
+                utilizationHistory[i] += vm.getUtilizationHistory().get(i) * vm.getTotalMipsCapacity() / totalMipsCapacity;
+            }
+        }
+        return MathUtil.trimZeroTail(utilizationHistory);
+    }
 
 }

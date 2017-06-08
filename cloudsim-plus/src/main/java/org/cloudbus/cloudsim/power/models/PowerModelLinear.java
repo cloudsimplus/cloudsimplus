@@ -31,32 +31,32 @@ package org.cloudbus.cloudsim.power.models;
  */
 public class PowerModelLinear  extends PowerModelAbstract {
 
-	/** The max power that can be consumed. */
+	/** @see #getMaxPower()  */
 	private double maxPower;
 
-	/** The constant that represents the power consumption
-         * for each fraction of resource used. */
+	/** @see #getConstant()  */
 	private double constant;
 
-	/** The static power consumption that is not dependent of resource usage.
-         * It is the amount of energy consumed even when the host is idle.
-         */
+	/**
+     * The static power consumption that is not dependent of resource usage.
+     * It is the amount of energy consumed even when the host is idle.
+     */
 	private double staticPower;
 
 	/**
 	 * Instantiates a new linear power model.
 	 *
-	 * @param maxPower the max power
+	 * @param maxPower the max power that can be consumed (in Watts/second).
 	 * @param staticPowerPercent the static power percent
 	 */
-	public PowerModelLinear(double maxPower, double staticPowerPercent) {
+	public PowerModelLinear(final double maxPower, final double staticPowerPercent) {
 		setMaxPower(maxPower);
 		setStaticPower(staticPowerPercent * maxPower);
-		setConstant((maxPower - getStaticPower()) / 100);
+		setConstant((maxPower - getStaticPower()) / 100.0);
 	}
 
 	@Override
-	protected double getPowerInternal(double utilization) throws IllegalArgumentException {
+	protected double getPowerInternal(final double utilization) throws IllegalArgumentException {
 		if (utilization == 0) {
 			return 0;
 		}
@@ -64,7 +64,7 @@ public class PowerModelLinear  extends PowerModelAbstract {
 	}
 
 	/**
-	 * Gets the max power.
+	 * Gets The max power that can be consumed.
 	 *
 	 * @return the max power
 	 */
@@ -73,7 +73,7 @@ public class PowerModelLinear  extends PowerModelAbstract {
 	}
 
 	/**
-	 * Sets the max power.
+	 * Sets The max power that can be consumed.
 	 *
 	 * @param maxPower the new max power
 	 */
@@ -82,7 +82,8 @@ public class PowerModelLinear  extends PowerModelAbstract {
 	}
 
 	/**
-	 * Gets the constant.
+	 * Gets the constant which represents the power consumption
+     * for each fraction of resource used.
 	 *
 	 * @return the constant
 	 */
@@ -91,7 +92,8 @@ public class PowerModelLinear  extends PowerModelAbstract {
 	}
 
 	/**
-	 * Sets the constant.
+	 * Sets the constant which represents the power consumption
+     * for each fraction of resource used.
 	 *
 	 * @param constant the new constant
 	 */

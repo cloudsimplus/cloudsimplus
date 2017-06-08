@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -137,7 +138,7 @@ public class PowerVm extends VmSimple {
         final double time = super.updateProcessing(currentTime, mipsShare);
         if (currentTime > getPreviousTime() && (currentTime - 0.1) % getHost().getDatacenter().getSchedulingInterval() == 0) {
             final double utilization = getCpuPercentUsage(getCloudletScheduler().getPreviousTime());
-            if (getSimulation().clock() != 0 || utilization != 0) {
+            if (currentTime != 0 || utilization != 0) {
                 addUtilizationHistoryValue(utilization);
             }
             setPreviousTime(currentTime);
@@ -203,7 +204,7 @@ public class PowerVm extends VmSimple {
     }
 
     /**
-     * Adds a CPU utilization percentage history value.
+     * Adds a CPU utilization percentage history value to the begining of the History List.
      *
      * @param utilization the CPU utilization percentage to add
      */
@@ -216,6 +217,10 @@ public class PowerVm extends VmSimple {
 
     /**
      * Gets a <b>read-only</b> CPU utilization percentage history (between [0 and 1], where 1 is 100%).
+     * Each value into the returned array is the CPU utilization percentage for
+     * a time interval equal to the {@link Datacenter#getSchedulingInterval()}.
+     *
+     * <p><b>The values are stored in the reverse chronological order.</b></p>
      *
      * @return
      */
