@@ -68,9 +68,9 @@ import java.util.List;
  * and the other half will have the double of this length.
  * This way, it's possible to see that for the last half of the
  * simulation time, a Host doesn't use the entire CPU capacity,
- * and therefore doesn't consume the maximum power.
+ * and therefore doesn't consume the maximum power.</p>
  *
- * However, you may notice in this case, the power usage isn't
+ * <p>However, you may notice in this case that the power usage isn't
  * half of the maximum consumption, because there is a minimum
  * amount of power to use, even if the Host is idle,
  * which is defined by {@link #STATIC_POWER_PERCENT}.
@@ -143,24 +143,34 @@ public class PowerExample {
         for (PowerHostUtilizationHistory host : hostList) {
             System.out.printf("Host %4d CPU utilization and power consumption\n", host.getId());
             /*
-            Since the utilization history is returned in
-            the values are stored in the reverse chronological order,
+            Since the utilization history are stored in the reverse chronological order,
             the values are presented in this way.
              */
             final double[] utilizationPercentHistory = host.getUtilizationHistory();
             double totalPower = 0;
             double time = simulation.clock();
             for (int i = 0; i < utilizationPercentHistory.length; i++) {
-                final double utilization = utilizationPercentHistory[i];
-                final double power = host.getPowerModel().getPower(utilization)*SCHEDULING_INTERVAL;
-                totalPower += power;
+                final double utilizationPercent = utilizationPercentHistory[i];
+                /**
+                 * The power consumption is returned in Watts/Second,
+                 * but it's measured only the instantaneous consumption for a given time,
+                 * according to the time interval defined by {@link #SCHEDULING_INTERVAL} set to the Datacenter.
+                 * For instance, for the time interval equal to 10,
+                 * It is measured the power consumption for instants, 10, 20 and so on.
+                 * That means it's not computed the power consumption for each time interval
+                 * of 10 seconds, but the power consumption at the 10th, 20th second and so on.
+                 * This way, to get the total power consumed for each 10 seconds interval,
+                 * the power consumption is multipled by the time interval.
+                */
+                final double wattsPerInterval = host.getPowerModel().getPower(utilizationPercent)*SCHEDULING_INTERVAL;
+                totalPower += wattsPerInterval;
                 System.out.printf("\tTime %6.0f | CPU Utilization %6.2f%% | Power Consumption: %8.2f Watts in %d Seconds\n",
-                    time,utilization*100, power, SCHEDULING_INTERVAL);
+                    time, utilizationPercent*100, wattsPerInterval, SCHEDULING_INTERVAL);
                 time -= SCHEDULING_INTERVAL;
             }
             System.out.printf(
-                "\t    Total Power Consumption Host %4d in %6.0f seconds: %10.2f Watts/Second\n\n",
-                host.getId(), simulation.clock(), totalPower*SCHEDULING_INTERVAL);
+                "\t    Total Host %4d Power Consumption in %6.0f seconds: %10.2f Watts (average of %.2f Watts/Second) \n\n",
+                host.getId(), simulation.clock(), totalPower, totalPower/simulation.clock());
         }
     }
 
