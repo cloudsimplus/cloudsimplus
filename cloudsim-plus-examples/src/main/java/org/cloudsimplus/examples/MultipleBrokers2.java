@@ -120,9 +120,14 @@ public class MultipleBrokers2 {
         /*
          * Static or dynamically submits a Cloudlet.
          * Choose the way you want to use by commenting one of the two lines below.
+         * Any way you chose, for the configuration of this example,
+         * the results will be exactly the same.
+         * These lines of code below are used just to show the different
+         * ways to to simulate arrival of Cloudlets at different times.
+         * See the documentation of the methods called below for more details.
          */
-        submitCloudletWithDelay();
-        //simulation.addOnClockTickListener(this::dynamicCloudletArrival);
+        //submitCloudletWithDelay();
+        simulation.addOnClockTickListener(this::dynamicCloudletArrival);
 
         simulation.start();
         printResults();
@@ -160,6 +165,10 @@ public class MultipleBrokers2 {
      * to a broker.
      * </p>
      *
+     * <p>The dynamic way of submitting Cloudlets is more flexible because it allows you to define
+     * any condition you want inside, and that condition may include any other git lvariables
+     * besides the time.</p>
+     *
      * @param e information about the generated event
      * @return
      * @see Datacenter#getSchedulingInterval()
@@ -172,7 +181,7 @@ public class MultipleBrokers2 {
 
         final Cloudlet c = createCloudlet(cloudletList.size(), CLOUDLET_LENGTH);
         final DatacenterBroker broker = brokers.get(1);
-        System.out.printf("\t#Dynamically submitting %s at time %.0f to %s\n", c, e.getTime(), broker);
+        System.out.printf("%.2f: \t\t\tDynamically submitting %s to %s\n", e.getTime(),  c, broker);
         broker.submitCloudlet(c);
     }
 

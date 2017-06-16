@@ -153,7 +153,7 @@ as presened below (check if the informed version is the latest one). This way yo
 <dependency>
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
 </dependency>
 ```
 
