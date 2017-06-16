@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.brokers;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -681,7 +680,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return false;
         }
 
-        if(vm.getIdleInterval() >= delay)  {
+        if(vm.getIdleInterval() >= delay) {
+            //VM destruction request already was sent
+            if(!vmExecList.contains(vm)){
+                return true;
+            }
+
             println(String.format("%.2f: %s: Destroying %s", getSimulation().clock(), getName(), vm));
             //request the Datacenter to destroy the VM
             sendNow(getVmDatacenter(vm).getId(), CloudSimTags.VM_DESTROY, vm);

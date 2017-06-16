@@ -129,6 +129,7 @@ public class CloudletExecutionInfo {
         this.cloudlet = cloudlet;
         this.arrivalTime = cloudlet.registerArrivalInDatacenter();
         this.finishedTime = Cloudlet.NOT_ASSIGNED;
+        this.lastProcessingTime = Cloudlet.NOT_ASSIGNED;
         this.totalCompletionTime = 0.0;
         this.startExecTime = 0.0;
         this.virtualRuntime = 0;
@@ -259,17 +260,19 @@ public class CloudletExecutionInfo {
     /**
      * Updates the length of cloudlet that has already been completed.
      *
-     * @param instructionsExecuted amount of instructions just executed, to be
+     * @param executedInstructions amount of instructions just executed, to be
      * added to the {@link #instructionsFinishedSoFar}, in Instructions (instead of Million Instructions)
      * @pre instructionsExecuted >= 0.0
      * @post $none
      */
-    public void updateProcessing(long instructionsExecuted) {
-        if(instructionsExecuted <= 0){
+    public void updateProcessing(long executedInstructions) {
+        setLastProcessingTime(cloudlet.getSimulation().clock());
+
+        if(executedInstructions <= 0){
             return;
         }
 
-        this.instructionsFinishedSoFar += instructionsExecuted;
+        this.instructionsFinishedSoFar += executedInstructions;
         this.instructionsFinishedSoFar =
                 Math.min(this.instructionsFinishedSoFar, cloudlet.getLength()*Conversion.MILLION);
 
