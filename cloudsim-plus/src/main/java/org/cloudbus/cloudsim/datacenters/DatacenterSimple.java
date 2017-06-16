@@ -293,78 +293,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Process a file deletion request.
-     *
-     * @param ev information about the event just happened
-     * @param ack indicates if the event's sender expects to receive an
-     * acknowledge message when the event finishes to be processed
-     */
-    protected void processDataDelete(SimEvent ev, boolean ack) {
-        if (Objects.isNull(ev)) {
-            return;
-        }
-
-        final Object[] data = (Object[]) ev.getData();
-        if (Objects.isNull(data)) {
-            return;
-        }
-
-        final String filename = (String) data[0];
-        final int reqSource = (Integer) data[1];
-        int tag;
-
-        // check if this file can be deleted (do not delete is right now)
-        final int msg = deleteFileFromStorage(filename);
-        if (msg == DataCloudTags.FILE_DELETE_SUCCESSFUL) {
-            tag = DataCloudTags.CTLG_DELETE_MASTER;
-        } else { // if an error occured, notify user
-            tag = DataCloudTags.FILE_DELETE_MASTER_RESULT;
-        }
-
-        if (ack) {
-            // send back to sender
-            Object pack[] = new Object[2];
-            pack[0] = filename;
-            pack[1] = msg;
-
-            sendNow(reqSource, tag, pack);
-        }
-    }
-
-    /**
-     * Process a file inclusion request.
-     *
-     * @param ev information about the event just happened
-     * @param ack indicates if the event's sender expects to receive an
-     * acknowledge message when the event finishes to be processed
-     */
-    protected void processDataAdd(SimEvent ev, boolean ack) {
-        if (Objects.isNull(ev)) {
-            return;
-        }
-
-        final Object[] pack = (Object[]) ev.getData();
-        if (Objects.isNull(pack)) {
-            return;
-        }
-
-        final File file = (File) pack[0]; // get the file
-        file.setMasterCopy(true); // set the file into a master copy
-        final int sentFrom = (Integer) pack[1]; // get sender ID
-
-        final Object[] data = new Object[3];
-        data[0] = file.getName();
-
-        final int msg = addFile(file); // add the file
-
-        if (ack) {
-            data[1] = -1; // no sender id
-            data[2] = msg; // the result of adding a master file
-            sendNow(sentFrom, DataCloudTags.MASTERFILE_ADD_RESULT, data);
-        }
-    }
-
-    /**
      * Processes a ping request.
      *
      * @param ev information about the event just happened
@@ -382,20 +310,199 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Process non-default received events that aren't processed by the
-     * {@link #processEvent(SimEvent)} method. This
-     * method should be overridden by subclasses in other to process new defined
-     * events.
+     * Processes a Cloudlet based on the event type.
      *
      * @param ev information about the event just happened
+     * @param type event type
      *
+     * @pre ev != null
+     * @pre type > 0
+     * @post $none
+     */
+    protected void processCloudlet(SimEvent ev, int type) {
+        Cloudlet cloudlet;
+        try {
+            cloudlet = (Cloudlet) ev.getData();
+        }
+        catch (ClassCastException e) {
+            Log.printConcatLine(super.getName(), ": Error in processing Cloudlet");
+            Log.printLine(e.getMessage());
+            return;
+        }
+
+        // begins executing ....
+        switch (type) {
+            case CloudSimTags.CLOUDLET_CANCEL:
+                processCloudletCancel(cloudlet);
+                break;
+            case CloudSimTags.CLOUDLET_PAUSE:
+                processCloudletPause(cloudlet, false);
+                break;
+            case CloudSimTags.CLOUDLET_PAUSE_ACK:
+                processCloudletPause(cloudlet, true);
+                break;
+            case CloudSimTags.CLOUDLET_RESUME:
+                processCloudletResume(cloudlet, false);
+                break;
+            case CloudSimTags.CLOUDLET_RESUME_ACK:
+                processCloudletResume(cloudlet, true);
+                break;
+        }
+    }
+    /**
+     * Processes the submission of a Cloudlet by a DatacenterBroker.
+     *
+     * @param ev information about the event just happened
+     * @param ack indicates if the event's sender expects to receive an
+     * acknowledge message when the event finishes to be processed
+     *
+     * @pre ev != null
+     * @post $none
+     */
+    protected void processCloudletSubmit(SimEvent ev, boolean ack) {
+        final Cloudlet cl = (Cloudlet) ev.getData();
+        if (checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(cl, ack)) {
+            return;
+        }
+
+        // process this Cloudlet to this Datacenter
+        cl.assignToDatacenter(this);
+        submitCloudletToVm(cl, ack);
+    }
+
+    /**
+     * Process the event for a Broker who wants to move a Cloudlet.
+     *
+     * @param receivedData an Object array containing data about the migration,
+     *                     where the index 0 will be a Cloudlet and
+     *                     the index 1 will be the id of the destination VM
+     * @param type event type
+     *
+     * @pre receivedData != null
+     * @pre type > 0
+     * @post $none
+     */
+    protected void processCloudletMove(Object[] receivedData, int type) {
+        updateCloudletProcessing();
+
+        final Cloudlet cloudlet = (Cloudlet)receivedData[0];
+        final int destVmId = (int)receivedData[1];
+
+        final Vm sourceVm = cloudlet.getVm();
+        final Host sourceHost = sourceVm.getHost();
+        final Vm destVm = sourceHost.getVm(destVmId, cloudlet.getBroker().getId());
+        final int destDatacenterId = destVm.getHost().getDatacenter().getId();
+        final Cloudlet cl = sourceVm.getCloudletScheduler().cloudletCancel(cloudlet.getId());
+
+        if (Cloudlet.NULL.equals(cl)) {
+            return;
+        }
+
+        // Has the cloudlet already finished?
+        if (cl.getStatus() == Cloudlet.Status.SUCCESS) {// if yes, send it back to user
+            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
+            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
+        }
+
+        // Prepare cloudlet for migration
+        cl.setVm(destVm);
+
+        // Cloudlet will migrate from one Datacenter to another
+        if (destDatacenterId != getId()) {
+            final int tag = ((type == CloudSimTags.CLOUDLET_MOVE_ACK)
+                ? CloudSimTags.CLOUDLET_SUBMIT_ACK
+                : CloudSimTags.CLOUDLET_SUBMIT);
+            sendNow(destDatacenterId, tag, cl);
+        }
+        // Cloudlet will migrate from one vm to another. Does the destination VM exist?
+        else if (!Vm.NULL.equals(destVm)) {
+            // time to transfer the files
+            final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
+            destVm.getCloudletScheduler().cloudletSubmit(cl, fileTransferTime);
+        }
+
+        if (type == CloudSimTags.CLOUDLET_MOVE_ACK) {// send ACK if requested
+            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cloudlet);
+        }
+    }
+
+    /**
+     * Processes a Cloudlet resume request.
+     *
+     * @param cloudlet cloudlet to be resumed
+     * @param ack indicates if the event's sender expects to receive an
+     * acknowledge message when the event finishes to be processed
      * @pre $none
      * @post $none
      */
-    protected void processOtherEvent(SimEvent ev) {
-        if (Objects.isNull(ev)) {
-            Log.printConcatLine(getName(), ".processOtherEvent(): Error - an event is null.");
+    protected void processCloudletResume(Cloudlet cloudlet, boolean ack) {
+        final double estimatedFinishTime = cloudlet.getVm()
+            .getCloudletScheduler().cloudletResume(cloudlet.getId());
+
+        if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec queue
+            if (estimatedFinishTime > getSimulation().clock()) {
+                schedule(getId(),
+                    getCloudletProcessingUpdateInterval(estimatedFinishTime),
+                    CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+            }
         }
+
+        if (ack) {
+            sendNow(cloudlet.getBroker().getId(), CloudSimTags.CLOUDLET_RESUME_ACK, cloudlet);
+        }
+    }
+
+    /**
+     * Processes a Cloudlet pause request.
+     *
+     * @param cloudlet cloudlet to be paused
+     * @param ack indicates if the event's sender expects to receive an
+     * acknowledge message when the event finishes to be processed
+     * @pre $none
+     * @post $none
+     */
+    protected void processCloudletPause(Cloudlet cloudlet, final boolean ack) {
+        cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet.getId());
+
+        if (ack) {
+            sendNow(cloudlet.getBroker().getId(), CloudSimTags.CLOUDLET_PAUSE_ACK, cloudlet);
+        }
+    }
+
+    /**
+     * Processes a Cloudlet cancel request.
+     *
+     * @param cloudlet cloudlet to be canceled
+     * @pre $none
+     * @post $none
+     */
+    protected void processCloudletCancel(Cloudlet cloudlet) {
+        cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet.getId());
+        sendNow(cloudlet.getBroker().getId(), CloudSimTags.CLOUDLET_CANCEL, cloudlet);
+    }
+
+    /**
+     * Submits a cloudlet to be executed inside its bind VM.
+     *
+     * @param cl the cloudlet to the executed
+     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
+     * receives the cloudlet submission
+     */
+    private void submitCloudletToVm(Cloudlet cl, boolean ack) {
+        // time to transfer cloudlet files
+        final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
+
+        final CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
+        final double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
+
+        // if this cloudlet is in the exec queue
+        if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
+            send(getId(),
+                getCloudletProcessingUpdateInterval(estimatedFinishTime),
+                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        }
+
+        sendCloudletSubmitAckToBroker(ack, cl, true);
     }
 
     /**
@@ -500,148 +607,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Processes a Cloudlet based on the event type.
-     *
-     * @param ev information about the event just happened
-     * @param type event type
-     *
-     * @pre ev != null
-     * @pre type > 0
-     * @post $none
-     */
-    protected void processCloudlet(SimEvent ev, int type) {
-        Cloudlet cloudlet;
-        try {
-            cloudlet = (Cloudlet) ev.getData();
-        }
-        catch (ClassCastException e) {
-            Log.printConcatLine(super.getName(), ": Error in processing Cloudlet");
-            Log.printLine(e.getMessage());
-            return;
-        }
-
-        // begins executing ....
-        switch (type) {
-            case CloudSimTags.CLOUDLET_CANCEL:
-                processCloudletCancel(cloudlet);
-            break;
-            case CloudSimTags.CLOUDLET_PAUSE:
-                processCloudletPause(cloudlet, false);
-            break;
-            case CloudSimTags.CLOUDLET_PAUSE_ACK:
-                processCloudletPause(cloudlet, true);
-            break;
-            case CloudSimTags.CLOUDLET_RESUME:
-                processCloudletResume(cloudlet, false);
-            break;
-            case CloudSimTags.CLOUDLET_RESUME_ACK:
-                processCloudletResume(cloudlet, true);
-            break;
-        }
-    }
-
-    /**
-     * Process the event for an User/Broker who wants to move a Cloudlet.
-     *
-     * @param receivedData an Object array containing data about the migration,
-     *                     where the index 0 will be a Cloudlet and
-     *                     the index 1 will be the id of the destination VM
-     * @param type event type
-     *
-     * @pre receivedData != null
-     * @pre type > 0
-     * @post $none
-     */
-    protected void processCloudletMove(Object[] receivedData, int type) {
-        updateCloudletProcessing();
-
-        final Cloudlet cloudlet = (Cloudlet)receivedData[0];
-        final int destVmId = (int)receivedData[1];
-
-        final Vm sourceVm = cloudlet.getVm();
-        final Host sourceHost = sourceVm.getHost();
-        final Vm destVm = sourceHost.getVm(destVmId, cloudlet.getBroker().getId());
-        final int destDatacenterId = destVm.getHost().getDatacenter().getId();
-        final Cloudlet cl = sourceVm.getCloudletScheduler().cloudletCancel(cloudlet.getId());
-
-        if (Cloudlet.NULL.equals(cl)) {
-            return;
-        }
-
-        // Has the cloudlet already finished?
-        if (cl.getStatus() == Cloudlet.Status.SUCCESS) {// if yes, send it back to user
-            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
-            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
-        }
-
-        // Prepare cloudlet for migration
-        cl.setVm(destVm);
-
-        // Cloudlet will migrate from one Datacenter to another
-        if (destDatacenterId != getId()) {
-            final int tag = ((type == CloudSimTags.CLOUDLET_MOVE_ACK)
-                    ? CloudSimTags.CLOUDLET_SUBMIT_ACK
-                    : CloudSimTags.CLOUDLET_SUBMIT);
-            sendNow(destDatacenterId, tag, cl);
-        }
-        // Cloudlet will migrate from one vm to another. Does the destination VM exist?
-        else if (!Vm.NULL.equals(destVm)) {
-            // time to transfer the files
-            final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
-            destVm.getCloudletScheduler().cloudletSubmit(cl, fileTransferTime);
-        }
-
-        if (type == CloudSimTags.CLOUDLET_MOVE_ACK) {// send ACK if requested
-            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cloudlet);
-        }
-    }
-
-    /**
-     * Processes the submission of a Cloudlet by a DatacenterBroker.
-     *
-     * @param ev information about the event just happened
-     * @param ack indicates if the event's sender expects to receive an
-     * acknowledge message when the event finishes to be processed
-     *
-     * @pre ev != null
-     * @post $none
-     */
-    protected void processCloudletSubmit(SimEvent ev, boolean ack) {
-        final Cloudlet cl = (Cloudlet) ev.getData();
-        if (checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(cl, ack)) {
-            return;
-        }
-
-        // process this Cloudlet to this Datacenter
-        cl.assignToDatacenter(this);
-        submitCloudletToVm(cl, ack);
-    }
-
-    /**
-     * Submits a cloudlet to be executed inside its bind VM.
-     *
-     * @param cl the cloudlet to the executed
-     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
-     * receives the cloudlet submission
-     */
-    private void submitCloudletToVm(Cloudlet cl, boolean ack) {
-        // time to transfer cloudlet files
-        final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
-
-        final CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
-        final double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
-
-        // if this cloudlet is in the exec queue
-        if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
-            send(getId(),
-                getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-        }
-
-        sendCloudletSubmitAckToBroker(ack, cl, true);
-    }
-
-    /**
      * Gets the time when the next update of cloudlets has to be performed.
      * This is the minimum value between the {@link #getSchedulingInterval()} and the given time
      * (if the scheduling interval is enable, i.e. if it's greater than 0),
@@ -718,6 +683,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
     }
+
     /**
      * Predict the total time to transfer a list of files.
      *
@@ -741,58 +707,75 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Processes a Cloudlet resume request.
+     * Process a file deletion request.
      *
-     * @param cloudlet cloudlet to be resumed
+     * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
-     * @pre $none
-     * @post $none
      */
-    protected void processCloudletResume(Cloudlet cloudlet, boolean ack) {
-        final double estimatedFinishTime = cloudlet.getVm()
-                .getCloudletScheduler().cloudletResume(cloudlet.getId());
+    protected void processDataDelete(SimEvent ev, boolean ack) {
+        if (Objects.isNull(ev)) {
+            return;
+        }
 
-        if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec queue
-            if (estimatedFinishTime > getSimulation().clock()) {
-                schedule(getId(),
-                    getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                    CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-            }
+        final Object[] data = (Object[]) ev.getData();
+        if (Objects.isNull(data)) {
+            return;
+        }
+
+        final String filename = (String) data[0];
+        final int reqSource = (Integer) data[1];
+        int tag;
+
+        // check if this file can be deleted (do not delete is right now)
+        final int msg = deleteFileFromStorage(filename);
+        if (msg == DataCloudTags.FILE_DELETE_SUCCESSFUL) {
+            tag = DataCloudTags.CTLG_DELETE_MASTER;
+        } else { // if an error occured, notify user
+            tag = DataCloudTags.FILE_DELETE_MASTER_RESULT;
         }
 
         if (ack) {
-            sendNow(cloudlet.getBroker().getId(), CloudSimTags.CLOUDLET_RESUME_ACK, cloudlet);
+            // send back to sender
+            Object pack[] = new Object[2];
+            pack[0] = filename;
+            pack[1] = msg;
+
+            sendNow(reqSource, tag, pack);
         }
     }
 
     /**
-     * Processes a Cloudlet pause request.
+     * Process a file inclusion request.
      *
-     * @param cloudlet cloudlet to be paused
+     * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
-     * @pre $none
-     * @post $none
      */
-    protected void processCloudletPause(Cloudlet cloudlet, final boolean ack) {
-        cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet.getId());
+    protected void processDataAdd(SimEvent ev, boolean ack) {
+        if (Objects.isNull(ev)) {
+            return;
+        }
+
+        final Object[] pack = (Object[]) ev.getData();
+        if (Objects.isNull(pack)) {
+            return;
+        }
+
+        final File file = (File) pack[0]; // get the file
+        file.setMasterCopy(true); // set the file into a master copy
+        final int sentFrom = (Integer) pack[1]; // get sender ID
+
+        final Object[] data = new Object[3];
+        data[0] = file.getName();
+
+        final int msg = addFile(file); // add the file
 
         if (ack) {
-            sendNow(cloudlet.getBroker().getId(), CloudSimTags.CLOUDLET_PAUSE_ACK, cloudlet);
+            data[1] = -1; // no sender id
+            data[2] = msg; // the result of adding a master file
+            sendNow(sentFrom, DataCloudTags.MASTERFILE_ADD_RESULT, data);
         }
-    }
-
-    /**
-     * Processes a Cloudlet cancel request.
-     *
-     * @param cloudlet cloudlet to be canceled
-     * @pre $none
-     * @post $none
-     */
-    protected void processCloudletCancel(Cloudlet cloudlet) {
-        cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet.getId());
-        sendNow(cloudlet.getBroker().getId(), CloudSimTags.CLOUDLET_CANCEL, cloudlet);
     }
 
     /**
@@ -1125,6 +1108,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         return Host.NULL;
     }
+
+    /**
+     * Process non-default received events that aren't processed by the
+     * {@link #processEvent(SimEvent)} method. This
+     * method should be overridden by subclasses in other to process new defined
+     * events.
+     *
+     * @param ev information about the event just happened
+     *
+     * @pre $none
+     * @post $none
+     */
+    protected void processOtherEvent(SimEvent ev) {/**/}
 
     @Override
     public String toString() {

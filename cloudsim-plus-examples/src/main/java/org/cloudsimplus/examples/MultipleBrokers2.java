@@ -48,6 +48,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.listeners.EventInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +77,9 @@ import java.util.function.Function;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.2
+ * @see MultipleBrokers1
  */
-public class MultipleBrokers1 {
+public class MultipleBrokers2 {
     /**
      * @see Datacenter#getSchedulingInterval()
      */
@@ -101,10 +103,10 @@ public class MultipleBrokers1 {
     private Datacenter datacenter0;
 
     public static void main(String[] args) {
-        new MultipleBrokers1();
+        new MultipleBrokers2();
     }
 
-    public MultipleBrokers1() {
+    public MultipleBrokers2() {
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
         brokers = createBrokers();
@@ -113,8 +115,27 @@ public class MultipleBrokers1 {
         cloudletList = new ArrayList<>(CLOUDLETS*VMS);
         createVmsAndCloudlets();
 
+        final Cloudlet c = createCloudlet(cloudletList.size(), CLOUDLET_LENGTH);
+        c.setSubmissionDelay(35);
+        cloudletList.add(c);
+        brokers.get(1).submitCloudlet(c);
+        //simulation.addOnClockTickListener(this::dynamicCloudletArrival);
         simulation.start();
         printResults();
+    }
+
+    /**
+     * Dynamically creates a cloudlet to submit during simulation execution.
+     * @param e
+     * @return
+     */
+    private void dynamicCloudletArrival(EventInfo e) {
+        if((int)e.getTime() != 45) {
+            return;
+        }
+
+        final Cloudlet c = createCloudlet(cloudletList.size(), CLOUDLET_LENGTH);
+        brokers.get(0).submitCloudlet(c);
     }
 
     /**
@@ -130,14 +151,7 @@ public class MultipleBrokers1 {
     private void createVmsAndCloudlets() {
         int i = 0;
         for (DatacenterBroker broker : brokers) {
-            /*
-             * You can use one of these two instructions below
-             * to set a specific delay or
-             * none of them at all to accept the default behavior.
-             */
-            //broker.setVmDestructionDelayFunction(vm -> 0.0);
-            broker.setVmDestructionDelayFunction(vm -> 2.0);
-
+            broker.setVmDestructionDelayFunction(vm -> 10.0);
             vmList.addAll(createAndSubmitVms(broker));
             cloudletList.addAll(createAndSubmitCloudlets(broker, CLOUDLET_LENGTH*CLOUDLETS*i++));
         }
