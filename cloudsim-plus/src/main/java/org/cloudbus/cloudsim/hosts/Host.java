@@ -311,6 +311,15 @@ public interface Host extends Machine, Comparable<Host> {
     <T extends Vm> List<T> getVmList();
 
     /**
+     * Gets a <b>read-only</b> list of all VMs which have been created into the host
+     * during the entire simulation.
+     *
+     * @param <T> The generic type
+     * @return the read-only vm created list
+     */
+    <T extends Vm> List<T> getVmCreatedList();
+
+    /**
      * Gets the policy for allocation of host PEs to VMs in order to schedule VM execution.
      *
      * @return the {@link VmScheduler}

@@ -35,7 +35,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "1.2.3";
+    public static final String VERSION = "1.2.4";
 
     /**
      * A constant to indicate that some entity was not found.
@@ -302,25 +302,6 @@ public class CloudSim implements Simulation {
     }
 
     /**
-     * Notifies all Listeners of onClockTick event when the simulation clock changes.
-     * If multiples events are receive consecutively but for the same simulation time,
-     * it will only notify the Listeners when the last event for that time is received.
-     * This ensure that, when the Listeners receive the notification, all the events
-     * for that simulation time already were processed and then, such Listeners
-     * will have access to the most updated simulation state.
-     */
-    private void notifyOnClockTickListenersIfClockChanged() {
-        if(clockTime != circularClockTimesQueue[0] || clockTime != circularClockTimesQueue[1]) {
-            if (lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[0] && lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[1]) {
-                lastTimeClockTickListenersWereUpdated = circularClockTimesQueue[0];
-                final EventInfo info = EventInfo.of(lastTimeClockTickListenersWereUpdated);
-                onClockTickListeners.forEach(l -> l.update(info));
-            }
-            addCurrentTimeToCircularQueue();
-        }
-    }
-
-    /**
      * Makes the circular queue to rotate, removing the first time to add
      * the current clock time.
      */
@@ -564,6 +545,26 @@ public class CloudSim implements Simulation {
         processEventByType(e);
         notifyOnClockTickListenersIfClockChanged();
         notifyOnEventProcessingListeners(e);
+    }
+
+    /**
+     * Notifies all Listeners of onClockTick event when the simulation clock changes.
+     * If multiples events are received consecutively but for the same simulation time,
+     * it will only notify the Listeners when the last event for that time is received.
+     * This ensure that, when the Listeners receive the notification, all the events
+     * for that simulation time already were processed and then, such Listeners
+     * will have access to the most updated simulation state.
+     */
+    private void notifyOnClockTickListenersIfClockChanged() {
+        if(clockTime != circularClockTimesQueue[0] || clockTime != circularClockTimesQueue[1]) {
+            if (lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[0] && lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[1]) {
+                lastTimeClockTickListenersWereUpdated = circularClockTimesQueue[0];
+                final EventInfo info = EventInfo.of(clockTime);
+                onClockTickListeners.forEach(l -> l.update(info));
+            }
+
+            addCurrentTimeToCircularQueue();
+        }
     }
 
     private void processEventByType(SimEvent e) {

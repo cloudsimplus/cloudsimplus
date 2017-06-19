@@ -603,10 +603,9 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     /**
-     * A map of AWS EC2 Template to be used for each customer.
+     * Gets the price per hour for the AWS EC2 Template to be used for a given customer.
      */
     public Double getTemplatesMap(DatacenterBroker broker) {
-
         return templatesMap.get(broker).getPricePerHour();
     }
 

@@ -96,7 +96,7 @@ public interface PacketScheduler {
     /**
      * Checks if is time to update the execution of a given Cloudlet.
      * If the Cloudlet is waiting for packets to be sent or received,
-     * then it is not time updated its processing.
+     * then it isn't time to update its processing.
      *
      * @param cloudlet the Cloudlet to check if it is time to update its execution
      * @return true if its timie to update Cloudlet execution, false otherwise.

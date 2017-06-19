@@ -37,6 +37,8 @@ public abstract class PowerModelAbstract implements PowerModel {
          * If the Host is not active and there are running VMs, it means
          * that a shutdown request was sent (setting the Host active attribute to false).
          * However, the Host will be powered off just when running VMs finish.
+         * If there aren't VMs and the Host is not active anymore,
+         * its power consumption is zero.
          */
 		if(getHost().getVmList().isEmpty() && !getHost().isActive()){
 		    return 0;

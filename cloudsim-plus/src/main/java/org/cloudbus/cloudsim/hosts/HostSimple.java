@@ -115,6 +115,7 @@ public class HostSimple implements Host {
     private List<ResourceManageable> resources;
     private List<ResourceProvisioner> provisioners;
     private boolean active;
+    private List<Vm> vmCreatedList;
 
     /**
      * Creates a Host without a pre-defined ID.
@@ -144,6 +145,7 @@ public class HostSimple implements Host {
         this.setDatacenter(Datacenter.NULL);
         this.onUpdateProcessingListeners = new HashSet<>();
         this.resources = new ArrayList();
+        this.vmCreatedList = new ArrayList();
         this.provisioners = new ArrayList();
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
@@ -213,6 +215,7 @@ public class HostSimple implements Host {
     public boolean createVm(Vm vm) {
         final boolean result = createVmInternal(vm);
         if(result) {
+            vmCreatedList.add(vm);
             vm.setHost(this);
             vm.notifyOnHostAllocationListeners();
             if(vm.getStartTime() < 0) {
@@ -532,6 +535,11 @@ public class HostSimple implements Host {
     @Override
     public <T extends Vm> List<T> getVmList() {
         return (List<T>) Collections.unmodifiableList(vmList);
+    }
+
+    @Override
+    public <T extends Vm> List<T> getVmCreatedList() {
+        return (List<T>) Collections.unmodifiableList(vmCreatedList);
     }
 
     protected void addVmToList(Vm vm){

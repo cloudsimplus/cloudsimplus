@@ -33,22 +33,15 @@ final class HostNull implements Host {
         return false;
     }
     @Override public boolean removeVmMigratingIn(Vm vm) { return false; }
-
-    @Override
-    public Set<Vm> getVmsMigratingOut() {
+    @Override public Set<Vm> getVmsMigratingOut() {
         return Collections.EMPTY_SET;
     }
-
-    @Override
-    public boolean addVmMigratingOut(Vm vm) {
+    @Override public boolean addVmMigratingOut(Vm vm) {
         return false;
     }
-
-    @Override
-    public boolean removeVmMigratingOut(Vm vm) {
+    @Override public boolean removeVmMigratingOut(Vm vm) {
         return false;
     }
-
     @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
         return false;
     }
@@ -105,6 +98,7 @@ final class HostNull implements Host {
     @Override public Vm getVm(int vmId, int brokerId) {
         return Vm.NULL;
     }
+    @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.EMPTY_LIST; }
     @Override public List<Vm> getVmList() {
         return Collections.emptyList();
     }

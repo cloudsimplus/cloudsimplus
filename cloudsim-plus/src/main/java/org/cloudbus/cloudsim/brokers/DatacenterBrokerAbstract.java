@@ -30,6 +30,19 @@ import org.cloudsimplus.listeners.EventListener;
  */
 public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
     /**
+     * A default {@link Function} which always returns {@link #DEFAULT_VM_DESTRUCTION_DELAY} to indicate that any VM should not be
+     * immediately destroyed after it becomes idle.
+     * This way, it has to wait until either:
+     * <ul>
+     * <li>all submitted Cloudlets from all VMs of the broker are finished and there are no waiting Cloudlets;</li>
+     * <li>all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
+     * </ul>
+     *
+     * @see #setVmDestructionDelayFunction(Function)
+     */
+    private static final Function<Vm, Double> DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION = vm -> DEFAULT_VM_DESTRUCTION_DELAY;
+
+    /**
      * A map of registered event listeners for the onCreationOfWaitingVmsFinish event
      * that the key is the Listener itself and the value indicates if it's a one
      * time listener (which is removed from the list after being notified for the first time).
@@ -419,7 +432,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * is sent only after the delay defined by the {@link #getVmDestructionDelayFunction()}),
      * the VM destruction has to be actually requested to the Datacenter
      * without any further delay.
-     * This way, it's given a {@link Function} to the {@link #destroyVmAndRemoveFromList(Vm, Function)}
+     *
+     * This way, it's given a {@link Function} to the {@link #requestIdleVmDestruction(Vm, Function)}
      * method which always returns a delay equals to 0 for any given VM.
      * Since the {@link Function} always returns the same value,
      * its Vm parameter is ignored (it's defined as __ ).
@@ -429,7 +443,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private void processBrokerVmDestroyRequest(Vm vm) {
         if(vm.getCloudletScheduler().isEmpty()) {
-            destroyVmAndRemoveFromList(vm, __ -> 0.0);
+            requestIdleVmDestruction(vm, __ -> 0.0);
         }
     }
 
@@ -600,7 +614,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         cloudletsCreated--;
 
         if(isNotAllRunningCloudletsReturned()){
-            destroyVmAndRemoveFromList(c.getVm(), vmDestructionDelayFunction);
+            requestIdleVmDestruction(c.getVm(), vmDestructionDelayFunction);
             return;
         }
 
@@ -608,10 +622,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         //If gets here, all running cloudlets have finished and returned to the broker.
         if (cloudletWaitingList.isEmpty()) {
             println(String.format(
-                "%.2f: %s: All submitted Cloudlets finished executing. Destroying VMs and requesting broker shutdown...",
+                "%.2f: %s: All submitted Cloudlets finished executing.",
                 getSimulation().clock(), getName()));
-            destroyVms(func);
-            requestShutDown();
+            requestIdleVmsDestruction(func);
             return;
         }
 
@@ -623,7 +636,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         defines one which always return 0 to indicate
         that in this situation, idle VMs must be destroyed immediately.
         */
-        destroyVms(func);
+        requestIdleVmsDestruction(func);
         requestDatacenterToCreateWaitingVms();
     }
 
@@ -637,65 +650,52 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Try to destroy all created broker's VMs at the time defined by a delay {@link Function}.
+     * Request all idle VMs to be destroyed at the time defined by a delay {@link Function}.
      *
      * @param vmDestructionDelayFunction a {@link Function} which indicates to time the VM will wait before being destructed
      * @pre $none
      * @post $none
      * @see #getVmDestructionDelayFunction()
      */
-    protected void destroyVms(Function<Vm,Double> vmDestructionDelayFunction) {
-        List<Vm> remove = new ArrayList<>();
-        for (final Vm vm : vmExecList) {
-            if(destroyVm(vm, vmDestructionDelayFunction)){
-                remove.add(vm);
-            }
+    protected void requestIdleVmsDestruction(Function<Vm,Double> vmDestructionDelayFunction) {
+        for (int i = vmExecList.size()-1; i >= 0; i--) {
+            requestIdleVmDestruction(vmExecList.get(i), vmDestructionDelayFunction);
         }
-
-        vmExecList.removeAll(remove);
     }
 
     /**
-     * Try to destroy a specific VM at the time defined by a delay {@link Function} and then
-     * removes it from the list of created VMs.
-     * The VM will be destroyed if the given delay function doesn't return a negative value.
-     * In this case, it means it's not time to destroy the VM.
+     * Request an idle VM to be destroyed at the time defined by a delay {@link Function}.
+     * The request will be sent if the given delay function returns a value
+     * greater than {@link #DEFAULT_VM_DESTRUCTION_DELAY}.
+     * Otherwise, it doesn't send the request, meaning the VM should not be destroyed according to a specific delay.
      *
      * @param vm the VM to destroy
      * @param vmDestructionDelayFunction a {@link Function} which indicates to time the VM will wait before being destructed
      * @return true if the VM was destroyed, false otherwise
      * @see #getVmDestructionDelayFunction()
      */
-    private boolean destroyVmAndRemoveFromList(Vm vm, Function<Vm,Double> vmDestructionDelayFunction) {
-        if(destroyVm(vm, vmDestructionDelayFunction)) {
-            vmExecList.remove(vm);
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Try to destroy a specific VM at the time defined by a delay {@link Function} and
-     * keeps it into the list of created VMs.
-     * The VM will be destroyed if the given delay function doesn't return a negative value.
-     * In this case, it means it's not time to destroy the VM.
-     *
-     * @param vm the VM to destroy
-     * @param vmDestructionDelayFunction a {@link Function} which indicates to time the VM will wait before being destructed
-     * @return true if the VM was destroyed, false otherwise
-     * @see #getVmDestructionDelayFunction()
-     */
-    private boolean destroyVm(Vm vm, Function<Vm,Double>vmDestructionDelayFunction) {
+    private boolean requestIdleVmDestruction(Vm vm, Function<Vm,Double>vmDestructionDelayFunction) {
         final double delay = vmDestructionDelayFunction.apply(vm);
-        if (delay < 0){
+        if (delay <= DEFAULT_VM_DESTRUCTION_DELAY){
             return false;
         }
 
-        if(vm.getIdleInterval() >= delay)  {
+        if(vm.getIdleInterval() >= delay) {
+            //VM destruction request already was sent
+            if(!vmExecList.contains(vm)){
+                return true;
+            }
+
             println(String.format("%.2f: %s: Destroying %s", getSimulation().clock(), getName(), vm));
             //request the Datacenter to destroy the VM
             sendNow(getVmDatacenter(vm).getId(), CloudSimTags.VM_DESTROY, vm);
+            vmExecList.remove(vm);
+            if (cloudletWaitingList.isEmpty() && vmExecList.isEmpty()) {
+                println(String.format(
+                    "%.2f: %s: Destroying VMs and requesting broker shutdown...",
+                    getSimulation().clock(), getName()));
+                requestShutDown();
+            }
             return true;
         }
 
@@ -777,10 +777,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                     getSimulation().clock(), getName(), cloudlet.getId()));
                 continue;
             }
+
+            final String delayStr =
+                cloudlet.getSubmissionDelay() > 0 ?
+                    String.format(" with a requested delay of %.0f seconds", cloudlet.getSubmissionDelay()) :
+                    "";
             println(String.format(
-                "%.2f: %s: Sending %s %d to %s in %s.",
+                "%.2f: %s: Sending %s %d to %s in %s%s.",
                 getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(),
-                lastSelectedVm, lastSelectedVm.getHost()));
+                lastSelectedVm, lastSelectedVm.getHost(), delayStr));
             cloudlet.setVm(lastSelectedVm);
             send(getVmDatacenter(lastSelectedVm).getId(),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);

@@ -49,12 +49,12 @@ public interface PowerModel {
     };
 
     /**
-     * Gets power consumption of the Power Model, according to the utilization
+     * Gets power consumption (in Watts/Second) of the Power Model, according to the utilization
      * percentage of a critical resource, such as CPU.
      *
      * @param utilization the utilization percentage (between [0 and 1]) of a
      * resource that is critical for power consumption.
-     * @return the power consumption
+     * @return the power consumption (in Watts/Second)
      * @throws IllegalArgumentException when the utilization percentage is not
      * between [0 and 1]
      */

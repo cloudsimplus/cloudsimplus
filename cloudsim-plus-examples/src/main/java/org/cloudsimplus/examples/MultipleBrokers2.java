@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
@@ -48,6 +49,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,8 +79,9 @@ import java.util.function.Function;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.2
+ * @see MultipleBrokers1
  */
-public class MultipleBrokers1 {
+public class MultipleBrokers2 {
     /**
      * @see Datacenter#getSchedulingInterval()
      */
@@ -101,10 +105,10 @@ public class MultipleBrokers1 {
     private Datacenter datacenter0;
 
     public static void main(String[] args) {
-        new MultipleBrokers1();
+        new MultipleBrokers2();
     }
 
-    public MultipleBrokers1() {
+    public MultipleBrokers2() {
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
         brokers = createBrokers();
@@ -113,8 +117,72 @@ public class MultipleBrokers1 {
         cloudletList = new ArrayList<>(CLOUDLETS*VMS);
         createVmsAndCloudlets();
 
+        /*
+         * Static or dynamically submits a Cloudlet.
+         * Choose the way you want to use by commenting one of the two lines below.
+         * Any way you chose, for the configuration of this example,
+         * the results will be exactly the same.
+         * These lines of code below are used just to show the different
+         * ways to to simulate arrival of Cloudlets at different times.
+         * See the documentation of the methods called below for more details.
+         */
+        //submitCloudletWithDelay();
+        simulation.addOnClockTickListener(this::dynamicCloudletArrival);
+
         simulation.start();
         printResults();
+    }
+
+    /**
+     * Statically submits a Cloudlet with a specific delay,
+     * meaning it will start executing only after the defined time.
+     * The Cloudlet is submitted before the simulation starts.
+     */
+    private void submitCloudletWithDelay() {
+        final Cloudlet c = createCloudlet(cloudletList.size(), CLOUDLET_LENGTH);
+        c.setSubmissionDelay(35);
+        brokers.get(1).submitCloudlet(c);
+    }
+
+    /**
+     * Dynamically submits a cloudlet during simulation execution.
+     * This method is called every time when the simulation clock
+     * advances.
+     * The created Cloudlet is submitted only at a specific simulation time.
+     * <p>Realize the interval in which this method is called is defined
+     * according to the {@link #SCHEDULING_INTERVAL}.</p>
+     *
+     * <p>Different from the {@link #submitCloudletWithDelay()} method
+     * with when the simulation starts the created Cloudlet will be waiting
+     * to start executing, this method is called dynamically during
+     * simulation execution. It defines internally, when
+     * we want the Cloudlet to be submitted.
+     * The method is called by the {@link CloudSim} object
+     * because an {@link EventListener} was added to be
+     * notified when the simulation clock changes.
+     * This way, it allows, between lots of possibilities,
+     * to define specific conditions when a new Cloudlet should be submitted
+     * to a broker.
+     * </p>
+     *
+     * <p>The dynamic way of submitting Cloudlets is more flexible because it allows you to define
+     * any condition you want inside, and that condition may include any other git lvariables
+     * besides the time.</p>
+     *
+     * @param e information about the generated event
+     * @return
+     * @see Datacenter#getSchedulingInterval()
+     * @see CloudSim#addOnClockTickListener(EventListener)
+     */
+    private void dynamicCloudletArrival(EventInfo e) {
+        if((int)e.getTime() != 35) {
+            return;
+        }
+
+        final Cloudlet c = createCloudlet(cloudletList.size(), CLOUDLET_LENGTH);
+        final DatacenterBroker broker = brokers.get(1);
+        System.out.printf("%.2f: \t\t\tDynamically submitting %s to %s\n", e.getTime(),  c, broker);
+        broker.submitCloudlet(c);
     }
 
     /**
@@ -130,14 +198,7 @@ public class MultipleBrokers1 {
     private void createVmsAndCloudlets() {
         int i = 0;
         for (DatacenterBroker broker : brokers) {
-            /*
-             * You can use one of these two instructions below
-             * to set a specific delay or
-             * none of them at all to accept the default behavior.
-             */
-            //broker.setVmDestructionDelayFunction(vm -> 0.0);
-            broker.setVmDestructionDelayFunction(vm -> 2.0);
-
+            broker.setVmDestructionDelayFunction(vm -> 10.0);
             vmList.addAll(createAndSubmitVms(broker));
             cloudletList.addAll(createAndSubmitCloudlets(broker, CLOUDLET_LENGTH*CLOUDLETS*i++));
         }
