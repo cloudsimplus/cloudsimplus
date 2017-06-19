@@ -30,12 +30,10 @@ package org.cloudsimplus.sla.tasktimecompletion;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.*;
+
 import static java.util.Comparator.comparingDouble;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -55,6 +53,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -62,10 +61,8 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 
-import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLETS;
-import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.CLOUDLET_LENGTHS;
-import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VMS;
-import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.VM_PES;
+import static java.util.stream.Collectors.toList;
+import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.*;
 
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -84,13 +81,12 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
 
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
-    private final SlaContract contract;
 
     private List<Host> hostList;
     private static List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    private final ContinuousDistribution randCloudlet, randVm;
+    private final ContinuousDistribution randCloudlet, randVm, randCloudletPes;
 
     private int createdCloudlets;
     private int createsVms;
@@ -98,7 +94,9 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String METRICS_FILE = "SlaMetrics.json";
+    public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
+    public Map<DatacenterBroker, SlaContract> contractsMap;
+
     private double cpuUtilizationSlaContract;
     private double taskTimeCompletionSlaContract;
 
@@ -120,14 +118,31 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     private CloudletTaskTimeCompletionMinimizationExperiment(int index, ExperimentRunner runner, long seed) {
         super(index, runner, seed);
         this.randCloudlet = new UniformDistr(getSeed());
-        this.randVm = new UniformDistr(getSeed());
-        try {
-            this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
-            getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
-        } catch (IOException ex) {
-            Logger.getLogger(CloudletTaskTimeCompletionMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
+        this.randVm = new UniformDistr(getSeed()+2);
+        this.randCloudletPes = new UniformDistr(getSeed()+3);
+        contractsMap = new HashMap<>();
+    //    getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
+
+    }
+
+    /**
+     * Read all SLA contracts registered in the {@link #SLA_CONTRACTS_LIST}.
+     * When the brokers are created, it is ensured the number of brokers
+     * is equals to the number of SLA contracts in the {@link #SLA_CONTRACTS_LIST}.
+     */
+    private void readTheSlaContracts() throws IOException {
+        for (final String file: readContractList()) {
+            SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
+            contractsMap.put(getFirstBroker(), contract);
         }
+    }
+
+    private List<String> readContractList() throws FileNotFoundException {
+        return ResourceLoader
+            .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
+            .lines()
+            .filter(l -> !l.startsWith("#"))
+            .collect(toList());
     }
 
     private DatacenterBroker getFirstBroker() {
@@ -170,9 +185,11 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     private Cloudlet createCloudlet(DatacenterBroker broker) {
         final int id = createdCloudlets++;
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
+        final int p = (int) (randCloudletPes.sample() * CLOUDLET_PES.length);
         final long length = CLOUDLET_LENGTHS[i];
+        final long pes = CLOUDLET_PES[p];
         UtilizationModel utilization = new UtilizationModelFull();
-        return new CloudletSimple(id, length, 2)
+        return new CloudletSimple(id, length, pes)
                 .setFileSize(1024)
                 .setOutputSize(1024)
                 .setUtilizationModel(utilization);
@@ -197,6 +214,8 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
                         .thenComparing(sortByExpectedCloudletTaskTimeCompletion)
                         .reversed());
         Vm mostFreePesVm = createdVms.stream().findFirst().orElse(Vm.NULL);
+
+        taskTimeCompletionSlaContract = contractsMap.get(cloudlet.getBroker()).getTaskCompletionTimeMetric().getMaxDimension().getValue();
 
         Vm selectedVm = createdVms.stream()
                 .filter(vm -> getExpectedNumberOfFreeVmPes(vm) >= cloudlet.getNumberOfPes())
@@ -270,7 +289,6 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
      * @return the created Vm
      */
     private Vm createVm() {
-        DatacenterBroker broker0 = getFirstBroker();
         final int id = createsVms++;
         final int i = (int) (randVm.sample() * VM_PES.length);
         final int pes = VM_PES[i];
@@ -307,12 +325,23 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     }
 
     @Override
+    protected void createBrokers() {
+        super.createBrokers();
+        DatacenterBroker broker0 = getFirstBroker();
+       // broker0.setVmMapper(this::selectVmForCloudlet);
+       // broker0.setCloudletComparator(sortCloudletsByLengthReversed);
+
+        try {
+            readTheSlaContracts();
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
     protected DatacenterBroker createBroker() {
-        DatacenterBroker broker0;
-        broker0 = new DatacenterBrokerSimple(getCloudSim());
-        broker0.setVmMapper(this::selectVmForCloudlet);
-        broker0.setCloudletComparator(sortCloudletsByLengthReversed);
-        return broker0;
+        return new DatacenterBrokerSimple(getCloudSim());
     }
 
     /**
@@ -330,17 +359,23 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .forEach(cloudletTaskTimeCompletion::addValue);
 
-        Log.printFormattedLine(
+        taskTimeCompletionSlaContract = getTaskTimeCompletionFromContract(broker);
+
+       /* Log.printFormattedLine(
                 "\t\t\n TaskTimeCompletion simulation: %.2f \n TaskTimeCompletion contrato SLA: %.2f \n",
-                cloudletTaskTimeCompletion.getMean(), taskTimeCompletionSlaContract);
+                cloudletTaskTimeCompletion.getMean(), taskTimeCompletionSlaContract);*/
         return cloudletTaskTimeCompletion.getMean();
+    }
+
+    private double getTaskTimeCompletionFromContract(DatacenterBroker broker) {
+        return contractsMap.get(broker).getTaskCompletionTimeMetric().getMaxDimension().getValue();
     }
 
     double getPercentageOfCloudletsMeetingTaskTimeCompletion() {
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
-
+        taskTimeCompletionSlaContract = contractsMap.get(broker).getTaskCompletionTimeMetric().getMaxDimension().getValue();
         double totalOfcloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= taskTimeCompletionSlaContract)
@@ -376,7 +411,7 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     double getRatioOfExistingVmPesToRequiredCloudletPes() {
         double sumPesVms = getSumPesVms();
         double sumPesCloudlets = getSumPesCloudlets();
-
+        //System.out.println("# ratio: " + sumPesVms / sumPesCloudlets);
         return sumPesVms / sumPesCloudlets;
     }
 
@@ -390,10 +425,11 @@ public final class CloudletTaskTimeCompletionMinimizationExperiment extends Simu
     public static void main(String[] args) throws FileNotFoundException, IOException {
         final long seed = System.currentTimeMillis();
         CloudletTaskTimeCompletionMinimizationExperiment exp =
-            new CloudletTaskTimeCompletionMinimizationExperiment(1475098589739L);
+            new CloudletTaskTimeCompletionMinimizationExperiment(475098589739L);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsTaskTimeCompletionAverage();
         exp.getPercentageOfCloudletsMeetingTaskTimeCompletion();
+        exp.getRatioOfExistingVmPesToRequiredCloudletPes();
     }
 }

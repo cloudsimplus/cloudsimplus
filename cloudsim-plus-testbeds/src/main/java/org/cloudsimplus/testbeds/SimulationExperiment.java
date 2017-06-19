@@ -402,4 +402,8 @@ public abstract class SimulationExperiment implements Runnable {
         return seed;
     }
 
+    @Override
+    public String toString() {
+        return String.format("Experiment %d", index);
+    }
 }

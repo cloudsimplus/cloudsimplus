@@ -32,6 +32,8 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
+
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
@@ -152,8 +154,8 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             setSimulationRuns(getSimulationRuns() + 1);
         }
 
-        if (getNumberOfBatches() % 2 != 0) {
-            setNumberOfBatches(getNumberOfBatches() + 1);
+        if (getSimulationRuns() % getNumberOfBatches()  != 0) {
+            setSimulationRunsAsMultipleOfBatchNumber();
         }
     }
 
@@ -210,12 +212,13 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * samples correlation, if the "Batch Means Method"
      * {@link #isApplyBatchMeansMethod() is to be applied}.
      *
-     * @param samples the list with samples to apply the "Batch Means Method"
+     * @param samples the list with samples to apply the "Batch Means Method".
+     *                Samples size is defined by the {@link #getSimulationRuns()}.
      * @return the samples list after applying the "Batch Means Method", in case
-     * the method is enabled to be applied, that will reduce the array to the
+     * the method is enabled to be applied, which will reduce the array to the
      * number of batches defined by {@link #getNumberOfBatches()} (each value in
      * the returned array will be the mean of every sample batch). Otherwise,
-     * return the same given array
+     * returns the same given array
      */
     protected List<Double> computeBatchMeans(List<Double> samples) {
         if (!isApplyBatchMeansMethod()) {
@@ -223,19 +226,55 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         }
 
         final List<Double> batchMeans = new ArrayList<>(getNumberOfBatches());
-        final int k = batchSizeCeil();
         for (int i = 0; i < getNumberOfBatches(); i++) {
-            double sum = 0.0;
-            for (int j = 0; j < k; j++) {
-                sum += samples.get(i * k + j);
-            }
-            batchMeans.add(sum / k);
+            batchMeans.add(getBatchAverage(samples, i));
         }
 
         System.out.printf(
                 "\tBatch Means Method applied. The number of samples was reduced to %d after computing the mean for each batch.\n", getNumberOfBatches());
 
         return batchMeans;
+    }
+
+    /**
+     * Gets the average for the values of a given batch <i>i</i>.
+     * If there are 10 simulation runs and the number of batches is 5,
+     * the batch size is 2 (⎡10/2⎤) and each batch will be formed as follows:
+     *
+     * <center>
+     *     {0 1} {2 3} {4 5} {6 7} {8 9}
+     * </center>
+     *
+     * @param samples the list with samples to apply the "Batch Means Method".
+     *                Samples size is defined by the {@link #getSimulationRuns()}.
+     * @param i the index of the batch to get it's values average
+     * @return the average for the values of a given batch
+     */
+    private double getBatchAverage(final List<Double> samples, final int i) {
+        final int k = batchSizeCeil();
+        return IntStream.range(0, k).mapToDouble(j -> samples.get(getBatchElementIndex(i, j))).average().orElse(0.0);
+    }
+
+    /**
+     * Gets the absolute position of the <i>jth</i> element of a batch <i>i</i>,
+     * from the samples of all experiments.
+     * If there are 12 simulation runs and the number of batches is 3,
+     * the batch size is 4 (⎡12/3⎤). The elements of the batch 2, for instance, from
+     * the samples of all experiments, will be the ones inside the brackets below:
+     *
+     * <center>
+     *     0 1 2 3 4 5 {6 <b>7</b> 8} 9 10 11
+     * </center>
+     *
+     * <p>This way, the absolute position of the 2nd (<i>j</i>) element inside the batch 3 (<i>i</i>) is 7 (in bold).</p>
+     *
+     * @param i the index of the batch to get the absolute position of one of its elements
+     * @param j the relative position of the element to get inside the batch
+     * @return the absolute position of the <i>jth</i> element of the batch
+     */
+    private int getBatchElementIndex(final int i, final int j) {
+        final int k = batchSizeCeil();
+        return i*k + j;
     }
 
     /**
@@ -336,6 +375,16 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     protected ExperimentRunner setSimulationRuns(int simulationRuns) {
         this.simulationRuns = simulationRuns;
         return this;
+    }
+
+    /**
+     * Adjusts the current number of simulations to be equal to its closer
+     * multiple of the number of batches.
+     * @return
+     */
+    protected ExperimentRunner setSimulationRunsAsMultipleOfBatchNumber() {
+         setSimulationRuns(getNumberOfBatches() * (int)Math.ceil(getSimulationRuns() / getNumberOfBatches()));
+         return this;
     }
 
     private final ExperimentRunner setApplyAntitheticVariatesTechnique(final boolean applyAntitheticVariatesTechnique) {

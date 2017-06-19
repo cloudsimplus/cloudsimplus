@@ -46,8 +46,8 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
-    static final int[] VM_PES = {2};
-    static final int VMS = 100;
+    static final int[] VM_PES = {2, 4};
+    static final int VMS = 30;
     static final int CLOUDLETS = 100;
 
     /**

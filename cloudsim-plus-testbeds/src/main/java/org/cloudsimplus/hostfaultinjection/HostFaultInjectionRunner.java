@@ -28,9 +28,13 @@ package org.cloudsimplus.hostfaultinjection;
 import java.util.*;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudsimplus.slametrics.SlaContract;
+import org.cloudsimplus.slametrics.SlaMetric;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
-import javax.swing.text.html.HTMLDocument;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * * Runs the {@link HostFaultInjectionExperiment} the number of
@@ -42,8 +46,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final long[] CLOUDLET_LENGTHS = {10000_000_000L, 9800_00_000L, 990000_000L};
-    static final int CLOUDLETS = 12;
+    static final long[] CLOUDLET_LENGTHS = {1000_000_000L};
 
     /**
      * Datacenter availability for each experiment.
@@ -51,8 +54,28 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     private List<Double> availability;
 
     /**
-     * The percentage of brokers meeting Availability average for all the
-     * experiments.
+     * A map of each availability achieved by each broker for each experiment.
+     * The key is a broker's name and the List for that key represents the availability
+     * reached by that broker in each experiment, for instance:
+     *
+     * <ul>
+     *    <li>Broker1 -> {AvailabilityExperiment1, AvailabilityExperiment2 ... AvailabilityExperimentN}</li>
+     *    <li>Broker2 -> {AvailabilityExperiment1, AvailabilityExperiment2 ... AvailabilityExperimentN}</li>
+     *    <li>BrokerN -> {AvailabilityExperiment1, AvailabilityExperiment2 ... AvailabilityExperimentN}</li>
+     * </ul>
+     *
+     * <p>It's used the broker's name instead of an actual broker instance
+     * because, despite each simulation run creates the same brokers
+     * (one for each SLA JSON file), they are different instances.
+     * As we want to relate, for instance, the broker 0 of one experiment
+     * run with the same broker 0 in all other runs,
+     * it's needed to use a String.
+     * </p>
+     */
+    private Map<String, List<Double>> availabilityByBroker;
+
+    /**
+     * Percentage of brokers meeting Availability average for each experiment.
      */
     private List<Double> percentageOfBrokersMeetingAvailability;
 
@@ -61,13 +84,22 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     private List<Double> ratioVmsPerHost;
 
+    /**
+     * Gets the cost total of each broker.
+     */
+    private Map<String, List<Double>> costTotal;
 
     /**
-     * The percentage of brokers meeting Cost average for all the
-     * experiments.
+     * Gets the actual price of all customers VMs per hour
+     */
+    private Map<String, List<Double>> customerActualPricePerHour;
+
+    /**
+     * Percentage of brokers meeting Cost average for each experiment.
      */
     private List<Double> percentageOfBrokersMeetingCost;
 
+    private Map<String, List<Double>> getTemplate;
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -81,8 +113,8 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new HostFaultInjectionRunner(true, 1475098589732L)
-            .setSimulationRuns(10)
+        new HostFaultInjectionRunner(true, 199975098589732L)
+            .setSimulationRuns(300)
             .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
             .setVerbose(true)
             .run();
@@ -90,10 +122,14 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
 
     HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
+        availabilityByBroker = new HashMap<>();
         availability = new ArrayList<>();
         percentageOfBrokersMeetingAvailability = new ArrayList<>();
         ratioVmsPerHost = new ArrayList<>();
         percentageOfBrokersMeetingCost = new ArrayList<>();
+        costTotal = new HashMap<>();
+        customerActualPricePerHour =  new HashMap<>();
+        getTemplate = new HashMap<>();
     }
 
     @Override
@@ -112,23 +148,106 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * @param exp the finished experiment
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
-        availability.add(exp.getFaultInjection().availability() * 100);
-        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla() * 100);
-        ratioVmsPerHost.add(exp.getRatioVmsPerHost());
-        percentageOfBrokersMeetingCost.add(exp.getPercentageOfBrokersMeetingCost() * 100);
+        final HostFaultInjection faultInjection = exp.getFaultInjection();
+        Map<DatacenterBroker, SlaContract> contract = exp.contractsMap;
 
+       /* availability.add(faultInjection.availability() * 100);
+          ratioVmsPerHost.add(exp.getRatioVmsPerHost());
+        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla() * 100);*/
+        percentageOfBrokersMeetingCost.add(exp.getPercentageOfBrokersMeetingCost());
+
+         //The availability for each broker for a single experiment.
+        final Map<DatacenterBroker, Double> brokersAvailabilities = exp.getBrokerList()
+            .stream()
+            .sorted()
+            .collect(toMap(b -> b, faultInjection::availability));
+
+        final Map<DatacenterBroker, Double> costBrokers = exp.getBrokerList()
+            .stream()
+            .sorted()
+            .collect(toMap(b -> b, exp::getTotalCost));
+
+        final Map<DatacenterBroker, Double> getCustomerActualPricePerHour = exp.getBrokerList()
+            .stream()
+            .sorted()
+            .collect(toMap(b -> b, exp::getCustomerActualPricePerHour));
+
+        final Map<DatacenterBroker, Double> templatePrice = exp.getBrokerList()
+            .stream()
+            .sorted()
+            .collect(toMap(b -> b, exp::getTemplatesMap));
+
+        /*
+         * Gets the availability of each broker for the current experiment
+         * and adds such a value to the List of availability of each broker
+         * inside the map of all brokers
+         */
+        brokersAvailabilities.forEach(this::addExperimentAvailabilityToBroker);
+
+        costBrokers.forEach(this::addExperimentCostToBroker);
+
+        getCustomerActualPricePerHour.forEach(this::addExperimentPriceCustomerPerHour);
     }
 
-    @Override
-    protected void setup() {/**/}
+    /**
+     * Gets the availability of a broker for an experiment
+     * and adds such a value to the List of availability of that broker
+     * inside the map of all brokers.
+     * @param broker the broker to add the availability of an experiment to its list of availabilities
+     * @param availability the availability of the broker for the experiment
+     */
+    private boolean addExperimentAvailabilityToBroker(final DatacenterBroker broker, final double availability) {
+        return availabilityByBroker.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(availability);
+    }
+
+    /**
+     * Gets the cost of a broker for an experiment
+     * and adds such a value to the List of costs of that broker
+     * inside the map of all brokers.
+     * @param broker the broker to add the availability of an experiment to its list of availabilities
+     * @param cost the cost of the broker for the experiment
+     */
+    private boolean addExperimentCostToBroker(final DatacenterBroker broker, final double cost) {
+        return costTotal.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(cost);
+    }
+
+    /**
+     * Gets the actual price of all customers VMs per hour for an experiment
+     * and adds such a value to the List of costs of that broker
+     * inside the map of all brokers.
+     * @param broker the broker to add the availability of an experiment to its list of availabilities
+     * @param priceCustomerPerHour the customer's price of the broker for the experiment
+     */
+    private boolean addExperimentPriceCustomerPerHour(final DatacenterBroker broker, final double priceCustomerPerHour) {
+        return getTemplate.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(priceCustomerPerHour);
+    }
+
+    /**
+     * Gets the template price of each customers for an experiment
+     * and adds such a value to the List of costs of that broker
+     * inside the map of all brokers.
+     * @param broker the broker to add the availability of an experiment to its list of availabilities
+     * @param priceTemplate the price of the template of the broker for the experiment
+     */
+    private boolean addExperimentPriceTemplate(final DatacenterBroker broker, final double priceTemplate) {
+        return customerActualPricePerHour.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(priceTemplate);
+    }
+
+    @Override protected void setup() {/**/}
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
-        map.put("Average of Total Availability of Simulation", availability);
-        map.put("Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
-        map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
+       /* map.put("Average of Total Availability of Simulation", availability);
+          map.put("VMs/Hosts Ratio: ", ratioVmsPerHost); */
+       // map.put("Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
+
         map.put("Percentagem of brokers meeting the Cost: ", percentageOfBrokersMeetingCost);
+        this.availabilityByBroker.forEach((brokerName, availabilities) -> map.put(brokerName + " availability: ", availabilities));
+        this.costTotal.forEach((brokerName, costs) -> map.put(brokerName + " cost: ", costs));
+        this.customerActualPricePerHour.forEach((brokerName, priceCustomerPerHour) -> map.put(brokerName + " price customer per hour: ", priceCustomerPerHour));
+        this.getTemplate.forEach((brokerName, priceTemplate) -> map.put(brokerName + " price Template: ", priceTemplate));
+
 
         return map;
     }
@@ -137,14 +256,13 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     protected void printSimulationParameters() {
         System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getSimulationRuns());
         System.out.println("Experiments configurations:");
-        System.out.printf("\tBase seed: %d | Number of Cloudlets: %d\n", getBaseSeed(), CLOUDLETS);
+        System.out.printf("\tBase seed: %d \n", getBaseSeed());
         System.out.printf("\tApply Antithetic Variates Technique: %b\n", isApplyAntitheticVariatesTechnique());
         if (isApplyBatchMeansMethod()) {
             System.out.println("\tApply Batch Means Method to reduce simulation results correlation: true");
             System.out.printf("\tNumber of Batches for Batch Means Method: %d", getNumberOfBatches());
             System.out.printf("\tBatch Size: %d\n", batchSizeCeil());
         }
-        System.out.printf("\nSimulated Annealing Parameters\n");
     }
 
     @Override
@@ -164,7 +282,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         double lower = stats.getMean() - intervalSize;
         double upper = stats.getMean() + intervalSize;
         System.out.printf(
-            "\t This METRIC mean 95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]\n",
+            "\tThis METRIC mean 95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]\n",
             stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.4f \n", stats.getStandardDeviation());
     }

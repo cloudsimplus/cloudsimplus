@@ -79,7 +79,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     private static final int SCHEDULING_INTERVAL = 5;
 
     private static final int HOSTS = 50;
-    private static final int HOST_PES = 32;
+    private static final int HOST_PES = 12;
     private final SlaContract contract;
 
     private List<Host> hostList;

@@ -194,7 +194,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * The recovery time is the delay that will be set
      * to start a clone from a failed VM.
      */
-    private static final int MAX_VM_RECOVERY_TIME_SECS = 250;
+    private static final int MAX_VM_RECOVERY_TIME_SECS = 450;
 
     private double maxTimeToGenerateFailureInHours;
 
@@ -466,12 +466,48 @@ public class HostFaultInjection extends CloudSimEntity {
                 collectingAndThen(maxBy(comparator), Optional::get)));
     }
 
+    /**
+     * Creates a VM for the last failed VM if all VMs belonging to the broker have failed
+     * and the maximum number of clones to create was not reached.
+     *
+     * <p>
+     * If all VMs have failed and a {@link VmCloner} is not set or the max number of
+     * clones already was created, from the time of the failure
+     * until the end of the simulation, this interval the customer
+     * service is completely unavailable.
+     *
+     * Since the map below stores recovery times and not unavailability times,
+     * it's being store the failure time as a negative value.
+     * This way, when computing the availability for the customer,
+     * these negative values are changed to: lastSimulationTime - |negativeRecoveryTime|.
+     * Using this logic, is like the VM was recovered only in the end of the simulation.
+     * It in fact is not recovered, but this logic has to be applied to
+     * allow computing the availability.
+     *
+     * </p>
+     * @param broker
+     * @param lastVmFailedFromBroker
+     */
     private void createVmCloneIfAllVmsDestroyed(DatacenterBroker broker, Vm lastVmFailedFromBroker) {
-        if(!isTimeToCreateVmClone(broker)) {
+        if(!isAllVmsFailed(broker)){
+            return;
+        }
+
+        if(!isVmClonerSet(broker) || getVmCloner(broker).isMaxClonesNumberReached()) {
+            vmRecoveryTimeSecsMap.put(lastVmFailedFromBroker, -getSimulation().clock());
+        }
+
+        if(!isVmClonerSet(broker)) {
+            Log.printFormattedLine("\t# A Vm Cloner was not set for broker %d. So that VM failure will not be recovered.", broker.getId());
             return;
         }
 
         final VmCloner cloner = getVmCloner(broker);
+        if(cloner.isMaxClonesNumberReached()){
+            Log.printFormattedLine("\t# The maximum allowed number of %d VMs to create has been reached.", cloner.getMaxClonesNumber());
+            return;
+        }
+
         registerFaultOfAllVms(broker);
         final double recoveryTimeSecs = getRandomRecoveryTimeForVmInSecs();
         Log.printFormattedLine("\t# Time to recovery from fault by cloning the failed VM: %.2f minutes", recoveryTimeSecs/60.0);
@@ -484,20 +520,6 @@ public class HostFaultInjection extends CloudSimEntity {
         clonedVm.addOnHostAllocationListener(evt -> vmRecoveryTimeSecsMap.put(evt.getVm(), recoveryTimeSecs));
         broker.submitVm(clonedVm);
         broker.submitCloudletList(clonedCloudlets, recoveryTimeSecs);
-    }
-
-    private boolean isTimeToCreateVmClone(DatacenterBroker broker) {
-        if(isVmClonerSet(broker) && isAllVmsFailed(broker)){
-            final VmCloner cloner = getVmCloner(broker);
-            if(cloner.isMaxClonesNumberReached()){
-                Log.printFormattedLine("\t# The maximum allowed number of %d VMs to create has been reached.", cloner.getMaxClonesNumber());
-                return false;
-            }
-
-            return true;
-        }
-
-        return false;
     }
 
     /**
@@ -601,7 +623,9 @@ public class HostFaultInjection extends CloudSimEntity {
         }
 
         final double mttr = meanTimeToRepairVmFaultsInMinutes(broker);
+       // System.out.println(" Availability: broker " + broker + " value: " + mtbf / (mtbf + mttr));
         return mtbf / (mtbf + mttr);
+
     }
 
     /**
@@ -646,7 +670,11 @@ public class HostFaultInjection extends CloudSimEntity {
                     .filter(entry -> broker.equals(entry.getKey().getBroker()))
                     .map(Map.Entry::getValue);
 
-        final double seconds = stream.reduce(0.0, Double::sum);
+        /**
+         * See the method {@link #createVmCloneIfAllVmsDestroyed(DatacenterBroker, Vm)}
+         * to understand the logic of the values in the recovery times map.
+         */
+        final double seconds = stream.map(rt -> rt >= 0 ? rt : getSimulation().clock() - Math.abs(rt)).reduce(0.0, Double::sum);
 
         return (long)(seconds/60.0);
     }

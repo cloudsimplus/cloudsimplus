@@ -95,12 +95,12 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Number of Hosts to create for each Datacenter. The number of elements in
      * this array defines the number of Datacenters to be created.
      */
-    private static final int HOSTS = 10;
+    private static final int HOSTS = 20;
     public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
 
     /*The average number of failures expected to happen each hour
     in a Poisson Process, which is also called event rate or rate parameter.*/
-    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.02;
+    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.025;
     public static final int MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS = 800;
 
     private List<Host> hostList;
@@ -112,8 +112,8 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * A map containing the {@link SlaContract} associated to each
      * {@link DatacenterBroker} representing a customer.
      */
-    private Map<DatacenterBroker, SlaContract> contractsMap;
-    private Map<DatacenterBroker, AwsEc2Template> templatesMap;
+    public Map<DatacenterBroker, SlaContract> contractsMap;
+    public Map<DatacenterBroker, AwsEc2Template> templatesMap;
     private int numVms = 0;
 
     private HostFaultInjectionExperiment(final long seed) {
@@ -190,9 +190,9 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
         selected = getCheaperVmTemplate(broker, all);
 
-        System.out.println(
+        /*System.out.println(
             "AWS EC2 Template selected for broker " + broker + ": " + selected + ". Number of VMs to create (fault tolerance level): " +
-            contract.getMinFaultToleranceLevel());
+            contract.getMinFaultToleranceLevel());*/
         return selected;
     }
 
@@ -301,7 +301,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     /**
-     * Creates the number of Cloudlets defined in {@link HostFaultInjectionRunner#CLOUDLETS} and submits
+     * Creates the number of Cloudlets defined in {@code createCloudlets #cloudlets} and submits
      * them to the given broker.
      *
      * @return the List of created Cloudlets
@@ -530,7 +530,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Calculates the total cost of all VMs a given broker executed,
      * for the entire simulation time.
      */
-    private double getTotalCost(DatacenterBroker broker) {
+    public double getTotalCost(DatacenterBroker broker) {
         final SlaContract contract = getContract(broker);
         final SlaMetricDimension customerExpectedPricePerHour = contract.getPriceMetric().getMaxDimension();
 
@@ -541,12 +541,12 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         final double days = totalExecutionTimeForVmsInHours / 24.0;
         final double totalPriceForAllVms = totalPriceForVmsInOneHour * totalExecutionTimeForVmsInHours;
 
-        System.out.println("\nCustomer: " + broker.getId());
+       /* System.out.println("\nCustomer: " + broker.getId());
         System.out.println("Created Vms: " + broker.getVmCreatedList().size());
         System.out.printf("VMs execution Hours: %.4f\n", totalExecutionTimeForVmsInHours);
         System.out.printf("VMs execution Days: %.8f\n", days);
         System.out.println("Customer's VMs Template: " + template);
-        System.out.println("Customer's expected mean VMs Price Per Hour: " + customerExpectedPricePerHour);
+        System.out.println("Customer's expected mean VMs Price Per Hour: " + customerExpectedPricePerHour);*/
 
         return totalPriceForAllVms;
     }
@@ -567,9 +567,9 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param broker
      * @return
      */
-    private double getCustomerActualPricePerHour(DatacenterBroker broker) {
+    public double getCustomerActualPricePerHour(DatacenterBroker broker) {
         final double customerActualPricePerHour = getTotalCost(broker)/getTotalExecutionTimeForVmsInHours(broker);
-        System.out.println("Customer's actual mean VMs Price Per Hour: " + customerActualPricePerHour);
+       // System.out.println("Customer's actual mean VMs Price Per Hour: " + customerActualPricePerHour);
         return customerActualPricePerHour;
     }
 
@@ -597,8 +597,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
 
         total = totalOfCostSatisfied / getBrokerList().size();
-        System.out.println("Percentage of cost meeting sla: " + total * 100 + " %");
-
+       // System.out.println("Percentage of cost meeting sla: " + total );
 
         return total;
     }
@@ -606,8 +605,9 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
     /**
      * A map of AWS EC2 Template to be used for each customer.
      */
-    public Map<DatacenterBroker, AwsEc2Template> getTemplatesMap() {
-        return templatesMap;
+    public Double getTemplatesMap(DatacenterBroker broker) {
+
+        return templatesMap.get(broker).getPricePerHour();
     }
 
     /**
@@ -632,7 +632,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         Log.printFormattedLine("# Hosts MTBF: %.2f minutes", exp.getFaultInjection().meanTimeBetweenHostFaultsInMinutes());
         Log.printFormattedLine("\n# If the hosts are showing in the result equal to 0, it was because the vms ended before the failure was set.\n");
 
-        for (DatacenterBroker b : exp.getBrokerList()) {
+        /*for (DatacenterBroker b : exp.getBrokerList()) {
             System.out.printf("Customer %d VMs execution time:\n", b.getId());
             final double totalVmsExecutionHours = b.getVmCreatedList().stream()
                 .peek(vm ->
@@ -646,7 +646,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
             System.out.printf(
                 "Total execution time for %d VMs: %.2f hours\n",
                 b.getVmCreatedList().size(), totalVmsExecutionHours);
-        }
+        }*/
         exp.getPercentageOfBrokersMeetingCost();
     }
 
