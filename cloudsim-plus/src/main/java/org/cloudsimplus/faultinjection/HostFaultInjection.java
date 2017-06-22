@@ -414,11 +414,9 @@ public class HostFaultInjection extends CloudSimEntity {
             i = i % vmsWithPes.size();
             Vm vm = vmsWithPes.get(i);
             lastFailedHost.getVmScheduler().deallocatePesFromVm(vm, 1);
-            vm.getCloudletScheduler()
-                .deallocatePesFromVm(vm, 1);
+            vm.getCloudletScheduler().deallocatePesFromVm(vm, 1);
             //remove 1 failed PE from the VM
-            vm.getProcessor()
-                .deallocateAndRemoveResource(1);
+            vm.getProcessor().deallocateAndRemoveResource(1);
 
             Log.printFormattedLine(
                     "\tRemoving 1 PE from VM %d due to Host PE failure. New VM PEs Number: %d\n",
@@ -659,7 +657,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the sum of the time (in minutes) each failed VM belonging to a broker took to recovery
+     * Gets the average of the time (in minutes) all failed VMs belonging to a broker took to recovery
      * from failure.
      * @return
      */
@@ -746,7 +744,8 @@ public class HostFaultInjection extends CloudSimEntity {
             return 0;
         }
 
-        return (getSimulation().clockInMinutes() - totalVmsRecoveryTimeInMinutes(broker)) / faultsFromBroker;
+        final double totalVmsRecoveryTimeInMinutes = meanTimeToRepairVmFaultsInMinutes(broker);
+        return getSimulation().clockInMinutes() - totalVmsRecoveryTimeInMinutes;
     }
 
     /**
