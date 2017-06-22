@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.util.function.Predicate;
 
@@ -140,17 +141,17 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      */
     private int waitingCloudletsComparator(CloudletExecutionInfo c1, CloudletExecutionInfo c2){
         final double vRuntimeDiff = c1.getVirtualRuntime() - c2.getVirtualRuntime();
-        final double priorityDiff = c1.getCloudlet().getPriority() - c2.getCloudlet().getPriority();
-        final double idDiff = c1.getCloudletId() - c2.getCloudletId();
+        final int priorityDiff = c1.getCloudlet().getPriority() - c2.getCloudlet().getPriority();
+        final int idDiff = c1.getCloudletId() - c2.getCloudletId();
 
         if (vRuntimeDiff != 0) {
-            return (int) vRuntimeDiff;
+            return MathUtil.doubleToInt(vRuntimeDiff);
         }
 
-        return (int) (priorityDiff != 0 ? priorityDiff : idDiff);
+        return priorityDiff != 0 ? priorityDiff : idDiff;
     }
 
-	/**
+    /**
 	 * Gets the latency, which is the amount of time (in seconds)
 	 * the scheduler will allow the execution of running Cloudlets
 	 * in the available PEs, before checking which are the next

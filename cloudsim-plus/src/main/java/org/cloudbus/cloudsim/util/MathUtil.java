@@ -9,6 +9,7 @@
 package org.cloudbus.cloudsim.util;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
@@ -344,5 +345,35 @@ public final class MathUtil {
             result[i] = Math.abs(data[i]);
         }
         return result;
+    }
+
+    /**
+     * Converts a double value to an int, using an appropriate
+     * rounding function.
+     * If the double is negative, it applies {@link Math#floor(double)}
+     * to round the number down. If it' a positive value, it
+     * applies {@link Math#ceil(double)} to round the number up.
+     * This way, a negative double will be converted to a negative int
+     * and a positive double will be converted to a positive int.
+     *
+     * <p>It's different from using: {@link Math#round(double)} which always
+     * rounds to the next positive integer; {@link Math#floor(double)} which
+     * always rounds down; or {@link Math#ceil(double)} which always
+     * rounds up. It applies floor for negative values and ceil
+     * for positive ones.</p>
+     *
+     * <p>This method is useful to be used by {@link Comparator}s which
+     * rely on a double attribute to compare a list of objects.
+     * Since the {@link Comparator#compare(Object, Object)} method
+     * must return an int, the method being implemented here
+     * converts a double to an int value which can be used by
+     * a Comparator.</p>
+     *
+     * @param d the double value to convert
+     * @return zero if the double value is zero, a negative int if the double is negative,
+     * or a positive int if the double is positive.
+     */
+    public static int doubleToInt(final double d){
+        return (int)(d < 0 ? Math.floor(d) : Math.ceil(d));
     }
 }
