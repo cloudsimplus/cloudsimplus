@@ -58,15 +58,27 @@ public class CloudletsTableBuilder {
      * Creates new helper object to print the list of cloudlets using the a
      * default {@link TextTableBuilder}.
      * To use a different {@link TableBuilder}, use the
-     * {@link #setTable(TableBuilder)} method.
+     * alternative constructors.
      *
      * @param list the list of Cloudlets that the data will be included into the table to be printed
      */
     public CloudletsTableBuilder(final List<? extends Cloudlet> list){
+        this(list, new TextTableBuilder());
+    }
+
+    /**
+     * Creates new helper object to print the list of cloudlets using the a
+     * given {@link TableBuilder}.
+     *
+     * @param list the list of Cloudlets that the data will be included into the table to be printed
+     * @param table the {@link TableBuilder} used to build the table with Cloudlet Data
+     */
+    public CloudletsTableBuilder(final List<? extends Cloudlet> list, final TableBuilder table){
         Objects.requireNonNull(list);
-        setTable(new TextTableBuilder());
+        setTable(table);
         setCloudletList(list);
         columnsDataFunctions = new HashMap<>();
+        createTableColumns();
     }
 
     public CloudletsTableBuilder setTitle(String title){
@@ -83,7 +95,6 @@ public class CloudletsTableBuilder {
             table.setTitle("SIMULATION RESULTS");
         }
 
-        createTableColumns();
         cloudletList.forEach(cloudlet -> addDataToRow(cloudlet, table.newRow()));
         table.print();
     }
@@ -138,7 +149,7 @@ public class CloudletsTableBuilder {
         columnsDataFunctions.put(col, c -> (long)c.getFinishTime());
 
         col = table.addColumn("ExecTime", SECONDS).setFormat("%d");
-        columnsDataFunctions.put(col, c -> (long)c.getActualCpuTime());
+        columnsDataFunctions.put(col, c -> (long)Math.ceil(c.getActualCpuTime()));
     }
 
     /**
@@ -158,7 +169,7 @@ public class CloudletsTableBuilder {
      * @param table the  {@link TableBuilder} to set
      * @return
      */
-    public final CloudletsTableBuilder setTable(TableBuilder table) {
+    private final CloudletsTableBuilder setTable(TableBuilder table) {
         Objects.requireNonNull(table);
         this.table = table;
         return this;

@@ -49,7 +49,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
-import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilder;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.builders.tables.TextTableColumn;
 
 /**
  * An example that uses an implementation of the {@link CloudletSchedulerCompletelyFair Completely Fair Scheduler}
@@ -80,10 +81,9 @@ public class LinuxCompletelyFairSchedulerExample {
 
     private int numberOfCreatedCloudlets = 0;
     private int numberOfCreatedVms = 0;
-    private int numberOfCreatedHosts = 0;
 
     /**
-     * Starts the simulation.
+     * Starts the example.
      * @param args
      */
     public static void main(String[] args) {
@@ -91,7 +91,7 @@ public class LinuxCompletelyFairSchedulerExample {
     }
 
     /**
-     * Default constructor where the simulation is built.
+     * Default constructor which builds and runs the simulation.
      */
     public LinuxCompletelyFairSchedulerExample() {
         Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
@@ -113,7 +113,9 @@ public class LinuxCompletelyFairSchedulerExample {
         simulation.start();
 
         List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        new PriorityCloudletsTableBuilder(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets)
+            .addColumn(2, new TextTableColumn("Priority"), Cloudlet::getPriority)
+            .build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
 
