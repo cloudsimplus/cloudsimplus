@@ -47,8 +47,9 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
     static final int[] CLOUDLET_PES = {2};
+    static final int[] MIPS_VM = {1000};
     static final int VMS = 30;
-    static final int CLOUDLETS = 110;
+    static final int CLOUDLETS = 40;
 
     /**
      * The TaskTimeCompletion average for all the experiments.
@@ -100,6 +101,7 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
         ContinuousDistribution randCloudlet = createRandomGen(i);
         ContinuousDistribution randVm = createRandomGen(i);
         ContinuousDistribution randCloudletPes = createRandomGen(i);
+        ContinuousDistribution randMips = createRandomGen(i);
         exp.setVerbose(experimentVerbose)
                 .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;

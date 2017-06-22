@@ -21,11 +21,6 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.sla.tasktimecompletion;
 
 import java.util.ArrayList;
@@ -46,14 +41,15 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
    // static final long[] CLOUDLET_LENGTHS = {20000, 30000, 40000, 50000};
-    static final int[] VM_PES = {10, 12};
+    static final int[] VM_PES = {2, 4, 6};
+    static final int[] VM_MIPS = {10000, 15000, 28000};
     static final int VMS = 30;
-    static final int CLOUDLETS = 80;
+    static final int CLOUDLETS = 300;
 
     /**
      * The TaskTimeCompletion average for all the experiments.
      */
-    private List<Double> cloudletTaskTimesCompletion;
+    private List<Double> cloudletsCompletionTime;
 
      /**
      * The percentage of cloudlets meeting TaskTimeCompletion average for all the experiments.
@@ -86,7 +82,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
 
     CloudletTaskTimeCompletionWorkLoadMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
-        cloudletTaskTimesCompletion = new ArrayList<>();
+        cloudletsCompletionTime = new ArrayList<>();
         percentageOfCloudletsMeetingTaskTimeCompletion = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
     }
@@ -97,6 +93,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
                 = new CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(i, this);
         ContinuousDistribution randCloudlet = createRandomGen(i);
         ContinuousDistribution randVm = createRandomGen(i);
+        ContinuousDistribution randMips = createRandomGen(i);
 
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
@@ -113,17 +110,17 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
      * @param experiment the finished experiment
      */
     private void afterExperimentFinish(CloudletTaskTimeCompletionWorkLoadMinimizationExperiment experiment) {
-        cloudletTaskTimesCompletion.add(experiment.getCloudletsTaskTimeCompletionAverage());
+        cloudletsCompletionTime.add(experiment.getAverageCloudletCompletionTime());
         percentageOfCloudletsMeetingTaskTimeCompletion.add(
-                experiment.getPercentageOfCloudletsMeetingTaskTimeCompletion());
+                experiment.getPercentageOfCloudletsMeetingCompletionTime());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
     }
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
-        map.put("Cloudlet TaskTimeCompletion", cloudletTaskTimesCompletion);
-        map.put("Percentage Of Cloudlets Meeting TaskTimesCompletion", percentageOfCloudletsMeetingTaskTimeCompletion);
+        map.put("Task Completion Time", cloudletsCompletionTime);
+        map.put("Percentage Of Cloudlets Meeting Task Completion Time", percentageOfCloudletsMeetingTaskTimeCompletion);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
         return map;
     }
@@ -139,7 +136,6 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
             System.out.printf("\tNumber of Batches for Batch Means Method: %d", getNumberOfBatches());
             System.out.printf("\tBatch Size: %d\n", batchSizeCeil());
         }
-        System.out.printf("\nSimulated Annealing Parameters\n");
     }
 
     @Override

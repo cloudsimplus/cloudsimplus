@@ -95,7 +95,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Number of Hosts to create for each Datacenter. The number of elements in
      * this array defines the number of Datacenters to be created.
      */
-    private static final int HOSTS = 20;
+    private static final int HOSTS = 30;
     public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
 
     /*The average number of failures expected to happen each hour
@@ -510,10 +510,10 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         double total = 0;
         double totalOfAvailabilitySatisfied = getBrokerList()
             .stream()
-            .filter(b -> faultInjection.availability(b) >= getCustomerMinAvailability(b))
+            .filter(b -> faultInjection.availability(b) * 100 >= getCustomerMinAvailability(b))
             .count();
         total = totalOfAvailabilitySatisfied / getBrokerList().size();
-
+       // System.out.println("\t -> broker list: " + getBrokerList().size() + " total of availability satisfaied: " + totalOfAvailabilitySatisfied);
         return total;
     }
 
@@ -524,6 +524,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      */
     private double getCustomerMinAvailability(DatacenterBroker broker) {
         return contractsMap.get(broker).getAvailabilityMetric().getMinDimension().getValue();
+
     }
 
     /**
@@ -597,7 +598,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
 
         total = totalOfCostSatisfied / getBrokerList().size();
-       // System.out.println("Percentage of cost meeting sla: " + total );
+      //  System.out.println("Percentage of cost meeting sla: " + total );
 
         return total;
     }
@@ -646,8 +647,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
                 "Total execution time for %d VMs: %.2f hours\n",
                 b.getVmCreatedList().size(), totalVmsExecutionHours);
         }*/
-        exp.getPercentageOfBrokersMeetingCost();
-    }
+        }
 
     public HostFaultInjection getFaultInjection() {
         return faultInjection;

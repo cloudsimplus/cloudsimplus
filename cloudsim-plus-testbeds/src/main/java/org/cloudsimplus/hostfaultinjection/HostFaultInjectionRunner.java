@@ -46,7 +46,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final long[] CLOUDLET_LENGTHS = {1000_000_000L};
+    static final long[] CLOUDLET_LENGTHS = {1000_000_000L, 1800_000_000L, 2800_000_000L };
 
     /**
      * Datacenter availability for each experiment.
@@ -113,8 +113,8 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new HostFaultInjectionRunner(true, 199975098589732L)
-            .setSimulationRuns(300)
+        new HostFaultInjectionRunner(true, 1475098589732L)
+            .setSimulationRuns(400)
             .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
             .setVerbose(true)
             .run();
@@ -151,10 +151,10 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         final HostFaultInjection faultInjection = exp.getFaultInjection();
         Map<DatacenterBroker, SlaContract> contract = exp.contractsMap;
 
-       /* availability.add(faultInjection.availability() * 100);
-          ratioVmsPerHost.add(exp.getRatioVmsPerHost());
-        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla() * 100);*/
-        percentageOfBrokersMeetingCost.add(exp.getPercentageOfBrokersMeetingCost());
+        availability.add(faultInjection.availability() * 100);
+        ratioVmsPerHost.add(exp.getRatioVmsPerHost());
+        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla() * 100);
+       // percentageOfBrokersMeetingCost.add(exp.getPercentageOfBrokersMeetingCost());
 
          //The availability for each broker for a single experiment.
         final Map<DatacenterBroker, Double> brokersAvailabilities = exp.getBrokerList()
@@ -238,15 +238,15 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
-       /* map.put("Average of Total Availability of Simulation", availability);
-          map.put("VMs/Hosts Ratio: ", ratioVmsPerHost); */
-       // map.put("Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
+        map.put("Average of Total Availability of Simulation", availability);
+          map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
+        map.put("Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
 
-        map.put("Percentagem of brokers meeting the Cost: ", percentageOfBrokersMeetingCost);
-        this.availabilityByBroker.forEach((brokerName, availabilities) -> map.put(brokerName + " availability: ", availabilities));
-        this.costTotal.forEach((brokerName, costs) -> map.put(brokerName + " cost: ", costs));
-        this.customerActualPricePerHour.forEach((brokerName, priceCustomerPerHour) -> map.put(brokerName + " price customer per hour: ", priceCustomerPerHour));
-        this.getTemplate.forEach((brokerName, priceTemplate) -> map.put(brokerName + " price Template: ", priceTemplate));
+       // map.put("Percentagem of brokers meeting the Cost: ", percentageOfBrokersMeetingCost);
+        // this.availabilityByBroker.forEach((brokerName, availabilities) -> map.put(brokerName + " availability: ", availabilities));
+       // this.costTotal.forEach((brokerName, costs) -> map.put(brokerName + " cost: ", costs));
+      //  this.customerActualPricePerHour.forEach((brokerName, priceCustomerPerHour) -> map.put(brokerName + " price customer per hour: ", priceCustomerPerHour));
+      //  this.getTemplate.forEach((brokerName, priceTemplate) -> map.put(brokerName + " price Template: ", priceTemplate));
 
 
         return map;

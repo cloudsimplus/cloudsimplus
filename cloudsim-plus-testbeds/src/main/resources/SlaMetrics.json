@@ -10,7 +10,7 @@
         },
         {
           "name": "maxValue",
-          "value": 40,
+          "value": 100,
           "unit": "Milliseconds"
         }
       ]
