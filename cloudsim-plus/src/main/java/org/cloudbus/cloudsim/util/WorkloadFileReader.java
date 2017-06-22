@@ -75,11 +75,8 @@ public class WorkloadFileReader implements WorkloadReader {
      */
     private final File file;
 
-    /**
-     * The Cloudlet's PE rating (in MIPS), considering that all PEs of a
-     * Cloudlet have the same rate.
-     */
-    private final int rating;
+    /** @see #getMips() */
+    private int mips;
 
     /**
      * List of Cloudlets created from the trace {@link #file}.
@@ -97,7 +94,7 @@ public class WorkloadFileReader implements WorkloadReader {
     private int submitTime = 1;
 
     /**
-     * Field index of running time of a job.
+     * Field index of execution time of a job.
      */
     private int runTime = 3;
 
@@ -159,23 +156,26 @@ public class WorkloadFileReader implements WorkloadReader {
      * @param fileName the workload trace full filename in one of the following
      *                 formats:
      *                 <i>ASCII text, zip, gz.</i>
-     * @param rating   the cloudlet's PE rating (in MIPS), considering that all
-     *                 PEs of a cloudlet have the same rate
+     * @param mips   the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     *               Considering the workload file provides the run time for each
+     *               application registered inside the file, the MIPS value will be used
+     *               to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     *               so that it's expected to execute, inside the VM with the given MIPS capacity,
+     *               for the same time as specified into the workload file.
      * @throws FileNotFoundException
      * @throws IllegalArgumentException This happens for the following
      *                                  conditions:
      *                                  <ul>
      *                                  <li>the workload trace file name is null or empty
-     *                                  <li>the resource PE rating <= 0 </ul> @pre fileName != null
-     * @pre rating > 0
+     *                                  <li>the resource PE mips <= 0 </ul> @pre fileName != null
+     * @pre mips > 0
      * @post $none
      */
-    public WorkloadFileReader(final String fileName, final int rating) throws FileNotFoundException {
+    public WorkloadFileReader(final String fileName, final int mips) throws FileNotFoundException {
         if (Objects.isNull(fileName) || fileName.isEmpty()) {
             throw new IllegalArgumentException("Invalid trace file name.");
-        } else if (rating <= 0) {
-            throw new IllegalArgumentException("Resource PE rating must be > 0.");
         }
+        this.setMips(mips);
 
         file = new File(fileName);
         if (!file.exists()) {
@@ -183,7 +183,6 @@ public class WorkloadFileReader implements WorkloadReader {
         }
 
         this.jobs = new ArrayList<>();
-        this.rating = rating;
         this.maxLinesToRead = -1;
     }
 
@@ -194,19 +193,23 @@ public class WorkloadFileReader implements WorkloadReader {
      * @param fileName the workload trace relative filename in one of the following
      *                 formats:
      *                 <i>ASCII text, zip, gz.</i>
-     * @param rating   the cloudlet's PE rating (in MIPS), considering that all
-     *                 PEs of a cloudlet have the same rate
+     * @param mips   the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     *               Considering the workload file provides the run time for each
+     *               application registered inside the file, the MIPS value will be used
+     *               to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     *               so that it's expected to execute, inside the VM with the given MIPS capacity,
+     *               for the same time as specified into the workload file.
      * @throws FileNotFoundException
      * @throws IllegalArgumentException This happens for the following
      *                                  conditions:
      *                                  <ul>
      *                                  <li>the workload trace file name is null or empty
-     *                                  <li>the resource PE rating <= 0 </ul> @pre fileName != null
-     * @pre rating > 0
+     *                                  <li>the resource PE mips <= 0 </ul> @pre fileName != null
+     * @pre mips > 0
      * @post $none
      */
-    public static WorkloadFileReader getInstanceFromResourcesDir(final String fileName, final int rating) throws FileNotFoundException {
-        return new WorkloadFileReader(ResourceLoader.getResourcePath(WorkloadFileReader.class, fileName), rating);
+    public static WorkloadFileReader getInstanceFromResourcesDir(final String fileName, final int mips) throws FileNotFoundException {
+        return new WorkloadFileReader(ResourceLoader.getResourcePath(WorkloadFileReader.class, fileName), mips);
     }
 
     @Override
@@ -329,9 +332,9 @@ public class WorkloadFileReader implements WorkloadReader {
      *
      * @param id         a Cloudlet ID
      * @param submitTime Cloudlet's submit time
-     * @param runTime    The number of seconds the Cloudlet has to run. Considering
-     *                   that and the {@link #rating}, the {@link Cloudlet#getLength()} is
-     *                   computed.
+     * @param runTime    The number of seconds the Cloudlet has to run.
+     *                   {@link Cloudlet#getLength()} is computed based on
+     *                   the {@link #getMips() mips} and this value.
      * @param numProc    number of Cloudlet's PEs
      * @param userID     user id
      * @param groupID    user's group id
@@ -340,13 +343,13 @@ public class WorkloadFileReader implements WorkloadReader {
      * @pre runTime >= 0
      * @pre numProc > 0
      * @post $none
-     * @see #rating
+     * @see #mips
      */
     private void createJob(final int id,
        final long submitTime, final int runTime,
        final int numProc, final int userID, final int groupID)
     {
-        final int len = runTime * rating;
+        final int len = runTime * mips;
         final UtilizationModel utilizationModel = new UtilizationModelFull();
         final Cloudlet cloudlet = new CloudletSimple(id, len, numProc)
             .setFileSize(DataCloudTags.DEFAULT_MTU)
@@ -462,8 +465,9 @@ public class WorkloadFileReader implements WorkloadReader {
             int line = 1;
             String readLine;
             while ((readLine = readNextLine(reader, line)) != null) {
-                parseValue(readLine, line);
-                line++;
+                if(parseValue(readLine, line)) {
+                    line++;
+                }
             }
         }
     }
@@ -547,4 +551,34 @@ public class WorkloadFileReader implements WorkloadReader {
     public void setMaxLinesToRead(int maxLinesToRead) {
         this.maxLinesToRead = maxLinesToRead;
     }
+
+    /**
+     * Gets the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     * Considering the workload file provides the run time for each
+     * application registered inside the file, the MIPS value will be used
+     * to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     * so that it's expected to execute, inside the VM with the given MIPS capacity,
+     * for the same time as specified into the workload file.
+     */
+    public int getMips() {
+        return mips;
+    }
+
+    /**
+     * Sets the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     * Considering the workload file provides the run time for each
+     * application registered inside the file, the MIPS value will be used
+     * to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     * so that it's expected to execute, inside the VM with the given MIPS capacity,
+     * for the same time as specified into the workload file.
+     * @param mips the MIPS value to set
+     */
+    public final WorkloadFileReader setMips(final int mips) {
+        if (mips <= 0) {
+            throw new IllegalArgumentException("MIPS must be greater than 0.");
+        }
+        this.mips = mips;
+        return this;
+    }
+
 }
