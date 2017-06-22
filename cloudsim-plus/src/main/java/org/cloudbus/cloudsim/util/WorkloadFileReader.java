@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -150,41 +151,7 @@ public class WorkloadFileReader implements WorkloadReader {
      */
     private int maxLinesToRead;
 
-    /**
-     * Create a new WorkloadFileReader object.
-     *
-     * @param fileName the workload trace full filename in one of the following
-     *                 formats:
-     *                 <i>ASCII text, zip, gz.</i>
-     * @param mips   the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
-     *               Considering the workload file provides the run time for each
-     *               application registered inside the file, the MIPS value will be used
-     *               to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
-     *               so that it's expected to execute, inside the VM with the given MIPS capacity,
-     *               for the same time as specified into the workload file.
-     * @throws FileNotFoundException
-     * @throws IllegalArgumentException This happens for the following
-     *                                  conditions:
-     *                                  <ul>
-     *                                  <li>the workload trace file name is null or empty
-     *                                  <li>the resource PE mips <= 0 </ul> @pre fileName != null
-     * @pre mips > 0
-     * @post $none
-     */
-    public WorkloadFileReader(final String fileName, final int mips) throws FileNotFoundException {
-        if (Objects.isNull(fileName) || fileName.isEmpty()) {
-            throw new IllegalArgumentException("Invalid trace file name.");
-        }
-        this.setMips(mips);
-
-        file = new File(fileName);
-        if (!file.exists()) {
-            throw new FileNotFoundException("Workload trace " + fileName + " does not exist");
-        }
-
-        this.jobs = new ArrayList<>();
-        this.maxLinesToRead = -1;
-    }
+    private Predicate<Cloudlet> predicate;
 
     /**
      * Gets a {@link WorkloadFileReader} object from a workload file
@@ -212,6 +179,45 @@ public class WorkloadFileReader implements WorkloadReader {
         return new WorkloadFileReader(ResourceLoader.getResourcePath(WorkloadFileReader.class, fileName), mips);
     }
 
+    /**
+     * Create a new WorkloadFileReader object.
+     *
+     * @param fileName the workload trace full filename in one of the following
+     *                 formats:
+     *                 <i>ASCII text, zip, gz.</i>
+     * @param mips   the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     *               Considering the workload file provides the run time for each
+     *               application registered inside the file, the MIPS value will be used
+     *               to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     *               so that it's expected to execute, inside the VM with the given MIPS capacity,
+     *               for the same time as specified into the workload file.
+     * @throws FileNotFoundException
+     * @throws IllegalArgumentException This happens for the following
+     *                                  conditions:
+     *                                  <ul>
+     *                                  <li>the workload trace file name is null or empty
+     *                                  <li>the resource PE mips <= 0 </ul> @pre fileName != null
+     * @pre mips > 0
+     * @post $none
+     */
+    public WorkloadFileReader(final String fileName, final int mips) throws FileNotFoundException {
+        if (Objects.isNull(fileName) || fileName.isEmpty()) {
+            throw new IllegalArgumentException("Invalid trace file name.");
+        }
+        this.setMips(mips);
+        /*A default predicate which indicates that a Cloudlet will be created for any job read from the workload file.
+        * That is, there isn't an actual condition to create a Cloudlet.*/
+        this.predicate = c -> true;
+
+        file = new File(fileName);
+        if (!file.exists()) {
+            throw new FileNotFoundException("Workload trace " + fileName + " does not exist");
+        }
+
+        this.jobs = new ArrayList<>();
+        this.maxLinesToRead = -1;
+    }
+
     @Override
     public List<Cloudlet> generateWorkload() throws IOException {
         if (jobs.isEmpty()) {
@@ -232,6 +238,12 @@ public class WorkloadFileReader implements WorkloadReader {
         }
 
         return jobs;
+    }
+
+    @Override
+    public WorkloadReader setPredicate(Predicate<Cloudlet> predicate) {
+        this.predicate = predicate;
+        return this;
     }
 
     /**
@@ -327,8 +339,7 @@ public class WorkloadFileReader implements WorkloadReader {
     }
 
     /**
-     * Creates a Cloudlet with the given information and adds to the list of
-     * {@link #jobs}.
+     * Creates a Cloudlet with the given information.
      *
      * @param id         a Cloudlet ID
      * @param submitTime Cloudlet's submit time
@@ -338,6 +349,7 @@ public class WorkloadFileReader implements WorkloadReader {
      * @param numProc    number of Cloudlet's PEs
      * @param userID     user id
      * @param groupID    user's group id
+     * @return the created Cloudlet
      * @pre id >= 0
      * @pre submitTime >= 0
      * @pre runTime >= 0
@@ -345,7 +357,7 @@ public class WorkloadFileReader implements WorkloadReader {
      * @post $none
      * @see #mips
      */
-    private void createJob(final int id,
+    private Cloudlet createJob(final int id,
        final long submitTime, final int runTime,
        final int numProc, final int userID, final int groupID)
     {
@@ -355,7 +367,7 @@ public class WorkloadFileReader implements WorkloadReader {
             .setFileSize(DataCloudTags.DEFAULT_MTU)
             .setOutputSize(DataCloudTags.DEFAULT_MTU)
             .setUtilizationModel(utilizationModel);
-        jobs.add(cloudlet);
+        return cloudlet;
     }
 
     /**
@@ -365,10 +377,11 @@ public class WorkloadFileReader implements WorkloadReader {
      *
      * @param array the array of fields generated from a line of the trace file.
      * @param lineNumber the line number
+     * @return the created Cloudlet
      * @pre array != null
      * @pre lineNumber > 0
      */
-    private void createCloudletFromOneTraceFileLine(final String[] array, final int lineNumber) {
+    private Cloudlet createCloudletFromTraceLine(final String[] array, final int lineNumber) {
         Integer obj;
 
         // get the job number
@@ -414,24 +427,30 @@ public class WorkloadFileReader implements WorkloadReader {
             numProc = 1;
         }
 
-        createJob(id, submitTime, runTime, numProc, userID, groupID);
+        return createJob(id, submitTime, runTime, numProc, userID, groupID);
     }
 
     /**
      * Breaks a line from the trace file into many fields into the
-     * {@link #fieldArray}.
+     * {@link #fieldArray} and create a Cloudlet from it
+     * if the {@link #setPredicate(Predicate) Predicate} is met
+     * and the line is not commented.
      *
      * @param line    a line from the trace file
      * @param lineNum the line number
-     * @return true if the line was parsed, false otherwise
+     * @return the created {@link Cloudlet} or {@link Cloudlet#NULL}
+     *         if, after reading the trace line, the conditions
+     *         to create the Cloudlet were not met or the line read
+     *         was commented.
      * @pre line != null
      * @pre lineNum > 0
      * @post $none
+     * @see #setPredicate(Predicate)
      */
-    private boolean parseValue(final String line, final int lineNum) {
+    private Cloudlet parseTraceLineAndCreateCloudlet(final String line, final int lineNum) {
         // skip a comment line
         if (line.startsWith(comment)) {
-            return false;
+            return Cloudlet.NULL;
         }
 
         final String[] sp = line.split("\\s+"); // split the fields based on a space
@@ -445,11 +464,13 @@ public class WorkloadFileReader implements WorkloadReader {
             }
         }
 
-        if (index == maxField) {
-            createCloudletFromOneTraceFileLine(fieldArray, lineNum);
+        //If all the fields could not be read, don't create the Cloudlet.
+        if (index < maxField) {
+            return Cloudlet.NULL;
         }
 
-        return true;
+        final Cloudlet c = createCloudletFromTraceLine(fieldArray, lineNum);
+        return predicate.test(c) ? c : Cloudlet.NULL;
     }
 
     /**
@@ -465,7 +486,9 @@ public class WorkloadFileReader implements WorkloadReader {
             int line = 1;
             String readLine;
             while ((readLine = readNextLine(reader, line)) != null) {
-                if(parseValue(readLine, line)) {
+                final Cloudlet c = parseTraceLineAndCreateCloudlet(readLine, line);
+                if(c != Cloudlet.NULL) {
+                    jobs.add(c);
                     line++;
                 }
             }
