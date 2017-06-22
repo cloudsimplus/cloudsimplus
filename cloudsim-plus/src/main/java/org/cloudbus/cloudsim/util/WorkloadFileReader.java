@@ -82,7 +82,7 @@ public class WorkloadFileReader implements WorkloadReader {
     /**
      * List of Cloudlets created from the trace {@link #file}.
      */
-    private final List<Cloudlet> jobs;
+    private final List<Cloudlet> cloudlets;
 
     /**
      * Field index of job number.
@@ -214,13 +214,13 @@ public class WorkloadFileReader implements WorkloadReader {
             throw new FileNotFoundException("Workload trace " + fileName + " does not exist");
         }
 
-        this.jobs = new ArrayList<>();
+        this.cloudlets = new ArrayList<>();
         this.maxLinesToRead = -1;
     }
 
     @Override
     public List<Cloudlet> generateWorkload() throws IOException {
-        if (jobs.isEmpty()) {
+        if (cloudlets.isEmpty()) {
             // create a temp array
             fieldArray = new String[maxField];
 
@@ -237,7 +237,7 @@ public class WorkloadFileReader implements WorkloadReader {
                 }
         }
 
-        return jobs;
+        return cloudlets;
     }
 
     @Override
@@ -357,9 +357,9 @@ public class WorkloadFileReader implements WorkloadReader {
      * @post $none
      * @see #mips
      */
-    private Cloudlet createJob(final int id,
-       final long submitTime, final int runTime,
-       final int numProc, final int userID, final int groupID)
+    private Cloudlet createCloudlet(final int id,
+                                    final long submitTime, final int runTime,
+                                    final int numProc, final int userID, final int groupID)
     {
         final int len = runTime * mips;
         final UtilizationModel utilizationModel = new UtilizationModelFull();
@@ -387,7 +387,7 @@ public class WorkloadFileReader implements WorkloadReader {
         // get the job number
         int id;
         if (jobNum == IRRELEVANT) {
-            id = jobs.size() + 1;
+            id = cloudlets.size() + 1;
         } else {
             obj = Integer.valueOf(array[jobNum].trim());
             id = obj;
@@ -427,7 +427,7 @@ public class WorkloadFileReader implements WorkloadReader {
             numProc = 1;
         }
 
-        return createJob(id, submitTime, runTime, numProc, userID, groupID);
+        return createCloudlet(id, submitTime, runTime, numProc, userID, groupID);
     }
 
     /**
@@ -488,7 +488,7 @@ public class WorkloadFileReader implements WorkloadReader {
             while ((readLine = readNextLine(reader, line)) != null) {
                 final Cloudlet c = parseTraceLineAndCreateCloudlet(readLine, line);
                 if(c != Cloudlet.NULL) {
-                    jobs.add(c);
+                    cloudlets.add(c);
                     line++;
                 }
             }
