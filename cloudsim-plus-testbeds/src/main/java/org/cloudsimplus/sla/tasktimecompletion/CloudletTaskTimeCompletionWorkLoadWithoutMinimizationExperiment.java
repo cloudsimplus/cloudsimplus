@@ -73,8 +73,8 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
 
     private static final int SCHEDULING_INTERVAL = 5;
 
-    private static final int HOSTS = 100;
-    private static final int HOST_PES = 70;
+    private static final int HOSTS = 50;
+    private static final int HOST_PES = 12;
 
     private List<Host> hostList;
     private List<Vm> vmList;
@@ -99,8 +99,8 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
 
     private CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
-        this.randCloudlet = new UniformDistr(getSeed());
-        this.randVm = new UniformDistr(getSeed()+1);
+        this.randCloudlet = new UniformDistr(1475098589732L);
+        this.randVm = new UniformDistr(1475098589732L+1);
         try {
             this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
         } catch (IOException ex) {
@@ -130,7 +130,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
        cloudletList = new ArrayList<>();
         try {
             workloadFileReader = WorkloadFileReader.getInstanceFromResourcesDir("METACENTRUM-2009-2.swf", 1);
-            cloudletList = workloadFileReader.generateWorkload().subList(0, 1000);
+            cloudletList = workloadFileReader.generateWorkload().subList(0, 70);
         } catch (FileNotFoundException ex) {
             Logger.getLogger(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

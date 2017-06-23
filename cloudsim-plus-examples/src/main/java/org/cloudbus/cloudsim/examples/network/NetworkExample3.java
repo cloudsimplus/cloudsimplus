@@ -168,10 +168,10 @@ public class NetworkExample3 {
         List<Cloudlet> newList2 = broker2.getCloudletFinishedList();
 
         new CloudletsTableBuilder(newList1)
-                .setTable(new TextTableBuilder("Broker " + broker1))
+                .setTitle("Broker " + broker1)
                 .build();
         new CloudletsTableBuilder(newList2)
-                .setTable(new TextTableBuilder("Broker " + broker2))
+                .setTitle("Broker " + broker2)
                 .build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }

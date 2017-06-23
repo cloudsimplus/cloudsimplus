@@ -121,7 +121,7 @@ abstract class NetworkVmExampleAbstract {
             List<Cloudlet> newList = broker.getCloudletFinishedList();
             String caption = broker.getName() + " - Application " + broker.getId();
             new CloudletsTableBuilder(newList)
-                    .setTable(new TextTableBuilder(caption))
+                    .setTitle(caption)
                     .build();
             Log.printFormattedLine(
                 "Number of NetworkCloudlets for Application %s: %d", broker.getId(), newList.size());

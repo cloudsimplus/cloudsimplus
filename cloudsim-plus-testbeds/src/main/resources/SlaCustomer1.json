@@ -35,7 +35,7 @@
       "dimensions": [
         {
           "name": "minValue",
-          "value": 99.90,
+          "value": 99.9,
           "unit": "%"
         },
         {
@@ -80,7 +80,7 @@
       "dimensions": [
         {
           "name": "maxValue",
-          "value": 0.050
+          "value": 0.040
         }
       ]
     },

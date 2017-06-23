@@ -46,8 +46,10 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
+    static final int[] CLOUDLET_PES = {2};
+    static final int[] MIPS_VM = {1000};
     static final int VMS = 30;
-    static final int CLOUDLETS = 50;
+    static final int CLOUDLETS = 40;
 
     /**
      * The TaskTimeCompletion average for all the experiments.
@@ -77,7 +79,7 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletTaskTimeCompletionMinimizationRunner(true, 1475098589732L)
+        new CloudletTaskTimeCompletionMinimizationRunner(true, 9075098589732L)
                 .setSimulationRuns(300)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
@@ -93,10 +95,13 @@ final class CloudletTaskTimeCompletionMinimizationRunner extends ExperimentRunne
 
     @Override
     protected CloudletTaskTimeCompletionMinimizationExperiment createExperiment(int i) {
-        ContinuousDistribution randCloudlet = createRandomGen(i);
-        ContinuousDistribution randVm = createRandomGen(i);
         CloudletTaskTimeCompletionMinimizationExperiment exp
                 = new CloudletTaskTimeCompletionMinimizationExperiment(i, this);
+
+        ContinuousDistribution randCloudlet = createRandomGen(i);
+        ContinuousDistribution randVm = createRandomGen(i);
+        ContinuousDistribution randCloudletPes = createRandomGen(i);
+        ContinuousDistribution randMips = createRandomGen(i);
         exp.setVerbose(experimentVerbose)
                 .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;

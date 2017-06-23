@@ -42,9 +42,10 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
-import org.cloudsimplus.builders.tables.PriorityCloudletsTableBuilder;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 
 import java.util.ArrayList;
@@ -102,7 +103,9 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         try {
             System.out.printf("\nCloudlets: %d\n", numCloudletsToCreate);
             final DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
-            new PriorityCloudletsTableBuilder(broker.getCloudletFinishedList()).build();
+            new CloudletsTableBuilder(broker.getCloudletFinishedList())
+                .addColumn(2, new TextTableColumn("Priority"), Cloudlet::getPriority)
+                .build();
         } finally {
             Log.disable();
         }

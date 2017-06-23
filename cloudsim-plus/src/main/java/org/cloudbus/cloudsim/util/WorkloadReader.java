@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.util;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.function.Predicate;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
@@ -34,4 +35,13 @@ public interface WorkloadReader {
      * @return a generated Cloudlet list
      */
     List<Cloudlet> generateWorkload() throws IOException;
+
+    /**
+     * Defines a {@link Predicate} which indicates when a {@link Cloudlet}
+     * must be created from a trace line read from the workload file.
+     * If a Predicate is not set, a Cloudlet will be created for any line read.
+     * @param predicate the predicate to define when a Cloudlet must be created from a line read from the workload file
+     * @return
+     */
+    WorkloadReader setPredicate(Predicate<Cloudlet> predicate);
 }

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -75,16 +76,13 @@ public class WorkloadFileReader implements WorkloadReader {
      */
     private final File file;
 
-    /**
-     * The Cloudlet's PE rating (in MIPS), considering that all PEs of a
-     * Cloudlet have the same rate.
-     */
-    private final int rating;
+    /** @see #getMips() */
+    private int mips;
 
     /**
      * List of Cloudlets created from the trace {@link #file}.
      */
-    private final List<Cloudlet> jobs;
+    private final List<Cloudlet> cloudlets;
 
     /**
      * Field index of job number.
@@ -97,7 +95,7 @@ public class WorkloadFileReader implements WorkloadReader {
     private int submitTime = 1;
 
     /**
-     * Field index of running time of a job.
+     * Field index of execution time of a job.
      */
     private int runTime = 3;
 
@@ -153,39 +151,7 @@ public class WorkloadFileReader implements WorkloadReader {
      */
     private int maxLinesToRead;
 
-    /**
-     * Create a new WorkloadFileReader object.
-     *
-     * @param fileName the workload trace full filename in one of the following
-     *                 formats:
-     *                 <i>ASCII text, zip, gz.</i>
-     * @param rating   the cloudlet's PE rating (in MIPS), considering that all
-     *                 PEs of a cloudlet have the same rate
-     * @throws FileNotFoundException
-     * @throws IllegalArgumentException This happens for the following
-     *                                  conditions:
-     *                                  <ul>
-     *                                  <li>the workload trace file name is null or empty
-     *                                  <li>the resource PE rating <= 0 </ul> @pre fileName != null
-     * @pre rating > 0
-     * @post $none
-     */
-    public WorkloadFileReader(final String fileName, final int rating) throws FileNotFoundException {
-        if (Objects.isNull(fileName) || fileName.isEmpty()) {
-            throw new IllegalArgumentException("Invalid trace file name.");
-        } else if (rating <= 0) {
-            throw new IllegalArgumentException("Resource PE rating must be > 0.");
-        }
-
-        file = new File(fileName);
-        if (!file.exists()) {
-            throw new FileNotFoundException("Workload trace " + fileName + " does not exist");
-        }
-
-        this.jobs = new ArrayList<>();
-        this.rating = rating;
-        this.maxLinesToRead = -1;
-    }
+    private Predicate<Cloudlet> predicate;
 
     /**
      * Gets a {@link WorkloadFileReader} object from a workload file
@@ -194,24 +160,67 @@ public class WorkloadFileReader implements WorkloadReader {
      * @param fileName the workload trace relative filename in one of the following
      *                 formats:
      *                 <i>ASCII text, zip, gz.</i>
-     * @param rating   the cloudlet's PE rating (in MIPS), considering that all
-     *                 PEs of a cloudlet have the same rate
+     * @param mips   the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     *               Considering the workload file provides the run time for each
+     *               application registered inside the file, the MIPS value will be used
+     *               to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     *               so that it's expected to execute, inside the VM with the given MIPS capacity,
+     *               for the same time as specified into the workload file.
      * @throws FileNotFoundException
      * @throws IllegalArgumentException This happens for the following
      *                                  conditions:
      *                                  <ul>
      *                                  <li>the workload trace file name is null or empty
-     *                                  <li>the resource PE rating <= 0 </ul> @pre fileName != null
-     * @pre rating > 0
+     *                                  <li>the resource PE mips <= 0 </ul> @pre fileName != null
+     * @pre mips > 0
      * @post $none
      */
-    public static WorkloadFileReader getInstanceFromResourcesDir(final String fileName, final int rating) throws FileNotFoundException {
-        return new WorkloadFileReader(ResourceLoader.getResourcePath(WorkloadFileReader.class, fileName), rating);
+    public static WorkloadFileReader getInstanceFromResourcesDir(final String fileName, final int mips) throws FileNotFoundException {
+        return new WorkloadFileReader(ResourceLoader.getResourcePath(WorkloadFileReader.class, fileName), mips);
+    }
+
+    /**
+     * Create a new WorkloadFileReader object.
+     *
+     * @param fileName the workload trace full filename in one of the following
+     *                 formats:
+     *                 <i>ASCII text, zip, gz.</i>
+     * @param mips   the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     *               Considering the workload file provides the run time for each
+     *               application registered inside the file, the MIPS value will be used
+     *               to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     *               so that it's expected to execute, inside the VM with the given MIPS capacity,
+     *               for the same time as specified into the workload file.
+     * @throws FileNotFoundException
+     * @throws IllegalArgumentException This happens for the following
+     *                                  conditions:
+     *                                  <ul>
+     *                                  <li>the workload trace file name is null or empty
+     *                                  <li>the resource PE mips <= 0 </ul> @pre fileName != null
+     * @pre mips > 0
+     * @post $none
+     */
+    public WorkloadFileReader(final String fileName, final int mips) throws FileNotFoundException {
+        if (Objects.isNull(fileName) || fileName.isEmpty()) {
+            throw new IllegalArgumentException("Invalid trace file name.");
+        }
+        this.setMips(mips);
+        /*A default predicate which indicates that a Cloudlet will be created for any job read from the workload file.
+        * That is, there isn't an actual condition to create a Cloudlet.*/
+        this.predicate = c -> true;
+
+        file = new File(fileName);
+        if (!file.exists()) {
+            throw new FileNotFoundException("Workload trace " + fileName + " does not exist");
+        }
+
+        this.cloudlets = new ArrayList<>();
+        this.maxLinesToRead = -1;
     }
 
     @Override
     public List<Cloudlet> generateWorkload() throws IOException {
-        if (jobs.isEmpty()) {
+        if (cloudlets.isEmpty()) {
             // create a temp array
             fieldArray = new String[maxField];
 
@@ -228,7 +237,13 @@ public class WorkloadFileReader implements WorkloadReader {
                 }
         }
 
-        return jobs;
+        return cloudlets;
+    }
+
+    @Override
+    public WorkloadReader setPredicate(Predicate<Cloudlet> predicate) {
+        this.predicate = predicate;
+        return this;
     }
 
     /**
@@ -324,35 +339,35 @@ public class WorkloadFileReader implements WorkloadReader {
     }
 
     /**
-     * Creates a Cloudlet with the given information and adds to the list of
-     * {@link #jobs}.
+     * Creates a Cloudlet with the given information.
      *
      * @param id         a Cloudlet ID
      * @param submitTime Cloudlet's submit time
-     * @param runTime    The number of seconds the Cloudlet has to run. Considering
-     *                   that and the {@link #rating}, the {@link Cloudlet#getLength()} is
-     *                   computed.
+     * @param runTime    The number of seconds the Cloudlet has to run.
+     *                   {@link Cloudlet#getLength()} is computed based on
+     *                   the {@link #getMips() mips} and this value.
      * @param numProc    number of Cloudlet's PEs
      * @param userID     user id
      * @param groupID    user's group id
+     * @return the created Cloudlet
      * @pre id >= 0
      * @pre submitTime >= 0
      * @pre runTime >= 0
      * @pre numProc > 0
      * @post $none
-     * @see #rating
+     * @see #mips
      */
-    private void createJob(final int id,
-       final long submitTime, final int runTime,
-       final int numProc, final int userID, final int groupID)
+    private Cloudlet createCloudlet(final int id,
+                                    final long submitTime, final int runTime,
+                                    final int numProc, final int userID, final int groupID)
     {
-        final int len = runTime * rating;
+        final int len = runTime * mips;
         final UtilizationModel utilizationModel = new UtilizationModelFull();
         final Cloudlet cloudlet = new CloudletSimple(id, len, numProc)
             .setFileSize(DataCloudTags.DEFAULT_MTU)
             .setOutputSize(DataCloudTags.DEFAULT_MTU)
             .setUtilizationModel(utilizationModel);
-        jobs.add(cloudlet);
+        return cloudlet;
     }
 
     /**
@@ -362,16 +377,17 @@ public class WorkloadFileReader implements WorkloadReader {
      *
      * @param array the array of fields generated from a line of the trace file.
      * @param lineNumber the line number
+     * @return the created Cloudlet
      * @pre array != null
      * @pre lineNumber > 0
      */
-    private void createCloudletFromOneTraceFileLine(final String[] array, final int lineNumber) {
+    private Cloudlet createCloudletFromTraceLine(final String[] array, final int lineNumber) {
         Integer obj;
 
         // get the job number
         int id;
         if (jobNum == IRRELEVANT) {
-            id = jobs.size() + 1;
+            id = cloudlets.size() + 1;
         } else {
             obj = Integer.valueOf(array[jobNum].trim());
             id = obj;
@@ -411,24 +427,30 @@ public class WorkloadFileReader implements WorkloadReader {
             numProc = 1;
         }
 
-        createJob(id, submitTime, runTime, numProc, userID, groupID);
+        return createCloudlet(id, submitTime, runTime, numProc, userID, groupID);
     }
 
     /**
      * Breaks a line from the trace file into many fields into the
-     * {@link #fieldArray}.
+     * {@link #fieldArray} and create a Cloudlet from it
+     * if the {@link #setPredicate(Predicate) Predicate} is met
+     * and the line is not commented.
      *
      * @param line    a line from the trace file
      * @param lineNum the line number
-     * @return true if the line was parsed, false otherwise
+     * @return the created {@link Cloudlet} or {@link Cloudlet#NULL}
+     *         if, after reading the trace line, the conditions
+     *         to create the Cloudlet were not met or the line read
+     *         was commented.
      * @pre line != null
      * @pre lineNum > 0
      * @post $none
+     * @see #setPredicate(Predicate)
      */
-    private boolean parseValue(final String line, final int lineNum) {
+    private Cloudlet parseTraceLineAndCreateCloudlet(final String line, final int lineNum) {
         // skip a comment line
         if (line.startsWith(comment)) {
-            return false;
+            return Cloudlet.NULL;
         }
 
         final String[] sp = line.split("\\s+"); // split the fields based on a space
@@ -442,11 +464,13 @@ public class WorkloadFileReader implements WorkloadReader {
             }
         }
 
-        if (index == maxField) {
-            createCloudletFromOneTraceFileLine(fieldArray, lineNum);
+        //If all the fields could not be read, don't create the Cloudlet.
+        if (index < maxField) {
+            return Cloudlet.NULL;
         }
 
-        return true;
+        final Cloudlet c = createCloudletFromTraceLine(fieldArray, lineNum);
+        return predicate.test(c) ? c : Cloudlet.NULL;
     }
 
     /**
@@ -462,8 +486,11 @@ public class WorkloadFileReader implements WorkloadReader {
             int line = 1;
             String readLine;
             while ((readLine = readNextLine(reader, line)) != null) {
-                parseValue(readLine, line);
-                line++;
+                final Cloudlet c = parseTraceLineAndCreateCloudlet(readLine, line);
+                if(c != Cloudlet.NULL) {
+                    cloudlets.add(c);
+                    line++;
+                }
             }
         }
     }
@@ -547,4 +574,34 @@ public class WorkloadFileReader implements WorkloadReader {
     public void setMaxLinesToRead(int maxLinesToRead) {
         this.maxLinesToRead = maxLinesToRead;
     }
+
+    /**
+     * Gets the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     * Considering the workload file provides the run time for each
+     * application registered inside the file, the MIPS value will be used
+     * to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     * so that it's expected to execute, inside the VM with the given MIPS capacity,
+     * for the same time as specified into the workload file.
+     */
+    public int getMips() {
+        return mips;
+    }
+
+    /**
+     * Sets the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     * Considering the workload file provides the run time for each
+     * application registered inside the file, the MIPS value will be used
+     * to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     * so that it's expected to execute, inside the VM with the given MIPS capacity,
+     * for the same time as specified into the workload file.
+     * @param mips the MIPS value to set
+     */
+    public final WorkloadFileReader setMips(final int mips) {
+        if (mips <= 0) {
+            throw new IllegalArgumentException("MIPS must be greater than 0.");
+        }
+        this.mips = mips;
+        return this;
+    }
+
 }
