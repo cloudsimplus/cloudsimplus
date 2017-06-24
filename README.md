@@ -352,8 +352,7 @@ Additionally, the interface `Storage` was renamed to `FileStorage` and its imple
 <a id="publications"></a>
 
 # CloudSim Plus Publications
-
-  1. This paper was accepted for publication and will be available at IEEExplore soon. If you are using CloudSim Plus in your research, please make sure you cite it: [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](http://im2017.ieee-im.org/mini-conference). You can check the paper presentation [here](http://cloudsimplus.org/docs/presentation/).
+  1. [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](http://manoelcampos.com.br/downloads/cloudsim-plus-paper-ieee-im2017.pdf). This paper was accepted for publication and will be available at IEEExplore soon. It's been made available at the given link according to the [IEEE author policy](https://www.ieee.org/documents/author_faq.pdf). If you are using CloudSim Plus in your research, please make sure you cite that paper. You can check the paper presentation [here](http://cloudsimplus.org/docs/presentation/).
   2. White Paper ["CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services"](https://github.com/manoelcampos/cloudsim-plus/blob/master/docs/cloudsim-plus-white-paper.pdf)
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
