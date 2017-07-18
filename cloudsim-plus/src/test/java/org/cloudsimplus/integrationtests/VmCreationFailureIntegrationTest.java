@@ -255,9 +255,9 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     private void assertThatOneGivenCloudletHasTheExpectedExecutionTimes(final ExpectedCloudletExecutionResults results) {
-        assertEquals("cloudlet.getActualCPUTime", results.getExpectedExecTime(), results.getCloudlet().getActualCpuTime(), 0.2);
-        assertEquals("cloudlet.getExecStartTime", results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), 0.2);
-        assertEquals("cloudlet.getFinishTime", results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.2);
+        assertEquals("cloudlet.getActualCPUTime", results.getExpectedExecTime(), results.getCloudlet().getActualCpuTime(), 0.3);
+        assertEquals("cloudlet.getExecStartTime", results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), 0.3);
+        assertEquals("cloudlet.getFinishTime", results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.3);
         assertEquals(0, results.getCloudlet().getVm().getId(), 0);
         assertEquals("Cloudlet wasn't executed at the expected Datacenter",
                 1, results.getCloudlet().getLastDatacenter().getId(), 0);

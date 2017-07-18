@@ -626,17 +626,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Computes the time span between the current simulation time and the last
-     * time the the processing of a cloudlet was update. The
-     * method manages to correct precision issues of double values math
-     * operations.
+     * time the processing of a cloudlet was updated.
      *
-     *
-     * @param cl
+     * @param cl the cloudlet to compute the execution time span
      * @param currentTime the current simulation time
      * @return
      */
-    protected double timeSpan(CloudletExecutionInfo cl, double currentTime) {
-        return Math.floor(currentTime) - Math.floor(cl.getLastProcessingTime());
+    protected double timeSpan(final CloudletExecutionInfo cl, final double currentTime) {
+        return currentTime - cl.getLastProcessingTime();
     }
 
     /**
