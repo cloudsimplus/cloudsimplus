@@ -69,12 +69,7 @@
             -->
             <id>default</id>
             <activation>
-                <property>
-                    <!-- Active the profile only if there is NOT a property
-                    called integration-tests
-                    (properties are passed as -Dname_of_property=value parameter to mvn command)  -->
-                    <name>!integration-tests</name>
-                </property>
+                <activeByDefault>true</activeByDefault>
             </activation>
             <build>
                 <plugins>
@@ -99,20 +94,8 @@
         <profile>
             <!--
             This is the profile that runs all the Unit and Integration/Functional Tests.
-            At NetBeans, you can right click on the project root, select
-            Custom >> integration-tests (that is configured in the nbactions.xml).
-            To run at other IDE's, you can see the maven parameters in the nbactions.xml file.
             -->
             <id>integration-tests</id>
-            <activation>
-                <property>
-                    <!-- Active the profile only if there is a property
-                    called integration-tests with value true
-                    (properties are passed as -Dname_of_property=value parameter to mvn command) -->
-                    <name>integration-tests</name>
-                    <value>true</value>
-                </property>
-            </activation>
             <build>
                 <plugins>
                     <plugin>
