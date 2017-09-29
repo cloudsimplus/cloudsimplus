@@ -22,7 +22,7 @@ import org.cloudbus.cloudsim.vms.power.PowerVm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface PowerVmAllocationPolicy extends VmAllocationPolicy{
+public interface PowerVmAllocationPolicy extends VmAllocationPolicy {
     /**
      * Finds the first host that has enough resources to host a given VM.
      *

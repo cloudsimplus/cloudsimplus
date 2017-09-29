@@ -58,20 +58,11 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             return false;
         }
 
-        List<Host> hostsWhereVmCreationFailed = new ArrayList<>();
+        final List<Host> hostsWhereVmCreationFailed = new ArrayList<>();
         //We still trying until we find a host or until we try all of them
         for(int tries = 0; tries < getHostFreePesMap().size(); tries++) {
-            Map.Entry<Host, Long> entry = getHostWithLessUsedPes(hostsWhereVmCreationFailed);
-            Host host = entry.getKey();
-            final long hostFreePes = entry.getValue();
-            if (host.createVm(vm)) {
-                addUsedPes(vm);
-                getHostFreePesMap().put(host, hostFreePes - vm.getNumberOfPes());
-                if(!hostsWhereVmCreationFailed.isEmpty()){
-                    Log.printFormattedLine(
-                            "%.2f: %s: %s was successfully allocated to %s",
-                             vm.getSimulation().clock(), getClass().getSimpleName(), vm, host);
-                }
+            final Host host = getHostWithLessUsedPes(hostsWhereVmCreationFailed);
+            if (allocateHostForVm(vm, host)) {
                 return true;
             } else {
                 hostsWhereVmCreationFailed.add(host);
@@ -87,9 +78,8 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             return false;
         }
 
-        final long requiredPes = vm.getNumberOfPes();
         addUsedPes(vm);
-        getHostFreePesMap().put(host, getHostFreePesMap().get(host) - requiredPes);
+        getHostFreePesMap().put(host, getHostFreePesMap().get(host) - vm.getNumberOfPes());
 
         Log.printFormattedLine(
             "%.2f: %s: VM #%d has been allocated to the host #%d",
@@ -106,8 +96,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * @param ignoredHosts the list of hosts that have to be ignored when selecting the
      *                     host with less used PEs. These list can be, for instance,
      *                     the list of hosts that the creation of a given VM failed.
-     * @return an Entry where the key is the Host and the value is
-     * the number of used PEs if a Host is found, or an Entry with a {@link Host#NULL}
+     * @return the Host with less used PEs or {@link Host#NULL} if not found
      * key if not found
      * @todo sorting the Host list may degrade performance
      * for large scale simulations. The number of free PEs
@@ -119,16 +108,14 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * is different during debug, because of the unsorted
      * nature of the Map.
      */
-    private Map.Entry<Host, Long> getHostWithLessUsedPes(List<Host> ignoredHosts) {
+    private Host getHostWithLessUsedPes(List<Host> ignoredHosts) {
         final Map<Host, Long> map = getHostFreePesMap();
-        final Host host = map.keySet()
+        return map.keySet()
                 .stream()
                 .filter(h -> !ignoredHosts.contains(h))
                 .sorted(Comparator.comparingInt(Host::getId))
                 .max(Comparator.comparingLong(h -> map.get(h)))
                 .orElseGet(() -> Host.NULL);
-
-        return new TreeMap.SimpleEntry<>(host, map.getOrDefault(host, 0L));
     }
 
     @Override
