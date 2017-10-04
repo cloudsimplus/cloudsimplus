@@ -37,6 +37,7 @@ import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
+import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -57,11 +58,13 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * <p>An example showing how to create 1 Datacenter with 3 hosts,
+ * An example showing how to create 1 Datacenter with 3 hosts,
  * 1 VM by host and 1 cloudlet by VM and perform VM migration using
  * a custom VmAllocationPolicy. Such a policy migrates VMs based on
  * {@link PowerVmAllocationPolicyMigrationBestFitStaticThreshold
- * static host CPU utilization threshold}. </p>
+ * static host CPU utilization threshold}.
+ * The VmAllocationPolicy used in this example ignores power usage of
+ * Hosts. This way, it isn't required to set a PowerModel for Hosts.
  *
  * <p>The created {@link PowerVmAllocationPolicyMigrationBestFitStaticThreshold policy}
  * allows the definition of static under and over CPU utilization thresholds to
@@ -77,7 +80,7 @@ import java.util.List;
  * and what will be the final results.
  * Several values impact the simulation results, such as
  * hosts CPU capacity and number of PEs, VMs and cloudlets requirements
- * and even Vm bandwidth (that defines the VM migration time).
+ * and even VM bandwidth (that defines the VM migration time).
  *
  * <p>This way, if you want to change these values, you must
  * define new appropriated ones to allow the simulation
@@ -336,14 +339,16 @@ public final class MigrationExample1 {
 
         DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
 
-        /*Sets an upper utilization threshold that is higher than the defined
-        * value to enable placing VMs that will use more PEs than
-        * the defined by the default migration threshold.
-        * After VMs are all submitted to Hosts, the threshold is changed
-        * to the default value.
-        * This is used to  place VMs into a Host that will
-        * become overloaded, what will trigger the migration.
-        * */
+        /**
+         * Sets an upper utilization threshold higher than the
+         * {@link #HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION}
+         * to enable placing VMs which will use more CPU than
+         * defined by the value in the mentioned constant.
+         * After VMs are all submitted to Hosts, the threshold is changed
+         * to the value of the constant.
+         * This is used to  place VMs into a Host which will
+         * become overloaded in order to trigger the migration.
+         */
         this.allocationPolicy =
             new PowerVmAllocationPolicyMigrationBestFitStaticThreshold(
                 new PowerVmSelectionPolicyMinimumUtilization(),
@@ -364,6 +369,7 @@ public final class MigrationExample1 {
                 .setRamProvisioner(new ResourceProvisionerSimple())
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
+            System.out.println("PowerModel: " + host.getPowerModel().getClass().getName());
             return host;
     }
 

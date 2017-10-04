@@ -9,7 +9,7 @@
 package org.cloudbus.cloudsim.power.models;
 
 /**
- * Implements a power model where the power consumption is linear to resource usage.
+ * A power model where the power consumption is linear to resource usage.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:</p>
@@ -47,7 +47,7 @@ public class PowerModelLinear  extends PowerModelAbstract {
 	 * Instantiates a new linear power model.
 	 *
 	 * @param maxPower the max power that can be consumed (in Watts/second).
-	 * @param staticPowerPercent the static power percent
+	 * @param staticPowerPercent the static power usage percentage
 	 */
 	public PowerModelLinear(final double maxPower, final double staticPowerPercent) {
 		setMaxPower(maxPower);
@@ -64,7 +64,7 @@ public class PowerModelLinear  extends PowerModelAbstract {
 	}
 
 	/**
-	 * Gets The max power that can be consumed.
+	 * Gets the max power that can be consumed (in Watts/second).
 	 *
 	 * @return the max power
 	 */
@@ -102,18 +102,18 @@ public class PowerModelLinear  extends PowerModelAbstract {
 	}
 
 	/**
-	 * Gets the static power.
+	 * Gets the static power usage percentage.
 	 *
-	 * @return the static power
+	 * @return the static power usage percentage
 	 */
 	protected final double getStaticPower() {
 		return staticPower;
 	}
 
 	/**
-	 * Sets the static power.
+	 * Sets the static power usage percentage.
 	 *
-	 * @param staticPower the new static power
+	 * @param staticPower the new static power usage percentage
 	 */
 	protected final void setStaticPower(double staticPower) {
 		this.staticPower = staticPower;

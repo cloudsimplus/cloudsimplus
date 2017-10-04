@@ -259,7 +259,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
      * @see #findHostForVmInternal(Vm, Stream)
      */
     public PowerHost findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts) {
-        /*The predicate also returns true to indicate that in fact it is not
+        /*The predicate always returns true to indicate that in fact it is not
         applying any additional filter.*/
         return findHostForVm(vm, excludedHosts, host -> true);
     }
