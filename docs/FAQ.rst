@@ -131,13 +131,13 @@ the intended behavior.
 2. How can I code a periodic behavior to be adopted by entities?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-This is done by setting an internal event to be set periodically. Upon
+This is done by setting an internal event to be fired periodically. Upon
 reception of the event, the handler for it is called, and the desired
 behavior is implemented in such handler method. Below we show how to do
 it for Datacenter class. The same steps can be used to enable such
 behavior in Broker as well.
 
-1. Extend Datacenter
+1. Extend DatacenterSimple
 
 2. Define a new tag to describe periodic event
 
@@ -152,7 +152,7 @@ of internal events, otherwise simulation will never finish.**
 
 .. code:: java
 
-    class NewDatacenter extends Datacenter {
+    class NewDatacenter extends DatacenterSimple {
      //choose any unused value you want to represent the tag.
      public static final int PERIODIC_EVENT = 67567; 
 
@@ -173,8 +173,9 @@ of internal events, otherwise simulation will never finish.**
        //your code here
        float delay; //contains the delay to the next periodic event
        boolean generatePeriodicEvent; //true if new internal events have to be generated
-       if (generatePeriodicEvent) 
+       if (generatePeriodicEvent) {
            send(getId(), delay,PERIODIC_EVENT, data);
+       }
      }
     }
 
