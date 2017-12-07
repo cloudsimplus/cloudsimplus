@@ -41,8 +41,8 @@ public final class ExecutionTimeMeasurer {
      * @param name the name of the method/process being measured.
      * @see #getExecutionStartTimes()
      */
-    public static void start(String name) {
-        getExecutionStartTimes().put(name, System.currentTimeMillis());
+    public static void start(final String name) {
+        executionStartTimes.put(name, System.currentTimeMillis());
     }
 
     /**
@@ -52,10 +52,8 @@ public final class ExecutionTimeMeasurer {
      * @return the time the method/process spent in execution (in seconds)
      * @see #getExecutionStartTimes()
      */
-    public static double end(String name) {
-        final double executionTime = (System.currentTimeMillis() - getExecutionStartTimes().get(name)) / 1000.0;
-        getExecutionStartTimes().remove(name);
-        return executionTime;
+    public static double end(final String name) {
+        return (System.currentTimeMillis() - executionStartTimes.remove(name)) / 1000.0;
     }
 
     /**
@@ -64,8 +62,12 @@ public final class ExecutionTimeMeasurer {
      * @return the execution times map
      * @see #executionStartTimes
      */
-    public static Map<String, Long> getExecutionStartTimes() {
+    protected static Map<String, Long> getExecutionStartTimes() {
         return executionStartTimes;
+    }
+
+    protected static Long getExecutionStartTime(final String name){
+        return executionStartTimes.get(name);
     }
 
 }

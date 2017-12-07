@@ -208,7 +208,7 @@ public class NetworkHost extends HostSimple {
     private void sendPacketsToExternalVms() {
         final double availableBwByPacket = getBandwidthByPacket(pktsToSendForExternalVms.size());
         for (final HostPacket hostPkt : pktsToSendForExternalVms) {
-            final double delay = Conversion.bytesToMegaBites(hostPkt.getVmPacket().getSize()) / availableBwByPacket;
+            final double delay = Conversion.bytesToMegaBits(hostPkt.getVmPacket().getSize()) / availableBwByPacket;
             totalDataTransferBytes += hostPkt.getVmPacket().getSize();
 
             // send to Datacenter with delay

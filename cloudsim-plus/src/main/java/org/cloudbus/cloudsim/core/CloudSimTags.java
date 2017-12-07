@@ -283,7 +283,7 @@ public final class CloudSimTags {
      * Defines the base tag to be used for failure events such as
      * failure of hosts or VMs.
     */
-    public static final int FAILURE = BASE + 47;
+    public static final int FAILURE = BASE + 48;
 
     /**
      * Defines the tag that represents a request to generate a host failure.

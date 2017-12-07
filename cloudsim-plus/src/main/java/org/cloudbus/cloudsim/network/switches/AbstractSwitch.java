@@ -273,7 +273,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @return the expected time to transfer the packet through the network (in seconds)
      */
     protected double networkDelayForPacketTransmission(HostPacket netPkt, double bwCapacity, List<HostPacket> netPktList) {
-        return Conversion.bytesToMegaBites(netPkt.getVmPacket().getSize()) / getAvailableBwForEachPacket(bwCapacity, netPktList);
+        return Conversion.bytesToMegaBits(netPkt.getVmPacket().getSize()) / getAvailableBwForEachPacket(bwCapacity, netPktList);
     }
 
     /**

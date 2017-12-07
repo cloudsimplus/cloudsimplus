@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.util;
 
 /**
- * A class that provides a set of methods for unit conversion.
+ * Provides a set of methods for unit conversion.
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -56,8 +56,8 @@ public final class Conversion {
      * @param bytes the value in bytes
      * @return the value in Megabites (Mb)
      */
-    public static double bytesToMegaBites(final double bytes){
-        return bytesToBites(bytesToMegaBytes(bytes));
+    public static double bytesToMegaBits(final double bytes){
+        return bytesToBits(bytesToMegaBytes(bytes));
     }
 
     /**
@@ -67,7 +67,7 @@ public final class Conversion {
      * @param bytes the value in bytes, KB, MB, GB, etc
      * @return the value in bites, Kbits, Mbits, Gbits and so on, according to the given value
      */
-    public static double bytesToBites(final double bytes){
+    public static double bytesToBits(final double bytes){
         return bytes * 8;
     }
 

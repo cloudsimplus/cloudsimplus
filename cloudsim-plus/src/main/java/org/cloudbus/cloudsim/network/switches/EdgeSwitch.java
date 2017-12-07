@@ -109,7 +109,7 @@ public class EdgeSwitch extends AbstractSwitch {
         }
 
         // otherwise, packet is to be sent to upper switch
-        /**
+        /*
          * ASSUMPTION: Each Edge is connected to one Aggregate Switch.
          * If there are more than one Aggregate Switch, the following code has to be modified.
         */
