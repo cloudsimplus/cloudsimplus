@@ -387,6 +387,6 @@ public class FileAttribute {
      * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
      */
     public static boolean isValid(final String fileName) {
-        return (!Objects.isNull(fileName)) && !fileName.trim().isEmpty();
+        return !Objects.isNull(fileName) && !fileName.trim().isEmpty();
     }
 }

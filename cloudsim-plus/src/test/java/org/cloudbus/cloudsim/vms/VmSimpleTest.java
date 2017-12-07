@@ -9,29 +9,21 @@ package org.cloudbus.cloudsim.vms;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.replay;
-import static org.easymock.EasyMock.verify;
+import static org.easymock.EasyMock.*;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.mocks.CloudSimMocker;
-import org.cloudbus.cloudsim.mocks.Mocks;
-import org.cloudsimplus.listeners.VmDatacenterEventInfo;
-import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.cloudbus.cloudsim.mocks.*;
+import org.cloudsimplus.listeners.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.easymock.EasyMock;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.*;
 
 import static org.easymock.EasyMock.createMock;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Anton Beloglazov
@@ -198,7 +190,9 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntry_addEntryToEmptyList(){
-        final double time=0, allocatedMips=1000, requestedMips=100;
+        final double time=0;
+        final double allocatedMips=1000;
+        final double requestedMips=100;
         final boolean inMigration = false;
         VmStateHistoryEntry entry =
                 new VmStateHistoryEntry(time, allocatedMips, requestedMips, inMigration);

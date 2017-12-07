@@ -71,11 +71,11 @@ public final class VmList {
      * Sort a given list of VMs by descending order of CPU utilization.
      *
      * @param vmList the vm list to be sorted
-     * @param currentSimulationTime the current simulation time to get the current CPU utilization for each Vm
+     * @param simulationTime the simulation time to get the current CPU utilization for each Vm
      */
-    public static void sortByCpuUtilization(List<? extends Vm> vmList, double currentSimulationTime) {
+    public static void sortByCpuUtilization(final List<? extends Vm> vmList, final double simulationTime) {
         Comparator<Vm> comparator =
-            Comparator.comparingDouble(vm -> vm.getTotalCpuMipsUsage(currentSimulationTime));
+            Comparator.comparingDouble(vm -> vm.getTotalCpuMipsUsage(simulationTime));
         vmList.sort(comparator.reversed());
     }
 

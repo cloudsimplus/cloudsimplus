@@ -120,7 +120,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @throws Exception the exception
      */
     public void saveHistory(String filename) {
-        try (final ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
             oos.writeObject(getHistory());
         } catch (IOException e) {
             throw new RuntimeException(e);

@@ -104,7 +104,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return allocatePesForVmInternal(vm, mipsShareRequested);
     }
 
-    protected abstract boolean allocatePesForVmInternal(Vm vm, final List<Double> mipsShareRequested);
+    protected abstract boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested);
 
     @Override
     public void deallocatePesFromVm(Vm vm) {
@@ -151,7 +151,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return pesToRemove;
     }
 
-    protected abstract void deallocatePesFromVmInternal(Vm vm, final int pesToRemove);
+    protected abstract void deallocatePesFromVmInternal(Vm vm, int pesToRemove);
 
     @Override
     public void deallocatePesForAllVms() {

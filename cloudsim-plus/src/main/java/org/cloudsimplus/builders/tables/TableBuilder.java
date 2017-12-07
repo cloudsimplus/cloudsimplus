@@ -45,7 +45,7 @@ public interface TableBuilder {
      * @param columnTitle The title of the column to be added.
      * @return The created column.
      */
-    TableColumn addColumn(final String columnTitle);
+    TableColumn addColumn(String columnTitle);
 
     /**
      * Adds a column with a given title to the end of the table's columns to be printed.
@@ -54,7 +54,7 @@ public interface TableBuilder {
      * @param columnTitle The title of the column to be added.
      * @return the created column
      */
-    TableColumn addColumn(final int index, final String columnTitle);
+    TableColumn addColumn(int index, String columnTitle);
 
     /**
      * Adds a column with a given title and sub-title to the end of the table's columns to be printed.
@@ -63,7 +63,7 @@ public interface TableBuilder {
      * @param columnSubTitle The sub-title of the column to be added.
      * @return the created column
      */
-    TableColumn addColumn(final String columnTitle, final String columnSubTitle);
+    TableColumn addColumn(String columnTitle, String columnSubTitle);
 
     /**
      * Adds a column object to a specific position of the table's columns to be printed.
@@ -72,7 +72,7 @@ public interface TableBuilder {
      * @param column The column to be added.
      * @return the created column
      */
-    TableColumn addColumn(final int index, final TableColumn column);
+    TableColumn addColumn(int index, TableColumn column);
 
     /**
      * Adds a column object to the end of the table's columns to be printed.
@@ -80,7 +80,7 @@ public interface TableBuilder {
      * @param column The column to be added.
      * @return the created column
      */
-    TableColumn addColumn(final TableColumn column);
+    TableColumn addColumn(TableColumn column);
 
     /**
      * Adds a list of columns (with given titles) to the end of the
@@ -91,7 +91,7 @@ public interface TableBuilder {
      * @return the {@link TableBuilder} instance.
      * @see #addColumn(String)
      */
-    TableBuilder addColumnList(final String... columnTitles);
+    TableBuilder addColumnList(String... columnTitles);
 
     /**
      *
@@ -104,7 +104,7 @@ public interface TableBuilder {
      * @param title the table title to set
      * @return The TableBuilder instance
      */
-    TableBuilder setTitle(final String title);
+    TableBuilder setTitle(String title);
 
     /**
      * @return the list of columns of the table

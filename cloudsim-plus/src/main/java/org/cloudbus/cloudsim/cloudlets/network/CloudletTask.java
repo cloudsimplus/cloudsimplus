@@ -148,8 +148,9 @@ public abstract class CloudletTask implements Identificable {
      * @throws RuntimeException when the task is already finished and you try to set it as unfinished
      */
     protected void setFinished(boolean finished){
-        if(this.finished && !finished)
-            throw new RuntimeException("The task is already finished. You cannot set it as unfinished.");
+        if(this.finished && !finished) {
+            throw new IllegalArgumentException("The task is already finished. You cannot set it as unfinished.");
+        }
 
         //If the task was not finished before and try to set it to finished,
         //stores the finishTime

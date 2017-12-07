@@ -20,7 +20,6 @@ final class VmSchedulerNull implements VmScheduler {
     }
     @Override public boolean allocatePesForVm(Vm vm) { return false; }
     @Override public void deallocatePesForAllVms() {/**/}
-    @Override public void deallocatePesFromVm(Vm vm) {/**/}
     @Override public List<Double> getAllocatedMips(Vm vm) {
         return Collections.emptyList();
     }
@@ -58,5 +57,6 @@ final class VmSchedulerNull implements VmScheduler {
         return this;
     }
     @Override public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare) { return false; }
+    @Override public void deallocatePesFromVm(Vm vm) {/**/}
     @Override public void deallocatePesFromVm(Vm vm, int pesToRemove) {/**/}
 }

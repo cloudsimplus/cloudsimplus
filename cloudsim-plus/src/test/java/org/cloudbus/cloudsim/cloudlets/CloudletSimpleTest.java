@@ -1,12 +1,9 @@
 /*
- * Title:        CloudSim Toolkiimport static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertSame;
-
-import java.util.LinkedList;
-
-import org.junit.Before;
-import org.junit.Test;
-c) 2009-2010, The University of Melbourne, Australia
+ * Title:        CloudSim Toolkit
+ * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
+ * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 package org.cloudbus.cloudsim.cloudlets;
 
@@ -341,27 +338,22 @@ public class CloudletSimpleTest {
     @Test
     public void testSetNetServiceLevel() {
         int valid = 1;
-        assertTrue(
-                "Cloudlet.setNetServiceLevel should return true",
-                cloudlet.setNetServiceLevel(valid));
+        final String trueMsg = "Cloudlet.setNetServiceLevel should return true";
+        final String falseMsg = "Cloudlet.setNetServiceLevel should return false";
+
+        assertTrue(trueMsg, cloudlet.setNetServiceLevel(valid));
         assertEquals(valid, cloudlet.getNetServiceLevel());
 
         final int invalid0 = 0;
-        assertFalse(
-                "Cloudlet.setNetServiceLevel should return false",
-                cloudlet.setNetServiceLevel(invalid0));
+        assertFalse(falseMsg, cloudlet.setNetServiceLevel(invalid0));
         assertEquals(valid, cloudlet.getNetServiceLevel());
 
         final int invalidNegative = -1;
-        assertFalse(
-                "Cloudlet.setNetServiceLevel should return false",
-                cloudlet.setNetServiceLevel(invalidNegative));
+        assertFalse(falseMsg, cloudlet.setNetServiceLevel(invalidNegative));
         assertEquals(valid, cloudlet.getNetServiceLevel());
 
         valid = 2;
-        assertTrue(
-                "Cloudlet.setNetServiceLevel should return true",
-                cloudlet.setNetServiceLevel(valid));
+        assertTrue(trueMsg, cloudlet.setNetServiceLevel(valid));
         assertEquals(valid, cloudlet.getNetServiceLevel());
     }
 
@@ -396,11 +388,15 @@ public class CloudletSimpleTest {
                 CLOUDLET_LENGTH, 1);
     }
 
+    public static CloudletSimple createCloudlet(final int id, int numberOfPes) {
+        return createCloudlet(id, CLOUDLET_LENGTH, numberOfPes);
+    }
+
     public static CloudletSimple createCloudlet(final int id,
-            UtilizationModel utilizationModelCPU,
-            UtilizationModel utilizationModelRAM,
-            UtilizationModel utilizationModelBW,
-            long length, int numberOfPes)
+                                                UtilizationModel utilizationModelCPU,
+                                                UtilizationModel utilizationModelRAM,
+                                                UtilizationModel utilizationModelBW,
+                                                long length, int numberOfPes)
     {
         final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
@@ -424,10 +420,6 @@ public class CloudletSimpleTest {
 
     public static CloudletSimple createCloudletWithOnePe(final int id, long length) {
         return createCloudlet(id, length, 1);
-    }
-
-    public static CloudletSimple createCloudlet(final int id, int numberOfPes) {
-        return createCloudlet(id, CLOUDLET_LENGTH, numberOfPes);
     }
 
     /**

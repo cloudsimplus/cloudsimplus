@@ -35,9 +35,6 @@ import org.cloudbus.cloudsim.hosts.power.PowerHost;
  * @since CloudSim Toolkit 2.0
  */
 public interface PowerModel {
-    PowerHost getHost();
-    void setHost(PowerHost host);
-
     /**
      * A property that implements the Null Object Design Pattern for {@link PowerHost}
      * objects.
@@ -47,6 +44,10 @@ public interface PowerModel {
         @Override public void setHost(PowerHost host) {}
         @Override public double getPower(double utilization) throws IllegalArgumentException { return 0; }
     };
+
+    PowerHost getHost();
+
+    void setHost(PowerHost host);
 
     /**
      * Gets power consumption (in Watts/Second) of the Power Model, according to the utilization

@@ -387,7 +387,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
          return this;
     }
 
-    private final ExperimentRunner setApplyAntitheticVariatesTechnique(final boolean applyAntitheticVariatesTechnique) {
+    private ExperimentRunner setApplyAntitheticVariatesTechnique(final boolean applyAntitheticVariatesTechnique) {
         this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
         return this;
     }
@@ -445,7 +445,6 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @see UniformDistr#isApplyAntitheticVariatesTechnique()
      */
     public ContinuousDistribution createRandomGen(int experimentIndex, double minValue, double maxValue) {
-        UniformDistr prng;
         if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
             final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
             return new UniformDistr(minValue, maxValue, seeds.get(expIndexFromFirstHalf))
@@ -453,11 +452,6 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
         }
 
         return new UniformDistr(minValue, maxValue, seeds.get(experimentIndex));
-    }
-
-    public boolean isToReuseSeedFromFirstHalfOfExperiments(int currentExperimentIndex) {
-        return isApplyAntitheticVariatesTechnique() &&
-        simulationRuns > 1 && currentExperimentIndex >= halfSimulationRuns();
     }
 
     /**
@@ -474,6 +468,11 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      */
     public ContinuousDistribution createRandomGen(int experimentIndex) {
         return createRandomGen(experimentIndex, 0, 1);
+    }
+
+    public boolean isToReuseSeedFromFirstHalfOfExperiments(int currentExperimentIndex) {
+        return isApplyAntitheticVariatesTechnique() &&
+        simulationRuns > 1 && currentExperimentIndex >= halfSimulationRuns();
     }
 
     /**

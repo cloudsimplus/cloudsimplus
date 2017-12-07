@@ -164,5 +164,5 @@ public interface FileStorage extends Resource {
      * @param fileSize to size of the file intended to be stored on the device
      * @return <tt>true</tt> if enough space available, <tt>false</tt> otherwise
     */
-    boolean hasPotentialAvailableSpace(final int fileSize);
+    boolean hasPotentialAvailableSpace(int fileSize);
 }

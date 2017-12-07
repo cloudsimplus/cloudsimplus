@@ -88,7 +88,7 @@ public class DelayMatrix {
 		}
 
 
-        for (TopologicalLink edge : graph.getLinksList()) {
+        for (final TopologicalLink edge : graph.getLinksList()) {
 			mDelayMatrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkDelay();
 			if (!directed) {
 				// according to symmetry to all communication-paths

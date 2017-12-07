@@ -79,7 +79,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * @see #getCloudletWaitingList()
      */
-    private List<CloudletExecutionInfo> cloudletWaitingList;
+    private final List<CloudletExecutionInfo> cloudletWaitingList;
 
     /**
      * @see #getVm()
@@ -319,7 +319,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     @Override
     public Cloudlet getCloudletToMigrate() {
-        Function<CloudletExecutionInfo, Cloudlet> finishMigratingCloudlet = rcl -> {
+        Function<CloudletExecutionInfo, Cloudlet> finishCloudletMigration = rcl -> {
             removeCloudletFromExecListAndAddToFinishedList(rcl);
             rcl.finalizeCloudlet();
             return rcl.getCloudlet();
@@ -327,7 +327,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         return cloudletExecList.stream()
             .findFirst()
-            .map(finishMigratingCloudlet).orElse(Cloudlet.NULL);
+            .map(finishCloudletMigration).orElse(Cloudlet.NULL);
     }
 
     @Override
@@ -466,7 +466,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         List<CloudletExecutionInfo> cloudletList, int cloudletId,
         Consumer<CloudletExecutionInfo> cloudletStatusUpdaterConsumer)
     {
-        Function<CloudletExecutionInfo, Cloudlet> removeCloudletFromListAndUpdateItsStatus = c -> {
+        final Function<CloudletExecutionInfo, Cloudlet> removeCloudletFromListAndUpdateItsStatus = c -> {
             cloudletList.remove(c);
             cloudletStatusUpdaterConsumer.accept(c);
             return c.getCloudlet();

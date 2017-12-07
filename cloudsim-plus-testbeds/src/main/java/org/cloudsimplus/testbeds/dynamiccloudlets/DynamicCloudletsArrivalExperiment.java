@@ -67,9 +67,8 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 
     @Override
     public void printResults() {
-        DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
-        List<Cloudlet> newList = broker.getCloudletFinishedList();
-        new CloudletsTableBuilder(newList).build();
+        final DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
+        new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
     }
 
     @Override
@@ -79,20 +78,17 @@ final class DynamicCloudletsArrivalExperiment extends SimulationExperiment {
 
     @Override
     protected List<Cloudlet> createCloudlets() {
-        List<Cloudlet> list = new ArrayList<>();
-        return list;
+        return new ArrayList<>();
     }
 
     @Override
     protected List<Vm> createVms(DatacenterBroker broker) {
-        List<Vm> list = new ArrayList<>();
-        return list;
+        return new ArrayList<>();
     }
 
     @Override
     protected List<Host> createHosts() {
-        List<Host> list = new ArrayList<>();
-        return list;
+        return new ArrayList<>();
     }
 
     /**

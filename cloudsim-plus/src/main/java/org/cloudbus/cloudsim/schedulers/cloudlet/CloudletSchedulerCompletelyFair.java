@@ -142,13 +142,13 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     private int waitingCloudletsComparator(CloudletExecutionInfo c1, CloudletExecutionInfo c2){
         final double vRuntimeDiff = c1.getVirtualRuntime() - c2.getVirtualRuntime();
         final int priorityDiff = c1.getCloudlet().getPriority() - c2.getCloudlet().getPriority();
-        final int idDiff = c1.getCloudletId() - c2.getCloudletId();
 
         if (vRuntimeDiff != 0) {
             return MathUtil.doubleToInt(vRuntimeDiff);
         }
 
-        return priorityDiff != 0 ? priorityDiff : idDiff;
+        final int idDiff = c1.getCloudletId() - c2.getCloudletId();
+        return priorityDiff == 0 ? idDiff : priorityDiff;
     }
 
     /**

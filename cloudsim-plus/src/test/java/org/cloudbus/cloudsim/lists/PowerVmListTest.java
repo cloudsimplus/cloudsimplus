@@ -76,12 +76,16 @@ public class PowerVmListTest {
         int i = NUMBER_OF_VMS;
         for(final PowerVm vm: list) {
             i--;
-            String msg = String.format(
-                    "It was expected that the PowerVm %d at the position %d",
-                    vm.getId(), i);
+            final String msg = getMsgVmExpectedAtPosition(i, vm);
             assertEquals(msg, i, vm.getId());
             EasyMock.verify(vm.getCloudletScheduler());
         };
+    }
+
+    private String getMsgVmExpectedAtPosition(int i, PowerVm vm) {
+        return String.format(
+                "It was expected that the PowerVm %d at the position %d",
+                vm.getId(), i);
     }
 
     @Test
@@ -90,11 +94,9 @@ public class PowerVmListTest {
         VmList.sortByCpuUtilization(list, 0);
 
         int i = -1;
-        for(PowerVm vm: list) {
+        for(final PowerVm vm: list) {
             i++;
-            String msg = String.format(
-                    "It was expected that the PowerVm %d at the position %d",
-                    vm.getId(), i);
+            final String msg = getMsgVmExpectedAtPosition(i, vm);
             assertEquals(msg, i, vm.getId());
             EasyMock.verify(vm.getCloudletScheduler());
         };

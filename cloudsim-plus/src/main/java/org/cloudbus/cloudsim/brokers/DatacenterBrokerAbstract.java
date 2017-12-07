@@ -289,21 +289,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Binds a list of Cloudlets to a given {@link Vm}.
-     * If the {@link Vm} is {@link Vm#NULL}, the Cloudlets will not be bound.
-     *
-     * @param cloudlets the List of Cloudlets to be bound to a VM
-     * @param vm the VM to bind the Cloudlets to
-     */
-    private void bindCloudletsToVm(List<? extends Cloudlet> cloudlets, Vm vm) {
-        if(Vm.NULL.equals(vm)){
-            return;
-        }
-
-        cloudlets.forEach(c -> c.setVm(vm));
-    }
-
-    /**
      * {@inheritDoc}
      * <p>If the entity already started (the simulation is running),
      * the creation of previously submitted Cloudlets already was requested
@@ -343,8 +328,23 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             notifyOnCreationOfWaitingVmsFinishListeners();
         } else
             println(String.format(
-                    " Waiting creation of %d VMs to send Cloudlets creation request to Datacenter.",
-                    vmWaitingList.size()));
+                " Waiting creation of %d VMs to send Cloudlets creation request to Datacenter.",
+                vmWaitingList.size()));
+    }
+
+    /**
+     * Binds a list of Cloudlets to a given {@link Vm}.
+     * If the {@link Vm} is {@link Vm#NULL}, the Cloudlets will not be bound.
+     *
+     * @param cloudlets the List of Cloudlets to be bound to a VM
+     * @param vm the VM to bind the Cloudlets to
+     */
+    private void bindCloudletsToVm(List<? extends Cloudlet> cloudlets, Vm vm) {
+        if(Vm.NULL.equals(vm)){
+            return;
+        }
+
+        cloudlets.forEach(c -> c.setVm(vm));
     }
 
     private void sortCloudletsIfComparatorIsSet(List<? extends Cloudlet> list) {

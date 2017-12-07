@@ -171,7 +171,6 @@ public class CloudletExecutionInfo {
             return false;
         }
 
-        boolean success = true;
         final double clock = cloudlet.getSimulation().clock();
 
         cloudlet.setStatus(newStatus);
@@ -188,7 +187,7 @@ public class CloudletExecutionInfo {
 
         startOrResumeCloudlet(newStatus, prevStatus);
 
-        return success;
+        return true;
     }
 
     /**

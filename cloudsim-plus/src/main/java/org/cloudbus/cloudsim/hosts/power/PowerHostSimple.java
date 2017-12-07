@@ -119,11 +119,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
      */
     @Override
     public double getMaxPower() {
-        try {
-            return getPowerModel().getPower(1);
-        } catch (IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        }
+        return getPowerModel().getPower(1);
     }
 
     /**

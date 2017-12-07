@@ -580,7 +580,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * @param startTime the start time to set (in seconds)
      * @return
      */
-    Vm setStartTime(final double startTime);
+    Vm setStartTime(double startTime);
 
     /**
      * Gets the time the VM was destroyed into the last Host it executed (in seconds).
@@ -612,7 +612,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * @return
      * @see #isCreated()
      */
-    Vm setStopTime(final double stopTime);
+    Vm setStopTime(double stopTime);
 
     /**
      * Gets the last time the VM was running some Cloudlet.

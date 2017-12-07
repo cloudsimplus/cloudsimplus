@@ -23,6 +23,11 @@ import static org.junit.Assert.*;
  * @since CloudSim Toolkit 2.0
  */
 public class LogTest {
+    public static final String TEST = "test";
+    public static final String TEST_TEST_TEST = "test test test";
+    public static final String FORMAT_D = "%d";
+    public static final String FORMAT_F = "%.2f";
+
     private static final ByteArrayOutputStream OUTPUT = new ByteArrayOutputStream();
     private static final String LINE_SEPARATOR = System.getProperty("line.separator");
     private static final DecimalFormatSymbols dfs
@@ -32,10 +37,6 @@ public class LogTest {
     private static final String TEST_S_TEST = "test %s test";
     private static final String TEST_TEST = "test test";
     private static final String NUMBERS = "123";
-    public static final String TEST = "test";
-    public static final String TEST_TEST_TEST = "test test test";
-    public static final String FORMAT_D = "%d";
-    public static final String FORMAT_F = "%.2f";
 
     @Before
     public void setUp() throws Exception {

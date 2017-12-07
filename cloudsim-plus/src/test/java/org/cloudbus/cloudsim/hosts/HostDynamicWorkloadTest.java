@@ -55,7 +55,7 @@ public class HostDynamicWorkloadTest {
 
     @Test
     public void testGetMaxUtilizationOneVm() {
-        Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
+        final Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateResourceForVm(vm0, ONE_THIRD_MIPS));
         assertEquals((ONE_THIRD_MIPS) / MIPS, host.getMaxUtilization(), 0.001);
@@ -63,8 +63,8 @@ public class HostDynamicWorkloadTest {
 
     @Test
     public void testGetMaxUtilization() {
-        Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
-        Vm vm1 = VmSimpleTest.createVmWithOnePeAndHalfMips(1);
+        final Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
+        final Vm vm1 = VmSimpleTest.createVmWithOnePeAndHalfMips(1);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateResourceForVm(vm0, ONE_THIRD_MIPS));
         assertTrue(peList.get(1).getPeProvisioner().allocateResourceForVm(vm1, ONE_FIFTH_MIPS));

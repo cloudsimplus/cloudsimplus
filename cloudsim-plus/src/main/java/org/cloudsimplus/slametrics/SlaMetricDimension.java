@@ -75,7 +75,7 @@ public final class SlaMetricDimension {
         return isPercent() ? value/100.0 : value;
     }
 
-    public final SlaMetricDimension setValue(final double value) {
+    public SlaMetricDimension setValue(final double value) {
         this.value = value;
         return this;
     }

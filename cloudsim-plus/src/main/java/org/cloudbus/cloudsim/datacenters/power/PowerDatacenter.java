@@ -135,7 +135,7 @@ public class PowerDatacenter extends DatacenterSimple {
         }
 
         final Map<Vm, Host> migrationMap = getVmAllocationPolicy().optimizeAllocation(getVmList());
-        for (Entry<Vm, Host> entry : migrationMap.entrySet()) {
+        for (final Entry<Vm, Host> entry : migrationMap.entrySet()) {
             startVmMigration(entry);
         }
     }
@@ -219,14 +219,14 @@ public class PowerDatacenter extends DatacenterSimple {
             return 0;
         }
 
-        double datacenterPowerUsageForTimeSpan = 0;
+        double datacenterTimeSpanPowerUse = 0;
         StringBuilder sb = new StringBuilder(this.<PowerHostSimple>getHostList().size()*100);
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             final double previousUseOfCpu = host.getPreviousUtilizationOfCpu();
             final double utilizationOfCpu = host.getUtilizationOfCpu();
             final double timeFrameHostEnergy =
                 host.getEnergyLinearInterpolation(previousUseOfCpu, utilizationOfCpu, timeSpan);
-            datacenterPowerUsageForTimeSpan += timeFrameHostEnergy;
+            datacenterTimeSpanPowerUse += timeFrameHostEnergy;
 
             sb.append(String.format(
                     "%.2f: [%s] utilization at %.2f was %.2f%%, now is %.2f%%",
@@ -244,7 +244,7 @@ public class PowerDatacenter extends DatacenterSimple {
             }
         }
 
-        if(datacenterPowerUsageForTimeSpan > 0) {
+        if(datacenterTimeSpanPowerUse > 0) {
             println(String.format(
                 "\nDatacenter %d energy consumption for the last time frame from %.2f to %.2f:",
                 getId(),
@@ -254,10 +254,10 @@ public class PowerDatacenter extends DatacenterSimple {
             println(String.format(
                 "\n%.2f: Datacenter %d energy is %.2f Watts/sec\n",
                 currentTime, getId(),
-                datacenterPowerUsageForTimeSpan));
+                datacenterTimeSpanPowerUse));
         }
 
-        return datacenterPowerUsageForTimeSpan;
+        return datacenterTimeSpanPowerUse;
     }
 
     protected void removeFinishedVmsFromEveryHost() {
@@ -279,7 +279,7 @@ public class PowerDatacenter extends DatacenterSimple {
 
         super.updateHostsProcessing();
         super.processVmMigrate(ev, ack);
-        SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
+        final SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
         if (Objects.isNull(event) || event.eventTime() > getSimulation().clock()) {
             super.updateHostsProcessing();
         }

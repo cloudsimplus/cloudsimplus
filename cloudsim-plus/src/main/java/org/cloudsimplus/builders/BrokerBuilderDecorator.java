@@ -56,10 +56,10 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
 
     public BrokerBuilderDecorator(final BrokerBuilder builder, final DatacenterBrokerSimple broker) {
         if(Objects.isNull(builder)) {
-            throw new RuntimeException("The builder parameter cannot be null.");
+            throw new IllegalArgumentException("The builder parameter cannot be null.");
         }
         if(Objects.isNull(broker)) {
-            throw new RuntimeException("The broker parameter cannot be null.");
+            throw new IllegalArgumentException("The broker parameter cannot be null.");
         }
         this.builder = builder;
         this.broker = broker;

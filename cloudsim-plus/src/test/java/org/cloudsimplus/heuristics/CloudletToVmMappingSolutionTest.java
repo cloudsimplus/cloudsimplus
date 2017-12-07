@@ -76,12 +76,6 @@ public class CloudletToVmMappingSolutionTest {
         return instance;
     }
 
-    private Cloudlet createCloudlet(int id, int numberOfPes){
-        return new CloudletSimple(id, 10000, numberOfPes)
-          .setFileSize(100)
-          .setOutputSize(100);
-    }
-
     private Vm[] createVms(int numberOfVms){
         Vm[] array = new Vm[numberOfVms];
         for(int i = 0; i < numberOfVms; i++){
@@ -167,15 +161,15 @@ public class CloudletToVmMappingSolutionTest {
 
         final Vm[] vms = createVms(numberOfEntries);
 
-        IntStream.range(0, numberOfEntries).forEach(i->{
+        IntStream.range(0, numberOfEntries).forEach(i -> {
             originalEntries[i] = new HashMap.SimpleEntry(cloudlets[i], vms[i]);
             /*After swapping VMs that are hosting given cloudlets,
             cloudlet 0 that was in VM 0 will be placed into VM 1,
             and cloudlet 1 that was in VM 1 will be placed into VM 0.
             The line below makes this change in the index of the VM
             to swap.*/
-            int swapedVmIndex = (i+1)%numberOfEntries;
-            swapedVmsEntries[i] = new HashMap.SimpleEntry(cloudlets[i], vms[swapedVmIndex]);
+            final int swappedVmIndex = (i+1)%numberOfEntries;
+            swapedVmsEntries[i] = new HashMap.SimpleEntry(cloudlets[i], vms[swappedVmIndex]);
         });
 
         final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);

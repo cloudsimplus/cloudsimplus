@@ -26,7 +26,8 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilization_defaultConstructor() {
-        final double usagePercentInc = 0.1, initialUtilization = 0;
+        final double usagePercentInc = 0.1;
+        final double initialUtilization = 0;
         final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initialUtilization);
         checkUtilization(initialUtilization, usagePercentInc, instance);
     }
@@ -132,7 +133,8 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testConstructor_zeroUtilizationPercentageIncrementPerSecond() {
-        final double increment = 0, initialUsage = 0.1;
+        final double increment = 0;
+        final double initialUsage = 0.1;
         final int initialTime = 1;
         final UtilizationModelDynamic instance = createUtilizationModel(increment, initialUsage, initialTime);
         assertEquals(initialUsage, instance.getUtilization(initialTime), 0.0);

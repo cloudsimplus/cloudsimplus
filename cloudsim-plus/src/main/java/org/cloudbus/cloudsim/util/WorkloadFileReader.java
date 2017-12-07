@@ -154,32 +154,6 @@ public class WorkloadFileReader implements WorkloadReader {
     private Predicate<Cloudlet> predicate;
 
     /**
-     * Gets a {@link WorkloadFileReader} object from a workload file
-     * inside the application's resource directory.
-     *
-     * @param fileName the workload trace relative filename in one of the following
-     *                 formats:
-     *                 <i>ASCII text, zip, gz.</i>
-     * @param mips   the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
-     *               Considering the workload file provides the run time for each
-     *               application registered inside the file, the MIPS value will be used
-     *               to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
-     *               so that it's expected to execute, inside the VM with the given MIPS capacity,
-     *               for the same time as specified into the workload file.
-     * @throws FileNotFoundException
-     * @throws IllegalArgumentException This happens for the following
-     *                                  conditions:
-     *                                  <ul>
-     *                                  <li>the workload trace file name is null or empty
-     *                                  <li>the resource PE mips <= 0 </ul> @pre fileName != null
-     * @pre mips > 0
-     * @post $none
-     */
-    public static WorkloadFileReader getInstanceFromResourcesDir(final String fileName, final int mips) throws FileNotFoundException {
-        return new WorkloadFileReader(ResourceLoader.getResourcePath(WorkloadFileReader.class, fileName), mips);
-    }
-
-    /**
      * Create a new WorkloadFileReader object.
      *
      * @param fileName the workload trace full filename in one of the following
@@ -216,6 +190,32 @@ public class WorkloadFileReader implements WorkloadReader {
 
         this.cloudlets = new ArrayList<>();
         this.maxLinesToRead = -1;
+    }
+
+    /**
+     * Gets a {@link WorkloadFileReader} object from a workload file
+     * inside the application's resource directory.
+     *
+     * @param fileName the workload trace relative filename in one of the following
+     *                 formats:
+     *                 <i>ASCII text, zip, gz.</i>
+     * @param mips   the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run.
+     *               Considering the workload file provides the run time for each
+     *               application registered inside the file, the MIPS value will be used
+     *               to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
+     *               so that it's expected to execute, inside the VM with the given MIPS capacity,
+     *               for the same time as specified into the workload file.
+     * @throws FileNotFoundException
+     * @throws IllegalArgumentException This happens for the following
+     *                                  conditions:
+     *                                  <ul>
+     *                                  <li>the workload trace file name is null or empty
+     *                                  <li>the resource PE mips <= 0 </ul> @pre fileName != null
+     * @pre mips > 0
+     * @post $none
+     */
+    public static WorkloadFileReader getInstanceFromResourcesDir(final String fileName, final int mips) throws FileNotFoundException {
+        return new WorkloadFileReader(ResourceLoader.getResourcePath(WorkloadFileReader.class, fileName), mips);
     }
 
     @Override

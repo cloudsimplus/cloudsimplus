@@ -128,6 +128,14 @@ import static java.util.stream.Collectors.*;
  */
 public class HostFaultInjection extends CloudSimEntity {
     /**
+     * Maximum number of seconds for a VM to recovery from a failure,
+     * which is randomly selected based on this value.
+     * The recovery time is the delay that will be set
+     * to start a clone from a failed VM.
+     */
+    private static final int MAX_VM_RECOVERY_TIME_SECS = 450;
+
+    /**
      * @see #getLastFailedHost()
      */
     private Host lastFailedHost;
@@ -188,13 +196,6 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private final Map<DatacenterBroker, Integer> faultsOfAllVmsByBroker;
 
-    /**
-     * Maximum number of seconds for a VM to recovery from a failure,
-     * which is randomly selected based on this value.
-     * The recovery time is the delay that will be set
-     * to start a clone from a failed VM.
-     */
-    private static final int MAX_VM_RECOVERY_TIME_SECS = 450;
 
     private double maxTimeToGenerateFailureInHours;
 
@@ -700,7 +701,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
         //computes the differences between failure times t2 - t1
         double sum=0, previous=faultTimes.get(0);
-        for(Double v: faultTimes) {
+        for(final Double v: faultTimes) {
             sum += (v - previous);
             previous = v;
         }

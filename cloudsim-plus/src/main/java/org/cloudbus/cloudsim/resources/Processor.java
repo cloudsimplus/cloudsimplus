@@ -77,7 +77,7 @@ public final class Processor extends ResourceManageableAbstract {
      * @param newMips the new MIPS of each PE
      * @pre newMips >= 0
      */
-    public final void setMips(double newMips) {
+    public void setMips(double newMips) {
         if(newMips < 0) {
             throw new IllegalArgumentException("MIPS cannot be negative");
         }
@@ -118,7 +118,7 @@ public final class Processor extends ResourceManageableAbstract {
      * @return
      */
     @Override
-    public final boolean setCapacity(long numberOfPes) {
+    public boolean setCapacity(long numberOfPes) {
         if(numberOfPes < 0){
             throw new IllegalArgumentException("The Processsor's number of PEs cannot be negative.");
         }

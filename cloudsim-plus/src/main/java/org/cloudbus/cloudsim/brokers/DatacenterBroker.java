@@ -372,5 +372,5 @@ public interface DatacenterBroker extends SimEntity {
      * @see #DEFAULT_VM_DESTRUCTION_DELAY
      * @see Vm#getIdleInterval()
      */
-    DatacenterBroker setVmDestructionDelayFunction(final Function<Vm, Double> function);
+    DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function);
 }

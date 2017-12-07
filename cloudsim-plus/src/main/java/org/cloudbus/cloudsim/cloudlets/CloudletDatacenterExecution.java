@@ -7,8 +7,8 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter, the cloudlet's
  * execution history on each Datacenter is registered at {@link CloudletAbstract#getLastExecutionInDatacenterInfo()}
  */
-final class ExecutionInDatacenterInfo {
-    protected static final ExecutionInDatacenterInfo NULL = new ExecutionInDatacenterInfo();
+final class CloudletDatacenterExecution {
+    protected static final CloudletDatacenterExecution NULL = new CloudletDatacenterExecution();
 
     private double arrivalTime;
     private double wallClockTime;
@@ -17,7 +17,7 @@ final class ExecutionInDatacenterInfo {
     private long finishedSoFar;
     private Datacenter datacenter;
 
-    ExecutionInDatacenterInfo() {
+    CloudletDatacenterExecution() {
         this.datacenter = Datacenter.NULL;
         this.arrivalTime = Cloudlet.NOT_ASSIGNED;
     }

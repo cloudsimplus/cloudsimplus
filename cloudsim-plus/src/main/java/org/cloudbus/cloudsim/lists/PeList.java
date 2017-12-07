@@ -163,7 +163,6 @@ public final class PeList {
      * @see #setStatusFailed(java.util.List, boolean)
      */
     public static void setStatusFailed(List<? extends Pe> peList, int hostId, boolean failed) {
-        String status = (failed ? "FAILED" : "WORKING");
         setStatusFailed(peList, failed);
     }
 

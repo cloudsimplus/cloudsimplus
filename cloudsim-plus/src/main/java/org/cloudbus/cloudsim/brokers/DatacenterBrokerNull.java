@@ -65,12 +65,6 @@ final class DatacenterBrokerNull implements DatacenterBroker {
         return Collections.emptyList();
     }
     @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.EMPTY_LIST; }
-    @Override public void submitVm(Vm vm) {/**/}
-    @Override public void submitCloudlet(Cloudlet cloudlet) {/**/}
-    @Override public void submitCloudletList(List<? extends Cloudlet> list) {/**/}
-    @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {/**/}
-    @Override public void submitVmList(List<? extends Vm> list) {/**/}
-    @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {/**/}
     @Override public boolean isThereWaitingCloudlets() { return false; }
     @Override public void shutdownEntity() {/**/}
     @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
@@ -86,6 +80,13 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
     @Override public void setLog(boolean log) {}
     @Override public void println(String msg) {}
+    @Override public void submitCloudlet(Cloudlet cloudlet) {/**/}
+    @Override public void submitCloudletList(List<? extends Cloudlet> list) {/**/}
+    @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {/**/}
     @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm) {}
     @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay) {}
+
+    @Override public void submitVm(Vm vm) {/**/}
+    @Override public void submitVmList(List<? extends Vm> list) {/**/}
+    @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {/**/}
 }

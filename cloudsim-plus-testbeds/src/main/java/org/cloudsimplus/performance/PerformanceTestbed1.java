@@ -89,11 +89,7 @@ public class PerformanceTestbed1 {
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    public static void main(String[] args) {
-        new PerformanceTestbed1();
-    }
-
-    public PerformanceTestbed1() {
+    private PerformanceTestbed1() {
         hostList = new ArrayList<>(HOSTS);
         vmList = new ArrayList<>(VMS);
         cloudletList = new ArrayList<>(CLOUDLETS);
@@ -118,6 +114,10 @@ public class PerformanceTestbed1 {
         Log.enable();
         //new CloudletsTableBuilder(finishedCloudlets).build();
         System.out.printf("Execution time: %.2f seconds\n", (System.currentTimeMillis()-startTime)/1000);
+    }
+
+    public static void main(String[] args) {
+        new PerformanceTestbed1();
     }
 
     /**

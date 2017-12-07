@@ -62,6 +62,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudsimplus.faultinjection.VmCloner;
 import org.cloudsimplus.faultinjection.VmClonerSimple;
 import org.cloudsimplus.slametrics.SlaMetricDimension;
 import org.cloudsimplus.vmtemplates.AwsEc2Template;
@@ -70,12 +71,37 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
- * An experiment using a {@link HostFaultInjection} which it set a VM cloner
- * linked to Broker when all VMs associated with it are destroyed.
+ * An experiment using a {@link HostFaultInjection} to generate random Host failures.
+ * The experiment sets a {@link VmCloner}
+ * linked to {@link DatacenterBroker} when all VMs associated with that broker are destroyed.
+ * This way, new VMs are created for fault recovery.
+ *
+ * The experiment assesses if the SLA contract of the customer (represented by a {@link DatacenterBroker}
+ * is being met or not.
  *
  * @author raysaoliveira
  */
 public final class HostFaultInjectionExperiment extends SimulationExperiment {
+    /**
+     * The list of SLA Contracts in JSON format which are used to assess
+     * if the metrics in those contracts are being met.
+     * This file is stored into the resources directory.
+     */
+    public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
+
+    /*The average number of failures expected to happen each hour
+    in a Poisson Process, which is also called event rate or rate parameter.*/
+    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.025;
+
+    /**
+     * The simulation time (in HOURS) after which, no failure will be generated,
+     * allowing the simulation to finish any moment after this time.
+     */
+    public static final int MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS = 800;
+
+    /**
+     * The time interval (in seconds) in which {@link Datacenter} events will be processed.
+     */
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 300; // (5 seconds * 60 (1 minute))
 
     private static final int HOST_PES = 4;
@@ -96,24 +122,27 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      * this array defines the number of Datacenters to be created.
      */
     private static final int HOSTS = 30;
-    public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
-
-    /*The average number of failures expected to happen each hour
-    in a Poisson Process, which is also called event rate or rate parameter.*/
-    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.025;
-    public static final int MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS = 800;
 
     private List<Host> hostList;
 
     private HostFaultInjection faultInjection;
 
-    private final ContinuousDistribution randCloudlet;
     /**
-     * A map containing the {@link SlaContract} associated to each
-     * {@link DatacenterBroker} representing a customer.
+     * A random number generator used to define the number of cloudlets to create.
      */
-    public Map<DatacenterBroker, SlaContract> contractsMap;
-    public Map<DatacenterBroker, AwsEc2Template> templatesMap;
+    private final ContinuousDistribution randCloudlet;
+
+    /**
+     * The map of SLA Contracts for each customer represented by a {@link DatacenterBroker}.
+     */
+    private Map<DatacenterBroker, SlaContract> contractsMap;
+
+    /**
+     * The map of Amazon EC2 Templates which will be used to create VMs for
+     * each customer represented by a {@link DatacenterBroker}.
+     */
+    private Map<DatacenterBroker, AwsEc2Template> templatesMap;
+
     private int numVms = 0;
 
     private HostFaultInjectionExperiment(final long seed) {
@@ -651,5 +680,17 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     public HostFaultInjection getFaultInjection() {
         return faultInjection;
+    }
+
+    /**
+     * A map containing the {@link SlaContract} associated to each
+     * {@link DatacenterBroker} representing a customer.
+     */
+    public Map<DatacenterBroker, SlaContract> getContractsMap() {
+        return contractsMap;
+    }
+
+    public Map<DatacenterBroker, AwsEc2Template> getTemplatesMap() {
+        return templatesMap;
     }
 }

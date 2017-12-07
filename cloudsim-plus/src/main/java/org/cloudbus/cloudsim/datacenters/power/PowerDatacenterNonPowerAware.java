@@ -230,7 +230,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
         try {
             hostPower = host.getMaxPower() * timeSpan;
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             hostPower = 0;
         }
         return hostPower;

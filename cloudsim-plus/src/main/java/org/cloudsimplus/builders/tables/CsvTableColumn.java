@@ -31,6 +31,11 @@ package org.cloudsimplus.builders.tables;
  * @since CloudSim Plus 1.0
  */
 public class CsvTableColumn extends AbstractTableColumn {
+    /**
+     * A format used to print data followed by the column separator.
+     */
+    public static final String DATA_COL_SEPARATOR_FORMAT = "%s%s";
+
     public CsvTableColumn(final String title, final String subTitle) {
         this(null, title, subTitle);
     }
@@ -53,7 +58,7 @@ public class CsvTableColumn extends AbstractTableColumn {
             return str;
         }
 
-        return String.format("%s%s", str, getTable().getColumnSeparator());
+        return String.format(DATA_COL_SEPARATOR_FORMAT, str, getTable().getColumnSeparator());
     }
 
     @Override
@@ -62,7 +67,7 @@ public class CsvTableColumn extends AbstractTableColumn {
             return super.generateData(data);
         }
 
-        return String.format("%s%s", super.generateData(data), getTable().getColumnSeparator());
+        return String.format(DATA_COL_SEPARATOR_FORMAT, super.generateData(data), getTable().getColumnSeparator());
     }
 
 

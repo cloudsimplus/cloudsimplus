@@ -45,6 +45,8 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  */
 public class CloudletsTableBuilder {
     private static final String SECONDS = "Seconds";
+    private static final String CPU_CORES = "CPU cores";
+    public static final String TIME_FORMAT = "%d";
     private TableBuilder table;
     private List<? extends Cloudlet> cloudletList;
     /**
@@ -136,19 +138,19 @@ public class CloudletsTableBuilder {
         columnsDataFunctions.put(table.addColumn("Status "), c -> c.getStatus().name());
         columnsDataFunctions.put(table.addColumn("DC", ID), c -> c.getVm().getHost().getDatacenter().getId());
         columnsDataFunctions.put(table.addColumn("Host", ID), c -> c.getVm().getHost().getId());
-        columnsDataFunctions.put(table.addColumn("Host PEs ", "CPU cores"), c -> c.getVm().getHost().getNumberOfWorkingPes());
+        columnsDataFunctions.put(table.addColumn("Host PEs ", CPU_CORES), c -> c.getVm().getHost().getNumberOfWorkingPes());
         columnsDataFunctions.put(table.addColumn("VM", ID), c -> c.getVm().getId());
-        columnsDataFunctions.put(table.addColumn("VM PEs   ", "CPU cores"), c -> c.getVm().getNumberOfPes());
+        columnsDataFunctions.put(table.addColumn("VM PEs   ", CPU_CORES), c -> c.getVm().getNumberOfPes());
         columnsDataFunctions.put(table.addColumn("CloudletLen", "MI"), c -> c.getLength());
-        columnsDataFunctions.put(table.addColumn("CloudletPEs", "CPU cores"), c -> c.getNumberOfPes());
+        columnsDataFunctions.put(table.addColumn("CloudletPEs", CPU_CORES), c -> c.getNumberOfPes());
 
-        TableColumn col = table.addColumn("StartTime", SECONDS).setFormat("%d");
+        TableColumn col = table.addColumn("StartTime", SECONDS).setFormat(TIME_FORMAT);
         columnsDataFunctions.put(col, c -> (long)c.getExecStartTime());
 
-        col = table.addColumn("FinishTime", SECONDS).setFormat("%d");
+        col = table.addColumn("FinishTime", SECONDS).setFormat(TIME_FORMAT);
         columnsDataFunctions.put(col, c -> (long)c.getFinishTime());
 
-        col = table.addColumn("ExecTime", SECONDS).setFormat("%d");
+        col = table.addColumn("ExecTime", SECONDS).setFormat(TIME_FORMAT);
         columnsDataFunctions.put(col, c -> (long)Math.ceil(c.getActualCpuTime()));
     }
 
@@ -169,7 +171,7 @@ public class CloudletsTableBuilder {
      * @param table the  {@link TableBuilder} to set
      * @return
      */
-    private final CloudletsTableBuilder setTable(TableBuilder table) {
+    private CloudletsTableBuilder setTable(TableBuilder table) {
         Objects.requireNonNull(table);
         this.table = table;
         return this;

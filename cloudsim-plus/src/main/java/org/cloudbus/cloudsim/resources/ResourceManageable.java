@@ -111,6 +111,21 @@ public interface ResourceManageable extends Resource {
     }
 
     /**
+     * Try to deallocate all the capacity of the given resource from this resource.
+     * This method is commonly used to deallocate a specific
+     * amount of a physical resource (this Resource instance)
+     * that was being used by a virtualized resource (the given Resource).
+     *
+     * @param resource the resource that its capacity will be deallocated
+     * @return true if capacity of the given resource > 0 and there is enough resource to
+     * deallocate, false otherwise
+     * @see #deallocateResource(long)
+     */
+    default boolean deallocateResource(Resource resource){
+        return deallocateResource(resource.getCapacity());
+    }
+
+    /**
      * Try to deallocate a given amount of the resource.
      *
      * @param amountToDeallocate the amount of resource to be deallocated
@@ -132,21 +147,6 @@ public interface ResourceManageable extends Resource {
      * deallocate, false otherwise
      */
     boolean deallocateAndRemoveResource(long amountToDeallocate);
-
-    /**
-     * Try to deallocate all the capacity of the given resource from this resource.
-     * This method is commonly used to deallocate a specific
-     * amount of a physical resource (this Resource instance)
-     * that was being used by a virtualized resource (the given Resource).
-     *
-     * @param resource the resource that its capacity will be deallocated
-     * @return true if capacity of the given resource > 0 and there is enough resource to
-     * deallocate, false otherwise
-     * @see #deallocateResource(long)
-     */
-    default boolean deallocateResource(Resource resource){
-        return deallocateResource(resource.getCapacity());
-    }
 
     /**
      * Deallocates all allocated resources, restoring the total available

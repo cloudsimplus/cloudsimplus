@@ -49,13 +49,13 @@ public class HostTest {
     }
 
     private Datacenter createMockDatacenter() {
-        Datacenter dc = EasyMock.createMock(Datacenter.class);
+        final Datacenter dc = EasyMock.createMock(Datacenter.class);
         EasyMock.replay(dc);
         return dc;
     }
 
     private EventListener<HostUpdatesVmsProcessingEventInfo> createMockListener() {
-        EventListener l = EasyMock.createMock(EventListener.class);
+        final EventListener l = EasyMock.createMock(EventListener.class);
         EasyMock.replay(l);
         return l;
     }

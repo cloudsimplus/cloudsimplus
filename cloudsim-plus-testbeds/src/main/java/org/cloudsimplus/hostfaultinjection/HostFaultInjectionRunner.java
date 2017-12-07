@@ -31,13 +31,12 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.slametrics.SlaContract;
-import org.cloudsimplus.slametrics.SlaMetric;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import static java.util.stream.Collectors.toMap;
 
 /**
- * * Runs the {@link HostFaultInjectionExperiment} the number of
+ * Runs the {@link HostFaultInjectionExperiment} the number of
  * times defines by {@link #getSimulationRuns()} and compute statistics.
  *
  * @author raysaoliveira
@@ -47,6 +46,11 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     static final long[] CLOUDLET_LENGTHS = {1000_000_000L, 1800_000_000L, 2800_000_000L };
+
+    /**
+     * Indicates if each experiment will output execution logs or not.
+     */
+    private final boolean experimentVerbose = false;
 
     /**
      * Datacenter availability for each experiment.
@@ -101,10 +105,18 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
 
     private Map<String, List<Double>> getTemplate;
 
-    /**
-     * Indicates if each experiment will output execution logs or not.
-     */
-    private final boolean experimentVerbose = false;
+
+    private HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+        super(applyAntitheticVariatesTechnique, baseSeed);
+        availabilityByBroker = new HashMap<>();
+        availability = new ArrayList<>();
+        percentageOfBrokersMeetingAvailability = new ArrayList<>();
+        ratioVmsPerHost = new ArrayList<>();
+        percentageOfBrokersMeetingCost = new ArrayList<>();
+        costTotal = new HashMap<>();
+        customerActualPricePerHour =  new HashMap<>();
+        getTemplate = new HashMap<>();
+    }
 
     /**
      * Starts the execution of the experiments the number of times defines in
@@ -118,18 +130,6 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
             .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
             .setVerbose(true)
             .run();
-    }
-
-    HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
-        super(applyAntitheticVariatesTechnique, baseSeed);
-        availabilityByBroker = new HashMap<>();
-        availability = new ArrayList<>();
-        percentageOfBrokersMeetingAvailability = new ArrayList<>();
-        ratioVmsPerHost = new ArrayList<>();
-        percentageOfBrokersMeetingCost = new ArrayList<>();
-        costTotal = new HashMap<>();
-        customerActualPricePerHour =  new HashMap<>();
-        getTemplate = new HashMap<>();
     }
 
     @Override
@@ -149,7 +149,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
         final HostFaultInjection faultInjection = exp.getFaultInjection();
-        Map<DatacenterBroker, SlaContract> contract = exp.contractsMap;
+        Map<DatacenterBroker, SlaContract> contract = exp.getContractsMap();
 
         availability.add(faultInjection.availability() * 100);
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());

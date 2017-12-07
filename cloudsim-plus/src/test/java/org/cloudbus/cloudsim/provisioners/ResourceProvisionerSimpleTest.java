@@ -70,7 +70,7 @@ public class ResourceProvisionerSimpleTest {
         assertEquals(p.getCapacity(), p.getAvailableResource());
         assertEquals(0, p.getTotalAllocatedResource());
 
-        VmSimple vm = createVm(1, CAPACITY);
+        final VmSimple vm = createVm(1, CAPACITY);
         final long allocatedResource = HALF_CAPACITY;
         p.allocateResourceForVm(vm, allocatedResource);
         assertEquals(allocatedResource, p.getTotalAllocatedResource());

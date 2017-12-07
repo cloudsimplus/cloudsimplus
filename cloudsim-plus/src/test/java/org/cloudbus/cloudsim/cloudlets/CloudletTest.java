@@ -18,7 +18,7 @@ public class CloudletTest {
 
     @Test
     public void testIsBoundedToVm() {
-        Cloudlet cloudlet = createCloudlet(0);
+        final Cloudlet cloudlet = createCloudlet(0);
         assertFalse(cloudlet.isBindToVm());
         cloudlet.setVm(Vm.NULL);
         assertFalse(cloudlet.isBindToVm());

@@ -38,7 +38,7 @@ public interface TableColumn {
      * @param data The data of the column to be formatted
      * @return a string containing the formatted column data
      */
-    String generateData(final Object data);
+    String generateData(Object data);
 
     /**
      * Generates the string that represents the header of the column,

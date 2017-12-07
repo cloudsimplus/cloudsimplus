@@ -151,14 +151,6 @@ public class HostSimple implements Host {
         this.vmsMigratingOut = new HashSet<>();
     }
 
-    @Override
-    public double getTotalMipsCapacity() {
-        return peList.stream()
-                .filter(Pe::isWorking)
-                .mapToDouble(Pe::getCapacity)
-                .sum();
-    }
-
     /**
      * Creates a Host with the given parameters.
      *
@@ -175,18 +167,26 @@ public class HostSimple implements Host {
      */
     @Deprecated
     public HostSimple(
-            int id,
-            ResourceProvisioner ramProvisioner,
-            ResourceProvisioner bwProvisioner,
-            long storage,
-            List<Pe> peList,
-            VmScheduler vmScheduler)
+        int id,
+        ResourceProvisioner ramProvisioner,
+        ResourceProvisioner bwProvisioner,
+        long storage,
+        List<Pe> peList,
+        VmScheduler vmScheduler)
     {
         this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setPeList(peList);
         setVmScheduler(vmScheduler);
+    }
+
+    @Override
+    public double getTotalMipsCapacity() {
+        return peList.stream()
+                .filter(Pe::isWorking)
+                .mapToDouble(Pe::getCapacity)
+                .sum();
     }
 
     @Override
@@ -307,10 +307,11 @@ public class HostSimple implements Host {
 
     @Override
     public boolean isSuitableForVm(Vm vm) {
-        return active && (vmScheduler.getPeCapacity() >= vm.getCurrentRequestedMaxMips()
-                && vmScheduler.getAvailableMips() >= vm.getCurrentRequestedTotalMips()
-                && ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam())
-                && bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()));
+        return  active &&
+                vmScheduler.getPeCapacity() >= vm.getCurrentRequestedMaxMips() &&
+                vmScheduler.getAvailableMips() >= vm.getCurrentRequestedTotalMips() &&
+                ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()) &&
+                bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw());
     }
 
     @Override
