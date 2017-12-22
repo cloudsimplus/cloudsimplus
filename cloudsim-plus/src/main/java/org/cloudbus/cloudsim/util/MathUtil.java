@@ -219,13 +219,13 @@ public final class MathUtil {
      * @return the Loess parameter estimates
      */
     public static double[] getLoessParameterEstimates(final double... y) {
-        int n = y.length;
-        double[] x = new double[n];
-        for (int i = 0; i < n; i++) {
+        final double[] x = new double[y.length];
+        for (int i = 0; i < y.length; i++) {
             x[i] = i + 1;
         }
-        return createWeigthedLinearRegression(x, y, getTricubeWeights(n))
-            .regress().getParameterEstimates();
+
+        return createWeigthedLinearRegression(x, y, getTricubeWeights(y.length))
+                .regress().getParameterEstimates();
     }
 
     public static SimpleRegression createLinearRegression(final double[] x, final double[] y) {

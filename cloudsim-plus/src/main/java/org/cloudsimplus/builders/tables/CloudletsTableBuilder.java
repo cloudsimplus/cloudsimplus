@@ -44,9 +44,9 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  * @since CloudSim Plus 1.0
  */
 public class CloudletsTableBuilder {
+    private static final String TIME_FORMAT = "%d";
     private static final String SECONDS = "Seconds";
     private static final String CPU_CORES = "CPU cores";
-    public static final String TIME_FORMAT = "%d";
     private TableBuilder table;
     private List<? extends Cloudlet> cloudletList;
     /**
@@ -132,7 +132,7 @@ public class CloudletsTableBuilder {
      * Creates the columns of the table and define how the data for those columns
      * will be got from a Cloudlet.
      */
-    protected void createTableColumns() {
+    private void createTableColumns() {
         final String ID = "ID";
         columnsDataFunctions.put(table.addColumn("Cloudlet", ID), c -> c.getId());
         columnsDataFunctions.put(table.addColumn("Status "), c -> c.getStatus().name());

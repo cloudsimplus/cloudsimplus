@@ -76,7 +76,6 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         mipsShare1.add(250.0);
 
         assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
-        final List<Pe> peList = vmScheduler.getHost().getPeList();
         assertEquals(1750, vmScheduler.getAvailableMips(), 0);
         assertEquals(1000, vmScheduler.getMaxAvailableMips(), 0);
         assertEquals(MIPS / 4, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0);

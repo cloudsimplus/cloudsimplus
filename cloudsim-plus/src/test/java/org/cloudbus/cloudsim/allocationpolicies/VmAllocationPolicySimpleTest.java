@@ -82,7 +82,6 @@ public class VmAllocationPolicySimpleTest {
 
     @Test
     public void allocateHostForVm_WhenOneVmIsGivenAndNoHostHasResourcesToRunIt() {
-        final Host secondHostWithLessPes = policy.getDatacenter().getHostList().get(3);
         final Vm vm = VmSimpleTest.createVm(0, 1000, 10);
         assertFalse(policy.allocateHostForVm(vm));
     }

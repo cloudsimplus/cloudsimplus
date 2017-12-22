@@ -58,8 +58,8 @@ public class ResourceScalingInstantaneous implements ResourceScaling {
     private static final ResourceScaling gradual = new ResourceScalingGradual();
 
     @Override
-    public double getResourceAmountToScale(VerticalVmScaling vmScaling) {
-        Function<Vm, Double> thresholdFunction = vmScaling.getResourceUsageThresholdFunction();
+    public double getResourceAmountToScale(final VerticalVmScaling vmScaling) {
+        final Function<Vm, Double> thresholdFunction = vmScaling.getResourceUsageThresholdFunction();
         /* Computes the size to which the resource has to be scaled to move it from the
         * under or overload state.*/
         final double newResourceSize =

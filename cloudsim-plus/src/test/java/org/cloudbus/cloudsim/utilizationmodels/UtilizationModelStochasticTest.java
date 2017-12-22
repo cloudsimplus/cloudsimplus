@@ -29,8 +29,8 @@ public class UtilizationModelStochasticTest {
 
     @Test
     public void testGetUtilization() {
-        double utilization0 = utilizationModel.getUtilization(0);
-        double utilization1 = utilizationModel.getUtilization(1);
+        final double utilization0 = utilizationModel.getUtilization(0);
+        final double utilization1 = utilizationModel.getUtilization(1);
         assertNotNull(utilization0);
         assertNotNull(utilization1);
         assertNotSame(utilization0, utilization1);

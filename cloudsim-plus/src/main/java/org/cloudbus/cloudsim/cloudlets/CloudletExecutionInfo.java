@@ -12,6 +12,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 
+import java.util.Objects;
+
 /**
  * Stores execution information about a {@link Cloudlet} submitted to a specific {@link Datacenter} for
  * processing. This class keeps track of the time for all activities in the
@@ -110,7 +112,7 @@ public class CloudletExecutionInfo {
      * @pre cloudlet != null
      * @post $none
      */
-    public CloudletExecutionInfo(Cloudlet cloudlet) {
+    public CloudletExecutionInfo(final Cloudlet cloudlet) {
         this(cloudlet, 0);
     }
 
@@ -125,7 +127,7 @@ public class CloudletExecutionInfo {
      * @pre startTime > 0
      * @post $none
      */
-    public CloudletExecutionInfo(Cloudlet cloudlet, long startTime) {
+    public CloudletExecutionInfo(final Cloudlet cloudlet, final long startTime) {
         this.cloudlet = cloudlet;
         this.arrivalTime = cloudlet.registerArrivalInDatacenter();
         this.finishedTime = Cloudlet.NOT_ASSIGNED;
@@ -162,12 +164,12 @@ public class CloudletExecutionInfo {
      * @pre status >= 0
      * @post $none
      */
-    public boolean setCloudletStatus(Cloudlet.Status newStatus) {
+    public boolean setCloudletStatus(final Cloudlet.Status newStatus) {
         // gets Cloudlet's previous status
         final Cloudlet.Status prevStatus = cloudlet.getStatus();
 
         // if the status of a Cloudlet is the same as last time, then ignore
-        if (prevStatus == newStatus) {
+        if (prevStatus.equals(newStatus)) {
             return false;
         }
 
@@ -196,7 +198,7 @@ public class CloudletExecutionInfo {
      * @param newStatus the new status that will be checked to start or resume the Cloudlet
      * @param oldStatus the old Cloudlet status
      */
-    private void startOrResumeCloudlet(Cloudlet.Status newStatus, Cloudlet.Status oldStatus) {
+    private void startOrResumeCloudlet(final Cloudlet.Status newStatus, final Cloudlet.Status oldStatus) {
         final double clock = cloudlet.getSimulation().clock();
         if (newStatus == Cloudlet.Status.INEXEC || (oldStatus == Cloudlet.Status.PAUSED && newStatus == Cloudlet.Status.RESUMED)) {
             startExecTime = clock;
@@ -212,7 +214,7 @@ public class CloudletExecutionInfo {
      * @param status The current cloudlet status
      * @return true if the cloudlet is NOT running, false if it is.
      */
-    private static boolean isNotRunning(Cloudlet.Status status) {
+    private static boolean isNotRunning(final Cloudlet.Status status) {
         return status == Cloudlet.Status.CANCELED || status == Cloudlet.Status.PAUSED || status == Cloudlet.Status.SUCCESS;
     }
 
@@ -457,8 +459,12 @@ public class CloudletExecutionInfo {
 
     @Override
     public boolean equals(Object obj) {
-        return (obj instanceof CloudletExecutionInfo) &&
+        return obj instanceof CloudletExecutionInfo &&
                ((CloudletExecutionInfo)obj).cloudlet.getId() == this.cloudlet.getId();
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(cloudlet.getId());
+    }
 }

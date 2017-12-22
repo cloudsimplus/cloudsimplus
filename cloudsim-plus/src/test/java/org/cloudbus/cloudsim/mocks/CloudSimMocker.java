@@ -63,8 +63,8 @@ public final class CloudSimMocker {
      *                 methods from CloudSim class
      * @return the created CloudSim mock object
      */
-    public static CloudSim createMock(Consumer<CloudSimMocker> consumer) {
-        CloudSimMocker mocker = new CloudSimMocker();
+    public static CloudSim createMock(final Consumer<CloudSimMocker> consumer) {
+        final CloudSimMocker mocker = new CloudSimMocker();
         consumer.accept(mocker);
         EasyMock.expect(mocker.mock.isRunning()).andReturn(true).anyTimes();
         CloudSimMocker.replay(mocker.mock);

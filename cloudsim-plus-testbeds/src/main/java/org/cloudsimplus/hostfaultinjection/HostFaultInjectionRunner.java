@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toMap;
  *
  * @author raysaoliveira
  */
-class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment> {
+public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment> {
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
@@ -55,7 +55,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     /**
      * Datacenter availability for each experiment.
      */
-    private List<Double> availability;
+    private final List<Double> availability;
 
     /**
      * A map of each availability achieved by each broker for each experiment.
@@ -86,7 +86,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     /**
      * Average number of VMs for each existing Host.
      */
-    private List<Double> ratioVmsPerHost;
+    private final List<Double> ratioVmsPerHost;
 
     /**
      * Gets the cost total of each broker.
@@ -98,13 +98,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     private Map<String, List<Double>> customerActualPricePerHour;
 
-    /**
-     * Percentage of brokers meeting Cost average for each experiment.
-     */
-    private List<Double> percentageOfBrokersMeetingCost;
-
     private Map<String, List<Double>> getTemplate;
-
 
     private HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
@@ -112,7 +106,6 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         availability = new ArrayList<>();
         percentageOfBrokersMeetingAvailability = new ArrayList<>();
         ratioVmsPerHost = new ArrayList<>();
-        percentageOfBrokersMeetingCost = new ArrayList<>();
         costTotal = new HashMap<>();
         customerActualPricePerHour =  new HashMap<>();
         getTemplate = new HashMap<>();
@@ -133,8 +126,8 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
     }
 
     @Override
-    protected HostFaultInjectionExperiment createExperiment(int i) {
-        HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(i, this);
+    protected HostFaultInjectionExperiment createExperiment(final int i) {
+        final HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(i, this);
         exp.setVerbose(experimentVerbose)
             .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
@@ -149,7 +142,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
         final HostFaultInjection faultInjection = exp.getFaultInjection();
-        Map<DatacenterBroker, SlaContract> contract = exp.getContractsMap();
+        final Map<DatacenterBroker, SlaContract> contract = exp.getContractsMap();
 
         availability.add(faultInjection.availability() * 100);
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
@@ -171,11 +164,6 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
             .stream()
             .sorted()
             .collect(toMap(b -> b, exp::getCustomerActualPricePerHour));
-
-        final Map<DatacenterBroker, Double> templatePrice = exp.getBrokerList()
-            .stream()
-            .sorted()
-            .collect(toMap(b -> b, exp::getTemplatesMap));
 
         /*
          * Gets the availability of each broker for the current experiment
@@ -237,17 +225,10 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
-        Map<String, List<Double>> map = new HashMap<>();
+        final Map<String, List<Double>> map = new HashMap<>();
         map.put("Average of Total Availability of Simulation", availability);
-          map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
+        map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
         map.put("Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
-
-       // map.put("Percentagem of brokers meeting the Cost: ", percentageOfBrokersMeetingCost);
-        // this.availabilityByBroker.forEach((brokerName, availabilities) -> map.put(brokerName + " availability: ", availabilities));
-       // this.costTotal.forEach((brokerName, costs) -> map.put(brokerName + " cost: ", costs));
-      //  this.customerActualPricePerHour.forEach((brokerName, priceCustomerPerHour) -> map.put(brokerName + " price customer per hour: ", priceCustomerPerHour));
-      //  this.getTemplate.forEach((brokerName, priceTemplate) -> map.put(brokerName + " price Template: ", priceTemplate));
-
 
         return map;
     }
@@ -271,6 +252,7 @@ class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperi
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
+
         if (getSimulationRuns() > 1) {
             showConfidenceInterval(stats);
         }

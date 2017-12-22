@@ -160,20 +160,20 @@ public class RamTest {
         assertEquals(0, instance.getAvailableResource());
         assertEquals(instance.getCapacity(), instance.getAllocatedResource());
 
-        assertEquals(false, instance.allocateResource(allocation));
+        assertFalse(instance.allocateResource(allocation));
         //available and allocated amount has to be unchanged
         assertEquals(0, instance.getAvailableResource());
         assertEquals(instance.getCapacity(), instance.getAllocatedResource());
 
         //increase the capacity
         final long oldCapacity = CAPACITY, newCapacity = oldCapacity + allocation;
-        assertEquals(true, instance.setCapacity(newCapacity));
+        assertTrue(instance.setCapacity(newCapacity));
         assertEquals(newCapacity, instance.getCapacity());
         assertEquals(allocation, instance.getAvailableResource());
         assertEquals(oldCapacity, instance.getAllocatedResource());
 
         //try a new allocation
-        assertEquals(true, instance.allocateResource(allocation));
+        assertTrue(instance.allocateResource(allocation));
         assertEquals(0, instance.getAvailableResource());
         assertEquals(newCapacity, instance.getAllocatedResource());
     }

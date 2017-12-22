@@ -60,7 +60,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public class PerformanceTestbed1 {
+public final class PerformanceTestbed1 {
     private static final int  HOSTS = 2_000;
     private static final int  HOST_PES = 8;
 

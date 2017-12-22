@@ -357,7 +357,7 @@ public class FileAttribute {
      * @return <tt>true</tt> if it is registered, <tt>false</tt> otherwise
      */
     public boolean isRegistered() {
-        return (id != File.NOT_REGISTERED);
+        return id != File.NOT_REGISTERED;
     }
 
     /**

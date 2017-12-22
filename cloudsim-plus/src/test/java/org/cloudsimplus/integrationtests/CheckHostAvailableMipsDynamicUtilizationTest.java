@@ -121,7 +121,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 + " to be correctly updated.")
     public void integrationTest() {
         simulation.start();
-        DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
+        final DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
         printCloudletsExecutionResults(broker);
     }
 

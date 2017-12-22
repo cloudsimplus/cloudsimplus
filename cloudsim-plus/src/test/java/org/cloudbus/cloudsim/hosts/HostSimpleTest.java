@@ -100,7 +100,7 @@ public class HostSimpleTest {
 
         final List<Vm> vms = new ArrayList<>();
         IntStream.range(0, 2).forEach(i -> {
-            Vm vm = VmSimpleTest.createVm(
+            final Vm vm = VmSimpleTest.createVm(
                     i, MIPS/numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms,
                     new CloudletSchedulerTimeShared());
             vm.setHost(Host.NULL);
@@ -195,7 +195,7 @@ public class HostSimpleTest {
 
     public void testAddMigratingInVm_lackOfStorage() {
         final int numberOfPes = 2;
-        Host host = createHostSimple(0, numberOfPes);
+        final Host host = createHostSimple(0, numberOfPes);
         final Vm vm = VmSimpleTest.createVm(0, MIPS, numberOfPes, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
@@ -238,23 +238,12 @@ public class HostSimpleTest {
     @Test
     public void testUpdateVmProcessing() {
         final int numberOfVms = 4;
-        final List<Vm> vmList = new ArrayList<>(numberOfVms);
 
         final List<Double> mipsShare = new ArrayList<>(1);
         mipsShare.add(MIPS / numberOfVms);
         final double time = 0;
 
-        IntStream.range(0, numberOfVms).forEach(i -> {
-            double nextCloudletCompletionTimeOfCurrentVm = i+1;
-
-            Vm vm = EasyMock.createMock(Vm.class);
-            EasyMock.expect(vm.updateProcessing(time, mipsShare))
-                    .andReturn(nextCloudletCompletionTimeOfCurrentVm)
-                    .times(1);
-            EasyMock.replay(vm);
-
-            vmList.add(vm);
-        });
+        final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
 
         final VmScheduler vmScheduler = EasyMock.createMock(VmScheduler.class);
         EasyMock.expect(vmScheduler.getAllocatedMips(EasyMock.anyObject()))
@@ -277,6 +266,22 @@ public class HostSimpleTest {
         EasyMock.verify(vm);
 
         EasyMock.verify(vmScheduler);
+    }
+
+    private List<Vm> createListOfMockVms(final int numberOfVms, final List<Double> mipsShare, final double simulationClock) {
+        final List<Vm> vmList = new ArrayList<>(numberOfVms);
+        for(int i = 0; i < numberOfVms; i++) {
+            final double nextCloudletCompletionTimeOfCurrentVm = i+1;
+
+            Vm vm = EasyMock.createMock(Vm.class);
+            EasyMock.expect(vm.updateProcessing(simulationClock, mipsShare))
+                    .andReturn(nextCloudletCompletionTimeOfCurrentVm)
+                    .times(1);
+            EasyMock.replay(vm);
+
+            vmList.add(vm);
+        };
+        return vmList;
     }
 
     @Test

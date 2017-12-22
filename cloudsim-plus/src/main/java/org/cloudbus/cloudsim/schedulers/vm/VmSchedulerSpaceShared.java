@@ -83,16 +83,16 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      * @return the list of PEs that can be allocated to the VM or
      * an empty list if there isn't enough capacity that can be allocated
      */
-    protected List<Pe> getTotalCapacityToBeAllocatedToVm(List<Double> vmRequestedMipsShare) {
+    protected List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> vmRequestedMipsShare) {
         // if there is no enough free PEs, fails
         if (freePesList.size() < vmRequestedMipsShare.size()) {
             return Collections.EMPTY_LIST;
         }
 
-        List<Pe> selectedPes = new ArrayList<>();
-        Iterator<Pe> peIterator = freePesList.iterator();
+        final List<Pe> selectedPes = new ArrayList<>();
+        final Iterator<Pe> peIterator = freePesList.iterator();
         Pe pe = peIterator.next();
-        for (double mips : vmRequestedMipsShare) {
+        for (final double mips : vmRequestedMipsShare) {
             if (mips <= pe.getCapacity()) {
                 selectedPes.add(pe);
                 if (!peIterator.hasNext()) {

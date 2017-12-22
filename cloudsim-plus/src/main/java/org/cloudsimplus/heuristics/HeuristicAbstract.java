@@ -126,7 +126,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 
 	@Override
 	public S solve() {
-		long startTime = System.currentTimeMillis();
+		final long startTime = System.currentTimeMillis();
 		setBestSolutionSoFar(getInitialSolution());
 		while (!isToStopSearch()) {
 			IntStream.range(0, getNumberOfNeighborhoodSearchesByIteration()).forEach(i -> {

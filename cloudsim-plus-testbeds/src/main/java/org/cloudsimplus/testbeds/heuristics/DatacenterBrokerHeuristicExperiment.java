@@ -74,16 +74,15 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * @author Manoel Campos da Silva Filho
  */
 public final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
-
-    protected static final int HOSTS_TO_CREATE = 100;
+    private static final int HOSTS_TO_CREATE = 100;
 
     /**
      * Simulated Annealing (SA) parameters.
      */
-    protected static final double SA_INIT_TEMPERATURE = 1.0;
-    protected static final double SA_COLD_TEMPERATURE = 0.0001;
-    protected static final double SA_COOLING_RATE = 0.003;
-    protected static final int SA_NEIGHBORHOOD_SEARCHES = 50;
+    public static final double SA_INIT_TEMPERATURE = 1.0;
+    public static final double SA_COLD_TEMPERATURE = 0.0001;
+    public static final double SA_COOLING_RATE = 0.003;
+    public static final int SA_NEIGHBORHOOD_SEARCHES = 50;
 
     /**
      * @see #setVmPesArray(int[])
@@ -233,11 +232,11 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
      * Sets the array with Number of PEs for each VM to create. The length of
      * the array defines the number of VMs to create.
      *
-     * @param vmPesArray VMs PEs array to set
+     * @param vmPes VMs PEs array to set
      * @return
      */
-    public DatacenterBrokerHeuristicExperiment setVmPesArray(int... vmPesArray) {
-        this.vmPesArray = vmPesArray;
+    public DatacenterBrokerHeuristicExperiment setVmPesArray(int... vmPes) {
+        this.vmPesArray = vmPes;
         return this;
     }
 
@@ -245,11 +244,11 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
      * Sets the array with Number of PEs for each Cloudlet to create. The length
      * of the array defines the number of Cloudlets to create.
      *
-     * @param cloudletPesArray Cloudlets PEs array to set
+     * @param cloudletPes Cloudlets PEs array to set
      * @return
      */
-    public DatacenterBrokerHeuristicExperiment setCloudletPesArray(int[] cloudletPesArray) {
-        this.cloudletPesArray = Arrays.copyOf(cloudletPesArray, cloudletPesArray.length);
+    public DatacenterBrokerHeuristicExperiment setCloudletPesArray(int... cloudletPes) {
+        this.cloudletPesArray = Arrays.copyOf(cloudletPes, cloudletPes.length);
         return this;
     }
 }

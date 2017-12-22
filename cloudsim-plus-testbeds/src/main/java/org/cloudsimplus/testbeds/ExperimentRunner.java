@@ -558,7 +558,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @param i a number that identifies the experiment
      * @return the created experiment
      */
-    protected abstract T createExperiment(int i);
+    protected abstract T createExperiment(final int i);
 
     /**
      * <p>

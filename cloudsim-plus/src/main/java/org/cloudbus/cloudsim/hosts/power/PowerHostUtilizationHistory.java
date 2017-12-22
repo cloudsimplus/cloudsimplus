@@ -17,10 +17,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.power.PowerVm;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * A {@link PowerHost} that stores its CPU utilization percentage history. The history is used by VM allocation

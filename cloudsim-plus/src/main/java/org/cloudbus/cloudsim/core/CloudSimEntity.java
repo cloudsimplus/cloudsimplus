@@ -407,7 +407,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public void run() {
-        SimEvent ev = buffer != null ? buffer : getNextEvent();
+        SimEvent ev = buffer == null ? getNextEvent() : buffer;
 
         while (ev != null) {
             processEvent(ev);
@@ -434,7 +434,7 @@ public abstract class CloudSimEntity implements SimEntity {
      */
     @Override
     protected final Object clone() throws CloneNotSupportedException {
-        CloudSimEntity copy = (CloudSimEntity) super.clone();
+        final CloudSimEntity copy = (CloudSimEntity) super.clone();
         copy.setName(name);
         copy.setSimulation(simulation);
         copy.setEventBuffer(null);

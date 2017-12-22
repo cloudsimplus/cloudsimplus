@@ -82,10 +82,10 @@ public class EdgeSwitch extends AbstractSwitch {
     protected void processPacketDown(SimEvent ev) {
         super.processPacketDown(ev);
 
-        HostPacket netPkt = (HostPacket) ev.getData();
-        Vm receiverVm = netPkt.getVmPacket().getDestination();
+        final HostPacket netPkt = (HostPacket) ev.getData();
+        final Vm receiverVm = netPkt.getVmPacket().getDestination();
         // packet is to be received by host
-        NetworkHost host = getVmHost(receiverVm);
+        final NetworkHost host = getVmHost(receiverVm);
         netPkt.setDestination(host);
         addPacketToBeSentToHost(host, netPkt);
     }

@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.vms;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
-import static org.easymock.EasyMock.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -194,7 +193,7 @@ public class VmSimpleTest {
         final double allocatedMips=1000;
         final double requestedMips=100;
         final boolean inMigration = false;
-        VmStateHistoryEntry entry =
+        final VmStateHistoryEntry entry =
                 new VmStateHistoryEntry(time, allocatedMips, requestedMips, inMigration);
         vm.addStateHistoryEntry(entry);
         assertFalse(vm.getStateHistory().isEmpty());
@@ -217,7 +216,7 @@ public class VmSimpleTest {
 
     @Test
     public void testAddStateHistoryEntry_changeAddedEntry(){
-        VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
+        final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         entry.setInMigration(true);
         vm.addStateHistoryEntry(entry);
@@ -353,16 +352,16 @@ public class VmSimpleTest {
         final CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedBwPercentUtilization())
+        EasyMock.expect(cloudletScheduler.getCurrentRequestedBwPercentUtilization())
                 .andReturn(currentBwUsagePercent);
-        replay(cloudletScheduler);
+        EasyMock.replay(cloudletScheduler);
 
         final Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
         vm0.setCreated(true);
 
         final long expectedCurrentBwUtilization = (long)(currentBwUsagePercent*BW);
         assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
-        verify(cloudletScheduler);
+        EasyMock.verify(cloudletScheduler);
     }
 
     @Test
@@ -381,14 +380,14 @@ public class VmSimpleTest {
         final CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
         cloudletScheduler.setVm(EasyMock.anyObject());
         EasyMock.expectLastCall().once();
-        expect(cloudletScheduler.getCurrentRequestedRamPercentUtilization())
+        EasyMock.expect(cloudletScheduler.getCurrentRequestedRamPercentUtilization())
                 .andReturn(currentRamUsagePercent);
-        replay(cloudletScheduler);
+        EasyMock.replay(cloudletScheduler);
 
         final Vm vm0 = VmSimpleTest.createVm(cloudletScheduler);
         vm0.setCreated(true);
         assertEquals(expectedCurrentRamUsage, vm0.getCurrentRequestedRam());
-        verify(cloudletScheduler);
+        EasyMock.verify(cloudletScheduler);
     }
 
     @Test

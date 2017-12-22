@@ -104,7 +104,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
 
     @Override
     public List<Object> newRow(){
-        List<Object> row = new ArrayList<>();
+        final List<Object> row = new ArrayList<>();
         rows.add(row);
         return row;
     }
@@ -126,7 +126,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
                 .collect(toList());
 
         int i = 0;
-        for(TableColumn col: cols){
+        for(final TableColumn col: cols){
             Log.print(col.generateData(row.get(i++)));
         }
         printRowClosing();

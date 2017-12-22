@@ -39,7 +39,8 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  */
 public class CloudletToVmMappingSimulatedAnnealing
       extends SimulatedAnnealing<CloudletToVmMappingSolution>
-      implements CloudletToVmMappingHeuristic {
+      implements CloudletToVmMappingHeuristic
+{
     private CloudletToVmMappingSolution initialSolution;
 
     /** @see #getVmList() */
@@ -56,7 +57,7 @@ public class CloudletToVmMappingSimulatedAnnealing
      * @see #setColdTemperature(double)
      * @see #setCoolingRate(double)
      */
-    public CloudletToVmMappingSimulatedAnnealing(double initialTemperature, ContinuousDistribution random) {
+    public CloudletToVmMappingSimulatedAnnealing(final double initialTemperature, final ContinuousDistribution random) {
         super(random, CloudletToVmMappingSolution.class);
 	    setCurrentTemperature(initialTemperature);
         initialSolution = new CloudletToVmMappingSolution(this);
@@ -114,8 +115,8 @@ public class CloudletToVmMappingSimulatedAnnealing
     }
 
     @Override
-    public CloudletToVmMappingSolution createNeighbor(CloudletToVmMappingSolution source) {
-        CloudletToVmMappingSolution clone = new CloudletToVmMappingSolution(source);
+    public CloudletToVmMappingSolution createNeighbor(final CloudletToVmMappingSolution source) {
+        final CloudletToVmMappingSolution clone = new CloudletToVmMappingSolution(source);
         clone.swapVmsOfTwoRandomSelectedMapEntries();
         return clone;
     }

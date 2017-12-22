@@ -27,7 +27,7 @@ public final class ResourceLoader {
      *             (that can be a file or a sub-directory inside the resources directory)
      * @return the absolute path of the resource
      */
-    public static String getResourcePath(Class klass, String name) {
+    public static String getResourcePath(final Class klass, final String name) {
         final URL resource = klass.getClassLoader().getResource(name);
         final String folder = (resource == null ? "" : resource.getPath());
         return (folder == null ? "" : folder);
@@ -42,7 +42,7 @@ public final class ResourceLoader {
      * @return a {@link FileReader} to read the resource
      * @throws FileNotFoundException when the file doesn't exist
      */
-    public static FileReader getFileReader(Class klass, String resourceName) throws FileNotFoundException {
+    public static FileReader getFileReader(final Class klass, final String resourceName) throws FileNotFoundException {
         return new FileReader(ResourceLoader.getResourcePath(klass, resourceName));
     }
 
@@ -55,7 +55,7 @@ public final class ResourceLoader {
      * @return a {@link BufferedReader} to read the resource
      * @throws FileNotFoundException when the file doesn't exist
      */
-    public static BufferedReader getBufferedReader(Class klass, String resourceName) throws FileNotFoundException {
+    public static BufferedReader getBufferedReader(final Class klass, final String resourceName) throws FileNotFoundException {
         return new BufferedReader(getFileReader(klass, resourceName));
     }
 

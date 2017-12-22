@@ -220,7 +220,7 @@ public class PowerDatacenter extends DatacenterSimple {
         }
 
         double datacenterTimeSpanPowerUse = 0;
-        StringBuilder sb = new StringBuilder(this.<PowerHostSimple>getHostList().size()*100);
+        final StringBuilder sb = new StringBuilder(this.<PowerHostSimple>getHostList().size()*100);
         for (PowerHostSimple host : this.<PowerHostSimple>getHostList()) {
             final double previousUseOfCpu = host.getPreviousUtilizationOfCpu();
             final double utilizationOfCpu = host.getUtilizationOfCpu();

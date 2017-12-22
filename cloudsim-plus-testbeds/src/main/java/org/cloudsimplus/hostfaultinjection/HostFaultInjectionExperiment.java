@@ -81,23 +81,23 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  *
  * @author raysaoliveira
  */
-public final class HostFaultInjectionExperiment extends SimulationExperiment {
+final class HostFaultInjectionExperiment extends SimulationExperiment {
     /**
      * The list of SLA Contracts in JSON format which are used to assess
      * if the metrics in those contracts are being met.
      * This file is stored into the resources directory.
      */
-    public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
+    private static final String SLA_CONTRACTS_LIST = "sla-files.txt";
 
     /*The average number of failures expected to happen each hour
     in a Poisson Process, which is also called event rate or rate parameter.*/
-    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.025;
+    private static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.025;
 
     /**
      * The simulation time (in HOURS) after which, no failure will be generated,
      * allowing the simulation to finish any moment after this time.
      */
-    public static final int MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS = 800;
+    private static final int MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS = 800;
 
     /**
      * The time interval (in seconds) in which {@link Datacenter} events will be processed.
@@ -660,23 +660,7 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
         Log.printFormattedLine("# Time the simulations finished: %.2f minutes", exp.getCloudSim().clockInMinutes());
         Log.printFormattedLine("# Hosts MTBF: %.2f minutes", exp.getFaultInjection().meanTimeBetweenHostFaultsInMinutes());
         Log.printFormattedLine("\n# If the hosts are showing in the result equal to 0, it was because the vms ended before the failure was set.\n");
-
-        /*for (DatacenterBroker b : exp.getBrokerList()) {
-            System.out.printf("Customer %d VMs execution time:\n", b.getId());
-            final double totalVmsExecutionHours = b.getVmCreatedList().stream()
-                .peek(vm ->
-                    System.out.printf("\tVm %2d - Start Time: %5.0f Finish Time: %5.0f Total: %5.2f hours\n",
-                        vm.getId(), vm.getStartTime() / 3600, vm.getStopTime() / 3600,
-                        vm.getTotalExecutionTime() / 3600))
-                .mapToDouble(Vm::getTotalExecutionTime)
-                .map(t -> t / 3600.0)
-                .sum();
-
-            System.out.printf(
-                "Total execution time for %d VMs: %.2f hours\n",
-                b.getVmCreatedList().size(), totalVmsExecutionHours);
-        }*/
-        }
+    }
 
     public HostFaultInjection getFaultInjection() {
         return faultInjection;
@@ -688,9 +672,5 @@ public final class HostFaultInjectionExperiment extends SimulationExperiment {
      */
     public Map<DatacenterBroker, SlaContract> getContractsMap() {
         return contractsMap;
-    }
-
-    public Map<DatacenterBroker, AwsEc2Template> getTemplatesMap() {
-        return templatesMap;
     }
 }

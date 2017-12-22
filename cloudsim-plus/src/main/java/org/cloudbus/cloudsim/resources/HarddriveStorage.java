@@ -309,7 +309,7 @@ public class HarddriveStorage implements FileStorage {
         }
 
         if (fileSize > 0 && storage.getCapacity() != 0) {
-            result += (fileSize / (double)storage.getCapacity());
+            result += fileSize / (double)storage.getCapacity();
         }
 
         return result;
@@ -397,23 +397,25 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public double deleteFile(final File file) {
-        double result = 0.0;
         // check if the file is valid or not
         if (!File.isValid(file)) {
-            return result;
+            return 0.0;
         }
-        double seekTime = getSeekTime(file.getSize());
-        double transferTime = getTransferTime(file.getSize());
+
+        final double seekTime = getSeekTime(file.getSize());
+        final double transferTime = getTransferTime(file.getSize());
 
         // check if the file is in the storage
         if (contains(file)) {
             fileList.remove(file);            // remove the file HD
             fileNameList.remove(file.getName());  // remove the name from name list
             storage.deallocateResource((long)file.getSize());    // decrement the current HD space
-            result = seekTime + transferTime;  // total time
+            final double result = seekTime + transferTime;  // total time
             file.setTransactionTime(result);
+            return result;
         }
-        return result;
+
+        return 0.0;
     }
 
     @Override

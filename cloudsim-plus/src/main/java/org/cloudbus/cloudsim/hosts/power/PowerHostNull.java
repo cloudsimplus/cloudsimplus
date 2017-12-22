@@ -192,7 +192,7 @@ final class PowerHostNull implements PowerHost {
     }
     @Override public void destroyVm(Vm vm) {/**/}
     @Override public boolean createTemporaryVm(Vm vm) { return false; }
-    @Override public void destroyTemporaryVm(Vm vm) {}
+    @Override public void destroyTemporaryVm(Vm vm) {/**/}
     @Override public void destroyAllVms() {/**/}
     @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return false; }
     @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return Host.NULL; }
@@ -202,7 +202,7 @@ final class PowerHostNull implements PowerHost {
     @Override public long getNumberOfWorkingPes() {
         return 0L;
     }
-    @Override public void setId(int id) {}
+    @Override public void setId(int id) {/**/}
     @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public long getNumberOfFailedPes() { return 0; }
     @Override public List<Pe> getWorkingPeList() { return Collections.EMPTY_LIST; }

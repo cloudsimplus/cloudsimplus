@@ -69,14 +69,14 @@ public class HostBuilder extends Builder {
     private Host createHost(final int id) {
         try {
             final List<Pe> peList = new PeBuilder().create(pes, mips);
-            Constructor cons = vmSchedulerClass.getConstructor();
+            final Constructor cons = vmSchedulerClass.getConstructor();
 
             final Host host =
-             new HostSimple(ram, bw, storage, peList)
-                .setRamProvisioner(new ResourceProvisionerSimple())
-                .setBwProvisioner(new ResourceProvisionerSimple())
-                .setVmScheduler((VmScheduler) cons.newInstance())
-                .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);
+                     new HostSimple(ram, bw, storage, peList)
+                        .setRamProvisioner(new ResourceProvisionerSimple())
+                        .setBwProvisioner(new ResourceProvisionerSimple())
+                        .setVmScheduler((VmScheduler) cons.newInstance())
+                        .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);
             hosts.add(host);
             return host;
         } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {

@@ -21,14 +21,10 @@ import org.junit.Ignore;
  * @author Manoel Campos da Silva Filho
  */
 public class CloudletSchedulerTimeSharedTest {
-    private static final double CPU_INIT_USAGE = 0.5;
-    private UtilizationModel um;
     private CloudletSchedulerTimeShared instance;
 
     @Before
     public void setUp(){
-        //creates an utilization model that doesn't increment the usage along the time
-        um = new UtilizationModelDynamic(CPU_INIT_USAGE);
         instance = new CloudletSchedulerTimeShared();
     }
 
@@ -375,8 +371,8 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test
     public void testRemoveCloudletFromExecList_CloudletNoFound() {
-        CloudletExecutionInfo cloudletNotAdded = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(0));
-        CloudletExecutionInfo cloudletAdded = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(1));
+        final CloudletExecutionInfo cloudletNotAdded = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(0));
+        final CloudletExecutionInfo cloudletAdded = new CloudletExecutionInfo(CloudletSimpleTest.createCloudletWithOnePe(1));
         final List<CloudletExecutionInfo> list = new ArrayList<>();
         list.add(cloudletAdded);
         instance.addCloudletToExecList(cloudletAdded);

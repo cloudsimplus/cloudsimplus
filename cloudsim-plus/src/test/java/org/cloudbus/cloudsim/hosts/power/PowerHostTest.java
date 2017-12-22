@@ -41,10 +41,11 @@ public class PowerHostTest {
 
     public static PowerHostSimple createPowerHost(final int hostId, final int numberOfPes) {
         final List<Pe> peList = new ArrayList<>(numberOfPes);
-        for(int i = 0; i < numberOfPes; i++)
+        for(int i = 0; i < numberOfPes; i++) {
             peList.add(new PeSimple(MIPS, new PeProvisionerSimple()));
+        }
 
-        PowerHostSimple host = new PowerHostSimple(RAM, BW, STORAGE, peList);
+        final PowerHostSimple host = new PowerHostSimple(RAM, BW, STORAGE, peList);
         host.setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT))
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
