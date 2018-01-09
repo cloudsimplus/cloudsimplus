@@ -18,18 +18,19 @@ package org.cloudbus.cloudsim.power.models;
  * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
- * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a>
+ * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a></li>
  * </ul>
  *
  * @author Anton Beloglazov
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.0
- * @TODO the tree first attributes are being repeated among several classes.
- * Thus, a better class hierarchy should be provided, such as an abstract class
- * implementing the PowerModel interface.
  */
 public class PowerModelLinear  extends PowerModelAbstract {
+    /* @TODO the tree first attributes are being repeated among several classes.
+     * Thus, a better class hierarchy should be provided, such as an abstract class
+     * implementing the PowerModel interface.
+     */
 
 	/** @see #getMaxPower()  */
 	private double maxPower;

@@ -751,17 +751,19 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * {@link #getCloudletWaitingList() Cloudlets waiting list}.
      * If there aren't available VMs to host all cloudlets,
      * the creation of some ones will be postponed.</p>
-     * <p>
+     *
      * <p>This method is called after all submitted VMs are created
      * in some Datacenter.</p>
      *
      * @pre $none
      * @post $none
-     * @todo @author manoelcampos Where is checked if the Vm to where
-     * a cloudlet was submitted has the required resources?
      * @see #submitCloudletList(java.util.List)
      */
     protected void requestDatacentersToCreateWaitingCloudlets() {
+        /* @todo @author manoelcampos Where is checked if the Vm to where
+         * a cloudlet was submitted has the required resources?
+         */
+
         final List<Cloudlet> successfullySubmitted = new ArrayList<>();
         for (final Cloudlet cloudlet : cloudletWaitingList) {
             if (cloudletCreationRequestsMap.containsKey(cloudlet)) {
