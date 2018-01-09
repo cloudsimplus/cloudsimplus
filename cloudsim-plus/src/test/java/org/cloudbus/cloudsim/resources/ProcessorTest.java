@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -20,12 +20,12 @@ public class ProcessorTest {
     private static final double PE_MIPS = 1000;
     private static final int NUMBER_OF_PES = 2;
 
-    private List<CloudletExecutionInfo> createCloudletExecList(int numberOfCloudlets) {
-        final List<CloudletExecutionInfo> cloudletExecList = new ArrayList<>();
+    private List<CloudletExecution> createCloudletExecList(int numberOfCloudlets) {
+        final List<CloudletExecution> cloudletExecList = new ArrayList<>();
         final Cloudlet cloudlet = createMockCloudlet(numberOfCloudlets);
 
         IntStream.range(0, numberOfCloudlets).forEach(i ->
-                cloudletExecList.add(new CloudletExecutionInfo(cloudlet)));
+                cloudletExecList.add(new CloudletExecution(cloudlet)));
         return cloudletExecList;
     }
 

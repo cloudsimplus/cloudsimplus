@@ -34,12 +34,12 @@ import java.util.Objects;
  * @author Rajkumar Buyya
  * @since CloudSim Toolkit 1.0
  */
-public class CloudletExecutionInfo {
+public class CloudletExecution {
     /**
-     * A property that implements the Null Object Design Pattern for {@link CloudletExecutionInfo}
+     * A property that implements the Null Object Design Pattern for {@link CloudletExecution}
      * objects.
      */
-    public static final CloudletExecutionInfo NULL = new CloudletExecutionInfo(Cloudlet.NULL);
+    public static final CloudletExecution NULL = new CloudletExecution(Cloudlet.NULL);
 
     /**
      * @see #getCloudlet()
@@ -112,7 +112,7 @@ public class CloudletExecutionInfo {
      * @pre cloudlet != null
      * @post $none
      */
-    public CloudletExecutionInfo(final Cloudlet cloudlet) {
+    public CloudletExecution(final Cloudlet cloudlet) {
         this(cloudlet, 0);
     }
 
@@ -127,7 +127,7 @@ public class CloudletExecutionInfo {
      * @pre startTime > 0
      * @post $none
      */
-    public CloudletExecutionInfo(final Cloudlet cloudlet, final long startTime) {
+    public CloudletExecution(final Cloudlet cloudlet, final long startTime) {
         this.cloudlet = cloudlet;
         this.arrivalTime = cloudlet.registerArrivalInDatacenter();
         this.finishedTime = Cloudlet.NOT_ASSIGNED;
@@ -459,8 +459,8 @@ public class CloudletExecutionInfo {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof CloudletExecutionInfo &&
-               ((CloudletExecutionInfo)obj).cloudlet.getId() == this.cloudlet.getId();
+        return obj instanceof CloudletExecution &&
+               ((CloudletExecution)obj).cloudlet.getId() == this.cloudlet.getId();
     }
 
     @Override

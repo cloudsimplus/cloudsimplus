@@ -28,7 +28,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
- * 
+ *
  * @see CloudSim
  * @since CloudSim Plus 1.0
  */
@@ -92,14 +92,14 @@ public interface Simulation {
      * @see #isRunning()
      */
     double clock();
-    
+
     /**
      * Gets the current simulation time in minutes.
      *
      * @return
      * @see #isRunning()
      */
-    double clockInMinutes();   
+    double clockInMinutes();
 
     /**
      * Gets the current simulation time in hours.
@@ -107,7 +107,7 @@ public interface Simulation {
      * @return
      * @see #isRunning()
      */
-    double clockInHours();    
+    double clockInHours();
 
     /**
      * Find first deferred event matching a predicate.
@@ -188,10 +188,10 @@ public interface Simulation {
     String getEntityName(int entityId);
 
     /**
-     * Returns the minimum time between events. Events within shorter periods
-     * after the last event are discarded.
+     * Returns the minimum time between events (in seconds).
+     * Events within shorter periods after the last event are discarded.
      *
-     * @return the minimum time between events.
+     * @return the minimum time between events (in seconds).
      */
     double getMinTimeBetweenEvents();
 
@@ -220,7 +220,7 @@ public interface Simulation {
      * because there is not need for that.</p>
      *
      * @param listener the event listener to add
-     * @return 
+     * @return
      */
     Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener);
 
@@ -238,7 +238,7 @@ public interface Simulation {
      * the {@link SimEvent} that was processed.
      *
      * @param listener the event listener to add
-     * @return 
+     * @return
      */
     Simulation addOnEventProcessingListener(EventListener<SimEvent> listener);
 
@@ -250,7 +250,7 @@ public interface Simulation {
      * part of the simulation time.
      *
      * @param listener the event listener to add
-     * @return 
+     * @return
      */
     Simulation addOnClockTickListener(EventListener<EventInfo> listener);
 
@@ -371,12 +371,12 @@ public interface Simulation {
      * execution of all entities</b>, i.e. until all entities threads reach
      * non-RUNNABLE state or there are no more events in the future event queue.
      * <p>
-     * <b>Note</b>: This method should be called just after all the entities 
+     * <b>Note</b>: This method should be called just after all the entities
      * have been setup and added.
      * </p>
      *
      * @return the last clock time
-     * @throws RuntimeException When the simulation already run once. 
+     * @throws RuntimeException When the simulation already run once.
      * If you paused the simulation and wants to resume it,
      * you must use {@link #resume()} instead of calling the current method.
      * @pre $none
@@ -401,11 +401,11 @@ public interface Simulation {
     boolean terminateAt(double time);
 
     /**
-     * Sets the state of an entity to {@link SimEntity.State#WAITING}, 
+     * Sets the state of an entity to {@link SimEntity.State#WAITING},
      * making it to wait for events that satisfy a given predicate.
-     * Only such events will be passed to the entity. 
+     * Only such events will be passed to the entity.
      * This is done to avoid unnecessary context Datacenter.
-     * 
+     *
      * @param src entity that scheduled the event
      * @param p   the event selection predicate
      */
@@ -447,10 +447,10 @@ public interface Simulation {
     /**
      * Gets a <b>read-only</b> map where each key is the name of an {@link SimEntity} and each value
      * is the actual {@link SimEntity}.
-     * @return 
+     * @return
      */
     Map<String, SimEntity> getEntitiesByName();
-    
+
     /**
      * Defines IDs for a list of {@link ChangeableId} entities that don't
      * have one already assigned. Such entities can be a {@link Cloudlet},
@@ -471,7 +471,7 @@ public interface Simulation {
      *
      * @param <T> the type of entities to define an ID
      * @param list list of objects to define an ID
-     * @param lastEntity the last created Entity which its ID will be used 
+     * @param lastEntity the last created Entity which its ID will be used
      *        as the base for the next IDs
      * @return true if the List has any Entity, false if it's empty
      */

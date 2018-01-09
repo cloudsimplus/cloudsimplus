@@ -8,7 +8,7 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 
 import org.cloudbus.cloudsim.resources.Pe;
 
@@ -45,7 +45,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      * @param c the resumed Cloudlet to move
      * @return the time the cloudlet is expected to finish or zero if it was moved to the waiting list
      */
-    private double movePausedCloudletToExecListOrWaitingList(CloudletExecutionInfo c) {
+    private double movePausedCloudletToExecListOrWaitingList(CloudletExecution c) {
         getCloudletPausedList().remove(c);
 
         // it can go to the exec list
@@ -71,7 +71,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      * @param c the cloudlet to be moved
      * @return the time the cloudlet is expected to finish
      */
-    private double movePausedCloudletToExecList(CloudletExecutionInfo c) {
+    private double movePausedCloudletToExecList(CloudletExecution c) {
         addCloudletToExecList(c);
         return getEstimatedFinishTimeOfCloudlet(c, getVm().getSimulation().clock());
     }
@@ -87,7 +87,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
+    public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);
     }
 }

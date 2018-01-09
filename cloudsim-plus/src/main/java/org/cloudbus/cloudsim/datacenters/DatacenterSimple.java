@@ -7,7 +7,7 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.apache.commons.lang3.BooleanUtils;
-import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.util.DataCloudTags;
@@ -884,7 +884,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     public void checkCloudletsCompletionForGivenVm(Vm vm) {
         final List<Cloudlet> nonReturnedCloudlets =
             vm.getCloudletScheduler().getCloudletFinishedList().stream()
-                .map(CloudletExecutionInfo::getCloudlet)
+                .map(CloudletExecution::getCloudlet)
                 .filter(c -> !vm.getCloudletScheduler().isCloudletReturned(c))
                 .collect(toList());
 

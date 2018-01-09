@@ -85,7 +85,7 @@ public interface Datacenter extends SimEntity {
      * scheduling interval to 5 to get an updated result. As longer is the
      * interval, faster will be the simulation execution.
      *
-     * @return the scheduling interval
+     * @return the scheduling interval (in seconds)
      */
     double getSchedulingInterval();
 
@@ -93,8 +93,8 @@ public interface Datacenter extends SimEntity {
      * Sets the scheduling delay to process each event received by the
      * Datacenter (in seconds).
      *
-     * @param schedulingInterval the new scheduling interval
-     * @return 
+     * @param schedulingInterval the new scheduling interval (in seconds)
+     * @return
      * @see #getSchedulingInterval()
      */
     Datacenter setSchedulingInterval(double schedulingInterval);

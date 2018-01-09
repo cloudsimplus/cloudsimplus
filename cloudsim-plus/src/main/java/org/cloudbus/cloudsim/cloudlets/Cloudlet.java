@@ -565,6 +565,14 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
     /**
      * Sets the status of this Cloudlet.
      *
+     * <p><b>WARNING</b>: This method is just used internally by classes such as
+     * {@link CloudletScheduler} to update Cloudlet status.
+     * Calling it directly might not get the expected result.
+     * You have to use the CloudletScheduler that controls the execution
+     * of the Cloudlet to change the Cloudlets status.
+     * The method is public due to a design issue.
+     * </p>
+     *
      * @param newStatus the status of this Cloudlet
      * @return true if the cloudlet status was changed,
      * i.e, if the newStatus is different from the current status; false otherwise
@@ -729,7 +737,7 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @param length executed length of this Cloudlet (in MI)
      * @return true if the length is valid and the cloudlet already has assigned
      * to a Datacenter, false otherwise
-     * @see CloudletExecutionInfo
+     * @see CloudletExecution
      * @pre length >= 0.0
      * @post $none
      */

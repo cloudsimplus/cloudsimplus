@@ -7,7 +7,7 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 
 import java.util.List;
@@ -82,7 +82,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    public List<CloudletExecutionInfo> getCloudletWaitingList() {
+    public List<CloudletExecution> getCloudletWaitingList() {
         return super.getCloudletWaitingList();
     }
 
@@ -93,7 +93,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * @param cloudlet the Cloudlet to move from the paused to the exec lit
      * @return the Cloudlet expected finish time
      */
-    private double movePausedCloudletToExecListAndGetExpectedFinishTime(CloudletExecutionInfo cloudlet) {
+    private double movePausedCloudletToExecListAndGetExpectedFinishTime(CloudletExecution cloudlet) {
         getCloudletPausedList().remove(cloudlet);
         addCloudletToExecList(cloudlet);
         return getEstimatedFinishTimeOfCloudlet(cloudlet, getVm().getSimulation().clock());
@@ -120,7 +120,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * immediately added to the execution list
      */
     @Override
-    public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet) {
+    public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet) {
         return true;
     }
 

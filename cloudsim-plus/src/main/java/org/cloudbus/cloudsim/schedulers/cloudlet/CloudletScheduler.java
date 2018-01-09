@@ -13,7 +13,7 @@ import java.util.Set;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletExecutionInfo;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -61,7 +61,7 @@ public interface CloudletScheduler extends Serializable {
      * @pre rcl != $null
      * @post $none
      */
-    void cloudletFinish(CloudletExecutionInfo rcl);
+    void cloudletFinish(CloudletExecution rcl);
 
     /**
      * Pauses execution of a cloudlet.
@@ -112,14 +112,14 @@ public interface CloudletScheduler extends Serializable {
      *
      * @return the cloudlet execution list
      */
-    List<CloudletExecutionInfo> getCloudletExecList();
+    List<CloudletExecution> getCloudletExecList();
 
     /**
      * Gets a <b>read-only</b> List of cloudlet waiting to be executed on the VM.
      *
      * @return the cloudlet waiting list
      */
-    List<CloudletExecutionInfo> getCloudletWaitingList();
+    List<CloudletExecution> getCloudletWaitingList();
 
     /**
      * Gets a <b>read-only</b> List of all cloudlets which are either <b>waiting</b> or <b>executing</b> on the VM.
@@ -140,7 +140,7 @@ public interface CloudletScheduler extends Serializable {
      *
      * @return the cloudlet finished list
      */
-    List<CloudletExecutionInfo> getCloudletFinishedList();
+    List<CloudletExecution> getCloudletFinishedList();
 
     /**
      * Checks if there <b>aren't</b> cloudlets <b>waiting</b> or <b>executing</b> inside the Vm.
@@ -208,7 +208,7 @@ public interface CloudletScheduler extends Serializable {
      * @param time the time
      * @return the current allocated mips for cloudlet
      */
-    double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
+    double getAllocatedMipsForCloudlet(CloudletExecution rcl, double time);
 
     /**
      * Gets the current requested MIPS for a given cloudlet.
@@ -217,7 +217,7 @@ public interface CloudletScheduler extends Serializable {
      * @param time the time
      * @return the current requested mips for the given cloudlet
      */
-    double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time);
+    double getRequestedMipsForCloudlet(CloudletExecution rcl, double time);
 
     /**
      * Gets total CPU utilization percentage of all cloudlets,
@@ -367,7 +367,7 @@ public interface CloudletScheduler extends Serializable {
 	 * @param cloudlet Cloudlet to check if it can be added to the execution list
 	 * @return true if the Cloudlet can be added to the execution list, false otherwise
 	 */
-	boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet);
+	boolean canAddCloudletToExecutionList(CloudletExecution cloudlet);
 
     /**
      * Checks if a Cloudlet has finished and was returned to its {@link DatacenterBroker}.
