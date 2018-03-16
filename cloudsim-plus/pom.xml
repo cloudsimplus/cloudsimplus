@@ -243,8 +243,6 @@
 
                     <configuration>
                         <failOnError>false</failOnError>
-                        <!-- Switch OFF the doclint in Java 8 -->
-                        <additionalparam>-Xdoclint:none</additionalparam>
                     </configuration>
                 </plugin>
             </plugins>
