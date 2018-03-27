@@ -83,7 +83,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
 	 * @param random a pseudo random number generator
      * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
      */
-    SimulatedAnnealing(ContinuousDistribution random, Class<S> solutionClass){
+    SimulatedAnnealing(final ContinuousDistribution random, final Class<S> solutionClass){
         super(random, solutionClass);
     }
 
@@ -146,7 +146,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
 	 * Sets the current system temperature.
 	 * @param currentTemperature the temperature to set
 	 */
-	protected void setCurrentTemperature(double currentTemperature) {
+	protected void setCurrentTemperature(final double currentTemperature) {
 		this.currentTemperature = currentTemperature;
 	}
 
@@ -162,7 +162,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
 	 * Sets the percentage rate in which the system will be cooled, in scale from [0 to 1[.
 	 * @param coolingRate the rate to set
 	 */
-	public void setCoolingRate(double coolingRate) {
+	public void setCoolingRate(final double coolingRate) {
         this.coolingRate = coolingRate;
     }
 
@@ -181,7 +181,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
      *
      * @param coldTemperature the cold temperature to set
      */
-    public void setColdTemperature(double coldTemperature) {
+    public void setColdTemperature(final double coldTemperature) {
         this.coldTemperature = coldTemperature;
     }
 

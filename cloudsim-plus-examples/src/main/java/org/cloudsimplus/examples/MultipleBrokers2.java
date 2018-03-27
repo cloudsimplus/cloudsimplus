@@ -123,7 +123,7 @@ public class MultipleBrokers2 {
          * Any way you chose, for the configuration of this example,
          * the results will be exactly the same.
          * These lines of code below are used just to show the different
-         * ways to to simulate arrival of Cloudlets at different times.
+         * ways to simulate arrival of Cloudlets at different times.
          * See the documentation of the methods called below for more details.
          */
         //submitCloudletWithDelay();
@@ -147,27 +147,28 @@ public class MultipleBrokers2 {
     /**
      * Dynamically submits a cloudlet during simulation execution.
      * This method is called every time when the simulation clock
-     * advances.
+     * increases.
      * The created Cloudlet is submitted only at a specific simulation time.
+     *
      * <p>Realize the interval in which this method is called is defined
      * according to the {@link #SCHEDULING_INTERVAL}.</p>
      *
-     * <p>Different from the {@link #submitCloudletWithDelay()} method
-     * with when the simulation starts the created Cloudlet will be waiting
+     * <p>Different from the {@link #submitCloudletWithDelay()} method,
+     * which creates all Cloudtets when the simulation starts and make them wait
      * to start executing, this method is called dynamically during
-     * simulation execution. It defines internally, when
+     * simulation. It defines internally, when
      * we want the Cloudlet to be submitted.
      * The method is called by the {@link CloudSim} object
      * because an {@link EventListener} was added to be
      * notified when the simulation clock changes.
-     * This way, it allows, between lots of possibilities,
+     * This way it allows, between uncountable possibilities,
      * to define specific conditions when a new Cloudlet should be submitted
      * to a broker.
      * </p>
      *
      * <p>The dynamic way of submitting Cloudlets is more flexible because it allows you to define
-     * any condition you want inside, and that condition may include any other git lvariables
-     * besides the time.</p>
+     * any condition you want inside a method such as this one.
+     * That condition may include any other variables besides the time.</p>
      *
      * @param e information about the generated event
      * @return

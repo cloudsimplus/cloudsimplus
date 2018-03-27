@@ -266,7 +266,7 @@ public class CloudletExecution {
      * @pre instructionsExecuted >= 0.0
      * @post $none
      */
-    public void updateProcessing(long executedInstructions) {
+    public void updateProcessing(final long executedInstructions) {
         setLastProcessingTime(cloudlet.getSimulation().clock());
 
         if(executedInstructions <= 0){
@@ -315,7 +315,7 @@ public class CloudletExecution {
      * @pre time >= 0.0
      * @post $none
      */
-    public void setFinishTime(double time) {
+    public void setFinishTime(final double time) {
         if (time < 0) {
             return;
         }
@@ -359,7 +359,7 @@ public class CloudletExecution {
 	 *
 	 * @param fileTransferTime the file transfer time to set
 	 */
-	public void setFileTransferTime(double fileTransferTime) {
+	public void setFileTransferTime(final double fileTransferTime) {
 		this.fileTransferTime = fileTransferTime;
 	}
 
@@ -377,7 +377,7 @@ public class CloudletExecution {
 	 * Sets the last time this Cloudlet was processed at a Datacenter.
 	 * @param lastProcessingTime the last processing time to set
 	 */
-	public void setLastProcessingTime(double lastProcessingTime) {
+	public void setLastProcessingTime(final double lastProcessingTime) {
 		this.lastProcessingTime = lastProcessingTime;
         cloudlet.notifyOnUpdateProcessingListeners(lastProcessingTime);
 	}
@@ -385,11 +385,11 @@ public class CloudletExecution {
     /**
      * Gets the virtual runtime (vruntime) that indicates how long the Cloudlet
      * has been executing by a {@link CloudletScheduler} (in seconds).
-     * The default value of this attribute is zero and each scheduler
-     * implementation might or not set a value to such attribute
-     * so that the scheduler might use to perform context switch,
+     * The default value of this attribute is zero. Each scheduler
+     * implementation might set a value to such attribute
+     * to use it for context switch,
      * preempting running Cloudlets to enable other ones to start executing.
-     * By this way, the attribute is just used internally by specific CloudletSchedulers.
+     * This way, the attribute is just used internally by specific CloudletSchedulers.
      *
      * @return
      */
@@ -404,7 +404,7 @@ public class CloudletExecution {
      * @return the new virtual runtime  (in seconds)
      * @pre timeToAdd >= 0
      */
-    public double addVirtualRuntime(double timeToAdd) {
+    public double addVirtualRuntime(final double timeToAdd) {
         if(timeToAdd >= 0) {
             setVirtualRuntime(virtualRuntime + timeToAdd);
         }
@@ -420,7 +420,7 @@ public class CloudletExecution {
      * @param virtualRuntime the value to set  (in seconds)
      * @see #getVirtualRuntime()
      */
-    public void setVirtualRuntime(double virtualRuntime){
+    public void setVirtualRuntime(final double virtualRuntime){
         this.virtualRuntime = virtualRuntime;
     }
 
@@ -448,7 +448,7 @@ public class CloudletExecution {
      * @param timeSlice the Cloudlet timeslice to set (in seconds)
      *
      */
-    public void setTimeSlice(double timeSlice) {
+    public void setTimeSlice(final double timeSlice) {
         this.timeSlice = timeSlice;
     }
 

@@ -778,7 +778,7 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
     void setExecStartTime(double clockTime);
 
     /**
-     * Adds a listener object that will be notified every time when
+     * Adds a Listener object that will be notified every time
      * the processing of the Cloudlet is updated in its {@link Vm}.
      *
      * @param listener the listener to add
@@ -795,7 +795,7 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
     boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener);
 
     /**
-     * Adds an OnCloudletFinishEventListener object that will be notified when a cloudlet finishes
+     * Adds a Listener object that will be notified when a cloudlet finishes
      * its execution at a given {@link Vm}.
      *
      * @param listener the listener to add

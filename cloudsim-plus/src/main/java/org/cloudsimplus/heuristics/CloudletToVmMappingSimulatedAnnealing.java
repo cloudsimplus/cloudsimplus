@@ -102,7 +102,7 @@ public class CloudletToVmMappingSimulatedAnnealing
     }
 
     @Override
-    public void setCloudletList(List<Cloudlet> cloudletList) {
+    public void setCloudletList(final List<Cloudlet> cloudletList) {
         this.cloudletList = cloudletList;
     }
 

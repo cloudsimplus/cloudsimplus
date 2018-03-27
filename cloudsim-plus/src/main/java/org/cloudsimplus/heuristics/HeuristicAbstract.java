@@ -129,21 +129,24 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 		final long startTime = System.currentTimeMillis();
 		setBestSolutionSoFar(getInitialSolution());
 		while (!isToStopSearch()) {
-			IntStream.range(0, getNumberOfNeighborhoodSearchesByIteration()).forEach(i -> {
-				setNeighborSolution(createNeighbor(getBestSolutionSoFar()));
-				if (getAcceptanceProbability() > getRandomValue(1)) {
-					setBestSolutionSoFar(getNeighborSolution());
-				}
-			});
-
-			updateSystemState();
+            searchSolutionInNeighborhood();
+            updateSystemState();
 		}
 		setSolveTime((System.currentTimeMillis() - startTime)/1000.0);
 
 		return getBestSolutionSoFar();
 	}
 
-	@Override
+    private void searchSolutionInNeighborhood() {
+        for (int i = 0; i < getNumberOfNeighborhoodSearchesByIteration(); i++) {
+            setNeighborSolution(createNeighbor(getBestSolutionSoFar()));
+            if (getAcceptanceProbability() > getRandomValue(1)) {
+                setBestSolutionSoFar(getNeighborSolution());
+            }
+        }
+    }
+
+    @Override
 	public S getBestSolutionSoFar() {
 	    return bestSolutionSoFar;
 	}

@@ -32,7 +32,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
      * @post $none
      * @see #setHeuristic(CloudletToVmMappingHeuristic)
      */
-    public DatacenterBrokerHeuristic(CloudSim simulation) {
+    public DatacenterBrokerHeuristic(final CloudSim simulation) {
         super(simulation);
         setVmMapper(this::selectVmForWaitingCloudlet);
         heuristic = CloudletToVmMappingHeuristic.NULL;
@@ -70,7 +70,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
     }
 
     @Override
-    protected Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) {
+    protected Vm selectVmForWaitingCloudlet(final Cloudlet cloudlet) {
         /*
          * Defines a fallback vm in the case the heuristic solution
          * didn't assign a Vm to the given cloudlet.
@@ -104,7 +104,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
      * @param heuristic the heuristic to be set
      * @return the DatacenterBrokerHeuristic instance
      */
-    public DatacenterBrokerHeuristic setHeuristic(CloudletToVmMappingHeuristic heuristic) {
+    public DatacenterBrokerHeuristic setHeuristic(final CloudletToVmMappingHeuristic heuristic) {
         this.heuristic = heuristic;
         return this;
     }

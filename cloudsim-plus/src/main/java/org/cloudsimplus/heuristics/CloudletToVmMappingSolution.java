@@ -77,11 +77,11 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @param heuristic the heuristic implementation used to find the solution
      * being created.
      */
-    public CloudletToVmMappingSolution(Heuristic heuristic){
+    public CloudletToVmMappingSolution(final Heuristic heuristic){
         this(heuristic, new HashMap<>());
     }
 
-    private CloudletToVmMappingSolution(Heuristic heuristic, Map<Cloudlet, Vm> cloudletVmMap){
+    private CloudletToVmMappingSolution(final Heuristic heuristic, final Map<Cloudlet, Vm> cloudletVmMap){
         this.heuristic = heuristic;
         this.cloudletVmMap = cloudletVmMap;
     }
@@ -91,7 +91,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      *
      * @param solution the solution to be cloned
      */
-    public CloudletToVmMappingSolution(CloudletToVmMappingSolution solution){
+    public CloudletToVmMappingSolution(final CloudletToVmMappingSolution solution){
         this(solution.heuristic, new HashMap<>(solution.cloudletVmMap));
     }
 
@@ -101,7 +101,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @param cloudlet the cloudlet to be added to a Vm
      * @param vm the Vm to assign a cloudlet to
      */
-    public void bindCloudletToVm(Cloudlet cloudlet, Vm vm){
+    public void bindCloudletToVm(final Cloudlet cloudlet, final Vm vm){
         cloudletVmMap.put(cloudlet, vm);
         recomputeCost = true;
     }
@@ -120,19 +120,36 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     @Override
     public double getCost() {
-        if(recomputeCost){
-	        final Map<Vm, List<Map.Entry<Cloudlet, Vm>>> cloudletsByVm =
-		        cloudletVmMap.entrySet().stream()
-			        .collect(Collectors.groupingBy(Map.Entry::getValue));
+        recomputeCostIfRequested();
+        return this.lastCost;
+    }
 
-	        lastCost = cloudletsByVm.entrySet().stream()
-		        .mapToDouble(e-> getVmCost(e.getKey(), e.getValue()))
-	            .sum();
-
-            recomputeCost = false;
+    private void recomputeCostIfRequested() {
+        if(!this.recomputeCost) {
+            return;
         }
 
-        return lastCost;
+        this.lastCost = computeCostOfAllVms();
+        this.recomputeCost = false;
+    }
+
+    private double computeCostOfAllVms() {
+        return groupCloudletsByVm()
+                .entrySet()
+                .stream()
+                .mapToDouble(this::getVmCost)
+                .sum();
+    }
+
+    /**
+     * Gets a Map of Cloudlets grouped by their VMs,
+     * where each key is a VM and the value is a List of Map Entries
+     * containing the Cloudlets running in that VM.
+     * @return
+     */
+    private Map<Vm, List<Map.Entry<Cloudlet, Vm>>> groupCloudletsByVm() {
+        return cloudletVmMap.entrySet().stream()
+            .collect(Collectors.groupingBy(Map.Entry::getValue));
     }
 
     /**
@@ -142,7 +159,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @return the cost of the entire mapping between Vm's and cloudlets
      * @see #getCost()
      */
-    public double getCost(boolean forceRecompute) {
+    public double getCost(final boolean forceRecompute) {
         recomputeCost |= forceRecompute;
         return getCost();
     }
@@ -152,16 +169,46 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * The cost is based on the number of PEs from the VM that
      * will be idle or overloaded.
      *
-     * @param vm VM to compute the cost based on the hosted Cloudlets
-     * @param listOfCloudletsForVm A list containing all Cloudlets for a given VM
+     * @param entry a Map Entry where the key is a VM hosting some Cloudlets
+     *              and the value is the Cloudlets hosted in this VM.
      * @return the VM cost to host the Cloudlets
      */
-    public double getVmCost(Vm vm, List<Map.Entry<Cloudlet, Vm>> listOfCloudletsForVm) {
-	    final long totalCloudletsPes = listOfCloudletsForVm.stream()
-		    .mapToLong(e->e.getKey().getNumberOfPes())
-		    .sum();
+    public double getVmCost(final Map.Entry<Vm, List<Map.Entry<Cloudlet, Vm>>> entry) {
+        final Vm vm = entry.getKey();
+        final List<Cloudlet> cloudlets = convertListOfMapEntriesToListOfCloudlets(entry.getValue());
+        return getVmCost(vm, cloudlets);
+    }
 
-        return Math.abs(vm.getNumberOfPes() - totalCloudletsPes);
+    private List<Cloudlet> convertListOfMapEntriesToListOfCloudlets(final List<Map.Entry<Cloudlet, Vm>> entriesList) {
+        return entriesList
+            .stream()
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
+    }
+
+    /**
+     * Computes the cost of all Cloudlets hosted by a given Vm.
+     * The cost is based on the number of PEs from the VM that
+     * will be idle or overloaded.
+     *
+     * @param vm the VM to compute the cost to host some Cloudlets
+     * @param cloudlets the list of Cloudlets to be hosted by the VM in order to compute the cost
+     * @return the VM cost to host the Cloudlets
+     */
+    public double getVmCost(final Vm vm, final List<Cloudlet> cloudlets) {
+        return Math.abs(vm.getNumberOfPes() - getTotalCloudletsPes(cloudlets));
+    }
+
+    /**
+     * Gets the total number of PEs from a list of Cloudlets
+     * @param listOfCloudletsForVm the list of Cloudlets to get the total number of PEs
+     * @return the total number of PEs from all given Cloudlets
+     */
+    private long getTotalCloudletsPes(final List<Cloudlet> listOfCloudletsForVm) {
+        return listOfCloudletsForVm
+            .stream()
+            .mapToLong(Cloudlet::getNumberOfPes)
+            .sum();
     }
 
     /**
@@ -175,12 +222,12 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(HeuristicSolution o) {
+    public int compareTo(final HeuristicSolution o) {
         final double diff = this.getCost() - o.getCost();
 
-
-        if(Math.abs(diff) <= MIN_DIFF)
+        if(Math.abs(diff) <= MIN_DIFF) {
             return 0;
+        }
 
         return (diff > 0 ? -1 : 1);
     }
@@ -204,14 +251,15 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * cloudlet of the first entry to the Vm of the second entry
      * and vice-versa.
      *
-     * @param entries an array of 2 entries that the Vm of their cloudlets should
-     * be swapped. If the entries don't have 2 elements, the method will
+     * @param entries an array of 2 entries containing Cloudlets to swap their VMs.
+     * If the entries don't have 2 elements, the method will
      * return without performing any change in the entries.
-     * @return true if the Cloudlet's VMs where swapped, false otherwise
+     * @return true if the VMs of the Cloudlets where swapped, false otherwise
      */
-    protected boolean swapVmsOfTwoMapEntries(Map.Entry<Cloudlet, Vm>... entries) {
-        if(Objects.isNull(entries) || entries.length != 2 || Objects.isNull(entries[0]) || Objects.isNull(entries[1]))
+    protected boolean swapVmsOfTwoMapEntries(final Map.Entry<Cloudlet, Vm>... entries) {
+        if(Objects.isNull(entries) || entries.length != 2 || Objects.isNull(entries[0]) || Objects.isNull(entries[1])) {
             return false;
+        }
 
         final Vm vm1 = entries[0].getValue();
         final Vm vm2 = entries[1].getValue();
@@ -247,16 +295,18 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @see #swapVmsOfTwoMapEntries(Map.Entry[])
      */
     protected Map.Entry<Cloudlet, Vm>[] getRandomMapEntries() {
-        if(cloudletVmMap.isEmpty())
-            return new Map.Entry[0];
-
-        if(cloudletVmMap.size() == 1) {
-            final Optional<Map.Entry<Cloudlet, Vm>> opt =
-                    cloudletVmMap.entrySet().stream().findFirst();
-
-            return opt.map(entry -> new Map.Entry[]{entry}).orElse(new Map.Entry[0]);
+        if(cloudletVmMap.isEmpty()) {
+            return createEmptyMapEntryArray();
         }
 
+        if(cloudletVmMap.size() == 1) {
+            return createArrayWithFirstMapEntry();
+        }
+
+        return createArrayWithTwoRandomEntries();
+    }
+
+    private Map.Entry<Cloudlet, Vm>[] createArrayWithTwoRandomEntries() {
         final int size = cloudletVmMap.entrySet().size();
         final Map.Entry<Cloudlet, Vm>[] selectedEntries = new Map.Entry[2];
         final Map.Entry<Cloudlet, Vm>[] allEntries = new Map.Entry[size];
@@ -269,5 +319,24 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return selectedEntries;
     }
 
+    /**
+     * Creates an array using only the first entry in the {@link #cloudletVmMap}.
+     * @return a single-entry array with either the first {@link #cloudletVmMap} entry
+     * or an empty array in case no entry is found.
+     */
+    private Map.Entry<Cloudlet, Vm>[] createArrayWithFirstMapEntry() {
+        return cloudletVmMap.entrySet()
+                            .stream()
+                            .findFirst()
+                            .map(entry -> new Map.Entry[]{entry})
+                            .orElse(createEmptyMapEntryArray());
+    }
 
+    /**
+     * Creates an array of Map Entries with no elements.
+     * @return the empty array.
+     */
+    private Map.Entry[] createEmptyMapEntryArray() {
+        return new Map.Entry[0];
+    }
 }
