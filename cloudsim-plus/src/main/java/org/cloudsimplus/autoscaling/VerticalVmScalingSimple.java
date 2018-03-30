@@ -146,12 +146,12 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public final boolean requestScalingIfPredicateMatches(double time) {
+    public final boolean requestUpScalingIfPredicateMatches(double time) {
         if(!isTimeToCheckPredicate(time)) {
             return false;
         }
 
-        final boolean requestedScaling = (isVmUnderloaded() || isVmOverloaded()) && requestScaling(time);
+        final boolean requestedScaling = (isVmUnderloaded() || isVmOverloaded()) && requestUpScaling(time);
         setLastProcessingTime(time);
         return requestedScaling;
     }
@@ -213,7 +213,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    protected boolean requestScaling(double time) {
+    protected boolean requestUpScaling(double time) {
         final Vm vm = this.getVm();
         vm.getSimulation().sendNow(vm.getId(), vm.getBroker().getId(), CloudSimTags.VM_VERTICAL_SCALING, this);
         return true;

@@ -38,7 +38,7 @@ final class VmScalingNull implements VmScaling {
     @Override public VmScaling setVm(Vm vm) {
         return this;
     }
-    @Override public boolean requestScalingIfPredicateMatches(double time) {
+    @Override public boolean requestUpScalingIfPredicateMatches(double time) {
         return false;
     }
 }

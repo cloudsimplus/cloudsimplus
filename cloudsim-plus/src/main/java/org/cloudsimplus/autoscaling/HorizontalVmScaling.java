@@ -33,30 +33,27 @@ import java.util.function.Supplier;
 
 /**
  * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Horizontal Scaling</a> mechanism
- * used by a {@link DatacenterBroker} to dynamically create or destroy VMs according to the arrival or termination of
+ * used by a {@link DatacenterBroker} to dynamically create VMs according to the arrival of
  * Cloudlets, in order to enable load balancing.
  *
  * <p>Since Cloudlets can be created and submitted to a broker in runtime,
  * the number of arrived Cloudlets can be to much to existing VMs,
  * requiring the creation of new VMs to balance the load.
- * Accordingly, as Cloudlets terminates, some created VMs may not
- * be required anymore and should be destroyed.</p>
+ * A HorizontalVmScaling implementation performs
+ * such up scaling by creating VMs as needed.</p>
  *
- * <p>A HorizontalVmScaling implementation performs
- * such up or down scaling by creating or destroying VMs
- * are needed.</p>
+ * <br>
+ * <p>
+ * To enable horizontal down scaling to destroy idle VMs, the {@link DatacenterBroker} has to be used
+ * by setting a {@link DatacenterBroker#getVmDestructionDelayFunction()}.
+ * Since there is no Cloudlet migration mechanism (and it isn't intended to have),
+ * if a VM becomes underloaded, there is nothing that can be done until all Cloudlets
+ * finish executing. When that happens, the {@link DatacenterBroker#getVmDestructionDelayFunction()}
+ * will handle such a situation.
+ * </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0.0
- * @todo The mechanism to destroy created VMs that are not required anymore is not implemented yet.
- * In fact, the DatacenterBroker already has a mechanism to enable destroying VMs as they become idle.
- * Check {@link DatacenterBroker#setVmDestructionDelayFunction(Function)}.
- * Therefore, he HorizontalScale may not need to implement anything related to down scaling.
- * This way, the underloadPredicate attribute may not be needed.
- * Since there is no Cloudlet migration mechanism (and it isn't the intention to have one),
- * if a VM becomes underloaded, there is nothing that can be done until all Cloudlets
- * finish executing. When that happens, the {@link DatacenterBroker#getVmDestructionDelayFunction()}
- * can handle such a situation.
  */
 public interface HorizontalVmScaling extends VmScaling {
     Predicate<Vm> FALSE_PREDICATE = vm -> false;
@@ -103,7 +100,7 @@ public interface HorizontalVmScaling extends VmScaling {
      * @return {@inheritDoc}
      */
     @Override
-    boolean requestScalingIfPredicateMatches(double time);
+    boolean requestUpScalingIfPredicateMatches(double time);
 
     /**
      * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
@@ -134,41 +131,4 @@ public interface HorizontalVmScaling extends VmScaling {
      * @return
      */
     VmScaling setOverloadPredicate(Predicate<Vm> predicate);
-
-    /**
-     * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
-     * that will make the Vm's {@link DatacenterBroker} to down scale Vm.
-     * The down scaling is performed by destroying idle VMs.
-     *
-     * @return
-     * @see #setUnderloadPredicate(Predicate)
-     */
-    Predicate<Vm> getUnderloadPredicate();
-
-    /**
-     * Checks if the VM is either under or overloaded
-     * @return true if the VM is in one of the mentioned conditions,
-     *         false if it's neither under or overloaded
-     */
-    default boolean isVmUnderOrOverloaded(){
-        return getUnderloadPredicate().or(getOverloadPredicate()).test(getVm());
-    }
-
-    /**
-     * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
-     * making the {@link DatacenterBroker} to down scale Vm.
-     * The down scaling is performed by destroying idle VMs.
-     *
-     * @param predicate a predicate that checks certain conditions
-     *                  to define a {@link #getVm() Vm} as underloaded.
-     *                  The predicate receives the Vm that has to be checked.
-     *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUsage(double)} CPU usage}
-     *                  and/or any other VM resource usage.
-     *                  Despite the VmScaling already is already linked to a {@link #getVm() Vm},
-     *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate
-     *                  to detect underload of different VMs.
-     * @return
-     */
-    VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
 }

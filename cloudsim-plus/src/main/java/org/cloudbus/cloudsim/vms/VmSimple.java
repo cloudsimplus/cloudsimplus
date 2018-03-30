@@ -827,7 +827,7 @@ public class VmSimple implements Vm {
         }
 
         vmScaling.setVm(this);
-        this.addOnUpdateProcessingListener(evt -> vmScaling.requestScalingIfPredicateMatches(evt.getTime()));
+        this.addOnUpdateProcessingListener(evt -> vmScaling.requestUpScalingIfPredicateMatches(evt.getTime()));
         return vmScaling;
     }
 

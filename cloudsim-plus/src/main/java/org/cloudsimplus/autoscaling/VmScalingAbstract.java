@@ -48,7 +48,7 @@ public abstract class VmScalingAbstract implements VmScaling {
     }
 
     @Override
-    public final VmScaling setVm(Vm vm) {
+    public final VmScaling setVm(final Vm vm) {
         Objects.requireNonNull(vm);
         this.vm = vm;
         return this;
@@ -60,26 +60,26 @@ public abstract class VmScalingAbstract implements VmScaling {
      * @param time current simulation time
      * @return true if it's time to check weather the Vm is over and underloaded, false otherwise
      */
-    protected boolean isTimeToCheckPredicate(double time) {
+    protected boolean isTimeToCheckPredicate(final double time) {
         return time > lastProcessingTime && (long) time % getVm().getHost().getDatacenter().getSchedulingInterval() == 0;
     }
 
     /**
      * Performs the actual request to scale the Vm up or down,
      * depending if it is over or underloaded, respectively.
-     * This method is automatically called by {@link #requestScalingIfPredicateMatches(double)}
+     * This method is automatically called by {@link #requestUpScalingIfPredicateMatches(double)}
      * when it is verified that the Vm is over or underloaded.
      *
      * @param time current simulation time
      * @return true if the request was actually sent, false otherwise
      */
-    protected abstract boolean requestScaling(double time);
+    protected abstract boolean requestUpScaling(final double time);
 
     /**
      * Sets the last time the scheduler checked for VM overload.
      * @param lastProcessingTime the processing time to set
      */
-    protected void setLastProcessingTime(double lastProcessingTime) {
+    protected void setLastProcessingTime(final double lastProcessingTime) {
         this.lastProcessingTime = lastProcessingTime;
     }
 }

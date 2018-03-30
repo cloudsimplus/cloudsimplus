@@ -54,7 +54,7 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public boolean isVmUnderloaded() { return false; }
     @Override public boolean isVmOverloaded() { return false; }
     @Override public Resource getResource() { return Resource.NULL; }
-    @Override public boolean requestScalingIfPredicateMatches(double time) {
+    @Override public boolean requestUpScalingIfPredicateMatches(double time) {
         return false;
     }
     @Override public Vm getVm() {

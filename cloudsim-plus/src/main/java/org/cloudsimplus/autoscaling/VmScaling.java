@@ -71,5 +71,5 @@ public interface VmScaling {
      * @param time current simulation time
      * @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker, false otherwise
      */
-    boolean requestScalingIfPredicateMatches(double time);
+    boolean requestUpScalingIfPredicateMatches(double time);
 }
