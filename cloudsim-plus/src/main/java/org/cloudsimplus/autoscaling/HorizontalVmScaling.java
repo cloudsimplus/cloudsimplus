@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -48,8 +49,14 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0.0
  * @todo The mechanism to destroy created VMs that are not required anymore is not implemented yet.
- * To implement the down scaling, a new underload predicate and a scaleIfUnderloaded method should
- * be introduced.
+ * In fact, the DatacenterBroker already has a mechanism to enable destroying VMs as they become idle.
+ * Check {@link DatacenterBroker#setVmDestructionDelayFunction(Function)}.
+ * Therefore, he HorizontalScale may not need to implement anything related to down scaling.
+ * This way, the underloadPredicate attribute may not be needed.
+ * Since there is no Cloudlet migration mechanism (and it isn't the intention to have one),
+ * if a VM becomes underloaded, there is nothing that can be done until all Cloudlets
+ * finish executing. When that happens, the {@link DatacenterBroker#getVmDestructionDelayFunction()}
+ * can handle such a situation.
  */
 public interface HorizontalVmScaling extends VmScaling {
     Predicate<Vm> FALSE_PREDICATE = vm -> false;
@@ -96,7 +103,7 @@ public interface HorizontalVmScaling extends VmScaling {
      * @return {@inheritDoc}
      */
     @Override
-    boolean requestScalingIfPredicateMatch(double time);
+    boolean requestScalingIfPredicateMatches(double time);
 
     /**
      * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
@@ -139,6 +146,15 @@ public interface HorizontalVmScaling extends VmScaling {
     Predicate<Vm> getUnderloadPredicate();
 
     /**
+     * Checks if the VM is either under or overloaded
+     * @return true if the VM is in one of the mentioned conditions,
+     *         false if it's neither under or overloaded
+     */
+    default boolean isVmUnderOrOverloaded(){
+        return getUnderloadPredicate().or(getOverloadPredicate()).test(getVm());
+    }
+
+    /**
      * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
      * making the {@link DatacenterBroker} to down scale Vm.
      * The down scaling is performed by destroying idle VMs.
@@ -152,7 +168,6 @@ public interface HorizontalVmScaling extends VmScaling {
      *                  Despite the VmScaling already is already linked to a {@link #getVm() Vm},
      *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate
      *                  to detect underload of different VMs.
-     *
      * @return
      */
     VmScaling setUnderloadPredicate(Predicate<Vm> predicate);

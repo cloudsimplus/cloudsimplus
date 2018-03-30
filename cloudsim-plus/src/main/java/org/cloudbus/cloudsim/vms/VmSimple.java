@@ -822,12 +822,12 @@ public class VmSimple implements Vm {
             final String name = vmScaling.getClass().getSimpleName();
             throw new IllegalArgumentException(
                 "The "+name+" given is already linked to a Vm. " +
-                "Each Vm must have its own "+name+" objects or none at all. " +
-                "A new scaling has to be provided for this Vm.");
+                "Each Vm must have its own "+name+" object or none at all. " +
+                "Another "+name+" has to be provided for this Vm.");
         }
 
         vmScaling.setVm(this);
-        this.addOnUpdateProcessingListener(evt -> vmScaling.requestScalingIfPredicateMatch(evt.getTime()));
+        this.addOnUpdateProcessingListener(evt -> vmScaling.requestScalingIfPredicateMatches(evt.getTime()));
         return vmScaling;
     }
 

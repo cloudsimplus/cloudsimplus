@@ -67,7 +67,7 @@ public abstract class VmScalingAbstract implements VmScaling {
     /**
      * Performs the actual request to scale the Vm up or down,
      * depending if it is over or underloaded, respectively.
-     * This method is automatically called by {@link #requestScalingIfPredicateMatch(double)}
+     * This method is automatically called by {@link #requestScalingIfPredicateMatches(double)}
      * when it is verified that the Vm is over or underloaded.
      *
      * @param time current simulation time

@@ -338,15 +338,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Gets a {@link Function} which defines when an idle VM should be destroyed.
      * The Function receives a {@link Vm} and returns the delay to wait (in seconds),
-     * after the VM become idle, to destruct it.
-     *
-     * <p>
-     *   This way, it has to wait until either:
-     *   <ul>
-     *     <li>all submitted Cloudlets from all VMs of the broker are finished and there are no waiting Cloudlets;</li>
-     *     <li>all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
-     *   </ul>
-     * </p>
+     * after the VM becomes idle, to destroy it.
      *
      * @return
      * @see #DEFAULT_VM_DESTRUCTION_DELAY
@@ -357,15 +349,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Sets a {@link Function} to define when an idle VM should be destroyed.
      * The Function receives a {@link Vm} and returns the delay to wait (in seconds),
-     * after the VM become idle, to destruct it.
-     *
-     * <p>
-     *   This way, it has to wait until either:
-     *   <ul>
-     *     <li>all submitted Cloudlets from all VMs of the broker are finished and there are no waiting Cloudlets;</li>
-     *     <li>all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
-     *   </ul>
-     * </p>
+     * after the VM becomes idle, to destroy it.
      *
      * @param function the {@link Function} to set (if null is given, it sets the default Function)
      * @return

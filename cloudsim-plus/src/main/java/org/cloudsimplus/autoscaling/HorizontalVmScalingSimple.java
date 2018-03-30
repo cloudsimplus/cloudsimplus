@@ -72,7 +72,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
 
     @Override
     public final HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) {
-        this.vmSupplier = (Objects.isNull(supplier) ? () -> Vm.NULL : supplier);
+        this.vmSupplier = supplier == null ? () -> Vm.NULL : supplier;
         return this;
     }
 
@@ -124,7 +124,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     }
 
     private boolean requestUpScaling(double time) {
-        if(!isNewCloudletsArrived()){
+        if(!haveNewCloudletsArrived()){
             return false;
         }
 
@@ -144,18 +144,17 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
      * time this method was called.
      * @return
      */
-    private boolean isNewCloudletsArrived(){
+    private boolean haveNewCloudletsArrived(){
         return getVm().getBroker().getCloudletCreatedList().size() > cloudletCreationRequests;
     }
 
     @Override
-    public final boolean requestScalingIfPredicateMatch(double time) {
+    public final boolean requestScalingIfPredicateMatches(double time) {
         if(!isTimeToCheckPredicate(time)) {
             return false;
         }
 
-        final boolean requestedScaling =
-            ( getUnderloadPredicate().test(getVm()) || getOverloadPredicate().test(getVm())) && requestScaling(time);
+        final boolean requestedScaling = isVmUnderOrOverloaded() && requestScaling(time);
         setLastProcessingTime(time);
         return requestedScaling;
     }

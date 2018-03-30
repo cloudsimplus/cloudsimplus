@@ -42,7 +42,7 @@ final class HorizontalVmScalingNull implements HorizontalVmScaling {
     @Override public HorizontalVmScaling setVmSupplier(Supplier<Vm> supplier) {
         return this;
     }
-    @Override public boolean requestScalingIfPredicateMatch(double time) {
+    @Override public boolean requestScalingIfPredicateMatches(double time) {
         return false;
     }
     @Override public Predicate<Vm> getOverloadPredicate() { return vm -> false; }

@@ -32,10 +32,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * A default {@link Function} which always returns {@link #DEFAULT_VM_DESTRUCTION_DELAY} to indicate that any VM should not be
      * immediately destroyed after it becomes idle.
-     * This way, it has to wait until either:
+     * This way, using this Function the broker will destroy VMs only after:
      * <ul>
-     * <li>all submitted Cloudlets from all VMs of the broker are finished and there are no waiting Cloudlets;</li>
-     * <li>all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
+     * <li>all submitted Cloudlets from all its VMs are finished and there are no waiting Cloudlets;</li>
+     * <li>or all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
      * </ul>
      *
      * @see #setVmDestructionDelayFunction(Function)
@@ -174,6 +174,18 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         setDefaultPolicies();
 
         vmDestructionDelayFunction = DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION;
+    }
+
+    /**
+     * A {@link Function} that can be used to indicate that any VM has not to wait
+     * to be destroyed after becoming idle.
+     *
+     * @param vm the VM to define the destruction wait time
+     * @return always 0 to indicate there is not delay to destroy a VM after it
+     *         becoming idle
+     */
+    private Double noDelayToDestroyIdleVm(final Vm vm) {
+        return 0.0;
     }
 
     /**
@@ -441,9 +453,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @param vm the VM to try to destroy
      */
-    private void processBrokerVmDestroyRequest(Vm vm) {
+    private void processBrokerVmDestroyRequest(final Vm vm) {
         if(vm.getCloudletScheduler().isEmpty()) {
-            requestIdleVmDestruction(vm, __ -> 0.0);
+            requestIdleVmDestruction(vm, this::noDelayToDestroyIdleVm);
         }
     }
 
@@ -613,13 +625,22 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             getSimulation().clock(), getName(), c.getClass().getSimpleName(), c.getId()));
         cloudletsCreated--;
 
-        if(isNotAllRunningCloudletsReturned()){
+        if(areThereRunningCloudlets()){
             requestIdleVmDestruction(c.getVm(), vmDestructionDelayFunction);
             return;
         }
 
-        final Function<Vm, Double> func = vmDestructionDelayFunction.apply(c.getVm()) < 0 ? vm -> 0.0 : vmDestructionDelayFunction;
-        //If gets here, all running cloudlets have finished and returned to the broker.
+        requestVmDestructionAfterAllCloudletsFinished(c);
+    }
+
+    /**
+     * Request the destruction of VMs after all running cloudlets have finished and returned to the broker.
+     * If there is no waiting Cloudlet, request all VMs to be destroyed.
+     * If a VM destruction function was not set, request VMs destruction without delay.
+     * Otherwise, use the {@link #vmDestructionDelayFunction} set.
+     */
+    private void requestVmDestructionAfterAllCloudletsFinished(Cloudlet c) {
+        final Function<Vm, Double> func = isNotVmDestructionDelayFunctionSet(c) ? this::noDelayToDestroyIdleVm : vmDestructionDelayFunction;
         if (cloudletWaitingList.isEmpty()) {
             println(String.format(
                 "%.2f: %s: All submitted Cloudlets finished executing.",
@@ -628,7 +649,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
-        /*There are some cloudlets waiting their VMs to be created.
+        /*
+        There are some cloudlets waiting their VMs to be created.
         Then, destroys finished VMs and requests creation of waiting ones.
         When there is waiting Cloudlets, it always request the destruction
         of idle VMs to possibly free resources to start waiting
@@ -641,11 +663,21 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Checks if <b>NOT</b> all created Cloudlets have returned to the broker,
-     * indicating some of them are executing yet.
+     * Checks if a specific {@link #vmDestructionDelayFunction} wasn't set
+     * @param cloudlet a Cloudlet to use to call the  {@link #vmDestructionDelayFunction} and check
+     *                 if that Function is the default one or not
+     * @return true if the {@link #DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION} is being used,
+     *              false if a specific {@link Function} was set
+     */
+    private boolean isNotVmDestructionDelayFunctionSet(final Cloudlet cloudlet) {
+        return vmDestructionDelayFunction.apply(cloudlet.getVm()) <= DEFAULT_VM_DESTRUCTION_DELAY;
+    }
+
+    /**
+     * Checks if there are Cloudlets running yet.
      * @return
      */
-    private boolean isNotAllRunningCloudletsReturned() {
+    private boolean areThereRunningCloudlets() {
         return cloudletsCreated > 0;
     }
 
@@ -657,7 +689,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @post $none
      * @see #getVmDestructionDelayFunction()
      */
-    protected void requestIdleVmsDestruction(Function<Vm,Double> vmDestructionDelayFunction) {
+    protected void requestIdleVmsDestruction(final Function<Vm,Double> vmDestructionDelayFunction) {
         for (int i = vmExecList.size()-1; i >= 0; i--) {
             requestIdleVmDestruction(vmExecList.get(i), vmDestructionDelayFunction);
         }
@@ -670,11 +702,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * Otherwise, it doesn't send the request, meaning the VM should not be destroyed according to a specific delay.
      *
      * @param vm the VM to destroy
-     * @param vmDestructionDelayFunction a {@link Function} which indicates to time the VM will wait before being destructed
+     * @param vmDestructionDelayFunction a {@link Function} which indicates the time the VM will wait before being destroyed
      * @return true if the VM was destroyed, false otherwise
      * @see #getVmDestructionDelayFunction()
      */
-    private boolean requestIdleVmDestruction(Vm vm, Function<Vm,Double>vmDestructionDelayFunction) {
+    private boolean requestIdleVmDestruction(final Vm vm, final Function<Vm,Double>vmDestructionDelayFunction) {
         final double delay = vmDestructionDelayFunction.apply(vm);
         if (delay <= DEFAULT_VM_DESTRUCTION_DELAY){
             return false;

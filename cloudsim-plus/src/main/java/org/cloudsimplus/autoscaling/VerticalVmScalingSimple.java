@@ -146,7 +146,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public final boolean requestScalingIfPredicateMatch(double time) {
+    public final boolean requestScalingIfPredicateMatches(double time) {
         if(!isTimeToCheckPredicate(time)) {
             return false;
         }

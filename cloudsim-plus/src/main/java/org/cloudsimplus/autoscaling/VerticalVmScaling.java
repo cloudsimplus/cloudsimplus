@@ -197,7 +197,7 @@ public interface VerticalVmScaling extends VmScaling {
      * @see #getScalingFactor()
      */
     @Override
-    boolean requestScalingIfPredicateMatch(double time);
+    boolean requestScalingIfPredicateMatches(double time);
 
     /**
      * Gets a {@link Function} that defines the upper utilization threshold for a {@link #getVm() Vm}
