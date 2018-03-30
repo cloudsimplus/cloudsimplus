@@ -59,6 +59,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static java.util.Comparator.comparingDouble;
@@ -79,8 +80,15 @@ import static java.util.Comparator.comparingDouble;
  * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs.
  * It relies on
  * <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html">Java 8 Lambda Expressions</a>
- * to create a Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}
- * in order to get notified when the simulation clock advances and then create and submit new Cloudlets.
+ * to set a Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}.
+ * That Listener gets notified every time the simulation clock advances and then creates and submits new Cloudlets.
+ * </p>
+ *
+ * <p>The {@link DatacenterBroker} is accountable to perform horizontal down scaling.
+ * The down scaling is enabled by setting a {@link Function} using the {@link DatacenterBroker#setVmDestructionDelayFunction(Function)}.
+ * This Function defines the time the broker has to wait to destroy a VM after it becomes idle.
+ * If no Function is set, the broker just destroys VMs after all running Cloudlets are finished
+ * and there is no Cloudlet waiting to be created.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
@@ -150,6 +158,15 @@ public class LoadBalancerByHorizontalVmScalingExample {
 
         createDatacenter();
         broker0 = new DatacenterBrokerSimple(simulation);
+
+        /*
+        * Defines the Vm Destruction Delay Function as a lambda expression
+        * so that the broker will wait 10 seconds before destroying an idle VM
+        * By comment this line, no down scaling will be performed
+        * and idle VMs will be destroyed just after all running Cloudlets
+        * are finished and there is no waiting Cloudlet.
+        */
+        broker0.setVmDestructionDelayFunction(vm -> 10.0);
 
         vmList.addAll(createListOfScalableVms(VMS));
 
