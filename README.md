@@ -152,7 +152,8 @@ as presened below (check if the informed version is the latest one). This way yo
 <dependency>
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
-    <version>1.2.6</version>
+    <!-- Set a specific version or use the latest one -->
+    <version>LATEST</version>
 </dependency>
 ```
 
@@ -222,7 +223,7 @@ cloudsim.start();
 
 /*Prints results when the simulation is over
 (you can use your own code here to print what you want from this cloudlet list).*/
-new CloudletsTableBuilder(broker0.getCloudletsFinishedList()).build();
+new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
 ```
 
 The presented results are structured and clear to allow better understanding. For example, the image below shows the output for a simulation with two cloudlets (applications).
