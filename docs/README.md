@@ -1,6 +1,9 @@
 # CloudSim Plus Documentation
 
-This directory contains several different kinds of CloudSim Plus documentation, including a:
+This directory contains several different kinds of CloudSim Plus documentation. You can browse the [online documentation here](http://cloudsimplus.rtfd.io). 
+
+The documentation includes:
+
 - FAQs, guides and [JavaDocs](javadocs) in [reStructuredText (rst)](https://en.wikipedia.org/wiki/ReStructuredText) format to be published at [ReadTheDocs site](http://cloudsimplus.rtfd.io);
 - [StarUML](http://staruml.io) project containing [UML diagrams](cloudsim-plus.staruml.mdj); 
 - [Side-by-Side comparison between CloudSim and CloudSim Plus java simulation scenarios](CloudSim-and-CloudSimPlus-Comparison.html) (online version available [here](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html));

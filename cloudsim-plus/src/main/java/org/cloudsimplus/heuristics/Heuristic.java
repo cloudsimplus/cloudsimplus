@@ -44,7 +44,7 @@ package org.cloudsimplus.heuristics;
  * to name a few.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @param <S> the class of solutions the heuristic will deal with
+ * @param <S> the {@link HeuristicSolution class of solutions} the heuristic will deal with
  * @since CloudSim Plus 1.0
  */
 public interface Heuristic<S extends HeuristicSolution<?>> {
@@ -132,7 +132,7 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
 
 	/**
 	 * Starts the heuristic to find a suboptimal solution.
-	 * After the method finishes, call the {@link #getBestSolutionSoFar()}
+	 * After the method finishes, you can call the {@link #getBestSolutionSoFar()}
 	 * to get the final solution.
 	 *
 	 * @return the final solution
@@ -148,5 +148,4 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
 	 * @see #solve()
 	 */
 	double getSolveTime();
-
 }

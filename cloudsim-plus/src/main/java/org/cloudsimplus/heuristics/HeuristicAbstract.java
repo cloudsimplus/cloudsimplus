@@ -33,10 +33,11 @@ import java.util.stream.IntStream;
  * A base class for {@link Heuristic} implementations.
  *
  * @author Manoel Campos da Silva Filho
- * @param <S> the class of solutions the heuristic will deal with, starting with a initial
- *           solution (usually random, depending on sub-classes implementations)
- *           and executing the solution search in order
- *           to achieve a satisfying solution (defined by a stop criteria)
+ * @param <S> The {@link HeuristicSolution class of solutions} the heuristic will deal with.
+ *            It start with an initial
+ *           solution (usually random, depending on each sub-class implementation)
+ *           and executes the solution search in order
+ *           to find a satisfying solution (defined by a stop criteria)
  * @since CloudSim Plus 1.0
  */
 public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  implements Heuristic<S> {

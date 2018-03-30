@@ -64,22 +64,23 @@ import java.util.function.Predicate;
 import static java.util.Comparator.comparingDouble;
 
 /**
- * An example that balances load by dynamically creating VMs according
- * to the arrival of Cloudlets.
- *  Cloudlets are {@link #createNewCloudlets(EventInfo) dynamically created and submitted to the broker
+ * An example that balances load by dynamically creating VMs,
+ * according to the arrival of Cloudlets.
+ * Cloudlets are {@link #createNewCloudlets(EventInfo) dynamically created and submitted to the broker
  * at specific time intervals}.
- * A {@link HorizontalVmScalingSimple}
+ *
+ * <p>A {@link HorizontalVmScalingSimple}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
  * that will check at {@link #SCHEDULING_INTERVAL specific time intervals}
  * if the VM {@link #isVmOverloaded(Vm) is overloaded or not} to then
- * request the creation of a new VM to attend the arriving Cloudlets.
+ * request the creation of a new VM to attend arriving Cloudlets.</p>
  *
- * <p>The example uses the CloudSim Plus {@link EventListener} feature
+ * <p>The example uses CloudSim Plus {@link EventListener} feature
  * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs.
  * It relies on
  * <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html">Java 8 Lambda Expressions</a>
- * to create an Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}
- * in order to get notified when the simulation clock advances and then create and submit new cloudlets.
+ * to create a Listener for the {@link Simulation#addOnClockTickListener(EventListener) onClockTick event}
+ * in order to get notified when the simulation clock advances and then create and submit new Cloudlets.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
@@ -90,16 +91,16 @@ public class LoadBalancerByHorizontalVmScalingExample {
      * The interval in which the Datacenter will schedule events.
      * As lower is this interval, sooner the processing of VMs and Cloudlets
      * is updated and you will get more notifications about the simulation execution.
-     * However, as higher is this value, it can affect the simulation performance.
+     * However, that also affect the simulation performance.
      *
-     * <p>For this example, a large schedule interval such as 15 will make that just
+     * <p>A large schedule interval, such as 15, will make that just
      * at every 15 seconds the processing of VMs is updated. If a VM is overloaded, just
      * after this time the creation of a new one will be requested
      * by the VM's {@link HorizontalVmScaling Horizontal Scaling} mechanism.</p>
      *
      * <p>If this interval is defined using a small value, you may get
-     * more dynamically created VMs than expected. Accordingly, this value
-     * has to be trade-off.
+     * more dynamically created VMs than expected.
+     * Accordingly, this value has to be trade-off.
      * For more details, see {@link Datacenter#getSchedulingInterval()}.</p>
     */
     private static final int SCHEDULING_INTERVAL = 5;
@@ -136,7 +137,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
     public LoadBalancerByHorizontalVmScalingExample() {
-        /*You can remove the seed to get a dynamic one, based on current computer time.
+        /*You can remove the seed parameter to get a dynamic one, based on current computer time.
         * With a dynamic seed you will get different results at each simulation run.*/
         final long seed = 1;
         rand = new UniformDistr(0, CLOUDLET_LENGTHS.length, seed);
@@ -177,10 +178,10 @@ public class LoadBalancerByHorizontalVmScalingExample {
     }
 
     /**
-     * Creates new Cloudlets at every 10 seconds up to the 50th simulation second.
+     * Creates new Cloudlets at every {@link #CLOUDLETS_CREATION_INTERVAL} seconds, up to the 50th simulation second.
      * A reference to this method is set as the {@link EventListener}
      * to the {@link Simulation#addOnClockTickListener(EventListener)}.
-     * The method is then called every time the simulation clock advances.
+     * The method is called every time the simulation clock advances.
      *
      * @param eventInfo the information about the OnClockTick event that has happened
      */
@@ -222,12 +223,10 @@ public class LoadBalancerByHorizontalVmScalingExample {
         final long ram = 2048; // in Megabytes
         final long storage = 1000000; // in Megabytes
         final long bw = 10000; //in Megabits/s
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
-        final int id = hostList.size();
         return new HostSimple(ram, bw, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(vmScheduler);
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     /**
@@ -252,7 +251,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
     /**
      * Creates a {@link HorizontalVmScaling} object for a given VM.
      *
-     * @param vm the VM in which the Horizontal Scaling will be created
+     * @param vm the VM for which the Horizontal Scaling will be created
      * @see #createListOfScalableVms(int)
      */
     private void createHorizontalVmScaling(Vm vm) {
@@ -261,7 +260,19 @@ public class LoadBalancerByHorizontalVmScalingExample {
              .setVmSupplier(this::createVm)
              .setOverloadPredicate(this::isVmOverloaded);
         vm.setHorizontalScaling(horizontalScaling);
+    }
 
+    /**
+     * A {@link Predicate} that checks if a given VM is overloaded or not,
+     * based on upper CPU utilization threshold.
+     * A reference to this method is assigned to each {@link HorizontalVmScaling} created.
+     *
+     * @param vm the VM to check if it is overloaded
+     * @return true if the VM is overloaded, false otherwise
+     * @see #createHorizontalVmScaling(Vm)
+     */
+    private boolean isVmOverloaded(Vm vm) {
+        return vm.getCpuPercentUsage() > 0.7;
     }
 
     /**
@@ -271,23 +282,9 @@ public class LoadBalancerByHorizontalVmScalingExample {
      */
     private Vm createVm() {
         final int id = createsVms++;
-        Vm vm = new VmSimple(id, 1000, 2)
+        return new VmSimple(id, 1000, 2)
             .setRam(512).setBw(1000).setSize(10000)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
-
-        return vm;
-    }
-
-    /**
-     * A {@link Predicate} that checks if a given VM is overloaded or not based on upper CPU utilization threshold.
-     * A reference to this method is assigned to each Horizontal VM Scaling created.
-     *
-     * @param vm the VM to check if it is overloaded
-     * @return true if the VM is overloaded, false otherwise
-     * @see #createHorizontalVmScaling(Vm)
-     */
-    private boolean isVmOverloaded(Vm vm) {
-        return vm.getCpuPercentUsage() > 0.7;
     }
 
     private Cloudlet createCloudlet() {

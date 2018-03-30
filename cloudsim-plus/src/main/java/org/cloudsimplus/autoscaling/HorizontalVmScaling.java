@@ -70,7 +70,7 @@ public interface HorizontalVmScaling extends VmScaling {
 
     /**
      * Sets a {@link Supplier} that will be used to create VMs when
-     * the Load Balancer detects that the Broker's VMs are overloaded.
+     * the Load Balancer detects that Broker's VMs are overloaded.
      *
      * @param supplier the supplier to set
      * @return
@@ -110,18 +110,20 @@ public interface HorizontalVmScaling extends VmScaling {
     Predicate<Vm> getOverloadPredicate();
 
     /**
-     * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,
-     * that will make the Vm's {@link DatacenterBroker} to up scale the VM.
+     * Sets a {@link Predicate} that defines when the {@link #getVm() Vm} is overloaded or not,
+     * making the {@link DatacenterBroker} to up scale the VM.
      * The up scaling is performed by creating new VMs to attend new arrived Cloudlets
-     * and then balance the load.
+     * in order to balance the load.
      *
      * @param predicate a predicate that checks certain conditions
-     *                  to define that the {@link #getVm() Vm} is over utilized.
-     *                  The predicate receives the Vm to allow the it
-     *                  to define the over utilization condition.
+     *                  to define a {@link #getVm() Vm} as overloaded.
+     *                  The predicate receives the Vm that has to be checked.
      *                  Such a condition can be defined, for instance,
      *                  based on Vm's {@link Vm#getCpuPercentUsage(double)} CPU usage}
      *                  and/or any other VM resource usage.
+     *                  Despite the VmScaling already is already linked to a {@link #getVm() Vm},
+     *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate
+     *                  to detect overload of different VMs.
      * @return
      */
     VmScaling setOverloadPredicate(Predicate<Vm> predicate);
@@ -138,16 +140,19 @@ public interface HorizontalVmScaling extends VmScaling {
 
     /**
      * Sets a {@link Predicate} that defines when {@link #getVm() Vm} is underloaded or not,
-     * that will make the Vm's {@link DatacenterBroker} to down scale Vm.
+     * making the {@link DatacenterBroker} to down scale Vm.
      * The down scaling is performed by destroying idle VMs.
      *
      * @param predicate a predicate that checks certain conditions
-     *                  to define that the {@link #getVm() Vm} is under utilized.
-     *                  The predicate receives the Vm to allow the it
-     *                  to define the over utilization condition.
+     *                  to define a {@link #getVm() Vm} as underloaded.
+     *                  The predicate receives the Vm that has to be checked.
      *                  Such a condition can be defined, for instance,
      *                  based on Vm's {@link Vm#getCpuPercentUsage(double)} CPU usage}
      *                  and/or any other VM resource usage.
+     *                  Despite the VmScaling already is already linked to a {@link #getVm() Vm},
+     *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate
+     *                  to detect underload of different VMs.
+     *
      * @return
      */
     VmScaling setUnderloadPredicate(Predicate<Vm> predicate);
