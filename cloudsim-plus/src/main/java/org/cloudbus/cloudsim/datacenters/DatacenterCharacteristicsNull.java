@@ -49,39 +49,18 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public DatacenterCharacteristics setOs(String os) {
         return DatacenterCharacteristics.NULL;
     }
-    @Override public <T extends Host> List<T> getHostList() {
-        return Collections.EMPTY_LIST;
-    }
-    @Override public Host getHostWithFreePe() {
-        return Host.NULL;
-    }
-    @Override public Host getHostWithFreePe(int peNumber) {
-        return Host.NULL;
-    }
     @Override public int getId() {
         return 0;
     }
     @Override public double getMips() { return 0; }
-    @Override public long getMipsOfOnePe(int hostId, int peId) {
-        return 0;
-    }
-    @Override public int getNumberOfBusyPes() {
-        return 0;
-    }
     @Override public long getNumberOfFailedHosts() {
         return 0;
     }
     @Override public int getNumberOfFreePes() {
         return 0;
     }
-    @Override public int getNumberOfHosts() {
-        return 0;
-    }
     @Override public int getNumberOfPes() {
         return 0;
-    }
-    @Override public String getResourceName() {
-        return "";
     }
     @Override public String getVmm() {
         return "";
@@ -94,7 +73,6 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     }
     @Override public DatacenterCharacteristics setCostPerMem(double c) { return DatacenterCharacteristics.NULL; }
     @Override public DatacenterCharacteristics setCostPerStorage(double c) { return DatacenterCharacteristics.NULL; }
-    @Override public DatacenterCharacteristics setDatacenter(Datacenter dc) { return DatacenterCharacteristics.NULL; }
     @Override public boolean setPeStatus(Pe.Status status, int hostId, int peId) {
         return false;
     }

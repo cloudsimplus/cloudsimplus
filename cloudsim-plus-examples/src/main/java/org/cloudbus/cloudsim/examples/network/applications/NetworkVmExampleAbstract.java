@@ -167,24 +167,19 @@ abstract class NetworkVmExampleAbstract {
             hostList.add(host);
         }
 
-        // 5. Create a DatacenterCharacteristics object that stores the
-        // properties of a data center: architecture, OS, list of
-        // Machines, allocation policy: time- or space-shared, time zone
-        // and its price (G$/Pe time unit).
-        DatacenterCharacteristics characteristics =
-                new DatacenterCharacteristicsSimple(hostList)
-                    .setCostPerSecond(COST)
-                    .setCostPerMem(COST_PER_MEM)
-                    .setCostPerStorage(COST_PER_STORAGE)
-                    .setCostPerBw(COST_PER_BW);
         // 6. Finally, we need to create a NetworkDatacenter object.
-        NetworkDatacenter newDatacenter =
+        NetworkDatacenter dc =
                 new NetworkDatacenter(
-                        simulation, characteristics, new VmAllocationPolicySimple());
-        newDatacenter.setSchedulingInterval(5);
+                        simulation, hostList, new VmAllocationPolicySimple());
+        dc.setSchedulingInterval(5);
+        dc.getCharacteristics()
+            .setCostPerSecond(COST)
+            .setCostPerMem(COST_PER_MEM)
+            .setCostPerStorage(COST_PER_STORAGE)
+            .setCostPerBw(COST_PER_BW);
 
-        createNetwork(newDatacenter);
-        return newDatacenter;
+        createNetwork(dc);
+        return dc;
     }
 
     public List<Pe> createPEs(final int numberOfPEs, final long mips) {
@@ -240,7 +235,7 @@ abstract class NetworkVmExampleAbstract {
     }
 
     private List<Host> getDatacenterHostList() {
-        return datacenter.getCharacteristics().getHostList();
+        return datacenter.getHostList();
     }
 
     /**

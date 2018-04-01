@@ -20,6 +20,7 @@ import org.cloudsimplus.listeners.EventInfo;
  * @since CloudSim Plus 1.0
  */
 public interface SimEvent extends Comparable<SimEvent>, EventInfo {
+
     /**
      * Internal event types
      */
@@ -109,9 +110,6 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * @return
      */
     SimEvent setDestination(int destination);
-
-    @Override
-    double getTime();
 
     /**
      * Gets the serial number that defines the order of received events when multiple

@@ -166,8 +166,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample1 {
             hostList.add(host);
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        Datacenter dc0 = new PowerDatacenter(simulation, characteristics, new VmAllocationPolicySimple());
+        Datacenter dc0 = new PowerDatacenter(simulation, hostList, new VmAllocationPolicySimple());
         dc0.setSchedulingInterval(SCHEDULING_INTERVAL);
     }
 

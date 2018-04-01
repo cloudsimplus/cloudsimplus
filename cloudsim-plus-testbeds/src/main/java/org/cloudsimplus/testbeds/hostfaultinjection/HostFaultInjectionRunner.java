@@ -23,7 +23,7 @@
  */
 /*
  */
-package org.cloudsimplus.hostfaultinjection;
+package org.cloudsimplus.testbeds.hostfaultinjection;
 
 import java.util.*;
 

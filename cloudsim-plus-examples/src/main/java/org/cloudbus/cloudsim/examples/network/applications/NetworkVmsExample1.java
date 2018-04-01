@@ -38,12 +38,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExample1 {
-
-    private static final double COST = 3.0; // the cost of using processing in this resource
-    private static final double COST_PER_MEM = 0.05; // the cost of using memory in this resource
-    private static final double COST_PER_STORAGE = 0.001; // the cost of using storage in this resource
-    private static final double COST_PER_BW = 0.0; // the cost of using bw in this resource
-
     private static final int NUMBER_OF_HOSTS = 2;
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 4;
@@ -118,15 +112,8 @@ public class NetworkVmsExample1 {
             hostList.add(host);
         }
 
-        DatacenterCharacteristics characteristics
-                = new DatacenterCharacteristicsSimple(hostList)
-                        .setCostPerSecond(COST)
-                        .setCostPerMem(COST_PER_MEM)
-                        .setCostPerStorage(COST_PER_STORAGE)
-                        .setCostPerBw(COST_PER_BW);
-
         NetworkDatacenter newDatacenter
-                = new NetworkDatacenter(simulation, characteristics, new VmAllocationPolicySimple());
+                = new NetworkDatacenter(simulation, hostList, new VmAllocationPolicySimple());
         newDatacenter.setSchedulingInterval(5);
 
         createNetwork(newDatacenter);

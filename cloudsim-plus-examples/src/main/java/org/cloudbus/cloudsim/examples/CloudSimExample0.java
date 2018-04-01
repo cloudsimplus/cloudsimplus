@@ -102,8 +102,7 @@ public class CloudSimExample0 {
             hostList.add(host);
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {

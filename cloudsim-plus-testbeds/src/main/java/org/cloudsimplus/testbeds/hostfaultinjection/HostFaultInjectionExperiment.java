@@ -23,9 +23,9 @@
  */
 /*
  */
-package org.cloudsimplus.hostfaultinjection;
+package org.cloudsimplus.testbeds.hostfaultinjection;
 
-import static org.cloudsimplus.hostfaultinjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
+import static org.cloudsimplus.testbeds.hostfaultinjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
 import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;

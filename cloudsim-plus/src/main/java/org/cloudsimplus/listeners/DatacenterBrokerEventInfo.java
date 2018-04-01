@@ -44,13 +44,15 @@ public interface DatacenterBrokerEventInfo extends EventInfo {
     /**
      * Gets a {@code DatacenterBrokerEventInfo} instance from the given parameters.
      *
+     * @param listener the listener to be notified about the event
      * @param broker the {@link DatacenterBroker} where the event happened
      */
-    static DatacenterBrokerEventInfo of(DatacenterBroker broker) {
+    static DatacenterBrokerEventInfo of(final EventListener<? extends EventInfo> listener, final DatacenterBroker broker) {
         final double time = broker.getSimulation().clock();
         return new DatacenterBrokerEventInfo() {
             @Override public double getTime() { return time; }
             @Override public DatacenterBroker getDatacenterBroker() { return broker; }
+            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
         };
     }
 }

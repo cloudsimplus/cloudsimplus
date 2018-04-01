@@ -90,9 +90,7 @@ class ReducedExample {
         hostList.add(host0);
 
         //Creates one Datacenter with a list of Hosts.
-        DatacenterCharacteristics characts = new DatacenterCharacteristicsSimple(hostList);
-        VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
-        Datacenter dc0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
+        Datacenter dc0 = new DatacenterSimple(cloudsim, hostList, new VmAllocationPolicySimple());
 
         //Creates one Vm to run applications (Cloudlets).
         List<Vm> vmList = new ArrayList<>(1);

@@ -38,15 +38,15 @@ public class VmSimpleTest {
     private static final long BW = 10000;
     private static final long SIZE = 1000;
     private static final String VMM = "Xen";
-    private CloudletSchedulerTimeShared vmScheduler;
+    private CloudletSchedulerTimeShared cloudletScheduler;
     private VmSimple vm;
 
     @Before
     public void setUp() throws Exception {
-        vmScheduler = new CloudletSchedulerTimeShared();
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
+        cloudletScheduler = new CloudletSchedulerTimeShared();
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
         final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
-        vm = VmSimpleTest.createVm(vmScheduler);
+        vm = VmSimpleTest.createVm(cloudletScheduler);
         vm.setBroker(broker);
     }
 
@@ -336,7 +336,9 @@ public class VmSimpleTest {
         final List<Double> mipsShare2 = new ArrayList<>(1);
         mipsShare1.add(1.0);
         mipsShare2.add(1.0);
-        assertEquals(vmScheduler.updateProcessing(0, mipsShare1), vm.updateProcessing(0, mipsShare2), 0);
+        final double expectedNextCompletionTime = cloudletScheduler.updateProcessing(0, mipsShare1);
+        final double actualNextCompletionTime = vm.updateProcessing(0, mipsShare2);
+        assertEquals(expectedNextCompletionTime, actualNextCompletionTime, 0);
     }
 
     @Test

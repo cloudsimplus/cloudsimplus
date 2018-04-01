@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.datacenters;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,53 +33,42 @@ import org.cloudbus.cloudsim.lists.PeList;
 public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
 
     /**
-     * The Datacenter id -- setup when Datacenter is created.
-     */
-    private int id;
-
-    /**
-     * The architecture of the resource.
+     * @see #getArchitecture()
      */
     private String architecture;
 
     /**
-     * The Operating System (OS) of the resource.
+     * @see #getOs()
      */
     private String os;
 
     /**
-     * The hosts owned by the Datacenter.
-     */
-    private List<? extends Host> hostList;
-
-    /**
-     * The time zone, defined as the difference from GMT.
+     * @see #getTimeZone()
      */
     private double timeZone;
 
     /**
-     * Price/CPU-unit. If unit = sec., then the price is defined as G$/CPU-sec.
+     * @see #getCostPerSecond()
      */
     private double costPerSecond;
 
     /**
-     * The Virtual Machine Monitor (VMM), also called hypervisor, used in the
-     * Datacenter..
+     * @see #getVmm()
      */
     private String vmm;
 
     /**
-     * The cost per each unity of RAM memory.
+     * @see #getCostPerMem()
      */
     private double costPerMem;
 
     /**
-     * The cost per each unit of storage.
+     * @see #getCostPerStorage()
      */
     private double costPerStorage;
 
     /**
-     * The cost of each byte of bandwidth (bw) consumed.
+     * @see #getCostPerBw()
      */
     private double costPerBw;
 
@@ -91,132 +81,44 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * {@link #getVmm() VMM}. The costs for {@link #getCostPerBw() BW}, {@link #getCostPerMem()} () RAM}
      * and {@link #getCostPerStorage()} () Storage} are set to zero.
      *
-     * @param hostList list of {@link Host} in the Datacenter
-     *
      * @pre machineList != null
      * @post $none
      */
-    public DatacenterCharacteristicsSimple(List<? extends Host> hostList){
-        setId(-1);
-        setHostList(hostList);
+    public DatacenterCharacteristicsSimple(final Datacenter datacenter){
         setArchitecture(DEFAULT_ARCH);
         setOs(DEFAULT_OS);
-        setHostList(hostList);
         setTimeZone(DEFAULT_TIMEZONE);
         setVmm(DEFAULT_VMM);
         setCostPerSecond(0);
         setCostPerMem(0);
         setCostPerStorage(0);
         setCostPerBw(0);
-        this.datacenter = Datacenter.NULL;
-    }
-
-    /**
-     * Creates a DatacenterCharacteristics. If the time zone is
-     * invalid, then by default, it will be GMT+0.
-     *
-     * @param architecture the architecture of the Datacenter
-     * @param os the operating system used on the Datacenter's PMs
-     * @param vmm the virtual machine monitor used
-     * @param hostList list of machines in the Datacenter
-     * @param timeZone local time zone of a user that owns this reservation.
-     * Time zone should be of range [GMT-12 ... GMT+13]
-     * @param costPerSec the cost per sec of CPU use in the Datacenter
-     * @param costPerMem the cost to use memory in the Datacenter
-     * @param costPerStorage the cost to use storage in the Datacenter
-     * @param costPerBw the cost of each byte of bandwidth (bw) consumed
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     *
-     * @pre architecture != null
-     * @pre OS != null
-     * @pre VMM != null
-     * @pre machineList != null
-     * @pre timeZone >= -12 && timeZone <= 13
-     * @pre costPerSec >= 0.0
-     * @pre costPerMem >= 0
-     * @pre costPerStorage >= 0
-     * @post $none
-     */
-    @Deprecated
-    public DatacenterCharacteristicsSimple(
-        String architecture,
-        String os,
-        String vmm,
-        List<? extends Host> hostList,
-        double timeZone,
-        double costPerSec,
-        double costPerMem,
-        double costPerStorage,
-        double costPerBw)
-    {
-            this(hostList);
-            this.setTimeZone(timeZone)
-                .setCostPerSecond(costPerSec)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
-    }
-
-    @Override
-    public String getResourceName() {
-        return datacenter.getSimulation().getEntityName(getId());
-    }
-
-    @Override
-    public Host getHostWithFreePe() {
-        return HostList.getHostWithFreePe(getHostList());
-    }
-
-    @Override
-    public Host getHostWithFreePe(int peNumber) {
-        return HostList.getHostWithFreePe(getHostList(), peNumber);
-    }
-
-    @Override
-    public long getMipsOfOnePe(int hostId, int peId) {
-        if (getHostList().isEmpty()) {
-            return -1;
-        }
-
-        return PeList.getMips(HostList.getById(getHostList(), hostId).getPeList(), peId);
+        this.datacenter = datacenter;
     }
 
     @Override
     public double getMips() {
-        return getHostList().stream().mapToDouble(Host::getTotalMipsCapacity).sum();
+        return datacenter.getHostList().stream().mapToDouble(Host::getTotalMipsCapacity).sum();
     }
 
     @Override
     public int getNumberOfPes() {
-        return HostList.getNumberOfPes(getHostList());
+        return HostList.getNumberOfPes(datacenter.getHostList());
     }
 
     @Override
     public int getNumberOfFreePes() {
-        return HostList.getNumberOfFreePes(getHostList());
+        return HostList.getNumberOfFreePes(datacenter.getHostList());
     }
 
     @Override
-    public int getNumberOfBusyPes() {
-        return HostList.getNumberOfBusyPes(getHostList());
-    }
-
-    @Override
-    public boolean setPeStatus(Pe.Status status, int hostId, int peId) {
-        return HostList.setPeStatus(getHostList(), status, hostId, peId);
-    }
-
-    @Override
-    public int getNumberOfHosts() {
-        return getHostList().size();
+    public boolean setPeStatus(final Pe.Status status, final int hostId, final int peId) {
+        return HostList.setPeStatus(datacenter.getHostList(), status, hostId, peId);
     }
 
     @Override
     public long getNumberOfFailedHosts() {
-        return getHostList().stream().filter(Host::isFailed).count();
+        return datacenter.getHostList().stream().filter(Host::isFailed).count();
     }
 
     @Override
@@ -235,7 +137,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final DatacenterCharacteristics setCostPerMem(double costPerMem) {
+    public final DatacenterCharacteristics setCostPerMem(final double costPerMem) {
         this.costPerMem = costPerMem;
         return this;
     }
@@ -246,7 +148,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final DatacenterCharacteristics setCostPerStorage(double costPerStorage) {
+    public final DatacenterCharacteristics setCostPerStorage(final double costPerStorage) {
         this.costPerStorage = costPerStorage;
         return this;
     }
@@ -257,7 +159,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final DatacenterCharacteristics setCostPerBw(double costPerBw) {
+    public final DatacenterCharacteristics setCostPerBw(final double costPerBw) {
         this.costPerBw = costPerBw;
         return this;
     }
@@ -267,18 +169,13 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
         return vmm;
     }
 
+    /**
+     * Gets the Datacenter id, setup when Datacenter is created.
+     * @return
+     */
     @Override
     public int getId() {
-        return id;
-    }
-
-    /**
-     * Sets the Datacenter id.
-     *
-     * @param id the new id
-     */
-    protected final void setId(int id) {
-        this.id = id;
+        return datacenter.getId();
     }
 
     @Override
@@ -304,31 +201,13 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public <T extends Host> List<T> getHostList() {
-        return (List<T>) hostList;
-    }
-
-    /**
-     * Sets the host list.
-     *
-     * @param hostList the new host list
-     */
-    protected final void setHostList(List<? extends Host> hostList) {
-        Objects.requireNonNull(hostList);
-        this.hostList = hostList;
-    }
-
-    @Override
     public double getTimeZone() {
         return timeZone;
     }
 
     @Override
-    public final DatacenterCharacteristics setTimeZone(double timeZone) {
-        if(timeZone < -12 || timeZone > 13)
-            timeZone = 0;
-
-        this.timeZone = timeZone;
+    public final DatacenterCharacteristics setTimeZone(final double timeZone) {
+        this.timeZone = (timeZone < -12 || timeZone > 13) ? 0 : timeZone;
         return this;
     }
 
@@ -344,7 +223,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final DatacenterCharacteristics setVmm(String vmm) {
+    public final DatacenterCharacteristics setVmm(final String vmm) {
         this.vmm = vmm;
         return this;
     }
@@ -352,13 +231,6 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     @Override
     public Datacenter getDatacenter() {
         return datacenter;
-    }
-
-    @Override
-    public DatacenterCharacteristics setDatacenter(Datacenter datacenter) {
-        this.datacenter = datacenter;
-        this.setId(datacenter.getId());
-        return this;
     }
 
 }

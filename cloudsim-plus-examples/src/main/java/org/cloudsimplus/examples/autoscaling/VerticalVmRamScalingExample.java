@@ -187,8 +187,7 @@ public class VerticalVmRamScalingExample {
             hostList.add(createHost());
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        Datacenter dc0 = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        Datacenter dc0 = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         dc0.setSchedulingInterval(SCHEDULING_INTERVAL);
     }
 

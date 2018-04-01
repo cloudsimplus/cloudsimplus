@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.core.events;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.Objects;
 
@@ -200,6 +202,11 @@ public final class CloudSimEvent implements SimEvent {
     @Override
     public double getTime() {
         return time;
+    }
+
+    @Override
+    public EventListener<? extends EventInfo> getListener() {
+        return EventListener.NULL;
     }
 
     @Override

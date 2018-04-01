@@ -44,6 +44,8 @@ final class DatacenterNull implements Datacenter {
     @Override public Host getHost(final int index) {
         return Host.NULL;
     }
+    @Override public <T extends Host> Datacenter addHostList(List<T> hostList) { return this; }
+    @Override public Datacenter addHost(Host host) { return this; }
     @Override public double getSchedulingInterval() {
         return 0;
     }

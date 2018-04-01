@@ -1,6 +1,7 @@
 # CloudSim Plus Documentation
 
-This directory contains several different kinds of CloudSim Plus documentation. You can browse the [online documentation here](http://cloudsimplus.rtfd.io). 
+This directory contains the sources to generate several different kinds of CloudSim Plus documentation. 
+You can browse the [online documentation here](http://cloudsimplus.rtfd.io). 
 
 The documentation includes:
 
@@ -11,7 +12,7 @@ The documentation includes:
 - [Web Slides](presentation/index.html) presenting CloudSim Plus (online version available [here](http://cloudsimplus.org/presentation/)).
 
 ## Building the reStructuredText files for the Documentation Site
-To generate the Sphinx documentation to publish at the [ReadTheDocs](http://cloudsimplus.rtfd.io) or to read locally, considering you have python installed, you can execute the commands below to install the additional tools:
+To generate the [Sphinx](http://sphinx-doc.org) documentation to publish at the [ReadTheDocs](http://cloudsimplus.rtfd.io) or to read locally, considering you have python installed, you can execute the commands below to install the additional tools:
 
 ```bash
 #Install pip to download python packages (can also be installed via package managers in Linux and macOS)
@@ -42,4 +43,5 @@ To build the documentation in html use:
 make html
 ```
 
-After that, you can navigate the generated documentation locally by accessing the [_build](_build) directory. To publish the updated documentation to ReadTheDocs site, just commit any changes (which don't include the _build directory) and push them to GitHub.
+After that, you can navigate the generated documentation locally by accessing the [_build](_build) directory. 
+To publish the updated documentation to ReadTheDocs site, just commit any changes (which don't include the _build directory) and push them to GitHub.

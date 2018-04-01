@@ -25,9 +25,9 @@ final class SimulationNull implements Simulation {
     @Override public boolean cancelAll(int src, Predicate<SimEvent> p) {
         return false;
     }
-    @Override public double clock() { return 0.0; } 
-    @Override public double clockInMinutes() { return 0.0; }    
-    @Override public double clockInHours() { return 0.0; }    
+    @Override public double clock() { return 0.0; }
+    @Override public double clockInMinutes() { return 0.0; }
+    @Override public double clockInHours() { return 0.0; }
     @Override public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p) {
         return SimEvent.NULL;
     }
@@ -99,7 +99,7 @@ final class SimulationNull implements Simulation {
     @Override public Simulation addOnClockTickListener(EventListener<EventInfo> listener) {
         return this;
     }
-    @Override public boolean removeOnClockTickListener(EventListener<EventInfo> listener) {
+    @Override public boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener) {
         return false;
     }
     @Override public double start() throws RuntimeException { return 0; }

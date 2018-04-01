@@ -240,8 +240,7 @@ public class MultipleBrokers2 {
             hostList.add(host);
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        final Datacenter dc = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }

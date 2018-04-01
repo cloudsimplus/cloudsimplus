@@ -50,7 +50,21 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics NULL = new DatacenterCharacteristicsNull();
 
     /**
-     * Gets the time zone, a value between  [-12 and 13].
+     * Gets the Datacenter id.
+     *
+     * @return the id
+     */
+    @Override int getId();
+
+    /**
+     * Gets the {@link Datacenter} that owns these characteristics
+     * @return the Datacenter
+     */
+    Datacenter getDatacenter();
+
+    /**
+     * Gets the time zone, a value between  [-12 and 13], in which the
+     * Datacenter is physically located.
      *
      * @return the time zone
      */
@@ -64,6 +78,14 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics setTimeZone(double timeZone);
 
     /**
+     * Gets the Virtual Machine Monitor (VMM), also called hypervisor, used in the
+     * Datacenter.
+     *
+     * @return the VMM name
+     */
+    String getVmm();
+
+    /**
      * Sets the vmm.
      *
      * @param vmm the new vmm
@@ -71,13 +93,7 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics setVmm(String vmm);
 
     /**
-     * Gets the {@link Datacenter} that owns these characteristics
-     * @return the Datacenter
-     */
-    Datacenter getDatacenter();
-
-    /**
-     * Gets the architecture.
+     * Gets the architecture of the Datacenter.
      *
      * @return the architecture
      */
@@ -91,7 +107,7 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics setArchitecture(String architecture);
 
     /**
-     * Gets the Operating System (OS).
+     * Gets the Operating System (OS) used by the Hosts in the Datacenter.
      *
      * @return the Operating System (OS)
      */
@@ -105,40 +121,6 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics setOs(String os);
 
     /**
-     * Gets the host list.
-     *
-     * @param <T> The generic type
-     * @return the host list
-     */
-    <T extends Host> List<T> getHostList();
-
-    /**
-     * Gets the first PM with at least one empty Pe.
-     *
-     * @return a Machine object or if not found
-     * @pre $none
-     * @post $none
-     */
-    Host getHostWithFreePe();
-
-    /**
-     * Gets a Machine with at least a given number of free Pe.
-     *
-     * @param peNumber the pe number
-     * @return a Machine object or if not found
-     * @pre $none
-     * @post $none
-     */
-    Host getHostWithFreePe(int peNumber);
-
-    /**
-     * Gets the Datacenter id.
-     *
-     * @return the id
-     */
-    @Override int getId();
-
-    /**
      * Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in
      * the Datacenter.
      *
@@ -148,30 +130,6 @@ public interface DatacenterCharacteristics extends Identificable {
      * @post $result >= 0
      */
     double getMips();
-
-    /**
-     * Gets Millions Instructions Per Second (MIPS) Rating of a Processing
-     * Element (Pe). It is essential to use this method when a Datacenter is
-     * made up of heterogenous PEs per PMs.
-     *
-     * @param hostId the machine ID
-     * @param peId the Pe ID
-     * @return the MIPS Rating or -1 if no PEs are exists.
-     *
-     * @pre id >= 0
-     * @pre peID >= 0
-     * @post $result >= -1
-     */
-    long getMipsOfOnePe(int hostId, int peId);
-
-    /**
-     * Gets the total number of <tt>BUSY</tt> PEs for all PMs.
-     *
-     * @return number of PEs
-     * @pre $none
-     * @post $result >= 0
-     */
-    int getNumberOfBusyPes();
 
     /**
      * Gets the current number of failed PMs.
@@ -190,13 +148,6 @@ public interface DatacenterCharacteristics extends Identificable {
     int getNumberOfFreePes();
 
     /**
-     * Gets the total number of PMs.
-     *
-     * @return total number of machines the Datacenter has.
-     */
-    int getNumberOfHosts();
-
-    /**
      * Gets the total number of PEs for all PMs.
      *
      * @return number of PEs
@@ -204,22 +155,6 @@ public interface DatacenterCharacteristics extends Identificable {
      * @post $result >= 0
      */
     int getNumberOfPes();
-
-    /**
-     * Gets the name of a resource.
-     *
-     * @return the resource name
-     * @pre $none
-     * @post $result != null
-     */
-    String getResourceName();
-
-    /**
-     * Gets the VMM in use in the Datacenter.
-     *
-     * @return the VMM name
-     */
-    String getVmm();
 
     /**
      * Checks whether all PMs of the Datacenter are working properly or not.
@@ -236,34 +171,6 @@ public interface DatacenterCharacteristics extends Identificable {
     double getCostPerBw();
 
     /**
-     * Get the cost to use each Megabyte of RAM in the Datacenter.
-     *
-     * @return the cost to use RAM
-     */
-    double getCostPerMem();
-
-    /**
-     * Gets the cost per second of CPU.
-     *
-     * @return the cost per second
-     */
-    double getCostPerSecond();
-
-    /**
-     * Get the cost to use each Megabyte of storage in the Datacenter.
-     *
-     * @return the cost to use storage
-     */
-    double getCostPerStorage();
-
-    /**
-     * Sets the cost per second of CPU.
-     *
-     * @param costPerSecond the new cost per second
-     */
-    DatacenterCharacteristics setCostPerSecond(double costPerSecond);
-
-    /**
      * Sets cost to use each Megabit of bandwidth.
      *
      * @param costPerBw the cost to set
@@ -271,6 +178,13 @@ public interface DatacenterCharacteristics extends Identificable {
      * @post $none
      */
     DatacenterCharacteristics setCostPerBw(double costPerBw);
+
+    /**
+     * Get the cost to use each Megabyte of RAM in the Datacenter.
+     *
+     * @return the cost to use RAM
+     */
+    double getCostPerMem();
 
     /**
      * Sets the cost to use each Megabyte of RAM in the Datacenter.
@@ -282,6 +196,27 @@ public interface DatacenterCharacteristics extends Identificable {
     DatacenterCharacteristics setCostPerMem(double costPerMem);
 
     /**
+     * Gets the cost per second of CPU for using the Hosts in the Datacenter.
+     *
+     * @return the cost per second
+     */
+    double getCostPerSecond();
+
+    /**
+     * Sets the cost per second of CPU.
+     *
+     * @param costPerSecond the new cost per second
+     */
+    DatacenterCharacteristics setCostPerSecond(double costPerSecond);
+
+    /**
+     * Get the cost to use each Megabyte of storage in the Datacenter.
+     *
+     * @return the cost to use storage
+     */
+    double getCostPerStorage();
+
+    /**
      * Sets cost to use each Megabyte of storage.
      *
      * @param costPerStorage cost to use storage
@@ -289,12 +224,6 @@ public interface DatacenterCharacteristics extends Identificable {
      * @post $none
      */
     DatacenterCharacteristics setCostPerStorage(double costPerStorage);
-
-    /**
-     * Sets the {@link Datacenter} that owns these characteristics
-     * @param datacenter the Datacenter to set
-     */
-    DatacenterCharacteristics setDatacenter(Datacenter datacenter);
 
     /**
      * Sets the particular Pe status on a PM.

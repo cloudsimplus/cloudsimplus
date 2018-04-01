@@ -160,12 +160,11 @@ public class LoadBalancerByHorizontalVmScalingExample {
         broker0 = new DatacenterBrokerSimple(simulation);
 
         /*
-        * Defines the Vm Destruction Delay Function as a lambda expression
-        * so that the broker will wait 10 seconds before destroying an idle VM
-        * By comment this line, no down scaling will be performed
-        * and idle VMs will be destroyed just after all running Cloudlets
-        * are finished and there is no waiting Cloudlet.
-        */
+         * Defines the Vm Destruction Delay Function as a lambda expression
+         * so that the broker will wait 10 seconds before destroying an idle VM.
+         * By commenting this line, no down scaling will be performed
+         * and idle VMs will be destroyed just after all running Cloudlets
+         * are finished and there is no waiting Cloudlet. */
         broker0.setVmDestructionDelayFunction(vm -> 10.0);
 
         vmList.addAll(createListOfScalableVms(VMS));
@@ -226,8 +225,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
             hostList.add(createHost());
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        Datacenter dc0 = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        Datacenter dc0 = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         dc0.setSchedulingInterval(SCHEDULING_INTERVAL);
     }
 

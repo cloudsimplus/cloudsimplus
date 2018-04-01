@@ -189,8 +189,7 @@ public class VmsCpuUsageExample {
             hostList.add(host);
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
     private static Host createHost(int pesNumber, long mips, int hostId) {

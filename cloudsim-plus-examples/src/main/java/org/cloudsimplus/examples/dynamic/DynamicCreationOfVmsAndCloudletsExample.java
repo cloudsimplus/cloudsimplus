@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples;
+package org.cloudsimplus.examples.dynamic;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -80,7 +80,6 @@ public class DynamicCreationOfVmsAndCloudletsExample {
     private List<Vm> vmList;
     private int numberOfCreatedCloudlets = 0;
     private int numberOfCreatedVms = 0;
-    private int numberOfCreatedHosts = 0;
 
     /**
      * Starts the simulation.
@@ -166,20 +165,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
             hostList.add(host);
         }
 
-        //Defines the characteristics of the data center
-        double cost = 3.0; // the cost of using processing in this Datacenter
-        double costPerMem = 0.05; // the cost of using memory in this Datacenter
-        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
-        double costPerBw = 0.0; // the cost of using bw in this Datacenter
-
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
-
-        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {

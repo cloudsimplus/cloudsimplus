@@ -47,42 +47,16 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      * Creates a Datacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the Datacenter characteristics
+     * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the vm provisioner
      *
      */
     public PowerDatacenterNonPowerAware(
-        CloudSim simulation,
-        DatacenterCharacteristics characteristics,
-        VmAllocationPolicy vmAllocationPolicy)
+        final CloudSim simulation,
+        final List<? extends Host> hostList,
+        final VmAllocationPolicy vmAllocationPolicy)
     {
-        super(simulation, characteristics, vmAllocationPolicy);
-    }
-
-    /**
-     * Creates a Datacenter with the given parameters.
-     *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the Datacenter characteristics
-     * @param vmAllocationPolicy the vm provisioner
-     * @param storageList the storage list
-     * @param schedulingInterval the scheduling interval
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     */
-    @Deprecated
-    public PowerDatacenterNonPowerAware(
-            CloudSim simulation,
-            DatacenterCharacteristics characteristics,
-            VmAllocationPolicy vmAllocationPolicy,
-            List<FileStorage> storageList,
-            double schedulingInterval)
-    {
-        this(simulation, characteristics, vmAllocationPolicy);
-        setStorageList(storageList);
-        setSchedulingInterval(schedulingInterval);
+        super(simulation, hostList, vmAllocationPolicy);
     }
 
     @Override

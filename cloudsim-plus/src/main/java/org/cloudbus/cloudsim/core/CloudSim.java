@@ -35,7 +35,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "1.2.7";
+    public static final String VERSION = "1.3.0";
 
     /**
      * A constant to indicate that some entity was not found.
@@ -559,8 +559,7 @@ public class CloudSim implements Simulation {
         if(clockTime != circularClockTimesQueue[0] || clockTime != circularClockTimesQueue[1]) {
             if (lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[0] && lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[1]) {
                 lastTimeClockTickListenersWereUpdated = circularClockTimesQueue[0];
-                final EventInfo info = EventInfo.of(clockTime);
-                onClockTickListeners.forEach(l -> l.update(info));
+                onClockTickListeners.forEach(l -> l.update(EventInfo.of(l, clockTime)));
             }
 
             addCurrentTimeToCircularQueue();
@@ -762,7 +761,7 @@ public class CloudSim implements Simulation {
      * Notifies all registered listeners when the simulation is paused.
      */
     private void notifyOnSimulationPausedListeners() {
-        onSimulationPausedListeners.forEach(l -> l.update(EventInfo.of(clockTime)));
+        onSimulationPausedListeners.forEach(l -> l.update(EventInfo.of(l, clockTime)));
     }
 
     private boolean isPauseRequested() {
@@ -869,7 +868,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public boolean removeOnClockTickListener(EventListener<EventInfo> listener) {
+    public boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener) {
         return onClockTickListeners.remove(listener);
     }
 

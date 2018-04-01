@@ -75,47 +75,21 @@ public class PowerDatacenter extends DatacenterSimple {
      * Creates a PowerDatacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the Datacenter to be created
+     * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
      */
     public PowerDatacenter(
         CloudSim simulation,
-        DatacenterCharacteristics characteristics,
+        final List<? extends Host> hostList,
         VmAllocationPolicy vmAllocationPolicy)
     {
-        super(simulation, characteristics, vmAllocationPolicy);
+        super(simulation, hostList, vmAllocationPolicy);
         setPower(0.0);
         setMigrationsEnabled(true);
         setLastCloudletProcessingTime(-1);
         setMigrationCount(0);
         bandwidthForMigrationPercent = 0.5;
-    }
-
-    /**
-     * Creates a PowerDatacenter with the given parameters.
-     *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the Datacenter to be created
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
-     * @param storageList a List of storage elements, for data simulation
-     * @param schedulingInterval the scheduling delay to process each Datacenter received event
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     */
-    @Deprecated
-    public PowerDatacenter(
-        CloudSim simulation,
-        DatacenterCharacteristics characteristics,
-        VmAllocationPolicy vmAllocationPolicy,
-        List<FileStorage> storageList,
-        double schedulingInterval)
-    {
-        this(simulation, characteristics, vmAllocationPolicy);
-        setStorageList(storageList);
-        setSchedulingInterval(schedulingInterval);
     }
 
     @Override

@@ -116,8 +116,7 @@ public class CloudletSchedulerTimeSharedExample1 {
             hostList.add(host);
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        final Datacenter dc = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         return dc;
     }
 

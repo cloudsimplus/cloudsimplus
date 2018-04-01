@@ -56,7 +56,7 @@ import java.util.List;
  * A minimal but organized, structured and re-usable CloudSim Plus example
  * which shows good coding practices for creating simulation scenarios.
  *
- * <p>It defines a set of constants that enable a developer
+ * <p>It defines a set of constants that enables a developer
  * to change the number of Hosts, VMs and Cloudlets to create
  * and the number of {@link Pe}s for Hosts, VMs and Cloudlets.</p>
  *
@@ -112,8 +112,7 @@ public class BasicFirstExample {
             hostList.add(host);
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        final Datacenter dc = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         return dc;
     }
 

@@ -80,6 +80,7 @@ CloudSim Plus provides a lot of exclusive features, ranging from the most basic 
     - definition of the time when an idle VM should be destroyed ([#99](https://github.com/manoelcampos/cloudsim-plus/issues/99));
     - sorting of requests to create submitted VMs and Cloudlets, defining priorities to create such objects ([#102](https://github.com/manoelcampos/cloudsim-plus/issues/102)). 
 1. [Host Fault Injection Mechanism](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/HostFaultInjectionExample1.java) to enable injection of random failures into Hosts PEs: it injects failures into Host PEs and reallocates working PEs to running VMs. When all PEs from a Host fail, it starts clones of failed VMs to recovery from failure. This way, it is simulated the instantiation of VM snapshots into different Hosts ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
+1. [Creation of Hosts at Simulation Runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/dynamic/DynamicHostCreation.java) to enable physical expansion of Datacenter capacity ([#124](https://github.com/manoelcampos/cloudsim-plus/issues/124)).
 
 # Project's Structure
 
@@ -194,9 +195,7 @@ host0.setRamProvisioner(new ResourceProvisionerSimple())
 hostList.add(host0);
 
 //Creates a Datacenter with a list of Hosts.
-DatacenterCharacteristics characts = new DatacenterCharacteristicsSimple(hostList);
-VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
-Datacenter dc0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
+Datacenter dc0 = new DatacenterSimple(cloudsim, hostList, new VmAllocationPolicySimple());
 
 //Creates VMs to run applications.
 List<Vm> vmList = new ArrayList<>(1);
@@ -309,15 +308,13 @@ Cloudlet cloudlet = new CloudletSimple(required, parameters, here);
 The method `setBrokerId(int userId)` from `Vm` and `Cloudlet` were refactored to `setBroker(DatacenterBroker broker)`,
 now requiring a `DatacenterBroker` instead of just an int ID which may be even nonexistent.
 
-A `DatacenterCharacteristics` now requires just the list of hosts. All the other parameters (such as costs) are optional.
-A `VmAllocationPolicy` doesn't require any parameter anymore. A `Datacenter` doesn't require a name, storage list and scheduling interval too.
+You don't need to explicitly create a `DatacenterCharacteristics` anymore. Such object is created internally when a `Datacenter` is created.
+A `VmAllocationPolicy` doesn't require any parameter at all. A `Datacenter` doesn't require a name, storage list and scheduling interval too.
 The name will be automatically defined. It and all the other parameter can be set further using the respective setter methods.
-Now it is just required a `CloudSim`, a `DatacenterCharacteristics` and a `VmAllocationPolicy` instance.
+Now it is just required a `CloudSim`, a `Host` list and a `VmAllocationPolicy` instance.
 
 ```java
-DatacenterCharacteristics characts = new DatacenterCharacteristicsSimple(hostList);
-VmAllocationPolicy vmAllocationPolicy = new VmAllocationPolicySimple();
-Datacenter datacenter0 = new DatacenterSimple(cloudsim, characts, vmAllocationPolicy);
+Datacenter dc0 = new DatacenterSimple(cloudsim, hostList, new VmAllocationPolicySimple());
 ```
 
 The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. Now you just have the generic class `ResourceProvisionerSimple` and you can just use its default no-args constructor. RAM and bandwidth capacity of the host now are given in the constructor, as it already was for storage. A `VmScheduler` constructor doesn't require any parameter. You don't need to set an ID for each Host, since

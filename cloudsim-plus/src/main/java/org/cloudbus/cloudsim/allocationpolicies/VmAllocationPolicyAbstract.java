@@ -21,6 +21,8 @@ import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
+import javax.xml.crypto.Data;
+
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -44,6 +46,12 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     private Datacenter datacenter;
     /**
      * @see #getHostFreePesMap()
+     * @todo The number of free PEs in each Host could be determined dynamically, instead of storing
+     *       such information in a HashMap.
+     *       The information in the map can become out-of-date and cause
+     *       issues.
+     *       There is just a concern about performance if this information
+     *       is computed every time when needed.
      */
     private Map<Host, Long> hostFreePesMap;
     /**
@@ -102,25 +110,36 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param datacenter the Datacenter to set
      */
     @Override
-    public final void setDatacenter(Datacenter datacenter){
-        if(Objects.isNull(datacenter)){
-            datacenter = Datacenter.NULL;
-        }
-
-        this.datacenter = datacenter;
-        addPesFromHostsToFreePesList();
+    public final void setDatacenter(final Datacenter datacenter){
+        addPesFromHostsToFreePesList(datacenter);
+        this.datacenter = datacenter == null ? Datacenter.NULL : datacenter;
     }
 
     /**
-     * Gets the number of working PEs from each Host in the {@link #getHostList() host list}
+     * Gets the number of free PEs from each Host in a list
      * and adds these numbers to the {@link #getHostFreePesMap() list of free PEs}.
-     * <b>The method expects that the {@link #datacenter} is already set.</b>
+     * Before the Host starts being used, the number of free PEs is
+     * the same as the number of working PEs.
      *
+     * @param datacenter the Datacenter to get Hosts from
      */
-    private void addPesFromHostsToFreePesList() {
-        setHostFreePesMap(new HashMap<>(getHostList().size()));
-        setUsedPes(new HashMap<>());
-        getHostList().forEach(host -> hostFreePesMap.put(host, host.getNumberOfWorkingPes()));
+    private void addPesFromHostsToFreePesList(final Datacenter datacenter) {
+        if(datacenter == null || datacenter == Datacenter.NULL || datacenter != this.datacenter) {
+            setHostFreePesMap(new HashMap<>(datacenter.getHostList().size()));
+            setUsedPes(new HashMap<>());
+        }
+
+        datacenter.getHostList().forEach(this::addPesFromHost);
+    }
+
+    /**
+     * Gets the number of free PEs from a given Host
+     * and adds these numbers to the {@link #getHostFreePesMap() list of free PEs}.
+     * Before the Host starts being used, the number of free PEs is
+     * the same as the number of working PEs.
+     */
+    private void addPesFromHost(final Host host) {
+        hostFreePesMap.putIfAbsent(host, host.getNumberOfWorkingPes());
     }
 
     /**

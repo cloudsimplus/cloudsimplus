@@ -61,7 +61,7 @@ public interface EventListener<T extends EventInfo> {
      * avoid NullPointerException's and checking everywhere if a listener object
      * is not null in order to call its methods.
      */
-    EventListener NULL = (EventListener<EventInfo>) (EventInfo info) -> {};
+    EventListener NULL = (EventListener<? extends EventInfo>) (EventInfo info) -> {};
 
     /**
      * Gets notified when the observed object (also called subject of

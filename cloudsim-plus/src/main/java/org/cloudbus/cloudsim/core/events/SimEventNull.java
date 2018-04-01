@@ -1,6 +1,8 @@
 package org.cloudbus.cloudsim.core.events;
 
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link SimEvent}
@@ -41,6 +43,7 @@ final class SimEventNull implements SimEvent {
     @Override public double getTime() {
         return 0;
     }
+    @Override public EventListener<EventInfo> getListener() { return EventListener.NULL; }
     @Override public int compareTo(SimEvent o) {
         return 0;
     }

@@ -41,34 +41,17 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
     /**
      * Gets a CloudletVmEventInfo instance from the given parameters.
-     *
-     * @param time the time the event happend
-     * @param cloudlet the {@link Cloudlet} that fired the event
-     * @param vm the {@link Vm} where the Cloudlet is or was running into,
-     *            depending on the fired event, such as the
-     *            {@link Cloudlet#addOnUpdateProcessingListener(EventListener) OnUpdateCloudletProcessing}
-     *           or {@link Cloudlet#addOnFinishListener(EventListener) OnCloudletFinish}
-     */
-    static CloudletVmEventInfo of(double time, Cloudlet cloudlet, Vm vm){
-        return new CloudletVmEventInfo() {
-            @Override public Cloudlet getCloudlet() { return cloudlet; }
-            @Override public Vm getVm() { return vm; }
-            @Override public double getTime() { return time; }
-        };
-    }
-
-    /**
-     * Gets a CloudletVmEventInfo instance from the given parameters.
      * The {@link #getTime()} is the current simulation time.
      *
+     * @param listener the listener to be notified about the event
      * @param cloudlet the {@link Cloudlet} that fired the event
      * @param vm the {@link Vm} where the Cloudlet is or was running into,
      *            depending on the fired event, such as the
      *            {@link Cloudlet#addOnUpdateProcessingListener(EventListener) OnUpdateCloudletProcessing}
      *           or {@link Cloudlet#addOnFinishListener(EventListener) OnCloudletFinish}
      */
-    static CloudletVmEventInfo of(Cloudlet cloudlet, Vm vm){
-        return of(cloudlet.getSimulation().clock(), cloudlet, vm);
+    static CloudletVmEventInfo of(final EventListener<? extends EventInfo> listener, final Cloudlet cloudlet, final Vm vm){
+        return of(listener, cloudlet.getSimulation().clock(), cloudlet, vm);
     }
 
     /**
@@ -78,10 +61,10 @@ public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
      *
      * @param time the time the event happened
      * @param cloudlet the {@link Cloudlet} that fired the event
-     * @see #of(Cloudlet, Vm)
+     * @see #of(EventListener, Cloudlet, Vm)
      */
-    static CloudletVmEventInfo of(double time, Cloudlet cloudlet){
-        return of(time, cloudlet, cloudlet.getVm());
+    static CloudletVmEventInfo of(final EventListener<? extends EventInfo> listener, final double time, final Cloudlet cloudlet){
+        return of(listener, time, cloudlet, cloudlet.getVm());
     }
 
     /**
@@ -90,10 +73,29 @@ public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
      * is running and the {@link #getTime()} is the current simulation time.
      *
      * @param cloudlet the {@link Cloudlet} that fired the event
-     * @see #of(Cloudlet, Vm)
+     * @see #of(EventListener, Cloudlet, Vm)
      */
-    static CloudletVmEventInfo of(Cloudlet cloudlet){
-        return of(cloudlet, cloudlet.getVm());
+    static CloudletVmEventInfo of(final EventListener<? extends EventInfo> listener, final Cloudlet cloudlet){
+        return of(listener, cloudlet, cloudlet.getVm());
     }
 
+    /**
+     * Gets a CloudletVmEventInfo instance from the given parameters.
+     *
+     * @param listener the listener to be notified about the event
+     * @param time the time the event happend
+     * @param cloudlet the {@link Cloudlet} that fired the event
+     * @param vm the {@link Vm} where the Cloudlet is or was running into,
+     *            depending on the fired event, such as the
+     *            {@link Cloudlet#addOnUpdateProcessingListener(EventListener) OnUpdateCloudletProcessing}
+     *           or {@link Cloudlet#addOnFinishListener(EventListener) OnCloudletFinish}
+     */
+    static CloudletVmEventInfo of(final EventListener<? extends EventInfo> listener, final double time, final Cloudlet cloudlet, final Vm vm){
+        return new CloudletVmEventInfo() {
+            @Override public Cloudlet getCloudlet() { return cloudlet; }
+            @Override public Vm getVm() { return vm; }
+            @Override public double getTime() { return time; }
+            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
+        };
+    }
 }

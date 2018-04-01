@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.tasktimecompletion;
+package org.cloudsimplus.testbeds.sla.tasktimecompletion;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -63,7 +63,7 @@ import org.cloudsimplus.listeners.EventInfo;
 
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
-import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.*;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionMinimizationRunner.*;
 
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;

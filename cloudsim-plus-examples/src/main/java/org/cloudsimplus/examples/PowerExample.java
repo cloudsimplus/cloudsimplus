@@ -183,8 +183,7 @@ public class PowerExample {
             hostList.add(host);
         }
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-        final PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, new VmAllocationPolicySimple());
+        final PowerDatacenter dc = new PowerDatacenter(simulation, hostList, new VmAllocationPolicySimple());
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }

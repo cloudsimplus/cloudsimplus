@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.tasktimecompletion;
+package org.cloudsimplus.testbeds.sla.tasktimecompletion;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -47,7 +47,6 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -60,7 +59,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import static java.util.Comparator.comparingInt;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
-import static org.cloudsimplus.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.*;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.*;
 
 import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.slametrics.SlaContract;

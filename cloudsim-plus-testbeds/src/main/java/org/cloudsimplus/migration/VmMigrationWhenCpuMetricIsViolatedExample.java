@@ -263,16 +263,13 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         }
         Log.printLine();
 
-        DatacenterCharacteristics characteristics
-                = new DatacenterCharacteristicsSimple(hostList);
-
         PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
                 = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
                         new PowerVmSelectionPolicyMinimumUtilization(),
                         contract.getCpuUtilizationMetric().getMaxDimension().getValue());
         allocationPolicy.setUnderUtilizationThreshold(contract.getCpuUtilizationMetric().getMinDimension().getValue());
 
-        PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
+        PowerDatacenter dc = new PowerDatacenter(simulation, hostList, allocationPolicy);
         dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
         return dc;
     }
@@ -290,7 +287,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      *
      * @todo @author manoelcampos The method
      * {@link DatacenterBroker#getCloudletFinishedList()} returns an empty list
-     * when using null null null null null     {@link PowerDatacenter},
+     * when using {@link PowerDatacenter},
      * {@link PowerHost} and {@link PowerVm}.
      */
     public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {

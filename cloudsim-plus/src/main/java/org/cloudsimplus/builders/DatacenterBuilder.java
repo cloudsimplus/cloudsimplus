@@ -89,18 +89,19 @@ public class DatacenterBuilder extends Builder {
             throw new IllegalArgumentException("The hosts parameter has to have at least 1 host.");
         }
 
-        final DatacenterCharacteristics characteristics =
-                new DatacenterCharacteristicsSimple (hosts)
-                      .setTimeZone(timezone)
-                      .setCostPerSecond(costPerCpuSecond)
-                      .setCostPerMem(costPerMem)
-                      .setCostPerStorage(costPerStorage)
-                      .setCostPerBw(costPerBwMegabit);
         final String name = String.format(DC_NAME_FORMAT, createdDatacenters++);
         final Datacenter datacenter =
-                new DatacenterSimple(scenario.getSimulation(), characteristics, new VmAllocationPolicySimple())
+                new DatacenterSimple(scenario.getSimulation(), hosts, new VmAllocationPolicySimple())
                     .setStorageList(storageList)
                     .setSchedulingInterval(schedulingInterval);
+
+        datacenter.getCharacteristics()
+            .setTimeZone(timezone)
+            .setCostPerSecond(costPerCpuSecond)
+            .setCostPerMem(costPerMem)
+            .setCostPerStorage(costPerStorage)
+            .setCostPerBw(costPerBwMegabit);
+
         datacenter.setName(name);
         this.datacenters.add(datacenter);
         return this;

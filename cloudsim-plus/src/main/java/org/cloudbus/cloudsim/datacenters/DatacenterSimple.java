@@ -37,8 +37,10 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterSimple extends CloudSimEntity implements Datacenter {
+    private List<? extends Host> hostList;
+
     /** @see #getCharacteristics() */
-    private DatacenterCharacteristics characteristics;
+    private final DatacenterCharacteristics characteristics;
 
     /** @see #getRegionalCisName() */
     private String regionalCisName;
@@ -56,42 +58,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private double schedulingInterval;
 
     /**
-     * Creates a Datacenter with the given parameters.
-     *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the Datacenter to be created
-     * @param storageList a List of storage elements, for data simulation
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
-     * @param schedulingInterval the scheduling interval to process each
-     * Datacenter received event (in seconds)
-     * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
-     * No PEs mean the Cloudlets can't be processed. A CloudResource must
-     * contain one or more Machines. A Machine must contain one or more PEs.
-     *
-     * @post $none
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     */
-    @Deprecated
-    public DatacenterSimple(
-        Simulation simulation,
-        DatacenterCharacteristics characteristics,
-        VmAllocationPolicy vmAllocationPolicy,
-        List<FileStorage> storageList,
-        double schedulingInterval)
-    {
-        this(simulation, characteristics, vmAllocationPolicy);
-        setStorageList(storageList);
-        setSchedulingInterval(schedulingInterval);
-    }
-
-    /**
      * Creates a Datacenter.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the Datacenter to be created
+     * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
      * <br>
@@ -101,34 +71,33 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     public DatacenterSimple(
-        Simulation simulation,
-        DatacenterCharacteristics characteristics,
-        VmAllocationPolicy vmAllocationPolicy)
+        final Simulation simulation,
+        final List<? extends Host> hostList,
+        final VmAllocationPolicy vmAllocationPolicy)
     {
         super(simulation);
+        setHostList(hostList);
 
-        // If this resource doesn't have any PEs then it isn't useful at all
-        if (characteristics.getNumberOfPes() == 0) {
-            throw new IllegalArgumentException(super.getName()
-                + " : Error - this entity has no PEs. Therefore, can't process any Cloudlets.");
-        }
-
-        // DatacenterCharacteristics stores the id of the Datacenter
-        setCharacteristics(characteristics);
-        setSimulationInstanceForHosts(characteristics);
         setVmAllocationPolicy(vmAllocationPolicy);
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
         setStorageList(new ArrayList<>());
-        assignHostsToCurrentDatacenter();
+
+        this.characteristics = new DatacenterCharacteristicsSimple(this);
     }
 
-    private void setSimulationInstanceForHosts(DatacenterCharacteristics characteristics) {
-        characteristics.getHostList().forEach(host -> host.setSimulation(getSimulation()));
+    private void setHostList(final List<? extends Host> hostList) {
+        this.hostList = hostList;
+        setupHosts();
     }
 
-    private void assignHostsToCurrentDatacenter() {
-        characteristics.getHostList().forEach(host -> host.setDatacenter(this));
+    private void setupHosts() {
+        for (final Host host : hostList) {
+            host.setDatacenter(this);
+            host.setSimulation(getSimulation());
+        }
+
+        Simulation.setIdForEntitiesWithoutOne(this.hostList);
     }
 
     @Override
@@ -164,12 +133,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
             case CloudSimTags.RESOURCE_NUM_PE:
                 srcId = (Integer) ev.getData();
-                sendNow(srcId, ev.getTag(), getCharacteristics().getNumberOfPes());
+                sendNow(srcId, ev.getTag(), characteristics.getNumberOfPes());
                 return 1;
 
             case CloudSimTags.RESOURCE_NUM_FREE_PE:
                 srcId = (Integer) ev.getData();
-                sendNow(srcId, ev.getTag(), getCharacteristics().getNumberOfFreePes());
+                sendNow(srcId, ev.getTag(), characteristics.getNumberOfFreePes());
                 return 1;
         }
 
@@ -996,23 +965,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public <T extends Host> List<T> getHostList() {
-        return characteristics.getHostList();
+        return (List<T>)Collections.unmodifiableList(hostList);
     }
 
     @Override
     public DatacenterCharacteristics getCharacteristics() {
         return characteristics;
-    }
-
-    /**
-     * Sets the Datacenter characteristics.
-     *
-     * @param characteristics the new Datacenter characteristics
-     */
-    protected final void setCharacteristics(DatacenterCharacteristics characteristics) {
-        characteristics.setDatacenter(this);
-        this.characteristics = characteristics;
-        Simulation.setIdForEntitiesWithoutOne(characteristics.getHostList());
     }
 
     /**
@@ -1128,6 +1086,31 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         return Host.NULL;
+    }
+
+    @Override
+    public <T extends Host> Datacenter addHostList(List<T> hostList) {
+        hostList.forEach(this::addHost);
+        return this;
+    }
+
+    @Override
+    public <T extends Host> Datacenter addHost(T host) {
+        if(vmAllocationPolicy == null || vmAllocationPolicy == VmAllocationPolicy.NULL){
+            throw new IllegalStateException("A VmAllocationPolicy must be set before adding a new Host to the Datacenter.");
+        }
+
+        if(host.getId() <= -1) {
+            host.setId(getHostList().size());
+        }
+
+        final DatacenterCharacteristicsSimple c = (DatacenterCharacteristicsSimple)characteristics;
+        host.setDatacenter(this);
+        ((List<T>)hostList).add(host);
+
+        //Sets the Datacenter again so that the new Host is registered internally on the VmAllocationPolicy
+        vmAllocationPolicy.setDatacenter(this);
+        return this;
     }
 
     /**

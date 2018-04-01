@@ -98,10 +98,6 @@ public class SwfWorkloadFormatExample1 {
      */
     private int maximumNumberOfCloudletsToCreateFromTheWorkloadFile = -1;
 
-    private static final double DATACENTER_CPU_COST = 3.0;
-    private static final double DATACENTER_MEM_COST = 0.05;
-    private static final double DATACENTER_STORAGE_COST = 0.001;
-    private static final double DATACENTER_BW_COST = 0.0;
     private static final int NUMBER_OF_VMS_PER_HOST = 10;
 
     /**
@@ -196,14 +192,7 @@ public class SwfWorkloadFormatExample1 {
      */
     private Datacenter createDatacenterAndHostsBasedOnVmRequirements() {
         List<Host> hostList = createHostsAccordingToVmRequirements();
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple (hostList)
-                .setCostPerSecond(DATACENTER_CPU_COST)
-                .setCostPerMem(DATACENTER_MEM_COST)
-                .setCostPerStorage(DATACENTER_STORAGE_COST)
-                .setCostPerBw(DATACENTER_BW_COST);
-
-        Datacenter datacenter = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        Datacenter datacenter = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         Log.printConcatLine("#Created ", hostList.size(), " Hosts at ", datacenter.getName());
         return datacenter;
     }

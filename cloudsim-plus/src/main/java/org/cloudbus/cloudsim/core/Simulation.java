@@ -260,7 +260,7 @@ public interface Simulation {
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
      */
-    boolean removeOnClockTickListener(EventListener<EventInfo> listener);
+    boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener);
 
     /**
      * Pauses an entity for some time.

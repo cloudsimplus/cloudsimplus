@@ -48,8 +48,21 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
     /**
      * Gets a VmHostEventInfo instance from the given parameters.
+     * The {@link #getHost() Host} attribute is defined as the {@link Host} where the {@link Vm}
+     * is running and the {@link #getTime()} is the current simulation time.
+     *
+     * @param listener the listener to be notified about the event
+     * @param vm {@link Vm} that fired the event
+     */
+    static VmHostEventInfo of(final EventListener<? extends EventInfo> listener, final Vm vm) {
+        return of(listener, vm, vm.getHost());
+    }
+
+    /**
+     * Gets a VmHostEventInfo instance from the given parameters.
      * The {@link #getTime()} is the current simulation time.
      *
+     * @param listener the listener to be notified about the event
      * @param vm {@link Vm} that fired the event
      * @param host {@link Host} that the {@link Vm} is related to.
      *                         Such a Host can be that one where the Vm is or was placed,
@@ -58,23 +71,13 @@ public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
      *                         {@link Vm#addOnHostAllocationListener(EventListener)}  OnHostAllocation} or
      *                         {@link Vm#addOnHostDeallocationListener(EventListener)}  OnHostDeallocation}
      */
-    static VmHostEventInfo of(Vm vm, Host host) {
+    static VmHostEventInfo of(final EventListener<? extends EventInfo> listener, final Vm vm, final Host host) {
         final double time = vm.getSimulation().clock();
         return new VmHostEventInfo() {
             @Override public Host getHost() { return host; }
             @Override public Vm getVm() { return vm; }
             @Override public double getTime() { return time; }
+            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
         };
-    }
-
-    /**
-     * Gets a VmHostEventInfo instance from the given parameters.
-     * The {@link #getHost() Host} attribute is defined as the {@link Host} where the {@link Vm}
-     * is running and the {@link #getTime()} is the current simulation time.
-     *
-     * @param vm {@link Vm} that fired the event
-     */
-    static VmHostEventInfo of(Vm vm) {
-        return of(vm, vm.getHost());
     }
 }

@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples;
+package org.cloudsimplus.examples.dynamic;
 
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
@@ -217,20 +217,7 @@ public class DynamicCloudletsArrival1 {
     private Datacenter createDatacenter() {
         Host host = createHost(0);
         hostList.add(host);
-
-        double cost = 3.0; // the cost of using processing in this resource
-        double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this Datacenter
-        double costPerBw = 0.0; // the cost of using bw in this resource
-
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
-
-        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
     /**

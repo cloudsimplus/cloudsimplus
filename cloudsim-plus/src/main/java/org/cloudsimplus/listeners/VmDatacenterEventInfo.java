@@ -40,8 +40,21 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo {
     /**
      * Gets a VmDatacenterEventInfo instance from the given parameters.
+     * The {@link #getDatacenter() Datacenter} attribute is defined as the {@link Datacenter} where the {@link Vm}
+     * is running and the {@link #getTime()} is the current simulation time..
+     *
+     * @param listener the listener to be notified about the event
+     * @param vm the {@link Vm} that fired the event
+     */
+    static VmDatacenterEventInfo of(final EventListener<? extends EventInfo> listener, final Vm vm) {
+        return of(listener, vm, vm.getHost().getDatacenter());
+    }
+
+    /**
+     * Gets a VmDatacenterEventInfo instance from the given parameters.
      * The {@link #getTime()} is the current simulation time.
      *
+     * @param listener the listener to be notified about the event
      * @param vm the {@link Vm} that fired the event
      * @param datacenter {@link Datacenter} that the {@link Vm} is related to.
      *                   Such a Datacenter can be that one where the Vm is or was placed,
@@ -49,23 +62,13 @@ public interface VmDatacenterEventInfo extends VmEventInfo, DatacenterEventInfo 
      *                   depending on the fired event, such as the
      *                   {@link Vm#addOnCreationFailureListener(EventListener)}  OnVmCreationFailure}
      */
-    static VmDatacenterEventInfo of(Vm vm, Datacenter datacenter) {
+    static VmDatacenterEventInfo of(final EventListener<? extends EventInfo> listener, final Vm vm, final Datacenter datacenter) {
         final double time = vm.getSimulation().clock();
         return new VmDatacenterEventInfo() {
             @Override public Datacenter getDatacenter() { return datacenter; }
             @Override public Vm getVm() { return vm; }
             @Override public double getTime() { return time; }
+            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
         };
-    }
-
-    /**
-     * Gets a VmDatacenterEventInfo instance from the given parameters.
-     * The {@link #getDatacenter() Datacenter} attribute is defined as the {@link Datacenter} where the {@link Vm}
-     * is running and the {@link #getTime()} is the current simulation time..
-     *
-     * @param vm the {@link Vm} that fired the event
-     */
-    static VmDatacenterEventInfo of(Vm vm) {
-        return of(vm, vm.getHost().getDatacenter());
     }
 }

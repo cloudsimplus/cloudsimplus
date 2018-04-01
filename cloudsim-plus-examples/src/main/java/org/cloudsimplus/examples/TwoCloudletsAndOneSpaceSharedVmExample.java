@@ -179,25 +179,8 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
 
         hostList.add(host);
 
-        // 5. Create a DatacenterCharacteristics object that stores the
-        // properties of a data center: architecture, OS, list of
-        // Machines, allocation policy: time- or space-shared, time zone
-        // and its price (G$/Pe time unit).
-        double cost = 3.0; // the cost of using processing in this resource
-        double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this
-        // resource
-        double costPerBw = 0.0; // the cost of using bw in this resource
-
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
-
         // 6. Finally, we need to create a DatacenterSimple object.
-        return new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
 }

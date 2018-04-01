@@ -331,8 +331,6 @@ public final class MigrationExample2 {
         }
         Log.printLine();
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-
         /* Defines the fallback VmAllocationPolicy to be used
         * in case there is not enough host CPU utilization history
         * to compute the Median Absolute Deviation (MAD).
@@ -357,7 +355,7 @@ public final class MigrationExample2 {
                 new PowerVmSelectionPolicyMinimumUtilization(),
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2, fallback);
 
-        PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
+        PowerDatacenter dc = new PowerDatacenter(simulation, hostList, allocationPolicy);
         dc.setMigrationsEnabled(true)
           .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
           .setLog(true);

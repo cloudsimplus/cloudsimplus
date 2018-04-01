@@ -65,10 +65,6 @@ import org.cloudsimplus.faultinjection.VmClonerSimple;
 public final class HostFaultInjectionExample1 {
 
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 0;
-    private static final double DATACENTER_COST_PER_CPU = 3.0;
-    private static final double DATACENTER_COST_PER_RAM = 0.05;
-    private static final double DATACENTER_COST_PER_STORAGE = 0.001;
-    private static final double DATACENTER_COST_PER_BW = 0.0;
 
     private static final int HOST_MIPS_BY_PE = 1000;
     private static final int HOST_PES = 4;
@@ -198,14 +194,7 @@ public final class HostFaultInjectionExample1 {
         }
         Log.printLine();
 
-        DatacenterCharacteristics characteristics
-                = new DatacenterCharacteristicsSimple(hostList)
-                        .setCostPerSecond(DATACENTER_COST_PER_CPU)
-                        .setCostPerMem(DATACENTER_COST_PER_RAM)
-                        .setCostPerStorage(DATACENTER_COST_PER_STORAGE)
-                        .setCostPerBw(DATACENTER_COST_PER_BW);
-
-        Datacenter dc = new DatacenterSimple(simulation, characteristics, new VmAllocationPolicySimple());
+        Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         dc
                 .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
                 .setLog(false);

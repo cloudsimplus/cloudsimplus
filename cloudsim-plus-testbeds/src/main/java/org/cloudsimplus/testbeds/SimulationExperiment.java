@@ -303,8 +303,7 @@ public abstract class SimulationExperiment implements Runnable {
     protected DatacenterSimple createDatacenter() {
         final List<Host> hosts = createHosts();
         hostList.addAll(hosts);
-        final DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hosts);
-        return new DatacenterSimple(cloudsim, characteristics, new VmAllocationPolicySimple());
+        return new DatacenterSimple(cloudsim, hosts, new VmAllocationPolicySimple());
     }
 
     protected abstract List<Host> createHosts();

@@ -202,8 +202,7 @@ public class HostSimple implements Host {
     }
 
     private void notifyOnUpdateProcessingListeners(double nextSimulationTime) {
-        final HostUpdatesVmsProcessingEventInfo info = HostUpdatesVmsProcessingEventInfo.of(this, nextSimulationTime);
-        onUpdateProcessingListeners.forEach(l -> l.update(info));
+        onUpdateProcessingListeners.forEach(l -> l.update(HostUpdatesVmsProcessingEventInfo.of(l,this, nextSimulationTime)));
     }
 
     @Override

@@ -337,8 +337,6 @@ public final class MigrationExample1 {
         }
         Log.printLine();
 
-        DatacenterCharacteristics characteristics = new DatacenterCharacteristicsSimple(hostList);
-
         /**
          * Sets an upper utilization threshold higher than the
          * {@link #HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION}
@@ -354,7 +352,7 @@ public final class MigrationExample1 {
                 new PowerVmSelectionPolicyMinimumUtilization(),
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2);
 
-        PowerDatacenter dc = new PowerDatacenter(simulation, characteristics, allocationPolicy);
+        PowerDatacenter dc = new PowerDatacenter(simulation, hostList, allocationPolicy);
         dc.setMigrationsEnabled(true)
           .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
           .setLog(true);

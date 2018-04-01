@@ -520,7 +520,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void notifyOnCreationOfWaitingVmsFinishListeners(){
-        onVmsCreatedListeners.entrySet().forEach(entry -> entry.getKey().update(DatacenterBrokerEventInfo.of(this)));
+        onVmsCreatedListeners.entrySet().forEach(entry -> entry.getKey().update(DatacenterBrokerEventInfo.of(entry.getKey(),this)));
         onVmsCreatedListeners.entrySet().removeIf(this::isOneTimeListener);
     }
 
@@ -587,7 +587,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param datacenter id of the Datacenter where the request to create
      *                   the Vm succeeded
      */
-    protected void processSuccessVmCreationInDatacenter(Vm vm, Datacenter datacenter) {
+    protected void processSuccessVmCreationInDatacenter(final Vm vm, final Datacenter datacenter) {
         vmsToDatacentersMap.put(vm, datacenter);
         vmWaitingList.remove(vm);
         vmExecList.add(vm);
@@ -604,7 +604,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param vm         id of the Vm that failed to be created inside the Datacenter
      * @param datacenter id of the Datacenter where the request to create
      */
-    protected void processFailedVmCreationInDatacenter(Vm vm, Datacenter datacenter) {
+    protected void processFailedVmCreationInDatacenter(final Vm vm, final Datacenter datacenter) {
         vm.notifyOnCreationFailureListeners(datacenter);
         println(String.format(
             "%.2f: %s: Creation of %s failed in Datacenter #%s",
@@ -618,7 +618,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @pre ev != $null
      * @post $none
      */
-    protected void processCloudletReturn(SimEvent ev) {
+    protected void processCloudletReturn(final SimEvent ev) {
         final Cloudlet c = (Cloudlet) ev.getData();
         cloudletsFinishedList.add(c);
         println(String.format("%.2f: %s: %s %d finished and returned to broker.",
@@ -639,7 +639,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * If a VM destruction function was not set, request VMs destruction without delay.
      * Otherwise, use the {@link #vmDestructionDelayFunction} set.
      */
-    private void requestVmDestructionAfterAllCloudletsFinished(Cloudlet c) {
+    private void requestVmDestructionAfterAllCloudletsFinished(final Cloudlet c) {
         final Function<Vm, Double> func = isNotVmDestructionDelayFunctionSet(c) ? this::noDelayToDestroyIdleVm : vmDestructionDelayFunction;
         if (cloudletWaitingList.isEmpty()) {
             println(String.format(

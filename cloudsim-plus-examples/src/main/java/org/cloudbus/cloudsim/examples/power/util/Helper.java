@@ -165,24 +165,20 @@ public final class Helper {
         Class<? extends Datacenter> datacenterClass,
         List<PowerHost> hostList,
         VmAllocationPolicy vmAllocationPolicy) throws Exception {
-        double cost = 3.0; // the cost of using processing in this resource
-        double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this resource
-        double costPerBw = 0.0; // the cost of using bw in this resource
 
-        DatacenterCharacteristics characteristics =
-            new DatacenterCharacteristicsSimple(hostList)
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
+        Constructor<? extends Datacenter> construct =
+            datacenterClass.getConstructor(
+                CloudSim.class,
+                List.class,
+                VmAllocationPolicy.class);
 
-        Constructor<? extends Datacenter> construct = datacenterClass.getConstructor(CloudSim.class,
-            DatacenterCharacteristics.class,
-            VmAllocationPolicy.class);
-
-        Datacenter datacenter = construct.newInstance(simulation, characteristics, vmAllocationPolicy);
-        return datacenter.setSchedulingInterval(Constants.SCHEDULING_INTERVAL);
+        Datacenter dc = construct.newInstance(simulation, hostList, vmAllocationPolicy);
+        dc.getCharacteristics()
+                .setCostPerSecond(3.0)
+                .setCostPerMem(0.05)
+                .setCostPerStorage(0.001)
+                .setCostPerBw(0.0);
+        return dc.setSchedulingInterval(Constants.SCHEDULING_INTERVAL);
     }
 
     /**

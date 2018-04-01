@@ -739,8 +739,7 @@ public class VmSimple implements Vm {
 
     @Override
     public void notifyOnHostAllocationListeners() {
-        final VmHostEventInfo info = VmHostEventInfo.of(this);
-        onHostAllocationListeners.forEach(l -> l.update(info));
+        onHostAllocationListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this)));
     }
 
     @Override
@@ -749,16 +748,14 @@ public class VmSimple implements Vm {
             return;
         }
 
-        final VmHostEventInfo info = VmHostEventInfo.of(this, deallocatedHost);
-        onHostDeallocationListeners.forEach(l -> l.update(info));
+        onHostDeallocationListeners.forEach(l -> l.update(VmHostEventInfo.of(l,this, deallocatedHost)));
     }
 
     /**
          * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
          */
     public void notifyOnUpdateProcessingListeners() {
-        final VmHostEventInfo info = VmHostEventInfo.of(this);
-        onUpdateProcessingListeners.forEach(l -> l.update(info));
+        onUpdateProcessingListeners.forEach(l -> l.update(VmHostEventInfo.of(l,this)));
     }
 
     @Override
@@ -767,8 +764,7 @@ public class VmSimple implements Vm {
             return;
         }
 
-        final VmDatacenterEventInfo info = VmDatacenterEventInfo.of(this, failedDatacenter);
-        onCreationFailureListeners.forEach(l -> l.update(info));
+        onCreationFailureListeners.forEach(l -> l.update(VmDatacenterEventInfo.of(l,this, failedDatacenter)));
     }
 
 

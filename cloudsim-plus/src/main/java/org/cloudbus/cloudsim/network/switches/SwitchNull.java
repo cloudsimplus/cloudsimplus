@@ -22,7 +22,7 @@ final class SwitchNull implements Switch {
     private static final Simulation s = Simulation.NULL;
     private static final DatacenterCharacteristics c = DatacenterCharacteristics.NULL;
     private static final VmAllocationPolicy p = VmAllocationPolicy.NULL;
-    private final NetworkDatacenter dc = new NetworkDatacenter(s, c, p);
+    private final NetworkDatacenter dc = new NetworkDatacenter(s, Collections.emptyList(), p);
 
     @Override public int getId() {
         return 0;

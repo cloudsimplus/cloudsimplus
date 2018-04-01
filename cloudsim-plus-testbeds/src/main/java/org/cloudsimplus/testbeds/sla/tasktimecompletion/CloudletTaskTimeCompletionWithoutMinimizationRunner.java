@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.sla.tasktimecompletion;
+package org.cloudsimplus.testbeds.sla.tasktimecompletion;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +40,7 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment> {
+public class CloudletTaskTimeCompletionWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskTimeCompletionWithoutMinimizationExperiment> {
 
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
@@ -48,22 +48,28 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
     static final int[] VM_PES = {2, 4};
     static final int VMS = 30;
-    static final int CLOUDLETS = 100;
+    static final int CLOUDLETS = 90;
 
     /**
      * The TaskTimeCompletion average for all the experiments.
      */
-    private List<Double> cloudletTaskTimeCompletion;
+    private List<Double> cloudletTaskTimesCompletion;
 
-     /**
-     * The percentage of cloudlets meeting TaskTimeCompletion average for all the experiments.
+    /**
+     * The percentage of cloudlets meeting TaskTimeCompletion average for all the
+     * experiments.
      */
-    private List<Double> percentageOfCloudletsMeetingTaskTimeCompletion;
+    private List<Double> percentageOfCloudletsMeetingTaskTimesCompletion;
 
     /**
      * Amount of cloudlet PE per PE of vm.
      */
     private List<Double> ratioOfVmPesToRequiredCloudletPesList;
+
+    /**
+     * Average of the cost total
+     */
+    private List<Double> averageTotalCostSimulation;
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -77,32 +83,34 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner(true, 1475098589732L)
-                .setSimulationRuns(100)
+        new CloudletTaskTimeCompletionWithoutMinimizationRunner(true, 1475098589732L)
+                .setSimulationRuns(300)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
 
-    CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+    CloudletTaskTimeCompletionWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
-        cloudletTaskTimeCompletion = new ArrayList<>();
-        percentageOfCloudletsMeetingTaskTimeCompletion = new ArrayList<>();
+        cloudletTaskTimesCompletion = new ArrayList<>();
+        percentageOfCloudletsMeetingTaskTimesCompletion = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
+        averageTotalCostSimulation = new ArrayList<>();
     }
 
     @Override
-    protected CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment createExperiment(int i) {
+    protected CloudletTaskTimeCompletionWithoutMinimizationExperiment createExperiment(int i) {
+        CloudletTaskTimeCompletionWithoutMinimizationExperiment exp
+                = new CloudletTaskTimeCompletionWithoutMinimizationExperiment(i, this);
         ContinuousDistribution randCloudlet = createRandomGen(i);
         ContinuousDistribution randVm = createRandomGen(i);
-        CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(i, this);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 
     @Override
-    protected void setup() {}
+    protected void setup() {
+    }
 
     /**
      * Method automatically called after every experiment finishes running. It
@@ -111,19 +119,22 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment experiment) {
-        cloudletTaskTimeCompletion.add(experiment.getCloudletsTaskTimeCompletionAverage());
-        percentageOfCloudletsMeetingTaskTimeCompletion.add(
+    private void afterExperimentFinish(CloudletTaskTimeCompletionWithoutMinimizationExperiment experiment) {
+        cloudletTaskTimesCompletion.add(experiment.getCloudletsTaskTimeCompletionAverage());
+        percentageOfCloudletsMeetingTaskTimesCompletion.add(
                 experiment.getPercentageOfCloudletsMeetingTaskTimeCompletion());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
+        averageTotalCostSimulation.add(experiment.getTotalCostPrice());
     }
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
-        map.put("Cloudlet Task Time Completion", cloudletTaskTimeCompletion);
-        map.put("Percentage Of Cloudlets Meeting the Task Time Completion", percentageOfCloudletsMeetingTaskTimeCompletion);
+        map.put("Cloudlet TaskTimeCompletion", cloudletTaskTimesCompletion);
+        map.put("Percentage Of Cloudlets Meeting TaskTimesCompletion", percentageOfCloudletsMeetingTaskTimesCompletion);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
+        map.put("Average of Total Cost of simulation", averageTotalCostSimulation);
+
         return map;
     }
 
@@ -144,6 +155,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
         System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
+
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }

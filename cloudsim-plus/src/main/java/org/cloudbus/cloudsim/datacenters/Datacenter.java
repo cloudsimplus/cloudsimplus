@@ -47,7 +47,7 @@ public interface Datacenter extends SimEntity {
     int addFile(File file);
 
     /**
-     * Gets the host list.
+     * Gets an <b>unmodifiable</b> host list.
      *
      * @param <T> The generic type
      * @return the host list
@@ -55,6 +55,39 @@ public interface Datacenter extends SimEntity {
     <T extends Host> List<T> getHostList();
 
     Host getHost(int index);
+
+    /**
+     * Physically expands the Datacenter by adding a List of new Hosts (physical machines) to it.
+     * Hosts can be added before or after the simulation has started.
+     * If a Host is added during simulation execution,
+     * in case VMs are added dynamically too, they
+     * may be allocated to this new Host,
+     * depending on the {@link VmAllocationPolicy}.
+     *
+     * <p>If an ID is not assigned to a Host, the method assigns one.</p>
+     *
+     * @param hostList the List of new hosts to be added
+     * @return
+     * @see #getVmAllocationPolicy()
+     */
+    <T extends Host> Datacenter addHostList(List<T> hostList);
+
+    /**
+     * Physically expands the Datacenter by adding a new Host (physical machine) to it.
+     * Hosts can be added before or after the simulation has started.
+     * If a Host is added during simulation execution,
+     * in case VMs are added dynamically too, they
+     * may be allocated to this new Host,
+     * depending on the {@link VmAllocationPolicy}.
+     *
+     * <p>If an ID is not assigned to the given Host,
+     * the method assigns one.</p>
+     *
+     * @param host the new host to be added
+     * @return
+     * @see #getVmAllocationPolicy()
+     */
+    <T extends Host> Datacenter addHost(T host);
 
     /**
      * Gets the policy to be used by the Datacenter to allocate VMs into hosts.

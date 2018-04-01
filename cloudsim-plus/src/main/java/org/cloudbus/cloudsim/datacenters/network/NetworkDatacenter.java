@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.switches.AbstractSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.network.switches.Switch;
@@ -60,7 +61,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      * Creates a NetworkDatacenter with the given parameters.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the Datacenter to be created
+     * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
      * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
@@ -72,45 +73,12 @@ public class NetworkDatacenter extends DatacenterSimple {
      */
     public NetworkDatacenter(
         Simulation simulation,
-        DatacenterCharacteristics characteristics,
+        final List<? extends Host> hostList,
         VmAllocationPolicy vmAllocationPolicy)
     {
-        super(simulation, characteristics, vmAllocationPolicy);
+        super(simulation, hostList, vmAllocationPolicy);
 
         switchMap = new ArrayList<>();
-    }
-
-    /**
-     * Creates a NetworkDatacenter with the given parameters.
-     *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param characteristics the characteristics of the Datacenter to be created
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
-     * @param storageList a List of storage elements, for data simulation
-     * @param schedulingInterval the scheduling delay to process each Datacenter received event
-     *
-     * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
-     * <br>
-     * No PEs mean the Cloudlets can't be processed. A CloudResource must
-     * contain one or more Machines. A Machine must contain one or more PEs.
-     *
-     * @post $none
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     */
-    @Deprecated
-    public NetworkDatacenter(
-        CloudSim simulation,
-        DatacenterCharacteristics characteristics,
-        VmAllocationPolicy vmAllocationPolicy,
-        List<FileStorage> storageList,
-        double schedulingInterval)
-    {
-        this(simulation, characteristics, vmAllocationPolicy);
-        setStorageList(storageList);
-        setSchedulingInterval(schedulingInterval);
     }
 
     /**
