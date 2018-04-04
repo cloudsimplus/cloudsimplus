@@ -272,8 +272,10 @@ public interface DatacenterBroker extends SimEntity {
      * It defines the policy used to select a Vm to host a Cloudlet
      * that is waiting to be created.
      *
-     * @param vmMapper the Vm mapper function to set. Such a function
-     * must receive a Cloudlet and return the Vm where it will be placed into.
+     * @param vmMapper the Vm mapper Function to set. Such a Function
+     *                 must receive a Cloudlet and return the Vm where it will be placed into.
+     *                 If the Function is unable to find a VM for a Cloudlet,
+     *                 it should return {@link Vm#NULL}.
      */
     void setVmMapper(Function<Cloudlet, Vm> vmMapper);
 
