@@ -29,6 +29,7 @@
 package org.cloudsimplus.testbeds.sla;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -56,7 +57,7 @@ public class VmCost {
      * @return getMemoryCost
      */
     public double getMemoryCost() {
-        return (getDatacenter().getCharacteristics().getCostPerMem() * vm.getRam().getCapacity());
+        return getDatacenter().getCharacteristics().getCostPerMem() * vm.getRam().getCapacity();
     }
 
     private Datacenter getDatacenter() {
@@ -78,11 +79,12 @@ public class VmCost {
      * @return getProcessingCost
      */
     public double getProcessingCost() {
-        double hostMips = vm.getHost().getPeList().stream()
+        final double hostMips = vm.getHost().getPeList().stream()
                 .findFirst()
-                .map(pe -> pe.getCapacity())
+                .map(Pe::getCapacity)
                 .orElse(0L);
-        double costPerMI = (hostMips > 0 ?
+
+        final double costPerMI = (hostMips > 0 ?
                 getDatacenter().getCharacteristics().getCostPerSecond()/hostMips :
                 0.0);
 

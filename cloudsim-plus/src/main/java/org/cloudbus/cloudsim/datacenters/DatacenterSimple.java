@@ -118,6 +118,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             case CloudSimTags.ICMP_PKT_SUBMIT:
                 processPingRequest(ev);
                 return 1;
+            default:
+                Log.printLine(getSimulation().clock() + ": " + getClass().getSimpleName() + ".processNetworkEvents(): Invalid event tag " + ev.getTag());
+                break;
         }
 
         return 0;
@@ -1104,7 +1107,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             host.setId(getHostList().size());
         }
 
-        final DatacenterCharacteristicsSimple c = (DatacenterCharacteristicsSimple)characteristics;
         host.setDatacenter(this);
         ((List<T>)hostList).add(host);
 
@@ -1124,7 +1126,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @pre $none
      * @post $none
      */
-    protected void processOtherEvent(SimEvent ev) {/**/}
+    private void processOtherEvent(SimEvent ev) {/**/}
 
     @Override
     public String toString() {

@@ -119,10 +119,10 @@ public class HostSimpleTest {
         final HostSimple host = createHostSimple(0, numberOfVms);
 
         final List<Vm> vms = new ArrayList<>(numberOfVms);
-        IntStream.range(0, numberOfVms).forEach(i -> {
-            Vm vm = VmSimpleTest.createVm(
-                    i, MIPS/numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms);
-            if(i == 0){
+        for (int i = 0; i < numberOfVms; i++) {
+            final Vm vm = VmSimpleTest.createVm(
+                i, MIPS / numberOfVms, 1, RAM / numberOfVms, BW / numberOfVms, STORAGE / numberOfVms);
+            if (i == 0) {
                 /*considers that one of the migrating in VMs already was placed at the host,
                 thus, it will not be added again to the host vm list.
                 By this way, the vms on the host list will be the same
@@ -131,7 +131,7 @@ public class HostSimpleTest {
             }
             host.addMigratingInVm(vm);
             vms.add(vm);
-        });
+        }
 
 
         host.reallocateMigratingInVms();

@@ -38,6 +38,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -59,7 +60,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import static java.util.Comparator.comparingInt;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadMinimizationRunner.*;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWorkLoadMinimizationRunner.*;
 
 import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.slametrics.SlaContract;
@@ -70,7 +71,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends SimulationExperiment {
+public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends SimulationExperiment {
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
 
@@ -94,15 +95,15 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     private ContinuousDistribution randCloudlet, randVm, randMip;
     private double taskCompletionTimeSlaContract;
 
-    private CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(final long seed) {
+    private CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(final long seed) {
         this(0, null, seed);
     }
 
-    CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(final int index, final ExperimentRunner runner) {
+    CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(final int index, final ExperimentRunner runner) {
         this(index, runner, -1);
     }
 
-    private CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
+    private CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
         randCloudlet = new UniformDistr(getSeed());
         randVm = new UniformDistr(getSeed()+1);
@@ -137,12 +138,8 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     @Override
     public final void printResults() {
         final DatacenterBroker broker0 = getFirstBroker();
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
-        Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
-        //finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         finishedCloudlets.sort(comparingInt(Cloudlet::getId));
-
 
         new CloudletsTableBuilder(finishedCloudlets)
             .addColumn(7, new TextTableColumn("VM    ", "MIPS  "), c -> (long)c.getVm().getMips())
@@ -192,8 +189,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     }
 
     private double getExpectedCloudletCompletionTime(Cloudlet cloudlet, Vm vm) {
-        final double expectedTaskTimeCompletion = cloudlet.getLength() / vm.getMips();
-        return expectedTaskTimeCompletion;
+        return cloudlet.getLength() / vm.getMips();
     }
 
     /**
@@ -211,14 +207,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
                         .mapToLong(Cloudlet::getNumberOfPes)
                         .sum();
 
-        final long numberOfVmFreePes
-                = vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
-
-  /*      Log.printFormattedLine(
-                "\t\tTotal pes of cloudlets in VM " + vm.getId() + ": "
-                + totalPesNumberForCloudletsOfVm + " -> vm pes: "
-                + vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);*/
-        return numberOfVmFreePes;
+        return vm.getNumberOfPes() - totalPesNumberForCloudletsOfVm;
     }
 
     @Override
@@ -237,7 +226,6 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
      * @return the created Vm
      */
     private Vm createVm() {
-        DatacenterBroker broker0 = getFirstBroker();
         final int id = createsVms++;
         final int i = (int) (randVm.sample() * VM_PES.length);
         final int pes = VM_PES[i];
@@ -261,19 +249,16 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
     }
 
     private Host createHost() {
-        List<Pe> pesList = new ArrayList<>(HOST_PES);
+        final List<Pe> pesList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
             pesList.add(new PeSimple(100000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
         Host h = new HostSimple(42480, 10000000, 10000000, pesList)
-                .setRamProvisioner(ramProvisioner)
-                .setBwProvisioner(bwProvisioner)
-                .setVmScheduler(vmScheduler);
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
+                .setVmScheduler(new VmSchedulerTimeShared());
         h.setId(id);
         return h;
     }
@@ -303,7 +288,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
      * @return the TaskTimeCompletion average
      */
     double getAverageCloudletCompletionTime() {
-        SummaryStatistics cloudletCompletionTime = new SummaryStatistics();
+        final SummaryStatistics cloudletCompletionTime = new SummaryStatistics();
         final DatacenterBroker broker = getFirstBroker();
 
         broker.getCloudletFinishedList().stream()
@@ -338,15 +323,15 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
         return contractsMap.get(broker).getTaskCompletionTimeMetric().getMaxDimension().getValue();
     }
 
-    double getSumPesVms() {
+    private double getSumPesVms() {
         return vmList.stream()
-                .mapToDouble(vm -> vm.getNumberOfPes())
+                .mapToDouble(Machine::getNumberOfPes)
                 .sum();
     }
 
-    double getSumPesCloudlets() {
+    private double getSumPesCloudlets() {
         return getCloudletList().stream()
-                .mapToDouble(c -> c.getNumberOfPes())
+                .mapToDouble(Cloudlet::getNumberOfPes)
                 .sum();
     }
 
@@ -360,11 +345,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
      * @return the average of vPEs/CloudletsPEs ratio
      */
     double getRatioOfExistingVmPesToRequiredCloudletPes() {
-        double sumPesVms = getSumPesVms();
-        double sumPesCloudlets = getSumPesCloudlets();
-    //    System.out.println("\n\t -> Pe cloudlets / PE vm: " + sumPesVms/sumPesCloudlets);
-
-        return sumPesVms / sumPesCloudlets;
+        return getSumPesVms() / getSumPesCloudlets();
     }
 
      /**
@@ -390,9 +371,8 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationExperiment extends Si
      * @throws IOException
      */
     public static void main(String[] args) throws FileNotFoundException, IOException {
-        final long seed = System.currentTimeMillis();
-        CloudletTaskTimeCompletionWorkLoadMinimizationExperiment exp
-            = new CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(1475098589732L);
+        final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment exp
+            = new CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(1475098589732L);
         exp.setVerbose(true);
         exp.run();
         exp.getAverageCloudletCompletionTime();

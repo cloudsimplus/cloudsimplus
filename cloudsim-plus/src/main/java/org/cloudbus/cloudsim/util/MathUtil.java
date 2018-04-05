@@ -244,11 +244,11 @@ public final class MathUtil {
         return regression;
     }
 
-    public static SimpleRegression createWeigthedLinearRegression(
+    private static SimpleRegression createWeigthedLinearRegression(
         final double[] x, final double[] y, final double[] weigths)
     {
-        double[] xW = new double[x.length];
-        double[] yW = new double[y.length];
+        final double[] xW = new double[x.length];
+        final double[] yW = new double[y.length];
 
         final long numZeroWeigths = Arrays.stream(weigths).filter(weigth -> weigth <= 0).count();
 

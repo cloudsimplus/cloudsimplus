@@ -34,16 +34,11 @@ import static org.junit.Assert.*;
  * @since	CloudSim Toolkit 2.0
  */
 public class CloudletSimpleTest {
-    private static final String FILE2 = "file2.txt";
-    private static final String FILE3 = "file3.txt";
-    private static final String FILE1 = "file1.txt";
-    private static final String FILE_INEXISTENT = "file-inexistent.txt";
+    public static final long CLOUDLET_LENGTH = 1000;
+    public static final long CLOUDLET_FILE_SIZE = 1000;
+    public static final int CLOUDLET_OUTPUT_SIZE = 1000;
 
-    private static final long CLOUDLET_LENGTH = 1000;
-    private static final long CLOUDLET_FILE_SIZE = 1000;
-    private static final int CLOUDLET_OUTPUT_SIZE = 1000;
-
-    private static final int PES_NUMBER = 2;
+    public static final int PES_NUMBER = 2;
 
     private CloudletSimple cloudlet;
     private UtilizationModel utilizationModelCpu;
@@ -51,7 +46,7 @@ public class CloudletSimpleTest {
     private UtilizationModel utilizationModelBw;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         utilizationModelCpu = new UtilizationModelStochastic();
         utilizationModelRam = new UtilizationModelStochastic();
         utilizationModelBw = new UtilizationModelStochastic();
@@ -245,7 +240,7 @@ public class CloudletSimpleTest {
 
         cloudlet = createCloudlet(id);
         cloudlet.setRecordTransactionHistory(true);
-        Assert.assertNotSame(expected, cloudlet.getHistory());
+        assertNotSame(expected, cloudlet.getHistory());
     }
 
     @Test
@@ -292,7 +287,7 @@ public class CloudletSimpleTest {
     public void testSetValidCloudletLength() {
         final int expected = 1000;
         cloudlet.setLength(expected);
-        Assert.assertEquals(expected, cloudlet.getLength());
+        assertEquals(expected, cloudlet.getLength());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -311,7 +306,7 @@ public class CloudletSimpleTest {
     public void testSetValidNumberOfPes() {
         final int expected = 2;
         cloudlet.setNumberOfPes(expected);
-        Assert.assertEquals(expected, cloudlet.getNumberOfPes());
+        assertEquals(expected, cloudlet.getNumberOfPes());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -322,17 +317,6 @@ public class CloudletSimpleTest {
     @Test(expected = IllegalArgumentException.class)
     public void testSetNumberOfPesToNegative() {
         cloudlet.setNumberOfPes(-1);
-    }
-
-    @Test
-    public void testSetRequiredFiles() {
-        cloudlet.setRequiredFiles(null);
-        Assert.assertNotNull(cloudlet.getRequiredFiles());
-
-        final List<String> files = new ArrayList<>();
-        files.add(FILE1);
-        cloudlet.setRequiredFiles(files);
-        assertEquals(files, cloudlet.getRequiredFiles());
     }
 
     @Test
@@ -357,16 +341,16 @@ public class CloudletSimpleTest {
         assertEquals(valid, cloudlet.getNetServiceLevel());
     }
 
-    private static CloudletSimple createCloudlet() {
+    static CloudletSimple createCloudlet() {
         return createCloudlet(0);
     }
 
-    private static CloudletSimple createCloudlet(final int id) {
+    static CloudletSimple createCloudlet(final int id) {
         return createCloudlet(id, new UtilizationModelFull());
     }
 
-    public static CloudletSimple createCloudlet(
-            final int id, UtilizationModel cpuRamAndBwUtilizationModel) {
+    private static CloudletSimple createCloudlet(
+        final int id, UtilizationModel cpuRamAndBwUtilizationModel) {
         return createCloudlet(id, cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel);
@@ -392,11 +376,11 @@ public class CloudletSimpleTest {
         return createCloudlet(id, CLOUDLET_LENGTH, numberOfPes);
     }
 
-    public static CloudletSimple createCloudlet(final int id,
-                                                UtilizationModel utilizationModelCPU,
-                                                UtilizationModel utilizationModelRAM,
-                                                UtilizationModel utilizationModelBW,
-                                                long length, int numberOfPes)
+    private static CloudletSimple createCloudlet(final int id,
+                                                 UtilizationModel utilizationModelCPU,
+                                                 UtilizationModel utilizationModelRAM,
+                                                 UtilizationModel utilizationModelBW,
+                                                 long length, int numberOfPes)
     {
         final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
@@ -436,29 +420,33 @@ public class CloudletSimpleTest {
     @Test
     public void testSetUtilizationModels() {
         final CloudletSimple c = createCloudlet();
-        Assert.assertNotNull(c.getUtilizationModelCpu());
-        Assert.assertNotNull(c.getUtilizationModelRam());
-        Assert.assertNotNull(c.getUtilizationModelBw());
+        assertNotNull(c.getUtilizationModelCpu());
+        assertNotNull(c.getUtilizationModelRam());
+        assertNotNull(c.getUtilizationModelBw());
     }
 
+    @Test
     public void testSetUtilizationModelBw_null() {
         final CloudletSimple c = createCloudlet();
         c.setUtilizationModelBw(null);
         assertEquals(UtilizationModel.NULL, c.getUtilizationModelBw());
     }
 
+    @Test
     public void testSetUtilizationModelRam_null() {
         final CloudletSimple c = createCloudlet();
         c.setUtilizationModelRam(null);
         assertEquals(UtilizationModel.NULL, c.getUtilizationModelRam());
     }
 
+    @Test
     public void testSetUtilizationModelCpu_null() {
         final CloudletSimple c = createCloudlet();
         c.setUtilizationModelCpu(null);
         assertEquals(UtilizationModel.NULL, c.getUtilizationModelCpu());
     }
 
+    @Test
     public void testNew_nullUtilizationModel() {
         final CloudletSimple c = createCloudlet(0, null);
         assertEquals(UtilizationModel.NULL, c.getUtilizationModelBw());
@@ -495,46 +483,6 @@ public class CloudletSimpleTest {
         assertFalse(c.setStatus(newStatus));
     }
 
-    @Test
-    public void testAddRequiredFile() {
-        final CloudletSimple c = createCloudlet();
-        final String files[] = {FILE1, FILE2};
-        for (final String file : files) {
-            assertTrue("Method file should be added",
-                    c.addRequiredFile(file));  //file doesn't previously added
-            assertFalse("Method file shouldn't be added",
-                    c.addRequiredFile(file)); //file already added
-        }
-    }
-
-    @Test
-    public void testDeleteRequiredFile() {
-        final CloudletSimple c = createCloudlet();
-        final String files[] = {FILE1, FILE2, FILE3};
-        for (final String file : files) {
-            c.addRequiredFile(file);
-        }
-
-        assertFalse(c.deleteRequiredFile(FILE_INEXISTENT));
-        for (final String file : files) {
-            assertTrue(c.deleteRequiredFile(file));
-            assertFalse(c.deleteRequiredFile(file)); //already deleted
-        }
-    }
-
-    @Test
-    public void testRequiredFiles() {
-        final CloudletSimple c = createCloudlet();
-        final String files[] = {FILE1, FILE2, FILE3};
-        c.setRequiredFiles(null); //internally it has to creates a new instance
-        Assert.assertNotNull(c.getRequiredFiles());
-
-        for (final String file : files) {
-            c.addRequiredFile(file);
-        }
-
-        assertTrue(c.requiresFiles()); //it has required files
-    }
 
     @Test
     public void testGetCloudletFinishedSoFar() {
@@ -572,15 +520,15 @@ public class CloudletSimpleTest {
     public void testSetPriority() {
         final int zero = 0;
 	    cloudlet.setPriority(zero);
-        Assert.assertEquals(zero, cloudlet.getPriority());
+        assertEquals(zero, cloudlet.getPriority());
 
         final int negative = -1;
         cloudlet.setPriority(negative);
-	    Assert.assertEquals(negative, cloudlet.getPriority());
+	    assertEquals(negative, cloudlet.getPriority());
 
         final int one = 1;
         cloudlet.setPriority(one);
-	    Assert.assertEquals(one, cloudlet.getPriority());
+	    assertEquals(one, cloudlet.getPriority());
     }
 
     @Test

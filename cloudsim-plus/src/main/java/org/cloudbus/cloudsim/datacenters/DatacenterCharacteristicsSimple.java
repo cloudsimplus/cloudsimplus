@@ -207,7 +207,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     @Override
     public final DatacenterCharacteristics setTimeZone(final double timeZone) {
-        this.timeZone = (timeZone < -12 || timeZone > 13) ? 0 : timeZone;
+        this.timeZone = timeZone < -12 || timeZone > 13 ? 0 : timeZone;
         return this;
     }
 

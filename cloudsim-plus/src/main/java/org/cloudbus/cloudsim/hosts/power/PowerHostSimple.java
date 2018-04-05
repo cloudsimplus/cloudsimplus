@@ -104,7 +104,7 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
      * resource that is critical for power consumption
      * @return the power consumption
      */
-    protected double getPower(double utilization) {
+    protected double getPower(final double utilization) {
         try {
             return getPowerModel().getPower(utilization);
         } catch (IllegalArgumentException e) {
@@ -132,12 +132,12 @@ public class PowerHostSimple extends HostDynamicWorkloadSimple implements PowerH
      * @return the energy
      */
     @Override
-    public double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time) {
+    public double getEnergyLinearInterpolation(final double fromUtilization, final double toUtilization, final double time) {
         if (fromUtilization == 0) {
             return 0;
         }
-        double fromPower = getPower(fromUtilization);
-        double toPower = getPower(toUtilization);
+        final double fromPower = getPower(fromUtilization);
+        final double toPower = getPower(toUtilization);
         return (fromPower + (toPower - fromPower) / 2) * time;
     }
 

@@ -40,7 +40,7 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment> {
+public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment> {
 
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
@@ -53,7 +53,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
     /**
      * The TaskTimeCompletion average for all the experiments.
      */
-    private List<Double> cloudletTaskTimeCompletion;
+    private List<Double> cloudletCompletionTime;
 
      /**
      * The percentage of cloudlets meeting TaskTimeCompletion average for all the experiments.
@@ -77,26 +77,26 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner(true, 1475098589732L)
+        new CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner(true, 1475098589732L)
                 .setSimulationRuns(100)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
 
-    CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+    CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
-        cloudletTaskTimeCompletion = new ArrayList<>();
+        cloudletCompletionTime = new ArrayList<>();
         percentageOfCloudletsMeetingTaskTimeCompletion = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
     }
 
     @Override
-    protected CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment createExperiment(int i) {
+    protected CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment createExperiment(int i) {
         ContinuousDistribution randCloudlet = createRandomGen(i);
         ContinuousDistribution randVm = createRandomGen(i);
-        CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(i, this);
+        CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment exp
+                = new CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment(i, this);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
@@ -111,8 +111,8 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment experiment) {
-        cloudletTaskTimeCompletion.add(experiment.getCloudletsTaskTimeCompletionAverage());
+    private void afterExperimentFinish(CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment experiment) {
+        cloudletCompletionTime.add(experiment.getCloudletsTaskTimeCompletionAverage());
         percentageOfCloudletsMeetingTaskTimeCompletion.add(
                 experiment.getPercentageOfCloudletsMeetingTaskTimeCompletion());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
@@ -121,7 +121,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner extends
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         Map<String, List<Double>> map = new HashMap<>();
-        map.put("Cloudlet Task Time Completion", cloudletTaskTimeCompletion);
+        map.put("Cloudlet Task Time Completion", cloudletCompletionTime);
         map.put("Percentage Of Cloudlets Meeting the Task Time Completion", percentageOfCloudletsMeetingTaskTimeCompletion);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
         return map;

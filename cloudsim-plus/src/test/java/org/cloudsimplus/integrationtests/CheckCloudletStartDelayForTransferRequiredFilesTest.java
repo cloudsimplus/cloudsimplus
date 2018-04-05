@@ -78,9 +78,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	private static final int NUMBER_OF_FILES_TO_CREATE = 2;
 	private static final double SAN_BANDWIDTH_MBITS_PER_SEC = 100;
 
-	private SimulationScenarioBuilder scenario;
-    private UtilizationModel utilizationModel;
-	private DatacenterBroker broker;
+    private DatacenterBroker broker;
 	private List<File> files;
 	private FileStorage storage;
     private CloudSim simulation;
@@ -90,8 +88,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 		createStorage();
 
         this.simulation = new  CloudSim();
-        utilizationModel = new UtilizationModelFull();
-        scenario = new SimulationScenarioBuilder(simulation);
+        final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder()
 	        .setSchedulingInterval(1)
 	        .addStorageToList(storage)
@@ -105,21 +102,21 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	        );
 
 
-        BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
 	    this.broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerSpaceShared())
+                .setCloudletSchedulerSupplier(CloudletSchedulerSpaceShared::new)
                 .createAndSubmitOneVm();
 
 		brokerBuilder.getVmBuilder()
-            .setCloudletSchedulerSupplier(() -> new CloudletSchedulerTimeShared())
+            .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
             .createAndSubmitOneVm();
 
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
-                .setUtilizationModelCpu(utilizationModel)
+                .setUtilizationModelCpu(new UtilizationModelFull())
                 .setPEs(CLOUDLET_PES)
 	            .setRequiredFiles(getFileNames())
                 .createAndSubmitCloudlets(NUMBER_OF_CLOUDLETS);
@@ -128,7 +125,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	private void createStorage() {
 		createListOfFiles();
 		storage = new SanStorage(100000, SAN_BANDWIDTH_MBITS_PER_SEC, 0.1);
-		files.stream().forEach(storage::addFile);
+		files.forEach(storage::addFile);
 	}
 
 	/**
@@ -152,12 +149,12 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	@Test
     public void integrationTest() {
         simulation.start();
-		List<Cloudlet> cloudlets = broker.getCloudletFinishedList();
+		final List<Cloudlet> cloudlets = broker.getCloudletFinishedList();
 		/* The expected finish time considers the delay to transfer the Cloudlet
 		 * required files and the actual execution time.
 		 */
 		final long expectedFinishTime = 7;
-		for(Cloudlet c: cloudlets) {
+		for(final Cloudlet c: cloudlets) {
 			//Checks if each cloudlet finished at the expected time, considering the delay to transfer the required files
 			assertEquals(c.toString(), expectedFinishTime, c.getFinishTime(), 0.3);
 
@@ -172,7 +169,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	    printCloudletsExecutionResults();
     }
 
-    public void printCloudletsExecutionResults() {
+    private void printCloudletsExecutionResults() {
         new CloudletsTableBuilder(broker.getCloudletFinishedList())
                 .setTitle(broker.getName())
                 .build();

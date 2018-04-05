@@ -66,7 +66,7 @@ public class HostBuilder extends Builder {
         return hosts;
     }
 
-    private Host createHost(final int id) {
+    private Host createHost() {
         try {
             final List<Pe> peList = new PeBuilder().create(pes, mips);
             final Constructor cons = vmSchedulerClass.getConstructor();
@@ -92,7 +92,7 @@ public class HostBuilder extends Builder {
         validateAmount(amount);
 
         for (int i = 0; i < amount; i++) {
-            hosts.add(createHost(numberOfCreatedHosts++));
+            hosts.add(createHost());
         }
         return this;
     }

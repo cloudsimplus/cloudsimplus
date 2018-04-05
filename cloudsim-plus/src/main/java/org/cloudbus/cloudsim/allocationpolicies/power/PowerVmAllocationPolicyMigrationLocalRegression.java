@@ -113,18 +113,18 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
      */
     @Override
     public double computeHostUtilizationMeasure(PowerHostUtilizationHistory host) throws IllegalArgumentException{
-        double[] utilizationHistory = host.getUtilizationHistory();
+        final double[] utilizationHistory = host.getUtilizationHistory();
         final int length = 10; // we use 10 to make the regression responsive enough to latest values
         if (utilizationHistory.length < length) {
             throw new IllegalArgumentException("There is not enough Host history to estimate its utilization using Local Regression");
         }
 
-        double[] utilizationHistoryReversed = new double[length];
+        final double[] utilizationHistoryReversed = new double[length];
         for (int i = 0; i < length; i++) {
             utilizationHistoryReversed[i] = utilizationHistory[length - i - 1];
         }
-        double[] estimates = getParameterEstimates(utilizationHistoryReversed);
-        double migrationIntervals = Math.ceil(getMaximumVmMigrationTime(host) / getSchedulingInterval());
+        final double[] estimates = getParameterEstimates(utilizationHistoryReversed);
+        final double migrationIntervals = Math.ceil(getMaximumVmMigrationTime(host) / getSchedulingInterval());
         return estimates[0] + estimates[1] * (length + migrationIntervals);
     }
 
@@ -134,7 +134,7 @@ public class PowerVmAllocationPolicyMigrationLocalRegression extends PowerVmAllo
      * @param utilizationHistoryReversed the utilization history in reverse order
      * @return the utilization estimates
      */
-    protected double[] getParameterEstimates(double[] utilizationHistoryReversed) {
+    protected double[] getParameterEstimates(final double[] utilizationHistoryReversed) {
         return MathUtil.getLoessParameterEstimates(utilizationHistoryReversed);
     }
 

@@ -23,17 +23,15 @@
  */
 package org.cloudsimplus.builders;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.resources.FileStorage;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.resources.FileStorage;
 
 /**
  * A Builder class to createDatacenter {@link DatacenterSimple} objects.
@@ -42,7 +40,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
  * @since CloudSim Plus 1.0
  */
 public class DatacenterBuilder extends Builder {
-    public static final String DC_NAME_FORMAT = "Datacenter%d";
+    private static final String DC_NAME_FORMAT = "Datacenter%d";
     private final SimulationScenarioBuilder scenario;
 
     private double costPerBwMegabit;

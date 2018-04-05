@@ -40,6 +40,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -58,8 +59,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner.VMS;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionWorkLoadWithoutMinimizationRunner.VM_PES;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VMS;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VM_PES;
 
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -69,7 +70,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment extends SimulationExperiment {
+public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment extends SimulationExperiment {
 
     private static final int SCHEDULING_INTERVAL = 5;
 
@@ -89,22 +90,22 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     private ContinuousDistribution randCloudlet, randVm;
     private SlaContract contract;
 
-    private CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(final long seed) {
+    private CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment(final long seed) {
         this(0, null, seed);
     }
 
-    CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(final int index, final ExperimentRunner runner) {
+    CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment(final int index, final ExperimentRunner runner) {
         this(index, runner, -1);
     }
 
-    private CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
+    private CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
         this.randCloudlet = new UniformDistr(1475098589732L);
         this.randVm = new UniformDistr(1475098589732L+1);
         try {
             this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
         } catch (IOException ex) {
-            Logger.getLogger(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
     }
@@ -115,10 +116,10 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
 
     @Override
     public final void printResults() {
-        DatacenterBroker broker0 = getFirstBroker();
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
-        Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
+        final DatacenterBroker broker0 = getFirstBroker();
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        final Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
+        final Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
         new CloudletsTableBuilder(finishedCloudlets).build();
@@ -131,10 +132,8 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         try {
             workloadFileReader = WorkloadFileReader.getInstanceFromResourcesDir("METACENTRUM-2009-2.swf", 1);
             cloudletList = workloadFileReader.generateWorkload().subList(0, 70);
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
-            Logger.getLogger(CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
         }
 
         return cloudletList;
@@ -146,7 +145,6 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
-
 
     @Override
     protected List<Vm> createVms(DatacenterBroker broker) {
@@ -164,7 +162,6 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
      * @return the created Vm
      */
     private Vm createVm() {
-        DatacenterBroker broker0 = getFirstBroker();
         final int id = createsVms++;
         final int i = (int) (randVm.sample() * VM_PES.length);
         final int pes = VM_PES[i];
@@ -185,28 +182,23 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     }
 
     private Host createHost() {
-        List<Pe> pesList = new ArrayList<>(HOST_PES);
+        final List<Pe> pesList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
             pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
         final int id = hostList.size();
-        Host h = new HostSimple(20480, 1000000, 1000000, pesList)
-                .setRamProvisioner(ramProvisioner)
-                .setBwProvisioner(bwProvisioner)
-                .setVmScheduler(vmScheduler);
+        final Host h = new HostSimple(20480, 1000000, 1000000, pesList)
+                .setRamProvisioner(new ResourceProvisionerSimple())
+                .setBwProvisioner(new ResourceProvisionerSimple())
+                .setVmScheduler(new VmSchedulerTimeShared());
         h.setId(id);
         return h;
     }
 
     @Override
     protected DatacenterBroker createBroker() {
-        DatacenterBroker broker0;
-        broker0 = new DatacenterBrokerSimple(getCloudSim());
-        return broker0;
+        return new DatacenterBrokerSimple(getCloudSim());
     }
 
     /**
@@ -216,8 +208,8 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
      * @return the TaskTimeCompletion average
      */
     double getCloudletsTaskTimeCompletionAverage() {
-        SummaryStatistics cloudletTaskTimeCompletion = new SummaryStatistics();
-        DatacenterBroker broker = getBrokerList().stream()
+        final SummaryStatistics cloudletTaskTimeCompletion = new SummaryStatistics();
+        final DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
         broker.getCloudletFinishedList().stream()
@@ -228,11 +220,11 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
     }
 
     double getPercentageOfCloudletsMeetingTaskTimeCompletion() {
-        DatacenterBroker broker = getBrokerList().stream()
+        final DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
 
-        double totalOfcloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
+        final double totalOfcloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= getCustomerMaxTaskCompletionTime())
                 .count();
@@ -243,15 +235,15 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
         return contract.getTaskCompletionTimeMetric().getMaxDimension().getValue();
     }
 
-    double getSumPesVms() {
+    private double getSumPesVms() {
         return vmList.stream()
-                .mapToDouble(vm -> vm.getNumberOfPes())
+                .mapToDouble(Machine::getNumberOfPes)
                 .sum();
     }
 
-    double getSumPesCloudlets() {
+    private double getSumPesCloudlets() {
         return cloudletList.stream()
-                .mapToDouble(c -> c.getNumberOfPes())
+                .mapToDouble(Cloudlet::getNumberOfPes)
                 .sum();
     }
 
@@ -265,10 +257,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
      * @return the average of vPEs/CloudletsPEs ratio
      */
     double getRatioOfExistingVmPesToRequiredCloudletPes() {
-        double sumPesVms = getSumPesVms();
-        double sumPesCloudlets = getSumPesCloudlets();
-
-        return sumPesVms / sumPesCloudlets;
+        return getSumPesVms() / getSumPesCloudlets();
     }
 
      /**
@@ -276,7 +265,7 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
      *
      * @param cloudlet list of cloudlets
      */
-    public void waitTimeAverage(List<Cloudlet> cloudlet) {
+     private void waitTimeAverage(final List<Cloudlet> cloudlet) {
         double waitTime = 0, quant = 0;
         for (Cloudlet cloudlets : cloudlet) {
             waitTime += cloudlets.getWaitingTime();
@@ -291,10 +280,9 @@ public class CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment ext
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        final long seed = System.currentTimeMillis();
-        CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWorkLoadWithoutMinimizationExperiment(1);
+    public static void main(String[] args) {
+        final CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment exp
+                = new CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment(1);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsTaskTimeCompletionAverage();

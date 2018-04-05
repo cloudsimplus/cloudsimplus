@@ -38,6 +38,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -56,16 +57,14 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.autoscaling.HorizontalVmScaling;
-import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.testbeds.sla.VmCost;
 
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.CLOUDLETS;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.CLOUDLET_LENGTHS;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.VMS;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskTimeCompletionWithoutMinimizationRunner.VM_PES;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWithoutMinimizationRunner.CLOUDLETS;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWithoutMinimizationRunner.CLOUDLET_LENGTHS;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWithoutMinimizationRunner.VMS;
+import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWithoutMinimizationRunner.VM_PES;
 
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -75,7 +74,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends SimulationExperiment {
+public class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends SimulationExperiment {
     private static final int SCHEDULING_INTERVAL = 5;
 
     private static final int HOSTS = 50;
@@ -96,15 +95,15 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
      */
     public static final String METRICS_FILE = "SlaMetrics.json";
 
-    private CloudletTaskTimeCompletionWithoutMinimizationExperiment(final long seed) {
+    private CloudletTaskCompletionTimeWithoutMinimizationExperiment(final long seed) {
         this(0, null, seed);
     }
 
-    CloudletTaskTimeCompletionWithoutMinimizationExperiment(final int index, final ExperimentRunner runner) {
+    CloudletTaskCompletionTimeWithoutMinimizationExperiment(final int index, final ExperimentRunner runner) {
         this(index, runner, -1);
     }
 
-    private CloudletTaskTimeCompletionWithoutMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
+    private CloudletTaskCompletionTimeWithoutMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
         randCloudlet = new UniformDistr(getSeed());
         randVm = new UniformDistr(getSeed()+1);
@@ -112,7 +111,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
             this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
             getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
         } catch (IOException ex) {
-            Logger.getLogger(CloudletTaskTimeCompletionWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(CloudletTaskCompletionTimeWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
             throw new RuntimeException(ex);
         }
     }
@@ -138,10 +137,10 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
 
     @Override
     public final void printResults() {
-        DatacenterBroker broker0 = getFirstBroker();
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
-        Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
+        final DatacenterBroker broker0 = getFirstBroker();
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        final Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
+        final Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
         new CloudletsTableBuilder(finishedCloudlets).build();
@@ -150,39 +149,32 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     @Override
     protected List<Cloudlet> createCloudlets() {
         cloudletList = new ArrayList<>(CLOUDLETS);
-        DatacenterBroker broker0 = getFirstBroker();
         for (int i = 0; i < CLOUDLETS; i++) {
-            cloudletList.add(createCloudlet(broker0));
+            cloudletList.add(createCloudlet());
         }
 
         return cloudletList;
     }
 
-    private Cloudlet createCloudlet(DatacenterBroker broker) {
+    private Cloudlet createCloudlet() {
         final int id = createdCloudlets++;
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
         final long length = CLOUDLET_LENGTHS[i];
 
-        UtilizationModel utilization = new UtilizationModelFull();
         return new CloudletSimple(id, length, 2)
                 .setFileSize(1024)
                 .setOutputSize(1024)
-                .setUtilizationModel(utilization);
+                .setUtilizationModel(new UtilizationModelFull());
     }
 
     @Override
     protected DatacenterSimple createDatacenter() {
         DatacenterSimple dc = super.createDatacenter();
-        double cost = 3.0; // the cost of using processing in this resource
-        double costPerMem = 0.05; // the cost of using memory in this resource
-        double costPerStorage = 0.001; // the cost of using storage in this
-        // resource
-        double costPerBw = 0.0; // the cost of using bw in this resource
         dc.getCharacteristics()
-                .setCostPerSecond(cost)
-                .setCostPerMem(costPerMem)
-                .setCostPerStorage(costPerStorage)
-                .setCostPerBw(costPerBw);
+                .setCostPerSecond(3.0)
+                .setCostPerMem(0.05)
+                .setCostPerStorage(0.001)
+                .setCostPerBw(0.0);
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
@@ -192,7 +184,6 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
-            // createHorizontalVmScaling(vm);
             vmList.add(vm);
         }
         return vmList;
@@ -204,7 +195,6 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
      * @return the created Vm
      */
     private Vm createVm() {
-        DatacenterBroker broker0 = getFirstBroker();
         final int id = createsVms++;
         final int i = (int) (randVm.sample() * VM_PES.length);
         final int pes = VM_PES[i];
@@ -213,32 +203,6 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
                 .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
-    }
-
-    /**
-     * Creates a {@link HorizontalVmScaling} object for a given VM.
-     *
-     * @param vm the VM in which the Horizontal Scaling will be created
-     */
-    private void createHorizontalVmScaling(Vm vm) {
-        HorizontalVmScaling horizontalScaling = new HorizontalVmScalingSimple();
-        horizontalScaling
-                .setVmSupplier(this::createVm)
-                .setOverloadPredicate(this::isVmOverloaded);
-        vm.setHorizontalScaling(horizontalScaling);
-    }
-
-    /**
-     * A {@link Predicate} that checks if a given VM is overloaded or not based
-     * on CPU usage. A reference to this method is assigned to each Horizontal
-     * VM Scaling created.
-     *
-     * @param vm the VM to check if it is overloaded
-     * @return true if the VM is overloaded, false otherwise
-     * @see #createHorizontalVmScaling(Vm)
-     */
-    private boolean isVmOverloaded(Vm vm) {
-        return vm.getCpuPercentUsage() > getCustomerMaxCpuUtilization();
     }
 
     @Override
@@ -251,7 +215,7 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
     }
 
     private Host createHost() {
-        List<Pe> pesList = new ArrayList<>(HOST_PES);
+        final List<Pe> pesList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
             pesList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
@@ -259,7 +223,6 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
         ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
         VmScheduler vmScheduler = new VmSchedulerTimeShared();
-        final int id = hostList.size();
         return new HostSimple(20480, 100000, 100000, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
@@ -315,15 +278,15 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
         return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
     }
 
-    double getSumPesVms() {
+    private double getSumPesVms() {
         return vmList.stream()
-                .mapToDouble(vm -> vm.getNumberOfPes())
+                .mapToDouble(Machine::getNumberOfPes)
                 .sum();
     }
 
-    double getSumPesCloudlets() {
+    private double getSumPesCloudlets() {
         return cloudletList.stream()
-                .mapToDouble(c -> c.getNumberOfPes())
+                .mapToDouble(Cloudlet::getNumberOfPes)
                 .sum();
     }
 
@@ -367,17 +330,13 @@ public class CloudletTaskTimeCompletionWithoutMinimizationExperiment extends Sim
      * A main method just for test purposes.
      *
      * @param args
-     * @throws FileNotFoundException
-     * @throws IOException
      */
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        final long seed = System.currentTimeMillis();
-        CloudletTaskTimeCompletionWithoutMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWithoutMinimizationExperiment(1);
+    public static void main(String[] args) {
+        CloudletTaskCompletionTimeWithoutMinimizationExperiment exp
+                = new CloudletTaskCompletionTimeWithoutMinimizationExperiment(1);
         exp.setVerbose(true);
         exp.run();
         exp.getCloudletsTaskTimeCompletionAverage();
         exp.getPercentageOfCloudletsMeetingTaskTimeCompletion();
-        double totalCost = exp.getTotalCostPrice();
     }
 }

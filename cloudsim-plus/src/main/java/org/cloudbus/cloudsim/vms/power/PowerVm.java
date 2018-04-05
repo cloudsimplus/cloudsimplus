@@ -91,48 +91,6 @@ public class PowerVm extends VmSimple {
         this(-1, mipsCapacity, numberOfPes);
     }
 
-    /**
-     * Instantiates a new PowerVm.
-     *
-     * @param id unique ID of the VM
-     * @param broker ID of the VM's owner, that is represented by the id of the {@link DatacenterBroker}
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
-     * @param ramCapacity amount of ram in Megabytes
-     * @param bwCapacity amount of bandwidth to be allocated to the VM (in Megabits/s)
-     * @param size size the VM image in Megabytes (the amount of storage it will use, at least initially).
-     * @param priority the priority
-     * @param vmm Virtual Machine Monitor that manages the VM lifecycle
-     * @param cloudletScheduler scheduler that defines the execution policy for Cloudlets inside this Vm
-     * @param schedulingInterval not used anymore
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     */
-    @Deprecated
-    public PowerVm(
-            final int id,
-            final DatacenterBroker broker,
-            final long mipsCapacity,
-            final int numberOfPes,
-            final int ramCapacity,
-            final long bwCapacity,
-            final long size,
-            final int priority,
-            final String vmm,
-            final CloudletScheduler cloudletScheduler,
-            final double schedulingInterval)
-    {
-        this(id, mipsCapacity, numberOfPes);
-        setBroker(broker);
-        setRam(ramCapacity);
-        setBw(bwCapacity);
-        setSize(size);
-        setVmm(vmm);
-        setCloudletScheduler(cloudletScheduler);
-    }
-
     @Override
     public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
         final double time = super.updateProcessing(currentTime, mipsShare);
@@ -153,8 +111,8 @@ public class PowerVm extends VmSimple {
     public double getUtilizationMad() {
         if (!getUtilizationHistory().isEmpty()) {
             int n = Math.min(MAX_HISTORY_ENTRIES, getUtilizationHistory().size());
-            double median = MathUtil.median(getUtilizationHistory());
-            double[] deviationSum = new double[n];
+            final double median = MathUtil.median(getUtilizationHistory());
+            final double[] deviationSum = new double[n];
             for (int i = 0; i < n; i++) {
                 deviationSum[i] = Math.abs(median - getUtilizationHistory().get(i));
             }

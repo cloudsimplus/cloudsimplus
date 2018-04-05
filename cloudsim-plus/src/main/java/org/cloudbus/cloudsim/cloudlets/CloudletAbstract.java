@@ -677,12 +677,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public boolean requiresFiles() {
-        boolean result = false;
-        if (getRequiredFiles().size() > 0) {
-            result = true;
-        }
-
-        return result;
+        return !getRequiredFiles().isEmpty();
     }
 
     @Override
@@ -782,7 +777,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public final void setSubmissionDelay(double submissionDelay) {
+    public final void setSubmissionDelay(final double submissionDelay) {
         if (submissionDelay < 0) {
             return;
         }
@@ -796,7 +791,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public final Cloudlet setFileSize(long fileSize) {
+    public final Cloudlet setFileSize(final long fileSize) {
         if (fileSize <= 0) {
             throw new IllegalArgumentException("Cloudlet fize size has to be greater than zero.");
         }
@@ -806,7 +801,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public final Cloudlet setOutputSize(long outputSize) {
+    public final Cloudlet setOutputSize(final long outputSize) {
         if (outputSize <= 0) {
             throw new IllegalArgumentException("Cloudlet output size has to be greater than zero.");
         }
@@ -898,7 +893,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         if (this == o) return true;
         if (!(o instanceof CloudletAbstract)) return false;
 
-        CloudletAbstract that = (CloudletAbstract) o;
+        final CloudletAbstract that = (CloudletAbstract) o;
 
         if (id != that.id) return false;
         return broker.equals(that.broker);

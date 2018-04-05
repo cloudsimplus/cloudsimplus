@@ -56,35 +56,6 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
         stateHistory = new LinkedList<>();
     }
 
-    /**
-     * Creates a host with the given parameters.
-     *
-     * @param id the id
-     * @param ramProvisioner the ram provisioner
-     * @param bwProvisioner the bw provisioner
-     * @param storage the storage capacity
-     * @param peList the host's PEs list
-     * @param vmScheduler the VM scheduler
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     */
-    @Deprecated
-    public HostDynamicWorkloadSimple(
-            int id,
-            ResourceProvisioner ramProvisioner,
-            ResourceProvisioner bwProvisioner,
-            long storage,
-            List<Pe> peList,
-            VmScheduler vmScheduler)
-    {
-        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
-        setRamProvisioner(ramProvisioner);
-        setBwProvisioner(bwProvisioner);
-        setVmScheduler(vmScheduler);
-    }
-
     @Override
     public double updateProcessing(double currentTime) {
         setPreviousUtilizationMips(getUtilizationOfCpuMips());
@@ -93,10 +64,8 @@ public class HostDynamicWorkloadSimple extends HostSimple implements HostDynamic
 
         for (final Vm vm : getVmList()) {
             final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
-
             showVmResourceUsageOnHost(vm);
-            final double totalAllocatedMips = addVmResourceUseToHistoryIfNotMigratingIn(vm, currentTime);
-
+            addVmResourceUseToHistoryIfNotMigratingIn(vm, currentTime);
             hostTotalRequestedMips += totalRequestedMips;
         }
 

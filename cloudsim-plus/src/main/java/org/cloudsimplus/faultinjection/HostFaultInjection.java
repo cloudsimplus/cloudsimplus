@@ -338,12 +338,7 @@ public class HostFaultInjection extends CloudSimEntity {
         }
 
         final int i = (int) (random.sample() * datacenter.getHostList().size());
-        Host h = datacenter.getHost(i);
-        /*if(h.getNumberOfWorkingPes() == 0){
-            return Host.NULL;
-        }*/
-
-        return h;
+        return datacenter.getHost(i);
     }
 
     /**

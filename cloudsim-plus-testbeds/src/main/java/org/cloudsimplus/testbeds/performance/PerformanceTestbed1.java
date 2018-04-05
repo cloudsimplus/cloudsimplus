@@ -86,6 +86,7 @@ public final class PerformanceTestbed1 {
     private List<Host> hostList;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
+    private final Datacenter dc0;
 
     private PerformanceTestbed1() {
         hostList = new ArrayList<>(HOSTS);
@@ -96,7 +97,7 @@ public final class PerformanceTestbed1 {
         final double startTime = System.currentTimeMillis();
         simulation = new CloudSim();
 
-        createDatacenter();
+        dc0 = createDatacenter();
 
         //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
         broker0 = new DatacenterBrokerSimple(simulation);
@@ -108,9 +109,11 @@ public final class PerformanceTestbed1 {
 
         simulation.start();
 
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         Log.enable();
-        //new CloudletsTableBuilder(finishedCloudlets).build();
+        /*
+        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        new CloudletsTableBuilder(finishedCloudlets).build();
+        */
         System.out.printf("Execution time: %.2f seconds\n", (System.currentTimeMillis()-startTime)/1000);
     }
 
@@ -121,30 +124,27 @@ public final class PerformanceTestbed1 {
     /**
      * Creates a Datacenter and its Hosts.
      */
-    private void createDatacenter() {
+    private Datacenter createDatacenter() {
         for(int h = 0; h < HOSTS; h++) {
             Host host = createHost();
             hostList.add(host);
         }
 
-        Datacenter dc0 = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {
-        List<Pe> peList = new ArrayList<>(HOST_PES);
+        final List<Pe> peList = new ArrayList<>(HOST_PES);
         //List of Host's CPUs (Processing Elements, PEs)
         for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(HOST_PE_MIPS, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
-        Host host = new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
+        final Host host = new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
         host
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 

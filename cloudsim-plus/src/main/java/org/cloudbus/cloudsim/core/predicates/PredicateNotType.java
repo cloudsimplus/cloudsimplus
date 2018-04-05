@@ -36,7 +36,7 @@ public class PredicateNotType implements Predicate<SimEvent> {
      *
      * @param tag An event {@link SimEvent#getTag() tag} value
      */
-    public PredicateNotType(int tag) {
+    public PredicateNotType(final int tag) {
         this.tags = new ArrayList<>(1);
         this.tags.add(tag);
 
@@ -47,7 +47,7 @@ public class PredicateNotType implements Predicate<SimEvent> {
      *
      * @param tags the list of {@link SimEvent#getTag() tags}
      */
-    public PredicateNotType(int[] tags) {
+    public PredicateNotType(final int ...tags) {
         this.tags = Arrays.stream(tags).boxed().collect(Collectors.toList());
     }
 
@@ -59,7 +59,7 @@ public class PredicateNotType implements Predicate<SimEvent> {
      * @see #tags
      */
     @Override
-    public boolean test(SimEvent ev) {
+    public boolean test(final SimEvent ev) {
         return tags.stream().noneMatch(tag -> tag == ev.getTag());
     }
 

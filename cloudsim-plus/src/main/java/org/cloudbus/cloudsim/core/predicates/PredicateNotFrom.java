@@ -36,7 +36,7 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
      *
      * @param sourceId the id number of the source entity
      */
-    public PredicateNotFrom(int sourceId) {
+    public PredicateNotFrom(final int sourceId) {
         this.ids = new ArrayList<>(1);
         this.ids.add(sourceId);
     }
@@ -46,7 +46,7 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
      *
      * @param sourceIds the set of id numbers of the source entities
      */
-    public PredicateNotFrom(int[] sourceIds) {
+    public PredicateNotFrom(final int ...sourceIds) {
         this.ids = Arrays.stream(sourceIds).boxed().collect(Collectors.toList());
     }
 
@@ -58,7 +58,7 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
      * @see #ids
      */
     @Override
-    public boolean test(SimEvent ev) {
+    public boolean test(final SimEvent ev) {
         return ids.stream().noneMatch(id -> id == ev.getSource());
     }
 

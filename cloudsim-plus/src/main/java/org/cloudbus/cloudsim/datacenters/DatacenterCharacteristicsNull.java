@@ -1,10 +1,6 @@
 package org.cloudbus.cloudsim.datacenters;
 
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link Datacenter}

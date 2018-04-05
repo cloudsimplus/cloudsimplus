@@ -35,16 +35,11 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends ExperimentRunner<CloudletTaskTimeCompletionWorkLoadMinimizationExperiment> {
-
-    /**
-     * Different lengths that will be randomly assigned to created Cloudlets.
-     */
-   // static final long[] CLOUDLET_LENGTHS = {20000, 30000, 40000, 50000};
+public class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWorkLoadMinimizationExperiment> {
     static final int[] VM_PES = {2, 4, 6};
     static final int[] VM_MIPS = {10000, 15000, 28000};
-    static final int VMS = 30;
-    static final int CLOUDLETS = 300;
+    public static final int VMS = 30;
+    public static final int CLOUDLETS = 300;
 
     /**
      * The TaskTimeCompletion average for all the experiments.
@@ -52,9 +47,9 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
     private List<Double> cloudletsCompletionTime;
 
      /**
-     * The percentage of cloudlets meeting TaskTimeCompletion average for all the experiments.
+     * The percentage of cloudlets meeting task completion time average for all the experiments.
      */
-    private List<Double> percentageOfCloudletsMeetingTaskTimeCompletion;
+    private List<Double> percentOfCloudletsMeetingCompletionTime;
 
     /**
      * Amount of cloudlet PE per PE of vm.
@@ -64,7 +59,7 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
     /**
      * Indicates if each experiment will output execution logs or not.
      */
-    private final boolean experimentVerbose = false;
+    private static final boolean experimentVerbose = false;
 
     /**
      * Starts the execution of the experiments the number of times defines in
@@ -73,28 +68,24 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletTaskTimeCompletionWorkLoadMinimizationRunner(true, 1475098589732L)
+        new CloudletTaskCompletionTimeWorkLoadMinimizationRunner(true, 1475098589732L)
                 .setSimulationRuns(300)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
 
-    CloudletTaskTimeCompletionWorkLoadMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+    private CloudletTaskCompletionTimeWorkLoadMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
         cloudletsCompletionTime = new ArrayList<>();
-        percentageOfCloudletsMeetingTaskTimeCompletion = new ArrayList<>();
+        percentOfCloudletsMeetingCompletionTime = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
     }
 
     @Override
-    protected CloudletTaskTimeCompletionWorkLoadMinimizationExperiment createExperiment(int i) {
-        CloudletTaskTimeCompletionWorkLoadMinimizationExperiment exp
-                = new CloudletTaskTimeCompletionWorkLoadMinimizationExperiment(i, this);
-        ContinuousDistribution randCloudlet = createRandomGen(i);
-        ContinuousDistribution randVm = createRandomGen(i);
-        ContinuousDistribution randMips = createRandomGen(i);
-
+    protected CloudletTaskCompletionTimeWorkLoadMinimizationExperiment createExperiment(int i) {
+        final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment exp
+                = new CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(i, this);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
@@ -109,18 +100,18 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletTaskTimeCompletionWorkLoadMinimizationExperiment experiment) {
+    private void afterExperimentFinish(CloudletTaskCompletionTimeWorkLoadMinimizationExperiment experiment) {
         cloudletsCompletionTime.add(experiment.getAverageCloudletCompletionTime());
-        percentageOfCloudletsMeetingTaskTimeCompletion.add(
+        percentOfCloudletsMeetingCompletionTime.add(
                 experiment.getPercentageOfCloudletsMeetingCompletionTime());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
     }
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
-        Map<String, List<Double>> map = new HashMap<>();
+        final Map<String, List<Double>> map = new HashMap<>();
         map.put("Task Completion Time", cloudletsCompletionTime);
-        map.put("Percentage Of Cloudlets Meeting Task Completion Time", percentageOfCloudletsMeetingTaskTimeCompletion);
+        map.put("Percentage Of Cloudlets Meeting Task Completion Time", percentOfCloudletsMeetingCompletionTime);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
         return map;
     }
@@ -151,9 +142,9 @@ public class CloudletTaskTimeCompletionWorkLoadMinimizationRunner extends Experi
 
     private void showConfidenceInterval(SummaryStatistics stats) {
         // Calculate 95% confidence interval
-        double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
-        double lower = stats.getMean() - intervalSize;
-        double upper = stats.getMean() + intervalSize;
+        final double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
+        final double lower = stats.getMean() - intervalSize;
+        final double upper = stats.getMean() + intervalSize;
         System.out.printf(
                 "\tTaskTimeCompletion mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
                 stats.getMean(), intervalSize, lower, upper);

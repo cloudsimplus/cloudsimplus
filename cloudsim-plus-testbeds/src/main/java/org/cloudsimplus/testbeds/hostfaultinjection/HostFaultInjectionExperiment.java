@@ -168,7 +168,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * is equals to the number of SLA contracts in the {@link #SLA_CONTRACTS_LIST}.
      */
     private void readTheSlaContracts() throws IOException {
-        Iterator<DatacenterBroker> brokerIterator = getBrokerList().iterator();
+        final Iterator<DatacenterBroker> brokerIterator = getBrokerList().iterator();
         final List<AwsEc2Template> all = readAllAvailableAwsEc2Instances();
         for (final String file: readContractList()) {
             SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
@@ -219,9 +219,6 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
 
         selected = getCheaperVmTemplate(broker, all);
 
-        /*System.out.println(
-            "AWS EC2 Template selected for broker " + broker + ": " + selected + ". Number of VMs to create (fault tolerance level): " +
-            contract.getMinFaultToleranceLevel());*/
         return selected;
     }
 
@@ -295,7 +292,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     private List<AwsEc2Template> readAllAvailableAwsEc2Instances() throws IOException {
-        List<AwsEc2Template> instances = new ArrayList<>();
+        final List<AwsEc2Template> instances = new ArrayList<>();
         //Lists the files into the given directory
         try (BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instance-files.txt")) {
             while (br.ready()) {
@@ -310,7 +307,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     @Override
     protected List<Vm> createVms(DatacenterBroker broker) {
         numVms = getContract(broker).getMinFaultToleranceLevel();
-        List<Vm> list = new ArrayList<>(numVms);
+        final List<Vm> list = new ArrayList<>(numVms);
         final int id = getVmList().size();
         for (int i = 0; i < numVms; i++) {
             Vm vm = createVm(broker, id + i, templatesMap.get(broker));
@@ -321,7 +318,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     public Vm createVm(DatacenterBroker broker, int id, AwsEc2Template template) {
-        Vm vm = new VmSimple(id, VM_MIPS, template.getCpus());
+        final Vm vm = new VmSimple(id, VM_MIPS, template.getCpus());
         vm
             .setRam(template.getMemoryInMB()).setBw(VM_BW).setSize(VM_SIZE)
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
@@ -335,22 +332,21 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      *
      * @return the List of created Cloudlets
      */
-    public Cloudlet createCloudlet(int id) {
+    public Cloudlet createCloudlet(final int id) {
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
         final long length = CLOUDLET_LENGTHS[i];
 
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet c
+        final Cloudlet c
             = new CloudletSimple(id, length, CLOUDLET_PES)
             .setFileSize(CLOUDLET_FILESIZE)
             .setOutputSize(CLOUDLET_OUTPUTSIZE)
-            .setUtilizationModel(utilizationModel);
+            .setUtilizationModel(new UtilizationModelFull());
         return c;
     }
 
     @Override
     protected List<Cloudlet> createCloudlets() {
-        int cloudlets = numVms * 2;
+        final int cloudlets = numVms * 2;
         final List<Cloudlet> list = new ArrayList<>(cloudlets);
         final int id = getCloudletList().size();
         for (int i = 0; i < cloudlets; i++) {
@@ -383,26 +379,15 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return
      */
     public Host createHost() {
-        List<Pe> pesList = new ArrayList<>(HOST_PES);
+        final List<Pe> pesList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
             pesList.add(new PeSimple(8000, new PeProvisionerSimple()));
         }
 
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
         return new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, pesList)
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
-    }
-
-    public List<Pe> createPeList(int numberOfPEs, long mips) {
-        List<Pe> list = new ArrayList<>(numberOfPEs);
-        for (int i = 0; i < numberOfPEs; i++) {
-            list.add(new PeSimple(mips, new PeProvisionerSimple()));
-        }
-        return list;
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     /**
@@ -411,17 +396,13 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param datacenter
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
-        //System.out.printf("Experiment %d seed: %d\n", getIndex(), getSeed());
         PoissonDistr poisson = new PoissonDistr(MEAN_FAILURE_NUMBER_PER_HOUR, getSeed());
-        //System.out.println("\n\t seed: " + getSeed());
 
         faultInjection = new HostFaultInjection(datacenter, poisson);
         getFaultInjection().setMaxTimeToGenerateFailureInHours(MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS);
 
         for (DatacenterBroker broker : getBrokerList()) {
-            Vm lastVmFromBroker = broker.getWaitingVm(broker.getVmWaitingList().size() - 1);
             getFaultInjection().addVmCloner (broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets));
-
         }
 
         Log.printFormattedLine(
@@ -437,8 +418,8 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return the cloned (new) VM.
      * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter)
      */
-    private Vm cloneVm(Vm vm) {
-        Vm clone = new VmSimple((long) vm.getMips(), (int) vm.getNumberOfPes());
+    private Vm cloneVm(final Vm vm) {
+        final Vm clone = new VmSimple((long) vm.getMips(), (int) vm.getNumberOfPes());
         /*It' not required to set an ID for the clone.
         It is being set here just to make it easy to
         relate the ID of the vm to its clone,
@@ -485,8 +466,8 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param length
      * @return the cloned (new) cloudlet
      */
-    private Cloudlet cloneCloudlet(Cloudlet source, long length) {
-        Cloudlet clone
+    private Cloudlet cloneCloudlet(final Cloudlet source, final long length) {
+        final Cloudlet clone
             = new CloudletSimple(length, (int) source.getNumberOfPes());
         /*It' not required to set an ID for the clone.
         It is being set here just to make it easy to
@@ -524,9 +505,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     public double getRatioVmsPerHost() {
-        double vmsize = getVmList().size();
-        double hostsize = getHostList().size();
-        return vmsize / hostsize;
+        return (double) getVmList().size() / (double) getHostList().size();
     }
 
     /**
@@ -536,14 +515,11 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return
      */
     public double getPercentageOfAvailabilityMeetingSla() {
-        double total = 0;
-        double totalOfAvailabilitySatisfied = getBrokerList()
+        final double totalOfAvailabilitySatisfied = getBrokerList()
             .stream()
             .filter(b -> faultInjection.availability(b) * 100 >= getCustomerMinAvailability(b))
             .count();
-        total = totalOfAvailabilitySatisfied / getBrokerList().size();
-       // System.out.println("\t -> broker list: " + getBrokerList().size() + " total of availability satisfaied: " + totalOfAvailabilitySatisfied);
-        return total;
+        return totalOfAvailabilitySatisfied / getBrokerList().size();
     }
 
     /**
@@ -562,23 +538,12 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      */
     public double getTotalCost(DatacenterBroker broker) {
         final SlaContract contract = getContract(broker);
-        final SlaMetricDimension customerExpectedPricePerHour = contract.getPriceMetric().getMaxDimension();
 
         final AwsEc2Template template = templatesMap.get(broker);
         final double totalPriceForVmsInOneHour = getActualPriceForAllVms(contract, template);
         final double totalExecutionTimeForVmsInHours = getTotalExecutionTimeForVmsInHours(broker);
 
-        final double days = totalExecutionTimeForVmsInHours / 24.0;
-        final double totalPriceForAllVms = totalPriceForVmsInOneHour * totalExecutionTimeForVmsInHours;
-
-       /* System.out.println("\nCustomer: " + broker.getId());
-        System.out.println("Created Vms: " + broker.getVmCreatedList().size());
-        System.out.printf("VMs execution Hours: %.4f\n", totalExecutionTimeForVmsInHours);
-        System.out.printf("VMs execution Days: %.8f\n", days);
-        System.out.println("Customer's VMs Template: " + template);
-        System.out.println("Customer's expected mean VMs Price Per Hour: " + customerExpectedPricePerHour);*/
-
-        return totalPriceForAllVms;
+        return totalPriceForVmsInOneHour * totalExecutionTimeForVmsInHours;
     }
 
     /**
@@ -598,9 +563,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return
      */
     public double getCustomerActualPricePerHour(DatacenterBroker broker) {
-        final double customerActualPricePerHour = getTotalCost(broker)/getTotalExecutionTimeForVmsInHours(broker);
-       // System.out.println("Customer's actual mean VMs Price Per Hour: " + customerActualPricePerHour);
-        return customerActualPricePerHour;
+        return getTotalCost(broker)/getTotalExecutionTimeForVmsInHours(broker);
     }
 
     /**
@@ -609,27 +572,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return
      */
     private double getTotalExecutionTimeForVmsInHours(DatacenterBroker broker) {
-        return broker.getVmCreatedList().stream().mapToDouble(vm -> vm.getTotalExecutionTime()).sum()/3600.0;
-    }
-
-    /**
-     * Computes the percentage of customers for whom the availability stated
-     * in the SLA was met (in scale from 0 to 1, where 1 is 100%).
-     *
-     * @return
-     */
-    public double getPercentageOfBrokersMeetingCost() {
-        double total = 0;
-        double totalOfCostSatisfied = getBrokerList()
-            .stream()
-            .filter(b -> getCustomerActualPricePerHour(b) <= contractsMap.get(b).getPriceMetric().getMaxDimension().getValue())
-            .count();
-
-
-        total = totalOfCostSatisfied / getBrokerList().size();
-      //  System.out.println("Percentage of cost meeting sla: " + total );
-
-        return total;
+        return broker.getVmCreatedList().stream().mapToDouble(Vm::getTotalExecutionTime).sum()/3600.0;
     }
 
     /**
@@ -646,11 +589,11 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    public static void main(String[] args) throws FileNotFoundException, IOException {
-        HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(System.currentTimeMillis());
+    public static void main(String[] args) {
+        final HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(System.currentTimeMillis());
 
         exp.setVerbose(true).run();
-        exp.getBrokerList().stream().forEach(b -> System.out.printf("%s - Availability %%: %.4f\n", b, exp.getFaultInjection().availability(b) * 100));
+        exp.getBrokerList().forEach(b -> System.out.printf("%s - Availability %%: %.4f\n", b, exp.getFaultInjection().availability(b) * 100));
 
         System.out.println("Percentage of Brokers meeting the Availability Metric in SLA: " + exp.getPercentageOfAvailabilityMeetingSla() * 100);
         System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());

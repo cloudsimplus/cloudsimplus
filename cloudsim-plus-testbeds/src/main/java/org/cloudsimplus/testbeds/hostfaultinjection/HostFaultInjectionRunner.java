@@ -142,14 +142,12 @@ public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultIn
      */
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
         final HostFaultInjection faultInjection = exp.getFaultInjection();
-        final Map<DatacenterBroker, SlaContract> contract = exp.getContractsMap();
 
         availability.add(faultInjection.availability() * 100);
         ratioVmsPerHost.add(exp.getRatioVmsPerHost());
         percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla() * 100);
-       // percentageOfBrokersMeetingCost.add(exp.getPercentageOfBrokersMeetingCost());
 
-         //The availability for each broker for a single experiment.
+        //The availability for each broker for a single experiment.
         final Map<DatacenterBroker, Double> brokersAvailabilities = exp.getBrokerList()
             .stream()
             .sorted()
@@ -259,7 +257,7 @@ public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultIn
     }
 
     private void showConfidenceInterval(SummaryStatistics stats) {
-        // Calculate 95% confidence interval
+        // Computes 95% confidence interval
         double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
         double lower = stats.getMean() - intervalSize;
         double upper = stats.getMean() + intervalSize;

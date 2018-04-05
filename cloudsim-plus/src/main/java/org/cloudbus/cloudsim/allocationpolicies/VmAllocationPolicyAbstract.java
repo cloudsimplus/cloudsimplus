@@ -74,6 +74,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         return (List<T>) datacenter.getHostList();
     }
 
+    @Override
     public boolean allocateHostForVm(Vm vm) {
         Host host;
         switch (vm.getId()){
@@ -93,11 +94,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             break;
         }
 
-        if (allocateHostForVm(vm, host)) {
-            return true;
-        }
+        return allocateHostForVm(vm, host);
 
-        return false;
     }
 
     @Override
@@ -326,7 +324,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     private void showResourceIsUnavailable(VerticalVmScaling scaling) {
         final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClass();
         final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
-        final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
         final double extraAmountToAllocate = scaling.getResourceAmountToScale();
         Log.printFormattedLine(
             "%.2f: %s: Vm %d requested more %d of %s capacity but the Host %d has just %d of available %s",
