@@ -91,11 +91,10 @@ public class FileTest {
         assertEquals(attributeSize, instance.getAttributeSize());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testSetDatacenterToNull() {
         final File instance = createFile();
         instance.setDatacenter(null);
-        assertEquals(Datacenter.NULL, instance.getDatacenter());
     }
 
     @Test
