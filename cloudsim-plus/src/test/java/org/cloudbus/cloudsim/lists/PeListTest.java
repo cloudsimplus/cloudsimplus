@@ -107,8 +107,8 @@ public class PeListTest {
 
     @Test
     public void testGetMaxUtilization() {
-        Vm vm0 = VmSimpleTest.createVm(0, MIPS / 2, 1);
-        Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2, 1);
+        final Vm vm0 = VmSimpleTest.createVm(0, MIPS / 2, 1);
+        final Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2, 1);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateResourceForVm(vm0, ONE_THIRD_MIPS));
         assertTrue(peList.get(1).getPeProvisioner().allocateResourceForVm(vm1, ONE_FIFTH_MIPS));
@@ -118,8 +118,8 @@ public class PeListTest {
 
     @Test
     public void testGetMaxUtilizationAmongVmsPes() {
-        Vm vm0 = VmSimpleTest.createVm(0, MIPS / 2.0, 1);
-        Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2.0, 1);
+        final Vm vm0 = VmSimpleTest.createVm(0, MIPS / 2.0, 1);
+        final Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2.0, 1);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateResourceForVm(vm0, ONE_THIRD_MIPS));
         assertTrue(peList.get(1).getPeProvisioner().allocateResourceForVm(vm1, ONE_FIFTH_MIPS));

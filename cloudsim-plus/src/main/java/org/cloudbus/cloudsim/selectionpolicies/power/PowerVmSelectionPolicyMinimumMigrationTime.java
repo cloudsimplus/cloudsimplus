@@ -40,7 +40,7 @@ public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelection
 
 		Vm vmToMigrate = Vm.NULL;
 		double minMetric = Double.MAX_VALUE;
-		for (Vm vm : migratableVms) {
+		for (final Vm vm : migratableVms) {
 			if (vm.isInMigration()) {
 				continue;
 			}

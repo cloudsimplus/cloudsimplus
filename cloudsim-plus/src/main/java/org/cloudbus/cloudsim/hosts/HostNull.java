@@ -156,7 +156,7 @@ final class HostNull implements Host {
     @Override public String toString() {
         return "Host.NULL";
     }
-    @Override public void setId(int id) {}
+    @Override public void setId(int id) {/**/}
     @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public long getNumberOfFailedPes() { return 0; }
     @Override public List<Pe> getWorkingPeList() { return Collections.EMPTY_LIST; }

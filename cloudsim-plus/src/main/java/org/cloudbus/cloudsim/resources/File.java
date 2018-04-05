@@ -467,13 +467,9 @@ public class File {
      * @return
      */
     public final File setDatacenter(Datacenter datacenter) {
-        if (Objects.isNull(datacenter)) {
-            datacenter = Datacenter.NULL;
-        }
-
+        Objects.requireNonNull(datacenter);
         this.datacenter = datacenter;
         return this;
     }
-
 
 }

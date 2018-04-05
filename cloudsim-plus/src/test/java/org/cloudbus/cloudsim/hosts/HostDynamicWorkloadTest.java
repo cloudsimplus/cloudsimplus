@@ -29,7 +29,6 @@ import static org.junit.Assert.assertTrue;
  * @since	CloudSim Toolkit 2.0
  */
 public class HostDynamicWorkloadTest {
-    private static final int ID = 0;
     private static final long STORAGE = Conversion.MILLION;
     private static final long RAM = 1024;
     private static final long BW = 10000;
@@ -95,8 +94,8 @@ public class HostDynamicWorkloadTest {
 
     @Test
     public void testGetMaxUtilizationAmongVmsPes() {
-        Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
-        Vm vm1 = VmSimpleTest.createVmWithOnePeAndHalfMips(1);
+        final Vm vm0 = VmSimpleTest.createVmWithOnePeAndHalfMips(0);
+        final Vm vm1 = VmSimpleTest.createVmWithOnePeAndHalfMips(1);
 
         assertTrue(peList.get(0).getPeProvisioner().allocateResourceForVm(vm0, ONE_THIRD_MIPS));
         assertTrue(peList.get(1).getPeProvisioner().allocateResourceForVm(vm1, ONE_FIFTH_MIPS));

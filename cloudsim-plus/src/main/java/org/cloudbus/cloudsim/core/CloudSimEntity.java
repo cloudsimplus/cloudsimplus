@@ -448,10 +448,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public final SimEntity setSimulation(Simulation simulation) {
-        if(Objects.isNull(simulation)){
-            simulation = Simulation.NULL;
-        }
-
+        Objects.requireNonNull(simulation);
         this.simulation = simulation;
         return this;
     }

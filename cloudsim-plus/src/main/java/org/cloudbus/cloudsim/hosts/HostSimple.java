@@ -144,9 +144,9 @@ public class HostSimple implements Host {
         this.setFailed(false);
         this.setDatacenter(Datacenter.NULL);
         this.onUpdateProcessingListeners = new HashSet<>();
-        this.resources = new ArrayList();
-        this.vmCreatedList = new ArrayList();
-        this.provisioners = new ArrayList();
+        this.resources = new ArrayList<>();
+        this.vmCreatedList = new ArrayList<>();
+        this.provisioners = new ArrayList<>();
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
     }
@@ -524,7 +524,7 @@ public class HostSimple implements Host {
         this.peList = Objects.isNull(peList) ? new ArrayList<>() : peList;
 
         int peId = this.peList.stream().filter(pe -> pe.getId() > 0).mapToInt(Pe::getId).max().orElse(-1);
-        List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
+        final List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
         for(Pe pe: pesWithoutIds){
             pe.setId(++peId);
         }

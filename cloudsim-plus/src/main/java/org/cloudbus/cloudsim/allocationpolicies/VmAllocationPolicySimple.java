@@ -114,7 +114,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
                 .stream()
                 .filter(h -> !ignoredHosts.contains(h))
                 .sorted(Comparator.comparingInt(Host::getId))
-                .max(Comparator.comparingLong(h -> map.get(h)))
+                .max(Comparator.comparingLong(map::get))
                 .orElseGet(() -> Host.NULL);
     }
 

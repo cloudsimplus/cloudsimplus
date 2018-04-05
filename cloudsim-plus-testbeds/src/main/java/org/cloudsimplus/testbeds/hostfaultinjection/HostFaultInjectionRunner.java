@@ -30,7 +30,6 @@ import java.util.*;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
-import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import static java.util.stream.Collectors.toMap;
@@ -93,12 +92,7 @@ public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultIn
      */
     private Map<String, List<Double>> costTotal;
 
-    /**
-     * Gets the actual price of all customers VMs per hour
-     */
-    private Map<String, List<Double>> customerActualPricePerHour;
-
-    private Map<String, List<Double>> getTemplate;
+    private final Map<String, List<Double>> template;
 
     private HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
@@ -107,8 +101,7 @@ public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultIn
         percentageOfBrokersMeetingAvailability = new ArrayList<>();
         ratioVmsPerHost = new ArrayList<>();
         costTotal = new HashMap<>();
-        customerActualPricePerHour =  new HashMap<>();
-        getTemplate = new HashMap<>();
+        template = new HashMap<>();
     }
 
     /**
@@ -205,18 +198,7 @@ public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultIn
      * @param priceCustomerPerHour the customer's price of the broker for the experiment
      */
     private boolean addExperimentPriceCustomerPerHour(final DatacenterBroker broker, final double priceCustomerPerHour) {
-        return getTemplate.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(priceCustomerPerHour);
-    }
-
-    /**
-     * Gets the template price of each customers for an experiment
-     * and adds such a value to the List of costs of that broker
-     * inside the map of all brokers.
-     * @param broker the broker to add the availability of an experiment to its list of availabilities
-     * @param priceTemplate the price of the template of the broker for the experiment
-     */
-    private boolean addExperimentPriceTemplate(final DatacenterBroker broker, final double priceTemplate) {
-        return customerActualPricePerHour.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(priceTemplate);
+        return template.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(priceCustomerPerHour);
     }
 
     @Override protected void setup() {/**/}

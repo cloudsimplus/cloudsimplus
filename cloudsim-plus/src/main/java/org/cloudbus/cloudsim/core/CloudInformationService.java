@@ -162,14 +162,6 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Notifies the registered entities about the end of simulation. This method
-     * should be overridden by child classes.
-     */
-    protected void processEndSimulation() {
-        // this should be overridden by the child class
-    }
-
-    /**
      * Tells all registered entities about the end of simulation.
      *
      * @pre $none

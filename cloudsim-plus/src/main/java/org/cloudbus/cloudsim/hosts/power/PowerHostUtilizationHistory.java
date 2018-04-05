@@ -50,38 +50,6 @@ public class PowerHostUtilizationHistory extends PowerHostSimple {
     }
 
 	/**
-	 * Creates a PowerHostUtilizationHistory with the given parameters.
-	 *
-	 * @param id the host id
-     * @param ramProvisioner the ram provisioner with capacity in MEGABYTE
-     * @param bwProvisioner the bw provisioner with capacity in Megabits/s
-     * @param storage the storage capacity in MEGABYTE
-	 * @param peList the host's PEs list
-	 * @param vmScheduler the vm scheduler
-	 * @param powerModel the power consumption model
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-	 */
-	@Deprecated
-    public PowerHostUtilizationHistory(
-			int id,
-			ResourceProvisioner ramProvisioner,
-			ResourceProvisioner bwProvisioner,
-			long storage,
-			List<Pe> peList,
-			VmScheduler vmScheduler,
-			PowerModel powerModel)
-    {
-		this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
-        setRamProvisioner(ramProvisioner);
-        setBwProvisioner(bwProvisioner);
-        setVmScheduler(vmScheduler);
-        setPowerModel(powerModel);
-    }
-
-	/**
 	 * Gets the host CPU utilization percentage history (between [0 and 1], where 1 is 100%).
      * Each value into the returned array is the CPU utilization percentage for
      * a time interval equal to the {@link Datacenter#getSchedulingInterval()}.

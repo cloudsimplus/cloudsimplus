@@ -185,6 +185,10 @@ public class PoissonDistr implements ContinuousDistribution {
 
     /**
      * Tests the simulations of customers arrivals in a Poisson process.
+     * All the code inside this method is just to try the class.
+     * That is way it declares internal methods as Functional
+     * objects, instead of declaring such methods
+     * at the class level and just calling them.
      *
      * @param args
      */
@@ -211,9 +215,10 @@ public class PoissonDistr implements ContinuousDistribution {
          */
         final int NUMBER_OF_SIMULATIONS = 100;
 
-        BiConsumer<PoissonDistr, Integer> printArrivals = (poisson, minute) -> {
-            if(showCustomerArrivals)
+        final BiConsumer<PoissonDistr, Integer> printArrivals = (poisson, minute) -> {
+            if(showCustomerArrivals) {
                 System.out.printf("%d customers arrived at minute %d\n", poisson.getK(), minute);
+            }
         };
 
         /*
@@ -223,7 +228,7 @@ public class PoissonDistr implements ContinuousDistribution {
          * @param poisson the PoissonDistr object that will compute the customer arrivals probabilities
          * @return the number of arrived customers
          */
-        Function<PoissonDistr, Integer> runSimulation = poisson -> {
+        final Function<PoissonDistr, Integer> runSimulation = poisson -> {
             /*We want to check the probability of 1 customer to arrive at each
             single minute. The default k value is 1, so we dont need to set it.*/
             final int totalArrivedCustomers =
@@ -253,12 +258,10 @@ public class PoissonDistr implements ContinuousDistribution {
         final double mean = customersArrivedInAllSimulations/NUMBER_OF_SIMULATIONS;
         System.out.printf("\nArrived customers average after %d simulations: %.2f\n",
                 NUMBER_OF_SIMULATIONS, mean);
-        if(poisson != null){
-            System.out.printf(
-                "%.2f customers expected by each %d minutes of simulation with interarrival time of %.2f minutes\n",
-                 poisson.getLambda()*SIMULATION_TIME_LENGHT, SIMULATION_TIME_LENGHT,
-                 poisson.getInterarrivalMeanTime());
-        }
+        System.out.printf(
+            "%.2f customers expected by each %d minutes of simulation with interarrival time of %.2f minutes\n",
+             poisson.getLambda()*SIMULATION_TIME_LENGHT, SIMULATION_TIME_LENGHT,
+             poisson.getInterarrivalMeanTime());
     }
 
 }

@@ -87,6 +87,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private void setHostList(final List<? extends Host> hostList) {
+        Objects.requireNonNull(hostList);
         this.hostList = hostList;
         setupHosts();
     }
