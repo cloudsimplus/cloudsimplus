@@ -73,31 +73,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     public final <T extends Host> List<T> getHostList() {
         return (List<T>) datacenter.getHostList();
     }
-
-    @Override
-    public boolean allocateHostForVm(Vm vm) {
-        Host host;
-        switch (vm.getId()){
-            case 0:
-            case 1:
-            case 2:
-                host = getHostList().get(0);
-            break;
-            case 3:
-            case 4:
-            case 5:
-                host = getHostList().get(1);
-                break;
-            default:
-                //default the rules for other VMs here
-                host = getHostList().get(0);
-            break;
-        }
-
-        return allocateHostForVm(vm, host);
-
-    }
-
+    
     @Override
     public Datacenter getDatacenter() {
         return datacenter;

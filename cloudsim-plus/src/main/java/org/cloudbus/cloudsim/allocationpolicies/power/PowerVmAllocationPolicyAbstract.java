@@ -42,6 +42,8 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 
     @Override
     public boolean allocateHostForVm(Vm vm, Host host) {
+        /*@todo This method has duplicated code from the same method in VmAllocationPolicySimple.*/
+
         final Simulation simulation = vm.getSimulation();
         if (host == PowerHost.NULL) {
             Log.printFormattedLine("%.2f: No suitable host found for VM #" + vm.getId() + "\n", simulation.clock());
