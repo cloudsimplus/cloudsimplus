@@ -21,17 +21,15 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples;
+package org.cloudsimplus.examples.simulationstatus;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -47,6 +45,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
+import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
@@ -54,28 +53,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An example showing how to terminate the simulation when a condition is met, before its natural end.
+ * An example showing how to pause the simulation at a given time in order to collect
+ * some partial results. In this example, such results are the cloudlets that have finished so far.
  * The example creates 4 Cloudlets that will run sequentially using a {@link CloudletSchedulerSpaceShared}.
- * However, when the last Cloudlet reaches 50% of its execution,
- * the simulation will be interrupted. By this way, just 3 Cloudlets will finish.
+ * The pause is scheduled after the simulation starts.
  *
  * <p>This example uses CloudSim Plus Listener features to intercept when
- * the second Cloudlet reaches 50% of its execution to then request
- * the simulation termination. This example uses the Java 8 Lambda Functions features
- * to pass a listener to the mentioned Cloudlet, by means of the
- * {@link Cloudlet#addOnUpdateProcessingListener(EventListener)} method.
+ * the simulation was paused, allowing to collect the desired data.
+ * This example uses the Java 8 Lambda Functions features
+ * to pass a listener to a {@link CloudSim} instance, by means of the
+ * {@link CloudSim#addOnSimulationPausedListener(EventListener)} method.
  * However, the same feature can be used for Java 7 passing an anonymous class
- * that implements {@code EventListener<CloudletVmEventInfo>}.</p>
+ * that implements {@code EventListener<EventInfo>}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see CloudSim#terminate()
- * @see Cloudlet#addOnUpdateProcessingListener(EventListener)
+ * @see CloudSim#pause(double)
+ * @see CloudSim#addOnSimulationPausedListener(EventListener)
  * @see EventListener
  */
-public class TerminateSimulationAtGivenConditionExample {
+public class PauseSimulationAtGivenTimeExample2 {
+    /**
+     * The interval in which the Datacenter will schedule events.
+     * As lower is this interval, sooner the processing of Cloudlets inside VMs
+     * is updated and you will get more notifications about the simulation execution.
+     * However, as higher is this value, it can affect the simulation performance.
+     *
+     * <p>For this example, a large schedule interval such as 15 will make that just
+     * at every 15 seconds the processing of Cloudlets is updated.
+     * Consider that each Cloudlet takes 10 seconds to finish and that
+     * the simulation is paused at time 22. With a scheduling interval of 15 seconds,
+     * at the time 22, the Cloudlets execution will be updated just 1 time, that means
+     * if we get the list of finished cloudlets at time 22, it will not be updated yet with
+     * the second Cloudlet that finished at time 20.</p>
+     *
+     * <p><b>Realise that changing this value, the method {@link #pauseSimulationAtSpecificTime(SimEvent)}
+     * may not be called at the expected time, doesn't making the simulation to pause.
+     * If you want to change this value, the number used inside the method mentioned above
+     * has to be a multiple of this value.</b></p>
+     *
+     * <p>Considering this characteristics, the scheduling interval
+     * was set to a lower value to get updates as soon as possible.
+     * For more details, see {@link Datacenter#getSchedulingInterval()}.</p>
+     */
+    public static final int SCHEDULING_INTERVAL = 1;
+
     private final CloudSim simulation;
+    private final DatacenterBrokerSimple broker;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private int numberOfCreatedCloudlets = 0;
@@ -87,13 +112,13 @@ public class TerminateSimulationAtGivenConditionExample {
      * @param args
      */
     public static void main(String[] args) {
-        new TerminateSimulationAtGivenConditionExample();
+        new PauseSimulationAtGivenTimeExample2();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public TerminateSimulationAtGivenConditionExample() {
+    public PauseSimulationAtGivenTimeExample2() {
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
@@ -105,30 +130,66 @@ public class TerminateSimulationAtGivenConditionExample {
         Creates a Broker accountable for submission of VMs and Cloudlets
         on behalf of a given cloud user (customer).
         */
-        DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
+        this.broker = new DatacenterBrokerSimple(simulation);
 
-        Vm vm0 = createVm(broker0);
+        Vm vm0 = createVm();
         this.vmList.add(vm0);
-        broker0.submitVmList(vmList);
+        this.broker.submitVmList(vmList);
 
         for(int i = 0; i < 4; i++) {
-            Cloudlet cloudlet = createCloudlet(broker0, vm0);
+            Cloudlet cloudlet = createCloudlet(vm0);
             this.cloudletList.add(cloudlet);
         }
 
-        Cloudlet lastCloudlet = this.cloudletList.get(this.cloudletList.size()-1);
-        lastCloudlet.addOnUpdateProcessingListener(event -> onClouletProcessingUpdate(event));
+        this.broker.submitCloudletList(cloudletList);
 
-        broker0.submitCloudletList(cloudletList);
+        /**
+         * Sets a Listener that will be notified when any {@link SimEvent} is processed during the simulation
+         * execution.
+         * Realise that it is being used Java 8 Lambda Expressions to define a Listener
+         * that will be executed only when a simulation event happens.
+         * See the {@link #pauseSimulationAtSpecificTime(SimEvent)} method for more details.
+         */
+        this.simulation.addOnEventProcessingListener(simEvent -> pauseSimulationAtSpecificTime(simEvent));
+
+        /*
+        * Sets a Listener that will be notified when the simulation is paused.
+        * Realise that it is being used Java 8 Lambda Expressions to define a Listener
+        * that will be executed only when the simulation is paused.
+        * */
+        this.simulation
+            .addOnSimulationPausedListener(pauseInfo -> printCloudletsFinishedSoFarAndResumeSimulation(pauseInfo));
 
         /* Starts the simulation and waits all cloudlets to be executed. */
-        simulation.start();
+        this.simulation.start();
 
         /*Prints results when the simulation is over
         (you can use your own code here to print what you want from this cloudlet list)*/
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        new CloudletsTableBuilder(finishedCloudlets).build();
+        printsListOfFinishedCloudlets("Finished cloudlets after simulation is complete");
+
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
+    }
+
+    /**
+     * Pauses the simulation when any event occurs at the a defined time.
+     */
+    private void pauseSimulationAtSpecificTime(SimEvent simEvent) {
+        if(Math.floor(simEvent.getTime()) == 22){
+            simulation.pause();
+        }
+    }
+
+    private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo pauseInfo) {
+        Log.printFormattedLine("\n#Simulation paused at %.2f second", pauseInfo.getTime());
+        printsListOfFinishedCloudlets("Cloudlets Finished So Far");
+        this.simulation.resume();
+    }
+
+    private void printsListOfFinishedCloudlets(String title) {
+        //Gets the list of cloudlets finished so far a prints
+        new CloudletsTableBuilder(broker.getCloudletFinishedList())
+            .setTitle(title)
+            .build();
     }
 
     /**
@@ -149,14 +210,16 @@ public class TerminateSimulationAtGivenConditionExample {
         Host host0 = createHost();
         hostList.add(host0);
 
-        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        DatacenterSimple dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
+        return dc;
     }
 
     private Host createHost() {
-        final long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        final long  ram = 2048; // in Megabytes
-        final long storage = 1000000; // in Megabytes
-        final long bw = 10000; //in Megabits/s
+        long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        long  ram = 2048; // host memory (MEGABYTE)
+        long storage = 1000000; // host storage (MEGABYTE)
+        long bw = 10000; //in Megabits/s
 
         List<Pe> peList = new ArrayList<>(); //List of CPU cores
 
@@ -167,10 +230,10 @@ public class TerminateSimulationAtGivenConditionExample {
         return new HostSimple(ram, bw, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(new VmSchedulerTimeShared());
+                .setVmScheduler(new VmSchedulerTimeShared());
     }
 
-    private Vm createVm(DatacenterBroker broker) {
+    private Vm createVm() {
         long mips = 1000;
         long   storage = 10000; // vm image size (MEGABYTE)
         int    ram = 512; // vm memory (MEGABYTE)
@@ -184,7 +247,7 @@ public class TerminateSimulationAtGivenConditionExample {
                 .setCloudletScheduler(new CloudletSchedulerSpaceShared());
     }
 
-    private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
+    private Cloudlet createCloudlet(Vm vm) {
         long length = 10000; //in Million Structions (MI)
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution

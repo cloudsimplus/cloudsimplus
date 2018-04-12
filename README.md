@@ -34,7 +34,7 @@
 
 # Overview
 
-CloudSim Plus is a full-featured, highly extensible simulation framework that enables modeling, simulation, and experimentation of emerging Cloud computing infrastructures and application services. It allows users to focus on specific system design issues to be investigated, without the concern of the low level details related to Cloud-based infrastructures and services.
+CloudSim Plus is a full-featured, highly extensible simulation framework enabling modeling, simulation, and experimentation of Cloud computing infrastructures and application services. It allows users to focus on specific system design issues to be investigated, without the concern of the low level details related to Cloud-based infrastructures and services.
  
 Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, and scalable computational services. For assurance of such characteristics in cloud systems under development, it is required timely, repeatable, and controllable methodologies for evaluation of new cloud applications and policies, before actual development of cloud products. Because utilization of real testbeds limits the experiments to the scale of the testbed and makes the reproduction of results cumbersome, computer-base simulation may constitute an interesting tool. This project is suitable to quickly develop such simulation scenarios and run them quickly, in a typical PC. 
 
@@ -52,7 +52,7 @@ The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is develop
 
 # Exclusive Features
 
-CloudSim Plus provides a lot of exclusive features, ranging from the most basic ones that enable building simple simulations, to advanced features for simulating more realistic cloud scenarios: 
+CloudSim Plus provides a lot of exclusive features, from the most basic ones to build simple simulations, to advanced features for simulating more realistic cloud scenarios: 
 
 1. It is easier to use. A complete and easy-to-understand simulation scenario can be built in few lines of code. Check the [Examples Section](#a-minimal-and-complete-simulation-example); 
 1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/VerticalVmCpuScalingExample.java) that performs on-demand up and down allocation of VM resources such as Ram, Bandwidth and PEs (CPUs) ([#7](https://github.com/manoelcampos/cloudsim-plus/issues/7));
@@ -119,7 +119,7 @@ The project has a [bash script](script/bootstrap.sh) you can use to build and ru
 This is a script for Unix-like systems such as Linux, FreeBDS and Mac OSX.
 
 To run some example type the command: `sh script/bootstrap.sh package.ExampleClassName`.
-For instance, to run the CloudSimExample0 you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample0`. 
+For instance, to run the `CloudSimExample0` you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample0`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
 To see which examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).

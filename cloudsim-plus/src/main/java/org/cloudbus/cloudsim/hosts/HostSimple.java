@@ -154,20 +154,13 @@ public class HostSimple implements Host {
     /**
      * Creates a Host with the given parameters.
      *
-     * @param id the host id
      * @param ramProvisioner the ram provisioner with capacity in Megabytes
      * @param bwProvisioner the bw provisioner with capacity in Megabits/s
      * @param storage the storage capacity in Megabytes
      * @param peList the host's PEs list
      * @param vmScheduler the vm scheduler
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
      */
-    @Deprecated
     public HostSimple(
-        int id,
         ResourceProvisioner ramProvisioner,
         ResourceProvisioner bwProvisioner,
         long storage,
@@ -190,28 +183,30 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public double updateProcessing(double currentTime) {
-        final double nextSimulationTime =
-            vmList.stream()
-                .mapToDouble(vm -> vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm)))
-                .min()
-                .orElse(Double.MAX_VALUE);
+    public double updateProcessing(final double currentTime) {
+        double nextSimulationTime = Double.MAX_VALUE;
+        for (final Vm vm : vmList) {
+            final double v = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
+            if (v < nextSimulationTime) {
+                nextSimulationTime = v;
+            }
+        }
 
         notifyOnUpdateProcessingListeners(nextSimulationTime);
         return nextSimulationTime;
     }
 
-    private void notifyOnUpdateProcessingListeners(double nextSimulationTime) {
+    private void notifyOnUpdateProcessingListeners(final double nextSimulationTime) {
         onUpdateProcessingListeners.forEach(l -> l.update(HostUpdatesVmsProcessingEventInfo.of(l,this, nextSimulationTime)));
     }
 
     @Override
-    public boolean removeVmMigratingIn(Vm vm){
+    public boolean removeVmMigratingIn(final Vm vm){
         return vmsMigratingIn.remove(vm);
     }
 
     @Override
-    public boolean createVm(Vm vm) {
+    public boolean createVm(final Vm vm) {
         final boolean result = createVmInternal(vm);
         if(result) {
             vmCreatedList.add(vm);
@@ -226,11 +221,11 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean createTemporaryVm(Vm vm) {
+    public boolean createTemporaryVm(final Vm vm) {
         return createVmInternal(vm);
     }
 
-    private boolean createVmInternal(Vm vm) {
+    private boolean createVmInternal(final Vm vm) {
         if(!allocateResourcesForVm(vm, false)){
             return false;
         }
@@ -246,7 +241,7 @@ public class HostSimple implements Host {
      * @param inMigration If the VM is migrating into the Host or it is being just created for the first time
      * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
      */
-    private boolean allocateResourcesForVm(Vm vm, boolean inMigration){
+    private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
         final String msg = inMigration ? "VM Migration" : "VM Creation";
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
             Log.printFormattedLine(
@@ -293,7 +288,7 @@ public class HostSimple implements Host {
 
     @Override
     public void reallocateMigratingInVms() {
-        for (Vm vm : getVmsMigratingIn()) {
+        for (final Vm vm : getVmsMigratingIn()) {
             if (!vmList.contains(vm)) {
                 vmList.add(vm);
             }
@@ -305,7 +300,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean isSuitableForVm(Vm vm) {
+    public boolean isSuitableForVm(final Vm vm) {
         return  active &&
                 vmScheduler.getPeCapacity() >= vm.getCurrentRequestedMaxMips() &&
                 vmScheduler.getAvailableMips() >= vm.getCurrentRequestedTotalMips() &&
@@ -319,24 +314,24 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final Host setActive(boolean active) {
+    public final Host setActive(final boolean active) {
         this.active = active;
         return this;
     }
 
     @Override
-    public void destroyVm(Vm vm) {
+    public void destroyVm(final Vm vm) {
         destroyVmInternal(vm);
         vm.notifyOnHostDeallocationListeners(this);
         vm.setStopTime(getSimulation().clock());
     }
 
     @Override
-    public void destroyTemporaryVm(Vm vm) {
+    public void destroyTemporaryVm(final Vm vm) {
         destroyVmInternal(vm);
     }
 
-    private void destroyVmInternal(Vm vm) {
+    private void destroyVmInternal(final Vm vm) {
         if (!Objects.isNull(vm)) {
             deallocateResourcesOfVm(vm);
             vmList.remove(vm);
@@ -348,7 +343,7 @@ public class HostSimple implements Host {
      *
      * @param vm the VM
      */
-    protected void deallocateResourcesOfVm(Vm vm) {
+    protected void deallocateResourcesOfVm(final Vm vm) {
         vm.setCreated(false);
         ramProvisioner.deallocateResourceForVm(vm);
         bwProvisioner.deallocateResourceForVm(vm);
@@ -377,7 +372,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public Vm getVm(int vmId, int brokerId) {
+    public Vm getVm(final int vmId, final int brokerId) {
         return vmList.stream()
             .filter(vm -> vm.getId() == vmId && vm.getBroker().getId() == brokerId)
             .findFirst().orElse(Vm.NULL);
@@ -401,22 +396,22 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
+    public boolean allocatePesForVm(final Vm vm, final List<Double> mipsShare) {
         return vmScheduler.allocatePesForVm(vm, mipsShare);
     }
 
     @Override
-    public void deallocatePesForVm(Vm vm) {
+    public void deallocatePesForVm(final Vm vm) {
         vmScheduler.deallocatePesFromVm(vm);
     }
 
     @Override
-    public List<Double> getAllocatedMipsForVm(Vm vm) {
+    public List<Double> getAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getAllocatedMips(vm);
     }
 
     @Override
-    public double getTotalAllocatedMipsForVm(Vm vm) {
+    public double getTotalAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getTotalAllocatedMipsForVm(vm);
     }
 
@@ -466,14 +461,14 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
+    public final Host setRamProvisioner(final ResourceProvisioner ramProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
         this.ramProvisioner = ramProvisioner;
         this.ramProvisioner.setResource(ram);
         return this;
     }
 
-    private void checkSimulationIsRunningAndAttemptedToChangeHost(String resourceName) {
+    private void checkSimulationIsRunningAndAttemptedToChangeHost(final String resourceName) {
         if(simulation.isRunning()){
             throw new UnsupportedOperationException("It is not allowed to change a Host's "+resourceName+" after the simulation started.");
         }
@@ -485,7 +480,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final Host setBwProvisioner(ResourceProvisioner bwProvisioner) {
+    public final Host setBwProvisioner(final ResourceProvisioner bwProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("BW");
         this.bwProvisioner = bwProvisioner;
         this.bwProvisioner.setResource(bw);
@@ -498,10 +493,8 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final Host setVmScheduler(VmScheduler vmScheduler) {
-        if(Objects.isNull(vmScheduler)){
-            vmScheduler = VmScheduler.NULL;
-        }
+    public final Host setVmScheduler(final VmScheduler vmScheduler) {
+        Objects.requireNonNull(vmScheduler);
 
         vmScheduler.setHost(this);
         this.vmScheduler = vmScheduler;
@@ -519,7 +512,7 @@ public class HostSimple implements Host {
      * @param peList the new pe list
      * @return
      */
-    protected final Host setPeList(List<Pe> peList) {
+    protected final Host setPeList(final List<Pe> peList) {
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
         this.peList = Objects.isNull(peList) ? new ArrayList<>() : peList;
 
@@ -547,7 +540,7 @@ public class HostSimple implements Host {
         vmList.add(vm);
     }
 
-    protected void removeVmFromList(Vm vm){
+    protected void removeVmFromList(final Vm vm){
         Objects.requireNonNull(vm);
         vmList.remove(vm);
     }
@@ -558,14 +551,14 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final boolean setFailed(boolean failed) {
+    public final boolean setFailed(final boolean failed) {
         this.failed = failed;
         PeList.setStatusFailed(peList, getId(), failed);
         return true;
     }
 
     @Override
-    public boolean setPeStatus(int peId, Pe.Status status) {
+    public boolean setPeStatus(final int peId, final Pe.Status status) {
         return PeList.setPeStatus(peList, peId, status);
     }
 
@@ -575,7 +568,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean addMigratingInVm(Vm vm) {
+    public boolean addMigratingInVm(final Vm vm) {
         if (vmsMigratingIn.contains(vm)) {
             return false;
         }
@@ -593,7 +586,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void removeMigratingInVm(Vm vm) {
+    public void removeMigratingInVm(final Vm vm) {
         deallocateResourcesOfVm(vm);
         vmsMigratingIn.remove(vm);
         vmList.remove(vm);
@@ -606,12 +599,12 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean addVmMigratingOut(Vm vm) {
+    public boolean addVmMigratingOut(final Vm vm) {
         return this.vmsMigratingOut.add(vm);
     }
 
     @Override
-    public boolean removeVmMigratingOut(Vm vm) {
+    public boolean removeVmMigratingOut(final Vm vm) {
         return this.vmsMigratingOut.remove(vm);
     }
 
@@ -621,7 +614,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final void setDatacenter(Datacenter datacenter) {
+    public final void setDatacenter(final Datacenter datacenter) {
         checkSimulationIsRunningAndAttemptedToChangeHost("Datacenter");
         this.datacenter = datacenter;
     }
@@ -635,12 +628,12 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+    public boolean removeOnUpdateProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
         return onUpdateProcessingListeners.remove(listener);
     }
 
     @Override
-    public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+    public Host addOnUpdateProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
         Objects.requireNonNull(listener);
         this.onUpdateProcessingListeners.add(listener);
         return this;
@@ -663,7 +656,7 @@ public class HostSimple implements Host {
                 .count();
     }
 
-    private Host setStorage(long size) {
+    private Host setStorage(final long size) {
         this.storage = new Storage(size);
         return this;
     }
@@ -674,7 +667,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final Host setSimulation(Simulation simulation) {
+    public final Host setSimulation(final Simulation simulation) {
         this.simulation = simulation;
         return this;
     }
@@ -686,12 +679,12 @@ public class HostSimple implements Host {
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(Host o) {
+    public int compareTo(final Host o) {
         return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity());
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -717,7 +710,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass) {
+    public ResourceProvisioner getProvisioner(final Class<? extends ResourceManageable> resourceClass) {
         if(simulation.isRunning() && provisioners.isEmpty()){
             provisioners = Arrays.asList(ramProvisioner, bwProvisioner);
         }
@@ -740,7 +733,7 @@ public class HostSimple implements Host {
         return computeCpuUtilizationPercent(getUtilizationOfCpuMips());
     }
 
-    protected double computeCpuUtilizationPercent(double mipsUsage){
+    protected double computeCpuUtilizationPercent(final double mipsUsage){
         final double totalMips = getTotalMipsCapacity();
         if(totalMips == 0){
             return 0;

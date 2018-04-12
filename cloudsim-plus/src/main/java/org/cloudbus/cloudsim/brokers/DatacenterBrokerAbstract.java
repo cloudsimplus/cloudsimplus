@@ -220,7 +220,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param list {@inheritDoc}
      */
     @Override
-    public void submitVmList(List<? extends Vm> list) {
+    public void submitVmList(final List<? extends Vm> list) {
         sortVmsIfComparatorIsSet(list);
         setBrokerForEntities(list);
         lastSubmittedVm = setIdForEntitiesWithoutOne(list, lastSubmittedVm);

@@ -29,7 +29,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 /**
- * A Cloudlet {@link UtilizationModel} that allows to increases the utilization of the related resource along
+ * A Cloudlet {@link UtilizationModel} that allows to increase the utilization of the related resource along
  * the simulation time. It accepts a Lambda Expression that defines how the utilization increment must behave.
  * By this way, the class enables the developer to define such a behaviour when instantiating objects
  * of this class.
@@ -228,13 +228,15 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * Sets the function that defines how the resource utilization will be incremented or decremented along the time.
+     * Sets the function defining how the resource utilization will be incremented or decremented along the time.
      *
-     * <p>Such a function must require one {@link UtilizationModelDynamic} parameter and returns the new resource utilization.
+     * <p>Such a function must require one {@link UtilizationModelDynamic} parameter and return the new resource utilization.
      * When this function is called internally by this {@code UtilizationModel},
      * it receives a read-only {@link UtilizationModelDynamic} instance and allow the developer using this {@code UtilizationModel} to
-     * define how the utilization must be updated. For instance, to define an arithmetic increment, a Lambda function
-     * to be given to this setter could be defined as below:
+     * define how the utilization must be updated.
+     *
+     * <p>For instance, to define an arithmetic increment, a Lambda function
+     * to be given to this setter could be defined as below:</p>
      * </p>
      *
      * <p>{@code um -> um.getUtilization() + um.getTimeSpan()*0.1}</p>

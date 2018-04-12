@@ -28,3 +28,5 @@ nbproject/
 
 #Documentation
 docs/presentation/node_modules/
+
+*.jar

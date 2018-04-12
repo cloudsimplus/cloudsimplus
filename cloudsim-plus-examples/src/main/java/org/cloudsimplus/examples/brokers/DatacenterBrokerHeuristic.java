@@ -45,7 +45,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -62,18 +61,18 @@ import org.cloudsimplus.heuristics.HeuristicSolution;
  * DatacenterBroker. The number of {@link Pe}s of Vm's and Cloudlets are defined
  * randomly.
  *
- * <p>The {@link DatacenterBrokerHeuristic} is used
+ * <p>The {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic} is used
  * with the {@link CloudletToVmMappingSimulatedAnnealing} class
  * in order to find an acceptable solution with a high
  * {@link HeuristicSolution#getFitness() fitness value}.</p>
  *
  * <p>Different {@link CloudletToVmMappingHeuristic} implementations can be used
- * with the {@link DatacenterBrokerHeuristic} class.</p>
+ * with the {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic} class.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class DatacenterBrokerHeuristicExample {
+public class DatacenterBrokerHeuristic {
     private final CloudSim simulation;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
@@ -109,13 +108,13 @@ public class DatacenterBrokerHeuristicExample {
      * @param args
      */
     public static void main(String[] args) {
-        new DatacenterBrokerHeuristicExample();
+        new DatacenterBrokerHeuristic();
     }
 
     /**
      * Default constructor where the simulation is built.
      */
-    public DatacenterBrokerHeuristicExample() {
+    public DatacenterBrokerHeuristic() {
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
@@ -124,7 +123,7 @@ public class DatacenterBrokerHeuristicExample {
 
         Datacenter datacenter0 = createDatacenter();
 
-        DatacenterBrokerHeuristic broker0 = createBroker();
+        org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0 = createBroker();
 
         createAndSubmitVms(broker0);
         createAndSubmitCloudlets(broker0);
@@ -137,21 +136,21 @@ public class DatacenterBrokerHeuristicExample {
         print(broker0);
     }
 
-	private DatacenterBrokerHeuristic createBroker() {
+	private org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic createBroker() {
 		createSimulatedAnnealingHeuristic();
-		DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic(simulation);
+		org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0 = new org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic(simulation);
 		broker0.setHeuristic(heuristic);
 		return broker0;
 	}
 
-	private void createAndSubmitCloudlets(DatacenterBrokerHeuristic broker0) {
+	private void createAndSubmitCloudlets(org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0) {
 		for(int i = 0; i < CLOUDLETS_TO_CREATE; i++){
 		    cloudletList.add(createCloudlet(broker0, getRandomNumberOfPes(4)));
 		}
 		broker0.submitCloudletList(cloudletList);
 	}
 
-	private void createAndSubmitVms(DatacenterBrokerHeuristic broker0) {
+	private void createAndSubmitVms(org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0) {
 		vmList = new ArrayList<>(VMS_TO_CREATE);
 		for(int i = 0; i < VMS_TO_CREATE; i++){
 		    vmList.add(createVm(broker0, getRandomNumberOfPes(4)));
@@ -167,7 +166,7 @@ public class DatacenterBrokerHeuristicExample {
 		heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
 	}
 
-	private void print(DatacenterBrokerHeuristic broker0) {
+	private void print(org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0) {
 		double roudRobinMappingCost = computeRoudRobinMappingCost();
 		printSolution(
 		        "Heuristic solution for mapping cloudlets to Vm's         ",

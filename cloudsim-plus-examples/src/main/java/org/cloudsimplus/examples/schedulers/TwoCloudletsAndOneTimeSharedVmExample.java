@@ -21,20 +21,18 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples;
+package org.cloudsimplus.examples.schedulers;
 
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.util.Log;
@@ -51,19 +49,19 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 
 /**
- * A simple example showing how to create a data center with 1 host, 1 VM and
- * run 2 cloudlets on it that will run sequentially: first one cloudlet executes
- * until complete, after the other one do the same. Once there is only one
- * cloudlet running on the VM by time, each one uses all VM's CPU capacity while
- * executing. By this way, one cloudlet finishes prior to the other, but the
- * execution time (the time using the processor) is the same. Using the cloudlet
- * space shared scheduler, the cloudlet is not interrupted when it starts to run
- * (because the non-preemptive nature of the scheduler).
+ * A simple example showing how to create a data center with 1 host, 1 vm and
+ * run 2 cloudlets on it that will compete for the VM's CPU.
+ * The VM's CPU is shared among the cloudlets using a time shared scheduler,
+ * that performs a preemptive scheduling. By this way, all the 2 cloudlets
+ * will have a quantum to use the VM's CPU. As they have the same length,
+ * they start and finish together. Thus, the execution time is the double
+ * compared to running each cloudlet in its own VM or using a space shared
+ * scheduler.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class TwoCloudletsAndOneSpaceSharedVmExample {
+public class TwoCloudletsAndOneTimeSharedVmExample {
     private List<Cloudlet> cloudletList;
     private List<Vm> vmlist;
     private CloudSim simulation;
@@ -74,15 +72,14 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
      * @param args the args
      */
     public static void main(String[] args) {
-        new TwoCloudletsAndOneSpaceSharedVmExample();
+        new TwoCloudletsAndOneTimeSharedVmExample();
     }
 
-    public TwoCloudletsAndOneSpaceSharedVmExample(){
+    public TwoCloudletsAndOneTimeSharedVmExample(){
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
 
         // First step: Initialize the CloudSim package. It should be called before creating any entities.
         int num_user = 1; // number of cloud users
-
         simulation = new CloudSim();
 
         // Second step: Create Datacenters
@@ -106,7 +103,8 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
 
         Vm vm = new VmSimple(vmid, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerSpaceShared());
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+
         vmlist.add(vm);
 
         // submit vm list to the broker
@@ -147,6 +145,7 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
         new CloudletsTableBuilder(newList).build();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());
     }
+
     /**
      * Creates the Datacenter.
      *
@@ -165,7 +164,7 @@ public class TwoCloudletsAndOneSpaceSharedVmExample {
         long mips = 1000;
 
         // 3. Create PEs and add these into a list.
-        peList.add(new PeSimple(mips, new PeProvisionerSimple())); // need to store Pe id and MIPS Rating
+        peList.add(new PeSimple(mips, new PeProvisionerSimple()));
 
         // 4. Create HostSimple with its id and list of PEs and add them to the list of machines
         final long ram = 20000; //in Megabytes

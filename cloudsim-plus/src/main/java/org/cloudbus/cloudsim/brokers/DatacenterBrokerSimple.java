@@ -34,7 +34,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * @param simulation name to be associated with this entity
      * @post $none
      */
-    public DatacenterBrokerSimple(CloudSim simulation) {
+    public DatacenterBrokerSimple(final CloudSim simulation) {
         super(simulation);
         setDatacenterSupplier(this::selectDatacenterForWaitingVms);
         setFallbackDatacenterSupplier(this::selectFallbackDatacenterForWaitingVms);
@@ -49,7 +49,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * of waiting VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
      */
     protected Datacenter selectDatacenterForWaitingVms() {
-        return (getDatacenterList().isEmpty() ? Datacenter.NULL : getDatacenterList().get(0));
+        return getDatacenterList().isEmpty() ? Datacenter.NULL : getDatacenterList().get(0);
     }
 
     /**
@@ -78,7 +78,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
      * no suitable VM was found
      */
-    protected Vm selectVmForWaitingCloudlet(Cloudlet cloudlet) {
+    protected Vm selectVmForWaitingCloudlet(final Cloudlet cloudlet) {
         if (cloudlet.isBindToVm() && getVmExecList().contains(cloudlet.getVm())) {
             return cloudlet.getVm();
         }

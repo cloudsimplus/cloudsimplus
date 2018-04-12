@@ -119,9 +119,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             case CloudSimTags.ICMP_PKT_SUBMIT:
                 processPingRequest(ev);
                 return 1;
-            default:
-                Log.printLine(getSimulation().clock() + ": " + getClass().getSimpleName() + ".processNetworkEvents(): Invalid event tag " + ev.getTag());
-                break;
         }
 
         return 0;

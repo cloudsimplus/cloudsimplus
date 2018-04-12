@@ -35,10 +35,9 @@ import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -55,6 +54,9 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+
+import static java.util.Comparator.comparingLong;
 
 /**
  * An example showing how to dynamically create cloudlets from a workload trace
@@ -88,6 +90,15 @@ public class SwfWorkloadFormatExample1 {
      * The workload file to be read.
      */
     private static final String WORKLOAD_FILENAME = "NASA-iPSC-1993-3.1-cln.swf.gz";
+
+    /**
+     * A {@link Comparator} that sorts VMs submitted to a broker
+     * by the VM's required PEs number in decreasing order.
+     * This way, VMs requiring more PEs are created first.
+     *
+     * @see DatacenterBroker#setVmComparator(Comparator)
+     */
+    private static final Comparator<Vm> VM_COMPARATOR = comparingLong(Vm::getNumberOfPes).reversed();
     private final CloudSim simulation;
 
     /**
@@ -132,7 +143,8 @@ public class SwfWorkloadFormatExample1 {
 
         simulation = new CloudSim();
         try {
-            broker = new DatacenterBrokerVmsWithMorePesFirst(simulation);
+            broker = new DatacenterBrokerSimple(simulation);
+            broker.setVmComparator(VM_COMPARATOR);
 
             /*Vms and cloudlets are created before the Datacenter and host
             because the example is defining the hosts based on VM requirements
@@ -148,7 +160,7 @@ public class SwfWorkloadFormatExample1 {
             simulation.start();
 
             List<Cloudlet> newList = broker.getCloudletFinishedList();
-            printCloudletList(newList);
+            new CloudletsTableBuilder(newList).build();
 
             Log.printConcatLine(SwfWorkloadFormatExample1.class.getSimpleName(), " finished!");
         } catch (IOException e) {
@@ -172,7 +184,7 @@ public class SwfWorkloadFormatExample1 {
 
     private void createCloudletsFromWorkloadFile() throws IOException {
         String path = this.getClass().getClassLoader().getResource("workload/swf").getPath();
-        if(Objects.isNull(path)){
+        if(path == null){
             path = "";
         }
 
@@ -314,39 +326,5 @@ public class SwfWorkloadFormatExample1 {
                 "#Total of VMs: ", totalOfVms,
                 " Total of required PEs of all VMs: ", totalOfPes, "\n");
         return vmsPesCountMap;
-    }
-
-    /**
-     * Prints the Cloudlet objects.
-     *
-     * @param list list of Cloudlets
-     */
-    private void printCloudletList(List<Cloudlet> list) {
-        int size = list.size();
-        Cloudlet cloudlet;
-
-        String indent = "    ";
-        Log.printLine();
-        Log.printLine("========== OUTPUT ==========");
-        Log.printLine("       #" + indent + "Cloudlet" + indent + "STATUS " + indent
-                + "Datacenter" + indent + "      VM" + indent + "Exec. Time" + indent
-                + "Start Time" + indent + "Finish Time");
-
-        for (int i = 0; i < size; i++) {
-            cloudlet = list.get(i);
-            String line =
-                String.format(
-                    "%8d    %8d    %7s    %10d    %8d    %10.0f    %10.0f    %11.0f",
-                    (i+1),
-                    cloudlet.getId(),
-                    cloudlet.getStatus().name(),
-                    cloudlet.getLastDatacenter(),
-                    cloudlet.getVm().getId(),
-                    cloudlet.getActualCpuTime(),
-                    cloudlet.getExecStartTime(),
-                    cloudlet.getFinishTime()
-                );
-            Log.printLine(line);
-        }
     }
 }

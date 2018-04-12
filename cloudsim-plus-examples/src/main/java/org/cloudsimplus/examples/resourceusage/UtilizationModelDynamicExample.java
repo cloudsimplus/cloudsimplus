@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples;
+package org.cloudsimplus.examples.resourceusage;
 
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
@@ -34,8 +34,6 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.util.Log;
@@ -53,7 +51,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 
 /**
- * An example that uses a UtilizationModel to define how a Cloudlet
+ * An example that uses a {@link UtilizationModelDynamic} to define how a Cloudlet
  * uses the VM CPU in order to use just 50% of CPU capacity (MIPS)
  * all the time. That makes the Cloudlet spend the double of the expected
  * time to finish.
@@ -61,7 +59,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
  * @author raysaoliveira
  * @since CloudSim Plus 1.0
  */
-public class CustomUtilizationModelExample {
+public class UtilizationModelDynamicExample {
     private static final int HOSTS = 1;
     private static final int VMS = 1;
     private static final int CLOUDLETS_PER_VM = 1;
@@ -70,20 +68,18 @@ public class CustomUtilizationModelExample {
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    private int numberOfCreatedHosts = 0;
-
     /**
      * Starts the example.
      * @param args
      */
     public static void main(String[] args) {
-        new CustomUtilizationModelExample();
+        new UtilizationModelDynamicExample();
     }
 
     /**
      * Default constructor that builds the simulation.
      */
-    public CustomUtilizationModelExample() {
+    public UtilizationModelDynamicExample() {
         Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
         this.simulation = new CloudSim();
 

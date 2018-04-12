@@ -30,8 +30,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -43,38 +41,57 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.listeners.EventInfo;
+import java.util.function.Function;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An example that runs 2 Cloudlets into a VM where its number
- * of PEs is just half of the total PEs required by all Cloudlets.
- * The Vm uses a {@link CloudletSchedulerTimeShared}.
- * Since there are enough PEs for all Cloudlets, this scheduler
- * shares existing PEs among all Cloudlets, so that there aren't
- * waiting Cloudlets.
- * They start at the same time and also considering they have the same length,
- * they finish together too.
- * However, each Cloudlet will take the double of the time
- * it would take if there were enough PEs for all of them.
+ * Shows how to destroy an overloaded VM during simulation runtime,
+ * after its CPU usage reaches a defined percentage.
+ *
+ * <p>The example uses the {@link UtilizationModelDynamic} to
+ * increase VM CPU usage over time (in seconds).
+ * This {@link UtilizationModelDynamic} uses a {@link Function}
+ * to increase resource usage. Such a Function is defined using a Lambda Expression.</p>
+ *
+ * <p>It shows Host CPU utilization every second, so that when the overloaded VM
+ * is destroyed, we can check the Host CPU utilization reduces.</p>
+ *
+ * <p><b>Lambda Expressions and Functional Interfaces are Java 8 features.</b>
+ * If you don't know what these features are, I suggest checking out this
+ * <a href="http://www.oracle.com/webfolder/technetwork/tutorials/obe/java/Lambda-QuickStart/index.html">tutorial</a></p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.2.1
+ * @since CloudSim Plus 1.3.0
  */
-public class CloudletSchedulerTimeSharedExample1 {
+public class VmDestructionExample {
+    /**
+     * Defines, between other things, the time intervals
+     * to update the processing of simulation events.
+     * This way, simulation clock increases according to this time.
+     * Since a {@link UtilizationModelDynamic} is being used to define CPU usage of VMs,
+     * the utilization is updated at this time interval.
+     *
+     * @see Datacenter#setSchedulingInterval(double)
+     */
+    private static final int SCHEDULING_INTERVAL = 1;
+
     private static final int HOSTS = 1;
-    private static final int HOST_PES = 4;
+    private static final int HOST_PES = 8;
 
-    private static final int VMS = 1;
-    private static final int VM_PES = 2;
+    private static final int VMS = 2;
+    private static final int VM_PES = 4;
 
-    private static final int CLOUDLETS = 2;
+    private static final int CLOUDLETS = 4;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 10000;
 
@@ -85,10 +102,10 @@ public class CloudletSchedulerTimeSharedExample1 {
     private Datacenter datacenter0;
 
     public static void main(String[] args) {
-        new CloudletSchedulerTimeSharedExample1();
+        new VmDestructionExample();
     }
 
-    public CloudletSchedulerTimeSharedExample1() {
+    public VmDestructionExample() {
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
 
@@ -97,6 +114,9 @@ public class CloudletSchedulerTimeSharedExample1 {
 
         vmList = createVms();
         cloudletList = createCloudlets();
+
+        simulation.addOnClockTickListener(this::clockTickListener);
+
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
@@ -107,16 +127,35 @@ public class CloudletSchedulerTimeSharedExample1 {
     }
 
     /**
+     * Tracks simulation clock and checks if VM 1 is overloaded to destroy it.
+     * @param info event information
+     */
+    private void clockTickListener(EventInfo info) {
+        final Vm vm = vmList.get(1);
+        //Destroys VM 1 when its CPU usage reaches 90%
+        if(vm.getCpuPercentUsage() > 0.9 && vm.isCreated()){
+            Log.printLine("\n# " + info.getTime() +
+                ": Intentionally destroying " + vm +
+                " due to CPU overload. Current VM CPU usage is " +
+                vm.getCpuPercentUsage());
+            vm.getHost().destroyVm(vm);
+        }
+
+        datacenter0.getHostList().forEach(h -> Log.printLine("# " + info.getTime() + ": " + h + " CPU Utilization " + h.getUtilizationOfCpu()));
+    }
+
+    /**
      * Creates a Datacenter and its Hosts.
      */
     private Datacenter createDatacenter() {
         final List<Host> hostList = new ArrayList<>(HOSTS);
-        for(int h = 0; h < HOSTS; h++) {
+        for(int i = 0; i < HOSTS; i++) {
             Host host = createHost();
             hostList.add(host);
         }
 
         final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
 
@@ -146,9 +185,9 @@ public class CloudletSchedulerTimeSharedExample1 {
      */
     private List<Vm> createVms() {
         final List<Vm> list = new ArrayList<>(VMS);
-        for (int v = 0; v < VMS; v++) {
+        for (int i = 0; i < VMS; i++) {
             Vm vm =
-                new VmSimple(v, 1000, VM_PES)
+                new VmSimple(i, 1000, VM_PES)
                     .setRam(512).setBw(1000).setSize(10000)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
@@ -164,12 +203,25 @@ public class CloudletSchedulerTimeSharedExample1 {
     private List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
         UtilizationModel utilization = new UtilizationModelFull();
-        for (int c = 0; c < CLOUDLETS; c++) {
+
+        /*Creates a utilization model that enables increasing resource usage over time.
+        * It is used to define the CPU usage of VMs dynamically.*/
+        UtilizationModelDynamic dynamicUtilization = new UtilizationModelDynamic();
+
+        /**
+         * Sets a {@link Function} that enables the utilization model to increment resource usage by 10% over time.
+         * This function is defined using a Lambda Expression.
+         */
+        dynamicUtilization.setUtilizationUpdateFunction(um -> um.getUtilization() + um.getTimeSpan()*0.1);
+
+        for (int i = 0; i < CLOUDLETS; i++) {
             Cloudlet cloudlet =
-                new CloudletSimple(c, CLOUDLET_LENGTH, CLOUDLET_PES)
+                new CloudletSimple(i, CLOUDLET_LENGTH, CLOUDLET_PES)
                     .setFileSize(1024)
                     .setOutputSize(1024)
-                    .setUtilizationModel(utilization);
+                    .setUtilizationModelRam(utilization)
+                    .setUtilizationModelBw(utilization)
+                    .setUtilizationModelCpu(dynamicUtilization);
             list.add(cloudlet);
         }
 

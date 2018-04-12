@@ -54,8 +54,7 @@ import java.util.function.Function;
 
 /**
  * An example showing how to change the policy
- * used by a {@link DatacenterBroker} to map
- * Cloudlets to VMs.
+ * used by a {@link DatacenterBroker} to map Cloudlets to VMs.
  *
  * <p>The example uses the CloudSim Plus
  * Functional DatacenterBroker that enables
