@@ -1,3 +1,28 @@
+<!--
+
+    CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
+    Modeling and Simulation of Cloud Computing Infrastructures and Services.
+    http://cloudsimplus.org
+
+        Copyright (C) ${license.git.copyrightYears} Universidade da Beira Interior (UBI, Portugal) and
+        the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
+
+        This file is part of CloudSim Plus.
+
+        CloudSim Plus is free software: you can redistribute it and/or modify
+        it under the terms of the GNU General Public License as published by
+        the Free Software Foundation, either version 3 of the License, or
+        (at your option) any later version.
+
+        CloudSim Plus is distributed in the hope that it will be useful,
+        but WITHOUT ANY WARRANTY; without even the implied warranty of
+        MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        GNU General Public License for more details.
+
+        You should have received a copy of the GNU General Public License
+        along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -76,8 +101,9 @@
           -->
         <uberjar.name>${project.build.finalName}-uber</uberjar.name>
 
-        <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
-        <license.dir>..</license.dir>
+        <license-maven-plugin.version>3.0</license-maven-plugin.version>
+        <!-- License file to be used by the com.mycila.license-maven-plugin -->
+        <copyrightfile>../COPYRIGHT</copyrightfile>
     </properties>
 
     <build>
@@ -135,16 +161,20 @@
 
             <!-- Inherited from the parent pom. See the plugin there for more details. -->
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.10.b1</version>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license-maven-plugin.version}</version>
                 <configuration>
-                    <header>${license.dir}/COPYRIGHT</header>
+                    <header>${copyrightfile}</header>
+                    <mapping>
+                        <java>SLASHSTAR_STYLE</java>
+                    </mapping>
                     <strictCheck>true</strictCheck>
                     <failIfMissing>false</failIfMissing>
                     <excludes>
                         <exclude>**/src/main/resources/**</exclude>
                         <exclude>**/*.md</exclude>
+                        <exclude>**/package-info.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>

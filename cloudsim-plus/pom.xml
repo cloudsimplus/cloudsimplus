@@ -25,8 +25,9 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <!-- Directory where is the license file to be used by the com.mycila.maven-license-plugin -->
-        <license.dir>..</license.dir>
+        <license-maven-plugin.version>3.0</license-maven-plugin.version>
+        <!-- License file to be used by the com.mycila.license-maven-plugin -->
+        <copyrightfile>../COPYRIGHT</copyrightfile>
     </properties>
 
     <developers>
@@ -341,19 +342,11 @@
             mvn license:format
             -->
             <plugin>
-                <groupId>com.mycila.maven-license-plugin</groupId>
-                <artifactId>maven-license-plugin</artifactId>
-                <version>1.10.b1</version>
-                <inherited>true</inherited>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>${license-maven-plugin.version}</version>
                 <configuration>
-                    <header>${license.dir}/COPYRIGHT</header>
-                    <aggregate>true</aggregate>
-                    <properties>
-                        <project>${project.name}</project>
-                        <founder>${project.organization.name}</founder>
-                        <year>${project.inceptionYear}</year>
-                        <website>${project.url}</website>
-                    </properties>
+                    <header>${copyrightfile}</header>
 
                     <mapping>
                         <java>SLASHSTAR_STYLE</java>
@@ -386,6 +379,7 @@
                         <include>**/src/main/java/**/CloudletSchedulerCompletelyFair.java</include>
                         <include>**/src/main/java/**/UtilizationModelArithmeticProgression.java</include>
                         <include>**/src/main/java/**/Resourceful.java</include>
+                        <include>**/src/main/java/**/PoissonDistr.java</include>
                     </includes>
 
                     <excludes>
@@ -401,13 +395,14 @@
                         <exclude>**/*.iml</exclude>
                         <exclude>**/*.xml</exclude>
                         <exclude>**/src/main/resources/**</exclude>
+                        <exclude>**/package-info.java</exclude>
                     </excludes>
                 </configuration>
                 <executions>
                     <execution>
                         <goals>
                             <!--
-                            Checks for missing license header in source files.
+                            Automatically checks for missing license header in source files.
                             You can use "format" to add missing headers or
                             call manually using: mvn license:format
                             -->
@@ -419,8 +414,8 @@
                 <dependencies>
                     <dependency>
                         <groupId>com.mycila</groupId>
-                        <artifactId>licenses</artifactId>
-                        <version>1</version>
+                        <artifactId>license-maven-plugin-git</artifactId>
+                        <version>${license-maven-plugin.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

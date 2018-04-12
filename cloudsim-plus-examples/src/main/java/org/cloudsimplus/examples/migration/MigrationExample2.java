@@ -3,7 +3,7 @@
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2018  Universidade da Beira Interior (UBI, Portugal) and
+ *     Copyright (C) 2015-2018 Universidade da Beira Interior (UBI, Portugal) and
  *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
@@ -21,7 +21,6 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-
 /*
  * CloudSim Plus: A modern, highly-extensible and easier-to-use Framework for
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
