@@ -3,7 +3,7 @@
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2016  Universidade da Beira Interior (UBI, Portugal) and
+ *     Copyright (C) 2015-2018  Universidade da Beira Interior (UBI, Portugal) and
  *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
@@ -21,7 +21,6 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-
 package org.cloudsimplus.testbeds.sla.tasktimecompletion;
 
 import java.io.FileNotFoundException;
