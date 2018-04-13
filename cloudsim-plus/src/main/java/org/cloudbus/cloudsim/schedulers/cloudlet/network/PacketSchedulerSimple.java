@@ -67,7 +67,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
     }
 
     @Override
-    public void processCloudletPackets(Cloudlet cloudlet, double currentTime) {
+    public void processCloudletPackets(final Cloudlet cloudlet, final double currentTime) {
         if (cloudlet.isFinished() || isNotNetworkCloudlet(cloudlet)) {
             return;
         }
@@ -95,8 +95,8 @@ public class PacketSchedulerSimple implements PacketScheduler {
     }
 
     @Override
-    public boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet) {
-        if(Objects.isNull(cloudlet) || cloudlet.isFinished()){
+    public boolean isTimeToUpdateCloudletProcessing(final Cloudlet cloudlet) {
+        if(cloudlet == null || cloudlet.isFinished()){
             return false;
         }
 
@@ -108,7 +108,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
         return nc.isTasksStarted() && nc.getCurrentTask() instanceof CloudletExecutionTask;
     }
 
-    private boolean isNotNetworkCloudlet(Cloudlet cloudlet) {
+    private boolean isNotNetworkCloudlet(final Cloudlet cloudlet) {
         return !(cloudlet instanceof NetworkCloudlet);
     }
 
@@ -119,7 +119,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
      *
      * @param sourceCloudlet cloudlet to get the list of packets to send
      */
-    private void addPacketsToBeSentFromVm(NetworkCloudlet sourceCloudlet) {
+    private void addPacketsToBeSentFromVm(final NetworkCloudlet sourceCloudlet) {
         final CloudletSendTask dataTask = (CloudletSendTask)sourceCloudlet.getCurrentTask();
         Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
                 "%d pkts added to be sent from cloudlet %d in VM %d",
@@ -136,7 +136,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
      *
      * @param sourceCloudlet cloudlet to check if there are packets to be received from.
      */
-    private void receivePackets(NetworkCloudlet sourceCloudlet) {
+    private void receivePackets(final NetworkCloudlet sourceCloudlet) {
         final CloudletReceiveTask task = (CloudletReceiveTask)sourceCloudlet.getCurrentTask();
         final List<VmPacket> receivedPkts = getPacketsSentToGivenTask(task);
         // Asumption: packet will not arrive in the same cycle
@@ -170,7 +170,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param destinationTask The task that is waiting for packets
      * @return
      */
-    private List<VmPacket> getPacketsSentToGivenTask(CloudletReceiveTask destinationTask) {
+    private List<VmPacket> getPacketsSentToGivenTask(final CloudletReceiveTask destinationTask) {
         final List<VmPacket> pktsFromExpectedSenderVm =
                 getListOfPacketsSentFromVm(destinationTask.getSourceVm());
 
@@ -180,7 +180,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
                 .collect(Collectors.toList());
     }
 
-    private void updateExecutionTask(NetworkCloudlet cloudlet) {
+    private void updateExecutionTask(final NetworkCloudlet cloudlet) {
         /**
          * @todo @author manoelcampos It has to be checked if the task execution
          * is considering only one cloudlet PE our all PEs.
@@ -195,7 +195,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
     /**
      * Schedules the execution of the next task of a given cloudlet.
      */
-    private void scheduleNextTaskIfCurrentIsFinished(NetworkCloudlet cloudlet) {
+    private void scheduleNextTaskIfCurrentIsFinished(final NetworkCloudlet cloudlet) {
         if(!cloudlet.startNextTaskIfCurrentIsFinished(cloudlet.getSimulation().clock())){
             return;
         }
@@ -210,7 +210,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
     }
 
     @Override
-    public void setVm(Vm vm) {
+    public void setVm(final Vm vm) {
         this.vm = (Objects.isNull(vm) ? Vm.NULL : vm);
     }
 
@@ -231,13 +231,13 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceVm VM to get the list of packets sent from
      * @return the list of packets sent from the given VM
      */
-    private List<VmPacket> getListOfPacketsSentFromVm(Vm sourceVm){
+    private List<VmPacket> getListOfPacketsSentFromVm(final Vm sourceVm){
         vmPacketsReceivedMap.putIfAbsent(sourceVm, new ArrayList<>());
         return vmPacketsReceivedMap.get(sourceVm);
     }
 
     @Override
-    public boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt){
+    public boolean addPacketToListOfPacketsSentFromVm(final VmPacket pkt){
         return getListOfPacketsSentFromVm(pkt.getSource()).add(pkt);
     }
 }

@@ -82,8 +82,8 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
         getHostFreePesMap().put(host, getHostFreePesMap().get(host) - vm.getNumberOfPes());
 
         Log.printFormattedLine(
-            "%.2f: %s: VM #%d has been allocated to the host #%d",
-            vm.getSimulation().clock(), getClass().getSimpleName(),  vm.getId(), host.getId());
+            "%.2f: %s: %s has been allocated to %s",
+            vm.getSimulation().clock(), getClass().getSimpleName(),  vm, host);
         return true;
     }
 

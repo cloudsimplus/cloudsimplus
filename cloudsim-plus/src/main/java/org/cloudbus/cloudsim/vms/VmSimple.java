@@ -653,7 +653,8 @@ public class VmSimple implements Vm {
     @Override
     public String toString() {
         final String desc = description.trim().isEmpty() ? "" : String.format(" (%s)", description);
-        return String.format("Vm %d%s", getId(), desc);
+        final String brokerName = broker == DatacenterBroker.NULL ? "" : "/Broker " + broker.getId();
+        return String.format("Vm %d%s%s", getId(), brokerName, desc);
     }
 
     @Override

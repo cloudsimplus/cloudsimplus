@@ -155,22 +155,6 @@ public interface Simulation {
     SimEntity getEntity(int id);
 
     /**
-     * Get the entity with a given name.
-     *
-     * @param name The entity's name
-     * @return The entity
-     */
-    SimEntity getEntity(String name);
-
-    /**
-     * Get the id of an entity with a given name.
-     *
-     * @param name The entity's name
-     * @return The entity's unique id number
-     */
-    int getEntityId(String name);
-
-    /**
      * Returns a read-only list of entities created for the simulation.
      *
      * @return
@@ -412,15 +396,6 @@ public interface Simulation {
     void wait(CloudSimEntity src, Predicate<SimEvent> p);
 
     /**
-     * Removes an entity with and old name from the {@link #getEntitiesByName()} map
-     * and adds it again using its new name.
-     *
-     * @param oldName the name the entity had before
-     * @return true if the entity was found and changed into the list, false otherwise
-     */
-    boolean updateEntityName(String oldName);
-
-    /**
      * Gets the number of events in the deferred event queue that are targeted to a given entity and
      * match a given predicate.
      *
@@ -443,13 +418,6 @@ public interface Simulation {
      * @param networkTopology the network topology to set
      */
     void setNetworkTopology(NetworkTopology networkTopology);
-
-    /**
-     * Gets a <b>read-only</b> map where each key is the name of an {@link SimEntity} and each value
-     * is the actual {@link SimEntity}.
-     * @return
-     */
-    Map<String, SimEntity> getEntitiesByName();
 
     /**
      * Defines IDs for a list of {@link ChangeableId} entities that don't

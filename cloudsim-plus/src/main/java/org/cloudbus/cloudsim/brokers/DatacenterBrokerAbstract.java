@@ -147,7 +147,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param simulation the CloudSim instance that represents the simulation the Entity is related to
      * @post $none
      */
-    public DatacenterBrokerAbstract(CloudSim simulation) {
+    public DatacenterBrokerAbstract(final CloudSim simulation) {
         super(simulation);
         this.onVmsCreatedListeners = new HashMap<>();
         this.lastSubmittedCloudlet = Cloudlet.NULL;
@@ -792,8 +792,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #submitCloudletList(java.util.List)
      */
     protected void requestDatacentersToCreateWaitingCloudlets() {
-        /* @todo @author manoelcampos Where is checked if the Vm to where
-         * a cloudlet was submitted has the required resources?
+        /* @todo @author manoelcampos Where is checked if the Vm where
+         * a cloudlet was submitted to has the required resources?
          */
 
         final List<Cloudlet> successfullySubmitted = new ArrayList<>();

@@ -46,19 +46,15 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
 
         final Simulation simulation = vm.getSimulation();
         if (host == PowerHost.NULL) {
-            Log.printFormattedLine("%.2f: No suitable host found for VM #" + vm.getId() + "\n", simulation.clock());
+            Log.printFormattedLine("%.2f: No suitable host found for %s\n", simulation.clock(), vm);
             return false;
         }
 
         if (host.createVm(vm)) { // if vm has been successfully created in the host
-            Log.printFormattedLine(
-                "%.2f: VM #" + vm.getId() + " has been allocated to the host #" + host.getId(),
-                simulation.clock());
+            Log.printFormattedLine("%.2f: %s has been allocated to %s", simulation.clock(),  vm, host);
             return true;
         }
-        Log.printFormattedLine(
-            "%.2f: Creation of VM #" + vm.getId() + " on the host #" + host.getId() + " failed\n",
-            simulation.clock());
+        Log.printFormattedLine("%.2f: Creation of %s on %s failed\n", simulation.clock(), vm, host);
         return false;
     }
 

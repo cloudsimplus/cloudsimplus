@@ -42,9 +42,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /** @see #getCharacteristics() */
     private final DatacenterCharacteristics characteristics;
 
-    /** @see #getRegionalCisName() */
-    private String regionalCisName;
-
     /** @see #getVmAllocationPolicy() */
     private VmAllocationPolicy vmAllocationPolicy;
 
@@ -589,10 +586,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         vm.setInMigration(false);
         if (result) {
             Log.printFormattedLine(
-                "%.2f: Migration of VM #%d to Host #%d is completed",
-                getSimulation().clock(), vm.getId(), targetHost.getId());
+                "%.2f: Migration of %s to %s is completed",
+                getSimulation().clock(), vm, targetHost);
         } else {
-            Log.printFormattedLine("[Datacenter] VM %d allocation to the destination host failed!", vm.getId());
+            Log.printFormattedLine("[Datacenter] %s allocation to the destination host failed!", vm);
 
         }
     }
@@ -952,13 +949,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     protected void startEntity() {
         Log.printConcatLine(getName(), " is starting...");
-        // this resource should register to regional CIS.
-        // However, if not specified, then register to system CIS (the
-        // default CloudInformationService) entity.
-        int cisID = getSimulation().getEntityId(regionalCisName);
-        if (cisID == -1) {
-            cisID = getSimulation().getCloudInfoServiceEntityId();
-        }
+        final int cisID = getSimulation().getCloudInfoServiceEntityId();
 
         // send the registration to CIS
         sendNow(cisID, CloudSimTags.DATACENTER_REGISTRATION_REQUEST, this);
@@ -972,25 +963,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public DatacenterCharacteristics getCharacteristics() {
         return characteristics;
-    }
-
-    /**
-     * Gets the regional Cloud Information Service (CIS) name.
-     *
-     * @return the regional CIS name
-     * @see org.cloudbus.cloudsim.core.CloudInformationService
-     */
-    protected String getRegionalCisName() {
-        return regionalCisName;
-    }
-
-    /**
-     * Sets the regional Cloud Information Service (CIS) name.
-     *
-     * @param regionalCisName the new regional CIS name
-     */
-    protected void setRegionalCisName(final String regionalCisName) {
-        this.regionalCisName = regionalCisName;
     }
 
     @Override

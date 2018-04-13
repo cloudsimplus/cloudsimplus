@@ -360,7 +360,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                  * the next VM, if the current selected Host doesn't fit another VM,
                  * it will not be selected anymore. */
                 targetHost.createTemporaryVm(vm);
-                Log.printConcatLine("\tVM #", vm.getId(), " will be migrated to host #", targetHost.getId());
+                Log.printFormattedLine("\t%s will be migrated to %s", vm, targetHost);
                 migrationMap.put(vm, targetHost);
             }
         }
@@ -399,7 +399,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
                 assessing the suitability of such a Host for the next VM.
                  */
                 targetHost.createTemporaryVm(vm);
-                Log.printConcatLine("\tVM #", vm.getId(), " will be allocated to host #", targetHost.getId());
+                Log.printFormattedLine("\t%s will be allocated to %s", vm, targetHost);
                 migrationMap.put(vm, targetHost);
             }
         }
@@ -586,9 +586,7 @@ public abstract class PowerVmAllocationPolicyMigrationAbstract extends PowerVmAl
         for (final Vm vm : savedAllocation.keySet()) {
             final PowerHost host = (PowerHost) savedAllocation.get(vm);
             if (!host.createTemporaryVm(vm)) {
-                Log.printFormattedLine(
-                        "Couldn't restore VM #%d on Host #%d",
-                        vm.getId(), host.getId());
+                Log.printFormattedLine("Couldn't restore %s on %s", vm, host);
                 return;
             }
         }

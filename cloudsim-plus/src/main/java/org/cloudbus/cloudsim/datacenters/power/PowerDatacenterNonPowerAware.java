@@ -122,17 +122,12 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
                 if (oldHost.equals(Host.NULL)) {
                     Log.printFormattedLine(
-                        "%.2f: Migration of VM #%d to Host #%d is started",
-                        getSimulation().clock(),
-                        entry.getKey().getId(),
-                        targetHost.getId());
+                        "%.2f: Migration of %s to %s is started",
+                        getSimulation().clock(), entry.getKey(), targetHost);
                 } else {
                     Log.printFormattedLine(
-                        "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
-                        getSimulation().clock(),
-                        entry.getKey().getId(),
-                        oldHost.getId(),
-                        targetHost.getId());
+                        "%.2f: Migration of %s from %s to %s is started",
+                        getSimulation().clock(), entry.getKey(), oldHost, targetHost);
                 }
 
                 targetHost.addMigratingInVm(entry.getKey());

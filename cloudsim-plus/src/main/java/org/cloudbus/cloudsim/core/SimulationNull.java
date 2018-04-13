@@ -43,15 +43,7 @@ final class SimulationNull implements Simulation {
     @Override public SimEntity getEntity(int id) {
         return SimEntity.NULL;
     }
-    @Override public SimEntity getEntity(String name) {
-        return SimEntity.NULL;
-    }
-    @Override public int getEntityId(String name) {
-        return 0;
-    }
-    @Override public List<SimEntity> getEntityList() {
-        return Collections.EMPTY_LIST;
-    }
+    @Override public List<SimEntity> getEntityList() { return Collections.EMPTY_LIST; }
     @Override public String getEntityName(int entityId) {
         return "";
     }
@@ -117,7 +109,5 @@ final class SimulationNull implements Simulation {
         return NetworkTopology.NULL;
     }
     @Override public void setNetworkTopology(NetworkTopology networkTopology) {/**/}
-    @Override public Map<String, SimEntity> getEntitiesByName() { return Collections.EMPTY_MAP; }
-    @Override public boolean updateEntityName(String oldName) { return false; }
     @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate) { return 0; }
 }
