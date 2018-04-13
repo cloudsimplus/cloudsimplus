@@ -73,7 +73,7 @@ public interface Simulation {
      * @param p   the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    SimEvent cancel(int src, Predicate<SimEvent> p);
+    SimEvent cancel(SimEntity src, Predicate<SimEvent> p);
 
     /**
      * Cancels all events from the future event queue that matches a given predicate
@@ -116,7 +116,7 @@ public interface Simulation {
      * @param p    the event selection predicate
      * @return the first matched event or {@link SimEvent#NULL} if not found
      */
-    SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p);
+    SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> p);
 
     /**
      * Gets a new copy of initial simulation Calendar.
@@ -128,13 +128,11 @@ public interface Simulation {
     Calendar getCalendar();
 
     /**
-     * Gets the entity ID of {@link CloudInformationService}.
+     * Gets the {@link CloudInformationService}.
      *
-     * @return the Entity ID or if it is not found
-     * @pre $none
-     * @post $result >= -1
+     * @return the Entity
      */
-    int getCloudInfoServiceEntityId();
+    CloudInformationService getCloudInfoService();
 
     /**
      * Sends a request to Cloud Information Service (CIS) entity to get the list
@@ -147,29 +145,11 @@ public interface Simulation {
     Set<Datacenter> getDatacenterList();
 
     /**
-     * Get the entity with a given id.
-     *
-     * @param id the entity's unique id number
-     * @return The entity, or if it could not be found
-     */
-    SimEntity getEntity(int id);
-
-    /**
      * Returns a read-only list of entities created for the simulation.
      *
      * @return
      */
     List<SimEntity> getEntityList();
-
-    /**
-     * Gets name of the entity given its entity ID.
-     *
-     * @param entityId the entity ID
-     * @return the Entity name or if this object does not have one
-     * @pre entityId > 0
-     * @post $none
-     */
-    String getEntityName(int entityId);
 
     /**
      * Returns the minimum time between events (in seconds).
@@ -248,19 +228,17 @@ public interface Simulation {
 
     /**
      * Pauses an entity for some time.
-     *
-     * @param src   id of entity to be paused
+     *  @param src   id of entity to be paused
      * @param delay the time period for which the entity will be inactive
      */
-    void pauseEntity(int src, double delay);
+    void pauseEntity(SimEntity src, double delay);
 
     /**
      * Holds an entity for some time.
-     *
-     * @param src   id of entity to be held
+     *  @param src   id of entity to be held
      * @param delay How many seconds after the current time the entity has to be held
      */
-    void holdEntity(int src, long delay);
+    void holdEntity(SimEntity src, long delay);
 
     /**
      * Checks if the simulation is paused.
@@ -311,44 +289,41 @@ public interface Simulation {
      * Selects the first deferred event that matches a given predicate
      * and removes it from the queue.
      *
-     * @param dest Id of entity that the event has to be sent to
+     * @param dest entity that the event has to be sent to
      * @param p    the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    SimEvent select(int dest, Predicate<SimEvent> p);
+    SimEvent select(SimEntity dest, Predicate<SimEvent> p);
 
     /**
      * Sends an event from one entity to another.
-     *
-     * @param src   Id of entity that scheduled the event
-     * @param dest  Id of entity that the event will be sent to
+     *  @param src  entity that scheduled the event
+     * @param dest  entity that the event will be sent to
      * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
      * @param data  the {@link SimEvent#getData() data} to be sent inside the event
      */
-    void send(int src, int dest, double delay, int tag, Object data);
+    void send(SimEntity src, SimEntity dest, double delay, int tag, Object data);
 
     /**
      * Sends an event from one entity to another, adding it to the beginning of the queue in order to give priority to it.
-     *
-     * @param src   Id of entity that scheduled the event
-     * @param dest  Id of entity that the event will be sent to
+     *  @param src  entity that scheduled the event
+     * @param dest  entity that the event will be sent to
      * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
      * @param data  the {@link SimEvent#getData() data} to be sent inside the event
      */
-    void sendFirst(int src, int dest, double delay, int tag, Object data);
+    void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data);
 
     /**
      * Sends an event from one entity to another without delaying
      * the message.
-     *
-     * @param src  Id of entity that scheduled the event
-     * @param dest Id of entity that the event will be sent to
+     *  @param src  entity that scheduled the event
+     * @param dest entity that the event will be sent to
      * @param tag  the {@link SimEvent#getTag() tag} that classifies the event
      * @param data the {@link SimEvent#getData() data} to be sent inside the event
      */
-    void sendNow(int src, int dest, int tag, Object data);
+    void sendNow(SimEntity src, SimEntity dest, int tag, Object data);
 
     /**
      * Starts the execution of CloudSim simulation and <b>waits for complete
@@ -403,7 +378,7 @@ public interface Simulation {
      * @param p    the event selection predicate
      * @return
      */
-    long waiting(int dest, Predicate<SimEvent> p);
+    long waiting(SimEntity dest, Predicate<SimEvent> p);
 
     /**
      * Gets the network topology used for Network simulations.

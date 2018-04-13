@@ -62,7 +62,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
      * In the case of up scaling, the value 1 will scale the resource in 100%, doubling its capacity.
      * @see VerticalVmScaling#setResourceScaling(ResourceScaling)
      */
-    public VerticalVmScalingSimple(Class<? extends ResourceManageable> resourceClassToScale, double scalingFactor){
+    public VerticalVmScalingSimple(final Class<? extends ResourceManageable> resourceClassToScale, double scalingFactor){
         super();
         this.setResourceScaling(new ResourceScalingGradual());
         this.lowerUtilizationThresholdFunction = VerticalVmScaling.NULL.getLowerThresholdFunction();
@@ -77,7 +77,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public final VerticalVmScaling setUpperThresholdFunction(Function<Vm, Double> upperThresholdFunction) {
+    public final VerticalVmScaling setUpperThresholdFunction(final Function<Vm, Double> upperThresholdFunction) {
         validateFunctions(lowerUtilizationThresholdFunction, upperThresholdFunction);
         this.upperUtilizationThresholdFunction = upperThresholdFunction;
         return this;
@@ -89,14 +89,14 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public final VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction) {
+    public final VerticalVmScaling setLowerThresholdFunction(final Function<Vm, Double> lowerThresholdFunction) {
         validateFunctions(lowerThresholdFunction, upperUtilizationThresholdFunction);
         this.lowerUtilizationThresholdFunction = lowerThresholdFunction;
         return this;
     }
 
     @Override
-    public final VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling) {
+    public final VerticalVmScaling setResourceScaling(final ResourceScaling resourceScaling) {
         Objects.requireNonNull(resourceScaling);
         this.resourceScaling = resourceScaling;
         return this;
@@ -131,7 +131,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public final VerticalVmScaling setResourceClass(Class<? extends ResourceManageable> resourceClass) {
+    public final VerticalVmScaling setResourceClass(final Class<? extends ResourceManageable> resourceClass) {
         Objects.requireNonNull(resourceClass);
         this.resourceClassToScale = resourceClass;
         if(Pe.class.equals(this.resourceClassToScale)){
@@ -146,7 +146,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public final boolean requestUpScalingIfPredicateMatches(double time) {
+    public final boolean requestUpScalingIfPredicateMatches(final double time) {
         if(!isTimeToCheckPredicate(time)) {
             return false;
         }
@@ -207,15 +207,16 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public final VerticalVmScaling setScalingFactor(double scalingFactor) {
+    public final VerticalVmScaling setScalingFactor(final double scalingFactor) {
         this.scalingFactor = scalingFactor;
         return this;
     }
 
     @Override
-    protected boolean requestUpScaling(double time) {
-        final Vm vm = this.getVm();
-        vm.getSimulation().sendNow(vm.getId(), vm.getBroker().getId(), CloudSimTags.VM_VERTICAL_SCALING, this);
+    protected boolean requestUpScaling(final double time) {
+        final DatacenterBroker broker = this.getVm().getBroker();
+        //@todo the src was the VM and the dest the broker, but the VM isn't a SimEntity. See if this change broke something
+        broker.getSimulation().sendNow(broker, broker, CloudSimTags.VM_VERTICAL_SCALING, this);
         return true;
     }
 }

@@ -101,7 +101,6 @@ public class CloudletSimpleTest {
         final int datacenterId = 0;
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(arrivalTime);
-            mocker.getEntityName(datacenterId);
         });
 
         final CloudletSimple cloudlet = createCloudlet();
@@ -150,7 +149,6 @@ public class CloudletSimpleTest {
         final int datacenterId = 0;
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(submissionTime);
-            mocker.getEntityName(datacenterId);
         });
 
         final CloudletSimple cloudlet = createCloudlet();
@@ -385,7 +383,6 @@ public class CloudletSimpleTest {
         final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(0).anyTimes();
-            mocker.getEntityName(EasyMock.anyInt()).anyTimes();
         });
 
         cloudlet

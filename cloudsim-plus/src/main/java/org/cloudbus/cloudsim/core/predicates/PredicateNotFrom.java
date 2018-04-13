@@ -59,7 +59,7 @@ public class PredicateNotFrom implements Predicate<SimEvent> {
      */
     @Override
     public boolean test(final SimEvent ev) {
-        return ids.stream().noneMatch(id -> id == ev.getSource());
+        return ids.stream().noneMatch(id -> id == ev.getSource().getId());
     }
 
 }

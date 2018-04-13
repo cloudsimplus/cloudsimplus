@@ -466,7 +466,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         final VerticalVmScaling scaling = (VerticalVmScaling) ev.getData();
         getSimulation().sendNow(
-            ev.getSource(), scaling.getVm().getHost().getDatacenter().getId(),
+            ev.getSource(), scaling.getVm().getHost().getDatacenter(),
             CloudSimTags.VM_VERTICAL_SCALING, scaling);
     }
 
@@ -720,7 +720,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             println(String.format("%.2f: %s: Destroying %s", getSimulation().clock(), getName(), vm));
             //request the Datacenter to destroy the VM
-            sendNow(getVmDatacenter(vm).getId(), CloudSimTags.VM_DESTROY, vm);
+            sendNow(getVmDatacenter(vm), CloudSimTags.VM_DESTROY, vm);
             vmExecList.remove(vm);
             if (cloudletWaitingList.isEmpty() && vmExecList.isEmpty()) {
                 println(String.format(
@@ -735,7 +735,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         Makes another request to the broker itself to check if the VM should be destroyed.
         The request will be processed only after the time specified by the delay has passed.
         */
-        send(getId(), delay, CloudSimTags.VM_DESTROY, vm);
+        send(this, delay, CloudSimTags.VM_DESTROY, vm);
         return false;
     }
 
@@ -769,7 +769,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 println(String.format(
                     "%.2f: %s: Trying to Create %s in %s",
                     getSimulation().clock(), getName(), vm, datacenter.getName()));
-                sendNow(datacenter.getId(), CloudSimTags.VM_CREATE_ACK, vm);
+                sendNow(datacenter, CloudSimTags.VM_CREATE_ACK, vm);
                 vmCreationRequestsMap.put(vm, datacenter);
                 requestedVms++;
             }
@@ -821,7 +821,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(),
                 lastSelectedVm, lastSelectedVm.getHost(), delayStr));
             cloudlet.setVm(lastSelectedVm);
-            send(getVmDatacenter(lastSelectedVm).getId(),
+            send(getVmDatacenter(lastSelectedVm),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudletCreationRequestsMap.put(cloudlet, getVmDatacenter(lastSelectedVm));
             cloudletsCreated++;
@@ -840,7 +840,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @post $none
      */
     protected void requestShutDown() {
-        sendNow(getId(), CloudSimTags.END_OF_SIMULATION);
+        sendNow(this, CloudSimTags.END_OF_SIMULATION);
     }
 
     @Override
@@ -851,7 +851,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void startEntity() {
         println(String.format("%s is starting...", getName()));
-        schedule(getSimulation().getCloudInfoServiceEntityId(), 0, CloudSimTags.DATACENTER_LIST_REQUEST);
+        schedule(getSimulation().getCloudInfoService(), 0, CloudSimTags.DATACENTER_LIST_REQUEST);
     }
 
     @Override

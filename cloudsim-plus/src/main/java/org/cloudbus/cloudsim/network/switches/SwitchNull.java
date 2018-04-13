@@ -1,7 +1,9 @@
 package org.cloudbus.cloudsim.network.switches;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
@@ -81,4 +83,18 @@ final class SwitchNull implements Switch {
     @Override public int getLevel() {
         return 0;
     }
+    @Override public SimEntity setState(State state) { return this; }
+    @Override public boolean isStarted() { return false; }
+    @Override public Simulation getSimulation() { return Simulation.NULL; }
+    @Override public SimEntity setSimulation(Simulation simulation) { return this; }
+    @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public void schedule(SimEntity dest, double delay, int tag) {/**/}
+    @Override public void run() {/**/}
+    @Override public void start() {/**/}
+    @Override public void shutdownEntity() {/**/}
+    @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
+    @Override public void setLog(boolean log) {/**/}
+    @Override public void println(String msg) {/**/}
+    @Override public int compareTo(SimEntity o) { return 0; }
+    @Override public String getName() { return ""; }
 }

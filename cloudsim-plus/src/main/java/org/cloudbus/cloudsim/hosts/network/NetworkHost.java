@@ -213,7 +213,7 @@ public class NetworkHost extends HostSimple {
 
             // send to Datacenter with delay
             getSimulation().send(
-                    getDatacenter().getId(), getEdgeSwitch().getId(),
+                    getDatacenter(), getEdgeSwitch(),
                     delay, CloudSimTags.NETWORK_EVENT_UP, hostPkt);
         }
 

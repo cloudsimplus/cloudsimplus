@@ -63,15 +63,13 @@ public class CloudInformationService extends CloudSimEntity {
 
     @Override
     public void processEvent(SimEvent ev) {
-        int id;  // requester id
         switch (ev.getTag()) {
             case CloudSimTags.REGISTER_REGIONAL_CIS:
                 cisList.add((CloudInformationService) ev.getData());
             break;
 
             case CloudSimTags.REQUEST_REGIONAL_CIS:
-                id = ev.getSource();
-                super.send(id, 0, ev.getTag(), cisList);
+                super.send(ev.getSource(), 0, ev.getTag(), cisList);
             break;
 
             case CloudSimTags.DATACENTER_REGISTRATION_REQUEST:
@@ -80,8 +78,7 @@ public class CloudInformationService extends CloudSimEntity {
 
             // A Broker is requesting a list of all datacenters.
             case CloudSimTags.DATACENTER_LIST_REQUEST:
-                id = ev.getSource();
-                super.send(id, 0, ev.getTag(), datacenterList);
+                super.send(ev.getSource(), 0, ev.getTag(), datacenterList);
             break;
 
             default:
@@ -158,7 +155,7 @@ public class CloudInformationService extends CloudSimEntity {
         }
 
         Log.printLine("CloudInformationSevice.processOtherEvent(): " + "Unable to handle a request from "
-            + getSimulation().getEntityName(ev.getSource()) + " with event tag = " + ev.getTag());
+            + ev.getSource().getName() + " with event tag = " + ev.getTag());
     }
 
     /**
@@ -193,7 +190,7 @@ public class CloudInformationService extends CloudSimEntity {
         }
 
         // Send END_OF_SIMULATION event to all entities in the list
-        list.forEach(entity -> super.send(entity.getId(), 0L, CloudSimTags.END_OF_SIMULATION));
+        list.forEach(entity -> super.send(entity, 0L, CloudSimTags.END_OF_SIMULATION));
     }
 
 }

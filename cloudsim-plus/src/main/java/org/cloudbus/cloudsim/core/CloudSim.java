@@ -260,8 +260,8 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public int getCloudInfoServiceEntityId() {
-        return cis.getId();
+    public CloudInformationService getCloudInfoService() {
+        return cis;
     }
 
     @Override
@@ -310,16 +310,6 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public SimEntity getEntity(int id) {
-        return entities.get(id);
-    }
-
-    @Override
-    public String getEntityName(int entityId) {
-        return getEntity(entityId).getName();
-    }
-
-    @Override
     public List<SimEntity> getEntityList() {
         return Collections.unmodifiableList(entities);
     }
@@ -327,8 +317,8 @@ public class CloudSim implements Simulation {
     @Override
     public void addEntity(CloudSimEntity e) {
         if (running) {
-            // Post an event to make this entity
-            final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, clockTime, 1, 0, 0, e);
+            //@todo src 1, dest 0? What did it mean? Probably nothing.
+            final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, clockTime, e);
             future.addEvent(evt);
         }
 
@@ -336,20 +326,6 @@ public class CloudSim implements Simulation {
             e.setId(entities.size());
             entities.add(e);
         }
-    }
-
-    /**
-     * Internal method used to add a new entity to the simulation when the
-     * simulation is running.
-     *
-     * <b>It should not be called from user simulations.</b>
-     *
-     * @param e The new entity
-     */
-    protected void addEntityDynamically(SimEntity e) {
-        Objects.requireNonNull(e);
-        printMessage("Adding: " + e.getName());
-        e.start();
     }
 
     /**
@@ -394,19 +370,19 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void sendNow(final int src, final int dest, final int tag, final Object data) {
+    public void sendNow(final SimEntity src, final SimEntity dest, final int tag, final Object data) {
         send(src, dest, 0, tag, data);
     }
 
     @Override
-    public void send(final int src, final int dest, final double delay, final int tag, final Object data) {
+    public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
         validateDelay(delay);
         final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.SEND, clockTime + delay, src, dest, tag, data);
         future.addEvent(evt);
     }
 
     @Override
-    public void sendFirst(final int src, final int dest, final double delay, final int tag, final Object data) {
+    public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
         validateDelay(delay);
         final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.SEND, clockTime + delay, src, dest, tag, data);
         future.addEventFirst(evt);
@@ -428,19 +404,19 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public long waiting(final int dest, final Predicate<SimEvent> p) {
+    public long waiting(final SimEntity dest, final Predicate<SimEvent> p) {
         return filterEventsToDestinationEntity(deferred, p, dest).count();
     }
 
     @Override
-    public SimEvent select(final int dest, final Predicate<SimEvent> p) {
+    public SimEvent select(final SimEntity dest, final Predicate<SimEvent> p) {
         final SimEvent evt = findFirstDeferred(dest, p);
         deferred.remove(evt);
         return evt;
     }
 
     @Override
-    public SimEvent findFirstDeferred(final int dest, final Predicate<SimEvent> p) {
+    public SimEvent findFirstDeferred(final SimEntity dest, final Predicate<SimEvent> p) {
         return filterEventsToDestinationEntity(deferred, p, dest).findFirst().orElse(SimEvent.NULL);
     }
 
@@ -453,13 +429,13 @@ public class CloudSim implements Simulation {
      * @param dest Id of entity that the event has to be sent to
      * @return a Stream of events from the queue
      */
-    private Stream<SimEvent> filterEventsToDestinationEntity(final EventQueue queue, final Predicate<SimEvent> p, final int dest) {
+    private Stream<SimEvent> filterEventsToDestinationEntity(final EventQueue queue, final Predicate<SimEvent> p, final SimEntity dest) {
         return filterEvents(queue, p.and(e -> e.getDestination() == dest));
     }
 
     @Override
-    public SimEvent cancel(final int src, final Predicate<SimEvent> p) {
-        final SimEvent evt = future.stream().filter(p.and(e -> e.getSource() == src)).findFirst().orElse(SimEvent.NULL);
+    public SimEvent cancel(final SimEntity src, final Predicate<SimEvent> p) {
+        final SimEvent evt = future.stream().filter(p.and(e -> e.getSource().equals(src))).findFirst().orElse(SimEvent.NULL);
         future.remove(evt);
         return evt;
     }
@@ -482,7 +458,7 @@ public class CloudSim implements Simulation {
      * @return a Stream of events from the queue
      */
     private Stream<SimEvent> filterEventsFromSourceEntity(final EventQueue queue, final Predicate<SimEvent> p, final int src) {
-        return filterEvents(queue, p.and(e -> e.getSource() == src));
+        return filterEvents(queue, p.and(e -> e.getSource().equals(src)));
     }
 
     /**
@@ -549,24 +525,37 @@ public class CloudSim implements Simulation {
     }
 
     private void processCreateEvent(final SimEvent e) {
-        final SimEntity newEvent = (SimEntity) e.getData();
-        addEntityDynamically(newEvent);
+        addEntityDynamically((SimEntity) e.getData());
+    }
+
+    /**
+     * Internal method used to add a new entity to the simulation when the
+     * simulation is running.
+     *
+     * <b>It should not be called from user simulations.</b>
+     *
+     * @param e The new entity
+     */
+    protected void addEntityDynamically(final SimEntity e) {
+        Objects.requireNonNull(e);
+        printMessage("Adding: " + e.getName());
+        e.start();
     }
 
     private void processHoldEvent(final SimEvent e) {
-        if (e.getSource() < 0) {
+        if (e.getSource() == SimEntity.NULL) {
             throw new IllegalArgumentException("Null entity holding.");
         }
 
-        entities.get(e.getSource()).setState(SimEntity.State.RUNNABLE);
+        e.getSource().setState(SimEntity.State.RUNNABLE);
     }
 
     private void processSendEvent(final SimEvent e) {
-        if (e.getDestination() < 0) {
+        if (e.getDestination() == SimEntity.NULL) {
             throw new IllegalArgumentException("Attempt to send to a null entity detected.");
         }
 
-        final CloudSimEntity destEnt = entities.get(e.getDestination());
+        final CloudSimEntity destEnt = entities.get(e.getDestination().getId());
         if (destEnt.getState() == SimEntity.State.WAITING) {
             final Predicate<SimEvent> p = waitPredicates.get(destEnt);
             if (Objects.isNull(p) || e.getTag() == 9999 || p.test(e)) {
@@ -576,9 +565,11 @@ public class CloudSim implements Simulation {
             } else {
                 deferred.addEvent(e);
             }
-        } else {
-            deferred.addEvent(e);
+
+            return;
         }
+
+        deferred.addEvent(e);
     }
 
     /**
@@ -632,17 +623,17 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void pauseEntity(final int src, final double delay) {
+    public void pauseEntity(final SimEntity src, final double delay) {
         final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, clockTime + delay, src);
         future.addEvent(evt);
-        entities.get(src).setState(SimEntity.State.HOLDING);
+        src.setState(SimEntity.State.HOLDING);
     }
 
     @Override
-    public void holdEntity(final int src, final long delay) {
+    public void holdEntity(final SimEntity src, final long delay) {
         final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, clockTime + delay, src);
         future.addEvent(evt);
-        entities.get(src).setState(SimEntity.State.HOLDING);
+        src.setState(SimEntity.State.HOLDING);
     }
 
     /**

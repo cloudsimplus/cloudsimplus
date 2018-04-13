@@ -56,26 +56,6 @@ public final class CloudSimTags {
     public static final int DATACENTER_LIST_REQUEST = BASE + 4;
 
     /**
-     * Denotes cloud resource allocation policy. This tag is normally used
-     * between CloudSim and Datacenter entity.
-     */
-    public static final int RESOURCE_DYNAMICS = BASE + 7;
-
-    /**
-     * Denotes a request to get the total number of Processing Elements (PEs) of
-     * a resource. This tag is normally used between CloudSim and Datacenter
-     * entity.
-     */
-    public static final int RESOURCE_NUM_PE = BASE + 8;
-
-    /**
-     * Denotes a request to get the total number of free Processing Elements
-     * (PEs) of a resource. This tag is normally used between CloudSim and
-     * Datacenter entity.
-     */
-    public static final int RESOURCE_NUM_FREE_PE = BASE + 9;
-
-    /**
      * Denotes a request to register a {@link CloudInformationService} entity as a regional CIS.
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link CloudInformationService} object.
@@ -225,29 +205,6 @@ public final class CloudSimTags {
      * a VM must be migrated.
      */
     public static final int VM_MIGRATE_ACK = BASE + 36;
-
-    /**
-     * Denotes an event to send a file from a user to a
-     * {@link Datacenter}.
-     */
-    public static final int VM_DATA_ADD = BASE + 37;
-
-    /**
-     * Denotes an event to send a file from a user to a {@link Datacenter}
-     * with acknowledgement information sent by the Datacener.
-     */
-    public static final int VM_DATA_ADD_ACK = BASE + 38;
-
-    /**
-     * Denotes an event to remove a file from a {@link Datacenter} .
-     */
-    public static final int VM_DATA_DEL = BASE + 39;
-
-    /**
-     * Denotes an event to remove a file from a {@link Datacenter} with
-     * acknowledgement information sent by the Datacener.
-     */
-    public static final int VM_DATA_DEL_ACK = BASE + 40;
 
     /**
      * Denotes an internal event generated in a {@link Datacenter}

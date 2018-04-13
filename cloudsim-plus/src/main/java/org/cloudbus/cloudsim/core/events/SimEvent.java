@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.core.events;
 
 import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
 
@@ -40,18 +41,18 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     Type getType();
 
     /**
-     * Gets the unique id number of the entity which received this event.
+     * Gets the entity which received this event.
      *
      * @return
      */
-    int getDestination();
+    SimEntity getDestination();
 
     /**
-     * Gets the unique id number of the entity which scheduled this event.
+     * Gets the entity which scheduled this event.
      *
      * @return
      */
-    int getSource();
+    SimEntity getSource();
 
     /**
      * Gets the simulation time that this event was scheduled.
@@ -68,11 +69,11 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     double endWaitingTime();
 
     /**
-     * Gets the unique id number of the entity which scheduled this event.
+     * Gets the entity which scheduled this event.
      *
      * @return
      */
-    int scheduledBy();
+    SimEntity scheduledBy();
 
     /**
      * Gets the user-defined tag of this event.
@@ -101,7 +102,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * @param source the unique id number of the source entity
      * @return
      */
-    SimEvent setSource(int source);
+    SimEvent setSource(SimEntity source);
 
     /**
      * Sets the destination entity of this event, that defines its destination.
@@ -109,7 +110,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * @param destination the unique id number of the destination entity
      * @return
      */
-    SimEvent setDestination(int destination);
+    SimEvent setDestination(SimEntity destination);
 
     /**
      * Gets the serial number that defines the order of received events when multiple

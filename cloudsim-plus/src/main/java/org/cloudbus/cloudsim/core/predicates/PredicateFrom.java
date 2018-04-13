@@ -57,7 +57,7 @@ public class PredicateFrom implements Predicate<SimEvent> {
 	 */
 	@Override
 	public boolean test(SimEvent ev) {
-        return ids.stream().anyMatch(id -> id == ev.getSource());
+        return ids.stream().anyMatch(id -> id == ev.getSource().getId());
 	}
 
 }

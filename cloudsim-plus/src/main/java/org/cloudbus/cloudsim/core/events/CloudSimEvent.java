@@ -42,14 +42,14 @@ public final class CloudSimEvent implements SimEvent {
     private double endWaitingTime;
 
     /**
-     * Id of entity who scheduled the event.
+     * The entity who scheduled the event.
      */
-    private int src;
+    private SimEntity src;
 
     /**
-     * Id of entity that the event will be sent to.
+     * The entity that the event will be sent to.
      */
-    private int dest;
+    private SimEntity dest;
 
     private final int tag;
 
@@ -61,36 +61,14 @@ public final class CloudSimEvent implements SimEvent {
     private long serial = -1;
 
     /**
-     * Creates a blank event.
-     * @param simulation the simulation to which the event belongs to
-     */
-    public CloudSimEvent(CloudSim simulation) {
-        this.simulation = simulation;
-        this.type = Type.NULL;
-        this.time = -1L;
-        this.endWaitingTime = -1.0;
-        this.src = -1;
-        this.dest = -1;
-        this.tag = -1;
-        this.data = null;
-    }
-
-    /**
-     * Creates an CloudSimEvent cloning another given one.
+     * Creates a CloudSimEvent.
      *
-     * @param eventToClone the event to clone
+     * @param src the event to clone
      */
-    public CloudSimEvent(SimEvent eventToClone) {
-        this.simulation = eventToClone.getSimulation();
-        this.type = eventToClone.getType();
-        this.time = eventToClone.getTime();
-        this.src = eventToClone.getSource();
-        this.dest = eventToClone.getDestination();
-        this.tag = eventToClone.getTag();
-        this.data = eventToClone.getData();
-    }
-
-    public CloudSimEvent(CloudSim simulation, Type type, double time, int src, int dest, int tag, Object data) {
+    public CloudSimEvent(
+        final CloudSim simulation, final Type type, final double time,
+        final SimEntity src, final SimEntity dest, final int tag, final Object data)
+    {
         this.simulation = simulation;
         this.type = type;
         this.time = time;
@@ -100,18 +78,31 @@ public final class CloudSimEvent implements SimEvent {
         this.data = data;
     }
 
-    public CloudSimEvent(CloudSim simulation, Type type, double time, int src) {
-        this.simulation = simulation;
-        this.type = type;
-        this.time = time;
-        this.src = src;
-        this.dest = -1;
-        this.tag = -1;
-        this.data = null;
+    /**
+     * Creates a CloudSimEvent.
+     *
+     */
+    public CloudSimEvent(final CloudSim simulation, final Type type, final double time, final Object data) {
+        this(simulation, type, time, SimEntity.NULL, SimEntity.NULL, -1, data);
+    }
+
+    /**
+     * Creates a CloudSimEvent cloning another given one.
+     *
+     * @param src the event to clone
+     */
+    public CloudSimEvent(final SimEvent src) {
+        this(
+            (CloudSim)src.getSimulation(), src.getType(), src.getTime(),
+            src.getSource(), src.getDestination(), src.getTag(), src.getData());
+    }
+
+    public CloudSimEvent(final CloudSim simulation, final Type type, final double time, final SimEntity src) {
+        this(simulation, type, time, src, SimEntity.NULL, -1, null);
     }
 
     @Override
-    public void setSerial(long serial) {
+    public void setSerial(final long serial) {
         this.serial = serial;
     }
 
@@ -120,14 +111,14 @@ public final class CloudSimEvent implements SimEvent {
      *
      * @param endWaitingTime the end of waiting time to set
      */
-    private void setEndWaitingTime(double endWaitingTime) {
+    private void setEndWaitingTime(final double endWaitingTime) {
         this.endWaitingTime = endWaitingTime;
     }
 
     @Override
     public String toString() {
-        return "Event tag = " + tag + " source = " + simulation.getEntity(src).getName() + " target = "
-                + simulation.getEntity(dest).getName() + " time = " + time;
+        return "Event tag = " + tag + " source = " + src.getName() +
+               " target = " + dest.getName() + " time = " + time;
     }
 
     @Override
@@ -136,7 +127,7 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public int compareTo(SimEvent event) {
+    public int compareTo(final SimEvent event) {
         if (Objects.isNull(event)) {
             return 1;
         } else if (time < event.getTime()) {
@@ -153,12 +144,12 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public int getDestination() {
+    public SimEntity getDestination() {
         return dest;
     }
 
     @Override
-    public int getSource() {
+    public SimEntity getSource() {
         return src;
     }
 
@@ -173,7 +164,7 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public int scheduledBy() {
+    public SimEntity scheduledBy() {
         return src;
     }
 
@@ -188,13 +179,13 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public SimEvent setSource(int source) {
+    public SimEvent setSource(final SimEntity source) {
         this.src = source;
         return this;
     }
 
     @Override
-    public SimEvent setDestination(int destination) {
+    public SimEvent setDestination(final SimEntity destination) {
         this.dest = destination;
         return this;
     }
