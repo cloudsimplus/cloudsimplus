@@ -128,7 +128,7 @@ public class HostSimple implements Host {
      * @param peList the host's {@link Pe} list
      * @see #setId(int)
      */
-    public HostSimple(long ram, long bw, long storage, List<Pe> peList) {
+    public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList) {
         this.setId(-1);
         this.setActive(true);
         this.setSimulation(Simulation.NULL);
@@ -161,11 +161,11 @@ public class HostSimple implements Host {
      * @param vmScheduler the vm scheduler
      */
     public HostSimple(
-        ResourceProvisioner ramProvisioner,
-        ResourceProvisioner bwProvisioner,
-        long storage,
-        List<Pe> peList,
-        VmScheduler vmScheduler)
+        final ResourceProvisioner ramProvisioner,
+        final ResourceProvisioner bwProvisioner,
+        final long storage,
+        final List<Pe> peList,
+        final VmScheduler vmScheduler)
     {
         this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
@@ -185,11 +185,12 @@ public class HostSimple implements Host {
     @Override
     public double updateProcessing(final double currentTime) {
         double nextSimulationTime = Double.MAX_VALUE;
-        for (final Vm vm : vmList) {
-            final double v = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
-            if (v < nextSimulationTime) {
-                nextSimulationTime = v;
-            }
+        /* Uses a traditional for to avoid ConcurrentModificationException,
+         * e.g., in cases of Vm destruction during simulation execution.*/
+        for (int i = 0; i < vmList.size(); i++) {
+            final Vm vm = vmList.get(i);
+            final double nextTime = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
+            nextSimulationTime = Math.min(nextTime, nextSimulationTime);
         }
 
         notifyOnUpdateProcessingListeners(nextSimulationTime);
