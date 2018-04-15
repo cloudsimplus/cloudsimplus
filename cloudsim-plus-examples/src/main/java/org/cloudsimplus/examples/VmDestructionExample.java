@@ -48,7 +48,9 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmHostEventInfo;
+
 import java.util.function.Function;
 
 import java.util.ArrayList;
@@ -115,7 +117,8 @@ public class VmDestructionExample {
         vmList = createVms();
         cloudletList = createCloudlets();
 
-        simulation.addOnClockTickListener(this::clockTickListener);
+        /*Adds a Listener to track the execution update of VM 1*/
+        vmList.get(1).addOnUpdateProcessingListener(this::vmProcessingUpdate);
 
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
@@ -127,11 +130,16 @@ public class VmDestructionExample {
     }
 
     /**
-     * Tracks simulation clock and checks if VM 1 is overloaded to destroy it.
-     * @param info event information
+     * Tracks the update of execution for a VM.
+     * If that VM is overloaded then destroys it.
+     * In this example, this {@link EventListener} is just
+     * attached for VM 1, therefore, just such a VM will be destroyed
+     * if overloaded.
+     *
+     * @param info event information, including the VM that was updated
      */
-    private void clockTickListener(EventInfo info) {
-        final Vm vm = vmList.get(1);
+    private void vmProcessingUpdate(VmHostEventInfo info) {
+        final Vm vm = info.getVm();
         //Destroys VM 1 when its CPU usage reaches 90%
         if(vm.getCpuPercentUsage() > 0.9 && vm.isCreated()){
             Log.printLine("\n# " + info.getTime() +

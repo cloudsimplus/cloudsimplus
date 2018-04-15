@@ -507,7 +507,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     private void updateCloudletsProcessing(double currentTime) {
-        for (final CloudletExecution rcl : cloudletExecList) {
+        /* Uses a traditional for to avoid ConcurrentModificationException,
+         * e.g., in cases of Cloudlet cancellation during simulation execution.*/
+        for (int i = 0; i < cloudletExecList.size(); i++) {
+            final CloudletExecution rcl = cloudletExecList.get(i);
             updateCloudletProcessingAndPacketsDispatch(rcl, currentTime);
         }
     }

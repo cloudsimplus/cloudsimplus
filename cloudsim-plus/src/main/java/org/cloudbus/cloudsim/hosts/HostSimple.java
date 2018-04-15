@@ -184,11 +184,14 @@ public class HostSimple implements Host {
 
     @Override
     public double updateProcessing(final double currentTime) {
-        final double nextSimulationTime =
-            vmList.stream()
-                .mapToDouble(vm -> vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm)))
-                .min()
-                .orElse(Double.MAX_VALUE);
+        double nextSimulationTime = Double.MAX_VALUE;
+        /* Uses a traditional for to avoid ConcurrentModificationException,
+         * e.g., in cases of Vm destruction during simulation execution.*/
+        for (int i = 0; i < vmList.size(); i++) {
+            final Vm vm = vmList.get(i);
+            final double nextTime = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
+            nextSimulationTime = Math.min(nextTime, nextSimulationTime);
+        }
 
         notifyOnUpdateProcessingListeners(nextSimulationTime);
         return nextSimulationTime;
