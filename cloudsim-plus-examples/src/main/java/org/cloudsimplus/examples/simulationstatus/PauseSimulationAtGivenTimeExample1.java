@@ -141,7 +141,7 @@ public class PauseSimulationAtGivenTimeExample1 {
         /*
         Requests the simulation to be paused at the 22nd second.
         The method schedules the simulation pause for a future time and returns immediately.
-        Since the start() method blocks untiil the simulation is finished,
+        Since the start() method blocks until the simulation is finished,
         the request to pause the simulation at a given time has to be scheduled
         before the simulation start.
         Otherwise, more complex mechanisms have to be used
