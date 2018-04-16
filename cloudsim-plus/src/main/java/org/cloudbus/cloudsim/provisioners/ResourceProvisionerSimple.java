@@ -43,12 +43,12 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
      * @param resource the resource to be managed by the provisioner
      * @post $none
      */
-    protected ResourceProvisionerSimple(ResourceManageable resource) {
+    protected ResourceProvisionerSimple(final ResourceManageable resource) {
         super(resource);
     }
 
     @Override
-    public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
+    public boolean allocateResourceForVm(final Vm vm, final long newTotalVmResourceCapacity) {
         Objects.requireNonNull(vm);
         if (isSuitableForVm(vm, newTotalVmResourceCapacity)) {
             final long prevVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
@@ -77,19 +77,19 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     }
 
     @Override
-    public boolean allocateResourceForVm(Vm vm, double newTotalVmResource) {
+    public boolean allocateResourceForVm(final Vm vm, final double newTotalVmResource) {
         return allocateResourceForVm(vm, (long)newTotalVmResource);
     }
 
     @Override
-    public boolean deallocateResourceForVm(Vm vm) {
+    public boolean deallocateResourceForVm(final Vm vm) {
         final long amountFreed = deallocateResourceForVmSettingAllocationMapEntryToZero(vm);
         getResourceAllocationMap().remove(vm);
         return amountFreed > 0;
     }
 
     @Override
-    protected long deallocateResourceForVmSettingAllocationMapEntryToZero(Vm vm) {
+    protected long deallocateResourceForVmSettingAllocationMapEntryToZero(final Vm vm) {
         if (getResourceAllocationMap().containsKey(vm)) {
             final long vmAllocatedResource = getResourceAllocationMap().get(vm);
             getResourceAllocationMap().put(vm, 0L);
@@ -105,7 +105,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     }
 
     @Override
-    public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {
+    public boolean isSuitableForVm(final Vm vm, final long newVmTotalAllocatedResource) {
         final long currentAllocatedResource = getAllocatedResourceForVm(vm);
         final long allocationDifference = newVmTotalAllocatedResource - currentAllocatedResource;
         return getResource().getAvailableResource() >=  allocationDifference;

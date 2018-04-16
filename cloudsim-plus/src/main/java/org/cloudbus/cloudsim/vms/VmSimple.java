@@ -133,7 +133,7 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(int id, long mipsCapacity, long numberOfPes) {
+    public VmSimple(final int id, final long mipsCapacity, final long numberOfPes) {
         this.resources = new ArrayList<>(4);
         setInMigration(false);
         setHost(Host.NULL);
@@ -181,7 +181,7 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(long mipsCapacity, long numberOfPes) {
+    public VmSimple(final long mipsCapacity, final long numberOfPes) {
         this(-1, mipsCapacity, numberOfPes);
     }
 
@@ -204,59 +204,12 @@ public class VmSimple implements Vm {
      * @pre numberOfPes > 0
      * @post $none
      */
-    public VmSimple(int id, double mipsCapacity, long numberOfPes) {
+    public VmSimple(final int id, final double mipsCapacity, final long numberOfPes) {
         this(id, (long)mipsCapacity, numberOfPes);
     }
 
-    /**
-     * Creates a Vm with the given parameters.
-     *
-     * @param id unique ID of the VM
-     * @param broker ID of the VM's owner, that is represented by the id of the {@link DatacenterBroker}
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
-     * @param ramCapacity amount of ram in Megabytes
-     * @param bwCapacity amount of bandwidth to be allocated to the VM (in Megabits/s)
-     * @param size size the VM image in Megabytes (the amount of storage it will use, at least initially).
-     * @param vmm Virtual Machine Monitor that manages the VM lifecycle
-     * @param cloudletScheduler scheduler that defines the execution policy for Cloudlets inside this Vm
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     *
-     * @pre id >= 0
-     * @pre broker >= 0
-     * @pre storageCapacity > 0
-     * @pre ramCapacity > 0
-     * @pre bwCapacity > 0
-     * @pre numberOfPes > 0
-     * @pre cloudletScheduler != null
-     * @post $none
-     */
-    @Deprecated
-    public VmSimple(
-            int id,
-            DatacenterBroker broker,
-            long mipsCapacity,
-            int numberOfPes,
-            long ramCapacity,
-            long bwCapacity,
-            long size,
-            String vmm,
-            CloudletScheduler cloudletScheduler)
-    {
-        this(id, mipsCapacity, numberOfPes);
-        setBroker(broker);
-        setRam(ramCapacity);
-        setBw(bwCapacity);
-        setSize(size);
-        setVmm(vmm);
-        setCloudletScheduler(cloudletScheduler);
-    }
-
     @Override
-    public double updateProcessing(double currentTime, List<Double> mipsShare) {
+    public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
         if (Objects.isNull(mipsShare)) {
             return Double.MAX_VALUE;
         }
@@ -275,12 +228,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public double getCpuPercentUsage(double time) {
+    public double getCpuPercentUsage(final double time) {
         return cloudletScheduler.getRequestedCpuPercentUtilization(time);
     }
 
     @Override
-    public double getTotalCpuMipsUsage(double time) {
+    public double getTotalCpuMipsUsage(final double time) {
         return getCpuPercentUsage(time) * getTotalMipsCapacity();
     }
 
@@ -824,7 +777,7 @@ public class VmSimple implements Vm {
         }
 
         vmScaling.setVm(this);
-        this.addOnUpdateProcessingListener(evt -> vmScaling.requestUpScalingIfPredicateMatches(evt.getTime()));
+        this.addOnUpdateProcessingListener(vmScaling::requestUpScalingIfPredicateMatches);
         return vmScaling;
     }
 

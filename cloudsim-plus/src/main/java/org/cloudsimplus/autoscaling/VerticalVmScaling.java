@@ -35,6 +35,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.function.Function;
 
@@ -193,11 +194,11 @@ public interface VerticalVmScaling extends VmScaling {
      * depends on the {@link Datacenter#getSchedulingInterval()} value.
      * Make sure to set such a value to enable the periodic overload verification.</p>
      *
-     * @param time current simulation time
+     * @param evt current simulation time
      * @see #getScalingFactor()
      */
     @Override
-    boolean requestUpScalingIfPredicateMatches(double time);
+    boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 
     /**
      * Gets a {@link Function} that defines the upper utilization threshold for a {@link #getVm() Vm}

@@ -459,7 +459,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
     }
 
-    private void requestVmVerticalScaling(SimEvent ev) {
+    private void requestVmVerticalScaling(final SimEvent ev) {
         if (!(ev.getData() instanceof VerticalVmScaling)) {
             return;
         }

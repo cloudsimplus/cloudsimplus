@@ -30,6 +30,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.Objects;
 import java.util.function.Function;
@@ -62,7 +63,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
      * In the case of up scaling, the value 1 will scale the resource in 100%, doubling its capacity.
      * @see VerticalVmScaling#setResourceScaling(ResourceScaling)
      */
-    public VerticalVmScalingSimple(final Class<? extends ResourceManageable> resourceClassToScale, double scalingFactor){
+    public VerticalVmScalingSimple(final Class<? extends ResourceManageable> resourceClassToScale, final double scalingFactor){
         super();
         this.setResourceScaling(new ResourceScalingGradual());
         this.lowerUtilizationThresholdFunction = VerticalVmScaling.NULL.getLowerThresholdFunction();
@@ -117,7 +118,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
      * @throws IllegalArgumentException if the two functions are equal
      * @throws NullPointerException if any of the functions is null
      */
-    private void validateFunctions(Function<Vm, Double> lowerThresholdFunction, Function<Vm, Double> upperThresholdFunction) {
+    private void validateFunctions(final Function<Vm, Double> lowerThresholdFunction, final Function<Vm, Double> upperThresholdFunction) {
         Objects.requireNonNull(lowerThresholdFunction);
         Objects.requireNonNull(upperThresholdFunction);
         if(upperThresholdFunction.equals(lowerThresholdFunction)){
@@ -146,13 +147,13 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     }
 
     @Override
-    public final boolean requestUpScalingIfPredicateMatches(final double time) {
-        if(!isTimeToCheckPredicate(time)) {
+    public final boolean requestUpScalingIfPredicateMatches(final VmHostEventInfo evt) {
+        if(!isTimeToCheckPredicate(evt.getTime())) {
             return false;
         }
 
-        final boolean requestedScaling = (isVmUnderloaded() || isVmOverloaded()) && requestUpScaling(time);
-        setLastProcessingTime(time);
+        final boolean requestedScaling = (isVmUnderloaded() || isVmOverloaded()) && requestUpScaling(evt.getTime());
+        setLastProcessingTime(evt.getTime());
         return requestedScaling;
     }
 
@@ -215,7 +216,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     @Override
     protected boolean requestUpScaling(final double time) {
         final DatacenterBroker broker = this.getVm().getBroker();
-        //@todo the src was the VM and the dest the broker, but the VM isn't a SimEntity. See if this change broke something
+        //@todo Previously, the src was the VM and the dest the broker. However, the VM isn't a SimEntity. See if this change brakes anything
         broker.getSimulation().sendNow(broker, broker, CloudSimTags.VM_VERTICAL_SCALING, this);
         return true;
     }

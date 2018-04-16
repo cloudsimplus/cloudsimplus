@@ -64,10 +64,10 @@ import static java.util.Comparator.comparingDouble;
 /**
  * An example that scales VM PEs up or down, according to the arrival of Cloudlets.
  * A {@link VerticalVmScaling}
- * is set to each {@link #createListOfScalableVms(int) initially created VM},
- * which will check at {@link #SCHEDULING_INTERVAL specific time intervals}
- * if VM PEs {@link #upperCpuUtilizationThreshold(Vm) are over or underloaded} to then
- * request such PEs to be scaled up or down.
+ * is set to each {@link #createListOfScalableVms(int) initially created VM}.
+ * Every VM will check at {@link #SCHEDULING_INTERVAL specific time intervals}
+ * if its PEs {@link #upperCpuUtilizationThreshold(Vm) are over or underloaded} to then
+ * request such PEs to be up or down scaled.
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
  * to enable monitoring the simulation and dynamically create objects such as Cloudlets and VMs at runtime.
@@ -162,9 +162,9 @@ public class VerticalVmCpuScalingExample {
     }
 
     private void printSimulationResults() {
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
-        Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        final Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
+        final Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
         new CloudletsTableBuilder(finishedCloudlets).build();
