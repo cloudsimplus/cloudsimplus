@@ -27,6 +27,7 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public int compareTo(SimEntity o) {
         return 0;
     }
+    @Override public SimEntity setState(State state) { return this; }
     @Override public boolean isStarted() {
         return false;
     }
@@ -37,7 +38,7 @@ final class DatacenterBrokerNull implements DatacenterBroker {
         return this;
     }
     @Override public void processEvent(SimEvent ev) {/**/}
-    @Override public void schedule(int dest, double delay, int tag) {/**/}
+    @Override public void schedule(SimEntity dest, double delay, int tag) {/**/}
     @Override public void run() {/**/}
     @Override public void start() {/**/}
     @Override public int getId() {

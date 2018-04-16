@@ -46,8 +46,8 @@ public class PowerDatacenterBroker extends DatacenterBrokerSimple {
         final Vm vm = (Vm) ev.getData();
 
 		if (!vm.isCreated()) {
-            Log.printConcatLine(getSimulation().clock() + ": " + getName() + ": Creation of VM #" + vm.getId()
-                + " failed in Datacenter #" + vm.getHost().getDatacenter().getId());
+            Log.printFormattedLine("%.2f: %s: Creation of %s failed in %s",
+                getSimulation().clock(), getName(), vm, vm.getHost().getDatacenter());
 		}
 		return super.processVmCreateResponseFromDatacenter(ev);
 	}

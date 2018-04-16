@@ -338,14 +338,14 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * See {@link #computeCloudletInitialVirtualRuntime(CloudletExecution)}
      * for more details.</p>
      *
-     * @param rcl {@inheritDoc}
+     * @param ce {@inheritDoc}
      * @param fileTransferTime {@inheritDoc}
      */
     @Override
-    public double processCloudletSubmit(CloudletExecution rcl, double fileTransferTime) {
-        rcl.setVirtualRuntime(computeCloudletInitialVirtualRuntime(rcl));
-        rcl.setTimeSlice(computeCloudletTimeSlice(rcl));
-        return super.processCloudletSubmit(rcl, fileTransferTime);
+    public double processCloudletSubmit(CloudletExecution ce, double fileTransferTime) {
+        ce.setVirtualRuntime(computeCloudletInitialVirtualRuntime(ce));
+        ce.setTimeSlice(computeCloudletTimeSlice(ce));
+        return super.processCloudletSubmit(ce, fileTransferTime);
     }
 
     /**
@@ -364,20 +364,20 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     @Override
-    public void updateCloudletProcessing(CloudletExecution rcl, double currentTime) {
+    public void updateCloudletProcessing(CloudletExecution ce, double currentTime) {
         /*
         Cloudlet has never been executed yet and it will start executing now,
         sets its actual virtual runtime. The negative value was used so far
         just to sort Cloudlets in the waiting list according to their priorities.
         */
-        if(rcl.getVirtualRuntime() < 0){
-            rcl.setVirtualRuntime(0);
+        if(ce.getVirtualRuntime() < 0){
+            ce.setVirtualRuntime(0);
         }
 
-        final double cloudletTimeSpan = currentTime - rcl.getLastProcessingTime();
-        super.updateCloudletProcessing(rcl, currentTime);
+        final double cloudletTimeSpan = currentTime - ce.getLastProcessingTime();
+        super.updateCloudletProcessing(ce, currentTime);
 
-        rcl.addVirtualRuntime(cloudletTimeSpan);
+        ce.addVirtualRuntime(cloudletTimeSpan);
     }
 
     /**
@@ -386,11 +386,11 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * The initial value is negative to indicate the Cloudlet hasn't started
      * executing yet. The virtual runtime is computed based on the Cloudlet priority.
      *
-     * @param rcl Cloudlet to compute the initial virtual runtime
+     * @param ce Cloudlet to compute the initial virtual runtime
      * @return the computed initial virtual runtime as a negative value
      * to indicate that the Cloudlet hasn't started executing yet
      */
-    private double computeCloudletInitialVirtualRuntime(CloudletExecution rcl) {
+    private double computeCloudletInitialVirtualRuntime(CloudletExecution ce) {
         /*
         A negative virtual runtime indicates the cloudlet has never been executed yet.
         This math was used just to ensure that the first added cloudlets
@@ -408,9 +408,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         can be understood as resulting in "higher negative" values, that is,
         extreme negative values.
         */
-        final double inverseOfCloudletId = Integer.MAX_VALUE/(rcl.getCloudletId()+1.0);
+        final double inverseOfCloudletId = Integer.MAX_VALUE/(ce.getCloudletId()+1.0);
 
-        return -Math.abs(rcl.getCloudlet().getPriority() + inverseOfCloudletId);
+        return -Math.abs(ce.getCloudlet().getPriority() + inverseOfCloudletId);
     }
 
     /**

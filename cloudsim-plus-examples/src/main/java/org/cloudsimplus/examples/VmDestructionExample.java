@@ -117,7 +117,11 @@ public class VmDestructionExample {
         vmList = createVms();
         cloudletList = createCloudlets();
 
-        /*Adds a Listener to track the execution update of VM 1*/
+        /*Adds a Listener to track the execution update of VM 1.
+        * If you want to track the update processing of multiple VMs, you can
+        * add this event listener for each desired VM that it will work
+        * transparently for any VM.
+        */
         vmList.get(1).addOnUpdateProcessingListener(this::vmProcessingUpdate);
 
         broker0.submitVmList(vmList);

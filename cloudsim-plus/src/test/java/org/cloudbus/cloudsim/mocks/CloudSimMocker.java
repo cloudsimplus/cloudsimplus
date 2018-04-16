@@ -111,12 +111,6 @@ public final class CloudSimMocker {
             .andReturn(clockTimeToReturn);
     }
 
-    public IExpectationSetters<String> getEntityName(final int datacenterId) {
-        return EasyMock
-                .expect(mock.getEntityName(datacenterId))
-                .andReturn("datacenter" + datacenterId);
-    }
-
     /**
      * Finishes the mocking process, making the mocked CloudSim class ready to
      * use. The method is used just internally as the final step in the

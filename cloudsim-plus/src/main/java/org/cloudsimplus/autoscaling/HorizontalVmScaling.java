@@ -26,6 +26,7 @@ package org.cloudsimplus.autoscaling;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -95,11 +96,11 @@ public interface HorizontalVmScaling extends VmScaling {
      * new Cloudlets were submitted to the broker.
      * </b></p>
      *
-     * @param time current simulation time
+     * @param evt current simulation time
      * @return {@inheritDoc}
      */
     @Override
-    boolean requestUpScalingIfPredicateMatches(double time);
+    boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 
     /**
      * Gets a {@link Predicate} that defines when {@link #getVm() Vm} is overloaded or not,

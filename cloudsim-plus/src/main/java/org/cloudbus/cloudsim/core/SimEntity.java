@@ -29,6 +29,8 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      */
     SimEntity NULL = new SimEntityNull();
 
+    SimEntity setState(State state);
+
     /**
      * Checks if the entity already was started or not.
      * @return
@@ -61,14 +63,12 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
     void processEvent(SimEvent ev);
 
     /**
-     * Sends an event to another entity by id number and with <b>no</b> data.
-     * Note that the tag <code>9999</code> is reserved.
-     *
-     * @param dest  The unique id number of the destination entity
+     * Sends an event to another entity with <b>no</b> attached data.
+     * @param dest the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag   An user-defined number representing the type of event.
      */
-    void schedule(int dest, double delay, int tag);
+    void schedule(SimEntity dest, double delay, int tag);
 
     /**
      * The run loop to process events fired during the simulation. The events
@@ -100,19 +100,19 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * @throws IllegalArgumentException when the entity name is <tt>null</tt> or empty
      */
     SimEntity setName(String newName) throws IllegalArgumentException;
-    
+
     /**
      * Define if log is enabled for this particular entity or not.
      * @param log true to enable logging, false to disable
      */
-    void setLog(boolean log);    
-    
+    void setLog(boolean log);
+
     /**
      * Prints a given message if the logging is enabled for this entity.
      * @param msg the message to be printed.
      */
     void println(String msg);
-    
+
     /**
      * Prints an empty line if the logging is enabled for this entity.
      */

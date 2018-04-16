@@ -61,6 +61,7 @@ final class DatacenterNull implements Datacenter {
     @Override public Datacenter setStorageList(List<FileStorage> storageList) {
         return Datacenter.NULL;
     }
+    @Override public SimEntity setState(State state) { return SimEntity.NULL; }
     @Override public boolean isStarted() {
         return false;
     }
@@ -71,7 +72,7 @@ final class DatacenterNull implements Datacenter {
         return this;
     }
     @Override public void processEvent(SimEvent ev) {/**/}
-    @Override public void schedule(int dest, double delay, int tag) {/**/}
+    @Override public void schedule(SimEntity dest, double delay, int tag) {/**/}
     @Override public void run() {/**/}
     @Override public void start() {/**/}
     @Override public void shutdownEntity() {/**/}

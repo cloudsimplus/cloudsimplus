@@ -121,10 +121,9 @@ public class NetworkDatacenter extends DatacenterSimple {
 
         // checks whether this Cloudlet has finished or not
         if (cl.isFinished()) {
-            final String name = getSimulation().getEntityName(cl.getBroker().getId());
             Log.printConcatLine(
                     getName(), ": Warning - Cloudlet #",
-                    cl.getId(), " owned by ", name,
+                    cl.getId(), " owned by ", cl.getBroker().getName(),
                     " is already completed/finished.");
             Log.printLine("Therefore, it is not being executed again\n");
 
@@ -136,10 +135,10 @@ public class NetworkDatacenter extends DatacenterSimple {
             if (ack) {
                 // unique tag = operation tag
                 final int tag = CloudSimTags.CLOUDLET_SUBMIT_ACK;
-                sendNow(cl.getBroker().getId(), tag, cl);
+                sendNow(cl.getBroker(), tag, cl);
             }
 
-            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_RETURN, cl);
+            sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_RETURN, cl);
 
             return;
         }
@@ -156,17 +155,17 @@ public class NetworkDatacenter extends DatacenterSimple {
         if (estimatedFinishTime > 0.0) { // if this cloudlet is in the exec
             // time to process the cloudlet
             estimatedFinishTime += fileTransferTime;
-            send(getId(),
+            send(this,
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
 
             // event to update the stages
-            send(getId(), 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+            send(this, 0.0001, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
 
         if (ack) {
             // unique tag = operation tag
-            sendNow(cl.getBroker().getId(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
+            sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
         }
 
         checkCloudletsCompletionForAllHosts();

@@ -157,8 +157,8 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
             his/her given utilizationUpdateFunction on such an instance,
             without causing infinity loop. Without passing a UtilizationModel clone,
             since the utilizationUpdateFunction function usually will call this current one, that in turns
-            calls the utilizationUpdateFunction to update the utilization progress, the infinity
-            loop condition would be set.*/
+            calls the utilizationUpdateFunction to update the utilization progress,
+            it would lead to an infinity loop.*/
             currentUtilization = utilizationUpdateFunction.apply(new UtilizationModelDynamic(this));
             previousUtilizationTime = time;
             if (currentUtilization <= 0) {

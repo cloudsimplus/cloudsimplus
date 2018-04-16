@@ -26,6 +26,7 @@ package org.cloudsimplus.autoscaling;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 /**
  * An interface to allow implementing <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">horizontal and vertical scaling</a>
@@ -68,8 +69,8 @@ public interface VmScaling {
      * that will call this method to check if it time to perform an down or up scaling, every time
      * the Vm processing is updated.</p>
      *
-     * @param time current simulation time
+     * @param evt event information, including the current simulation time and the VM to be scaled
      * @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker, false otherwise
      */
-    boolean requestUpScalingIfPredicateMatches(double time);
+    boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 }

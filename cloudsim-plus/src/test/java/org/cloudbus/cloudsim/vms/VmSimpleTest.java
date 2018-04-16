@@ -172,7 +172,7 @@ public class VmSimpleTest {
 
     @Test
     public void testToString() {
-        assertEquals("Vm " + vm.getId(), vm.toString());
+        assertEquals(String.format("Vm %d/Broker %d", vm.getId(), vm.getBroker().getId()), vm.toString());
     }
 
     @Test

@@ -26,6 +26,7 @@ package org.cloudsimplus.autoscaling;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -119,12 +120,12 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     }
 
     @Override
-    public final boolean requestUpScalingIfPredicateMatches(final double time) {
-        if(!isTimeToCheckPredicate(time)) {
+    public final boolean requestUpScalingIfPredicateMatches(final VmHostEventInfo evt) {
+        if(!isTimeToCheckPredicate(evt.getTime())) {
             return false;
         }
 
-        setLastProcessingTime(time);
-        return overloadPredicate.test(getVm()) && requestUpScaling(time);
+        setLastProcessingTime(evt.getTime());
+        return overloadPredicate.test(getVm()) && requestUpScaling(evt.getTime());
     }
 }

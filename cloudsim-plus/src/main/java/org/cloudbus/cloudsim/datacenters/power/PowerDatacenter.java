@@ -142,7 +142,7 @@ public class PowerDatacenter extends DatacenterSimple {
         targetHost.addMigratingInVm(entry.getKey());
         incrementMigrationCount();
 
-        send(getId(), delay, CloudSimTags.VM_MIGRATE, entry);
+        send(this, delay, CloudSimTags.VM_MIGRATE, entry);
     }
 
     /**
@@ -253,7 +253,7 @@ public class PowerDatacenter extends DatacenterSimple {
 
         super.updateHostsProcessing();
         super.processVmMigrate(ev, ack);
-        final SimEvent event = getSimulation().findFirstDeferred(getId(), new PredicateType(CloudSimTags.VM_MIGRATE));
+        final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTags.VM_MIGRATE));
         if (Objects.isNull(event) || event.eventTime() > getSimulation().clock()) {
             super.updateHostsProcessing();
         }

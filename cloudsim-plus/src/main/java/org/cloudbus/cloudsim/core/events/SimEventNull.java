@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.core.events;
 
+import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -13,20 +14,16 @@ import org.cloudsimplus.listeners.EventListener;
  */
 final class SimEventNull implements SimEvent {
     @Override public Type getType() { return Type.NULL; }
-    @Override public int getDestination() {
-        return 0;
-    }
-    @Override public int getSource() {
-        return 0;
+    @Override public SimEntity getDestination() { return SimEntity.NULL; }
+    @Override public SimEntity getSource() {
+        return SimEntity.NULL;
     }
     @Override public double eventTime() {
         return 0;
     }
-    @Override public double endWaitingTime() {
-        return 0;
-    }
-    @Override public int scheduledBy() {
-        return 0;
+    @Override public double endWaitingTime() { return 0; }
+    @Override public SimEntity scheduledBy() {
+        return SimEntity.NULL;
     }
     @Override public int getTag() {
         return 0;
@@ -34,10 +31,10 @@ final class SimEventNull implements SimEvent {
     @Override public Object getData() {
         return 0;
     }
-    @Override public SimEvent setSource(int source) {
+    @Override public SimEvent setSource(SimEntity source) {
         return this;
     }
-    @Override public SimEvent setDestination(int destination) {
+    @Override public SimEvent setDestination(SimEntity destination) {
         return this;
     }
     @Override public double getTime() {

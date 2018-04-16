@@ -247,7 +247,7 @@ public class HostFaultInjection extends CloudSimEntity {
         */
 
         if (numOfOtherEvents > 0 || getSimulation().clock() < getMaxTimeToGenerateFailureInSeconds()) {
-            schedule(getId(), getTimeDelayForNextFault(), CloudSimTags.HOST_FAILURE);
+            schedule(this, getTimeDelayForNextFault(), CloudSimTags.HOST_FAILURE);
         }
     }
 
@@ -542,7 +542,7 @@ public class HostFaultInjection extends CloudSimEntity {
          it is set here as the sender of the vm destroy request.
          */
         getSimulation().sendNow(
-                broker.getId(), datacenter.getId(),
+                broker, datacenter,
                 CloudSimTags.VM_DESTROY, vm);
     }
 

@@ -62,8 +62,8 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     @Override
     protected double updateCloudletProcessing() {
         if (getLastCloudletProcessingTime() == -1 || getLastCloudletProcessingTime() == getSimulation().clock()) {
-            getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
-            schedule(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+            getSimulation().cancelAll(this, new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+            schedule(this, getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return Double.MAX_VALUE;
         }
 
@@ -102,9 +102,8 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      */
     private void scheduleUpdateOfCloudletsProcessingForFutureTime(double nextCloudletFinishTime) {
         if (nextCloudletFinishTime != Double.MAX_VALUE) {
-            getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
-            // getSimulation().cancelAll(getId(), CloudSim.SIM_ANY);
-            send(getId(), getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+            getSimulation().cancelAll(this, new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+            send(this, getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
     }
 
@@ -122,24 +121,19 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
 
                 if (oldHost.equals(Host.NULL)) {
                     Log.printFormattedLine(
-                        "%.2f: Migration of VM #%d to Host #%d is started",
-                        getSimulation().clock(),
-                        entry.getKey().getId(),
-                        targetHost.getId());
+                        "%.2f: Migration of %s to %s is started",
+                        getSimulation().clock(), entry.getKey(), targetHost);
                 } else {
                     Log.printFormattedLine(
-                        "%.2f: Migration of VM #%d from Host #%d to Host #%d is started",
-                        getSimulation().clock(),
-                        entry.getKey().getId(),
-                        oldHost.getId(),
-                        targetHost.getId());
+                        "%.2f: Migration of %s from %s to %s is started",
+                        getSimulation().clock(), entry.getKey(), oldHost, targetHost);
                 }
 
                 targetHost.addMigratingInVm(entry.getKey());
                 incrementMigrationCount();
 
                 final double delay = timeToMigrateVm(entry.getKey(), targetHost);
-                send(getId(), delay, CloudSimTags.VM_MIGRATE, entry);
+                send(this, delay, CloudSimTags.VM_MIGRATE, entry);
             }
         }
     }

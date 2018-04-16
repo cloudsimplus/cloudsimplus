@@ -140,7 +140,8 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
-     *  @param cloudletId     id of the Cloudlet
+     *
+     * @param cloudletId     id of the Cloudlet
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
      * @param pesNumber      number of PEs that Cloudlet will require
      */
@@ -189,9 +190,20 @@ public abstract class CloudletAbstract implements Cloudlet {
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
-     * @param pesNumber      number of PEs that Cloudlet will require
+     * @param pesNumber number of PEs that Cloudlet will require
      */
     public CloudletAbstract(final long length, final int pesNumber) {
+        this(-1, length, pesNumber);
+    }
+
+    /**
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     *
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param pesNumber number of PEs that Cloudlet will require
+     */
+    public CloudletAbstract(final long length, final long pesNumber) {
         this(-1, length, pesNumber);
     }
 

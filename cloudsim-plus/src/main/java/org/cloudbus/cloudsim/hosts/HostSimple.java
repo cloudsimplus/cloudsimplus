@@ -186,7 +186,7 @@ public class HostSimple implements Host {
     public double updateProcessing(final double currentTime) {
         double nextSimulationTime = Double.MAX_VALUE;
         /* Uses a traditional for to avoid ConcurrentModificationException,
-         * e.g., in cases of Vm destruction during simulation execution.*/
+         * e.g., in cases when Vm is destroyed during simulation execution.*/
         for (int i = 0; i < vmList.size(); i++) {
             final Vm vm = vmList.get(i);
             final double nextTime = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));

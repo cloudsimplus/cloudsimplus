@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.network.switches;
 
 import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
@@ -13,7 +14,7 @@ import java.util.Map;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface Switch extends Identificable {
+public interface Switch extends SimEntity {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Switch}

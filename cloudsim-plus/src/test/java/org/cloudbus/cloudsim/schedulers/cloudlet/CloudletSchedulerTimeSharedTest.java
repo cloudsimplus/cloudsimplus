@@ -150,19 +150,19 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test @Ignore("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
     public void testGetTotalCurrentAllocatedMipsForCloudlet() {
-        final CloudletExecution rcl = new CloudletExecution(Cloudlet.NULL);
+        final CloudletExecution ce = new CloudletExecution(Cloudlet.NULL);
         final double time = 0.0;
         final double expResult = 0.0;
-        final double result = instance.getAllocatedMipsForCloudlet(rcl, time);
+        final double result = instance.getAllocatedMipsForCloudlet(ce, time);
         assertEquals(expResult, result, 0.0);
     }
 
     @Test @Ignore("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
     public void testGetTotalCurrentRequestedMipsForCloudlet() {
-        final CloudletExecution rcl = new CloudletExecution(Cloudlet.NULL);
+        final CloudletExecution ce = new CloudletExecution(Cloudlet.NULL);
         final double time = 0.0;
         final double expResult = 0.0;
-        final double result = instance.getRequestedMipsForCloudlet(rcl, time);
+        final double result = instance.getRequestedMipsForCloudlet(ce, time);
         assertEquals(expResult, result, 0.0);
     }
 

@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.function.Function;
 
@@ -54,7 +55,7 @@ final class VerticalVmScalingNull implements VerticalVmScaling {
     @Override public boolean isVmUnderloaded() { return false; }
     @Override public boolean isVmOverloaded() { return false; }
     @Override public Resource getResource() { return Resource.NULL; }
-    @Override public boolean requestUpScalingIfPredicateMatches(double time) {
+    @Override public boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt) {
         return false;
     }
     @Override public Vm getVm() {
