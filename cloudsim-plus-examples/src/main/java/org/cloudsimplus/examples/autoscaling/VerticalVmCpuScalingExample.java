@@ -31,8 +31,6 @@ import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -45,7 +43,9 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
@@ -341,26 +341,6 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Creates a single Cloudlet.
-     *
-     * @param length the length of the cloudlet to create.
-     * @param numberOfPes the number of PEs the Cloudlets requires.
-     * @param delay the delay that defines the arrival time of the Cloudlet at the Cloud infrastructure.
-     * @return the created Cloudlet
-     */
-    private Cloudlet createCloudlet(long length, int numberOfPes, double delay) {
-        final int id = createdCloudlets++;
-        //randomly selects a length for the cloudlet
-        UtilizationModel utilizationFull = new UtilizationModelFull();
-        Cloudlet cl = new CloudletSimple(id, length, numberOfPes);
-        cl.setFileSize(1024)
-          .setOutputSize(1024)
-          .setUtilizationModel(utilizationFull)
-          .setSubmissionDelay(delay);
-        return cl;
-    }
-
-    /**
      * Creates a single Cloudlet with no delay, which means the Cloudlet arrival time will
      * be zero (exactly when the simulation starts).
      *
@@ -368,7 +348,49 @@ public class VerticalVmCpuScalingExample {
      * @param numberOfPes the number of PEs the Cloudlets requires
      * @return the created Cloudlet
      */
-    private Cloudlet createCloudlet(long length, int numberOfPes) {
+    private Cloudlet createCloudlet(final long length, final int numberOfPes) {
         return createCloudlet(length, numberOfPes, 0);
+    }
+
+    /**
+     * Creates a single Cloudlet.
+     *
+     * @param length the length of the cloudlet to create.
+     * @param numberOfPes the number of PEs the Cloudlets requires.
+     * @param delay the delay that defines the arrival time of the Cloudlet at the Cloud infrastructure.
+     * @return the created Cloudlet
+     */
+    private Cloudlet createCloudlet(final long length, final int numberOfPes, final double delay) {
+        /*
+        Since a VM PE isn't used by two Cloudlets at the same time,
+        the Cloudlet can used 100% of that CPU capacity at the time
+        it is running. Even if a CloudletSchedulerTimeShared is used
+        to share the same VM PE among multiple Cloudlets,
+        just one Cloudlet uses the PE at a time.
+        Then it is preempted to enable other Cloudlets to use such a VM PE.
+         */
+        final UtilizationModel utilizationCpu = new UtilizationModelFull();
+
+        /**
+         * Since BW e RAM are shared resources that don't enable preemption,
+         * two Cloudlets can't use the same portion of such resources at the same time
+         * (unless virtual memory is enabled, but such a feature is not available in simulation).
+         * This way, the total capacity of such resources is being evenly split among created Cloudlets.
+         * If there are 10 Cloudlets, each one will use just 10% of such resources.
+         * This value can be defined in different ways, as you want. For instance, some Cloudlets
+         * can require more resources than other ones.
+         * To enable that, you would need to instantiate specific {@link UtilizationModelDynamic} for each Cloudlet,
+         * use a {@link UtilizationModelStochastic} to define resource usage randomly,
+         * or use any other {@link UtilizationModel} implementation.
+        */
+        final UtilizationModel utilizationModelDynamic = new UtilizationModelDynamic(1.0/CLOUDLETS);
+        Cloudlet cl = new CloudletSimple(length, numberOfPes);
+        cl.setFileSize(1024)
+            .setOutputSize(1024)
+            .setUtilizationModelBw(utilizationModelDynamic)
+            .setUtilizationModelRam(utilizationModelDynamic)
+            .setUtilizationModelCpu(utilizationCpu)
+            .setSubmissionDelay(delay);
+        return cl;
     }
 }

@@ -186,7 +186,7 @@ public class UtilizationModelDynamicTest {
         final UtilizationModelDynamic instance = new UtilizationModelDynamic();
         final double maxResourceUsagePercentage = 1.1;
         instance.setMaxResourceUtilization(maxResourceUsagePercentage);
-        assertEquals(maxResourceUsagePercentage, instance.getMaxResourceUtilization());
+        assertEquals(maxResourceUsagePercentage, instance.getMaxResourceUtilization(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)

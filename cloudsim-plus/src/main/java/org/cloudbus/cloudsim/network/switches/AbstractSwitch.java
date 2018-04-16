@@ -156,7 +156,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         // add packet in the switch list
         // add packet in the host list
         // int src=ev.getSource();
-        getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
+        getSimulation().cancelAll(this, new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
         schedule(this, getSwitchingDelay(), CloudSimTags.NETWORK_EVENT_SEND);
     }
 
@@ -177,7 +177,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     protected void processPacketUp(SimEvent ev) {
         // packet coming from down level router has to be sent up.
         // check which switch to forward to and add packet in the switch list
-        getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
+        getSimulation().cancelAll(this, new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
         schedule(this, switchingDelay, CloudSimTags.NETWORK_EVENT_SEND);
     }
 

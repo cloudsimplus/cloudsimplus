@@ -57,11 +57,11 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Processes a finished cloudlet.
      *
-     * @param rcl finished cloudlet
-     * @pre rcl != $null
+     * @param ce finished cloudlet
+     * @pre ce != $null
      * @post $none
      */
-    void cloudletFinish(CloudletExecution rcl);
+    void cloudletFinish(CloudletExecution ce);
 
     /**
      * Pauses execution of a cloudlet.
@@ -204,20 +204,20 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Gets the current allocated MIPS for cloudlet.
      *
-     * @param rcl the rcl
+     * @param ce the ce
      * @param time the time
      * @return the current allocated mips for cloudlet
      */
-    double getAllocatedMipsForCloudlet(CloudletExecution rcl, double time);
+    double getAllocatedMipsForCloudlet(CloudletExecution ce, double time);
 
     /**
      * Gets the current requested MIPS for a given cloudlet.
      *
-     * @param rcl the rcl
+     * @param ce the ce
      * @param time the time
      * @return the current requested mips for the given cloudlet
      */
-    double getRequestedMipsForCloudlet(CloudletExecution rcl, double time);
+    double getRequestedMipsForCloudlet(CloudletExecution ce, double time);
 
     /**
      * Gets total CPU utilization percentage of all cloudlets,

@@ -62,7 +62,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
     @Override
     protected double updateCloudletProcessing() {
         if (getLastCloudletProcessingTime() == -1 || getLastCloudletProcessingTime() == getSimulation().clock()) {
-            getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+            getSimulation().cancelAll(this, new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
             schedule(this, getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
             return Double.MAX_VALUE;
         }
@@ -102,8 +102,7 @@ public class PowerDatacenterNonPowerAware extends PowerDatacenter {
      */
     private void scheduleUpdateOfCloudletsProcessingForFutureTime(double nextCloudletFinishTime) {
         if (nextCloudletFinishTime != Double.MAX_VALUE) {
-            getSimulation().cancelAll(getId(), new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
-            // getSimulation().cancelAll(getId(), CloudSim.SIM_ANY);
+            getSimulation().cancelAll(this, new PredicateType(CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
             send(this, getSchedulingInterval(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
     }

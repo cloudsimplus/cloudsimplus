@@ -22,7 +22,7 @@ final class SimulationNull implements Simulation {
     @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> p) {
         return SimEvent.NULL;
     }
-    @Override public boolean cancelAll(int src, Predicate<SimEvent> p) {
+    @Override public boolean cancelAll(SimEntity src, Predicate<SimEvent> p) {
         return false;
     }
     @Override public double clock() { return 0.0; }

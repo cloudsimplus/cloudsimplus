@@ -64,14 +64,17 @@ import java.util.List;
 import static java.util.Comparator.comparingDouble;
 
 /**
- * An example that scale VM RAM up, according to the arrival of Cloudlets.
+ * An example that scales VM RAM up or down, according to current Cloudlets requests.
  * It is used a {@link UtilizationModelDynamic} object to
- * define Vm RAM usage that will increment along the time.
- * A {@link VerticalVmScaling}
+ * define Vm RAM usage increasingly along the time.
+ * Cloudlets are created with different length, so that they will finish gradually.
+ * This way, it's possible to check that RAM usage decreases along the time.
+ *
+ * <p>A {@link VerticalVmScaling}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
  * that will check at {@link #SCHEDULING_INTERVAL specific time intervals}
  * if a VM RAM {@link #upperRamUtilizationThreshold(Vm) is overloaded or not} to then
- * request the RAM to be scaled up.
+ * request the RAM to be scaled up.</p>
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
  * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs.
@@ -159,21 +162,22 @@ public class VerticalVmRamScalingExample {
     }
 
     private void onClockTickListener(EventInfo eventInfo) {
-        vmList.forEach(vm -> {
+        for (Vm vm : vmList) {
             Log.printFormatted("\t\tTime %6.1f: Vm %d Ram Usage: %6.2f%% (%4d of %4d MB)",
-                eventInfo.getTime(), vm.getId(), vm.getRam().getPercentUtilization()*100.0,
+                eventInfo.getTime(), vm.getId(), vm.getRam().getPercentUtilization() * 100.0,
                 vm.getRam().getAllocatedResource(), vm.getRam().getCapacity());
+
             Log.printFormattedLine(" | Host Ram Allocation: %6.2f%% (%5d of %5d MB). Running Cloudlets: %d",
-                vm.getHost().getRam().getPercentUtilization()*100,
+                vm.getHost().getRam().getPercentUtilization() * 100,
                 vm.getHost().getRam().getAllocatedResource(),
                 vm.getHost().getRam().getCapacity(), vm.getCloudletScheduler().getCloudletExecList().size());
-        });
+        }
     }
 
     private void printSimulationResults() {
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
-        Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        final Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
+        final Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
         new CloudletsTableBuilder(finishedCloudlets).build();
@@ -192,7 +196,7 @@ public class VerticalVmRamScalingExample {
     }
 
     private Host createHost() {
-        List<Pe> peList = new ArrayList<>(HOST_PES);
+        final List<Pe> peList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
@@ -200,7 +204,6 @@ public class VerticalVmRamScalingExample {
         final long ram = 20000; //in Megabytes
         final long bw = 100000; //in Megabytes
         final long storage = 10000000; //in Megabites/s
-        final int id = hostList.size();
         return new HostSimple(ram, bw, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
@@ -216,7 +219,7 @@ public class VerticalVmRamScalingExample {
      * @see #createVerticalRamScalingForVm(Vm)
      */
     private List<Vm> createListOfScalableVms(final int numberOfVms) {
-        List<Vm> newList = new ArrayList<>(numberOfVms);
+        final List<Vm> newList = new ArrayList<>(numberOfVms);
         for (int i = 0; i < numberOfVms; i++) {
             Vm vm = createVm();
             createVerticalRamScalingForVm(vm);

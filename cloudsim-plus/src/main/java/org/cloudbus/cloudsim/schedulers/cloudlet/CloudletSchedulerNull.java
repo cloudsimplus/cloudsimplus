@@ -20,7 +20,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public Cloudlet cloudletCancel(int cloudletId) {
         return Cloudlet.NULL;
     }
-    @Override public void cloudletFinish(CloudletExecution rcl) {/**/}
+    @Override public void cloudletFinish(CloudletExecution ce) {/**/}
     @Override public boolean cloudletPause(int cloudletId) {
         return false;
     }
@@ -51,10 +51,10 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public double getPreviousTime() {
         return 0.0;
     }
-    @Override public double getAllocatedMipsForCloudlet(CloudletExecution rcl, double time) {
+    @Override public double getAllocatedMipsForCloudlet(CloudletExecution ce, double time) {
         return 0.0;
     }
-    @Override public double getRequestedMipsForCloudlet(CloudletExecution rcl, double time) {
+    @Override public double getRequestedMipsForCloudlet(CloudletExecution ce, double time) {
         return 0.0;
     }
     @Override public double getRequestedCpuPercentUtilization(double time) { return 0.0; }

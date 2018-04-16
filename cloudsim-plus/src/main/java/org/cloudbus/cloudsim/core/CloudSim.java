@@ -35,12 +35,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "1.3.0";
-
-    /**
-     * A constant to indicate that some entity was not found.
-     */
-    private static final int NOT_FOUND = -1;
+    public static final String VERSION = "1.3.1";
 
     /**
      * An array that works as a circular queue with capacity for just 2 elements
@@ -87,7 +82,7 @@ public class CloudSim implements Simulation {
     /**
      * @see #getMinTimeBetweenEvents()
      */
-    private double minTimeBetweenEvents = 0.1;
+    private final double minTimeBetweenEvents;
 
     /**
      * @see #getEntityList()
@@ -151,29 +146,26 @@ public class CloudSim implements Simulation {
     private Set<EventListener<EventInfo>> onClockTickListeners;
 
     /**
-     * Creates a CloudSim simulation using a default calendar.
+     * Creates a CloudSim simulation.
      * Internally it creates a CloudInformationService.
      *
      * @see CloudInformationService
-     * @pre numUser >= 0
-     * @post $none
+     * @see #CloudSim(double)
      */
     public CloudSim(){
-        this(null);
+        this(0.1);
     }
 
     /**
-     * Creates a CloudSim simulation with the given parameters.
+     * Creates a CloudSim simulation that tracks events happening in a time interval
+     * as little as the minTimeBetweenEvents parameter.
      * Internally it creates a {@link CloudInformationService}.
      *
-     * @param cal starting time for this simulation. If it is <code>null</code>,
-     * then the time will be taken from <code>Calendar.getInstance()</code>
-     * @throws RuntimeException
-     *
+     * @param minTimeBetweenEvents the minimal period between events. Events
+     * within shorter periods after the last event are discarded.
      * @see CloudInformationService
-     * @post $none
      */
-    public CloudSim(Calendar cal) {
+    public CloudSim(final double minTimeBetweenEvents) {
         this.entities = new ArrayList<>();
         this.future = new FutureQueue();
         this.deferred = new DeferredQueue();
@@ -189,37 +181,14 @@ public class CloudSim implements Simulation {
         this.lastTimeClockTickListenersWereUpdated = 0;
 
         // NOTE: the order for the lines below is important
-        this.calendar = (Objects.isNull(calendar) ? Calendar.getInstance() : calendar);
+        this.calendar = Calendar.getInstance();
         this.cis = new CloudInformationService(this);
-    }
 
-    /**
-     * Creates a CloudSim simulation with the given parameters.
-     * Internally it creates a {@link CloudInformationService}.
-     *
-     * @param numUser this parameter is not being used anymore
-     * @param cal starting time for this simulation. If it is <tt>null</tt>,
-     * then the time will be taken from <tt>Calendar.getInstance()</tt>
-     * @param traceFlag this parameter is not being used anymore
-     * @param periodBetweenEvents the minimal period between events. Events
-     * within shorter periods after the last event are discarded.
-     * @see CloudInformationService
-     * @pre numUser >= 0
-     * @post $none
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     */
-    @Deprecated
-    public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents) {
-        this(cal);
-
-        if (periodBetweenEvents <= 0) {
-            throw new IllegalArgumentException("The minimal time between events should be positive, but is:" + periodBetweenEvents);
+        if (minTimeBetweenEvents <= 0) {
+            throw new IllegalArgumentException("The minimal time between events should be positive, but is:" + minTimeBetweenEvents);
         }
 
-        minTimeBetweenEvents = periodBetweenEvents;
+        this.minTimeBetweenEvents = minTimeBetweenEvents;
     }
 
     @Override
@@ -239,7 +208,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public boolean terminateAt(double time) {
+    public boolean terminateAt(final double time) {
         if (time <= clockTime) {
             return false;
         } else {
@@ -315,7 +284,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void addEntity(CloudSimEntity e) {
+    public void addEntity(final CloudSimEntity e) {
         if (running) {
             //@todo src 1, dest 0? What did it mean? Probably nothing.
             final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, clockTime, e);
@@ -343,7 +312,7 @@ public class CloudSim implements Simulation {
         }
     }
 
-    private void processAllFutureEventsHappeningAtSameTimeOfTheFirstOne(SimEvent firstEvent) {
+    private void processAllFutureEventsHappeningAtSameTimeOfTheFirstOne(final SimEvent firstEvent) {
         processEvent(firstEvent);
         future.remove(firstEvent);
 
@@ -395,7 +364,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void wait(CloudSimEntity src, Predicate<SimEvent> p) {
+    public void wait(final CloudSimEntity src, final Predicate<SimEvent> p) {
         src.setState(SimEntity.State.WAITING);
         if (p != SIM_ANY) {
             // If a predicate has been used, store it in order to check incomming events that matches it
@@ -441,9 +410,9 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public boolean cancelAll(final int src, final Predicate<SimEvent> p) {
+    public boolean cancelAll(final SimEntity src, final Predicate<SimEvent> p) {
         final int previousSize = future.size();
-        final List<SimEvent> cancelList = filterEventsFromSourceEntity(future, p, src).collect(toList());
+        final List<SimEvent> cancelList = filterEventsFromSourceEntity(src, p, future).collect(toList());
         future.removeAll(cancelList);
         return previousSize < future.size();
     }
@@ -452,12 +421,12 @@ public class CloudSim implements Simulation {
      * Gets a stream of events inside a specific queue that match a given predicate
      * and from a source entity.
      *
-     * @param queue the queue to get the events from
-     * @param p the event selection predicate
      * @param src Id of entity that scheduled the event
+     * @param p the event selection predicate
+     * @param queue the queue to get the events from
      * @return a Stream of events from the queue
      */
-    private Stream<SimEvent> filterEventsFromSourceEntity(final EventQueue queue, final Predicate<SimEvent> p, final int src) {
+    private Stream<SimEvent> filterEventsFromSourceEntity(final SimEntity src, final Predicate<SimEvent> p, final EventQueue queue) {
         return filterEvents(queue, p.and(e -> e.getSource().equals(src)));
     }
 
@@ -558,7 +527,7 @@ public class CloudSim implements Simulation {
         final CloudSimEntity destEnt = entities.get(e.getDestination().getId());
         if (destEnt.getState() == SimEntity.State.WAITING) {
             final Predicate<SimEvent> p = waitPredicates.get(destEnt);
-            if (Objects.isNull(p) || e.getTag() == 9999 || p.test(e)) {
+            if (p == null || e.getTag() == 9999 || p.test(e)) {
                 destEnt.setEventBuffer(new CloudSimEvent(e));
                 destEnt.setState(SimEntity.State.RUNNABLE);
                 waitPredicates.remove(destEnt);
@@ -784,7 +753,7 @@ public class CloudSim implements Simulation {
      *
      * @param message the message
      */
-    private void printMessage(String message) {
+    private void printMessage(final String message) {
         Log.printLine(message);
     }
 
@@ -794,7 +763,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public final Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener) {
+    public final Simulation addOnSimulationPausedListener(final EventListener<EventInfo> listener) {
         Objects.requireNonNull(listener);
         this.onSimulationPausedListeners.add(listener);
         return this;
@@ -835,7 +804,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void setNetworkTopology(NetworkTopology networkTopology) {
+    public void setNetworkTopology(final NetworkTopology networkTopology) {
         this.networkTopology = networkTopology;
     }
 }

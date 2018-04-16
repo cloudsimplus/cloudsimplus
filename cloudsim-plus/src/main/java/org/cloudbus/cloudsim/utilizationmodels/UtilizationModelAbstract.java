@@ -31,7 +31,7 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
         this(Unit.PERCENTAGE);
     }
 
-    public UtilizationModelAbstract(Unit unit){
+    public UtilizationModelAbstract(final Unit unit){
         this.simulation = Simulation.NULL;
         this.setUnit(unit);
     }
@@ -51,14 +51,14 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
      * @param unit {@link Unit} to set
      * @return
      */
-    protected final UtilizationModel setUnit(Unit unit) {
+    protected final UtilizationModel setUnit(final Unit unit) {
         Objects.requireNonNull(unit);
         this.unit = unit;
         return this;
     }
 
     @Override
-    public UtilizationModel setSimulation(Simulation simulation) {
+    public UtilizationModel setSimulation(final Simulation simulation) {
         Objects.requireNonNull(simulation);
         this.simulation = simulation;
         return this;
@@ -74,11 +74,11 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
      * @param fieldName the name of the field to display at the Exception when the value is invalid
      * @param fieldValue the current value of the field
      */
-    protected void validateUtilizationField(String fieldName, double fieldValue) {
+    protected void validateUtilizationField(final String fieldName, final double fieldValue) {
         validateUtilizationField(fieldName, fieldValue, 0);
     }
 
-    protected void validateUtilizationField(String fieldName, double fieldValue, double minValue) {
+    protected void validateUtilizationField(final String fieldName, final double fieldValue, double minValue) {
         minValue = (minValue <= ALMOST_ZERO ? 0 : minValue);
         if(fieldValue < minValue) {
             throw new IllegalArgumentException(fieldName + " cannot be lower than " + minValue);

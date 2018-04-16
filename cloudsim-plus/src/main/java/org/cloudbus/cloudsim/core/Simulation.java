@@ -83,7 +83,7 @@ public interface Simulation {
      * @param p   the event selection predicate
      * @return true if at least one event has been cancelled; false otherwise
      */
-    boolean cancelAll(int src, Predicate<SimEvent> p);
+    boolean cancelAll(SimEntity src, Predicate<SimEvent> p);
 
     /**
      * Gets the current simulation time in seconds.

@@ -55,8 +55,9 @@ import java.util.List;
  * An example showing how to pause the simulation at a given time in order to collect
  * some partial results. In this example, such results are the cloudlets that have finished so far.
  * The example creates 4 Cloudlets that will run sequentially using a {@link CloudletSchedulerSpaceShared}.
- * The pause is scheduled before the simulation starts, that is the easier way to perform
- * such an action.
+ *
+ * <p>The pause is scheduled before the simulation starts, which is the <b>easiest way</b> to perform
+ * such an action.</p>
  *
  * <p>This example uses CloudSim Plus Listener features to intercept when
  * the simulation was paused, allowing to collect the desired data.
@@ -98,9 +99,6 @@ public class PauseSimulationAtGivenTimeExample1 {
     private final DatacenterBrokerSimple broker;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
-    private int numberOfCreatedCloudlets = 0;
-    private int numberOfCreatedVms = 0;
-    private int numberOfCreatedHosts = 0;
 
     /**
      * Starts the simulation.
@@ -155,7 +153,7 @@ public class PauseSimulationAtGivenTimeExample1 {
         * that will be executed only when the simulation is paused.
         * */
         this.simulation
-            .addOnSimulationPausedListener(pauseInfo -> printCloudletsFinishedSoFarAndResumeSimulation(pauseInfo));
+            .addOnSimulationPausedListener(this::printCloudletsFinishedSoFarAndResumeSimulation);
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         this.simulation.start();
@@ -180,19 +178,6 @@ public class PauseSimulationAtGivenTimeExample1 {
             .build();
     }
 
-    /**
-     * Checks if the Cloudlet that had its processing updated reached 50% of execution.
-     * If so, request the simulation interruption.
-     * @param event object containing data about the happened event
-     */
-    private void onClouletProcessingUpdate(CloudletVmEventInfo event) {
-        if(event.getCloudlet().getFinishedLengthSoFar() >= event.getCloudlet().getLength()/2.0){
-            Log.printFormattedLine("Cloudlet %d reached 50% of execution. Intentionally requesting termination of the simulation at time %.2f",
-                event.getCloudlet().getId(), simulation.clock());
-            simulation.terminate();
-        }
-    }
-
     private DatacenterSimple createDatacenter() {
         List<Host> hostList = new ArrayList<>();
         Host host0 = createHost();
@@ -204,12 +189,12 @@ public class PauseSimulationAtGivenTimeExample1 {
     }
 
     private Host createHost() {
-        long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
-        long bw = 10000; //in Megabits/s
+        final long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
+        final long ram = 2048; // host memory (MEGABYTE)
+        final long storage = 1000000; // host storage (MEGABYTE)
+        final long bw = 10000; //in Megabits/s
 
-        List<Pe> peList = new ArrayList<>(); //List of CPU cores
+        final List<Pe> peList = new ArrayList<>(); //List of CPU cores
 
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
@@ -218,38 +203,22 @@ public class PauseSimulationAtGivenTimeExample1 {
         return new HostSimple(ram, bw, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
-                .setVmScheduler(new VmSchedulerTimeShared());
+            .setVmScheduler(new VmSchedulerTimeShared());
     }
 
     private Vm createVm() {
-        long   mips = 1000;
-        long   storage = 10000; // vm image size (MEGABYTE)
-        int    ram = 512; // vm memory (MEGABYTE)
-        long   bw = 1000; // vm bandwidth (Megabits/s)
-        int    pesNumber = 1; // number of CPU cores
-
-        return new VmSimple(numberOfCreatedVms++, mips, pesNumber)
-                .setRam(ram)
-                .setBw(bw)
-                .setSize(storage)
+        return new VmSimple(1000, 1)
+                .setRam(512)
+                .setBw(1000)
+                .setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerSpaceShared());
     }
 
     private Cloudlet createCloudlet(Vm vm) {
-        long length = 10000; //in Million Structions (MI)
-        long fileSize = 300; //Size (in bytes) before execution
-        long outputSize = 300; //Size (in bytes) after execution
-        long  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
-
-        //Defines how CPU, RAM and Bandwidth resources are used
-        //Sets the same utilization model for all these resources.
-        UtilizationModel utilization = new UtilizationModelFull();
-
-        return new CloudletSimple(
-                numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setUtilizationModel(utilization)
+        return new CloudletSimple(10000, vm.getNumberOfPes())
+                .setFileSize(300)
+                .setOutputSize(300)
+                .setUtilizationModel(new UtilizationModelFull())
                 .setVm(vm);
     }
 
