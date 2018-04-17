@@ -52,34 +52,37 @@ public abstract class RunnerAbstract {
      * @param inputFolder        the input folder
      * @param outputFolder       the output folder
      * @param workload           the workload
-     * @param vmAllocationPolicy the vm allocation policy
-     * @param vmSelectionPolicy  the vm selection policy
+     * @param vmAllocationPolicyName the vm allocation policy
+     * @param vmSelectionPolicyName  the vm selection policy
      * @param safetyParameterOrUtilizationThreshold a double value to be passed to the specific
      *                               PowerVmSelectionPolicy being created, which the meaning depends
      *                               on that policy.
      */
     public RunnerAbstract(
-        boolean enableOutput,
-        boolean outputToFile,
-        String inputFolder,
-        String outputFolder,
-        String workload,
-        String vmAllocationPolicy,
-        String vmSelectionPolicy,
-        double safetyParameterOrUtilizationThreshold)
+        final boolean enableOutput,
+        final boolean outputToFile,
+        final String inputFolder,
+        final String outputFolder,
+        final String workload,
+        final String vmAllocationPolicyName,
+        final String vmSelectionPolicyName,
+        final double safetyParameterOrUtilizationThreshold)
     {
         this.startTime = System.currentTimeMillis()/1000;
         initLogOutput(
             enableOutput, outputToFile, outputFolder, workload,
-            vmAllocationPolicy, vmSelectionPolicy, safetyParameterOrUtilizationThreshold);
+            vmAllocationPolicyName, vmSelectionPolicyName, safetyParameterOrUtilizationThreshold);
 
         init(inputFolder + "/" + workload);
-        start(
-            getExperimentName(
-                workload, vmAllocationPolicy, vmSelectionPolicy,
-                String.valueOf(safetyParameterOrUtilizationThreshold)),
-            outputFolder,
-            getVmAllocationPolicy(vmAllocationPolicy, vmSelectionPolicy, safetyParameterOrUtilizationThreshold));
+
+        final String experimentName = getExperimentName(
+            workload, vmAllocationPolicyName, vmSelectionPolicyName,
+            String.valueOf(safetyParameterOrUtilizationThreshold));
+
+        final VmAllocationPolicy vmAllocationPolicy =
+            getVmAllocationPolicy(vmAllocationPolicyName, vmSelectionPolicyName, safetyParameterOrUtilizationThreshold);
+
+        start(experimentName, outputFolder, vmAllocationPolicy);
         this.finishTime = System.currentTimeMillis()/1000;
         System.out.printf("Total execution time: %.2f minutes\n", getActualExecutionTimeInMinutes());
     }
@@ -98,13 +101,13 @@ public abstract class RunnerAbstract {
      *                               on that policy.
      */
     protected void initLogOutput(
-        boolean enableOutput,
-        boolean outputToFile,
-        String outputFolder,
-        String workload,
-        String vmAllocationPolicy,
-        String vmSelectionPolicy,
-        double safetyParameterOrUtilizationThreshold)
+        final boolean enableOutput,
+        final boolean outputToFile,
+        final String outputFolder,
+        final String workload,
+        final String vmAllocationPolicy,
+        final String vmSelectionPolicy,
+        final double safetyParameterOrUtilizationThreshold)
     {
         try{
             setEnableOutput(enableOutput);
@@ -120,9 +123,11 @@ public abstract class RunnerAbstract {
                     folder2.mkdir();
                 }
 
-                File file = new File(outputFolder + "/log/"
-                    + getExperimentName(workload, vmAllocationPolicy, vmSelectionPolicy,
-                    String.valueOf(safetyParameterOrUtilizationThreshold)) + ".txt");
+                final String experimentName =
+                    getExperimentName(
+                        workload, vmAllocationPolicy, vmSelectionPolicy,
+                        String.valueOf(safetyParameterOrUtilizationThreshold));
+                File file = new File(outputFolder + "/log/" + experimentName + ".txt");
                 file.createNewFile();
                 Log.setOutput(new FileOutputStream(file));
             }
@@ -148,7 +153,7 @@ public abstract class RunnerAbstract {
      * @param outputFolder       the output folder
      * @param vmAllocationPolicy the vm allocation policy
      */
-    protected void start(final String experimentName, final String outputFolder, VmAllocationPolicy vmAllocationPolicy) {
+    protected void start(final String experimentName, final String outputFolder, final VmAllocationPolicy vmAllocationPolicy) {
         System.out.println("Starting " + experimentName);
 
         try {
@@ -185,17 +190,20 @@ public abstract class RunnerAbstract {
      * @param args the args
      * @return the experiment name
      */
-    protected String getExperimentName(String... args) {
-        StringBuilder experimentName = new StringBuilder();
+    protected String getExperimentName(final String... args) {
+        final StringBuilder experimentName = new StringBuilder();
         for (int i = 0; i < args.length; i++) {
             if (args[i].isEmpty()) {
                 continue;
             }
+
             if (i != 0) {
                 experimentName.append("_");
             }
+
             experimentName.append(args[i]);
         }
+
         return experimentName.toString();
     }
 
@@ -279,7 +287,7 @@ public abstract class RunnerAbstract {
      * @param vmSelectionPolicyName the vm selection policy name
      * @return the vm selection policy
      */
-    protected PowerVmSelectionPolicy getVmSelectionPolicy(String vmSelectionPolicyName) {
+    protected PowerVmSelectionPolicy getVmSelectionPolicy(final String vmSelectionPolicyName) {
         PowerVmSelectionPolicy vmSelectionPolicy = null;
         switch (vmSelectionPolicyName) {
             case "mc":
@@ -307,7 +315,7 @@ public abstract class RunnerAbstract {
      *
      * @param enableOutput the new enable output
      */
-    public void setEnableOutput(boolean enableOutput) {
+    public void setEnableOutput(final boolean enableOutput) {
         RunnerAbstract.enableOutput = enableOutput;
     }
 
