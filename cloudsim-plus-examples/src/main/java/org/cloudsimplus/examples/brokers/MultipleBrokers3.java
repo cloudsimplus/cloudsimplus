@@ -54,6 +54,10 @@ import java.util.List;
 import java.util.function.Function;
 
 /**
+ * An example showing how to create multiple VMs and Cloudlets for different customers,
+ * each one represented by a {@link DatacenterBroker} object.
+ * The example creates VMs and Cloudlets without defining an ID, which
+ * are defined when such objects are submitted to their brokers.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.3.1
