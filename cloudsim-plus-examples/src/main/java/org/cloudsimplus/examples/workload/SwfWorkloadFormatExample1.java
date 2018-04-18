@@ -183,14 +183,8 @@ public class SwfWorkloadFormatExample1 {
     }
 
     private void createCloudletsFromWorkloadFile() throws IOException {
-        String path = this.getClass().getClassLoader().getResource("workload/swf").getPath();
-        if(path == null){
-            path = "";
-        }
-
-        String fileName = String.format("%s/%s", path, WORKLOAD_FILENAME);
-        WorkloadFileReader reader =
-                new WorkloadFileReader(fileName, CLOUDLETS_MIPS);
+        final String fileName = "workload/swf/"+WORKLOAD_FILENAME;
+        WorkloadFileReader reader = WorkloadFileReader.getInstance(fileName, CLOUDLETS_MIPS);
         reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();
 

@@ -47,12 +47,10 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -102,12 +100,7 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment ext
         super(index, runner, seed);
         this.randCloudlet = new UniformDistr(1475098589732L);
         this.randVm = new UniformDistr(1475098589732L+1);
-        try {
-            this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
-        } catch (IOException ex) {
-            Logger.getLogger(CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
-        }
+        this.contract = SlaContract.getInstance(METRICS_FILE);
     }
 
     private DatacenterBroker getFirstBroker() {
@@ -130,7 +123,7 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment ext
        WorkloadFileReader workloadFileReader;
        cloudletList = new ArrayList<>();
         try {
-            workloadFileReader = WorkloadFileReader.getInstanceFromResourcesDir("METACENTRUM-2009-2.swf", 1);
+            workloadFileReader = WorkloadFileReader.getInstance("METACENTRUM-2009-2.swf", 1);
             cloudletList = workloadFileReader.generateWorkload().subList(0, 70);
         } catch (IOException ex) {
             Logger.getLogger(CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);

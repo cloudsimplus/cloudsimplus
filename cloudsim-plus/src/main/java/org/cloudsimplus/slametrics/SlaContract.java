@@ -28,7 +28,8 @@ import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudsimplus.vmtemplates.AwsEc2Template;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,8 +39,8 @@ import java.util.List;
  * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">Amazon Cloudwatch</a>.
  *
  * <p>Instances of this class can be created from a JSON file
- * using the {@link #getInstance(String)} or
- * {@link #getInstanceFromResourcesDir(Class, String)} methods.
+ * using the {@link #getInstance(InputStream)} or
+ * {@link #getInstance(String)} methods.
  * This way, one doesn't need to create instances
  * of this class using its default constructor.
  * This one is just used by the JSON parsing library.</p>
@@ -61,7 +62,13 @@ public class SlaContract {
      * Default constructor used to create a {@link SlaContract} instance.
      * If you want to get a contract from a JSON file,
      * you shouldn't call the constructor directly.
-     * Instead, use some methods such as the {@link #getInstance(String)}.
+     * Instead, use some methods of the class methods.
+     *
+     * <p>This constructor is just provided to enable the {@link Gson} object
+     * to use reflection to instantiate a SlaContract.</p>
+     *
+     * @see #getInstance(String)
+     * @see #getInstance(InputStream)
      */
     public SlaContract() {
         this.metrics = new ArrayList<>();
@@ -69,23 +76,22 @@ public class SlaContract {
 
     /**
      * Gets an {@link SlaContract} from a JSON file.
-     * @param jsonFilePath the full path to the JSON file representing the SLA contract to read
+     * Use the available constructors if you want to load a file outside the resource directory.
+     *
+     * @param inputStream a {@link InputStream} to read the file
      * @return a {@link SlaContract} read from the JSON file
      */
-    public static SlaContract getInstance(final String jsonFilePath) throws FileNotFoundException {
-        return new Gson().fromJson(new FileReader(jsonFilePath), SlaContract.class);
+    private static SlaContract getInstance(final InputStream inputStream) {
+        return new Gson().fromJson(new InputStreamReader(inputStream), SlaContract.class);
     }
 
     /**
-     * Gets an {@link SlaContract} from a JSON file inside the application's resource directory.
-     * @param klass a class from the project which will be used just to assist in getting the path
-     *              of the given resource. It can can any class inside the project
-     *              where a resource you are trying to get from the resources directory
-     * @param jsonFilePath the relative path to the JSON file representing the SLA contract to read
+     * Gets an {@link SlaContract} from a JSON file inside the <b>application's resource directory</b>.
+     * @param jsonFilePath the <b>relative path</b> to the JSON file representing the SLA contract to read
      * @return a {@link SlaContract} read from the JSON file
      */
-    public static SlaContract getInstanceFromResourcesDir(final Class klass, final String jsonFilePath) throws FileNotFoundException {
-        return getInstance(ResourceLoader.getResourcePath(klass, jsonFilePath));
+    public static SlaContract getInstance(final String jsonFilePath) {
+        return getInstance(ResourceLoader.getInputStream(SlaContract.class, jsonFilePath));
     }
 
     /**
@@ -165,13 +171,13 @@ public class SlaContract {
      * A main method just to try the class implementation.
      * @param args
      */
-    public static void main(String[] args) throws FileNotFoundException {
-        final String file = "/Users/raysaoliveira/Desktop/Mestrado/cloudsim-plus/cloudsim-plus-testbeds/src/main/resources/SlaCustomer1.json";
+    public static void main(String[] args) {
+        final String file = "SampleCustomerSLA.json";
         SlaContract contract = SlaContract.getInstance(file);
         System.out.println("Contract file: " + file);
         System.out.println(contract);
         System.out.println("Minimum Price Metric Value: " + contract.getPriceMetric().getMinDimension());
         System.out.println("Maximum Price Metric Value: " + contract.getPriceMetric().getMaxDimension());
-        System.out.println("Maximum CPU Metric Value: " + contract.getCpuUtilizationMetric().getMaxDimension());
+        System.out.println("Maximum CPU   Metric Value: " + contract.getCpuUtilizationMetric().getMaxDimension());
     }
 }

@@ -12,10 +12,9 @@ import org.cloudbus.cloudsim.network.topologies.Point2D;
 import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
 import org.cloudbus.cloudsim.network.topologies.TopologicalLink;
 import org.cloudbus.cloudsim.network.topologies.TopologicalNode;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.StringTokenizer;
 import java.util.function.Function;
 
@@ -45,32 +44,37 @@ public class TopologyReaderBrite implements TopologyReader {
 
 
     @Override
-    public TopologicalGraph readGraphFile(String filename) throws IOException {
+    public TopologicalGraph readGraphFile(final String filename) {
+        return readGraphFile(ResourceLoader.getFileReader(filename));
+    }
+
+    @Override
+    public TopologicalGraph readGraphFile(final InputStreamReader streamReader) {
         graph = new TopologicalGraph();
-        final BufferedReader br = new BufferedReader(new FileReader(filename));
-
-        String nextLine;
-        while ((nextLine = br.readLine()) != null) {
-            // functionality to diferentiate between all the parsing-states
-            // state that should just find the start of node-declaration
-            if (state == PARSE_NOTHING) {
-                if (nextLine.contains("Nodes:")) {
-                    state = PARSE_NODES;
+        try(final BufferedReader br = new BufferedReader(streamReader)) {
+            String nextLine;
+            while ((nextLine = br.readLine()) != null) {
+                // functionality to diferentiate between all the parsing-states
+                // state that should just find the start of node-declaration
+                if (state == PARSE_NOTHING) {
+                    if (nextLine.contains("Nodes:")) {
+                        state = PARSE_NODES;
+                    }
                 }
-            }
-            // the state to retrieve all node-information
-            else if (state == PARSE_NODES) {
-                // perform the parsing of this node-line
-                parseNodeString(nextLine);
-            }
-            // the state to retrieve all edges-information
-            else if (state == PARSE_EDGES) {
-                parseEdgesString(nextLine);
-            }
+                // the state to retrieve all node-information
+                else if (state == PARSE_NODES) {
+                    // perform the parsing of this node-line
+                    parseNodeString(nextLine);
+                }
+                // the state to retrieve all edges-information
+                else if (state == PARSE_EDGES) {
+                    parseEdgesString(nextLine);
+                }
 
+            }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
-
-        br.close();
 
         return graph;
     }

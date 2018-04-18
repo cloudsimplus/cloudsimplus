@@ -47,16 +47,13 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.ResourceLoader;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -64,7 +61,6 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.faultinjection.VmCloner;
 import org.cloudsimplus.faultinjection.VmClonerSimple;
-import org.cloudsimplus.slametrics.SlaMetricDimension;
 import org.cloudsimplus.vmtemplates.AwsEc2Template;
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -171,7 +167,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
         final Iterator<DatacenterBroker> brokerIterator = getBrokerList().iterator();
         final List<AwsEc2Template> all = readAllAvailableAwsEc2Instances();
         for (final String file: readContractList()) {
-            SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
+            SlaContract contract = SlaContract.getInstance(file);
             DatacenterBroker b = brokerIterator.next();
             contractsMap.put(b, contract);
             templatesMap.put(b, getSuitableAwsEc2InstanceTemplate(b, all));
@@ -188,10 +184,10 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     private List<String> readContractList() throws FileNotFoundException {
         return ResourceLoader
-            .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
-            .lines()
-            .filter(l -> !l.startsWith("#"))
-            .collect(toList());
+                .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
+                .lines()
+                .filter(l -> !l.startsWith("#"))
+                .collect(toList());
     }
 
     /**
@@ -297,7 +293,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
         try (BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instance-files.txt")) {
             while (br.ready()) {
                 final String file = br.readLine();
-                final AwsEc2Template instance = AwsEc2Template.getInstanceFromResourcesDir("vmtemplates/aws/"+file);
+                final AwsEc2Template instance = AwsEc2Template.getInstance("vmtemplates/aws/"+file);
                 instances.add(instance);
             }
         }

@@ -27,7 +27,7 @@ import com.google.gson.Gson;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -43,8 +43,8 @@ import java.nio.file.Paths;
 public class AwsEc2Template implements Comparable<AwsEc2Template> {
     public static final AwsEc2Template NULL = new AwsEc2Template();
 
-    private String name;
     private Path path;
+    private String name;
     private int cpus;
     private int memoryInMB;
     private double pricePerHour;
@@ -54,16 +54,18 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * If you want to get a template from a JSON file,
      * you shouldn't call the constructor directly.
      * Instead, use some methods such as the {@link #getInstance(String)}.
+     *
+     * <p>This constructor is just provided to enable the {@link Gson} object
+     * to use reflection to instantiate a AwsEc2Template.</p>
      */
-    public AwsEc2Template(){
-    }
+    public AwsEc2Template(){}
 
     /**
      * A clone constructor which receives an {@link AwsEc2Template}
      * and creates a clone of it.
      * @param source the {@link AwsEc2Template} to be cloned
      */
-    public AwsEc2Template(AwsEc2Template source){
+    public AwsEc2Template(final AwsEc2Template source){
         this.name = source.name;
         this.cpus = source.cpus;
         this.memoryInMB = source.memoryInMB;
@@ -72,31 +74,44 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
     }
 
     /**
-     * Gets an AWS EC2 Instance from a JSON file.
-     * @param jsonTemplateFilePath the full path to the JSON file representing the template with
+     * Instantiates an AWS EC2 Instance from a JSON file.
+     *
+     * @param jsonFilePath the full path to the JSON file representing the template with
      *                     configurations for an AWS EC2 Instance
-     * @return the AWS EC2 Instance from the JSON file
      */
-    public static AwsEc2Template getInstance(final String jsonTemplateFilePath) throws FileNotFoundException {
-        final FileReader fileReader = new FileReader(jsonTemplateFilePath);
-        final AwsEc2Template template = new Gson().fromJson(fileReader, AwsEc2Template.class);
-        template.path = Paths.get(jsonTemplateFilePath);
-        return template;
+    public AwsEc2Template(final String jsonFilePath) {
+        this(getInstance(jsonFilePath, ResourceLoader.getFileReader(jsonFilePath)));
     }
 
     /**
-     * Gets an AWS EC2 Instance from a JSON file inside the application's resource directory.
-     * @param jsonFilePath the relative path to the JSON file representing the template with
+     * Gets an AWS EC2 Instance from a JSON file inside the <b>application's resource directory</b>.
+     * Use the available constructors if you want to load a file outside the resource directory.
+     *
+     * @param jsonFilePath the <b>relative path</b> to the JSON file representing the template with
      *                     configurations for an AWS EC2 Instance
      * @return the AWS EC2 Instance from the JSON file
      */
-    public static AwsEc2Template getInstanceFromResourcesDir(final String jsonFilePath) throws FileNotFoundException {
-        return getInstance(ResourceLoader.getResourcePath(AwsEc2Template.class, jsonFilePath));
+    public static AwsEc2Template getInstance(final String jsonFilePath) {
+        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(AwsEc2Template.class, jsonFilePath));
+        return getInstance(jsonFilePath, reader);
+    }
+
+    /**
+     * Gets an AWS EC2 Instance from a JSON file.
+     * @param jsonFilePath the <b>relative path</b> to the JSON file representing the template with
+     *                     configurations for an AWS EC2 Instance
+     * @param reader a {@link InputStreamReader} to read the file
+     * @return the AWS EC2 Instance from the JSON file
+     */
+    private static AwsEc2Template getInstance(final String jsonFilePath, final InputStreamReader reader) {
+        final AwsEc2Template template = new Gson().fromJson(reader, AwsEc2Template.class);
+        template.path = Paths.get(jsonFilePath);
+        return template;
     }
 
     public String getName() {return name; }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
@@ -104,7 +119,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         return cpus;
     }
 
-    public void setCpus(int cpus) {
+    public void setCpus(final int cpus) {
         this.cpus = cpus;
     }
 
@@ -112,7 +127,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         return memoryInMB;
     }
 
-    public void setMemoryInMB(int memoryInMB) {
+    public void setMemoryInMB(final int memoryInMB) {
         this.memoryInMB = memoryInMB;
     }
 
@@ -124,25 +139,8 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         return pricePerHour;
     }
 
-    public void setPricePerHour(double pricePerHour) {
+    public void setPricePerHour(final double pricePerHour) {
         this.pricePerHour = pricePerHour;
-    }
-
-    @Override
-    public String toString() {
-        return "AwsEc2Template {name = " + name +
-               ",  cpus = " + cpus +
-               ",  memoryInMB = " + memoryInMB +
-               ",  pricePerHour = " + pricePerHour +'}';
-    }
-
-    /**
-     * A main method just to try the class implementation.
-     * @param args
-     */
-    public static void main(String[] args) throws FileNotFoundException {
-        final AwsEc2Template template = AwsEc2Template.getInstanceFromResourcesDir("vmtemplates/aws/t2.nano.json");
-        System.out.println(template);
     }
 
     /**
@@ -162,9 +160,17 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         return path.getFileName().toString();
     }
 
+    @Override
+    public String toString() {
+        return "AwsEc2Template {name = " + name +
+            ",  cpus = " + cpus +
+            ",  memoryInMB = " + memoryInMB +
+            ",  pricePerHour = " + pricePerHour +'}';
+    }
+
 
     @Override
-    public int compareTo(AwsEc2Template o) {
+    public int compareTo(final AwsEc2Template o) {
         int comparison = Double.compare(this.cpus, o.cpus);
         if(comparison != 0){
             return comparison;
@@ -178,4 +184,16 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         comparison = Double.compare(this.pricePerHour, o.pricePerHour);
         return comparison;
     }
+
+    /**
+     * A main method just to try the class implementation.
+     * @param args
+     */
+    public static void main(String[] args) {
+        final String file = "vmtemplates/aws/t2.nano.json";
+        final AwsEc2Template template = AwsEc2Template.getInstance(file);
+        System.out.println("Template file: " + file);
+        System.out.println(template);
+    }
+
 }

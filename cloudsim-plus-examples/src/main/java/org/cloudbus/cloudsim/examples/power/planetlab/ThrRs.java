@@ -33,7 +33,7 @@ public class ThrRs {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		String inputFolder = ResourceLoader.getResourcePath(NonPowerAware.class,"workload/planetlab");
+		String inputFolder = "workload/planetlab";
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "thr"; // Static Threshold (THR) VM allocation policy

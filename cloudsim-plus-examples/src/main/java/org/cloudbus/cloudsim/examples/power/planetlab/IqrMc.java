@@ -29,10 +29,9 @@ public class IqrMc {
 	 * The main method.
 	 *
 	 * @param args the arguments
-	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static void main(String[] args) throws IOException {
-		final String inputFolder =  ResourceLoader.getResourcePath(IqrMc.class,"workload/planetlab");
+	public static void main(String[] args) {
+		final String inputFolder =  "workload/planetlab";
         final String outputFolder = "output";
         final String workload = "20110303"; // PlanetLab workload
         final String vmAllocationPolicy = "iqr"; // Inter Quartile Range (IQR) VM allocation policy

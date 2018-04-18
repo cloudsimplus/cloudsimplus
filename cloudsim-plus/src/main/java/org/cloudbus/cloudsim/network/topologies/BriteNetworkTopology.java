@@ -7,12 +7,13 @@
  */
 package org.cloudbus.cloudsim.network.topologies;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.network.DelayMatrix;
 import org.cloudbus.cloudsim.network.topologies.readers.TopologyReaderBrite;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 
 /**
  * Implements a network layer by reading the topology from a file in the
@@ -75,21 +76,31 @@ public class BriteNetworkTopology implements NetworkTopology {
      * parsed. File is written in the BRITE format and contains
      * topological information on simulation entities.
      *
-     * @param fileName name of the BRITE file
+     * @param filePath the path of the BRITE file
      * @pre fileName != null
      * @post $none
      */
-    public BriteNetworkTopology(String fileName) {
+    public BriteNetworkTopology(final String filePath) {
+        this(ResourceLoader.getFileReader(filePath));
+        Log.printConcatLine("Topology file: ", filePath);
+    }
+
+    private BriteNetworkTopology(final InputStreamReader streamReader) {
         this();
-        Log.printConcatLine("Topology file: ", fileName);
         // try to find the file
         final TopologyReaderBrite reader = new TopologyReaderBrite();
-        try {
-            graph = reader.readGraphFile(fileName);
-            generateMatrices();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        graph = reader.readGraphFile(streamReader);
+        generateMatrices();
+    }
+
+    /**
+     * Instantiates a new Network Topology a file inside the <b>application's resource directory</b>.
+     * @param fileName the <b>relative name</b> of the BRITE file
+     * @return the BriteNetworkTopology instance.
+     */
+    public static BriteNetworkTopology getInstance(final String fileName){
+        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(BriteNetworkTopology.class, fileName));
+        return new BriteNetworkTopology(reader);
     }
 
     /**
@@ -114,10 +125,10 @@ public class BriteNetworkTopology implements NetworkTopology {
      * @param directed true if the graph is directed; false otherwise
      * @return the bandwidth graph
      */
-    private double[][] createBwMatrix(TopologicalGraph graph, boolean directed) {
+    private double[][] createBwMatrix(final TopologicalGraph graph, final boolean directed) {
         final int nodes = graph.getNumberOfNodes();
 
-        double[][] mtx = new double[nodes][nodes];
+        final double[][] mtx = new double[nodes][nodes];
 
         // cleanup matrix
         for (int i = 0; i < nodes; i++) {
@@ -138,12 +149,12 @@ public class BriteNetworkTopology implements NetworkTopology {
 
 
     @Override
-    public void addLink(int srcId, int destId, double bw, double lat) {
-        if (Objects.isNull(getTopologycalGraph())) {
+    public void addLink(final int srcId, final int destId, final double bw, final double lat) {
+        if (getTopologycalGraph() == null) {
             graph = new TopologicalGraph();
         }
 
-        if (Objects.isNull(map)) {
+        if (map == null) {
             map = new HashMap<>();
         }
 
@@ -164,11 +175,10 @@ public class BriteNetworkTopology implements NetworkTopology {
         getTopologycalGraph().addLink(new TopologicalLink(map.get(srcId), map.get(destId), (float) lat, (float) bw));
 
         generateMatrices();
-
     }
 
     @Override
-    public void mapNode(int cloudSimEntityID, int briteID) {
+    public void mapNode(final int cloudSimEntityID, final int briteID) {
         if (!networkEnabled) {
             return;
         }
@@ -188,7 +198,7 @@ public class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public void unmapNode(int cloudSimEntityID) {
+    public void unmapNode(final int cloudSimEntityID) {
         if (!networkEnabled) {
             return;
         }
@@ -197,7 +207,7 @@ public class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public double getDelay(int srcID, int destID) {
+    public double getDelay(final int srcID, final int destID) {
         if (!networkEnabled) {
             return 0.0;
         }
