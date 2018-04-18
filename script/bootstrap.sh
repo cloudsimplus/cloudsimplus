@@ -5,13 +5,14 @@ echo "It requires maven to build all sources and create the JAR packages. Thus, 
 echo "http://cloudsimplus.org"
 echo ""
 
-#Gets the root directory of CloudSim Plus project
-BASEDIR=$(dirname "$0")
-if [ "$BASEDIR" = "." ]; then
-   BASEDIR=".." 
-elif [ "$BASEDIR" = "script" ]; then
-   BASEDIR="." 
+if [ $(dirname "$0") != "script" ]; then
+   SCRIPT=$(basename "$0")
+   echo "You must run this script from CloudSim Plus root directory by executing script/$SCRIPT">&2
+   exit -1
 fi
+
+#The root directory of CloudSim Plus project
+BASEDIR="."
 
 #Gets the most recent jar file with a specific filename pattern
 function get_examples_jar_file() {
@@ -66,4 +67,3 @@ if [ "$#" -eq 1 ] && [ "$1" != "build" ]; then
     echo ""
     java -cp $EXAMPLES_JAR "$1"
 fi
-

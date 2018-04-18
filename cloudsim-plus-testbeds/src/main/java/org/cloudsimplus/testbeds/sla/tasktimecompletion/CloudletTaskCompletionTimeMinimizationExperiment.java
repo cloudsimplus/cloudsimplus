@@ -121,7 +121,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
      */
     private void readTheSlaContracts() throws IOException {
         for (final String file: readContractList()) {
-            SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
+            SlaContract contract = SlaContract.getInstance(file);
             contractsMap.put(getFirstBroker(), contract);
         }
     }

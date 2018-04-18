@@ -23,13 +23,11 @@
  */
 package org.cloudsimplus.testbeds.sla.tasktimecompletion;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import static java.util.Comparator.comparingDouble;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -52,7 +50,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -106,13 +103,8 @@ public class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends Sim
         super(index, runner, seed);
         randCloudlet = new UniformDistr(getSeed());
         randVm = new UniformDistr(getSeed()+1);
-        try {
-            this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
-            getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
-        } catch (IOException ex) {
-            Logger.getLogger(CloudletTaskCompletionTimeWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
-            throw new RuntimeException(ex);
-        }
+        this.contract = SlaContract.getInstance(METRICS_FILE);
+        getCloudSim().addOnClockTickListener(this::printVmsCpuUsage);
     }
 
     private DatacenterBroker getFirstBroker() {

@@ -1,16 +1,15 @@
 package org.cloudbus.cloudsim.examples.power.util;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelPlanetLab;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * The example runner for the PlanetLab workload.
@@ -77,28 +76,21 @@ public final class PlanetLabRunner extends RunnerAbstract {
     /**
      * Creates the cloudlet list planet lab.
      *
-     * @param broker          the broker
      * @param inputFolderName the input folder name
      * @return the list
      */
-    public static List<Cloudlet> createCloudletListPlanetLab(final DatacenterBroker broker, final String inputFolderName) {
+    public static List<Cloudlet> createCloudletListPlanetLab(final String inputFolderName) {
         final long fileSize = 300;
         final long outputSize = 300;
 
-        final File inputFolder = new File(inputFolderName);
-        final File[] planetLabFiles = inputFolder.listFiles();
-        if (Objects.isNull(planetLabFiles)) {
-            return new ArrayList<>();
-        }
+        final List<String> planetLabFiles = getFileList(inputFolderName);
 
-        final int filesToRead = Math.min(planetLabFiles.length, MAX_NUMBER_OF_WORLOAD_FILES_TO_READ);
+        final int filesToRead = Math.min(planetLabFiles.size(), MAX_NUMBER_OF_WORLOAD_FILES_TO_READ);
         final List<Cloudlet> list = new ArrayList<>(filesToRead);
         for (int i = 0; i < filesToRead; i++) {
             try {
                 UtilizationModel utilizationModelCPU =
-                    new UtilizationModelPlanetLab(
-                        planetLabFiles[i].getAbsolutePath(),
-                        Constants.SCHEDULING_INTERVAL);
+                    UtilizationModelPlanetLab.getInstance(planetLabFiles.get(i), Constants.SCHEDULING_INTERVAL);
                 CloudletSimple cloudlet = new CloudletSimple(
                     i, Constants.CLOUDLET_LENGTH, Constants.CLOUDLET_PES);
                 cloudlet.setFileSize(fileSize)
@@ -114,12 +106,22 @@ public final class PlanetLabRunner extends RunnerAbstract {
         return list;
     }
 
+    private static List<String> getFileList(final String inputFolderName) {
+        final List<String> files = ResourceLoader.getResourceList(PlanetLabRunner.class, inputFolderName);
+        if (files == null || files.isEmpty()) {
+            Log.printLine("No workload files found in " + inputFolderName);
+            return new ArrayList<>();
+        }
+
+        return files;
+    }
+
     @Override
     protected void init(final String inputFolder) {
         try {
             super.init(inputFolder);
             broker = Helper.createBroker(getSimulation());
-            cloudletList = createCloudletListPlanetLab(broker, inputFolder);
+            cloudletList = createCloudletListPlanetLab(inputFolder);
             vmList = Helper.createVmList(broker, cloudletList.size());
             hostList = Helper.createHostList(NUMBER_OF_HOSTS);
         } catch (Exception e) {

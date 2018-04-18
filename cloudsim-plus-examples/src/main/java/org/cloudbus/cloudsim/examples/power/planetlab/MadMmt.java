@@ -32,8 +32,8 @@ public class MadMmt {
 	 * @param args the arguments
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static void main(String[] args) throws IOException {
-		String inputFolder =  ResourceLoader.getResourcePath(MadMmt.class,"workload/planetlab");
+	public static void main(String[] args) {
+		String inputFolder =  "workload/planetlab";
 		String outputFolder = "output";
 		String workload = "20110303"; // PlanetLab workload
 		String vmAllocationPolicy = "mad"; // Median Absolute Deviation (MAD) VM allocation policy

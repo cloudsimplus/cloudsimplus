@@ -1,9 +1,15 @@
 package org.cloudbus.cloudsim.util;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Loads a resource file/directory that is contained inside the directory of a given class.
@@ -18,6 +24,19 @@ public final class ResourceLoader {
     private ResourceLoader(){}
 
     /**
+     * Gets a {@link FileReader}
+     * @param filePath the path to the file
+     * @return the {@link FileReader} instance.
+     */
+    public static FileReader getFileReader(final String filePath){
+        try {
+            return new FileReader(filePath);
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
      * Gets the absolute path of a resource (a file or sub-directory) inside the resources directory.
      *
      * @param klass a class from the project which will be used just to assist in getting the path
@@ -28,22 +47,68 @@ public final class ResourceLoader {
      * @return the absolute path of the resource
      */
     public static String getResourcePath(final Class klass, final String name) {
-        final URL resource = klass.getClassLoader().getResource(name);
-        final String folder = (resource == null ? "" : resource.getPath());
-        return (folder == null ? "" : folder);
+        final URL resource = getResourceUrl(klass, name);
+        return resource != null && resource.getPath() != null ? resource.getFile() : "";
     }
 
     /**
-     * Gets a {@link FileReader} to read a resource (a file or sub-directory inside the resources directory)
-     * from its absolute path.
+     * Gets the {@link URL} of a resource (a file or sub-directory) inside the resources directory.
      *
-     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
-     * @param resourceName the name of the resource to get a {@link FileReader} for it
-     * @return a {@link FileReader} to read the resource
-     * @throws FileNotFoundException when the file doesn't exist
+     * @param klass a class from the project which will be used just to assist in getting the path
+     *              of the given resource. It can can any class inside the project
+     *              where a resource you are trying to get from the resources directory
+     * @param name the name of the resource to get its path
+     *             (that can be a file or a sub-directory inside the resources directory)
+     * @return the {@link URL} of the resource
      */
-    public static FileReader getFileReader(final Class klass, final String resourceName) throws FileNotFoundException {
-        return new FileReader(ResourceLoader.getResourcePath(klass, resourceName));
+    public static URL getResourceUrl(final Class klass, final String name) {
+        return klass.getClassLoader().getResource(name);
+    }
+
+    /**
+     * Gets the list of files contained inside a given resource directory.
+     *
+     * @param klass a class from the project which will be used just to assist in getting the path
+     *              of the given resource. It can can any class inside the project
+     *              where a resource you are trying to get from the resources directory
+     * @param resourceDir the name of the resource directory to get the list of files from
+     * @return
+     */
+    public static List<String> getResourceList(final Class klass, final String resourceDir){
+        final URI uri;
+        try {
+            uri = getResourceUrl(klass, resourceDir).toURI();
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+
+        try {
+            Path path = uriToPath(resourceDir, uri);
+            final Stream<Path> walk = Files.walk(path, 1);
+
+            final List<String> list = new ArrayList<>();
+            for (Iterator<Path> it = walk.iterator(); it.hasNext();){
+                list.add(resourceDir + "/" + it.next().getFileName().toString());
+            }
+
+            //Removes the first element which is the name of the containing directory
+            if(!list.isEmpty()) {
+                list.remove(0);
+            }
+
+            return list;
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    private static Path uriToPath(final String resourceDir, final URI uri) throws IOException {
+        if (uri.getScheme().equals("jar")) {
+            FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
+            return fileSystem.getPath(resourceDir);
+        }
+
+        return Paths.get(uri);
     }
 
     /**
@@ -55,8 +120,39 @@ public final class ResourceLoader {
      * @return a {@link BufferedReader} to read the resource
      * @throws FileNotFoundException when the file doesn't exist
      */
-    public static BufferedReader getBufferedReader(final Class klass, final String resourceName) throws FileNotFoundException {
-        return new BufferedReader(getFileReader(klass, resourceName));
+    public static BufferedReader getBufferedReader(final Class klass, final String resourceName) {
+        return new BufferedReader(new InputStreamReader(getInputStream(klass, resourceName)));
+    }
+
+    /**
+     * Try to load the resource from a jar file, in case the user is running simulations
+     * from a jar instead of directly from the IDE.
+     * If the input is null, the simulation is not being executed from a jar file,
+     * so try to load the resource from a directory in the filesystem.
+     *
+     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
+     * @param resourceName the name of the resource to get a {@link BufferedReader} for it
+     * @return a {@link InputStream} to read the resource
+     */
+    public static InputStream getInputStream(final Class klass, final String resourceName) {
+        //Try to load the resource from the resource directory in the filesystem
+        InputStream input = klass.getClassLoader().getResourceAsStream("/"+resourceName);
+        if(input != null){
+            return input;
+        }
+
+        //Try to load the resource from a jar file
+        input = klass.getResourceAsStream("/"+resourceName);
+        if(input != null){
+            return input;
+        }
+
+        //Try to load the resource from anywhere else than the resource directory
+        try {
+            return new FileInputStream(resourceName);
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(new FileNotFoundException(resourceName + " was not found."));
+        }
     }
 
 }

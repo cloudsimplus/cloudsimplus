@@ -44,12 +44,10 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
@@ -92,7 +90,8 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
      * ones.
      */
     private final Comparator<Cloudlet> sortCloudletsByLengthReversed = Comparator.comparingLong(Cloudlet::getLength).reversed();
-    private ContinuousDistribution randCloudlet, randVm, randMip;
+    private ContinuousDistribution randVm;
+    private ContinuousDistribution randMip;
     private double taskCompletionTimeSlaContract;
 
     private CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(final long seed) {
@@ -105,7 +104,6 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
 
     private CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
-        randCloudlet = new UniformDistr(getSeed());
         randVm = new UniformDistr(getSeed()+1);
         randMip = new UniformDistr(getSeed()+2);
         contractsMap = new HashMap<>();
@@ -116,14 +114,14 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
      * When the brokers are created, it is ensured the number of brokers
      * is equals to the number of SLA contracts in the {@link #SLA_CONTRACTS_LIST}.
      */
-    private void readTheSlaContracts() throws IOException {
+    private void readTheSlaContracts() {
         for (final String file: readContractList()) {
-            SlaContract contract = SlaContract.getInstanceFromResourcesDir(getClass(), file);
+            SlaContract contract = SlaContract.getInstance(file);
             contractsMap.put(getFirstBroker(), contract);
         }
     }
 
-    private List<String> readContractList() throws FileNotFoundException {
+    private List<String> readContractList() {
         return ResourceLoader
             .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
             .lines()
@@ -151,7 +149,7 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
     protected List<Cloudlet> createCloudlets() {
         try {
             final WorkloadFileReader workloadFileReader =
-                WorkloadFileReader.getInstanceFromResourcesDir("METACENTRUM-2009-2.swf", 1);
+                WorkloadFileReader.getInstance("METACENTRUM-2009-2.swf", 1);
             workloadFileReader.setPredicate(c -> c.getLength() > 1000);
             workloadFileReader.setMaxLinesToRead(CLOUDLETS);
             final List<Cloudlet> list = workloadFileReader.generateWorkload();
@@ -269,11 +267,7 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
         getFirstBroker().setVmMapper(this::selectVmForCloudlet);
         getFirstBroker().setCloudletComparator(sortCloudletsByLengthReversed);
 
-        try {
-            readTheSlaContracts();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        readTheSlaContracts();
     }
 
     @Override

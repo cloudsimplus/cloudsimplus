@@ -34,8 +34,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
 import org.cloudbus.cloudsim.hosts.power.PowerHost;
 import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
@@ -126,7 +124,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         Log.printConcatLine("Starting ", VmMigrationWhenCpuMetricIsViolatedExample.class.getSimpleName(), "...");
         simulation = new CloudSim();
 
-        this.contract = SlaContract.getInstanceFromResourcesDir(getClass(), METRICS_FILE);
+        this.contract = SlaContract.getInstance(METRICS_FILE);
         cloudletList = new ArrayList<>(NUMBER_OF_CLOUDLETS_TO_CREATE_BY_VM);
 
         @SuppressWarnings("unused")

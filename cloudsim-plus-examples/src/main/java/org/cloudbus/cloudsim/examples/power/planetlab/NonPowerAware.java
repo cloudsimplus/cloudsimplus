@@ -2,14 +2,12 @@ package org.cloudbus.cloudsim.examples.power.planetlab;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Objects;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.examples.power.util.PlanetLabRunner;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.examples.power.util.Constants;
@@ -47,13 +45,10 @@ public class NonPowerAware {
 	 * @param args the arguments
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		final String experimentName = "planetlab_npa";
 		final String outputFolder = "output";
-        String inputFolder =  ResourceLoader.getResourcePath(NonPowerAware.class,"workload/planetlab/20110303");
-        if(Objects.isNull(inputFolder)){
-            inputFolder = "";
-        }
+        final String inputFolder = "workload/planetlab/20110303";
 
 		Log.setDisabled(!Constants.ENABLE_OUTPUT);
 		Log.printLine("Starting " + experimentName);
@@ -64,7 +59,7 @@ public class NonPowerAware {
 
 			DatacenterBroker broker = helper.createBroker(simulation);
 
-			List<Cloudlet> cloudletList = PlanetLabRunner.createCloudletListPlanetLab(broker, inputFolder);
+			List<Cloudlet> cloudletList = PlanetLabRunner.createCloudletListPlanetLab(inputFolder);
 			List<Vm> vmList = helper.createVmList(broker, cloudletList.size());
 			List<PowerHost> hostList = helper.createHostList(NUMBER_OF_HOSTS);
 

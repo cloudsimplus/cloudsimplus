@@ -11,6 +11,8 @@ package org.cloudbus.cloudsim.network.topologies.readers;
 import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 /**
  * An interface to be implemented by classes that read
@@ -28,6 +30,15 @@ public interface TopologyReader {
 	 * @return The created TopologicalGraph
 	 * @throws IOException when the file cannot be accessed
 	 */
-	TopologicalGraph readGraphFile(String filename) throws IOException;
+	TopologicalGraph readGraphFile(String filename);
+
+    /**
+     * Reads a file and creates an {@link TopologicalGraph} object.
+     *
+     * @param streamReader the {@link InputStreamReader} to read the file
+     * @return The created TopologicalGraph
+     * @throws IOException when the file cannot be accessed
+     */
+    TopologicalGraph readGraphFile(InputStreamReader streamReader);
 
 }
