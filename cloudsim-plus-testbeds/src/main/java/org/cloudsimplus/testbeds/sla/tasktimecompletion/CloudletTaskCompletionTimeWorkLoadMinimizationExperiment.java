@@ -125,6 +125,8 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
         return ResourceLoader
             .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
             .lines()
+            .map(String::trim)
+            .filter(l -> !l.isEmpty())
             .filter(l -> !l.startsWith("#"))
             .collect(toList());
     }
