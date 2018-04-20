@@ -96,7 +96,8 @@ public class PacketSchedulerSimple implements PacketScheduler {
 
     @Override
     public boolean isTimeToUpdateCloudletProcessing(final Cloudlet cloudlet) {
-        if(cloudlet == null || cloudlet.isFinished()){
+        Objects.requireNonNull(cloudlet);
+        if(cloudlet.isFinished()){
             return false;
         }
 

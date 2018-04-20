@@ -191,8 +191,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return Collections.unmodifiableList(cloudletExecList);
     }
 
-    protected void addCloudletToWaitingList(CloudletExecution cloudlet) {
-        if(cloudlet == null || CloudletExecution.NULL.equals(cloudlet)){
+    protected void addCloudletToWaitingList(final CloudletExecution cloudlet) {
+        Objects.requireNonNull(cloudlet);
+        if(cloudlet == CloudletExecution.NULL){
             return;
         }
 
@@ -215,7 +216,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return cloudletFinishedList;
     }
 
-    protected void addCloudletToFinishedList(CloudletExecution cloudlet) {
+    protected void addCloudletToFinishedList(final CloudletExecution cloudlet) {
         cloudletFinishedList.add(cloudlet);
     }
 

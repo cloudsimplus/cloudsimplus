@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.power.models;
 
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
+import org.cloudbus.cloudsim.hosts.Host;
 
 import java.util.Objects;
 
@@ -11,15 +11,15 @@ import java.util.Objects;
  * @since CloudSim Plus 1.2.0
  */
 public abstract class PowerModelAbstract implements PowerModel {
-    private PowerHost host;
+    private Host host;
 
     @Override
-    public PowerHost getHost() {
+    public Host getHost() {
         return host;
     }
 
     @Override
-    public final void setHost(PowerHost host) {
+    public final void setHost(Host host) {
         Objects.requireNonNull(host);
         this.host = host;
     }

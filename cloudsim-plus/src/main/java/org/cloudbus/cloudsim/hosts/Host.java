@@ -8,6 +8,8 @@
 package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.Machine;
+import org.cloudbus.cloudsim.power.supply.PowerSupply;
+import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -17,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.vms.VmUtilizationHistory;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
@@ -58,11 +61,11 @@ public interface Host extends Machine, Comparable<Host> {
     void setDatacenter(Datacenter datacenter);
 
     /**
-     * Checks if the host active and is suitable for vm. If it has enough resources
-     * to attend the VM.
+     * Checks if the host is active and is suitable for vm
+     * (if it has enough resources to attend the VM).
      *
-     * @param vm the vm
-     * @return true, if is suitable for vm
+     * @param vm the vm to check
+     * @return true if is suitable for vm, false otherwise
      */
     boolean isSuitableForVm(Vm vm);
 
@@ -486,4 +489,62 @@ public interface Host extends Machine, Comparable<Host> {
      */
     long getUtilizationOfRam();
 
+    /**
+     * <p>Gets the host CPU utilization percentage history (between [0 and 1], where 1 is 100%),
+     * based on its VM utilization history.
+     * Each value into the returned array is the CPU utilization percentage for
+     * a time interval equal to the {@link Datacenter#getSchedulingInterval()}.
+     * </p>
+     *
+     * <p><b>In order to enable the Host to get utilization history,
+     * utilization history of its VMs should be enabled
+     * by calling {@link VmUtilizationHistory#enable()} from
+     * the {@link Vm#getUtilizationHistory()}.</b></p>
+     * @return
+     */
+    double[] getUtilizationHistory();
+
+    /**
+     * Gets the {@link PowerSupply} that enables getting power usage information,
+     * including the {@link PowerModel}.
+     * Power information is just available if a {@link PowerModel} is set to the PowerSupply.
+     *
+     * @return
+     */
+    PowerSupply getPowerSupply();
+
+    double getPreviousUtilizationOfCpu();
+
+    /**
+     * Enables storing Host state history.
+     * @see #getStateHistory()
+     */
+    void enableStateHistory();
+
+    /**
+     * Disable storing Host state history.
+     * @see #getStateHistory()
+     */
+    void disableStateHistory();
+
+    /**
+     * Checks if Host state history is being collected and stored.
+     * @return
+     */
+    boolean isStateHistoryEnabled();
+
+    /**
+     * Gets a <b>read-only</b> host state history.
+     * This List is just populated if {@link #isStateHistoryEnabled()}
+     *
+     * @return the state history
+     * @see #enableStateHistory()
+     */
+    List<HostStateHistoryEntry> getStateHistory();
+
+    /**
+     * Gets the List of VMs that have finished executing.
+     * @return
+     */
+    List<Vm> getFinishedVms();
 }

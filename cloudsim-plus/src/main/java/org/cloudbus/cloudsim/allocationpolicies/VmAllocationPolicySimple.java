@@ -8,96 +8,36 @@
 package org.cloudbus.cloudsim.allocationpolicies;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.*;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with fewer PEs in use. It is therefore a Worst Fit
- * policy, allocating VMs into the host with most available PEs.
+ * the host for a VM, that one with fewer PEs in use.
+ * <b>It is therefore a Worst Fit policy</b>, allocating VMs into the host with most available PEs.
  *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation (placement)
  * by means of VM migration.</b></p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     /**
      * Creates a new VmAllocationPolicySimple object.
-     *
-     * @pre $none
-     * @post $none
      */
     public VmAllocationPolicySimple() {
         super();
     }
 
     /**
-     * Allocates the host with less PEs in use for a given VM.
+     * Gets the first suitable host from the {@link #getHostList()} that has fewer used PEs (i.e, higher free PEs).
+     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      *
-     * @param vm {@inheritDoc}
-     * @return {@inheritDoc}
-     * @pre $none
-     * @post $none
-     */
-    @Override
-    public boolean allocateHostForVm(final Vm vm) {
-        if(getHostList().isEmpty()){
-            Log.printFormattedLine(
-                "%.2f: %s: Vm %s could not be allocated because there isn't any Host for Datacenter %d",
-                vm.getSimulation().clock(), vm.getId(), getDatacenter().getId());
-            return false;
-        }
-
-        if (vm.isCreated()) {
-            return false;
-        }
-
-        final List<Host> hostsWhereVmCreationFailed = new ArrayList<>();
-        //We still trying until we find a host or until we try all of them
-        for(int tries = 0; tries < getHostFreePesMap().size(); tries++) {
-            final Host host = getHostWithLessUsedPes(hostsWhereVmCreationFailed);
-            if (allocateHostForVm(vm, host)) {
-                return true;
-            } else {
-                hostsWhereVmCreationFailed.add(host);
-            }
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean allocateHostForVm(final Vm vm, final Host host) {
-        if (!host.createVm(vm)) {
-            return false;
-        }
-
-        addUsedPes(vm);
-        getHostFreePesMap().put(host, getHostFreePesMap().get(host) - vm.getNumberOfPes());
-
-        Log.printFormattedLine(
-            "%.2f: %s: %s has been allocated to %s",
-            vm.getSimulation().clock(), getClass().getSimpleName(),  vm, host);
-        return true;
-    }
-
-    /**
-     * Gets the host from the {@link #getHostList()} that has
-     * the less number of used PEs.
-     *
-     * <b>The method must not be called without checking if the host list is empty first.</b>
-     *
-     * @param ignoredHosts the list of hosts that have to be ignored when selecting the
-     *                     host with less used PEs. These list can be, for instance,
-     *                     the list of hosts that the creation of a given VM failed.
-     * @return the Host with less used PEs or {@link Host#NULL} if not found
-     * key if not found
      * @todo sorting the Host list may degrade performance
      * for large scale simulations. The number of free PEs
      * may be taken directly from each Host in a List,
@@ -108,35 +48,47 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * is different during debug, because of the unsorted
      * nature of the Map.
      */
-    private Host getHostWithLessUsedPes(final List<Host> ignoredHosts) {
+    @Override
+    protected Optional<Host> findHostForVm(final Vm vm) {
         final Map<Host, Long> map = getHostFreePesMap();
-        return map.keySet()
-                .stream()
-                .filter(h -> !ignoredHosts.contains(h))
-                .sorted(Comparator.comparingInt(Host::getId))
-                .max(Comparator.comparingLong(map::get))
-                .orElseGet(() -> Host.NULL);
+        return map.entrySet()
+            .stream()
+            .filter(e -> e.getKey().isSuitableForVm(vm))
+            .sorted(Comparator.comparingInt(e -> e.getKey().getId()))
+            .max(Comparator.comparingLong(Map.Entry::getValue))
+            .map(Map.Entry::getKey);
+    }
+
+    @Override
+    public boolean allocateHostForVm(final Vm vm, final Host host) {
+        if(super.allocateHostForVm(vm, host)){
+            addUsedPes(vm);
+            getHostFreePesMap().put(host, getHostFreePesMap().get(host) - vm.getNumberOfPes());
+            return true;
+        }
+
+        return false;
     }
 
     @Override
     public void deallocateHostForVm(final Vm vm) {
-        final Host host = vm.getHost();
+        final Host previousHost = vm.getHost();
+        super.deallocateHostForVm(vm);
         final long pes = removeUsedPes(vm);
-        if (host != Host.NULL) {
-            host.destroyVm(vm);
-            getHostFreePesMap().put(host, getHostFreePesMap().get(host) + pes);
+        if (previousHost != Host.NULL) {
+            getHostFreePesMap().compute(previousHost, (host, freePes) -> freePes == null ? pes : freePes + pes);
         }
     }
 
     /**
-     * The method in this VmAllocationPolicy doesn't perform any
+     * This implementation doesn't perform any
      * VM placement optimization and, in fact, has no effect.
      *
      * @param vmList the list of VMs
      * @return an empty map to indicate that it never performs optimization
      */
     @Override
-    public Map<Vm, Host> optimizeAllocation(final List<? extends Vm> vmList) {
+    public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
         return Collections.EMPTY_MAP;
     }
 }

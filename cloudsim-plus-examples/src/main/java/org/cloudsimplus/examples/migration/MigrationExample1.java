@@ -46,20 +46,17 @@
  */
 package org.cloudsimplus.examples.migration;
 
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigration;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationBestFitStaticThreshold;
+import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
+import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigrationBestFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
-import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
-import org.cloudbus.cloudsim.power.models.PowerModelLinear;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -72,7 +69,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
@@ -83,19 +80,19 @@ import java.util.List;
  * An example showing how to create 1 Datacenter with 3 hosts,
  * 1 VM by host and 1 cloudlet by VM and perform VM migration using
  * a custom VmAllocationPolicy. Such a policy migrates VMs based on
- * {@link PowerVmAllocationPolicyMigrationBestFitStaticThreshold
+ * {@link VmAllocationPolicyMigrationBestFitStaticThreshold
  * static host CPU utilization threshold}.
  * The VmAllocationPolicy used in this example ignores power usage of
  * Hosts. This way, it isn't required to set a PowerModel for Hosts.
  *
- * <p>The created {@link PowerVmAllocationPolicyMigrationBestFitStaticThreshold policy}
+ * <p>The created {@link VmAllocationPolicyMigrationBestFitStaticThreshold policy}
  * allows the definition of static under and over CPU utilization thresholds to
  * enable VM migration.
  * The example uses a custom UtilizationModel to define CPU usage of cloudlets which
  * {@link UtilizationModelDynamic increases along the simulation time}.</p>
  *
  * It is used some constants to create simulation objects such as
- * {@link  PowerDatacenter}, {@link  PowerHost} and {@link  PowerVm}.
+ * {@link  DatacenterSimple}, {@link  Host} and {@link  Vm}.
  * The values of these constants were careful and accordingly chosen to allow
  * migration of VMs due to either under and overloaded hosts and
  * to allow one developer to know exactly how the simulation will run
@@ -108,10 +105,14 @@ import java.util.List;
  * define new appropriated ones to allow the simulation
  * to run correctly.</p>
  *
+ * <p>Realize that the Host State History is just collected
+ * if {@link Host#isStateHistoryEnabled() history is enabled}
+ * by calling {@link Host#enableStateHistory()}.</p>
+ *
  * @author Manoel Campos da Silva Filho
  */
 public final class MigrationExample1 {
-    private static final int    SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 5;
+    private static final int    SCHEDULE_INTERVAL = 5;
 
     private static final int HOSTS = 5;
     private static final int VMS = 3;
@@ -125,11 +126,11 @@ public final class MigrationExample1 {
     /**
      * The time spent during VM migration depend on the
      * bandwidth of the target Host.
-     * By default, a {@link PowerVmAllocationPolicyMigration}
+     * By default, a {@link Datacenter}
      * uses only 50% of the BW to migrate VMs, while the
      * remaining capacity is used for VM communication.
      * This can be changed by calling
-     * {@link PowerDatacenter#setBandwidthForMigrationPercent(double)}.
+     * {@link DatacenterSimple#setBandwidthPercentForMigration(double)}.
      *
      * <p>The 16000 Mb/s is equal to 2000 MB/s. Since just half of this capacity
      * is used for VM migration, only 1000 MB/s will be available for this process.
@@ -178,8 +179,8 @@ public final class MigrationExample1 {
     private final List<Vm> vmList = new ArrayList<>();
 
     private CloudSim simulation;
-    private PowerVmAllocationPolicyMigrationBestFitStaticThreshold allocationPolicy;
-    private List<PowerHostUtilizationHistory> hostList;
+    private VmAllocationPolicyMigrationBestFitStaticThreshold allocationPolicy;
+    private List<Host> hostList;
 
     /**
      * Starts the example.
@@ -220,7 +221,7 @@ public final class MigrationExample1 {
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
-    private void printHostHistory(PowerHost h) {
+    private void printHostHistory(Host h) {
         System.out.printf("Host: %d\n", h.getId());
         System.out.println("------------------------------------------------------------------------------------------");
         h.getStateHistory().stream().forEach(System.out::print);
@@ -268,7 +269,7 @@ public final class MigrationExample1 {
     public void createAndSubmitVms(DatacenterBroker broker) {
         List<Vm> list = new ArrayList<>(VMS);
         for(int i = 0; i < VMS; i++){
-            PowerVm vm = createVm(broker, VM_PES);
+            Vm vm = createVm(broker, VM_PES);
             list.add(vm);
         }
 
@@ -276,8 +277,8 @@ public final class MigrationExample1 {
         broker.submitVmList(list);
     }
 
-    public PowerVm createVm(DatacenterBroker broker, int pes) {
-        PowerVm vm = new PowerVm(VM_MIPS, pes);
+    public Vm createVm(DatacenterBroker broker, int pes) {
+        Vm vm = new VmSimple(VM_MIPS, pes);
         vm
           .setRam(VM_RAM).setBw((long)VM_BW).setSize(VM_SIZE)
           .setCloudletScheduler(new CloudletSchedulerTimeShared());
@@ -353,9 +354,8 @@ public final class MigrationExample1 {
         this.hostList = new ArrayList<>();
         for(int i = 0; i < HOSTS; i++){
             final int pes = HOST_INITIAL_PES + i;
-            PowerHostUtilizationHistory host = createHost(pes, HOST_MIPS);
+            Host host = createHost(pes, HOST_MIPS);
             hostList.add(host);
-            Log.printFormattedLine("#Created host %d with %d MIPS x %2d PEs. Powered on: %s", i, HOST_MIPS, pes, host.isActive());
         }
         Log.printLine();
 
@@ -370,26 +370,24 @@ public final class MigrationExample1 {
          * become overloaded in order to trigger the migration.
          */
         this.allocationPolicy =
-            new PowerVmAllocationPolicyMigrationBestFitStaticThreshold(
+            new VmAllocationPolicyMigrationBestFitStaticThreshold(
                 new PowerVmSelectionPolicyMinimumUtilization(),
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2);
 
-        PowerDatacenter dc = new PowerDatacenter(simulation, hostList, allocationPolicy);
-        dc.setMigrationsEnabled(true)
-          .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
-          .setLog(true);
+        DatacenterSimple dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
+        dc.setSchedulingInterval(SCHEDULE_INTERVAL).setLog(true);
         return dc;
     }
 
-    public PowerHostUtilizationHistory createHost(int numberOfPes, long mipsByPe) {
+    public Host createHost(int numberOfPes, long mipsByPe) {
             List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-            PowerHostUtilizationHistory host =
-                new PowerHostUtilizationHistory(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
+            Host host =
+                new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
             host
                 .setRamProvisioner(new ResourceProvisionerSimple())
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
-            System.out.println("PowerModel: " + host.getPowerModel().getClass().getName());
+            host.enableStateHistory();
             return host;
     }
 

@@ -631,11 +631,14 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the total number of Host faults which affected all VMs from a given broker.
-     * @param broker the broker to get the number of faults for
+     * Gets the total number of Host faults which affected all VMs from a given broker
+     * or VMs from all existing brokers.
+     *
+     * @param broker the broker to get the number of Host faults affecting its VMs or null
+     *               whether is to be counted Host faults affecting VMs from any broker
      * @return
      */
-    public long getNumberOfFaults(DatacenterBroker broker) {
+    public long getNumberOfFaults(final DatacenterBroker broker) {
         if(broker == null){
             return getNumberOfFaults();
         }
@@ -734,7 +737,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * or zero if no VM was destroyed due to Host failure
      * @see #meanTimeBetweenHostFaultsInMinutes()
      */
-    public double meanTimeBetweenVmFaultsInMinutes(DatacenterBroker broker) {
+    public double meanTimeBetweenVmFaultsInMinutes(final DatacenterBroker broker) {
         final double faultsFromBroker = getNumberOfFaults(broker);
         if(faultsFromBroker == 0){
             return 0;
@@ -746,10 +749,9 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /**
      * Computes the current Mean Time To Repair failures of VMs in minutes (MTTR)
-     * in the Datacenter.
+     * in the Datacenter, for all existing brokers.
      *
-     * @return the Mean Time to Repair failures of VMs in minutes (MTTR)
-     * or zero if no VM was destroyed due to Host failure
+     * @return the MTTR (in minutes) or zero if no VM was destroyed due to Host failure
      */
     public double meanTimeToRepairVmFaultsInMinutes() {
         return meanTimeToRepairVmFaultsInMinutes(null);
@@ -758,12 +760,12 @@ public class HostFaultInjection extends CloudSimEntity {
     /**
      * Computes the current Mean Time To Repair Failures of VMs in minutes (MTTR)
      * belonging to given broker.
+     * If a null broker is given, computes the MTTR of all VMs for all existing brokers.
      *
-     * @param broker the broker to get the MTTR for
-     * @return the current Mean Time To Repair Failures of VMs in minutes (MTTR)
-     * or zero if no VM was destroyed due to Host failure
+     * @param broker the broker to get the MTTR for or null if the MTTR is to be computed for all brokers
+     * @return the current MTTR (in minutes) or zero if no VM was destroyed due to Host failure
      */
-    public double meanTimeToRepairVmFaultsInMinutes(DatacenterBroker broker) {
+    public double meanTimeToRepairVmFaultsInMinutes(final DatacenterBroker broker) {
         final double faultsFromBroker = getNumberOfFaults(broker);
         if(faultsFromBroker == 0){
             return 0;

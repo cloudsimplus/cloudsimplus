@@ -12,10 +12,10 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.util.MathUtil;
+import org.cloudbus.cloudsim.vms.UtilizationHistory;
 
 /**
  * A VM selection policy that selects for migration the VM with the Maximum Correlation Coefficient (MCC) among
@@ -53,8 +53,8 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
     }
 
     @Override
-    public Vm getVmToMigrate(final PowerHost host) {
-        final List<PowerVm> migratableVms = getMigratableVms(host);
+    public Vm getVmToMigrate(final Host host) {
+        final List<Vm> migratableVms = getMigratableVms(host);
         if (migratableVms.isEmpty()) {
             return Vm.NULL;
         }
@@ -84,13 +84,13 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
      * @return the CPU utilization percentage matrix, where each line i
      * is a VM and each column j is a CPU utilization percentage history for that VM.
      */
-    protected double[][] getUtilizationMatrix(final List<PowerVm> vmList) {
+    protected double[][] getUtilizationMatrix(final List<Vm> vmList) {
         final int numberVms = vmList.size();
         final int minHistorySize = getMinUtilizationHistorySize(vmList);
         final double[][] utilization = new double[numberVms][minHistorySize];
 
         for (int i = 0; i < numberVms; i++) {
-            final List<Double> vmUtilization = vmList.get(i).getUtilizationHistory();
+            final List<Double> vmUtilization = vmList.get(i).getUtilizationHistory().getHistory();
             for (int j = 0; j < minHistorySize; j++) {
                 utilization[i][j] = vmUtilization.get(j);
             }
@@ -104,9 +104,10 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
      * @param vmList the VM list
      * @return the min CPU utilization percentage history size of the VM list
      */
-    protected int getMinUtilizationHistorySize(final List<PowerVm> vmList) {
+    protected int getMinUtilizationHistorySize(final List<Vm> vmList) {
         return vmList.stream()
-            .map(PowerVm::getUtilizationHistory)
+            .map(Vm::getUtilizationHistory)
+            .map(UtilizationHistory::getHistory)
             .mapToInt(List::size)
             .min().orElse(0);
     }

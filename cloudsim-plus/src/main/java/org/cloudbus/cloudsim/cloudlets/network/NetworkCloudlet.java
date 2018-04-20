@@ -64,50 +64,11 @@ public class NetworkCloudlet extends CloudletSimple {
      * @pre cloudletLength >= 0.0
      * @post $none
      */
-    public NetworkCloudlet(final int id,  final long cloudletLength,  final int pesNumber) {
+    public NetworkCloudlet(final int id,  final long cloudletLength, final int pesNumber) {
         super(id, cloudletLength, pesNumber);
         this.currentTaskNum = -1;
         this.memory = 0;
         this.tasks = new ArrayList<>();
-    }
-
-    /**
-     * Creates a NetworkCloudlet with the given parameters.
-     *
-     * @param id the unique ID of this cloudlet
-     * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
-     * @param pesNumber the pes number
-     * @param cloudletFileSize the file size (in bytes) of this cloudlet <tt>BEFORE</tt> submitting to a Datacenter
-     * @param cloudletOutputSize the file size (in bytes) of this cloudlet <tt>AFTER</tt> finish executing by a VM
-     * @param memory the amount of memory
-     * @param utilizationModelCpu the utilization model of CPU
-     * @param utilizationModelRam the utilization model of RAM
-     * @param utilizationModelBw  the utilization model of BW
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
-     *
-     */
-    @Deprecated
-    public NetworkCloudlet(
-            int id,
-            final long cloudletLength,
-            int pesNumber,
-            long cloudletFileSize,
-            long cloudletOutputSize,
-            long memory,
-            UtilizationModel utilizationModelCpu,
-            UtilizationModel utilizationModelRam,
-            UtilizationModel utilizationModelBw)
-    {
-        this(id, cloudletLength, pesNumber);
-        this.setFileSize(cloudletFileSize)
-            .setOutputSize(cloudletOutputSize)
-            .setUtilizationModelCpu(utilizationModelCpu)
-            .setUtilizationModelRam(utilizationModelRam)
-            .setUtilizationModelBw(utilizationModelBw);
-        this.memory = memory;
     }
 
     public double getNumberOfTasks() {
@@ -136,7 +97,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * @param memory amount of RAM to set
      *
      */
-    public NetworkCloudlet setMemory(long memory) {
+    public NetworkCloudlet setMemory(final long memory) {
         this.memory = memory;
         return this;
     }
@@ -157,7 +118,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * @param nextTaskStartTime the time that the next task will start
      * @return true if the current task finished and the next one was started, false otherwise
      */
-    public boolean startNextTaskIfCurrentIsFinished(double nextTaskStartTime){
+    public boolean startNextTaskIfCurrentIsFinished(final double nextTaskStartTime){
         /**
          * @todo @author manoelcampos CloudletTask should implement
          * Null Object Pattern to avoid these null checks.
@@ -220,7 +181,7 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     @Override
-    public boolean setFinishedLengthSoFar(long length) {
+    public boolean setFinishedLengthSoFar(final long length) {
         return super.setFinishedLengthSoFar(length);
     }
 
@@ -231,7 +192,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * @param task Task to be added
      * @return the NetworkCloudlet instance
      */
-    public NetworkCloudlet addTask(CloudletTask task) {
+    public NetworkCloudlet addTask(final CloudletTask task) {
         task.setCloudlet(this);
         tasks.add(task);
         return this;

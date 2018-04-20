@@ -5,6 +5,29 @@ Lists the main changes in the project.
 ## [Current Development Version]
 - xxx
 
+## [2.0.0] - 2018-04-20
+
+- PowerVm class was removed and its methods were moved to a new VmUtilizationHistory class.
+  The Vm now has an attribute VmUtilizationHistory that enables collecting CPU utilization
+  data. The VmUtilizationHistory.enabled is set by default to false.
+  This way, the user have to manually enable the history to start collecting utilization
+  data. It was disabled by default to reduce memory usage.
+
+- PowerHostUtilizationHistory class was removed and its single method getUtilizationHistory
+  was moved to the PowerHost. Since the method gets the history from VMs, the host
+  doesn't store any data. The VM utilization history must be enabled to allow
+  getting such data (as describe above).
+
+- PowerHost class removed and its methods moved to Host.
+  A PowerSupply interface was introduced to group power
+  consumption data (including a PowerModel).
+  This way, any Host can extract power consumption data.
+  It's just required a PowerModel to be set in the
+  PowerSupply.
+
+- Removes PowerVmAllocationPolicySimple because it was doing nothing
+  than other policies weren't doing.
+
 ## [1.2.3] - 2017-06-05
 
 ### Added / Changed

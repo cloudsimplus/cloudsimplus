@@ -30,11 +30,9 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
-import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -47,20 +45,17 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * A example showing how to use the power module to
- * compute power consumption of Hosts.
- * Realize that for this goal, you must
- * use all power-related objects such as
- * {@link PowerDatacenter}, {@link PowerHost},
- * {@link PowerVm} and a {@link PowerModel}
- * for each Host.
+ * A example showing how to show Hosts power consumption.
+ * Realize that for this goal, you define a {@link PowerModel}
+ * for each Host by calling {@code host.getPowerSupply().setPowerModel(powerModel)}.
  *
  * <p>It creates the number of cloudlets defined in
  * {@link #CLOUDLETS}. All cloudlets will required 100% of PEs they are using all the time.
@@ -78,6 +73,10 @@ import java.util.List;
  * there is a constant power which is computed
  * and added to consumer power when it
  * is lower or equal to the minimum usage percentage.</p>
+ *
+ * <p>Realize that the Host CPU Utilization History is only computed
+ * if VMs utilization history is enabled by calling
+ * {@code vm.getUtilizationHistory().enable()}</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.4
@@ -109,10 +108,10 @@ public class PowerExample {
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
-    private List<PowerVm> vmList;
+    private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
     private Datacenter datacenter0;
-    private final List<PowerHostUtilizationHistory> hostList;
+    private final List<Host> hostList;
 
     public static void main(String[] args) {
         new PowerExample();
@@ -121,11 +120,11 @@ public class PowerExample {
     public PowerExample() {
         simulation = new CloudSim();
         hostList = new ArrayList<>(HOSTS);
-        datacenter0 = createPowerDatacenter();
+        datacenter0 = createDatacenterSimple();
         //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
         broker0 = new DatacenterBrokerSimple(simulation);
 
-        vmList = createPowerVms();
+        vmList = createVms();
         cloudletList = createCloudlets();
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
@@ -138,10 +137,17 @@ public class PowerExample {
         printHostCpuUtilizationAndPowerConsumption();
     }
 
+    /**
+     * <p>The Host CPU Utilization History is only computed
+     * if VMs utilization history is enabled by calling
+     * {@code vm.getUtilizationHistory().enable()}
+     * </p>*
+     */
     private void printHostCpuUtilizationAndPowerConsumption() {
         System.out.println();
-        for (PowerHostUtilizationHistory host : hostList) {
-            System.out.printf("Host %4d CPU utilization and power consumption\n", host.getId());
+        for (Host host : hostList) {
+            System.out.printf("Host %d CPU utilization and power consumption\n", host.getId());
+            System.out.println("-------------------------------------------------------------------------------------------");
             /*
             Since the utilization history are stored in the reverse chronological order,
             the values are presented in this way.
@@ -162,33 +168,34 @@ public class PowerExample {
                  * This way, to get the total power consumed for each 10 seconds interval,
                  * the power consumption is multipled by the time interval.
                 */
-                final double wattsPerInterval = host.getPowerModel().getPower(utilizationPercent)*SCHEDULING_INTERVAL;
+                final double wattsPerInterval = host.getPowerSupply().getPowerModel().getPower(utilizationPercent)*SCHEDULING_INTERVAL;
                 totalPower += wattsPerInterval;
                 System.out.printf("\tTime %6.0f | CPU Utilization %6.2f%% | Power Consumption: %8.2f Watts in %d Seconds\n",
                     time, utilizationPercent*100, wattsPerInterval, SCHEDULING_INTERVAL);
                 time -= SCHEDULING_INTERVAL;
             }
             System.out.printf(
-                "\t    Total Host %4d Power Consumption in %6.0f seconds: %10.2f Watts (average of %.2f Watts/Second) \n\n",
+                "Total Host %d Power Consumption in %.0f seconds: %.2f Watts (mean of %.2f Watts/Second) \n",
                 host.getId(), simulation.clock(), totalPower, totalPower/simulation.clock());
+            System.out.println("-------------------------------------------------------------------------------------------\n");
         }
     }
 
     /**
-     * Creates a {@link PowerDatacenter} and its {@link PowerHost}s.
+     * Creates a {@link Datacenter} and its {@link Host}s.
      */
-    private PowerDatacenter createPowerDatacenter() {
+    private Datacenter createDatacenterSimple() {
         for(int i = 0; i < HOSTS; i++) {
-            PowerHostUtilizationHistory host = createPowerHost();
+            Host host = createPowerHost();
             hostList.add(host);
         }
 
-        final PowerDatacenter dc = new PowerDatacenter(simulation, hostList, new VmAllocationPolicySimple());
+        final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
 
-    private PowerHostUtilizationHistory createPowerHost() {
+    private Host createPowerHost() {
         final List<Pe> peList = new ArrayList<>(HOST_PES);
         //List of Host's CPUs (Processing Elements, PEs)
         for (int i = 0; i < HOST_PES; i++) {
@@ -204,8 +211,8 @@ public class PowerExample {
         final ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
         final VmScheduler vmScheduler = new VmSchedulerTimeShared();
 
-        final PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(ram, bw, storage, peList);
-        host.setPowerModel(powerModel);
+        final Host host = new HostSimple(ram, bw, storage, peList);
+        host.getPowerSupply().setPowerModel(powerModel);
         host
             .setRamProvisioner(ramProvisioner)
             .setBwProvisioner(bwProvisioner)
@@ -216,12 +223,13 @@ public class PowerExample {
     /**
      * Creates a list of VMs.
      */
-    private List<PowerVm> createPowerVms() {
-        final List<PowerVm> list = new ArrayList<>(VMS);
+    private List<Vm> createVms() {
+        final List<Vm> list = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
-            PowerVm vm = new PowerVm(i, 1000, VM_PES);
+            Vm vm = new VmSimple(i, 1000, VM_PES);
             vm.setRam(512).setBw(1000).setSize(10000)
               .setCloudletScheduler(new CloudletSchedulerTimeShared());
+            vm.getUtilizationHistory().enable();
             list.add(vm);
         }
 

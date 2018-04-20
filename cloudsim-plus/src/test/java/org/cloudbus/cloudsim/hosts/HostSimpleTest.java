@@ -246,6 +246,9 @@ public class HostSimpleTest {
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
 
         final VmScheduler vmScheduler = EasyMock.createMock(VmScheduler.class);
+        EasyMock.expect(vmScheduler.getTotalAllocatedMipsForVm(EasyMock.anyObject()))
+            .andReturn(MIPS)
+            .times(numberOfVms);
         EasyMock.expect(vmScheduler.getAllocatedMips(EasyMock.anyObject()))
                 .andReturn(mipsShare)
                 .times(numberOfVms);

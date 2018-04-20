@@ -6,8 +6,11 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.power.supply.HostPowerSupply;
+import org.cloudbus.cloudsim.power.supply.PowerSupply;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
@@ -15,6 +18,8 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import java.util.*;
 
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
+import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.lists.PeList;
@@ -35,11 +40,25 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class HostSimple implements Host {
+    /**
+     * @see #getStateHistory()
+     */
+    private final List<HostStateHistoryEntry> stateHistory;
+    private final PowerSupply powerSupply;
 
     /**
      * @see #getId()
      */
     private int id;
+
+    /**
+     * @see #isFailed()
+     */
+    private boolean failed;
+
+    private boolean active;
+    private boolean stateHistoryEnabled;
+
 
     private Ram ram;
 
@@ -76,11 +95,6 @@ public class HostSimple implements Host {
     private List<Pe> peList;
 
     /**
-     * @see #isFailed()
-     */
-    private boolean failed;
-
-    /**
      * @see #getVmsMigratingIn()
      */
     private final Set<Vm> vmsMigratingIn;
@@ -114,8 +128,11 @@ public class HostSimple implements Host {
      */
     private List<ResourceManageable> resources;
     private List<ResourceProvisioner> provisioners;
-    private boolean active;
     private List<Vm> vmCreatedList;
+    /**
+     * The previous utilization mips.
+     */
+    private double previousUtilizationMips;
 
     /**
      * Creates a Host without a pre-defined ID.
@@ -149,6 +166,8 @@ public class HostSimple implements Host {
         this.provisioners = new ArrayList<>();
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
+        this.powerSupply = new HostPowerSupply(this);
+        stateHistory = new LinkedList<>();
     }
 
     /**
@@ -184,6 +203,7 @@ public class HostSimple implements Host {
 
     @Override
     public double updateProcessing(final double currentTime) {
+        setPreviousUtilizationMips(getUtilizationOfCpuMips());
         double nextSimulationTime = Double.MAX_VALUE;
         /* Uses a traditional for to avoid ConcurrentModificationException,
          * e.g., in cases when Vm is destroyed during simulation execution.*/
@@ -194,6 +214,8 @@ public class HostSimple implements Host {
         }
 
         notifyOnUpdateProcessingListeners(nextSimulationTime);
+        addStateHistory(currentTime);
+
         return nextSimulationTime;
     }
 
@@ -759,5 +781,143 @@ public class HostSimple implements Host {
     @Override
     public long getUtilizationOfBw() {
         return bwProvisioner.getTotalAllocatedResource();
+    }
+
+    @Override
+    public double[] getUtilizationHistory() {
+        final double[] utilizationHistory = new double[UtilizationHistory.DEF_MAX_HISTORY_ENTRIES];
+        final double totalMipsCapacity = getTotalMipsCapacity();
+        for (final Vm vm : this.getVmCreatedList()) {
+            final List<Double> history = vm.getUtilizationHistory().getHistory();
+            for (int i = 0; i < history.size(); i++) {
+                utilizationHistory[i] += history.get(i) * vm.getTotalMipsCapacity() / totalMipsCapacity;
+            }
+        }
+        return MathUtil.trimZeroTail(utilizationHistory);
+    }
+
+    @Override
+    public PowerSupply getPowerSupply() {
+        return powerSupply;
+    }
+
+    @Override
+    public double getPreviousUtilizationOfCpu() {
+        return computeCpuUtilizationPercent(previousUtilizationMips);
+    }
+
+    @Override
+    public void enableStateHistory() {
+        this.stateHistoryEnabled = true;
+    }
+
+    @Override
+    public void disableStateHistory() {
+        this.stateHistoryEnabled = false;
+    }
+
+    @Override
+    public boolean isStateHistoryEnabled() {
+        return this.stateHistoryEnabled;
+    }
+
+    /**
+     * Sets the previous utilization of CPU in mips.
+     *
+     * @param previousUtilizationMips the new previous utilization of CPU in
+     * mips
+     */
+    private void setPreviousUtilizationMips(final double previousUtilizationMips) {
+        this.previousUtilizationMips = previousUtilizationMips;
+    }
+
+    @Override
+    public List<Vm> getFinishedVms() {
+        return getVmList().stream()
+            .filter(vm -> !vm.isInMigration())
+            .filter(vm -> vm.getCurrentRequestedTotalMips() == 0)
+            .collect(toList());
+    }
+
+    /**
+     * Adds the VM resource usage to the History if the VM is not migrating into the Host.
+     * @param vm the VM to add its usage to the history
+     * @param currentTime the current simulation time
+     * @return the total allocated MIPS for the given VM
+     */
+    private double addVmResourceUseToHistoryIfNotMigratingIn(final Vm vm, final double currentTime) {
+        double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
+        if (getVmsMigratingIn().contains(vm)) {
+            Log.printFormattedLine("%.2f: [" + this + "] " + vm
+                    + " is migrating in", getSimulation().clock());
+            return totalAllocatedMips;
+        }
+
+        final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
+        if (totalAllocatedMips + 0.1 < totalRequestedMips) {
+            final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
+            final double notAllocatedMipsByPe = (totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes();
+            Log.printFormattedLine(
+                "%.2f: [%s] %.0f MIPS not allocated for each one of the %d PEs from %s due to %s.",
+                getSimulation().clock(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
+        }
+
+        final VmStateHistoryEntry entry = new VmStateHistoryEntry(
+                currentTime,
+                totalAllocatedMips,
+                totalRequestedMips,
+                vm.isInMigration() && !getVmsMigratingIn().contains(vm));
+        vm.addStateHistoryEntry(entry);
+
+        if (vm.isInMigration()) {
+            Log.printFormattedLine(
+                    "%.2f: [" + this + "] " + vm + " is migrating out ",
+                    getSimulation().clock());
+            totalAllocatedMips /= getVmScheduler().getMaxCpuUsagePercentDuringOutMigration();
+        }
+
+        return totalAllocatedMips;
+    }
+
+    private void addStateHistory(final double currentTime) {
+        if(!stateHistoryEnabled){
+            return;
+        }
+
+        double hostTotalRequestedMips = 0;
+
+        for (final Vm vm : getVmList()) {
+            final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
+            addVmResourceUseToHistoryIfNotMigratingIn(vm, currentTime);
+            hostTotalRequestedMips += totalRequestedMips;
+        }
+
+        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips,getUtilizationOfCpuMips() > 0);
+    }
+
+    /**
+     * Adds a host state history entry.
+     *
+     * @param time the time
+     * @param allocatedMips the allocated mips
+     * @param requestedMips the requested mips
+     * @param isActive the is active
+     */
+    private void addStateHistoryEntry(final double time, final double allocatedMips, final double requestedMips, final boolean isActive) {
+        final HostStateHistoryEntry newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
+        if (!stateHistory.isEmpty()) {
+            final HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
+            if (previousState.getTime() == time) {
+                stateHistory.set(stateHistory.size() - 1, newState);
+                return;
+            }
+        }
+
+        stateHistory.add(newState);
+    }
+
+    @Override
+    public List<HostStateHistoryEntry> getStateHistory() {
+        return Collections.unmodifiableList(stateHistory);
     }
 }

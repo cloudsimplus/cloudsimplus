@@ -27,16 +27,16 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.allocationpolicies.power.PowerVmAllocationPolicyMigrationWorstFitStaticThreshold;
+import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigrationWorstFitStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.power.PowerDatacenter;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.hosts.power.PowerHostUtilizationHistory;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -51,7 +51,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
@@ -159,7 +159,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
     public void createAndSubmitVms(DatacenterBroker broker) {
         for (int i = 0; i < NUMBER_OF_VMS_TO_CREATE; i++) {
-            PowerVm vm = createVm(broker);
+            Vm vm = createVm(broker);
             vmlist.add(vm);
         }
         broker.submitVmList(vmlist);
@@ -170,8 +170,8 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      * @param broker
      * @return
      */
-    public PowerVm createVm(DatacenterBroker broker) {
-        PowerVm vm = new PowerVm(vmlist.size(), VM_MIPS, VM_PES_NUM);
+    public Vm createVm(DatacenterBroker broker) {
+        Vm vm = new VmSimple(vmlist.size(), VM_MIPS, VM_PES_NUM);
         vm
                 .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
@@ -254,21 +254,21 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     }
 
     private Datacenter createDatacenter() {
-        ArrayList<PowerHost> hostList = new ArrayList<>();
+        final List<Host> hostList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS_TO_CREATE; i++) {
             hostList.add(createHost(i, HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
             Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_NUMBER_OF_PES);
         }
         Log.printLine();
 
-        PowerVmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
-                = new PowerVmAllocationPolicyMigrationWorstFitStaticThreshold(
+        VmAllocationPolicyMigrationWorstFitStaticThreshold allocationPolicy
+                = new VmAllocationPolicyMigrationWorstFitStaticThreshold(
                         new PowerVmSelectionPolicyMinimumUtilization(),
                         contract.getCpuUtilizationMetric().getMaxDimension().getValue());
         allocationPolicy.setUnderUtilizationThreshold(contract.getCpuUtilizationMetric().getMinDimension().getValue());
 
-        PowerDatacenter dc = new PowerDatacenter(simulation, hostList, allocationPolicy);
-        dc.setMigrationsEnabled(true).setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
+        DatacenterSimple dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
+        dc.enableMigrations().setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
         return dc;
     }
 
@@ -285,13 +285,13 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
      *
      * @todo @author manoelcampos The method
      * {@link DatacenterBroker#getCloudletFinishedList()} returns an empty list
-     * when using {@link PowerDatacenter},
-     * {@link PowerHost} and {@link PowerVm}.
+     * when using {@link DatacenterSimple},
+     * {@link Host} and {@link Vm}.
      */
-    public static PowerHostUtilizationHistory createHost(int id, int numberOfPes, long mipsByPe) {
+    public static Host createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
-        PowerHostUtilizationHistory host = new PowerHostUtilizationHistory(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
-        host.setPowerModel(new PowerModelLinear(1000, 0.7))
+        Host host = new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
+        host.getPowerSupply().setPowerModel(new PowerModelLinear(1000, 0.7))
                 .setRamProvisioner(new ResourceProvisionerSimple())
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());

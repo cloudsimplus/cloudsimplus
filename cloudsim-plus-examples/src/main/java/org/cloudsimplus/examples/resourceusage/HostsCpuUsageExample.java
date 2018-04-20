@@ -31,7 +31,8 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.hosts.HostDynamicWorkloadSimple;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -65,7 +66,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 public class HostsCpuUsageExample {
     private List<Cloudlet> cloudletList;
     private List<Vm> vmlist;
-    private List<HostDynamicWorkloadSimple> hostList;
+    private List<Host> hostList;
     private DatacenterBroker broker;
     private CloudSim simulation;
 
@@ -149,7 +150,7 @@ public class HostsCpuUsageExample {
         Log.printLine("\nHosts CPU utilization history for the entire simulation period");
         int numberOfUsageHistoryEntries = 0;
         final double interval = 1;
-        for (HostDynamicWorkloadSimple host : hostList) {
+        for (Host host : hostList) {
             double mipsByPe = host.getTotalMipsCapacity() / (double)host.getNumberOfPes();
             Log.printFormattedLine("Host %d: Number of PEs %2d, MIPS by PE %.0f", host.getId(), host.getNumberOfPes(), mipsByPe);
             for(HostStateHistoryEntry history: host.getStateHistory()){
@@ -170,14 +171,14 @@ public class HostsCpuUsageExample {
         int pesNumber = 1;
         int mips = 1200;
         for (int i = 1; i <= 2; i++) {
-            HostDynamicWorkloadSimple host = createHosts(pesNumber, mips*i, i-1);
+            Host host = createHosts(pesNumber, mips*i, i-1);
             hostList.add(host);
         }
 
         return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
-    private HostDynamicWorkloadSimple createHosts(int pesNumber, long mips, int hostId) {
+    private Host createHosts(int pesNumber, long mips, int hostId) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
@@ -187,7 +188,7 @@ public class HostsCpuUsageExample {
         long storage = 1000000; //host storage (MEGABYTE)
         long bw = 10000; //Megabits/s
 
-        HostDynamicWorkloadSimple host = new HostDynamicWorkloadSimple(ram, bw, storage, peList);
+        Host host = new HostSimple(ram, bw, storage, peList);
         host
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())

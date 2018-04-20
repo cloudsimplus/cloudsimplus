@@ -7,10 +7,7 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -20,8 +17,6 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
-
-import javax.xml.crypto.Data;
 
 import static java.util.stream.Collectors.toList;
 
@@ -36,6 +31,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
@@ -68,6 +64,15 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         setDatacenter(Datacenter.NULL);
     }
 
+    /**
+     * Finds a host that has enough resources to place a given VM.
+     * <b>Subclasses must implement this method to define how to select a Host for a given VM.</b>
+     *
+     * @param vm the vm to find a host for it
+     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
+     */
+    protected abstract Optional<Host> findHostForVm(final Vm vm);
+
     @Override
     public final <T extends Host> List<T> getHostList() {
         return (List<T>) datacenter.getHostList();
@@ -98,7 +103,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param datacenter the Datacenter to get Hosts from
      */
     private void addPesFromHostsToFreePesList(final Datacenter datacenter) {
-        if(datacenter == null || datacenter == Datacenter.NULL || datacenter != this.datacenter) {
+        Objects.requireNonNull(datacenter);
+        if(datacenter == Datacenter.NULL || datacenter != this.datacenter) {
             setHostFreePesMap(new HashMap<>(datacenter.getHostList().size()));
             setUsedPes(new HashMap<>());
         }
@@ -137,16 +143,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * Gets the map between each VM and the number of PEs used. The map key is a
-     * VM and the value is the number of used Pes for that VM.
-     *
-     * @return the used PEs map
-     */
-    protected Map<Vm, Long> getUsedPes() {
-        return usedPes;
-    }
-
-    /**
      * Adds number used PEs for a Vm to the map between each VM and the number of PEs used.
      * @param vm the VM to add the number of used PEs to the map
      */
@@ -161,7 +157,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     protected long removeUsedPes(final Vm vm) {
         final Long pes = usedPes.remove(vm);
-        return (pes == null ? 0 : pes);
+        return pes == null ? 0 : pes;
     }
 
     /**
@@ -341,5 +337,51 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             scaling.getVm().getId(), vmResource.getCapacity(),
             vmResource.getPercentUtilization()*100);
         return true;
+    }
+
+    /**
+     * Allocates the host with less PEs in use for a given VM.
+     *
+     * @param vm {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public boolean allocateHostForVm(final Vm vm) {
+        if(getHostList().isEmpty()){
+            Log.printFormattedLine(
+                "%.2f: %s: Vm %s could not be allocated because there isn't any Host for Datacenter %d",
+                vm.getSimulation().clock(), vm.getId(), getDatacenter().getId());
+            return false;
+        }
+
+        if (vm.isCreated()) {
+            return false;
+        }
+
+        final Optional<Host> optional = findHostForVm(vm);
+        if(optional.isPresent()){
+            return allocateHostForVm(vm, optional.get());
+        }
+
+        Log.printFormattedLine("%.2f: No suitable host found for %s\n", vm.getSimulation().clock(), vm);
+        return false;
+    }
+
+    @Override
+    public boolean allocateHostForVm(final Vm vm, final Host host) {
+        if (host.createVm(vm)) {
+            Log.printFormattedLine(
+                "%.2f: %s: %s has been allocated to %s",
+                vm.getSimulation().clock(), getClass().getSimpleName(), vm, host);
+            return true;
+        }
+
+        Log.printFormattedLine("%.2f: Creation of %s on %s failed\n", vm.getSimulation().clock(), vm, host);
+        return false;
+    }
+
+    @Override
+    public void deallocateHostForVm(final Vm vm) {
+        vm.getHost().destroyVm(vm);
     }
 }

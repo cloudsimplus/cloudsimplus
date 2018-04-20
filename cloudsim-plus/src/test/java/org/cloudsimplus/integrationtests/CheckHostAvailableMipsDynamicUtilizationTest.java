@@ -93,7 +93,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                     .setVmSchedulerClass(VmSchedulerSpaceShared.class)
                     .setRam(4000).setBw(400000)
                     .setPes(HOST_PES).setMips(HOST_MIPS)
-                    .setOnUpdateVmsProcessingListener((evt) -> onUpdateVmsProcessing(evt))
+                    .setOnUpdateVmsProcessingListener(this::onUpdateVmsProcessing)
                     .createOneHost()
                     .getHosts()
         );
@@ -103,7 +103,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
         brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                .setCloudletSchedulerSupplier(() -> new CloudletSchedulerTimeShared())
+                .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
                 .createAndSubmitVms(NUMBER_OF_VMS);
 
         utilizationModel = new UtilizationModelDynamic()
@@ -116,7 +116,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     }
 
     @Test @Ignore("WARNING: It has to be checked if it is really required to use the "
-                + " PowerDatacenter, PowerHostUtilizationHistory, PowerVm"
+                + " PowerDatacenter, PowerHostUtilizationHistory, Vm"
                 + " and CloudletSchedulerDynamicWorkload to make the host CPU usage"
                 + " to be correctly updated.")
     public void integrationTest() {
