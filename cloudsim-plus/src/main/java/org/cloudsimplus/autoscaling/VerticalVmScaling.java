@@ -149,7 +149,7 @@ public interface VerticalVmScaling extends VmScaling {
      *
      * @return the lower resource utilization threshold function if the Vm resource
      * is underloaded, upper resource utilization threshold function if the Vm resource
-     * is overloaded, or a function that always returns 0 if the Vm is is not in these conditions.
+     * is overloaded, or a function that always returns 0 if the Vm isn't in any of these conditions.
      * @see #getLowerThresholdFunction()
      * @see #getUpperThresholdFunction()
      */

@@ -400,8 +400,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param host the Host to check if assigned scheduler's Host is different from
      * @return
      */
-    private boolean isOtherHostAssigned(Host host) {
-        return !Objects.isNull(this.host) && this.host != Host.NULL && !host.equals(this.host);
+    private boolean isOtherHostAssigned(final Host host) {
+        return this.host != null && this.host != Host.NULL && !host.equals(this.host);
     }
 
     /**

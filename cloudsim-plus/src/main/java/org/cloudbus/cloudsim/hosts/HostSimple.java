@@ -333,10 +333,9 @@ public class HostSimple implements Host {
     }
 
     private void destroyVmInternal(final Vm vm) {
-        if (!Objects.isNull(vm)) {
-            deallocateResourcesOfVm(vm);
-            vmList.remove(vm);
-        }
+        Objects.requireNonNull(vm);
+        deallocateResourcesOfVm(vm);
+        vmList.remove(vm);
     }
 
     /**
@@ -514,8 +513,9 @@ public class HostSimple implements Host {
      * @return
      */
     protected final Host setPeList(final List<Pe> peList) {
+        Objects.requireNonNull(peList);
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
-        this.peList = Objects.isNull(peList) ? new ArrayList<>() : peList;
+        this.peList = peList;
 
         int peId = this.peList.stream().filter(pe -> pe.getId() > 0).mapToInt(Pe::getId).max().orElse(-1);
         final List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());

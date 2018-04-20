@@ -26,7 +26,7 @@ public class FileTest {
         return new File(NAME, size);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testCreateFile_nullFileParameter() {
         final File nullFile = null;
         new File(nullFile);

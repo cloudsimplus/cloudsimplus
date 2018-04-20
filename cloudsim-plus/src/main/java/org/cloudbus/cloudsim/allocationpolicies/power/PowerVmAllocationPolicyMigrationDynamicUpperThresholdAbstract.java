@@ -112,8 +112,9 @@ public abstract class PowerVmAllocationPolicyMigrationDynamicUpperThresholdAbstr
     }
 
     @Override
-    public final void setFallbackVmAllocationPolicy(PowerVmAllocationPolicyMigration fallbackPolicy) {
-        this.fallbackVmAllocationPolicy = Objects.isNull(fallbackPolicy) ? PowerVmAllocationPolicyMigration.NULL : fallbackPolicy;
+    public final void setFallbackVmAllocationPolicy(final PowerVmAllocationPolicyMigration fallbackPolicy) {
+        Objects.requireNonNull(fallbackPolicy);
+        this.fallbackVmAllocationPolicy = fallbackPolicy;
     }
 
     @Override

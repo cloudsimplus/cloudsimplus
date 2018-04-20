@@ -207,9 +207,10 @@ public final class Log {
      * @return the output
      */
     public static OutputStream getOutput() {
-        if (Objects.isNull(output)) {
+        if (output == null) {
             setOutput(System.out);
         }
+
         return output;
     }
 

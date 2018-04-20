@@ -133,7 +133,7 @@ public class TerminateSimulationAtGivenTimeExample {
         final long storage = 1000000; // in Megabytes
         final long bw = 10000; //in Megabits/s
 
-        List<Pe> peList = new ArrayList<>(); //List of CPU cores
+        final List<Pe> peList = new ArrayList<>(); //List of CPU cores
 
         /*Creates the Host's CPU cores and defines the provisioner
         used to allocate each core for requesting VMs.*/
@@ -143,39 +143,28 @@ public class TerminateSimulationAtGivenTimeExample {
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
-
     }
 
     private Vm createVm(DatacenterBroker broker) {
-        long mips = 1000;
-        long   storage = 10000; // vm image size (MEGABYTE)
-        int    ram = 512; // vm memory (MEGABYTE)
-        long   bw = 1000; // vm bandwidth (Megabits/s)
-        int    pesNumber = 1; // number of CPU cores
+        final long mips = 1000;
+        final int    pesNumber = 1; // number of CPU cores
 
         return new VmSimple(numberOfCreatedVms++, mips, pesNumber)
-                .setRam(ram)
-                .setBw(bw)
-                .setSize(storage)
+                .setRam(512)
+                .setBw((long) 1000)
+                .setSize((long) 10000)
                 .setCloudletScheduler(new CloudletSchedulerSpaceShared());
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
-        long length = 10000; //in Million Structions (MI)
-        long fileSize = 300; //Size (in bytes) before execution
-        long outputSize = 300; //Size (in bytes) after execution
-        long  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
-
-        //Defines how CPU, RAM and Bandwidth resources are used
-        //Sets the same utilization model for all these resources.
-        UtilizationModel utilization = new UtilizationModelFull();
+        final long length = 10000; //in Million Structions (MI)
+        final long  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
 
         return new CloudletSimple(
                 numberOfCreatedCloudlets++, length, numberOfCpuCores)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setUtilizationModel(utilization)
+                .setFileSize(300)
+                .setOutputSize(300)
+                .setUtilizationModel(new UtilizationModelFull())
                 .setVm(vm);
     }
-
 }

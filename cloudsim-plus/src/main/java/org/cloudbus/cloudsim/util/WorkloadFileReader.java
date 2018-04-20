@@ -249,19 +249,18 @@ public class WorkloadFileReader implements WorkloadReader {
     /**
      * Sets the string that identifies the start of a comment line.
      *
-     * @param cmt a character that denotes the start of a comment, e.g. ";" or
-     *            "#"
+     * @param comment a character that denotes the start of a comment, e.g. ";" or "#"
      * @return <code>true</code> if it is successful, <code>false</code> otherwise
      * @pre comment != null
      * @post $none
      */
-    public boolean setComment(final String cmt) {
-        boolean success = false;
-        if (!Objects.isNull(cmt) && !cmt.isEmpty()) {
-            comment = cmt;
-            success = true;
+    public boolean setComment(final String comment) {
+        if (comment != null && !comment.trim().isEmpty()) {
+            this.comment = comment;
+            return true;
         }
-        return success;
+
+        return false;
     }
 
     /**

@@ -48,8 +48,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @see #getHostFreePesMap()
      * @todo The number of free PEs in each Host could be determined dynamically, instead of storing
      *       such information in a HashMap.
-     *       The information in the map can become out-of-date and cause
-     *       issues.
+     *       The information in the map can become out-of-date and cause issues.
      *       There is just a concern about performance if this information
      *       is computed every time when needed.
      */
@@ -85,8 +84,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     @Override
     public final void setDatacenter(final Datacenter datacenter){
+        Objects.requireNonNull(datacenter);
         addPesFromHostsToFreePesList(datacenter);
-        this.datacenter = datacenter == null ? Datacenter.NULL : datacenter;
+        this.datacenter = datacenter;
     }
 
     /**

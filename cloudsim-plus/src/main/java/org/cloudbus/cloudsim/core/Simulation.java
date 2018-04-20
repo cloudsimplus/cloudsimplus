@@ -418,13 +418,13 @@ public interface Simulation {
      *        as the base for the next IDs
      * @return true if the List has any Entity, false if it's empty
      */
-    static <T extends ChangeableId> boolean setIdForEntitiesWithoutOne(List<? extends T> list, T lastEntity){
+    static <T extends ChangeableId> boolean setIdForEntitiesWithoutOne(final List<? extends T> list, final T lastEntity){
         Objects.requireNonNull(list);
         if(list.isEmpty()){
             return false;
         }
 
-        int id = Objects.isNull(lastEntity) ? list.get(list.size()-1).getId() : lastEntity.getId();
+        int id = lastEntity == null ? list.get(list.size()-1).getId() : lastEntity.getId();
         //if the ID is a negative number lower than -1, it's set as -1 to start the first ID as 0
         id = Math.max(id, -1);
         for (final ChangeableId e : list) {

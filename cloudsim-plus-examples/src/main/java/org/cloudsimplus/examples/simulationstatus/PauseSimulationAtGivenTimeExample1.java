@@ -179,7 +179,7 @@ public class PauseSimulationAtGivenTimeExample1 {
     }
 
     private DatacenterSimple createDatacenter() {
-        List<Host> hostList = new ArrayList<>();
+        final List<Host> hostList = new ArrayList<>();
         Host host0 = createHost();
         hostList.add(host0);
 

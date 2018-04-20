@@ -257,7 +257,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @return true if the VMs of the Cloudlets where swapped, false otherwise
      */
     protected boolean swapVmsOfTwoMapEntries(final Map.Entry<Cloudlet, Vm>... entries) {
-        if(Objects.isNull(entries) || entries.length != 2 || Objects.isNull(entries[0]) || Objects.isNull(entries[1])) {
+        if(entries == null || entries.length != 2 || entries[0] == null || entries[1] == null) {
             return false;
         }
 

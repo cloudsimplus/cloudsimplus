@@ -246,7 +246,7 @@ public class PowerDatacenter extends DatacenterSimple {
     }
 
     @Override
-    protected void processVmMigrate(SimEvent ev, boolean ack) {
+    protected void processVmMigrate(final SimEvent ev, final boolean ack) {
         if (getSimulation().clock() <= getLastProcessTime()) {
             return;
         }
@@ -254,13 +254,13 @@ public class PowerDatacenter extends DatacenterSimple {
         super.updateHostsProcessing();
         super.processVmMigrate(ev, ack);
         final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTags.VM_MIGRATE));
-        if (Objects.isNull(event) || event.eventTime() > getSimulation().clock()) {
+        if (event == null || event.eventTime() > getSimulation().clock()) {
             super.updateHostsProcessing();
         }
     }
 
     @Override
-    protected void processCloudletSubmit(SimEvent ev, boolean ack) {
+    protected void processCloudletSubmit(final SimEvent ev, final boolean ack) {
         super.processCloudletSubmit(ev, ack);
         setLastCloudletProcessingTime(getSimulation().clock());
     }

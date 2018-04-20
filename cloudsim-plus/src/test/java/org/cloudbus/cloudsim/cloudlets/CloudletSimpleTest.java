@@ -422,33 +422,27 @@ public class CloudletSimpleTest {
         assertNotNull(c.getUtilizationModelBw());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testSetUtilizationModelBw_null() {
         final CloudletSimple c = createCloudlet();
         c.setUtilizationModelBw(null);
-        assertEquals(UtilizationModel.NULL, c.getUtilizationModelBw());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testSetUtilizationModelRam_null() {
         final CloudletSimple c = createCloudlet();
         c.setUtilizationModelRam(null);
-        assertEquals(UtilizationModel.NULL, c.getUtilizationModelRam());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testSetUtilizationModelCpu_null() {
         final CloudletSimple c = createCloudlet();
         c.setUtilizationModelCpu(null);
-        assertEquals(UtilizationModel.NULL, c.getUtilizationModelCpu());
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testNew_nullUtilizationModel() {
         final CloudletSimple c = createCloudlet(0, null);
-        assertEquals(UtilizationModel.NULL, c.getUtilizationModelBw());
-        assertEquals(UtilizationModel.NULL, c.getUtilizationModelRam());
-        assertEquals(UtilizationModel.NULL, c.getUtilizationModelCpu());
     }
 
     @Test

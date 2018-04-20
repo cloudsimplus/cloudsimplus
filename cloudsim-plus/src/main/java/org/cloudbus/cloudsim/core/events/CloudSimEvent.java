@@ -128,7 +128,7 @@ public final class CloudSimEvent implements SimEvent {
 
     @Override
     public int compareTo(final SimEvent event) {
-        if (Objects.isNull(event)) {
+        if (event == null) {
             return 1;
         } else if (time < event.getTime()) {
             return -1;

@@ -77,7 +77,8 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
 
     @Override
     public final HorizontalVmScaling setVmSupplier(final Supplier<Vm> supplier) {
-        this.vmSupplier = supplier == null ? () -> Vm.NULL : supplier;
+        Objects.requireNonNull(supplier);
+        this.vmSupplier = supplier;
         return this;
     }
 
