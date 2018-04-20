@@ -8,6 +8,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * A class that implements the Null Object Design Pattern for the {@link VmAllocationPolicy}
@@ -34,7 +35,7 @@ final class VmAllocationPolicyNull implements VmAllocationPolicy {
     @Override public List<Host> getHostList() {
         return Collections.emptyList();
     }
-    @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
+    @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) {
         return Collections.emptyMap();
     }
 }

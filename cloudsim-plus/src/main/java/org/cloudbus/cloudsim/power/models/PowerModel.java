@@ -7,12 +7,12 @@
  */
 package org.cloudbus.cloudsim.power.models;
 
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
+import org.cloudbus.cloudsim.hosts.Host;
 
 /**
- * The PowerModel interface needs to be implemented in order to provide a model
- * of power consumption of hosts, depending on utilization of a critical system
+ * Provides a model for power consumption of hosts, depending on utilization of a critical system
  * component, such as CPU.
+ *
  * The interface implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link PowerModel#NULL} object instead of attributing {@code null} to
@@ -36,18 +36,18 @@ import org.cloudbus.cloudsim.hosts.power.PowerHost;
  */
 public interface PowerModel {
     /**
-     * A property that implements the Null Object Design Pattern for {@link PowerHost}
+     * A property that implements the Null Object Design Pattern for {@link Host}
      * objects.
      */
     PowerModel NULL = new PowerModel() {
-        @Override public PowerHost getHost() { return PowerHost.NULL; }
-        @Override public void setHost(PowerHost host) {}
+        @Override public Host getHost() { return Host.NULL; }
+        @Override public void setHost(Host host) {}
         @Override public double getPower(double utilization) throws IllegalArgumentException { return 0; }
     };
 
-    PowerHost getHost();
+    Host getHost();
 
-    void setHost(PowerHost host);
+    void setHost(Host host);
 
     /**
      * Gets power consumption (in Watts/Second) of the Power Model, according to the utilization

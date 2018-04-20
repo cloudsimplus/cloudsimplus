@@ -8,5 +8,7 @@
  * such as IBM or HP.</p>
  *
  * <p>The most basic PowerModel is the {@link org.cloudbus.cloudsim.power.models.PowerModelLinear}.</p>
+ *
+ * @see org.cloudbus.cloudsim.power.supply
  */
 package org.cloudbus.cloudsim.power.models;

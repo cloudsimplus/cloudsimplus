@@ -12,8 +12,7 @@ import java.util.List;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
-import org.cloudbus.cloudsim.vms.power.PowerVm;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -40,8 +39,8 @@ public class PowerVmSelectionPolicyRandomSelection extends PowerVmSelectionPolic
     }
 
 	@Override
-	public Vm getVmToMigrate(PowerHost host) {
-		final List<PowerVm> migratableVms = getMigratableVms(host);
+	public Vm getVmToMigrate(Host host) {
+		final List<Vm> migratableVms = getMigratableVms(host);
 		if (migratableVms.isEmpty()) {
 			return Vm.NULL;
 		}

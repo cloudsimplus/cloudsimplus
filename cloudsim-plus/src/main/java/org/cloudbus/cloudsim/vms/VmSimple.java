@@ -38,6 +38,12 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSimple implements Vm {
+    /** @see #getUtilizationHistory() */
+    protected final UtilizationHistory utilizationHistory;
+
+    /** @see #getStateHistory() */
+    private final List<VmStateHistoryEntry> stateHistory;
+
     private HorizontalVmScaling horizontalScaling;
     private boolean failed;
 
@@ -77,10 +83,6 @@ public class VmSimple implements Vm {
 
     private List<ResourceManageable> resources;
 
-    /**
-     * @see #getStateHistory()
-     */
-    private final List<VmStateHistoryEntry> stateHistory;
 
     /**
      * The VM's storage resource that represents the Vm size in disk.
@@ -165,6 +167,9 @@ public class VmSimple implements Vm {
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
         this.setPeVerticalScaling(VerticalVmScaling.NULL);
+
+        //By default, the VM doesn't store utilization history. This has be enabled by the user as wanted
+        utilizationHistory = new VmUtilizationHistory(this, false);
     }
 
     /**
@@ -217,6 +222,8 @@ public class VmSimple implements Vm {
         }
         final double nextSimulationTime = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
+
+        utilizationHistory.addUtilizationHistory(currentTime);
         return nextSimulationTime;
     }
 
@@ -549,7 +556,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void addStateHistoryEntry(VmStateHistoryEntry entry) {
+    public void addStateHistoryEntry(final VmStateHistoryEntry entry) {
         if (!stateHistory.isEmpty()) {
             final VmStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
             if (previousState.getTime() == entry.getTime()) {
@@ -561,12 +568,12 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount) {
+    public void allocateResource(final Class<? extends ResourceManageable> resourceClass, final long newTotalResourceAmount) {
         getResource(resourceClass).allocateResource(newTotalResourceAmount);
     }
 
     @Override
-    public void deallocateResource(Class<? extends ResourceManageable> resourceClass) {
+    public void deallocateResource(final Class<? extends ResourceManageable> resourceClass) {
         getResource(resourceClass).deallocateAllResources();
     }
 
@@ -580,26 +587,26 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
+    public Vm addOnHostAllocationListener(final EventListener<VmHostEventInfo> listener) {
         Objects.requireNonNull(listener);
         this.onHostAllocationListeners.add(listener);
         return this;
     }
 
     @Override
-    public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
+    public Vm addOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
         Objects.requireNonNull(listener);
         this.onHostDeallocationListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
+    public boolean removeOnHostAllocationListener(final EventListener<VmHostEventInfo> listener) {
         return onHostAllocationListeners.remove(listener);
     }
 
     @Override
-    public boolean removeOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
+    public boolean removeOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
         return onHostDeallocationListeners.remove(listener);
     }
 
@@ -611,26 +618,26 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+    public Vm addOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
         Objects.requireNonNull(listener);
         this.onCreationFailureListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
+    public boolean removeOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
         return onCreationFailureListeners.remove(listener);
     }
 
     @Override
-    public Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
+    public Vm addOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
         Objects.requireNonNull(listener);
         this.onUpdateProcessingListeners.add(listener);
         return this;
     }
 
     @Override
-    public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
+    public boolean removeOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
         return onUpdateProcessingListeners.remove(listener);
     }
 
@@ -641,12 +648,12 @@ public class VmSimple implements Vm {
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(Vm o) {
+    public int compareTo(final Vm o) {
         return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity());
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
@@ -664,7 +671,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void setFailed(boolean failed) {
+    public void setFailed(final boolean failed) {
         this.failed = failed;
     }
 
@@ -684,7 +691,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public final void setSubmissionDelay(double submissionDelay) {
+    public final void setSubmissionDelay(final double submissionDelay) {
         if(submissionDelay < 0) {
             return;
         }
@@ -722,25 +729,25 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public final Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
+    public final Vm setHorizontalScaling(final HorizontalVmScaling horizontalScaling) throws IllegalArgumentException {
         this.horizontalScaling = validateAndConfigureVmScaling(horizontalScaling);
         return this;
     }
 
     @Override
-    public final Vm setRamVerticalScaling(VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
+    public final Vm setRamVerticalScaling(final VerticalVmScaling ramVerticalScaling) throws IllegalArgumentException {
         this.ramVerticalScaling = validateAndConfigureVmScaling(ramVerticalScaling);
         return this;
     }
 
     @Override
-    public final Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
+    public final Vm setBwVerticalScaling(final VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException {
         this.bwVerticalScaling = validateAndConfigureVmScaling(bwVerticalScaling);
         return this;
     }
 
     @Override
-    public final Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException {
+    public final Vm setPeVerticalScaling(final VerticalVmScaling peVerticalScaling) throws IllegalArgumentException {
         this.peVerticalScaling = validateAndConfigureVmScaling(peVerticalScaling);
         return this;
     }
@@ -760,7 +767,7 @@ public class VmSimple implements Vm {
         return peVerticalScaling;
     }
 
-    private <T extends VmScaling> T validateAndConfigureVmScaling(T vmScaling) {
+    private <T extends VmScaling> T validateAndConfigureVmScaling(final T vmScaling) {
         Objects.requireNonNull(vmScaling);
         if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
             final String name = vmScaling.getClass().getSimpleName();
@@ -784,5 +791,10 @@ public class VmSimple implements Vm {
     public Vm setDescription(final String description) {
         this.description = description == null ? "" : description;
         return this;
+    }
+
+    @Override
+    public UtilizationHistory getUtilizationHistory() {
+        return utilizationHistory;
     }
 }

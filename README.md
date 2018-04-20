@@ -57,6 +57,7 @@ CloudSim Plus provides a lot of exclusive features, from the most basic ones to 
 1. It is easier to use. A complete and easy-to-understand simulation scenario can be built in few lines of code. Check the [Examples Section](#a-minimal-and-complete-simulation-example); 
 1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/VerticalVmCpuScalingExample.java) that performs on-demand up and down allocation of VM resources such as Ram, Bandwidth and PEs (CPUs) ([#7](https://github.com/manoelcampos/cloudsim-plus/issues/7));
 1. [Horizontal VM scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/LoadBalancerByHorizontalVmScalingExample.java), allowing dynamic creation of VMs according to an overload condition. Such a condition is defined by a predicate that checks different VM resources usage such as CPU, RAM or BW ([#41](https://github.com/manoelcampos/cloudsim-plus/issues/41));
+1. Enables power-aware simulations using regular classes such as `DatacenterSimple`, `HostSimple` and `VmSimple`. This way, it automatically enables creating simulations that are both network- and power-aware by using the network version of such classes ([#45](https://github.com/manoelcampos/cloudsim-plus/issues/45));
 1. [Parallel execution of simulations](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing several simulations to be run simultaneously, in a isolated way, inside a multi-core computer ([#38](https://github.com/manoelcampos/cloudsim-plus/issues/38));
 1. Delay creation of submitted VMs and [Cloudlets](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCloudletsArrival1.java), enabling simulation of dynamic arrival of tasks ([#11](https://github.com/manoelcampos/cloudsim-plus/issues/11), [#23](https://github.com/manoelcampos/cloudsim-plus/issues/23)); 
 1. [Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/dynamic/DynamicCreationOfVmsAndCloudletsExample.java), enabling VMs to be created on-demand according to arrived cloudlets ([#43](https://github.com/manoelcampos/cloudsim-plus/issues/43));
@@ -231,6 +232,7 @@ The presented results are structured and clear to allow better understanding. Fo
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # Documentation and Help
+
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
 
@@ -336,21 +338,22 @@ Additionally, the interface `Storage` was renamed to `FileStorage` and its imple
 
 # General Features of the Framework
 
-  * Support for modeling and simulation of large scale Cloud computing data centers.
-  * Support for modeling and simulation of virtualized server hosts, with customizable policies for provisioning host resources to virtual machines.
-  * Support for modeling and simulation of energy-aware computational resources.
-  * Support for modeling and simulation of data center network topologies and message-passing applications.
-  * Support for modeling and simulation of federated clouds.
-  * Support for dynamic insertion of simulation elements, stop and resume of simulation.
-  * Support for user-defined policies for allocation of hosts to virtual machines and policies for allocation of host resources to virtual machines.
+* Support for modeling and simulation of large scale Cloud computing data centers.
+* Support for modeling and simulation of virtualized server hosts, with customizable policies for provisioning host resources to virtual machines.
+* Support for modeling and simulation of energy-aware computational resources.
+* Support for modeling and simulation of data center network topologies and message-passing applications.
+* Support for modeling and simulation of federated clouds.
+* Support for dynamic insertion of simulation elements, stop and resume of simulation.
+* Support for user-defined policies for allocation of hosts to virtual machines and policies for allocation of host resources to virtual machines.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="publications"></a>
 
 # CloudSim Plus Publications
-  1. [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](https://doi.org/10.23919/INM.2017.7987304). If you are using CloudSim Plus in your research, please make sure you cite that paper. You can check the paper presentation [here](http://cloudsimplus.org/docs/presentation/).
-  2. White Paper ["CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services"](https://github.com/manoelcampos/cloudsim-plus/blob/master/docs/cloudsim-plus-white-paper.pdf)
+
+1. [M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire, “CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,” in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7](https://doi.org/10.23919/INM.2017.7987304). If you are using CloudSim Plus in your research, please make sure you cite that paper. You can check the paper presentation [here](http://cloudsimplus.org/docs/presentation/).
+2. White Paper ["CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services"](https://github.com/manoelcampos/cloudsim-plus/blob/master/docs/cloudsim-plus-white-paper.pdf)
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   

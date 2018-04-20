@@ -20,8 +20,7 @@ import java.util.Objects;
  * Datacenter for a specific Cloudlet. Before a Cloudlet exits the Datacenter,
  * it is RECOMMENDED to call this method {@link #finalizeCloudlet()}.
  * <p>
- * It contains a Cloudlet object along with its arrival time and the ID of the
- * machine and the Pe (Processing Element) allocated to it. It acts as a
+ * It acts as a
  * placeholder for maintaining the amount of resource share allocated at various
  * times for simulating any scheduling using internal events.
  * </p>

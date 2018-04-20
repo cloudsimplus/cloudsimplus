@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.power.supply.PowerSupply;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Resource;
@@ -164,4 +165,12 @@ final class HostNull implements Host {
     @Override public double getUtilizationOfCpuMips() { return 0.0; }
     @Override public long getUtilizationOfBw() { return 0; }
     @Override public long getUtilizationOfRam() { return 0; }
+    @Override public double[] getUtilizationHistory() { return new double[0]; }
+    @Override public PowerSupply getPowerSupply() { return PowerSupply.NULL; }
+    @Override public double getPreviousUtilizationOfCpu() { return 0; }
+    @Override public void enableStateHistory() {/**/}
+    @Override public void disableStateHistory() {/**/}
+    @Override public boolean isStateHistoryEnabled() { return false; }
+    @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.EMPTY_LIST; }
+    @Override public List<Vm> getFinishedVms() { return Collections.EMPTY_LIST; }
 }

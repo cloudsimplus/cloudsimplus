@@ -8,7 +8,7 @@
 
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
-import org.cloudbus.cloudsim.hosts.power.PowerHost;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
@@ -35,7 +35,7 @@ import java.util.function.Predicate;
  */
 public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPolicy {
     @Override
-    public Vm getVmToMigrate(PowerHost host) {
+    public Vm getVmToMigrate(Host host) {
         final List<? extends Vm> migratableVms = getMigratableVms(host);
         if (migratableVms.isEmpty()) {
             return Vm.NULL;

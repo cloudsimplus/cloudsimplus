@@ -42,7 +42,7 @@ public class VmAllocationPolicySimpleTest {
         final List<Host> hosts = new ArrayList<>(freePesByHost.length);
         for(int i = 1; i <= freePesByHost.length; i++) {
             final Host host = HostSimpleTest.createHostSimple(
-                i, freePesByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i*HOST_BASE_STORAGE);
+                i-1, freePesByHost[i-1], HOST_MIPS, HOST_RAM, HOST_BW, i*HOST_BASE_STORAGE);
             hostFreePesMap.put(host, host.getNumberOfPes());
             hosts.add(host);
         }
@@ -70,14 +70,14 @@ public class VmAllocationPolicySimpleTest {
 
     @Test
     public void allocateHostForVm_WhenOneVmIsGivenAndSelectedHostDoesntHaveStorage_AllocateOtherHost() {
-        final Host secondHostWithLessPes = policy.getDatacenter().getHostList().get(3);
+        final Host hostWithMoreFreePes = policy.getDatacenter().getHostList().get(2);
         final Vm vm = VmSimpleTest.createVm(
             0, 1000, 2, 1, 1,
-            secondHostWithLessPes.getStorage().getCapacity(), CloudletScheduler.NULL);
-        assertTrue(policy.allocateHostForVm(vm));
+            HOST_BASE_STORAGE, CloudletScheduler.NULL);
+        assertTrue(vm + " couldn't be allocated to " + hostWithMoreFreePes, policy.allocateHostForVm(vm));
 
         final Host allocatedHostForVm = vm.getHost();
-        assertEquals(secondHostWithLessPes, allocatedHostForVm);
+        assertEquals(hostWithMoreFreePes, allocatedHostForVm);
     }
 
     @Test

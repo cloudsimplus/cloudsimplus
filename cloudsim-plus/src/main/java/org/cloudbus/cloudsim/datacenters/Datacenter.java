@@ -153,4 +153,27 @@ public interface Datacenter extends SimEntity {
      * @return
      */
     Datacenter setStorageList(List<FileStorage> storageList);
+
+    /**
+     * Gets the percentage of the bandwidth allocated to a Host to
+     * migrate VMs. It's a value between [0 and 1] (where 1 is 100%).
+     * The default value is 0.5, meaning only 50% of the bandwidth
+     * will be allowed for migration, while the remaining
+     * will be used for VM services.
+     *
+     * @return
+     * @see #DEF_BANDWIDTH_PERCENT_FOR_MIGRATION
+     */
+    double getBandwidthPercentForMigration();
+
+    /**
+     * Sets the percentage of the bandwidth allocated to a Host to
+     * migrate VMs. It's a value between [0 and 1] (where 1 is 100%).
+     * The default value is 0.5, meaning only 50% of the bandwidth
+     * will be allowed for migration, while the remaining
+     * will be used for VM services.
+     *
+     * @param bandwidthPercentForMigration the bandwidth migration percentage to set
+     */
+    void setBandwidthPercentForMigration(double bandwidthPercentForMigration);
 }

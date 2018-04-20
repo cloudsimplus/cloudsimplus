@@ -61,16 +61,12 @@ final class DatacenterNull implements Datacenter {
     @Override public Datacenter setStorageList(List<FileStorage> storageList) {
         return Datacenter.NULL;
     }
+    @Override public double getBandwidthPercentForMigration() { return 0; }
+    @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration) {/**/}
     @Override public SimEntity setState(State state) { return SimEntity.NULL; }
-    @Override public boolean isStarted() {
-        return false;
-    }
-    @Override public Simulation getSimulation() {
-        return Simulation.NULL;
-    }
-    @Override public SimEntity setSimulation(Simulation simulation) {
-        return this;
-    }
+    @Override public boolean isStarted() { return false; }
+    @Override public Simulation getSimulation() { return Simulation.NULL; }
+    @Override public SimEntity setSimulation(Simulation simulation) { return this; }
     @Override public void processEvent(SimEvent ev) {/**/}
     @Override public void schedule(SimEntity dest, double delay, int tag) {/**/}
     @Override public void run() {/**/}
@@ -80,7 +76,6 @@ final class DatacenterNull implements Datacenter {
     @Override public String toString() {
         return "Datacenter.NULL";
     }
-
     @Override public void setLog(boolean log) {/**/}
     @Override public void println(String msg) {/**/}
 }

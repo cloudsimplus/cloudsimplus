@@ -9,6 +9,8 @@ package org.cloudbus.cloudsim.allocationpolicies;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -98,11 +100,14 @@ public interface VmAllocationPolicy {
      <T extends Host> List<T> getHostList();
 
     /**
-     * Optimize allocation of the VMs according to current utilization.
+     * Gets a map of optimized allocation for VMs according to current utilization
+     * and Hosts under and overloaded conditions.
+     * The conditions that will make a new VM placement map to be proposed
+     * and returned is defined by each implementing class.
      *
      * @param vmList the list of VMs to be reallocated
      * @return the new vm placement map, where each key is a VM and each value is the host where such a Vm has to be placed
      *
      */
-    Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList);
+    Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList);
 }

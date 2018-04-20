@@ -14,13 +14,15 @@
  * {@link org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple}.
  * </p>
  *
- * <p>Specific Datacenter implementations can be power- or network-aware, enabling the simulation
- * of power consumption and network communication. There are specifc power- and networtk-aware
+ * <p><b>All datacenter implementations are natively power-ware.</b>
+ * Specific implementations can also be network-aware, enabling the simulation
+ * of network communication. There are specifc networtk-aware
  * versions for Hosts and VMs and a single kindle of such objects must be used for a
- * simulation. For instance a power-aware simulation must use
- * {@link org.cloudbus.cloudsim.datacenters.power.PowerDatacenter},
- * {@link org.cloudbus.cloudsim.hosts.power.PowerHost}
- * and {@link org.cloudbus.cloudsim.vms.power.PowerVm}.</p>
+ * simulation. For instance a network-aware simulation must use
+ * {@link org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter},
+ * {@link org.cloudbus.cloudsim.hosts.network.NetworkHost},
+ * {@link org.cloudbus.cloudsim.vms.network.NetworkVm} and
+ * {@link org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet}.</p>
  *
  * @author Manoel Campos da Silva Filho
  */

@@ -9,7 +9,9 @@ package org.cloudbus.cloudsim.datacenters;
 import org.apache.commons.lang3.BooleanUtils;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.core.predicates.PredicateType;
 import org.cloudbus.cloudsim.network.IcmpPacket;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.util.Log;
@@ -37,6 +39,28 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterSimple extends CloudSimEntity implements Datacenter {
+    /**
+     * The default percentage of bandwidth allocated for VM migration, is
+     * a value is not set.
+     * @see #setBandwidthPercentForMigration(double)
+     */
+    private static final double DEF_BANDWIDTH_PERCENT_FOR_MIGRATION = 0.5;
+
+    /**
+     * @see #getBandwidthPercentForMigration()
+     */
+    private double bandwidthPercentForMigration;
+
+    /**
+     * Indicates if migrations are disabled or not.
+     */
+    private boolean migrationsEnabled;
+
+    /**
+     * @see #getPower()
+     */
+    private double power;
+
     private List<? extends Host> hostList;
 
     /** @see #getCharacteristics() */
@@ -81,6 +105,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         setStorageList(new ArrayList<>());
 
         this.characteristics = new DatacenterCharacteristicsSimple(this);
+        this.bandwidthPercentForMigration = DEF_BANDWIDTH_PERCENT_FOR_MIGRATION;
+        migrationsEnabled = true;
     }
 
     private void setHostList(final List<? extends Host> hostList) {
@@ -110,7 +136,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
     }
 
-    private int processNetworkEvents(SimEvent ev) {
+    private int processNetworkEvents(final SimEvent ev) {
         switch (ev.getTag()) {
             case CloudSimTags.ICMP_PKT_SUBMIT:
                 processPingRequest(ev);
@@ -142,10 +168,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 processVmDestroy(ev, true);
                 return 1;
             case CloudSimTags.VM_MIGRATE:
-                processVmMigrate(ev, false);
+                finishVmMigration(ev, false);
                 return 1;
             case CloudSimTags.VM_MIGRATE_ACK:
-                processVmMigrate(ev, true);
+                finishVmMigration(ev, true);
                 return 1;
             case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT:
                 updateCloudletProcessing();
@@ -369,7 +395,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Request the migration of a Cloudlet to another Datacenter.
-     *  @param type event type
+     * @param type event type
      * @param destDatacenter ID of the destination Datacenter
      * @param cl the Cloudlet to request migration
      */
@@ -520,7 +546,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Process the event from the Datacenter to migrate a VM.
+     * Finishes the process of migrating a VM.
      *
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
@@ -529,7 +555,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @pre ev != null
      * @post $none
      */
-    protected void processVmMigrate(final SimEvent ev, final boolean ack) {
+    protected void finishVmMigration(final SimEvent ev, final boolean ack) {
         if (!(ev.getData() instanceof Map.Entry<?, ?>)) {
             throw new ClassCastException("The data object must be Map.Entry<Vm, Host>");
         }
@@ -539,7 +565,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final Vm vm = entry.getKey();
         final Host targetHost = entry.getValue();
 
+        //Updates processing of all Hosts to get the latest state for all Hosts before migrating VMs
+        updateHostsProcessing();
+
+        //Deallocates the VM on the source Host (where it is migrating out)
         vmAllocationPolicy.deallocateHostForVm(vm);
+
         targetHost.removeMigratingInVm(vm);
         final boolean result = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
 
@@ -548,6 +579,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         vm.setInMigration(false);
+
+        final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTags.VM_MIGRATE));
+        if (event == null || event.eventTime() > getSimulation().clock()) {
+            //Updates processing of all Hosts again to get the latest state for all Hosts after the VMs migrations
+            updateHostsProcessing();
+        }
+
         if (result) {
             Log.printFormattedLine(
                 "%.2f: Migration of %s to %s is completed",
@@ -658,6 +696,58 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
+     * Updates the processing of all Hosts, meaning
+     * it makes the processing of VMs running inside such hosts to be updated.
+     * Finally, the processing of Cloudlets running inside such VMs is updated too.
+     *
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (which is a relative delay from the current simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
+     */
+    protected double updateHostsProcessing() {
+        double nextSimulationTime = Double.MAX_VALUE;
+        for (final Host host : getHostList()) {
+            final double time = host.updateProcessing(getSimulation().clock());
+            nextSimulationTime = Math.min(time, nextSimulationTime);
+        }
+
+        // Guarantees a minimal interval before scheduling the event
+        final double minTimeBetweenEvents = getSimulation().getMinTimeBetweenEvents()+0.01;
+        nextSimulationTime = Math.max(nextSimulationTime, minTimeBetweenEvents);
+
+        if (nextSimulationTime == Double.MAX_VALUE) {
+            return nextSimulationTime;
+        }
+
+        power += getDatacenterPowerUsageForTimeSpan();
+
+        return nextSimulationTime;
+    }
+
+    /**
+     * Gets the total power consumed (in Watts/sec) by all Hosts of the Datacenter since the last time the processing
+     * of Cloudlets in this Host was updated.
+     *
+     * @return the total power consumed (in Watts/sec) by all Hosts in the elapsed time span
+     */
+    private double getDatacenterPowerUsageForTimeSpan() {
+        if (getSimulation().clock() - getLastProcessTime() == 0) { //time span
+            return 0;
+        }
+
+        double datacenterTimeSpanPowerUse = 0;
+        for (final Host host : this.getHostList()) {
+            final double prevCpuUsage = host.getPreviousUtilizationOfCpu();
+            final double cpuUsage = host.getUtilizationOfCpu();
+            final double timeFrameHostEnergy =
+                host.getPowerSupply().getEnergyLinearInterpolation(prevCpuUsage, cpuUsage, getSimulation().clock() - getLastProcessTime());
+            datacenterTimeSpanPowerUse += timeFrameHostEnergy;
+        }
+
+        return datacenterTimeSpanPowerUse;
+    }
+
+    /**
      * Updates processing of each Host, that fires the update of VMs,
      * which in turn updates cloudlets running in this Datacenter.
      * After that, the method schedules the next processing update.
@@ -685,10 +775,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
         setLastProcessTime(getSimulation().clock());
+
+        checkIfVmMigrationsAreNeeded();
         return nextSimulationTime;
     }
 
-    protected boolean isTimeToUpdateCloudletsProcessing() {
+    private boolean isTimeToUpdateCloudletsProcessing() {
         // if some time passed since last processing
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
@@ -697,30 +789,60 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Updates the processing of all Hosts, that means
-     * that makes the processing of VMs running inside such hosts to be updated.
-     * Finally, the processing of Cloudlets running inside such VMs is updated.
-     *
-     * @return the predicted completion time of the earliest finishing cloudlet
-     * (which is a relative delay from the current simulation time),
-     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
+     * Checks if the {@link #getVmAllocationPolicy()} has defined
+     * a new VM placement map, then sends the request to migrate VMs.
      */
-    protected double updateHostsProcessing() {
-        double nextSimulationTime = Double.MAX_VALUE;
-        for (final Host host : getHostList()) {
-            final double time = host.updateProcessing(getSimulation().clock());
-            nextSimulationTime = Math.min(time, nextSimulationTime);
+    private void checkIfVmMigrationsAreNeeded() {
+        if (!isMigrationsEnabled()) {
+            return;
         }
 
-        // Guarantees a minimal interval before scheduling the event
-        final double minTimeBetweenEvents = getSimulation().getMinTimeBetweenEvents()+0.01;
-        nextSimulationTime = Math.max(nextSimulationTime, minTimeBetweenEvents);
-
-        if (nextSimulationTime == Double.MAX_VALUE) {
-            return nextSimulationTime;
+        final Map<Vm, Host> migrationMap = getVmAllocationPolicy().getOptimizedAllocationMap(getVmList());
+        for (final Map.Entry<Vm, Host> entry : migrationMap.entrySet()) {
+            requestVmMigration(entry);
         }
+    }
 
-        return nextSimulationTime;
+    /**
+     * Actually fires the event that starts the VM migration
+     * @param entry a Map Entry that indicate to which Host a VM must be migrated
+     */
+    private void requestVmMigration(final Map.Entry<Vm, Host> entry) {
+        final double currentTime = getSimulation().clock();
+        final Host sourceHost = entry.getKey().getHost();
+        final Host targetHost = entry.getValue();
+
+        final double delay = timeToMigrateVm(entry.getKey(), targetHost);
+        if (sourceHost == Host.NULL) {
+            Log.printFormattedLine(
+                "%.2f: Migration of %s to %s is started.",
+                currentTime, entry.getKey(), targetHost);
+        } else {
+            Log.printFormattedLine(
+                "%.2f: Migration of %s from %s to %s is started.",
+                currentTime, entry.getKey(), sourceHost, targetHost);
+        }
+        Log.printFormattedLine(
+            "\tIt's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.",
+            delay, getBandwidthPercentForMigration()*100);
+
+
+        sourceHost.addVmMigratingOut(entry.getKey());
+        targetHost.addMigratingInVm(entry.getKey());
+
+        send(this, delay, CloudSimTags.VM_MIGRATE, entry);
+    }
+
+    /**
+     * Computes the expected time to migrate a VM to a given Host.
+     * It is computed as: VM RAM (MB)/Target Host Bandwidth (Mb/s).
+     *
+     * @param vm the VM to migrate.
+     * @param targetHost the Host where tto migrate the VM
+     * @return the time (in seconds) that is expected to migrate the VM
+     */
+    private double timeToMigrateVm(final Vm vm, final Host targetHost) {
+        return vm.getRam().getCapacity() / Conversion.bitesToBytes(targetHost.getBw().getCapacity() * getBandwidthPercentForMigration());
     }
 
     /**
@@ -735,18 +857,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         hosts.forEach(this::checkCloudletsCompletionForGivenHost);
     }
 
-    protected void checkCloudletsCompletionForGivenHost(Host host) {
+    private void checkCloudletsCompletionForGivenHost(Host host) {
         host.getVmList().forEach(this::checkCloudletsCompletionForGivenVm);
     }
 
-    public void checkCloudletsCompletionForGivenVm(Vm vm) {
+    private void checkCloudletsCompletionForGivenVm(Vm vm) {
         final List<Cloudlet> nonReturnedCloudlets =
             vm.getCloudletScheduler().getCloudletFinishedList().stream()
                 .map(CloudletExecution::getCloudlet)
                 .filter(c -> !vm.getCloudletScheduler().isCloudletReturned(c))
                 .collect(toList());
 
-        nonReturnedCloudlets.stream().forEach(this::returnFinishedCloudletToBroker);
+        nonReturnedCloudlets.forEach(this::returnFinishedCloudletToBroker);
     }
 
     /**
@@ -861,8 +983,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      *
      * @param vmAllocationPolicy the new vm allocation policy
      */
-    protected final Datacenter setVmAllocationPolicy(final VmAllocationPolicy vmAllocationPolicy) {
+    public final Datacenter setVmAllocationPolicy(final VmAllocationPolicy vmAllocationPolicy) {
         Objects.requireNonNull(vmAllocationPolicy);
+        if(vmAllocationPolicy.getDatacenter() != null && vmAllocationPolicy.getDatacenter() != Datacenter.NULL && !this.equals(vmAllocationPolicy.getDatacenter())){
+            throw new IllegalStateException("The given VmAllocationPolicy is already used by another Datacenter.");
+        }
+
         vmAllocationPolicy.setDatacenter(this);
         this.vmAllocationPolicy = vmAllocationPolicy;
         return this;
@@ -1002,5 +1128,70 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         int result = super.hashCode();
         result = 31 * result + characteristics.hashCode();
         return result;
+    }
+
+    @Override
+    public double getBandwidthPercentForMigration() {
+        return bandwidthPercentForMigration;
+    }
+
+    @Override
+    public void setBandwidthPercentForMigration(final double bandwidthPercentForMigration) {
+        if(bandwidthPercentForMigration <= 0){
+            throw new IllegalArgumentException("The bandwidth migration percentage must be greater than 0.");
+        }
+
+        if(bandwidthPercentForMigration > 1){
+            throw new IllegalArgumentException("The bandwidth migration percentage must be lower or equal to 1.");
+        }
+
+        this.bandwidthPercentForMigration = bandwidthPercentForMigration;
+    }
+
+    /**
+     * Gets the Datacenter power consumption (in Watts/Second).
+     *
+     * @return the power consumption (in Watts/Second)
+     */
+    public double getPower() {
+        return power;
+    }
+
+    /**
+     * Gets the Datacenter power consumption (in Kilo Watts/Hour).
+     *
+     * @return the power consumption (in Kilo Watts/Hour)
+     */
+    public double getPowerInKWattsHour() {
+        return getPower() / (3600 * 1000);
+    }
+
+    /**
+     * Checks if migrations are enabled.
+     *
+     * @return true, if migrations are enable; false otherwise
+     */
+    public boolean isMigrationsEnabled() {
+        return migrationsEnabled;
+    }
+
+    /**
+     * Enable VM migrations.
+     *
+     * @return
+     */
+    public final Datacenter enableMigrations() {
+        this.migrationsEnabled = true;
+        return this;
+    }
+
+    /**
+     * Disable VM migrations.
+     *
+     * @return
+     */
+    public final Datacenter disableMigrations() {
+        this.migrationsEnabled = false;
+        return this;
     }
 }
