@@ -70,8 +70,10 @@ public class PeProvisionerSimple extends ResourceProvisionerSimple implements Pe
      * @param pe the Pe to check
      * @return
      */
-    private boolean isOtherProvisionerAssignedToPe(Pe pe) {
-        return !Objects.isNull(pe) && !Objects.isNull(pe.getPeProvisioner())
-                && pe.getPeProvisioner() != PeProvisioner.NULL && !pe.getPeProvisioner().equals(this);
+    private boolean isOtherProvisionerAssignedToPe(final Pe pe) {
+        Objects.requireNonNull(pe);
+        return pe.getPeProvisioner() != null &&
+               pe.getPeProvisioner() != PeProvisioner.NULL &&
+               !pe.getPeProvisioner().equals(this);
     }
 }

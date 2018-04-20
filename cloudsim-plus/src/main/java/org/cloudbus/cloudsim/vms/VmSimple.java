@@ -210,9 +210,7 @@ public class VmSimple implements Vm {
 
     @Override
     public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
-        if (Objects.isNull(mipsShare)) {
-            return Double.MAX_VALUE;
-        }
+        Objects.requireNonNull(mipsShare);
 
         if(!cloudletScheduler.getCloudletExecList().isEmpty()){
             this.lastBuzyTime = getSimulation().clock();
@@ -303,8 +301,9 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public final Vm setBroker(DatacenterBroker broker) {
-        this.broker = Objects.isNull(broker) ? DatacenterBroker.NULL : broker;
+    public final Vm setBroker(final DatacenterBroker broker) {
+        Objects.requireNonNull(broker);
+        this.broker = broker;
         return this;
     }
 
@@ -486,12 +485,13 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public final Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
+    public final Vm setCloudletScheduler(final CloudletScheduler cloudletScheduler) {
+        Objects.requireNonNull(cloudletScheduler);
         if(isCreated()){
             throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm was not created inside a Host yet.");
         }
 
-        this.cloudletScheduler = Objects.isNull(cloudletScheduler) ? CloudletScheduler.NULL : cloudletScheduler;
+        this.cloudletScheduler = cloudletScheduler;
         this.cloudletScheduler.setVm(this);
         return this;
     }
@@ -502,7 +502,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public final void setInMigration(boolean inMigration) {
+    public final void setInMigration(final boolean inMigration) {
         this.inMigration = inMigration;
     }
 
@@ -697,11 +697,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void notifyOnHostDeallocationListeners(Host deallocatedHost) {
-        if(Objects.isNull(deallocatedHost)){
-            return;
-        }
-
+    public void notifyOnHostDeallocationListeners(final Host deallocatedHost) {
+        Objects.requireNonNull(deallocatedHost);
         onHostDeallocationListeners.forEach(l -> l.update(VmHostEventInfo.of(l,this, deallocatedHost)));
     }
 
@@ -713,11 +710,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {
-        if(Objects.isNull(failedDatacenter)){
-            return;
-        }
-
+    public void notifyOnCreationFailureListeners(final Datacenter failedDatacenter) {
+        Objects.requireNonNull(failedDatacenter);
         onCreationFailureListeners.forEach(l -> l.update(VmDatacenterEventInfo.of(l,this, failedDatacenter)));
     }
 
@@ -787,8 +781,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public Vm setDescription(String description) {
-        this.description = Objects.isNull(description) ? "" : description;
+    public Vm setDescription(final String description) {
+        this.description = description == null ? "" : description;
         return this;
     }
 }

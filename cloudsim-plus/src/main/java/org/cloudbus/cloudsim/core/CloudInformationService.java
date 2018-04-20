@@ -104,40 +104,6 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     /**
-     * Checks whether the given Datacenter ID exists or not.
-     *
-     * @param id a Datacenter id
-     * @return <tt>true</tt> if the given ID exists, <tt>false</tt> otherwise
-     * @pre id != null
-     * @post $none
-     */
-    public boolean datacenterExists(Integer id) {
-        if (Objects.isNull(id) || id < 0) {
-            return false;
-        }
-
-        return datacenterExists(datacenterList, id);
-    }
-
-    /**
-     * Checks whether a Datacenter list contains a particular Datacenter id.
-     *
-     * @param list         list of Datacenter id
-     * @param datacenterId a Datacenter ID to find
-     * @return true if a Datacenter is in the list, otherwise false
-     * @pre list != null
-     * @pre id > 0
-     * @post $none
-     */
-    private boolean datacenterExists(Collection<Datacenter> list, Integer datacenterId) {
-        if (Objects.isNull(list) || Objects.isNull(datacenterId) || datacenterId < 0) {
-            return false;
-        }
-
-        return list.stream().map(Datacenter::getId).anyMatch(datacenterId::equals);
-    }
-
-    /**
      * Process non-default received events that aren't processed by the
      * {@link #processEvent(SimEvent)} method. This
      * method should be overridden by subclasses in other to process new defined
@@ -147,8 +113,8 @@ public class CloudInformationService extends CloudSimEntity {
      * @pre ev != null
      * @post $none
      */
-    protected void processOtherEvent(SimEvent ev) {
-        if (Objects.isNull(ev)) {
+    protected void processOtherEvent(final SimEvent ev) {
+        if (ev == null) {
             Log.printConcatLine("CloudInformationService.processOtherEvent(): ",
                 "Unable to handle a request since the event is null.");
             return;
@@ -183,9 +149,9 @@ public class CloudInformationService extends CloudSimEntity {
      * @pre list != null
      * @post $none
      */
-    protected void signalShutdown(Collection<? extends SimEntity> list) {
+    protected void signalShutdown(final Collection<? extends SimEntity> list) {
         // checks whether a list is empty or not
-        if (Objects.isNull(list)) {
+        if (list == null) {
             return;
         }
 

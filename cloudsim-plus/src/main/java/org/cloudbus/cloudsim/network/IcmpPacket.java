@@ -163,7 +163,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     @Override
     public String toString() {
-        if (Objects.isNull(name)) {
+        if (name == null) {
             return "Empty IcmpPacket that contains no ping information.";
         }
 

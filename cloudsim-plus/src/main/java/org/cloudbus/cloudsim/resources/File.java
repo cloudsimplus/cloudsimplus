@@ -95,10 +95,8 @@ public class File {
      * @param file the source file to create a copy and that will be set as a replica
      * @throws IllegalArgumentException This happens when the source file is <tt>null</tt>
      */
-    public File(File file) throws IllegalArgumentException {
-        if (Objects.isNull(file)) {
-            throw new IllegalArgumentException("File(): Error - file is null.");
-        }
+    public File(final File file) throws IllegalArgumentException {
+        Objects.requireNonNull(file);
 
         init(file.getName(), file.getSize());
         this.setDatacenter(file.getDatacenter());
@@ -125,7 +123,7 @@ public class File {
      * @return <tt>true</tt> if the file is valid, <tt>false</tt> otherwise
      */
     public static boolean isValid(final File file) {
-        return !Objects.isNull(file) && isValid(file.getName());
+        return file != null && isValid(file.getName());
     }
 
     private void init(final String fileName, final int fileSize) throws IllegalArgumentException {
@@ -158,7 +156,7 @@ public class File {
      */
     public File makeMasterCopy() {
         final File file = makeCopy();
-        if (!Objects.isNull(file)) {
+        if (file != null) {
             file.setMasterCopy(true);
         }
 

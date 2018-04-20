@@ -103,7 +103,7 @@ public class EdgeSwitch extends AbstractSwitch {
         hostPkt.setDestination(host);
 
         // packet needs to go to a host which is connected directly to switch
-        if (!Objects.isNull(host)) {
+        if (host != null && host != Host.NULL) {
             addPacketToBeSentToHost(host, hostPkt);
             return;
         }

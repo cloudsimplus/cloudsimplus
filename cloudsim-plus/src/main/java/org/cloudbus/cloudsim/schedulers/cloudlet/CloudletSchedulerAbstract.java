@@ -821,7 +821,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return
      */
     private boolean isOtherVmAssigned(final Vm vm) {
-        return !Objects.isNull(this.vm) && this.vm != Vm.NULL && !vm.equals(this.vm);
+        return this.vm != null && this.vm != Vm.NULL && !vm.equals(this.vm);
     }
 
     @Override
@@ -864,7 +864,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public void setPacketScheduler(final PacketScheduler packetScheduler) {
-        this.packetScheduler = packetScheduler == null ? PacketScheduler.NULL : packetScheduler;
+        Objects.requireNonNull(packetScheduler);
+        this.packetScheduler = packetScheduler;
         this.packetScheduler.setVm(vm);
     }
 

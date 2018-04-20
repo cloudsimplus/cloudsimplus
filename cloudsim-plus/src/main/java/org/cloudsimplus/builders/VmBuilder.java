@@ -57,10 +57,7 @@ public class VmBuilder {
     private EventListener<VmHostEventInfo> onUpdateVmProcessingListener;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
-        if(Objects.isNull(broker)){
-           throw new RuntimeException("The broker parameter cannot be null.");
-        }
-
+        Objects.requireNonNull(broker);
         this.broker = broker;
         this.numberOfCreatedVms = 0;
         this.onHostAllocationListener = EventListener.NULL;
@@ -177,11 +174,9 @@ public class VmBuilder {
         return onUpdateVmProcessingListener;
     }
 
-    public VmBuilder setOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> onUpdateVmProcessing) {
-        if(!Objects.isNull(onUpdateVmProcessing)) {
-            this.onUpdateVmProcessingListener = onUpdateVmProcessing;
-        }
-
+    public VmBuilder setOnUpdateVmProcessingListener(final EventListener<VmHostEventInfo> onUpdateVmProcessing) {
+        Objects.requireNonNull(onUpdateVmProcessing);
+        this.onUpdateVmProcessingListener = onUpdateVmProcessing;
         return this;
     }
 }

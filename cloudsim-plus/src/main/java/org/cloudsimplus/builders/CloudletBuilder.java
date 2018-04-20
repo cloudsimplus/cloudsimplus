@@ -65,12 +65,8 @@ public class CloudletBuilder extends Builder {
 	private List<String> requiredFiles;
 
 	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
-        if(Objects.isNull(brokerBuilder)) {
-            throw new RuntimeException("The brokerBuilder parameter cannot be null.");
-        }
-        if(Objects.isNull(broker)) {
-            throw new RuntimeException("The broker parameter cannot be null.");
-        }
+        Objects.requireNonNull(brokerBuilder);
+        Objects.requireNonNull(broker);
 
         this.brokerBuilder = brokerBuilder;
         setUtilizationModelCpuRamAndBw(new UtilizationModelFull());
@@ -88,26 +84,25 @@ public class CloudletBuilder extends Builder {
      * @param utilizationModel the utilization model to set
      * @return
      */
-    public final CloudletBuilder setUtilizationModelCpuRamAndBw(UtilizationModel utilizationModel) {
-        if(!Objects.isNull(utilizationModel)){
-            this.utilizationModelCpu = utilizationModel;
-            this.utilizationModelRam = utilizationModel;
-            this.utilizationModelBw = utilizationModel;
-        }
+    public final CloudletBuilder setUtilizationModelCpuRamAndBw(final UtilizationModel utilizationModel) {
+        Objects.requireNonNull(utilizationModel);
+        this.utilizationModelCpu = utilizationModel;
+        this.utilizationModelRam = utilizationModel;
+        this.utilizationModelBw = utilizationModel;
         return this;
     }
 
-    public CloudletBuilder setVm(Vm defaultVm) {
+    public CloudletBuilder setVm(final Vm defaultVm) {
         this.vm = defaultVm;
         return this;
     }
 
-    public CloudletBuilder setFileSize(long defaultFileSize) {
+    public CloudletBuilder setFileSize(final long defaultFileSize) {
         this.fileSize = defaultFileSize;
         return this;
     }
 
-    public CloudletBuilder setRequiredFiles(List<String> requiredFiles){
+    public CloudletBuilder setRequiredFiles(final List<String> requiredFiles){
 	    this.requiredFiles = requiredFiles;
 	    return this;
     }
@@ -116,7 +111,7 @@ public class CloudletBuilder extends Builder {
         return cloudlets;
     }
 
-    public CloudletBuilder setPEs(int defaultPEs) {
+    public CloudletBuilder setPEs(final int defaultPEs) {
         this.pes = defaultPEs;
         return this;
     }
@@ -131,13 +126,6 @@ public class CloudletBuilder extends Builder {
 
     public long getOutputSize() {
         return outputSize;
-    }
-
-    public Cloudlet getCloudletById(final int id) {
-        return broker.getCloudletWaitingList().stream()
-            .filter(cloudlet -> cloudlet.getId() == id)
-            .findFirst()
-            .orElse(Cloudlet.NULL);
     }
 
     public CloudletBuilder setOutputSize(long defaultOutputSize) {
@@ -209,7 +197,7 @@ public class CloudletBuilder extends Builder {
         return onCloudletFinishEventListener;
     }
 
-    public CloudletBuilder setOnCloudletFinishEventListener(EventListener<CloudletVmEventInfo> defaultOnCloudletFinishEventListener) {
+    public CloudletBuilder setOnCloudletFinishEventListener(final EventListener<CloudletVmEventInfo> defaultOnCloudletFinishEventListener) {
         this.onCloudletFinishEventListener = defaultOnCloudletFinishEventListener;
         return this;
     }
@@ -218,11 +206,9 @@ public class CloudletBuilder extends Builder {
         return utilizationModelRam;
     }
 
-    public CloudletBuilder setUtilizationModelRam(UtilizationModel utilizationModelRam) {
-        if(!Objects.isNull(utilizationModelRam)){
-            this.utilizationModelRam = utilizationModelRam;
-        }
-
+    public CloudletBuilder setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
+        Objects.requireNonNull(utilizationModelRam);
+        this.utilizationModelRam = utilizationModelRam;
         return this;
     }
 
@@ -230,11 +216,9 @@ public class CloudletBuilder extends Builder {
         return utilizationModelCpu;
     }
 
-    public CloudletBuilder setUtilizationModelCpu(UtilizationModel utilizationModelCpu) {
-        if(!Objects.isNull(utilizationModelCpu)){
-            this.utilizationModelCpu = utilizationModelCpu;
-        }
-
+    public CloudletBuilder setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
+        Objects.requireNonNull(utilizationModelCpu);
+        this.utilizationModelCpu = utilizationModelCpu;
         return this;
     }
 
@@ -242,10 +226,9 @@ public class CloudletBuilder extends Builder {
         return utilizationModelBw;
     }
 
-    public CloudletBuilder setUtilizationModelBw(UtilizationModel utilizationModelBw) {
-        if(!Objects.isNull(utilizationModelBw)){
-            this.utilizationModelBw = utilizationModelBw;
-        }
+    public CloudletBuilder setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
+        Objects.requireNonNull(utilizationModelBw);
+        this.utilizationModelBw = utilizationModelBw;
         return this;
     }
 }

@@ -62,8 +62,8 @@ public class CloudletSendTask extends CloudletTask {
      * @throws IllegalArgumentException when the source or destination Cloudlet doesn't have an assigned VM
      */
     public VmPacket addPacket(Cloudlet destinationCloudlet, long dataLength) {
-        if(Objects.isNull(getCloudlet())) {
-            throw new RuntimeException("You must assign a NetworkCloudlet to this Task before adding packets.");
+        if(getCloudlet() == null) {
+            throw new IllegalStateException("You must assign a NetworkCloudlet to this Task before adding packets.");
         }
         if(!getCloudlet().isBindToVm()) {
             throw new IllegalArgumentException("The source Cloudlet has to have an assigned VM.");

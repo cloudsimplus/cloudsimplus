@@ -46,7 +46,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * @post $none
      */
     @Override
-    public boolean allocateHostForVm(Vm vm) {
+    public boolean allocateHostForVm(final Vm vm) {
         if(getHostList().isEmpty()){
             Log.printFormattedLine(
                 "%.2f: %s: Vm %s could not be allocated because there isn't any Host for Datacenter %d",
@@ -73,7 +73,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     }
 
     @Override
-    public boolean allocateHostForVm(Vm vm, Host host) {
+    public boolean allocateHostForVm(final Vm vm, final Host host) {
         if (!host.createVm(vm)) {
             return false;
         }
@@ -108,7 +108,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * is different during debug, because of the unsorted
      * nature of the Map.
      */
-    private Host getHostWithLessUsedPes(List<Host> ignoredHosts) {
+    private Host getHostWithLessUsedPes(final List<Host> ignoredHosts) {
         final Map<Host, Long> map = getHostFreePesMap();
         return map.keySet()
                 .stream()
@@ -119,7 +119,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     }
 
     @Override
-    public void deallocateHostForVm(Vm vm) {
+    public void deallocateHostForVm(final Vm vm) {
         final Host host = vm.getHost();
         final long pes = removeUsedPes(vm);
         if (host != Host.NULL) {
@@ -136,7 +136,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * @return an empty map to indicate that it never performs optimization
      */
     @Override
-    public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList) {
+    public Map<Vm, Host> optimizeAllocation(final List<? extends Vm> vmList) {
         return Collections.EMPTY_MAP;
     }
 }

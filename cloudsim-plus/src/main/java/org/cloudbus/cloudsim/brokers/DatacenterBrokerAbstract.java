@@ -257,7 +257,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void sortVmsIfComparatorIsSet(final List<? extends Vm> list) {
-        if(!Objects.isNull(vmComparator)) {
+        if(vmComparator != null) {
             list.sort(vmComparator);
         }
     }
@@ -360,7 +360,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void sortCloudletsIfComparatorIsSet(final List<? extends Cloudlet> list) {
-        if(!Objects.isNull(cloudletComparator)) {
+        if(cloudletComparator != null) {
             list.sort(cloudletComparator);
         }
     }

@@ -115,7 +115,7 @@ public class TerminateSimulationAtGivenConditionExample {
         }
 
         Cloudlet lastCloudlet = this.cloudletList.get(this.cloudletList.size()-1);
-        lastCloudlet.addOnUpdateProcessingListener(event -> onClouletProcessingUpdate(event));
+        lastCloudlet.addOnUpdateProcessingListener(this::onClouletProcessingUpdate);
 
         broker0.submitCloudletList(cloudletList);
 

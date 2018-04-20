@@ -761,8 +761,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public int addFile(File file) {
-        if (Objects.isNull(file)) {
+    public int addFile(final File file) {
+        if (file == null) {
             return DataCloudTags.FILE_ADD_ERROR_EMPTY;
         }
 
@@ -791,10 +791,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param file a file to be searched
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    protected boolean contains(File file) {
-        if (Objects.isNull(file)) {
-            return false;
-        }
+    protected boolean contains(final File file) {
+        Objects.requireNonNull(file);
         return contains(file.getName());
     }
 
@@ -805,7 +803,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     protected boolean contains(final String fileName) {
-        if (Objects.isNull(fileName) || fileName.isEmpty()) {
+        if (fileName == null || fileName.trim().isEmpty()) {
             return false;
         }
 
@@ -900,11 +898,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     @Override
-    public final Datacenter setStorageList(List<FileStorage> storageList) {
-        if(Objects.isNull(storageList)){
-            storageList = new ArrayList<>();
-        }
-
+    public final Datacenter setStorageList(final List<FileStorage> storageList) {
+        Objects.requireNonNull(storageList);
         this.storageList = storageList;
         setAllFilesOfAllStoragesToThisDatacenter();
 

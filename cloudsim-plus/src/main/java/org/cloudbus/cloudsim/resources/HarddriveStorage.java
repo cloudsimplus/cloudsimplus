@@ -85,7 +85,7 @@ public class HarddriveStorage implements FileStorage {
     public HarddriveStorage(final String name, final long capacity) throws IllegalArgumentException {
         this.storage = new Storage(capacity);
         this.reservedStorage = new Storage(capacity);
-        if (Objects.isNull(name) || name.trim().isEmpty()) {
+        if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("HarddriveStorage(): Error - invalid storage name.");
         }
 
@@ -136,10 +136,8 @@ public class HarddriveStorage implements FileStorage {
     }
 
     @Override
-    public double addReservedFile(File file) {
-        if (Objects.isNull(file)) {
-            return 0;
-        }
+    public double addReservedFile(final File file) {
+        Objects.requireNonNull(file);
 
         if(!reservedStorage.isResourceAmountBeingUsed((long)file.getSize())){
             throw new RuntimeException("The file size wasn't previously reserved in order to add a reserved file.");
@@ -304,7 +302,7 @@ public class HarddriveStorage implements FileStorage {
     private double getSeekTime(final int fileSize) {
         double result = 0;
 
-        if (!Objects.isNull(gen)) {
+        if (gen != null) {
             result += gen.sample();
         }
 
@@ -370,7 +368,8 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public double addFile(final List<File> list) {
-        if (Objects.isNull(list) || list.isEmpty()) {
+        Objects.requireNonNull(list);
+        if (list.isEmpty()) {
             Log.printConcatLine(getName(), ".addFile(): Warning - list is empty.");
             return 0.0;
         }
@@ -420,7 +419,7 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public boolean contains(final String fileName) {
-        if (Objects.isNull(fileName) || fileName.isEmpty()) {
+        if (fileName == null || fileName.trim().isEmpty()) {
             Log.printConcatLine(name, ".contains(): Warning - invalid file name");
             return false;
         }
@@ -447,7 +446,7 @@ public class HarddriveStorage implements FileStorage {
         final String oldName = file.getName();
         // replace the file name in the file (physical) list
         final File renamedFile = getFile(oldName);
-        if (!Objects.isNull(renamedFile)) {
+        if (renamedFile != null) {
             renamedFile.setName(newName);
             renamedFile.setTransactionTime(0);
             fileNameList.remove(oldName);

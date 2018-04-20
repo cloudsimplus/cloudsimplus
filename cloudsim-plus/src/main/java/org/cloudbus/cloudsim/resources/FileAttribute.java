@@ -87,10 +87,11 @@ public class FileAttribute {
 
         // set the file creation time. This is absolute time
         final Calendar cal =
-                (!Objects.isNull(file.getDatacenter().getSimulation())  ?
+                file.getDatacenter().getSimulation() != null  ?
                 file.getDatacenter().getSimulation().getCalendar() :
-                Calendar.getInstance());
-        Date date = cal.getTime();
+                Calendar.getInstance();
+
+        final Date date = cal.getTime();
         creationTime = date.getTime();
 
         ownerName = "";
@@ -111,11 +112,8 @@ public class FileAttribute {
      * @return <tt>true</tt> if the copy operation is successful, <tt>false</tt>
      * otherwise
      */
-    public boolean copyValue(FileAttribute destinationAttr) {
-        if (Objects.isNull(destinationAttr)) {
-            return false;
-        }
-
+    public boolean copyValue(final FileAttribute destinationAttr) {
+        Objects.requireNonNull(destinationAttr);
         destinationAttr.setFileSize(fileSize);
         destinationAttr.setOwnerName(ownerName);
         destinationAttr.setUpdateTime(lastUpdateTime);
@@ -159,8 +157,8 @@ public class FileAttribute {
      * @param name the owner name
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setOwnerName(String name) {
-        if (Objects.isNull(name) || name.isEmpty()) {
+    public boolean setOwnerName(final String name) {
+        if (name == null || name.trim().isEmpty()) {
             return false;
         }
 
@@ -186,7 +184,7 @@ public class FileAttribute {
      */
     public int getAttributeSize() {
         int length = DataCloudTags.PKT_SIZE;
-        if (!Objects.isNull(ownerName)) {
+        if (ownerName != null) {
             length += ownerName.length();
         }
 
@@ -387,6 +385,6 @@ public class FileAttribute {
      * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
      */
     public static boolean isValid(final String fileName) {
-        return !Objects.isNull(fileName) && !fileName.trim().isEmpty();
+        return fileName != null && !fileName.trim().isEmpty();
     }
 }

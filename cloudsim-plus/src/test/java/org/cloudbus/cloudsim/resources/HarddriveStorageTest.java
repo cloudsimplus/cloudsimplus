@@ -81,9 +81,13 @@ public class HarddriveStorageTest {
         final int totalFiles = 4;
         instance.addFile(createFileList(totalFiles, FILE_SIZE));
         assertEquals(totalFiles, instance.getNumStoredFile());
+    }
 
-        final List<File> nullList = null;
-        assertEquals(0, instance.addFile(nullList), 0.0);
+    @Test(expected = NullPointerException.class)
+    public void testGetNumStoredFile_Null() {
+        final HarddriveStorage instance = createHardDrive();
+
+        assertEquals(0, instance.addFile((List<File>) null), 0.0);
     }
 
     @Test
@@ -164,9 +168,6 @@ public class HarddriveStorageTest {
         assertTrue(instance.addFile(file) > 0.0);
         assertEquals(available, instance.getAvailableResource());
 
-        //a null file cannot be added
-        assertEquals(0, instance.addReservedFile(null), 0.0);
-
         //file larger than the available capacity
         assertEquals(0, instance.addFile(new File("too-big-file.txt", FILE_SIZE*10)), 0.0);
 
@@ -175,6 +176,12 @@ public class HarddriveStorageTest {
         file = createNumberedFile(++fileNumber, fileSize);
         assertTrue(instance.addReservedFile(file) > 0);
         assertEquals(0, instance.getAvailableResource());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testAddFile_Null() {
+        final HarddriveStorage instance = createHardDrive(1);
+        assertEquals(0, instance.addReservedFile(null), 0.0);
     }
 
     @Test
@@ -515,10 +522,11 @@ public class HarddriveStorageTest {
         return createHardDrive(capacity, "");
     }
 
-    private HarddriveStorage createHardDrive(final long capacity, String name) {
-        if(Objects.isNull(name) || name.trim().isEmpty()) {
+    private HarddriveStorage createHardDrive(final long capacity, final String name) {
+        if(name == null || name.trim().isEmpty()) {
             return new HarddriveStorage(capacity);
         }
+
         return new HarddriveStorage(name, capacity);
     }
 }

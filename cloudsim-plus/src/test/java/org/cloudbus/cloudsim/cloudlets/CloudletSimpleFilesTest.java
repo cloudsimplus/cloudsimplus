@@ -29,7 +29,7 @@ public class CloudletSimpleFilesTest {
     private UtilizationModel utilizationModelBw;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         utilizationModelCpu = new UtilizationModelStochastic();
         utilizationModelRam = new UtilizationModelStochastic();
         utilizationModelBw = new UtilizationModelStochastic();
@@ -39,16 +39,6 @@ public class CloudletSimpleFilesTest {
             .setUtilizationModelCpu(utilizationModelCpu)
             .setUtilizationModelRam(utilizationModelRam)
             .setUtilizationModelBw(utilizationModelBw);
-    }
-    @Test
-    public void testSetRequiredFiles() {
-        cloudlet.setRequiredFiles(null);
-        assertNotNull(cloudlet.getRequiredFiles());
-
-        final List<String> files = new ArrayList<>();
-        files.add(FILE1);
-        cloudlet.setRequiredFiles(files);
-        assertEquals(files, cloudlet.getRequiredFiles());
     }
 
     @Test
@@ -79,11 +69,24 @@ public class CloudletSimpleFilesTest {
     }
 
     @Test
-    public void testRequiredFiles() {
+    public void testSetRequiredFiles0() {
+        final List<String> files = new ArrayList<>();
+        files.add(FILE1);
+        cloudlet.setRequiredFiles(files);
+        assertEquals(files, cloudlet.getRequiredFiles());
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testRequiredFiles1() {
+        final CloudletSimple c = createCloudlet();
+        c.setRequiredFiles(null);
+        assertNotNull(c.getRequiredFiles());
+    }
+
+    @Test
+    public void testRequiredFiles2() {
         final CloudletSimple c = createCloudlet();
         final String files[] = {FILE1, FILE2, FILE3};
-        c.setRequiredFiles(null); //internally it has to creates a new instance
-        assertNotNull(c.getRequiredFiles());
 
         for (final String file : files) {
             c.addRequiredFile(file);

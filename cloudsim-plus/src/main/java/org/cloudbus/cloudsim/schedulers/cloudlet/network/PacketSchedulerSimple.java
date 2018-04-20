@@ -211,7 +211,8 @@ public class PacketSchedulerSimple implements PacketScheduler {
 
     @Override
     public void setVm(final Vm vm) {
-        this.vm = (Objects.isNull(vm) ? Vm.NULL : vm);
+        Objects.requireNonNull(vm);
+        this.vm = vm;
     }
 
     @Override

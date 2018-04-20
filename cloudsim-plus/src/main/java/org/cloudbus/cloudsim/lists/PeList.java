@@ -145,9 +145,7 @@ public final class PeList {
      * @post $result >= 0
      */
     public static int getNumberOfFreePes(List<? extends Pe> peList) {
-        return (int)peList.stream()
-            .filter(Pe::isFree)
-            .count();
+        return (int)peList.stream().filter(Pe::isFree).count();
     }
 
     /**

@@ -314,8 +314,9 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public String getHistory() {
-        if (Objects.isNull(history))
+        if (history == null) {
             return String.format(NO_HISTORY_IS_RECORDED_FOR_CLOUDLET, id);
+        }
 
         return history.toString();
     }
@@ -366,10 +367,8 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public final Cloudlet setBroker(DatacenterBroker broker) {
-        if (Objects.isNull(broker)) {
-            broker = DatacenterBroker.NULL;
-        }
+    public final Cloudlet setBroker(final DatacenterBroker broker) {
+        Objects.requireNonNull(broker);
         this.broker = broker;
         return this;
     }
@@ -545,7 +544,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @post $none
      */
     protected void write(final String str) {
-        if (Objects.isNull(str)) {
+        if (str == null) {
             return;
         }
 
@@ -553,7 +552,7 @@ public abstract class CloudletAbstract implements Cloudlet {
             return;
         }
 
-        if (Objects.isNull(history)) {
+        if (history == null) {
             // Creates the transaction history of this Cloudlet
             history = new StringBuffer(1000);
             history.append("Time below denotes the simulation time.");
@@ -647,11 +646,8 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @param requiredFiles the new list of required files
      */
     public final void setRequiredFiles(final List<String> requiredFiles) {
-        if (Objects.isNull(requiredFiles)) {
-            this.requiredFiles = new LinkedList<>();
-        } else {
-            this.requiredFiles = requiredFiles;
-        }
+        Objects.requireNonNull(requiredFiles);
+        this.requiredFiles = requiredFiles;
     }
 
     @Override
@@ -699,7 +695,8 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
-        this.utilizationModelCpu = Objects.isNull(utilizationModelCpu) ? UtilizationModel.NULL : utilizationModelCpu;
+        Objects.requireNonNull(utilizationModelCpu);
+        this.utilizationModelCpu = utilizationModelCpu;
         return this;
     }
 
@@ -710,7 +707,8 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
-        this.utilizationModelRam = Objects.isNull(utilizationModelRam) ? UtilizationModel.NULL : utilizationModelRam;
+        Objects.requireNonNull(utilizationModelRam);
+        this.utilizationModelRam = utilizationModelRam;
         return this;
     }
 
@@ -721,7 +719,8 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public final Cloudlet setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
-        this.utilizationModelBw = Objects.isNull(utilizationModelBw) ? UtilizationModel.NULL : utilizationModelBw;
+        Objects.requireNonNull(utilizationModelBw);
+        this.utilizationModelBw = utilizationModelBw;
         return this;
     }
 
