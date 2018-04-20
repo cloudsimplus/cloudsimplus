@@ -36,6 +36,7 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
@@ -98,7 +99,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param datacenter the Datacenter to get Hosts from
      */
     private void addPesFromHostsToFreePesList(final Datacenter datacenter) {
-        if(datacenter == null || datacenter == Datacenter.NULL || datacenter != this.datacenter) {
+        Objects.requireNonNull(datacenter);
+        if(datacenter == Datacenter.NULL || datacenter != this.datacenter) {
             setHostFreePesMap(new HashMap<>(datacenter.getHostList().size()));
             setUsedPes(new HashMap<>());
         }

@@ -264,9 +264,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void submitVm(final Vm vm) {
-        if(vm == null || vm == Vm.NULL){
+        Objects.requireNonNull(vm);
+        if(vm == Vm.NULL){
             return;
         }
+
         final List<Vm> newList = new ArrayList<>(1);
         newList.add(vm);
         submitVmList(newList);
@@ -274,7 +276,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void submitCloudlet(final Cloudlet cloudlet) {
-        if(cloudlet == null || cloudlet == Cloudlet.NULL){
+        Objects.requireNonNull(cloudlet);
+        if(cloudlet == Cloudlet.NULL){
             return;
         }
 

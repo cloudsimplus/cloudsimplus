@@ -36,12 +36,12 @@ import org.cloudbus.cloudsim.core.Simulation;
 public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicyAbstract implements PowerVmAllocationPolicy {
 
     @Override
-    public boolean allocateHostForVm(Vm vm) {
+    public boolean allocateHostForVm(final Vm vm) {
         return allocateHostForVm(vm, findHostForVm(vm));
     }
 
     @Override
-    public boolean allocateHostForVm(Vm vm, Host host) {
+    public boolean allocateHostForVm(final Vm vm, final Host host) {
         /*@todo This method has duplicated code from the same method in VmAllocationPolicySimple.*/
 
         final Simulation simulation = vm.getSimulation();
@@ -59,7 +59,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
     }
 
     @Override
-    public PowerHost findHostForVm(Vm vm) {
+    public PowerHost findHostForVm(final Vm vm) {
         return this.<PowerHost>getHostList()
                 .stream()
                 .sorted()
@@ -68,7 +68,7 @@ public abstract class PowerVmAllocationPolicyAbstract extends VmAllocationPolicy
     }
 
     @Override
-    public void deallocateHostForVm(Vm vm) {
+    public void deallocateHostForVm(final Vm vm) {
         vm.getHost().destroyVm(vm);
     }
 }

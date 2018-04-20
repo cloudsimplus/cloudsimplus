@@ -930,13 +930,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public final Datacenter setSchedulingInterval(double schedulingInterval) {
+    public final Datacenter setSchedulingInterval(final double schedulingInterval) {
         this.schedulingInterval = Math.max(schedulingInterval, 0);
         return this;
     }
 
     @Override
-    public Host getHost(int index) {
+    public Host getHost(final int index) {
         if (index >= 0 && index < getHostList().size()) {
             return getHostList().get(index);
         }
@@ -945,13 +945,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public <T extends Host> Datacenter addHostList(List<T> hostList) {
+    public <T extends Host> Datacenter addHostList(final List<T> hostList) {
         hostList.forEach(this::addHost);
         return this;
     }
 
     @Override
-    public <T extends Host> Datacenter addHost(T host) {
+    public <T extends Host> Datacenter addHost(final T host) {
         if(vmAllocationPolicy == null || vmAllocationPolicy == VmAllocationPolicy.NULL){
             throw new IllegalStateException("A VmAllocationPolicy must be set before adding a new Host to the Datacenter.");
         }

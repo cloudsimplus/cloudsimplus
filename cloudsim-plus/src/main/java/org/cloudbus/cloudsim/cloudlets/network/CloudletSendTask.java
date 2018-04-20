@@ -66,10 +66,10 @@ public class CloudletSendTask extends CloudletTask {
             throw new IllegalStateException("You must assign a NetworkCloudlet to this Task before adding packets.");
         }
         if(!getCloudlet().isBindToVm()) {
-            throw new IllegalArgumentException("The source Cloudlet has to have an assigned VM.");
+            throw new IllegalStateException("The source Cloudlet has to have an assigned VM.");
         }
         if(!destinationCloudlet.isBindToVm()) {
-            throw new IllegalArgumentException("The destination Cloudlet has to have an assigned VM.");
+            throw new IllegalStateException("The destination Cloudlet has to have an assigned VM.");
         }
 
         VmPacket packet = new VmPacket(

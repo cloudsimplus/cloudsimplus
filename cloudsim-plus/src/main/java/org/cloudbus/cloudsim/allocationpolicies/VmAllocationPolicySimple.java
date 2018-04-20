@@ -23,15 +23,13 @@ import java.util.*;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
 
     /**
      * Creates a new VmAllocationPolicySimple object.
-     *
-     * @pre $none
-     * @post $none
      */
     public VmAllocationPolicySimple() {
         super();
@@ -42,8 +40,6 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      *
      * @param vm {@inheritDoc}
      * @return {@inheritDoc}
-     * @pre $none
-     * @post $none
      */
     @Override
     public boolean allocateHostForVm(final Vm vm) {
@@ -64,9 +60,8 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             final Host host = getHostWithLessUsedPes(hostsWhereVmCreationFailed);
             if (allocateHostForVm(vm, host)) {
                 return true;
-            } else {
-                hostsWhereVmCreationFailed.add(host);
             }
+            hostsWhereVmCreationFailed.add(host);
         }
 
         return false;
