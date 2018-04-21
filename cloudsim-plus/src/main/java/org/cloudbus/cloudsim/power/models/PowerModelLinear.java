@@ -58,9 +58,6 @@ public class PowerModelLinear  extends PowerModelAbstract {
 
 	@Override
 	protected double getPowerInternal(final double utilization) throws IllegalArgumentException {
-		if (utilization == 0) {
-			return 0;
-		}
 		return getStaticPower() + getConstant() * utilization * 100;
 	}
 
