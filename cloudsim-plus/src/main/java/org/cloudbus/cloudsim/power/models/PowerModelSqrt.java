@@ -51,9 +51,6 @@ public class PowerModelSqrt extends PowerModelAbstract {
 
 	@Override
 	protected double getPowerInternal(double utilization) throws IllegalArgumentException {
-		if (utilization == 0) {
-			return 0;
-		}
 		return getStaticPower() + getConstant() * Math.sqrt(utilization * 100);
 	}
 
