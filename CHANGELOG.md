@@ -16,7 +16,7 @@ Lists the main changes in the project.
 - PowerHostUtilizationHistory class was removed and its single method getUtilizationHistory
   was moved to the PowerHost. Since the method gets the history from VMs, the host
   doesn't store any data. The VM utilization history must be enabled to allow
-  getting such data (as describe above).
+  getting such data (as described above).
 
 - PowerHost class removed and its methods moved to Host.
   A PowerSupply interface was introduced to group power

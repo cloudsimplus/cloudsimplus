@@ -50,7 +50,11 @@ public class VmAllocationPolicyMigrationLocalRegressionRobust extends VmAllocati
      * @param fallbackVmAllocationPolicy the fallback VM allocation policy to be used when
      * the over utilization host detection doesn't have data to be computed
      */
-    public VmAllocationPolicyMigrationLocalRegressionRobust(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, VmAllocationPolicyMigration fallbackVmAllocationPolicy) {
+    public VmAllocationPolicyMigrationLocalRegressionRobust(
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final double safetyParameter,
+        final VmAllocationPolicyMigration fallbackVmAllocationPolicy)
+    {
         super(vmSelectionPolicy, safetyParameter, fallbackVmAllocationPolicy);
     }
 
@@ -61,7 +65,7 @@ public class VmAllocationPolicyMigrationLocalRegressionRobust extends VmAllocati
 	 * @return the utilization estimates
 	 */
 	@Override
-	protected double[] getParameterEstimates(double[] reversedUsageHistory) {
+	protected double[] getParameterEstimates(final double[] reversedUsageHistory) {
 		return MathUtil.getRobustLoessParameterEstimates(reversedUsageHistory);
 	}
 

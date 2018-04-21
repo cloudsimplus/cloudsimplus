@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
  * @since CloudSim Plus 1.4
  * @see PowerSupply#NULL
  */
-class PowerSupplyNull implements PowerSupply {
+final class PowerSupplyNull implements PowerSupply {
     @Override public double getPower() {
         return 0;
     }

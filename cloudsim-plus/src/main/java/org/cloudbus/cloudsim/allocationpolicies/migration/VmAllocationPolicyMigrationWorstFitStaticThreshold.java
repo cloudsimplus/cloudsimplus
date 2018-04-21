@@ -30,8 +30,8 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
  */
 public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends VmAllocationPolicyMigrationStaticThreshold {
     public VmAllocationPolicyMigrationWorstFitStaticThreshold(
-            PowerVmSelectionPolicy vmSelectionPolicy,
-            double overUtilizationThreshold)
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final double overUtilizationThreshold)
     {
         super(vmSelectionPolicy, overUtilizationThreshold);
     }
@@ -50,7 +50,7 @@ public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends VmAlloca
      * @return {@inheritDoc}
      */
     @Override
-    protected Optional<Host> findHostForVmInternal(Vm vm, Stream<Host> hostStream) {
+    protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream) {
         /*It's ignoring the super class to intentionally avoid the additional filtering performed there
         * and to apply a different method to select the Host to place the VM.*/
         return hostStream.min(Comparator.comparingDouble(Host::getUtilizationOfCpuMips));

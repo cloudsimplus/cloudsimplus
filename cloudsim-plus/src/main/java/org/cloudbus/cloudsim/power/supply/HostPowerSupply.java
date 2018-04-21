@@ -6,11 +6,11 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
 import java.util.Objects;
 
 /**
- * Provides information about a PM power consumption,
- * including its {@link PowerModel}.
+ * Provides data about a PM power consumption,
+ * according to a defined {@link PowerModel}.
  *
- * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @author Anton Beloglazov
  * @since CloudSim Plus 1.4
  */
 public class HostPowerSupply implements PowerSupply {
@@ -59,7 +59,11 @@ public class HostPowerSupply implements PowerSupply {
     }
 
     @Override
-    public double getEnergyLinearInterpolation(final double fromUtilization, final double toUtilization, final double time) {
+    public double getEnergyLinearInterpolation(
+        final double fromUtilization,
+        final double toUtilization,
+        final double time)
+    {
         if (fromUtilization == 0) {
             return 0;
         }

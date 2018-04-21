@@ -8,15 +8,18 @@
 package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.power.supply.PowerSupply;
 
 /**
  * Provides a model for power consumption of hosts, depending on utilization of a critical system
  * component, such as CPU.
+ * <b>This is the fundamental class to enable power-aware Hosts.</b> Despite all Hosts have a {@link PowerSupply} attribute,
+ * it just provides power usage data if a PowerModel is set using the {@link PowerSupply#setPowerModel(PowerModel)}.
  *
- * The interface implements the Null Object
+ * <p>The interface implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
  * using the {@link PowerModel#NULL} object instead of attributing {@code null} to
- * {@link PowerModel} variables.
+ * {@link PowerModel} variables.</p>
  *
  * <p>If you are using any algorithms, policies or workload included in the
  * power package please cite the following paper:</p>
@@ -31,6 +34,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * </ul>
  *
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  *
  * @since CloudSim Toolkit 2.0
  */

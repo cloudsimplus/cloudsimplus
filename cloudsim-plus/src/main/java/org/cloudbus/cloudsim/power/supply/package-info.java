@@ -1,7 +1,9 @@
 /**
  * Provides classes and interfaces enabling a {@link org.cloudbus.cloudsim.hosts.Host}
- * to compute power consumption using a {@link org.cloudbus.cloudsim.power.supply.PowerSupply}
- * that follows a {@link org.cloudbus.cloudsim.power.models.PowerModel}.
+ * to be power-aware.
+ * Every host nas a {@link org.cloudbus.cloudsim.power.supply.PowerSupply} instance
+ * that might define power consumption following a {@link org.cloudbus.cloudsim.power.models.PowerModel}.
+ * However, a Host just provides power usage data if a {@link org.cloudbus.cloudsim.power.models.PowerModel} is set.
  *
  * <p>CloudSim Plus natively supports power-aware simulations
  * using regular objects such as {@link org.cloudbus.cloudsim.datacenters.DatacenterSimple},
