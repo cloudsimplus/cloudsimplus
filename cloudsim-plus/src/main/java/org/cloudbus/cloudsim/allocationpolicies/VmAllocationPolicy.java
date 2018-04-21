@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -21,10 +23,15 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
  * a {@link Datacenter} to choose a {@link Host} to place or migrate a
  * given {@link Vm}.
  *
+ * <p>The VmAllocationPolicy uses Java 8 Functional Programming
+ * to enable changing, at runtime, the policy used
+ * to select a Host for a given VM.</p>
+ *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ * @see #setFindHostForVmFunction(BiFunction)
  */
 public interface VmAllocationPolicy {
     /**
@@ -91,6 +98,17 @@ public interface VmAllocationPolicy {
     void deallocateHostForVm(Vm vm);
 
     /**
+     * Finds a host that has enough resources to place a given VM.
+     * <b>Classes must implement this method to define how to select a Host for a given VM.</b>
+     * They just have to provide a default implementation. However, this implementation can be dynamically
+     * changed by calling {@link #setFindHostForVmFunction(BiFunction)}.
+     *
+     * @param vm the vm to find a host for it
+     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
+     */
+    Optional<Host> findHostForVm(Vm vm);
+
+    /**
      * Gets the list of Hosts available in a {@link Datacenter}, that will be
      * used by the Allocation Policy to place VMs.
      *
@@ -110,4 +128,18 @@ public interface VmAllocationPolicy {
      *
      */
     Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList);
+
+    /**
+     * Sets a {@link BiFunction} that selects a Host for a given Vm.
+     * This Function receives the current VmAllocationPolicy and the
+     * {@link Vm} requesting to be place.
+     * It then returns an {@link Optional<Host>}
+     * that may contain a suitable Host for that Vm or not.
+     *
+     * <p>If not Function is set, the default VM selection method provided by implementing classes
+     * will be used.</p>
+     *
+     * @param findHostForVmFunction the {@link BiFunction} to set
+     */
+    void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction);
 }

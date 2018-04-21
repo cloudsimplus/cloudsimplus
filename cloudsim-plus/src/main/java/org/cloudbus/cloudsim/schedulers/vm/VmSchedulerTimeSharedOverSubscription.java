@@ -67,12 +67,12 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * @see #allocateMipsShareForVm(Vm, List)
      */
     @Override
-    public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare){
+    public boolean isAllowedToAllocateMips(final List<Double> vmRequestedMipsShare){
         return getWorkingPeList().size() >= vmRequestedMipsShare.size();
     }
 
     @Override
-    protected void allocateMipsShareForVm(Vm vm, final List<Double> mipsShareRequestedReduced) {
+    protected void allocateMipsShareForVm(final Vm vm, final List<Double> mipsShareRequestedReduced) {
         final double totalRequestedMips = mipsShareRequestedReduced.stream().reduce(0.0, Double::sum);
         if (getAvailableMips() >= totalRequestedMips) {
             super.allocateMipsShareForVm(vm, mipsShareRequestedReduced);
@@ -95,7 +95,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * of the MIPS requested by all VMs enables all requests to be fulfilled.</p>
      * @see #getMipsMapAllocated()
      */
-    protected void redistributeMipsDueToOverSubscription() {
+    private void redistributeMipsDueToOverSubscription() {
         // First, we calculate the scaling factor - the MIPS allocation for all VMs will be scaled proportionally
         final Map<Vm, List<Double>> mipsMapRequestedReduced = getNewTotalRequestedMipsByAllVms();
 
@@ -105,7 +105,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         for (final Entry<Vm, List<Double>> entry : mipsMapRequestedReduced.entrySet()) {
             final Vm vm = entry.getKey();
             List<Double> updatedMipsAllocation = getMipsShareToAllocate(vm, entry.getValue());
-            updatedMipsAllocation = getMipsShareToAllocate(vm, updatedMipsAllocation, scalingFactor);
+            updatedMipsAllocation = getMipsShareToAllocate(updatedMipsAllocation, scalingFactor);
             getMipsMapAllocated().put(vm, updatedMipsAllocation);
         }
     }
@@ -123,7 +123,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * @return the scaling factor to apply for VMs requested MIPS (a percentage value in scale from 0 to 1)
      * @see #getMipsShareRequestedReduced(Vm, List)
      */
-    private double getVmsMipsScalingFactor(Map<Vm, List<Double>> mipsMapRequestedReduced) {
+    private double getVmsMipsScalingFactor(final Map<Vm, List<Double>> mipsMapRequestedReduced) {
         final double totalMipsCapacity = getHost().getTotalMipsCapacity();
         final double totalMipsToAllocateForAllVms = getTotalMipsToAllocateForAllVms(mipsMapRequestedReduced);
         return Math.min(1, totalMipsCapacity / totalMipsToAllocateForAllVms);

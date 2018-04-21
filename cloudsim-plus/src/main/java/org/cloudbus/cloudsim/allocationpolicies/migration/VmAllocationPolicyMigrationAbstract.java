@@ -8,10 +8,13 @@
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.lists.VmList;
@@ -94,7 +97,21 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
     public VmAllocationPolicyMigrationAbstract(final PowerVmSelectionPolicy vmSelectionPolicy) {
-        super();
+        this(vmSelectionPolicy, null);
+    }
+
+    /**
+     * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
+     *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
+     * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
+     */
+    public VmAllocationPolicyMigrationAbstract(
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+    {
+        super(findHostForVmFunction);
         this.underUtilizationThreshold = 0.35;
         this.savedAllocation = new HashMap<>();
         this.utilizationHistory = new HashMap<>();
@@ -122,7 +139,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param overloadedHosts the List of over utilized hosts
      * @param migrationMap current migration map that will be updated
      */
-    private void updateMigrationMapFromUnderloadedHosts(final Set<Host> overloadedHosts, final Map<Vm, Host> migrationMap) {
+    private void updateMigrationMapFromUnderloadedHosts(
+        final Set<Host> overloadedHosts,
+        final Map<Vm, Host> migrationMap)
+    {
         final List<Host> switchedOffHosts = getSwitchedOffHosts();
 
         // over-utilized hosts + hosts that are selected to migrate VMs to from over-utilized hosts

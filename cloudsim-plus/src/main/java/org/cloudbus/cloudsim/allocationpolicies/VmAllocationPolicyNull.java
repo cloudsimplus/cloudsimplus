@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 /**
  * A class that implements the Null Object Design Pattern for the {@link VmAllocationPolicy}
@@ -32,10 +33,10 @@ final class VmAllocationPolicyNull implements VmAllocationPolicy {
         return false;
     }
     @Override public void deallocateHostForVm(Vm vm) {/**/}
+    @Override public Optional<Host> findHostForVm(Vm vm) { return Optional.empty(); }
     @Override public List<Host> getHostList() {
         return Collections.emptyList();
     }
-    @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) {
-        return Collections.emptyMap();
-    }
+    @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) { return Collections.emptyMap(); }
+    @Override public void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {/**/}
 }

@@ -181,14 +181,6 @@ public interface VmScheduler {
     <T extends Pe> List<T> getWorkingPeList();
 
     /**
-     * Gets the list of PEs allocated for a VM.
-     *
-     * @param vm the VM to get the allocated PEs
-     * @return
-     */
-    List<Pe> getPesAllocatedForVm(Vm vm);
-
-    /**
      * Gets the actual total allocated MIPS for a VM along all its allocated PEs.
      * If the VM is migrating into the Host, then just a fraction
      * of the requested MIPS is actually allocated, representing

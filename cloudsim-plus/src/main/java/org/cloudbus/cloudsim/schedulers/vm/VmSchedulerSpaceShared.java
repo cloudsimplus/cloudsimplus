@@ -29,20 +29,10 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
-
-    /**
-     * A map between each VM and its allocated PEs, where the key is a VM ID and
-     * the value a list of PEs allocated to VM.
-     */
-    private Map<Vm, List<Pe>> peAllocationMap;
-
-    /**
-     * The list of free PEs yet available in the host.
-     */
-    private List<Pe> freePesList;
 
     /**
      * Creates a space-shared VM scheduler.
@@ -60,20 +50,16 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      */
     public VmSchedulerSpaceShared(final double vmMigrationCpuOverhead){
         super(vmMigrationCpuOverhead);
-        setPeAllocationMap(new HashMap<>());
-        setFreePesList(new ArrayList<>());
     }
 
     @Override
-    public VmScheduler setHost(Host host) {
+    public VmScheduler setHost(final Host host) {
         super.setHost(host);
-        setPeAllocationMap(new HashMap<>());
-        setFreePesList(new ArrayList<>(this.getHost().getWorkingPeList()));
         return this;
     }
 
     @Override
-    public boolean isSuitableForVm(List<Double> vmMipsList) {
+    public boolean isSuitableForVm(final List<Double> vmMipsList) {
         return !getTotalCapacityToBeAllocatedToVm(vmMipsList).isEmpty();
     }
 
@@ -83,14 +69,14 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      * @return the list of PEs that can be allocated to the VM or
      * an empty list if there isn't enough capacity that can be allocated
      */
-    protected List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> vmRequestedMipsShare) {
+    private List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> vmRequestedMipsShare) {
         // if there is no enough free PEs, fails
-        if (freePesList.size() < vmRequestedMipsShare.size()) {
+        if (getHost().getFreePeList().size() < vmRequestedMipsShare.size()) {
             return Collections.EMPTY_LIST;
         }
 
         final List<Pe> selectedPes = new ArrayList<>();
-        final Iterator<Pe> peIterator = freePesList.iterator();
+        final Iterator<Pe> peIterator = getHost().getFreePeList().iterator();
         Pe pe = peIterator.next();
         for (final double mips : vmRequestedMipsShare) {
             if (mips <= pe.getCapacity()) {
@@ -110,76 +96,18 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVmInternal(Vm vm, final List<Double> mipsShareRequested) {
+    public boolean allocatePesForVmInternal(final Vm vm, final List<Double> mipsShareRequested) {
         final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
         if(selectedPes.isEmpty()){
             return false;
         }
 
-        final double totalMips = mipsShareRequested.stream().mapToDouble(m -> m).sum();
-
-        freePesList.removeAll(selectedPes);
-
-        peAllocationMap.put(vm, selectedPes);
         getMipsMapAllocated().put(vm, mipsShareRequested);
         return true;
     }
 
     @Override
-    protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove) {
-        freePesList.addAll(getAllocatedWorkingPesForVm(vm));
-        removePesFromMap(vm, peAllocationMap,  pesToRemove);
+    protected void deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
         removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
     }
-
-    /**
-     * Gets a list or working PEs (non-failed) which are allocated to a
-     * given VM.
-     * @param vm the VM to get the list of allocated working PEs
-     * @return
-     */
-    private List<Pe> getAllocatedWorkingPesForVm(Vm vm) {
-        return peAllocationMap
-                .getOrDefault(vm, new ArrayList<>())
-                .stream()
-                .filter(Pe::isWorking)
-                .collect(toList());
-    }
-
-    /**
-     * Sets the pe allocation map.
-     *
-     * @param peAllocationMap the pe allocation map
-     */
-    protected final void setPeAllocationMap(Map<Vm, List<Pe>> peAllocationMap) {
-        this.peAllocationMap = peAllocationMap;
-    }
-
-    /**
-     * Gets the pe allocation map.
-     *
-     * @return the pe allocation map
-     */
-    protected Map<Vm, List<Pe>> getPeAllocationMap() {
-        return peAllocationMap;
-    }
-
-    /**
-     * Sets the free pes list.
-     *
-     * @param freePesList the new free pes list
-     */
-    protected final void setFreePesList(List<Pe> freePesList) {
-        this.freePesList = freePesList;
-    }
-
-    /**
-     * Gets the free pes list.
-     *
-     * @return the free pes list
-     */
-    protected final List<Pe> getFreePesList() {
-        return freePesList;
-    }
-
 }

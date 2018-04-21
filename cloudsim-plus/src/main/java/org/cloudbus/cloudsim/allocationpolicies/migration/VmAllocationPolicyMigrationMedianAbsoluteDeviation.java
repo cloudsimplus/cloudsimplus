@@ -41,7 +41,7 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public VmAllocationPolicyMigrationMedianAbsoluteDeviation(PowerVmSelectionPolicy vmSelectionPolicy) {
+    public VmAllocationPolicyMigrationMedianAbsoluteDeviation(final PowerVmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
     }
 
@@ -53,7 +53,11 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
      * @param fallbackPolicy the fallback VM allocation policy to be used when
      * the over utilization host detection doesn't have data to be computed
      */
-    public VmAllocationPolicyMigrationMedianAbsoluteDeviation(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, VmAllocationPolicyMigration fallbackPolicy) {
+    public VmAllocationPolicyMigrationMedianAbsoluteDeviation(
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final double safetyParameter,
+        final VmAllocationPolicyMigration fallbackPolicy)
+    {
         super(vmSelectionPolicy, safetyParameter, fallbackPolicy);
     }
 
@@ -65,7 +69,7 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
      * @throws {@inheritDoc}
      */
     @Override
-    public double computeHostUtilizationMeasure(Host host) throws IllegalArgumentException {
+    public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
         final double[] data = host.getUtilizationHistory();
         if (MathUtil.countNonZeroBeginning(data) >= MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_MAD) {
             return MathUtil.mad(data);

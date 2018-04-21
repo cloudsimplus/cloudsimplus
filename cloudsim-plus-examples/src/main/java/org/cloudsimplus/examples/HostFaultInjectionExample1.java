@@ -31,8 +31,6 @@ import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -56,7 +54,7 @@ import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.faultinjection.VmClonerSimple;
 
 /**
- * Example which shows how to inject random {@link Pe} faults into Hosts using
+ * Example showing how to inject random {@link Pe} faults into Hosts using
  * {@link HostFaultInjection} objects.
  *
  * @author raysaoliveira
@@ -71,16 +69,12 @@ public final class HostFaultInjectionExample1 {
     private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
+
     /*The average number of failures expected to happen each hour
     in a Poisson Process, which is also called event rate or rate parameter.*/
-    public static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.02;
-    private List<Host> hostList;
+    private static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.02;
 
-    /**
-     * The percentage of host CPU usage that trigger VM migration due to over
-     * utilization (in scale from 0 to 1, where 1 is 100%).
-     */
-    private static final double HOST_USAGE_THRESHOLD_VM_MIGRATION = 0.5;
+    private List<Host> hostList;
 
     private static final int VM_MIPS = 1000;
     private static final long VM_SIZE = 1000; //image size (MEGABYTE)
@@ -107,7 +101,8 @@ public final class HostFaultInjectionExample1 {
     private CloudSim simulation;
     private final DatacenterBroker broker;
 
-    HostFaultInjection fault;
+    private HostFaultInjection fault;
+
     /**
      * The Poisson Random Number Generator used to generate failure times (in hours).
      */
@@ -126,7 +121,7 @@ public final class HostFaultInjectionExample1 {
         Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
 
         simulation = new CloudSim();
-        Datacenter datacenter = createDatacenter(HOSTS);
+        Datacenter datacenter = createDatacenter();
 
         broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms();
@@ -137,7 +132,7 @@ public final class HostFaultInjectionExample1 {
         new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
 
         System.out.printf(
-            "Mean Number of Failures per Hour: %.3f (1 failure expected at each %.2f hours).\n",
+            "\n# Mean Number of Failures per Hour: %.3f (1 failure expected at each %.2f hours).\n",
             MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterarrivalMeanTime());
         System.out.printf("# Number of Host faults: %d\n", fault.getNumberOfHostFaults());
         System.out.printf("# Number of VM faults (VMs destroyed): %d\n", fault.getNumberOfFaults());
@@ -145,7 +140,7 @@ public final class HostFaultInjectionExample1 {
         System.out.printf("# Mean Time To Repair Failures of VMs in minutes (MTTR): %.2f minute\n", fault.meanTimeToRepairVmFaultsInMinutes());
         System.out.printf("# Mean Time Between Failures (MTBF) affecting all VMs in minutes: %.2f minutes\n", fault.meanTimeBetweenVmFaultsInMinutes());
         System.out.printf("# Hosts MTBF: %.2f minutes\n", fault.meanTimeBetweenHostFaultsInMinutes());
-        System.out.printf("# Availability: %.2f%%\n", fault.availability()*100);
+        System.out.printf("# Availability: %.2f%%\n\n", fault.availability()*100);
 
 
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
@@ -162,33 +157,32 @@ public final class HostFaultInjectionExample1 {
     public Vm createVm() {
         Vm vm = new VmSimple(vmList.size()+1, VM_MIPS, VM_PES);
         vm
-                .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
     }
 
     /**
      * Creates the number of Cloudlets defined in {@link #CLOUDLETS} and submits
      * them to the created broker.
-     *
      */
     public void createAndSubmitCloudlets() {
         UtilizationModel utilizationModel = new UtilizationModelFull();
         for (int i = 0; i < CLOUDLETS; i++) {
             Cloudlet c
-                    = new CloudletSimple(cloudletList.size()+1, CLOUDLET_LENGHT, CLOUDLET_PES)
-                            .setFileSize(CLOUDLET_FILESIZE)
-                            .setOutputSize(CLOUDLET_OUTPUTSIZE)
-                            .setUtilizationModel(utilizationModel);
+                = new CloudletSimple(cloudletList.size()+1, CLOUDLET_LENGHT, CLOUDLET_PES)
+                        .setFileSize(CLOUDLET_FILESIZE)
+                        .setOutputSize(CLOUDLET_OUTPUTSIZE)
+                        .setUtilizationModel(utilizationModel);
             cloudletList.add(c);
         }
 
         broker.submitCloudletList(cloudletList);
     }
 
-    private Datacenter createDatacenter(int numberOfHosts) {
+    private Datacenter createDatacenter() {
         hostList = new ArrayList<>();
-        for (int i = 0; i < numberOfHosts; i++) {
+        for (int i = 0; i < HOSTS; i++) {
             hostList.add(createHost());
             Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_PES);
         }
@@ -207,26 +201,22 @@ public final class HostFaultInjectionExample1 {
      * @return
      */
     public Host createHost() {
-        List<Pe> pesList = new ArrayList<>(HOST_PES);
-        for (int i = 0; i < HOST_PES; i++) {
-            pesList.add(new PeSimple(HOST_MIPS_BY_PE, new PeProvisionerSimple()));
-        }
-
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
-        final int id = hostList.size();
+        final List<Pe> pesList = createPeList(HOST_PES, HOST_MIPS_BY_PE);
+        final ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        final ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
+        final VmScheduler vmScheduler = new VmSchedulerTimeShared();
         return new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, pesList)
                 .setRamProvisioner(ramProvisioner)
                 .setBwProvisioner(bwProvisioner)
                 .setVmScheduler(vmScheduler);
     }
 
-    public List<Pe> createPeList(int numberOfPEs, long mips) {
+    public List<Pe> createPeList(final int numberOfPEs, final long mips) {
         List<Pe> list = new ArrayList<>(numberOfPEs);
         for (int i = 0; i < numberOfPEs; i++) {
             list.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
+
         return list;
     }
 
@@ -236,6 +226,7 @@ public final class HostFaultInjectionExample1 {
      * @param datacenter
      */
     private void createFaultInjectionForHosts(Datacenter datacenter) {
+        //Use the system time to get random results every time you run the simulation
         //final long seed = System.currentTimeMillis();
         final long seed = 112717613L;
         this.poisson = new PoissonDistr(MEAN_FAILURE_NUMBER_PER_HOUR, seed);
@@ -243,7 +234,7 @@ public final class HostFaultInjectionExample1 {
         fault = new HostFaultInjection(datacenter, poisson);
         fault.setMaxTimeToGenerateFailureInHours(800);
 
-        this.vmList.stream().forEach(vm -> fault.addVmCloner(broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets)));
+        this.vmList.forEach(vm -> fault.addVmCloner(broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets)));
     }
 
     /**
@@ -253,8 +244,7 @@ public final class HostFaultInjectionExample1 {
      * @param vm the VM to be cloned
      * @return the cloned (new) VM.
      *
-     * @see
-     * #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter)
+     * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter)
      */
     private Vm cloneVm(Vm vm) {
         Vm clone = new VmSimple((long) vm.getMips(), (int) vm.getNumberOfPes());
@@ -266,10 +256,10 @@ public final class HostFaultInjectionExample1 {
         clone.setId(vm.getId() * 10);
         clone.setDescription("Clone of VM " + vm.getId());
         clone
-                .setSize(vm.getStorage().getCapacity())
-                .setBw(vm.getBw().getCapacity())
-                .setRam(vm.getBw().getCapacity())
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+            .setSize(vm.getStorage().getCapacity())
+            .setBw(vm.getBw().getCapacity())
+            .setRam(vm.getBw().getCapacity())
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
         Log.printFormattedLine("\n\n#Cloning VM %d\n\tMips %.2f Number of Pes: %d ", vm.getId(), clone.getMips(), clone.getNumberOfPes());
 
         return clone;
@@ -306,10 +296,7 @@ public final class HostFaultInjectionExample1 {
      * @return the cloned (new) cloudlet
      */
     private Cloudlet cloneCloudlet(Cloudlet source) {
-        Cloudlet clone
-                = new CloudletSimple(
-                        source.getLength(),
-                        (int) source.getNumberOfPes());
+        Cloudlet clone = new CloudletSimple(source.getLength(), source.getNumberOfPes());
         /*It' not required to set an ID for the clone.
         It is being set here just to make it easy to
         relate the ID of the cloudlet to its clone,
@@ -317,10 +304,9 @@ public final class HostFaultInjectionExample1 {
         source cloudlet.*/
         clone.setId(source.getId() * 10);
         clone
-                .setUtilizationModelBw(source.getUtilizationModelBw())
-                .setUtilizationModelCpu(source.getUtilizationModelCpu())
-                .setUtilizationModelRam(source.getUtilizationModelRam());
+            .setUtilizationModelBw(source.getUtilizationModelBw())
+            .setUtilizationModelCpu(source.getUtilizationModelCpu())
+            .setUtilizationModelRam(source.getUtilizationModelRam());
         return clone;
     }
-
 }

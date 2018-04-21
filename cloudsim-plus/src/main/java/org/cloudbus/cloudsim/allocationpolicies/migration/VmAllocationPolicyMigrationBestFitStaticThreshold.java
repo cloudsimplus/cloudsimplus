@@ -14,6 +14,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
@@ -29,11 +31,28 @@ import java.util.stream.Stream;
  * @since CloudSim Plus 1.0
  */
 public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocationPolicyMigrationStaticThreshold {
+
     public VmAllocationPolicyMigrationBestFitStaticThreshold(
-            PowerVmSelectionPolicy vmSelectionPolicy,
-            double overUtilizationThreshold)
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final double overUtilizationThreshold)
     {
-        super(vmSelectionPolicy, overUtilizationThreshold);
+        this(vmSelectionPolicy, overUtilizationThreshold, null);
+    }
+
+    /**
+     * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @param overUtilizationThreshold the over utilization threshold
+     * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
+     *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
+     * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
+     */
+    public VmAllocationPolicyMigrationBestFitStaticThreshold(
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final double overUtilizationThreshold,
+        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+    {
+        super(vmSelectionPolicy, overUtilizationThreshold, findHostForVmFunction);
     }
 
     /**

@@ -8,6 +8,8 @@
 package org.cloudbus.cloudsim.allocationpolicies;
 
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -35,11 +37,13 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
+    private BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
 
     /**
      * @see #getDatacenter()
      */
     private Datacenter datacenter;
+
     /**
      * @see #getHostFreePesMap()
      * @todo The number of free PEs in each Host could be determined dynamically, instead of storing
@@ -49,29 +53,28 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *       is computed every time when needed.
      */
     private Map<Host, Long> hostFreePesMap;
+
     /**
-     * @see #getUsedPes()
+     * The number of PEs used in each VM.
      */
     private Map<Vm, Long> usedPes;
 
     /**
-     * Creates a new VmAllocationPolicy object.
-     *
-     * @pre $none
-     * @post $none
+     * Creates a new VmAllocationPolicy.
      */
     public VmAllocationPolicyAbstract() {
-        setDatacenter(Datacenter.NULL);
+        this(null);
     }
 
     /**
-     * Finds a host that has enough resources to place a given VM.
-     * <b>Subclasses must implement this method to define how to select a Host for a given VM.</b>
-     *
-     * @param vm the vm to find a host for it
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
+     * Creates a new VmAllocationPolicy, changing the {@link BiFunction} to select a Host for a Vm.
+     * @param findHostForVmFunction a {@link BiFunction} to select a Host for a given Vm.
+     * @see VmAllocationPolicy#setFindHostForVmFunction(BiFunction)
      */
-    protected abstract Optional<Host> findHostForVm(final Vm vm);
+    public VmAllocationPolicyAbstract(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
+        setDatacenter(Datacenter.NULL);
+        setFindHostForVmFunction(findHostForVmFunction);
+    }
 
     @Override
     public final <T extends Host> List<T> getHostList() {
@@ -358,7 +361,13 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return false;
         }
 
-        final Optional<Host> optional = findHostForVm(vm);
+        /** Calls the Function that finds a Host for a VM.
+         *  It doesn't call the {@link #findHostForVm(Vm)} directly
+         *  since that method is the default implementation.
+         *  However, such an implementation can be changed by
+         *  calling {@link VmAllocationPolicy#setFindHostForVmFunction(BiFunction)}.
+         */
+        final Optional<Host> optional = findHostForVmFunction.apply(this, vm);
         if(optional.isPresent()){
             return allocateHostForVm(vm, optional.get());
         }
@@ -383,5 +392,16 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public void deallocateHostForVm(final Vm vm) {
         vm.getHost().destroyVm(vm);
+    }
+
+    /**
+     * {@inheritDoc}
+     * The default implementation of such a Function is provided by the method {@link #findHostForVm(Vm)}.
+     * @param findHostForVmFunction {@inheritDoc}.
+     *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
+     */
+    @Override
+    public final void setFindHostForVmFunction(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
+        this.findHostForVmFunction = findHostForVmFunction == null ? VmAllocationPolicy::findHostForVm : findHostForVmFunction;
     }
 }

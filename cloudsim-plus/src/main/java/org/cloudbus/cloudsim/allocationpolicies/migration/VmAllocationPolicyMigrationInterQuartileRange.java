@@ -42,7 +42,7 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public VmAllocationPolicyMigrationInterQuartileRange(PowerVmSelectionPolicy vmSelectionPolicy) {
+    public VmAllocationPolicyMigrationInterQuartileRange(final PowerVmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
     }
 
@@ -54,7 +54,11 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
      * @param fallbackPolicy the fallback VM allocation policy to be used when
      * the over utilization host detection doesn't have data to be computed
      */
-    public VmAllocationPolicyMigrationInterQuartileRange(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, VmAllocationPolicyMigration fallbackPolicy) {
+    public VmAllocationPolicyMigrationInterQuartileRange(
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final double safetyParameter, final
+        VmAllocationPolicyMigration fallbackPolicy)
+    {
         super(vmSelectionPolicy, safetyParameter, fallbackPolicy);
     }
 
@@ -65,7 +69,7 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
      * @return the host CPU utilization percentage IQR
      */
     @Override
-    public double computeHostUtilizationMeasure(Host host) throws IllegalArgumentException {
+    public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
         final double[] data = host.getUtilizationHistory();
         if (MathUtil.countNonZeroBeginning(data) >= MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ) {
             return MathUtil.iqr(data);

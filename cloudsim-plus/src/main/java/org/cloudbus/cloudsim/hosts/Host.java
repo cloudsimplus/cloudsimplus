@@ -204,12 +204,28 @@ public interface Host extends Machine, Comparable<Host> {
     List<Pe> getPeList();
 
     /**
+     * Gets the list of working Processing Elements (PEs) of the host.
+     * It's the list of all PEs which are not <b>FAILEd</b>.
+     *
+     * @return the list working (non-failed) Host PEs
+     */
+    List<Pe> getWorkingPeList();
+
+    /**
      * Gets the list of working Processing Elements (PEs) of the host,
      * <b>which excludes failed PEs</b>.
      *
      * @return the list working (non-failed) Host PEs
      */
-    List<Pe> getWorkingPeList();
+    List<Pe> getBuzyPeList();
+
+    /**
+     * Gets the list of Free Processing Elements (PEs) of the host,
+     * <b>which excludes failed PEs</b>.
+     *
+     * @return the list free (non-failed) Host PEs
+     */
+    List<Pe> getFreePeList();
 
     /**
      * Gets the free pes number.
@@ -306,7 +322,7 @@ public interface Host extends Machine, Comparable<Host> {
     Vm getVm(int vmId, int brokerId);
 
     /**
-     * Gets a <b>read-only</b> list of VMs assigned to the host.
+     * Gets a <b>read-only</b> list of VMs currently assigned to the host.
      *
      * @param <T> The generic type
      * @return the read-only vm list
@@ -316,6 +332,8 @@ public interface Host extends Machine, Comparable<Host> {
     /**
      * Gets a <b>read-only</b> list of all VMs which have been created into the host
      * during the entire simulation.
+     * This way, this method returns a historic list of created VMs,
+     * including those ones already destroyed.
      *
      * @param <T> The generic type
      * @return the read-only vm created list

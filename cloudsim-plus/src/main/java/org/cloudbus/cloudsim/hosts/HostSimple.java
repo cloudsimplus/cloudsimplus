@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 
 import java.util.*;
+import java.util.function.Predicate;
 
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
@@ -738,7 +739,8 @@ public class HostSimple implements Host {
             provisioners = Arrays.asList(ramProvisioner, bwProvisioner);
         }
 
-        return provisioners.stream()
+        return provisioners
+            .stream()
             .filter(r -> r.getResource().isObjectSubClassOf(resourceClass))
             .findFirst()
             .orElse(ResourceProvisioner.NULL);
@@ -746,9 +748,21 @@ public class HostSimple implements Host {
 
     @Override
     public List<Pe> getWorkingPeList() {
-        return peList.stream()
-                .filter(Pe::isWorking)
-                .collect(toList());
+        return getFilteredPeList(Pe::isWorking);
+    }
+
+    @Override
+    public List<Pe> getBuzyPeList() {
+        return getFilteredPeList(Pe::isBuzy);
+    }
+
+    @Override
+    public List<Pe> getFreePeList() {
+        return getFilteredPeList(Pe::isFree);
+    }
+
+    private List<Pe> getFilteredPeList(final Predicate<Pe> status) {
+        return peList.stream().filter(status).collect(toList());
     }
 
     @Override

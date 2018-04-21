@@ -11,6 +11,8 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
@@ -26,7 +28,6 @@ import java.util.*;
  * @since CloudSim Toolkit 1.0
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
-
     /**
      * Creates a new VmAllocationPolicySimple object.
      */
@@ -35,12 +36,20 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     }
 
     /**
+     * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
+     * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
+     * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
+     */
+    public VmAllocationPolicySimple(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
+        super(findHostForVmFunction);
+    }
+
+    /**
      * Gets the first suitable host from the {@link #getHostList()} that has fewer used PEs (i.e, higher free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      *
-     * @todo sorting the Host list may degrade performance
-     * for large scale simulations. The number of free PEs
-     * may be taken directly from each Host in a List,
+     * @todo Sorting the Host list may degrade performance for large scale simulations.
+     * @todo The number of free PEs may be taken directly from each Host in a List,
      * avoiding the use of Maps that doesn't ensure order.
      * The entries are being sorted just to ensure that
      * the results are always the same for a specific static simulation.
@@ -49,7 +58,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * nature of the Map.
      */
     @Override
-    protected Optional<Host> findHostForVm(final Vm vm) {
+    public Optional<Host> findHostForVm(final Vm vm) {
         final Map<Host, Long> map = getHostFreePesMap();
         return map.entrySet()
             .stream()

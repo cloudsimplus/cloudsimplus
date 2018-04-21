@@ -7,8 +7,14 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
+import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 /**
  * A VM allocation policy that uses a static CPU utilization threshold to detect
@@ -41,14 +47,30 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
     /**
      * Creates a VmAllocationPolicyMigrationStaticThreshold.
      *
-     * @param vmSelectionPolicy the policy that defines how VMs are selected for
-     * migration
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      * @param overUtilizationThreshold the over utilization threshold
      */
     public VmAllocationPolicyMigrationStaticThreshold(
-            PowerVmSelectionPolicy vmSelectionPolicy,
-            double overUtilizationThreshold) {
-        super(vmSelectionPolicy);
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final double overUtilizationThreshold)
+    {
+        this(vmSelectionPolicy, overUtilizationThreshold, null);
+    }
+
+    /**
+     * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @param overUtilizationThreshold the over utilization threshold
+     * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
+     *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
+     * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
+     */
+    public VmAllocationPolicyMigrationStaticThreshold(
+        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final double overUtilizationThreshold,
+        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+    {
+        super(vmSelectionPolicy, findHostForVmFunction);
         setOverUtilizationThreshold(overUtilizationThreshold);
     }
 
@@ -58,7 +80,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
      *
      * @param overUtilizationThreshold the overUtilizationThreshold to set
      */
-    public final void setOverUtilizationThreshold(double overUtilizationThreshold) {
+    public final void setOverUtilizationThreshold(final double overUtilizationThreshold) {
         this.overUtilizationThreshold = overUtilizationThreshold;
     }
 

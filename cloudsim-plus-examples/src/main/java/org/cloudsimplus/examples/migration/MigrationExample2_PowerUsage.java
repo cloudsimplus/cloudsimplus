@@ -79,19 +79,20 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * An example showing how to create 1 Datacenter with 3 hosts,
- * 1 VM by host and 1 cloudlet by VM and perform VM migration using
+ * An example showing how to create 1 Datacenter with 5 hosts,
+ * 3 VMs and 1 cloudlet by VM and perform VM migration using
  * a custom VmAllocationPolicy. Such a policy migrates VMs relying on a
  * {@link VmAllocationPolicyMigrationMedianAbsoluteDeviation
  * dynamic host CPU utilization threshold} based on CPU utilization.
- * This VmAllocationPolicy considers the power usage of Hosts to place VMs.
+ *
+ * <p>This VmAllocationPolicy considers the power usage of Hosts to place VMs.
  * So that, a {@link org.cloudbus.cloudsim.power.models.PowerModel} is being
- * set to every created Host by means of {@code host.getPowerSupply().setPowerModel(powerModel)}.
+ * set to every created Host by means of {@code host.getPowerSupply().setPowerModel(powerModel)}.</p>
  *
- * <p>The example uses a custom UtilizationModel to define CPU usage of cloudlets which
- * {@link UtilizationModelDynamic increases along the simulation time}.
+ * <p>The example uses a {@link UtilizationModelDynamic} that defines the CPU usage of cloudlets
+ *  increases along the simulation time.</p>
  *
- * It is used some constants to create simulation objects such as
+ * <p>It is used some constants to create simulation objects such as
  * {@link  DatacenterSimple}, {@link  Host} and {@link  Vm}.
  * The values of these constants were careful and accordingly chosen to allow
  * migration of VMs due to either under and overloaded hosts and
@@ -99,7 +100,7 @@ import java.util.List;
  * and what will be the final results.
  * Several values impact the simulation results, such as
  * hosts CPU capacity and number of PEs, VMs and cloudlets requirements
- * and even VM bandwidth (that defines the VM migration time).
+ * and even VM bandwidth (that defines the VM migration time).</p>
  *
  * <p>This way, if you want to change these values, you must
  * define new appropriated ones to allow the simulation

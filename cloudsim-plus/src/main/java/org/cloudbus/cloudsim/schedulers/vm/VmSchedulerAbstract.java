@@ -22,6 +22,7 @@ import java.util.stream.IntStream;
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmSchedulerAbstract implements VmScheduler {
@@ -31,6 +32,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @see #getVmMigrationCpuOverhead()
      */
     public static final double DEFAULT_VM_MIGRATION_CPU_OVERHEAD = 0.1;
+
     /**
      * @see #getMipsMapRequested()
      */
@@ -42,11 +44,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     private Host host;
 
     /**
-     * @see #getPeMap()
-     */
-    private Map<Vm, List<Pe>> peMap;
-
-    /**
      * @see #getMipsMapAllocated()
      */
     private Map<Vm, List<Double>> mipsMapAllocated;
@@ -55,15 +52,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @see #getVmMigrationCpuOverhead()
      */
     private final double vmMigrationCpuOverhead;
-
-    /**
-     * Creates a VmScheduler.
-     *
-     * @post $none
-     */
-    public VmSchedulerAbstract() {
-        this(DEFAULT_VM_MIGRATION_CPU_OVERHEAD);
-    }
 
     /**
      * Creates a VmScheduler, defining a CPU overhead for VM migration.
@@ -81,12 +69,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean isSuitableForVm(Vm vm) {
+    public final boolean isSuitableForVm(final Vm vm) {
         return isSuitableForVm(vm.getCurrentRequestedMips());
     }
 
     @Override
-    public final boolean allocatePesForVm(Vm vm) {
+    public final boolean allocatePesForVm(final Vm vm) {
         final List<Double> mipsShareRequested =
                 LongStream.range(0, vm.getNumberOfPes())
                         .mapToObj(i -> vm.getMips())
@@ -95,29 +83,74 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean allocatePesForVm(Vm vm, final List<Double> mipsShareRequested) {
+    public final boolean allocatePesForVm(final Vm vm, final List<Double> mipsShareRequested) {
         if (!vm.isInMigration() && host.getVmsMigratingOut().contains(vm)) {
             host.removeVmMigratingOut(vm);
         }
 
+        setHostPesStatusForVmUsedPes(vm, getHost().getFreePeList(), Pe.Status.BUSY);
         mipsMapRequested.put(vm, mipsShareRequested);
         return allocatePesForVmInternal(vm, mipsShareRequested);
     }
 
-    protected abstract boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested);
+    /**
+     * Gets the number of PEs required by a given VM and sets the status of the same
+     * number of physical PEs in its Host to a given status.
+     *
+     * @param vm the VM to set its the status of its used physical PEs
+     * @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
+     * @param status the status to set
+     */
+    private void setHostPesStatusForVmUsedPes(final Vm vm, final List<Pe> peList, final Pe.Status status) {
+        setHostPesStatusForVmUsedPes(vm, peList, status, vm.getNumberOfPes());
+    }
+
+    /**
+     * Gets a specific number of virtual PEs and sets the status of the same
+     * number of physical PEs in its Host to a given status.
+     * @param vm the VM to set its the status of its used physical PEs
+     * @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
+     * @param status the status to set
+     * @param vPesNumber the number of Virtual PEs that correspond to the number of physical PEs to have their status changed
+     */
+    private void setHostPesStatusForVmUsedPes(final Vm vm, final List<Pe> peList, final Pe.Status status, final long vPesNumber) {
+        if(vPesNumber <= 0) {
+            return;
+        }
+
+        peList.stream()
+            .limit(vPesNumber)
+            .forEach(pe -> pe.setStatus(status));
+    }
+
+    protected abstract boolean allocatePesForVmInternal(final Vm vm, final List<Double> mipsShareRequested);
 
     @Override
-    public void deallocatePesFromVm(Vm vm) {
+    public void deallocatePesFromVm(final Vm vm) {
         deallocatePesFromVm(vm, (int)vm.getNumberOfPes());
     }
 
     @Override
-    public void deallocatePesFromVm(Vm vm, final int pesToRemove) {
+    public void deallocatePesFromVm(final Vm vm, final int pesToRemove) {
         if(pesToRemove <= 0 || vm.getNumberOfPes() == 0){
             return;
         }
 
         deallocatePesFromVmInternal(vm, pesToRemove);
+        freeUsedPes(vm);
+    }
+
+    /**
+     * Sets the status of physical PEs used by a VM being destroyed to FREE.
+     * That works for any kind of scheduler, such as time- and space-shared.
+     *
+     * @param vm the VM to changed its PEs status
+     */
+    private void freeUsedPes(final Vm vm) {
+        final long totalVirtualPesNumber = getMipsMapAllocated().values().stream().mapToLong(Collection::size).sum();
+        final List<Pe> peList = getHost().getBuzyPeList();
+        final long vPesNumber = Math.min(peList.size() - totalVirtualPesNumber, 0);
+        setHostPesStatusForVmUsedPes(vm, peList, Pe.Status.FREE, vPesNumber);
     }
 
     /**
@@ -135,7 +168,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param pesToRemove the number of PEs to remove from the List of PEs associated to the Vm
      * @return the number of removed PEs
      */
-    protected <T> int removePesFromMap(Vm vm, Map<Vm, List<T>> map, int pesToRemove) {
+    protected <T> int removePesFromMap(final Vm vm, final Map<Vm, List<T>> map, int pesToRemove) {
         final List<T> values = map.getOrDefault(vm, new ArrayList<>());
         if(values.isEmpty()){
             return 0;
@@ -151,7 +184,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return pesToRemove;
     }
 
-    protected abstract void deallocatePesFromVmInternal(Vm vm, int pesToRemove);
+    protected abstract void deallocatePesFromVmInternal(final Vm vm, final int pesToRemove);
 
     @Override
     public void deallocatePesForAllVms() {
@@ -160,12 +193,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public List<Pe> getPesAllocatedForVm(Vm vm) {
-        return peMap.getOrDefault(vm, new ArrayList<>());
-    }
-
-    @Override
-    public List<Double> getAllocatedMips(Vm vm) {
+    public List<Double> getAllocatedMips(final Vm vm) {
         final List<Double> list = mipsMapAllocated.getOrDefault(vm, new ArrayList<>());
         /*
         When a VM is migrating out of the source Host, its allocated MIPS
@@ -185,7 +213,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param mipsShareRequested the VM requested MIPS List
      * @return the VM requested MIPS List without MIPS higher than the PE capacity.
      */
-    protected List<Double> getMipsShareRequestedReduced(Vm vm, List<Double> mipsShareRequested){
+    protected List<Double> getMipsShareRequestedReduced(final Vm vm, final List<Double> mipsShareRequested){
         final double peMips = getPeCapacity();
         return mipsShareRequested.stream()
             .map(mips -> Math.min(mips, peMips)*percentOfMipsToRequest(vm))
@@ -193,7 +221,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public double getTotalAllocatedMipsForVm(Vm vm) {
+    public double getTotalAllocatedMipsForVm(final Vm vm) {
         return getAllocatedMips(vm).stream().mapToDouble(v -> v).sum();
     }
 
@@ -226,31 +254,20 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public List<Double> getRequestedMips(Vm vm) {
+    public List<Double> getRequestedMips(final Vm vm) {
         return new ArrayList<>(mipsMapRequested.getOrDefault(vm, Collections.EMPTY_LIST));
     }
 
     /**
      * Gets the map of VMs to MIPS, were each key is a VM and each value is the
-     * currently allocated MIPS from the respective PE to that VM. The PEs where
-     * the MIPS capacity is get are defined in the {@link #peMap}.
+     * List of currently allocated MIPS from the respective physical PEs which
+     * are being used by such a VM.
      *
      * @return the mips map
      * @see #getAllocatedMips(Vm)
      */
     protected Map<Vm, List<Double>> getMipsMapAllocated() {
         return mipsMapAllocated;
-    }
-
-    /**
-     * Sets the map of VMs to MIPS, were each key is a VM and each value is the
-     * currently allocated MIPS from the respective PE to that VM. The PEs where
-     * the MIPS capacity is get are defined in the {@link #peMap}.
-     *
-     * @param mipsMapAllocated the mips map
-     */
-    protected final void setMipsMapAllocated(Map<Vm, List<Double>> mipsMapAllocated) {
-        this.mipsMapAllocated = mipsMapAllocated;
     }
 
     @Override
@@ -278,7 +295,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @return the actual requested MIPS sum across all VM PEs,
      * including the CPU overhead of the VM is in migration to this Host
      */
-    private double actualVmTotalRequestedMips(Vm vm) {
+    private double actualVmTotalRequestedMips(final Vm vm) {
         final double totalVmRequestedMips =
                 getMipsMapAllocated()
                     .getOrDefault(vm, new ArrayList<>())
@@ -320,7 +337,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @return the percentage of MIPS requested by the VM that will be in fact
      * requested to the Host (in scale from [0 to 1], where  is 100%)
      */
-    protected double percentOfMipsToRequest(Vm vm) {
+    protected double percentOfMipsToRequest(final Vm vm) {
         if (host.getVmsMigratingIn().contains(vm)) {
             /* While the VM is migrating in,
             the destination host only increases CPU usage according
@@ -351,45 +368,21 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return vmMigrationCpuOverhead;
     }
 
-    /**
-     * Gets the map of VMs to PEs, where each key is a VM and each value is a list
-     * of PEs allocated to that VM.
-     *
-     * @return
-     */
-    protected Map<Vm, List<Pe>> getPeMap() {
-        return peMap;
-    }
-
-
-    /**
-     * Sets the map of VMs to PEs, where each key is a VM and each value is a list
-     * of PEs allocated to that VM.
-     *
-     * @param peMap the pe map
-     */
-    protected final void setPeMap(Map<Vm, List<Pe>> peMap) {
-        this.peMap = peMap;
-    }
-
     @Override
     public Host getHost() {
         return host;
     }
 
     @Override
-    public VmScheduler setHost(Host host) {
+    public VmScheduler setHost(final Host host) {
         Objects.requireNonNull(host);
 
         if(isOtherHostAssigned(host)){
-            throw new IllegalArgumentException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
+            throw new IllegalStateException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
         }
 
         this.host = host;
-
-        setPeMap(new HashMap<>());
-        setMipsMapAllocated(new HashMap<>());
-
+        mipsMapAllocated = new HashMap<>();
         return this;
     }
 

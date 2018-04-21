@@ -35,7 +35,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "2.0.0";
+    public static final String VERSION = "2.1.0";
 
     /**
      * An array that works as a circular queue with capacity for just 2 elements

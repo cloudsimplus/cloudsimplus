@@ -38,7 +38,7 @@ public class VmAllocationPolicyMigrationLocalRegressionRobust extends VmAllocati
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public VmAllocationPolicyMigrationLocalRegressionRobust(PowerVmSelectionPolicy vmSelectionPolicy) {
+    public VmAllocationPolicyMigrationLocalRegressionRobust(final PowerVmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
     }
 
