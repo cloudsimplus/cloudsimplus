@@ -22,12 +22,11 @@ package org.cloudbus.cloudsim.power.models;
  * </ul>
  *
  * @author Anton Beloglazov
- *
- * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
 public class PowerModelLinear  extends PowerModelAbstract {
-    /* @TODO the tree first attributes are being repeated among several classes.
+    /* @TODO the three first attributes are being repeated among several classes.
      * Thus, a better class hierarchy should be provided, such as an abstract class
      * implementing the PowerModel interface.
      */

@@ -22,92 +22,96 @@ package org.cloudbus.cloudsim.power.models;
  * </ul>
  *
  * @author Anton Beloglazov
- *
- * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
 public class PowerModelCubic extends PowerModelAbstract {
-	/** The max power that can be consumed. */
-	private double maxPower;
+    /**
+     * The max power that can be consumed.
+     */
+    private double maxPower;
 
-	/** The constant that represents the power consumption
-         * for each fraction of resource used. */
-	private double constant;
+    /**
+     * The constant that represents the power consumption
+     * for each fraction of resource used.
+     */
+    private double constant;
 
-	/** The static power consumption that is not dependent of resource usage.
-         * It is the amount of energy consumed even when the host is idle.
-         */
-	private double staticPower;
+    /**
+     * The static power consumption that is not dependent of resource usage.
+     * It is the amount of energy consumed even when the host is idle.
+     */
+    private double staticPower;
 
-	/**
-	 * Instantiates a new power model cubic.
-	 *
-	 * @param maxPower the max power
-	 * @param staticPowerPercent the static power percent
-	 */
-	public PowerModelCubic(double maxPower, double staticPowerPercent) {
-		setMaxPower(maxPower);
-		setStaticPower(staticPowerPercent * maxPower);
-		setConstant((maxPower - getStaticPower()) / Math.pow(100, 3));
-	}
+    /**
+     * Instantiates a new power model cubic.
+     *
+     * @param maxPower           the max power
+     * @param staticPowerPercent the static power percent
+     */
+    public PowerModelCubic(double maxPower, double staticPowerPercent) {
+        setMaxPower(maxPower);
+        setStaticPower(staticPowerPercent * maxPower);
+        setConstant((maxPower - getStaticPower()) / Math.pow(100, 3));
+    }
 
-	@Override
-	protected double getPowerInternal(double utilization) throws IllegalArgumentException {
-		return getStaticPower() + getConstant() * Math.pow(utilization * 100, 3);
-	}
+    @Override
+    protected double getPowerInternal(double utilization) throws IllegalArgumentException {
+        return getStaticPower() + getConstant() * Math.pow(utilization * 100, 3);
+    }
 
-	/**
-	 * Gets the max power.
-	 *
-	 * @return the max power
-	 */
-	protected double getMaxPower() {
-		return maxPower;
-	}
+    /**
+     * Gets the max power.
+     *
+     * @return the max power
+     */
+    protected double getMaxPower() {
+        return maxPower;
+    }
 
-	/**
-	 * Sets the max power.
-	 *
-	 * @param maxPower the new max power
-	 */
-	protected final void setMaxPower(double maxPower) {
-		this.maxPower = maxPower;
-	}
+    /**
+     * Sets the max power.
+     *
+     * @param maxPower the new max power
+     */
+    protected final void setMaxPower(double maxPower) {
+        this.maxPower = maxPower;
+    }
 
-	/**
-	 * Gets the constant.
-	 *
-	 * @return the constant
-	 */
-	protected double getConstant() {
-		return constant;
-	}
+    /**
+     * Gets the constant.
+     *
+     * @return the constant
+     */
+    protected double getConstant() {
+        return constant;
+    }
 
-	/**
-	 * Sets the constant.
-	 *
-	 * @param constant the new constant
-	 */
-	protected final void setConstant(double constant) {
-		this.constant = constant;
-	}
+    /**
+     * Sets the constant.
+     *
+     * @param constant the new constant
+     */
+    protected final void setConstant(double constant) {
+        this.constant = constant;
+    }
 
-	/**
-	 * Gets the static power.
-	 *
-	 * @return the static power
-	 */
-	protected final double getStaticPower() {
-		return staticPower;
-	}
+    /**
+     * Gets the static power.
+     *
+     * @return the static power
+     */
+    protected final double getStaticPower() {
+        return staticPower;
+    }
 
-	/**
-	 * Sets the static power.
-	 *
-	 * @param staticPower the new static power
-	 */
-	protected final void setStaticPower(double staticPower) {
-		this.staticPower = staticPower;
-	}
+    /**
+     * Sets the static power.
+     *
+     * @param staticPower the new static power
+     */
+    protected final void setStaticPower(double staticPower) {
+        this.staticPower = staticPower;
+    }
 
 }

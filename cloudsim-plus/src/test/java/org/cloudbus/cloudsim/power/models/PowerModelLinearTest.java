@@ -47,7 +47,7 @@ public class PowerModelLinearTest {
 
     @Test
     public void testGetPowerForZeroUsage() {
-        assertEquals(0, powerModel.getPower(0.0), 0);
+        assertEquals(175, powerModel.getPower(0.0), 0);
     }
 
     @Test

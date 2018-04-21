@@ -22,6 +22,7 @@ package org.cloudbus.cloudsim.power.models;
  * </ul>
  *
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
 public class PowerModelSquare extends PowerModelAbstract {
