@@ -5,17 +5,17 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.resources.Pe;
 
 /**
- * Provides information about a PM power consumption,
- * including its {@link PowerModel}.
- * Power information is just available if a {@link PowerModel}
+ * Provides data about a PM power consumption,
+ * according to a defined {@link PowerModel}.
+ * Power consumption data is just available if a {@link PowerModel}
  * is set to the PowerSupply.
  *
  * <p><b>It's required to set a {@link PowerModel} in order to get any power usage data
  * using the available methods. A {@link PowerModel} don't need to be set
  * you don't want to simulate power consumption.</b></p>
  *
- * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
+ * @author Anton Beloglazov
  * @since CloudSim Plus 1.4
  */
 public interface PowerSupply {

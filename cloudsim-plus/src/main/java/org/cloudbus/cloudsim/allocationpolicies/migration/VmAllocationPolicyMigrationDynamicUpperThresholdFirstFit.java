@@ -57,7 +57,7 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
 
     /**
      * Checks if a host is over utilized based on the CPU over utilization threshold computed using
-     * the statistical method defined in {@link VmAllocationPolicyMigrationDynamicUpperThreshold#computeHostUtilizationMeasure(Host)}.
+     * the statistical method defined in {@link #computeHostUtilizationMeasure(Host)}.
      *
      * @param host {@inheritDoc}
      * @return {@inheritDoc}

@@ -9,6 +9,7 @@ import java.util.List;
 /**
  * Stores resource utilization data for a specific {@link Vm}.
  *
+ * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.4
  */

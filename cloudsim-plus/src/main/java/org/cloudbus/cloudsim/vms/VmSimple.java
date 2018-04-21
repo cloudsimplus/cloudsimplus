@@ -168,7 +168,7 @@ public class VmSimple implements Vm {
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
         this.setPeVerticalScaling(VerticalVmScaling.NULL);
 
-        //By default, the VM doesn't store utilization history. This has be enabled by the user as wanted
+        //By default, the VM doesn't store utilization history. This has to be enabled by the user as wanted
         utilizationHistory = new VmUtilizationHistory(this, false);
     }
 

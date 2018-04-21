@@ -11,7 +11,7 @@ import java.util.List;
  * @since CloudSim Plus 1.4
  * @see UtilizationHistory#NULL
  */
-class UtilizationHistoryNull implements UtilizationHistory {
+final class UtilizationHistoryNull implements UtilizationHistory {
     @Override public double getUtilizationMad() { return 0; }
     @Override public double getUtilizationMean() { return 0; }
     @Override public double getUtilizationVariance() { return 0; }
