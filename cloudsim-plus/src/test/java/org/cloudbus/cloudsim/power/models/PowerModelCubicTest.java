@@ -25,7 +25,7 @@ public class PowerModelCubicTest {
     private PowerModelCubic powerModel;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         powerModel = new PowerModelCubic(MAX_POWER, STATIC_POWER_PERCENT);
         powerModel.setHost(PowerModelTest.createHostWithOneVm());
     }

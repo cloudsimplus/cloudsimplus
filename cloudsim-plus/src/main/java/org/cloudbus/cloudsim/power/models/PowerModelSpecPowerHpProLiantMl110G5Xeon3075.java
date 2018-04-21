@@ -34,7 +34,7 @@ public class PowerModelSpecPowerHpProLiantMl110G5Xeon3075 extends PowerModelSpec
 	private final double[] power = { 93.7, 97, 101, 105, 110, 116, 121, 125, 129, 133, 135 };
 
 	@Override
-	protected double getPowerData(int index) {
+	protected double getPowerData(final int index) {
 		return power[index];
 	}
 

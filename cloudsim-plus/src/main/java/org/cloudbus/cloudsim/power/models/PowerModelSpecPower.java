@@ -26,17 +26,19 @@ package org.cloudbus.cloudsim.power.models;
  * @since CloudSim Toolkit 3.0
  */
 public abstract class PowerModelSpecPower extends PowerModelAbstract {
+
 	@Override
-	protected double getPowerInternal(double utilization) throws IllegalArgumentException {
+	protected double getPowerInternal(final double utilization) throws IllegalArgumentException {
 		if (utilization % 0.1 == 0) {
 			return getPowerData((int) (utilization * 10));
 		}
+
 		final int utilization1 = (int) Math.floor(utilization * 10);
 		final int utilization2 = (int) Math.ceil(utilization * 10);
 		final double power1 = getPowerData(utilization1);
 		final double power2 = getPowerData(utilization2);
 		final double delta = (power2 - power1) / 10;
-        return power1 + delta * (utilization - (double) utilization1 / 10) * 100;
+        return power1  +  delta * (utilization - (double) utilization1 / 10) * 100;
 	}
 
 	/**
@@ -46,6 +48,6 @@ public abstract class PowerModelSpecPower extends PowerModelAbstract {
          * where 10 means 100% of utilization.
 	 * @return the power consumption for the given utilization percentage
 	 */
-	protected abstract double getPowerData(int index);
+	protected abstract double getPowerData(final int index);
 
 }

@@ -25,95 +25,14 @@ package org.cloudbus.cloudsim.power.models;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
-public class PowerModelLinear  extends PowerModelAbstract {
-    /* @TODO the three first attributes are being repeated among several classes.
-     * Thus, a better class hierarchy should be provided, such as an abstract class
-     * implementing the PowerModel interface.
-     */
-
-	/** @see #getMaxPower()  */
-	private double maxPower;
-
-	/** @see #getConstant()  */
-	private double constant;
-
-	/**
-     * The static power consumption that is not dependent of resource usage.
-     * It is the amount of energy consumed even when the host is idle.
-     */
-	private double staticPower;
-
-	/**
-	 * Instantiates a new linear power model.
+public class PowerModelLinear  extends PowerModelSimple {
+    /**
+	 * Instantiates a linear power model.
 	 *
 	 * @param maxPower the max power that can be consumed (in Watts/second).
-	 * @param staticPowerPercent the static power usage percentage
+	 * @param staticPowerPercent the static power usage percentage between 0 and 1.
 	 */
 	public PowerModelLinear(final double maxPower, final double staticPowerPercent) {
-		setMaxPower(maxPower);
-		setStaticPower(staticPowerPercent * maxPower);
-		setConstant((maxPower - getStaticPower()) / 100.0);
+	    super(maxPower, staticPowerPercent, utilizationPercent -> utilizationPercent);
 	}
-
-	@Override
-	protected double getPowerInternal(final double utilization) throws IllegalArgumentException {
-		return getStaticPower() + getConstant() * utilization * 100;
-	}
-
-	/**
-	 * Gets the max power that can be consumed (in Watts/second).
-	 *
-	 * @return the max power
-	 */
-	protected double getMaxPower() {
-		return maxPower;
-	}
-
-	/**
-	 * Sets The max power that can be consumed.
-	 *
-	 * @param maxPower the new max power
-	 */
-	protected final void setMaxPower(double maxPower) {
-		this.maxPower = maxPower;
-	}
-
-	/**
-	 * Gets the constant which represents the power consumption
-     * for each fraction of resource used.
-	 *
-	 * @return the constant
-	 */
-	protected double getConstant() {
-		return constant;
-	}
-
-	/**
-	 * Sets the constant which represents the power consumption
-     * for each fraction of resource used.
-	 *
-	 * @param constant the new constant
-	 */
-	protected final void setConstant(double constant) {
-		this.constant = constant;
-	}
-
-	/**
-	 * Gets the static power usage percentage.
-	 *
-	 * @return the static power usage percentage
-	 */
-	protected final double getStaticPower() {
-		return staticPower;
-	}
-
-	/**
-	 * Sets the static power usage percentage.
-	 *
-	 * @param staticPower the new static power usage percentage
-	 */
-	protected final void setStaticPower(double staticPower) {
-		this.staticPower = staticPower;
-	}
-
 }

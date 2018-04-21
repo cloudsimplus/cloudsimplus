@@ -19,13 +19,13 @@ public abstract class PowerModelAbstract implements PowerModel {
     }
 
     @Override
-    public final void setHost(Host host) {
+    public final void setHost(final Host host) {
         Objects.requireNonNull(host);
         this.host = host;
     }
 
     @Override
-    public final double getPower(double utilization) throws IllegalArgumentException {
+    public final double getPower(final double utilization) throws IllegalArgumentException {
 		if (utilization < 0 || utilization > 1) {
 			throw new IllegalArgumentException(
                 String.format(
@@ -58,5 +58,5 @@ public abstract class PowerModelAbstract implements PowerModel {
      * @throws IllegalArgumentException when the utilization percentage is not
      * between [0 and 1]
      */
-    protected abstract double getPowerInternal(double utilization) throws IllegalArgumentException;
+    protected abstract double getPowerInternal(final double utilization) throws IllegalArgumentException;
 }

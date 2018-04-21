@@ -34,7 +34,7 @@ public class PowerModelSpecPowerIbmX3250XeonX3480 extends PowerModelSpecPower {
 	private final double[] power = { 42.3, 46.7, 49.7, 55.4, 61.8, 69.3, 76.1, 87, 96.1, 106, 113 };
 
 	@Override
-	protected double getPowerData(int index) {
+	protected double getPowerData(final int index) {
 		return power[index];
 	}
 
