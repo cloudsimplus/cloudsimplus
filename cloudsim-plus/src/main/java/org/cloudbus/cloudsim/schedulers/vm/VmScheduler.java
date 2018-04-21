@@ -43,7 +43,7 @@ public interface VmScheduler {
      * Requests the allocation of PEs for a VM.
      *
      * @param vm the vm to allocate PEs to
-     * @param mipsShareRequested the list of MIPS share to be allocated to a VM
+     * @param requestedMips the list of MIPS share to be allocated to a VM
      * @return true if the PEs were allocated to the VM, false otherwise
      *
      * @pre $none
@@ -61,7 +61,7 @@ public interface VmScheduler {
      * if the total requested mips is available, while only the difference has
      * to be checked. It has to be added some tests to check this issue.
      */
-    boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested);
+    boolean allocatePesForVm(Vm vm, List<Double> requestedMips);
 
     /**
      * Requests the allocation of PEs for a VM, according

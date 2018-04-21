@@ -37,7 +37,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  * @since CloudSim Plus 1.0
  */
 public class BrokerBuilder extends Builder implements BrokerBuilderInterface {
-    private static final String BROKER_NAME_FORMAT = "Broker%d";
     private final List<DatacenterBroker> brokers;
     private final SimulationScenarioBuilder scenario;
 

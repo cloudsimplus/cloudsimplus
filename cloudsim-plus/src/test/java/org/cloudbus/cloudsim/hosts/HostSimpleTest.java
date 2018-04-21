@@ -361,43 +361,6 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testAllocatePesForVm() {
-        final int numberOfPes = 4;
-        final Host host = createHostSimple(0, numberOfPes);
-        final List<Double> mipsShare = new ArrayList<>(1);
-        mipsShare.add(MIPS);
-        final Vm vm = new VmSimple(1000, 1);
-        assertTrue(host.allocatePesForVm(vm, mipsShare));
-        assertEquals(mipsShare, host.getAllocatedMipsForVm(vm));
-        host.deallocatePesForVm(vm);
-        assertTrue(host.getAllocatedMipsForVm(vm).isEmpty());
-    }
-
-    @Test
-    public void testGetTotalAllocatedMipsForVm() {
-        final int numberOfPes = 4;
-        final Host host = createHostSimple(0, numberOfPes);
-        final List<Double> mipsShare = new ArrayList<>(2);
-        mipsShare.add(MIPS);
-        mipsShare.add(MIPS);
-        final Vm vm = Vm.NULL;
-        host.allocatePesForVm(vm, mipsShare);
-        assertEquals(MIPS*mipsShare.size(), host.getTotalAllocatedMipsForVm(vm), 0);
-    }
-
-    @Test
-    public void testGetMaxAvailableMips() {
-        final int numberOfPes = 3;
-        final Host host = createHostSimple(0, numberOfPes);
-        final List<Double> mipsShare = new ArrayList<>(2);
-        mipsShare.add(MIPS);
-        mipsShare.add(MIPS);
-        final Vm vm = Vm.NULL;
-        host.allocatePesForVm(vm, mipsShare);
-        assertEquals(MIPS, host.getMaxAvailableMips(), 0);
-    }
-
-    @Test
     public void testGetNumberOfFreePes() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);

@@ -141,22 +141,36 @@ public class CloudletBuilder extends Builder {
         this.length = defaultLength;
         return this;
     }
+    public CloudletBuilder createCloudlets(final int amount, final int initialId) {
+        createCloudletsInternal(amount, initialId);
+        return this;
 
-    public CloudletBuilder createAndSubmitOneCloudlet() {
-        return createAndSubmitCloudlets(1);
     }
 
     public CloudletBuilder createCloudlets(final int amount) {
-        createCloudletsInternal(amount);
+        createCloudletsInternal(amount, 0);
         return this;
     }
 
-    private List<Cloudlet> createCloudletsInternal(final int amount) {
+    public CloudletBuilder createAndSubmitCloudlets(final int amount) {
+        return createAndSubmitCloudlets(amount, 0);
+    }
+
+    public CloudletBuilder createAndSubmitCloudlets(final int amount, final int initialId) {
+        List<Cloudlet> localList = createCloudletsInternal(amount, initialId);
+        broker.submitCloudletList(localList);
+        if(vm != Vm.NULL){
+            localList.forEach(c -> broker.bindCloudletToVm(c, vm));
+        }
+        return this;
+    }
+
+    private List<Cloudlet> createCloudletsInternal(final int amount, final int initialId) {
         List<Cloudlet> localList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            final int cloudletId = numberOfCreatedCloudlets++;
+            final int cloudletId = initialId + numberOfCreatedCloudlets++;
             Cloudlet cloudlet =
-                    new CloudletSimple(cloudletId, length, pes)
+                new CloudletSimple(cloudletId, length, pes)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)
                     .setUtilizationModelCpu(utilizationModelCpu)
@@ -169,15 +183,6 @@ public class CloudletBuilder extends Builder {
         }
         cloudlets.addAll(localList);
         return localList;
-    }
-
-    public CloudletBuilder createAndSubmitCloudlets(final int amount) {
-        List<Cloudlet> localList = createCloudletsInternal(amount);
-        broker.submitCloudletList(localList);
-        if(vm != Vm.NULL){
-            localList.forEach(c -> broker.bindCloudletToVm(c, vm));
-        }
-        return this;
     }
 
     /**
@@ -193,17 +198,9 @@ public class CloudletBuilder extends Builder {
         return brokerBuilder;
     }
 
-    public EventListener<CloudletVmEventInfo> getOnCloudletFinishEventListener() {
-        return onCloudletFinishEventListener;
-    }
-
     public CloudletBuilder setOnCloudletFinishEventListener(final EventListener<CloudletVmEventInfo> defaultOnCloudletFinishEventListener) {
         this.onCloudletFinishEventListener = defaultOnCloudletFinishEventListener;
         return this;
-    }
-
-    public UtilizationModel getUtilizationModelRam() {
-        return utilizationModelRam;
     }
 
     public CloudletBuilder setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
@@ -212,18 +209,10 @@ public class CloudletBuilder extends Builder {
         return this;
     }
 
-    public UtilizationModel getUtilizationModelCpu() {
-        return utilizationModelCpu;
-    }
-
     public CloudletBuilder setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
         Objects.requireNonNull(utilizationModelCpu);
         this.utilizationModelCpu = utilizationModelCpu;
         return this;
-    }
-
-    public UtilizationModel getUtilizationModelBw() {
-        return utilizationModelBw;
     }
 
     public CloudletBuilder setUtilizationModelBw(final UtilizationModel utilizationModelBw) {

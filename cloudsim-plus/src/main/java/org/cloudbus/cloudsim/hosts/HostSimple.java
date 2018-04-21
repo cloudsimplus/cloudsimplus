@@ -419,11 +419,6 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean allocatePesForVm(final Vm vm, final List<Double> mipsShare) {
-        return vmScheduler.allocatePesForVm(vm, mipsShare);
-    }
-
-    @Override
     public void deallocatePesForVm(final Vm vm) {
         vmScheduler.deallocatePesFromVm(vm);
     }

@@ -157,17 +157,6 @@ public interface Host extends Machine, Comparable<Host> {
     void removeMigratingInVm(Vm vm);
 
     /**
-     * Allocates PEs for a VM.
-     *
-     * @param vm the vm
-     * @param mipsShare the list of MIPS share to be allocated to the VM
-     * @return $true if this policy allows a new VM in the host, $false otherwise
-     * @pre $none
-     * @post $none
-     */
-    boolean allocatePesForVm(Vm vm, List<Double> mipsShare);
-
-    /**
      * Releases PEs allocated to a VM.
      *
      * @param vm the vm

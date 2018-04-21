@@ -22,6 +22,7 @@ package org.cloudbus.cloudsim.power.models;
  * </ul>
  *
  * @author Anton Beloglazov
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
  */
 public class PowerModelSquare extends PowerModelAbstract {
@@ -57,9 +58,6 @@ public class PowerModelSquare extends PowerModelAbstract {
 
     @Override
     protected double getPowerInternal(double utilization) throws IllegalArgumentException {
-        if (utilization == 0) {
-            return 0;
-        }
         return getStaticPower() + getConstant() * Math.pow(utilization * 100, 2);
     }
 

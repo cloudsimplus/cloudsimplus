@@ -15,7 +15,7 @@ import java.util.List;
  * @see VmScheduler#NULL
  */
 final class VmSchedulerNull implements VmScheduler {
-    @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
+    @Override public boolean allocatePesForVm(Vm vm, List<Double> requestedMips) {
         return false;
     }
     @Override public boolean allocatePesForVm(Vm vm) { return false; }

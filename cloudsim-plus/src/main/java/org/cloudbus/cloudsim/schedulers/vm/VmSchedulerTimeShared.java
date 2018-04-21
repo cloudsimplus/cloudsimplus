@@ -71,8 +71,8 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVmInternal(final Vm vm, final List<Double> mipsShareRequested) {
-        if(!allocateMipsShareForVmInternal(vm, mipsShareRequested)) {
+    public boolean allocatePesForVmInternal(final Vm vm, final List<Double> requestedMips) {
+        if(!allocateMipsShareForVmInternal(vm, requestedMips)) {
             return false;
         }
 
@@ -82,18 +82,18 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     /**
      * Try to allocate the MIPS requested by a VM
-     * and update the {@link #getMipsMapRequested()}.
+     * and update the {@link #getRequestedMipsMap()}.
      *
      * @param vm the VM
-     * @param mipsShareRequested the list of mips share requested by the vm
+     * @param requestedMips the list of mips share requested by the vm
      * @return true if successful, false otherwise
      */
-    private boolean allocateMipsShareForVmInternal(final Vm vm, final List<Double> mipsShareRequested) {
-        if (!isAllowedToAllocateMips(mipsShareRequested)) {
+    private boolean allocateMipsShareForVmInternal(final Vm vm, final List<Double> requestedMips) {
+        if (!isAllowedToAllocateMips(requestedMips)) {
             return false;
         }
 
-        allocateMipsShareForVm(vm, mipsShareRequested);
+        allocateMipsShareForVm(vm, requestedMips);
 
         return true;
     }
@@ -104,13 +104,13 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * if the VM is in migration, due to migration overhead.
      *
      * @param vm the VM to allocate MIPS to
-     * @param mipsShareRequestedReduced the list of MIPS to allocate to the VM,
+     * @param requestedMipsReduced the list of MIPS to allocate to the VM,
      * after it being adjusted by the {@link #getMipsShareRequestedReduced(Vm, List)} method.
      * @see #getMipsShareRequestedReduced(Vm, List)
      */
-    protected void allocateMipsShareForVm(final Vm vm, final List<Double> mipsShareRequestedReduced) {
-        final List<Double> mipsShare = getMipsShareToAllocate(vm, mipsShareRequestedReduced);
-        getMipsMapAllocated().put(vm, mipsShare);
+    protected void allocateMipsShareForVm(final Vm vm, final List<Double> requestedMipsReduced) {
+        final List<Double> mipsShare = getMipsShareToAllocate(vm, requestedMipsReduced);
+        getAllocatedMipsMap().put(vm, mipsShare);
     }
 
     /**
@@ -118,7 +118,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void updatePesAllocationForAllVms() {
         clearAllocationOfPesForAllVms();
-        getMipsMapAllocated().entrySet().forEach(this::allocatePesListForVm);
+        getAllocatedMipsMap().entrySet().forEach(this::allocatePesListForVm);
     }
 
     /**
@@ -134,7 +134,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     /**
      * Allocates Host PEs for a given VM.
-     * @param entry an entry from the {@link #getMipsMapAllocated()} containing a VM and
+     * @param entry an entry from the {@link #getAllocatedMipsMap()} containing a VM and
      *              the list of MIPS to be allocated for each of its PEs
      */
     private void allocatePesListForVm(final Map.Entry<Vm, List<Double>> entry) {
@@ -287,11 +287,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * the amount of MIPS allocated to the VM.
      *
      * @param vm the VM requesting allocation of MIPS
-     * @param mipsShareRequested the list of MIPS requested for each vPE
+     * @param requestedMips the list of MIPS requested for each vPE
      * @return the List of MIPS allocated to the VM
      */
-    protected List<Double> getMipsShareToAllocate(final Vm vm, final List<Double> mipsShareRequested) {
-        return getMipsShareToAllocate(mipsShareRequested, percentOfMipsToRequest(vm));
+    protected List<Double> getMipsShareToAllocate(final Vm vm, final List<Double> requestedMips) {
+        return getMipsShareToAllocate(requestedMips, percentOfMipsToRequest(vm));
     }
 
     /**
@@ -300,13 +300,13 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * If the VM is in migration, this will cause overhead, reducing
      * the amount of MIPS allocated to the VM.
      *
-     * @param mipsShareRequested the list of MIPS requested for each vPE
+     * @param requestedMips the list of MIPS requested for each vPE
      * @param scalingFactor the factor that will be used to reduce the amount of MIPS
      * allocated to each vPE (which is a percentage value between [0 .. 1]) in case the VM is in migration
      * @return the List of MIPS allocated to the VM
      */
-    protected List<Double> getMipsShareToAllocate(final List<Double> mipsShareRequested, final double scalingFactor) {
-        return mipsShareRequested
+    protected List<Double> getMipsShareToAllocate(final List<Double> requestedMips, final double scalingFactor) {
+        return requestedMips
                 .stream()
                 .map(mips -> mips*scalingFactor)
                 .collect(toList());
@@ -314,10 +314,10 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     @Override
     protected void deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
-        removePesFromMap(vm, getMipsMapRequested(), pesToRemove);
-        removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
+        removePesFromMap(vm, getRequestedMipsMap(), pesToRemove);
+        removePesFromMap(vm, getAllocatedMipsMap(), pesToRemove);
 
-        for (final Map.Entry<Vm, List<Double>> entry : getMipsMapRequested().entrySet()) {
+        for (final Map.Entry<Vm, List<Double>> entry : getRequestedMipsMap().entrySet()) {
             allocateMipsShareForVmInternal(entry.getKey(), entry.getValue());
         }
 
@@ -330,7 +330,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     @Override
     public void deallocatePesForAllVms() {
         super.deallocatePesForAllVms();
-        getMipsMapRequested().clear();
+        getRequestedMipsMap().clear();
     }
 
 }

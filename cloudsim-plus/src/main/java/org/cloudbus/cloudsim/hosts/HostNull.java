@@ -43,9 +43,6 @@ final class HostNull implements Host {
     @Override public boolean removeVmMigratingOut(Vm vm) {
         return false;
     }
-    @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare) {
-        return false;
-    }
     @Override public void deallocatePesForVm(Vm vm) {/**/}
     @Override public List<Double> getAllocatedMipsForVm(Vm vm) {
         return Collections.emptyList();

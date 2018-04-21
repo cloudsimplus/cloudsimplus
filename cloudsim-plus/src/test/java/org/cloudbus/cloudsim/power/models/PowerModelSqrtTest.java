@@ -47,7 +47,7 @@ public class PowerModelSqrtTest {
 
     @Test
     public void testGetPowerZeroUsage() {
-        assertEquals(0, powerModel.getPower(0.0), 0);
+        assertEquals(60, powerModel.getPower(0.0), 0);
     }
 
     @Test

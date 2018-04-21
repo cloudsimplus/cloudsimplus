@@ -90,7 +90,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Creates a new CloudletScheduler object.
      */
-    public CloudletSchedulerAbstract() {
+    protected CloudletSchedulerAbstract() {
         setPreviousTime(0.0);
         vm = Vm.NULL;
         cloudletExecList = new ArrayList<>();
@@ -137,7 +137,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         this.currentMipsShare = currentMipsShare;
     }
 
-
     /**
      * Gets the amount of MIPS available (free) for each Processor PE,
      * considering the currently executing cloudlets in this processor
@@ -183,7 +182,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     private double getTotalMipsShare(){
-        return currentMipsShare.stream().reduce(0.0, Double::sum);
+        return currentMipsShare.stream().mapToDouble(d -> d).sum();
     }
 
     @Override
@@ -312,15 +311,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     @Override
     public Cloudlet getCloudletToMigrate() {
-        final Function<CloudletExecution, Cloudlet> finishCloudletMigration = ce -> {
-            removeCloudletFromExecListAndAddToFinishedList(ce);
-            ce.finalizeCloudlet();
-            return ce.getCloudlet();
-        };
-
         return cloudletExecList.stream()
             .findFirst()
-            .map(finishCloudletMigration).orElse(Cloudlet.NULL);
+            .map(this::finishCloudletMigration)
+            .orElse(Cloudlet.NULL);
+    }
+
+    private Cloudlet finishCloudletMigration(final CloudletExecution ce) {
+        removeCloudletFromExecListAndAddToFinishedList(ce);
+        ce.finalizeCloudlet();
+        return ce.getCloudlet();
     }
 
     @Override
@@ -341,10 +341,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Cloudlet was found or not
      */
     protected Optional<CloudletExecution> findCloudletInAllLists(final double cloudletId) {
-        //Concatenate all lists into a strem
+        //Concatenate all lists into a stream
         final Stream<List<CloudletExecution>> streamOfAllLists
             = Stream.of(cloudletExecList, cloudletPausedList, cloudletWaitingList,
             cloudletFinishedList, cloudletFailedList);
+
         //Gets all elements in each list and makes them a single full list,
         //returning the first Cloudlet with the given id
         return streamOfAllLists
@@ -376,15 +377,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public boolean cloudletPause(final int cloudletId) {
-        if (changeStatusOfCloudletIntoList(
-            cloudletExecList, cloudletId,
-            c -> changeStatusOfCloudlet(c, Status.INEXEC, Status.PAUSED)) != Cloudlet.NULL) {
+        if (changeStatusOfCloudletIntoList(cloudletExecList, cloudletId, this::changeInexecToPaused) != Cloudlet.NULL) {
             return true;
         }
 
-        return changeStatusOfCloudletIntoList(
-            cloudletWaitingList, cloudletId,
-            c -> changeStatusOfCloudlet(c, Status.READY, Status.PAUSED)) != Cloudlet.NULL;
+        return changeStatusOfCloudletIntoList(cloudletWaitingList, cloudletId, this::changeReadyToPaused) != Cloudlet.NULL;
+    }
+
+    private void changeInexecToPaused(final CloudletExecution c) {
+        changeStatusOfCloudlet(c, Status.INEXEC, Status.PAUSED);
+    }
+
+    private void changeReadyToPaused(final CloudletExecution c) {
+        changeStatusOfCloudlet(c, Status.READY, Status.PAUSED);
     }
 
     @Override
@@ -440,7 +445,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         switch (newStatus) {
             case PAUSED:
                 cloudletPausedList.add(cloudlet);
-                break;
+            break;
         }
     }
 
@@ -456,7 +461,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * given list
      */
     private Cloudlet changeStatusOfCloudletIntoList(
-        final List<CloudletExecution> cloudletList, final int cloudletId,
+        final List<CloudletExecution> cloudletList,
+        final int cloudletId,
         final Consumer<CloudletExecution> cloudletStatusUpdaterConsumer)
     {
         final Function<CloudletExecution, Cloudlet> removeCloudletFromListAndUpdateItsStatus = c -> {
@@ -626,9 +632,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * otherwise
      */
     private boolean hasCloudletFileTransferTimePassed(final CloudletExecution ce, final double currentTime) {
-        return ce.getFileTransferTime() == 0
-            || currentTime - ce.getCloudletArrivalTime() > ce.getFileTransferTime()
-            || ce.getCloudlet().getFinishedLengthSoFar() > 0;
+        return ce.getFileTransferTime() == 0 ||
+               currentTime - ce.getCloudletArrivalTime() > ce.getFileTransferTime() ||
+               ce.getCloudlet().getFinishedLengthSoFar() > 0;
     }
 
     /**
@@ -664,7 +670,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return finishedCloudlets.size();
     }
 
-    private void removeCloudletFromExecListAndAddToFinishedList(CloudletExecution cloudlet) {
+    private void removeCloudletFromExecListAndAddToFinishedList(final CloudletExecution cloudlet) {
         setCloudletFinishTimeAndAddToFinishedList(cloudlet);
         removeCloudletFromExecList(cloudlet);
     }
@@ -803,7 +809,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public void setVm(Vm vm) {
+    public void setVm(final Vm vm) {
         Objects.requireNonNull(vm);
 
         if (isOtherVmAssigned(vm)) {
@@ -950,7 +956,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
      * @return the absolute amount of resource that the Cloudlet will use
      */
-    private double getAbsoluteCloudletResourceUtilization(final UtilizationModel um, final double time, final double maxResourceAllowedToUse) {
+    private double getAbsoluteCloudletResourceUtilization(
+        final UtilizationModel um,
+        final double time,
+        final double maxResourceAllowedToUse)
+    {
         return um.getUnit() == Unit.ABSOLUTE ?
             Math.min(um.getUtilization(time), maxResourceAllowedToUse) :
             um.getUtilization() * maxResourceAllowedToUse;

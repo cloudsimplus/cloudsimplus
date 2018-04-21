@@ -9,11 +9,8 @@ package org.cloudbus.cloudsim.schedulers.vm;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-import static java.util.stream.Collectors.toList;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -65,20 +62,20 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
     /**
      * Checks if the requested amount of MIPS is available to be allocated to a VM
-     * @param vmRequestedMipsShare a VM's list of requested MIPS
+     * @param vmRequestedMips a VM's list of requested MIPS
      * @return the list of PEs that can be allocated to the VM or
      * an empty list if there isn't enough capacity that can be allocated
      */
-    private List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> vmRequestedMipsShare) {
+    private List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> vmRequestedMips) {
         // if there is no enough free PEs, fails
-        if (getHost().getFreePeList().size() < vmRequestedMipsShare.size()) {
+        if (getHost().getFreePeList().size() < vmRequestedMips.size()) {
             return Collections.EMPTY_LIST;
         }
 
         final List<Pe> selectedPes = new ArrayList<>();
         final Iterator<Pe> peIterator = getHost().getFreePeList().iterator();
         Pe pe = peIterator.next();
-        for (final double mips : vmRequestedMipsShare) {
+        for (final double mips : vmRequestedMips) {
             if (mips <= pe.getCapacity()) {
                 selectedPes.add(pe);
                 if (!peIterator.hasNext()) {
@@ -88,7 +85,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             }
         }
 
-        if (vmRequestedMipsShare.size() > selectedPes.size()) {
+        if (vmRequestedMips.size() > selectedPes.size()) {
             return Collections.EMPTY_LIST;
         }
 
@@ -96,18 +93,18 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVmInternal(final Vm vm, final List<Double> mipsShareRequested) {
-        final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(mipsShareRequested);
+    public boolean allocatePesForVmInternal(final Vm vm, final List<Double> requestedMips) {
+        final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
         if(selectedPes.isEmpty()){
             return false;
         }
 
-        getMipsMapAllocated().put(vm, mipsShareRequested);
+        getAllocatedMipsMap().put(vm, requestedMips);
         return true;
     }
 
     @Override
     protected void deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
-        removePesFromMap(vm, getMipsMapAllocated(), pesToRemove);
+        removePesFromMap(vm, getAllocatedMipsMap(), pesToRemove);
     }
 }

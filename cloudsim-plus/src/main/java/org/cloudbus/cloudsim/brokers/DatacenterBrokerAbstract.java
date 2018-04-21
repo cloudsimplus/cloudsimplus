@@ -811,8 +811,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             if (lastSelectedVm == Vm.NULL) {
                 // vm was not created
                 println(String.format(
-                    "%.2f: %s: : Postponing execution of cloudlet %d: bind VM not available.",
-                    getSimulation().clock(), getName(), cloudlet.getId()));
+                    "%.2f: %s: : Postponing execution of %s: bind VM not available.",
+                    getSimulation().clock(), getName(), cloudlet));
                 continue;
             }
 
@@ -821,8 +821,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                     String.format(" with a requested delay of %.0f seconds", cloudlet.getSubmissionDelay()) :
                     "";
             println(String.format(
-                "%.2f: %s: Sending %s %d to %s in %s%s.",
-                getSimulation().clock(), getName(), cloudlet.getClass().getSimpleName(), cloudlet.getId(),
+                "%.2f: %s: Sending %s to %s in %s%s.",
+                getSimulation().clock(), getName(), cloudlet,
                 lastSelectedVm, lastSelectedVm.getHost(), delayStr));
             cloudlet.setVm(lastSelectedVm);
             send(getVmDatacenter(lastSelectedVm),
