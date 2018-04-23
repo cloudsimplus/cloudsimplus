@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
@@ -35,6 +36,12 @@ public interface Datacenter extends SimEntity {
      * {@link Datacenter} objects.
      */
     Datacenter NULL = new DatacenterNull();
+    /**
+     * The default percentage of bandwidth allocated for VM migration, is
+     * a value is not set.
+     * @see #setBandwidthPercentForMigration(double)
+     */
+    double DEF_BANDWIDTH_PERCENT_FOR_MIGRATION = 0.5;
 
     /**
      * Adds a file into the resource's storage before the experiment starts. If
@@ -176,4 +183,25 @@ public interface Datacenter extends SimEntity {
      * @param bandwidthPercentForMigration the bandwidth migration percentage to set
      */
     void setBandwidthPercentForMigration(double bandwidthPercentForMigration);
+
+    /**
+     * Gets an <b>estimation</b> of Datacenter power consumption (in Watts/Second).
+     * <p>To get actual power consumption, it's required to enable
+     * {@link Host#getStateHistory() Host's StateHistory}
+     * by calling {@link Host#enableStateHistory()}
+     * and use each Host {@link PowerModel} to compute power usage
+     * based on the CPU utilization got form the StateHistory.
+     * </p>
+     *
+     * @return th <b>estimated</b> power consumption (in Watts/Second)
+     */
+    double getPower();
+
+    /**
+     * Gets an <b>estimation</b> the Datacenter power consumption (in Kilo Watts/Hour).
+     *
+     * @return the <b>estimated</b> power consumption (in Kilo Watts/Hour)
+     * @see #getPower()
+     */
+    double getPowerInKWattsHour();
 }

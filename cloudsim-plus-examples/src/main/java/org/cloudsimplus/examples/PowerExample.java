@@ -55,7 +55,7 @@ import java.util.List;
 /**
  * A example showing how to show Hosts power consumption.
  * Realize that for this goal, you define a {@link PowerModel}
- * for each Host by calling {@code host.getPowerSupply().setPowerModel(powerModel)}.
+ * for each Host by calling {@code host.setPowerModel(powerModel)}.
  *
  * <p>It creates the number of cloudlets defined in
  * {@link #CLOUDLETS}. All cloudlets will required 100% of PEs they are using all the time.
@@ -168,7 +168,7 @@ public class PowerExample {
                  * This way, to get the total power consumed for each 10 seconds interval,
                  * the power consumption is multipled by the time interval.
                 */
-                final double wattsPerInterval = host.getPowerSupply().getPowerModel().getPower(utilizationPercent)*SCHEDULING_INTERVAL;
+                final double wattsPerInterval = host.getPowerModel().getPower(utilizationPercent)*SCHEDULING_INTERVAL;
                 totalPower += wattsPerInterval;
                 System.out.printf("\tTime %6.0f | CPU Utilization %6.2f%% | Power Consumption: %8.2f Watts in %d Seconds\n",
                     time, utilizationPercent*100, wattsPerInterval, SCHEDULING_INTERVAL);
@@ -212,7 +212,7 @@ public class PowerExample {
         final VmScheduler vmScheduler = new VmSchedulerTimeShared();
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.getPowerSupply().setPowerModel(powerModel);
+        host.setPowerModel(powerModel);
         host
             .setRamProvisioner(ramProvisioner)
             .setBwProvisioner(bwProvisioner)

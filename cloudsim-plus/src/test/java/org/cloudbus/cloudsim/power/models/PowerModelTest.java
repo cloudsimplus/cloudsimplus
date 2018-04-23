@@ -3,7 +3,6 @@ package org.cloudbus.cloudsim.power.models;
 import java.util.stream.IntStream;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.power.supply.HostPowerTest;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.Test;
 import static org.junit.Assert.*;

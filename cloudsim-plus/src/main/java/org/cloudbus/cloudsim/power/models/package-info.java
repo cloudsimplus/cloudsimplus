@@ -9,6 +9,6 @@
  *
  * <p>The most basic PowerModel is the {@link org.cloudbus.cloudsim.power.models.PowerModelLinear}.</p>
  *
- * @see org.cloudbus.cloudsim.power.supply
+ * @see org.cloudbus.cloudsim.power.model
  */
 package org.cloudbus.cloudsim.power.models;

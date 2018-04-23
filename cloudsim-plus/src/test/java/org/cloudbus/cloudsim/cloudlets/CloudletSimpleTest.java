@@ -7,23 +7,17 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
-import java.util.ArrayList;
-
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterMocker;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.Mocks;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-
-import java.util.List;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.easymock.EasyMock;
-import org.junit.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 

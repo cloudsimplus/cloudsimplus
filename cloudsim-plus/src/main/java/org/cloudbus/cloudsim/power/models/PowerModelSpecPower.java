@@ -26,8 +26,12 @@ package org.cloudbus.cloudsim.power.models;
  * @since CloudSim Toolkit 3.0
  */
 public abstract class PowerModelSpecPower extends PowerModelAbstract {
+    @Override
+    public double getMaxPower() {
+        return getPower(1);
+    }
 
-	@Override
+    @Override
 	protected double getPowerInternal(final double utilization) throws IllegalArgumentException {
 		if (utilization % 0.1 == 0) {
 			return getPowerData((int) (utilization * 10));

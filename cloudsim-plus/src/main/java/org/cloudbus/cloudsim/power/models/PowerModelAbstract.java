@@ -25,6 +25,11 @@ public abstract class PowerModelAbstract implements PowerModel {
     }
 
     @Override
+    public double getPower() {
+        return getPower(host.getUtilizationOfCpu());
+    }
+
+    @Override
     public final double getPower(final double utilization) throws IllegalArgumentException {
 		if (utilization < 0 || utilization > 1) {
 			throw new IllegalArgumentException(
@@ -59,4 +64,18 @@ public abstract class PowerModelAbstract implements PowerModel {
      * between [0 and 1]
      */
     protected abstract double getPowerInternal(final double utilization) throws IllegalArgumentException;
+
+    @Override
+    public double getEnergyLinearInterpolation(
+        final double fromUtilization,
+        final double toUtilization,
+        final double time)
+    {
+        if (fromUtilization == 0) {
+            return 0;
+        }
+        final double fromPower = getPower(fromUtilization);
+        final double toPower = getPower(toUtilization);
+        return (fromPower + (toPower - fromPower) / 2) * time;
+    }
 }

@@ -63,6 +63,8 @@ final class DatacenterNull implements Datacenter {
     }
     @Override public double getBandwidthPercentForMigration() { return 0; }
     @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration) {/**/}
+    @Override public double getPower() { return 0; }
+    @Override public double getPowerInKWattsHour() { return 0; }
     @Override public SimEntity setState(State state) { return SimEntity.NULL; }
     @Override public boolean isStarted() { return false; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }

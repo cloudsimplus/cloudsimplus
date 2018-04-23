@@ -87,7 +87,7 @@ import java.util.List;
  *
  * <p>This VmAllocationPolicy considers the power usage of Hosts to place VMs.
  * So that, a {@link org.cloudbus.cloudsim.power.models.PowerModel} is being
- * set to every created Host by means of {@code host.getPowerSupply().setPowerModel(powerModel)}.</p>
+ * set to every created Host by means of {@code host.setPowerModel(powerModel)}.</p>
  *
  * <p>The example uses a {@link UtilizationModelDynamic} that defines the CPU usage of cloudlets
  *  increases along the simulation time.</p>
@@ -261,7 +261,7 @@ public final class MigrationExample2_PowerUsage {
         int time = 0;
         for (int i = 0; i < utilizationHistory.length; i++) {
             final double cpuUsage = utilizationHistory[i];
-            System.out.printf("Time: %6d | %9.2f | %.2f\n", i*SCHEDULE_INTERVAL, cpuUsage, host.getPowerSupply().getPower(cpuUsage));
+            System.out.printf("Time: %6d | %9.2f | %.2f\n", i*SCHEDULE_INTERVAL, cpuUsage, host.getPowerModel().getPower(cpuUsage));
             time += SCHEDULE_INTERVAL;
         }
         System.out.println();
@@ -437,7 +437,7 @@ public final class MigrationExample2_PowerUsage {
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
             host.enableStateHistory();
-            host.getPowerSupply().setPowerModel(new PowerModelLinear(800, 0.3));
+            host.setPowerModel(new PowerModelLinear(800, 0.3));
             return host;
     }
 

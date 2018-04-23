@@ -8,13 +8,15 @@
 package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.power.supply.PowerSupply;
+import org.cloudbus.cloudsim.resources.Pe;
 
 /**
  * Provides a model for power consumption of hosts, depending on utilization of a critical system
  * component, such as CPU.
- * <b>This is the fundamental class to enable power-aware Hosts.</b> Despite all Hosts have a {@link PowerSupply} attribute,
- * it just provides power usage data if a PowerModel is set using the {@link PowerSupply#setPowerModel(PowerModel)}.
+ * <b>This is the fundamental class to enable power-aware Hosts.
+ * However, a Host just provides power usage data if a PowerModel is set using the
+ * {@link Host#setPowerModel(PowerModel)}.</b>
+ *
  *
  * <p>The interface implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when
@@ -46,12 +48,30 @@ public interface PowerModel {
     PowerModel NULL = new PowerModel() {
         @Override public Host getHost() { return Host.NULL; }
         @Override public void setHost(Host host) {}
+        @Override public double getMaxPower() { return 0; }
+        @Override public double getPower() { return 0; }
         @Override public double getPower(double utilization) throws IllegalArgumentException { return 0; }
+        @Override public double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time) { return 0; }
     };
 
     Host getHost();
 
     void setHost(Host host);
+
+    /**
+     * Gets the max power that can be consumed by the host (in Watts/Second).
+     *
+     * @return the max consumption power (in Watts/Second)
+     */
+    double getMaxPower();
+
+    /**
+     * Gets the current power consumption of the host (in Watts/Second).
+     * For this moment, it only computes the power consumed by {@link Pe}s.
+     *
+     * @return the power consumption (in Watts/Second)
+     */
+    double getPower();
 
     /**
      * Gets power consumption (in Watts/Second) of the Power Model, according to the utilization
@@ -64,4 +84,16 @@ public interface PowerModel {
      * between [0 and 1]
      */
     double getPower(double utilization) throws IllegalArgumentException;
+
+    /**
+     * Gets an <b>estimation</b> of energy consumption using linear interpolation of the utilization
+     * change.
+     * <b>It's required to set a {@link PowerModel} in order to get power usage data.</b>
+     *
+     * @param fromUtilization the initial utilization percentage
+     * @param toUtilization   the final utilization percentage
+     * @param time            the time
+     * @return the <b>estimated</b> energy consumption
+     */
+    double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time);
 }

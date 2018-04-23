@@ -6,8 +6,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.power.supply.HostPowerSupply;
-import org.cloudbus.cloudsim.power.supply.PowerSupply;
+import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -45,7 +44,7 @@ public class HostSimple implements Host {
      * @see #getStateHistory()
      */
     private final List<HostStateHistoryEntry> stateHistory;
-    private final PowerSupply powerSupply;
+    private PowerModel powerModel;
 
     /**
      * @see #getId()
@@ -167,7 +166,7 @@ public class HostSimple implements Host {
         this.provisioners = new ArrayList<>();
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
-        this.powerSupply = new HostPowerSupply(this);
+        this.powerModel = PowerModel.NULL;
         stateHistory = new LinkedList<>();
     }
 
@@ -806,8 +805,20 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public PowerSupply getPowerSupply() {
-        return powerSupply;
+    public PowerModel getPowerModel() {
+        return powerModel;
+    }
+
+    @Override
+    public Host setPowerModel(final PowerModel powerModel) {
+        Objects.requireNonNull(powerModel);
+        if(powerModel.getHost() != null && powerModel.getHost() != Host.NULL && !powerModel.getHost().equals(this)){
+            throw new IllegalStateException("The given PowerModel is already assigned to another Host. Each Host must have its own PowerModel instance.");
+        }
+
+        this.powerModel = powerModel;
+        powerModel.setHost(this);
+        return this;
     }
 
     @Override
@@ -901,7 +912,7 @@ public class HostSimple implements Host {
             hostTotalRequestedMips += totalRequestedMips;
         }
 
-        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips,getUtilizationOfCpuMips() > 0);
+        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips, active);
     }
 
     /**

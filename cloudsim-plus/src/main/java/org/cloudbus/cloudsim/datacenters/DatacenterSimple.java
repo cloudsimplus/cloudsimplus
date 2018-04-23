@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
 import org.cloudbus.cloudsim.network.IcmpPacket;
+import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -39,12 +40,6 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterSimple extends CloudSimEntity implements Datacenter {
-    /**
-     * The default percentage of bandwidth allocated for VM migration, is
-     * a value is not set.
-     * @see #setBandwidthPercentForMigration(double)
-     */
-    private static final double DEF_BANDWIDTH_PERCENT_FOR_MIGRATION = 0.5;
 
     /**
      * @see #getBandwidthPercentForMigration()
@@ -725,10 +720,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets the total power consumed (in Watts/sec) by all Hosts of the Datacenter since the last time the processing
-     * of Cloudlets in this Host was updated.
+     * Gets an <b>estimation</b> of total power consumed (in Watts/sec) by all Hosts of the Datacenter
+     * since the last time the processing of Cloudlets in this Host was updated.
      *
-     * @return the total power consumed (in Watts/sec) by all Hosts in the elapsed time span
+     * @return the <b>estimated</b> total power consumed (in Watts/sec) by all Hosts in the elapsed time span
+     * @see #getPower()
      */
     private double getDatacenterPowerUsageForTimeSpan() {
         if (getSimulation().clock() - getLastProcessTime() == 0) { //time span
@@ -740,7 +736,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             final double prevCpuUsage = host.getPreviousUtilizationOfCpu();
             final double cpuUsage = host.getUtilizationOfCpu();
             final double timeFrameHostEnergy =
-                host.getPowerSupply().getEnergyLinearInterpolation(prevCpuUsage, cpuUsage, getSimulation().clock() - getLastProcessTime());
+                host.getPowerModel().getEnergyLinearInterpolation(prevCpuUsage, cpuUsage, getSimulation().clock() - getLastProcessTime());
             datacenterTimeSpanPowerUse += timeFrameHostEnergy;
         }
 
@@ -1148,20 +1144,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         this.bandwidthPercentForMigration = bandwidthPercentForMigration;
     }
 
-    /**
-     * Gets the Datacenter power consumption (in Watts/Second).
-     *
-     * @return the power consumption (in Watts/Second)
-     */
+    @Override
     public double getPower() {
         return power;
     }
 
-    /**
-     * Gets the Datacenter power consumption (in Kilo Watts/Hour).
-     *
-     * @return the power consumption (in Kilo Watts/Hour)
-     */
+    @Override
     public double getPowerInKWattsHour() {
         return getPower() / (3600 * 1000);
     }

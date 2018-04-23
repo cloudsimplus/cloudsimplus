@@ -6,7 +6,7 @@
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
-package org.cloudbus.cloudsim.power.supply;
+package org.cloudbus.cloudsim.power.models;
 
 import static org.junit.Assert.assertEquals;
 
@@ -47,7 +47,7 @@ public class HostPowerTest {
         }
 
         final HostSimple host = new HostSimple(RAM, BW, STORAGE, peList);
-        host.getPowerSupply().setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT))
+        host.setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT))
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
@@ -62,16 +62,16 @@ public class HostPowerTest {
 
     @Test
     public void testGetMaxPower() {
-        assertEquals(MAX_POWER, host.getPowerSupply().getMaxPower(), 0);
+        assertEquals(MAX_POWER, host.getPowerModel().getMaxPower(), 0);
     }
 
     @Test
     public void testGetEnergy() {
-        final PowerSupply ps = host.getPowerSupply();
-        assertEquals(0, ps.getEnergyLinearInterpolation(0, 0, TIME), 0);
+        final PowerModel pm = host.getPowerModel();
+        assertEquals(0, pm.getEnergyLinearInterpolation(0, 0, TIME), 0);
         double expectedEnergy = 0;
-        expectedEnergy = (ps.getPowerModel().getPower(0.2) + (ps.getPowerModel().getPower(0.9) - ps.getPowerModel().getPower(0.2)) / 2) * TIME;
-        assertEquals(expectedEnergy, ps.getEnergyLinearInterpolation(0.2, 0.9, TIME), 0);
+        expectedEnergy = (pm.getPower(0.2) + (pm.getPower(0.9) - pm.getPower(0.2)) / 2) * TIME;
+        assertEquals(expectedEnergy, pm.getEnergyLinearInterpolation(0.2, 0.9, TIME), 0);
     }
 
 }

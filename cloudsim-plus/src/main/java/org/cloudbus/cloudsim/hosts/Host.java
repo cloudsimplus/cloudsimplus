@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.Machine;
-import org.cloudbus.cloudsim.power.supply.PowerSupply;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -512,13 +511,23 @@ public interface Host extends Machine, Comparable<Host> {
     double[] getUtilizationHistory();
 
     /**
-     * Gets the {@link PowerSupply} that enables getting power usage information,
-     * including the {@link PowerModel}.
-     * Power information is just available if a {@link PowerModel} is set to the PowerSupply.
+     * Gets the {@link PowerModel} used by the host
+     * to define how it consumes power.
+     * A Host just provides power usage data if a PowerModel is set.
      *
+     * @return the Host's {@link PowerModel}
+     */
+    PowerModel getPowerModel();
+
+    /**
+     * Sets the {@link PowerModel} used by the host
+     * to define how it consumes power.
+     * A Host just provides power usage data if a PowerModel is set.
+     *
+     * @param powerModel the {@link PowerModel} to set
      * @return
      */
-    PowerSupply getPowerSupply();
+    Host setPowerModel(PowerModel powerModel);
 
     double getPreviousUtilizationOfCpu();
 

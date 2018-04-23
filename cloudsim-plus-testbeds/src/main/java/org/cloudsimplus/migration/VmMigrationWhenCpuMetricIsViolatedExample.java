@@ -291,7 +291,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     public static Host createHost(int id, int numberOfPes, long mipsByPe) {
         List<Pe> peList = createPeList(numberOfPes, mipsByPe);
         Host host = new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
-        host.getPowerSupply().setPowerModel(new PowerModelLinear(1000, 0.7))
+        host.setPowerModel(new PowerModelLinear(1000, 0.7))
                 .setRamProvisioner(new ResourceProvisionerSimple())
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
