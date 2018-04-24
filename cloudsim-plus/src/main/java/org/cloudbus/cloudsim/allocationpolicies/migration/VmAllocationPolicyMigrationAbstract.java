@@ -506,7 +506,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private Host getUnderloadedHost(final Set<? extends Host> excludedHosts) {
         return this.getHostList().stream()
             .filter(h -> !excludedHosts.contains(h))
-            .filter(h -> h.getUtilizationOfCpu() > 0)
+            .filter(Host::isActive)
             .filter(this::isHostUnderloaded)
             .filter(h -> h.getVmsMigratingIn().isEmpty())
             .filter(this::isNotAllVmsMigratingOut)

@@ -29,7 +29,7 @@ public class PowerModelTest {
     }
 
     static Host createHostWithOneVm(){
-        final Host host = HostPowerTest.createPowerHost(0, 10);
+        final Host host = HostPowerTest.createPowerHost(10);
         host.createVm(new VmSimple(0, 1000, 1));
         return host;
     }

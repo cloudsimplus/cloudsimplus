@@ -105,7 +105,7 @@ public class HostSimpleTest {
         final double[] result = host.getUtilizationHistory();
         assertEquals("The number of history entries is not equal", expected.length, result.length);
         for (int i = 0; i < result.length; i++) {
-            assertEquals(expected[i], result[i], 0);
+            assertEquals("Utilization History at position " + i, expected[i], result[i], 0);
         }
     }
 

@@ -502,6 +502,8 @@ public interface Host extends Machine, Comparable<Host> {
      * a time interval equal to the {@link Datacenter#getSchedulingInterval()}.
      * </p>
      *
+     * <p><b>The values are stored in the reverse chronological order.</b></p>
+     *
      * <p><b>In order to enable the Host to get utilization history,
      * utilization history of its VMs should be enabled
      * by calling {@link VmUtilizationHistory#enable()} from

@@ -149,22 +149,6 @@ public final class PeList {
     }
 
     /**
-     * Sets the status of PEs of a host to FAILED or FREE. NOTE:
-     * <tt>hostId</tt> are used for debugging purposes, which is <b>ON</b> by
-     * default. Use {@link #setStatusFailed(List, boolean)} if you do not want this
-     * information.
-     *
-     * @param peList the host's PE list to be set as failed or free
-     * @param hostId the id of the host
-     * @param failed true if the host's PEs have to be set as FAILED, false if
-     * they have to be set as FREE.
-     * @see #setStatusFailed(java.util.List, boolean)
-     */
-    public static void setStatusFailed(List<? extends Pe> peList, int hostId, boolean failed) {
-        setStatusFailed(peList, failed);
-    }
-
-    /**
      * Sets the status of PEs of a host to FAILED or FREE.
      *
      * @param <T> the generic type
@@ -172,8 +156,8 @@ public final class PeList {
      * @param failed true if the host's PEs have to be set as FAILED, false if
      * they have to be set as FREE.
      */
-    public static <T extends Pe> void setStatusFailed(List<T> peList, boolean failed) {
-        final Pe.Status status = (failed ? Pe.Status.FAILED : Pe.Status.FREE);
+    public static <T extends Pe> void setStatusFailed(final List<T> peList, final boolean failed) {
+        final Pe.Status status = failed ? Pe.Status.FAILED : Pe.Status.FREE;
         peList.forEach(pe -> pe.setStatus(status));
     }
 

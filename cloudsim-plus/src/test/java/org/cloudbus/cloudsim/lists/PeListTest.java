@@ -34,7 +34,7 @@ public class PeListTest {
     private List<Pe> peList;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         peList = new ArrayList<>();
         peList.add(new PeSimple(0, MIPS, new PeProvisionerSimple()));
         peList.add(new PeSimple(1, MIPS, new PeProvisionerSimple()));
@@ -79,21 +79,11 @@ public class PeListTest {
 
     @Test
     public void testSetStatusFailed() {
-        assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 0).getStatus());
-        assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 1).getStatus());
         PeList.setStatusFailed(peList, true);
-        assertEquals(PeSimple.Status.FAILED, PeList.getById(peList, 0).getStatus());
-        assertEquals(PeSimple.Status.FAILED, PeList.getById(peList, 1).getStatus());
-        PeList.setStatusFailed(peList, false);
-        assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 0).getStatus());
-        assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 1).getStatus());
+        peList.forEach(pe -> assertEquals(PeSimple.Status.FAILED, pe.getStatus()));
 
-        PeList.setStatusFailed(peList, 0, true);
-        assertEquals(PeSimple.Status.FAILED, PeList.getById(peList, 0).getStatus());
-        assertEquals(PeSimple.Status.FAILED, PeList.getById(peList, 1).getStatus());
-        PeList.setStatusFailed(peList, 0, false);
-        assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 0).getStatus());
-        assertEquals(PeSimple.Status.FREE, PeList.getById(peList, 1).getStatus());
+        PeList.setStatusFailed(peList, false);
+        peList.forEach(pe -> assertEquals(PeSimple.Status.FREE, pe.getStatus()));
     }
 
     @Test
@@ -127,5 +117,4 @@ public class PeListTest {
         assertEquals(ONE_THIRD_MIPS / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm0), 0.001);
         assertEquals(ONE_FIFTH_MIPS / MIPS, PeList.getMaxUtilizationAmongVmsPes(peList, vm1), 0.001);
     }
-
 }

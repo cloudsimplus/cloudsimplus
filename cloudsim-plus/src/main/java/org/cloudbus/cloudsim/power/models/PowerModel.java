@@ -69,6 +69,8 @@ public interface PowerModel {
      * Gets the current power consumption of the host (in Watts/Second).
      * For this moment, it only computes the power consumed by {@link Pe}s.
      *
+     * <p><b>The power consumption data is just available while the host is active.</b></p>
+     *
      * @return the power consumption (in Watts/Second)
      */
     double getPower();
@@ -76,6 +78,8 @@ public interface PowerModel {
     /**
      * Gets power consumption (in Watts/Second) of the Power Model, according to the utilization
      * percentage of a critical resource, such as CPU.
+     *
+     * <p><b>The power consumption data is just available while the host is active.</b></p>
      *
      * @param utilization the utilization percentage (between [0 and 1]) of a
      * resource that is critical for power consumption.
@@ -92,7 +96,7 @@ public interface PowerModel {
      *
      * @param fromUtilization the initial utilization percentage
      * @param toUtilization   the final utilization percentage
-     * @param time            the time
+     * @param time            the time span between the initial and final utilization to compute the energy consumption
      * @return the <b>estimated</b> energy consumption
      */
     double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time);

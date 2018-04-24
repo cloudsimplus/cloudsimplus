@@ -64,7 +64,7 @@ import java.util.List;
  * <p>After the simulation starts and reaches 5 seconds (defined in {@link #SCHEDULING_INTERVAL}),
  * it's created a new Host and VM. Two new Cloudlets are created for this new VM
  * the Cloudlets and the VM is submitted by the broker to the Datacenter.
- * Since all Hosts created when before the simulation start
+ * Since the Hosts created before starting the simulation
  * don't have enough PEs to place this new VM, the {@link VmAllocationPolicy}
  * will chose the 5th Host (created dynamically) to place that VM
  * and run the Cloudlets.

@@ -574,7 +574,16 @@ public class HostSimple implements Host {
     @Override
     public final boolean setFailed(final boolean failed) {
         this.failed = failed;
-        PeList.setStatusFailed(peList, getId(), failed);
+        PeList.setStatusFailed(peList, failed);
+
+        /*Just changes the active state when the Host is set to active.
+        * In other situations, the active status must remain as it was.
+        * For example, if the host was inactive and now it's set to failed,
+        * it must remain inactive.*/
+        if(failed && active){
+            active = false;
+        }
+
         return true;
     }
 
@@ -934,7 +943,12 @@ public class HostSimple implements Host {
      * @param requestedMips the requested mips
      * @param isActive the is active
      */
-    private void addStateHistoryEntry(final double time, final double allocatedMips, final double requestedMips, final boolean isActive) {
+    private void addStateHistoryEntry(
+        final double time,
+        final double allocatedMips,
+        final double requestedMips,
+        final boolean isActive)
+    {
         final HostStateHistoryEntry newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
         if (!stateHistory.isEmpty()) {
             final HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);

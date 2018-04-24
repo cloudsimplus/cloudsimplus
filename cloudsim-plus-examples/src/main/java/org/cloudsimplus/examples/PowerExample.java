@@ -166,7 +166,7 @@ public class PowerExample {
                  * That means it's not computed the power consumption for each time interval
                  * of 10 seconds, but the power consumption at the 10th, 20th second and so on.
                  * This way, to get the total power consumed for each 10 seconds interval,
-                 * the power consumption is multipled by the time interval.
+                 * the power consumption is multiplied by the time interval.
                 */
                 final double wattsPerInterval = host.getPowerModel().getPower(utilizationPercent)*SCHEDULING_INTERVAL;
                 totalPower += wattsPerInterval;

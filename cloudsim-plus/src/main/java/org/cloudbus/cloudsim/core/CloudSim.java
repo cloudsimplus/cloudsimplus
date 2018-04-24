@@ -45,19 +45,22 @@ public class CloudSim implements Simulation {
      * It is used to know when it is time to notify listeners that
      * the simulation clock has incremented.
      *
+     * <p>The element in the head (0) of the queue is the oldest simulation time
+     * stored. The element in the tail (1) is the newest one.</p>
+     *
      * <p>Such a structure is required because multiple events
      * can be received consecutively for the same simulation time.
      * </p>
      *
      * @see #notifyOnClockTickListenersIfClockChanged()
      */
-    private final double[] circularClockTimesQueue;
+    private final double[] circularClockTimeQueue;
 
     /**
      * The last time the OnClockTickListeners were updated.
      * @see #addOnClockTickListener(EventListener)
      */
-    private double lastTimeClockTickListenersWereUpdated;
+    private double lastTimeClockTickListenersUpdated;
 
     /**
      * @see #getNetworkTopology()
@@ -177,8 +180,8 @@ public class CloudSim implements Simulation {
         this.onEventProcessingListeners = new HashSet<>();
         this.onSimulationPausedListeners = new HashSet<>();
         this.onClockTickListeners = new HashSet<>();
-        this.circularClockTimesQueue = new double[]{0, -1};
-        this.lastTimeClockTickListenersWereUpdated = 0;
+        this.circularClockTimeQueue = new double[]{0, -1};
+        this.lastTimeClockTickListenersUpdated = 0;
 
         // NOTE: the order for the lines below is important
         this.calendar = Calendar.getInstance();
@@ -262,15 +265,6 @@ public class CloudSim implements Simulation {
         final double oldTime = clockTime;
         this.clockTime = newTime;
         return oldTime;
-    }
-
-    /**
-     * Makes the circular queue to rotate, removing the first time to add
-     * the current clock time.
-     */
-    private void addCurrentTimeToCircularQueue() {
-        circularClockTimesQueue[0] = circularClockTimesQueue[1];
-        circularClockTimesQueue[1] = clockTime;
     }
 
     @Override
@@ -459,22 +453,33 @@ public class CloudSim implements Simulation {
     }
 
     /**
-     * Notifies all Listeners of onClockTick event when the simulation clock changes.
-     * If multiples events are received consecutively but for the same simulation time,
+     * Notifies all Listeners about onClockTick event when the simulation clock changes.
+     * If multiple events are received consecutively but for the same simulation time,
      * it will only notify the Listeners when the last event for that time is received.
-     * This ensure that, when the Listeners receive the notification, all the events
-     * for that simulation time already were processed and then, such Listeners
+     * It ensures that, when Listeners receive the notification, all the events
+     * for that simulation time were already processed and then, such Listeners
      * will have access to the most updated simulation state.
      */
     private void notifyOnClockTickListenersIfClockChanged() {
-        if(clockTime != circularClockTimesQueue[0] || clockTime != circularClockTimesQueue[1]) {
-            if (lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[0] && lastTimeClockTickListenersWereUpdated != circularClockTimesQueue[1]) {
-                lastTimeClockTickListenersWereUpdated = circularClockTimesQueue[0];
+        if(clockTime != circularClockTimeQueue[0] || clockTime != circularClockTimeQueue[1]) {
+            if (lastTimeClockTickListenersUpdated != circularClockTimeQueue[0] &&
+                lastTimeClockTickListenersUpdated != circularClockTimeQueue[1])
+            {
+                lastTimeClockTickListenersUpdated = circularClockTimeQueue[0];
                 onClockTickListeners.forEach(l -> l.update(EventInfo.of(l, clockTime)));
             }
 
             addCurrentTimeToCircularQueue();
         }
+    }
+
+    /**
+     * Makes the circular queue to rotate, removing the first time,
+     * then adding the current clock time.
+     */
+    private void addCurrentTimeToCircularQueue() {
+        circularClockTimeQueue[0] = circularClockTimeQueue[1];
+        circularClockTimeQueue[1] = clockTime;
     }
 
     private void processEventByType(final SimEvent e) {

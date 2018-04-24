@@ -116,7 +116,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public final class MigrationExample2_PowerUsage {
-    private static final int SCHEDULE_INTERVAL = 5;
+    private static final int SCHEDULING_INTERVAL = 5;
 
     private static final int HOSTS = 5;
     private static final int VMS = 3;
@@ -244,7 +244,7 @@ public final class MigrationExample2_PowerUsage {
 
     /**
      * Shows Host CPU utilization history and power consumption.
-     * The history is shown in the interval defined by {@link #SCHEDULE_INTERVAL},
+     * The history is shown in the interval defined by {@link #SCHEDULING_INTERVAL},
      * which is the interval in which simulation is updated and usage data is collected.
      *
      * <p>The Host CPU Utilization History also is only computed
@@ -258,11 +258,11 @@ public final class MigrationExample2_PowerUsage {
         System.out.printf("Host: %6d | CPU Usage | Power Consumption\n", host.getId());
         System.out.println("-------------------------------------------------------------------------------------------");
         final double[] utilizationHistory = host.getUtilizationHistory();
-        int time = 0;
+        double time = simulation.clock();
         for (int i = 0; i < utilizationHistory.length; i++) {
             final double cpuUsage = utilizationHistory[i];
-            System.out.printf("Time: %6d | %9.2f | %.2f\n", i*SCHEDULE_INTERVAL, cpuUsage, host.getPowerModel().getPower(cpuUsage));
-            time += SCHEDULE_INTERVAL;
+            System.out.printf("Time: %6.0f | %9.2f | %.2f\n", time, cpuUsage, host.getPowerModel().getPower(cpuUsage));
+            time -= SCHEDULING_INTERVAL;
         }
         System.out.println();
     }
@@ -424,7 +424,7 @@ public final class MigrationExample2_PowerUsage {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2, fallback);
 
         Datacenter dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
-        dc.setSchedulingInterval(SCHEDULE_INTERVAL).setLog(true);
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL).setLog(true);
         return dc;
     }
 
