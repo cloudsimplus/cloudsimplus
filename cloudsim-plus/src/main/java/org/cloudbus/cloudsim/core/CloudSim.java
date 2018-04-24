@@ -180,7 +180,7 @@ public class CloudSim implements Simulation {
         this.onEventProcessingListeners = new HashSet<>();
         this.onSimulationPausedListeners = new HashSet<>();
         this.onClockTickListeners = new HashSet<>();
-        this.circularClockTimeQueue = new double[]{0, -1};
+        this.circularClockTimeQueue = new double[]{-1, 0};
         this.lastTimeClockTickListenersUpdated = 0;
 
         // NOTE: the order for the lines below is important
@@ -461,15 +461,13 @@ public class CloudSim implements Simulation {
      * will have access to the most updated simulation state.
      */
     private void notifyOnClockTickListenersIfClockChanged() {
-        if(clockTime != circularClockTimeQueue[0] || clockTime != circularClockTimeQueue[1]) {
-            if (lastTimeClockTickListenersUpdated != circularClockTimeQueue[0] &&
-                lastTimeClockTickListenersUpdated != circularClockTimeQueue[1])
+        if(clockTime > lastTimeClockTickListenersUpdated) {
+            addCurrentTimeToCircularQueue();
+            if (circularClockTimeQueue[0] < circularClockTimeQueue[1])
             {
                 lastTimeClockTickListenersUpdated = circularClockTimeQueue[0];
                 onClockTickListeners.forEach(l -> l.update(EventInfo.of(l, clockTime)));
             }
-
-            addCurrentTimeToCircularQueue();
         }
     }
 
