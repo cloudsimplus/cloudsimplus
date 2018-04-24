@@ -114,7 +114,7 @@ public class DynamicCloudletsArrival1 {
         /*Defines a delay of 5 seconds and creates another group of cloudlets
         that will start executing inside a VM only after this delay expires.*/
         double submissionDelay = 5;
-        //createAndSubmitCloudlets(vm, submissionDelay);
+        createAndSubmitCloudlets(vm, submissionDelay);
 
         runSimulationAndPrintResults();
         Log.printFormattedLine("%s finished!", getClass().getSimpleName());

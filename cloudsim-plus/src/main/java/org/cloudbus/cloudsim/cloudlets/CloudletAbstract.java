@@ -359,10 +359,13 @@ public abstract class CloudletAbstract implements Cloudlet {
     /**
      * Notifies all registered listeners about the termination of the Cloudlet
      * if it in fact has finished.
+     * It then removes the registered listeners to avoid a Listener to be notified
+     * multiple times about a Cloudlet termination.
      */
     private void notifyListenersIfCloudletIsFinished() {
         if (isFinished()) {
             onFinishListeners.forEach(l -> l.update(CloudletVmEventInfo.of(l, this)));
+            onFinishListeners.clear();
         }
     }
 

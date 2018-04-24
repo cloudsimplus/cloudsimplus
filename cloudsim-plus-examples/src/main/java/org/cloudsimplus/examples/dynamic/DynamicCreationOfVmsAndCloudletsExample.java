@@ -61,11 +61,9 @@ import java.util.List;
  *
  * <p>This example uses CloudSim Plus Listener features to intercept when
  * the first Cloudlet finishes its execution to then request
- * the creation of new VMs and Cloudlets. This example uses the Java 8 Lambda Functions features
+ * the creation of new VMs and Cloudlets. It uses the Java 8 Lambda Functions features
  * to pass a listener to the mentioned Cloudlet, by means of the
- * {@link Cloudlet#addOnFinishListener(EventListener)} method.
- * However, the same feature can be used for Java 7 passing an anonymous class
- * that implements {@code EventListener<CloudletVmEventInfo>}.</p>
+ * {@link Cloudlet#addOnFinishListener(EventListener)} method.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
