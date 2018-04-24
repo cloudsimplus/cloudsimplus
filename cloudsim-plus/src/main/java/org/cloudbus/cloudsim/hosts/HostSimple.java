@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
@@ -19,7 +18,6 @@ import java.util.function.Predicate;
 
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
-import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.cloudbus.cloudsim.lists.PeList;
@@ -232,7 +230,7 @@ public class HostSimple implements Host {
     public boolean createVm(final Vm vm) {
         final boolean result = createVmInternal(vm);
         if(result) {
-            vmCreatedList.add(vm);
+            addVmToCreatedList(vm);
             vm.setHost(this);
             vm.notifyOnHostAllocationListeners();
             if(vm.getStartTime() < 0) {
@@ -553,9 +551,14 @@ public class HostSimple implements Host {
         return (List<T>) Collections.unmodifiableList(vmCreatedList);
     }
 
-    protected void addVmToList(Vm vm){
+    protected void addVmToList(final Vm vm){
         Objects.requireNonNull(vm);
         vmList.add(vm);
+    }
+
+    protected void addVmToCreatedList(final Vm vm){
+        Objects.requireNonNull(vm);
+        vmCreatedList.add(vm);
     }
 
     protected void removeVmFromList(final Vm vm){
@@ -793,15 +796,23 @@ public class HostSimple implements Host {
 
     @Override
     public double[] getUtilizationHistory() {
-        final double[] utilizationHistory = new double[UtilizationHistory.DEF_MAX_HISTORY_ENTRIES];
+        final double[] utilizationHistory = new double[getMaxNumberOfVmHistoryEntries()];
         final double totalMipsCapacity = getTotalMipsCapacity();
-        for (final Vm vm : this.getVmCreatedList()) {
+        for (final Vm vm : this.vmCreatedList) {
             final List<Double> history = vm.getUtilizationHistory().getHistory();
             for (int i = 0; i < history.size(); i++) {
                 utilizationHistory[i] += history.get(i) * vm.getTotalMipsCapacity() / totalMipsCapacity;
             }
         }
-        return MathUtil.trimZeroTail(utilizationHistory);
+        return utilizationHistory;
+    }
+
+    private int getMaxNumberOfVmHistoryEntries() {
+        return vmCreatedList
+            .stream()
+            .map(vm -> vm.getUtilizationHistory().getHistory().size())
+            .mapToInt(size -> size)
+            .max().orElse(0);
     }
 
     @Override

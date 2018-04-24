@@ -203,16 +203,6 @@ public final class MathUtil {
     }
 
     /**
-     * Trims zeros at the end of an array.
-     *
-     * @param data the data array
-     * @return the trimmed array
-     */
-    public static double[] trimZeroTail(final double... data) {
-        return Arrays.copyOfRange(data, 0, countNonZeroBeginning(data));
-    }
-
-    /**
      * Gets the Local Regression (Loess) parameter estimates.
      *
      * @param y the y array

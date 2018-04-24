@@ -48,7 +48,7 @@ public interface UtilizationHistory {
     /**
      * Adds a CPU utilization percentage history value related to the current simulation time,
      * to the beginning of the History List.
-     * The value is added only if the utilization history {@link #isEnabled()}.
+     * <b>The value is added only if the utilization history {@link #isEnabled()}.</b>
      *
      * @param time the current simulation time
      */

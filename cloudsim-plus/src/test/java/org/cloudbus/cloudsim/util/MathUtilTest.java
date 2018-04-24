@@ -41,11 +41,6 @@ public class MathUtilTest {
 	}
 
 	@Test
-	public void testTrimZeroTail() {
-		assertArrayEquals(NON_ZERO_TAIL, MathUtil.trimZeroTail(DATA4), 0);
-	}
-
-	@Test
 	public void testSum() {
 		final List<Double> data1 = new ArrayList<Double>();
 		for(final Double number : DATA1) {

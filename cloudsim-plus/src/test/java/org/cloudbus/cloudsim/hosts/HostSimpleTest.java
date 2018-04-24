@@ -19,9 +19,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.*;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.easymock.EasyMock;
@@ -29,6 +27,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -45,13 +44,15 @@ public class HostSimpleTest {
     private static final long A_QUARTER_STORAGE = STORAGE / 4;
     private static final long RAM = 1024;
     private static final long BW = 10000;
+
+    private static final int HOST_PES = 2;
     private static final double MIPS = 1000;
+    private static final double TOTAL_HOST_MIPS = HOST_PES*MIPS;
 
     private HostSimple host;
 
     public static HostSimple createHostSimple(final int hostId, final int numberOfPes) {
-        return createHostSimple(
-                hostId, numberOfPes, MIPS, RAM, BW, STORAGE);
+        return createHostSimple(hostId, numberOfPes, MIPS, RAM, BW, STORAGE);
     }
 
     public static HostSimple createHostSimple(
@@ -85,12 +86,54 @@ public class HostSimpleTest {
         for (int i = 0; i < numberOfPes; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
+
         return peList;
     }
 
     @Before
-    public void setUp() throws Exception {
-        host = createHostSimple(ID, 2);
+    public void setUp() {
+        host = createHostSimple(ID, HOST_PES);
+    }
+
+    @Test
+    public void testGetUtilizationHistory(){
+        final int VMS = 4;
+        final List<Vm> vmList = createMockVmsWithUtilizationHistory(VMS);
+        vmList.forEach(vm -> host.addVmToCreatedList(vm));
+
+        final double expected[] = {0.75, 0.5, 0.25, 0.0};
+        final double[] result = host.getUtilizationHistory();
+        assertEquals("The number of history entries is not equal", expected.length, result.length);
+        for (int i = 0; i < result.length; i++) {
+            assertEquals(expected[i], result[i], 0);
+        }
+    }
+
+    private List<Vm> createMockVmsWithUtilizationHistory(final int vmsNumber) {
+        final List<Vm> list = new ArrayList<>(vmsNumber);
+
+        for (int i = 0; i < vmsNumber; i++) {
+            final Vm vm = EasyMock.createMock(Vm.class);
+
+            final List<Double> history = new ArrayList<>(i);
+            //Adds values in inverse order, since this is the way the they are stored in the  UtilizationHistory class
+            for (int j = i; j >= 0; j--) {
+                history.add(j == 0 ? 0 : 1.0);
+            }
+
+
+            final UtilizationHistory uh = EasyMock.createMock(UtilizationHistory.class);
+            EasyMock.expect(uh.getHistory()).andReturn(history).anyTimes();
+            EasyMock.expect(vm.getUtilizationHistory()).andReturn(uh).anyTimes();
+            EasyMock.expect(vm.getTotalMipsCapacity()).andReturn(TOTAL_HOST_MIPS/vmsNumber).anyTimes();
+
+            EasyMock.replay(vm);
+            EasyMock.replay(uh);
+
+            list.add(vm);
+        }
+
+        return list;
     }
 
     @Test
