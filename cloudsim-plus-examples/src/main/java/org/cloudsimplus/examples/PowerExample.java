@@ -102,7 +102,7 @@ public class PowerExample {
      */
     public static final double STATIC_POWER_PERCENT = 0.7;
     /**
-     * The max number of watts/second of power a Host uses.
+     * The max number of watt-second (Ws) of power a Host uses.
      */
     public static final int MAX_POWER = 100;
 
@@ -121,7 +121,7 @@ public class PowerExample {
         simulation = new CloudSim();
         hostList = new ArrayList<>(HOSTS);
         datacenter0 = createDatacenterSimple();
-        //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
+        //Creates a broker that is a software acting on behalf of a cloud customer to manage his/her VMs and Cloudlets
         broker0 = new DatacenterBrokerSimple(simulation);
 
         vmList = createVms();
@@ -158,24 +158,18 @@ public class PowerExample {
             for (int i = 0; i < utilizationPercentHistory.length; i++) {
                 final double utilizationPercent = utilizationPercentHistory[i];
                 /**
-                 * The power consumption is returned in Watts/Second,
-                 * but it's measured only the instantaneous consumption for a given time,
+                 * The power consumption is returned in Watt-second,
+                 * but it's measured the continuous consumption before a given time,
                  * according to the time interval defined by {@link #SCHEDULING_INTERVAL} set to the Datacenter.
-                 * For instance, for the time interval equal to 10,
-                 * It is measured the power consumption for instants, 10, 20 and so on.
-                 * That means it's not computed the power consumption for each time interval
-                 * of 10 seconds, but the power consumption at the 10th, 20th second and so on.
-                 * This way, to get the total power consumed for each 10 seconds interval,
-                 * the power consumption is multiplied by the time interval.
                 */
                 final double wattsPerInterval = host.getPowerModel().getPower(utilizationPercent)*SCHEDULING_INTERVAL;
                 totalPower += wattsPerInterval;
-                System.out.printf("\tTime %6.0f | CPU Utilization %6.2f%% | Power Consumption: %8.2f Watts in %d Seconds\n",
+                System.out.printf("\tTime %6.0f | CPU Utilization %6.2f%% | Power Consumption: %8.2f Watt-Second in %d Seconds\n",
                     time, utilizationPercent*100, wattsPerInterval, SCHEDULING_INTERVAL);
                 time -= SCHEDULING_INTERVAL;
             }
             System.out.printf(
-                "Total Host %d Power Consumption in %.0f seconds: %.2f Watts (mean of %.2f Watts/Second) \n",
+                "Total Host %d Power Consumption in %.0f seconds: %.2f Watt-Second (mean of %.2f Watt-Second) \n",
                 host.getId(), simulation.clock(), totalPower, totalPower/simulation.clock());
             System.out.println("-------------------------------------------------------------------------------------------\n");
         }
