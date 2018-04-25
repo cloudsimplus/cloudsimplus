@@ -104,7 +104,7 @@ public class PowerExample {
     /**
      * The max number of watts/second of power a Host uses.
      */
-    public static final int MAX_POWER = 1000;
+    public static final int MAX_POWER = 100;
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
