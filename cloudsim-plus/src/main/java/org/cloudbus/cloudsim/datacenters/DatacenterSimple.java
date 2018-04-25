@@ -720,11 +720,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Gets an <b>estimation</b> of total power consumed (in Watts/sec) by all Hosts of the Datacenter
+     * Gets an <b>estimation</b> of total power consumed (in Watts-sec) by all Hosts of the Datacenter
      * since the last time the processing of Cloudlets in this Host was updated.
      *
-     * @return the <b>estimated</b> total power consumed (in Watts/sec) by all Hosts in the elapsed time span
+     * @return the <b>estimated</b> total power consumed (in Watts-sec) by all Hosts in the elapsed time span
      * @see #getPower()
+     * @see #getPowerInKWattsHour()
      */
     private double getDatacenterPowerUsageForTimeSpan() {
         if (getSimulation().clock() - getLastProcessTime() == 0) { //time span
@@ -1147,11 +1148,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public double getPower() {
         return power;
-    }
-
-    @Override
-    public double getPowerInKWattsHour() {
-        return getPower() / (3600 * 1000);
     }
 
     /**

@@ -40,7 +40,7 @@ import org.cloudbus.cloudsim.resources.Pe;
  *
  * @since CloudSim Toolkit 2.0
  */
-public interface PowerModel {
+public interface PowerModel extends PowerAware {
     /**
      * A property that implements the Null Object Design Pattern for {@link Host}
      * objects.
@@ -59,31 +59,21 @@ public interface PowerModel {
     void setHost(Host host);
 
     /**
-     * Gets the max power that can be consumed by the host (in Watts/Second).
+     * Gets the max power that can be consumed by the host in Watt-Second (Ws).
      *
-     * @return the max consumption power (in Watts/Second)
+     * @return the max consumption power in Watt-Second (Ws)
      */
     double getMaxPower();
 
     /**
-     * Gets the current power consumption of the host (in Watts/Second).
-     * For this moment, it only computes the power consumed by {@link Pe}s.
-     *
-     * <p><b>The power consumption data is just available while the host is active.</b></p>
-     *
-     * @return the power consumption (in Watts/Second)
-     */
-    double getPower();
-
-    /**
-     * Gets power consumption (in Watts/Second) of the Power Model, according to the utilization
+     * Gets power consumption in Watt-Second (Ws) of the Power Model, according to the utilization
      * percentage of a critical resource, such as CPU.
      *
      * <p><b>The power consumption data is just available while the host is active.</b></p>
      *
      * @param utilization the utilization percentage (between [0 and 1]) of a
      * resource that is critical for power consumption.
-     * @return the power consumption (in Watts/Second)
+     * @return the power consumption in Watt-Second (Ws)
      * @throws IllegalArgumentException when the utilization percentage is not
      * between [0 and 1]
      */

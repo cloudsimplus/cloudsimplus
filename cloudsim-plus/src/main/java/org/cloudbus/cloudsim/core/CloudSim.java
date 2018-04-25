@@ -42,14 +42,18 @@ public class CloudSim implements Simulation {
      * (defined in the constructor). When a new element is added to the queue,
      * the first element is removed to open space for that new one.
      * This queue stores the last 2 simulation clock values.
-     * It is used to know when it is time to notify listeners that
+     * It is used to know when it's time to notify listeners that
      * the simulation clock has incremented.
      *
-     * <p>The element in the head (0) of the queue is the oldest simulation time
-     * stored. The element in the tail (1) is the newest one.</p>
+     * <p>The head (value at index 0) of the queue is the oldest simulation time stored,
+     * the tail (value at index 1) is the newest one.</p>
      *
      * <p>Such a structure is required because multiple events
      * can be received consecutively for the same simulation time.
+     * When the head of the queue is lower than the tail,
+     * it means the last event for that head time
+     * was already processed and a more recent event
+     * has just arrived.
      * </p>
      *
      * @see #notifyOnClockTickListenersIfClockChanged()
@@ -180,8 +184,6 @@ public class CloudSim implements Simulation {
         this.onEventProcessingListeners = new HashSet<>();
         this.onSimulationPausedListeners = new HashSet<>();
         this.onClockTickListeners = new HashSet<>();
-        this.circularClockTimeQueue = new double[]{-1, 0};
-        this.lastTimeClockTickListenersUpdated = 0;
 
         // NOTE: the order for the lines below is important
         this.calendar = Calendar.getInstance();
@@ -192,6 +194,9 @@ public class CloudSim implements Simulation {
         }
 
         this.minTimeBetweenEvents = minTimeBetweenEvents;
+
+        this.lastTimeClockTickListenersUpdated = minTimeBetweenEvents;
+        this.circularClockTimeQueue = new double[]{minTimeBetweenEvents, minTimeBetweenEvents};
     }
 
     @Override
@@ -456,9 +461,9 @@ public class CloudSim implements Simulation {
      * Notifies all Listeners about onClockTick event when the simulation clock changes.
      * If multiple events are received consecutively but for the same simulation time,
      * it will only notify the Listeners when the last event for that time is received.
-     * It ensures that, when Listeners receive the notification, all the events
-     * for that simulation time were already processed and then, such Listeners
-     * will have access to the most updated simulation state.
+     * It ensures when Listeners receive the notification, all the events
+     * for such a simulation time were already processed and then,
+     * the Listeners will have access to the most updated simulation state.
      */
     private void notifyOnClockTickListenersIfClockChanged() {
         if(clockTime > lastTimeClockTickListenersUpdated) {
@@ -466,7 +471,7 @@ public class CloudSim implements Simulation {
             if (circularClockTimeQueue[0] < circularClockTimeQueue[1])
             {
                 lastTimeClockTickListenersUpdated = circularClockTimeQueue[0];
-                onClockTickListeners.forEach(l -> l.update(EventInfo.of(l, clockTime)));
+                onClockTickListeners.forEach(l -> l.update(EventInfo.of(l, lastTimeClockTickListenersUpdated)));
             }
         }
     }

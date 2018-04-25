@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.power.models.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -30,7 +31,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Datacenter extends SimEntity {
+public interface Datacenter extends SimEntity, PowerAware {
     /**
      * A property that implements the Null Object Design Pattern for
      * {@link Datacenter} objects.
@@ -185,23 +186,16 @@ public interface Datacenter extends SimEntity {
     void setBandwidthPercentForMigration(double bandwidthPercentForMigration);
 
     /**
-     * Gets an <b>estimation</b> of Datacenter power consumption (in Watts/Second).
-     * <p>To get actual power consumption, it's required to enable
+     * Gets an <b>estimation</b> of Datacenter power consumption in Watt-Second (Ws).
+     * <p><b>To get actual power consumption, it's required to enable
      * {@link Host#getStateHistory() Host's StateHistory}
      * by calling {@link Host#enableStateHistory()}
      * and use each Host {@link PowerModel} to compute power usage
-     * based on the CPU utilization got form the StateHistory.
+     * based on the CPU utilization got form the StateHistory.</b>
      * </p>
      *
-     * @return th <b>estimated</b> power consumption (in Watts/Second)
+     * @return th <b>estimated</b> power consumption in Watt-Second (Ws)
      */
+    @Override
     double getPower();
-
-    /**
-     * Gets an <b>estimation</b> the Datacenter power consumption (in Kilo Watts/Hour).
-     *
-     * @return the <b>estimated</b> power consumption (in Kilo Watts/Hour)
-     * @see #getPower()
-     */
-    double getPowerInKWattsHour();
 }

@@ -31,7 +31,7 @@ public class PowerModelSqrt extends PowerModelSimple {
     /**
      * Instantiates a new power model sqrt.
      *
-     * @param maxPower           the max power that can be consumed (in Watts/second).
+     * @param maxPower           the max power that can be consumed in Watt-Second (Ws).
      * @param staticPowerPercent the static power usage percentage between 0 and 1.
      */
     public PowerModelSqrt(final double maxPower, final double staticPowerPercent) {
