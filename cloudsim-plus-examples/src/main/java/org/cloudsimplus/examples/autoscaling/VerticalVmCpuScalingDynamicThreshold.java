@@ -330,8 +330,7 @@ public class VerticalVmCpuScalingDynamicThreshold {
      */
     private double upperCpuUtilizationThreshold(Vm vm) {
         final List<Double> history = vm.getUtilizationHistory().getHistory();
-        final double threshold = history.size() > 10 ? MathUtil.median(history) * 1.2 : 0.7;
-        return threshold;
+        return history.size() > 10 ? MathUtil.median(history) * 1.2 : 0.7;
     }
 
     /**
