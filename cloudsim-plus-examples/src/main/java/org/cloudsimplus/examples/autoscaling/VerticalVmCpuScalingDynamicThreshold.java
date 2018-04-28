@@ -42,6 +42,7 @@ import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -70,7 +71,7 @@ import static java.util.Comparator.comparingDouble;
  * is set to each {@link #createListOfScalableVms(int) initially created VM}.
  * Every VM will check at {@link #SCHEDULING_INTERVAL specific time intervals}
  * if its PEs {@link #upperCpuUtilizationThreshold(Vm) are over or underloaded},
- * according to a <b>static computed utilization threshold</b>.
+ * according to a <b>dynamic computed utilization threshold</b>.
  * Then it requests such PEs to be up or down scaled.
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
@@ -85,7 +86,7 @@ import static java.util.Comparator.comparingDouble;
  * @since CloudSim Plus 1.2.0
  * @see VerticalVmRamScalingExample
  */
-public class VerticalVmCpuScalingExample {
+public class VerticalVmCpuScalingDynamicThreshold {
     /**
      * The interval in which the Datacenter will schedule events.
      * As lower is this interval, sooner the processing of VMs and Cloudlets
@@ -122,13 +123,13 @@ public class VerticalVmCpuScalingExample {
     private int createsVms;
 
     public static void main(String[] args) {
-        new VerticalVmCpuScalingExample();
+        new VerticalVmCpuScalingDynamicThreshold();
     }
 
     /**
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
-    private VerticalVmCpuScalingExample() {
+    private VerticalVmCpuScalingDynamicThreshold() {
         /*You can remove the seed to get a dynamic one, based on current computer time.
         * With a dynamic seed you will get different results at each simulation run.*/
         final long seed = 1;
@@ -159,9 +160,13 @@ public class VerticalVmCpuScalingExample {
      */
     private void onClockTickListener(EventInfo evt) {
         vmList.forEach(vm -> {
-            Log.printFormatted("\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%d)\n",
+            Log.printFormatted(
+                "\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%02d) Upper Threshold: %.2f History Entries: %d\n",
                 evt.getTime(), vm.getId(), vm.getCpuPercentUsage()*100.0,
-                vm.getNumberOfPes(), vm.getCloudletScheduler().getCloudletExecList().size());
+                vm.getNumberOfPes(),
+                vm.getCloudletScheduler().getCloudletExecList().size(),
+                vm.getPeVerticalScaling().getUpperThresholdFunction().apply(vm),
+                vm.getUtilizationHistory().getHistory().size());
         });
     }
 
@@ -222,16 +227,21 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Creates a Vm object.
+     * Creates a Vm object, enabling it to store
+     * CPU utilization history which is used
+     * to compute a dynamic threshold for CPU vertical scaling.
      *
      * @return the created Vm
      */
     private Vm createVm() {
         final int id = createsVms++;
 
-        return new VmSimple(id, 1000, VM_PES)
+        final Vm vm = new VmSimple(id, 1000, VM_PES)
             .setRam(VM_RAM).setBw(1000).setSize(10000)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
+
+        vm.getUtilizationHistory().enable();
+        return vm;
     }
 
     /**
@@ -304,19 +314,24 @@ public class VerticalVmCpuScalingExample {
     }
 
     /**
-     * Defines the maximum CPU utilization percentage that indicates a Vm is overloaded.
-     * This function is using a statically defined threshold, but it would be defined
-     * a dynamic threshold based on any condition you want.
+     * Defines a dynamic CPU utilization threshold that indicates a Vm is overloaded.
+     * Such a threshold is the maximum CPU a VM can use before requesting vertical CPU scaling.
      * A reference to this method is assigned to each Vertical VM Scaling created.
+     *
+     * <p>The dynamic upper threshold is defined as 20% above the mean,
+     * if there are at least 10 CPU utilization history entries.
+     * Otherwise, it defines a static threshold as 70% of CPU utilization.</p>
      *
      * @param vm the VM to check if its CPU is overloaded.
      *        The parameter is not being used internally, that means the same
      *        threshold is used for any Vm.
-     * @return the upper CPU utilization threshold
+     * @return the upper dynamic CPU utilization threshold
      * @see #createVerticalPeScaling()
      */
     private double upperCpuUtilizationThreshold(Vm vm) {
-        return 0.8;
+        final List<Double> history = vm.getUtilizationHistory().getHistory();
+        final double threshold = history.size() > 10 ? MathUtil.median(history) * 1.2 : 0.7;
+        return threshold;
     }
 
     /**

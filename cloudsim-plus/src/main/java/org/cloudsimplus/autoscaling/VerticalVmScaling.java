@@ -285,7 +285,7 @@ public interface VerticalVmScaling extends VmScaling {
     VerticalVmScaling setLowerThresholdFunction(Function<Vm, Double> lowerThresholdFunction);
 
     /**
-     * Sets the {@link ResourceScaling}.
+     * Sets the {@link ResourceScaling} that defines how the resource has to be resized.
      * @param resourceScaling the {@link ResourceScaling} to set
      * @return
      */

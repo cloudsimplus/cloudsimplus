@@ -73,8 +73,9 @@ import static java.util.Comparator.comparingDouble;
  * <p>A {@link VerticalVmScaling}
  * is set to each {@link #createListOfScalableVms(int) initially created VM},
  * that will check at {@link #SCHEDULING_INTERVAL specific time intervals}
- * if a VM RAM {@link #upperRamUtilizationThreshold(Vm) is overloaded or not} to then
- * request the RAM to be scaled up.</p>
+ * if a VM RAM {@link #upperRamUtilizationThreshold(Vm) is overloaded or not},
+ * according to a <b>static computed utilization threshold</b>.
+ * Then it requests the RAM to be scaled up.</p>
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
  * to enable monitoring the simulation and dynamically creating objects such as Cloudlets and VMs.
@@ -249,9 +250,9 @@ public class VerticalVmRamScalingExample {
      * @see #createListOfScalableVms(int)
      */
     private void createVerticalRamScalingForVm(Vm vm) {
-        VerticalVmScaling verticalRamScaling = new VerticalVmScalingSimple(Ram.class, 0.1);
-        /* By uncommenting the line below, you will see that instead of gradually
-         * increasing or decreasing the RAM, when the scaling object detect
+        VerticalVmScalingSimple verticalRamScaling = new VerticalVmScalingSimple(Ram.class, 0.1);
+        /* By uncommenting the line below, you will see that, instead of gradually
+         * increasing or decreasing the RAM, when the scaling object detects
          * the RAM usage is above or below the defined thresholds,
          * it will automatically calculate the amount of RAM to add/remove to
          * move the VM from the over or underload condition.
@@ -263,7 +264,7 @@ public class VerticalVmRamScalingExample {
     }
 
     /**
-     * Defines the minimum RAM utilization percentage that defines a Vm as underloaded.
+     * Defines the minimum RAM utilization percentage that indicates a Vm is underloaded.
      * This function is using a statically defined threshold, but it would be defined
      * a dynamic threshold based on any condition you want.
      * A reference to this method is assigned to each Vertical VM Scaling created.
@@ -278,7 +279,7 @@ public class VerticalVmRamScalingExample {
     }
 
     /**
-     * Defines the maximum RAM utilization percentage that defines a Vm as overloaded.
+     * Defines the maximum RAM utilization percentage that indicates a Vm is overloaded.
      * This function is using a statically defined threshold, but it would be defined
      * a dynamic threshold based on any condition you want.
      * A reference to this method is assigned to each Vertical VM Scaling created.

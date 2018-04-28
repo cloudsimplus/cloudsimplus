@@ -57,10 +57,12 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
      *
      * @param resourceClassToScale the class of Vm resource that this scaling object will request up or down scaling
      *  (such as {@link Ram}.class, {@link Bandwidth}.class or {@link Processor}.class).
-     * @param scalingFactor the factor that will be used to scale a Vm resource up or down,
-     * whether if such a resource is over or underloaded, according to the
-     * defined predicates (a percentage value in scale from 0 to 1).
-     * In the case of up scaling, the value 1 will scale the resource in 100%, doubling its capacity.
+     * @param scalingFactor the factor (a percentage value in scale from 0 to 1)
+     *                      that will be used to scale a Vm resource up or down,
+     *                      whether such a resource is over or underloaded, according to the
+     *                      defined predicates.
+     *                      In the case of up scaling, the value 1 will scale the resource in 100%,
+     *                      doubling its capacity.
      * @see VerticalVmScaling#setResourceScaling(ResourceScaling)
      */
     public VerticalVmScalingSimple(final Class<? extends ResourceManageable> resourceClassToScale, final double scalingFactor){
@@ -96,6 +98,13 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>This class's constructors define a {@link ResourceScalingGradual}
+     * as the default {@link ResourceScaling}.</p>
+     * @param resourceScaling {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public final VerticalVmScaling setResourceScaling(final ResourceScaling resourceScaling) {
         Objects.requireNonNull(resourceScaling);
@@ -118,7 +127,10 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
      * @throws IllegalArgumentException if the two functions are equal
      * @throws NullPointerException if any of the functions is null
      */
-    private void validateFunctions(final Function<Vm, Double> lowerThresholdFunction, final Function<Vm, Double> upperThresholdFunction) {
+    private void validateFunctions(
+        final Function<Vm, Double> lowerThresholdFunction,
+        final Function<Vm, Double> upperThresholdFunction)
+    {
         Objects.requireNonNull(lowerThresholdFunction);
         Objects.requireNonNull(upperThresholdFunction);
         if(upperThresholdFunction.equals(lowerThresholdFunction)){

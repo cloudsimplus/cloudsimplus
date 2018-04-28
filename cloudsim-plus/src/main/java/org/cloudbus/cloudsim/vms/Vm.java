@@ -627,7 +627,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     double getIdleInterval();
 
     /**
-     * Gets the object that contains CPU utilization percentage history (between [0 and 1], where 1 is 100%).
+     * Gets the object containing CPU utilization percentage history (between [0 and 1], where 1 is 100%).
      * The history can be obtained by calling {@link VmUtilizationHistory#getHistory()}.
      * Initially, the data collection is disabled.
      * To enable it call {@link VmUtilizationHistory#enable()}.
@@ -635,6 +635,9 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * <p>Utilization history for Hosts, obtained by
      * calling {@link Host#getUtilizationHistory()} is just available
      * if the utilization history for its VM is enabled.</p>
+     *
+     * <p>The time interval in which utilization is collected is defined
+     * by the {@link Datacenter#getSchedulingInterval()}.</p>
      *
      * @return
      * @see UtilizationHistory#enable()

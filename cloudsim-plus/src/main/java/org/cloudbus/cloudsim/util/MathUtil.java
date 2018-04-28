@@ -144,6 +144,16 @@ public final class MathUtil {
      * @param data the array of numbers
      * @return the mad
      */
+    public static double mad(final List<Double> data) {
+        return mad(data.stream().mapToDouble(v->v).toArray());
+    }
+
+    /**
+     * Gets the Median absolute deviation (MAD) from a array of numbers.
+     *
+     * @param data the array of numbers
+     * @return the mad
+     */
     public static double mad(final double... data) {
         if (data.length == 0) {
             return 0;

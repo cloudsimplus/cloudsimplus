@@ -78,7 +78,7 @@ public class NetworkVmsExample1 {
         datacenter = createDatacenter();
         broker = new DatacenterBrokerSimple(simulation);
         vmList = createAndSubmitVMs(broker);
-        cloudletList = createNetworkCloudlets(broker);
+        cloudletList = createNetworkCloudlets();
         broker.submitCloudletList(cloudletList);
 
         simulation.start();
@@ -191,15 +191,14 @@ public class NetworkVmsExample1 {
      * Creates a list of {@link NetworkCloudlet} that together represents the
      * distributed processes of a given fictitious application.
      *
-     * @param broker broker to associate the NetworkCloudlets
      * @return the list of create NetworkCloudlets
      */
-    private List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker) {
+    private List<NetworkCloudlet> createNetworkCloudlets() {
         final int numberOfCloudlets = 2;
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(numberOfCloudlets);
 
         for (int i = 0; i < numberOfCloudlets; i++) {
-            networkCloudletList.add(createNetworkCloudlet(vmList.get(i), broker));
+            networkCloudletList.add(createNetworkCloudlet(vmList.get(i)));
         }
 
         //NetworkCloudlet 0 Tasks
@@ -217,18 +216,15 @@ public class NetworkVmsExample1 {
      * Creates a {@link NetworkCloudlet}.
      *
      * @param vm the VM that will run the created {@link NetworkCloudlet)
-     * @param broker the broker that will own the create NetworkCloudlet
      * @return
      */
-    private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, DatacenterBroker broker) {
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-
+    private NetworkCloudlet createNetworkCloudlet(NetworkVm vm) {
         NetworkCloudlet netCloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 4000, HOST_PES);
         netCloudlet
                 .setMemory(TASK_RAM)
                 .setFileSize(CLOUDLET_FILE_SIZE)
                 .setOutputSize(CLOUDLET_OUTPUT_SIZE)
-                .setUtilizationModel(utilizationModel);
+                .setUtilizationModel(new UtilizationModelFull());
         netCloudlet.setVm(vm);
 
         return netCloudlet;
