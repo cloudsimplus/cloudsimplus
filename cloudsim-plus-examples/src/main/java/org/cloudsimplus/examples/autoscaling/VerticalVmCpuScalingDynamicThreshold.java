@@ -83,7 +83,7 @@ import static java.util.Comparator.comparingDouble;
  * </p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.2.0
+ * @since CloudSim Plus 2.2.1
  * @see VerticalVmRamScalingExample
  */
 public class VerticalVmCpuScalingDynamicThreshold {
