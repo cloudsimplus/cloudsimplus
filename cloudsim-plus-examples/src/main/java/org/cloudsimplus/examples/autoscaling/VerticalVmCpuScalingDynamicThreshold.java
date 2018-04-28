@@ -318,9 +318,12 @@ public class VerticalVmCpuScalingDynamicThreshold {
      * Such a threshold is the maximum CPU a VM can use before requesting vertical CPU scaling.
      * A reference to this method is assigned to each Vertical VM Scaling created.
      *
-     * <p>The dynamic upper threshold is defined as 20% above the mean,
+     * <p>The dynamic upper threshold is defined as 20% above the mean (mean * 1.2),
      * if there are at least 10 CPU utilization history entries.
-     * Otherwise, it defines a static threshold as 70% of CPU utilization.</p>
+     * That means if the CPU utilization of a VM is 20% above its mean
+     * CPU utilization, it indicates the VM is overloaded.
+     * If there aren't enough history entries,
+     * it defines a static threshold as 70% of CPU utilization.</p>
      *
      * @param vm the VM to check if its CPU is overloaded.
      *        The parameter is not being used internally, that means the same
