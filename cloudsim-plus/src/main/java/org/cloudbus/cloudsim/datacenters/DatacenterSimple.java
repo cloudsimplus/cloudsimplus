@@ -92,7 +92,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         super(simulation);
         setHostList(hostList);
 
-        setVmAllocationPolicy(vmAllocationPolicy);
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
         setStorageList(new ArrayList<>());
@@ -100,6 +99,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         this.characteristics = new DatacenterCharacteristicsSimple(this);
         this.bandwidthPercentForMigration = DEF_BANDWIDTH_PERCENT_FOR_MIGRATION;
         migrationsEnabled = true;
+
+        setVmAllocationPolicy(vmAllocationPolicy);
     }
 
     private void setHostList(final List<? extends Host> hostList) {

@@ -36,7 +36,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
      * @see #getRequestedMipsMap()
      */
-    private Map<Vm, List<Double>> requestedMipsMap;
+    private final Map<Vm, List<Double>> requestedMipsMap;
 
     /**
      * @see #getHost()

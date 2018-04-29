@@ -382,14 +382,12 @@ public class WorkloadFileReader implements WorkloadReader {
 
         // get the submit time
         final Long l = Long.valueOf(array[submitTime].trim());
+        //@todo the submission time would be used as the Cloudlet submission delay
         final long submitTime = l.intValue();
 
         // if the required run time field is ignored, then use the actual run time
         obj = Integer.valueOf(array[runTime].trim());
         int runTime = obj;
-
-        final int userID = Integer.valueOf(array[userId].trim());
-        final int groupID = Integer.valueOf(array[groupId].trim());
 
         // according to the SWF manual, runtime of 0 is possible due
         // to rounding down. E.g. runtime is 0.4 seconds -> runtime = 0

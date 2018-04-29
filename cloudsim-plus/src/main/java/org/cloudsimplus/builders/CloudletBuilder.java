@@ -65,6 +65,7 @@ public class CloudletBuilder extends Builder {
 	private List<String> requiredFiles;
 
 	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
+	    super();
         Objects.requireNonNull(brokerBuilder);
         Objects.requireNonNull(broker);
 

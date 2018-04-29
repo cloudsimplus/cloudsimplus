@@ -87,9 +87,9 @@ public class FileAttribute {
 
         // set the file creation time. This is absolute time
         final Calendar cal =
-                file.getDatacenter().getSimulation() != null  ?
-                file.getDatacenter().getSimulation().getCalendar() :
-                Calendar.getInstance();
+            file.getDatacenter().getSimulation() == null ?
+                Calendar.getInstance() :
+                file.getDatacenter().getSimulation().getCalendar();
 
         final Date date = cal.getTime();
         creationTime = date.getTime();

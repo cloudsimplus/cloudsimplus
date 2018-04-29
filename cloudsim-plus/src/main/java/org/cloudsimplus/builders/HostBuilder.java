@@ -57,6 +57,7 @@ public class HostBuilder extends Builder {
     private final List<Host> hosts;
 
     public HostBuilder() {
+        super();
         this.hosts = new ArrayList<>();
     }
 

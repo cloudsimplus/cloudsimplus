@@ -123,7 +123,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
             oos.writeObject(getHistory());
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new UncheckedIOException(e);
         }
     }
 
@@ -137,7 +137,9 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     public void loadHistory(String filename) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             setHistory((Map<Double, Double>) ois.readObject());
-        } catch (ClassNotFoundException|IOException e) {
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

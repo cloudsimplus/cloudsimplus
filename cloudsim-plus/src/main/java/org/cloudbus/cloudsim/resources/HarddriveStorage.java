@@ -140,7 +140,7 @@ public class HarddriveStorage implements FileStorage {
         Objects.requireNonNull(file);
 
         if(!reservedStorage.isResourceAmountBeingUsed((long)file.getSize())){
-            throw new RuntimeException("The file size wasn't previously reserved in order to add a reserved file.");
+            throw new IllegalStateException("The file size wasn't previously reserved in order to add a reserved file.");
         }
 
         final long fileSize = file.getSize();

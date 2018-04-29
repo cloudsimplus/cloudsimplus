@@ -61,7 +61,6 @@ public class CloudletTest {
 
     @Test
     public void testNullObjectStatus(){
-        assertEquals("", Cloudlet.NULL.getHistory());
         assertFalse(Cloudlet.NULL.setStatus(Cloudlet.Status.SUCCESS));
         assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getStatus());
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());

@@ -26,7 +26,7 @@ public class VmAllocationPolicySimpleTest {
 
     @Before
     public void setUp(){
-        policy = createVmAllocationPolicy(new int[]{4, 2, 6, 5});
+        policy = createVmAllocationPolicy(4, 2, 6, 5);
     }
 
     /**
@@ -37,7 +37,7 @@ public class VmAllocationPolicySimpleTest {
      *                      This array will define the number of Hosts and its PEs.
      * @return
      */
-    private VmAllocationPolicySimple createVmAllocationPolicy(int[] freePesByHost) {
+    private VmAllocationPolicySimple createVmAllocationPolicy(int... freePesByHost) {
         final Map<Host, Long> hostFreePesMap = new HashMap<>(freePesByHost.length);
         final List<Host> hosts = new ArrayList<>(freePesByHost.length);
         for(int i = 1; i <= freePesByHost.length; i++) {

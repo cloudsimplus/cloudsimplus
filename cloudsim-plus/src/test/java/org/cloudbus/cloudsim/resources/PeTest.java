@@ -57,7 +57,7 @@ public class PeTest {
 
     @Test
     public void testSetMips() {
-        PeSimple pe = createPe();
+        final PeSimple pe = createPe();
         assertEquals(MIPS, pe.getCapacity(), 0);
         pe.setCapacity(MIPS / 2);
         assertEquals(MIPS / 2, pe.getCapacity(), 0);

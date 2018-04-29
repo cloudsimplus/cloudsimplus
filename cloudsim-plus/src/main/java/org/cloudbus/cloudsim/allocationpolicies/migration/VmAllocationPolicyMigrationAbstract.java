@@ -69,7 +69,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * A map of CPU utilization history (in percentage) for each host, where
      * each key is a hos and each value is the CPU utilization percentage history.
      *
-     * @todo there is inconsistence between these data.
+     * @todo there is inconsistency between these data.
      * Into the Host, it is stored the actual utilization for the given time.
      * Here it is stored the utilization as it was computed
      * by the VmAllocationPolicy implementation.
@@ -336,7 +336,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param hostStream a {@link Stream} containing the Hosts after passing the basic filtering
      * @return the Hosts {@link Stream} after applying the additional filters
      */
-    protected Stream<Host> additionalHostFilters(final Vm vm, final Stream<Host> hostStream){
+    private Stream<Host> additionalHostFilters(final Vm vm, final Stream<Host> hostStream){
         return hostStream.filter(h -> getPowerAfterAllocation(h, vm) > 0);
     }
 
@@ -346,7 +346,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param migrationMap the migration map
      * @return the list
      */
-    protected List<Host> extractHostListFromMigrationMap(final Map<Vm, Host> migrationMap) {
+    private List<Host> extractHostListFromMigrationMap(final Map<Vm, Host> migrationMap) {
         return migrationMap.entrySet().stream()
                 .map(Map.Entry::getValue)
                 .collect(toList());
@@ -360,7 +360,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return the new VM placement map where each key is a VM
      * and each value is the Host to place it.
      */
-    protected Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
+    private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
         if(overloadedHosts.isEmpty()) {
             return  new HashMap<>();
         }
@@ -385,9 +385,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * destination hosts
      * @return the new vm placement for the given VMs
      */
-    protected Map<Vm, Host> getNewVmPlacementFromUnderloadedHost(
-            final List<? extends Vm> vmsToMigrate,
-            final Set<? extends Host> excludedHosts)
+    private Map<Vm, Host> getNewVmPlacementFromUnderloadedHost(
+        final List<? extends Vm> vmsToMigrate,
+        final Set<? extends Host> excludedHosts)
     {
         final Map<Vm, Host> migrationMap = new HashMap<>();
         sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
@@ -435,7 +435,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param overloadedHosts the List of overloaded Hosts
      * @return the VMs to migrate from hosts
      */
-    protected List<Vm> getVmsToMigrateFromOverloadedHosts(final Set<Host> overloadedHosts) {
+    private List<Vm> getVmsToMigrateFromOverloadedHosts(final Set<Host> overloadedHosts) {
         final List<Vm> vmsToMigrate = new LinkedList<>();
         for (final Host host : overloadedHosts) {
             vmsToMigrate.addAll(getVmsToMigrateFromOverloadedHost(host));
@@ -583,7 +583,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *
      * @see #savedAllocation
      */
-    protected void saveAllocation() {
+    private void saveAllocation() {
         savedAllocation.clear();
         for (final Host host : getHostList()) {
             for (final Vm vm : host.getVmList()) {
@@ -599,7 +599,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *
      * @see #savedAllocation
      */
-    protected void restoreAllocation() {
+    private void restoreAllocation() {
         for (final Host host : getHostList()) {
             host.destroyAllVms();
             host.reallocateMigratingInVms();
@@ -627,8 +627,8 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     protected double getPowerAfterAllocation(final Host host, final Vm vm) {
         try {
             return host.getPowerModel().getPower(getMaxUtilizationAfterAllocation(host, vm));
-        } catch (Exception e) {
-            Log.printFormattedLine("[ERROR] Power consumption for Host %d could not be determined: ", host.getId(), e.getMessage());
+        } catch (IllegalArgumentException e) {
+            Log.printFormattedLine("[ERROR] Power consumption for Host %d could not be determined: %s", host.getId(), e.getMessage());
         }
 
         return 0;
@@ -689,15 +689,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             utilizationHistory.get(host).add(host.getUtilizationOfCpu());
             metricHistory.get(host).add(metric);
         }
-    }
-
-    /**
-     * Gets the saved allocation.
-     *
-     * @return the saved allocation
-     */
-    protected Map<Vm, Host> getSavedAllocation() {
-        return savedAllocation;
     }
 
     /**
