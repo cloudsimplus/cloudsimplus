@@ -49,7 +49,7 @@ public class PeTest {
 
     @Test
     public void testSetId() {
-        PeSimple pe = createPe();
+        final PeSimple pe = createPe();
         assertEquals(0, pe.getId());
         pe.setId(1);
         assertEquals(1, pe.getId());

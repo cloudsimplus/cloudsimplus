@@ -56,9 +56,6 @@ final class CloudletNull implements Cloudlet {
     @Override public long getFinishedLengthSoFar(Datacenter datacenter) {
         return 0L;
     }
-    @Override public String getHistory() {
-        return "";
-    }
     @Override public long getLength() {
         return 0L;
     }

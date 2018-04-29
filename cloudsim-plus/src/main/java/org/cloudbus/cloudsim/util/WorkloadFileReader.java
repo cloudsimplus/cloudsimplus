@@ -340,25 +340,17 @@ public class WorkloadFileReader implements WorkloadReader {
      * Creates a Cloudlet with the given information.
      *
      * @param id         a Cloudlet ID
-     * @param submitTime Cloudlet's submit time
      * @param runTime    The number of seconds the Cloudlet has to run.
      *                   {@link Cloudlet#getLength()} is computed based on
      *                   the {@link #getMips() mips} and this value.
      * @param numProc    number of Cloudlet's PEs
-     * @param userID     user id
-     * @param groupID    user's group id
      * @return the created Cloudlet
-     * @pre id >= 0
-     * @pre submitTime >= 0
-     * @pre runTime >= 0
-     * @pre numProc > 0
-     * @post $none
      * @see #mips
      */
     private Cloudlet createCloudlet(
         final int id,
-        final long submitTime, final int runTime,
-        final int numProc, final int userID, final int groupID)
+        final int runTime,
+        final int numProc)
     {
         final int len = runTime * mips;
         final UtilizationModel utilizationModel = new UtilizationModelFull();
@@ -373,13 +365,10 @@ public class WorkloadFileReader implements WorkloadReader {
      * a line from the trace reader, and creates a cloudlet using this
      * information.
      *
-     * @param array      the array of fields generated from a line of the trace reader.
-     * @param lineNumber the line number
+     * @param array the array of fields generated from a line of the trace reader.
      * @return the created Cloudlet
-     * @pre array != null
-     * @pre lineNumber > 0
      */
-    private Cloudlet createCloudletFromTraceLine(final String[] array, final int lineNumber) {
+    private Cloudlet createCloudletFromTraceLine(final String[] array) {
         Integer obj;
 
         // get the job number
@@ -425,7 +414,7 @@ public class WorkloadFileReader implements WorkloadReader {
             numProc = 1;
         }
 
-        return createCloudlet(id, submitTime, runTime, numProc, userID, groupID);
+        return createCloudlet(id, runTime, numProc);
     }
 
     /**
@@ -435,17 +424,13 @@ public class WorkloadFileReader implements WorkloadReader {
      * and the line is not commented.
      *
      * @param line    a line from the trace reader
-     * @param lineNum the line number
      * @return the created {@link Cloudlet} or {@link Cloudlet#NULL}
      * if, after reading the trace line, the conditions
      * to create the Cloudlet were not met or the line read
      * was commented.
-     * @pre line != null
-     * @pre lineNum > 0
-     * @post $none
      * @see #setPredicate(Predicate)
      */
-    private Cloudlet parseTraceLineAndCreateCloudlet(final String line, final int lineNum) {
+    private Cloudlet parseTraceLineAndCreateCloudlet(final String line) {
         // skip a comment line
         if (line.startsWith(comment)) {
             return Cloudlet.NULL;
@@ -467,7 +452,7 @@ public class WorkloadFileReader implements WorkloadReader {
             return Cloudlet.NULL;
         }
 
-        final Cloudlet c = createCloudletFromTraceLine(fieldArray, lineNum);
+        final Cloudlet c = createCloudletFromTraceLine(fieldArray);
         return predicate.test(c) ? c : Cloudlet.NULL;
     }
 
@@ -485,7 +470,7 @@ public class WorkloadFileReader implements WorkloadReader {
         int line = 1;
         String readLine;
         while ((readLine = readNextLine(reader, line)) != null) {
-            final Cloudlet c = parseTraceLineAndCreateCloudlet(readLine, line);
+            final Cloudlet c = parseTraceLineAndCreateCloudlet(readLine);
             if (c != Cloudlet.NULL) {
                 cloudlets.add(c);
                 line++;

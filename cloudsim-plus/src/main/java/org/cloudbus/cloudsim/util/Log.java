@@ -123,7 +123,7 @@ public final class Log {
      */
     public static void printConcatLine(Object... messages) {
         if (isEnabled()) {
-            StringBuilder buffer = new StringBuilder(messages.length);
+            final StringBuilder buffer = new StringBuilder(messages.length);
             for (final Object message : messages) {
                 buffer.append(String.valueOf(message));
             }

@@ -16,7 +16,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
-import java.text.DecimalFormat;
 import java.util.*;
 
 /**
@@ -96,10 +95,6 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @see #getFinishTime()
      */
     private double finishTime;
-    /**
-     * The cloudlet transaction history.
-     */
-    private StringBuffer history;
     /**
      * @see #getCostPerBw()
      */
@@ -297,15 +292,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public long getNumberOfPes() {
         return numberOfPes;
-    }
-
-    @Override
-    public String getHistory() {
-        if (history == null) {
-            return String.format(NO_HISTORY_IS_RECORDED_FOR_CLOUDLET, id);
-        }
-
-        return history.toString();
     }
 
     @Override

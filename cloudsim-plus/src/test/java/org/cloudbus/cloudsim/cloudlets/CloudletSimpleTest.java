@@ -171,7 +171,6 @@ public class CloudletSimpleTest {
         final double submissionTime = 0, execStartTime = 10;
         final double simulationClock = 100;
         final double actualCpuTime = simulationClock - execStartTime;
-        final int datacenterId = 0;
 
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(submissionTime);
@@ -216,18 +215,6 @@ public class CloudletSimpleTest {
         final int expected = 8;
         cloudlet.setPriority(expected);
         assertEquals(expected, cloudlet.getPriority(), 0);
-    }
-
-    @Test
-    public void testGetCloudletHistory() {
-        final int id = 1;
-        CloudletSimple cloudlet = createCloudlet(id);
-        final String expected = String.format(Cloudlet.NO_HISTORY_IS_RECORDED_FOR_CLOUDLET, id);
-        assertEquals(expected, cloudlet.getHistory());
-        assertEquals(expected, cloudlet.getHistory());
-
-        cloudlet = createCloudlet(id);
-        assertNotSame(expected, cloudlet.getHistory());
     }
 
     @Test

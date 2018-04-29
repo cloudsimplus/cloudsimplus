@@ -1,7 +1,5 @@
 package org.cloudbus.cloudsim.datacenters;
 
-import org.cloudbus.cloudsim.resources.Pe;
-
 /**
  * A class that implements the Null Object Design Pattern for {@link Datacenter}
  * class.

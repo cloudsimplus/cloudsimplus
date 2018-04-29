@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.core.Identificable;
-import org.cloudbus.cloudsim.resources.Pe;
 
 /**
  * An interface to be implemented by each class that represents

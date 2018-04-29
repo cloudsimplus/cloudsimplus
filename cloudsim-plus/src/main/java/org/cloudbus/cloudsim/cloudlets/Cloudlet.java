@@ -32,8 +32,6 @@ import org.cloudsimplus.listeners.EventListener;
  * @since CloudSim Plus 1.0
  */
 public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, CustomerEntity {
-  String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET = "No history is recorded for Cloudlet #%d";
-
   /**
    * Status of Cloudlets
    */
@@ -185,17 +183,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @post $result >= 1
      */
     long getFileSize();
-
-    /**
-     * Gets the transaction history of this Cloudlet. The layout of this history
-     * is in a readable table column with <tt>time</tt> and <tt>description</tt>
-     * as headers.
-     *
-     * @return a String containing the history of this Cloudlet object.
-     * @pre $none
-     * @post $result != null
-     */
-    String getHistory();
 
     /**
      * Gets the output file size of this Cloudlet after execution (in bytes).
