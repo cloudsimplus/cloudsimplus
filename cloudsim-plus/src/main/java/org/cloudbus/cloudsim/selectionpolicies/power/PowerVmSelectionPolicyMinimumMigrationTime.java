@@ -31,8 +31,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  */
 public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelectionPolicy {
 	@Override
-	public Vm getVmToMigrate(Host host) {
-		List<Vm> migratableVms = getMigratableVms(host);
+	public Vm getVmToMigrate(final Host host) {
+		final List<Vm> migratableVms = getMigratableVms(host);
 		if (migratableVms.isEmpty()) {
 			return Vm.NULL;
 		}

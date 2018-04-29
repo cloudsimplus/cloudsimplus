@@ -532,7 +532,7 @@ public class HostSimple implements Host {
 
         int peId = this.peList.stream().filter(pe -> pe.getId() > 0).mapToInt(Pe::getId).max().orElse(-1);
         final List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
-        for(Pe pe: pesWithoutIds){
+        for(final Pe pe: pesWithoutIds){
             pe.setId(++peId);
         }
 
@@ -707,7 +707,7 @@ public class HostSimple implements Host {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        HostSimple that = (HostSimple) o;
+        final HostSimple that = (HostSimple) o;
 
         if (id != that.id) return false;
         return simulation.equals(that.simulation);

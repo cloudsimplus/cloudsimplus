@@ -42,7 +42,7 @@ public class PeTest {
 
     @Test
     public void testGetPeProvisioner() {
-        PeSimple pe = createPe();
+        final PeSimple pe = createPe();
         assertSame(peProvisioner, pe.getPeProvisioner());
         assertEquals(MIPS, pe.getPeProvisioner().getAvailableResource(), 0);
     }

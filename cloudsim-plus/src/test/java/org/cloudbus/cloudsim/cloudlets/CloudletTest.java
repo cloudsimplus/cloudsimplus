@@ -52,7 +52,7 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.requiresFiles());
         assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalInDatacenter(), 0);
         assertFalse(Cloudlet.NULL.removeOnFinishListener(null));
-        EventListener listener = EasyMock.createMock(EventListener.class);
+        final EventListener listener = EasyMock.createMock(EventListener.class);
         EasyMock.replay(listener);
         Cloudlet.NULL.addOnFinishListener(listener);
 
@@ -96,7 +96,7 @@ public class CloudletTest {
         assertEquals(0, Cloudlet.NULL.getUtilizationOfCpu(0), 0);
         assertEquals(0, Cloudlet.NULL.getUtilizationOfRam(0), 0);
 
-        UtilizationModel um = EasyMock.createMock(UtilizationModel.class);
+        final UtilizationModel um = EasyMock.createMock(UtilizationModel.class);
         EasyMock.replay(um);
         Cloudlet.NULL.setUtilizationModelBw(um);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());

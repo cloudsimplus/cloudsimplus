@@ -26,7 +26,7 @@ public class PowerVmSelectionPolicyMaximumCorrelationTest {
 
     @Test
     public void testGetPowerModel() {
-        List<Double> result = vmSelectionPolicyMaximumCorrelation.getCorrelationCoefficients(DATA);
+        final List<Double> result = vmSelectionPolicyMaximumCorrelation.getCorrelationCoefficients(DATA);
         for (int i = 0; i < result.size(); i++) {
             assertEquals(CORRELATION[i], result.get(i), 0.00001);
         }

@@ -32,17 +32,12 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private int id;
     /**
-     * Stores the operating system line separator.
-     */
-    private final String newline;
-    /**
-     * The format of decimal numbers.
-     */
-    private final DecimalFormat num;
-    /**
-     * The list of every {@link Datacenter} where the cloudlet has been executed. In case
-     * it starts and finishes executing in a single Datacenter, without
+     * The list of every {@link Datacenter} where the cloudlet has been executed.
+     * In case it starts and finishes executing in a single Datacenter, without
      * being migrated, this list will have only one item.
+     *
+     * @todo There isn't Cloudlet migration, so this attribute doesn't make sense.
+     * But since a lot of methods uses this attribute, it's removal has to be carefully assessed.
      */
     private final List<CloudletDatacenterExecution> datacenterExecutionList;
     /**
@@ -65,10 +60,6 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @see #getExecStartTime()
      */
     private double execStartTime;
-    /**
-     * @see #isRecordTransactionHistory()
-     */
-    private boolean recordTransactionHistory;
     /**
      * @see #getPriority()
      */
@@ -154,16 +145,12 @@ public abstract class CloudletAbstract implements Cloudlet {
         this.datacenterExecutionList = new ArrayList<>(2);
         this.requiredFiles = new LinkedList<>();
 
-        this.num = new DecimalFormat("#0.00#");
-        this.newline = System.getProperty("line.separator");
-
         this.id = cloudletId;
         this.netServiceLevel = 0;
         this.execStartTime = 0.0;
         this.status = Status.INSTANTIATED;
         this.priority = 0;
         this.setNumberOfPes(pesNumber);
-        this.recordTransactionHistory = false;
 
         this.lastExecutedDatacenterIdx = NOT_ASSIGNED;
         setBroker(DatacenterBroker.NULL);
@@ -351,7 +338,6 @@ public abstract class CloudletAbstract implements Cloudlet {
         }
 
         getLastExecutionInDatacenterInfo().setFinishedSoFar(Math.min(length, this.getLength()));
-        write("Set the length's finished so far to %d", length);
         notifyListenersIfCloudletIsFinished();
         return true;
     }
@@ -412,7 +398,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public void setExecStartTime(final double clockTime) {
         this.execStartTime = clockTime;
-        write("Sets the execution start time to %s", num.format(clockTime));
     }
 
     @Override
@@ -424,9 +409,6 @@ public abstract class CloudletAbstract implements Cloudlet {
         final CloudletDatacenterExecution datacenter = getLastExecutionInDatacenterInfo();
         datacenter.setWallClockTime(wallTime);
         datacenter.setActualCpuTime(actualCpuTime);
-
-        write("Sets the wall clock time to %s and the actual CPU time to %s",
-            num.format(wallTime), num.format(actualCpuTime));
 
         return true;
     }
@@ -441,8 +423,6 @@ public abstract class CloudletAbstract implements Cloudlet {
         if (newStatus == Status.SUCCESS) {
             setFinishTime(getSimulation().clock());
         }
-
-        write("Sets Cloudlet status from %s to %s", status.name(), newStatus.name());
 
         this.status = newStatus;
         return true;
@@ -539,55 +519,6 @@ public abstract class CloudletAbstract implements Cloudlet {
         this.finishTime = finishTime;
     }
 
-    /**
-     * Writes a particular history transaction of this Cloudlet into a log.
-     *
-     * @param str a history transaction of this Cloudlet
-     * @pre str != null
-     * @post $none
-     */
-    protected void write(final String str) {
-        if (str == null) {
-            return;
-        }
-
-        if (!recordTransactionHistory) {
-            return;
-        }
-
-        if (history == null) {
-            // Creates the transaction history of this Cloudlet
-            history = new StringBuffer(1000);
-            history.append("Time below denotes the simulation time.");
-            history.append(this.newline);
-            history.append("Time (sec)       Description Cloudlet #").append(id);
-            history.append(this.newline);
-            history.append("------------------------------------------");
-            history.append(this.newline);
-            history.append(num.format(getSimulation().clock()));
-            history.append("   Creates Cloudlet ID #").append(id);
-            history.append(this.newline);
-        }
-
-        history.append(num.format(getSimulation().clock()));
-        history.append("   ").append(str).append(newline);
-    }
-
-    /**
-     * Writes a formatted particular history transaction of this Cloudlet into a log.
-     *
-     * @param format the format of the Cloudlet's history transaction, according
-     *               to the format parameter of {@link String#format(String, Object...)}
-     * @param args   The list of values to be shown in the history,
-     *               that are referenced by the format.
-     * @pre format != null
-     * @post $none
-     * @see #write(String)
-     */
-    protected void write(final String format, Object... args) {
-        write(String.format(format, args));
-    }
-
     @Override
     public Status getStatus() {
         return status;
@@ -664,9 +595,9 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public boolean addRequiredFiles(List<String> fileNames) {
+    public boolean addRequiredFiles(final List<String> fileNames) {
         boolean atLeastOneFileAdded = false;
-        for (String fileName : fileNames) {
+        for (final String fileName : fileNames) {
             atLeastOneFileAdded |= addRequiredFile(fileName);
         }
         return atLeastOneFileAdded;
@@ -823,26 +754,6 @@ public abstract class CloudletAbstract implements Cloudlet {
         return this;
     }
 
-    /**
-     * Indicates if Cloudlet transaction history is to be recorded or not.
-     *
-     * @return
-     * @see #getHistory()
-     */
-    public boolean isRecordTransactionHistory() {
-        return recordTransactionHistory;
-    }
-
-    /**
-     * Sets the Cloudlet transaction history writing.
-     *
-     * @param recordTransactionHistory true enables transaction history writing,
-     *                                 false disables.
-     */
-    public void setRecordTransactionHistory(boolean recordTransactionHistory) {
-        this.recordTransactionHistory = recordTransactionHistory;
-    }
-
     @Override
     public void assignToDatacenter(final Datacenter datacenter) {
         final CloudletDatacenterExecution dcInfo = new CloudletDatacenterExecution();
@@ -851,18 +762,6 @@ public abstract class CloudletAbstract implements Cloudlet {
 
         // add into a list if moving to a new cloud Datacenter
         datacenterExecutionList.add(dcInfo);
-
-        if (isRecordTransactionHistory()) {
-            if (isAssignedToDatacenter()) {
-                final Datacenter oldDc = getLastExecutionInDatacenterInfo().getDatacenter();
-                write("Moves Cloudlet from %s (ID #%d) to %s (ID #%d) with cost = $%.2f/sec",
-                    oldDc.getName(), oldDc.getId(), dcInfo.getDatacenter().getName(), dcInfo.getDatacenter().getId(), dcInfo.getCostPerSec());
-
-            } else {
-                write("Allocates this Cloudlet to %s (ID #%d) with cost = $%.2f/sec",
-                    dcInfo.getDatacenter().getName(), dcInfo.getDatacenter().getId(), dcInfo.getCostPerSec());
-            }
-        }
 
         setLastExecutedDatacenterIdx(getLastExecutedDatacenterIdx() + 1);
 

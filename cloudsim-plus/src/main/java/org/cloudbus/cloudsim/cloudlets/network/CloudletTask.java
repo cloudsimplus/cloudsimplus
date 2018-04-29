@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  * and {@link CloudletExecution} share a common set of attributes that would be defined by a common interface.
  */
 public abstract class CloudletTask implements Identificable {
-    private boolean finished = false;
+    private boolean finished;
 
     /**
      * @see #getId()

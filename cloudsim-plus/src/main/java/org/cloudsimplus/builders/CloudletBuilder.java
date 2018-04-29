@@ -157,7 +157,7 @@ public class CloudletBuilder extends Builder {
     }
 
     public CloudletBuilder createAndSubmitCloudlets(final int amount, final int initialId) {
-        List<Cloudlet> localList = createCloudletsInternal(amount, initialId);
+        final List<Cloudlet> localList = createCloudletsInternal(amount, initialId);
         broker.submitCloudletList(localList);
         if(vm != Vm.NULL){
             localList.forEach(c -> broker.bindCloudletToVm(c, vm));
@@ -166,10 +166,10 @@ public class CloudletBuilder extends Builder {
     }
 
     private List<Cloudlet> createCloudletsInternal(final int amount, final int initialId) {
-        List<Cloudlet> localList = new ArrayList<>();
+        final List<Cloudlet> localList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             final int cloudletId = initialId + createdCloudlets++;
-            Cloudlet cloudlet =
+            final Cloudlet cloudlet =
                 new CloudletSimple(cloudletId, length, pes)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)

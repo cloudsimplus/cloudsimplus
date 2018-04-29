@@ -100,7 +100,7 @@ public class CloudletReceiveTask extends CloudletTask {
     public void receivePacket(VmPacket packet) {
         packet.setReceiveTime(getCloudlet().getSimulation().clock());
         this.packetsReceived.add(packet);
-        boolean finished = this.packetsReceived.size() >= numberOfExpectedPacketsToReceive;
+        final boolean finished = this.packetsReceived.size() >= numberOfExpectedPacketsToReceive;
         setFinished(finished);
     }
 

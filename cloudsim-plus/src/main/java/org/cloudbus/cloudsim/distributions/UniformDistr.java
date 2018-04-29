@@ -97,7 +97,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
             throw new IllegalArgumentException("Maximum must be greater than the minimum.");
         }
 
-        return (rd.nextDouble() * (max - min)) + min;
+        return rd.nextDouble() * (max - min) + min;
     }
 
     /**

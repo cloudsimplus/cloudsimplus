@@ -128,7 +128,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
      */
     @Override
     public void updateSystemState() {
-	    currentTemperature *= (1 - coolingRate);
+	    currentTemperature *= 1 - coolingRate;
     }
 
     /**

@@ -231,7 +231,7 @@ public class VmSimpleTest {
 
     @Test
     public void testRemoveOnHostAllocationListener() {
-        EventListener<VmHostEventInfo> listener = (info) -> {};
+        final EventListener<VmHostEventInfo> listener = (info) -> {};
         vm.addOnHostAllocationListener(listener);
         assertTrue(vm.removeOnHostAllocationListener(listener));
     }

@@ -99,8 +99,8 @@ public class RootSwitch extends AbstractSwitch {
      * edge switch or {@link Switch#NULL} if not found.
      */
     private Switch findAggregateSwitchConnectedToGivenEdgeSwitch(Switch edgeSwitch) {
-        for (Switch aggregateSw : getDownlinkSwitches()) {
-            for (Switch edgeSw : aggregateSw.getDownlinkSwitches()) {
+        for (final Switch aggregateSw : getDownlinkSwitches()) {
+            for (final Switch edgeSw : aggregateSw.getDownlinkSwitches()) {
                 if (edgeSw.getId() == edgeSwitch.getId()) {
                     return aggregateSw;
                 }

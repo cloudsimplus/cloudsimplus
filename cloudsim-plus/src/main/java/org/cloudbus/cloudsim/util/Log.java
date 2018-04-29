@@ -50,11 +50,6 @@ public final class Log {
     private static boolean disabled;
 
     /**
-     * Buffer to avoid creating new string builder upon every print.
-     */
-    private static StringBuilder buffer = new StringBuilder();
-
-    /**
      * Checks if application is running in debug mode.
      * "jdwp" is the acronym for "Java Debug Wire Protocol" that
      * may exists as an application parameter to define
@@ -128,7 +123,7 @@ public final class Log {
      */
     public static void printConcatLine(Object... messages) {
         if (isEnabled()) {
-            buffer = new StringBuilder(messages.length);
+            StringBuilder buffer = new StringBuilder(messages.length);
             for (final Object message : messages) {
                 buffer.append(String.valueOf(message));
             }
@@ -170,7 +165,7 @@ public final class Log {
      * @param args the args
      */
     public static void println(Level level, Class klass, double time, String format, Object... args) {
-        if((level == Level.DEBUG && isDebug()) || (level != Level.DEBUG)){
+        if(level == Level.DEBUG && isDebug() || level != Level.DEBUG){
             final String msg = String.format(format, args);
             printFormattedLine("Time %.1f %s/%s\n   %s", time, level.name(), klass.getSimpleName(), msg);
         }

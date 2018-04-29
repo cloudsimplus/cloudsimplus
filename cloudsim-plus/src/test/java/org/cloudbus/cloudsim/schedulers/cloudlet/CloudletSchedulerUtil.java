@@ -15,11 +15,12 @@ public final class CloudletSchedulerUtil {
      */
     private CloudletSchedulerUtil(){}
 
-    public static List<Double> createMipsList(int pesNumber, double mips) {
-        List<Double> mipsList = new ArrayList<>();
+    public static List<Double> createMipsList(final int pesNumber, final double mips) {
+        final List<Double> mipsList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
             mipsList.add(mips);
         }
+
         return mipsList;
     }
 
@@ -28,7 +29,7 @@ public final class CloudletSchedulerUtil {
      * @param mips the mips value to be added to the list
      * @return the create unitary mips list
      */
-    public static List<Double> createUnitaryMipsList(double mips) {
+    public static List<Double> createUnitaryMipsList(final double mips) {
         return createMipsList(1, mips);
     }
 

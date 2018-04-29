@@ -89,7 +89,7 @@ public class TopologicalGraph {
 
     @Override
     public String toString() {
-        final StringBuilder builder = new StringBuilder(60);
+        final StringBuilder builder = new StringBuilder(61);
         builder.append("topological-node-information: \n");
 
         for (final TopologicalNode node : nodeList) {

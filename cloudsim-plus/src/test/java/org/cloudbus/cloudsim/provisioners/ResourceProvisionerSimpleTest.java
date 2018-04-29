@@ -134,8 +134,8 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testDeallocateResourceForVm() {
-        VmSimple vm1 = createVm(0, HALF_CAPACITY);
-        VmSimple vm2 = createVm(1, HALF_CAPACITY);
+        final VmSimple vm1 = createVm(0, HALF_CAPACITY);
+        final VmSimple vm2 = createVm(1, HALF_CAPACITY);
 
         assertEquals(0, vm1.getCurrentAllocatedRam());
         assertEquals(0, vm2.getCurrentAllocatedRam());

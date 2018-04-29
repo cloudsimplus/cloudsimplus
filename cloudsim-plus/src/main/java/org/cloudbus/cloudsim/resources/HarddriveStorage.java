@@ -146,7 +146,7 @@ public class HarddriveStorage implements FileStorage {
         final long fileSize = file.getSize();
         storage.deallocateResource(fileSize);
         reservedStorage.deallocateResource(fileSize);
-        double result = addFile(file);
+        final double result = addFile(file);
 
         // if add file fails, then set the current size back to its old value
         if (result == 0.0) {
@@ -266,7 +266,7 @@ public class HarddriveStorage implements FileStorage {
         int size = 0;
 
         // find the file in the disk
-        for(File currentFile: fileList) {
+        for(final File currentFile: fileList) {
             size += currentFile.getSize();
             if (currentFile.getName().equals(fileName)) {
                 // if the file is found, then determine the time taken to get it

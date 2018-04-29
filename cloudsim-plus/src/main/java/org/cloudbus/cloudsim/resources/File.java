@@ -155,7 +155,7 @@ public class File {
      * @return a clone of the current file (as a replica) or <tt>null</tt> if an error occurs
      */
     private File makeCopy() {
-        File file = new File(name, attribute.getFileSize());
+        final File file = new File(name, attribute.getFileSize());
 
         this.attribute.copyValue(file.attribute);
         file.attribute.setMasterCopy(false);   // set this file as a replica

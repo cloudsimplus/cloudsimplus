@@ -109,7 +109,7 @@ public class VmBuilder {
     public VmBuilder createAndSubmitVms(final int amount) {
         final List<Vm> vms = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes)
+            final Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes)
                     .setRam(ram).setBw(bw).setSize(size)
                     .setCloudletScheduler(cloudletSchedulerSupplier.get())
                     .setBroker(broker)

@@ -58,7 +58,7 @@ public class ZipfDistr extends ContinuousDistributionAbstract {
 
     @Override
     public double sample() {
-        double variate = super.sample();
+        final double variate = super.sample();
         double num = 1;
         double nextNum = 1 + 1 / Math.pow(2, shape);
         double j = 3;

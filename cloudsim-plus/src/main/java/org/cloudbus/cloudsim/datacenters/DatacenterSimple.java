@@ -330,12 +330,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         updateCloudletProcessing();
 
         final Cloudlet cloudlet = (Cloudlet)receivedData[0];
-        final int destVmId = (int)receivedData[1];
 
         final Vm sourceVm = cloudlet.getVm();
-        final Host sourceHost = sourceVm.getHost();
-        final Vm destVm = sourceHost.getVm(destVmId, cloudlet.getBroker().getId());
-        final Datacenter destDatacenter = destVm.getHost().getDatacenter();
         final Cloudlet cl = sourceVm.getCloudletScheduler().cloudletCancel(cloudlet.getId());
 
         if (Cloudlet.NULL.equals(cl)) {
@@ -349,8 +345,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         // Prepare cloudlet for migration
+        final Host sourceHost = sourceVm.getHost();
+        final int destVmId = (int)receivedData[1];
+        final Vm destVm = sourceHost.getVm(destVmId, cloudlet.getBroker().getId());
         cl.setVm(destVm);
 
+        final Datacenter destDatacenter = destVm.getHost().getDatacenter();
         if (destDatacenter.equals(this))
             requestCloudletMigrationToOtherVm(destVm, cl);
         else requestCloudletMigrationToOtherDc(type, destDatacenter, cl);

@@ -304,7 +304,7 @@ public class RamTest {
 
         //decrease available resource (use of a negative value)
         long amountToSum = -QUARTER_CAPACITY;
-        long expResult = THREE_QUARTERS_CAPACITY;
+        final long expResult = THREE_QUARTERS_CAPACITY;
         assertTrue(instance.sumAvailableResource(amountToSum));
         assertEquals(expResult, instance.getAvailableResource());
 
@@ -333,7 +333,7 @@ public class RamTest {
     @Test
     public void testDeallocateAllResources() {
         final Ram instance = createResource();
-        long deallocated = 0;
+        final long deallocated = 0;
         assertEquals(deallocated, instance.getAllocatedResource());
         assertEquals(deallocated, instance.deallocateAllResources());
 
