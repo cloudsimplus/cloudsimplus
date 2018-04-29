@@ -137,7 +137,7 @@ public final class Log {
     }
 
     /**
-     * Prints a string formated as in String.printFormatted().
+     * Prints a string formatted as in String.printFormatted().
      *
      * @param format the printFormatted
      * @param args the args
@@ -147,7 +147,7 @@ public final class Log {
     }
 
     /**
-     * Prints a string formated as in String.printFormatted(), followed by a new
+     * Prints a string formatted as in String.printFormatted(), followed by a new
      * line.
      *
      * @param format the printFormatted
@@ -158,7 +158,7 @@ public final class Log {
     }
 
     /**
-     * Prints a string formated as in String.printFormatted(), followed by a new
+     * Prints a string formatted as in String.printFormatted(), followed by a new
      * line, that will be printed only according to
      * the specified level
      *

@@ -73,7 +73,7 @@ public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
      * Gets the result of the solution.
      * For instance, if a implementation of this interface aims to provide
      * a mapping between Cloudlets and Vm's, this type would be
-     * a {@code  Map<Cloudet, Vm>}, that will indicate which Vm will
+     * a {@code  Map<Cloudlet, Vm>}, that will indicate which Vm will
      * run each Cloudlet.
      * This way, the type T of the solution is totally dependent of the problem
      * being solved by the heuristic implementation.

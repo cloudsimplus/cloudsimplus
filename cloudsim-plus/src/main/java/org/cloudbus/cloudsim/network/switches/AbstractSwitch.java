@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.core.predicates.PredicateType;
+import org.cloudbus.cloudsim.core.events.PredicateType;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
@@ -118,7 +118,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
                 processPacketDown(ev);
             break;
             case CloudSimTags.NETWORK_EVENT_SEND:
-                processPacketForward(ev);
+                processPacketForward();
             break;
             case CloudSimTags.NETWORK_EVENT_HOST:
                 processHostPacket(ev);
@@ -190,9 +190,8 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Sends a packet to hosts connected to the switch
      *
-     * @param ev Event/packet to process
      */
-    private void processPacketForward(final SimEvent ev) {
+    private void processPacketForward() {
         forwardPacketsToDownlinkSwitches();
         forwardPacketsToUplinkSwitches();
         forwardPacketsToHosts();

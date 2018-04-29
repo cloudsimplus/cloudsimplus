@@ -8,7 +8,7 @@ package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.core.predicates.PredicateType;
+import org.cloudbus.cloudsim.core.events.PredicateType;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
@@ -353,7 +353,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         if (destDatacenter.equals(this))
             requestCloudletMigrationToOtherVm(destVm, cl);
-        else requestClodletMigrationToOtherDc(type, destDatacenter, cl);
+        else requestCloudletMigrationToOtherDc(type, destDatacenter, cl);
 
         if (type == CloudSimTags.CLOUDLET_MOVE_ACK) {// send ACK if requested
             sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cloudlet);
@@ -381,7 +381,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param destDatacenter ID of the destination Datacenter
      * @param cl the Cloudlet to request migration
      */
-    private void requestClodletMigrationToOtherDc(final int type, final Datacenter destDatacenter, final Cloudlet cl) {
+    private void requestCloudletMigrationToOtherDc(final int type, final Datacenter destDatacenter, final Cloudlet cl) {
         final int tag = ((type == CloudSimTags.CLOUDLET_MOVE_ACK)
             ? CloudSimTags.CLOUDLET_SUBMIT_ACK
             : CloudSimTags.CLOUDLET_SUBMIT);

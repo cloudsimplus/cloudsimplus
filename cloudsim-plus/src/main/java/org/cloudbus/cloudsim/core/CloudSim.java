@@ -365,8 +365,8 @@ public class CloudSim implements Simulation {
     @Override
     public void wait(final CloudSimEntity src, final Predicate<SimEvent> p) {
         src.setState(SimEntity.State.WAITING);
-        if (p != SIM_ANY) {
-            // If a predicate has been used, store it in order to check incomming events that matches it
+        if (p != ANY_EVT) {
+            // If a predicate has been used, store it in order to check incoming events that matches it
             waitPredicates.put(src, p);
         }
     }
@@ -706,7 +706,7 @@ public class CloudSim implements Simulation {
         while (paused) {
             try {
                 Thread.sleep(100);
-            } catch (InterruptedException e) {
+            } catch (InterruptedException ignored) {
             }
         }
 
@@ -802,7 +802,7 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public boolean removeOnClockTickListener(final EventListener<EventInfo> listener) {
+    public boolean removeOnClockTickListener(final EventListener<? extends EventInfo> listener) {
         Objects.requireNonNull(listener);
         return onClockTickListeners.remove(listener);
     }

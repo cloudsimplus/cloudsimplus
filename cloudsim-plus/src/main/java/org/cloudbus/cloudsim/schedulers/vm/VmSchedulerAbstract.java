@@ -106,25 +106,24 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @param status the status to set
      */
     private void setHostPesStatusForVmUsedPes(final Vm vm, final List<Pe> peList, final Pe.Status status) {
-        setHostPesStatusForVmUsedPes(vm, peList, status, vm.getNumberOfPes());
+        setHostPesStatusForVmUsedPes(peList, status, vm.getNumberOfPes());
     }
 
     /**
      * Gets a specific number of virtual PEs and sets the status of the same
      * number of physical PEs in its Host to a given status.
-     * @param vm the VM to set its the status of its used physical PEs
      * @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
      * @param status the status to set
      * @param vPesNumber the number of Virtual PEs that correspond to the number of physical PEs to have their status changed
      */
-    private void setHostPesStatusForVmUsedPes(final Vm vm, final List<Pe> peList, final Pe.Status status, final long vPesNumber) {
+    private void setHostPesStatusForVmUsedPes(final List<Pe> peList, final Pe.Status status, final long vPesNumber) {
         if(vPesNumber <= 0) {
             return;
         }
 
         peList.stream()
-            .limit(vPesNumber)
-            .forEach(pe -> pe.setStatus(status));
+              .limit(vPesNumber)
+              .forEach(pe -> pe.setStatus(status));
     }
 
     protected abstract boolean allocatePesForVmInternal(final Vm vm, final List<Double> mipsShareRequested);
@@ -154,7 +153,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         final long totalVirtualPesNumber = getAllocatedMipsMap().values().stream().mapToLong(Collection::size).sum();
         final List<Pe> peList = getHost().getBuzyPeList();
         final long vPesNumber = Math.min(peList.size() - totalVirtualPesNumber, 0);
-        setHostPesStatusForVmUsedPes(vm, peList, Pe.Status.FREE, vPesNumber);
+        setHostPesStatusForVmUsedPes(peList, Pe.Status.FREE, vPesNumber);
     }
 
     /**

@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 /**
  * <p>A class that implements the Decorator Design Pattern in order to
- * include functionalities in a existing class.
+ * include features in a existing class.
  * It is used to ensure that specific methods are called only after
  * a given method is called.</p>
  *

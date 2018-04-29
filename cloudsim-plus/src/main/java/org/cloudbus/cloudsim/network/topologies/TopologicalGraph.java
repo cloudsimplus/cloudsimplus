@@ -9,7 +9,6 @@
 package org.cloudbus.cloudsim.network.topologies;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -33,9 +32,6 @@ public class TopologicalGraph {
      */
     private final List<TopologicalLink> linksList;
 
-    /**
-     * The list of nodes of the network graph.
-     */
     private final List<TopologicalNode> nodeList;
 
     /**
@@ -91,15 +87,6 @@ public class TopologicalGraph {
         return Collections.unmodifiableList(linksList);
     }
 
-    /**
-     * Gets an iterator through all network-graph nodes.
-     *
-     * @return the iterator through all nodes
-     */
-    public Iterator<TopologicalNode> getNodeIterator() {
-        return nodeList.iterator();
-    }
-
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder(60);
@@ -120,5 +107,12 @@ public class TopologicalGraph {
         }
 
         return builder.toString();
+    }
+
+    /**
+     * Gets a <b>read-only</b> list of nodes of the network graph.
+     */
+    public List<TopologicalNode> getNodeList() {
+        return Collections.unmodifiableList(nodeList);
     }
 }

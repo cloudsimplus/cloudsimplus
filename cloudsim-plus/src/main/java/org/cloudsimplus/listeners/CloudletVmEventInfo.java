@@ -83,7 +83,7 @@ public interface CloudletVmEventInfo extends CloudletEventInfo, VmEventInfo {
      * Gets a CloudletVmEventInfo instance from the given parameters.
      *
      * @param listener the listener to be notified about the event
-     * @param time the time the event happend
+     * @param time the time the event happened
      * @param cloudlet the {@link Cloudlet} that fired the event
      * @param vm the {@link Vm} where the Cloudlet is or was running into,
      *            depending on the fired event, such as the

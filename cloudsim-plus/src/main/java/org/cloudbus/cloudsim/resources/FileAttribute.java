@@ -56,7 +56,7 @@ public class FileAttribute {
     private double lastUpdateTime;
 
     /**
-     * Creation time (ms) - abosulte/relative.
+     * Creation time (ms) - absolute/relative.
      */
     private long creationTime;
 
@@ -97,7 +97,7 @@ public class FileAttribute {
         ownerName = "";
         id = File.NOT_REGISTERED;
         checksum = 0;
-        type = File.TYPE_UNKOWN;
+        type = File.TYPE_UNKNOWN;
         lastUpdateTime = 0;
         cost = 0;
         masterCopy = true;
@@ -109,10 +109,8 @@ public class FileAttribute {
      *
      * @param destinationAttr the destination FileAttribute object to copy the
      * current object to
-     * @return <tt>true</tt> if the copy operation is successful, <tt>false</tt>
-     * otherwise
      */
-    public boolean copyValue(final FileAttribute destinationAttr) {
+    public void copyValue(final FileAttribute destinationAttr) {
         Objects.requireNonNull(destinationAttr);
         destinationAttr.setFileSize(fileSize);
         destinationAttr.setOwnerName(ownerName);
@@ -123,8 +121,6 @@ public class FileAttribute {
         destinationAttr.setCost(cost);
         destinationAttr.setMasterCopy(masterCopy);
         destinationAttr.setCreationTime(creationTime);
-
-        return true;
     }
 
     /**

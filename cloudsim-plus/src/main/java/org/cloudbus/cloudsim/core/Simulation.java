@@ -13,8 +13,6 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 
 import java.util.function.Predicate;
 
-import org.cloudbus.cloudsim.core.predicates.PredicateAny;
-import org.cloudbus.cloudsim.core.predicates.PredicateNone;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -36,12 +34,7 @@ public interface Simulation {
     /**
      * A standard predicate that matches any event.
      */
-    PredicateAny SIM_ANY = new PredicateAny();
-
-    /**
-     * A standard predicate that does not match any events.
-     */
-    PredicateNone SIM_NONE = new PredicateNone();
+    Predicate<SimEvent> ANY_EVT = evt -> true;
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Simulation}
@@ -224,7 +217,7 @@ public interface Simulation {
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
      */
-    boolean removeOnClockTickListener(EventListener<EventInfo> listener);
+    boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener);
 
     /**
      * Pauses an entity for some time.

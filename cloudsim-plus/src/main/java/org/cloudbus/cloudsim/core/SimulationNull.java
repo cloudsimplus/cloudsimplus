@@ -85,7 +85,7 @@ final class SimulationNull implements Simulation {
     @Override public Simulation addOnClockTickListener(EventListener<EventInfo> listener) {
         return this;
     }
-    @Override public boolean removeOnClockTickListener(EventListener<EventInfo> listener) {
+    @Override public boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener) {
         return false;
     }
     @Override public double start() throws RuntimeException { return 0; }

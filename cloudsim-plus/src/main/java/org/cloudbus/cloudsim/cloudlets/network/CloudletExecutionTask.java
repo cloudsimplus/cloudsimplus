@@ -71,7 +71,7 @@ public class CloudletExecutionTask extends CloudletTask {
     /**
      * @see #getTotalExecutedLength()
      */
-    private long totalExecutedLenght;
+    private long totalExecutedLength;
 
     /**
      * Creates a new task.
@@ -106,22 +106,22 @@ public class CloudletExecutionTask extends CloudletTask {
      * @return
      */
     public long getTotalExecutedLength() {
-        return totalExecutedLenght;
+        return totalExecutedLength;
     }
 
     /**
      * Sets a given number of MI to the {@link #getTotalExecutedLength() total
      * MI executed so far} by the cloudlet.
-     * @param executedLenghtSoFar the total number of MI executed so far
+     * @param executedLengthSoFar the total number of MI executed so far
      * @return {@inheritDoc}
      */
-    public boolean process(long executedLenghtSoFar) {
-        if(executedLenghtSoFar <= 0) {
+    public boolean process(long executedLengthSoFar) {
+        if(executedLengthSoFar <= 0) {
             return false;
         }
 
-        this.totalExecutedLenght = Math.min(executedLenghtSoFar, length);
-        setFinished(this.totalExecutedLenght == length);
+        this.totalExecutedLength = Math.min(executedLengthSoFar, length);
+        setFinished(this.totalExecutedLength == length);
         return true;
     }
 

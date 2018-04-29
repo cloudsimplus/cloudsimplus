@@ -99,7 +99,7 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Receives an cloudlet to be executed in the VM managed by this scheduler.
      *
-     * @param cl the submited cloudlet
+     * @param cl the submitted cloudlet
      * @return expected finish time of this cloudlet (considering the time to transfer required
      * files from the Datacenter to the Vm), or 0 if it is in a waiting queue
      * @pre cl != null

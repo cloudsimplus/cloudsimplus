@@ -84,7 +84,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      */
-    public UtilizationModelDynamic(Unit unit) {
+    public UtilizationModelDynamic(final Unit unit) {
         this(unit, 0);
     }
 
@@ -112,7 +112,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * @param initialUtilization the initial of resource utilization, that the unit depends
      *                           on the {@code unit} parameter
      */
-    public UtilizationModelDynamic(Unit unit, final double initialUtilization) {
+    public UtilizationModelDynamic(final Unit unit, final double initialUtilization) {
         super(unit);
         this.readOnly = false;
         this.maxResourceUtilization = (unit == Unit.PERCENTAGE ? Conversion.HUNDRED_PERCENT : 0);
@@ -129,14 +129,23 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * A copy constructor that creates a read-only UtilizationModelDynamic based on a source object
+     * A copy constructor that creates a read-only UtilizationModelDynamic based on a source object.
+     *
      * @param source the source UtilizationModelDynamic to create an instance from
      */
-    protected UtilizationModelDynamic(UtilizationModelDynamic source){
+    @SuppressWarnings("CopyConstructorMissesField")
+    protected UtilizationModelDynamic(final UtilizationModelDynamic source){
         this(source.getUnit(), source.currentUtilization);
         this.currentUtilizationTime = source.currentUtilizationTime;
         this.previousUtilizationTime = source.previousUtilizationTime;
         this.maxResourceUtilization = source.maxResourceUtilization;
+
+        /** The copy constructor doesn't copy the utilizationUpdateFunction because
+         * when this constructor is used, it sets the copy
+         * to readonly. This way, the  {@link #getUtilization()} doesn't use such a function
+         * to return the current utilization, but the last utilization value stored
+         * in the {@link #currentUtilization} attribute.
+         */
         this.readOnly = true;
     }
 
@@ -149,16 +158,18 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    public double getUtilization(double time) {
+    public double getUtilization(final double time) {
         currentUtilizationTime = time;
         if(previousUtilizationTime != time) {
-            /*Pass a copy of this current UtilizationModel to avoid it to be changed
+            /*
+            Pass a copy of this current UtilizationModel to avoid it to be changed
             and also to enable the developer to call the getUtilization() method from
             his/her given utilizationUpdateFunction on such an instance,
             without causing infinity loop. Without passing a UtilizationModel clone,
             since the utilizationUpdateFunction function usually will call this current one, that in turns
             calls the utilizationUpdateFunction to update the utilization progress,
-            it would lead to an infinity loop.*/
+            it would lead to an infinity loop.
+            */
             currentUtilization = utilizationUpdateFunction.apply(new UtilizationModelDynamic(this));
             previousUtilizationTime = time;
             if (currentUtilization <= 0) {
@@ -175,7 +186,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
 
     @Override
     public double getUtilization() {
-        return (readOnly ? currentUtilization : super.getUtilization());
+        return readOnly ? currentUtilization : super.getUtilization();
     }
 
     /**
@@ -195,7 +206,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      *
      * @param currentUtilization current resource utilization
      */
-    private void setCurrentUtilization(double currentUtilization) {
+    private void setCurrentUtilization(final double currentUtilization) {
         validateUtilizationField("currentUtilization", currentUtilization);
         this.currentUtilization = currentUtilization;
     }
@@ -221,7 +232,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * @param maxResourceUsagePercentage the maximum resource usage
      * @return
      */
-    public final UtilizationModelDynamic setMaxResourceUtilization(double maxResourceUsagePercentage) {
+    public final UtilizationModelDynamic setMaxResourceUtilization(final double maxResourceUsagePercentage) {
         validateUtilizationField("maxResourceUtilization", maxResourceUsagePercentage, ALMOST_ZERO);
         this.maxResourceUtilization = maxResourceUsagePercentage;
         return this;
@@ -258,7 +269,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      *                                  based on the previous utilization.
      * @return
      */
-    public final UtilizationModelDynamic setUtilizationUpdateFunction(Function<UtilizationModelDynamic, Double> utilizationUpdateFunction) {
+    public final UtilizationModelDynamic setUtilizationUpdateFunction(final Function<UtilizationModelDynamic, Double> utilizationUpdateFunction) {
         Objects.requireNonNull(utilizationUpdateFunction);
         this.utilizationUpdateFunction = utilizationUpdateFunction;
         return this;

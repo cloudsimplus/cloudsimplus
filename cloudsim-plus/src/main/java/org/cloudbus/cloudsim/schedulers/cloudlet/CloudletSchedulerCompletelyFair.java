@@ -83,11 +83,11 @@ import static java.util.stream.Collectors.toList;
  *     that can be run), it doesn't matter which PEs are "running" the application.
  *     </li>
  *	   </li>
- *	   <li>It doesn't use a Red-Black tree (such as the TreeSet), as in real implementations of CFS, to accendingly sort
- *	   Cloudlets in the waiting list (runqueue) based on their virtual runtime (vruntime or VRT)
- *	   (placing the Cloudlets that have run the least at the top of the tree) because
- *	   the use of such a data structure added some complexity to the implementation. And once different Cloudlets
- *	   may have the same virtual runtime, this introduced some issues when adding or
+ *	   <li>It doesn't use a Red-Black tree (such as the TreeSet), as in real implementations of CFS,
+ *	   to sort waiting Cloudlets (runqueue list) increasingly, based on their virtual runtime (vruntime or VRT)
+ *	   (placing the Cloudlets that have run the least at the top of the tree).
+ *	   Furthermore, the use of such a data structure added some complexity to the implementation.
+ *	   Since different Cloudlets may have the same virtual runtime, this introduced some issues when adding or
  *	   removing elements in a structure such as the TreeSet, that requires
  *	   each value (the virtual runtime in this case) used to sort the Set to be unique.</li>
  * </ul>
@@ -394,7 +394,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         /*
         A negative virtual runtime indicates the cloudlet has never been executed yet.
         This math was used just to ensure that the first added cloudlets
-        will have the lower vruntime, depending of their priorites.
+        will have the lower vruntime, depending of their priorities.
         If all cloudlets have the same priority, the first
         added will start executing first.
         */
@@ -478,7 +478,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         /*After preempted Cloudlets are moved to the waiting list
         and next Cloudlets on the beginning of this list are moved
         to the execution list, the virtual runtime of these preempted Cloudlets
-        is reseted so that they can compete with other waiting Cloudlets to use
+        is reset so that they can compete with other waiting Cloudlets to use
         the processor again.*/
         for(final CloudletExecution c: preemptedCloudlets) {
             c.setVirtualRuntime(computeCloudletInitialVirtualRuntime(c));

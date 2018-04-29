@@ -28,7 +28,7 @@ public class File {
     /**
      * Denotes that the type of this file is unknown.
      */
-    public static final int TYPE_UNKOWN = 0;
+    public static final int TYPE_UNKNOWN = 0;
 
     /**
      * Logical file name.

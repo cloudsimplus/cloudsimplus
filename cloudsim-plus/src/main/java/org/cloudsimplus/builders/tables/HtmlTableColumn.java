@@ -47,20 +47,20 @@ public class HtmlTableColumn extends AbstractTableColumn {
         super(table, title, subTitle);
     }
 
-    private String identLine(final int columnIndex) {
+    private String indentLine(final int columnIndex) {
         return columnIndex == 0 ? "    " : "";
     }
 
     @Override
     protected String generateHeader(final String str) {
         final int index = getTable().getColumns().indexOf(this);
-        return String.format("%s<th>%s</th>", identLine(index), str);
+        return String.format("%s<th>%s</th>", indentLine(index), str);
     }
 
     @Override
     public String generateData(final Object data) {
         final int index = getTable().getColumns().indexOf(this);
-        return String.format("%s<td>%s</td>", identLine(index), super.generateData(data));
+        return String.format("%s<td>%s</td>", indentLine(index), super.generateData(data));
     }
 
 }

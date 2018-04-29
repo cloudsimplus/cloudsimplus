@@ -222,7 +222,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return The count of events
      */
     public long numEventsWaiting() {
-        return simulation.waiting(this, Simulation.SIM_ANY);
+        return simulation.waiting(this, Simulation.ANY_EVT);
     }
 
     /**
@@ -277,7 +277,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return the simulation event
      */
     public SimEvent getNextEvent() {
-        return getNextEvent(Simulation.SIM_ANY);
+        return getNextEvent(Simulation.ANY_EVT);
     }
 
     /**

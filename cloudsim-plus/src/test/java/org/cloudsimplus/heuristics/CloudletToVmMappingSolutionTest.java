@@ -23,8 +23,7 @@
  */
 package org.cloudsimplus.heuristics;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -152,36 +151,38 @@ public class CloudletToVmMappingSolutionTest {
     @Test
     public void testSwapVmsOfTwoMapEntries() {
         final int numberOfEntries = 2;
-        final Map.Entry<Cloudlet, Vm> originalEntries[] = new Map.Entry[numberOfEntries];
-        final Map.Entry<Cloudlet, Vm> swapedVmsEntries[] = new Map.Entry[numberOfEntries];
         final Cloudlet[] cloudlets = new Cloudlet[numberOfEntries];
+
         for(int i = 1; i <= numberOfEntries; i++){
             cloudlets[i-1] = CloudletSimpleTest.createCloudlet(i, i*1000, i);
         }
 
         final Vm[] vms = createVms(numberOfEntries);
 
-        IntStream.range(0, numberOfEntries).forEach(i -> {
-            originalEntries[i] = new HashMap.SimpleEntry(cloudlets[i], vms[i]);
+        final List<Map.Entry<Cloudlet, Vm>> originalEntries = new ArrayList<>(numberOfEntries);
+        final List<Map.Entry<Cloudlet, Vm>> swappedVmsEntries = new ArrayList<>(numberOfEntries);
+        for (int i = 0; i < numberOfEntries; i++) {
+            originalEntries.add(new AbstractMap.SimpleEntry<>(cloudlets[i], vms[i]));
+
             /*After swapping VMs that are hosting given cloudlets,
             cloudlet 0 that was in VM 0 will be placed into VM 1,
             and cloudlet 1 that was in VM 1 will be placed into VM 0.
             The line below makes this change in the index of the VM
             to swap.*/
-            final int swappedVmIndex = (i+1)%numberOfEntries;
-            swapedVmsEntries[i] = new HashMap.SimpleEntry(cloudlets[i], vms[swappedVmIndex]);
-        });
+            final int swappedVmIndex = (i + 1) % numberOfEntries;
+            swappedVmsEntries.add(new AbstractMap.SimpleEntry<>(cloudlets[i], vms[swappedVmIndex])) ;
+        }
 
         final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         instance.swapVmsOfTwoMapEntries(originalEntries);
 
-        assertArrayEquals(
+        assertEquals(
             String.format(
                 "The VMs of the given cloudlets were not swapped. It was expected the cloudlet %d to move to VM %d and cloudlet %d to move to VM %d.",
-                swapedVmsEntries[0].getKey().getId(),
-                swapedVmsEntries[0].getValue().getId(),
-                swapedVmsEntries[1].getKey().getId(),
-                swapedVmsEntries[1].getValue().getId()),
-            swapedVmsEntries, originalEntries);
+                swappedVmsEntries.get(0).getKey().getId(),
+                swappedVmsEntries.get(0).getValue().getId(),
+                swappedVmsEntries.get(1).getKey().getId(),
+                swappedVmsEntries.get(1).getValue().getId()),
+            swappedVmsEntries, originalEntries);
     }
 }

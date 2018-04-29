@@ -807,7 +807,7 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public final Cloudlet setFileSize(final long fileSize) {
         if (fileSize <= 0) {
-            throw new IllegalArgumentException("Cloudlet fize size has to be greater than zero.");
+            throw new IllegalArgumentException("Cloudlet file size has to be greater than zero.");
         }
 
         this.fileSize = fileSize;

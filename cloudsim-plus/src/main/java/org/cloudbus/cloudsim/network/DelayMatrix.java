@@ -42,7 +42,7 @@ public class DelayMatrix {
 	 */
 	public DelayMatrix(TopologicalGraph graph, boolean directed) {
 
-		// lets preinitialize the Delay-Matrix
+		// lets pre-initialize the Delay-Matrix
 		createDelayMatrix(graph, directed);
 
 		// now its time to calculate all possible connection-delays
@@ -57,7 +57,7 @@ public class DelayMatrix {
 	 * @return the delay between the given two nodes
 	 */
 	public double getDelay(int srcID, int destID) {
-		// check the nodeIDs against internal array-boundarys
+		// check the nodeIDs against internal array-boundaries
 		if (srcID > mTotalNodeNum || destID > mTotalNodeNum) {
 			throw new ArrayIndexOutOfBoundsException("srcID or destID is higher than highest stored node-ID!");
 		}

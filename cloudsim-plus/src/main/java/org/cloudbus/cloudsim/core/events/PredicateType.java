@@ -6,18 +6,12 @@
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
-package org.cloudbus.cloudsim.core.predicates;
+package org.cloudbus.cloudsim.core.events;
 
-import org.cloudbus.cloudsim.core.events.SimEvent;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
- * A predicate to select events with specific {@link SimEvent#getTag() tags}.
+ * A predicate to select events with specific {@link SimEvent#getTag() tag}.
  *
  * @author Marcos Dias de Assuncao
  * @see Predicate
@@ -25,31 +19,27 @@ import java.util.stream.Collectors;
  */
 public class PredicateType implements Predicate<SimEvent> {
 
-    /**
-     * Array of tags to verify if the tag of received events correspond to.
-     */
-    private final List<Integer> tags;
+    private final int tag;
 
     /**
      * Constructor used to select events with the given tag value.
      *
      * @param tag an event {@link SimEvent#getTag() tag} value
      */
-    public PredicateType(int tag) {
-        this.tags = new ArrayList<>(1);
-        this.tags.add(tag);
+    public PredicateType(final int tag) {
+        this.tag = tag;
     }
 
     /**
-     * Matches any event that has one of the specified {@link #tags}.
+     * Matches any event that has one of the specified {@link #tag}.
      *
      * @param ev {@inheritDoc}
      * @return {@inheritDoc}
-     * @see #tags
+     * @see #tag
      */
     @Override
-    public boolean test(SimEvent ev) {
-        return tags.stream().anyMatch(tag -> tag == ev.getTag());
+    public boolean test(final SimEvent ev) {
+        return tag == ev.getTag();
     }
 
 }

@@ -8,7 +8,7 @@
 package org.cloudbus.cloudsim.util;
 
 /**
- * Contains additional tags for the DataCloud functionalities, such as file
+ * Contains additional tags for DataCloud features, such as file
  * information retrieval, file transfers, and storage info.
  *
  * @author Uros Cibej

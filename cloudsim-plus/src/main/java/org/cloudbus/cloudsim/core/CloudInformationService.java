@@ -80,10 +80,6 @@ public class CloudInformationService extends CloudSimEntity {
             case CloudSimTags.DATACENTER_LIST_REQUEST:
                 super.send(ev.getSource(), 0, ev.getTag(), datacenterList);
             break;
-
-            default:
-                processOtherEvent(ev);
-            break;
         }
     }
 
@@ -101,27 +97,6 @@ public class CloudInformationService extends CloudSimEntity {
      */
     public Set<Datacenter> getDatacenterList() {
         return datacenterList;
-    }
-
-    /**
-     * Process non-default received events that aren't processed by the
-     * {@link #processEvent(SimEvent)} method. This
-     * method should be overridden by subclasses in other to process new defined
-     * events.
-     *
-     * @param ev a CloudSimEvent object
-     * @pre ev != null
-     * @post $none
-     */
-    protected void processOtherEvent(final SimEvent ev) {
-        if (ev == null) {
-            Log.printConcatLine("CloudInformationService.processOtherEvent(): ",
-                "Unable to handle a request since the event is null.");
-            return;
-        }
-
-        Log.printLine("CloudInformationSevice.processOtherEvent(): " + "Unable to handle a request from "
-            + ev.getSource().getName() + " with event tag = " + ev.getTag());
     }
 
     /**

@@ -65,7 +65,7 @@ public interface DatacenterBroker extends SimEntity {
     boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm);
 
     /**
-     * Gets the list of cloudlets submmited to the broker that are waiting to be created inside
+     * Gets the list of cloudlets submitted to the broker that are waiting to be created inside
      * some Vm yet.
      *
      * @param <T> the class of Cloudlets inside the list
