@@ -10,9 +10,9 @@ package org.cloudbus.cloudsim.cloudlets.network;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 
 /**
  * NetworkCloudlet class extends Cloudlet to support simulation of complex
@@ -33,9 +33,10 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
  * </p>
  *
  * @author Saurabh Kumar Garg
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  *
- * @TODO @author manoelcampos See how to implement the NULL pattern for this class.
+ * @TODO @author manoelcampos Check how to implement the NULL pattern for this class.
  */
 public class NetworkCloudlet extends CloudletSimple {
 
@@ -119,43 +120,40 @@ public class NetworkCloudlet extends CloudletSimple {
      * @return true if the current task finished and the next one was started, false otherwise
      */
     public boolean startNextTaskIfCurrentIsFinished(final double nextTaskStartTime){
-        /**
-         * @todo @author manoelcampos CloudletTask should implement
-         * Null Object Pattern to avoid these null checks.
-         */
-        final CloudletTask nextTask = getNextTaskIfCurrentIfFinished();
-        if(nextTask == null){
-            return false;
-        }
-
-        nextTask.setStartTime(nextTaskStartTime);
-        return true;
+        return getNextTaskIfCurrentIfFinished()
+                    .map(task -> task.setStartTime(nextTaskStartTime))
+                    .isPresent();
     }
 
     /**
-     * Gets the current task.
+     * Gets an {@link Optional} containing the current task
+     * or an {@link Optional#empty()}.
      *
      * @return
      */
-    public CloudletTask getCurrentTask() {
+    public Optional<CloudletTask> getCurrentTask() {
         if (currentTaskNum < 0 || currentTaskNum >= tasks.size()) {
-            return null;
+            return Optional.empty();
         }
 
-        return tasks.get(currentTaskNum);
+        return Optional.of(tasks.get(currentTaskNum));
     }
 
     /**
-     * Gets the next task in the list if the current task is finished.
-     * @return the next task or null if the current task is already the last one
+     * Gets an {@link Optional} containing the next task in the list if the current task is finished.
+     *
+     * @return the next task if the current one is finished;
+     * otherwise an {@link Optional#empty()} if the current task is already the last one
      * or it is not finished yet.
      */
-    protected CloudletTask getNextTaskIfCurrentIfFinished(){
-        if(getCurrentTask() != null && !getCurrentTask().isFinished())
-            return null;
+    private Optional<CloudletTask> getNextTaskIfCurrentIfFinished(){
+        if(getCurrentTask().map(CloudletTask::isActive).isPresent()) {
+            return Optional.empty();
+        }
 
-        if(this.currentTaskNum <= tasks.size()-1)
+        if(this.currentTaskNum <= tasks.size()-1) {
             this.currentTaskNum++;
+        }
 
         return getCurrentTask();
     }
@@ -175,14 +173,10 @@ public class NetworkCloudlet extends CloudletSimple {
     @Override
     public long getLength() {
         return getTasks().stream()
-                .filter(t -> t instanceof CloudletExecutionTask)
-                .mapToLong(t -> ((CloudletExecutionTask)t).getLength())
+                .filter(CloudletTask::isExecutionTask)
+                .map(t -> (CloudletExecutionTask)t)
+                .mapToLong(CloudletExecutionTask::getLength)
                 .sum();
-    }
-
-    @Override
-    public boolean setFinishedLengthSoFar(final long length) {
-        return super.setFinishedLengthSoFar(length);
     }
 
     /**
@@ -197,9 +191,4 @@ public class NetworkCloudlet extends CloudletSimple {
         tasks.add(task);
         return this;
     }
-
-    protected long numberOfExecutionTasks() {
-        return getTasks().stream().filter(t -> t instanceof CloudletExecutionTask).count();
-    }
-
 }

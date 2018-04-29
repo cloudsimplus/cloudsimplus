@@ -458,6 +458,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      */
     @Override
     public List<CloudletExecution> getCloudletExecList() {
+        //The method was overridden here just to extend its JavaDoc.
         return super.getCloudletExecList();
     }
 

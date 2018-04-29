@@ -68,7 +68,7 @@ public class VmClonerSimple implements VmCloner {
         Objects.requireNonNull(sourceVm);
         final Vm clonedVm = vmClonerFunction.apply(sourceVm);
         final List<Cloudlet> clonedCloudlets = cloudletsClonerFunction.apply(sourceVm);
-        clonedCloudlets.stream().forEach(c -> c.setVm(clonedVm));
+        clonedCloudlets.forEach(c -> c.setVm(clonedVm));
         clonedVmsNumber++;
         return new HashMap.SimpleEntry<>(clonedVm, clonedCloudlets);
     }

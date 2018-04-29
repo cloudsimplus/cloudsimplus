@@ -11,7 +11,6 @@ package org.cloudbus.cloudsim.network.topologies.readers;
 import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 
 /**

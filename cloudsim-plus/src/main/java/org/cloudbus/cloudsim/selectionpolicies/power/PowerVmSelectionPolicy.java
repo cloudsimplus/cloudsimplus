@@ -48,7 +48,7 @@ public abstract class PowerVmSelectionPolicy {
 	 * @return the list of migratable VMs
 	 */
 	protected List<Vm> getMigratableVms(Host host) {
-        return host.<Vm>getVmList().stream()
+        return host.getVmList().stream()
             .filter(vm -> !vm.isInMigration())
             .collect(Collectors.toList());
 	}

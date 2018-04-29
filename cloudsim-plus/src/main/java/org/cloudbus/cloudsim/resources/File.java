@@ -31,21 +31,6 @@ public class File {
     public static final int TYPE_UNKOWN = 0;
 
     /**
-     * Denotes that the type of this file is a raw data.
-     */
-    public static final int TYPE_RAW_DATA = 1;
-
-    /**
-     * Denotes that the type of this file is a reconstructed data.
-     */
-    public static final int TYPE_RECONSTRUCTED_DATA = 2;
-
-    /**
-     * Denotes that the type of this file is a tag data.
-     */
-    public static final int TYPE_TAG_DATA = 3;
-
-    /**
      * Logical file name.
      */
     private String name;
@@ -100,6 +85,7 @@ public class File {
 
         init(file.getName(), file.getSize());
         this.setDatacenter(file.getDatacenter());
+        this.deleted = file.deleted;
 
         file.getFileAttribute().copyValue(this.attribute);
         this.attribute.setMasterCopy(false);   // set this file as a replica

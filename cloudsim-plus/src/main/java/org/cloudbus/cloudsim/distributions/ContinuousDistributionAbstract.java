@@ -17,7 +17,7 @@ public abstract class ContinuousDistributionAbstract implements ContinuousDistri
      * The actual random number generator that will be the base
      * to generate random numbers following a continuous distribution.
      */
-    private RealDistribution numGen;
+    private final RealDistribution numGen;
 
     /**
      * Creates a new continuous random number generator

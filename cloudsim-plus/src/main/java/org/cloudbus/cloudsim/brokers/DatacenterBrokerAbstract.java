@@ -50,7 +50,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #addOnVmsCreatedListener(EventListener)
      * @see #addOneTimeOnVmsCreatedListener(EventListener)
      */
-    private Map<EventListener<DatacenterBrokerEventInfo>, Boolean> onVmsCreatedListeners;
+    private final Map<EventListener<DatacenterBrokerEventInfo>, Boolean> onVmsCreatedListeners;
 
     /**
      * @see #getLastSelectedVm()
@@ -177,13 +177,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * A {@link Function} that can be used to indicate that any VM has not to wait
+     * A {@link Function} that can be used to indicate that any VM will not wait
      * to be destroyed after becoming idle.
      *
-     * @param vm the VM to define the destruction wait time
-     * @return always 0 to indicate there is not delay to destroy a VM after it
+     * @param vm the VM to define the destruction wait time for
+     * @return always 0 to indicate there is not delay to destroy a any VM after it
      *         becoming idle
      */
+    @SuppressWarnings("unused")
     private Double noDelayToDestroyIdleVm(final Vm vm) {
         return 0.0;
     }

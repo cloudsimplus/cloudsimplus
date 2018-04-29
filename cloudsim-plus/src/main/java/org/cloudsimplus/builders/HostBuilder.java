@@ -54,12 +54,10 @@ public class HostBuilder extends Builder {
     private Class<? extends VmSchedulerAbstract> vmSchedulerClass = VmSchedulerTimeShared.class;
     private EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener = EventListener.NULL;
 
-    private int numberOfCreatedHosts;
     private final List<Host> hosts;
 
     public HostBuilder() {
         this.hosts = new ArrayList<>();
-        this.numberOfCreatedHosts = 0;
     }
 
     public List<Host> getHosts() {

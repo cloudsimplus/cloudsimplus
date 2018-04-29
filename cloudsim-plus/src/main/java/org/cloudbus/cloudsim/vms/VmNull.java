@@ -168,8 +168,9 @@ final class VmNull implements Vm {
     @Override public void deallocateResource(Class<? extends ResourceManageable> c) {/**/}
     @Override public void setFailed(boolean failed) {/**/}
     @Override public boolean isFailed() {
-        return false;
+        return true;
     }
+    @Override public boolean isWorking() { return false; }
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }

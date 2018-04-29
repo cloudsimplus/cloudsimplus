@@ -26,7 +26,6 @@ package org.cloudsimplus.vmtemplates;
 import com.google.gson.Gson;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
-import java.io.FileNotFoundException;
 import java.io.InputStreamReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;

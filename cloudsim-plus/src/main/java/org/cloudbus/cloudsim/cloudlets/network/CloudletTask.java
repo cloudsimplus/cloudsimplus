@@ -64,7 +64,7 @@ public abstract class CloudletTask implements Identificable {
      * Creates a new task.
      * @param id task id
      */
-    public CloudletTask(int id) {
+    public CloudletTask(final int id) {
         super();
         this.id = id;
         this.startTime = -1;
@@ -83,10 +83,11 @@ public abstract class CloudletTask implements Identificable {
 
     /**
      * Sets the id of the CloudletTask.
-     * @param id
+     * @param id the ID to set
      */
-    public void setId(int id) {
+    public CloudletTask setId(final int id) {
         this.id = id;
+        return this;
     }
 
     /**
@@ -101,8 +102,9 @@ public abstract class CloudletTask implements Identificable {
      * Sets the memory amount used by the task.
      * @param memory the memory amount to set
      */
-    public void setMemory(long memory) {
+    public CloudletTask setMemory(final long memory) {
         this.memory = memory;
+        return this;
     }
 
     /**
@@ -117,8 +119,9 @@ public abstract class CloudletTask implements Identificable {
      * Sets the time the task started executing.
      * @param startTime the start time to set
      */
-    public void setStartTime(double startTime) {
+    public CloudletTask setStartTime(final double startTime) {
         this.startTime = startTime;
+        return this;
     }
 
     /**
@@ -129,17 +132,29 @@ public abstract class CloudletTask implements Identificable {
         return cloudlet;
     }
 
-    public void setCloudlet(NetworkCloudlet cloudlet) {
+    public CloudletTask setCloudlet(final NetworkCloudlet cloudlet) {
         this.cloudlet = cloudlet;
+        return this;
     }
 
     /**
      * Indicates if the task is finished or not.
      *
-     * @return true if the task has finished
+     * @return true if the task has finished, false otherwise
+     * @see #isActive()
      */
     public boolean isFinished(){
         return finished;
+    }
+
+    /**
+     * Indicates if the task is active (it's not finished).
+     *
+     * @return true if the task is active, false otherwise
+     * @see #isFinished()
+     */
+    public boolean isActive(){
+        return !isFinished();
     }
 
     /**
@@ -147,7 +162,7 @@ public abstract class CloudletTask implements Identificable {
      * @param finished true to set the task as finished, false otherwise
      * @throws RuntimeException when the task is already finished and you try to set it as unfinished
      */
-    protected void setFinished(boolean finished){
+    protected void setFinished(final boolean finished){
         if(this.finished && !finished) {
             throw new IllegalArgumentException("The task is already finished. You cannot set it as unfinished.");
         }
@@ -176,4 +191,15 @@ public abstract class CloudletTask implements Identificable {
         return finishTime;
     }
 
+    public boolean isExecutionTask(){
+        return this instanceof CloudletExecutionTask;
+    }
+
+    public boolean isSendTask(){
+        return this instanceof CloudletSendTask;
+    }
+
+    public boolean isReceiveTask(){
+        return this instanceof CloudletReceiveTask;
+    }
 }

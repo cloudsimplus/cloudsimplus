@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.cloudlets.network;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.network.VmPacket;

@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.resources.Pe;
 
 /**
  * Provides a model for power consumption of hosts, depending on utilization of a critical system

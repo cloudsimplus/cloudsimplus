@@ -6,12 +6,10 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.core.predicates.PredicateType;
 import org.cloudbus.cloudsim.network.IcmpPacket;
-import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -121,60 +119,51 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public void processEvent(final SimEvent ev) {
-        int processed = 0;
-        processed += processCloudletEvents(ev);
-        processed += processVmEvents(ev);
-        processed += processNetworkEvents(ev);
-
-        if(processed == 0){
-            processOtherEvent(ev);
-        }
+        processCloudletEvents(ev);
+        processVmEvents(ev);
+        processNetworkEvents(ev);
     }
 
-    private int processNetworkEvents(final SimEvent ev) {
+    private void processNetworkEvents(final SimEvent ev) {
         switch (ev.getTag()) {
             case CloudSimTags.ICMP_PKT_SUBMIT:
                 processPingRequest(ev);
-                return 1;
+            break;
         }
-
-        return 0;
     }
 
     /**
      * Process a received event.
      * @param ev the event to be processed
-     * @return 1 if the event was processed, 0 otherwise
      */
-    private int processVmEvents(final SimEvent ev) {
+    private void processVmEvents(final SimEvent ev) {
         switch (ev.getTag()) {
             case CloudSimTags.VM_CREATE:
                 processVmCreate(ev, false);
-                return 1;
+            break;
             case CloudSimTags.VM_CREATE_ACK:
                 processVmCreate(ev, true);
-                return 1;
+            break;
             case CloudSimTags.VM_VERTICAL_SCALING:
-                return BooleanUtils.toInteger(requestVmVerticalScaling(ev));
+                requestVmVerticalScaling(ev);
+            break;
             case CloudSimTags.VM_DESTROY:
                 processVmDestroy(ev, false);
-                return 1;
+            break;
             case CloudSimTags.VM_DESTROY_ACK:
                 processVmDestroy(ev, true);
-                return 1;
+            break;
             case CloudSimTags.VM_MIGRATE:
                 finishVmMigration(ev, false);
-                return 1;
+            break;
             case CloudSimTags.VM_MIGRATE_ACK:
                 finishVmMigration(ev, true);
-                return 1;
+            break;
             case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT:
                 updateCloudletProcessing();
                 checkCloudletsCompletionForAllHosts();
-                return 1;
+            break;
         }
-
-        return 0;
     }
 
     /**
@@ -192,57 +181,55 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return vmAllocationPolicy.scaleVmVertically((VerticalVmScaling)ev.getData());
     }
 
-    private int processCloudletEvents(final SimEvent ev) {
+    private void processCloudletEvents(final SimEvent ev) {
         switch (ev.getTag()) {
             // New Cloudlet arrives
             case CloudSimTags.CLOUDLET_SUBMIT:
                 processCloudletSubmit(ev, false);
-                return 1;
+            break;
 
             // New Cloudlet arrives, but the sender asks for an ack
             case CloudSimTags.CLOUDLET_SUBMIT_ACK:
                 processCloudletSubmit(ev, true);
-                return 1;
+            break;
 
             // Cancels a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_CANCEL:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_CANCEL);
-                return 1;
+            break;
 
             // Pauses a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_PAUSE:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_PAUSE);
-                return 1;
+            break;
 
             // Pauses a previously submitted Cloudlet, but the sender
             // asks for an acknowledgement
             case CloudSimTags.CLOUDLET_PAUSE_ACK:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_PAUSE_ACK);
-                return 1;
+            break;
 
             // Resumes a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_RESUME:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_RESUME);
-                return 1;
+            break;
 
             // Resumes a previously submitted Cloudlet, but the sender
             // asks for an acknowledgement
             case CloudSimTags.CLOUDLET_RESUME_ACK:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_RESUME_ACK);
-                return 1;
+            break;
 
             // Moves a previously submitted Cloudlet to a different Datacenter
             case CloudSimTags.CLOUDLET_MOVE:
                 processCloudletMove((Object[]) ev.getData(), CloudSimTags.CLOUDLET_MOVE);
-                return 1;
+            break;
 
             // Moves a previously submitted Cloudlet to a different Datacenter
             case CloudSimTags.CLOUDLET_MOVE_ACK:
                 processCloudletMove((Object[]) ev.getData(), CloudSimTags.CLOUDLET_MOVE_ACK);
-                return 1;
+            break;
         }
-
-        return 0;
     }
 
     /**
@@ -1090,19 +1077,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         vmAllocationPolicy.setDatacenter(this);
         return this;
     }
-
-    /**
-     * Process non-default received events that aren't processed by the
-     * {@link #processEvent(SimEvent)} method. This
-     * method should be overridden by subclasses in other to process new defined
-     * events.
-     *
-     * @param ev information about the event just happened
-     *
-     * @pre $none
-     * @post $none
-     */
-    private void processOtherEvent(SimEvent ev) {/**/}
 
     @Override
     public String toString() {

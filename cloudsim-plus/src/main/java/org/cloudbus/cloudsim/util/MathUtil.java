@@ -44,16 +44,6 @@ public final class MathUtil {
     }
 
     /**
-     * Converts a List to array.
-     *
-     * @param list the list of numbers
-     * @return the double[]
-     */
-    public static double[] listToArray(final List<? extends Number> list) {
-        return list.stream().mapToDouble(Number::doubleValue).toArray();
-    }
-
-    /**
      * Gets the median from a list of numbers.
      *
      * @param list the list of numbers
@@ -144,16 +134,6 @@ public final class MathUtil {
      * @param data the array of numbers
      * @return the mad
      */
-    public static double mad(final List<Double> data) {
-        return mad(data.stream().mapToDouble(v->v).toArray());
-    }
-
-    /**
-     * Gets the Median absolute deviation (MAD) from a array of numbers.
-     *
-     * @param data the array of numbers
-     * @return the mad
-     */
     public static double mad(final double... data) {
         if (data.length == 0) {
             return 0;
@@ -196,20 +176,6 @@ public final class MathUtil {
             }
         }
         return i + 2;
-    }
-
-    /**
-     * Gets the length of the shortest row in a given matrix
-     *
-     * @param data the data matrix
-     * @return the length of the shortest row int he matrix
-     */
-    public static int countShortestRow(final double[][] data) {
-        int minLength = 0;
-        for (final double[] row : data) {
-            minLength = Math.min(row.length, minLength);
-        }
-        return minLength;
     }
 
     /**

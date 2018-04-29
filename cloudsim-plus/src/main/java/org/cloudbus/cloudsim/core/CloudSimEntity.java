@@ -368,15 +368,6 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
-     * Gets the event buffer.
-     *
-     * @return the event buffer
-     */
-    protected SimEvent getEventBuffer() {
-        return buffer;
-    }
-
-    /**
      * Sets the entity state.
      *
      * @param state the new state

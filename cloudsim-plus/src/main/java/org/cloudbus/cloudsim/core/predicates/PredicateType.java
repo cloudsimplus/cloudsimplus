@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
  * A predicate to select events with specific {@link SimEvent#getTag() tags}.
  *
  * @author Marcos Dias de Assuncao
- * @see PredicateNotType
  * @see Predicate
  * @since CloudSim Toolkit 1.0
  */
@@ -39,15 +38,6 @@ public class PredicateType implements Predicate<SimEvent> {
     public PredicateType(int tag) {
         this.tags = new ArrayList<>(1);
         this.tags.add(tag);
-    }
-
-    /**
-     * Constructor used to select events with a tag value equal to any of the specified tags.
-     *
-     * @param tags the list of {@link SimEvent#getTag() tags}
-     */
-    public PredicateType(int[] tags) {
-        this.tags = Arrays.stream(tags).boxed().collect(Collectors.toList());
     }
 
     /**

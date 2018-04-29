@@ -39,17 +39,17 @@ public class FloydWarshall {
      * Weights when k is equal to -1.
      * (used for dynamic programming).
      */
-    private double[][] dk_minus_one;
+    private final double[][] dk_minus_one;
 
     /**
      * The predecessor matrix (used for dynamic programming).
      */
-    private int[][] pk;
+    private final int[][] pk;
 
     /**
      * (used for dynamic programming).
      */
-    private int[][] pk_minus_one;
+    private final int[][] pk_minus_one;
 
     /**
      * Creates a matrix of network nodes.
@@ -58,7 +58,7 @@ public class FloydWarshall {
      */
     public FloydWarshall(final int numVertices) {
         this.numVertices = numVertices;
-        this.vertices = IntStream.range(0, numVertices).mapToObj(i -> i).collect(toList());
+        this.vertices = IntStream.range(0, numVertices).boxed().collect(toList());
         dk_minus_one = new double[numVertices][numVertices];
         pk = new int[numVertices][numVertices];
         pk_minus_one = new int[numVertices][numVertices];

@@ -24,6 +24,8 @@
 package org.cloudsimplus.faultinjection;
 
 import java.util.*;
+import static java.util.function.BinaryOperator.maxBy;
+
 import java.util.stream.Stream;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -39,6 +41,7 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
 
+import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -154,7 +157,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * A Pseudo Random Number Generator used to select a Host
      * and the number of PEs to set as fail.
      */
-    private ContinuousDistribution random;
+    private final ContinuousDistribution random;
 
     /**
      * A map that stores {@link VmCloner} objects to be used to clone
@@ -162,13 +165,13 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @see #addVmCloner(DatacenterBroker, VmCloner)
      */
-    private Map<DatacenterBroker, VmCloner> vmClonerMap;
+    private final Map<DatacenterBroker, VmCloner> vmClonerMap;
 
     /**
      * A Pseudo Random Number Generator which generates the times (in hours)
      * that Hosts failures will occur.
      */
-    private ContinuousDistribution faultArrivalTimesGeneratorInHours;
+    private final ContinuousDistribution faultArrivalTimesGeneratorInHours;
 
     /**
      * The attribute counts how many host failures the simulation had
@@ -214,7 +217,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * {@link PoissonDistr} to generate failure arrivals, but any {@link ContinuousDistribution}
      * can be used.
      */
-    public HostFaultInjection(Datacenter datacenter, ContinuousDistribution faultArrivalTimesGeneratorInHours) {
+    public HostFaultInjection(final Datacenter datacenter, final ContinuousDistribution faultArrivalTimesGeneratorInHours) {
         super(datacenter.getSimulation());
         this.setDatacenter(datacenter);
         this.lastFailedHost = Host.NULL;
@@ -264,7 +267,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     @Override
-    public void processEvent(SimEvent ev) {
+    public void processEvent(final SimEvent ev) {
         switch (ev.getTag()) {
             case CloudSimTags.HOST_FAILURE:
                 generateHostFault();
@@ -410,7 +413,7 @@ public class HostFaultInjection extends CloudSimEntity {
             i = i % vmsWithPes.size();
             Vm vm = vmsWithPes.get(i);
             lastFailedHost.getVmScheduler().deallocatePesFromVm(vm, 1);
-            vm.getCloudletScheduler().deallocatePesFromVm(vm, 1);
+            vm.getCloudletScheduler().deallocatePesFromVm(1);
             //remove 1 failed PE from the VM
             vm.getProcessor().deallocateAndRemoveResource(1);
 
@@ -425,9 +428,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private int numberOfFailedPesToRemoveFromVms() {
         final int hostWorkingPes = (int)lastFailedHost.getNumberOfWorkingPes();
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
-        int failedPesToRemoveFromVms = vmsRequiredPes-hostWorkingPes;
-
-        return failedPesToRemoveFromVms;
+        return vmsRequiredPes - hostWorkingPes;
     }
 
     /**
@@ -446,18 +447,18 @@ public class HostFaultInjection extends CloudSimEntity {
      * Sets to failed all VMs from a given list due to
      * Host PEs failures.
      */
-    private void setVmListToFailed(List<Vm> vms) {
+    private void setVmListToFailed(final List<Vm> vms) {
         final Map<DatacenterBroker, Vm> lastVmFailedByBroker = getLastFailedVmByBroker(vms);
 
         vms.forEach(this::setVmToFailed);
         lastVmFailedByBroker.forEach(this::createVmCloneIfAllVmsDestroyed);
     }
 
-    private Map<DatacenterBroker, Vm> getLastFailedVmByBroker(List<Vm> vmsWithoutPes) {
+    private Map<DatacenterBroker, Vm> getLastFailedVmByBroker(final List<Vm> vmsWithoutPes) {
         final Comparator<Vm> comparator = Comparator.comparingInt(Vm::getId);
-        return vmsWithoutPes.stream().collect(
-                groupingBy(Vm::getBroker,
-                collectingAndThen(maxBy(comparator), Optional::get)));
+        return vmsWithoutPes
+                    .stream()
+                    .collect(toMap(Vm::getBroker, identity(), maxBy(comparator)));
     }
 
     /**
@@ -482,8 +483,8 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param broker
      * @param lastVmFailedFromBroker
      */
-    private void createVmCloneIfAllVmsDestroyed(DatacenterBroker broker, Vm lastVmFailedFromBroker) {
-        if(!isAllVmsFailed(broker)){
+    private void createVmCloneIfAllVmsDestroyed(final DatacenterBroker broker, final Vm lastVmFailedFromBroker) {
+        if(isSomeVmWorking(broker)){
             return;
         }
 
@@ -524,14 +525,14 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @param vm VM to set to failed
      */
-    private void setVmToFailed(Vm vm) {
+    private void setVmToFailed(final Vm vm) {
         if (Host.NULL.equals(lastFailedHost)) {
             return;
         }
 
         vm.setFailed(true);
         final DatacenterBroker broker = vm.getBroker();
-        if(isVmClonerSet(broker) && !isAllVmsFailed(broker)){
+        if(isVmClonerSet(broker) && isSomeVmWorking(broker)){
             Log.printFormattedLine(
                 "\n\t\t\t #VM %d destroyed but not cloned, since there are %d VMs for the broker %d yet\n",
                 vm.getId(), getRunningVmsNumber(broker), broker.getId());
@@ -552,7 +553,7 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @param broker the broker to increase the number of faults
      */
-    private void registerFaultOfAllVms(DatacenterBroker broker) {
+    private void registerFaultOfAllVms(final DatacenterBroker broker) {
         faultsOfAllVmsByBroker.merge(broker, 1, (old, inc) -> old + inc);
     }
 
@@ -562,16 +563,16 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param broker the broker the VM belongs to
      * @return the {@link VmCloner} object or {@link VmCloner#NULL} if no cloner was set
      */
-    private VmCloner getVmCloner(DatacenterBroker broker) {
+    private VmCloner getVmCloner(final DatacenterBroker broker) {
         return vmClonerMap.getOrDefault(broker, VmCloner.NULL);
     }
 
-    private boolean isAllVmsFailed(DatacenterBroker broker) {
-        return broker.getVmExecList().stream().allMatch(Vm::isFailed);
+    private boolean isSomeVmWorking(final DatacenterBroker broker) {
+        return broker.getVmExecList().stream().anyMatch(Vm::isWorking);
     }
 
-    private long getRunningVmsNumber(DatacenterBroker broker) {
-        return broker.getVmExecList().stream().filter(vm -> !vm.isFailed()).count();
+    private long getRunningVmsNumber(final DatacenterBroker broker) {
+        return broker.getVmExecList().stream().filter(Vm::isWorking).count();
     }
 
     /**
@@ -579,7 +580,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param broker broker to check if it has a {@link VmCloner}.
      * @return true if the broker has a {@link VmCloner}, false otherwise
      */
-    private boolean isVmClonerSet(DatacenterBroker broker) {
+    private boolean isVmClonerSet(final DatacenterBroker broker) {
         return vmClonerMap.getOrDefault(broker, VmCloner.NULL) != VmCloner.NULL;
     }
 
@@ -609,7 +610,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param broker the broker to get the availability of its VMs
      * @return
      */
-    public double availability(DatacenterBroker broker) {
+    public double availability(final DatacenterBroker broker) {
         //no failures means 100% availability
         final double mtbf = meanTimeBetweenVmFaultsInMinutes(broker);
         if(mtbf == 0) {
@@ -627,7 +628,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @return
      */
     public long getNumberOfFaults() {
-        return faultsOfAllVmsByBroker.values().stream().count();
+        return (long) faultsOfAllVmsByBroker.values().size();
     }
 
     /**
@@ -647,20 +648,11 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the sum of the time (in minutes) each failed VM took to recovery
-     * from failure.
-     * @return
-     */
-    private double totalVmsRecoveryTimeInMinutes() {
-        return totalVmsRecoveryTimeInMinutes(null);
-    }
-
-    /**
      * Gets the average of the time (in minutes) all failed VMs belonging to a broker took to recovery
      * from failure.
      * @return
      */
-    private double totalVmsRecoveryTimeInMinutes(DatacenterBroker broker) {
+    private double totalVmsRecoveryTimeInMinutes(final DatacenterBroker broker) {
         final Stream<Double> stream = broker == null ?
                 vmRecoveryTimeSecsMap.values().stream() :
                 vmRecoveryTimeSecsMap.entrySet().stream()
@@ -687,24 +679,26 @@ public class HostFaultInjection extends CloudSimEntity {
      * @see #meanTimeBetweenVmFaultsInMinutes()
      */
     public double meanTimeBetweenHostFaultsInMinutes() {
-        final List<Double> faultTimes = hostFaultsTimeSecsMap
-                .values()
-                .stream()
-                .flatMap(list -> list.stream())
-                .sorted()
-                .collect(toList());
-        if(faultTimes.isEmpty()){
+        final double[] faultTimes = hostFaultsTimeSecsMap
+            .values()
+            .stream()
+            .flatMap(Collection::stream)
+            .mapToDouble(v -> v)
+            .sorted()
+            .toArray();
+
+        if(faultTimes.length == 0){
             return 0;
         }
 
         //computes the differences between failure times t2 - t1
-        double sum=0, previous=faultTimes.get(0);
-        for(final Double v: faultTimes) {
+        double sum=0, previous=faultTimes[0];
+        for(final double v: faultTimes) {
             sum += (v - previous);
             previous = v;
         }
 
-        final double seconds = sum/faultTimes.size();
+        final double seconds = sum/faultTimes.length;
         return (long)(seconds/60.0);
     }
 
@@ -794,8 +788,8 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private long getPesSumOfWorkingVms() {
         return lastFailedHost.getVmList().stream()
-                .filter(vm -> !vm.isFailed())
-                .mapToLong(vm -> vm.getNumberOfPes())
+                .filter(Vm::isWorking)
+                .mapToLong(Machine::getNumberOfPes)
                 .sum();
     }
 
@@ -827,7 +821,7 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @param datacenter the datacenter to set
      */
-    protected final void setDatacenter(Datacenter datacenter) {
+    protected final void setDatacenter(final Datacenter datacenter) {
         Objects.requireNonNull(datacenter);
         this.datacenter = datacenter;
     }
@@ -842,7 +836,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param broker the broker to set the VM cloner Function to
      * @param cloner the {@link VmCloner} to set
      */
-    public void addVmCloner(DatacenterBroker broker, VmCloner cloner) {
+    public void addVmCloner(final DatacenterBroker broker, final VmCloner cloner) {
         Objects.requireNonNull(broker);
         Objects.requireNonNull(cloner);
         this.vmClonerMap.put(broker, cloner);

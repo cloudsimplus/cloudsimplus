@@ -17,7 +17,6 @@ import java.util.stream.Stream;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -367,7 +366,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         }
 
         Log.printLine("\tReallocation of VMs from overloaded hosts: ");
-        VmList.sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
+        sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (final Vm vm : vmsToMigrate) {
             findHostForVm(vm, overloadedHosts).ifPresent(host -> addVmToMigrationMap(migrationMap, vm, host, "\t%s will be migrated to %s"));
         }
@@ -389,7 +388,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             final Set<? extends Host> excludedHosts)
     {
         final Map<Vm, Host> migrationMap = new HashMap<>();
-        VmList.sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
+        sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (final Vm vm : vmsToMigrate) {
             //try to find a target Host to place a VM from an underloaded Host that is not underloaded too
             final Optional<Host> optional = findHostForVm(vm, excludedHosts, host -> !isHostUnderloaded(host));
@@ -402,6 +401,18 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         }
 
         return migrationMap;
+    }
+
+    /**
+     * Sort a given list of VMs by descending order of CPU utilization.
+     *
+     * @param vmList the vm list to be sorted
+     * @param simulationTime the simulation time to get the current CPU utilization for each Vm
+     */
+    private void sortByCpuUtilization(final List<? extends Vm> vmList, final double simulationTime) {
+        Comparator<Vm> comparator =
+            Comparator.comparingDouble(vm -> vm.getTotalCpuMipsUsage(simulationTime));
+        vmList.sort(comparator.reversed());
     }
 
     private <T extends Host> void addVmToMigrationMap(final Map<Vm, T> migrationMap, final Vm vm, final T targetHost, final String msg) {
@@ -594,7 +605,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         }
 
         for (final Vm vm : savedAllocation.keySet()) {
-            final Host host = (Host) savedAllocation.get(vm);
+            final Host host = savedAllocation.get(vm);
             if (!host.createTemporaryVm(vm)) {
                 Log.printFormattedLine("Couldn't restore %s on %s", vm, host);
                 return;

@@ -173,10 +173,9 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Releases a given number of PEs from a VM.
      *
-     * @param vm the vm to deallocate PEs from
      * @param pesToRemove number of PEs to deallocate
      */
-    void deallocatePesFromVm(Vm vm, int pesToRemove);
+    void deallocatePesFromVm(int pesToRemove);
 
     /**
      /**

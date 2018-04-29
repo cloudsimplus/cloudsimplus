@@ -71,7 +71,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * @see #getCloudletExecList()
      */
-    private List<CloudletExecution> cloudletExecList;
+    private final List<CloudletExecution> cloudletExecList;
     /**
      * @see #getCloudletWaitingList()
      */
@@ -85,7 +85,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * @see #getCloudletReturnedList()
      */
-    private Set<Cloudlet> cloudletReturnedList;
+    private final Set<Cloudlet> cloudletReturnedList;
 
     /**
      * Creates a new CloudletScheduler object.
@@ -504,6 +504,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param currentTime current simulation time
      */
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     private void updateCloudletsProcessing(final double currentTime) {
         /* Uses a traditional for to avoid ConcurrentModificationException,
          * e.g., in cases when Cloudlet is cancelled during simulation execution.*/
@@ -982,13 +983,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public void deallocatePesFromVm(final Vm vm, final int pesToRemove) {
-        removeUsedPes(pesToRemove);
-        deallocatePesFromMipsShare(pesToRemove);
-    }
-
-    private void deallocatePesFromMipsShare(int pesToRemove) {
+    public void deallocatePesFromVm(int pesToRemove) {
         pesToRemove = Math.min(pesToRemove, currentMipsShare.size());
+        removeUsedPes(pesToRemove);
         IntStream.range(0, pesToRemove).forEach(i -> currentMipsShare.remove(0));
     }
 

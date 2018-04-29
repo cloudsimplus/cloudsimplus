@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.allocationpolicies;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.LongStream;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;

@@ -35,7 +35,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "2.2.1";
+    public static final String VERSION = "2.2.2";
 
     /**
      * An array that works as a circular queue with capacity for just 2 elements
@@ -74,12 +74,12 @@ public class CloudSim implements Simulation {
     /**
      * The Cloud Information Service (CIS) entity.
      */
-    private CloudInformationService cis;
+    private final CloudInformationService cis;
 
     /**
      * The calendar.
      */
-    private Calendar calendar;
+    private final Calendar calendar;
 
     /**
      * The termination time.
@@ -94,17 +94,17 @@ public class CloudSim implements Simulation {
     /**
      * @see #getEntityList()
      */
-    private List<CloudSimEntity> entities;
+    private final List<CloudSimEntity> entities;
 
     /**
      * The queue of events that will be sent in a future simulation time.
      */
-    private FutureQueue future;
+    private final FutureQueue future;
 
     /**
      * The deferred event queue.
      */
-    private DeferredQueue deferred;
+    private final DeferredQueue deferred;
 
     /**
      * The current simulation clock.
@@ -121,7 +121,7 @@ public class CloudSim implements Simulation {
      * Received events are filtered based on the predicate associated with each entity
      * so that just the resulting events are sent to the entity.
      */
-    private Map<SimEntity, Predicate<SimEvent>> waitPredicates;
+    private final Map<SimEntity, Predicate<SimEvent>> waitPredicates;
 
     /**
      * @see #isPaused()
@@ -148,9 +148,9 @@ public class CloudSim implements Simulation {
      */
     private boolean alreadyRunOnce;
 
-    private Set<EventListener<SimEvent>> onEventProcessingListeners;
-    private Set<EventListener<EventInfo>> onSimulationPausedListeners;
-    private Set<EventListener<EventInfo>> onClockTickListeners;
+    private final Set<EventListener<SimEvent>> onEventProcessingListeners;
+    private final Set<EventListener<EventInfo>> onSimulationPausedListeners;
+    private final Set<EventListener<EventInfo>> onClockTickListeners;
 
     /**
      * Creates a CloudSim simulation.
@@ -802,7 +802,8 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public boolean removeOnClockTickListener(final EventListener<? extends EventInfo> listener) {
+    public boolean removeOnClockTickListener(final EventListener<EventInfo> listener) {
+        Objects.requireNonNull(listener);
         return onClockTickListeners.remove(listener);
     }
 

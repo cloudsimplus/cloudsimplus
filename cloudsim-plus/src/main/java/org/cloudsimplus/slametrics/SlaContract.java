@@ -27,7 +27,6 @@ import com.google.gson.Gson;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudsimplus.vmtemplates.AwsEc2Template;
 
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;

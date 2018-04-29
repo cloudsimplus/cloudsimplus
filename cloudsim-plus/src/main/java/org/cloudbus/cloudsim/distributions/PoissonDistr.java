@@ -44,7 +44,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * A Uniform Pseudo Random Number Generator used
      * internally to generate Poisson numbers.
      */
-    private UniformDistr rand;
+    private final UniformDistr rand;
 
     /**
      * @see #getLambda()

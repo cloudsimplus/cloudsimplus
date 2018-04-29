@@ -437,9 +437,16 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     /**
      * Checks if the Vm is failed or not.
      * @return
+     * @see #isWorking()
      */
     boolean isFailed();
 
+    /**
+     * Checks if the Vm is working or failed.
+     * @return
+     * @see #isFailed()
+     */
+    boolean isWorking();
 
     /**
      * {@inheritDoc}

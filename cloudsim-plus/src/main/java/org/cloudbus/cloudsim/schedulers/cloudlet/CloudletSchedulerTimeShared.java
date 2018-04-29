@@ -83,6 +83,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      */
     @Override
     public List<CloudletExecution> getCloudletWaitingList() {
+        //The method was overridden here just to extend its JavaDoc.
         return super.getCloudletWaitingList();
     }
 

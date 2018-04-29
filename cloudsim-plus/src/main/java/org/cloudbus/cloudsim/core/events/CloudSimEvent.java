@@ -13,8 +13,6 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
-import java.util.Objects;
-
 /**
  * This class represents a simulation event which is passed between the entities
  * in the simulation.

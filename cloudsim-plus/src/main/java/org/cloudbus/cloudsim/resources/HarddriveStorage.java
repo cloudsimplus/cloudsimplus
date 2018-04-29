@@ -40,7 +40,7 @@ public class HarddriveStorage implements FileStorage {
      * The available space is update according to files added or removed
      * from the HD.
      */
-    private Storage storage;
+    private final Storage storage;
 
     /**
      * An storage just to control the amount of space previously allocated
@@ -52,7 +52,7 @@ public class HarddriveStorage implements FileStorage {
      * @see #reserveSpace(int)
      * @see #addReservedFile(File)
      */
-    private Storage reservedStorage;
+    private final Storage reservedStorage;
 
     /** @see #getFileNameList()   */
     private List<String> fileNameList;

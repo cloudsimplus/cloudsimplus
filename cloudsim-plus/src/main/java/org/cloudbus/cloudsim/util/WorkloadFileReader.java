@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.util;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
@@ -179,7 +178,7 @@ public class WorkloadFileReader implements WorkloadReader {
      * @pre mips > 0
      * @see #getInstance(String, int)
      */
-    private WorkloadFileReader(final String filePath, final InputStream reader, final int mips) throws FileNotFoundException {
+    private WorkloadFileReader(final String filePath, final InputStream reader, final int mips) {
         if (filePath == null || filePath.isEmpty()) {
             throw new IllegalArgumentException("Invalid trace reader name.");
         }
@@ -208,12 +207,12 @@ public class WorkloadFileReader implements WorkloadReader {
      *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
      *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
      *                 for the same time as specified into the workload reader.
-     * @throws FileNotFoundException
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
+     * @throws UncheckedIOException when the file cannot be accessed (such as when it doesn't exist)
      * @pre mips > 0
      * @post $none
      */
-    public static WorkloadFileReader getInstance(final String fileName, final int mips) throws FileNotFoundException {
+    public static WorkloadFileReader getInstance(final String fileName, final int mips) {
         final InputStream reader = ResourceLoader.getInputStream(WorkloadFileReader.class, fileName);
         return new WorkloadFileReader(fileName, reader, mips);
     }

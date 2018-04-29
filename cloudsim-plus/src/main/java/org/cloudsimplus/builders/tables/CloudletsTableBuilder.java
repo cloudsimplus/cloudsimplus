@@ -30,6 +30,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.Identificable;
 
 /**
  * Builds a table for printing simulation results from a list of Cloudlets.
@@ -54,7 +55,7 @@ public class CloudletsTableBuilder {
      * the data to be printed from that Cloudlet to the associated column
      * of the table to be printed.
      */
-    private Map<TableColumn, Function<Cloudlet, Object>> columnsDataFunctions;
+    private final Map<TableColumn, Function<Cloudlet, Object>> columnsDataFunctions;
 
     /**
      * Creates new helper object to print the list of cloudlets using the a
@@ -134,15 +135,15 @@ public class CloudletsTableBuilder {
      */
     private void createTableColumns() {
         final String ID = "ID";
-        columnsDataFunctions.put(table.addColumn("Cloudlet", ID), c -> c.getId());
+        columnsDataFunctions.put(table.addColumn("Cloudlet", ID), Identificable::getId);
         columnsDataFunctions.put(table.addColumn("Status "), c -> c.getStatus().name());
         columnsDataFunctions.put(table.addColumn("DC", ID), c -> c.getVm().getHost().getDatacenter().getId());
         columnsDataFunctions.put(table.addColumn("Host", ID), c -> c.getVm().getHost().getId());
         columnsDataFunctions.put(table.addColumn("Host PEs ", CPU_CORES), c -> c.getVm().getHost().getNumberOfWorkingPes());
         columnsDataFunctions.put(table.addColumn("VM", ID), c -> c.getVm().getId());
         columnsDataFunctions.put(table.addColumn("VM PEs   ", CPU_CORES), c -> c.getVm().getNumberOfPes());
-        columnsDataFunctions.put(table.addColumn("CloudletLen", "MI"), c -> c.getLength());
-        columnsDataFunctions.put(table.addColumn("CloudletPEs", CPU_CORES), c -> c.getNumberOfPes());
+        columnsDataFunctions.put(table.addColumn("CloudletLen", "MI"), Cloudlet::getLength);
+        columnsDataFunctions.put(table.addColumn("CloudletPEs", CPU_CORES), Cloudlet::getNumberOfPes);
 
         TableColumn col = table.addColumn("StartTime", SECONDS).setFormat(TIME_FORMAT);
         columnsDataFunctions.put(col, c -> (long)c.getExecStartTime());
@@ -161,8 +162,7 @@ public class CloudletsTableBuilder {
      */
     protected void addDataToRow(Cloudlet cloudlet, List<Object> row) {
         table.getColumns()
-            .stream()
-            .forEach(col -> row.add(columnsDataFunctions.get(col).apply(cloudlet)));
+             .forEach(col -> row.add(columnsDataFunctions.get(col).apply(cloudlet)));
     }
 
     /**

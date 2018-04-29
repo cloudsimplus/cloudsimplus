@@ -7,8 +7,6 @@
  */
 package org.cloudbus.cloudsim.network.switches;
 
-import java.util.Objects;
-
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;

@@ -10,12 +10,7 @@ package org.cloudbus.cloudsim.datacenters;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
 import org.cloudbus.cloudsim.lists.HostList;
-import org.cloudbus.cloudsim.lists.PeList;
 
 /**
  * Represents static properties of a Datacenter such as architecture, Operating
@@ -73,7 +68,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     private double costPerBw;
 
     /** @see #getDatacenter() */
-    private Datacenter datacenter;
+    private final Datacenter datacenter;
 
     /**
      * Creates a DatacenterCharacteristics with default values

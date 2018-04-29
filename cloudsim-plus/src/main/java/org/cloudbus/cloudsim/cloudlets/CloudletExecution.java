@@ -53,7 +53,7 @@ public class CloudletExecution {
     /**
      * @see #getCloudletArrivalTime()
      */
-    private double arrivalTime;
+    private final double arrivalTime;
 
     /**
      * @see #getFinishTime()
@@ -101,32 +101,12 @@ public class CloudletExecution {
     private double timeSlice;
 
     /**
-     * Instantiates a new CloudletExecutionInfo object upon the arrival of a Cloudlet object.
-     * The arriving time is determined by
-     * {@link org.cloudbus.cloudsim.core.CloudSim#clock()}.
-     *
-     * @param cloudlet a cloudlet object
-     *
-     * @see CloudSim#clock()
-     * @pre cloudlet != null
-     * @post $none
-     */
-    public CloudletExecution(final Cloudlet cloudlet) {
-        this(cloudlet, 0);
-    }
-
-    /**
      * Instantiates a CloudletExecutionInfo object upon the arrival of a Cloudlet inside a Datacenter.
+     * The arriving time is determined by {@link CloudSim#clock()}.
      *
      * @param cloudlet the Cloudlet to store execution information from
-     * @param startTime a reservation start time, that can also be interpreted as
-     * starting time to execute this Cloudlet
-     *
-     * @pre cloudlet != null
-     * @pre startTime > 0
-     * @post $none
      */
-    public CloudletExecution(final Cloudlet cloudlet, final long startTime) {
+    public CloudletExecution(final Cloudlet cloudlet) {
         this.cloudlet = cloudlet;
         this.arrivalTime = cloudlet.registerArrivalInDatacenter();
         this.finishedTime = Cloudlet.NOT_ASSIGNED;

@@ -5,16 +5,12 @@ import java.util.*;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudbus.cloudsim.network.switches.AggregateSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
@@ -28,7 +24,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.builders.tables.TextTableBuilder;
 
 /**
  * A base class for network simulation examples
@@ -252,11 +247,9 @@ abstract class NetworkVmExampleAbstract {
         int numOfExistingVms = this.vmList.size();
         UniformDistr rand = new UniformDistr(0, numOfExistingVms, 5);
         for (int i = 0; i < numberOfVmsToSelect; i++) {
-            int vmId = (int) rand.sample();
-            NetworkVm vm = VmList.getById(this.vmList, vmId);
-            if(vm != Vm.NULL){
-                list.add(vm);
-            }
+            final int vmIndex = (int)rand.sample() % vmList.size();
+            NetworkVm vm = vmList.get(vmIndex);
+            list.add(vm);
         }
         return list;
     }

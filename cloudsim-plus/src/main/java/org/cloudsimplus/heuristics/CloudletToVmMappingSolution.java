@@ -93,6 +93,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     public CloudletToVmMappingSolution(final CloudletToVmMappingSolution solution){
         this(solution.heuristic, new HashMap<>(solution.cloudletVmMap));
+        this.recomputeCost = solution.recomputeCost;
+        this.lastCost = solution.lastCost;
+        this.cloudletVmMap.putAll(solution.cloudletVmMap);
     }
 
     /**
@@ -251,20 +254,20 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * cloudlet of the first entry to the Vm of the second entry
      * and vice-versa.
      *
-     * @param entries an array of 2 entries containing Cloudlets to swap their VMs.
+     * @param entries a List of 2 entries containing Cloudlets to swap their VMs.
      * If the entries don't have 2 elements, the method will
      * return without performing any change in the entries.
      * @return true if the VMs of the Cloudlets where swapped, false otherwise
      */
-    protected boolean swapVmsOfTwoMapEntries(final Map.Entry<Cloudlet, Vm>... entries) {
-        if(entries == null || entries.length != 2 || entries[0] == null || entries[1] == null) {
+    protected final boolean swapVmsOfTwoMapEntries(final List<Map.Entry<Cloudlet, Vm>> entries) {
+        if(entries == null || entries.size() != 2 || entries.get(0) == null || entries.get(1) == null) {
             return false;
         }
 
-        final Vm vm1 = entries[0].getValue();
-        final Vm vm2 = entries[1].getValue();
-        entries[0].setValue(vm2);
-        entries[1].setValue(vm1);
+        final Vm vm0 = entries.get(0).getValue();
+        final Vm vm1 = entries.get(1).getValue();
+        entries.get(0).setValue(vm1);
+        entries.get(1).setValue(vm0);
 
         return true;
     }
@@ -278,7 +281,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * cloudlet of the first entry to the Vm of the second entry
      * and vice-versa.
      *
-     * @see #swapVmsOfTwoMapEntries(Map.Entry[])
+     * @see #swapVmsOfTwoMapEntries(List)
      * @return true if the Cloudlet's VMs where swapped, false otherwise
      */
     boolean swapVmsOfTwoRandomSelectedMapEntries() {
@@ -288,55 +291,68 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     /**
      * Try to get 2 randomly selected entries from the {@link #cloudletVmMap}.
      *
-     * @return an array with 2 entries from the {@link #cloudletVmMap}
-     * if the map has at least 2 entries, an unitary array if the map
-     * has only one entry, or an empty array if there is no entry.
+     * @return a List with 2 entries from the {@link #cloudletVmMap}
+     * if the map has at least 2 entries, an unitary List if the map
+     * has only one entry, or an empty List if there is no entry.
      *
-     * @see #swapVmsOfTwoMapEntries(Map.Entry[])
+     * @see #swapVmsOfTwoMapEntries(List)
      */
-    protected Map.Entry<Cloudlet, Vm>[] getRandomMapEntries() {
+    protected List<Map.Entry<Cloudlet, Vm>> getRandomMapEntries() {
         if(cloudletVmMap.isEmpty()) {
-            return createEmptyMapEntryArray();
+            return new ArrayList<>();
         }
 
         if(cloudletVmMap.size() == 1) {
-            return createArrayWithFirstMapEntry();
+            return createListWithFirstMapEntry();
         }
 
-        return createArrayWithTwoRandomEntries();
-    }
-
-    private Map.Entry<Cloudlet, Vm>[] createArrayWithTwoRandomEntries() {
-        final int size = cloudletVmMap.entrySet().size();
-        final Map.Entry<Cloudlet, Vm>[] selectedEntries = new Map.Entry[2];
-        final Map.Entry<Cloudlet, Vm>[] allEntries = new Map.Entry[size];
-
-        final int i = heuristic.getRandomValue(size);
-        final int j = heuristic.getRandomValue(size);
-        cloudletVmMap.entrySet().toArray(allEntries);
-        selectedEntries[0] = allEntries[i];
-        selectedEntries[1] = allEntries[j];
-        return selectedEntries;
+        return createListWithTwoRandomEntries();
     }
 
     /**
-     * Creates an array using only the first entry in the {@link #cloudletVmMap}.
-     * @return a single-entry array with either the first {@link #cloudletVmMap} entry
-     * or an empty array in case no entry is found.
+     * Creates a List using only the first entry in the {@link #cloudletVmMap}.
+     * @return a single-entry List with either the first {@link #cloudletVmMap} entry
+     * or an empty List in case no entry is found.
      */
-    private Map.Entry<Cloudlet, Vm>[] createArrayWithFirstMapEntry() {
+    private List<Map.Entry<Cloudlet, Vm>> createListWithFirstMapEntry() {
         return cloudletVmMap.entrySet()
-                            .stream()
-                            .findFirst()
-                            .map(entry -> new Map.Entry[]{entry})
-                            .orElse(createEmptyMapEntryArray());
+            .stream()
+            .limit(1)
+            .collect(Collectors.toList());
     }
 
     /**
-     * Creates an array of Map Entries with no elements.
-     * @return the empty array.
+     * The way the method is called is ensured there is at least to entries
+     * in the {@link #cloudletVmMap}.
+     *
+     * @return
      */
-    private Map.Entry[] createEmptyMapEntryArray() {
-        return new Map.Entry[0];
+    private List<Map.Entry<Cloudlet, Vm>> createListWithTwoRandomEntries() {
+        final int size = cloudletVmMap.entrySet().size();
+
+        final int firstIdx = heuristic.getRandomValue(size);
+        final int secondIdx = heuristic.getRandomValue(size);
+
+        final List<Map.Entry<Cloudlet, Vm>> selected = new ArrayList<>(2);
+        final Iterator<Map.Entry<Cloudlet, Vm>> it = cloudletVmMap.entrySet().iterator();
+
+        /*
+        Loop over the entries until the entries defined by the first and second index
+        are found and added to the List.
+        Since there is not way to get the entries inside the map don't have a index,
+        we can't access the ith entry directly.
+        This loops ensure we iterate the the least number of times
+        until finding the required entries, without creating
+        a List with all entries in order to get just two of them.
+        */
+        for(int i = 0; selected.size() < 2 && it.hasNext(); ){
+            final Map.Entry<Cloudlet, Vm> solution = it.next();
+            if(i == firstIdx || i == secondIdx){
+                selected.add(solution);
+                i++;
+            }
+        }
+
+        return selected;
     }
 }

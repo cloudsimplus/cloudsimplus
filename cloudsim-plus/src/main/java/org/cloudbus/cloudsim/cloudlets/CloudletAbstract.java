@@ -130,8 +130,8 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private UtilizationModel utilizationModelBw;
 
-    private Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
-    private Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
+    private final Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
+    private final Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
 
     /**
      * @see #getSubmissionDelay()

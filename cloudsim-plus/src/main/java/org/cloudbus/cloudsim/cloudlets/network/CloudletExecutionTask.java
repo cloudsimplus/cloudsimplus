@@ -69,7 +69,7 @@ public class CloudletExecutionTask extends CloudletTask {
     private long length;
 
     /**
-     * @see #getTotalExecutedLenght()
+     * @see #getTotalExecutedLength()
      */
     private long totalExecutedLenght;
 
@@ -105,23 +105,12 @@ public class CloudletExecutionTask extends CloudletTask {
      * Gets the length of this CloudletTask that has been executed so far (in MI).
      * @return
      */
-    public long getTotalExecutedLenght() {
+    public long getTotalExecutedLength() {
         return totalExecutedLenght;
     }
 
     /**
-     * Adds a given number of MI to the {@link #getTotalExecutedLenght() total
-     * MI executed so far} by the cloudlet.
-     * @param partialExecutionLength the partial number of MI just executed that has to be to added
-     * to the total MI executed so far
-     * @return {@inheritDoc}
-     */
-    public boolean increaseTaskProgress(long partialExecutionLength){
-        return process(this.totalExecutedLenght+partialExecutionLength);
-    }
-
-    /**
-     * Sets a given number of MI to the {@link #getTotalExecutedLenght() total
+     * Sets a given number of MI to the {@link #getTotalExecutedLength() total
      * MI executed so far} by the cloudlet.
      * @param executedLenghtSoFar the total number of MI executed so far
      * @return {@inheritDoc}

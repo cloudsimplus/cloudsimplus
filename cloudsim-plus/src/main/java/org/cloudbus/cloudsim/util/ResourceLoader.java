@@ -133,6 +133,7 @@ public final class ResourceLoader {
      * @param klass a class from the project that will be used just to assist in getting the path of the given resource
      * @param resourceName the name of the resource to get a {@link BufferedReader} for it
      * @return a {@link InputStream} to read the resource
+     * @throws UncheckedIOException when the file cannot be accessed (such as when it doesn't exist)
      */
     public static InputStream getInputStream(final Class klass, final String resourceName) {
         //Try to load the resource from the resource directory in the filesystem

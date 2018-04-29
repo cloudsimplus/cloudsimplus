@@ -25,7 +25,6 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.lists.PeList;
-import org.cloudbus.cloudsim.lists.VmList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
@@ -143,9 +142,9 @@ public class NetworkHost extends HostSimple {
         for (final HostPacket hostPkt : hostPktsReceived) {
             hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
 
+            final Vm destinationVm = hostPkt.getVmPacket().getDestination();
             //Checks if the destinationVm is inside this host
-            final Vm destinationVm = VmList.getById(getVmList(), hostPkt.getVmPacket().getDestination().getId());
-            if(destinationVm.equals(Vm.NULL)){
+            if(!getVmList().contains(destinationVm)){
                 Log.println(
                     Log.Level.ERROR, getClass(), getSimulation().clock(),
                     "Destination VM %d was not found inside the Host %d",
@@ -281,9 +280,9 @@ public class NetworkHost extends HostSimple {
      */
     private void collectPacketToSendFromVm(VmPacket vmPkt) {
         final HostPacket hostPkt = new HostPacket(this, vmPkt);
+        final Vm receiverVm = vmPkt.getDestination();
         //Checks if the VM is inside this Host
-        final Vm receiverVm = VmList.getById(this.getVmList(), vmPkt.getDestination().getId());
-        if (!receiverVm.equals(Vm.NULL)) {
+        if (getVmList().contains(receiverVm)) {
             pktsToSendForLocalVms.add(hostPkt);
         } else {
             pktsToSendForExternalVms.add(hostPkt);

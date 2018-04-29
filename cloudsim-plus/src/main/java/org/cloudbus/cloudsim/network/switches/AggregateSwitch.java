@@ -51,6 +51,7 @@ public class AggregateSwitch extends AbstractSwitch {
      * It also represents the uplink bandwidth of connected edge Datacenter.
      */
     public static final long DOWNLINK_BW =  (long) Conversion.MEGABYTE * 100 * 8;
+
     /**
      * Default number of aggregation switch ports that defines the number of
      * {@link EdgeSwitch} that can be connected to it.

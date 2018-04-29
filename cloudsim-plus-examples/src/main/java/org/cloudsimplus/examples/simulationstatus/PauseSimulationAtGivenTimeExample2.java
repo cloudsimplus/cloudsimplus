@@ -82,7 +82,7 @@ public class PauseSimulationAtGivenTimeExample2 {
      * The interval in which the Datacenter will schedule events.
      * As lower is this interval, sooner the processing of Cloudlets inside VMs
      * is updated and you will get more notifications about the simulation execution.
-     * However, as higher is this value, it can affect the simulation performance.
+     * However, it can affect the simulation performance.
      *
      * <p>For this example, a large schedule interval such as 15 will make that just
      * at every 15 seconds the processing of Cloudlets is updated.

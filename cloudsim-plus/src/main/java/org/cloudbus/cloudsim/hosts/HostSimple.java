@@ -57,10 +57,9 @@ public class HostSimple implements Host {
     private boolean active;
     private boolean stateHistoryEnabled;
 
+    private final Ram ram;
 
-    private Ram ram;
-
-    private Bandwidth bw;
+    private final Bandwidth bw;
 
     /**
      * @see #getStorage()
@@ -102,7 +101,6 @@ public class HostSimple implements Host {
      */
     private final Set<Vm> vmsMigratingOut;
 
-
     /**
      * @see #getDatacenter()
      */
@@ -111,7 +109,7 @@ public class HostSimple implements Host {
     /**
      * @see Host#removeOnUpdateProcessingListener(EventListener)
      */
-    private Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
+    private final Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
 
     /**
      * @see #getSimulation()
@@ -126,7 +124,7 @@ public class HostSimple implements Host {
      */
     private List<ResourceManageable> resources;
     private List<ResourceProvisioner> provisioners;
-    private List<Vm> vmCreatedList;
+    private final List<Vm> vmCreatedList;
     /**
      * The previous utilization mips.
      */
@@ -199,6 +197,7 @@ public class HostSimple implements Host {
                 .sum();
     }
 
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     @Override
     public double updateProcessing(final double currentTime) {
         setPreviousUtilizationMips(getUtilizationOfCpuMips());
@@ -559,11 +558,6 @@ public class HostSimple implements Host {
     protected void addVmToCreatedList(final Vm vm){
         Objects.requireNonNull(vm);
         vmCreatedList.add(vm);
-    }
-
-    protected void removeVmFromList(final Vm vm){
-        Objects.requireNonNull(vm);
-        vmList.remove(vm);
     }
 
     @Override

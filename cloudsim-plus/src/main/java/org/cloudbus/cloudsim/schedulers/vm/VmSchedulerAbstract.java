@@ -405,7 +405,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @return true if the requested MIPS List is available, false otherwise
      */
     @Override
-    public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare) {
+    public boolean isAllowedToAllocateMips(final List<Double> vmRequestedMipsShare) {
         final double pmMips = getPeCapacity();
         double totalRequestedMips = 0;
         for (final double vmMips : vmRequestedMipsShare) {
@@ -417,10 +417,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         }
 
         // This scheduler does not allow over-subscription
-        if (getAvailableMips() < totalRequestedMips || getWorkingPeList().size() < vmRequestedMipsShare.size()) {
-            return false;
-        }
-
-        return true;
+        return getAvailableMips() >= totalRequestedMips && getWorkingPeList().size() >= vmRequestedMipsShare.size();
     }
 }

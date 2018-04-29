@@ -11,15 +11,12 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.*;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.util.Log;
 
-import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
-import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -79,19 +76,21 @@ public class PacketSchedulerSimple implements PacketScheduler {
         }
 
 
-        /**
+        /*
          * @todo @author manoelcampos It should be used polymorphism to avoid
          * including these if's for each type of task.
          */
         if (isTimeToUpdateCloudletProcessing(netcl)) {
             updateExecutionTask(netcl);
+            return;
         }
-        else if (netcl.getCurrentTask() instanceof CloudletSendTask) {
-            addPacketsToBeSentFromVm(netcl);
-        }
-        else if (netcl.getCurrentTask() instanceof CloudletReceiveTask) {
-            receivePackets(netcl);
-        }
+
+        netcl.getCurrentTask().ifPresent(task -> {
+            if (task.isSendTask())
+               addPacketsToBeSentFromVm(netcl);
+            else if (task.isReceiveTask())
+               receivePackets(netcl);
+        });
     }
 
     @Override
@@ -106,7 +105,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
         }
 
         final NetworkCloudlet nc = (NetworkCloudlet)cloudlet;
-        return nc.isTasksStarted() && nc.getCurrentTask() instanceof CloudletExecutionTask;
+        return nc.getCurrentTask().filter(CloudletTask::isExecutionTask).isPresent();
     }
 
     private boolean isNotNetworkCloudlet(final Cloudlet cloudlet) {
@@ -121,13 +120,17 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceCloudlet cloudlet to get the list of packets to send
      */
     private void addPacketsToBeSentFromVm(final NetworkCloudlet sourceCloudlet) {
-        final CloudletSendTask dataTask = (CloudletSendTask)sourceCloudlet.getCurrentTask();
-        Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
-                "%d pkts added to be sent from cloudlet %d in VM %d",
-                dataTask.getPacketsToSend().size(), sourceCloudlet.getId(),
-                sourceCloudlet.getVm().getId());
+        if(!sourceCloudlet.getCurrentTask().isPresent()){
+            return;
+        }
 
-        vmPacketsToSend.addAll(dataTask.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
+        final CloudletSendTask task = (CloudletSendTask)sourceCloudlet.getCurrentTask().get();
+        Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
+            "%d pkts added to be sent from cloudlet %d in VM %d",
+            task.getPacketsToSend().size(), sourceCloudlet.getId(),
+            sourceCloudlet.getVm().getId());
+
+        vmPacketsToSend.addAll(task.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
         scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
     }
 
@@ -138,9 +141,13 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceCloudlet cloudlet to check if there are packets to be received from.
      */
     private void receivePackets(final NetworkCloudlet sourceCloudlet) {
-        final CloudletReceiveTask task = (CloudletReceiveTask)sourceCloudlet.getCurrentTask();
+        if(!sourceCloudlet.getCurrentTask().isPresent()){
+            return;
+        }
+
+        final CloudletReceiveTask task = (CloudletReceiveTask)sourceCloudlet.getCurrentTask().get();
         final List<VmPacket> receivedPkts = getPacketsSentToGivenTask(task);
-        // Asumption: packet will not arrive in the same cycle
+        // Assumption: packet will not arrive in the same cycle
         receivedPkts.forEach(task::receivePacket);
         receivedPkts.forEach(pkt ->
             Log.println(
@@ -158,7 +165,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
         from the list of the sender VM*/
         getListOfPacketsSentFromVm(task.getSourceVm()).removeAll(receivedPkts);
 
-        /**
+        /*
          * @todo @author manoelcampos The task has to wait the reception
          * of the expected packets up to a given timeout.
          * After that, the task has to stop waiting and fail.
@@ -182,15 +189,17 @@ public class PacketSchedulerSimple implements PacketScheduler {
     }
 
     private void updateExecutionTask(final NetworkCloudlet cloudlet) {
-        /**
+        /*
          * @todo @author manoelcampos It has to be checked if the task execution
          * is considering only one cloudlet PE our all PEs.
          * Each execution task is supposed to use just one PE.
          */
-        final CloudletExecutionTask task = (CloudletExecutionTask)cloudlet.getCurrentTask();
-        task.process(cloudlet.getFinishedLengthSoFar());
-
-        scheduleNextTaskIfCurrentIsFinished(cloudlet);
+        cloudlet.getCurrentTask()
+            .map(task -> (CloudletExecutionTask)task)
+            .ifPresent(task -> {
+                task.process(cloudlet.getFinishedLengthSoFar());
+                scheduleNextTaskIfCurrentIsFinished(cloudlet);
+            });
     }
 
     /**

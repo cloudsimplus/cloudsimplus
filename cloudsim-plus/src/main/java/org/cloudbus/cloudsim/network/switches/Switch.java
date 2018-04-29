@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.network.switches;
 
-import org.cloudbus.cloudsim.core.Identificable;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;

@@ -54,7 +54,7 @@ public class VmSimple implements Vm {
 
     private DatacenterBroker broker;
 
-    private Processor processor;
+    private final Processor processor;
 
     /**
      * @see #getVmm()
@@ -107,10 +107,10 @@ public class VmSimple implements Vm {
      */
     private double submissionDelay;
 
-    private Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
-    private Set<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
-    private Set<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
-    private Set<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
+    private final Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
+    private final Set<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
+    private final Set<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
+    private final Set<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
 
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
@@ -678,6 +678,11 @@ public class VmSimple implements Vm {
     @Override
     public boolean isFailed() {
         return failed;
+    }
+
+    @Override
+    public boolean isWorking() {
+        return !isFailed();
     }
 
     @Override

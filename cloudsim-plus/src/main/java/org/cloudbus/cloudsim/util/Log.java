@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.util;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
-import java.util.Objects;
 
 /**
  * Logger used for performing logging of the simulation process. It provides the
@@ -63,7 +62,7 @@ public final class Log {
      *
      * @see #isDebug()
      */
-    private static boolean debug =
+    private static final boolean debug =
             ManagementFactory.getRuntimeMXBean().getInputArguments()
                     .toString().indexOf("jdwp") > 0;
 
@@ -119,21 +118,6 @@ public final class Log {
      */
     public static void printLine(Object message) {
         printLine(String.valueOf(message));
-    }
-
-    /**
-     * Prints the concatenated text representation of the arguments.
-     *
-     * @param messages the messages to print
-     */
-    public static void printConcat(Object... messages) {
-        if (isEnabled()) {
-            buffer = new StringBuilder(messages.length);
-            for (Object message : messages) {
-                buffer.append(String.valueOf(message));
-            }
-            print(buffer);
-        }
     }
 
     /**
@@ -258,5 +242,4 @@ public final class Log {
     public static boolean isDebug() {
         return debug;
     }
-
 }
