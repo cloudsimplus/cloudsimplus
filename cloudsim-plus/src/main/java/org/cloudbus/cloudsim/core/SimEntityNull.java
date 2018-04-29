@@ -22,6 +22,6 @@ final class SimEntityNull implements SimEntity {
     @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override public String getName() {  return ""; }
     @Override public int getId() { return 0; }
-    @Override public void setLog(boolean log) {}
-    @Override public void println(String msg) {}
+    @Override public void setLog(boolean log) {/**/}
+    @Override public void println(String msg) {/**/}
 }

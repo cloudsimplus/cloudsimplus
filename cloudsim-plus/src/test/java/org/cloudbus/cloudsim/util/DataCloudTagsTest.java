@@ -30,10 +30,8 @@ public class DataCloudTagsTest {
     @Test
     public void testConstantsWithSameValue(){
         for (final Field field : constants) {
-            Field anotherField = CloudSimTagsTest.getAnotherConstWithSameValue(constants, field);
-            assertFalse(
-                CloudSimTagsTest.getFieldsWithDuplicatedValueMsg(field, anotherField),
-                !field.equals(anotherField));
+            final Field anotherField = CloudSimTagsTest.getAnotherConstWithSameValue(constants, field);
+            assertTrue(CloudSimTagsTest.getFieldsWithDuplicatedValueMsg(field, anotherField), field.equals(anotherField));
         }
     }
 

@@ -8,10 +8,8 @@
 
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 
 import java.util.Collections;
 import java.util.List;

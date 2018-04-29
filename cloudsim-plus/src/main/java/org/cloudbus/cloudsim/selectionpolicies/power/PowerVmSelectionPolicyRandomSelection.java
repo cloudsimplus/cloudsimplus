@@ -35,6 +35,7 @@ public class PowerVmSelectionPolicyRandomSelection extends PowerVmSelectionPolic
     private final ContinuousDistribution rand;
 
     public PowerVmSelectionPolicyRandomSelection(){
+        super();
         rand = new UniformDistr();
     }
 

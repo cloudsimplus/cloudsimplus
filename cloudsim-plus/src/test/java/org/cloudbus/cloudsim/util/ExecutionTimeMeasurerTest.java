@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.util;
 
 import org.easymock.EasyMock;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -73,7 +72,7 @@ public class ExecutionTimeMeasurerTest {
 
     @Test
     public void testGetExecutionStartTimes(){
-        Map<String, Long> map = new HashMap<>(1);
+        final Map<String, Long> map = new HashMap<>(1);
         map.put(ENTRY_NAME, START_TIME);
         start(true);
         assertEquals(map, ExecutionTimeMeasurer.getExecutionStartTimes());

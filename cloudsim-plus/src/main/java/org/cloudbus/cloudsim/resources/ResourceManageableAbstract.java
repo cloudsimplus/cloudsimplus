@@ -121,16 +121,24 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     }
 
     @Override
-    public boolean deallocateAndRemoveResource(long amountToDeallocate) {
-        final long amountToRemoveFromSize = amountToDeallocate;
-        //cannot deallocate more than it's allocated
-        amountToDeallocate = Math.min(amountToDeallocate, this.getAllocatedResource());
-        if(amountToDeallocate != 0 && !deallocateResource(amountToDeallocate)){
+    public boolean deallocateAndRemoveResource(final long amountToDeallocate) {
+        if(!deallocateResource(getActualAmountToDeallocate(amountToDeallocate))){
             return false;
         }
 
-        return removeCapacity(amountToRemoveFromSize);
+        return removeCapacity(amountToDeallocate);
 
+    }
+
+    /**
+     * Gets the actual amount of resource that can be deallocated.
+     * If the amount requested to deallocate is greater than the allocated one,
+     * returns just the allocated amount. Otherwise, return the exact requested amount.
+     * @param amountToDeallocate the amount requested to deallocate
+     * @return the actual amount do deallocate
+     */
+    private long getActualAmountToDeallocate(long amountToDeallocate) {
+        return Math.min(amountToDeallocate, this.getAllocatedResource());
     }
 
     @Override

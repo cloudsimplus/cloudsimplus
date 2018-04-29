@@ -67,7 +67,7 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
 
     @Override
     public void deallocateResourceForAllVms() {
-        for(Vm vm: getResourceAllocationMap().keySet()){
+        for(final Vm vm: getResourceAllocationMap().keySet()){
             deallocateResourceForVmSettingAllocationMapEntryToZero(vm);
         }
         getResourceAllocationMap().clear();
@@ -130,5 +130,5 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     public boolean isResourceAllocatedToVm(Vm vm) {
         return resourceAllocationMap.keySet().contains(vm);
     }
-    
+
 }

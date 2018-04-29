@@ -23,11 +23,8 @@
  */
 package org.cloudsimplus.integrationtests;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudsimplus.builders.BrokerBuilderDecorator;
-import org.cloudsimplus.builders.HostBuilder;
-import org.cloudsimplus.builders.SimulationScenarioBuilder;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.resources.FileStorage;
@@ -35,10 +32,11 @@ import org.cloudbus.cloudsim.resources.SanStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.builders.tables.TextTableBuilder;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudsimplus.builders.BrokerBuilderDecorator;
+import org.cloudsimplus.builders.HostBuilder;
+import org.cloudsimplus.builders.SimulationScenarioBuilder;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.junit.Before;
 import org.junit.Test;
 

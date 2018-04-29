@@ -145,9 +145,10 @@ public class UtilizationModelDynamicTest {
         new UtilizationModelDynamic(-1.1);
     }
 
+    @Test
     public void testConstructor_UtilizationPercentageIncrementGreaterThan1() {
         final double initialUtilizationPercent = 1.1;
-        UtilizationModelDynamic um = new UtilizationModelDynamic(initialUtilizationPercent);
+        final UtilizationModelDynamic um = new UtilizationModelDynamic(initialUtilizationPercent);
         assertEquals(initialUtilizationPercent, um.getUtilization(), 0);
     }
 
@@ -156,9 +157,10 @@ public class UtilizationModelDynamicTest {
         new UtilizationModelDynamic(Unit.PERCENTAGE, -1.1);
     }
 
-    public void constructor_InitialValueGreaterThan1() {
+    @Test
+    public void testConstructor_InitialValueGreaterThan1() {
         final int initialUtilization = 2;
-        UtilizationModelDynamic um = new UtilizationModelDynamic(Unit.PERCENTAGE, initialUtilization);
+        final UtilizationModelDynamic um = new UtilizationModelDynamic(Unit.PERCENTAGE, initialUtilization);
         assertEquals(initialUtilization, um.getUtilization(), 0);
     }
 
@@ -182,6 +184,7 @@ public class UtilizationModelDynamicTest {
 
     }
 
+    @Test
     public void testSetMaxResourceUsagePercentage_valueGreaterThanOne() {
         final UtilizationModelDynamic instance = new UtilizationModelDynamic();
         final double maxResourceUsagePercentage = 1.1;

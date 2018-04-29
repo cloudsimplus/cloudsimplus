@@ -52,7 +52,7 @@ public class VmUtilizationHistory implements UtilizationHistory {
     @Override
     public double getUtilizationMad() {
         if (!history.isEmpty()) {
-            int n = Math.min(getMaxHistoryEntries(), getHistory().size());
+            final int n = Math.min(getMaxHistoryEntries(), getHistory().size());
             final double median = MathUtil.median(getHistory());
             final double[] deviationSum = new double[n];
             for (int i = 0; i < n; i++) {
@@ -67,9 +67,9 @@ public class VmUtilizationHistory implements UtilizationHistory {
     @Override
     public double getUtilizationMean() {
         if (!history.isEmpty()) {
-            final int maxNumOfEntriesToAverage = Math.min(getMaxHistoryEntries(), getHistory().size());
+            final int maxEntries = Math.min(getMaxHistoryEntries(), getHistory().size());
             final double usagePercentMean = getHistory().stream()
-                .limit(maxNumOfEntriesToAverage)
+                .limit(maxEntries)
                 .mapToDouble(usagePercent -> usagePercent)
                 .average()
                 .orElse(0);

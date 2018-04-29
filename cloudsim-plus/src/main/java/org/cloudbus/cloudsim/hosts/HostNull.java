@@ -128,7 +128,7 @@ final class HostNull implements Host {
         return false;
     }
     @Override public boolean createTemporaryVm(Vm vm) { return false; }
-    @Override public void destroyTemporaryVm(Vm vm) {}
+    @Override public void destroyTemporaryVm(Vm vm) {/**/}
     @Override public void destroyVm(Vm vm) {/**/}
     @Override public void destroyAllVms() {/**/}
     @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return false; }

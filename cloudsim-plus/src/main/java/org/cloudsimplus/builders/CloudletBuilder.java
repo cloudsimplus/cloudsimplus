@@ -56,7 +56,7 @@ public class CloudletBuilder extends Builder {
     private UtilizationModel utilizationModelBw;
 
     private final List<Cloudlet> cloudlets;
-    private int numberOfCreatedCloudlets;
+    private int createdCloudlets;
 
     private final BrokerBuilderDecorator brokerBuilder;
     private final DatacenterBrokerSimple broker;
@@ -73,7 +73,7 @@ public class CloudletBuilder extends Builder {
         this.broker = broker;
         this.cloudlets = new ArrayList<>();
 		this.requiredFiles = new ArrayList<>();
-        this.numberOfCreatedCloudlets = 0;
+        this.createdCloudlets = 0;
     }
 
     /**
@@ -168,7 +168,7 @@ public class CloudletBuilder extends Builder {
     private List<Cloudlet> createCloudletsInternal(final int amount, final int initialId) {
         List<Cloudlet> localList = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
-            final int cloudletId = initialId + numberOfCreatedCloudlets++;
+            final int cloudletId = initialId + createdCloudlets++;
             Cloudlet cloudlet =
                 new CloudletSimple(cloudletId, length, pes)
                     .setFileSize(fileSize)

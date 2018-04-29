@@ -133,7 +133,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
      * @param utilizationHistoryReversed the utilization history in reverse order
      * @return the utilization estimates
      */
-    protected double[] getParameterEstimates(final double[] utilizationHistoryReversed) {
+    protected double[] getParameterEstimates(final double... utilizationHistoryReversed) {
         return MathUtil.getLoessParameterEstimates(utilizationHistoryReversed);
     }
 
