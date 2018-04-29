@@ -219,16 +219,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             case CloudSimTags.CLOUDLET_RESUME_ACK:
                 processCloudlet(ev, CloudSimTags.CLOUDLET_RESUME_ACK);
             break;
-
-            // Moves a previously submitted Cloudlet to a different Datacenter
-            case CloudSimTags.CLOUDLET_MOVE:
-                processCloudletMove((Object[]) ev.getData(), CloudSimTags.CLOUDLET_MOVE);
-            break;
-
-            // Moves a previously submitted Cloudlet to a different Datacenter
-            case CloudSimTags.CLOUDLET_MOVE_ACK:
-                processCloudletMove((Object[]) ev.getData(), CloudSimTags.CLOUDLET_MOVE_ACK);
-            break;
         }
     }
 
@@ -312,80 +302,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         // process this Cloudlet to this Datacenter
         cl.assignToDatacenter(this);
         submitCloudletToVm(cl, ack);
-    }
-
-    /**
-     * Process the event for a Broker who wants to move a Cloudlet.
-     *
-     * @param receivedData an Object array containing data about the migration,
-     *                     where the index 0 will be a Cloudlet and
-     *                     the index 1 will be the id of the destination VM
-     * @param type event type
-     *
-     * @pre receivedData != null
-     * @pre type > 0
-     * @post $none
-     */
-    protected void processCloudletMove(final Object[] receivedData, final int type) {
-        updateCloudletProcessing();
-
-        final Cloudlet cloudlet = (Cloudlet)receivedData[0];
-
-        final Vm sourceVm = cloudlet.getVm();
-        final Cloudlet cl = sourceVm.getCloudletScheduler().cloudletCancel(cloudlet.getId());
-
-        if (Cloudlet.NULL.equals(cl)) {
-            return;
-        }
-
-        // Has the cloudlet already finished?
-        if (cl.getStatus() == Cloudlet.Status.SUCCESS) {// if yes, send it back to user
-            sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
-            sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_RETURN, cl);
-        }
-
-        // Prepare cloudlet for migration
-        final Host sourceHost = sourceVm.getHost();
-        final int destVmId = (int)receivedData[1];
-        final Vm destVm = sourceHost.getVm(destVmId, cloudlet.getBroker().getId());
-        cl.setVm(destVm);
-
-        final Datacenter destDatacenter = destVm.getHost().getDatacenter();
-        if (destDatacenter.equals(this))
-            requestCloudletMigrationToOtherVm(destVm, cl);
-        else requestCloudletMigrationToOtherDc(type, destDatacenter, cl);
-
-        if (type == CloudSimTags.CLOUDLET_MOVE_ACK) {// send ACK if requested
-            sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cloudlet);
-        }
-    }
-
-    /**
-     * Cloudlet will migrate from one VM to another.
-     * @param destVm the VM to migrate the Cloudlet to
-     * @param cl the Cloudlet to migrate
-     */
-    private void requestCloudletMigrationToOtherVm(final Vm destVm, final Cloudlet cl) {
-        if (destVm == Vm.NULL) {
-            return;
-        }
-
-        // time to transfer the files
-        final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
-        destVm.getCloudletScheduler().cloudletSubmit(cl, fileTransferTime);
-    }
-
-    /**
-     * Request the migration of a Cloudlet to another Datacenter.
-     * @param type event type
-     * @param destDatacenter ID of the destination Datacenter
-     * @param cl the Cloudlet to request migration
-     */
-    private void requestCloudletMigrationToOtherDc(final int type, final Datacenter destDatacenter, final Cloudlet cl) {
-        final int tag = ((type == CloudSimTags.CLOUDLET_MOVE_ACK)
-            ? CloudSimTags.CLOUDLET_SUBMIT_ACK
-            : CloudSimTags.CLOUDLET_SUBMIT);
-        sendNow(destDatacenter, tag, cl);
     }
 
     /**
@@ -512,7 +428,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @post $none
      */
     protected void processVmDestroy(final SimEvent ev, final boolean ack) {
-        Vm vm = (Vm) ev.getData();
+        final Vm vm = (Vm) ev.getData();
         final int cloudlets = vm.getCloudletScheduler().getCloudletList().size();
         vmAllocationPolicy.deallocateHostForVm(vm);
 
@@ -645,7 +561,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * receives the cloudlet submission
      * @param cl the cloudlet to respond to DatacenterBroker if it was created or not
      */
-    private void sendCloudletSubmitAckToBroker(final boolean ack, Cloudlet cl) {
+    private void sendCloudletSubmitAckToBroker(final boolean ack, final Cloudlet cl) {
         if(!ack){
             return;
         }
@@ -684,7 +600,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
-    protected double updateHostsProcessing() {
+    private double updateHostsProcessing() {
         double nextSimulationTime = Double.MAX_VALUE;
         for (final Host host : getHostList()) {
             final double time = host.updateProcessing(getSimulation().clock());
@@ -741,8 +657,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * or it isn't time to update the cloudlets
-     * @pre $none
-     * @post $none
      */
     protected double updateCloudletProcessing() {
         if (!isTimeToUpdateCloudletsProcessing()){
@@ -830,16 +744,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Verifies if some cloudlet inside the hosts of this Datacenter have already finished.
      * If yes, send them to the User/Broker
-     *
-     * @pre $none
-     * @post $none
      */
     protected void checkCloudletsCompletionForAllHosts() {
-        List<? extends Host> hosts = vmAllocationPolicy.getHostList();
+        final List<? extends Host> hosts = vmAllocationPolicy.getHostList();
         hosts.forEach(this::checkCloudletsCompletionForGivenHost);
     }
 
-    private void checkCloudletsCompletionForGivenHost(Host host) {
+    private void checkCloudletsCompletionForGivenHost(final Host host) {
         host.getVmList().forEach(this::checkCloudletsCompletionForGivenVm);
     }
 
@@ -1062,14 +973,14 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
 
         final DatacenterSimple that = (DatacenterSimple) o;
 
-        return (!characteristics.equals(that.characteristics));
+        return !characteristics.equals(that.characteristics);
     }
 
     @Override

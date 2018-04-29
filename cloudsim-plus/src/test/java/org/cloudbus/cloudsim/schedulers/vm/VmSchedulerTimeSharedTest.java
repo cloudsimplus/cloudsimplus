@@ -47,7 +47,7 @@ public class VmSchedulerTimeSharedTest {
     }
 
     private VmScheduler createVmScheduler(double mips, int pesNumber) {
-        VmSchedulerTimeShared scheduler = new VmSchedulerTimeShared();
+        final VmSchedulerTimeShared scheduler = new VmSchedulerTimeShared();
         final List<Pe> peList = new ArrayList<>(pesNumber);
         LongStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
         final Host host = new HostSimple(2048, 20000, 20000, peList);

@@ -101,7 +101,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
         }
 
         final double vmCpuUsagePercent = getVm().getCpuPercentUsage() * 100;
-        Vm newVm = getVmSupplier().get();
+        final Vm newVm = getVmSupplier().get();
         Log.printFormattedLine(
             "\t%.2f: %s%d: Requesting creation of Vm %d to receive new Cloudlets in order to balance load of Vm %d. Vm %d CPU usage is %.2f%%",
             time, getClass().getSimpleName(), getVm().getId(), newVm.getId(), getVm().getId(), getVm().getId(), vmCpuUsagePercent);

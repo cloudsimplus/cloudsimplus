@@ -322,7 +322,7 @@ public class HostSimpleTest {
         for(int i = 0; i < numberOfVms; i++) {
             final double nextCloudletCompletionTimeOfCurrentVm = i+1;
 
-            Vm vm = EasyMock.createMock(Vm.class);
+            final Vm vm = EasyMock.createMock(Vm.class);
             EasyMock.expect(vm.updateProcessing(simulationClock, mipsShare))
                     .andReturn(nextCloudletCompletionTimeOfCurrentVm)
                     .times(1);
@@ -477,7 +477,7 @@ public class HostSimpleTest {
                 0, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
                 new CloudletSchedulerTimeShared());
         vm0.setBroker(broker);
-        VmSimple vm1 = VmSimpleTest.createVm(
+        final VmSimple vm1 = VmSimpleTest.createVm(
                 1, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
                 new CloudletSchedulerTimeShared());
         vm1.setBroker(broker);

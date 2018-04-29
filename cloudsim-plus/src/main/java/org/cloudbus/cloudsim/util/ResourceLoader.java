@@ -83,7 +83,7 @@ public final class ResourceLoader {
         }
 
         try {
-            Path path = uriToPath(resourceDir, uri);
+            final Path path = uriToPath(resourceDir, uri);
             final Stream<Path> walk = Files.walk(path, 1);
 
             final List<String> list = new ArrayList<>();
@@ -104,7 +104,7 @@ public final class ResourceLoader {
 
     private static Path uriToPath(final String resourceDir, final URI uri) throws IOException {
         if (uri.getScheme().equals("jar")) {
-            FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
+            final FileSystem fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
             return fileSystem.getPath(resourceDir);
         }
 

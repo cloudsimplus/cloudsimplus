@@ -78,8 +78,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
                 .getHosts()
         );
 
-
-        BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
         broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
             .setRam(1000).setBw(100000)
@@ -100,7 +99,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
         printCloudletsExecutionResults(broker);
 
         final double time = 20;
-        for(Cloudlet c: broker.getCloudletFinishedList()){
+        for(final Cloudlet c: broker.getCloudletFinishedList()){
             assertEquals(String.format(
                 "Cloudlet %d doesn't have the expected finish time.",
                 c.getId(), time),

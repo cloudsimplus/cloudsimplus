@@ -248,7 +248,7 @@ public final class VmCreationFailureIntegrationTest {
                 "The number of finished cloudlets was not as expected",
                 cloudletList.size(), expectedResults.length);
         int i = -1;
-        for (Cloudlet cloudlet : cloudletList) {
+        for (final Cloudlet cloudlet : cloudletList) {
             expectedResults[++i].setCloudlet(cloudlet);
             assertThatOneGivenCloudletHasTheExpectedExecutionTimes(expectedResults[i]);
         }

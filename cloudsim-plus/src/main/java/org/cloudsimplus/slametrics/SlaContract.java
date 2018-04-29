@@ -172,7 +172,7 @@ public class SlaContract {
      */
     public static void main(String[] args) {
         final String file = "SampleCustomerSLA.json";
-        SlaContract contract = SlaContract.getInstance(file);
+        final SlaContract contract = SlaContract.getInstance(file);
         System.out.println("Contract file: " + file);
         System.out.println(contract);
         System.out.println("Minimum Price Metric Value: " + contract.getPriceMetric().getMinDimension());

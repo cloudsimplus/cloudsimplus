@@ -141,24 +141,6 @@ public final class CloudSimTags {
     public static final int CLOUDLET_RESUME_ACK = BASE + 28;
 
     /**
-     * Moves a Cloudlet to another Datacenter entity.
-     * When an event of this type is sent, the {@link SimEvent#getData()}
-     * must be an Object array containing data about the migration,
-     * where the index 0 will be a Cloudlet and
-     * the index 1 will be the id of the destination VM.
-     */
-    public static final int CLOUDLET_MOVE = BASE + 29;
-
-    /**
-     * Moves a Cloudlet to another Datacenter entity with an acknowledgement.
-     * When an event of this type is sent, the {@link SimEvent#getData()}
-     * must be an Object array containing data about the migration,
-     * where the index 0 will be a Cloudlet and
-     * the index 1 will be the id of the destination VM.
-     */
-    public static final int CLOUDLET_MOVE_ACK = BASE + 30;
-
-    /**
      * Denotes a request to create a new VM in a {@link Datacenter}
      * without requiring and acknowledgement to be sent back to the sender.
      */

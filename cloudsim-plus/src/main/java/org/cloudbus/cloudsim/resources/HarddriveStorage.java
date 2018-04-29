@@ -386,7 +386,7 @@ public class HarddriveStorage implements FileStorage {
         final int i = fileNameList.indexOf(fileName);
         if(i != -1){
             final File file = fileList.get(i);
-            double result = deleteFile(file);
+            final double result = deleteFile(file);
             file.setTransactionTime(result);
             return file;
         }

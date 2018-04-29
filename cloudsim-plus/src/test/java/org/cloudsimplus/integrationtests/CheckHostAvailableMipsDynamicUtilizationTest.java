@@ -98,7 +98,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                     .getHosts()
         );
 
-        BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
 
         brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)

@@ -90,11 +90,9 @@ public final class CheckHostAvailableMipsTest {
             .getHosts();
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(hosts);
 
-
-
         //Create VMs and cloudlets for different brokers
         for(int i = 0; i < NUMBER_OF_VMS; i++){
-            BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+            final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
             brokerBuilder.getVmBuilder()
                 .setRam(1000).setBw(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
@@ -126,12 +124,6 @@ public final class CheckHostAvailableMipsTest {
             "- VMs processing at time ", time, " host ", evt.getHost().getId(),
             " available mips: ", evt.getHost().getAvailableMips(),
             " expected availability: ", expectedAvailableHostMips);
-
-/*
-        assertEquals(
-                String.format("Host available mips at time %.0f", time),
-                expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0);
-*/
     }
 
     private double getExpectedAvailableHostMips(final double time) {

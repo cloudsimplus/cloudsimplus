@@ -92,13 +92,13 @@ public class CloudletToVmMappingSolutionTest {
     public void testCompareTo_InstanceIsGreater() {
         final int NUMBER_OF_CLOUDLETS = 3;
         final int PES = 2;
-        CloudletToVmMappingSolution instance =
+        final CloudletToVmMappingSolution instance =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
 
-        HeuristicSolution o =
+        final HeuristicSolution o =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES/2);
-        int expResult = 1;
-        int result = instance.compareTo(o);
+        final int expResult = 1;
+        final int result = instance.compareTo(o);
         assertEquals(
             String.format(
                 "The instance was expected to be greater than the compared object. Instance fitness: %f Compared object fitness: %f",
@@ -110,7 +110,7 @@ public class CloudletToVmMappingSolutionTest {
     public void testCompareTo_InstanceIsEquals() {
         final int NUMBER_OF_CLOUDLETS = 3;
         final int PES = 2;
-        CloudletToVmMappingSolution instance =
+        final CloudletToVmMappingSolution instance =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES+1);
         final HeuristicSolution o =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES+1);
@@ -127,9 +127,9 @@ public class CloudletToVmMappingSolutionTest {
     public void testCompareTo_InstanceIsLower() {
         final int NUMBER_OF_CLOUDLETS = 3;
         final int PES = 2;
-        CloudletToVmMappingSolution instance =
+        final CloudletToVmMappingSolution instance =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES/2);
-        HeuristicSolution o =
+        final HeuristicSolution o =
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
         final int expResult = -1;
         final int result = instance.compareTo(o);

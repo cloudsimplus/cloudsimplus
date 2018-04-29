@@ -24,8 +24,8 @@ public final class DatacenterMocker {
         this.c = EasyMock.createMock(DatacenterCharacteristics.class);
     }
 
-    public static Datacenter createMock(Consumer<DatacenterMocker> consumer) {
-        DatacenterMocker mocker = new DatacenterMocker();
+    public static Datacenter createMock(final Consumer<DatacenterMocker> consumer) {
+        final DatacenterMocker mocker = new DatacenterMocker();
         consumer.accept(mocker);
         DatacenterMocker.replay(mocker.c);
         DatacenterMocker.replay(mocker.dc);
@@ -36,27 +36,27 @@ public final class DatacenterMocker {
         return EasyMock.expect(dc.getCharacteristics()).andReturn(c);
     }
 
-    public IExpectationSetters<Double> getCostPerBw(double cost) {
+    public IExpectationSetters<Double> getCostPerBw(final double cost) {
         return EasyMock.expect(c.getCostPerBw()).andReturn(cost);
     }
 
-    public IExpectationSetters<Double> getCostPerSecond(double cost) {
+    public IExpectationSetters<Double> getCostPerSecond(final double cost) {
         return EasyMock.expect(c.getCostPerSecond()).andReturn(cost);
     }
 
-    public IExpectationSetters<Double> getCostPerMem(double cost) {
+    public IExpectationSetters<Double> getCostPerMem(final double cost) {
         return EasyMock.expect(c.getCostPerMem()).andReturn(cost);
     }
 
-    public IExpectationSetters<Double> getCostPerStorage(double cost) {
+    public IExpectationSetters<Double> getCostPerStorage(final double cost) {
         return EasyMock.expect(c.getCostPerStorage()).andReturn(cost);
     }
 
-    private static <T extends Object> void replay(T mock) {
+    private static <T extends Object> void replay(final T mock) {
         EasyMock.replay(mock);
     }
 
-    public static <T extends Object> void verify(T mock) {
+    public static <T extends Object> void verify(final T mock) {
         EasyMock.verify(mock);
     }
 

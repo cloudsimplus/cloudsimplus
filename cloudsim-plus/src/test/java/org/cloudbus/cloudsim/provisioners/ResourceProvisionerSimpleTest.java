@@ -66,7 +66,7 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testGetTotalAllocatedResource() {
-        ResourceProvisioner p = createSimpleProvisioner();
+        final ResourceProvisioner p = createSimpleProvisioner();
         assertEquals(p.getCapacity(), p.getAvailableResource());
         assertEquals(0, p.getTotalAllocatedResource());
 

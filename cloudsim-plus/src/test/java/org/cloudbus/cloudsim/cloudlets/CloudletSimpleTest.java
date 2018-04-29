@@ -109,7 +109,6 @@ public class CloudletSimpleTest {
     @Test
     public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterNotAssigned() {
         final CloudletSimple cloudlet = createCloudlet(0);
-        cloudlet.setRecordTransactionHistory(true);
         cloudlet.assignToDatacenter(Datacenter.NULL);
         assertEquals(Datacenter.NULL, cloudlet.getLastDatacenter());
     }
@@ -117,7 +116,6 @@ public class CloudletSimpleTest {
     @Test
     public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterAlreadAssigned() {
         final CloudletSimple cloudlet = createCloudlet(0);
-        cloudlet.setRecordTransactionHistory(true);
         cloudlet.assignToDatacenter(Datacenter.NULL);
 
         cloudlet.assignToDatacenter(Datacenter.NULL);
@@ -229,7 +227,6 @@ public class CloudletSimpleTest {
         assertEquals(expected, cloudlet.getHistory());
 
         cloudlet = createCloudlet(id);
-        cloudlet.setRecordTransactionHistory(true);
         assertNotSame(expected, cloudlet.getHistory());
     }
 
@@ -257,7 +254,6 @@ public class CloudletSimpleTest {
     @Test
     public void testGetDatacenterId() {
         final CloudletSimple cloudlet = createCloudlet(0);
-        cloudlet.setRecordTransactionHistory(true);
         assertEquals(Datacenter.NULL, cloudlet.getLastDatacenter());
 
         cloudlet.assignToDatacenter(Datacenter.NULL);
