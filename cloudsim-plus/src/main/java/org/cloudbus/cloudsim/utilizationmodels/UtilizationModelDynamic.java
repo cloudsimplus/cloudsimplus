@@ -43,7 +43,7 @@ import java.util.function.Function;
  */
 public class UtilizationModelDynamic extends UtilizationModelAbstract {
     private boolean readOnly;
-    private double currentUtilization = 0;
+    private double currentUtilization;
 
     /** @see #getMaxResourceUtilization() */
     private double maxResourceUtilization;

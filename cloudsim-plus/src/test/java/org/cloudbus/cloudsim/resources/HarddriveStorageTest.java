@@ -1,12 +1,13 @@
 package org.cloudbus.cloudsim.resources;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.stream.IntStream;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.ExponentialDistr;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.IntStream;
+
 import static org.junit.Assert.*;
 
 /**

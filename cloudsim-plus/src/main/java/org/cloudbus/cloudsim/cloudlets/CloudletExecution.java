@@ -179,12 +179,16 @@ public class CloudletExecution {
      */
     private void startOrResumeCloudlet(final Cloudlet.Status newStatus, final Cloudlet.Status oldStatus) {
         final double clock = cloudlet.getSimulation().clock();
-        if (newStatus == Cloudlet.Status.INEXEC || (oldStatus == Cloudlet.Status.PAUSED && newStatus == Cloudlet.Status.RESUMED)) {
+        if (newStatus == Cloudlet.Status.INEXEC || isTryingToResumePausedCloudlet(newStatus, oldStatus)) {
             startExecTime = clock;
             if(cloudlet.getExecStartTime() == 0) {
                 cloudlet.setExecStartTime(startExecTime);
             }
         }
+    }
+
+    private boolean isTryingToResumePausedCloudlet(final Cloudlet.Status newStatus, final Cloudlet.Status oldStatus) {
+        return newStatus == Cloudlet.Status.RESUMED && oldStatus == Cloudlet.Status.PAUSED;
     }
 
     /**

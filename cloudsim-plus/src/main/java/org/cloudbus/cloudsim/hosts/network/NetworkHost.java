@@ -98,31 +98,18 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Creates a NetworkHost with the given parameters.
+     * Creates a NetworkHost.
      *
-     * @param id the id
-     * @param ramProvisioner the ram provisioner
-     * @param bwProvisioner the bw provisioner
-     * @param storage the storage capacity
-     * @param peList the host's PEs list
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
      * @param vmScheduler the VM scheduler
      *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
      */
-    @Deprecated
-    public NetworkHost(
-            int id,
-            ResourceProvisioner ramProvisioner,
-            ResourceProvisioner bwProvisioner,
-            long storage,
-            List<Pe> peList,
-            VmScheduler vmScheduler)
+    public NetworkHost(long ram, long bw, long storage, List<Pe> peList, final VmScheduler vmScheduler)
     {
-        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
-        setRamProvisioner(ramProvisioner);
-        setBwProvisioner(bwProvisioner);
+        this(ram, bw, storage, peList);
         setVmScheduler(vmScheduler);
     }
 

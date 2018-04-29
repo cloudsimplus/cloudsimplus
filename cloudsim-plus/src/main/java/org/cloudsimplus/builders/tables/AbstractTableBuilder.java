@@ -179,7 +179,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
 
     @Override
     public final TableBuilder addColumnList(final String... columnTitles) {
-        for(String column: columnTitles){
+        for(final String column: columnTitles){
             addColumn(column);
         }
         return this;

@@ -107,7 +107,7 @@ public class DelayMatrix {
 
 	@Override
 	public String toString() {
-		StringBuilder builder = new StringBuilder(100);
+		final StringBuilder builder = new StringBuilder(100);
 
 		builder.append(
 		    "just a simple printout of the distance-aware-topology-class\ndelay-matrix is:\n");

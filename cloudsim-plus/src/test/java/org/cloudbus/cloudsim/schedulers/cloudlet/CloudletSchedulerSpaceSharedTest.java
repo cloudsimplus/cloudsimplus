@@ -298,7 +298,6 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testGetCloudletExecList_ReturnEmptyList() {
         final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        final List<CloudletExecution> result = instance.getCloudletExecList();
         assertTrue(instance.getCloudletExecList().isEmpty());
     }
 

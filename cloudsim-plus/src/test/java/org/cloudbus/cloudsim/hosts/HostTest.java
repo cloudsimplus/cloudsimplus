@@ -48,12 +48,6 @@ public class HostTest {
         assertTrue(instance.getVmList().isEmpty());
     }
 
-    private Datacenter createMockDatacenter() {
-        final Datacenter dc = EasyMock.createMock(Datacenter.class);
-        EasyMock.replay(dc);
-        return dc;
-    }
-
     private EventListener<HostUpdatesVmsProcessingEventInfo> createMockListener() {
         final EventListener l = EasyMock.createMock(EventListener.class);
         EasyMock.replay(l);

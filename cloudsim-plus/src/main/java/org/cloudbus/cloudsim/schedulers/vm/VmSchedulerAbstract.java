@@ -140,16 +140,15 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         }
 
         deallocatePesFromVmInternal(vm, pesToRemove);
-        freeUsedPes(vm);
+        freeUsedPes();
     }
 
     /**
-     * Sets the status of physical PEs used by a VM being destroyed to FREE.
+     * Sets the status of physical PEs used by a destroyed VM to FREE.
      * That works for any kind of scheduler, such as time- and space-shared.
-     *
-     * @param vm the VM to changed its PEs status
      */
-    private void freeUsedPes(final Vm vm) {
+    private void freeUsedPes() {
+        //Gets the total virtual PEs of currently created VMs
         final long totalVirtualPesNumber = getAllocatedMipsMap().values().stream().mapToLong(Collection::size).sum();
         final List<Pe> peList = getHost().getBuzyPeList();
         final long vPesNumber = Math.min(peList.size() - totalVirtualPesNumber, 0);

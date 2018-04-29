@@ -57,7 +57,8 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * <p>This constructor is just provided to enable the {@link Gson} object
      * to use reflection to instantiate a AwsEc2Template.</p>
      */
-    public AwsEc2Template(){}
+    public AwsEc2Template(){
+    }
 
     /**
      * A clone constructor which receives an {@link AwsEc2Template}

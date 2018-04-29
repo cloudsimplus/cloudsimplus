@@ -80,13 +80,13 @@ import org.junit.Before;
  */
 public final class VmCreationFailureIntegrationTest {
     /** The number of times a host was allocated to a VM. */
-    private int numberOfHostAllocations = 0;
+    private int numberOfHostAllocations;
 
     /** The number of times a host was deallocated to a VM. */
-    private int numberOfHostDeallocations = 0;
+    private int numberOfHostDeallocations;
 
     /** The number of times a VM failed to be created due to lack of host resources. */
-    private int numberOfVmCreationFailures = 0;
+    private int numberOfVmCreationFailures;
 
     private SimulationScenarioBuilder scenario;
     private CloudSim simulation;
@@ -143,7 +143,7 @@ public final class VmCreationFailureIntegrationTest {
         numberOfVmCreationFailures++;
         final int expectedVmId = 1;
 
-        String msg = String.format(
+        final String msg = String.format(
                 "Only Vm %d should had failed to be created due to lack of resources",
                 expectedVmId);
         assertEquals(msg, expectedVmId, evt.getVm().getId());
@@ -200,7 +200,7 @@ public final class VmCreationFailureIntegrationTest {
                 .getHosts()
         );
 
-        BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
 
         brokerBuilder.getVmBuilder()
                 .setRam(512).setBw(1000)
@@ -224,7 +224,7 @@ public final class VmCreationFailureIntegrationTest {
     @Test
     public void integrationTest() {
         simulation.start();
-        DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
+        final DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
         assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(broker);
         assertThatListenersWereCalledTheExpectedAmountOfTimes();
 

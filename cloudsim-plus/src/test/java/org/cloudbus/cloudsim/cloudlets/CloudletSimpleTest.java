@@ -92,7 +92,6 @@ public class CloudletSimpleTest {
     @Test
     public void testGetWaitingTime() {
         final double arrivalTime = 0.0, execStartTime = 10.0;
-        final int datacenterId = 0;
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(arrivalTime);
         });
@@ -131,7 +130,7 @@ public class CloudletSimpleTest {
         assertEquals(0, cloudlet.getExecStartTime(), 0);
 
         cloudlet.assignToDatacenter(Datacenter.NULL);
-        final int submissionTime = 0, execStartTime = 10;
+        final int execStartTime = 10;
         cloudlet.registerArrivalInDatacenter();
         cloudlet.setExecStartTime(execStartTime);
         assertEquals(execStartTime, cloudlet.getExecStartTime(), 0);
@@ -434,7 +433,7 @@ public class CloudletSimpleTest {
 
     @Test(expected = NullPointerException.class)
     public void testNew_nullUtilizationModel() {
-        final CloudletSimple c = createCloudlet(0, null);
+        createCloudlet(0, null);
     }
 
     @Test

@@ -22,6 +22,7 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Simulation;
 
+import static java.util.Comparator.comparingDouble;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
@@ -144,10 +145,11 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     {
         final List<Host> switchedOffHosts = getSwitchedOffHosts();
 
-        // over-utilized hosts + hosts that are selected to migrate VMs to from over-utilized hosts
-        final Set<Host> excludedHostsFromUnderloadSearch = new HashSet<>();
-        excludedHostsFromUnderloadSearch.addAll(overloadedHosts);
-        excludedHostsFromUnderloadSearch.addAll(switchedOffHosts);
+        // overloaded hosts + hosts that are selected to migrate VMs from overloaded hosts
+        final Set<Host> ignoredSourceHosts = new HashSet<>();
+        ignoredSourceHosts.addAll(overloadedHosts);
+        ignoredSourceHosts.addAll(switchedOffHosts);
+
         /*
         During the computation of the new placement for VMs
         the current VM placement is changed temporarily, before the actual migration of VMs.
@@ -158,40 +160,40 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         looking for underloaded Hosts.
         See https://github.com/manoelcampos/cloudsim-plus/issues/94
          */
-        excludedHostsFromUnderloadSearch.addAll(migrationMap.values());
+        ignoredSourceHosts.addAll(migrationMap.values());
 
-        // over-utilized + under-utilized hosts
-        final Set<Host> excludedHostsForFindingNewVmPlacement = new HashSet<>();
-        excludedHostsForFindingNewVmPlacement.addAll(overloadedHosts);
-        excludedHostsForFindingNewVmPlacement.addAll(switchedOffHosts);
+        // overloaded + underloaded hosts
+        final Set<Host> ignoredTargetHosts = new HashSet<>();
+        ignoredTargetHosts.addAll(overloadedHosts);
+        ignoredTargetHosts.addAll(switchedOffHosts);
 
         final int numberOfHosts = getHostList().size();
 
         while (true) {
-            if (numberOfHosts == excludedHostsFromUnderloadSearch.size()) {
+            if (numberOfHosts == ignoredSourceHosts.size()) {
                 break;
             }
 
-            final Host underloadedHost = getUnderloadedHost(excludedHostsFromUnderloadSearch);
+            final Host underloadedHost = getUnderloadedHost(ignoredSourceHosts);
             if (underloadedHost == Host.NULL) {
                 break;
             }
 
             Log.printFormattedLine("%.2f: PowerVmAllocationPolicy: Underloaded hosts: %s", getDatacenter().getSimulation().clock(),  underloadedHost);
 
-            excludedHostsFromUnderloadSearch.add(underloadedHost);
-            excludedHostsForFindingNewVmPlacement.add(underloadedHost);
+            ignoredSourceHosts.add(underloadedHost);
+            ignoredTargetHosts.add(underloadedHost);
 
-            List<? extends Vm> vmsToMigrateFromUnderloadedHost = getVmsToMigrateFromUnderUtilizedHost(underloadedHost);
-            if (!vmsToMigrateFromUnderloadedHost.isEmpty()) {
+            final List<? extends Vm> vmsToMigrateFromHost = getVmsToMigrateFromUnderUtilizedHost(underloadedHost);
+            if (!vmsToMigrateFromHost.isEmpty()) {
                 Log.printFormatted("\tVMs to be reallocated from the underloaded Host %d: ", underloadedHost.getId());
-                printVmIds(vmsToMigrateFromUnderloadedHost);
+                printVmIds(vmsToMigrateFromHost);
 
                 final Map<Vm, Host> newVmPlacement = getNewVmPlacementFromUnderloadedHost(
-                        vmsToMigrateFromUnderloadedHost,
-                        excludedHostsForFindingNewVmPlacement);
+                        vmsToMigrateFromHost,
+                        ignoredTargetHosts);
 
-                excludedHostsFromUnderloadSearch.addAll(extractHostListFromMigrationMap(newVmPlacement));
+                ignoredSourceHosts.addAll(extractHostListFromMigrationMap(newVmPlacement));
                 migrationMap.putAll(newVmPlacement);
                 Log.printLine();
             }
@@ -318,7 +320,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream){
         final Comparator<Host> hostPowerConsumptionComparator =
-            Comparator.comparingDouble(h -> getPowerAfterAllocationDifference(h, vm));
+            comparingDouble(h -> getPowerAfterAllocationDifference(h, vm));
 
         return additionalHostFilters(vm, hostStream).min(hostPowerConsumptionComparator);
     }
@@ -359,14 +361,14 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * and each value is the Host to place it.
      */
     protected Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
-        final List<Vm> vmsToMigrate = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
-        final Map<Vm, Host> migrationMap = new HashMap<>();
         if(overloadedHosts.isEmpty()) {
-            return migrationMap;
+            return  new HashMap<>();
         }
 
         Log.printLine("\tReallocation of VMs from overloaded hosts: ");
+        final List<Vm> vmsToMigrate = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
         sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
+        final Map<Vm, Host> migrationMap = new HashMap<>();
         for (final Vm vm : vmsToMigrate) {
             findHostForVm(vm, overloadedHosts).ifPresent(host -> addVmToMigrationMap(migrationMap, vm, host, "\t%s will be migrated to %s"));
         }
@@ -410,8 +412,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param simulationTime the simulation time to get the current CPU utilization for each Vm
      */
     private void sortByCpuUtilization(final List<? extends Vm> vmList, final double simulationTime) {
-        Comparator<Vm> comparator =
-            Comparator.comparingDouble(vm -> vm.getTotalCpuMipsUsage(simulationTime));
+        final Comparator<Vm> comparator = comparingDouble(vm -> vm.getTotalCpuMipsUsage(simulationTime));
         vmList.sort(comparator.reversed());
     }
 
@@ -521,7 +522,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             .filter(this::isHostUnderloaded)
             .filter(h -> h.getVmsMigratingIn().isEmpty())
             .filter(this::isNotAllVmsMigratingOut)
-            .min(Comparator.comparingDouble(Host::getUtilizationOfCpu))
+            .min(comparingDouble(Host::getUtilizationOfCpu))
             .orElse(Host.NULL);
     }
 

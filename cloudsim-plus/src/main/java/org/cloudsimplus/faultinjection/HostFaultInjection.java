@@ -32,6 +32,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.*;
@@ -360,7 +361,6 @@ public class HostFaultInjection extends CloudSimEntity {
      * is more working PEs than required by all VMs.
      */
     private void logNoVmFault() {
-        final int vmsRequiredPes = (int) getPesSumOfWorkingVms();
         if(lastFailedHost.getVmList().isEmpty()){
             Log.printLine("\tThere aren't VMs running on the failed Host.");
             return;
@@ -369,10 +369,12 @@ public class HostFaultInjection extends CloudSimEntity {
         Log.printFormattedLine(
                 "\tNumber of failed PEs is less than PEs required by all its %d VMs, thus it doesn't affect any VM.",
                 lastFailedHost.getVmList().size());
+
+        final int vmsRequiredPes = (int) getPesSumOfWorkingVms();
         Log.printFormattedLine(
                 "\tTotal PEs: %d | Total Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
-                lastFailedHost.getNumberOfPes(), lastFailedHost.getNumberOfFailedPes(), lastFailedHost.getNumberOfWorkingPes(),
-                vmsRequiredPes);
+                lastFailedHost.getNumberOfPes(), lastFailedHost.getNumberOfFailedPes(),
+                lastFailedHost.getNumberOfWorkingPes(), vmsRequiredPes);
     }
 
     /**
@@ -411,7 +413,7 @@ public class HostFaultInjection extends CloudSimEntity {
         int i = 0;
         while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms-- > 0) {
             i = i % vmsWithPes.size();
-            Vm vm = vmsWithPes.get(i);
+            final Vm vm = vmsWithPes.get(i);
             lastFailedHost.getVmScheduler().deallocatePesFromVm(vm, 1);
             vm.getCloudletScheduler().deallocatePesFromVm(1);
             //remove 1 failed PE from the VM
@@ -692,7 +694,8 @@ public class HostFaultInjection extends CloudSimEntity {
         }
 
         //computes the differences between failure times t2 - t1
-        double sum=0, previous=faultTimes[0];
+        double sum=0;
+        double previous=faultTimes[0];
         for(final double v: faultTimes) {
             sum += (v - previous);
             previous = v;

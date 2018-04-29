@@ -104,13 +104,9 @@ public final class CloudSimEvent implements SimEvent {
         this.serial = serial;
     }
 
-    /**
-     * Sets the time that the event was removed from the queue to start service.
-     *
-     * @param endWaitingTime the end of waiting time to set
-     */
-    private void setEndWaitingTime(final double endWaitingTime) {
-        this.endWaitingTime = endWaitingTime;
+    @Override
+    public double getEndWaitingTime() {
+        return endWaitingTime;
     }
 
     @Override
@@ -154,11 +150,6 @@ public final class CloudSimEvent implements SimEvent {
     @Override
     public double eventTime() {
         return time;
-    }
-
-    @Override
-    public double endWaitingTime() {
-        return endWaitingTime;
     }
 
     @Override

@@ -88,7 +88,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet) { return false; }
     @Override public Set<Cloudlet> getCloudletReturnedList() { return Collections.EMPTY_SET; }
     @Override public boolean isCloudletReturned(Cloudlet cloudlet) { return false; }
-    @Override public void addCloudletToReturnedList(Cloudlet cloudlet) {}
+    @Override public void addCloudletToReturnedList(Cloudlet cloudlet) {/**/}
     @Override public List<CloudletExecution> getCloudletFinishedList() { return Collections.emptyList(); }
     @Override public boolean isEmpty() { return false; }
     @Override public List<CloudletExecution> getCloudletWaitingList() { return Collections.EMPTY_LIST; }

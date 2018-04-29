@@ -462,7 +462,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
 
-        sendCloudletSubmitAckToBroker(ack, cl, true);
+        sendCloudletSubmitAckToBroker(ack, cl);
     }
 
     /**
@@ -627,7 +627,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
          Hence, this might cause CloudSim to be hanged since waiting
          for this Cloudlet back.
         */
-        sendCloudletSubmitAckToBroker(ack, cl,  false);
+        sendCloudletSubmitAckToBroker(ack, cl);
 
         sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_RETURN, cl);
         return true;
@@ -644,10 +644,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @oaram ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
      * @param cl the cloudlet to respond to DatacenterBroker if it was created or not
-     * @param cloudletCreated indicates if the cloudlet was successfully created
-     * by the Datacenter or not
      */
-    private void sendCloudletSubmitAckToBroker(final boolean ack, Cloudlet cl, final boolean cloudletCreated) {
+    private void sendCloudletSubmitAckToBroker(final boolean ack, Cloudlet cl) {
         if(!ack){
             return;
         }
@@ -914,26 +912,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         return storageList.stream().anyMatch(storage -> storage.contains(fileName));
-    }
-
-    /**
-     * Deletes the file from the storage. Also, check whether it is possible to
-     * delete the file from the storage.
-     *
-     * @param fileName the name of the file to be deleted
-     * @return the tag denoting the status of the operation, either
-     * {@link DataCloudTags#FILE_DELETE_ERROR} or
-     * {@link DataCloudTags#FILE_DELETE_SUCCESSFUL}
-     */
-    private int deleteFileFromStorage(final String fileName) {
-        int msg = DataCloudTags.FILE_DELETE_ERROR;
-
-        for (final FileStorage storage : getStorageList()) {
-            storage.deleteFile(fileName);
-            msg = DataCloudTags.FILE_DELETE_SUCCESSFUL;
-        }
-
-        return msg;
     }
 
     @Override

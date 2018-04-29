@@ -32,7 +32,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  */
 public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit {
     // 12 has been suggested as a safe value
-    private static final int MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_MAD = 12;
+    private static final int MIN_HISTORY_ENTRIES_TO_COMPUTE_MAD = 12;
 
     /**
      * Creates a VmAllocationPolicyMigrationMedianAbsoluteDeviation
@@ -71,7 +71,7 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
     @Override
     public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
         final double[] data = host.getUtilizationHistory();
-        if (MathUtil.countNonZeroBeginning(data) >= MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_MAD) {
+        if (MathUtil.countNonZeroBeginning(data) >= MIN_HISTORY_ENTRIES_TO_COMPUTE_MAD) {
             return MathUtil.mad(data);
         }
 

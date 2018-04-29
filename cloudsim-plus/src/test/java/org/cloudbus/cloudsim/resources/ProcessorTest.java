@@ -19,19 +19,6 @@ public class ProcessorTest {
     private static final double PE_MIPS = 1000;
     private static final int NUMBER_OF_PES = 2;
 
-    private Cloudlet createMockCloudlet(int numberOfCloudlets) {
-        final Cloudlet cloudlet = EasyMock.createMock(Cloudlet.class);
-        EasyMock.expect(cloudlet.getNumberOfPes()).andReturn(1L).times(numberOfCloudlets*2);
-        EasyMock.expect(cloudlet.registerArrivalInDatacenter()).andReturn(0.0).times(numberOfCloudlets);
-        EasyMock.expect(cloudlet.getFinishedLengthSoFar()).andReturn(0L).times(numberOfCloudlets);
-        EasyMock.replay(cloudlet);
-        return cloudlet;
-    }
-
-    private List<Double> createMipsList(int numberOfPes) {
-        return IntStream.range(0, numberOfPes).mapToObj(i -> PE_MIPS).collect(toList());
-    }
-
     @Test
     public void testGetTotalMipsCapacity() {
         final Processor instance = createDefaultProcessor();

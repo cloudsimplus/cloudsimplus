@@ -66,7 +66,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      *
      * @return
      */
-    double endWaitingTime();
+    double getEndWaitingTime();
 
     /**
      * Gets the entity which scheduled this event.

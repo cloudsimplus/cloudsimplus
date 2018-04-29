@@ -48,7 +48,7 @@ public final class ResourceLoader {
      */
     public static String getResourcePath(final Class klass, final String name) {
         final URL resource = getResourceUrl(klass, name);
-        return resource != null && resource.getPath() != null ? resource.getFile() : "";
+        return resource == null || resource.getPath() == null ? "" : resource.getFile();
     }
 
     /**
@@ -87,7 +87,7 @@ public final class ResourceLoader {
             final Stream<Path> walk = Files.walk(path, 1);
 
             final List<String> list = new ArrayList<>();
-            for (Iterator<Path> it = walk.iterator(); it.hasNext();){
+            for (final Iterator<Path> it = walk.iterator(); it.hasNext();){
                 list.add(resourceDir + "/" + it.next().getFileName().toString());
             }
 
@@ -152,7 +152,7 @@ public final class ResourceLoader {
         try {
             return new FileInputStream(resourceName);
         } catch (FileNotFoundException e) {
-            throw new UncheckedIOException(new FileNotFoundException(resourceName + " was not found."));
+            throw new UncheckedIOException(e);
         }
     }
 

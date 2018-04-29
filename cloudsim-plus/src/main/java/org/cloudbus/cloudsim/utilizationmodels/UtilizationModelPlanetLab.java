@@ -147,9 +147,9 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         final int prevIndex = getPrevUtilizationIndex(time);
 
         //elapsed time since the previous utilization index
-        final double elapsedTimeSincePrevUtilization = prevIndex * getSchedulingInterval();
+        final double elapsedTimeSincePrevUsage = prevIndex * getSchedulingInterval();
 
-        final double totalElapsedTime = time - elapsedTimeSincePrevUtilization;
+        final double totalElapsedTime = time - elapsedTimeSincePrevUsage;
         return utilization[prevIndex] + getUtilizationPerSec(time)*totalElapsedTime;
     }
 

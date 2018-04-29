@@ -21,7 +21,7 @@ final class SimEventNull implements SimEvent {
     @Override public double eventTime() {
         return 0;
     }
-    @Override public double endWaitingTime() { return 0; }
+    @Override public double getEndWaitingTime() { return 0; }
     @Override public SimEntity scheduledBy() {
         return SimEntity.NULL;
     }

@@ -104,7 +104,6 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         vm1.setInMigration(true);
         vm2.setInMigration(true);
 
-        final List<Pe> peList = vmScheduler.getHost().getPeList();
         assertEquals(750.0, vmScheduler.getAvailableMips(), 0);
         //During migration, just  10% of capacity is allocated (it's the migration overhead)
         assertEquals(25.0, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0);
