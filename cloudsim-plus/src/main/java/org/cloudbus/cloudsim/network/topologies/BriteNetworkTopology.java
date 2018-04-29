@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.util.ResourceLoader;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-public class BriteNetworkTopology implements NetworkTopology {
+public final class BriteNetworkTopology implements NetworkTopology {
 
     /**
      * The BRITE id to use for the next node to be created in the network.

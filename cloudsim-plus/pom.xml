@@ -237,7 +237,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <!-- There is some problem with the version 2.19.1 or with
                     Netbeans 8.0.2 that the JUnit GUI is not shown at the IDE-->
-                    <version>2.20.1</version>
+                    <version>2.21.0</version>
                 </plugin>
 
                 <plugin>

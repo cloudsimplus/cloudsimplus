@@ -65,7 +65,7 @@ public class PeTest {
 
     @Test
     public void testSetStatus() {
-        PeSimple pe = createPe();
+        final PeSimple pe = createPe();
         assertEquals(PeSimple.Status.FREE, pe.getStatus());
         pe.setStatus(PeSimple.Status.BUSY);
         assertEquals(PeSimple.Status.BUSY, pe.getStatus());

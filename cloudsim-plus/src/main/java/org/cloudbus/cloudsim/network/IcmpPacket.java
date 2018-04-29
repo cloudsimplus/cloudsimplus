@@ -184,12 +184,11 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         }
 
         sb.append("\nRound Trip Time : ")
-            .append(num.format(getTotalResponseTime()))
-            .append(" seconds")
-            .append("\nNumber of Hops  : ")
-            .append(getNumberOfHops())
-            .append("\nBottleneck Bandwidth : ")
-            .append(bandwidth).append(" bits/s");
+          .append(num.format(getTotalResponseTime()))
+          .append(" seconds\nNumber of Hops  : ")
+          .append(getNumberOfHops())
+          .append("\nBottleneck Bandwidth : ")
+          .append(bandwidth).append(" bits/s");
 
         return sb.toString();
     }
