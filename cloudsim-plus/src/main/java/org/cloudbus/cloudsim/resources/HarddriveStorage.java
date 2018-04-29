@@ -271,7 +271,7 @@ public class HarddriveStorage implements FileStorage {
             if (currentFile.getName().equals(fileName)) {
                 // if the file is found, then determine the time taken to get it
                 final double seekTime = getSeekTime(size);
-                double transferTime = getTransferTime(currentFile.getSize());
+                final double transferTime = getTransferTime(currentFile.getSize());
 
                 // total time for this operation
                 currentFile.setTransactionTime(seekTime + transferTime);

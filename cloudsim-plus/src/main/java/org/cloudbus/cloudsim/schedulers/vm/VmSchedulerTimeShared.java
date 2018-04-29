@@ -192,7 +192,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         * with that MIPS amount available.
         */
         while (allocatedMipsForVmPe <= 0 && hostPesIterator.hasNext()) {
-            Pe selectedHostPe = hostPesIterator.next();
+             final Pe selectedHostPe = hostPesIterator.next();
              if(allocateAllVmPeRequestedMipsFromHostPe(vm, selectedHostPe, requestedMipsForVmPe)){
                 allocatedMipsForVmPe = requestedMipsForVmPe;
              } else {

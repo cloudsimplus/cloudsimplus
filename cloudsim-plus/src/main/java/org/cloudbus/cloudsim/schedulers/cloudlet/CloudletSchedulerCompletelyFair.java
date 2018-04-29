@@ -139,14 +139,13 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @return a negative value if c1 is lower than c2, zero if they are equals,
      * a positive value if c1 is greater than c2
      */
-    private int waitingCloudletsComparator(CloudletExecution c1, CloudletExecution c2){
+    private int waitingCloudletsComparator(final CloudletExecution c1, final CloudletExecution c2){
         final double vRuntimeDiff = c1.getVirtualRuntime() - c2.getVirtualRuntime();
-        final int priorityDiff = c1.getCloudlet().getPriority() - c2.getCloudlet().getPriority();
-
         if (vRuntimeDiff != 0) {
             return MathUtil.doubleToInt(vRuntimeDiff);
         }
 
+        final int priorityDiff = c1.getCloudlet().getPriority() - c2.getCloudlet().getPriority();
         final int idDiff = c1.getCloudletId() - c2.getCloudletId();
         return priorityDiff == 0 ? idDiff : priorityDiff;
     }
@@ -181,7 +180,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @throws IllegalArgumentException when latency is lower than minimum granularity
      * @see #getLatency()
 	 */
-	public void setLatency(int latency) {
+	public void setLatency(final int latency) {
 		if(latency < minimumGranularity){
             throw new IllegalArgumentException("Latency cannot be lower than the mininum granularity.");
         }
@@ -204,7 +203,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * @see #getCloudletWeight(CloudletExecution)
 	 * @see #getWeightSumOfRunningCloudlets()
 	 */
-	protected double computeCloudletTimeSlice(CloudletExecution cloudlet){
+	protected double computeCloudletTimeSlice(final CloudletExecution cloudlet){
 		final double timeslice = getLatency() * getCloudletWeightPercentBetweenAllCloudlets(cloudlet);
 		return Math.min(timeslice, getMinimumGranularity());
 	}
@@ -255,7 +254,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * @return the cloudlet weight to use PEs
      * @see #getCloudletNiceness(CloudletExecution)
 	 */
-	protected double getCloudletWeight(CloudletExecution cloudlet){
+	protected double getCloudletWeight(final CloudletExecution cloudlet){
 		return 1024.0/(Math.pow(1.25, getCloudletNiceness(cloudlet)));
 	}
 
@@ -270,7 +269,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @return the cloudlet niceness
      * @see <a href="http://man7.org/linux/man-pages/man1/nice.1.html">Man Pages: Nice values for Linux processes</a>
      */
-    protected double getCloudletNiceness(CloudletExecution cloudlet){
+    protected double getCloudletNiceness(final CloudletExecution cloudlet){
         return -cloudlet.getCloudlet().getPriority();
     }
 
@@ -281,7 +280,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * @param cloudlet Cloudlet to get its weight percentage
 	 * @return the cloudlet weight percentage between all Cloudlets in the execution list
 	 */
-	private double getCloudletWeightPercentBetweenAllCloudlets(CloudletExecution cloudlet) {
+	private double getCloudletWeightPercentBetweenAllCloudlets(final CloudletExecution cloudlet) {
 		return getCloudletWeight(cloudlet) / getWeightSumOfRunningCloudlets();
 	}
 
@@ -322,7 +321,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * @param minimumGranularity the minimum granularity to set
      * @throws IllegalArgumentException when minimum granularity is greater than latency
 	 */
-	public void setMinimumGranularity(int minimumGranularity) {
+	public void setMinimumGranularity(final int minimumGranularity) {
         if(minimumGranularity > latency){
             throw new IllegalArgumentException("Minimum granularity cannot be greater than latency.");
         }
@@ -342,7 +341,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @param fileTransferTime {@inheritDoc}
      */
     @Override
-    public double processCloudletSubmit(CloudletExecution ce, double fileTransferTime) {
+    public double processCloudletSubmit(final CloudletExecution ce, final double fileTransferTime) {
         ce.setVirtualRuntime(computeCloudletInitialVirtualRuntime(ce));
         ce.setTimeSlice(computeCloudletTimeSlice(ce));
         return super.processCloudletSubmit(ce, fileTransferTime);
@@ -356,7 +355,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * the time of the next expiring Cloudlet, enabling the preemption process), or Double.MAX_VALUE if there is no next events
      */
     @Override
-    public double updateProcessing(double currentTime, List<Double> mipsShare) {
+    public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
         super.updateProcessing(currentTime, mipsShare);
         return getCloudletExecList().stream()
                 .mapToDouble(CloudletExecution::getTimeSlice)
@@ -364,7 +363,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     @Override
-    public void updateCloudletProcessing(CloudletExecution ce, double currentTime) {
+    public void updateCloudletProcessing(final CloudletExecution ce, final double currentTime) {
         /*
         Cloudlet has never been executed yet and it will start executing now,
         sets its actual virtual runtime. The negative value was used so far
@@ -390,7 +389,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @return the computed initial virtual runtime as a negative value
      * to indicate that the Cloudlet hasn't started executing yet
      */
-    private double computeCloudletInitialVirtualRuntime(CloudletExecution ce) {
+    private double computeCloudletInitialVirtualRuntime(final CloudletExecution ce) {
         /*
         A negative virtual runtime indicates the cloudlet has never been executed yet.
         This math was used just to ensure that the first added cloudlets
@@ -427,7 +426,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @return {@inheritDoc}
      */
     @Override
-    public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet) {
+    public boolean canAddCloudletToExecutionList(final CloudletExecution cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);
     }
 

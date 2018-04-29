@@ -129,7 +129,7 @@ public final class Log {
     public static void printConcatLine(Object... messages) {
         if (isEnabled()) {
             buffer = new StringBuilder(messages.length);
-            for (Object message : messages) {
+            for (final Object message : messages) {
                 buffer.append(String.valueOf(message));
             }
             printLine(buffer);
@@ -171,7 +171,7 @@ public final class Log {
      */
     public static void println(Level level, Class klass, double time, String format, Object... args) {
         if((level == Level.DEBUG && isDebug()) || (level != Level.DEBUG)){
-            String msg = String.format(format, args);
+            final String msg = String.format(format, args);
             printFormattedLine("Time %.1f %s/%s\n   %s", time, level.name(), klass.getSimpleName(), msg);
         }
     }

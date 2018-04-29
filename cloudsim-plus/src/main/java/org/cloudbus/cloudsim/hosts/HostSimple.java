@@ -20,7 +20,6 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.lists.PeList;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 import static java.util.stream.Collectors.toList;
@@ -373,7 +372,7 @@ public class HostSimple implements Host {
     @Override
     public void destroyAllVms() {
         deallocateResourcesOfAllVms();
-        for (Vm vm : vmList) {
+        for (final Vm vm : vmList) {
             vm.setCreated(false);
             storage.deallocateResource(vm.getStorage());
         }
@@ -411,7 +410,7 @@ public class HostSimple implements Host {
 
     @Override
     public int getNumberOfFreePes() {
-        return PeList.getNumberOfFreePes(getPeList());
+        return (int)peList.stream().filter(Pe::isFree).count();
     }
 
     @Override
@@ -568,7 +567,8 @@ public class HostSimple implements Host {
     @Override
     public final boolean setFailed(final boolean failed) {
         this.failed = failed;
-        PeList.setStatusFailed(peList, failed);
+        final Pe.Status status = failed ? Pe.Status.FAILED : Pe.Status.FREE;
+        peList.forEach(pe -> pe.setStatus(status));
 
         /*Just changes the active state when the Host is set to active.
         * In other situations, the active status must remain as it was.
@@ -579,11 +579,6 @@ public class HostSimple implements Host {
         }
 
         return true;
-    }
-
-    @Override
-    public boolean setPeStatus(final int peId, final Pe.Status status) {
-        return PeList.setPeStatus(peList, peId, status);
     }
 
     @Override

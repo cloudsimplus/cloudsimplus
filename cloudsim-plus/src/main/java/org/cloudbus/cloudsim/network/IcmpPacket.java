@@ -168,8 +168,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
 
         final int SIZE = 1000;   // number of chars
         final StringBuilder sb = new StringBuilder(SIZE);
-        sb.append("Ping information for ").append(name).append('\n')
-          .append("Entity Name\tEntry Time\tExit Time\t Bandwidth\n")
+        sb.append("Ping information for ").append(name)
+          .append("\nEntity Name\tEntry TiOme\tExit Time\t Bandwidth\n")
           .append("----------------------------------------------------------\n");
 
         final String tab = "    ";  // 4 spaces

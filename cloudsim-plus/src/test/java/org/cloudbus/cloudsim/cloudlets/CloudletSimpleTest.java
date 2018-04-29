@@ -139,7 +139,6 @@ public class CloudletSimpleTest {
     @Test
     public void testGetDatacenterArrivalTime() {
         final double submissionTime = 1;
-        final int datacenterId = 0;
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(submissionTime);
         });

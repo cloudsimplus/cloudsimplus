@@ -47,10 +47,4 @@ public class HostTest {
         assertEquals(-1, instance.getId());
         assertTrue(instance.getVmList().isEmpty());
     }
-
-    private EventListener<HostUpdatesVmsProcessingEventInfo> createMockListener() {
-        final EventListener l = EasyMock.createMock(EventListener.class);
-        EasyMock.replay(l);
-        return l;
-    }
 }

@@ -25,7 +25,6 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.lists.PeList;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 
 /**
  * NetworkHost class extends {@link HostSimple} to support simulation of
@@ -274,16 +273,6 @@ public class NetworkHost extends HostSimple {
         } else {
             pktsToSendForExternalVms.add(hostPkt);
         }
-    }
-
-    /**
-     * Gets the maximum utilization among the PEs of a given VM.
-     *
-     * @param vm The VM to get its PEs maximum utilization
-     * @return The maximum utilization among the PEs of the VM.
-     */
-    public double getMaxUtilizationAmongVmsPes(Vm vm) {
-        return PeList.getMaxUtilizationAmongVmsPes(getPeList(), vm);
     }
 
     public EdgeSwitch getEdgeSwitch() {

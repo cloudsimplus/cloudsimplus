@@ -69,7 +69,4 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     }
     @Override public DatacenterCharacteristics setCostPerMem(double c) { return DatacenterCharacteristics.NULL; }
     @Override public DatacenterCharacteristics setCostPerStorage(double c) { return DatacenterCharacteristics.NULL; }
-    @Override public boolean setPeStatus(Pe.Status status, int hostId, int peId) {
-        return false;
-    }
 }

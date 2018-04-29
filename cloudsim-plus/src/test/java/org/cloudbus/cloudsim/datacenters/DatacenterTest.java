@@ -1,10 +1,11 @@
 package org.cloudbus.cloudsim.datacenters;
 
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.junit.Assert;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *

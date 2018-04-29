@@ -50,30 +50,31 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     @Override
     public boolean allocateResourceForVm(final Vm vm, final long newTotalVmResourceCapacity) {
         Objects.requireNonNull(vm);
-        if (isSuitableForVm(vm, newTotalVmResourceCapacity)) {
-            final long prevVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
-            if (getResourceAllocationMap().containsKey(vm)) {
-                //Deallocates any amount of the resource assigned to the Vm in order to allocate a new capacity
-                deallocateResourceForVm(vm);
-            }
-
-            /*
-            Pe resources are not stored in the VM resource List. Only the provisioner that keeps track
-            of Pe allocation for VM. By this way, if the resource is not found inside the VM
-            and it is a Pe, it's OK (as it is expected)
-            */
-            if(!getResource().isObjectSubClassOf(Pe.class) && !vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
-                return false;
-            }
-
-            //Allocates the requested resource from the physical resource
-            getResource().allocateResource(newTotalVmResourceCapacity);
-            getResourceAllocationMap().put(vm, newTotalVmResourceCapacity);
-            vm.getResource(getResourceClass()).setAllocatedResource(prevVmResourceAllocation);
-            return true;
+        if (!isSuitableForVm(vm, newTotalVmResourceCapacity)) {
+            return false;
         }
 
-        return false;
+        final long prevVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
+        if (getResourceAllocationMap().containsKey(vm)) {
+            //Deallocates any amount of the resource assigned to the Vm in order to allocate a new capacity
+            deallocateResourceForVm(vm);
+        }
+
+        /*
+        Pe resources are not stored in the VM resource List.
+        Only the provisioner keeps track of Pe allocation for VM.
+        This way, if the resource is not found inside the VM
+        and it is a Pe, it's OK (as it is expected)
+        */
+        if(!getResource().isObjectSubClassOf(Pe.class) && !vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
+            return false;
+        }
+
+        //Allocates the requested resource from the physical resource
+        getResource().allocateResource(newTotalVmResourceCapacity);
+        getResourceAllocationMap().put(vm, newTotalVmResourceCapacity);
+        vm.getResource(getResourceClass()).setAllocatedResource(prevVmResourceAllocation);
+        return true;
     }
 
     @Override

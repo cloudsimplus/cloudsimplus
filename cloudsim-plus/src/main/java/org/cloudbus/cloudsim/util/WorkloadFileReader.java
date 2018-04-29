@@ -481,7 +481,7 @@ public class WorkloadFileReader implements WorkloadReader {
      */
     private void readFile(final InputStream inputStream) throws IOException {
         //the reader is safely closed by the caller
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+        final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
         int line = 1;
         String readLine;
         while ((readLine = readNextLine(reader, line)) != null) {

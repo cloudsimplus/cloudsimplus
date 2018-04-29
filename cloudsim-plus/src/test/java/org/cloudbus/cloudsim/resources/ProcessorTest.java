@@ -1,14 +1,8 @@
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.easymock.EasyMock;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 
 /**

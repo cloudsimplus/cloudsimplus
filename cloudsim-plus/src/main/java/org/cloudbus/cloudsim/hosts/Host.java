@@ -223,18 +223,6 @@ public interface Host extends Machine, Comparable<Host> {
     int getNumberOfFreePes();
 
     /**
-     * Sets the particular Pe status on the host.
-     *
-     * @param peId the pe id
-     * @param status the new Pe status
-     * @return <tt>true</tt> if the Pe status has set, <tt>false</tt> otherwise (Pe id might not
-     *         be exist)
-     * @pre peID >= 0
-     * @post $none
-     */
-    boolean setPeStatus(int peId, Pe.Status status);
-
-    /**
      * Gets the number of PEs that are working.
      * That is, the number of PEs that aren't FAIL.
      *

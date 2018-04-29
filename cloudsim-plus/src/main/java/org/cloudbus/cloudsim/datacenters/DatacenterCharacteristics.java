@@ -221,17 +221,4 @@ public interface DatacenterCharacteristics extends Identificable {
      * @post $none
      */
     DatacenterCharacteristics setCostPerStorage(double costPerStorage);
-
-    /**
-     * Sets the particular Pe status on a PM.
-     *
-     * @param status the new Pe status
-     * @param hostId Machine ID
-     * @param peId Pe id
-     * @return otherwise (Machine id or Pe id might not be exist)
-     * @pre machineID >= 0
-     * @pre peID >= 0
-     * @post $none
-     */
-    boolean setPeStatus(Pe.Status status, int hostId, int peId);
 }

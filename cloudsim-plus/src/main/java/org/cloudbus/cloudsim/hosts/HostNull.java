@@ -118,9 +118,6 @@ final class HostNull implements Host {
     @Override public void reallocateMigratingInVms() {/**/}
     @Override public void removeMigratingInVm(Vm vm) {/**/}
     @Override public void setDatacenter(Datacenter datacenter) {/**/}
-    @Override public boolean setPeStatus(int peId, Pe.Status status) {
-        return false;
-    }
     @Override public double updateProcessing(double currentTime) {
         return 0.0;
     }

@@ -8,9 +8,6 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.resources.Pe;
-
-import org.cloudbus.cloudsim.lists.HostList;
 
 /**
  * Represents static properties of a Datacenter such as architecture, Operating
@@ -98,17 +95,12 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     @Override
     public int getNumberOfPes() {
-        return HostList.getNumberOfPes(datacenter.getHostList());
+        return (int)datacenter.getHostList().stream().mapToLong(Host::getNumberOfPes).sum();
     }
 
     @Override
     public int getNumberOfFreePes() {
-        return HostList.getNumberOfFreePes(datacenter.getHostList());
-    }
-
-    @Override
-    public boolean setPeStatus(final Pe.Status status, final int hostId, final int peId) {
-        return HostList.setPeStatus(datacenter.getHostList(), status, hostId, peId);
+        return datacenter.getHostList().stream().mapToInt(Host::getNumberOfFreePes).sum();
     }
 
     @Override

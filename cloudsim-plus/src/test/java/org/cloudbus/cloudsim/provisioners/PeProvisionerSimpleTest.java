@@ -89,8 +89,8 @@ public class PeProvisionerSimpleTest {
 
     @Test
     public void testDeallocateMipsForVM() {
-        Vm vm1 = VmSimpleTest.createVm(0, HALF_MIPS, 1);
-        Vm vm2 = VmSimpleTest.createVm(1, HALF_MIPS, 1);
+        final Vm vm1 = VmSimpleTest.createVm(0, HALF_MIPS, 1);
+        final Vm vm2 = VmSimpleTest.createVm(1, HALF_MIPS, 1);
 
         peProvisioner.allocateResourceForVm(vm1, HALF_MIPS);
         peProvisioner.allocateResourceForVm(vm2, ONE_FORTH_MIPS);

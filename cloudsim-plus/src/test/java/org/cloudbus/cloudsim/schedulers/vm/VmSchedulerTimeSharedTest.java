@@ -121,7 +121,6 @@ public class VmSchedulerTimeSharedTest {
         vm0.setInMigration(true);
 
         vmScheduler.getHost().addMigratingInVm(vm0);
-        final List<Pe> peList = vmScheduler.getHost().getPeList();
         assertEquals(1500, vmScheduler.getAvailableMips(), 0);
         /*While the VM is being migrated, just 10% of its requested MIPS is allocated,
         * representing the CPU migration overhead.*/

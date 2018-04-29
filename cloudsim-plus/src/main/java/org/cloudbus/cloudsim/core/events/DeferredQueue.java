@@ -36,7 +36,7 @@ public class DeferredQueue implements EventQueue {
 	 *
 	 * @param newEvent The event to be added to the queue.
 	 */
-	public void addEvent(SimEvent newEvent) {
+	public void addEvent(final SimEvent newEvent) {
 		// The event has to be inserted as the last of all events
 		// with the same event_time(). Yes, this matters.
 		double eventTime = newEvent.eventTime();
@@ -46,7 +46,7 @@ public class DeferredQueue implements EventQueue {
 			return;
 		}
 
-		ListIterator<SimEvent> iterator = list.listIterator();
+		final ListIterator<SimEvent> iterator = list.listIterator();
 		SimEvent event;
 		while (iterator.hasNext()) {
 			event = iterator.next();
@@ -98,7 +98,7 @@ public class DeferredQueue implements EventQueue {
      * @param event the event
      * @return true, if successful
      */
-    public boolean remove(SimEvent event) {
+    public boolean remove(final SimEvent event) {
         return list.remove(event);
     }
 

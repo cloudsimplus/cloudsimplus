@@ -223,12 +223,12 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return false;
         }
 
-        final Vm vm = scaling.getVm();
         if (scaling.isVmOverloaded() && isNotHostPesSuitableToUpScaleVm(scaling)) {
             showResourceIsUnavailable(scaling);
             return false;
         }
 
+        final Vm vm = scaling.getVm();
         vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
         if(scaling.isVmUnderloaded()) {
             vm.getProcessor().removeCapacity((long)numberOfPesForScaling);

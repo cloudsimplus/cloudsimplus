@@ -71,7 +71,7 @@ public class CloudletSendTask extends CloudletTask {
             throw new IllegalStateException("The destination Cloudlet has to have an assigned VM.");
         }
 
-        VmPacket packet = new VmPacket(
+        final VmPacket packet = new VmPacket(
                 getCloudlet().getVm(), destinationCloudlet.getVm(),
                 dataLength, getCloudlet(), destinationCloudlet);
         packetsToSend.add(packet);
