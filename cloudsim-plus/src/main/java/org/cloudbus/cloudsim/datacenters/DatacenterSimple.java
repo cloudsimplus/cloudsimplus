@@ -828,7 +828,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public void shutdownEntity() {
-        Log.printConcatLine(getName(), " is shutting down...");
+        Log.printFormattedLine("%.2f: %s is shutting down...", getSimulation().clock(), getName());
     }
 
     @Override

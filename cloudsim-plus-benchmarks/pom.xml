@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-benchmarks</artifactId>
-    <version>2.2.2</version>
+    <version>2.3.0</version>
     <name>CloudSim Plus Benchmarks</name>
     <description>A module containing benchmarks created using JMH (Java Microbenchmark Harness framework) to assess CloudSim Plus performance</description>
     <url>http://cloudsimplus.org</url>

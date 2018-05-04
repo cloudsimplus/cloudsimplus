@@ -17,6 +17,11 @@ import java.util.function.UnaryOperator;
  * @since CloudSim Plus 2.1.0
  */
 public class PowerModelSimple extends PowerModelAbstract {
+    /**
+     * A value representing one hundred percent.
+     */
+    private static final double ONE_HUNDRED = 100.0;
+
     private final UnaryOperator<Double> powerIncrementFunction;
 
     /**
@@ -110,11 +115,11 @@ public class PowerModelSimple extends PowerModelAbstract {
      * @return the power consumption constant in Watt-Second (Ws)
      */
     protected double getConstant() {
-        return (maxPower - getStaticPower()) / powerIncrementFunction.apply(100.0);
+        return (maxPower - getStaticPower()) / powerIncrementFunction.apply(ONE_HUNDRED);
     }
 
     @Override
     protected double getPowerInternal(final double utilization) throws IllegalArgumentException {
-        return getStaticPower() + getConstant() * powerIncrementFunction.apply(utilization*100.0);
+        return getStaticPower() + getConstant() * powerIncrementFunction.apply(utilization* ONE_HUNDRED);
     }
 }

@@ -850,7 +850,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void shutdownEntity() {
-        println(String.format("%s is shutting down...", getName()));
+        println(String.format("%.2f: %s is shutting down...", getSimulation().clock(), getName()));
     }
 
     @Override

@@ -343,9 +343,18 @@ public interface Simulation {
     boolean terminate();
 
     /**
-     * Schedules the termination of the simulation for a given time before it has completely finished.
+     * Schedules the termination of the simulation for a given time (in seconds).
      *
-     * @param time the time at which the simulation has to be terminated
+     * <p>If a termination time is set, the simulation stays running even
+     * if there is no event to process.
+     * It keeps waiting for new dynamic events, such as the creation
+     * of Cloudlets and VMs at runtime.
+     * If no event happens, the clock is increased to simulate time passing.
+     * The clock increment is defined according to: (i) the lower {@link Datacenter#getSchedulingInterval()}
+     * between existing Datacenters;  or (ii) {@link #getMinTimeBetweenEvents()} in case
+     * no {@link Datacenter} has its schedulingInterval set.</p>
+     *
+     * @param time the time at which the simulation has to be terminated (in seconds)
      * @return true if the time given is greater than the current simulation time, false otherwise
      */
     boolean terminateAt(double time);

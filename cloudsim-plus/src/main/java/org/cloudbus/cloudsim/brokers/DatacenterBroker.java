@@ -40,7 +40,7 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker NULL = new DatacenterBrokerNull();
 
     /**
-     * A default delay value to indicate that any VM should <b>NOT</b> be
+     * A default delay value to indicate that <b>no</b> VM should be
      * immediately destroyed after it becomes idle.
      *
      * <p>This is used as the default value returned by the {@link #getVmDestructionDelayFunction()}

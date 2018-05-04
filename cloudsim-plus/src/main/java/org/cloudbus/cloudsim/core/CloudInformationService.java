@@ -85,7 +85,14 @@ public class CloudInformationService extends CloudSimEntity {
 
     @Override
     public void shutdownEntity() {
-        notifyAllEntity();
+        Log.printConcatLine(super.getName(), ": Notify all CloudSim Plus entities to shutdown.");
+
+        signalShutdown(datacenterList);
+        signalShutdown(cisList);
+
+        // reset the values
+        datacenterList.clear();
+        cisList.clear();
     }
 
     /**
@@ -97,23 +104,6 @@ public class CloudInformationService extends CloudSimEntity {
      */
     public Set<Datacenter> getDatacenterList() {
         return datacenterList;
-    }
-
-    /**
-     * Tells all registered entities about the end of simulation.
-     *
-     * @pre $none
-     * @post $none
-     */
-    private void notifyAllEntity() {
-        Log.printConcatLine(super.getName(), ": Notify all CloudSim Plus entities to shutdown.");
-
-        signalShutdown(datacenterList);
-        signalShutdown(cisList);
-
-        // reset the values
-        datacenterList.clear();
-        cisList.clear();
     }
 
     /**

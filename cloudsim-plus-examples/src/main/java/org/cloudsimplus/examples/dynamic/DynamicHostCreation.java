@@ -58,7 +58,7 @@ import java.util.List;
  * An example showing how to create Hosts at simulation runtime,
  * enabling to simulate the physical expansion of a Datacenter by
  * the addition of new Hosts (PMs).
- * The exemple starts by creating 2 hosts and 4 VMs (2 VMs for each Host).
+ * The example starts by creating 2 hosts and 4 VMs (2 VMs for each Host).
  * Then it creates 4 Cloudlets (1 for each VM).
  *
  * <p>After the simulation starts and reaches 5 seconds (defined in {@link #SCHEDULING_INTERVAL}),

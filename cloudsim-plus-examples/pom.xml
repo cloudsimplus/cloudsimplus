@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-examples</artifactId>
-    <version>2.2.2</version>
+    <version>2.3.0</version>
     <name>CloudSim Plus Examples</name>
     <description>
         Ready-to-run examples of how to use CloudSim Plus API.
