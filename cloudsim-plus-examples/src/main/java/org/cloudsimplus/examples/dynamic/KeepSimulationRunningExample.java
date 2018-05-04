@@ -93,7 +93,14 @@ import java.util.List;
  * @since CloudSim Plus 2.3.0
  */
 public class KeepSimulationRunningExample {
+    /**
+     * @see #createDynamicCloudletAndVm(EventInfo)
+     */
     private static final int TIME_TO_CREATE_NEW_CLOUDLET = 15;
+
+    /**
+     * @see Simulation#terminateAt(double)
+     */
     private static final int TIME_TO_TERMINATE_SIMULATION = TIME_TO_CREATE_NEW_CLOUDLET*2;
 
     /**
