@@ -494,7 +494,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * <p><b>In order to enable the Host to get utilization history,
      * utilization history of its VMs should be enabled
-     * by calling {@link VmUtilizationHistory#enable()} from
+     * by calling {@link VmUtilizationHistory#enable() enable()} from
      * the {@link Vm#getUtilizationHistory()}.</b></p>
      * @return
      */

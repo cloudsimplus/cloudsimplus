@@ -76,13 +76,10 @@ public class CloudSim implements Simulation {
      */
     private final CloudInformationService cis;
 
-    /**
-     * The calendar.
-     */
     private final Calendar calendar;
 
     /**
-     * The termination time.
+     * The time the simulation should be terminated.
      */
     private double terminationTime = -1;
 
@@ -201,8 +198,33 @@ public class CloudSim implements Simulation {
 
     @Override
     public double start() {
+        if(alreadyRunOnce){
+            throw new UnsupportedOperationException(
+                "You can't run a simulation that has already run previously. If you've paused the simulation and want to resume it, you should call resume().");
+        }
+
         Log.printConcatLine("Starting CloudSim Plus ", VERSION);
-        return run();
+        startEntitiesIfNotRunning();
+        this.alreadyRunOnce = true;
+
+        while (running) {
+            runClockTickAndProcessFutureEventQueue();
+
+            if (isThereRequestToTerminateSimulationAndWasItFulfilled()) {
+                Log.printFormattedLine(
+                    "\nSimulation finished at time %.2f, before completing, in reason of an explicit request to terminate() or terminateAt().\n", clockTime);
+                break;
+            }
+
+            checkIfThereIsRequestToPauseSimulation();
+        }
+
+        final double lastSimulationTime = clock();
+
+        finishSimulation();
+        printMessage("Simulation completed.");
+
+        return lastSimulationTime;
     }
 
     @Override
@@ -219,10 +241,9 @@ public class CloudSim implements Simulation {
     public boolean terminateAt(final double time) {
         if (time <= clockTime) {
             return false;
-        } else {
-            terminationTime = time;
         }
 
+        terminationTime = time;
         return true;
     }
 
@@ -557,11 +578,11 @@ public class CloudSim implements Simulation {
         onEventProcessingListeners.forEach(l -> l.update(e));
     }
 
-    /**
-     * Internal method used to start the simulation. This method should
-     * <b>not</b> be used by user simulations.
-     */
-    private void runStart() {
+    private void startEntitiesIfNotRunning() {
+        if (running) {
+            return;
+        }
+
         running = true;
         entities.forEach(SimEntity::start);
         printMessage("Entities started.");
@@ -613,47 +634,7 @@ public class CloudSim implements Simulation {
         src.setState(SimEntity.State.HOLDING);
     }
 
-    /**
-     * Starts the simulation execution. This should be called after all the
-     * entities have been setup and added.
-     * The method blocks until the simulation is ended.
-     *
-     * @return the last clock value
-     * @throws RuntimeException when the simulation already run once. If you paused the simulation and wants to resume it,
-     * you must use {@link #resume()} instead of {@link #start()}.
-     */
-    private double run()  {
-        if(alreadyRunOnce){
-            throw new UnsupportedOperationException("You can't run a simulation that already ran previously. If you've paused the simulation and want to resume it, you should call resume().");
-        }
-
-        if (!running) {
-            runStart();
-        }
-
-        this.alreadyRunOnce = true;
-
-        while (running) {
-            runClockTickAndProcessFutureEventQueue();
-
-            if (isThereRequestToTerminateSimulationAndItWasAttended()) {
-                Log.printFormattedLine(
-                    "\nSimulation finished at time %.2f, before completing, in reason of an explicit request to terminate() or terminateAt().\n", clockTime);
-                break;
-            }
-
-            checkIfThereIsRequestToPauseSimulation();
-        }
-
-        final double lastSimulationTime = clock();
-
-        finishSimulation();
-        printMessage("Simulation completed.");
-
-        return lastSimulationTime;
-    }
-
-    private boolean isThereRequestToTerminateSimulationAndItWasAttended() {
+    private boolean isThereRequestToTerminateSimulationAndWasItFulfilled() {
         if(abortRequested){
             return true;
         }
@@ -680,7 +661,7 @@ public class CloudSim implements Simulation {
      * @see #pause()
      * @see #pause(double)
      */
-    public boolean doPause() {
+    private boolean doPause() {
         if(running && isPauseRequested()) {
             paused=true;
             setClock(pauseAt);

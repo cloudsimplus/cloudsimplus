@@ -319,20 +319,18 @@ public interface Simulation {
     void sendNow(SimEntity src, SimEntity dest, int tag, Object data);
 
     /**
-     * Starts the execution of CloudSim simulation and <b>waits for complete
-     * execution of all entities</b>, i.e. until all entities threads reach
+     * Starts simulation execution and <b>waits for
+     * all entities to finish</b>, i.e. until all entities threads reach
      * non-RUNNABLE state or there are no more events in the future event queue.
      * <p>
      * <b>Note</b>: This method should be called just after all the entities
-     * have been setup and added.
+     * have been setup and added. The method blocks until the simulation is ended.
      * </p>
      *
      * @return the last clock time
-     * @throws RuntimeException When the simulation already run once.
+     * @throws UnsupportedOperationException When the simulation has already run once.
      * If you paused the simulation and wants to resume it,
      * you must use {@link #resume()} instead of calling the current method.
-     * @pre $none
-     * @post $none
      */
     double start();
 

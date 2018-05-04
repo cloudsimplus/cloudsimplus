@@ -27,7 +27,7 @@ import java.util.List;
  * Represents a ping (ICMP protocol) packet that can be used to gather information from the network layer.
  * An IcmpPacket traverses the network topology similar to a {@link HostPacket},
  * but it collects information like bandwidths, and Round Trip Time etc.
- * <p>
+ *
  * <p>
  * You can set all the parameters to an IcmpPacket that can be applied to a
  * HostPacket. So if you want to find out the kind of information that a
@@ -121,10 +121,11 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @param source          the entity that sends out this packet
      * @param destination     the entity to which this packet is destined
      * @param netServiceLevel the class of traffic this packet belongs to
-     * @pre name != null
-     * @post $none
      */
-    public IcmpPacket(String name, int packetID, long size, SimEntity source, SimEntity destination, int netServiceLevel) {
+    public IcmpPacket(
+        final String name, final int packetID, final long size,
+        final SimEntity source, final SimEntity destination, final int netServiceLevel)
+    {
         this.name = name;
         packetId = packetID;
         this.source = source;
@@ -146,8 +147,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Returns the ID of this packet
      *
      * @return packet ID
-     * @pre $none
-     * @post $none
      */
     public int getId() {
         return packetId;
@@ -157,8 +156,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Returns a human-readable information of this packet.
      *
      * @return description of this packet
-     * @pre $none
-     * @post $none
      */
     @Override
     public String toString() {
@@ -202,7 +199,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @pre v != null
      * @post index > 0
      */
-    private String getData(List<Double> v, int index) {
+    private String getData(final List<Double> v, final int index) {
         try {
             final double id = v.get(index);
             return num.format(id);
@@ -224,7 +221,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @pre size >= 0
      * @post $none
      */
-    public boolean setSize(long size) {
+    public boolean setSize(final long size) {
         if (size < 0) {
             return false;
         }
@@ -239,7 +236,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     @Override
-    public void setSource(SimEntity source) {
+    public void setSource(final SimEntity source) {
         this.source = source;
     }
 
@@ -249,7 +246,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     @Override
-    public void setDestination(SimEntity destination) {
+    public void setDestination(final SimEntity destination) {
         this.destination = destination;
     }
 
@@ -259,7 +256,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     @Override
-    public void setSendTime(double time) {
+    public void setSendTime(final double time) {
         this.sendTime = time;
     }
 
@@ -269,7 +266,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     @Override
-    public void setReceiveTime(double time) {
+    public void setReceiveTime(final double time) {
         this.receiveTime = time;
     }
 
@@ -278,8 +275,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * packet takes a round trip, the same router may have been traversed twice.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     public int getNumberOfHops() {
         final int PAIR = 2;
@@ -326,7 +321,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @param entity the id of the hop that this IcmpPacket is traversing
      * @post $none
      */
-    public void addHop(SimEntity entity) {
+    public void addHop(final SimEntity entity) {
         entities.add(entity);
     }
 
@@ -340,7 +335,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @pre time >= 0
      * @post $none
      */
-    public void addEntryTime(double time) {
+    public void addEntryTime(final double time) {
         entryTimes.add(Math.min(time, 0));
     }
 
@@ -355,7 +350,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @pre time >= 0
      * @post $none
      */
-    public void addExitTime(double time) {
+    public void addExitTime(final double time) {
         exitTimes.add(Math.min(time, 0));
     }
 
@@ -369,7 +364,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @pre baudRate > 0
      * @post $none
      */
-    public void addBaudRate(double baudRate) {
+    public void addBaudRate(final double baudRate) {
         baudRates.add(baudRate);
         if (bandwidth < 0 || baudRate < bandwidth) {
             bandwidth = baudRate;
@@ -439,7 +434,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @param entity the entity to set as the last hop
      * @post $none
      */
-    public void setLastHop(SimEntity entity) {
+    public void setLastHop(final SimEntity entity) {
         this.lastHop = entity;
     }
 
@@ -461,9 +456,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * the priority of this service level.
      *
      * @param netServiceLevel the service level to set
-     * @post $none
      */
-    public void setNetServiceLevel(int netServiceLevel) {
+    public void setNetServiceLevel(final int netServiceLevel) {
         this.netServiceLevel = netServiceLevel;
     }
 
@@ -473,8 +467,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * or {@link CloudSimTags#ICMP_PKT_RETURN}.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     public int getTag() {
         return tag;
@@ -487,10 +479,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      *
      * @param tag the direction to set
      * @return true if the tag is valid, false otherwise
-     * @pre tag > 0
-     * @post $none
      */
-    public boolean setTag(int tag) {
+    public boolean setTag(final int tag) {
         if (tag < CloudSimTags.ICMP_PKT_SUBMIT || tag > CloudSimTags.ICMP_PKT_RETURN) {
             return false;
         }

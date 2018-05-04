@@ -109,7 +109,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         /* Assigns an EventListener to be notified when the first Cloudlets finishes executing
         * and then dynamically create a new list of VMs and Cloudlets to submit to the broker.*/
         Cloudlet cloudlet0 = this.cloudletList.get(0);
-        cloudlet0.addOnFinishListener(eventInfo -> submitNewVmsAndCloudletsToBroker(eventInfo));
+        cloudlet0.addOnFinishListener(this::submitNewVmsAndCloudletsToBroker);
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         simulation.start();
