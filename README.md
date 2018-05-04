@@ -82,6 +82,7 @@ CloudSim Plus provides a lot of exclusive features, from the most basic ones to 
     - sorting of requests to create submitted VMs and Cloudlets, defining priorities to create such objects ([#102](https://github.com/manoelcampos/cloudsim-plus/issues/102)). 
 1. [Host Fault Injection Mechanism](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/HostFaultInjectionExample1.java) to enable injection of random failures into Hosts PEs: it injects failures into Host PEs and reallocates working PEs to running VMs. When all PEs from a Host fail, it starts clones of failed VMs to recovery from failure. This way, it is simulated the instantiation of VM snapshots into different Hosts ([#81](https://github.com/manoelcampos/cloudsim-plus/issues/81)).
 1. [Creation of Hosts at Simulation Runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/dynamic/DynamicHostCreation.java) to enable physical expansion of Datacenter capacity ([#124](https://github.com/manoelcampos/cloudsim-plus/issues/124)).
+1. [Enables the simulation to keep running, waiting for dynamic and even random events such as the arrival of Cloudlets and VMs](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/dynamic/KeepSimulationRunningExample.java) ([#130](https://github.com/manoelcampos/cloudsim-plus/issues/130)).
 
 # Project's Structure
 
