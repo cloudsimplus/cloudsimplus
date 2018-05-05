@@ -32,17 +32,6 @@ CloudInformationService
 
 Methods
 -------
-datacenterExists
-^^^^^^^^^^^^^^^^
-
-.. java:method:: public boolean datacenterExists(Integer id)
-   :outertype: CloudInformationService
-
-   Checks whether the given Datacenter ID exists or not.
-
-   :param id: a Datacenter id
-   :return: \ ``true``\  if the given ID exists, \ ``false``\  otherwise
-
 getDatacenterList
 ^^^^^^^^^^^^^^^^^
 
@@ -51,29 +40,11 @@ getDatacenterList
 
    Gets the list of all registered Datacenters.
 
-processEndSimulation
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processEndSimulation()
-   :outertype: CloudInformationService
-
-   Notifies the registered entities about the end of simulation. This method should be overridden by child classes.
-
 processEvent
 ^^^^^^^^^^^^
 
 .. java:method:: @Override public void processEvent(SimEvent ev)
    :outertype: CloudInformationService
-
-processOtherEvent
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processOtherEvent(SimEvent ev)
-   :outertype: CloudInformationService
-
-   Process non-default received events that aren't processed by the \ :java:ref:`processEvent(SimEvent)`\  method. This method should be overridden by subclasses in other to process new defined events.
-
-   :param ev: a CloudSimEvent object
 
 shutdownEntity
 ^^^^^^^^^^^^^^

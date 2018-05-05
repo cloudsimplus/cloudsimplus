@@ -37,13 +37,13 @@ Methods
 allocatePesForVm
 ^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested)
+.. java:method::  boolean allocatePesForVm(Vm vm, List<Double> requestedMips)
    :outertype: VmScheduler
 
    Requests the allocation of PEs for a VM.
 
    :param vm: the vm to allocate PEs to
-   :param mipsShareRequested: the list of MIPS share to be allocated to a VM
+   :param requestedMips: the list of MIPS share to be allocated to a VM
    :return: true if the PEs were allocated to the VM, false otherwise
 
 allocatePesForVm
@@ -137,16 +137,6 @@ getPeCapacity
    :outertype: VmScheduler
 
    Gets PE capacity in MIPS.
-
-getPesAllocatedForVm
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  List<Pe> getPesAllocatedForVm(Vm vm)
-   :outertype: VmScheduler
-
-   Gets the list of PEs allocated for a VM.
-
-   :param vm: the VM to get the allocated PEs
 
 getRequestedMips
 ^^^^^^^^^^^^^^^^

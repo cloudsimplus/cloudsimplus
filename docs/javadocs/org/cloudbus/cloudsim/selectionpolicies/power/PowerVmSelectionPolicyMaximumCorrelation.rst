@@ -4,13 +4,13 @@
 
 .. java:import:: org.apache.commons.math3.linear Array2DRowRealMatrix
 
-.. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
-
-.. java:import:: org.cloudbus.cloudsim.vms.power PowerVm
+.. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.util MathUtil
+
+.. java:import:: org.cloudbus.cloudsim.vms UtilizationHistory
 
 PowerVmSelectionPolicyMaximumCorrelation
 ========================================
@@ -68,7 +68,7 @@ getFallbackPolicy
 getMinUtilizationHistorySize
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected int getMinUtilizationHistorySize(List<PowerVm> vmList)
+.. java:method:: protected int getMinUtilizationHistorySize(List<Vm> vmList)
    :outertype: PowerVmSelectionPolicyMaximumCorrelation
 
    Gets the min CPU utilization percentage history size among a list of VMs.
@@ -79,7 +79,7 @@ getMinUtilizationHistorySize
 getUtilizationMatrix
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double[][] getUtilizationMatrix(List<PowerVm> vmList)
+.. java:method:: protected double[][] getUtilizationMatrix(List<Vm> vmList)
    :outertype: PowerVmSelectionPolicyMaximumCorrelation
 
    Gets the CPU utilization percentage matrix for a given list of VMs.
@@ -90,7 +90,7 @@ getUtilizationMatrix
 getVmToMigrate
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Vm getVmToMigrate(PowerHost host)
+.. java:method:: @Override public Vm getVmToMigrate(Host host)
    :outertype: PowerVmSelectionPolicyMaximumCorrelation
 
 setFallbackPolicy

@@ -29,10 +29,16 @@ end
 
    **See also:** :java:ref:`.getExecutionStartTimes()`
 
+getExecutionStartTime
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected static Long getExecutionStartTime(String name)
+   :outertype: ExecutionTimeMeasurer
+
 getExecutionStartTimes
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public static Map<String, Long> getExecutionStartTimes()
+.. java:method:: protected static Map<String, Long> getExecutionStartTimes()
    :outertype: ExecutionTimeMeasurer
 
    Gets map the execution times.

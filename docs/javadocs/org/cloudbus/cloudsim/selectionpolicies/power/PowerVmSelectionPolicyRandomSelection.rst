@@ -4,9 +4,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.distributions UniformDistr
 
-.. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
-
-.. java:import:: org.cloudbus.cloudsim.vms.power PowerVm
+.. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -39,6 +37,6 @@ Methods
 getVmToMigrate
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Vm getVmToMigrate(PowerHost host)
+.. java:method:: @Override public Vm getVmToMigrate(Host host)
    :outertype: PowerVmSelectionPolicyRandomSelection
 

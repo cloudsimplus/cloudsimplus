@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.core Machine
 
+.. java:import:: org.cloudbus.cloudsim.power.models PowerModel
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -11,6 +13,8 @@
 .. java:import:: java.util Set
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
+
+.. java:import:: org.cloudbus.cloudsim.vms VmUtilizationHistory
 
 .. java:import:: org.cloudsimplus.listeners EventListener
 
@@ -78,18 +82,6 @@ addVmMigratingOut
    :param vm: the vm to be added
    :return: true if the VM wasn't into the list and was added, false otherwise
 
-allocatePesForVm
-^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean allocatePesForVm(Vm vm, List<Double> mipsShare)
-   :outertype: Host
-
-   Allocates PEs for a VM.
-
-   :param vm: the vm
-   :param mipsShare: the list of MIPS share to be allocated to the VM
-   :return: $true if this policy allows a new VM in the host, $false otherwise
-
 createTemporaryVm
 ^^^^^^^^^^^^^^^^^
 
@@ -152,6 +144,26 @@ destroyVm
 
    :param vm: the VM
 
+disableStateHistory
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void disableStateHistory()
+   :outertype: Host
+
+   Disable storing Host state history.
+
+   **See also:** :java:ref:`.getStateHistory()`
+
+enableStateHistory
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void enableStateHistory()
+   :outertype: Host
+
+   Enables storing Host state history.
+
+   **See also:** :java:ref:`.getStateHistory()`
+
 getAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -183,6 +195,16 @@ getAvailableStorage
 
    :return: the free storage
 
+getBuzyPeList
+^^^^^^^^^^^^^
+
+.. java:method::  List<Pe> getBuzyPeList()
+   :outertype: Host
+
+   Gets the list of working Processing Elements (PEs) of the host, \ **which excludes failed PEs**\ .
+
+   :return: the list working (non-failed) Host PEs
+
 getBwProvisioner
 ^^^^^^^^^^^^^^^^
 
@@ -202,6 +224,24 @@ getDatacenter
    Gets the Datacenter where the host is placed.
 
    :return: the data center of the host
+
+getFinishedVms
+^^^^^^^^^^^^^^
+
+.. java:method::  List<Vm> getFinishedVms()
+   :outertype: Host
+
+   Gets the List of VMs that have finished executing.
+
+getFreePeList
+^^^^^^^^^^^^^
+
+.. java:method::  List<Pe> getFreePeList()
+   :outertype: Host
+
+   Gets the list of Free Processing Elements (PEs) of the host, \ **which excludes failed PEs**\ .
+
+   :return: the list free (non-failed) Host PEs
 
 getMaxAvailableMips
 ^^^^^^^^^^^^^^^^^^^
@@ -255,6 +295,22 @@ getPeList
 
    **See also:** :java:ref:`.getWorkingPeList()`
 
+getPowerModel
+^^^^^^^^^^^^^
+
+.. java:method::  PowerModel getPowerModel()
+   :outertype: Host
+
+   Gets the \ :java:ref:`PowerModel`\  used by the host to define how it consumes power. A Host just provides power usage data if a PowerModel is set.
+
+   :return: the Host's \ :java:ref:`PowerModel`\
+
+getPreviousUtilizationOfCpu
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getPreviousUtilizationOfCpu()
+   :outertype: Host
+
 getProvisioner
 ^^^^^^^^^^^^^^
 
@@ -276,6 +332,18 @@ getRamProvisioner
 
    :return: the ram provisioner
 
+getStateHistory
+^^^^^^^^^^^^^^^
+
+.. java:method::  List<HostStateHistoryEntry> getStateHistory()
+   :outertype: Host
+
+   Gets a \ **read-only**\  host state history. This List is just populated if \ :java:ref:`isStateHistoryEnabled()`\
+
+   :return: the state history
+
+   **See also:** :java:ref:`.enableStateHistory()`
+
 getTotalAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -296,6 +364,21 @@ getTotalMipsCapacity
    Gets total MIPS capacity of PEs which are not \ :java:ref:`Status.FAILED`\ .
 
    :return: the total MIPS of working PEs
+
+getUtilizationHistory
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double[] getUtilizationHistory()
+   :outertype: Host
+
+   Gets the host CPU utilization percentage history (between [0 and 1], where 1 is 100%), based on its VM utilization history. Each value into the returned array is the CPU utilization percentage for a time interval equal to the \ :java:ref:`Datacenter.getSchedulingInterval()`\ .
+
+   \ **The values are stored in the reverse chronological order.**\
+
+   In order to enable the Host to get utilization history,
+   utilization history of its VMs should be enabled
+   by calling enable() from
+   the .
 
 getUtilizationOfBw
 ^^^^^^^^^^^^^^^^^^
@@ -341,13 +424,24 @@ getVm
    :param brokerId: ID of VM's owner
    :return: the virtual machine object, $null if not found
 
+getVmCreatedList
+^^^^^^^^^^^^^^^^
+
+.. java:method::  <T extends Vm> List<T> getVmCreatedList()
+   :outertype: Host
+
+   Gets a \ **read-only**\  list of all VMs which have been created into the host during the entire simulation. This way, this method returns a historic list of created VMs, including those ones already destroyed.
+
+   :param <T>: The generic type
+   :return: the read-only vm created list
+
 getVmList
 ^^^^^^^^^
 
 .. java:method::  <T extends Vm> List<T> getVmList()
    :outertype: Host
 
-   Gets a \ **read-only**\  list of VMs assigned to the host.
+   Gets a \ **read-only**\  list of VMs currently assigned to the host.
 
    :param <T>: The generic type
    :return: the read-only vm list
@@ -387,7 +481,7 @@ getWorkingPeList
 .. java:method::  List<Pe> getWorkingPeList()
    :outertype: Host
 
-   Gets the list of working Processing Elements (PEs) of the host, \ **which excludes failed PEs**\ .
+   Gets the list of working Processing Elements (PEs) of the host. It's the list of all PEs which are not \ **FAILEd**\ .
 
    :return: the list working (non-failed) Host PEs
 
@@ -411,16 +505,24 @@ isFailed
 
    :return: true, if the host PEs have failed; false otherwise
 
+isStateHistoryEnabled
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isStateHistoryEnabled()
+   :outertype: Host
+
+   Checks if Host state history is being collected and stored.
+
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
 .. java:method::  boolean isSuitableForVm(Vm vm)
    :outertype: Host
 
-   Checks if the host active and is suitable for vm. If it has enough resources to attend the VM.
+   Checks if the host is active and is suitable for vm (if it has enough resources to attend the VM).
 
-   :param vm: the vm
-   :return: true, if is suitable for vm
+   :param vm: the vm to check
+   :return: true if is suitable for vm, false otherwise
 
 reallocateMigratingInVms
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -516,17 +618,15 @@ setFailed
    :param failed: true to set the Host to "failed", false to set to "working"
    :return: true if the Host status was changed, false otherwise
 
-setPeStatus
-^^^^^^^^^^^
+setPowerModel
+^^^^^^^^^^^^^
 
-.. java:method::  boolean setPeStatus(int peId, Pe.Status status)
+.. java:method::  Host setPowerModel(PowerModel powerModel)
    :outertype: Host
 
-   Sets the particular Pe status on the host.
+   Sets the \ :java:ref:`PowerModel`\  used by the host to define how it consumes power. A Host just provides power usage data if a PowerModel is set.
 
-   :param peId: the pe id
-   :param status: the new Pe status
-   :return: \ ``true``\  if the Pe status has set, \ ``false``\  otherwise (Pe id might not be exist)
+   :param powerModel: the \ :java:ref:`PowerModel`\  to set
 
 setRamProvisioner
 ^^^^^^^^^^^^^^^^^

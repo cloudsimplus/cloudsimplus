@@ -4,10 +4,6 @@
 
 .. java:import:: java.util.function Predicate
 
-.. java:import:: org.cloudbus.cloudsim.core.predicates PredicateAny
-
-.. java:import:: org.cloudbus.cloudsim.core.predicates PredicateNone
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies NetworkTopology
@@ -34,6 +30,14 @@ Simulation
 
 Fields
 ------
+ANY_EVT
+^^^^^^^
+
+.. java:field::  Predicate<SimEvent> ANY_EVT
+   :outertype: Simulation
+
+   A standard predicate that matches any event.
+
 NULL
 ^^^^
 
@@ -41,22 +45,6 @@ NULL
    :outertype: Simulation
 
    An attribute that implements the Null Object Design Pattern for \ :java:ref:`Simulation`\  objects.
-
-SIM_ANY
-^^^^^^^
-
-.. java:field::  PredicateAny SIM_ANY
-   :outertype: Simulation
-
-   A standard predicate that matches any event.
-
-SIM_NONE
-^^^^^^^^
-
-.. java:field::  PredicateNone SIM_NONE
-   :outertype: Simulation
-
-   A standard predicate that does not match any events.
 
 Methods
 -------
@@ -116,7 +104,7 @@ addOnSimulationPausedListener
 cancel
 ^^^^^^
 
-.. java:method::  SimEvent cancel(int src, Predicate<SimEvent> p)
+.. java:method::  SimEvent cancel(SimEntity src, Predicate<SimEvent> p)
    :outertype: Simulation
 
    Cancels the first event from the future event queue that matches a given predicate and was sent by a given entity, then removes it from the queue.
@@ -128,7 +116,7 @@ cancel
 cancelAll
 ^^^^^^^^^
 
-.. java:method::  boolean cancelAll(int src, Predicate<SimEvent> p)
+.. java:method::  boolean cancelAll(SimEntity src, Predicate<SimEvent> p)
    :outertype: Simulation
 
    Cancels all events from the future event queue that matches a given predicate and were sent by a given entity, then removes those ones from the queue.
@@ -170,7 +158,7 @@ clockInMinutes
 findFirstDeferred
 ^^^^^^^^^^^^^^^^^
 
-.. java:method::  SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p)
+.. java:method::  SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> p)
    :outertype: Simulation
 
    Find first deferred event matching a predicate.
@@ -189,15 +177,15 @@ getCalendar
 
    :return: a new copy of Calendar object
 
-getCloudInfoServiceEntityId
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getCloudInfoService
+^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  int getCloudInfoServiceEntityId()
+.. java:method::  CloudInformationService getCloudInfoService()
    :outertype: Simulation
 
-   Gets the entity ID of \ :java:ref:`CloudInformationService`\ .
+   Gets the \ :java:ref:`CloudInformationService`\ .
 
-   :return: the Entity ID or if it is not found
+   :return: the Entity
 
 getDatacenterList
 ^^^^^^^^^^^^^^^^^
@@ -209,47 +197,6 @@ getDatacenterList
 
    :return: a List containing Datacenter IDs
 
-getEntitiesByName
-^^^^^^^^^^^^^^^^^
-
-.. java:method::  Map<String, SimEntity> getEntitiesByName()
-   :outertype: Simulation
-
-   Gets a \ **read-only**\  map where each key is the name of an \ :java:ref:`SimEntity`\  and each value is the actual \ :java:ref:`SimEntity`\ .
-
-getEntity
-^^^^^^^^^
-
-.. java:method::  SimEntity getEntity(int id)
-   :outertype: Simulation
-
-   Get the entity with a given id.
-
-   :param id: the entity's unique id number
-   :return: The entity, or if it could not be found
-
-getEntity
-^^^^^^^^^
-
-.. java:method::  SimEntity getEntity(String name)
-   :outertype: Simulation
-
-   Get the entity with a given name.
-
-   :param name: The entity's name
-   :return: The entity
-
-getEntityId
-^^^^^^^^^^^
-
-.. java:method::  int getEntityId(String name)
-   :outertype: Simulation
-
-   Get the id of an entity with a given name.
-
-   :param name: The entity's name
-   :return: The entity's unique id number
-
 getEntityList
 ^^^^^^^^^^^^^
 
@@ -258,26 +205,15 @@ getEntityList
 
    Returns a read-only list of entities created for the simulation.
 
-getEntityName
-^^^^^^^^^^^^^
-
-.. java:method::  String getEntityName(int entityId)
-   :outertype: Simulation
-
-   Gets name of the entity given its entity ID.
-
-   :param entityId: the entity ID
-   :return: the Entity name or if this object does not have one
-
 getMinTimeBetweenEvents
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method::  double getMinTimeBetweenEvents()
    :outertype: Simulation
 
-   Returns the minimum time between events. Events within shorter periods after the last event are discarded.
+   Returns the minimum time between events (in seconds). Events within shorter periods after the last event are discarded.
 
-   :return: the minimum time between events.
+   :return: the minimum time between events (in seconds).
 
 getNetworkTopology
 ^^^^^^^^^^^^^^^^^^
@@ -311,7 +247,7 @@ getNumberOfFutureEvents
 holdEntity
 ^^^^^^^^^^
 
-.. java:method::  void holdEntity(int src, long delay)
+.. java:method::  void holdEntity(SimEntity src, long delay)
    :outertype: Simulation
 
    Holds an entity for some time.
@@ -361,7 +297,7 @@ pause
 pauseEntity
 ^^^^^^^^^^^
 
-.. java:method::  void pauseEntity(int src, double delay)
+.. java:method::  void pauseEntity(SimEntity src, double delay)
    :outertype: Simulation
 
    Pauses an entity for some time.
@@ -372,7 +308,7 @@ pauseEntity
 removeOnClockTickListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean removeOnClockTickListener(EventListener<EventInfo> listener)
+.. java:method::  boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener)
    :outertype: Simulation
 
    Removes a listener from the onClockTickListener List.
@@ -415,25 +351,25 @@ resume
 select
 ^^^^^^
 
-.. java:method::  SimEvent select(int dest, Predicate<SimEvent> p)
+.. java:method::  SimEvent select(SimEntity dest, Predicate<SimEvent> p)
    :outertype: Simulation
 
    Selects the first deferred event that matches a given predicate and removes it from the queue.
 
-   :param dest: Id of entity that the event has to be sent to
+   :param dest: entity that the event has to be sent to
    :param p: the event selection predicate
    :return: the removed event or \ :java:ref:`SimEvent.NULL`\  if not found
 
 send
 ^^^^
 
-.. java:method::  void send(int src, int dest, double delay, int tag, Object data)
+.. java:method::  void send(SimEntity src, SimEntity dest, double delay, int tag, Object data)
    :outertype: Simulation
 
    Sends an event from one entity to another.
 
-   :param src: Id of entity that scheduled the event
-   :param dest: Id of entity that the event will be sent to
+   :param src: entity that scheduled the event
+   :param dest: entity that the event will be sent to
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: the \ :java:ref:`tag <SimEvent.getTag()>`\  that classifies the event
    :param data: the \ :java:ref:`data <SimEvent.getData()>`\  to be sent inside the event
@@ -441,13 +377,13 @@ send
 sendFirst
 ^^^^^^^^^
 
-.. java:method::  void sendFirst(int src, int dest, double delay, int tag, Object data)
+.. java:method::  void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data)
    :outertype: Simulation
 
    Sends an event from one entity to another, adding it to the beginning of the queue in order to give priority to it.
 
-   :param src: Id of entity that scheduled the event
-   :param dest: Id of entity that the event will be sent to
+   :param src: entity that scheduled the event
+   :param dest: entity that the event will be sent to
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: the \ :java:ref:`tag <SimEvent.getTag()>`\  that classifies the event
    :param data: the \ :java:ref:`data <SimEvent.getData()>`\  to be sent inside the event
@@ -455,13 +391,13 @@ sendFirst
 sendNow
 ^^^^^^^
 
-.. java:method::  void sendNow(int src, int dest, int tag, Object data)
+.. java:method::  void sendNow(SimEntity src, SimEntity dest, int tag, Object data)
    :outertype: Simulation
 
    Sends an event from one entity to another without delaying the message.
 
-   :param src: Id of entity that scheduled the event
-   :param dest: Id of entity that the event will be sent to
+   :param src: entity that scheduled the event
+   :param dest: entity that the event will be sent to
    :param tag: the \ :java:ref:`tag <SimEvent.getTag()>`\  that classifies the event
    :param data: the \ :java:ref:`data <SimEvent.getData()>`\  to be sent inside the event
 
@@ -506,12 +442,12 @@ start
 .. java:method::  double start()
    :outertype: Simulation
 
-   Starts the execution of CloudSim simulation and waits for complete
-   execution of all entities, i.e. until all entities threads reach non-RUNNABLE state or there are no more events in the future event queue.
+   Starts simulation execution and waits for
+   all entities to finish, i.e. until all entities threads reach non-RUNNABLE state or there are no more events in the future event queue.
 
-   \ **Note**\ : This method should be called just after all the entities have been setup and added.
+   \ **Note**\ : This method should be called just after all the entities have been setup and added. The method blocks until the simulation is ended.
 
-   :throws RuntimeException: When the simulation already run once. If you paused the simulation and wants to resume it, you must use \ :java:ref:`resume()`\  instead of calling the current method.
+   :throws UnsupportedOperationException: When the simulation has already run once. If you paused the simulation and wants to resume it, you must use \ :java:ref:`resume()`\  instead of calling the current method.
    :return: the last clock time
 
 terminate
@@ -530,21 +466,12 @@ terminateAt
 .. java:method::  boolean terminateAt(double time)
    :outertype: Simulation
 
-   Schedules the termination of the simulation for a given time before it has completely finished.
+   Schedules the termination of the simulation for a given time (in seconds).
 
-   :param time: the time at which the simulation has to be terminated
+   If a termination time is set, the simulation stays running even if there is no event to process. It keeps waiting for new dynamic events, such as the creation of Cloudlets and VMs at runtime. If no event happens, the clock is increased to simulate time passing. The clock increment is defined according to: (i) the lower \ :java:ref:`Datacenter.getSchedulingInterval()`\  between existing Datacenters; or (ii) \ :java:ref:`getMinTimeBetweenEvents()`\  in case no \ :java:ref:`Datacenter`\  has its schedulingInterval set.
+
+   :param time: the time at which the simulation has to be terminated (in seconds)
    :return: true if the time given is greater than the current simulation time, false otherwise
-
-updateEntityName
-^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean updateEntityName(String oldName)
-   :outertype: Simulation
-
-   Removes an entity with and old name from the \ :java:ref:`getEntitiesByName()`\  map and adds it again using its new name.
-
-   :param oldName: the name the entity had before
-   :return: true if the entity was found and changed into the list, false otherwise
 
 wait
 ^^^^
@@ -560,7 +487,7 @@ wait
 waiting
 ^^^^^^^
 
-.. java:method::  long waiting(int dest, Predicate<SimEvent> p)
+.. java:method::  long waiting(SimEntity dest, Predicate<SimEvent> p)
    :outertype: Simulation
 
    Gets the number of events in the deferred event queue that are targeted to a given entity and match a given predicate.

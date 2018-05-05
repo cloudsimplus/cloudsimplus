@@ -10,14 +10,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.util Log
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets.network CloudletExecutionTask
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets.network CloudletReceiveTask
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets.network CloudletSendTask
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets.network NetworkCloudlet
-
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 PacketSchedulerSimple

@@ -6,11 +6,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies TopologicalNode
 
-.. java:import:: java.io BufferedReader
-
-.. java:import:: java.io FileReader
-
-.. java:import:: java.io IOException
+.. java:import:: org.cloudbus.cloudsim.util ResourceLoader
 
 .. java:import:: java.util StringTokenizer
 
@@ -38,6 +34,12 @@ Methods
 readGraphFile
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public TopologicalGraph readGraphFile(String filename) throws IOException
+.. java:method:: @Override public TopologicalGraph readGraphFile(String filename)
+   :outertype: TopologyReaderBrite
+
+readGraphFile
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public TopologicalGraph readGraphFile(InputStreamReader streamReader)
    :outertype: TopologyReaderBrite
 

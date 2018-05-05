@@ -1,10 +1,12 @@
-.. java:import:: org.apache.commons.lang3 BooleanUtils
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
+.. java:import:: org.cloudbus.cloudsim.core.events PredicateType
+
 .. java:import:: org.cloudbus.cloudsim.network IcmpPacket
+
+.. java:import:: org.cloudbus.cloudsim.util Conversion
 
 .. java:import:: org.cloudbus.cloudsim.util DataCloudTags
 
@@ -43,28 +45,13 @@ Constructors
 DatacenterSimple
 ^^^^^^^^^^^^^^^^
 
-.. java:constructor:: @Deprecated public DatacenterSimple(Simulation simulation, DatacenterCharacteristics characteristics, VmAllocationPolicy vmAllocationPolicy, List<FileStorage> storageList, double schedulingInterval)
-   :outertype: DatacenterSimple
-
-   Creates a Datacenter with the given parameters.
-
-   :param simulation: The CloudSim instance that represents the simulation the Entity is related to
-   :param characteristics: the characteristics of the Datacenter to be created
-   :param storageList: a List of storage elements, for data simulation
-   :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
-   :param schedulingInterval: the scheduling interval to process each Datacenter received event (in seconds)
-   :throws IllegalArgumentException: when this entity has \ ``zero``\  number of PEs (Processing Elements). No PEs mean the Cloudlets can't be processed. A CloudResource must contain one or more Machines. A Machine must contain one or more PEs.
-
-DatacenterSimple
-^^^^^^^^^^^^^^^^
-
-.. java:constructor:: public DatacenterSimple(Simulation simulation, DatacenterCharacteristics characteristics, VmAllocationPolicy vmAllocationPolicy)
+.. java:constructor:: public DatacenterSimple(Simulation simulation, List<? extends Host> hostList, VmAllocationPolicy vmAllocationPolicy)
    :outertype: DatacenterSimple
 
    Creates a Datacenter.
 
    :param simulation: The CloudSim instance that represents the simulation the Entity is related to
-   :param characteristics: the characteristics of the Datacenter to be created
+   :param hostList: list of \ :java:ref:`Host`\ s that will compound the Datacenter
    :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
    :throws IllegalArgumentException: when this entity has \ ``zero``\  number of PEs (Processing Elements).  No PEs mean the Cloudlets can't be processed. A CloudResource must contain one or more Machines. A Machine must contain one or more PEs.
 
@@ -76,6 +63,18 @@ addFile
 .. java:method:: @Override public int addFile(File file)
    :outertype: DatacenterSimple
 
+addHost
+^^^^^^^
+
+.. java:method:: @Override public <T extends Host> Datacenter addHost(T host)
+   :outertype: DatacenterSimple
+
+addHostList
+^^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Host> Datacenter addHostList(List<T> hostList)
+   :outertype: DatacenterSimple
+
 checkCloudletsCompletionForAllHosts
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -83,18 +82,6 @@ checkCloudletsCompletionForAllHosts
    :outertype: DatacenterSimple
 
    Verifies if some cloudlet inside the hosts of this Datacenter have already finished. If yes, send them to the User/Broker
-
-checkCloudletsCompletionForGivenHost
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void checkCloudletsCompletionForGivenHost(Host host)
-   :outertype: DatacenterSimple
-
-checkCloudletsCompletionForGivenVm
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public void checkCloudletsCompletionForGivenVm(Vm vm)
-   :outertype: DatacenterSimple
 
 contains
 ^^^^^^^^
@@ -118,10 +105,43 @@ contains
    :param fileName: a file name to be searched
    :return: \ ``true``\  if successful, \ ``false``\  otherwise
 
+disableMigrations
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public final Datacenter disableMigrations()
+   :outertype: DatacenterSimple
+
+   Disable VM migrations.
+
+enableMigrations
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public final Datacenter enableMigrations()
+   :outertype: DatacenterSimple
+
+   Enable VM migrations.
+
 equals
 ^^^^^^
 
 .. java:method:: @Override public boolean equals(Object o)
+   :outertype: DatacenterSimple
+
+finishVmMigration
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected void finishVmMigration(SimEvent ev, boolean ack)
+   :outertype: DatacenterSimple
+
+   Finishes the process of migrating a VM.
+
+   :param ev: information about the event just happened
+   :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
+
+getBandwidthPercentForMigration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getBandwidthPercentForMigration()
    :outertype: DatacenterSimple
 
 getCharacteristics
@@ -165,17 +185,11 @@ getLastProcessTime
 
    :return: the last process time
 
-getRegionalCisName
-^^^^^^^^^^^^^^^^^^
+getPower
+^^^^^^^^
 
-.. java:method:: protected String getRegionalCisName()
+.. java:method:: @Override public double getPower()
    :outertype: DatacenterSimple
-
-   Gets the regional Cloud Information Service (CIS) name.
-
-   :return: the regional CIS name
-
-   **See also:** :java:ref:`org.cloudbus.cloudsim.core.CloudInformationService`
 
 getSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^
@@ -207,11 +221,15 @@ hashCode
 .. java:method:: @Override public int hashCode()
    :outertype: DatacenterSimple
 
-isTimeToUpdateCloudletsProcessing
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+isMigrationsEnabled
+^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean isTimeToUpdateCloudletsProcessing()
+.. java:method:: public boolean isMigrationsEnabled()
    :outertype: DatacenterSimple
+
+   Checks if migrations are enabled.
+
+   :return: true, if migrations are enable; false otherwise
 
 predictFileTransferTime
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -244,17 +262,6 @@ processCloudletCancel
    Processes a Cloudlet cancel request.
 
    :param cloudlet: cloudlet to be canceled
-
-processCloudletMove
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processCloudletMove(Object[] receivedData, int type)
-   :outertype: DatacenterSimple
-
-   Process the event for an User/Broker who wants to move a Cloudlet.
-
-   :param receivedData: an Object array containing data about the migration, where the index 0 will be a Cloudlet and the index 1 will be the id of the destination VM
-   :param type: event type
 
 processCloudletPause
 ^^^^^^^^^^^^^^^^^^^^
@@ -289,43 +296,11 @@ processCloudletSubmit
    :param ev: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
 
-processDataAdd
-^^^^^^^^^^^^^^
-
-.. java:method:: protected void processDataAdd(SimEvent ev, boolean ack)
-   :outertype: DatacenterSimple
-
-   Process a file inclusion request.
-
-   :param ev: information about the event just happened
-   :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
-
-processDataDelete
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processDataDelete(SimEvent ev, boolean ack)
-   :outertype: DatacenterSimple
-
-   Process a file deletion request.
-
-   :param ev: information about the event just happened
-   :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
-
 processEvent
 ^^^^^^^^^^^^
 
 .. java:method:: @Override public void processEvent(SimEvent ev)
    :outertype: DatacenterSimple
-
-processOtherEvent
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processOtherEvent(SimEvent ev)
-   :outertype: DatacenterSimple
-
-   Process non-default received events that aren't processed by the \ :java:ref:`processEvent(SimEvent)`\  method. This method should be overridden by subclasses in other to process new defined events.
-
-   :param ev: information about the event just happened
 
 processPingRequest
 ^^^^^^^^^^^^^^^^^^
@@ -360,26 +335,11 @@ processVmDestroy
    :param ev: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
 
-processVmMigrate
-^^^^^^^^^^^^^^^^
+setBandwidthPercentForMigration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void processVmMigrate(SimEvent ev, boolean ack)
+.. java:method:: @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration)
    :outertype: DatacenterSimple
-
-   Process the event from the Datacenter to migrate a VM.
-
-   :param ev: information about the event just happened
-   :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
-
-setCharacteristics
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected final void setCharacteristics(DatacenterCharacteristics characteristics)
-   :outertype: DatacenterSimple
-
-   Sets the Datacenter characteristics.
-
-   :param characteristics: the new Datacenter characteristics
 
 setLastProcessTime
 ^^^^^^^^^^^^^^^^^^
@@ -390,16 +350,6 @@ setLastProcessTime
    Sets the last time some cloudlet was processed in the Datacenter.
 
    :param lastProcessTime: the new last process time
-
-setRegionalCisName
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void setRegionalCisName(String regionalCisName)
-   :outertype: DatacenterSimple
-
-   Sets the regional Cloud Information Service (CIS) name.
-
-   :param regionalCisName: the new regional CIS name
 
 setSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^
@@ -420,7 +370,7 @@ setStorageList
 setVmAllocationPolicy
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected final Datacenter setVmAllocationPolicy(VmAllocationPolicy vmAllocationPolicy)
+.. java:method:: public final Datacenter setVmAllocationPolicy(VmAllocationPolicy vmAllocationPolicy)
    :outertype: DatacenterSimple
 
    Sets the policy to be used by the Datacenter to allocate VMs into hosts.
@@ -454,14 +404,4 @@ updateCloudletProcessing
    Updates processing of each Host, that fires the update of VMs, which in turn updates cloudlets running in this Datacenter. After that, the method schedules the next processing update. It is necessary because Hosts and VMs are simple objects, not entities. So, they don't receive events and updating cloudlets inside them must be called from the outside.
 
    :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute or it isn't time to update the cloudlets
-
-updateHostsProcessing
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected double updateHostsProcessing()
-   :outertype: DatacenterSimple
-
-   Updates the processing of all Hosts, that means that makes the processing of VMs running inside such hosts to be updated. Finally, the processing of Cloudlets running inside such VMs is updated.
-
-   :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
 

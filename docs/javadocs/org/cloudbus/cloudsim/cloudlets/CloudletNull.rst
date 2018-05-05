@@ -152,12 +152,6 @@ getFinishedLengthSoFar
 .. java:method:: @Override public long getFinishedLengthSoFar(Datacenter datacenter)
    :outertype: CloudletNull
 
-getHistory
-^^^^^^^^^^
-
-.. java:method:: @Override public String getHistory()
-   :outertype: CloudletNull
-
 getId
 ^^^^^
 

@@ -42,35 +42,19 @@ CloudSim
 .. java:constructor:: public CloudSim()
    :outertype: CloudSim
 
-   Creates a CloudSim simulation using a default calendar. Internally it creates a CloudInformationService.
+   Creates a CloudSim simulation. Internally it creates a CloudInformationService.
 
-   **See also:** :java:ref:`CloudInformationService`
-
-CloudSim
-^^^^^^^^
-
-.. java:constructor:: public CloudSim(Calendar cal)
-   :outertype: CloudSim
-
-   Creates a CloudSim simulation with the given parameters. Internally it creates a \ :java:ref:`CloudInformationService`\ .
-
-   :param cal: starting time for this simulation. If it is \ ``null``\ , then the time will be taken from \ ``Calendar.getInstance()``\
-   :throws RuntimeException:
-
-   **See also:** :java:ref:`CloudInformationService`
+   **See also:** :java:ref:`CloudInformationService`, :java:ref:`.CloudSim(double)`
 
 CloudSim
 ^^^^^^^^
 
-.. java:constructor:: @Deprecated public CloudSim(int numUser, Calendar cal, boolean traceFlag, double periodBetweenEvents)
+.. java:constructor:: public CloudSim(double minTimeBetweenEvents)
    :outertype: CloudSim
 
-   Creates a CloudSim simulation with the given parameters. Internally it creates a \ :java:ref:`CloudInformationService`\ .
+   Creates a CloudSim simulation that tracks events happening in a time interval as little as the minTimeBetweenEvents parameter. Internally it creates a \ :java:ref:`CloudInformationService`\ .
 
-   :param numUser: this parameter is not being used anymore
-   :param cal: starting time for this simulation. If it is \ ``null``\ , then the time will be taken from \ ``Calendar.getInstance()``\
-   :param traceFlag: this parameter is not being used anymore
-   :param periodBetweenEvents: the minimal period between events. Events within shorter periods after the last event are discarded.
+   :param minTimeBetweenEvents: the minimal period between events. Events within shorter periods after the last event are discarded.
 
    **See also:** :java:ref:`CloudInformationService`
 
@@ -87,16 +71,6 @@ addEntity
 
 .. java:method:: @Override public void addEntity(CloudSimEntity e)
    :outertype: CloudSim
-
-addEntityDynamically
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void addEntityDynamically(SimEntity e)
-   :outertype: CloudSim
-
-   Internal method used to add a new entity to the simulation when the simulation is running. \ **It should not be called from user simulations.**\
-
-   :param e: The new entity
 
 addOnClockTickListener
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -119,13 +93,13 @@ addOnSimulationPausedListener
 cancel
 ^^^^^^
 
-.. java:method:: @Override public SimEvent cancel(int src, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> p)
    :outertype: CloudSim
 
 cancelAll
 ^^^^^^^^^
 
-.. java:method:: @Override public boolean cancelAll(int src, Predicate<SimEvent> p)
+.. java:method:: @Override public boolean cancelAll(SimEntity src, Predicate<SimEvent> p)
    :outertype: CloudSim
 
 clock
@@ -146,22 +120,10 @@ clockInMinutes
 .. java:method:: @Override public double clockInMinutes()
    :outertype: CloudSim
 
-doPause
-^^^^^^^
-
-.. java:method:: public boolean doPause()
-   :outertype: CloudSim
-
-   Effectively pauses the simulation after an pause request.
-
-   :return: true if the simulation was paused (the simulation is running and was not paused yet), false otherwise
-
-   **See also:** :java:ref:`.pause()`, :java:ref:`.pause(double)`
-
 findFirstDeferred
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> p)
    :outertype: CloudSim
 
 getCalendar
@@ -170,10 +132,10 @@ getCalendar
 .. java:method:: @Override public Calendar getCalendar()
    :outertype: CloudSim
 
-getCloudInfoServiceEntityId
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getCloudInfoService
+^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public int getCloudInfoServiceEntityId()
+.. java:method:: @Override public CloudInformationService getCloudInfoService()
    :outertype: CloudSim
 
 getDatacenterList
@@ -182,40 +144,10 @@ getDatacenterList
 .. java:method:: @Override public Set<Datacenter> getDatacenterList()
    :outertype: CloudSim
 
-getEntitiesByName
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<String, SimEntity> getEntitiesByName()
-   :outertype: CloudSim
-
-getEntity
-^^^^^^^^^
-
-.. java:method:: @Override public SimEntity getEntity(int id)
-   :outertype: CloudSim
-
-getEntity
-^^^^^^^^^
-
-.. java:method:: @Override public SimEntity getEntity(String name)
-   :outertype: CloudSim
-
-getEntityId
-^^^^^^^^^^^
-
-.. java:method:: @Override public int getEntityId(String name)
-   :outertype: CloudSim
-
 getEntityList
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<SimEntity> getEntityList()
-   :outertype: CloudSim
-
-getEntityName
-^^^^^^^^^^^^^
-
-.. java:method:: @Override public String getEntityName(int entityId)
    :outertype: CloudSim
 
 getMinTimeBetweenEvents
@@ -245,7 +177,7 @@ getNumberOfFutureEvents
 holdEntity
 ^^^^^^^^^^
 
-.. java:method:: @Override public void holdEntity(int src, long delay)
+.. java:method:: @Override public void holdEntity(SimEntity src, long delay)
    :outertype: CloudSim
 
 isPaused
@@ -275,13 +207,13 @@ pause
 pauseEntity
 ^^^^^^^^^^^
 
-.. java:method:: @Override public void pauseEntity(int src, double delay)
+.. java:method:: @Override public void pauseEntity(SimEntity src, double delay)
    :outertype: CloudSim
 
 removeOnClockTickListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean removeOnClockTickListener(EventListener<EventInfo> listener)
+.. java:method:: @Override public boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener)
    :outertype: CloudSim
 
 removeOnEventProcessingListener
@@ -305,25 +237,25 @@ resume
 select
 ^^^^^^
 
-.. java:method:: @Override public SimEvent select(int dest, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> p)
    :outertype: CloudSim
 
 send
 ^^^^
 
-.. java:method:: @Override public void send(int src, int dest, double delay, int tag, Object data)
+.. java:method:: @Override public void send(SimEntity src, SimEntity dest, double delay, int tag, Object data)
    :outertype: CloudSim
 
 sendFirst
 ^^^^^^^^^
 
-.. java:method:: @Override public void sendFirst(int src, int dest, double delay, int tag, Object data)
+.. java:method:: @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data)
    :outertype: CloudSim
 
 sendNow
 ^^^^^^^
 
-.. java:method:: @Override public void sendNow(int src, int dest, int tag, Object data)
+.. java:method:: @Override public void sendNow(SimEntity src, SimEntity dest, int tag, Object data)
    :outertype: CloudSim
 
 setNetworkTopology
@@ -350,12 +282,6 @@ terminateAt
 .. java:method:: @Override public boolean terminateAt(double time)
    :outertype: CloudSim
 
-updateEntityName
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean updateEntityName(String oldName)
-   :outertype: CloudSim
-
 wait
 ^^^^
 
@@ -365,6 +291,6 @@ wait
 waiting
 ^^^^^^^
 
-.. java:method:: @Override public long waiting(int dest, Predicate<SimEvent> p)
+.. java:method:: @Override public long waiting(SimEntity dest, Predicate<SimEvent> p)
    :outertype: CloudSim
 

@@ -87,7 +87,7 @@ setUnit
 setValue
 ^^^^^^^^
 
-.. java:method:: public final SlaMetricDimension setValue(double value)
+.. java:method:: public SlaMetricDimension setValue(double value)
    :outertype: SlaMetricDimension
 
 toString

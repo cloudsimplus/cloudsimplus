@@ -12,10 +12,12 @@ The most basic PowerModel is the \ :java:ref:`org.cloudbus.cloudsim.power.models
 .. toctree::
    :maxdepth: 1
 
+   PowerAware
    PowerModel
    PowerModelAbstract
    PowerModelCubic
    PowerModelLinear
+   PowerModelSimple
    PowerModelSpecPower
    PowerModelSpecPowerHpProLiantMl110G3PentiumD930
    PowerModelSpecPowerHpProLiantMl110G4Xeon3040

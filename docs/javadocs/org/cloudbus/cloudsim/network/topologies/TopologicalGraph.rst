@@ -1,7 +1,5 @@
 .. java:import:: java.util Collections
 
-.. java:import:: java.util Iterator
-
 .. java:import:: java.util LinkedList
 
 .. java:import:: java.util List
@@ -67,15 +65,13 @@ getLinksList
 
    :return: the List of network-graph links
 
-getNodeIterator
-^^^^^^^^^^^^^^^
+getNodeList
+^^^^^^^^^^^
 
-.. java:method:: public Iterator<TopologicalNode> getNodeIterator()
+.. java:method:: public List<TopologicalNode> getNodeList()
    :outertype: TopologicalGraph
 
-   Gets an iterator through all network-graph nodes.
-
-   :return: the iterator through all nodes
+   Gets a \ **read-only**\  list of nodes of the network graph.
 
 getNumberOfLinks
 ^^^^^^^^^^^^^^^^

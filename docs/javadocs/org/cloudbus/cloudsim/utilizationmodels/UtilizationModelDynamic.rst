@@ -12,7 +12,7 @@ UtilizationModelDynamic
 
 .. java:type:: public class UtilizationModelDynamic extends UtilizationModelAbstract
 
-   A Cloudlet \ :java:ref:`UtilizationModel`\  that allows to increases the utilization of the related resource along the simulation time. It accepts a Lambda Expression that defines how the utilization increment must behave. By this way, the class enables the developer to define such a behaviour when instantiating objects of this class.
+   A Cloudlet \ :java:ref:`UtilizationModel`\  that allows to increase the utilization of the related resource along the simulation time. It accepts a Lambda Expression that defines how the utilization increment must behave. By this way, the class enables the developer to define such a behaviour when instantiating objects of this class.
 
    For instance, it is possible to use the class to arithmetically or geometrically increment resource usage, but any kind of increment as logarithmic or exponential is possible. For more details, see the \ :java:ref:`setUtilizationUpdateFunction(Function)`\ .
 
@@ -76,10 +76,10 @@ UtilizationModelDynamic
 UtilizationModelDynamic
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: protected UtilizationModelDynamic(UtilizationModelDynamic source)
+.. java:constructor:: @SuppressWarnings protected UtilizationModelDynamic(UtilizationModelDynamic source)
    :outertype: UtilizationModelDynamic
 
-   A copy constructor that creates a read-only UtilizationModelDynamic based on a source object
+   A copy constructor that creates a read-only UtilizationModelDynamic based on a source object.
 
    :param source: the source UtilizationModelDynamic to create an instance from
 
@@ -142,9 +142,11 @@ setUtilizationUpdateFunction
 .. java:method:: public final UtilizationModelDynamic setUtilizationUpdateFunction(Function<UtilizationModelDynamic, Double> utilizationUpdateFunction)
    :outertype: UtilizationModelDynamic
 
-   Sets the function that defines how the resource utilization will be incremented or decremented along the time.
+   Sets the function defining how the resource utilization will be incremented or decremented along the time.
 
-   Such a function must require one \ :java:ref:`UtilizationModelDynamic`\  parameter and returns the new resource utilization. When this function is called internally by this \ ``UtilizationModel``\ , it receives a read-only \ :java:ref:`UtilizationModelDynamic`\  instance and allow the developer using this \ ``UtilizationModel``\  to define how the utilization must be updated. For instance, to define an arithmetic increment, a Lambda function to be given to this setter could be defined as below:
+   Such a function must require one \ :java:ref:`UtilizationModelDynamic`\  parameter and return the new resource utilization. When this function is called internally by this \ ``UtilizationModel``\ , it receives a read-only \ :java:ref:`UtilizationModelDynamic`\  instance and allow the developer using this \ ``UtilizationModel``\  to define how the utilization must be updated.
+
+   For instance, to define an arithmetic increment, a Lambda function to be given to this setter could be defined as below:
 
    \ ``um -> um.getUtilization() + um.getTimeSpan()*0.1``\
 

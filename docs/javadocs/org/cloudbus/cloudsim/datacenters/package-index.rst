@@ -7,7 +7,7 @@ Each Datacenter has attributes that define its characteristics, such as the cost
 
 For each created Datacenter, a \ :java:ref:`org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy`\  instance must be defined. This object decides which PM will host each \ :java:ref:`org.cloudbus.cloudsim.vms.Vm`\ . The most basic VmAllocationPolicy is the \ :java:ref:`org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple`\ .
 
-Specific Datacenter implementations can be power- or network-aware, enabling the simulation of power consumption and network communication. There are specifc power- and networtk-aware versions for Hosts and VMs and a single kindle of such objects must be used for a simulation. For instance a power-aware simulation must use \ :java:ref:`org.cloudbus.cloudsim.datacenters.power.PowerDatacenter`\ , \ :java:ref:`org.cloudbus.cloudsim.hosts.power.PowerHost`\  and \ :java:ref:`org.cloudbus.cloudsim.vms.power.PowerVm`\ .
+\ **All datacenter implementations are natively power-ware.**\  Specific implementations can also be network-aware, enabling the simulation of network communication. There are specifc networtk-aware versions for Hosts and VMs and a single kindle of such objects must be used for a simulation. For instance a network-aware simulation must use \ :java:ref:`org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter`\ , \ :java:ref:`org.cloudbus.cloudsim.hosts.network.NetworkHost`\ , \ :java:ref:`org.cloudbus.cloudsim.vms.network.NetworkVm`\  and \ :java:ref:`org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet`\ .
 
 :author: Manoel Campos da Silva Filho
 

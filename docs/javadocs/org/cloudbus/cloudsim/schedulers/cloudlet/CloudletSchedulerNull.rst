@@ -1,6 +1,6 @@
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketScheduler
 
@@ -37,7 +37,7 @@ addCloudletToReturnedList
 canAddCloudletToExecutionList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet)
+.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerNull
 
 cloudletCancel
@@ -49,7 +49,7 @@ cloudletCancel
 cloudletFinish
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void cloudletFinish(CloudletExecutionInfo rcl)
+.. java:method:: @Override public void cloudletFinish(CloudletExecution ce)
    :outertype: CloudletSchedulerNull
 
 cloudletPause
@@ -79,25 +79,25 @@ cloudletSubmit
 deallocatePesFromVm
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void deallocatePesFromVm(Vm vm, int pesToRemove)
+.. java:method:: @Override public void deallocatePesFromVm(int pesToRemove)
    :outertype: CloudletSchedulerNull
 
 getAllocatedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
+.. java:method:: @Override public double getAllocatedMipsForCloudlet(CloudletExecution ce, double time)
    :outertype: CloudletSchedulerNull
 
 getCloudletExecList
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<CloudletExecutionInfo> getCloudletExecList()
+.. java:method:: @Override public List<CloudletExecution> getCloudletExecList()
    :outertype: CloudletSchedulerNull
 
 getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<CloudletExecutionInfo> getCloudletFinishedList()
+.. java:method:: @Override public List<CloudletExecution> getCloudletFinishedList()
    :outertype: CloudletSchedulerNull
 
 getCloudletList
@@ -127,7 +127,7 @@ getCloudletToMigrate
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<CloudletExecutionInfo> getCloudletWaitingList()
+.. java:method:: @Override public List<CloudletExecution> getCloudletWaitingList()
    :outertype: CloudletSchedulerNull
 
 getCurrentMipsShare
@@ -175,7 +175,7 @@ getRequestedCpuPercentUtilization
 getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
+.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution ce, double time)
    :outertype: CloudletSchedulerNull
 
 getUsedPes

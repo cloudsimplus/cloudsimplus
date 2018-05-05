@@ -83,12 +83,12 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method::  void schedule(int dest, double delay, int tag)
+.. java:method::  void schedule(SimEntity dest, double delay, int tag)
    :outertype: SimEntity
 
-   Sends an event to another entity by id number and with \ **no**\  data. Note that the tag \ ``9999``\  is reserved.
+   Sends an event to another entity with \ **no**\  attached data.
 
-   :param dest: The unique id number of the destination entity
+   :param dest: the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: An user-defined number representing the type of event.
 
@@ -122,6 +122,12 @@ setSimulation
    Sets the CloudSim instance that represents the simulation the Entity is related to.
 
    :param simulation: The CloudSim instance that represents the simulation the Entity is related to
+
+setState
+^^^^^^^^
+
+.. java:method::  SimEntity setState(State state)
+   :outertype: SimEntity
 
 shutdownEntity
 ^^^^^^^^^^^^^^

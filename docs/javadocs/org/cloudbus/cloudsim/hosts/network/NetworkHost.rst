@@ -30,12 +30,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
-.. java:import:: org.cloudbus.cloudsim.lists PeList
-
-.. java:import:: org.cloudbus.cloudsim.lists VmList
-
-.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
-
 NetworkHost
 ===========
 
@@ -72,16 +66,15 @@ NetworkHost
 NetworkHost
 ^^^^^^^^^^^
 
-.. java:constructor:: @Deprecated public NetworkHost(int id, ResourceProvisioner ramProvisioner, ResourceProvisioner bwProvisioner, long storage, List<Pe> peList, VmScheduler vmScheduler)
+.. java:constructor:: public NetworkHost(long ram, long bw, long storage, List<Pe> peList, VmScheduler vmScheduler)
    :outertype: NetworkHost
 
-   Creates a NetworkHost with the given parameters.
+   Creates a NetworkHost.
 
-   :param id: the id
-   :param ramProvisioner: the ram provisioner
-   :param bwProvisioner: the bw provisioner
-   :param storage: the storage capacity
-   :param peList: the host's PEs list
+   :param ram: the RAM capacity in Megabytes
+   :param bw: the Bandwidth (BW) capacity in Megabits/s
+   :param storage: the storage capacity in Megabytes
+   :param peList: the host's \ :java:ref:`Pe`\  list
    :param vmScheduler: the VM scheduler
 
 Methods
@@ -123,17 +116,6 @@ getEdgeSwitch
 
 .. java:method:: public EdgeSwitch getEdgeSwitch()
    :outertype: NetworkHost
-
-getMaxUtilizationAmongVmsPes
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public double getMaxUtilizationAmongVmsPes(Vm vm)
-   :outertype: NetworkHost
-
-   Gets the maximum utilization among the PEs of a given VM.
-
-   :param vm: The VM to get its PEs maximum utilization
-   :return: The maximum utilization among the PEs of the VM.
 
 getTotalDataTransferBytes
 ^^^^^^^^^^^^^^^^^^^^^^^^^

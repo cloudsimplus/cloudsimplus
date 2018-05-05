@@ -13,4 +13,6 @@ Provides classes to inject random faults during simulation runtime.
    :maxdepth: 1
 
    HostFaultInjection
+   VmCloner
+   VmClonerSimple
 

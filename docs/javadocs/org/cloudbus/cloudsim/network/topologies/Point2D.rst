@@ -38,18 +38,6 @@ getY
 .. java:method:: public int getY()
    :outertype: Point2D
 
-setX
-^^^^
-
-.. java:method:: public void setX(int x)
-   :outertype: Point2D
-
-setY
-^^^^
-
-.. java:method:: public void setY(int y)
-   :outertype: Point2D
-
 toString
 ^^^^^^^^
 

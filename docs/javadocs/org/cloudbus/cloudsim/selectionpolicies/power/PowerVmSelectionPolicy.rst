@@ -2,9 +2,7 @@
 
 .. java:import:: java.util.stream Collectors
 
-.. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
-
-.. java:import:: org.cloudbus.cloudsim.vms.power PowerVm
+.. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -29,7 +27,7 @@ Methods
 getMigratableVms
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: protected List<PowerVm> getMigratableVms(PowerHost host)
+.. java:method:: protected List<Vm> getMigratableVms(Host host)
    :outertype: PowerVmSelectionPolicy
 
    Gets the list of migratable VMs from a given host.
@@ -40,7 +38,7 @@ getMigratableVms
 getVmToMigrate
 ^^^^^^^^^^^^^^
 
-.. java:method:: public abstract Vm getVmToMigrate(PowerHost host)
+.. java:method:: public abstract Vm getVmToMigrate(Host host)
    :outertype: PowerVmSelectionPolicy
 
    Gets a VM to migrate from a given host.

@@ -6,7 +6,9 @@ PowerModelSpecPowerHpProLiantMl110G5Xeon3075
 
 .. java:type:: public class PowerModelSpecPowerHpProLiantMl110G5Xeon3075 extends PowerModelSpecPower
 
-   The power model of an HP ProLiant ML110 G5 (1 x [Xeon 3075 2660 MHz, 2 cores], 4GB). \ `http://www.spec.org/power_ssj2008/results/res2011q1/power_ssj2008-20110124-00339.html <http://www.spec.org/power_ssj2008/results/res2011q1/power_ssj2008-20110124-00339.html>`_\  If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   The power model of an HP ProLiant ML110 G5 (1 x [Xeon 3075 2660 MHz, 2 cores], 4GB). \ `http://www.spec.org/power_ssj2008/results/res2011q1/power_ssj2008-20110124-00339.html <http://www.spec.org/power_ssj2008/results/res2011q1/power_ssj2008-20110124-00339.html>`_\
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 

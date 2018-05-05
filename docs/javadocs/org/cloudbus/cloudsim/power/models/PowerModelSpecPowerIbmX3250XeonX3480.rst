@@ -6,7 +6,9 @@ PowerModelSpecPowerIbmX3250XeonX3480
 
 .. java:type:: public class PowerModelSpecPowerIbmX3250XeonX3480 extends PowerModelSpecPower
 
-   The power model of an IBM server x3250 (1 x [Xeon X3480 3067 MHz, 4 cores], 8GB). \ `http://www.spec.org/power_ssj2008/results/res2010q4/power_ssj2008-20101001-00297.html <http://www.spec.org/power_ssj2008/results/res2010q4/power_ssj2008-20101001-00297.html>`_\  If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   The power model of an IBM server x3250 (1 x [Xeon X3480 3067 MHz, 4 cores], 8GB). \ `http://www.spec.org/power_ssj2008/results/res2010q4/power_ssj2008-20101001-00297.html <http://www.spec.org/power_ssj2008/results/res2010q4/power_ssj2008-20101001-00297.html>`_\
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 

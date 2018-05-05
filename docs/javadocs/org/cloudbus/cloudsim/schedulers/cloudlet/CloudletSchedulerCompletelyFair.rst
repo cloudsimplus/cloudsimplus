@@ -1,10 +1,12 @@
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
+
+.. java:import:: org.cloudbus.cloudsim.util MathUtil
 
 .. java:import:: java.util.function Predicate
 
@@ -35,13 +37,13 @@ CloudletSchedulerCompletelyFair
 
    * Additional overhead for CPU context switch: the context switch is the process of removing an application that is using a CPU core to allow another one to start executing. This is the task preemption process that allows a core to be shared between several applications.
    * Since this scheduler does not consider \ `context switch <https://en.wikipedia.org/wiki/Context_switch>`_\  overhead, there is only one runqueue (waiting list) for all CPU cores because each application is not in fact assigned to a specific CPU core. The scheduler just computes how much computing power (in MIPS) and number of cores each application can use and that MIPS capacity is multiplied by the number of cores the application requires. Such an approach then enables the application to execute that number of instructions per second. Once the \ :java:ref:`PEs <Pe>`\  do not in fact run the application, (application execution is simulated just computing the amount of instructions that can be run), it doesn't matter which PEs are "running" the application.
-   * It doesn't use a Red-Black tree (such as the TreeSet), as in real implementations of CFS, to accendingly sort Cloudlets in the waiting list (runqueue) based on their virtual runtime (vruntime or VRT) (placing the Cloudlets that have run the least at the top of the tree) because the use of such a data structure added some complexity to the implementation. And once different Cloudlets may have the same virtual runtime, this introduced some issues when adding or removing elements in a structure such as the TreeSet, that requires each value (the virtual runtime in this case) used to sort the Set to be unique.
+   * It doesn't use a Red-Black tree (such as the TreeSet), as in real implementations of CFS, to sort waiting Cloudlets (runqueue list) increasingly, based on their virtual runtime (vruntime or VRT) (placing the Cloudlets that have run the least at the top of the tree). Furthermore, the use of such a data structure added some complexity to the implementation. Since different Cloudlets may have the same virtual runtime, this introduced some issues when adding or removing elements in a structure such as the TreeSet, that requires each value (the virtual runtime in this case) used to sort the Set to be unique.
 
    \ **NOTES:**\
 
    ..
 
-   * The time interval for updating cloudlets execution in this scheduler is not primarily defined by the \ :java:ref:`Datacenter.getSchedulingInterval()`\ , but by the \ :java:ref:`timeslice <computeCloudletTimeSlice(CloudletExecutionInfo)>`\  computed based on the defined \ :java:ref:`getLatency()`\ . Each time the computed timeslice is greater than the Datacenter scheduling interval, then the next update of Cloudlets processing will follow the \ :java:ref:`Datacenter.getSchedulingInterval()`\ .
+   * The time interval for updating cloudlets execution in this scheduler is not primarily defined by the \ :java:ref:`Datacenter.getSchedulingInterval()`\ , but by the \ :java:ref:`timeslice <computeCloudletTimeSlice(CloudletExecution)>`\  computed based on the defined \ :java:ref:`getLatency()`\ . Each time the computed timeslice is greater than the Datacenter scheduling interval, then the next update of Cloudlets processing will follow the \ :java:ref:`Datacenter.getSchedulingInterval()`\ .
    * The implementation was based on the book of Robert Love: Linux Kernel Development, 3rd ed. Addison-Wesley, 2010 and some other references listed below.
 
    :author: Manoel Campos da Silva Filho
@@ -53,7 +55,7 @@ Methods
 canAddCloudletToExecutionList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet)
+.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerCompletelyFair
 
    Checks if a Cloudlet can be submitted to the execution list. This scheduler, different from its time-shared parent, only adds submitted Cloudlets to the execution list if there is enough free PEs. Otherwise, such Cloudlets are added to the waiting list, really enabling time-sharing between running Cloudlets. By this way, some Cloudlets have to be preempted to allow other ones to be executed.
@@ -64,22 +66,22 @@ canAddCloudletToExecutionList
 computeCloudletTimeSlice
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double computeCloudletTimeSlice(CloudletExecutionInfo cloudlet)
+.. java:method:: protected double computeCloudletTimeSlice(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerCompletelyFair
 
    Computes the timeslice for a Cloudlet, which is the amount of time (in seconds) that it will have to use the PEs, considering all Cloudlets in the \ :java:ref:`executing list <getCloudletExecList()>`\ .
 
-   The timeslice is computed considering the \ :java:ref:`Cloudlet weight <getCloudletWeight(CloudletExecutionInfo)>`\  and what it represents in percentage of the \ :java:ref:`weight sum <getWeightSumOfRunningCloudlets()>`\  of all cloudlets in the execution list.
+   The timeslice is computed considering the \ :java:ref:`Cloudlet weight <getCloudletWeight(CloudletExecution)>`\  and what it represents in percentage of the \ :java:ref:`weight sum <getWeightSumOfRunningCloudlets()>`\  of all cloudlets in the execution list.
 
    :param cloudlet: Cloudlet to get the timeslice
    :return: Cloudlet timeslice (in seconds)
 
-   **See also:** :java:ref:`.getCloudletWeight(CloudletExecutionInfo)`, :java:ref:`.getWeightSumOfRunningCloudlets()`
+   **See also:** :java:ref:`.getCloudletWeight(CloudletExecution)`, :java:ref:`.getWeightSumOfRunningCloudlets()`
 
 findSuitableWaitingCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected Optional<CloudletExecutionInfo> findSuitableWaitingCloudlet()
+.. java:method:: @Override protected Optional<CloudletExecution> findSuitableWaitingCloudlet()
    :outertype: CloudletSchedulerCompletelyFair
 
    {@inheritDoc} The cloudlet waiting list (runqueue) is sorted according to the virtual runtime (vruntime or VRT), which indicates the amount of time the Cloudlet has run. This runtime increases as the Cloudlet executes.
@@ -89,7 +91,7 @@ findSuitableWaitingCloudlet
 getCloudletExecList
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<CloudletExecutionInfo> getCloudletExecList()
+.. java:method:: @Override public List<CloudletExecution> getCloudletExecList()
    :outertype: CloudletSchedulerCompletelyFair
 
    {@inheritDoc}
@@ -101,7 +103,7 @@ getCloudletExecList
 getCloudletNiceness
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double getCloudletNiceness(CloudletExecutionInfo cloudlet)
+.. java:method:: protected double getCloudletNiceness(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerCompletelyFair
 
    Gets the nice value from a Cloudlet based on its priority. The nice value is the opposite of the priority.
@@ -116,7 +118,7 @@ getCloudletNiceness
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<CloudletExecutionInfo> getCloudletWaitingList()
+.. java:method:: @Override public List<CloudletExecution> getCloudletWaitingList()
    :outertype: CloudletSchedulerCompletelyFair
 
    Gets a \ **read-only**\  list of Cloudlets which are waiting to run, the so called \ `run queue <https://en.wikipedia.org/wiki/Run_queue>`_\ .
@@ -126,19 +128,19 @@ getCloudletWaitingList
 getCloudletWeight
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double getCloudletWeight(CloudletExecutionInfo cloudlet)
+.. java:method:: protected double getCloudletWeight(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerCompletelyFair
 
    Gets the weight of the Cloudlet to use the CPU, that is defined based on its niceness. As greater is the weight, more time the Cloudlet will have to use the PEs.
 
-   As the \ :java:ref:`timelice <computeCloudletTimeSlice(CloudletExecutionInfo)>`\  assigned to a Cloudlet to use the CPU is defined exponentially instead of linearly according to its niceness, this method is used as the base to correctly compute the timeslice.
+   As the \ :java:ref:`timelice <computeCloudletTimeSlice(CloudletExecution)>`\  assigned to a Cloudlet to use the CPU is defined exponentially instead of linearly according to its niceness, this method is used as the base to correctly compute the timeslice.
 
    \ **NOTICE**\ : The formula used is based on the book referenced at the class documentation.
 
    :param cloudlet: Cloudlet to get the weight to use PEs
    :return: the cloudlet weight to use PEs
 
-   **See also:** :java:ref:`.getCloudletNiceness(CloudletExecutionInfo)`
+   **See also:** :java:ref:`.getCloudletNiceness(CloudletExecution)`
 
 getLatency
 ^^^^^^^^^^
@@ -179,14 +181,14 @@ moveNextCloudletsFromWaitingToExecList
 processCloudletSubmit
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double processCloudletSubmit(CloudletExecutionInfo rcl, double fileTransferTime)
+.. java:method:: @Override public double processCloudletSubmit(CloudletExecution ce, double fileTransferTime)
    :outertype: CloudletSchedulerCompletelyFair
 
    {@inheritDoc}
 
-   It also sets the initial virtual runtime for the given Cloudlet in order to define how long the Cloudlet has executed yet. See \ :java:ref:`computeCloudletInitialVirtualRuntime(CloudletExecutionInfo)`\  for more details.
+   It also sets the initial virtual runtime for the given Cloudlet in order to define how long the Cloudlet has executed yet. See \ :java:ref:`computeCloudletInitialVirtualRuntime(CloudletExecution)`\  for more details.
 
-   :param rcl: {@inheritDoc}
+   :param ce: {@inheritDoc}
    :param fileTransferTime: {@inheritDoc}
 
 setLatency
@@ -216,7 +218,7 @@ setMinimumGranularity
 updateCloudletProcessing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void updateCloudletProcessing(CloudletExecutionInfo rcl, double currentTime)
+.. java:method:: @Override public void updateCloudletProcessing(CloudletExecution ce, double currentTime)
    :outertype: CloudletSchedulerCompletelyFair
 
 updateProcessing

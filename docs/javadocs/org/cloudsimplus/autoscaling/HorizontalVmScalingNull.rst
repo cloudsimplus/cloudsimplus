@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
 .. java:import:: java.util.function Predicate
 
 .. java:import:: java.util.function Supplier
@@ -26,12 +28,6 @@ getOverloadPredicate
 .. java:method:: @Override public Predicate<Vm> getOverloadPredicate()
    :outertype: HorizontalVmScalingNull
 
-getUnderloadPredicate
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Predicate<Vm> getUnderloadPredicate()
-   :outertype: HorizontalVmScalingNull
-
 getVm
 ^^^^^
 
@@ -44,22 +40,16 @@ getVmSupplier
 .. java:method:: @Override public Supplier<Vm> getVmSupplier()
    :outertype: HorizontalVmScalingNull
 
-requestScalingIfPredicateMatch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestUpScalingIfPredicateMatches
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean requestScalingIfPredicateMatch(double time)
+.. java:method:: @Override public boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt)
    :outertype: HorizontalVmScalingNull
 
 setOverloadPredicate
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate)
-   :outertype: HorizontalVmScalingNull
-
-setUnderloadPredicate
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate)
    :outertype: HorizontalVmScalingNull
 
 setVm

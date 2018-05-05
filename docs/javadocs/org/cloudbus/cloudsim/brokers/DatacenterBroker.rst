@@ -36,18 +36,15 @@ DatacenterBroker
 
 Fields
 ------
-DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+DEFAULT_VM_DESTRUCTION_DELAY
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:field::  Function<Vm, Double> DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION
+.. java:field::  double DEFAULT_VM_DESTRUCTION_DELAY
    :outertype: DatacenterBroker
 
-   A default \ :java:ref:`Function`\  which always returns -1 to indicate that a VM should not be immediately destroyed after it becomes idle. This way, it has to wait until either:
+   A default delay value to indicate that \ **no**\  VM should be immediately destroyed after it becomes idle.
 
-   ..
-
-   * all submitted Cloudlets from all VMs of the broker are finished and there are no waiting Cloudlets;
-   * all running Cloudlets are finished and there are some of them waiting their VMs to be created.
+   This is used as the default value returned by the \ :java:ref:`getVmDestructionDelayFunction()`\  if a \ :java:ref:`Function`\  is not set.
 
    **See also:** :java:ref:`.setVmDestructionDelayFunction(Function)`
 
@@ -79,7 +76,7 @@ addOnVmsCreatedListener
 
    :param listener: the Listener that will be notified
 
-   **See also:** :java:ref:`.getVmsWaitingList()`, :java:ref:`.addOneTimeOnVmsCreatedListener(EventListener)`
+   **See also:** :java:ref:`.getVmWaitingList()`, :java:ref:`.addOneTimeOnVmsCreatedListener(EventListener)`
 
 addOneTimeOnVmsCreatedListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -95,7 +92,7 @@ addOneTimeOnVmsCreatedListener
 
    :param listener: the Listener that will be notified
 
-   **See also:** :java:ref:`.getVmsWaitingList()`, :java:ref:`.addOnVmsCreatedListener(EventListener)`
+   **See also:** :java:ref:`.getVmWaitingList()`, :java:ref:`.addOnVmsCreatedListener(EventListener)`
 
 bindCloudletToVm
 ^^^^^^^^^^^^^^^^
@@ -103,26 +100,26 @@ bindCloudletToVm
 .. java:method::  boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm)
    :outertype: DatacenterBroker
 
-   Specifies that an already submitted cloudlet, that is in the \ :java:ref:`waiting list <getCloudletsWaitingList()>`\ , must run in a specific virtual machine.
+   Specifies that an already submitted cloudlet, which is in the \ :java:ref:`waiting list <getCloudletWaitingList()>`\ , must run in a specific virtual machine.
 
    :param cloudlet: the cloudlet to be bind to a given Vm
    :param vm: the vm to bind the Cloudlet to
    :return: true if the Cloudlet was found in the waiting list and was bind to the given Vm, false it the Cloudlet was not found in such a list (that may mean it wasn't submitted yet or was already created)
 
-getCloudletsCreatedList
-^^^^^^^^^^^^^^^^^^^^^^^
+getCloudletCreatedList
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  Set<Cloudlet> getCloudletsCreatedList()
+.. java:method::  Set<Cloudlet> getCloudletCreatedList()
    :outertype: DatacenterBroker
 
    Gets a \ **read-only**\  list of cloudlets created inside some Vm.
 
    :return: the list of created Cloudlets
 
-getCloudletsFinishedList
-^^^^^^^^^^^^^^^^^^^^^^^^
+getCloudletFinishedList
+^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  <T extends Cloudlet> List<T> getCloudletsFinishedList()
+.. java:method::  <T extends Cloudlet> List<T> getCloudletFinishedList()
    :outertype: DatacenterBroker
 
    Gets a \ **copy**\  of the list of cloudlets that have finished executing, to avoid the original list to be changed.
@@ -130,16 +127,29 @@ getCloudletsFinishedList
    :param <T>: the class of Cloudlets inside the list
    :return: the list of finished cloudlets
 
-getCloudletsWaitingList
-^^^^^^^^^^^^^^^^^^^^^^^
+getCloudletWaitingList
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  <T extends Cloudlet> List<T> getCloudletsWaitingList()
+.. java:method::  <T extends Cloudlet> List<T> getCloudletWaitingList()
    :outertype: DatacenterBroker
 
-   Gets the list of cloudlets submmited to the broker that are waiting to be created inside some Vm yet.
+   Gets the list of cloudlets submitted to the broker that are waiting to be created inside some Vm yet.
 
    :param <T>: the class of Cloudlets inside the list
    :return: the cloudlet waiting list
+
+getVmCreatedList
+^^^^^^^^^^^^^^^^
+
+.. java:method::  <T extends Vm> List<T> getVmCreatedList()
+   :outertype: DatacenterBroker
+
+   Gets the list of all VMs created so far, independently if they are running yet or were already destroyed. This can be used at the end of the simulation to know which VMs have executed.
+
+   :param <T>: the class of VMs inside the list
+   :return: the list of created VMs
+
+   **See also:** :java:ref:`.getVmExecList()`
 
 getVmDestructionDelayFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -147,25 +157,27 @@ getVmDestructionDelayFunction
 .. java:method::  Function<Vm, Double> getVmDestructionDelayFunction()
    :outertype: DatacenterBroker
 
-   Gets a \ :java:ref:`Function`\  which defines when an idle VM should be destroyed. The Function receives a \ :java:ref:`Vm`\  and returns the delay to wait (in seconds), after the VM become idle, to destruct it.
+   Gets a \ :java:ref:`Function`\  which defines when an idle VM should be destroyed. The Function receives a \ :java:ref:`Vm`\  and returns the delay to wait (in seconds), after the VM becomes idle, to destroy it.
 
-   **See also:** :java:ref:`.DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION`, :java:ref:`Vm.getIdleInterval()`
+   **See also:** :java:ref:`.DEFAULT_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`
 
-getVmsCreatedList
-^^^^^^^^^^^^^^^^^
+getVmExecList
+^^^^^^^^^^^^^
 
-.. java:method::  <T extends Vm> List<T> getVmsCreatedList()
+.. java:method::  <T extends Vm> List<T> getVmExecList()
    :outertype: DatacenterBroker
 
-   Gets the list of VMs created by the broker.
+   Gets the list of VMs in execution, if they are running Cloudlets or not. These VMs can receive new submitted Cloudlets.
 
    :param <T>: the class of VMs inside the list
-   :return: the list of created VMs
+   :return: the list of running VMs
 
-getVmsWaitingList
-^^^^^^^^^^^^^^^^^
+   **See also:** :java:ref:`.getVmCreatedList()`
 
-.. java:method::  <T extends Vm> List<T> getVmsWaitingList()
+getVmWaitingList
+^^^^^^^^^^^^^^^^
+
+.. java:method::  <T extends Vm> List<T> getVmWaitingList()
    :outertype: DatacenterBroker
 
    Gets a List of VMs submitted to the broker that are waiting to be created inside some Datacenter yet.
@@ -239,11 +251,11 @@ setVmDestructionDelayFunction
 .. java:method::  DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function)
    :outertype: DatacenterBroker
 
-   Sets a \ :java:ref:`Function`\  to define when an idle VM should be destroyed. The Function receives a \ :java:ref:`Vm`\  and returns the delay to wait (in seconds), after the VM become idle, to destruct it.
+   Sets a \ :java:ref:`Function`\  to define when an idle VM should be destroyed. The Function receives a \ :java:ref:`Vm`\  and returns the delay to wait (in seconds), after the VM becomes idle, to destroy it.
 
    :param function: the \ :java:ref:`Function`\  to set (if null is given, it sets the default Function)
 
-   **See also:** :java:ref:`.DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION`, :java:ref:`Vm.getIdleInterval()`
+   **See also:** :java:ref:`.DEFAULT_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`
 
 setVmMapper
 ^^^^^^^^^^^
@@ -253,7 +265,7 @@ setVmMapper
 
    Sets a \ :java:ref:`Function`\  that maps a given Cloudlet to a Vm. It defines the policy used to select a Vm to host a Cloudlet that is waiting to be created.
 
-   :param vmMapper: the Vm mapper function to set. Such a function must receive a Cloudlet and return the Vm where it will be placed into.
+   :param vmMapper: the Vm mapper Function to set. Such a Function must receive a Cloudlet and return the Vm where it will be placed into. If the Function is unable to find a VM for a Cloudlet, it should return \ :java:ref:`Vm.NULL`\ .
 
 submitCloudlet
 ^^^^^^^^^^^^^^
@@ -271,7 +283,7 @@ submitCloudletList
 .. java:method::  void submitCloudletList(List<? extends Cloudlet> list)
    :outertype: DatacenterBroker
 
-   Sends a list of cloudlets to the broker so that it requests their creation inside some VM, following the submission delay specified in each cloudlet (if any). All cloudlets will be added to the \ :java:ref:`getCloudletsWaitingList()`\ .
+   Sends a list of cloudlets to the broker so that it requests their creation inside some VM, following the submission delay specified in each cloudlet (if any). All cloudlets will be added to the \ :java:ref:`getCloudletWaitingList()`\ .
 
    :param list: the list of Cloudlets to request the creation
 
@@ -283,7 +295,7 @@ submitCloudletList
 .. java:method::  void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay)
    :outertype: DatacenterBroker
 
-   Sends a list of cloudlets to the broker so that it requests their creation inside some VM just after a given delay. Just the Cloudlets that don't have a delay already assigned will have its submission delay changed. All cloudlets will be added to the \ :java:ref:`getCloudletsWaitingList()`\ , setting their submission delay to the specified value.
+   Sends a list of cloudlets to the broker so that it requests their creation inside some VM just after a given delay. Just the Cloudlets that don't have a delay already assigned will have its submission delay changed. All cloudlets will be added to the \ :java:ref:`getCloudletWaitingList()`\ , setting their submission delay to the specified value.
 
    :param list: the list of Cloudlets to request the creation
    :param submissionDelay: the delay the broker has to include when requesting the creation of Cloudlets
@@ -296,7 +308,7 @@ submitCloudletList
 .. java:method::  void submitCloudletList(List<? extends Cloudlet> list, Vm vm)
    :outertype: DatacenterBroker
 
-   Sends a list of cloudlets to the broker so that it requests their creation inside a specific VM, following the submission delay specified in each cloudlet (if any). All cloudlets will be added to the \ :java:ref:`getCloudletsWaitingList()`\ .
+   Sends a list of cloudlets to the broker so that it requests their creation inside a specific VM, following the submission delay specified in each cloudlet (if any). All cloudlets will be added to the \ :java:ref:`getCloudletWaitingList()`\ .
 
    :param list: the list of Cloudlets to request the creation
    :param vm: the VM to which all Cloudlets will be bound to
@@ -309,7 +321,7 @@ submitCloudletList
 .. java:method::  void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay)
    :outertype: DatacenterBroker
 
-   Sends a list of cloudlets to the broker so that it requests their creation inside a specific VM just after a given delay. Just the Cloudlets that don't have a delay already assigned will have its submission delay changed. All cloudlets will be added to the \ :java:ref:`getCloudletsWaitingList()`\ , setting their submission delay to the specified value.
+   Sends a list of cloudlets to the broker so that it requests their creation inside a specific VM just after a given delay. Just the Cloudlets that don't have a delay already assigned will have its submission delay changed. All cloudlets will be added to the \ :java:ref:`getCloudletWaitingList()`\ , setting their submission delay to the specified value.
 
    :param list: the list of Cloudlets to request the creation
    :param vm: the VM to which all Cloudlets will be bound to
@@ -343,7 +355,7 @@ submitVmList
 .. java:method::  void submitVmList(List<? extends Vm> list, double submissionDelay)
    :outertype: DatacenterBroker
 
-   Sends a list of VMs for the broker that their creation inside some Host will be requested just after a given delay. Just the VMs that don't have a delay already assigned will have its submission delay changed. All VMs will be added to the \ :java:ref:`getVmsWaitingList()`\ , setting their submission delay to the specified value.
+   Sends a list of VMs for the broker so that their creation inside some Host will be requested just after a given delay. Just the VMs that don't have a delay already assigned will have its submission delay changed. All VMs will be added to the \ :java:ref:`getVmWaitingList()`\ , setting their submission delay to the specified value.
 
    :param list: the list of VMs to request the creation
    :param submissionDelay: the delay the broker has to include when requesting the creation of VMs

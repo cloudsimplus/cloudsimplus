@@ -24,34 +24,10 @@ NOT_REGISTERED
 
    Denotes that this file has not been registered to a Replica Catalogue.
 
-TYPE_RAW_DATA
-^^^^^^^^^^^^^
+TYPE_UNKNOWN
+^^^^^^^^^^^^
 
-.. java:field:: public static final int TYPE_RAW_DATA
-   :outertype: File
-
-   Denotes that the type of this file is a raw data.
-
-TYPE_RECONSTRUCTED_DATA
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:field:: public static final int TYPE_RECONSTRUCTED_DATA
-   :outertype: File
-
-   Denotes that the type of this file is a reconstructed data.
-
-TYPE_TAG_DATA
-^^^^^^^^^^^^^
-
-.. java:field:: public static final int TYPE_TAG_DATA
-   :outertype: File
-
-   Denotes that the type of this file is a tag data.
-
-TYPE_UNKOWN
-^^^^^^^^^^^
-
-.. java:field:: public static final int TYPE_UNKOWN
+.. java:field:: public static final int TYPE_UNKNOWN
    :outertype: File
 
    Denotes that the type of this file is unknown.

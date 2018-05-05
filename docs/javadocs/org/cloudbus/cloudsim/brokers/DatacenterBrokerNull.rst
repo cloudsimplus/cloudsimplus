@@ -66,22 +66,22 @@ compareTo
 .. java:method:: @Override public int compareTo(SimEntity o)
    :outertype: DatacenterBrokerNull
 
-getCloudletsCreatedList
-^^^^^^^^^^^^^^^^^^^^^^^
+getCloudletCreatedList
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Set<Cloudlet> getCloudletsCreatedList()
+.. java:method:: @Override public Set<Cloudlet> getCloudletCreatedList()
    :outertype: DatacenterBrokerNull
 
-getCloudletsFinishedList
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletsFinishedList()
-   :outertype: DatacenterBrokerNull
-
-getCloudletsWaitingList
+getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletsWaitingList()
+.. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletFinishedList()
+   :outertype: DatacenterBrokerNull
+
+getCloudletWaitingList
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletWaitingList()
    :outertype: DatacenterBrokerNull
 
 getId
@@ -102,22 +102,28 @@ getSimulation
 .. java:method:: @Override public Simulation getSimulation()
    :outertype: DatacenterBrokerNull
 
+getVmCreatedList
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Vm> List<T> getVmCreatedList()
+   :outertype: DatacenterBrokerNull
+
 getVmDestructionDelayFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public Function<Vm, Double> getVmDestructionDelayFunction()
    :outertype: DatacenterBrokerNull
 
-getVmsCreatedList
-^^^^^^^^^^^^^^^^^
+getVmExecList
+^^^^^^^^^^^^^
 
-.. java:method:: @Override public <T extends Vm> List<T> getVmsCreatedList()
+.. java:method:: @Override public <T extends Vm> List<T> getVmExecList()
    :outertype: DatacenterBrokerNull
 
-getVmsWaitingList
-^^^^^^^^^^^^^^^^^
+getVmWaitingList
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public <T extends Vm> List<T> getVmsWaitingList()
+.. java:method:: @Override public <T extends Vm> List<T> getVmWaitingList()
    :outertype: DatacenterBrokerNull
 
 getWaitingVm
@@ -159,7 +165,7 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(int dest, double delay, int tag)
+.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
    :outertype: DatacenterBrokerNull
 
 setCloudletComparator
@@ -196,6 +202,12 @@ setSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public SimEntity setSimulation(Simulation simulation)
+   :outertype: DatacenterBrokerNull
+
+setState
+^^^^^^^^
+
+.. java:method:: @Override public SimEntity setState(State state)
    :outertype: DatacenterBrokerNull
 
 setVmComparator

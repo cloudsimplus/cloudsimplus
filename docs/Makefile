@@ -25,3 +25,12 @@ javadoc:
 clean:
 	rm -rf $(BUILDDIR)
 	rm -rf javadocs/org
+
+# Install dependencies
+install:
+	#Install pip to download python packages (can also be installed via package managers in Linux and macOS)
+	pip > /dev/null || sudo curl https://bootstrap.pypa.io/get-pip.py | python
+	#Install sphinx and its build tools to locally build the rst documents to html, latex, epub or other formats
+	pip install sphinx sphinx-autobuild 
+	#Install a Sphinx extension to parse javadocs comments inside Java files and generate rst files for Sphinx
+	pip install javasphinx

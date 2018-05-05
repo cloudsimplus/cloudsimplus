@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
+.. java:import:: org.cloudbus.cloudsim.core SimEntity
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudsimplus.listeners EventInfo
@@ -36,14 +38,6 @@ compareTo
 .. java:method:: @Override  int compareTo(SimEvent o)
    :outertype: SimEvent
 
-endWaitingTime
-^^^^^^^^^^^^^^
-
-.. java:method::  double endWaitingTime()
-   :outertype: SimEvent
-
-   Gets the simulation time that this event was removed from the queue for service.
-
 eventTime
 ^^^^^^^^^
 
@@ -65,10 +59,18 @@ getData
 getDestination
 ^^^^^^^^^^^^^^
 
-.. java:method::  int getDestination()
+.. java:method::  SimEntity getDestination()
    :outertype: SimEvent
 
-   Gets the unique id number of the entity which received this event.
+   Gets the entity which received this event.
+
+getEndWaitingTime
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getEndWaitingTime()
+   :outertype: SimEvent
+
+   Gets the simulation time that this event was removed from the queue for service.
 
 getSerial
 ^^^^^^^^^
@@ -89,10 +91,10 @@ getSimulation
 getSource
 ^^^^^^^^^
 
-.. java:method::  int getSource()
+.. java:method::  SimEntity getSource()
    :outertype: SimEvent
 
-   Gets the unique id number of the entity which scheduled this event.
+   Gets the entity which scheduled this event.
 
 getTag
 ^^^^^^
@@ -101,12 +103,6 @@ getTag
    :outertype: SimEvent
 
    Gets the user-defined tag of this event. The meaning of such a tag depends on the entities that generate and receive the event. Usually it is defined from a constant value defined in \ :java:ref:`CloudSimTags`\ .
-
-getTime
-^^^^^^^
-
-.. java:method:: @Override  double getTime()
-   :outertype: SimEvent
 
 getType
 ^^^^^^^
@@ -119,15 +115,15 @@ getType
 scheduledBy
 ^^^^^^^^^^^
 
-.. java:method::  int scheduledBy()
+.. java:method::  SimEntity scheduledBy()
    :outertype: SimEvent
 
-   Gets the unique id number of the entity which scheduled this event.
+   Gets the entity which scheduled this event.
 
 setDestination
 ^^^^^^^^^^^^^^
 
-.. java:method::  SimEvent setDestination(int destination)
+.. java:method::  SimEvent setDestination(SimEntity destination)
    :outertype: SimEvent
 
    Sets the destination entity of this event, that defines its destination.
@@ -147,7 +143,7 @@ setSerial
 setSource
 ^^^^^^^^^
 
-.. java:method::  SimEvent setSource(int source)
+.. java:method::  SimEvent setSource(SimEntity source)
    :outertype: SimEvent
 
    Sets the source entity of this event, that defines its sender.

@@ -6,6 +6,8 @@
 
 .. java:import:: org.cloudsimplus.autoscaling.resources ResourceScaling
 
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
 .. java:import:: java.util.function Function
 
 VerticalVmScalingNull
@@ -90,10 +92,10 @@ isVmUnderloaded
 .. java:method:: @Override public boolean isVmUnderloaded()
    :outertype: VerticalVmScalingNull
 
-requestScalingIfPredicateMatch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestUpScalingIfPredicateMatches
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean requestScalingIfPredicateMatch(double time)
+.. java:method:: @Override public boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt)
    :outertype: VerticalVmScalingNull
 
 setLowerThresholdFunction

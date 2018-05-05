@@ -14,6 +14,7 @@ Provides classes used by the core message passing mechanisms. CloudSim Plus is a
    DeferredQueue
    EventQueue
    FutureQueue
+   PredicateType
    SimEvent
    SimEvent-Type
    SimEventNull

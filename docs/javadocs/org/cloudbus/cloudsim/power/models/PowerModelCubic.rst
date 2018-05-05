@@ -4,7 +4,7 @@ PowerModelCubic
 .. java:package:: org.cloudbus.cloudsim.power.models
    :noindex:
 
-.. java:type:: public class PowerModelCubic extends PowerModelAbstract
+.. java:type:: public class PowerModelCubic extends PowerModelSimple
 
    Implements a power model where the power consumption is the cube of the resource usage.
 
@@ -14,7 +14,7 @@ PowerModelCubic
 
    * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012 <http://dx.doi.org/10.1002/cpe.1867>`_\
 
-   :author: Anton Beloglazov, Anton Beloglazov
+   :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Constructors
 ------------
@@ -26,74 +26,6 @@ PowerModelCubic
 
    Instantiates a new power model cubic.
 
-   :param maxPower: the max power
-   :param staticPowerPercent: the static power percent
-
-Methods
--------
-getConstant
-^^^^^^^^^^^
-
-.. java:method:: protected double getConstant()
-   :outertype: PowerModelCubic
-
-   Gets the constant.
-
-   :return: the constant
-
-getMaxPower
-^^^^^^^^^^^
-
-.. java:method:: protected double getMaxPower()
-   :outertype: PowerModelCubic
-
-   Gets the max power.
-
-   :return: the max power
-
-getPowerInternal
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override protected double getPowerInternal(double utilization) throws IllegalArgumentException
-   :outertype: PowerModelCubic
-
-getStaticPower
-^^^^^^^^^^^^^^
-
-.. java:method:: protected final double getStaticPower()
-   :outertype: PowerModelCubic
-
-   Gets the static power.
-
-   :return: the static power
-
-setConstant
-^^^^^^^^^^^
-
-.. java:method:: protected final void setConstant(double constant)
-   :outertype: PowerModelCubic
-
-   Sets the constant.
-
-   :param constant: the new constant
-
-setMaxPower
-^^^^^^^^^^^
-
-.. java:method:: protected final void setMaxPower(double maxPower)
-   :outertype: PowerModelCubic
-
-   Sets the max power.
-
-   :param maxPower: the new max power
-
-setStaticPower
-^^^^^^^^^^^^^^
-
-.. java:method:: protected final void setStaticPower(double staticPower)
-   :outertype: PowerModelCubic
-
-   Sets the static power.
-
-   :param staticPower: the new static power
+   :param maxPower: the max power that can be consumed in Watt-Second (Ws).
+   :param staticPowerPercent: the static power usage percentage between 0 and 1.
 

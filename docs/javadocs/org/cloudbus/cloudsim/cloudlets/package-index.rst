@@ -17,8 +17,8 @@ Specific Cloudlet implementations can be, for instance, network-aware, enabling 
    Cloudlet
    Cloudlet-Status
    CloudletAbstract
-   CloudletExecutionInfo
+   CloudletDatacenterExecution
+   CloudletExecution
    CloudletNull
    CloudletSimple
-   ExecutionInDatacenterInfo
 

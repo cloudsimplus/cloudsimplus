@@ -1,9 +1,3 @@
-.. java:import:: java.time Duration
-
-.. java:import:: java.util.function Function
-
-.. java:import:: java.util.function UnaryOperator
-
 .. java:import:: java.util.stream Stream
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
@@ -71,51 +65,28 @@ Constructors
 HostFaultInjection
 ^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public HostFaultInjection(Datacenter datacenter, ContinuousDistribution faultArrivalTimesGenerator)
+.. java:constructor:: public HostFaultInjection(Datacenter datacenter, ContinuousDistribution faultArrivalTimesGeneratorInHours)
    :outertype: HostFaultInjection
 
    Creates a fault injection mechanism for the Hosts of a given \ :java:ref:`Datacenter`\ . The failures are randomly injected according to the given mean of failures to be generated per \ **minute**\ , which is also called \ **event rate**\  or \ **rate parameter**\ .
 
    :param datacenter: the Datacenter to which failures will be randomly injected for its Hosts
-   :param faultArrivalTimesGenerator: a Pseudo Random Number Generator which generates the times that Hosts failures will occur. \ **The values returned by the generator will be considered to be minutes**\ . Frequently it is used a \ :java:ref:`PoissonDistr`\  to generate failure arrivals, but any \ :java:ref:`ContinuousDistribution`\  can be used.
+   :param faultArrivalTimesGeneratorInHours: a Pseudo Random Number Generator which generates the times (in hours) Hosts failures will occur. \ **The values returned by the generator will be considered to be hours**\ . Frequently it is used a \ :java:ref:`PoissonDistr`\  to generate failure arrivals, but any \ :java:ref:`ContinuousDistribution`\  can be used.
 
 Methods
 -------
-addCloudletsCloner
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public void addCloudletsCloner(DatacenterBroker broker, Function<Vm, List<Cloudlet>> cloudletsCloner)
-   :outertype: HostFaultInjection
-
-   Adds a \ :java:ref:`Function`\  that will create a clone of all Cloudlets which were running inside a \ :java:ref:`Vm`\ , belonging to a given broker, after a failure. The same function is used to clone the cloudlets of any cloned VM.
-
-   If a Vm cloner Function is not set, setting a Cloudlet's cloner function is optional. Since in this situation VMs will not be recovered from failures, Cloudlets inside failed VMs will not be recovered too.
-
-   Such a Function is used to recreate and re-submit those Cloudlets to a clone of the failed VM. In this case, all the Cloudlets are recreated from scratch into the cloned VM, re-starting their execution from the beginning.
-
-   Since a snapshot (clone) of the failed VM will be started into another Host, the Cloudlets cloner Function will recreated all Cloudlets, simulating the restart of applications into this new VM instance.
-
-   :param broker: the broker to set the Cloudlets cloner Function to
-   :param cloudletsCloner: the cloudlets cloner \ :java:ref:`Function`\  to set
-
-   **See also:** :java:ref:`.addVmCloner(DatacenterBroker,UnaryOperator)`
-
 addVmCloner
 ^^^^^^^^^^^
 
-.. java:method:: public void addVmCloner(DatacenterBroker broker, UnaryOperator<Vm> clonerFunction)
+.. java:method:: public void addVmCloner(DatacenterBroker broker, VmCloner cloner)
    :outertype: HostFaultInjection
 
-   Adds a \ :java:ref:`UnaryOperator`\  that creates a clone of a \ :java:ref:`Vm`\  belonging to a given broker. when all Host PEs fail or all VM's PEs are deallocated because they have failed.
+   Adds a \ :java:ref:`VmCloner`\  that creates a clone for the last failed \ :java:ref:`Vm`\  belonging to a given broker, when all VMs of that broker have failed.
 
-   This is optional. If a cloner function is not set, VMs will not be recovered from failures.
-
-   The \ :java:ref:`UnaryOperator`\  is a \ :java:ref:`Function`\  that receives a \ :java:ref:`Vm`\  and returns a clone of it. When all PEs of the VM fail, this vmCloner \ :java:ref:`Function`\  is used to create a copy of the VM to be submitted to another Host. It is like a VM snapshot in a real cloud infrastructure, which will be started into another datacenter in order to recovery from a failure.
+   This is optional. If a \ :java:ref:`VmCloner`\  is not set, VMs will not be recovered from failures.
 
    :param broker: the broker to set the VM cloner Function to
-   :param clonerFunction: the VM cloner \ :java:ref:`Function`\  to set
-
-   **See also:** :java:ref:`.addCloudletsCloner(DatacenterBroker,Function)`
+   :param cloner: the \ :java:ref:`VmCloner`\  to set
 
 availability
 ^^^^^^^^^^^^
@@ -153,13 +124,13 @@ getLastFailedHost
 
    :return: the last failed Host or \ :java:ref:`Host.NULL`\  if not Host has failed yet.
 
-getMaxTimeToGenerateFailure
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getMaxTimeToGenerateFailureInHours
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public double getMaxTimeToGenerateFailure()
+.. java:method:: public double getMaxTimeToGenerateFailureInHours()
    :outertype: HostFaultInjection
 
-   Get the max time to generate a failure
+   Gets the max time to generate a failure (in hours)
 
 getNumberOfFaults
 ^^^^^^^^^^^^^^^^^
@@ -175,9 +146,9 @@ getNumberOfFaults
 .. java:method:: public long getNumberOfFaults(DatacenterBroker broker)
    :outertype: HostFaultInjection
 
-   Gets the total number of faults which affected all VMs from a given broker.
+   Gets the total number of Host faults which affected all VMs from a given broker or VMs from all existing brokers.
 
-   :param broker: the broker to get the number of faults for
+   :param broker: the broker to get the number of Host faults affecting its VMs or null whether is to be counted Host faults affecting VMs from any broker
 
 getNumberOfHostFaults
 ^^^^^^^^^^^^^^^^^^^^^
@@ -187,10 +158,10 @@ getNumberOfHostFaults
 
    Gets the total number of faults happened for existing hosts. This isn't the total number of failed hosts because one host may fail multiple times.
 
-getRandomRecoveryTimeForVm
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+getRandomRecoveryTimeForVmInSecs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public double getRandomRecoveryTimeForVm()
+.. java:method:: public double getRandomRecoveryTimeForVmInSecs()
    :outertype: HostFaultInjection
 
    Gets a Pseudo Random Number used to give a recovery time (in seconds) for each VM that was failed.
@@ -201,7 +172,7 @@ meanTimeBetweenHostFaultsInMinutes
 .. java:method:: public double meanTimeBetweenHostFaultsInMinutes()
    :outertype: HostFaultInjection
 
-   Computes the current mean time (in minutes) between Host failures (MTBF). Since Hosts don't actually recover from failures, there aren't recovery time to make easier the computation of MTBF for Host as it is directly computed for VMs.
+   Computes the current Mean Time Between host Failures (MTBF) in minutes. Since Hosts don't actually recover from failures, there aren't recovery time to make easier the computation of MTBF for Host as it is directly computed for VMs.
 
    :return: the current mean time (in minutes) between Host failures (MTBF) or zero if no failures have happened yet
 
@@ -213,9 +184,9 @@ meanTimeBetweenVmFaultsInMinutes
 .. java:method:: public double meanTimeBetweenVmFaultsInMinutes()
    :outertype: HostFaultInjection
 
-   Computes the current Mean Time Between host Failures (MTBF) in minutes for the entire Datacenter. It uses a straightforward way to compute the MTBF. Since it's stored the VM recovery times, it's possible to use such values to make easier the MTBF computation, different from the Hosts MTBF.
+   Computes the current Mean Time Between host Failures (MTBF) in minutes, which affected VMs from any broker for the entire Datacenter. It uses a straightforward way to compute the MTBF. Since it's stored the VM recovery times, it's possible to use such values to make easier the MTBF computation, different from the Hosts MTBF.
 
-   :return: the current mean time (in minutes) between Host failures (MTBF) or zero if no VM was destroyed due to Host failure
+   :return: the current Mean Time Between host Failures (MTBF) in minutes or zero if no VM was destroyed due to Host failure
 
    **See also:** :java:ref:`.meanTimeBetweenHostFaultsInMinutes()`
 
@@ -225,7 +196,7 @@ meanTimeBetweenVmFaultsInMinutes
 .. java:method:: public double meanTimeBetweenVmFaultsInMinutes(DatacenterBroker broker)
    :outertype: HostFaultInjection
 
-   Computes the current Mean Time Between host Failures (MTBF) in minutes for a given broker, considering only its VMs which are affected by failures. It uses a straightforward way to compute the MTBF. Since it's stored the VM recovery times, it's possible to use such values to make easier the MTBF computation, different from the Hosts MTBF.
+   Computes the current Mean Time Between host Failures (MTBF) in minutes, which affected VMs from a given broker. It uses a straightforward way to compute the MTBF. Since it's stored the VM recovery times, it's possible to use such values to make easier the MTBF computation, different from the Hosts MTBF.
 
    :param broker: the broker to get the MTBF for
    :return: the current mean time (in minutes) between Host failures (MTBF) or zero if no VM was destroyed due to Host failure
@@ -238,9 +209,9 @@ meanTimeToRepairVmFaultsInMinutes
 .. java:method:: public double meanTimeToRepairVmFaultsInMinutes()
    :outertype: HostFaultInjection
 
-   Computes the current mean time (in minutes) to repair failures of VMs (MTTR) in the Datacenter.
+   Computes the current Mean Time To Repair failures of VMs in minutes (MTTR) in the Datacenter, for all existing brokers.
 
-   :return: the current mean time (in minutes) to repair VM failures (MTTR) or zero if no VM was destroyed due to Host failure
+   :return: the MTTR (in minutes) or zero if no VM was destroyed due to Host failure
 
 meanTimeToRepairVmFaultsInMinutes
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -248,10 +219,10 @@ meanTimeToRepairVmFaultsInMinutes
 .. java:method:: public double meanTimeToRepairVmFaultsInMinutes(DatacenterBroker broker)
    :outertype: HostFaultInjection
 
-   Computes the current mean time (in minutes) to repair failures of VMs (MTTR) belonging to given broker.
+   Computes the current Mean Time To Repair Failures of VMs in minutes (MTTR) belonging to given broker. If a null broker is given, computes the MTTR of all VMs for all existing brokers.
 
-   :param broker: the broker to get the MTTR for
-   :return: the current mean time (in minutes) to repair VM failures (MTTR) or zero if no VM was destroyed due to Host failure
+   :param broker: the broker to get the MTTR for or null if the MTTR is to be computed for all brokers
+   :return: the current MTTR (in minutes) or zero if no VM was destroyed due to Host failure
 
 processEvent
 ^^^^^^^^^^^^
@@ -269,11 +240,15 @@ setDatacenter
 
    :param datacenter: the datacenter to set
 
-setMaxTimeToGenerateFailure
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+setMaxTimeToGenerateFailureInHours
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public void setMaxTimeToGenerateFailure(double maxTimeToGenerateFailure)
+.. java:method:: public void setMaxTimeToGenerateFailureInHours(double maxTimeToGenerateFailureInHours)
    :outertype: HostFaultInjection
+
+   Sets the max time to generate a failure (in hours).
+
+   :param maxTimeToGenerateFailureInHours: the maximum time to set
 
 shutdownEntity
 ^^^^^^^^^^^^^^

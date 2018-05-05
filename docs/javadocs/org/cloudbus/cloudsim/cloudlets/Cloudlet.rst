@@ -42,12 +42,6 @@ NOT_ASSIGNED
 
    Value to indicate that the cloudlet was not assigned to a Datacenter yet.
 
-NO_HISTORY_IS_RECORDED_FOR_CLOUDLET
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:field::  String NO_HISTORY_IS_RECORDED_FOR_CLOUDLET
-   :outertype: Cloudlet
-
 NULL
 ^^^^
 
@@ -64,7 +58,7 @@ addOnFinishListener
 .. java:method::  Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: Cloudlet
 
-   Adds an OnCloudletFinishEventListener object that will be notified when a cloudlet finishes its execution at a given \ :java:ref:`Vm`\ .
+   Adds a Listener object that will be notified when a cloudlet finishes its execution at a given \ :java:ref:`Vm`\ .
 
    :param listener: the listener to add
 
@@ -74,7 +68,7 @@ addOnUpdateProcessingListener
 .. java:method::  Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: Cloudlet
 
-   Adds a listener object that will be notified every time when the processing of the Cloudlet is updated in its \ :java:ref:`Vm`\ .
+   Adds a Listener object that will be notified every time the processing of the Cloudlet is updated in its \ :java:ref:`Vm`\ .
 
    :param listener: the listener to add
 
@@ -258,16 +252,6 @@ getFinishedLengthSoFar
 
    :param datacenter: the Datacenter entity
    :return: the length of a partially executed Cloudlet; the full Cloudlet length if it is completed; or 0 if the Cloudlet has never been executed in the given Datacenter
-
-getHistory
-^^^^^^^^^^
-
-.. java:method::  String getHistory()
-   :outertype: Cloudlet
-
-   Gets the transaction history of this Cloudlet. The layout of this history is in a readable table column with \ ``time``\  and \ ``description``\  as headers.
-
-   :return: a String containing the history of this Cloudlet object.
 
 getLastDatacenter
 ^^^^^^^^^^^^^^^^^
@@ -669,7 +653,7 @@ setFinishedLengthSoFar
    :param length: executed length of this Cloudlet (in MI)
    :return: true if the length is valid and the cloudlet already has assigned to a Datacenter, false otherwise
 
-   **See also:** :java:ref:`CloudletExecutionInfo`
+   **See also:** :java:ref:`CloudletExecution`
 
 setLength
 ^^^^^^^^^
@@ -733,6 +717,8 @@ setStatus
    :outertype: Cloudlet
 
    Sets the status of this Cloudlet.
+
+   \ **WARNING**\ : This method is just used internally by classes such as \ :java:ref:`CloudletScheduler`\  to update Cloudlet status. Calling it directly might not get the expected result. You have to use the CloudletScheduler that controls the execution of the Cloudlet to change the Cloudlets status. The method is public due to a design issue.
 
    :param newStatus: the status of this Cloudlet
    :return: true if the cloudlet status was changed, i.e, if the newStatus is different from the current status; false otherwise

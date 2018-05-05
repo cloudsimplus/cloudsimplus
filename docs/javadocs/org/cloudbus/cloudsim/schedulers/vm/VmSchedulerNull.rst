@@ -27,7 +27,7 @@ Methods
 allocatePesForVm
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare)
+.. java:method:: @Override public boolean allocatePesForVm(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerNull
 
 allocatePesForVm
@@ -88,12 +88,6 @@ getPeCapacity
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public long getPeCapacity()
-   :outertype: VmSchedulerNull
-
-getPesAllocatedForVm
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<Pe> getPesAllocatedForVm(Vm vm)
    :outertype: VmSchedulerNull
 
 getRequestedMips

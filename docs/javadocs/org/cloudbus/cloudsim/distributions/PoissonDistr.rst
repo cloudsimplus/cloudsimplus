@@ -30,7 +30,7 @@ PoissonDistr
 
    Creates a new Poisson random number generator to check the probability of 1 event (\ :java:ref:`k <getK()>`\ ) to happen at each time interval.
 
-   :param lambda: the average number of events that happen at each 1 time unit.
+   :param lambda: the average number of events that happen at each 1 time unit. If one considers the unit as minute, this value means the average number of arrivals at each minute.
    :param seed: the seed to initialize the uniform random number generator
 
    **See also:** :java:ref:`.setK(int)`, :java:ref:`.setLambda(double)`
@@ -75,7 +75,7 @@ getInterarrivalMeanTime
 .. java:method:: public double getInterarrivalMeanTime()
    :outertype: PoissonDistr
 
-   Gets the mean time between arrival of two events, which is the inverse of lambda. What is the time unit (if seconds, minutes, hours, etc) doesn't matter for the Poisson Process computations. Therefore, it can be considered any time unit wanted.
+   Gets the mean time between arrival of two events, which is the inverse of lambda. The time unit (if seconds, minutes, hours, etc) is the same considered when setting a value to the \ :java:ref:`lambda <getLambda()>`\  parameter.
 
 getK
 ^^^^
@@ -107,7 +107,7 @@ main
 .. java:method:: public static void main(String[] args)
    :outertype: PoissonDistr
 
-   Tests the simulations of customers arrivals in a Poisson process.
+   Tests the simulations of customers arrivals in a Poisson process. All the code inside this method is just to try the class. That is way it declares internal methods as Functional objects, instead of declaring such methods at the class level and just calling them.
 
    :param args:
 

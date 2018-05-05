@@ -2,9 +2,11 @@
 
 .. java:import:: org.cloudbus.cloudsim.util ResourceLoader
 
-.. java:import:: java.io FileNotFoundException
+.. java:import:: org.cloudsimplus.vmtemplates AwsEc2Template
 
-.. java:import:: java.io FileReader
+.. java:import:: java.io InputStream
+
+.. java:import:: java.io InputStreamReader
 
 .. java:import:: java.util ArrayList
 
@@ -20,7 +22,7 @@ SlaContract
 
    Represents a SLA Contract containing a list of metrics. It follows the standard used by \ `Amazon Cloudwatch <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>`_\ .
 
-   Instances of this class can be created from a JSON file using the \ :java:ref:`getInstance(String)`\  or \ :java:ref:`getInstanceFromResourcesDir(Class,String)`\  methods. This way, one doesn't need to create instances of this class using its default constructor. This one is just used by the JSON parsing library.
+   Instances of this class can be created from a JSON file using the \ :java:ref:`getInstance(InputStream)`\  or \ :java:ref:`getInstance(String)`\  methods. This way, one doesn't need to create instances of this class using its default constructor. This one is just used by the JSON parsing library.
 
    :author: raysaoliveira
 
@@ -32,7 +34,11 @@ SlaContract
 .. java:constructor:: public SlaContract()
    :outertype: SlaContract
 
-   Default constructor used to create a \ :java:ref:`SlaContract`\  instance. If you want to get a contract from a JSON file, you shouldn't call the constructor directly. Instead, use some methods such as the \ :java:ref:`getInstance(String)`\ .
+   Default constructor used to create a \ :java:ref:`SlaContract`\  instance. If you want to get a contract from a JSON file, you shouldn't call the constructor directly. Instead, use some methods of the class methods.
+
+   This constructor is just provided to enable the \ :java:ref:`Gson`\  object to use reflection to instantiate a SlaContract.
+
+   **See also:** :java:ref:`.getInstance(String)`, :java:ref:`.getInstance(InputStream)`
 
 Methods
 -------
@@ -48,28 +54,40 @@ getCpuUtilizationMetric
 .. java:method:: public SlaMetric getCpuUtilizationMetric()
    :outertype: SlaContract
 
+getExpectedMaxPriceForSingleVm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double getExpectedMaxPriceForSingleVm()
+   :outertype: SlaContract
+
+   Gets the expected maximum price a single VM can cost, considering the \ :java:ref:`Fault Tolerance Level <getMinFaultToleranceLevel()>`\ .
+
+   :return: the expected maximum price a single VM can cost for the given customer \ :java:ref:`AwsEc2Template`\  for the customer's expected price
+
+getFaultToleranceLevel
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public SlaMetric getFaultToleranceLevel()
+   :outertype: SlaContract
+
 getInstance
 ^^^^^^^^^^^
 
-.. java:method:: public static SlaContract getInstance(String jsonFilePath) throws FileNotFoundException
+.. java:method:: public static SlaContract getInstance(String jsonFilePath)
    :outertype: SlaContract
 
-   Gets an \ :java:ref:`SlaContract`\  from a JSON file.
+   Gets an \ :java:ref:`SlaContract`\  from a JSON file inside the \ **application's resource directory**\ .
 
-   :param jsonFilePath: the full path to the JSON file representing the SLA contract to read
+   :param jsonFilePath: the \ **relative path**\  to the JSON file representing the SLA contract to read
    :return: a \ :java:ref:`SlaContract`\  read from the JSON file
 
-getInstanceFromResourcesDir
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getMaxPrice
+^^^^^^^^^^^
 
-.. java:method:: public static SlaContract getInstanceFromResourcesDir(Class klass, String jsonFilePath) throws FileNotFoundException
+.. java:method:: public double getMaxPrice()
    :outertype: SlaContract
 
-   Gets an \ :java:ref:`SlaContract`\  from a JSON file inside the application's resource directory.
-
-   :param klass: a class from the project which will be used just to assist in getting the path of the given resource. It can can any class inside the project where a resource you are trying to get from the resources directory
-   :param jsonFilePath: the relative path to the JSON file representing the SLA contract to read
-   :return: a \ :java:ref:`SlaContract`\  read from the JSON file
+   Gets the maximum price a customer expects to pay hourly for all his/her running VMs.
 
 getMetrics
 ^^^^^^^^^^
@@ -78,6 +96,12 @@ getMetrics
    :outertype: SlaContract
 
    :return: the metrics
+
+getMinFaultToleranceLevel
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public int getMinFaultToleranceLevel()
+   :outertype: SlaContract
 
 getPriceMetric
 ^^^^^^^^^^^^^^
@@ -100,7 +124,7 @@ getWaitTimeMetric
 main
 ^^^^
 
-.. java:method:: public static void main(String[] args) throws FileNotFoundException
+.. java:method:: public static void main(String[] args)
    :outertype: SlaContract
 
    A main method just to try the class implementation.

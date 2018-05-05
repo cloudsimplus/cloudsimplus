@@ -14,7 +14,7 @@ BrokerBuilderDecorator
 
 .. java:type:: public class BrokerBuilderDecorator implements BrokerBuilderInterface
 
-   A class that implements the Decorator Design Pattern in order to include functionalities in a existing class. It is used to ensure that specific methods are called only after a given method is called.
+   A class that implements the Decorator Design Pattern in order to include features in a existing class. It is used to ensure that specific methods are called only after a given method is called.
 
    For instance, the methods \ :java:ref:`getVmBuilder()`\  and \ :java:ref:`getCloudletBuilder()`\  can only be called after some \ :java:ref:`DatacenterBrokerSimple`\  was created by calling the method \ :java:ref:`createBroker()`\ . By this way, after the method is called, it returns an instance of this decorator that allow chained call to the specific decorator methods as the following example:
 

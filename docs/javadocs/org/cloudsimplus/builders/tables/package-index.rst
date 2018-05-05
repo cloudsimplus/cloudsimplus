@@ -21,7 +21,6 @@ The classes and interfaces provided allow creating custom TableBuilders to add, 
    CsvTableColumn
    HtmlTableBuilder
    HtmlTableColumn
-   PriorityCloudletsTableBuilder
    TableBuilder
    TableColumn
    TextTableBuilder

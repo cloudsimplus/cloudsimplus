@@ -4,6 +4,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
 .. java:import:: java.util Objects
 
 .. java:import:: java.util.function Predicate
@@ -18,11 +20,13 @@ HorizontalVmScalingSimple
 
 .. java:type:: public class HorizontalVmScalingSimple extends VmScalingAbstract implements HorizontalVmScaling
 
-   A \ :java:ref:`HorizontalVmScaling`\  implementation that allows defining the conditions to identify an under or overloaded VM, based on any desired criteria, such as current RAM, CPU and/or Bandwidth utilization. A \ :java:ref:`DatacenterBroker`\  thus monitors the VMs that have an HorizontalVmScaling object in order to create or destroy VMs on demand.
+   A \ :java:ref:`HorizontalVmScaling`\  implementation that allows defining the condition to identify an overloaded VM, based on any desired criteria, such as current RAM, CPU and/or Bandwidth utilization. A \ :java:ref:`DatacenterBroker`\  monitors the VMs that have an HorizontalVmScaling object in order to create or destroy VMs on demand.
 
-   Thes conditions in fact have to be defined by the user of this class, by providing \ :java:ref:`Predicate`\ s using the \ :java:ref:`setUnderloadPredicate(Predicate)`\  and \ :java:ref:`setOverloadPredicate(Predicate)`\  methods.
+   The overload condition has to be defined by providing a \ :java:ref:`Predicate`\  using the \ :java:ref:`setOverloadPredicate(Predicate)`\  method. Check the \ :java:ref:`HorizontalVmScaling`\  documentation for details on how to enable horizontal down scaling using the \ :java:ref:`DatacenterBroker`\ .
 
    :author: Manoel Campos da Silva Filho
+
+   **See also:** :java:ref:`HorizontalVmScaling`
 
 Constructors
 ------------
@@ -40,40 +44,28 @@ getOverloadPredicate
 .. java:method:: @Override public Predicate<Vm> getOverloadPredicate()
    :outertype: HorizontalVmScalingSimple
 
-getUnderloadPredicate
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Predicate<Vm> getUnderloadPredicate()
-   :outertype: HorizontalVmScalingSimple
-
 getVmSupplier
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Supplier<Vm> getVmSupplier()
    :outertype: HorizontalVmScalingSimple
 
-requestScaling
-^^^^^^^^^^^^^^
+requestUpScaling
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected boolean requestScaling(double time)
+.. java:method:: @Override protected boolean requestUpScaling(double time)
    :outertype: HorizontalVmScalingSimple
 
-requestScalingIfPredicateMatch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestUpScalingIfPredicateMatches
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final boolean requestScalingIfPredicateMatch(double time)
+.. java:method:: @Override public final boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt)
    :outertype: HorizontalVmScalingSimple
 
 setOverloadPredicate
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public VmScaling setOverloadPredicate(Predicate<Vm> predicate)
-   :outertype: HorizontalVmScalingSimple
-
-setUnderloadPredicate
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public VmScaling setUnderloadPredicate(Predicate<Vm> predicate)
    :outertype: HorizontalVmScalingSimple
 
 setVmSupplier

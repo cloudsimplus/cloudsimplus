@@ -426,6 +426,20 @@ getTotalExecutionTime
 
    :return: the VM total execution time if the VM has stopped, the time executed so far if the VM is running yet, or 0 if it hasn't started.
 
+getUtilizationHistory
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  UtilizationHistory getUtilizationHistory()
+   :outertype: Vm
+
+   Gets the object containing CPU utilization percentage history (between [0 and 1], where 1 is 100%). The history can be obtained by calling \ :java:ref:`VmUtilizationHistory.getHistory()`\ . Initially, the data collection is disabled. To enable it call \ :java:ref:`VmUtilizationHistory.enable()`\ .
+
+   Utilization history for Hosts, obtained by calling \ :java:ref:`Host.getUtilizationHistory()`\  is just available if the utilization history for its VM is enabled.
+
+   The time interval in which utilization is collected is defined by the \ :java:ref:`Datacenter.getSchedulingInterval()`\ .
+
+   **See also:** :java:ref:`UtilizationHistory.enable()`
+
 getVmm
 ^^^^^^
 
@@ -454,6 +468,8 @@ isFailed
 
    Checks if the Vm is failed or not.
 
+   **See also:** :java:ref:`.isWorking()`
+
 isInMigration
 ^^^^^^^^^^^^^
 
@@ -461,6 +477,16 @@ isInMigration
    :outertype: Vm
 
    Checks if the VM is in migration process or not, that is, if it is migrating in or out of a Host.
+
+isWorking
+^^^^^^^^^
+
+.. java:method::  boolean isWorking()
+   :outertype: Vm
+
+   Checks if the Vm is working or failed.
+
+   **See also:** :java:ref:`.isFailed()`
 
 notifyOnCreationFailureListeners
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

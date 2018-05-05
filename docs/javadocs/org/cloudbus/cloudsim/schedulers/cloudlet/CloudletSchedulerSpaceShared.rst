@@ -1,6 +1,6 @@
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
@@ -25,7 +25,7 @@ Methods
 canAddCloudletToExecutionList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet)
+.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerSpaceShared
 
    The space-shared scheduler \ **does not**\  share the CPU time between executing cloudlets. Each CPU (\ :java:ref:`Pe`\ ) is used by another Cloudlet just when the previous Cloudlet using it has finished executing completely. By this way, if there are more Cloudlets than PEs, some Cloudlet will not be allowed to start executing immediately.

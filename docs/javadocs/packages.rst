@@ -5,22 +5,17 @@ JavaDocs
    :maxdepth: 2
 
    org/cloudbus/cloudsim/allocationpolicies/package-index
-   org/cloudbus/cloudsim/allocationpolicies/power/package-index
+   org/cloudbus/cloudsim/allocationpolicies/migration/package-index
    org/cloudbus/cloudsim/brokers/package-index
-   org/cloudbus/cloudsim/brokers/power/package-index
    org/cloudbus/cloudsim/cloudlets/package-index
    org/cloudbus/cloudsim/cloudlets/network/package-index
    org/cloudbus/cloudsim/core/package-index
    org/cloudbus/cloudsim/core/events/package-index
-   org/cloudbus/cloudsim/core/predicates/package-index
    org/cloudbus/cloudsim/datacenters/package-index
    org/cloudbus/cloudsim/datacenters/network/package-index
-   org/cloudbus/cloudsim/datacenters/power/package-index
    org/cloudbus/cloudsim/distributions/package-index
    org/cloudbus/cloudsim/hosts/package-index
    org/cloudbus/cloudsim/hosts/network/package-index
-   org/cloudbus/cloudsim/hosts/power/package-index
-   org/cloudbus/cloudsim/lists/package-index
    org/cloudbus/cloudsim/network/package-index
    org/cloudbus/cloudsim/network/switches/package-index
    org/cloudbus/cloudsim/network/topologies/package-index
@@ -37,7 +32,6 @@ JavaDocs
    org/cloudbus/cloudsim/utilizationmodels/package-index
    org/cloudbus/cloudsim/vms/package-index
    org/cloudbus/cloudsim/vms/network/package-index
-   org/cloudbus/cloudsim/vms/power/package-index
    org/cloudsimplus/autoscaling/package-index
    org/cloudsimplus/autoscaling/resources/package-index
    org/cloudsimplus/builders/package-index

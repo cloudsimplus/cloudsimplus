@@ -1,6 +1,6 @@
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
@@ -35,7 +35,7 @@ Methods
 canAddCloudletToExecutionList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet)
+.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerTimeShared
 
    This time-shared scheduler shares the CPU time between all executing cloudlets, giving the same CPU timeslice for each Cloudlet to execute. It always allow any submitted Cloudlets to be immediately added to the execution list. By this way, it doesn't matter what Cloudlet is being submitted, since it will always include it in the execution list.
@@ -52,7 +52,7 @@ cloudletResume
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<CloudletExecutionInfo> getCloudletWaitingList()
+.. java:method:: @Override public List<CloudletExecution> getCloudletWaitingList()
    :outertype: CloudletSchedulerTimeShared
 
    {@inheritDoc}

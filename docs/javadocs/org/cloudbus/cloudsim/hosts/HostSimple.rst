@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.power.models PowerModel
+
 .. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -6,13 +8,15 @@
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
+.. java:import:: java.util.function Predicate
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
+
+.. java:import:: org.cloudbus.cloudsim.vms VmStateHistoryEntry
 
 .. java:import:: org.cloudsimplus.listeners EventListener
 
 .. java:import:: org.cloudsimplus.listeners HostUpdatesVmsProcessingEventInfo
-
-.. java:import:: org.cloudbus.cloudsim.lists PeList
 
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
 
@@ -48,12 +52,11 @@ HostSimple
 HostSimple
 ^^^^^^^^^^
 
-.. java:constructor:: @Deprecated public HostSimple(int id, ResourceProvisioner ramProvisioner, ResourceProvisioner bwProvisioner, long storage, List<Pe> peList, VmScheduler vmScheduler)
+.. java:constructor:: public HostSimple(ResourceProvisioner ramProvisioner, ResourceProvisioner bwProvisioner, long storage, List<Pe> peList, VmScheduler vmScheduler)
    :outertype: HostSimple
 
    Creates a Host with the given parameters.
 
-   :param id: the host id
    :param ramProvisioner: the ram provisioner with capacity in Megabytes
    :param bwProvisioner: the bw provisioner with capacity in Megabits/s
    :param storage: the storage capacity in Megabytes
@@ -80,16 +83,16 @@ addVmMigratingOut
 .. java:method:: @Override public boolean addVmMigratingOut(Vm vm)
    :outertype: HostSimple
 
+addVmToCreatedList
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected void addVmToCreatedList(Vm vm)
+   :outertype: HostSimple
+
 addVmToList
 ^^^^^^^^^^^
 
 .. java:method:: protected void addVmToList(Vm vm)
-   :outertype: HostSimple
-
-allocatePesForVm
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare)
    :outertype: HostSimple
 
 compareTo
@@ -163,6 +166,18 @@ destroyVm
 .. java:method:: @Override public void destroyVm(Vm vm)
    :outertype: HostSimple
 
+disableStateHistory
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void disableStateHistory()
+   :outertype: HostSimple
+
+enableStateHistory
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void enableStateHistory()
+   :outertype: HostSimple
+
 equals
 ^^^^^^
 
@@ -187,6 +202,12 @@ getAvailableStorage
 .. java:method:: @Override public long getAvailableStorage()
    :outertype: HostSimple
 
+getBuzyPeList
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Pe> getBuzyPeList()
+   :outertype: HostSimple
+
 getBw
 ^^^^^
 
@@ -203,6 +224,18 @@ getDatacenter
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Datacenter getDatacenter()
+   :outertype: HostSimple
+
+getFinishedVms
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Vm> getFinishedVms()
+   :outertype: HostSimple
+
+getFreePeList
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Pe> getFreePeList()
    :outertype: HostSimple
 
 getId
@@ -259,6 +292,18 @@ getPeList
 .. java:method:: @Override public List<Pe> getPeList()
    :outertype: HostSimple
 
+getPowerModel
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public PowerModel getPowerModel()
+   :outertype: HostSimple
+
+getPreviousUtilizationOfCpu
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getPreviousUtilizationOfCpu()
+   :outertype: HostSimple
+
 getProvisioner
 ^^^^^^^^^^^^^^
 
@@ -289,6 +334,12 @@ getSimulation
 .. java:method:: @Override public Simulation getSimulation()
    :outertype: HostSimple
 
+getStateHistory
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<HostStateHistoryEntry> getStateHistory()
+   :outertype: HostSimple
+
 getStorage
 ^^^^^^^^^^
 
@@ -305,6 +356,12 @@ getTotalMipsCapacity
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getTotalMipsCapacity()
+   :outertype: HostSimple
+
+getUtilizationHistory
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double[] getUtilizationHistory()
    :outertype: HostSimple
 
 getUtilizationOfBw
@@ -335,6 +392,12 @@ getVm
 ^^^^^
 
 .. java:method:: @Override public Vm getVm(int vmId, int brokerId)
+   :outertype: HostSimple
+
+getVmCreatedList
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Vm> List<T> getVmCreatedList()
    :outertype: HostSimple
 
 getVmList
@@ -385,6 +448,12 @@ isFailed
 .. java:method:: @Override public boolean isFailed()
    :outertype: HostSimple
 
+isStateHistoryEnabled
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isStateHistoryEnabled()
+   :outertype: HostSimple
+
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
@@ -407,12 +476,6 @@ removeOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener)
-   :outertype: HostSimple
-
-removeVmFromList
-^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void removeVmFromList(Vm vm)
    :outertype: HostSimple
 
 removeVmMigratingIn
@@ -467,10 +530,10 @@ setPeList
 
    :param peList: the new pe list
 
-setPeStatus
-^^^^^^^^^^^
+setPowerModel
+^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean setPeStatus(int peId, Pe.Status status)
+.. java:method:: @Override public Host setPowerModel(PowerModel powerModel)
    :outertype: HostSimple
 
 setRamProvisioner
@@ -500,6 +563,6 @@ toString
 updateProcessing
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double updateProcessing(double currentTime)
+.. java:method:: @SuppressWarnings @Override public double updateProcessing(double currentTime)
    :outertype: HostSimple
 

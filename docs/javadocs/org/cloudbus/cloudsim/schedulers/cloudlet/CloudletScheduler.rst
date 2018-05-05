@@ -8,7 +8,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
 .. java:import:: org.cloudbus.cloudsim.network VmPacket
 
@@ -61,7 +61,7 @@ addCloudletToReturnedList
 canAddCloudletToExecutionList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean canAddCloudletToExecutionList(CloudletExecutionInfo cloudlet)
+.. java:method::  boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
    :outertype: CloudletScheduler
 
    Checks if a Cloudlet can be added to the execution list or not. Each CloudletScheduler can define a different policy to indicate if a Cloudlet can be added to the execution list or not at the moment this method is called.
@@ -87,12 +87,12 @@ cloudletCancel
 cloudletFinish
 ^^^^^^^^^^^^^^
 
-.. java:method::  void cloudletFinish(CloudletExecutionInfo rcl)
+.. java:method::  void cloudletFinish(CloudletExecution ce)
    :outertype: CloudletScheduler
 
    Processes a finished cloudlet.
 
-   :param rcl: finished cloudlet
+   :param ce: finished cloudlet
 
 cloudletPause
 ^^^^^^^^^^^^^
@@ -136,36 +136,35 @@ cloudletSubmit
 
    Receives an cloudlet to be executed in the VM managed by this scheduler.
 
-   :param cl: the submited cloudlet
+   :param cl: the submitted cloudlet
    :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
 
 deallocatePesFromVm
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  void deallocatePesFromVm(Vm vm, int pesToRemove)
+.. java:method::  void deallocatePesFromVm(int pesToRemove)
    :outertype: CloudletScheduler
 
    Releases a given number of PEs from a VM.
 
-   :param vm: the vm to deallocate PEs from
    :param pesToRemove: number of PEs to deallocate
 
 getAllocatedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getAllocatedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
+.. java:method::  double getAllocatedMipsForCloudlet(CloudletExecution ce, double time)
    :outertype: CloudletScheduler
 
    Gets the current allocated MIPS for cloudlet.
 
-   :param rcl: the rcl
+   :param ce: the ce
    :param time: the time
    :return: the current allocated mips for cloudlet
 
 getCloudletExecList
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  List<CloudletExecutionInfo> getCloudletExecList()
+.. java:method::  List<CloudletExecution> getCloudletExecList()
    :outertype: CloudletScheduler
 
    Gets a \ **read-only**\  List of cloudlets being executed on the VM.
@@ -175,7 +174,7 @@ getCloudletExecList
 getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  List<CloudletExecutionInfo> getCloudletFinishedList()
+.. java:method::  List<CloudletExecution> getCloudletFinishedList()
    :outertype: CloudletScheduler
 
    Gets a list of finished cloudlets.
@@ -224,7 +223,7 @@ getCloudletToMigrate
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  List<CloudletExecutionInfo> getCloudletWaitingList()
+.. java:method::  List<CloudletExecution> getCloudletWaitingList()
    :outertype: CloudletScheduler
 
    Gets a \ **read-only**\  List of cloudlet waiting to be executed on the VM.
@@ -303,12 +302,12 @@ getRequestedCpuPercentUtilization
 getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getRequestedMipsForCloudlet(CloudletExecutionInfo rcl, double time)
+.. java:method::  double getRequestedMipsForCloudlet(CloudletExecution ce, double time)
    :outertype: CloudletScheduler
 
    Gets the current requested MIPS for a given cloudlet.
 
-   :param rcl: the rcl
+   :param ce: the ce
    :param time: the time
    :return: the current requested mips for the given cloudlet
 

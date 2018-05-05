@@ -314,6 +314,12 @@ getUid
 .. java:method:: @Override public String getUid()
    :outertype: VmNull
 
+getUtilizationHistory
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public UtilizationHistory getUtilizationHistory()
+   :outertype: VmNull
+
 getVmm
 ^^^^^^
 
@@ -336,6 +342,12 @@ isInMigration
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isInMigration()
+   :outertype: VmNull
+
+isWorking
+^^^^^^^^^
+
+.. java:method:: @Override public boolean isWorking()
    :outertype: VmNull
 
 notifyOnCreationFailureListeners

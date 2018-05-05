@@ -12,20 +12,9 @@ The documentation includes:
 - [Web Slides](presentation/index.html) presenting CloudSim Plus (online version available [here](http://cloudsimplus.org/presentation/)).
 
 ## Building the reStructuredText files for the Documentation Site
-To generate the [Sphinx](http://sphinx-doc.org) documentation to publish at the [ReadTheDocs](http://cloudsimplus.rtfd.io) or to read locally, considering you have python installed, you can execute the commands below to install the additional tools:
+To generate the [Sphinx](http://sphinx-doc.org) documentation to publish at the [ReadTheDocs](http://cloudsimplus.rtfd.io) or to read locally, considering you have python installed, you can execute `make install` to install the additional tools.
 
-```bash
-#Install pip to download python packages (can also be installed via package managers in Linux and macOS)
-sudo curl https://bootstrap.pypa.io/get-pip.py | python
-
-#Install sphinx and its build tools to locally build the rst documents to html, latex, epub or other formats
-pip install sphinx sphinx-autobuild 
-
-#Install a Sphinx extension to parse javadocs comments inside Java files and generate rst files for Sphinx
-pip install javasphinx-apidoc
-```
-
-Ensure that you have the following environments variables declared, since the python scripts use UTF-8 encoding:
+Ensure you have the following environments variables declared, since the python scripts use UTF-8 encoding:
 
 ```bash
 export LC_ALL=en_US.UTF-8

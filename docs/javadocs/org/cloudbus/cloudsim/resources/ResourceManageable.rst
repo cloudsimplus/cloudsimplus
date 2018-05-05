@@ -83,17 +83,6 @@ deallocateAndRemoveResource
 deallocateResource
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean deallocateResource(long amountToDeallocate)
-   :outertype: ResourceManageable
-
-   Try to deallocate a given amount of the resource.
-
-   :param amountToDeallocate: the amount of resource to be deallocated
-   :return: true if amountToDeallocate > 0 and there is enough resource to deallocate, false otherwise
-
-deallocateResource
-^^^^^^^^^^^^^^^^^^
-
 .. java:method::  boolean deallocateResource(Resource resource)
    :outertype: ResourceManageable
 
@@ -103,6 +92,17 @@ deallocateResource
    :return: true if capacity of the given resource > 0 and there is enough resource to deallocate, false otherwise
 
    **See also:** :java:ref:`.deallocateResource(long)`
+
+deallocateResource
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean deallocateResource(long amountToDeallocate)
+   :outertype: ResourceManageable
+
+   Try to deallocate a given amount of the resource.
+
+   :param amountToDeallocate: the amount of resource to be deallocated
+   :return: true if amountToDeallocate > 0 and there is enough resource to deallocate, false otherwise
 
 isResourceAmountBeingUsed
 ^^^^^^^^^^^^^^^^^^^^^^^^^

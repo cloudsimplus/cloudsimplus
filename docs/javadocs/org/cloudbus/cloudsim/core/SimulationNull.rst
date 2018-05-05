@@ -59,13 +59,13 @@ addOnSimulationPausedListener
 cancel
 ^^^^^^
 
-.. java:method:: @Override public SimEvent cancel(int src, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> p)
    :outertype: SimulationNull
 
 cancelAll
 ^^^^^^^^^
 
-.. java:method:: @Override public boolean cancelAll(int src, Predicate<SimEvent> p)
+.. java:method:: @Override public boolean cancelAll(SimEntity src, Predicate<SimEvent> p)
    :outertype: SimulationNull
 
 clock
@@ -89,7 +89,7 @@ clockInMinutes
 findFirstDeferred
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent findFirstDeferred(int dest, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> p)
    :outertype: SimulationNull
 
 getCalendar
@@ -98,10 +98,10 @@ getCalendar
 .. java:method:: @Override public Calendar getCalendar()
    :outertype: SimulationNull
 
-getCloudInfoServiceEntityId
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getCloudInfoService
+^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public int getCloudInfoServiceEntityId()
+.. java:method:: @Override public CloudInformationService getCloudInfoService()
    :outertype: SimulationNull
 
 getDatacenterList
@@ -110,40 +110,10 @@ getDatacenterList
 .. java:method:: @Override public Set<Datacenter> getDatacenterList()
    :outertype: SimulationNull
 
-getEntitiesByName
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<String, SimEntity> getEntitiesByName()
-   :outertype: SimulationNull
-
-getEntity
-^^^^^^^^^
-
-.. java:method:: @Override public SimEntity getEntity(int id)
-   :outertype: SimulationNull
-
-getEntity
-^^^^^^^^^
-
-.. java:method:: @Override public SimEntity getEntity(String name)
-   :outertype: SimulationNull
-
-getEntityId
-^^^^^^^^^^^
-
-.. java:method:: @Override public int getEntityId(String name)
-   :outertype: SimulationNull
-
 getEntityList
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<SimEntity> getEntityList()
-   :outertype: SimulationNull
-
-getEntityName
-^^^^^^^^^^^^^
-
-.. java:method:: @Override public String getEntityName(int entityId)
    :outertype: SimulationNull
 
 getMinTimeBetweenEvents
@@ -173,7 +143,7 @@ getNumberOfFutureEvents
 holdEntity
 ^^^^^^^^^^
 
-.. java:method:: @Override public void holdEntity(int src, long delay)
+.. java:method:: @Override public void holdEntity(SimEntity src, long delay)
    :outertype: SimulationNull
 
 isPaused
@@ -203,13 +173,13 @@ pause
 pauseEntity
 ^^^^^^^^^^^
 
-.. java:method:: @Override public void pauseEntity(int src, double delay)
+.. java:method:: @Override public void pauseEntity(SimEntity src, double delay)
    :outertype: SimulationNull
 
 removeOnClockTickListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean removeOnClockTickListener(EventListener<EventInfo> listener)
+.. java:method:: @Override public boolean removeOnClockTickListener(EventListener<? extends EventInfo> listener)
    :outertype: SimulationNull
 
 removeOnEventProcessingListener
@@ -233,25 +203,25 @@ resume
 select
 ^^^^^^
 
-.. java:method:: @Override public SimEvent select(int dest, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> p)
    :outertype: SimulationNull
 
 send
 ^^^^
 
-.. java:method:: @Override public void send(int src, int dest, double delay, int tag, Object data)
+.. java:method:: @Override public void send(SimEntity src, SimEntity dest, double delay, int tag, Object data)
    :outertype: SimulationNull
 
 sendFirst
 ^^^^^^^^^
 
-.. java:method:: @Override public void sendFirst(int src, int dest, double delay, int tag, Object data)
+.. java:method:: @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data)
    :outertype: SimulationNull
 
 sendNow
 ^^^^^^^
 
-.. java:method:: @Override public void sendNow(int src, int dest, int tag, Object data)
+.. java:method:: @Override public void sendNow(SimEntity src, SimEntity dest, int tag, Object data)
    :outertype: SimulationNull
 
 setNetworkTopology
@@ -278,12 +248,6 @@ terminateAt
 .. java:method:: @Override public boolean terminateAt(double time)
    :outertype: SimulationNull
 
-updateEntityName
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean updateEntityName(String oldName)
-   :outertype: SimulationNull
-
 wait
 ^^^^
 
@@ -293,6 +257,6 @@ wait
 waiting
 ^^^^^^^
 
-.. java:method:: @Override public long waiting(int dest, Predicate<SimEvent> p)
+.. java:method:: @Override public long waiting(SimEntity dest, Predicate<SimEvent> p)
    :outertype: SimulationNull
 

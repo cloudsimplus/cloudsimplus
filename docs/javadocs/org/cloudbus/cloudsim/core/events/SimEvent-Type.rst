@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
+.. java:import:: org.cloudbus.cloudsim.core SimEntity
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudsimplus.listeners EventInfo

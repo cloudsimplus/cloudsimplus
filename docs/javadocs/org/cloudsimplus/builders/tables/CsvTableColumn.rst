@@ -10,6 +10,16 @@ CsvTableColumn
 
    :author: Manoel Campos da Silva Filho
 
+Fields
+------
+DATA_COL_SEPARATOR_FORMAT
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:field:: public static final String DATA_COL_SEPARATOR_FORMAT
+   :outertype: CsvTableColumn
+
+   A format used to print data followed by the column separator.
+
 Constructors
 ------------
 CsvTableColumn

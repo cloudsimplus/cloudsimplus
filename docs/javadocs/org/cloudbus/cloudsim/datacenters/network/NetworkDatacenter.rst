@@ -2,8 +2,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.core CloudSim
-
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
@@ -12,17 +10,15 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterCharacteristics
-
 .. java:import:: org.cloudbus.cloudsim.datacenters DatacenterSimple
+
+.. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.network.switches AbstractSwitch
 
 .. java:import:: org.cloudbus.cloudsim.network.switches EdgeSwitch
 
 .. java:import:: org.cloudbus.cloudsim.network.switches Switch
-
-.. java:import:: org.cloudbus.cloudsim.resources FileStorage
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
@@ -53,29 +49,14 @@ Constructors
 NetworkDatacenter
 ^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public NetworkDatacenter(Simulation simulation, DatacenterCharacteristics characteristics, VmAllocationPolicy vmAllocationPolicy)
+.. java:constructor:: public NetworkDatacenter(Simulation simulation, List<? extends Host> hostList, VmAllocationPolicy vmAllocationPolicy)
    :outertype: NetworkDatacenter
 
    Creates a NetworkDatacenter with the given parameters.
 
    :param simulation: The CloudSim instance that represents the simulation the Entity is related to
-   :param characteristics: the characteristics of the Datacenter to be created
+   :param hostList: list of \ :java:ref:`Host`\ s that will compound the Datacenter
    :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
-   :throws IllegalArgumentException: when this entity has \ ``zero``\  number of PEs (Processing Elements).  No PEs mean the Cloudlets can't be processed. A CloudResource must contain one or more Machines. A Machine must contain one or more PEs.
-
-NetworkDatacenter
-^^^^^^^^^^^^^^^^^
-
-.. java:constructor:: @Deprecated public NetworkDatacenter(CloudSim simulation, DatacenterCharacteristics characteristics, VmAllocationPolicy vmAllocationPolicy, List<FileStorage> storageList, double schedulingInterval)
-   :outertype: NetworkDatacenter
-
-   Creates a NetworkDatacenter with the given parameters.
-
-   :param simulation: The CloudSim instance that represents the simulation the Entity is related to
-   :param characteristics: the characteristics of the Datacenter to be created
-   :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
-   :param storageList: a List of storage elements, for data simulation
-   :param schedulingInterval: the scheduling delay to process each Datacenter received event
    :throws IllegalArgumentException: when this entity has \ ``zero``\  number of PEs (Processing Elements).  No PEs mean the Cloudlets can't be processed. A CloudResource must contain one or more Machines. A Machine must contain one or more PEs.
 
 Methods

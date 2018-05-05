@@ -21,30 +21,19 @@ Methods
 of
 ^^
 
-.. java:method:: static CloudletVmEventInfo of(double time, Cloudlet cloudlet, Vm vm)
-   :outertype: CloudletVmEventInfo
-
-   Gets a CloudletVmEventInfo instance from the given parameters.
-
-   :param time: the time the event happend
-   :param cloudlet: the \ :java:ref:`Cloudlet`\  that fired the event
-   :param vm: the \ :java:ref:`Vm`\  where the Cloudlet is or was running into, depending on the fired event, such as the \ :java:ref:`OnUpdateCloudletProcessing <Cloudlet.addOnUpdateProcessingListener(EventListener)>`\  or \ :java:ref:`OnCloudletFinish <Cloudlet.addOnFinishListener(EventListener)>`\
-
-of
-^^
-
-.. java:method:: static CloudletVmEventInfo of(Cloudlet cloudlet, Vm vm)
+.. java:method:: static CloudletVmEventInfo of(EventListener<? extends EventInfo> listener, Cloudlet cloudlet, Vm vm)
    :outertype: CloudletVmEventInfo
 
    Gets a CloudletVmEventInfo instance from the given parameters. The \ :java:ref:`getTime()`\  is the current simulation time.
 
+   :param listener: the listener to be notified about the event
    :param cloudlet: the \ :java:ref:`Cloudlet`\  that fired the event
    :param vm: the \ :java:ref:`Vm`\  where the Cloudlet is or was running into, depending on the fired event, such as the \ :java:ref:`OnUpdateCloudletProcessing <Cloudlet.addOnUpdateProcessingListener(EventListener)>`\  or \ :java:ref:`OnCloudletFinish <Cloudlet.addOnFinishListener(EventListener)>`\
 
 of
 ^^
 
-.. java:method:: static CloudletVmEventInfo of(double time, Cloudlet cloudlet)
+.. java:method:: static CloudletVmEventInfo of(EventListener<? extends EventInfo> listener, double time, Cloudlet cloudlet)
    :outertype: CloudletVmEventInfo
 
    Gets a CloudletVmEventInfo instance from the given parameters. The \ :java:ref:`Vm <getVm()>`\  attribute is defined as the \ :java:ref:`Vm`\  where the \ :java:ref:`Cloudlet`\  is running.
@@ -52,17 +41,30 @@ of
    :param time: the time the event happened
    :param cloudlet: the \ :java:ref:`Cloudlet`\  that fired the event
 
-   **See also:** :java:ref:`.of(Cloudlet,Vm)`
+   **See also:** :java:ref:`.of(EventListener,Cloudlet,Vm)`
 
 of
 ^^
 
-.. java:method:: static CloudletVmEventInfo of(Cloudlet cloudlet)
+.. java:method:: static CloudletVmEventInfo of(EventListener<? extends EventInfo> listener, Cloudlet cloudlet)
    :outertype: CloudletVmEventInfo
 
    Gets a CloudletVmEventInfo instance from the given parameters. The \ :java:ref:`Vm <getVm()>`\  attribute is defined as the \ :java:ref:`Vm`\  where the \ :java:ref:`Cloudlet`\  is running and the \ :java:ref:`getTime()`\  is the current simulation time.
 
    :param cloudlet: the \ :java:ref:`Cloudlet`\  that fired the event
 
-   **See also:** :java:ref:`.of(Cloudlet,Vm)`
+   **See also:** :java:ref:`.of(EventListener,Cloudlet,Vm)`
+
+of
+^^
+
+.. java:method:: static CloudletVmEventInfo of(EventListener<? extends EventInfo> listener, double time, Cloudlet cloudlet, Vm vm)
+   :outertype: CloudletVmEventInfo
+
+   Gets a CloudletVmEventInfo instance from the given parameters.
+
+   :param listener: the listener to be notified about the event
+   :param time: the time the event happened
+   :param cloudlet: the \ :java:ref:`Cloudlet`\  that fired the event
+   :param vm: the \ :java:ref:`Vm`\  where the Cloudlet is or was running into, depending on the fired event, such as the \ :java:ref:`OnUpdateCloudletProcessing <Cloudlet.addOnUpdateProcessingListener(EventListener)>`\  or \ :java:ref:`OnCloudletFinish <Cloudlet.addOnFinishListener(EventListener)>`\
 
