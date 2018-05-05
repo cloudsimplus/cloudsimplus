@@ -4,9 +4,9 @@
 
 .. java:import:: java.util List
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletSimple
+.. java:import:: java.util Optional
 
-.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletSimple
 
 NetworkCloudlet
 ===============
@@ -24,7 +24,7 @@ NetworkCloudlet
 
    * \ `Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS Press, USA), Melbourne, Australia, December 5-7, 2011. <http://dx.doi.org/10.1109/UCC.2011.24>`_\
 
-   :author: Saurabh Kumar Garg
+   :author: Saurabh Kumar Garg, Manoel Campos da Silva Filho
 
 Constructors
 ------------
@@ -39,24 +39,6 @@ NetworkCloudlet
    :param id: the unique ID of this cloudlet
    :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
    :param pesNumber: the pes number
-
-NetworkCloudlet
-^^^^^^^^^^^^^^^
-
-.. java:constructor:: @Deprecated public NetworkCloudlet(int id, long cloudletLength, int pesNumber, long cloudletFileSize, long cloudletOutputSize, long memory, UtilizationModel utilizationModelCpu, UtilizationModel utilizationModelRam, UtilizationModel utilizationModelBw)
-   :outertype: NetworkCloudlet
-
-   Creates a NetworkCloudlet with the given parameters.
-
-   :param id: the unique ID of this cloudlet
-   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
-   :param pesNumber: the pes number
-   :param cloudletFileSize: the file size (in bytes) of this cloudlet \ ``BEFORE``\  submitting to a Datacenter
-   :param cloudletOutputSize: the file size (in bytes) of this cloudlet \ ``AFTER``\  finish executing by a VM
-   :param memory: the amount of memory
-   :param utilizationModelCpu: the utilization model of CPU
-   :param utilizationModelRam: the utilization model of RAM
-   :param utilizationModelBw: the utilization model of BW
 
 Methods
 -------
@@ -74,10 +56,10 @@ addTask
 getCurrentTask
 ^^^^^^^^^^^^^^
 
-.. java:method:: public CloudletTask getCurrentTask()
+.. java:method:: public Optional<CloudletTask> getCurrentTask()
    :outertype: NetworkCloudlet
 
-   Gets the current task.
+   Gets an \ :java:ref:`Optional`\  containing the current task or an \ :java:ref:`Optional.empty()`\ .
 
 getLength
 ^^^^^^^^^
@@ -98,16 +80,6 @@ getMemory
    :outertype: NetworkCloudlet
 
    Gets the Cloudlet's RAM memory.
-
-getNextTaskIfCurrentIfFinished
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected CloudletTask getNextTaskIfCurrentIfFinished()
-   :outertype: NetworkCloudlet
-
-   Gets the next task in the list if the current task is finished.
-
-   :return: the next task or null if the current task is already the last one or it is not finished yet.
 
 getNumberOfTasks
 ^^^^^^^^^^^^^^^^
@@ -138,18 +110,6 @@ isTasksStarted
    Checks if the some Cloudlet Task has started yet.
 
    :return: true if some task has started, false otherwise
-
-numberOfExecutionTasks
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected long numberOfExecutionTasks()
-   :outertype: NetworkCloudlet
-
-setFinishedLengthSoFar
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean setFinishedLengthSoFar(long length)
-   :outertype: NetworkCloudlet
 
 setMemory
 ^^^^^^^^^

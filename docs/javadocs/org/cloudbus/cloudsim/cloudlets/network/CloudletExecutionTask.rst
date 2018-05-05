@@ -39,34 +39,23 @@ getLength
 
    Gets the execution length of the task (in MI).
 
-getTotalExecutedLenght
+getTotalExecutedLength
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public long getTotalExecutedLenght()
+.. java:method:: public long getTotalExecutedLength()
    :outertype: CloudletExecutionTask
 
    Gets the length of this CloudletTask that has been executed so far (in MI).
 
-increaseTaskProgress
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public boolean increaseTaskProgress(long partialExecutionLength)
-   :outertype: CloudletExecutionTask
-
-   Adds a given number of MI to the \ :java:ref:`total MI executed so far <getTotalExecutedLenght()>`\  by the cloudlet.
-
-   :param partialExecutionLength: the partial number of MI just executed that has to be to added to the total MI executed so far
-   :return: {@inheritDoc}
-
 process
 ^^^^^^^
 
-.. java:method:: public boolean process(long executedLenghtSoFar)
+.. java:method:: public boolean process(long executedLengthSoFar)
    :outertype: CloudletExecutionTask
 
-   Sets a given number of MI to the \ :java:ref:`total MI executed so far <getTotalExecutedLenght()>`\  by the cloudlet.
+   Sets a given number of MI to the \ :java:ref:`total MI executed so far <getTotalExecutedLength()>`\  by the cloudlet.
 
-   :param executedLenghtSoFar: the total number of MI executed so far
+   :param executedLengthSoFar: the total number of MI executed so far
    :return: {@inheritDoc}
 
 setLength

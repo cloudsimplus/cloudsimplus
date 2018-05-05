@@ -41,13 +41,13 @@ isTimeToCheckPredicate
    :param time: current simulation time
    :return: true if it's time to check weather the Vm is over and underloaded, false otherwise
 
-requestScaling
-^^^^^^^^^^^^^^
+requestUpScaling
+^^^^^^^^^^^^^^^^
 
-.. java:method:: protected abstract boolean requestScaling(double time)
+.. java:method:: protected abstract boolean requestUpScaling(double time)
    :outertype: VmScalingAbstract
 
-   Performs the actual request to scale the Vm up or down, depending if it is over or underloaded, respectively. This method is automatically called by \ :java:ref:`requestScalingIfPredicateMatch(double)`\  when it is verified that the Vm is over or underloaded.
+   Performs the actual request to scale the Vm up or down, depending if it is over or underloaded, respectively. This method is automatically called by \ :java:ref:`VmScaling.requestUpScalingIfPredicateMatches(org.cloudsimplus.listeners.VmHostEventInfo)`\  when it is verified that the Vm is over or underloaded.
 
    :param time: current simulation time
    :return: true if the request was actually sent, false otherwise

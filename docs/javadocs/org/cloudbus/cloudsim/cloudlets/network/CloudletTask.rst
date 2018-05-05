@@ -1,4 +1,4 @@
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecutionInfo
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
@@ -84,6 +84,24 @@ getStartTime
 
    :return: the time the task started executing, or -1 if not started yet.
 
+isActive
+^^^^^^^^
+
+.. java:method:: public boolean isActive()
+   :outertype: CloudletTask
+
+   Indicates if the task is active (it's not finished).
+
+   :return: true if the task is active, false otherwise
+
+   **See also:** :java:ref:`.isFinished()`
+
+isExecutionTask
+^^^^^^^^^^^^^^^
+
+.. java:method:: public boolean isExecutionTask()
+   :outertype: CloudletTask
+
 isFinished
 ^^^^^^^^^^
 
@@ -92,12 +110,26 @@ isFinished
 
    Indicates if the task is finished or not.
 
-   :return: true if the task has finished
+   :return: true if the task has finished, false otherwise
+
+   **See also:** :java:ref:`.isActive()`
+
+isReceiveTask
+^^^^^^^^^^^^^
+
+.. java:method:: public boolean isReceiveTask()
+   :outertype: CloudletTask
+
+isSendTask
+^^^^^^^^^^
+
+.. java:method:: public boolean isSendTask()
+   :outertype: CloudletTask
 
 setCloudlet
 ^^^^^^^^^^^
 
-.. java:method:: public void setCloudlet(NetworkCloudlet cloudlet)
+.. java:method:: public CloudletTask setCloudlet(NetworkCloudlet cloudlet)
    :outertype: CloudletTask
 
 setFinished
@@ -114,17 +146,17 @@ setFinished
 setId
 ^^^^^
 
-.. java:method:: public void setId(int id)
+.. java:method:: public CloudletTask setId(int id)
    :outertype: CloudletTask
 
    Sets the id of the CloudletTask.
 
-   :param id:
+   :param id: the ID to set
 
 setMemory
 ^^^^^^^^^
 
-.. java:method:: public void setMemory(long memory)
+.. java:method:: public CloudletTask setMemory(long memory)
    :outertype: CloudletTask
 
    Sets the memory amount used by the task.
@@ -134,7 +166,7 @@ setMemory
 setStartTime
 ^^^^^^^^^^^^
 
-.. java:method:: public void setStartTime(double startTime)
+.. java:method:: public CloudletTask setStartTime(double startTime)
    :outertype: CloudletTask
 
    Sets the time the task started executing.

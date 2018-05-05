@@ -67,7 +67,7 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(int dest, double delay, int tag)
+.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
    :outertype: SimEntityNull
 
 setLog
@@ -86,6 +86,12 @@ setSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public SimEntity setSimulation(Simulation simulation)
+   :outertype: SimEntityNull
+
+setState
+^^^^^^^^
+
+.. java:method:: @Override public SimEntity setState(State state)
    :outertype: SimEntityNull
 
 shutdownEntity

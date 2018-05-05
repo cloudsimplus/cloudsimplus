@@ -4,7 +4,9 @@
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
-.. java:import:: java.util Objects
+.. java:import:: org.cloudsimplus.listeners EventInfo
+
+.. java:import:: org.cloudsimplus.listeners EventListener
 
 CloudSimEvent
 =============
@@ -25,33 +27,35 @@ Constructors
 CloudSimEvent
 ^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudSimEvent(CloudSim simulation)
+.. java:constructor:: public CloudSimEvent(CloudSim simulation, Type type, double time, SimEntity src, SimEntity dest, int tag, Object data)
    :outertype: CloudSimEvent
 
-   Creates a blank event.
+   Creates a CloudSimEvent.
 
-   :param simulation: the simulation to which the event belongs to
+   :param src: the event to clone
 
 CloudSimEvent
 ^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudSimEvent(SimEvent eventToClone)
+.. java:constructor:: public CloudSimEvent(CloudSim simulation, Type type, double time, Object data)
    :outertype: CloudSimEvent
 
-   Creates an CloudSimEvent cloning another given one.
-
-   :param eventToClone: the event to clone
+   Creates a CloudSimEvent.
 
 CloudSimEvent
 ^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudSimEvent(CloudSim simulation, Type type, double time, int src, int dest, int tag, Object data)
+.. java:constructor:: public CloudSimEvent(SimEvent src)
    :outertype: CloudSimEvent
+
+   Creates a CloudSimEvent cloning another given one.
+
+   :param src: the event to clone
 
 CloudSimEvent
 ^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudSimEvent(CloudSim simulation, Type type, double time, int src)
+.. java:constructor:: public CloudSimEvent(CloudSim simulation, Type type, double time, SimEntity src)
    :outertype: CloudSimEvent
 
 Methods
@@ -60,12 +64,6 @@ compareTo
 ^^^^^^^^^
 
 .. java:method:: @Override public int compareTo(SimEvent event)
-   :outertype: CloudSimEvent
-
-endWaitingTime
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double endWaitingTime()
    :outertype: CloudSimEvent
 
 eventTime
@@ -83,7 +81,19 @@ getData
 getDestination
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public int getDestination()
+.. java:method:: @Override public SimEntity getDestination()
+   :outertype: CloudSimEvent
+
+getEndWaitingTime
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getEndWaitingTime()
+   :outertype: CloudSimEvent
+
+getListener
+^^^^^^^^^^^
+
+.. java:method:: @Override public EventListener<? extends EventInfo> getListener()
    :outertype: CloudSimEvent
 
 getSerial
@@ -101,7 +111,7 @@ getSimulation
 getSource
 ^^^^^^^^^
 
-.. java:method:: @Override public int getSource()
+.. java:method:: @Override public SimEntity getSource()
    :outertype: CloudSimEvent
 
 getTag
@@ -125,13 +135,13 @@ getType
 scheduledBy
 ^^^^^^^^^^^
 
-.. java:method:: @Override public int scheduledBy()
+.. java:method:: @Override public SimEntity scheduledBy()
    :outertype: CloudSimEvent
 
 setDestination
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent setDestination(int destination)
+.. java:method:: @Override public SimEvent setDestination(SimEntity destination)
    :outertype: CloudSimEvent
 
 setSerial
@@ -143,7 +153,7 @@ setSerial
 setSource
 ^^^^^^^^^
 
-.. java:method:: @Override public SimEvent setSource(int source)
+.. java:method:: @Override public SimEvent setSource(SimEntity source)
    :outertype: CloudSimEvent
 
 toString

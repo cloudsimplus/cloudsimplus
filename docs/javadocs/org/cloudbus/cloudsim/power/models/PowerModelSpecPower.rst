@@ -18,6 +18,12 @@ PowerModelSpecPower
 
 Methods
 -------
+getMaxPower
+^^^^^^^^^^^
+
+.. java:method:: @Override public double getMaxPower()
+   :outertype: PowerModelSpecPower
+
 getPowerData
 ^^^^^^^^^^^^
 

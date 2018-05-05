@@ -14,8 +14,6 @@
 
 .. java:import:: org.cloudsimplus.listeners EventListener
 
-.. java:import:: java.text DecimalFormat
-
 CloudletAbstract
 ================
 
@@ -46,6 +44,17 @@ CloudletAbstract
 ^^^^^^^^^^^^^^^^
 
 .. java:constructor:: public CloudletAbstract(long length, int pesNumber)
+   :outertype: CloudletAbstract
+
+   Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
+
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param pesNumber: number of PEs that Cloudlet will require
+
+CloudletAbstract
+^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public CloudletAbstract(long length, long pesNumber)
    :outertype: CloudletAbstract
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
@@ -173,12 +182,6 @@ getFinishedLengthSoFar
 ^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public long getFinishedLengthSoFar()
-   :outertype: CloudletAbstract
-
-getHistory
-^^^^^^^^^^
-
-.. java:method:: @Override public String getHistory()
    :outertype: CloudletAbstract
 
 getId
@@ -379,16 +382,6 @@ isFinished
 .. java:method:: @Override public boolean isFinished()
    :outertype: CloudletAbstract
 
-isRecordTransactionHistory
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public boolean isRecordTransactionHistory()
-   :outertype: CloudletAbstract
-
-   Indicates if Cloudlet transaction history is to be recorded or not.
-
-   **See also:** :java:ref:`.getHistory()`
-
 notifyOnUpdateProcessingListeners
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -515,16 +508,6 @@ setPriority
 .. java:method:: @Override public void setPriority(int priority)
    :outertype: CloudletAbstract
 
-setRecordTransactionHistory
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public void setRecordTransactionHistory(boolean recordTransactionHistory)
-   :outertype: CloudletAbstract
-
-   Sets the Cloudlet transaction history writing.
-
-   :param recordTransactionHistory: true enables transaction history writing, false disables.
-
 setRequiredFiles
 ^^^^^^^^^^^^^^^^
 
@@ -582,27 +565,4 @@ setWallClockTime
 
 .. java:method:: @Override public boolean setWallClockTime(double wallTime, double actualCpuTime)
    :outertype: CloudletAbstract
-
-write
-^^^^^
-
-.. java:method:: protected void write(String str)
-   :outertype: CloudletAbstract
-
-   Writes a particular history transaction of this Cloudlet into a log.
-
-   :param str: a history transaction of this Cloudlet
-
-write
-^^^^^
-
-.. java:method:: protected void write(String format, Object... args)
-   :outertype: CloudletAbstract
-
-   Writes a formatted particular history transaction of this Cloudlet into a log.
-
-   :param format: the format of the Cloudlet's history transaction, according to the format parameter of \ :java:ref:`String.format(String,Object...)`\
-   :param args: The list of values to be shown in the history, that are referenced by the format.
-
-   **See also:** :java:ref:`.write(String)`
 

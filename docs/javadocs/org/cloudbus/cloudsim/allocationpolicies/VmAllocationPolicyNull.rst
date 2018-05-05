@@ -12,6 +12,10 @@
 
 .. java:import:: java.util Map
 
+.. java:import:: java.util Optional
+
+.. java:import:: java.util.function BiFunction
+
 VmAllocationPolicyNull
 ======================
 
@@ -46,6 +50,12 @@ deallocateHostForVm
 .. java:method:: @Override public void deallocateHostForVm(Vm vm)
    :outertype: VmAllocationPolicyNull
 
+findHostForVm
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public Optional<Host> findHostForVm(Vm vm)
+   :outertype: VmAllocationPolicyNull
+
 getDatacenter
 ^^^^^^^^^^^^^
 
@@ -58,10 +68,10 @@ getHostList
 .. java:method:: @Override public List<Host> getHostList()
    :outertype: VmAllocationPolicyNull
 
-optimizeAllocation
-^^^^^^^^^^^^^^^^^^
+getOptimizedAllocationMap
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Map<Vm, Host> optimizeAllocation(List<? extends Vm> vmList)
+.. java:method:: @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList)
    :outertype: VmAllocationPolicyNull
 
 scaleVmVertically
@@ -74,5 +84,11 @@ setDatacenter
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setDatacenter(Datacenter datacenter)
+   :outertype: VmAllocationPolicyNull
+
+setFindHostForVmFunction
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
    :outertype: VmAllocationPolicyNull
 

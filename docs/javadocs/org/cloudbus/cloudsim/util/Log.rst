@@ -4,8 +4,6 @@
 
 .. java:import:: java.lang.management ManagementFactory
 
-.. java:import:: java.util Objects
-
 Log
 ===
 
@@ -92,16 +90,6 @@ print
 
    :param message: the message
 
-printConcat
-^^^^^^^^^^^
-
-.. java:method:: public static void printConcat(Object... messages)
-   :outertype: Log
-
-   Prints the concatenated text representation of the arguments.
-
-   :param messages: the messages to print
-
 printConcatLine
 ^^^^^^^^^^^^^^^
 
@@ -118,7 +106,7 @@ printFormatted
 .. java:method:: public static void printFormatted(String format, Object... args)
    :outertype: Log
 
-   Prints a string formated as in String.printFormatted().
+   Prints a string formatted as in String.printFormatted().
 
    :param format: the printFormatted
    :param args: the args
@@ -129,7 +117,7 @@ printFormattedLine
 .. java:method:: public static void printFormattedLine(String format, Object... args)
    :outertype: Log
 
-   Prints a string formated as in String.printFormatted(), followed by a new line.
+   Prints a string formatted as in String.printFormatted(), followed by a new line.
 
    :param format: the printFormatted
    :param args: the args
@@ -168,7 +156,7 @@ println
 .. java:method:: public static void println(Level level, Class klass, double time, String format, Object... args)
    :outertype: Log
 
-   Prints a string formated as in String.printFormatted(), followed by a new line, that will be printed only according to the specified level
+   Prints a string formatted as in String.printFormatted(), followed by a new line, that will be printed only according to the specified level
 
    :param level: the level that define the kind of message
    :param klass: Class that is asking to print a message (where the print method is being called)

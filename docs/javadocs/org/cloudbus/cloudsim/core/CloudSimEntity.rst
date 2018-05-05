@@ -67,16 +67,6 @@ equals
 .. java:method:: @Override public boolean equals(Object o)
    :outertype: CloudSimEntity
 
-getEventBuffer
-^^^^^^^^^^^^^^
-
-.. java:method:: protected SimEvent getEventBuffer()
-   :outertype: CloudSimEntity
-
-   Gets the event buffer.
-
-   :return: the event buffer
-
 getId
 ^^^^^
 
@@ -192,12 +182,12 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: public void schedule(int dest, double delay, int tag, Object data)
+.. java:method:: public void schedule(SimEntity dest, double delay, int tag, Object data)
    :outertype: CloudSimEntity
 
-   Sends an event to another entity by id number, with data. Note that the tag \ ``9999``\  is reserved.
+   Sends an event to another entity.
 
-   :param dest: The unique id number of the destination entity
+   :param dest: the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: An user-defined number representing the type of event.
    :param data: The data to be sent with the event.
@@ -205,43 +195,18 @@ schedule
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(int dest, double delay, int tag)
+.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
    :outertype: CloudSimEntity
-
-schedule
-^^^^^^^^
-
-.. java:method:: public void schedule(String dest, double delay, int tag, Object data)
-   :outertype: CloudSimEntity
-
-   Sends an event to another entity through a port with a given name, with data. Note that the tag \ ``9999``\  is reserved.
-
-   :param dest: The name of the port to send the event through
-   :param delay: How many seconds after the current simulation time the event should be sent
-   :param tag: An user-defined number representing the type of event.
-   :param data: The data to be sent with the event.
-
-schedule
-^^^^^^^^
-
-.. java:method:: public void schedule(String dest, double delay, int tag)
-   :outertype: CloudSimEntity
-
-   Sends an event to another entity through a port with a given name, with \ **no**\  data. Note that the tag \ ``9999``\  is reserved.
-
-   :param dest: The name of the port to send the event through
-   :param delay: How many seconds after the current simulation time the event should be sent
-   :param tag: An user-defined number representing the type of event.
 
 scheduleFirst
 ^^^^^^^^^^^^^
 
-.. java:method:: public void scheduleFirst(int dest, double delay, int tag, Object data)
+.. java:method:: public void scheduleFirst(SimEntity dest, double delay, int tag, Object data)
    :outertype: CloudSimEntity
 
-   Sends a high priority event to another entity by id number, with data. Note that the tag \ ``9999``\  is reserved.
+   Sends a high priority event to another entity.
 
-   :param dest: The unique id number of the destination entity
+   :param dest: the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: An user-defined number representing the type of event.
    :param data: The data to be sent with the event.
@@ -249,130 +214,59 @@ scheduleFirst
 scheduleFirst
 ^^^^^^^^^^^^^
 
-.. java:method:: public void scheduleFirst(int dest, double delay, int tag)
+.. java:method:: public void scheduleFirst(SimEntity dest, double delay, int tag)
    :outertype: CloudSimEntity
 
-   Sends a high priority event to another entity by id number and with \ **no**\  data. Note that the tag \ ``9999``\  is reserved.
+   Sends a high priority event to another entity and with \ **no**\  attached data.
 
-   :param dest: The unique id number of the destination entity
-   :param delay: How many seconds after the current simulation time the event should be sent
-   :param tag: An user-defined number representing the type of event.
-
-scheduleFirst
-^^^^^^^^^^^^^
-
-.. java:method:: public void scheduleFirst(String dest, double delay, int tag, Object data)
-   :outertype: CloudSimEntity
-
-   Sends a high priority event to another entity through a port with a given name, with data. Note that the tag \ ``9999``\  is reserved.
-
-   :param dest: The name of the port to send the event through
-   :param delay: How many seconds after the current simulation time the event should be sent
-   :param tag: An user-defined number representing the type of event.
-   :param data: The data to be sent with the event.
-
-scheduleFirst
-^^^^^^^^^^^^^
-
-.. java:method:: public void scheduleFirst(String dest, double delay, int tag)
-   :outertype: CloudSimEntity
-
-   Sends a high priority event to another entity through a port with a given name, with \ **no**\  data. Note that the tag \ ``9999``\  is reserved.
-
-   :param dest: The name of the port to send the event through
+   :param dest: the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: An user-defined number representing the type of event.
 
 scheduleFirstNow
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: public void scheduleFirstNow(int dest, int tag, Object data)
+.. java:method:: public void scheduleFirstNow(SimEntity dest, int tag, Object data)
    :outertype: CloudSimEntity
 
-   Sends a high priority event to another entity by id number, with data and no delay. Note that the tag \ ``9999``\  is reserved.
+   Sends a high priority event to another entity with no delay.
 
-   :param dest: The unique id number of the destination entity
+   :param dest: the destination entity
    :param tag: An user-defined number representing the type of event.
    :param data: The data to be sent with the event.
 
 scheduleFirstNow
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: public void scheduleFirstNow(int dest, int tag)
+.. java:method:: public void scheduleFirstNow(SimEntity dest, int tag)
    :outertype: CloudSimEntity
 
-   Sends a high priority event to another entity by id number and with \ **no**\  data and no delay. Note that the tag \ ``9999``\  is reserved.
+   Sends a high priority event to another entity with \ **no**\  attached data and no delay.
 
-   :param dest: The unique id number of the destination entity
-   :param tag: An user-defined number representing the type of event.
-
-scheduleFirstNow
-^^^^^^^^^^^^^^^^
-
-.. java:method:: public void scheduleFirstNow(String dest, int tag, Object data)
-   :outertype: CloudSimEntity
-
-   Sends a high priority event to another entity through a port with a given name, with data and no delay. Note that the tag \ ``9999``\  is reserved.
-
-   :param dest: The name of the port to send the event through
-   :param tag: An user-defined number representing the type of event.
-   :param data: The data to be sent with the event.
-
-scheduleFirstNow
-^^^^^^^^^^^^^^^^
-
-.. java:method:: public void scheduleFirstNow(String dest, int tag)
-   :outertype: CloudSimEntity
-
-   Sends a high priority event to another entity through a port with a given name, with \ **no**\  data and no delay. Note that the tag \ ``9999``\  is reserved.
-
-   :param dest: The name of the port to send the event through
+   :param dest: the destination entity
    :param tag: An user-defined number representing the type of event.
 
 scheduleNow
 ^^^^^^^^^^^
 
-.. java:method:: public void scheduleNow(int dest, int tag, Object data)
+.. java:method:: public void scheduleNow(SimEntity dest, int tag, Object data)
    :outertype: CloudSimEntity
 
-   Sends an event to another entity by id number, with data but no delay. Note that the tag \ ``9999``\  is reserved.
+   Sends an event to another entity with no delay.
 
-   :param dest: The unique id number of the destination entity
+   :param dest: the destination entity
    :param tag: An user-defined number representing the type of event.
    :param data: The data to be sent with the event.
 
 scheduleNow
 ^^^^^^^^^^^
 
-.. java:method:: public void scheduleNow(int dest, int tag)
+.. java:method:: public void scheduleNow(SimEntity dest, int tag)
    :outertype: CloudSimEntity
 
-   Sends an event to another entity by id number and with \ **no**\  data and no delay. Note that the tag \ ``9999``\  is reserved.
+   Sends an event to another entity with \ **no**\  attached data and no delay.
 
-   :param dest: The unique id number of the destination entity
-   :param tag: An user-defined number representing the type of event.
-
-scheduleNow
-^^^^^^^^^^^
-
-.. java:method:: public void scheduleNow(String dest, int tag, Object data)
-   :outertype: CloudSimEntity
-
-   Sends an event to another entity through a port with a given name, with data but no delay. Note that the tag \ ``9999``\  is reserved.
-
-   :param dest: The name of the port to send the event through
-   :param tag: An user-defined number representing the type of event.
-   :param data: The data to be sent with the event.
-
-scheduleNow
-^^^^^^^^^^^
-
-.. java:method:: public void scheduleNow(String dest, int tag)
-   :outertype: CloudSimEntity
-
-   Send an event to another entity through a port with a given name, with \ **no**\  data and no delay. Note that the tag \ ``9999``\  is reserved.
-
-   :param dest: The name of the port to send the event through
+   :param dest: the destination entity
    :param tag: An user-defined number representing the type of event.
 
 selectEvent
@@ -389,12 +283,12 @@ selectEvent
 send
 ^^^^
 
-.. java:method:: protected void send(int destEntityId, double delay, int cloudSimTag, Object data)
+.. java:method:: protected void send(SimEntity dest, double delay, int cloudSimTag, Object data)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
 
-   :param destEntityId: the id number of the destination entity
+   :param dest: the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
    :param cloudSimTag: an user-defined number representing the type of an event/message
    :param data: A reference to data to be sent with the event
@@ -402,84 +296,36 @@ send
 send
 ^^^^
 
-.. java:method:: protected void send(int destEntityId, double delay, int cloudSimTag)
+.. java:method:: protected void send(SimEntity dest, double delay, int cloudSimTag)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
 
-   :param destEntityId: the id number of the destination entity
-   :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
-   :param cloudSimTag: an user-defined number representing the type of an event/message
-
-send
-^^^^
-
-.. java:method:: protected void send(String destEntityName, double delay, int cloudSimTag, Object data)
-   :outertype: CloudSimEntity
-
-   Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
-
-   :param destEntityName: the name of the destination entity
-   :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
-   :param cloudSimTag: an user-defined number representing the type of an event/message
-   :param data: A reference to data to be sent with the event
-
-send
-^^^^
-
-.. java:method:: protected void send(String destEntityName, double delay, int cloudSimTag)
-   :outertype: CloudSimEntity
-
-   Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
-
-   :param destEntityName: the name of the destination entity
+   :param dest: the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
    :param cloudSimTag: an user-defined number representing the type of an event/message
 
 sendNow
 ^^^^^^^
 
-.. java:method:: protected void sendNow(int destEntityId, int cloudSimTag, Object data)
+.. java:method:: protected void sendNow(SimEntity dest, int cloudSimTag, Object data)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity, with a tag representing the event type.
 
-   :param destEntityId: the id number of the destination entity
+   :param dest: the destination entity
    :param cloudSimTag: an user-defined number representing the type of an event/message
    :param data: A reference to data to be sent with the event
 
 sendNow
 ^^^^^^^
 
-.. java:method:: protected void sendNow(int destEntityId, int cloudSimTag)
+.. java:method:: protected void sendNow(SimEntity dest, int cloudSimTag)
    :outertype: CloudSimEntity
 
    Sends an event/message to another entity, with a tag representing the event type.
 
-   :param destEntityId: the id number of the destination entity
-   :param cloudSimTag: an user-defined number representing the type of an event/message
-
-sendNow
-^^^^^^^
-
-.. java:method:: protected void sendNow(String destEntityName, int cloudSimTag, Object data)
-   :outertype: CloudSimEntity
-
-   Sends an event/message to another entity, with a tag representing the event type.
-
-   :param destEntityName: the name of the destination entity
-   :param cloudSimTag: an user-defined number representing the type of an event/message
-   :param data: A reference to data to be sent with the event
-
-sendNow
-^^^^^^^
-
-.. java:method:: protected void sendNow(String destEntityName, int cloudSimTag)
-   :outertype: CloudSimEntity
-
-   Sends an event/message to another entity, with a tag representing the event type.
-
-   :param destEntityName: the name of the destination entity
+   :param dest: the destination entity
    :param cloudSimTag: an user-defined number representing the type of an event/message
 
 setEventBuffer
@@ -495,10 +341,10 @@ setEventBuffer
 setId
 ^^^^^
 
-.. java:method:: protected void setId(int id)
+.. java:method:: protected final void setId(int id)
    :outertype: CloudSimEntity
 
-   Sets the entity id.
+   Sets the entity id and defines its name based on such ID.
 
    :param id: the new id
 
@@ -511,7 +357,7 @@ setLog
 setName
 ^^^^^^^
 
-.. java:method:: @Override public SimEntity setName(String newName) throws IllegalArgumentException
+.. java:method:: @Override public SimEntity setName(String name) throws IllegalArgumentException
    :outertype: CloudSimEntity
 
 setSimulation
@@ -533,7 +379,7 @@ setStarted
 setState
 ^^^^^^^^
 
-.. java:method:: public SimEntity setState(State state)
+.. java:method:: @Override public SimEntity setState(State state)
    :outertype: CloudSimEntity
 
    Sets the entity state.

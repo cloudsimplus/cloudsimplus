@@ -23,7 +23,7 @@ VmSchedulerTimeShared
 
    In a real hypervisor in a Host that has Hyper-threading CPU cores, two virtual PEs can be allocated to the same physical PE, but a single virtual PE must be allocated to just one physical PE.
 
-   :author: Rodrigo N. Calheiros, Anton Beloglazov
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Constructors
 ------------
@@ -50,32 +50,20 @@ Methods
 allocateMipsShareForVm
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void allocateMipsShareForVm(Vm vm, List<Double> mipsShareRequestedReduced)
+.. java:method:: protected void allocateMipsShareForVm(Vm vm, List<Double> requestedMipsReduced)
    :outertype: VmSchedulerTimeShared
 
    Performs the allocation of a MIPS List to a given VM. The actual MIPS to be allocated to the VM may be reduced if the VM is in migration, due to migration overhead.
 
    :param vm: the VM to allocate MIPS to
-   :param mipsShareRequestedReduced: the list of MIPS to allocate to the VM, after it being adjusted by the \ :java:ref:`getMipsShareRequestedReduced(Vm,List)`\  method.
+   :param requestedMipsReduced: the list of MIPS to allocate to the VM, after it being adjusted by the \ :java:ref:`getMipsShareRequestedReduced(Vm,List)`\  method.
 
    **See also:** :java:ref:`.getMipsShareRequestedReduced(Vm,List)`
-
-allocateMipsShareForVmInternal
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected boolean allocateMipsShareForVmInternal(Vm vm, List<Double> mipsShareRequested)
-   :outertype: VmSchedulerTimeShared
-
-   Try to allocate the MIPS requested by a VM and update the \ :java:ref:`getMipsMapRequested()`\ .
-
-   :param vm: the VM
-   :param mipsShareRequested: the list of mips share requested by the vm
-   :return: true if successful, false otherwise
 
 allocatePesForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested)
+.. java:method:: @Override public boolean allocatePesForVmInternal(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerTimeShared
 
 deallocatePesForAllVms
@@ -95,51 +83,30 @@ deallocatePesFromVmInternal
 getMipsShareToAllocate
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected List<Double> getMipsShareToAllocate(Vm vm, List<Double> mipsShareRequested)
+.. java:method:: protected List<Double> getMipsShareToAllocate(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerTimeShared
 
    Gets the actual MIPS that will be allocated to each vPE (Virtual PE), considering the VM migration status. If the VM is in migration, this will cause overhead, reducing the amount of MIPS allocated to the VM.
 
    :param vm: the VM requesting allocation of MIPS
-   :param mipsShareRequested: the list of MIPS requested for each vPE
+   :param requestedMips: the list of MIPS requested for each vPE
    :return: the List of MIPS allocated to the VM
 
 getMipsShareToAllocate
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected List<Double> getMipsShareToAllocate(Vm vm, List<Double> mipsShareRequested, double scalingFactor)
+.. java:method:: protected List<Double> getMipsShareToAllocate(List<Double> requestedMips, double scalingFactor)
    :outertype: VmSchedulerTimeShared
 
    Gets the actual MIPS that will be allocated to each vPE (Virtual PE), considering the VM migration status. If the VM is in migration, this will cause overhead, reducing the amount of MIPS allocated to the VM.
 
-   :param vm: the VM requesting allocation of MIPS
-   :param mipsShareRequested: the list of MIPS requested for each vPE
-   :param scalingFactor: the factor that will be used to reduce the amount of MIPS allocated to each vPE (which is a percentage value between [0 .. 1])
+   :param requestedMips: the list of MIPS requested for each vPE
+   :param scalingFactor: the factor that will be used to reduce the amount of MIPS allocated to each vPE (which is a percentage value between [0 .. 1]) in case the VM is in migration
    :return: the List of MIPS allocated to the VM
-
-getPesInUse
-^^^^^^^^^^^
-
-.. java:method:: protected long getPesInUse()
-   :outertype: VmSchedulerTimeShared
-
-   Gets the number of PEs in use.
-
-   :return: the pes in use
 
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isSuitableForVm(List<Double> vmMipsList)
    :outertype: VmSchedulerTimeShared
-
-setPesInUse
-^^^^^^^^^^^
-
-.. java:method:: protected void setPesInUse(long pesInUse)
-   :outertype: VmSchedulerTimeShared
-
-   Sets the number of PEs in use.
-
-   :param pesInUse: the new pes in use
 

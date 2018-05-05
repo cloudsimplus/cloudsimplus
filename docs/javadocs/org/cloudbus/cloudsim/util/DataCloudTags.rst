@@ -6,7 +6,7 @@ DataCloudTags
 
 .. java:type:: public final class DataCloudTags
 
-   Contains additional tags for the DataCloud functionalities, such as file information retrieval, file transfers, and storage info.
+   Contains additional tags for DataCloud features, such as file information retrieval, file transfers, and storage info.
 
    :author: Uros Cibej, Anthony Sulistio
 

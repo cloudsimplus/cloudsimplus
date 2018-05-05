@@ -1,4 +1,4 @@
-.. java:import:: org.cloudbus.cloudsim.core Identificable
+.. java:import:: org.cloudbus.cloudsim.core SimEntity
 
 .. java:import:: org.cloudbus.cloudsim.datacenters.network NetworkDatacenter
 
@@ -16,7 +16,7 @@ Switch
 .. java:package:: org.cloudbus.cloudsim.network.switches
    :noindex:
 
-.. java:type:: public interface Switch extends Identificable
+.. java:type:: public interface Switch extends SimEntity
 
    Represents a Network Switch.
 

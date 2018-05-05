@@ -66,34 +66,22 @@ bindCloudletToVm
 .. java:method:: @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm)
    :outertype: DatacenterBrokerAbstract
 
-destroyVms
-^^^^^^^^^^
+getCloudletCreatedList
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void destroyVms(Function<Vm, Double> vmDestructionDelayFunction)
+.. java:method:: @Override public Set<Cloudlet> getCloudletCreatedList()
    :outertype: DatacenterBrokerAbstract
 
-   Try to destroy all created broker's VMs at the time defined by a delay \ :java:ref:`Function`\ .
-
-   :param vmDestructionDelayFunction: a \ :java:ref:`Function`\  which indicates to time the VM will wait before being destructed
-
-   **See also:** :java:ref:`.getVmDestructionDelayFunction()`
-
-getCloudletsCreatedList
+getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Set<Cloudlet> getCloudletsCreatedList()
+.. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletFinishedList()
    :outertype: DatacenterBrokerAbstract
 
-getCloudletsFinishedList
-^^^^^^^^^^^^^^^^^^^^^^^^
+getCloudletWaitingList
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletsFinishedList()
-   :outertype: DatacenterBrokerAbstract
-
-getCloudletsWaitingList
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletsWaitingList()
+.. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletWaitingList()
    :outertype: DatacenterBrokerAbstract
 
 getDatacenterList
@@ -121,6 +109,12 @@ getLastSelectedVm
    :outertype: DatacenterBrokerAbstract
 
    :return: latest VM selected to run a cloudlet.
+
+getVmCreatedList
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Vm> List<T> getVmCreatedList()
+   :outertype: DatacenterBrokerAbstract
 
 getVmCreationAcks
 ^^^^^^^^^^^^^^^^^
@@ -158,27 +152,27 @@ getVmDestructionDelayFunction
 .. java:method:: @Override public Function<Vm, Double> getVmDestructionDelayFunction()
    :outertype: DatacenterBrokerAbstract
 
+getVmExecList
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Vm> List<T> getVmExecList()
+   :outertype: DatacenterBrokerAbstract
+
 getVmFromCreatedList
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: protected Vm getVmFromCreatedList(int vmIndex)
    :outertype: DatacenterBrokerAbstract
 
-   Gets a Vm at a given index from the \ :java:ref:`list of created VMs <getVmsCreatedList()>`\ .
+   Gets a Vm at a given index from the \ :java:ref:`list of created VMs <getVmExecList()>`\ .
 
    :param vmIndex: the index where a VM has to be got from the created VM list
    :return: the VM at the given index or \ :java:ref:`Vm.NULL`\  if the index is invalid
 
-getVmsCreatedList
-^^^^^^^^^^^^^^^^^
+getVmWaitingList
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public <T extends Vm> List<T> getVmsCreatedList()
-   :outertype: DatacenterBrokerAbstract
-
-getVmsWaitingList
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public <T extends Vm> List<T> getVmsWaitingList()
+.. java:method:: @Override public <T extends Vm> List<T> getVmWaitingList()
    :outertype: DatacenterBrokerAbstract
 
 getWaitingVm
@@ -266,7 +260,7 @@ requestDatacenterToCreateWaitingVms
 .. java:method:: protected void requestDatacenterToCreateWaitingVms()
    :outertype: DatacenterBrokerAbstract
 
-   Request the creation of VMs in the \ :java:ref:`VM waiting list <getVmsWaitingList()>`\  inside some Datacenter.
+   Request the creation of VMs in the \ :java:ref:`VM waiting list <getVmWaitingList()>`\  inside some Datacenter.
 
    **See also:** :java:ref:`.submitVmList(java.util.List)`
 
@@ -276,7 +270,7 @@ requestDatacenterToCreateWaitingVms
 .. java:method:: protected void requestDatacenterToCreateWaitingVms(Datacenter datacenter)
    :outertype: DatacenterBrokerAbstract
 
-   Request a specific Datacenter to create the VM in the \ :java:ref:`VM waiting list <getVmsWaitingList()>`\ .
+   Request a specific Datacenter to create the VM in the \ :java:ref:`VM waiting list <getVmWaitingList()>`\ .
 
    :param datacenter: id of the Datacenter to request the VMs creation
 
@@ -288,11 +282,23 @@ requestDatacentersToCreateWaitingCloudlets
 .. java:method:: protected void requestDatacentersToCreateWaitingCloudlets()
    :outertype: DatacenterBrokerAbstract
 
-   Request Datacenters to create the Cloudlets in the \ :java:ref:`Cloudlets waiting list <getCloudletsWaitingList()>`\ . If there aren't available VMs to host all cloudlets, the creation of some ones will be postponed.
+   Request Datacenters to create the Cloudlets in the \ :java:ref:`Cloudlets waiting list <getCloudletWaitingList()>`\ . If there aren't available VMs to host all cloudlets, the creation of some ones will be postponed.
 
    This method is called after all submitted VMs are created in some Datacenter.
 
    **See also:** :java:ref:`.submitCloudletList(java.util.List)`
+
+requestIdleVmsDestruction
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected void requestIdleVmsDestruction(Function<Vm, Double> vmDestructionDelayFunction)
+   :outertype: DatacenterBrokerAbstract
+
+   Request all idle VMs to be destroyed at the time defined by a delay \ :java:ref:`Function`\ .
+
+   :param vmDestructionDelayFunction: a \ :java:ref:`Function`\  which indicates to time the VM will wait before being destructed
+
+   **See also:** :java:ref:`.getVmDestructionDelayFunction()`
 
 requestShutDown
 ^^^^^^^^^^^^^^^

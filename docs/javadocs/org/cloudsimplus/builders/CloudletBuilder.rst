@@ -48,10 +48,16 @@ createAndSubmitCloudlets
 .. java:method:: public CloudletBuilder createAndSubmitCloudlets(int amount)
    :outertype: CloudletBuilder
 
-createAndSubmitOneCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+createAndSubmitCloudlets
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public CloudletBuilder createAndSubmitOneCloudlet()
+.. java:method:: public CloudletBuilder createAndSubmitCloudlets(int amount, int initialId)
+   :outertype: CloudletBuilder
+
+createCloudlets
+^^^^^^^^^^^^^^^
+
+.. java:method:: public CloudletBuilder createCloudlets(int amount, int initialId)
    :outertype: CloudletBuilder
 
 createCloudlets
@@ -64,12 +70,6 @@ getBrokerBuilder
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: public BrokerBuilderDecorator getBrokerBuilder()
-   :outertype: CloudletBuilder
-
-getCloudletById
-^^^^^^^^^^^^^^^
-
-.. java:method:: public Cloudlet getCloudletById(int id)
    :outertype: CloudletBuilder
 
 getCloudlets
@@ -90,12 +90,6 @@ getLength
 .. java:method:: public long getLength()
    :outertype: CloudletBuilder
 
-getOnCloudletFinishEventListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public EventListener<CloudletVmEventInfo> getOnCloudletFinishEventListener()
-   :outertype: CloudletBuilder
-
 getOutputSize
 ^^^^^^^^^^^^^
 
@@ -106,24 +100,6 @@ getPes
 ^^^^^^
 
 .. java:method:: public int getPes()
-   :outertype: CloudletBuilder
-
-getUtilizationModelBw
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public UtilizationModel getUtilizationModelBw()
-   :outertype: CloudletBuilder
-
-getUtilizationModelCpu
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public UtilizationModel getUtilizationModelCpu()
-   :outertype: CloudletBuilder
-
-getUtilizationModelRam
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public UtilizationModel getUtilizationModelRam()
    :outertype: CloudletBuilder
 
 setFileSize

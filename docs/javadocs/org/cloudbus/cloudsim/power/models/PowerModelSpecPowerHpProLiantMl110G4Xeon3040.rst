@@ -6,7 +6,9 @@ PowerModelSpecPowerHpProLiantMl110G4Xeon3040
 
 .. java:type:: public class PowerModelSpecPowerHpProLiantMl110G4Xeon3040 extends PowerModelSpecPower
 
-   The power model of an HP ProLiant ML110 G4 (1 x [Xeon 3040 1860 MHz, 2 cores], 4GB). \ `http://www.spec.org/power_ssj2008/results/res2011q1/power_ssj2008-20110127-00342.html <http://www.spec.org/power_ssj2008/results/res2011q1/power_ssj2008-20110127-00342.html>`_\  If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   The power model of an HP ProLiant ML110 G4 (1 x [Xeon 3040 1860 MHz, 2 cores], 4GB). \ `http://www.spec.org/power_ssj2008/results/res2011q1/power_ssj2008-20110127-00342.html <http://www.spec.org/power_ssj2008/results/res2011q1/power_ssj2008-20110127-00342.html>`_\
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 

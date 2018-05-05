@@ -1,8 +1,10 @@
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
 
+.. java:import:: org.cloudbus.cloudsim.core SimEntity
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
-.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterCharacteristics
+.. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
 .. java:import:: org.cloudbus.cloudsim.datacenters.network NetworkDatacenter
 
@@ -48,6 +50,12 @@ addPacketToBeSentToUplinkSwitch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void addPacketToBeSentToUplinkSwitch(Switch uplinkSwitch, HostPacket packet)
+   :outertype: SwitchNull
+
+compareTo
+^^^^^^^^^
+
+.. java:method:: @Override public int compareTo(SimEntity o)
    :outertype: SwitchNull
 
 connectHost
@@ -110,6 +118,12 @@ getLevel
 .. java:method:: @Override public int getLevel()
    :outertype: SwitchNull
 
+getName
+^^^^^^^
+
+.. java:method:: @Override public String getName()
+   :outertype: SwitchNull
+
 getPacketList
 ^^^^^^^^^^^^^
 
@@ -126,6 +140,12 @@ getPorts
 ^^^^^^^^
 
 .. java:method:: @Override public int getPorts()
+   :outertype: SwitchNull
+
+getSimulation
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public Simulation getSimulation()
    :outertype: SwitchNull
 
 getSwitchingDelay
@@ -158,6 +178,36 @@ getUplinkSwitches
 .. java:method:: @Override public List<Switch> getUplinkSwitches()
    :outertype: SwitchNull
 
+isStarted
+^^^^^^^^^
+
+.. java:method:: @Override public boolean isStarted()
+   :outertype: SwitchNull
+
+println
+^^^^^^^
+
+.. java:method:: @Override public void println(String msg)
+   :outertype: SwitchNull
+
+processEvent
+^^^^^^^^^^^^
+
+.. java:method:: @Override public void processEvent(SimEvent ev)
+   :outertype: SwitchNull
+
+run
+^^^
+
+.. java:method:: @Override public void run()
+   :outertype: SwitchNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
+   :outertype: SwitchNull
+
 setDatacenter
 ^^^^^^^^^^^^^
 
@@ -170,10 +220,34 @@ setDownlinkBandwidth
 .. java:method:: @Override public void setDownlinkBandwidth(double downlinkBandwidth)
    :outertype: SwitchNull
 
+setLog
+^^^^^^
+
+.. java:method:: @Override public void setLog(boolean log)
+   :outertype: SwitchNull
+
+setName
+^^^^^^^
+
+.. java:method:: @Override public SimEntity setName(String newName) throws IllegalArgumentException
+   :outertype: SwitchNull
+
 setPorts
 ^^^^^^^^
 
 .. java:method:: @Override public void setPorts(int ports)
+   :outertype: SwitchNull
+
+setSimulation
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public SimEntity setSimulation(Simulation simulation)
+   :outertype: SwitchNull
+
+setState
+^^^^^^^^
+
+.. java:method:: @Override public SimEntity setState(State state)
    :outertype: SwitchNull
 
 setSwitchingDelay
@@ -186,5 +260,17 @@ setUplinkBandwidth
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setUplinkBandwidth(double uplinkBandwidth)
+   :outertype: SwitchNull
+
+shutdownEntity
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void shutdownEntity()
+   :outertype: SwitchNull
+
+start
+^^^^^
+
+.. java:method:: @Override public void start()
    :outertype: SwitchNull
 

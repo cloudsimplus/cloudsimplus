@@ -24,6 +24,14 @@ EventInfo
 
 Methods
 -------
+getListener
+^^^^^^^^^^^
+
+.. java:method::  EventListener<? extends EventInfo> getListener()
+   :outertype: EventInfo
+
+   Gets the listener that was notified about the event.
+
 getTime
 ^^^^^^^
 
@@ -35,10 +43,11 @@ getTime
 of
 ^^
 
-.. java:method:: static EventInfo of(double time)
+.. java:method:: static EventInfo of(EventListener<? extends EventInfo> listener, double time)
    :outertype: EventInfo
 
    Gets a EventInfo instance from the given parameters.
 
+   :param listener: the listener to be notified about the event
    :param time: the time the event happened
 

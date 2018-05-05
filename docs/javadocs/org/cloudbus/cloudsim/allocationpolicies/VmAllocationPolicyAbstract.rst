@@ -1,10 +1,4 @@
-.. java:import:: java.util HashMap
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Map
-
-.. java:import:: java.util Objects
+.. java:import:: java.util.function BiFunction
 
 .. java:import:: java.util.stream LongStream
 
@@ -32,7 +26,7 @@ VmAllocationPolicyAbstract
 
    Each \ :java:ref:`Datacenter`\  must to have its own instance of a \ :java:ref:`VmAllocationPolicy`\ .
 
-   :author: Rodrigo N. Calheiros, Anton Beloglazov
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Constructors
 ------------
@@ -42,7 +36,19 @@ VmAllocationPolicyAbstract
 .. java:constructor:: public VmAllocationPolicyAbstract()
    :outertype: VmAllocationPolicyAbstract
 
-   Creates a new VmAllocationPolicy object.
+   Creates a new VmAllocationPolicy.
+
+VmAllocationPolicyAbstract
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public VmAllocationPolicyAbstract(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+   :outertype: VmAllocationPolicyAbstract
+
+   Creates a new VmAllocationPolicy, changing the \ :java:ref:`BiFunction`\  to select a Host for a Vm.
+
+   :param findHostForVmFunction: a \ :java:ref:`BiFunction`\  to select a Host for a given Vm.
+
+   **See also:** :java:ref:`VmAllocationPolicy.setFindHostForVmFunction(BiFunction)`
 
 Methods
 -------
@@ -55,6 +61,29 @@ addUsedPes
    Adds number used PEs for a Vm to the map between each VM and the number of PEs used.
 
    :param vm: the VM to add the number of used PEs to the map
+
+allocateHostForVm
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean allocateHostForVm(Vm vm)
+   :outertype: VmAllocationPolicyAbstract
+
+   Allocates the host with less PEs in use for a given VM.
+
+   :param vm: {@inheritDoc}
+   :return: {@inheritDoc}
+
+allocateHostForVm
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean allocateHostForVm(Vm vm, Host host)
+   :outertype: VmAllocationPolicyAbstract
+
+deallocateHostForVm
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void deallocateHostForVm(Vm vm)
+   :outertype: VmAllocationPolicyAbstract
 
 getDatacenter
 ^^^^^^^^^^^^^
@@ -77,16 +106,6 @@ getHostList
 
 .. java:method:: @Override public final <T extends Host> List<T> getHostList()
    :outertype: VmAllocationPolicyAbstract
-
-getUsedPes
-^^^^^^^^^^
-
-.. java:method:: protected Map<Vm, Long> getUsedPes()
-   :outertype: VmAllocationPolicyAbstract
-
-   Gets the map between each VM and the number of PEs used. The map key is a VM and the value is the number of used Pes for that VM.
-
-   :return: the used PEs map
 
 removeUsedPes
 ^^^^^^^^^^^^^
@@ -114,6 +133,16 @@ setDatacenter
    Sets the Datacenter associated to the Allocation Policy
 
    :param datacenter: the Datacenter to set
+
+setFindHostForVmFunction
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+   :outertype: VmAllocationPolicyAbstract
+
+   {@inheritDoc} The default implementation of such a Function is provided by the method \ :java:ref:`findHostForVm(Vm)`\ .
+
+   :param findHostForVmFunction: {@inheritDoc}. Passing null makes the Function to be set as the default \ :java:ref:`findHostForVm(Vm)`\ .
 
 setHostFreePesMap
 ^^^^^^^^^^^^^^^^^

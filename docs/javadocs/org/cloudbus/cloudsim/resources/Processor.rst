@@ -87,7 +87,7 @@ getVm
 setCapacity
 ^^^^^^^^^^^
 
-.. java:method:: @Override public final boolean setCapacity(long numberOfPes)
+.. java:method:: @Override public boolean setCapacity(long numberOfPes)
    :outertype: Processor
 
    Sets the number of \ :java:ref:`Pe`\ s of the Processor
@@ -97,7 +97,7 @@ setCapacity
 setMips
 ^^^^^^^
 
-.. java:method:: public final void setMips(double newMips)
+.. java:method:: public void setMips(double newMips)
    :outertype: Processor
 
    Sets the individual MIPS of each \ :java:ref:`Pe`\ .

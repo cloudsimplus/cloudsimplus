@@ -38,6 +38,16 @@ VmSimple
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov
 
+Fields
+------
+utilizationHistory
+^^^^^^^^^^^^^^^^^^
+
+.. java:field:: protected final UtilizationHistory utilizationHistory
+   :outertype: VmSimple
+
+   **See also:** :java:ref:`.getUtilizationHistory()`
+
 Constructors
 ------------
 VmSimple
@@ -76,24 +86,6 @@ VmSimple
    :param id: unique ID of the VM
    :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
    :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
-
-VmSimple
-^^^^^^^^
-
-.. java:constructor:: @Deprecated public VmSimple(int id, DatacenterBroker broker, long mipsCapacity, int numberOfPes, long ramCapacity, long bwCapacity, long size, String vmm, CloudletScheduler cloudletScheduler)
-   :outertype: VmSimple
-
-   Creates a Vm with the given parameters.
-
-   :param id: unique ID of the VM
-   :param broker: ID of the VM's owner, that is represented by the id of the \ :java:ref:`DatacenterBroker`\
-   :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
-   :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
-   :param ramCapacity: amount of ram in Megabytes
-   :param bwCapacity: amount of bandwidth to be allocated to the VM (in Megabits/s)
-   :param size: size the VM image in Megabytes (the amount of storage it will use, at least initially).
-   :param vmm: Virtual Machine Monitor that manages the VM lifecycle
-   :param cloudletScheduler: scheduler that defines the execution policy for Cloudlets inside this Vm
 
 Methods
 -------
@@ -384,6 +376,12 @@ getUid
 .. java:method:: @Override public String getUid()
    :outertype: VmSimple
 
+getUtilizationHistory
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public UtilizationHistory getUtilizationHistory()
+   :outertype: VmSimple
+
 getVmm
 ^^^^^^
 
@@ -412,6 +410,12 @@ isInMigration
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isInMigration()
+   :outertype: VmSimple
+
+isWorking
+^^^^^^^^^
+
+.. java:method:: @Override public boolean isWorking()
    :outertype: VmSimple
 
 notifyOnCreationFailureListeners

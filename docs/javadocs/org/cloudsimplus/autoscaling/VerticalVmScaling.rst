@@ -14,6 +14,8 @@
 
 .. java:import:: org.cloudsimplus.listeners EventListener
 
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
 .. java:import:: java.util.function Function
 
 VerticalVmScaling
@@ -118,7 +120,7 @@ getResourceUsageThresholdFunction
 
    Gets the lower or upper resource utilization threshold \ :java:ref:`Function`\ , depending if the Vm resource is under or overloaded, respectively.
 
-   :return: the lower resource utilization threshold function if the Vm resource is underloaded, upper resource utilization threshold function if the Vm resource is overloaded, or a function that always returns 0 if the Vm is is not in these conditions.
+   :return: the lower resource utilization threshold function if the Vm resource is underloaded, upper resource utilization threshold function if the Vm resource is overloaded, or a function that always returns 0 if the Vm isn't in any of these conditions.
 
    **See also:** :java:ref:`.getLowerThresholdFunction()`, :java:ref:`.getUpperThresholdFunction()`
 
@@ -168,17 +170,17 @@ isVmUnderloaded
 
    :return: true if the Vm is underloaded, false otherwise
 
-requestScalingIfPredicateMatch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestUpScalingIfPredicateMatches
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override  boolean requestScalingIfPredicateMatch(double time)
+.. java:method:: @Override  boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt)
    :outertype: VerticalVmScaling
 
    Performs the vertical scale if the Vm is overloaded, according to the \ :java:ref:`getUpperThresholdFunction()`\  predicate, increasing the Vm resource to which the scaling object is linked to (that may be RAM, CPU, BW, etc), by the factor defined a scaling factor.
 
    The time interval in which it will be checked if the Vm is overloaded depends on the \ :java:ref:`Datacenter.getSchedulingInterval()`\  value. Make sure to set such a value to enable the periodic overload verification.
 
-   :param time: current simulation time
+   :param evt: current simulation time
 
    **See also:** :java:ref:`.getScalingFactor()`
 
@@ -212,7 +214,7 @@ setResourceScaling
 .. java:method::  VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling)
    :outertype: VerticalVmScaling
 
-   Sets the \ :java:ref:`ResourceScaling`\ .
+   Sets the \ :java:ref:`ResourceScaling`\  that defines how the resource has to be resized.
 
    :param resourceScaling: the \ :java:ref:`ResourceScaling`\  to set
 

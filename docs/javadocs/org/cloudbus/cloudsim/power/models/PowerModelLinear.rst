@@ -4,9 +4,9 @@ PowerModelLinear
 .. java:package:: org.cloudbus.cloudsim.power.models
    :noindex:
 
-.. java:type:: public class PowerModelLinear extends PowerModelAbstract
+.. java:type:: public class PowerModelLinear extends PowerModelSimple
 
-   Implements a power model where the power consumption is linear to resource usage.
+   A power model where the power consumption is linear to resource usage.
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
@@ -14,7 +14,7 @@ PowerModelLinear
 
    * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012 <http://dx.doi.org/10.1002/cpe.1867>`_\
 
-   :author: Anton Beloglazov, Anton Beloglazov
+   :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Constructors
 ------------
@@ -24,76 +24,8 @@ PowerModelLinear
 .. java:constructor:: public PowerModelLinear(double maxPower, double staticPowerPercent)
    :outertype: PowerModelLinear
 
-   Instantiates a new linear power model.
+   Instantiates a linear power model.
 
-   :param maxPower: the max power
-   :param staticPowerPercent: the static power percent
-
-Methods
--------
-getConstant
-^^^^^^^^^^^
-
-.. java:method:: protected double getConstant()
-   :outertype: PowerModelLinear
-
-   Gets the constant.
-
-   :return: the constant
-
-getMaxPower
-^^^^^^^^^^^
-
-.. java:method:: protected double getMaxPower()
-   :outertype: PowerModelLinear
-
-   Gets the max power.
-
-   :return: the max power
-
-getPowerInternal
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override protected double getPowerInternal(double utilization) throws IllegalArgumentException
-   :outertype: PowerModelLinear
-
-getStaticPower
-^^^^^^^^^^^^^^
-
-.. java:method:: protected final double getStaticPower()
-   :outertype: PowerModelLinear
-
-   Gets the static power.
-
-   :return: the static power
-
-setConstant
-^^^^^^^^^^^
-
-.. java:method:: protected final void setConstant(double constant)
-   :outertype: PowerModelLinear
-
-   Sets the constant.
-
-   :param constant: the new constant
-
-setMaxPower
-^^^^^^^^^^^
-
-.. java:method:: protected final void setMaxPower(double maxPower)
-   :outertype: PowerModelLinear
-
-   Sets the max power.
-
-   :param maxPower: the new max power
-
-setStaticPower
-^^^^^^^^^^^^^^
-
-.. java:method:: protected final void setStaticPower(double staticPower)
-   :outertype: PowerModelLinear
-
-   Sets the static power.
-
-   :param staticPower: the new static power
+   :param maxPower: the max power that can be consumed in Watt-Second (Ws).
+   :param staticPowerPercent: the static power usage percentage between 0 and 1.
 

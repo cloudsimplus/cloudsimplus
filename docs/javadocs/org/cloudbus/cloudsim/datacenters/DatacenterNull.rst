@@ -40,10 +40,28 @@ addFile
 .. java:method:: @Override public int addFile(File file)
    :outertype: DatacenterNull
 
+addHost
+^^^^^^^
+
+.. java:method:: @Override public Datacenter addHost(Host host)
+   :outertype: DatacenterNull
+
+addHostList
+^^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Host> Datacenter addHostList(List<T> hostList)
+   :outertype: DatacenterNull
+
 compareTo
 ^^^^^^^^^
 
 .. java:method:: @Override public int compareTo(SimEntity o)
+   :outertype: DatacenterNull
+
+getBandwidthPercentForMigration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getBandwidthPercentForMigration()
    :outertype: DatacenterNull
 
 getCharacteristics
@@ -74,6 +92,18 @@ getName
 ^^^^^^^
 
 .. java:method:: @Override public String getName()
+   :outertype: DatacenterNull
+
+getPower
+^^^^^^^^
+
+.. java:method:: @Override public double getPower()
+   :outertype: DatacenterNull
+
+getPowerInKWattsHour
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getPowerInKWattsHour()
    :outertype: DatacenterNull
 
 getSchedulingInterval
@@ -133,7 +163,13 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(int dest, double delay, int tag)
+.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
+   :outertype: DatacenterNull
+
+setBandwidthPercentForMigration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration)
    :outertype: DatacenterNull
 
 setLog
@@ -158,6 +194,12 @@ setSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public SimEntity setSimulation(Simulation simulation)
+   :outertype: DatacenterNull
+
+setState
+^^^^^^^^
+
+.. java:method:: @Override public SimEntity setState(State state)
    :outertype: DatacenterNull
 
 setStorageList

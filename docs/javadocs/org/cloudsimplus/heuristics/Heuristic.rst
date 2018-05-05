@@ -11,7 +11,7 @@ Heuristic
    Different heuristic can be implemented, such as \ `Tabu search <https://en.wikipedia.org/wiki/Tabu_search>`_\ , \ `Simulated annealing <https://en.wikipedia.org/wiki/Simulated_annealing>`_\ , \ `Hill climbing <https://en.wikipedia.org/wiki/Hill_climbing>`_\  or \ `Ant colony optimization <https://en.wikipedia.org/wiki/Ant_colony_optimization_algorithms>`_\ , to name a few.
 
    :author: Manoel Campos da Silva Filho
-   :param <S>: the class of solutions the heuristic will deal with
+   :param <S>: the \ :java:ref:`class of solutions <HeuristicSolution>`\  the heuristic will deal with
 
 Fields
 ------
@@ -129,7 +129,7 @@ solve
 .. java:method::  S solve()
    :outertype: Heuristic
 
-   Starts the heuristic to find a suboptimal solution. After the method finishes, call the \ :java:ref:`getBestSolutionSoFar()`\  to get the final solution.
+   Starts the heuristic to find a suboptimal solution. After the method finishes, you can call the \ :java:ref:`getBestSolutionSoFar()`\  to get the final solution.
 
    :return: the final solution
 

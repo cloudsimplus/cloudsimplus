@@ -2,6 +2,8 @@
 
 .. java:import:: java.io IOException
 
+.. java:import:: java.io InputStreamReader
+
 TopologyReader
 ==============
 
@@ -19,12 +21,24 @@ Methods
 readGraphFile
 ^^^^^^^^^^^^^
 
-.. java:method::  TopologicalGraph readGraphFile(String filename) throws IOException
+.. java:method::  TopologicalGraph readGraphFile(String filename)
    :outertype: TopologyReader
 
    Reads a file and creates an \ :java:ref:`TopologicalGraph`\  object.
 
    :param filename: Name of the file to read
+   :throws IOException: when the file cannot be accessed
+   :return: The created TopologicalGraph
+
+readGraphFile
+^^^^^^^^^^^^^
+
+.. java:method::  TopologicalGraph readGraphFile(InputStreamReader streamReader)
+   :outertype: TopologyReader
+
+   Reads a file and creates an \ :java:ref:`TopologicalGraph`\  object.
+
+   :param streamReader: the \ :java:ref:`InputStreamReader`\  to read the file
    :throws IOException: when the file cannot be accessed
    :return: The created TopologicalGraph
 

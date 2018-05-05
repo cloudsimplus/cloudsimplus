@@ -6,7 +6,7 @@ Conversion
 
 .. java:type:: public final class Conversion
 
-   A class that provides a set of methods for unit conversion.
+   Provides a set of methods for unit conversion.
 
    :author: Manoel Campos da Silva Filho
 
@@ -69,10 +69,10 @@ bitesToBytes
    :param bits: the value in bites, Kb, Mb, Gb, etc
    :return: the value in bites, Kbytes, Mbytes, Gbytes and so on, according to the given value
 
-bytesToBites
-^^^^^^^^^^^^
+bytesToBits
+^^^^^^^^^^^
 
-.. java:method:: public static double bytesToBites(double bytes)
+.. java:method:: public static double bytesToBits(double bytes)
    :outertype: Conversion
 
    Converts any value in bytes to bits, doesn't matter if the unit is Kilobytes (KB), Megabytes (MB), Gigabytes (GB), etc.
@@ -80,10 +80,10 @@ bytesToBites
    :param bytes: the value in bytes, KB, MB, GB, etc
    :return: the value in bites, Kbits, Mbits, Gbits and so on, according to the given value
 
-bytesToMegaBites
-^^^^^^^^^^^^^^^^
+bytesToMegaBits
+^^^^^^^^^^^^^^^
 
-.. java:method:: public static double bytesToMegaBites(double bytes)
+.. java:method:: public static double bytesToMegaBits(double bytes)
    :outertype: Conversion
 
    Converts a value in bytes to Megabites (Mb)

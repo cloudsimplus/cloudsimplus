@@ -1,4 +1,10 @@
+.. java:import:: org.cloudbus.cloudsim.core SimEntity
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
+
+.. java:import:: org.cloudsimplus.listeners EventInfo
+
+.. java:import:: org.cloudsimplus.listeners EventListener
 
 SimEventNull
 ============
@@ -22,12 +28,6 @@ compareTo
 .. java:method:: @Override public int compareTo(SimEvent o)
    :outertype: SimEventNull
 
-endWaitingTime
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double endWaitingTime()
-   :outertype: SimEventNull
-
 eventTime
 ^^^^^^^^^
 
@@ -43,7 +43,19 @@ getData
 getDestination
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public int getDestination()
+.. java:method:: @Override public SimEntity getDestination()
+   :outertype: SimEventNull
+
+getEndWaitingTime
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getEndWaitingTime()
+   :outertype: SimEventNull
+
+getListener
+^^^^^^^^^^^
+
+.. java:method:: @Override public EventListener<EventInfo> getListener()
    :outertype: SimEventNull
 
 getSerial
@@ -61,7 +73,7 @@ getSimulation
 getSource
 ^^^^^^^^^
 
-.. java:method:: @Override public int getSource()
+.. java:method:: @Override public SimEntity getSource()
    :outertype: SimEventNull
 
 getTag
@@ -85,13 +97,13 @@ getType
 scheduledBy
 ^^^^^^^^^^^
 
-.. java:method:: @Override public int scheduledBy()
+.. java:method:: @Override public SimEntity scheduledBy()
    :outertype: SimEventNull
 
 setDestination
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent setDestination(int destination)
+.. java:method:: @Override public SimEvent setDestination(SimEntity destination)
    :outertype: SimEventNull
 
 setSerial
@@ -103,6 +115,6 @@ setSerial
 setSource
 ^^^^^^^^^
 
-.. java:method:: @Override public SimEvent setSource(int source)
+.. java:method:: @Override public SimEvent setSource(SimEntity source)
    :outertype: SimEventNull
 

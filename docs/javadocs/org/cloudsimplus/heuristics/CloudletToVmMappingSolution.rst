@@ -106,14 +106,14 @@ getHeuristic
 getRandomMapEntries
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected Map.Entry<Cloudlet, Vm>[] getRandomMapEntries()
+.. java:method:: protected List<Map.Entry<Cloudlet, Vm>> getRandomMapEntries()
    :outertype: CloudletToVmMappingSolution
 
    Try to get 2 randomly selected entries from the \ :java:ref:`cloudletVmMap`\ .
 
-   :return: an array with 2 entries from the \ :java:ref:`cloudletVmMap`\  if the map has at least 2 entries, an unitary array if the map has only one entry, or an empty array if there is no entry.
+   :return: a List with 2 entries from the \ :java:ref:`cloudletVmMap`\  if the map has at least 2 entries, an unitary List if the map has only one entry, or an empty List if there is no entry.
 
-   **See also:** :java:ref:`.swapVmsOfTwoMapEntries(Map.Entry[])`
+   **See also:** :java:ref:`.swapVmsOfTwoMapEntries(List)`
 
 getResult
 ^^^^^^^^^
@@ -126,25 +126,36 @@ getResult
 getVmCost
 ^^^^^^^^^
 
-.. java:method:: public double getVmCost(Vm vm, List<Map.Entry<Cloudlet, Vm>> listOfCloudletsForVm)
+.. java:method:: public double getVmCost(Map.Entry<Vm, List<Map.Entry<Cloudlet, Vm>>> entry)
    :outertype: CloudletToVmMappingSolution
 
    Computes the cost of all Cloudlets hosted by a given Vm. The cost is based on the number of PEs from the VM that will be idle or overloaded.
 
-   :param vm: VM to compute the cost based on the hosted Cloudlets
-   :param listOfCloudletsForVm: A list containing all Cloudlets for a given VM
+   :param entry: a Map Entry where the key is a VM hosting some Cloudlets and the value is the Cloudlets hosted in this VM.
+   :return: the VM cost to host the Cloudlets
+
+getVmCost
+^^^^^^^^^
+
+.. java:method:: public double getVmCost(Vm vm, List<Cloudlet> cloudlets)
+   :outertype: CloudletToVmMappingSolution
+
+   Computes the cost of all Cloudlets hosted by a given Vm. The cost is based on the number of PEs from the VM that will be idle or overloaded.
+
+   :param vm: the VM to compute the cost to host some Cloudlets
+   :param cloudlets: the list of Cloudlets to be hosted by the VM in order to compute the cost
    :return: the VM cost to host the Cloudlets
 
 swapVmsOfTwoMapEntries
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean swapVmsOfTwoMapEntries(Map.Entry<Cloudlet, Vm>... entries)
+.. java:method:: protected final boolean swapVmsOfTwoMapEntries(List<Map.Entry<Cloudlet, Vm>> entries)
    :outertype: CloudletToVmMappingSolution
 
    Swap the Vm's of 2 randomly selected cloudlets in the \ :java:ref:`cloudletVmMap`\  in order to provide a neighbor solution. The method change the given Map entries, moving the cloudlet of the first entry to the Vm of the second entry and vice-versa.
 
-   :param entries: an array of 2 entries that the Vm of their cloudlets should be swapped. If the entries don't have 2 elements, the method will return without performing any change in the entries.
-   :return: true if the Cloudlet's VMs where swapped, false otherwise
+   :param entries: a List of 2 entries containing Cloudlets to swap their VMs. If the entries don't have 2 elements, the method will return without performing any change in the entries.
+   :return: true if the VMs of the Cloudlets where swapped, false otherwise
 
 swapVmsOfTwoRandomSelectedMapEntries
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -156,5 +167,5 @@ swapVmsOfTwoRandomSelectedMapEntries
 
    :return: true if the Cloudlet's VMs where swapped, false otherwise
 
-   **See also:** :java:ref:`.swapVmsOfTwoMapEntries(Map.Entry[])`
+   **See also:** :java:ref:`.swapVmsOfTwoMapEntries(List)`
 

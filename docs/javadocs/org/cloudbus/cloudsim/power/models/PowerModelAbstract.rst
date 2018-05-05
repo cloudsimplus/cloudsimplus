@@ -1,4 +1,4 @@
-.. java:import:: org.cloudbus.cloudsim.hosts.power PowerHost
+.. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: java.util Objects
 
@@ -16,10 +16,22 @@ PowerModelAbstract
 
 Methods
 -------
+getEnergyLinearInterpolation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time)
+   :outertype: PowerModelAbstract
+
 getHost
 ^^^^^^^
 
-.. java:method:: @Override public PowerHost getHost()
+.. java:method:: @Override public Host getHost()
+   :outertype: PowerModelAbstract
+
+getPower
+^^^^^^^^
+
+.. java:method:: @Override public double getPower()
    :outertype: PowerModelAbstract
 
 getPower
@@ -45,6 +57,6 @@ getPowerInternal
 setHost
 ^^^^^^^
 
-.. java:method:: @Override public final void setHost(PowerHost host)
+.. java:method:: @Override public final void setHost(Host host)
    :outertype: PowerModelAbstract
 

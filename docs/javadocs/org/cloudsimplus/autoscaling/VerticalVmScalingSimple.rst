@@ -10,6 +10,8 @@
 
 .. java:import:: org.cloudsimplus.autoscaling.resources ResourceScalingInstantaneous
 
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
 .. java:import:: java.util Objects
 
 .. java:import:: java.util.function Function
@@ -39,7 +41,7 @@ VerticalVmScalingSimple
    Creates a VerticalVmScalingSimple with a \ :java:ref:`ResourceScalingGradual`\  scaling type.
 
    :param resourceClassToScale: the class of Vm resource that this scaling object will request up or down scaling (such as \ :java:ref:`Ram`\ .class, \ :java:ref:`Bandwidth`\ .class or \ :java:ref:`Processor`\ .class).
-   :param scalingFactor: the factor that will be used to scale a Vm resource up or down, whether if such a resource is over or underloaded, according to the defined predicates (a percentage value in scale from 0 to 1). In the case of up scaling, the value 1 will scale the resource in 100%, doubling its capacity.
+   :param scalingFactor: the factor (a percentage value in scale from 0 to 1) that will be used to scale a Vm resource up or down, whether such a resource is over or underloaded, according to the defined predicates. In the case of up scaling, the value 1 will scale the resource in 100%, doubling its capacity.
 
    **See also:** :java:ref:`VerticalVmScaling.setResourceScaling(ResourceScaling)`
 
@@ -114,16 +116,16 @@ isVmUnderloaded
 .. java:method:: @Override public boolean isVmUnderloaded()
    :outertype: VerticalVmScalingSimple
 
-requestScaling
-^^^^^^^^^^^^^^
+requestUpScaling
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected boolean requestScaling(double time)
+.. java:method:: @Override protected boolean requestUpScaling(double time)
    :outertype: VerticalVmScalingSimple
 
-requestScalingIfPredicateMatch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestUpScalingIfPredicateMatches
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final boolean requestScalingIfPredicateMatch(double time)
+.. java:method:: @Override public final boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt)
    :outertype: VerticalVmScalingSimple
 
 setLowerThresholdFunction
@@ -143,6 +145,13 @@ setResourceScaling
 
 .. java:method:: @Override public final VerticalVmScaling setResourceScaling(ResourceScaling resourceScaling)
    :outertype: VerticalVmScalingSimple
+
+   {@inheritDoc}
+
+   This class's constructors define a \ :java:ref:`ResourceScalingGradual`\  as the default \ :java:ref:`ResourceScaling`\ .
+
+   :param resourceScaling: {@inheritDoc}
+   :return: {@inheritDoc}
 
 setScalingFactor
 ^^^^^^^^^^^^^^^^

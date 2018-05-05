@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.power.models PowerModel
+
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
@@ -58,12 +60,6 @@ addVmMigratingOut
 .. java:method:: @Override public boolean addVmMigratingOut(Vm vm)
    :outertype: HostNull
 
-allocatePesForVm
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean allocatePesForVm(Vm vm, List<Double> mipsShare)
-   :outertype: HostNull
-
 compareTo
 ^^^^^^^^^
 
@@ -106,6 +102,18 @@ destroyVm
 .. java:method:: @Override public void destroyVm(Vm vm)
    :outertype: HostNull
 
+disableStateHistory
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void disableStateHistory()
+   :outertype: HostNull
+
+enableStateHistory
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void enableStateHistory()
+   :outertype: HostNull
+
 getAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -124,6 +132,12 @@ getAvailableStorage
 .. java:method:: @Override public long getAvailableStorage()
    :outertype: HostNull
 
+getBuzyPeList
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Pe> getBuzyPeList()
+   :outertype: HostNull
+
 getBw
 ^^^^^
 
@@ -140,6 +154,18 @@ getDatacenter
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Datacenter getDatacenter()
+   :outertype: HostNull
+
+getFinishedVms
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Vm> getFinishedVms()
+   :outertype: HostNull
+
+getFreePeList
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Pe> getFreePeList()
    :outertype: HostNull
 
 getId
@@ -190,6 +216,18 @@ getPeList
 .. java:method:: @Override public List<Pe> getPeList()
    :outertype: HostNull
 
+getPowerModel
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public PowerModel getPowerModel()
+   :outertype: HostNull
+
+getPreviousUtilizationOfCpu
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getPreviousUtilizationOfCpu()
+   :outertype: HostNull
+
 getProvisioner
 ^^^^^^^^^^^^^^
 
@@ -220,6 +258,12 @@ getSimulation
 .. java:method:: @Override public Simulation getSimulation()
    :outertype: HostNull
 
+getStateHistory
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<HostStateHistoryEntry> getStateHistory()
+   :outertype: HostNull
+
 getStorage
 ^^^^^^^^^^
 
@@ -236,6 +280,12 @@ getTotalMipsCapacity
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getTotalMipsCapacity()
+   :outertype: HostNull
+
+getUtilizationHistory
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double[] getUtilizationHistory()
    :outertype: HostNull
 
 getUtilizationOfBw
@@ -266,6 +316,12 @@ getVm
 ^^^^^
 
 .. java:method:: @Override public Vm getVm(int vmId, int brokerId)
+   :outertype: HostNull
+
+getVmCreatedList
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Vm> List<T> getVmCreatedList()
    :outertype: HostNull
 
 getVmList
@@ -308,6 +364,12 @@ isFailed
 ^^^^^^^^
 
 .. java:method:: @Override public boolean isFailed()
+   :outertype: HostNull
+
+isStateHistoryEnabled
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isStateHistoryEnabled()
    :outertype: HostNull
 
 isSuitableForVm
@@ -376,10 +438,10 @@ setId
 .. java:method:: @Override public void setId(int id)
    :outertype: HostNull
 
-setPeStatus
-^^^^^^^^^^^
+setPowerModel
+^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean setPeStatus(int peId, Pe.Status status)
+.. java:method:: @Override public Host setPowerModel(PowerModel powerModel)
    :outertype: HostNull
 
 setRamProvisioner

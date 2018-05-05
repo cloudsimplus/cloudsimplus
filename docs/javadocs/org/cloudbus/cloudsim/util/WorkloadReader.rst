@@ -2,6 +2,8 @@
 
 .. java:import:: java.util List
 
+.. java:import:: java.util.function Predicate
+
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 WorkloadReader
@@ -29,4 +31,14 @@ generateWorkload
    Generates a list of jobs (\ :java:ref:`Cloudlets <Cloudlet>`\ ) to be executed.
 
    :return: a generated Cloudlet list
+
+setPredicate
+^^^^^^^^^^^^
+
+.. java:method::  WorkloadReader setPredicate(Predicate<Cloudlet> predicate)
+   :outertype: WorkloadReader
+
+   Defines a \ :java:ref:`Predicate`\  which indicates when a \ :java:ref:`Cloudlet`\  must be created from a trace line read from the workload file. If a Predicate is not set, a Cloudlet will be created for any line read.
+
+   :param predicate: the predicate to define when a Cloudlet must be created from a line read from the workload file
 

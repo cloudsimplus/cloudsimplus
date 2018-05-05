@@ -2,9 +2,11 @@
 
 .. java:import:: org.cloudbus.cloudsim.util ResourceLoader
 
-.. java:import:: java.io FileNotFoundException
+.. java:import:: java.io InputStreamReader
 
-.. java:import:: java.io FileReader
+.. java:import:: java.nio.file Path
+
+.. java:import:: java.nio.file Paths
 
 AwsEc2Template
 ==============
@@ -12,13 +14,21 @@ AwsEc2Template
 .. java:package:: org.cloudsimplus.vmtemplates
    :noindex:
 
-.. java:type:: public class AwsEc2Template
+.. java:type:: public class AwsEc2Template implements Comparable<AwsEc2Template>
 
    Represents an \ `Amazon EC2 Instance <http://aws.amazon.com/ec2/>`_\  template. This class enables reading a template from a JSON file, containing actual configurations for VMs available in \ `Amazon Web Services <http://aws.amazon.com/>`_\ .
 
    :author: raysaoliveira
 
    **See also:** :java:ref:`.getInstance(String)`
+
+Fields
+------
+NULL
+^^^^
+
+.. java:field:: public static final AwsEc2Template NULL
+   :outertype: AwsEc2Template
 
 Constructors
 ------------
@@ -30,6 +40,8 @@ AwsEc2Template
 
    Default constructor used to create an \ :java:ref:`AwsEc2Template`\  instance. If you want to get a template from a JSON file, you shouldn't call the constructor directly. Instead, use some methods such as the \ :java:ref:`getInstance(String)`\ .
 
+   This constructor is just provided to enable the \ :java:ref:`Gson`\  object to use reflection to instantiate a AwsEc2Template.
+
 AwsEc2Template
 ^^^^^^^^^^^^^^
 
@@ -40,45 +52,56 @@ AwsEc2Template
 
    :param source: the \ :java:ref:`AwsEc2Template`\  to be cloned
 
+AwsEc2Template
+^^^^^^^^^^^^^^
+
+.. java:constructor:: public AwsEc2Template(String jsonFilePath)
+   :outertype: AwsEc2Template
+
+   Instantiates an AWS EC2 Instance from a JSON file.
+
+   :param jsonFilePath: the full path to the JSON file representing the template with configurations for an AWS EC2 Instance
+
 Methods
 -------
+compareTo
+^^^^^^^^^
+
+.. java:method:: @Override public int compareTo(AwsEc2Template o)
+   :outertype: AwsEc2Template
+
 getCpus
 ^^^^^^^
 
 .. java:method:: public int getCpus()
    :outertype: AwsEc2Template
 
+getFileName
+^^^^^^^^^^^
+
+.. java:method:: public String getFileName()
+   :outertype: AwsEc2Template
+
+   Gets only the name of the JSON template file used to create this template, without the path.
+
+getFilePath
+^^^^^^^^^^^
+
+.. java:method:: public String getFilePath()
+   :outertype: AwsEc2Template
+
+   Gets the full path to the JSON template file used to create this template.
+
 getInstance
 ^^^^^^^^^^^
 
-.. java:method:: public static AwsEc2Template getInstance(String jsonTemplateFilePath) throws FileNotFoundException
+.. java:method:: public static AwsEc2Template getInstance(String jsonFilePath)
    :outertype: AwsEc2Template
 
-   Gets an AWS EC2 Instance from a JSON file.
+   Gets an AWS EC2 Instance from a JSON file inside the \ **application's resource directory**\ . Use the available constructors if you want to load a file outside the resource directory.
 
-   :param jsonTemplateFilePath: the full path to the JSON file representing the template with configurations for an AWS EC2 Instance
+   :param jsonFilePath: the \ **relative path**\  to the JSON file representing the template with configurations for an AWS EC2 Instance
    :return: the AWS EC2 Instance from the JSON file
-
-getInstanceFromResourcesDir
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public static AwsEc2Template getInstanceFromResourcesDir(String jsonFilePath) throws FileNotFoundException
-   :outertype: AwsEc2Template
-
-   Gets an AWS EC2 Instance from a JSON file inside the application's resource directory.
-
-   :param jsonFilePath: the relative path to the JSON file representing the template with configurations for an AWS EC2 Instance
-   :return: the AWS EC2 Instance from the JSON file
-
-getMaxNumberOfVmsForCustomer
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public double getMaxNumberOfVmsForCustomer()
-   :outertype: AwsEc2Template
-
-   Gets the maximum number of VMs which can be created with this configuration for a specific customer, considering the maximum price the customer expects to pay hourly for all his/her running VMs.
-
-   This is not a field inside the JSON file and doesn't in fact represent a AWS EC2 Instance attribute. It's a value which may be computed externally and assigned to the attribute. It's usage is optional and it's default value is zero.
 
 getMemoryInMB
 ^^^^^^^^^^^^^
@@ -98,10 +121,12 @@ getPricePerHour
 .. java:method:: public double getPricePerHour()
    :outertype: AwsEc2Template
 
+   Gets the price per hour of a VM created from this template
+
 main
 ^^^^
 
-.. java:method:: public static void main(String[] args) throws FileNotFoundException
+.. java:method:: public static void main(String[] args)
    :outertype: AwsEc2Template
 
    A main method just to try the class implementation.
@@ -113,18 +138,6 @@ setCpus
 
 .. java:method:: public void setCpus(int cpus)
    :outertype: AwsEc2Template
-
-setMaxNumberOfVmsForCustomer
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public AwsEc2Template setMaxNumberOfVmsForCustomer(double maxNumberOfVmsForCustomer)
-   :outertype: AwsEc2Template
-
-   Sets the maximum number of VMs which can be created with this configuration for a specific customer, considering the maximum price the customer expects to pay hourly for all his/her running VMs.
-
-   This is not a field inside the JSON file and doesn't in fact represent a AWS EC2 Instance attribute. It's a value which may be computed externally and assigned to the attribute. It's usage is optional and it's default value is zero.
-
-   :param maxNumberOfVmsForCustomer: the maximum number of VMs to set
 
 setMemoryInMB
 ^^^^^^^^^^^^^

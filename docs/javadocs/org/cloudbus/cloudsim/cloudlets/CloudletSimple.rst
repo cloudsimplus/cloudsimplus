@@ -34,6 +34,17 @@ CloudletSimple
 CloudletSimple
 ^^^^^^^^^^^^^^
 
+.. java:constructor:: public CloudletSimple(long cloudletLength, long pesNumber)
+   :outertype: CloudletSimple
+
+   Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
+
+   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param pesNumber: number of PEs that Cloudlet will require
+
+CloudletSimple
+^^^^^^^^^^^^^^
+
 .. java:constructor:: public CloudletSimple(int id, long cloudletLength, long pesNumber)
    :outertype: CloudletSimple
 

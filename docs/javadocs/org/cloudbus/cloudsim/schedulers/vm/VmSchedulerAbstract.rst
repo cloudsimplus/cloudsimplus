@@ -20,7 +20,7 @@ VmSchedulerAbstract
 
    An abstract class for implementation of \ :java:ref:`VmScheduler`\ s.
 
-   :author: Rodrigo N. Calheiros, Anton Beloglazov
+   :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
 Fields
 ------
@@ -36,14 +36,6 @@ DEFAULT_VM_MIGRATION_CPU_OVERHEAD
 
 Constructors
 ------------
-VmSchedulerAbstract
-^^^^^^^^^^^^^^^^^^^
-
-.. java:constructor:: public VmSchedulerAbstract()
-   :outertype: VmSchedulerAbstract
-
-   Creates a VmScheduler.
-
 VmSchedulerAbstract
 ^^^^^^^^^^^^^^^^^^^
 
@@ -65,7 +57,7 @@ allocatePesForVm
 allocatePesForVm
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final boolean allocatePesForVm(Vm vm, List<Double> mipsShareRequested)
+.. java:method:: @Override public final boolean allocatePesForVm(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerAbstract
 
 allocatePesForVmInternal
@@ -104,6 +96,18 @@ getAllocatedMips
 .. java:method:: @Override public List<Double> getAllocatedMips(Vm vm)
    :outertype: VmSchedulerAbstract
 
+getAllocatedMipsMap
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected Map<Vm, List<Double>> getAllocatedMipsMap()
+   :outertype: VmSchedulerAbstract
+
+   Gets the map of VMs to MIPS, were each key is a VM and each value is the List of currently allocated MIPS from the respective physical PEs which are being used by such a VM.
+
+   :return: the mips map
+
+   **See also:** :java:ref:`.getAllocatedMips(Vm)`
+
 getAvailableMips
 ^^^^^^^^^^^^^^^^
 
@@ -128,26 +132,6 @@ getMaxCpuUsagePercentDuringOutMigration
 .. java:method:: @Override public double getMaxCpuUsagePercentDuringOutMigration()
    :outertype: VmSchedulerAbstract
 
-getMipsMapAllocated
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected Map<Vm, List<Double>> getMipsMapAllocated()
-   :outertype: VmSchedulerAbstract
-
-   Gets the map of VMs to MIPS, were each key is a VM and each value is the currently allocated MIPS from the respective PE to that VM. The PEs where the MIPS capacity is get are defined in the \ :java:ref:`peMap`\ .
-
-   :return: the mips map
-
-   **See also:** :java:ref:`.getAllocatedMips(Vm)`
-
-getMipsMapRequested
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected Map<Vm, List<Double>> getMipsMapRequested()
-   :outertype: VmSchedulerAbstract
-
-   Gets a map of MIPS requested by each VM, where each key is a VM and each value is a list of MIPS requested by that VM.
-
 getMipsShareRequestedReduced
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -166,25 +150,19 @@ getPeCapacity
 .. java:method:: @Override public long getPeCapacity()
    :outertype: VmSchedulerAbstract
 
-getPeMap
-^^^^^^^^
-
-.. java:method:: protected Map<Vm, List<Pe>> getPeMap()
-   :outertype: VmSchedulerAbstract
-
-   Gets the map of VMs to PEs, where each key is a VM and each value is a list of PEs allocated to that VM.
-
-getPesAllocatedForVm
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<Pe> getPesAllocatedForVm(Vm vm)
-   :outertype: VmSchedulerAbstract
-
 getRequestedMips
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<Double> getRequestedMips(Vm vm)
    :outertype: VmSchedulerAbstract
+
+getRequestedMipsMap
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected Map<Vm, List<Double>> getRequestedMipsMap()
+   :outertype: VmSchedulerAbstract
+
+   Gets a map of MIPS requested by each VM, where each key is a VM and each value is a list of MIPS requested by that VM.
 
 getTotalAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -259,24 +237,4 @@ setHost
 
 .. java:method:: @Override public VmScheduler setHost(Host host)
    :outertype: VmSchedulerAbstract
-
-setMipsMapAllocated
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected final void setMipsMapAllocated(Map<Vm, List<Double>> mipsMapAllocated)
-   :outertype: VmSchedulerAbstract
-
-   Sets the map of VMs to MIPS, were each key is a VM and each value is the currently allocated MIPS from the respective PE to that VM. The PEs where the MIPS capacity is get are defined in the \ :java:ref:`peMap`\ .
-
-   :param mipsMapAllocated: the mips map
-
-setPeMap
-^^^^^^^^
-
-.. java:method:: protected final void setPeMap(Map<Vm, List<Pe>> peMap)
-   :outertype: VmSchedulerAbstract
-
-   Sets the map of VMs to PEs, where each key is a VM and each value is a list of PEs allocated to that VM.
-
-   :param peMap: the pe map
 

@@ -4,8 +4,6 @@
 
 .. java:import:: java.lang.management ManagementFactory
 
-.. java:import:: java.util Objects
-
 Log.Level
 =========
 

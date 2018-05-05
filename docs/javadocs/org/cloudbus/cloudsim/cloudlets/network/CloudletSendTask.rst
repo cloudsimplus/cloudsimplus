@@ -4,8 +4,6 @@
 
 .. java:import:: java.util List
 
-.. java:import:: java.util Objects
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.network VmPacket

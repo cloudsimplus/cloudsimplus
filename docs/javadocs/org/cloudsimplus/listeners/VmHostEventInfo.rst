@@ -25,21 +25,23 @@ Methods
 of
 ^^
 
-.. java:method:: static VmHostEventInfo of(Vm vm, Host host)
-   :outertype: VmHostEventInfo
-
-   Gets a VmHostEventInfo instance from the given parameters. The \ :java:ref:`getTime()`\  is the current simulation time.
-
-   :param vm: \ :java:ref:`Vm`\  that fired the event
-   :param host: \ :java:ref:`Host`\  that the \ :java:ref:`Vm`\  is related to. Such a Host can be that one where the Vm is or was placed, or where the Vm was tried to be be created, depending on the fired event, such as the \ :java:ref:`Vm.addOnHostAllocationListener(EventListener)`\  OnHostAllocation} or \ :java:ref:`Vm.addOnHostDeallocationListener(EventListener)`\  OnHostDeallocation}
-
-of
-^^
-
-.. java:method:: static VmHostEventInfo of(Vm vm)
+.. java:method:: static VmHostEventInfo of(EventListener<? extends EventInfo> listener, Vm vm)
    :outertype: VmHostEventInfo
 
    Gets a VmHostEventInfo instance from the given parameters. The \ :java:ref:`Host <getHost()>`\  attribute is defined as the \ :java:ref:`Host`\  where the \ :java:ref:`Vm`\  is running and the \ :java:ref:`getTime()`\  is the current simulation time.
 
+   :param listener: the listener to be notified about the event
    :param vm: \ :java:ref:`Vm`\  that fired the event
+
+of
+^^
+
+.. java:method:: static VmHostEventInfo of(EventListener<? extends EventInfo> listener, Vm vm, Host host)
+   :outertype: VmHostEventInfo
+
+   Gets a VmHostEventInfo instance from the given parameters. The \ :java:ref:`getTime()`\  is the current simulation time.
+
+   :param listener: the listener to be notified about the event
+   :param vm: \ :java:ref:`Vm`\  that fired the event
+   :param host: \ :java:ref:`Host`\  that the \ :java:ref:`Vm`\  is related to. Such a Host can be that one where the Vm is or was placed, or where the Vm was tried to be be created, depending on the fired event, such as the \ :java:ref:`Vm.addOnHostAllocationListener(EventListener)`\  OnHostAllocation} or \ :java:ref:`Vm.addOnHostDeallocationListener(EventListener)`\  OnHostDeallocation}
 

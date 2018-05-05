@@ -1,10 +1,10 @@
-.. java:import:: java.io IOException
-
 .. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: org.cloudbus.cloudsim.network DelayMatrix
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies.readers TopologyReaderBrite
+
+.. java:import:: org.cloudbus.cloudsim.util ResourceLoader
 
 BriteNetworkTopology
 ====================
@@ -12,7 +12,7 @@ BriteNetworkTopology
 .. java:package:: org.cloudbus.cloudsim.network.topologies
    :noindex:
 
-.. java:type:: public class BriteNetworkTopology implements NetworkTopology
+.. java:type:: public final class BriteNetworkTopology implements NetworkTopology
 
    Implements a network layer by reading the topology from a file in the \ `BRITE format <http://www.cs.bu.edu/brite/user_manual/node29.html>`_\ , the \ `Boston university Representative Topology gEnerator <http://www.cs.bu.edu/brite/>`_\ , and generates a topological network from it. Information of this network is used to simulate latency in network traffic of CloudSim.
 
@@ -33,12 +33,12 @@ BriteNetworkTopology
 BriteNetworkTopology
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public BriteNetworkTopology(String fileName)
+.. java:constructor:: public BriteNetworkTopology(String filePath)
    :outertype: BriteNetworkTopology
 
    Creates a network topology if the file exists and can be successfully parsed. File is written in the BRITE format and contains topological information on simulation entities.
 
-   :param fileName: name of the BRITE file
+   :param filePath: the path of the BRITE file
 
 Methods
 -------
@@ -61,6 +61,17 @@ getDelay
 
 .. java:method:: @Override public double getDelay(int srcID, int destID)
    :outertype: BriteNetworkTopology
+
+getInstance
+^^^^^^^^^^^
+
+.. java:method:: public static BriteNetworkTopology getInstance(String fileName)
+   :outertype: BriteNetworkTopology
+
+   Instantiates a new Network Topology a file inside the \ **application's resource directory**\ .
+
+   :param fileName: the \ **relative name**\  of the BRITE file
+   :return: the BriteNetworkTopology instance.
 
 getTopologycalGraph
 ^^^^^^^^^^^^^^^^^^^

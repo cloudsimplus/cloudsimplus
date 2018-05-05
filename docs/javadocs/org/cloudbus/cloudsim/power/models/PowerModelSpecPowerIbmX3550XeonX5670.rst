@@ -6,7 +6,9 @@ PowerModelSpecPowerIbmX3550XeonX5670
 
 .. java:type:: public class PowerModelSpecPowerIbmX3550XeonX5670 extends PowerModelSpecPower
 
-   The power model of an IBM server x3550 (2 x [Xeon X5670 2933 MHz, 6 cores], 12GB). \ `http://www.spec.org/power_ssj2008/results/res2010q2/power_ssj2008-20100315-00239.html <http://www.spec.org/power_ssj2008/results/res2010q2/power_ssj2008-20100315-00239.html>`_\  If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   The power model of an IBM server x3550 (2 x [Xeon X5670 2933 MHz, 6 cores], 12GB). \ `http://www.spec.org/power_ssj2008/results/res2010q2/power_ssj2008-20100315-00239.html <http://www.spec.org/power_ssj2008/results/res2010q2/power_ssj2008-20100315-00239.html>`_\
+
+   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 

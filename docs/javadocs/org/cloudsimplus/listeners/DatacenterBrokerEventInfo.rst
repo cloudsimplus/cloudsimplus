@@ -25,10 +25,11 @@ getDatacenterBroker
 of
 ^^
 
-.. java:method:: static DatacenterBrokerEventInfo of(DatacenterBroker broker)
+.. java:method:: static DatacenterBrokerEventInfo of(EventListener<? extends EventInfo> listener, DatacenterBroker broker)
    :outertype: DatacenterBrokerEventInfo
 
    Gets a \ ``DatacenterBrokerEventInfo``\  instance from the given parameters.
 
+   :param listener: the listener to be notified about the event
    :param broker: the \ :java:ref:`DatacenterBroker`\  where the event happened
 

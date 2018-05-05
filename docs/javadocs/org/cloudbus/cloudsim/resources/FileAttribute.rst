@@ -38,13 +38,12 @@ Methods
 copyValue
 ^^^^^^^^^
 
-.. java:method:: public boolean copyValue(FileAttribute destinationAttr)
+.. java:method:: public void copyValue(FileAttribute destinationAttr)
    :outertype: FileAttribute
 
    Copy the values of the object into a given FileAttribute instance.
 
    :param destinationAttr: the destination FileAttribute object to copy the current object to
-   :return: \ ``true``\  if the copy operation is successful, \ ``false``\  otherwise
 
 getAttributeSize
 ^^^^^^^^^^^^^^^^

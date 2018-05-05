@@ -17,8 +17,6 @@ Specific Host implementations can be power- or network-aware, enabling the simul
    :maxdepth: 1
 
    Host
-   HostDynamicWorkload
-   HostDynamicWorkloadSimple
    HostNull
    HostSimple
    HostStateHistoryEntry

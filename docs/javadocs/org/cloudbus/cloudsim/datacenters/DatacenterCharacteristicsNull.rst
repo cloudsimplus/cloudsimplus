@@ -1,11 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
-.. java:import:: org.cloudbus.cloudsim.resources Pe
-
-.. java:import:: java.util Collections
-
-.. java:import:: java.util List
-
 DatacenterCharacteristicsNull
 =============================
 
@@ -58,24 +50,6 @@ getDatacenter
 .. java:method:: @Override public Datacenter getDatacenter()
    :outertype: DatacenterCharacteristicsNull
 
-getHostList
-^^^^^^^^^^^
-
-.. java:method:: @Override public <T extends Host> List<T> getHostList()
-   :outertype: DatacenterCharacteristicsNull
-
-getHostWithFreePe
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Host getHostWithFreePe()
-   :outertype: DatacenterCharacteristicsNull
-
-getHostWithFreePe
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Host getHostWithFreePe(int peNumber)
-   :outertype: DatacenterCharacteristicsNull
-
 getId
 ^^^^^
 
@@ -86,18 +60,6 @@ getMips
 ^^^^^^^
 
 .. java:method:: @Override public double getMips()
-   :outertype: DatacenterCharacteristicsNull
-
-getMipsOfOnePe
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getMipsOfOnePe(int hostId, int peId)
-   :outertype: DatacenterCharacteristicsNull
-
-getNumberOfBusyPes
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public int getNumberOfBusyPes()
    :outertype: DatacenterCharacteristicsNull
 
 getNumberOfFailedHosts
@@ -112,12 +74,6 @@ getNumberOfFreePes
 .. java:method:: @Override public int getNumberOfFreePes()
    :outertype: DatacenterCharacteristicsNull
 
-getNumberOfHosts
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public int getNumberOfHosts()
-   :outertype: DatacenterCharacteristicsNull
-
 getNumberOfPes
 ^^^^^^^^^^^^^^
 
@@ -128,12 +84,6 @@ getOs
 ^^^^^
 
 .. java:method:: @Override public String getOs()
-   :outertype: DatacenterCharacteristicsNull
-
-getResourceName
-^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public String getResourceName()
    :outertype: DatacenterCharacteristicsNull
 
 getTimeZone
@@ -184,22 +134,10 @@ setCostPerStorage
 .. java:method:: @Override public DatacenterCharacteristics setCostPerStorage(double c)
    :outertype: DatacenterCharacteristicsNull
 
-setDatacenter
-^^^^^^^^^^^^^
-
-.. java:method:: @Override public DatacenterCharacteristics setDatacenter(Datacenter dc)
-   :outertype: DatacenterCharacteristicsNull
-
 setOs
 ^^^^^
 
 .. java:method:: @Override public DatacenterCharacteristics setOs(String os)
-   :outertype: DatacenterCharacteristicsNull
-
-setPeStatus
-^^^^^^^^^^^
-
-.. java:method:: @Override public boolean setPeStatus(Pe.Status status, int hostId, int peId)
    :outertype: DatacenterCharacteristicsNull
 
 setTimeZone

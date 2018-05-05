@@ -47,7 +47,7 @@ Methods
 allocateMipsShareForVm
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected void allocateMipsShareForVm(Vm vm, List<Double> mipsShareRequestedReduced)
+.. java:method:: @Override protected void allocateMipsShareForVm(Vm vm, List<Double> requestedMipsReduced)
    :outertype: VmSchedulerTimeSharedOverSubscription
 
 isAllowedToAllocateMips
@@ -64,16 +64,4 @@ isAllowedToAllocateMips
    :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
 
    **See also:** :java:ref:`.allocateMipsShareForVm(Vm,List)`
-
-redistributeMipsDueToOverSubscription
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void redistributeMipsDueToOverSubscription()
-   :outertype: VmSchedulerTimeSharedOverSubscription
-
-   Redistribute the allocation of MIPs among all VMs when the total MIPS requested by all of them is higher than the total available MIPS. This way, it reduces the MIPS allocated to all VMs in order to enable all MIPS requests to be fulfilled.
-
-   Updates the Map containing the list of allocated MIPS by all VMs, reducing the amount requested according to a scaling factor. This is performed when the amount of total requested MIPS by all VMs is higher than the total available MIPS. The reduction of the MIPS requested by all VMs enables all requests to be fulfilled.
-
-   **See also:** :java:ref:`.getMipsMapAllocated()`
 

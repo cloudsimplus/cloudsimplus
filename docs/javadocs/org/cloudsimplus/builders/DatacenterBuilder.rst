@@ -1,22 +1,18 @@
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Objects
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicySimple
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.datacenters DatacenterSimple
 
-.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterCharacteristics
-
-.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterCharacteristicsSimple
-
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicySimple
-
 .. java:import:: org.cloudbus.cloudsim.resources FileStorage
+
+.. java:import:: java.util ArrayList
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Objects
 
 DatacenterBuilder
 =================
@@ -29,14 +25,6 @@ DatacenterBuilder
    A Builder class to createDatacenter \ :java:ref:`DatacenterSimple`\  objects.
 
    :author: Manoel Campos da Silva Filho
-
-Fields
-------
-DC_NAME_FORMAT
-^^^^^^^^^^^^^^
-
-.. java:field:: public static final String DC_NAME_FORMAT
-   :outertype: DatacenterBuilder
 
 Constructors
 ------------

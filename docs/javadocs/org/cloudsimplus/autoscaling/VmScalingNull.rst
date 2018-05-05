@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
 VmScalingNull
 =============
 
@@ -22,10 +24,10 @@ getVm
 .. java:method:: @Override public Vm getVm()
    :outertype: VmScalingNull
 
-requestScalingIfPredicateMatch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+requestUpScalingIfPredicateMatches
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean requestScalingIfPredicateMatch(double time)
+.. java:method:: @Override public boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt)
    :outertype: VmScalingNull
 
 setVm

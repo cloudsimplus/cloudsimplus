@@ -1,10 +1,4 @@
-.. java:import:: java.util List
-
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
 .. java:import:: org.cloudbus.cloudsim.core Identificable
-
-.. java:import:: org.cloudbus.cloudsim.resources Pe
 
 DatacenterCharacteristics
 =========================
@@ -68,7 +62,7 @@ getArchitecture
 .. java:method::  String getArchitecture()
    :outertype: DatacenterCharacteristics
 
-   Gets the architecture.
+   Gets the architecture of the Datacenter.
 
    :return: the architecture
 
@@ -98,7 +92,7 @@ getCostPerSecond
 .. java:method::  double getCostPerSecond()
    :outertype: DatacenterCharacteristics
 
-   Gets the cost per second of CPU.
+   Gets the cost per second of CPU for using the Hosts in the Datacenter.
 
    :return: the cost per second
 
@@ -122,38 +116,6 @@ getDatacenter
 
    :return: the Datacenter
 
-getHostList
-^^^^^^^^^^^
-
-.. java:method::  <T extends Host> List<T> getHostList()
-   :outertype: DatacenterCharacteristics
-
-   Gets the host list.
-
-   :param <T>: The generic type
-   :return: the host list
-
-getHostWithFreePe
-^^^^^^^^^^^^^^^^^
-
-.. java:method::  Host getHostWithFreePe()
-   :outertype: DatacenterCharacteristics
-
-   Gets the first PM with at least one empty Pe.
-
-   :return: a Machine object or if not found
-
-getHostWithFreePe
-^^^^^^^^^^^^^^^^^
-
-.. java:method::  Host getHostWithFreePe(int peNumber)
-   :outertype: DatacenterCharacteristics
-
-   Gets a Machine with at least a given number of free Pe.
-
-   :param peNumber: the pe number
-   :return: a Machine object or if not found
-
 getId
 ^^^^^
 
@@ -173,28 +135,6 @@ getMips
    Gets the total MIPS rating, which is the sum of MIPS rating of all Hosts in the Datacenter.
 
    :return: the sum of MIPS ratings
-
-getMipsOfOnePe
-^^^^^^^^^^^^^^
-
-.. java:method::  long getMipsOfOnePe(int hostId, int peId)
-   :outertype: DatacenterCharacteristics
-
-   Gets Millions Instructions Per Second (MIPS) Rating of a Processing Element (Pe). It is essential to use this method when a Datacenter is made up of heterogenous PEs per PMs.
-
-   :param hostId: the machine ID
-   :param peId: the Pe ID
-   :return: the MIPS Rating or -1 if no PEs are exists.
-
-getNumberOfBusyPes
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  int getNumberOfBusyPes()
-   :outertype: DatacenterCharacteristics
-
-   Gets the total number of \ ``BUSY``\  PEs for all PMs.
-
-   :return: number of PEs
 
 getNumberOfFailedHosts
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -216,16 +156,6 @@ getNumberOfFreePes
 
    :return: number of PEs
 
-getNumberOfHosts
-^^^^^^^^^^^^^^^^
-
-.. java:method::  int getNumberOfHosts()
-   :outertype: DatacenterCharacteristics
-
-   Gets the total number of PMs.
-
-   :return: total number of machines the Datacenter has.
-
 getNumberOfPes
 ^^^^^^^^^^^^^^
 
@@ -242,19 +172,9 @@ getOs
 .. java:method::  String getOs()
    :outertype: DatacenterCharacteristics
 
-   Gets the Operating System (OS).
+   Gets the Operating System (OS) used by the Hosts in the Datacenter.
 
    :return: the Operating System (OS)
-
-getResourceName
-^^^^^^^^^^^^^^^
-
-.. java:method::  String getResourceName()
-   :outertype: DatacenterCharacteristics
-
-   Gets the name of a resource.
-
-   :return: the resource name
 
 getTimeZone
 ^^^^^^^^^^^
@@ -262,7 +182,7 @@ getTimeZone
 .. java:method::  double getTimeZone()
    :outertype: DatacenterCharacteristics
 
-   Gets the time zone, a value between [-12 and 13].
+   Gets the time zone, a value between [-12 and 13], in which the Datacenter is physically located.
 
    :return: the time zone
 
@@ -272,7 +192,7 @@ getVmm
 .. java:method::  String getVmm()
    :outertype: DatacenterCharacteristics
 
-   Gets the VMM in use in the Datacenter.
+   Gets the Virtual Machine Monitor (VMM), also called hypervisor, used in the Datacenter.
 
    :return: the VMM name
 
@@ -336,16 +256,6 @@ setCostPerStorage
 
    :param costPerStorage: cost to use storage
 
-setDatacenter
-^^^^^^^^^^^^^
-
-.. java:method::  DatacenterCharacteristics setDatacenter(Datacenter datacenter)
-   :outertype: DatacenterCharacteristics
-
-   Sets the \ :java:ref:`Datacenter`\  that owns these characteristics
-
-   :param datacenter: the Datacenter to set
-
 setOs
 ^^^^^
 
@@ -355,19 +265,6 @@ setOs
    Sets the Operating System (OS).
 
    :param os: the new Operating System (OS)
-
-setPeStatus
-^^^^^^^^^^^
-
-.. java:method::  boolean setPeStatus(Pe.Status status, int hostId, int peId)
-   :outertype: DatacenterCharacteristics
-
-   Sets the particular Pe status on a PM.
-
-   :param status: the new Pe status
-   :param hostId: Machine ID
-   :param peId: Pe id
-   :return: otherwise (Machine id or Pe id might not be exist)
 
 setTimeZone
 ^^^^^^^^^^^

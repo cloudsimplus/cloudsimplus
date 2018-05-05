@@ -6,13 +6,11 @@
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
-.. java:import:: org.cloudbus.cloudsim.core.predicates PredicateType
+.. java:import:: org.cloudbus.cloudsim.core.events PredicateType
 
 .. java:import:: org.cloudbus.cloudsim.datacenters.network NetworkDatacenter
 
 .. java:import:: org.cloudbus.cloudsim.hosts.network NetworkHost
-
-.. java:import:: org.cloudbus.cloudsim.lists VmList
 
 .. java:import:: org.cloudbus.cloudsim.network HostPacket
 
@@ -103,17 +101,6 @@ getHostList
 
 .. java:method:: @Override public List<NetworkHost> getHostList()
    :outertype: AbstractSwitch
-
-getHostOfVm
-^^^^^^^^^^^
-
-.. java:method:: protected NetworkHost getHostOfVm(int vmId)
-   :outertype: AbstractSwitch
-
-   Gets the host of a given VM.
-
-   :param vmId: The id of the VM
-   :return: the host of the VM
 
 getHostPacketList
 ^^^^^^^^^^^^^^^^^
@@ -220,16 +207,6 @@ processHostPacket
 
    :param ev: The packet sent.
 
-processOtherEvent
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processOtherEvent(SimEvent ev)
-   :outertype: AbstractSwitch
-
-   Process non-default received events that aren't processed by the \ :java:ref:`processEvent(SimEvent)`\  method. This method should be overridden by subclasses in other to process new defined events.
-
-   :param ev: the event to be processed
-
 processPacketDown
 ^^^^^^^^^^^^^^^^^
 
@@ -237,16 +214,6 @@ processPacketDown
    :outertype: AbstractSwitch
 
    Sends a packet to Datacenter connected through a downlink port.
-
-   :param ev: Event/packet to process
-
-processPacketForward
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processPacketForward(SimEvent ev)
-   :outertype: AbstractSwitch
-
-   Sends a packet to hosts connected to the switch
 
    :param ev: Event/packet to process
 

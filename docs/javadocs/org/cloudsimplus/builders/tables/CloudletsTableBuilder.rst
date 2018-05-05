@@ -10,6 +10,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
+.. java:import:: org.cloudbus.cloudsim.core Identificable
+
 CloudletsTableBuilder
 =====================
 
@@ -32,9 +34,20 @@ CloudletsTableBuilder
 .. java:constructor:: public CloudletsTableBuilder(List<? extends Cloudlet> list)
    :outertype: CloudletsTableBuilder
 
-   Creates new helper object to print the list of cloudlets using the a default \ :java:ref:`TextTableBuilder`\ . To use a different \ :java:ref:`TableBuilder`\ , use the \ :java:ref:`setTable(TableBuilder)`\  method.
+   Creates new helper object to print the list of cloudlets using the a default \ :java:ref:`TextTableBuilder`\ . To use a different \ :java:ref:`TableBuilder`\ , use the alternative constructors.
 
    :param list: the list of Cloudlets that the data will be included into the table to be printed
+
+CloudletsTableBuilder
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public CloudletsTableBuilder(List<? extends Cloudlet> list, TableBuilder table)
+   :outertype: CloudletsTableBuilder
+
+   Creates new helper object to print the list of cloudlets using the a given \ :java:ref:`TableBuilder`\ .
+
+   :param list: the list of Cloudlets that the data will be included into the table to be printed
+   :param table: the \ :java:ref:`TableBuilder`\  used to build the table with Cloudlet Data
 
 Methods
 -------
@@ -80,14 +93,6 @@ build
 
    Builds the table with the data of the Cloudlet list and shows the results.
 
-createTableColumns
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void createTableColumns()
-   :outertype: CloudletsTableBuilder
-
-   Creates the columns of the table and define how the data for those columns will be got from a Cloudlet.
-
 getTable
 ^^^^^^^^
 
@@ -99,16 +104,6 @@ setCloudletList
 
 .. java:method:: protected final CloudletsTableBuilder setCloudletList(List<? extends Cloudlet> cloudletList)
    :outertype: CloudletsTableBuilder
-
-setTable
-^^^^^^^^
-
-.. java:method:: public final CloudletsTableBuilder setTable(TableBuilder table)
-   :outertype: CloudletsTableBuilder
-
-   Sets the \ :java:ref:`TableBuilder`\  used to build the table with Cloudlet Data. The default table builder is \ :java:ref:`TextTableBuilder`\ .
-
-   :param table: the \ :java:ref:`TableBuilder`\  to set
 
 setTitle
 ^^^^^^^^

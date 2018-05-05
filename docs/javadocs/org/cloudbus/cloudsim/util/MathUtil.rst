@@ -1,5 +1,7 @@
 .. java:import:: java.util Arrays
 
+.. java:import:: java.util Comparator
+
 .. java:import:: java.util List
 
 .. java:import:: org.apache.commons.math3.stat.descriptive DescriptiveStatistics
@@ -54,17 +56,6 @@ countNonZeroBeginning
    :param data: the array of numbers
    :return: the number of values different of zero at the beginning of the array
 
-countShortestRow
-^^^^^^^^^^^^^^^^
-
-.. java:method:: public static int countShortestRow(double[][] data)
-   :outertype: MathUtil
-
-   Gets the length of the shortest row in a given matrix
-
-   :param data: the data matrix
-   :return: the length of the shortest row int he matrix
-
 createLinearRegression
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -77,11 +68,20 @@ createLinearRegression
 .. java:method:: public static OLSMultipleLinearRegression createLinearRegression(double[][] x, double[] y)
    :outertype: MathUtil
 
-createWeigthedLinearRegression
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+doubleToInt
+^^^^^^^^^^^
 
-.. java:method:: public static SimpleRegression createWeigthedLinearRegression(double[] x, double[] y, double[] weigths)
+.. java:method:: public static int doubleToInt(double d)
    :outertype: MathUtil
+
+   Converts a double value to an int, using an appropriate rounding function. If the double is negative, it applies \ :java:ref:`Math.floor(double)`\  to round the number down. If it' a positive value, it applies \ :java:ref:`Math.ceil(double)`\  to round the number up. This way, a negative double will be converted to a negative int and a positive double will be converted to a positive int.
+
+   It's different from using: \ :java:ref:`Math.round(double)`\  which always rounds to the next positive integer; \ :java:ref:`Math.floor(double)`\  which always rounds down; or \ :java:ref:`Math.ceil(double)`\  which always rounds up. It applies floor for negative values and ceil for positive ones.
+
+   This method is useful to be used by \ :java:ref:`Comparator`\ s which rely on a double attribute to compare a list of objects. Since the \ :java:ref:`Comparator.compare(Object,Object)`\  method must return an int, the method being implemented here converts a double to an int value which can be used by a Comparator.
+
+   :param d: the double value to convert
+   :return: zero if the double value is zero, a negative int if the double is negative, or a positive int if the double is positive.
 
 getLoessParameterEstimates
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -160,17 +160,6 @@ iqr
    :param data: the array of numbers
    :return: the IQR
 
-listToArray
-^^^^^^^^^^^
-
-.. java:method:: public static double[] listToArray(List<? extends Number> list)
-   :outertype: MathUtil
-
-   Converts a List to array.
-
-   :param list: the list of numbers
-   :return: the double[]
-
 mad
 ^^^
 
@@ -236,17 +225,6 @@ sum
 
    :param list: the list of numbers
    :return: the double
-
-trimZeroTail
-^^^^^^^^^^^^
-
-.. java:method:: public static double[] trimZeroTail(double... data)
-   :outertype: MathUtil
-
-   Trims zeros at the end of an array.
-
-   :param data: the data array
-   :return: the trimmed array
 
 variance
 ^^^^^^^^
