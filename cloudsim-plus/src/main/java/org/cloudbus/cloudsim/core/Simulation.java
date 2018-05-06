@@ -42,6 +42,8 @@ public interface Simulation {
      */
     Simulation NULL = new SimulationNull();
 
+    boolean isTerminationTimeSet();
+
     /**
      * Aborts the simulation without finishing the processing
      * of entities in the {@link #getEntityList() entities list}, <b>what may give
@@ -333,6 +335,8 @@ public interface Simulation {
      * you must use {@link #resume()} instead of calling the current method.
      */
     double start();
+
+    boolean isTimeToTerminateSimulationUnderRequest();
 
     /**
      * Forces the termination of the simulation before it ends.

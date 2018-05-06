@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
@@ -342,6 +343,14 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     boolean isCreated();
 
     /**
+     * Checks if the VM has enough capacity to run a Cloudlet.
+     *
+     * @param cloudlet the candidate Cloudlet to run inside the VM
+     * @return true if the VM can run the Cloudlet, false otherwise
+     */
+    boolean isSuitableForCloudlet(Cloudlet cloudlet);
+
+    /**
      * Changes the created status of the Vm inside the Host.
      *
      * @param created true to indicate the VM was created inside the Host; false otherwise
@@ -625,13 +634,28 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * Gets the last time the VM was running some Cloudlet.
      * @return the last buzy time (in seconds)
      */
-    double getLastBuzyTime();
+    double getLastBusyTime();
 
     /**
      * Gets the last interval the VM was idle (without running any Cloudlet).
      * @return the last idle time interval (in seconds)
      */
     double getIdleInterval();
+
+    /**
+     * Checks if the VM is currently idle.
+     * @return true if the VM currently idle, false otherwise
+     */
+    boolean isIdle();
+
+    /**
+     * Checks if the VM has been idle for a given amount of time (in seconds).
+     * @param time the time interval to check if the VM has been idle (in seconds).
+     *             If time is zero, it will be checked if the VM is currently idle.
+     * @return true if the VM has been idle as long as the given time,
+     *         false if it's active of isn't idle as long enough
+     */
+    boolean isIdleEnough(double time);
 
     /**
      * Gets the object containing CPU utilization percentage history (between [0 and 1], where 1 is 100%).

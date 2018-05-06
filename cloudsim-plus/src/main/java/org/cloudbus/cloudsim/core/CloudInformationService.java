@@ -46,7 +46,6 @@ public class CloudInformationService extends CloudSimEntity {
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @pre name != null
-     * @post $none
      */
     CloudInformationService(CloudSim simulation) {
         super(simulation);
@@ -85,7 +84,8 @@ public class CloudInformationService extends CloudSimEntity {
 
     @Override
     public void shutdownEntity() {
-        Log.printConcatLine(super.getName(), ": Notify all CloudSim Plus entities to shutdown.");
+        super.shutdownEntity();
+        Log.printConcatLine(super.getName(), ": Notify all CloudSim Plus entities to shutdown.\n");
 
         signalShutdown(datacenterList);
         signalShutdown(cisList);
@@ -99,8 +99,6 @@ public class CloudInformationService extends CloudSimEntity {
      * Gets the list of all registered Datacenters.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     public Set<Datacenter> getDatacenterList() {
         return datacenterList;
@@ -112,9 +110,8 @@ public class CloudInformationService extends CloudSimEntity {
      *
      * @param list List of entities to notify about simulation end
      * @pre list != null
-     * @post $none
      */
-    protected void signalShutdown(final Collection<? extends SimEntity> list) {
+    private void signalShutdown(final Collection<? extends SimEntity> list) {
         // checks whether a list is empty or not
         if (list == null) {
             return;

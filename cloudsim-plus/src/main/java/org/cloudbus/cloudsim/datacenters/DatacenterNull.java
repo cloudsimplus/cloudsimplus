@@ -67,6 +67,8 @@ final class DatacenterNull implements Datacenter {
     @Override public double getPowerInKWattsHour() { return 0; }
     @Override public SimEntity setState(State state) { return SimEntity.NULL; }
     @Override public boolean isStarted() { return false; }
+    @Override public boolean isAlive() { return false; }
+    @Override public boolean isFinished() { return false; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public SimEntity setSimulation(Simulation simulation) { return this; }
     @Override public void processEvent(SimEvent ev) {/**/}

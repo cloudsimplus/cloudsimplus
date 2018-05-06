@@ -119,7 +119,7 @@ public class VmSimple implements Vm {
     private String description;
     private double startTime;
     private double stopTime;
-    private double lastBuzyTime;
+    private double lastBusyTime;
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
@@ -144,7 +144,7 @@ public class VmSimple implements Vm {
         this.description = "";
         this.startTime = -1;
         this.stopTime = -1;
-        this.lastBuzyTime = 0;
+        this.lastBusyTime = 0;
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -218,7 +218,7 @@ public class VmSimple implements Vm {
         Objects.requireNonNull(mipsShare);
 
         if(!cloudletScheduler.getCloudletExecList().isEmpty()){
-            this.lastBuzyTime = getSimulation().clock();
+            this.lastBusyTime = getSimulation().clock();
         }
         final double nextSimulationTime = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
@@ -337,13 +337,31 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public double getLastBuzyTime() {
-        return this.lastBuzyTime;
+    public double getLastBusyTime() {
+        return this.lastBusyTime;
     }
 
     @Override
     public double getIdleInterval() {
-        return getSimulation().clock() - lastBuzyTime;
+        return getSimulation().clock() - lastBusyTime;
+    }
+
+    @Override
+    public boolean isIdle() {
+        /*If the idle interval is not zero
+        * but the cloudletScheduler doesn't have any running or waiting Cloudlet,
+        * the VM has just become idle.
+        * That is way it's idle interval is zero. */
+        return getIdleInterval() > 0 || cloudletScheduler.isEmpty();
+    }
+
+    @Override
+    public boolean isIdleEnough(final double time) {
+        if(time <= 0 && !isIdle()) {
+            return false;
+        }
+
+        return getIdleInterval() >= time;
     }
 
     @Override
@@ -371,7 +389,7 @@ public class VmSimple implements Vm {
      *
      * @param mips the new mips for every VM's PE
      */
-    protected final void setMips(double mips) {
+    protected final void setMips(final double mips) {
         processor.setMips(mips);
     }
 
@@ -380,7 +398,7 @@ public class VmSimple implements Vm {
         return processor.getCapacity();
     }
 
-    private void setNumberOfPes(long numberOfPes) {
+    private void setNumberOfPes(final long numberOfPes) {
         processor.setCapacity(numberOfPes);
     }
 
@@ -398,13 +416,13 @@ public class VmSimple implements Vm {
      * Sets a new {@link Ram} resource for the Vm.
      * @param ram the Ram resource to set
      */
-    private void setRam(Ram ram) {
+    private void setRam(final Ram ram) {
         Objects.requireNonNull(ram);
         this.ram = ram;
     }
 
     @Override
-    public final Vm setRam(long ramCapacity) {
+    public final Vm setRam(final long ramCapacity) {
         if(this.isCreated()){
             throw new UnsupportedOperationException("RAM capacity can just be changed when the Vm was not created inside a Host yet.");
         }
@@ -422,13 +440,13 @@ public class VmSimple implements Vm {
      * Sets a new {@link Bandwidth} resource for the Vm.
      * @param bw the Bandwidth resource to set
      */
-    private void setBw(Bandwidth bw){
+    private void setBw(final Bandwidth bw){
         Objects.requireNonNull(bw);
         this.bw = bw;
     }
 
     @Override
-    public final Vm setBw(long bwCapacity) {
+    public final Vm setBw(final long bwCapacity) {
         if(this.isCreated()){
             throw new UnsupportedOperationException("Bandwidth capacity can just be changed when the Vm was not created inside a Host yet.");
         }
@@ -445,13 +463,13 @@ public class VmSimple implements Vm {
      * Sets a new {@link Storage} resource for the Vm.
      * @param storage the RawStorage resource to set
      */
-    private void setStorage(Storage storage){
+    private void setStorage(final Storage storage){
         Objects.requireNonNull(storage);
         this.storage = storage;
     }
 
     @Override
-    public final Vm setSize(long size) {
+    public final Vm setSize(final long size) {
         if(this.isCreated()){
             throw new UnsupportedOperationException("Storage size can just be changed when the Vm was not created inside a Host yet.");
         }
@@ -469,12 +487,12 @@ public class VmSimple implements Vm {
      *
      * @param vmm the new VMM
      */
-    protected final void setVmm(String vmm) {
+    protected final void setVmm(final String vmm) {
         this.vmm = vmm;
     }
 
     @Override
-    public final void setHost(Host host) {
+    public final void setHost(final Host host) {
         if(host == Host.NULL){
             setCreated(false);
         }
@@ -540,7 +558,13 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public final void setCreated(boolean created) {
+    public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
+        return getNumberOfPes() >= cloudlet.getNumberOfPes() &&
+               storage.getAvailableResource() >= cloudlet.getFileSize();
+    }
+
+    @Override
+    public final void setCreated(final boolean created) {
         this.created = created;
     }
 

@@ -38,6 +38,18 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
     boolean isStarted();
 
     /**
+     * Checks if the entity is alive, i.e, it's not finished.
+     * @return
+     */
+    boolean isAlive();
+
+    /**
+     * Checks if the entity is finished or not.
+     * @return
+     */
+    boolean isFinished();
+
+    /**
      * Gets the CloudSim instance that represents the simulation to each the Entity is related to.
      * @return
      */

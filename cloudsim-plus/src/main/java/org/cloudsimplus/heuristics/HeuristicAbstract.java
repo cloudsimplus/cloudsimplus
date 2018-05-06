@@ -70,7 +70,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 * @param random a random number generator
 	 * @param solutionClass reference to the generic class that will be used to instantiate heuristic solutions
 	 */
-	HeuristicAbstract(ContinuousDistribution random, Class<S> solutionClass){
+	HeuristicAbstract(final ContinuousDistribution random, final Class<S> solutionClass){
 		this.solutionClass = solutionClass;
 		this.random = random;
 		this.numberOfNeighborhoodSearchesByIteration = 1;
@@ -87,7 +87,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 * Sets the time taken to solve the heuristic.
 	 * @param solveTime the time to set (in seconds)
 	 */
-	protected void setSolveTime(double solveTime) {
+	protected void setSolveTime(final double solveTime) {
 		this.solveTime = solveTime;
 	}
 
@@ -115,7 +115,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	protected abstract void updateSystemState();
 
 	@Override
-	public int getRandomValue(int maxValue){
+	public int getRandomValue(final int maxValue){
 		final double uniform = getRandom().sample();
 
         /*always get an index between [0 and size[,
@@ -160,7 +160,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 * Sets a solution as the current one.
 	 * @param solution the solution to set as the current one.
 	 */
-	protected final void setBestSolutionSoFar(S solution) {
+	protected final void setBestSolutionSoFar(final S solution) {
         this.bestSolutionSoFar = solution;
     }
 
@@ -168,7 +168,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	 * Sets a solution as the neighbor one.
 	 * @param neighborSolution the solution to set as the neighbor one.
 	 */
-    protected final void setNeighborSolution(S neighborSolution) {
+    protected final void setNeighborSolution(final S neighborSolution) {
         this.neighborSolution = neighborSolution;
     }
 
@@ -176,7 +176,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
         return numberOfNeighborhoodSearchesByIteration;
     }
 
-	public void setNumberOfNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches) {
+	public void setNumberOfNeighborhoodSearchesByIteration(final int numberOfNeighborhoodSearches) {
         this.numberOfNeighborhoodSearchesByIteration = numberOfNeighborhoodSearches;
     }
 }

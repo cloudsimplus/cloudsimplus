@@ -17,6 +17,7 @@ import java.util.function.Predicate;
  * @see Simulation#NULL
  */
 final class SimulationNull implements Simulation {
+    @Override public boolean isTerminationTimeSet() { return false; }
     @Override public void abort() {/**/}
     @Override public void addEntity(CloudSimEntity e) {/**/}
     @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> p) {
@@ -89,6 +90,7 @@ final class SimulationNull implements Simulation {
         return false;
     }
     @Override public double start() throws RuntimeException { return 0; }
+    @Override public boolean isTimeToTerminateSimulationUnderRequest() { return false; }
     @Override public boolean terminate() {
         return false;
     }

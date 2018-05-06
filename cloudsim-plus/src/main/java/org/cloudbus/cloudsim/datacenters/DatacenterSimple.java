@@ -227,9 +227,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Processes a ping request.
      *
      * @param ev information about the event just happened
-     *
-     * @pre ev != null
-     * @post $none
      */
     protected void processPingRequest(final SimEvent ev) {
         final IcmpPacket pkt = (IcmpPacket) ev.getData();
@@ -245,10 +242,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      *
      * @param ev information about the event just happened
      * @param type event type
-     *
-     * @pre ev != null
-     * @pre type > 0
-     * @post $none
      */
     protected void processCloudlet(final SimEvent ev, final int type) {
         Cloudlet cloudlet;
@@ -290,13 +283,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
-     *
-     * @pre ev != null
-     * @post $none
      */
     protected void processCloudletSubmit(final SimEvent ev, final boolean ack) {
         final Cloudlet cl = (Cloudlet) ev.getData();
-        if (checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(cl, ack)) {
+        if (cl.isFinished()) {
+            notifyBrokerAboutFinishedCloudlet(cl, ack);
             return;
         }
 
@@ -311,8 +302,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param cloudlet cloudlet to be resumed
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
-     * @pre $none
-     * @post $none
      */
     protected void processCloudletResume(final Cloudlet cloudlet, final boolean ack) {
         final double estimatedFinishTime = cloudlet.getVm()
@@ -424,9 +413,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
-     *
-     * @pre ev != null
-     * @post $none
      */
     protected void processVmDestroy(final SimEvent ev, final boolean ack) {
         final Vm vm = (Vm) ev.getData();
@@ -437,10 +423,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             sendNow(vm.getBroker(), CloudSimTags.VM_DESTROY_ACK, vm);
         }
 
-        final String msg = cloudlets > 0 ?
-            String.format("It had a total of %d cloudlets (running + waiting).", cloudlets) :
-            "It had no running or waiting cloudlets.";
-        Log.printFormatted("%.2f: %s: %s destroyed on %s. %s\n",
+        final String msg = cloudlets == 0 ? "" : String.format("It had a total of %d cloudlets (running + waiting).", cloudlets);
+        Log.printFormatted(
+                "%.2f: %s: %s destroyed on %s. %s\n",
                 getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), msg);
     }
 
@@ -450,9 +435,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param ev information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
-     *
-     * @pre ev != null
-     * @post $none
      */
     protected void finishVmMigration(final SimEvent ev, final boolean ack) {
         if (!(ev.getData() instanceof Map.Entry<?, ?>)) {
@@ -520,17 +502,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * If it is the case, the Datacenter notifies the Broker that
      * the Cloudlet cannot be created again because it has already finished.
      *
-     * @param cl the submitted cloudlet
+     * @param cl the finished cloudlet
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
-     * @return true if the submitted cloudlet has already finished, indicating
-     * it can be created again; false otherwise
      */
-    private boolean checksIfSubmittedCloudletIsAlreadyFinishedAndNotifyBroker(final Cloudlet cl, final boolean ack) {
-        if(!cl.isFinished()){
-            return false;
-        }
-
+    private void notifyBrokerAboutFinishedCloudlet(final Cloudlet cl, final boolean ack) {
         Log.printConcatLine(
                 getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", cl.getBroker().getName(),
                 " is already completed/finished.");
@@ -547,7 +523,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         sendCloudletSubmitAckToBroker(ack, cl);
 
         sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_RETURN, cl);
-        return true;
     }
 
     /**
@@ -828,6 +803,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public void shutdownEntity() {
+        super.shutdownEntity();
         Log.printFormattedLine("%.2f: %s is shutting down...", getSimulation().clock(), getName());
     }
 

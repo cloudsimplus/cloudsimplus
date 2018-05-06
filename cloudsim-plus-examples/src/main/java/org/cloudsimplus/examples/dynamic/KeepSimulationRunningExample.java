@@ -41,6 +41,8 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -49,29 +51,32 @@ import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Shows how to keep the simulation running, even
- * if there is no event to be processed anymore.
+ * when there is no event to be processed anymore.
  * It calls the {@link Simulation#terminateAt(double)} to define
- * the time when the simulation must be terminated.
+ * the time the simulation must be terminated.
  *
  * <p>The example is useful when you want to run a simulation
  * for a specific amount of time.
  * For instance, if you want to run a simulation for 24 hours,
  * you just need to call {@code simulation.terminateAt(60*60*24)} (realize the value is in seconds).</p>
  *
- * <p>The example creates 4 Cloudlets and 2 VMs statically.
+ * <p>It creates 4 Cloudlets and 2 VMs statically.
  * These Cloudlets will take 10 seconds to finish, but
  * the simulation is set to terminate
- * only after that ({@link #TIME_TO_TERMINATE_SIMULATION}).
+ * only after the time defined in {@link #TIME_TO_TERMINATE_SIMULATION}.
+ *
  * This way, the simulation keeps waiting for dynamically
- * arrived events (such as creation of VMs and Cloudlets in runtime).
+ * arrived events (such as runtime creation of VMs and Cloudlets).
  * </p>
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
- * to enable monitoring the simulation and dynamically create Cloudlets and VMs at runtime.
+ * to enable monitoring the simulation and dynamically creating Cloudlets and VMs at runtime.
  * It relies on
  * <a href="https://docs.oracle.com/javase/tutorial/java/javaOO/methodreferences.html">Java 8 Method References</a>
  * to set a method to be called for {@link Simulation#addOnClockTickListener(EventListener) onClockTick events}.
@@ -79,7 +84,7 @@ import java.util.List;
  * </p>
  *
  * <p>Since the simulation was set to keep waiting for new events
- * until a defined time, the simulation clock will be updated
+ * until a defined time, the clock will be updated
  * even if no event arrives, to simulate time passing.
  * Check the {@link Simulation#terminateAt(double)} for details.
  * </p>
@@ -96,19 +101,19 @@ public class KeepSimulationRunningExample {
     /**
      * @see #createDynamicCloudletAndVm(EventInfo)
      */
-    private static final int TIME_TO_CREATE_NEW_CLOUDLET = 15;
+    private static final double TIME_TO_CREATE_NEW_CLOUDLET = 15;
 
     /**
      * @see Simulation#terminateAt(double)
      */
-    private static final int TIME_TO_TERMINATE_SIMULATION = TIME_TO_CREATE_NEW_CLOUDLET*2;
+    private static final double TIME_TO_TERMINATE_SIMULATION = TIME_TO_CREATE_NEW_CLOUDLET*2;
 
     /**
      * @see Datacenter#getSchedulingInterval()
      */
     private static final int SCHEDULING_INTERVAL = 1;
 
-    private static final int HOSTS = 1;
+    private static final int HOSTS = 3;
     private static final int HOST_PES = 8;
 
     private static final int VMS = 2;
@@ -128,16 +133,17 @@ public class KeepSimulationRunningExample {
         new KeepSimulationRunningExample();
     }
 
-    public KeepSimulationRunningExample() {
+    private KeepSimulationRunningExample() {
         simulation = new CloudSim();
         simulation.terminateAt(TIME_TO_TERMINATE_SIMULATION);
         datacenter0 = createDatacenter();
 
-        //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
         broker0 = new DatacenterBrokerSimple(simulation);
 
-        vmList = createVms();
+        vmList = new ArrayList<>(VMS);
+        createVms();
         cloudletList = createCloudlets();
+        broker0.setVmDestructionDelayFunction(vm -> 0.0);
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
@@ -185,18 +191,15 @@ public class KeepSimulationRunningExample {
     /**
      * Creates a list of VMs.
      */
-    private List<Vm> createVms() {
-        final List<Vm> list = new ArrayList<>(VMS);
+    private void createVms() {
         for (int i = 0; i < VMS; i++) {
-            list.add(createVm());
+            vmList.add(createVm(VM_PES));
         }
-
-        return list;
     }
 
-    private Vm createVm() {
-        return new VmSimple(1000, VM_PES)
-            .setRam(512).setBw(1000).setSize(10000)
+    private Vm createVm(final int pes) {
+        return new VmSimple(vmList.size(),1000, pes)
+            .setRam(1000).setBw(1000).setSize(10000)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
@@ -213,10 +216,13 @@ public class KeepSimulationRunningExample {
     }
 
     private Cloudlet createCloudlet() {
+        UtilizationModel um = new UtilizationModelDynamic(0.2);
         return new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES)
             .setFileSize(1024)
             .setOutputSize(1024)
-            .setUtilizationModel(new UtilizationModelFull());
+            .setUtilizationModelCpu(new UtilizationModelFull())
+            .setUtilizationModelRam(um)
+            .setUtilizationModelBw(um);
     }
 
     /**
@@ -226,7 +232,7 @@ public class KeepSimulationRunningExample {
     private void createDynamicCloudletAndVm(EventInfo evt) {
         if((int)evt.getTime() == TIME_TO_CREATE_NEW_CLOUDLET){
             Log.printFormattedLine("\n# Dynamically creating 1 Cloudlet and 1 VM at time %.2f\n", evt.getTime());
-            Vm vm = createVm();
+            Vm vm = createVm(VM_PES*2);
             vmList.add(vm);
             Cloudlet cloudlet = createCloudlet();
             cloudletList.add(cloudlet);

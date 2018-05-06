@@ -363,8 +363,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
         /** Calls the Function that finds a Host for a VM.
          *  It doesn't call the {@link #findHostForVm(Vm)} directly
-         *  since that method is the default implementation.
-         *  However, such an implementation can be changed by
+         *  because that method is the default implementation.
+         *  However, such an implementation may have been changed by
          *  calling {@link VmAllocationPolicy#setFindHostForVmFunction(BiFunction)}.
          */
         final Optional<Host> optional = findHostForVmFunction.apply(this, vm);

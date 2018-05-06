@@ -107,7 +107,7 @@ public class CloudletToVmMappingSimulatedAnnealing
     }
 
     /**
-     * @return a random Vm from the  {@link #getVmList() available Vm's list}.
+     * @return a random Vm from the {@link #getVmList() available Vm's list}.
      */
     private Vm getRandomVm() {
         final int i = getRandomValue(vmList.size());

@@ -278,6 +278,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     @Override
     public void shutdownEntity() {
+        super.shutdownEntity();
         Log.printConcatLine(getName(), " is shutting down...");
     }
 

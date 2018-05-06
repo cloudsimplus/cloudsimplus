@@ -120,11 +120,6 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         this.currentUtilizationTime = 0;
         this.setCurrentUtilization(initialUtilization);
 
-        /**
-         * Creates a default lambda function that doesn't increment the utilization along the time.
-         * The {@link #setUtilizationUpdateFunction(Function)} should be used to defined
-         * a different increment function.
-         */
         utilizationUpdateFunction = um -> um.currentUtilization;
     }
 

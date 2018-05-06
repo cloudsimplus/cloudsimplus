@@ -41,7 +41,7 @@ public interface DatacenterBroker extends SimEntity {
 
     /**
      * A default delay value to indicate that <b>no</b> VM should be
-     * immediately destroyed after it becomes idle.
+     * immediately destroyed after it becoming idle.
      *
      * <p>This is used as the default value returned by the {@link #getVmDestructionDelayFunction()}
      * if a {@link Function} is not set.</p>
@@ -359,4 +359,16 @@ public interface DatacenterBroker extends SimEntity {
      * @see Vm#getIdleInterval()
      */
     DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function);
+
+    /**
+     * Defines the default policy used to select a Vm to host a Cloudlet
+     * that is waiting to be created.
+     * <br>It applies a Round-Robin policy to cyclically select
+     * the next Vm from the list of waiting VMs.
+     *
+     * @param cloudlet the cloudlet that needs a VM to be placed into
+     * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
+     * no suitable VM was found
+     */
+    Vm defaultVmMapper(Cloudlet cloudlet);
 }

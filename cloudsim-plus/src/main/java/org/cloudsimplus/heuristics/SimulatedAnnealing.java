@@ -39,9 +39,9 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * <p>The algorithm basically works as follows:
  * <ol>
  *  <li>Starts generating a random solution as you wish;</li>
- *  <li>Computes its fitness using some function defined by the developer implementing the heuristic;</li>
- *  <li>Generates a neighbor random solution from the current solution and compute its fitness;</li>
- *  <li>Assess the neighbor and the current solution:
+ *  <li>Computes its fitness using some function (defined by the developer implementing the heuristic);</li>
+ *  <li>Generates a neighbor random solution from the current solution and computes its fitness;</li>
+ *  <li>Assesses the neighbor and current solution (the conditions below are ensured by the {@link #getAcceptanceProbability()} method):
  *      <ul>
  *          <li>{@code if neighbor.getFitness() > current.getFitness()} then move to the new solution;</li>
  *          <li>{@code if neighbor.getFitness() < current.getFitness()} then randomly decide if move to the new solution;</li>
@@ -92,7 +92,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
      * <p>It is used the Boltzmann distribution to define the probability
      * of a worse solution (considering its cost)
      * to be accepted or not in order to avoid local minima.
-     * The Boltzmann factor computed also ensures that better solutions are always accepted.
+     * The computed Boltzmann factor also ensures that better solutions are always accepted.
      *
      * The Boltzmann Constant has different values depending of the used unit.
      * In this case, it was used the natural unit of information.</p>

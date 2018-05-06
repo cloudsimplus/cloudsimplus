@@ -998,6 +998,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public boolean isEmpty() {
-        return getCloudletList().isEmpty();
+        return cloudletExecList.isEmpty() && cloudletWaitingList.isEmpty();
     }
 }

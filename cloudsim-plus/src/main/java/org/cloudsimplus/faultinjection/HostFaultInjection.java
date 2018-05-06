@@ -651,6 +651,8 @@ public class HostFaultInjection extends CloudSimEntity {
     /**
      * Gets the average of the time (in minutes) all failed VMs belonging to a broker took to recovery
      * from failure.
+     * See the method {@link #createVmCloneIfAllVmsDestroyed(DatacenterBroker, Vm)}
+     * to understand the logic of the values in the recovery times map.
      * @return
      */
     private double totalVmsRecoveryTimeInMinutes(final DatacenterBroker broker) {
@@ -660,10 +662,6 @@ public class HostFaultInjection extends CloudSimEntity {
                     .filter(entry -> broker.equals(entry.getKey().getBroker()))
                     .map(Map.Entry::getValue);
 
-        /**
-         * See the method {@link #createVmCloneIfAllVmsDestroyed(DatacenterBroker, Vm)}
-         * to understand the logic of the values in the recovery times map.
-         */
         final double seconds = stream.map(rt -> rt >= 0 ? rt : getSimulation().clock() - Math.abs(rt)).reduce(0.0, Double::sum);
 
         return (long)(seconds/60.0);
@@ -853,9 +851,6 @@ public class HostFaultInjection extends CloudSimEntity {
     public Host getLastFailedHost() {
         return lastFailedHost;
     }
-
-    @Override
-    public void shutdownEntity() {/**/}
 
     /**
      * Gets a Pseudo Random Number used to give a

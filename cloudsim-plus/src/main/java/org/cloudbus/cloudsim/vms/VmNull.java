@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -128,8 +129,10 @@ final class VmNull implements Vm {
     @Override public double getStopTime() { return 0; }
     @Override public double getTotalExecutionTime() { return 0; }
     @Override public Vm setStopTime(double stopTime) { return this; }
-    @Override public double getLastBuzyTime() { return 0; }
+    @Override public double getLastBusyTime() { return 0; }
     @Override public double getIdleInterval() { return 0; }
+    @Override public boolean isIdle() { return false; }
+    @Override public boolean isIdleEnough(double time) { return false; }
     @Override public UtilizationHistory getUtilizationHistory() { return UtilizationHistory.NULL; }
     @Override public String getVmm() {
         return "";
@@ -137,6 +140,7 @@ final class VmNull implements Vm {
     @Override public boolean isCreated() {
         return false;
     }
+    @Override public boolean isSuitableForCloudlet(Cloudlet cloudlet) { return false; }
     @Override public boolean isInMigration() {
         return false;
     }
