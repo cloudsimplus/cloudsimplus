@@ -213,7 +213,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
 
         try {
-            return delayMatrix.getDelay(map.get(srcID), map.get(destID));
+            return delayMatrix.getDelay(map.getOrDefault(srcID, -1), map.getOrDefault(destID, -1));
         } catch (ArrayIndexOutOfBoundsException e) {
             return 0.0;
         }
