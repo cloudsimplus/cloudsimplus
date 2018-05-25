@@ -131,6 +131,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
             .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
             .lines()
             .filter(l -> !l.startsWith("#"))
+            .filter(l -> !l.trim().isEmpty())
             .collect(toList());
     }
 

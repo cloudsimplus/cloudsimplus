@@ -54,6 +54,8 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -324,12 +326,15 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     public Cloudlet createCloudlet(final int id) {
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
         final long length = CLOUDLET_LENGTHS[i];
+        final UtilizationModel um = new UtilizationModelDynamic(UtilizationModel.Unit.ABSOLUTE, 50);
 
         final Cloudlet c
             = new CloudletSimple(id, length, CLOUDLET_PES)
             .setFileSize(CLOUDLET_FILESIZE)
             .setOutputSize(CLOUDLET_OUTPUTSIZE)
-            .setUtilizationModel(new UtilizationModelFull());
+            .setUtilizationModelCpu(new UtilizationModelFull())
+            .setUtilizationModelRam(um)
+            .setUtilizationModelBw(um);
         return c;
     }
 
