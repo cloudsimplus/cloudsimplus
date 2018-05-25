@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.testbeds.sla.tasktimecompletion;
+package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -58,7 +58,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import static java.util.Comparator.comparingInt;
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWorkLoadMinimizationRunner.*;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadMinimizationRunner.*;
 
 import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.slametrics.SlaContract;
@@ -278,10 +278,10 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
     }
 
     /**
-     * Computes the TaskTimeCompletion average for all finished Cloudlets on this
+     * Computes the Task Completion Time average for all finished Cloudlets on this
      * experiment.
      *
-     * @return the TaskTimeCompletion average
+     * @return the Task Completion Time average
      */
     double getAverageCloudletCompletionTime() {
         final SummaryStatistics cloudletCompletionTime = new SummaryStatistics();

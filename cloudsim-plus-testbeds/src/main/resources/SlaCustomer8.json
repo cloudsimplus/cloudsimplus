@@ -1,7 +1,7 @@
 {
   "metrics": [
     {
-      "name": "TaskTimeCompletion",
+      "name": "TaskCompletionTime",
       "dimensions": [
         {
           "name": "minValue",

@@ -21,15 +21,13 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.testbeds.sla.tasktimecompletion;
+package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import static java.util.Comparator.comparingDouble;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -57,10 +55,10 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.testbeds.sla.VmCost;
 
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWithoutMinimizationRunner.CLOUDLETS;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWithoutMinimizationRunner.CLOUDLET_LENGTHS;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWithoutMinimizationRunner.VMS;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWithoutMinimizationRunner.VM_PES;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.CLOUDLETS;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.CLOUDLET_LENGTHS;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.VMS;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.VM_PES;
 
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -228,31 +226,31 @@ public class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends Sim
     }
 
     /**
-     * Computes the TaskTimeCompletion average for all finished Cloudlets on this
+     * Computes the Task Completion Time average for all finished Cloudlets on this
      * experiment.
      *
-     * @return the TaskTimeCompletion average
+     * @return the Task Completion Time average
      */
-    double getCloudletsTaskTimeCompletionAverage() {
-        SummaryStatistics cloudletTaskTimeCompletion = new SummaryStatistics();
+    double getCloudletsTaskCompletionTimeAverage() {
+        SummaryStatistics cloudletTaskCompletionTime = new SummaryStatistics();
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
         broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .forEach(cloudletTaskTimeCompletion::addValue);
+                .forEach(cloudletTaskCompletionTime::addValue);
 
         Log.printFormattedLine(
-                "\t\t\n TaskTimeCompletion simulation: %.2f \n TaskTimeCompletion contrato SLA: %.2f \n",
-                cloudletTaskTimeCompletion.getMean(), getCustomerMaxTaskCompletionTime());
-        return cloudletTaskTimeCompletion.getMean();
+                "\t\t\nTaskCompletionTime simulation: %.2f \n TaskCompletionTime SLA contract: %.2f \n",
+                cloudletTaskCompletionTime.getMean(), getCustomerMaxTaskCompletionTime());
+        return cloudletTaskCompletionTime.getMean();
     }
 
     private double getCustomerMaxTaskCompletionTime() {
         return contract.getTaskCompletionTimeMetric().getMaxDimension().getValue();
     }
 
-    double getPercentageOfCloudletsMeetingTaskTimeCompletion() {
+    double getPercentageOfCloudletsMeetingTaskCompletionTime() {
         DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
@@ -327,7 +325,7 @@ public class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends Sim
                 = new CloudletTaskCompletionTimeWithoutMinimizationExperiment(1);
         exp.setVerbose(true);
         exp.run();
-        exp.getCloudletsTaskTimeCompletionAverage();
-        exp.getPercentageOfCloudletsMeetingTaskTimeCompletion();
+        exp.getCloudletsTaskCompletionTimeAverage();
+        exp.getPercentageOfCloudletsMeetingTaskCompletionTime();
     }
 }

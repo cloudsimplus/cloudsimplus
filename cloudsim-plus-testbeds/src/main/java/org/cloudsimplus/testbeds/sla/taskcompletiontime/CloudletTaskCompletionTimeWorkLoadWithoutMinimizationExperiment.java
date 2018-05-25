@@ -26,7 +26,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package org.cloudsimplus.testbeds.sla.tasktimecompletion;
+package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -57,8 +57,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VMS;
-import static org.cloudsimplus.testbeds.sla.tasktimecompletion.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VM_PES;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VMS;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VM_PES;
 
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -195,24 +195,24 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment ext
     }
 
     /**
-     * Computes the TaskTimeCompletion average for all finished Cloudlets on this
+     * Computes the Task Completion Time average for all finished Cloudlets on this
      * experiment.
      *
-     * @return the TaskTimeCompletion average
+     * @return the Task Completion Time average
      */
-    double getCloudletsTaskTimeCompletionAverage() {
-        final SummaryStatistics cloudletTaskTimeCompletion = new SummaryStatistics();
+    double getCloudletsTaskCompletionTimeAverage() {
+        final SummaryStatistics cloudletTaskCompletionTime = new SummaryStatistics();
         final DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
         broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .forEach(cloudletTaskTimeCompletion::addValue);
+                .forEach(cloudletTaskCompletionTime::addValue);
 
-        return cloudletTaskTimeCompletion.getMean();
+        return cloudletTaskCompletionTime.getMean();
     }
 
-    double getPercentageOfCloudletsMeetingTaskTimeCompletion() {
+    double getPercentageOfCloudletsMeetingTaskCompletionTime() {
         final DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
@@ -278,8 +278,8 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment ext
                 = new CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment(1);
         exp.setVerbose(true);
         exp.run();
-        exp.getCloudletsTaskTimeCompletionAverage();
-        exp.getPercentageOfCloudletsMeetingTaskTimeCompletion();
+        exp.getCloudletsTaskCompletionTimeAverage();
+        exp.getPercentageOfCloudletsMeetingTaskCompletionTime();
         exp.getRatioOfExistingVmPesToRequiredCloudletPes();
         exp.waitTimeAverage(exp.getCloudletList());
     }

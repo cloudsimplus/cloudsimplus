@@ -21,45 +21,34 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.cloudsimplus.testbeds.sla.tasktimecompletion;
+package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
  *
  * @author raysaoliveira
  */
-public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWithoutMinimizationExperiment> {
-
-    /**
-     * Different lengths that will be randomly assigned to created Cloudlets.
-     */
-    static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
-    public static final int[] VM_PES = {2, 4};
+public class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWorkLoadMinimizationExperiment> {
+    static final int[] VM_PES = {2, 4, 6};
+    static final int[] VM_MIPS = {10000, 15000, 28000};
     public static final int VMS = 30;
-    public static final int CLOUDLETS = 90;
+    public static final int CLOUDLETS = 300;
 
     /**
-     * The TaskTimeCompletion average for all the experiments.
+     * The Task Completion Time average for all the experiments.
      */
-    private List<Double> cloudletTaskTimesCompletion;
+    private List<Double> cloudletsCompletionTime;
 
-    /**
-     * The percentage of cloudlets meeting TaskTimeCompletion average for all the
-     * experiments.
+     /**
+     * The percentage of cloudlets meeting task completion time average for all the experiments.
      */
-    private List<Double> percentageOfCloudletsMeetingTaskTimesCompletion;
+    private List<Double> percentOfCloudletsMeetingCompletionTime;
 
     /**
      * Amount of cloudlet PE per PE of vm.
@@ -67,14 +56,9 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
     private List<Double> ratioOfVmPesToRequiredCloudletPesList;
 
     /**
-     * Average of the cost total
-     */
-    private List<Double> averageTotalCostSimulation;
-
-    /**
      * Indicates if each experiment will output execution logs or not.
      */
-    private final boolean experimentVerbose = false;
+    private static final boolean experimentVerbose = false;
 
     /**
      * Starts the execution of the experiments the number of times defines in
@@ -83,34 +67,30 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        new CloudletTaskCompletionTimeWithoutMinimizationRunner(true, 1475098589732L)
+        new CloudletTaskCompletionTimeWorkLoadMinimizationRunner(true, 1475098589732L)
                 .setSimulationRuns(300)
                 .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
 
-    CloudletTaskCompletionTimeWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+    private CloudletTaskCompletionTimeWorkLoadMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
-        cloudletTaskTimesCompletion = new ArrayList<>();
-        percentageOfCloudletsMeetingTaskTimesCompletion = new ArrayList<>();
+        cloudletsCompletionTime = new ArrayList<>();
+        percentOfCloudletsMeetingCompletionTime = new ArrayList<>();
         ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
-        averageTotalCostSimulation = new ArrayList<>();
     }
 
     @Override
-    protected CloudletTaskCompletionTimeWithoutMinimizationExperiment createExperiment(int i) {
-        CloudletTaskCompletionTimeWithoutMinimizationExperiment exp
-                = new CloudletTaskCompletionTimeWithoutMinimizationExperiment(i, this);
-        ContinuousDistribution randCloudlet = createRandomGen(i);
-        ContinuousDistribution randVm = createRandomGen(i);
+    protected CloudletTaskCompletionTimeWorkLoadMinimizationExperiment createExperiment(int i) {
+        final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment exp
+                = new CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(i, this);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 
     @Override
-    protected void setup() {
-    }
+    protected void setup() {}
 
     /**
      * Method automatically called after every experiment finishes running. It
@@ -119,22 +99,19 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletTaskCompletionTimeWithoutMinimizationExperiment experiment) {
-        cloudletTaskTimesCompletion.add(experiment.getCloudletsTaskTimeCompletionAverage());
-        percentageOfCloudletsMeetingTaskTimesCompletion.add(
-                experiment.getPercentageOfCloudletsMeetingTaskTimeCompletion());
+    private void afterExperimentFinish(CloudletTaskCompletionTimeWorkLoadMinimizationExperiment experiment) {
+        cloudletsCompletionTime.add(experiment.getAverageCloudletCompletionTime());
+        percentOfCloudletsMeetingCompletionTime.add(
+                experiment.getPercentageOfCloudletsMeetingCompletionTime());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
-        averageTotalCostSimulation.add(experiment.getTotalCostPrice());
     }
 
     @Override
     protected Map<String, List<Double>> createMetricsMap() {
         final Map<String, List<Double>> map = new HashMap<>();
-        map.put("Cloudlet TaskTimeCompletion", cloudletTaskTimesCompletion);
-        map.put("Percentage Of Cloudlets Meeting TaskTimesCompletion", percentageOfCloudletsMeetingTaskTimesCompletion);
+        map.put("Task Completion Time", cloudletsCompletionTime);
+        map.put("Percentage Of Cloudlets Meeting Task Completion Time", percentOfCloudletsMeetingCompletionTime);
         map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
-        map.put("Average of Total Cost of simulation", averageTotalCostSimulation);
-
         return map;
     }
 
@@ -149,13 +126,11 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
             System.out.printf("\tNumber of Batches for Batch Means Method: %d", getNumberOfBatches());
             System.out.printf("\tBatch Size: %d\n", batchSizeCeil());
         }
-        System.out.printf("\nSimulated Annealing Parameters\n");
     }
 
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
         System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
-
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
@@ -170,8 +145,9 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
         final double lower = stats.getMean() - intervalSize;
         final double upper = stats.getMean() + intervalSize;
         System.out.printf(
-                "\tTaskTimeCompletion mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
+                "\tTask Completion Time mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
                 stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.2f \n", stats.getStandardDeviation());
     }
+
 }

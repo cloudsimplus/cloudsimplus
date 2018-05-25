@@ -191,8 +191,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * simulate sending response data to the user.
      *
      * @return the Cloudlet output file size (in bytes)
-     * @pre $none
-     * @post $result >= 1
      */
     long getOutputSize();
 
@@ -200,8 +198,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * Gets the execution status of this Cloudlet.
      *
      * @return the Cloudlet status
-     * @pre $none
-     * @post $none
      *
      */
     Status getStatus();

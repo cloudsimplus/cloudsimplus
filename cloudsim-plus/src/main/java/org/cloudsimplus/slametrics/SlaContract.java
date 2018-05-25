@@ -36,6 +36,8 @@ import java.util.List;
  * Represents a SLA Contract containing a list of metrics.
  * It follows the standard used by
  * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">Amazon Cloudwatch</a>.
+ * <p>The constants inside the class define the names
+ * of SLA Metrics supported in the JSON SLA Contract format.</p>
  *
  * <p>Instances of this class can be created from a JSON file
  * using the {@link #getInstance(InputStream)} or
@@ -48,12 +50,11 @@ import java.util.List;
  */
 public class SlaContract {
     private static final String AVAILABILITY = "Availability";
-    private static final String TASK_COMPLETION_TIME = "TaskTimeCompletion";
+    private static final String TASK_COMPLETION_TIME = "TaskCompletionTime";
     private static final String CPU_UTILIZATION = "CpuUtilization";
     private static final String WAIT_TIME = "WaitTime";
     private static final String PRICE = "Price";
     private static final String FAULT_TOLERANCE_LEVEL = "FaultToleranceLevel";
-
 
     private List<SlaMetric> metrics;
 
