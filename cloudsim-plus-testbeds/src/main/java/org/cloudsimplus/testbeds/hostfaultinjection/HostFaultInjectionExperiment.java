@@ -151,7 +151,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     private HostFaultInjectionExperiment(int index, ExperimentRunner runner, long seed) {
         super(index, runner, seed);
-        setNumBrokersToCreate((int)numberSlaContracts());
+        setNumBrokersToCreate(readContractList().size());
         setAfterScenarioBuild(exp -> createFaultInjectionForHosts(getDatacenter0()));
         this.randCloudlet = new UniformDistr(this.getSeed());
         contractsMap = new HashMap<>();
@@ -174,19 +174,12 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
         }
     }
 
-    private long numberSlaContracts()  {
-        try {
-            return readContractList().size();
-        } catch (FileNotFoundException e) {
-            return 0;
-        }
-    }
-
-    private List<String> readContractList() throws FileNotFoundException {
+    private List<String> readContractList() {
         return ResourceLoader
                 .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
                 .lines()
                 .filter(l -> !l.startsWith("#"))
+                .filter(l -> !l.trim().isEmpty())
                 .collect(toList());
     }
 
