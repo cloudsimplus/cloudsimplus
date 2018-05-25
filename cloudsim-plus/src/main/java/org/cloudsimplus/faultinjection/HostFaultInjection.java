@@ -121,6 +121,9 @@ import static java.util.stream.Collectors.*;
  * </ul>
  * </p>
  *
+ * <p>For more details, check
+ * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
+ *
  * @author raysaoliveira
  * @since CloudSim Plus 1.2.0
  * @see <a href="https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/">SAP Blog: Availability vs Reliability</a>

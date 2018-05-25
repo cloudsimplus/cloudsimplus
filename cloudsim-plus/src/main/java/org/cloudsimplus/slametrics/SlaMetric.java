@@ -31,6 +31,9 @@ import java.util.List;
  * Follows the standard defined by
  * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">AWS Cloudwatch</a>.
  *
+ * <p>For more details, check
+ * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
+ *
  * @author raysaoliveira
  */
 public class SlaMetric {

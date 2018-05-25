@@ -50,7 +50,6 @@ import org.cloudbus.cloudsim.util.*;
 import org.cloudbus.cloudsim.utilizationmodels.*;
 import org.cloudbus.cloudsim.vms.*;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.listeners.EventInfo;
 
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
@@ -60,9 +59,11 @@ import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.*;
 
 /**
- * An experiment of dynamic creation of vm at runtime, respecting the cpu usage
- * limit and the free number of each VM, thus selecting an "ideal" VM for a
- * given cloudlet, which will then minimize Cloudlet Task Completion Time.
+ * An experiment that tries to minimize task completion time,
+ * where workload imposed by Cloudlets is defined randomly.
+ *
+ * <p>For more details, check
+ * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
  *
  * @author raysaoliveira
  */
@@ -87,7 +88,6 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
     private static final String SLA_CONTRACTS_LIST = "sla-files.txt";
     private Map<DatacenterBroker, SlaContract> contractsMap;
 
-    private double cpuUtilizationSlaContract;
     private double taskCompletionTimeSlaContract;
 
     /**
@@ -139,17 +139,6 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
         return getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
     }
 
-    private void printVmsCpuUsage(EventInfo eventInfo) {
-        DatacenterBroker broker0 = getFirstBroker();
-        broker0.getVmExecList().sort(Comparator.comparingInt(Vm::getId));
-
-        broker0.getVmExecList().forEach(vm
-                -> Log.printFormattedLine("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
-                        eventInfo.getTime(), vm.getId(),
-                        vm.getCpuPercentUsage(), cpuUtilizationSlaContract)
-        );
-    }
-
     @Override
     public final void printResults() {
         final DatacenterBroker broker0 = getFirstBroker();
@@ -164,15 +153,14 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
     @Override
     protected List<Cloudlet> createCloudlets() {
         cloudletList = new ArrayList<>(CLOUDLETS);
-        DatacenterBroker broker0 = getFirstBroker();
         for (int i = 0; i < CLOUDLETS; i++) {
-            cloudletList.add(createCloudlet(broker0));
+            cloudletList.add(createCloudlet());
         }
 
         return cloudletList;
     }
 
-    private Cloudlet createCloudlet(DatacenterBroker broker) {
+    private Cloudlet createCloudlet() {
         final int id = createdCloudlets++;
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
         final int p = (int) (randCloudletPes.sample() * CLOUDLET_PES.length);
@@ -349,11 +337,11 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
         taskCompletionTimeSlaContract = contractsMap.get(broker).getTaskCompletionTimeMetric().getMaxDimension().getValue();
-        double totalOfcloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
+        double totalOfCloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= taskCompletionTimeSlaContract)
                 .count();
-        return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
+        return (totalOfCloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
     }
 
     private double getSumPesVms() {
@@ -387,8 +375,6 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
      * A main method just for test purposes.
      *
      * @param args
-     * @throws FileNotFoundException
-     * @throws IOException
      */
     public static void main(String[] args) {
         final CloudletTaskCompletionTimeMinimizationExperiment exp =

@@ -66,6 +66,11 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
 
 /**
+ * An experiment that tries to minimize task completion time,
+ * where tasks are created from a workload file.
+ *
+ * <p>For more details, check
+ * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
  *
  * @author raysaoliveira
  */
@@ -81,8 +86,8 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
     /**
      * The file containing the SLA Contract in JSON format.
      */
-    public static final String SLA_CONTRACTS_LIST = "sla-files.txt";
-    public Map<DatacenterBroker, SlaContract> contractsMap;
+    private static final String SLA_CONTRACTS_LIST = "sla-files.txt";
+    private Map<DatacenterBroker, SlaContract> contractsMap;
 
     /**
      * Sorts the Cloudlets before submitting them to the Broker, so that

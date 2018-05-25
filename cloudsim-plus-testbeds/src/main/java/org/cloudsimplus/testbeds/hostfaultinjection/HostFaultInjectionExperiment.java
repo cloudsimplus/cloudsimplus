@@ -25,16 +25,6 @@
  */
 package org.cloudsimplus.testbeds.hostfaultinjection;
 
-import static org.cloudsimplus.testbeds.hostfaultinjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
-import static java.util.Comparator.comparingDouble;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
-
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.*;
-
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -63,10 +53,18 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.faultinjection.VmCloner;
 import org.cloudsimplus.faultinjection.VmClonerSimple;
-import org.cloudsimplus.vmtemplates.AwsEc2Template;
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
+import org.cloudsimplus.vmtemplates.AwsEc2Template;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.*;
+
+import static java.util.Comparator.comparingDouble;
+import static java.util.stream.Collectors.toList;
+import static org.cloudsimplus.testbeds.hostfaultinjection.HostFaultInjectionRunner.CLOUDLET_LENGTHS;
 
 /**
  * An experiment using a {@link HostFaultInjection} to generate random Host failures.
@@ -76,6 +74,9 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
  *
  * The experiment assesses if the SLA contract of the customer (represented by a {@link DatacenterBroker}
  * is being met or not.
+ *
+ * <p>For more details, check
+ * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
  *
  * @author raysaoliveira
  */
@@ -580,8 +581,6 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * A main method just for test purposes.
      *
      * @param args
-     * @throws FileNotFoundException
-     * @throws IOException
      */
     public static void main(String[] args) {
         final HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(System.currentTimeMillis());

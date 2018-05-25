@@ -31,6 +31,8 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
+ * Runs the {@link CloudletTaskCompletionTimeWorkLoadMinimizationExperiment} the number of
+ * times defines by {@link #getSimulationRuns()} and compute statistics.
  *
  * @author raysaoliveira
  */

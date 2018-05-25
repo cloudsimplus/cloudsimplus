@@ -36,6 +36,9 @@ import java.nio.file.Paths;
  * This class enables reading a template from a JSON file, containing actual configurations for VMs
  * available in <a href="http://aws.amazon.com/">Amazon Web Services</a>.
  *
+ * <p>For more details, check
+ * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
+ *
  * @author raysaoliveira
  * @see #getInstance(String)
  */

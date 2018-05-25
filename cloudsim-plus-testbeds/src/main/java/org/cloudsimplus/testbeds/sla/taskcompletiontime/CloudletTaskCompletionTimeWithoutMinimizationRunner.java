@@ -37,6 +37,8 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
+ * Runs the {@link CloudletTaskCompletionTimeWithoutMinimizationExperiment} the number of
+ * times defines by {@link #getSimulationRuns()} and compute statistics.
  *
  * @author raysaoliveira
  */

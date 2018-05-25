@@ -46,6 +46,9 @@ import java.util.List;
  * of this class using its default constructor.
  * This one is just used by the JSON parsing library.</p>
  *
+ * <p>For more details, check
+ * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
+ *
  * @author raysaoliveira
  */
 public class SlaContract {

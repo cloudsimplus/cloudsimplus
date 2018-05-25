@@ -38,6 +38,9 @@ import static java.util.stream.Collectors.toMap;
  * Runs the {@link HostFaultInjectionExperiment} the number of
  * times defines by {@link #getSimulationRuns()} and compute statistics.
  *
+ * <p>For more details, check
+ * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
+ *
  * @author raysaoliveira
  */
 public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment> {
