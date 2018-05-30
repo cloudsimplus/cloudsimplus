@@ -46,8 +46,8 @@
  */
 package org.cloudsimplus.examples.migration;
 
-import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigrationBestFitStaticThreshold;
+import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigrationStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -77,21 +77,37 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * An example showing how to create 1 Datacenter with 5 hosts,
- * 3 VMs and 1 cloudlet by VM and perform VM migration using
+ * An example showing how to create 1 Datacenter with: 5 hosts
+ * with increasing number of PEs (starting at 4 PEs for the 1st host); 3 VMs with 2 PEs each one;
+ * and 1 cloudlet by VM, each one having the same number of PEs from its VM.
+ *
+ *
+ * <p>The example then performs VM migration using
  * a {@link VmAllocationPolicyMigrationBestFitStaticThreshold}.
  * Such a policy migrates VMs based on
- * static host CPU utilization threshold.
- * The VmAllocationPolicy used in this example ignores power usage of
- * Hosts. This way, it isn't required to set a PowerModel for Hosts.
+ * a static host CPU utilization threshold.
+ * The VmAllocationPolicy used in this example ignores power usage of Hosts.
+ * This way, it isn't required to set a PowerModel for Hosts.</p>
+ *
+ * <p>According to the allocation policy, VM 0 will be allocated to Host 0.
+ * Since Host 0 has just 4 PEs, allocating a second VM into it
+ * would cause overload.
+ * Each cloudlet will start using 80% of its VM CPU.
+ * As the VM 0 will run one Cloudlet and requires just 2 PEs from Host 0 (which has 4 PEs),
+ * the initial Host CPU usage will be just 40% (1 VM using 80% of 2 PEs from a total of 4 Host PEs = 0.8*2 / 4).
+ * Allocating a second VM into Host 0 would double the Host CPU utilization,
+ * overreaching its upper utilization threshold (defined as 70%).
+ * This way, VMs 1 and 2 are allocated to Host 1 which has 5 PEs.
+ * Host 1 will have an initial CPU usage of 64%
+ * (2 VMs using 80% of 2 PEs from a total of 5 Host PEs = 2*0.8*2 / 5).</p>
  *
  * <p>The {@link VmAllocationPolicyMigrationBestFitStaticThreshold}
  * allows the definition of static under and over CPU utilization thresholds to
  * enable VM migration.
  * The example uses a {@link UtilizationModelDynamic} that defines the CPU usage of cloudlets
- *  increases along the simulation time.</p>
+ * increases along the simulation time.</p>
  *
- * It is used some constants to create simulation objects such as
+ * <p>Some constants are used to create simulation objects such as
  * {@link  DatacenterSimple}, {@link  Host} and {@link  Vm}.
  * The values of these constants were careful and accordingly chosen to allow
  * migration of VMs due to either under and overloaded hosts and
@@ -99,7 +115,7 @@ import java.util.List;
  * and what will be the final results.
  * Several values impact the simulation results, such as
  * hosts CPU capacity and number of PEs, VMs and cloudlets requirements
- * and even VM bandwidth (that defines the VM migration time).
+ * and even VM bandwidth (which defines the VM migration time).</p>
  *
  * <p>This way, if you want to change these values, you must
  * define new appropriated ones to allow the simulation
@@ -112,16 +128,16 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public final class MigrationExample1 {
-    private static final int    SCHEDULE_INTERVAL = 5;
-
-    private static final int HOSTS = 5;
-    private static final int VMS = 3;
-
-    private static final int    HOST_MIPS = 1000; //for each PE
-
-    private static final int    HOST_INITIAL_PES = 4;
-    private static final long   HOST_RAM = 500000; //host memory (MB)
-    private static final long   HOST_STORAGE = 1000000; //host storage
+    /**
+     * @see Datacenter#getSchedulingInterval()
+     */
+    private static final int  SCHEDULE_INTERVAL = 1;
+    private static final int  HOSTS = 5;
+    private static final int  VMS = 3;
+    private static final int  HOST_MIPS = 1000; //for each PE
+    private static final int  HOST_INITIAL_PES = 4;
+    private static final long HOST_RAM = 500000; //host memory (MB)
+    private static final long HOST_STORAGE = 1000000; //host storage
 
     /**
      * The time spent during VM migration depend on the
@@ -132,10 +148,10 @@ public final class MigrationExample1 {
      * This can be changed by calling
      * {@link DatacenterSimple#setBandwidthPercentForMigration(double)}.
      *
-     * <p>The 16000 Mb/s is equal to 2000 MB/s. Since just half of this capacity
+     * <p>The 16000 Mb/s is the same as 2000 MB/s. Since just half of this capacity
      * is used for VM migration, only 1000 MB/s will be available for this process.
-     * The time that take to migrate a Vm depend on the VM RAM capacity.
-     * Since VMs in this example are creates with 2000 MB, any migration
+     * The time that takes to migrate a Vm depend on the VM RAM capacity.
+     * Since VMs in this example are created with 2000 MB of RAM, any migration
      * will take 2 seconds to finish, as can be seen in the logs.
      */
     private static final long   HOST_BW = 16000L; //Mb/s
@@ -171,7 +187,7 @@ public final class MigrationExample1 {
      * (in scale from 0 to 1, where 1 is 100%).
      * @see #createCpuUtilizationModel(double, double)
      */
-    private static final double CLOUDLET_CPU_INCREMENT_PER_SECOND = 0.1;
+    private static final double CLOUDLET_CPU_INCREMENT_PER_SECOND = 0.02;
 
     /**
      * List of all created VMs.
@@ -179,7 +195,7 @@ public final class MigrationExample1 {
     private final List<Vm> vmList = new ArrayList<>();
 
     private CloudSim simulation;
-    private VmAllocationPolicyMigrationBestFitStaticThreshold allocationPolicy;
+    private VmAllocationPolicyMigrationStaticThreshold allocationPolicy;
     private List<Host> hostList;
 
     /**
@@ -229,17 +245,15 @@ public final class MigrationExample1 {
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
-        double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_PERCENTAGE;
         final List<Cloudlet> list = new ArrayList<>(VMS -1);
         Cloudlet cloudlet = Cloudlet.NULL;
-        int id = 0;
-        UtilizationModelDynamic um = createCpuUtilizationModel(initialCloudletCpuUtilizationPercentage, 1);
+        UtilizationModelDynamic um = createCpuUtilizationModel(CLOUDLET_INITIAL_CPU_PERCENTAGE, 1);
         for(Vm vm: vmList){
             cloudlet = createCloudlet(vm, broker, um);
             list.add(cloudlet);
         }
 
-        //Changes the CPU usage of the last cloudlet to increase dynamically
+        //Changes the CPU usage of the last cloudlet to start at a lower value and increase dynamically up to 100%
         cloudlet.setUtilizationModelCpu(createCpuUtilizationModel(0.2, 1));
 
         broker.submitCloudletList(list);
@@ -254,15 +268,17 @@ public final class MigrationExample1 {
      * @return the created Cloudlets
      */
     public Cloudlet createCloudlet(Vm vm, DatacenterBroker broker, UtilizationModel cpuUtilizationModel) {
-        UtilizationModel utilizationModelFull = new UtilizationModelFull();
+        final UtilizationModel utilizationModelFull = new UtilizationModelFull();
+
         final Cloudlet cloudlet =
             new CloudletSimple(CLOUDLET_LENGHT, (int)vm.getNumberOfPes())
                 .setFileSize(CLOUDLET_FILESIZE)
                 .setOutputSize(CLOUDLET_OUTPUTSIZE)
-                .setUtilizationModelCpu(cpuUtilizationModel)
                 .setUtilizationModelRam(utilizationModelFull)
-                .setUtilizationModelBw(utilizationModelFull);
+                .setUtilizationModelBw(utilizationModelFull)
+                .setUtilizationModelCpu(cpuUtilizationModel);
         broker.bindCloudletToVm(cloudlet, vm);
+
         return cloudlet;
     }
 
@@ -340,8 +356,8 @@ public final class MigrationExample1 {
      * Increments the CPU resource utilization, that is defined in percentage values.
      * @return the new resource utilization after the increment
      */
-    private double getCpuUsageIncrement(UtilizationModelDynamic um){
-        return  um.getUtilization() + um.getTimeSpan()* CLOUDLET_CPU_INCREMENT_PER_SECOND;
+    private double getCpuUsageIncrement(final UtilizationModelDynamic um){
+        return um.getUtilization() + um.getTimeSpan()*CLOUDLET_CPU_INCREMENT_PER_SECOND;
     }
 
     /**

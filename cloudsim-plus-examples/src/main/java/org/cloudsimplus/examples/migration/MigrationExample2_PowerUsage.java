@@ -268,17 +268,15 @@ public final class MigrationExample2_PowerUsage {
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
-        double initialCloudletCpuUtilizationPercentage = CLOUDLET_INITIAL_CPU_PERCENTAGE;
         final List<Cloudlet> list = new ArrayList<>(VMS -1);
         Cloudlet cloudlet = Cloudlet.NULL;
-        int id = 0;
-        UtilizationModelDynamic um = createCpuUtilizationModel(initialCloudletCpuUtilizationPercentage, 1);
+        UtilizationModelDynamic um = createCpuUtilizationModel(CLOUDLET_INITIAL_CPU_PERCENTAGE, 1);
         for(Vm vm: vmList){
             cloudlet = createCloudlet(vm, broker, um);
             list.add(cloudlet);
         }
 
-        //Changes the CPU usage of the last cloudlet to increase dynamically
+        //Changes the CPU usage of the last cloudlet to start at a lower value and increase dynamically up to 100%
         cloudlet.setUtilizationModelCpu(createCpuUtilizationModel(0.2, 1));
 
         broker.submitCloudletList(list);
@@ -380,8 +378,8 @@ public final class MigrationExample2_PowerUsage {
      * Increments the CPU resource utilization, that is defined in percentage values.
      * @return the new resource utilization after the increment
      */
-    private double getCpuUsageIncrement(UtilizationModelDynamic um){
-        return  um.getUtilization() + um.getTimeSpan()* CLOUDLET_CPU_INCREMENT_PER_SECOND;
+    private double getCpuUsageIncrement(final UtilizationModelDynamic um){
+        return  um.getUtilization() + um.getTimeSpan()*CLOUDLET_CPU_INCREMENT_PER_SECOND;
     }
 
     /**

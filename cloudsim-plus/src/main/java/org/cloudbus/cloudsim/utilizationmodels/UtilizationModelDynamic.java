@@ -134,6 +134,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         this.currentUtilizationTime = source.currentUtilizationTime;
         this.previousUtilizationTime = source.previousUtilizationTime;
         this.maxResourceUtilization = source.maxResourceUtilization;
+        this.setSimulation(source.getSimulation());
 
         /** The copy constructor doesn't copy the utilizationUpdateFunction because
          * when this constructor is used, it sets the copy
