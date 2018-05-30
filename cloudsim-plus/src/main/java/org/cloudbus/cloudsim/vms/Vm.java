@@ -258,12 +258,10 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     boolean removeOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
     /**
-     * Gets bandwidth resource assigned to the Vm,
-     * allowing to check its capacity (in Megabits/s) and usage.
+     * Gets bandwidth resource (in Megabits/s) assigned to the Vm,
+     * allowing to check its capacity  and usage.
      *
      * @return bandwidth resource.
-     * @pre $none
-     * @post $none
      */
     @Override
     Resource getBw();
@@ -273,8 +271,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * allowing to check its capacity (in Megabytes) and usage.
      *
      * @return the RAM resource
-     * @pre $none
-     * @post $none
      */
     @Override
     Resource getRam();
@@ -284,8 +280,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * allowing to check its capacity (in Megabytes) and usage.
      *
      * @return the storage resource
-     * @pre $none
-     * @post $none
      */
     @Override
     Resource getStorage();
@@ -374,12 +368,11 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     void setInMigration(boolean inMigration);
 
     /**
-     * Sets the BW capacity
+     * Sets the bandwidth capacity (in Megabits/s)
      *
-     * @param bwCapacity new BW capacity
+     * @param bwCapacity new BW capacity (in Megabits/s)
      * @return
      * @pre bwCapacity > 0
-     * @post $none
      */
     Vm setBw(long bwCapacity);
 

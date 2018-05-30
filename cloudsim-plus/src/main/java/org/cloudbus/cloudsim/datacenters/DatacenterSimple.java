@@ -297,6 +297,50 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
+     * Submits a cloudlet to be executed inside its bind VM.
+     *
+     * @param cl the cloudlet to the executed
+     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
+     * receives the cloudlet submission
+     */
+    private void submitCloudletToVm(final Cloudlet cl, final boolean ack) {
+        // time to transfer cloudlet files
+        final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
+
+        final CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
+        final double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
+
+        // if this cloudlet is in the exec queue
+        if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
+            send(this,
+                getCloudletProcessingUpdateInterval(estimatedFinishTime),
+                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        }
+
+        sendCloudletSubmitAckToBroker(ack, cl);
+    }
+
+    /**
+     * Gets the time when the next update of cloudlets has to be performed.
+     * This is the minimum value between the {@link #getSchedulingInterval()} and the given time
+     * (if the scheduling interval is enable, i.e. if it's greater than 0),
+     * which represents when the next update of Cloudlets processing
+     * has to be performed.
+     *
+     * @param nextFinishingCloudletTime the predicted completion time of the earliest finishing cloudlet
+     * (which is a relative delay from the current simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
+     * @return next time cloudlets processing will be updated
+     *
+     * @see #updateCloudletProcessing()
+     */
+    protected double getCloudletProcessingUpdateInterval(final double nextFinishingCloudletTime){
+        return (schedulingInterval == 0 ?
+            nextFinishingCloudletTime :
+            Math.min(nextFinishingCloudletTime, schedulingInterval));
+    }
+
+    /**
      * Processes a Cloudlet resume request.
      *
      * @param cloudlet cloudlet to be resumed
@@ -345,30 +389,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     protected void processCloudletCancel(final Cloudlet cloudlet) {
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet.getId());
         sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_CANCEL, cloudlet);
-    }
-
-    /**
-     * Submits a cloudlet to be executed inside its bind VM.
-     *
-     * @param cl the cloudlet to the executed
-     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
-     * receives the cloudlet submission
-     */
-    private void submitCloudletToVm(final Cloudlet cl, final boolean ack) {
-        // time to transfer cloudlet files
-        final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
-
-        final CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
-        final double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
-
-        // if this cloudlet is in the exec queue
-        if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
-            send(this,
-                getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
-        }
-
-        sendCloudletSubmitAckToBroker(ack, cl);
     }
 
     /**
@@ -475,26 +495,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             Log.printFormattedLine("[Datacenter] %s allocation to the destination host failed!", vm);
 
         }
-    }
-
-    /**
-     * Gets the time when the next update of cloudlets has to be performed.
-     * This is the minimum value between the {@link #getSchedulingInterval()} and the given time
-     * (if the scheduling interval is enable, i.e. if it's greater than 0),
-     * which represents when the next update of Cloudlets processing
-     * has to be performed.
-     *
-     * @param nextFinishingCloudletTime the predicted completion time of the earliest finishing cloudlet
-     * (which is a relative delay from the current simulation time),
-     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
-     * @return next time cloudlets processing will be updated
-     *
-     * @see #updateCloudletProcessing()
-     */
-    protected double getCloudletProcessingUpdateInterval(final double nextFinishingCloudletTime){
-        return (schedulingInterval == 0 ?
-            nextFinishingCloudletTime :
-            Math.min(nextFinishingCloudletTime, schedulingInterval));
     }
 
     /**
@@ -730,7 +730,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         host.getVmList().forEach(this::checkCloudletsCompletionForGivenVm);
     }
 
-    private void checkCloudletsCompletionForGivenVm(Vm vm) {
+    private void checkCloudletsCompletionForGivenVm(final Vm vm) {
         final List<Cloudlet> nonReturnedCloudlets =
             vm.getCloudletScheduler().getCloudletFinishedList().stream()
                 .map(CloudletExecution::getCloudlet)

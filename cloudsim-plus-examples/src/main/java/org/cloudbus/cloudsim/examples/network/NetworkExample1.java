@@ -40,7 +40,15 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 
 /**
  * A simple example showing how to create a Datacenter with 1 host and a network
- * topology and and run 1 cloudlet on it.
+ * topology, running 1 cloudlet on it.
+ * There is just one VM with a single PE of 250 MIPS.
+ * The Cloudlet requires 1 PE and has a length of 40000 MI.
+ * This way, the Cloudlet will take 160 seconds to finish (40000/250).
+ *
+ * <p>The Cloudlet is not requiring any files from a {@link org.cloudbus.cloudsim.resources.SanStorage SAN},
+ * but since a network topology is defined from the file topology.brite,
+ * communication delay between network elements is simulated,
+ * causing the Cloudlet to start executing just after a few seconds.</p>
  */
 public class NetworkExample1 {
     private List<Cloudlet> cloudletList;
@@ -58,8 +66,6 @@ public class NetworkExample1 {
 
     public NetworkExample1() {
         Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
-        // First step: Initialize the CloudSim package. It should be called
-        // before creating any entities.
 
         // Initialize the CloudSim library
         simulation = new CloudSim();
@@ -74,13 +80,12 @@ public class NetworkExample1 {
         //Fourth step: Create one virtual machine
         vmlist = new ArrayList<>();
 
-        //VM description
-        int vmid = 0;
-        int mips = 250;
-        long size = 10000; //image size (MEGABYTE)
-        int ram = 512; //vm memory (MEGABYTE)
-        long bw = 1000;
-        int pesNumber = 1; //number of cpus
+        final int vmid = 0;
+        final int mips = 250;
+        final long size = 10000; //image size (MEGABYTE)
+        final int ram = 512; //vm memory (MEGABYTE)
+        final long bw = 1000; //in Megabits/s
+        final int pesNumber = 1; //number of cpus
 
         //create VM
         Vm vm1 = new VmSimple(vmid, mips, pesNumber)
@@ -97,11 +102,12 @@ public class NetworkExample1 {
         cloudletList = new ArrayList<>();
 
         //Cloudlet properties
-        int id = 0;
-        long length = 40000;
-        long fileSize = 300;
-        long outputSize = 300;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
+        final int id = 0;
+        final long length = 40000;
+        final long fileSize = 300;
+        final long outputSize = 300;
+        //The RAM, CPU and Bandwidth UtilizationModel.
+        final UtilizationModel utilizationModel = new UtilizationModelFull();
 
         Cloudlet cloudlet1 =
             new CloudletSimple(id, length, pesNumber)

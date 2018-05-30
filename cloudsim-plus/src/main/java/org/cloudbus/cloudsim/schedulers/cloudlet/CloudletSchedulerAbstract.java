@@ -242,30 +242,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public double cloudletSubmit(final Cloudlet cloudlet) {
+    public final double cloudletSubmit(final Cloudlet cloudlet) {
         return cloudletSubmit(cloudlet, 0.0);
     }
 
     @Override
-    public double cloudletSubmit(final Cloudlet cl, final double fileTransferTime) {
-        return processCloudletSubmit(new CloudletExecution(cl), fileTransferTime);
+    public final double cloudletSubmit(final Cloudlet cl, final double fileTransferTime) {
+        return cloudletSubmitInternal(new CloudletExecution(cl), fileTransferTime);
     }
 
     /**
-     * Process a Cloudlet after it is received by the
-     * {@link #cloudletSubmit(Cloudlet, double)} method, that creates a
-     * {@link CloudletExecution} object to encapsulate the submitted
-     * Cloudlet and record execution data.
-     *
-     * @param ce              the CloudletExecutionInfo that encapsulates the Cloudlet
-     *                         object
-     * @param fileTransferTime time required to move the required files from the
-     *                         SAN to the VM
-     * @return expected finish time of this cloudlet (considering the time to
-     * transfer required files from the Datacenter to the Vm), or 0 if it is in
-     * a waiting queue
+     * @see #cloudletSubmit(Cloudlet, double)
      */
-    protected double processCloudletSubmit(final CloudletExecution ce, final double fileTransferTime) {
+    protected double cloudletSubmitInternal(final CloudletExecution ce, final double fileTransferTime) {
         if (canAddCloudletToExecutionList(ce)) {
             ce.setCloudletStatus(Status.INEXEC);
             ce.setFileTransferTime(fileTransferTime);
@@ -482,7 +471,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
         setCurrentMipsShare(mipsShare);
 
-        if (cloudletExecList.isEmpty() && cloudletWaitingList.isEmpty()) {
+        if (isEmpty()) {
             setPreviousTime(currentTime);
             return Double.MAX_VALUE;
         }
