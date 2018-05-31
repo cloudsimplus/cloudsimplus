@@ -112,6 +112,7 @@ final class VmNull implements Vm {
     @Override public double getCpuPercentUsage() {
         return 0;
     }
+    @Override public double getTotalCpuMipsUsage() { return 0; }
     @Override public double getTotalCpuMipsUsage(double time) {
         return 0.0;
     }
