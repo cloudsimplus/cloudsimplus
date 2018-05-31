@@ -100,14 +100,17 @@ import java.util.List;
  * Allocating a second VM into Host 0 would double the Host CPU utilization,
  * overreaching its upper utilization threshold (defined as 70%).
  * This way, VMs 1 and 2 are allocated to Host 1 which has 5 PEs.
- * Host 1 will have an initial CPU usage of 64%
- * (2 VMs using 80% of 2 PEs from a total of 5 Host PEs = 2*0.8*2 / 5).</p>
+ * </p>
  *
  * <p>The {@link VmAllocationPolicyMigrationBestFitStaticThreshold}
  * allows the definition of static under and over CPU utilization thresholds to
  * enable VM migration.
- * The example uses a {@link UtilizationModelDynamic} that defines the CPU usage of cloudlets
- * increases along the simulation time.</p>
+ * The example uses a {@link UtilizationModelDynamic} to define that the CPU usage of cloudlets
+ * increases along the simulation time.
+ * The first 2 Cloudlets all start with a usage of 80% of CPU,
+ * that increases along the time (see {@link #CLOUDLET_CPU_INCREMENT_PER_SECOND}).
+ * The third Cloudlet starts a a lower CPU usage and increases in the same way.
+ * </p>
  *
  * <p>Some constants are used to create simulation objects such as
  * {@link  DatacenterSimple}, {@link  Host} and {@link  Vm}.

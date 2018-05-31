@@ -765,7 +765,7 @@ public class HostSimple implements Host {
         return computeCpuUtilizationPercent(getUtilizationOfCpuMips());
     }
 
-    protected double computeCpuUtilizationPercent(final double mipsUsage){
+    private double computeCpuUtilizationPercent(final double mipsUsage){
         final double totalMips = getTotalMipsCapacity();
         if(totalMips == 0){
             return 0;
@@ -777,9 +777,7 @@ public class HostSimple implements Host {
 
     @Override
     public double getUtilizationOfCpuMips() {
-        return vmList.stream()
-                .mapToDouble(vm -> vmScheduler.getTotalAllocatedMipsForVm(vm))
-                .sum();
+        return vmList.stream().mapToDouble(Vm::getTotalCpuMipsUsage).sum();
     }
 
     @Override

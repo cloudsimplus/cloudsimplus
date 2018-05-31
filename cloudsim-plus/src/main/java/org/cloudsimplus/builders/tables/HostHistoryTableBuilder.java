@@ -85,7 +85,7 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
         col = getTable().addColumn("Host Total MIPS").setFormat("%9.0f");
         addColumnDataFunction(col, history -> host.getTotalMipsCapacity());
 
-        col = getTable().addColumn("Host Total Usage").setFormat("%3.0f%%");
+        col = getTable().addColumn("Host Total Usage").setFormat("%5.1f%%");
         addColumnDataFunction(col, history -> history.getAllocatedMips()/host.getTotalMipsCapacity()*100);
     }
 }
