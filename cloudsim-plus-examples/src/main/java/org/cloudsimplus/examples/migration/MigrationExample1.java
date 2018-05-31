@@ -71,6 +71,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.builders.tables.HostHistoryTableBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -95,6 +96,7 @@ import java.util.List;
  * Each cloudlet will start using 80% of its VM CPU.
  * As the VM 0 will run one Cloudlet and requires just 2 PEs from Host 0 (which has 4 PEs),
  * the initial Host CPU usage will be just 40% (1 VM using 80% of 2 PEs from a total of 4 Host PEs = 0.8*2 / 4).
+ *
  * Allocating a second VM into Host 0 would double the Host CPU utilization,
  * overreaching its upper utilization threshold (defined as 70%).
  * This way, VMs 1 and 2 are allocated to Host 1 which has 5 PEs.
@@ -131,7 +133,7 @@ public final class MigrationExample1 {
     /**
      * @see Datacenter#getSchedulingInterval()
      */
-    private static final int  SCHEDULE_INTERVAL = 1;
+    private static final int  SCHEDULING_INTERVAL = 1;
     private static final int  HOSTS = 5;
     private static final int  VMS = 3;
     private static final int  HOST_MIPS = 1000; //for each PE
@@ -187,7 +189,7 @@ public final class MigrationExample1 {
      * (in scale from 0 to 1, where 1 is 100%).
      * @see #createCpuUtilizationModel(double, double)
      */
-    private static final double CLOUDLET_CPU_INCREMENT_PER_SECOND = 0.02;
+    private static final double CLOUDLET_CPU_INCREMENT_PER_SECOND = 0.04;
 
     /**
      * List of all created VMs.
@@ -237,11 +239,8 @@ public final class MigrationExample1 {
         Log.printConcatLine(getClass().getSimpleName(), " finished!");
     }
 
-    private void printHostHistory(Host h) {
-        System.out.printf("Host: %d\n", h.getId());
-        System.out.println("------------------------------------------------------------------------------------------");
-        h.getStateHistory().stream().forEach(System.out::print);
-        System.out.println();
+    private void printHostHistory(Host host) {
+        new HostHistoryTableBuilder(host).setTitle(host.toString()).build();
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
@@ -391,7 +390,7 @@ public final class MigrationExample1 {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2);
 
         DatacenterSimple dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
-        dc.setSchedulingInterval(SCHEDULE_INTERVAL).setLog(true);
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL).setLog(true);
         return dc;
     }
 

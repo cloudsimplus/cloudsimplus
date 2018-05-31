@@ -79,6 +79,14 @@ public final class HostStateHistoryEntry {
     }
 
     /**
+     * Gets the percentage (in scale from 0 to 1) of allocated MIPS from the total requested.
+     * @return
+     */
+    public double getPercentUsage(){
+        return requestedMips > 0 ? allocatedMips/requestedMips : 0;
+    }
+
+    /**
      * Checks if the Host is/was active at the recorded time.
      *
      * @return true if is active, false otherwise
@@ -89,6 +97,7 @@ public final class HostStateHistoryEntry {
 
     @Override
     public String toString() {
-        return String.format("Time: %6.0f | Requested: %10.0f MIPS | Allocated: %10.0f MIPS | Host Active: %s\n", time, requestedMips, allocatedMips, active);
+        return String.format("Time: %6.0f | Requested: %10.0f MIPS | Allocated: %10.0f MIPS | Used: %3.0f%% Host Active: %s\n",
+                            time, requestedMips, allocatedMips, getPercentUsage()*100, active);
     }
 }

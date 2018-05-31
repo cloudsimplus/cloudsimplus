@@ -31,12 +31,12 @@ import org.cloudbus.cloudsim.util.Log;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class CsvTableBuilder extends AbstractTableBuilder {
-    public CsvTableBuilder() {
+public class CsvTable extends AbstractTable {
+    public CsvTable() {
         this("");
     }
 
-    public CsvTableBuilder(final String title) {
+    public CsvTable(final String title) {
         super(title);
         this.setColumnSeparator(";");
     }

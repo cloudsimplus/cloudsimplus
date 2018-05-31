@@ -1,0 +1,147 @@
+package org.cloudsimplus.builders.tables;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+
+/**
+ * An abstract class to build tables to print
+ * data from a list of objects containing simulation results.
+ *
+ * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 2.3.2
+ */
+public abstract class TableBuilderAbstract<T> {
+    private List<? extends T> list;
+
+    /**
+     * A Map containing a function that receives an object T and returns
+     * the data to be printed from that object to the associated column
+     * of the table to be printed.
+     */
+    private final Map<TableColumn, Function<T, Object>> columnsDataFunctions;
+
+    private Table table;
+
+    /**
+     * Instantiates a builder to print the list of objects T using the a
+     * default {@link TextTable}.
+     * To use a different {@link Table}, check the alternative constructors.
+     *
+     * @param list the list of objects T to print
+     */
+    public TableBuilderAbstract(final List<? extends T> list){
+        this(list, new TextTable());
+    }
+
+    /**
+     * Instantiates a builder to print the list of objects T using the a
+     * given {@link Table}.
+     *
+     * @param list the list of objects T to print
+     * @param table the {@link Table} used to build the table with the object data
+     */
+    public TableBuilderAbstract(final List<? extends T> list, final Table table){
+        setTable(table);
+        setObjectList(list);
+        columnsDataFunctions = new HashMap<>();
+        createTableColumns();
+    }
+
+    /**
+     * Sets a List of objects T to be printed.
+     * @param list List of objects T to set
+     * @return
+     */
+    protected final TableBuilderAbstract<T> setObjectList(final List<? extends T> list) {
+        Objects.requireNonNull(list);
+        this.list = list;
+        return this;
+    }
+
+    public TableBuilderAbstract<T> setTitle(final String title){
+        table.setTitle(title);
+        return this;
+    }
+
+    protected Table getTable() {
+        return table;
+    }
+
+    /**
+     * Sets the {@link Table} used to build the table with Cloudlet Data.
+     * The default table builder is {@link TextTable}.
+     * @param table the  {@link Table} to set
+     * @return
+     */
+    protected TableBuilderAbstract<T> setTable(final Table table) {
+        Objects.requireNonNull(table);
+        this.table = table;
+        return this;
+    }
+
+    /**
+     * Dynamically adds a column to the end of the table to be built.
+     * @param col the column to add
+     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
+     * @return
+     */
+    public TableBuilderAbstract<T> addColumn(final TableColumn col, final Function<T, Object> dataFunction){
+        return addColumn(getTable().getColumns().size(), col, dataFunction);
+    }
+
+    /**
+     * Dynamically adds a column to a specific position into the table to be built.
+     * @param index the position to insert the column.
+     * @param col the column to add
+     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
+     * @return
+     */
+    public TableBuilderAbstract<T> addColumn(final int index, final TableColumn col, final Function<T, Object> dataFunction){
+        Objects.requireNonNull(col);
+        Objects.requireNonNull(dataFunction);
+
+        col.setTable(getTable());
+        getTable().addColumn(index, col);
+        columnsDataFunctions.put(col, dataFunction);
+        return this;
+    }
+
+    /**
+     * Creates the columns of the table and define how the data for those columns
+     * will be got from an object inside the {@link #list} of objects to be printed.
+     */
+    protected abstract void createTableColumns();
+
+    /**
+     * Builds the table with the data from the list of objects and shows the results.
+     */
+    public void build(){
+        if(getTable().getTitle().isEmpty()){
+            getTable().setTitle("SIMULATION RESULTS");
+        }
+
+        list.forEach(cloudlet -> addDataToRow(cloudlet, getTable().newRow()));
+        getTable().print();
+    }
+
+    /**
+     * Add data to a row of the table being generated.
+     * @param object The object T to get to data to show in the row of the table
+     * @param row The row that the data from the object T will be added to
+     */
+    protected void addDataToRow(final T object, final List<Object> row) {
+        getTable()
+            .getColumns()
+            .forEach(col -> row.add(columnsDataFunctions.get(col).apply(object)));
+    }
+
+    protected TableBuilderAbstract<T> addColumnDataFunction(final TableColumn col, final Function<T, Object> function){
+        Objects.requireNonNull(col);
+        Objects.requireNonNull(function);
+        columnsDataFunctions.put(col, function);
+        return this;
+    }
+}

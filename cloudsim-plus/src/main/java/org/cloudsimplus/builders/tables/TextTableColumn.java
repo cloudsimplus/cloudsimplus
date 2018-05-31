@@ -39,11 +39,11 @@ public class TextTableColumn extends CsvTableColumn {
         this(null, title, "");
     }
 
-    public TextTableColumn(final TableBuilder table, final String title,  final String subTitle) {
+    public TextTableColumn(final Table table, final String title, final String subTitle) {
         super(table, title, subTitle);
     }
 
-    public TextTableColumn(TableBuilder table, String title) {
+    public TextTableColumn(Table table, String title) {
         super(table, title);
     }
 

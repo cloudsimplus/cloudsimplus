@@ -25,7 +25,7 @@ package org.cloudsimplus.builders.tables;
 
 /**
  * An interface that represents a column of a table generated
- * using a {@link TableBuilder}.
+ * using a {@link Table}.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -70,7 +70,7 @@ public interface TableColumn {
      *
      * @return The table that the column belongs to.
      */
-    TableBuilder getTable();
+    Table getTable();
 
     /**
      *
@@ -82,7 +82,7 @@ public interface TableColumn {
 
     TableColumn setSubTitle(String subTitle);
 
-    TableColumn setTable(TableBuilder table);
+    TableColumn setTable(Table table);
 
     TableColumn setTitle(String title);
 }

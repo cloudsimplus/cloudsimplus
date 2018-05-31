@@ -25,17 +25,18 @@ package org.cloudsimplus.builders.tables;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.cloudbus.cloudsim.util.Log;
 
 import static java.util.stream.Collectors.toList;
 
 /**
- * An abstract base class for implementing table builders.
+ * An abstract base class for implementing data tables.
  *
  * @author Manoel Campos da Silva Filho
  */
-public abstract class AbstractTableBuilder implements TableBuilder {
+public abstract class AbstractTable implements Table {
     /** @see #getColumns() */
     private final List<TableColumn> columns;
 
@@ -50,15 +51,15 @@ public abstract class AbstractTableBuilder implements TableBuilder {
      */
     private String columnSeparator;
 
-    public AbstractTableBuilder(){
+    public AbstractTable(){
         this("");
     }
 
     /**
-     * Creates an TableBuilder
+     * Creates an Table
      * @param title Title of the table
      */
-    public AbstractTableBuilder(final String title){
+    public AbstractTable(final String title){
         this.columns = new ArrayList<>();
         this.rows = new ArrayList<>();
         setTitle(title);
@@ -78,7 +79,8 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     }
 
     @Override
-    public final TableBuilder setTitle(final String title) {
+    public final Table setTitle(final String title) {
+        Objects.requireNonNull(title);
         this.title = title;
         return this;
     }
@@ -89,7 +91,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     }
 
     @Override
-    public final TableBuilder setColumnSeparator(String columnSeparator) {
+    public final Table setColumnSeparator(String columnSeparator) {
         this.columnSeparator = columnSeparator;
         return this;
     }
@@ -178,7 +180,7 @@ public abstract class AbstractTableBuilder implements TableBuilder {
     protected abstract void printTableClosing();
 
     @Override
-    public final TableBuilder addColumnList(final String... columnTitles) {
+    public final Table addColumnList(final String... columnTitles) {
         for(final String column: columnTitles){
             addColumn(column);
         }

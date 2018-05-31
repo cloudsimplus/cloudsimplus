@@ -32,7 +32,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface TableBuilder {
+public interface Table {
     /**
      * Adds a new row to the list of rows containing the data to be printed.
      * @return
@@ -88,10 +88,10 @@ public interface TableBuilder {
      * will be printed without a specific format.
      *
      * @param columnTitles The titles of the columns
-     * @return the {@link TableBuilder} instance.
+     * @return the {@link Table} instance.
      * @see #addColumn(String)
      */
-    TableBuilder addColumnList(String... columnTitles);
+    Table addColumnList(String... columnTitles);
 
     /**
      *
@@ -102,9 +102,9 @@ public interface TableBuilder {
     /**
      *
      * @param title the table title to set
-     * @return The TableBuilder instance
+     * @return The Table instance
      */
-    TableBuilder setTitle(String title);
+    Table setTitle(String title);
 
     /**
      * @return the list of columns of the table
@@ -122,10 +122,10 @@ public interface TableBuilder {
      * @param columnSeparator the separator to set
      * @return
      */
-    TableBuilder setColumnSeparator(String columnSeparator);
+    Table setColumnSeparator(String columnSeparator);
 
     /**
-     * Builds and prints the table.
+     * Prints the table.
      */
     void print();
 }
