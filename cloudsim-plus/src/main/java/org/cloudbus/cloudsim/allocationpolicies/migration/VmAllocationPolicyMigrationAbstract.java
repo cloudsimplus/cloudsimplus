@@ -23,7 +23,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.Simulation;
 
 import static java.util.Comparator.comparingDouble;
-import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
@@ -249,17 +248,66 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *
      * @param host the host to verify
      * @param vm the candidate vm
-     * @return true, if the host will be over utilized after VM placement; false
-     * otherwise
+     * @return true, if the host will be over utilized after VM placement;
+     *         false otherwise
      */
-    protected boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
+    private boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
         if (!host.createTemporaryVm(vm)) {
             return false;
         }
 
-        final boolean isNotHostOverUsedAfterAllocation = !isHostOverloaded(host);
+        final double usagePercent = getHostCpuPercentRequested(host);
+        final boolean isNotHostOverUsedAfterAllocation = !isHostOverloaded(host, usagePercent);
         host.destroyTemporaryVm(vm);
         return isNotHostOverUsedAfterAllocation;
+    }
+
+    /**
+     * {@inheritDoc}
+     * It's based on current CPU usage.
+     *
+     * @param host {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public boolean isHostOverloaded(final Host host) {
+        final double upperThreshold = getOverUtilizationThreshold(host);
+        addHistoryEntryIfAbsent(host, upperThreshold);
+
+        return isHostOverloaded(host, host.getUtilizationOfCpu());
+    }
+
+    /**
+     * Checks if a Host is overloaded based on the given CPU utilization percent.
+     * @param host the Host to check
+     * @param cpuUsagePercent the Host's CPU utilization percent. The values may be:
+     *                        <ul>
+     *                          <li>the current CPU utilization if you want to check if the Host is overloaded right now;</li>
+     *                          <li>the requested CPU utilization after temporarily placing a VM into the Host
+     *                          just to check if it supports that VM without being overloaded.
+     *                          In this case, if the Host doesn't support the already placed temporary VM,
+     *                          the method will return true to indicate the Host will be overloaded
+     *                          if the VM is actually placed into it.
+     *                          </li>
+     *                        </ul>
+     * @return true if the Host is overloaded, false otherwise
+     */
+    private boolean isHostOverloaded(final Host host, final double cpuUsagePercent){
+        final double upperThreshold = getOverUtilizationThreshold(host);
+        addHistoryEntryIfAbsent(host, upperThreshold);
+
+        return cpuUsagePercent > upperThreshold;
+    }
+
+    /**
+     * Checks if a host is under utilized, based on current CPU usage.
+     *
+     * @param host the host
+     * @return true, if the host is under utilized; false otherwise
+     */
+    @Override
+    public boolean isHostUnderloaded(final Host host) {
+        return getHostCpuPercentRequested(host) < getUnderUtilizationThreshold();
     }
 
     @Override
@@ -502,7 +550,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *
      * @return the over utilized hosts
      */
-    protected Set<Host> getOverloadedHosts() {
+    private Set<Host> getOverloadedHosts() {
         return this.getHostList().stream()
             .filter(this::isHostOverloaded)
             .filter(h -> h.getVmsMigratingOut().isEmpty())
@@ -528,39 +576,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             .filter(Host::isActive)
             .filter(this::isHostUnderloaded)
             .filter(h -> h.getVmsMigratingIn().isEmpty())
-            .filter(this::isNotAllVmsMigratingOut)
+            .filter(this::notAllVmsAreMigratingOut)
             .min(comparingDouble(Host::getUtilizationOfCpu))
             .orElse(Host.NULL);
     }
 
-    /**
-     * Checks if a host is under utilized, based on current CPU usage.
-     *
-     * @param host the host
-     * @return true, if the host is under utilized; false otherwise
-     */
-    @Override
-    public boolean isHostUnderloaded(final Host host) {
-        return getHostCpuPercentUsage(host) < getUnderUtilizationThreshold();
-    }
-
-    /**
-     * {@inheritDoc}
-     * It's based on current CPU usage.
-     *
-     * @param host {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public boolean isHostOverloaded(final Host host) {
-        final double upperThreshold = getOverUtilizationThreshold(host);
-        addHistoryEntryIfAbsent(host, upperThreshold);
-
-        final double usage = getHostCpuPercentUsage(host);
-        return usage > upperThreshold;
-    }
-
-    private double getHostCpuPercentUsage(final Host host) {
+    private double getHostCpuPercentRequested(final Host host) {
         return getHostTotalRequestedMips(host) / host.getTotalMipsCapacity();
     }
 
@@ -578,11 +599,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     /**
      * Checks if all VMs of a Host are <b>NOT</b> migrating out.
      * In this case, the given Host will not be selected as an underloaded Host at the current moment.
+     * That is: not all VMs are migrating out if at least one VM isn't in migration process.
      *
      * @param host the host to check
-     * @return
+     * @return true if at least one VM isn't migrating, false if all VMs are migrating
      */
-    protected boolean isNotAllVmsMigratingOut(final Host host) {
+    protected boolean notAllVmsAreMigratingOut(final Host host) {
         return host.getVmList().stream().anyMatch(vm -> !vm.isInMigration());
     }
 

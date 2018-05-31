@@ -55,7 +55,16 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
     Map<Host, List<Double>> getTimeHistory();
 
     /**
-     * Checks if host is over utilized, according the the
+     * Checks if host is currently under utilized, according the the
+     * conditions defined by the Allocation Policy.
+     *
+     * @param host the host
+     * @return true, if the host is under utilized; false otherwise
+     */
+    boolean isHostUnderloaded(Host host);
+
+    /**
+     * Checks if host is currently over utilized, according the the
      * conditions defined by the Allocation Policy.
      *
      * @param host the host to check
@@ -72,14 +81,6 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
      * @return the over utilization threshold
      */
     double getOverUtilizationThreshold(Host host);
-
-    /**
-     * Checks if host is under utilized.
-     *
-     * @param host the host
-     * @return true, if the host is under utilized; false otherwise
-     */
-    boolean isHostUnderloaded(Host host);
 
     /**
      * Gets the percentage of total CPU utilization

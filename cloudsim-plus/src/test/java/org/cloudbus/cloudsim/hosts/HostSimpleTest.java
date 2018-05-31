@@ -292,9 +292,6 @@ public class HostSimpleTest {
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
 
         final VmScheduler vmScheduler = EasyMock.createMock(VmScheduler.class);
-        EasyMock.expect(vmScheduler.getTotalAllocatedMipsForVm(EasyMock.anyObject()))
-            .andReturn(MIPS)
-            .times(numberOfVms);
         EasyMock.expect(vmScheduler.getAllocatedMips(EasyMock.anyObject()))
                 .andReturn(mipsShare)
                 .times(numberOfVms);
@@ -304,7 +301,7 @@ public class HostSimpleTest {
         EasyMock.replay(vmScheduler);
 
         final HostSimple host = createHostSimple(0, numberOfVms, vmScheduler);
-        vmList.stream().forEach(host::addVmToList);
+        vmList.forEach(host::addVmToList);
 
         final int i = 0;
         final Vm vm = vmList.get(i);
@@ -317,19 +314,29 @@ public class HostSimpleTest {
         EasyMock.verify(vmScheduler);
     }
 
-    private List<Vm> createListOfMockVms(final int numberOfVms, final List<Double> mipsShare, final double simulationClock) {
+    private List<Vm> createListOfMockVms(
+        final int numberOfVms, final List<Double> mipsShare,
+        final double simulationClock)
+    {
         final List<Vm> vmList = new ArrayList<>(numberOfVms);
+        final double totalMipsCapacity = mipsShare.stream().mapToDouble(v -> v).sum();
         for(int i = 0; i < numberOfVms; i++) {
             final double nextCloudletCompletionTimeOfCurrentVm = i+1;
 
             final Vm vm = EasyMock.createMock(Vm.class);
-            EasyMock.expect(vm.updateProcessing(simulationClock, mipsShare))
+            EasyMock
+                    .expect(vm.updateProcessing(simulationClock, mipsShare))
                     .andReturn(nextCloudletCompletionTimeOfCurrentVm)
+                    .times(1);
+            EasyMock
+                    .expect(vm.getTotalCpuMipsUsage())
+                    .andReturn(totalMipsCapacity)
                     .times(1);
             EasyMock.replay(vm);
 
             vmList.add(vm);
-        };
+        }
+
         return vmList;
     }
 
