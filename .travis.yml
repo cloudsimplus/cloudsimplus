@@ -1,7 +1,6 @@
 language: java
 install: mvn clean install -B -V -Dintegration-tests=true
 script:
-  - cd cloudsim-plus && mvn versioneye:update; cd ..
   - cd cloudsim-plus && mvn clean test -Dintegration-tests=true jacoco:report; cd ..
 cache:
   directories:

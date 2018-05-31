@@ -311,28 +311,6 @@
                 </executions>
             </plugin>
 
-            <!--
-            Checks out-of-date dependencies and License violations: http://versioneye.com
-            The plugin automatically collect dependencies information and submit to the
-            project on its website.
-            It requires an API key that can be defined in an environment variable: export VERSIONEYE_API_KEY=value
-            For manual update execute: mvn versioneye:update
-            -->
-            <plugin>
-                <groupId>com.versioneye</groupId>
-                <artifactId>versioneye-maven-plugin</artifactId>
-                <version>3.11.4</version>
-                <configuration>
-                    <organisation>manoelcampos</organisation>
-                    <projectId>587a137d2ef9ab000eff9d41</projectId>
-                </configuration>
-                <!--
-                The plugin is just being executed when the repository is pushed to travis-ci.org
-                in order to speed up local build.
-                See the .travis.yml file to check the command line being executed.
-                -->
-                <!--<executions><execution><goals><goal>update</goal></goals></execution></executions>-->
-            </plugin>
 
             <!--
             Adds License Information to project source and binaries using com.mycila.maven-license-plugin.
