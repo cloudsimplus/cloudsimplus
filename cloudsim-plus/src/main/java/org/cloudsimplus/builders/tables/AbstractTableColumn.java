@@ -24,7 +24,7 @@
 package org.cloudsimplus.builders.tables;
 
 /**
- * A column of a table to be generated using a {@link TableBuilder} class.
+ * A column of a table to be generated using a {@link Table} class.
  * @author Manoel Campos da Silva Filho
  */
 public abstract class AbstractTableColumn implements TableColumn {
@@ -46,14 +46,14 @@ public abstract class AbstractTableColumn implements TableColumn {
     /**
      * @see #getTable()
      */
-    private TableBuilder table;
+    private Table table;
 
     /**
      * Creates a column with a specific title.
      * @param table The table that the column belongs to.
      * @param title The column title.
      */
-    public AbstractTableColumn(final TableBuilder table, final String title) {
+    public AbstractTableColumn(final Table table, final String title) {
         this(table, title, "");
     }
 
@@ -71,7 +71,7 @@ public abstract class AbstractTableColumn implements TableColumn {
      * @param title The column title.
      * @param subTitle The column sub-title.
      */
-    public AbstractTableColumn(final TableBuilder table, final String title, final String subTitle) {
+    public AbstractTableColumn(final Table table, final String title, final String subTitle) {
         this.table = table;
         this.title = title;
         this.setFormat("");
@@ -134,13 +134,13 @@ public abstract class AbstractTableColumn implements TableColumn {
      * @return The table that the column belongs to.
      */
     @Override
-    public TableBuilder getTable() {
+    public Table getTable() {
         return table;
     }
 
 
     @Override
-    public AbstractTableColumn setTable(TableBuilder table) {
+    public AbstractTableColumn setTable(Table table) {
         this.table = table;
         return this;
     }
@@ -180,7 +180,7 @@ public abstract class AbstractTableColumn implements TableColumn {
     /**
      *
      * @return The index of the current column into the
-     * column list of the {@link #getTable() TableBuilder}.
+     * column list of the {@link #getTable() Table}.
      */
     protected int getIndex() {
         return table.getColumns().indexOf(this);
@@ -188,7 +188,7 @@ public abstract class AbstractTableColumn implements TableColumn {
 
     /**
      * Indicates if the current column is the last one
-     * in the column list of the {@link #getTable() TableBuilder}.
+     * in the column list of the {@link #getTable() Table}.
      * @return true if it is the last column, false otherwise.
      */
     protected boolean isLastColumn() {

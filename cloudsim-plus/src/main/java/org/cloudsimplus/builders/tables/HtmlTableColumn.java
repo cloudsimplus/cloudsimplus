@@ -39,11 +39,11 @@ public class HtmlTableColumn extends AbstractTableColumn {
         this(null, title, "");
     }
 
-    public HtmlTableColumn(final TableBuilder table, final String title) {
+    public HtmlTableColumn(final Table table, final String title) {
         super(table, title);
     }
 
-    public HtmlTableColumn(final TableBuilder table, final String title,  final String subTitle) {
+    public HtmlTableColumn(final Table table, final String title, final String subTitle) {
         super(table, title, subTitle);
     }
 

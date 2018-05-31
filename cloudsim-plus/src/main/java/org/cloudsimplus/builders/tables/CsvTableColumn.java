@@ -44,11 +44,11 @@ public class CsvTableColumn extends AbstractTableColumn {
         this(null, title, "");
     }
 
-    public CsvTableColumn(final TableBuilder table, final String title,  final String subTitle) {
+    public CsvTableColumn(final Table table, final String title, final String subTitle) {
         super(table, title, subTitle);
     }
 
-    public CsvTableColumn(TableBuilder table, String title) {
+    public CsvTableColumn(Table table, String title) {
         super(table, title);
     }
 

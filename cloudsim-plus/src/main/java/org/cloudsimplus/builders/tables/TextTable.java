@@ -31,16 +31,16 @@ import org.cloudbus.cloudsim.util.Log;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class TextTableBuilder extends CsvTableBuilder {
-    public TextTableBuilder() {
+public class TextTable extends CsvTable {
+    public TextTable() {
         this("");
     }
 
     /**
-     * Creates an TableBuilder
+     * Creates an Table
      * @param title Title of the table
      */
-    public TextTableBuilder(final String title) {
+    public TextTable(final String title) {
         super(title);
         setColumnSeparator("|");
     }

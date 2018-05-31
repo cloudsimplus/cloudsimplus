@@ -31,16 +31,16 @@ import org.cloudbus.cloudsim.util.Log;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class HtmlTableBuilder extends AbstractTableBuilder {
-    public HtmlTableBuilder() {
+public class HtmlTable extends AbstractTable {
+    public HtmlTable() {
         super();
     }
 
     /**
-     * Creates an TableBuilder
+     * Creates an Table
      * @param title Title of the table
      */
-    public HtmlTableBuilder(final String title) {
+    public HtmlTable(final String title) {
         super(title);
     }
 
