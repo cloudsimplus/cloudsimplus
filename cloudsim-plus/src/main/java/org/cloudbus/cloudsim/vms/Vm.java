@@ -150,7 +150,7 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     /**
      * Changes the allocation of a given resource for a VM.
      * The old allocated amount will be changed to the new given amount.
-     *  @param resourceClass the class of the resource to change the allocation
+     * @param resourceClass the class of the resource to change the allocation
      * @param newTotalResourceAmount the new amount to change the current allocation to*/
     void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount);
 
@@ -309,6 +309,15 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
     double getCpuPercentUsage();
 
     /**
+     * Gets the current total CPU MIPS utilization of all PEs from all cloudlets running on this VM.
+     *
+     * @return total CPU utilization in MIPS
+     * @see #getCpuPercentUsage(double)
+     *
+     */
+    double getTotalCpuMipsUsage();
+
+    /**
      * Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the
      * given time.
      *
@@ -323,8 +332,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * Gets the Virtual Machine Monitor (VMM) that manages the VM.
      *
      * @return VMM
-     * @pre $none
-     * @post $none
      */
     String getVmm();
 
@@ -380,8 +387,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * Sets the PM that hosts the VM.
      *
      * @param host Host to run the VM
-     * @pre host != $null
-     * @post $none
      */
     void setHost(Host host);
 
@@ -391,7 +396,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * @param ramCapacity new RAM capacity
      * @return
      * @pre ramCapacity > 0
-     * @post $none
      */
     Vm setRam(long ramCapacity);
 
@@ -401,8 +405,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * @param size new storage size
      * @return
      * @pre size > 0
-     * @post $none
-     *
      */
     Vm setSize(long size);
 
@@ -416,7 +418,6 @@ public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, Cust
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      * @pre currentTime >= 0
-     * @post $none
      */
     double updateProcessing(double currentTime, List<Double> mipsShare);
 

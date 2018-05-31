@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  * detect host {@link #getUnderUtilizationThreshold() under} and
  * {@link #getOverUtilizationThreshold(Host)} over} utilization.
  *
- * <p>It's a <b>Worst Fit policy</b> which selects the Host having the least used amount of CPU
+ * <p>It's a <b>Best Fit policy</b> which selects the Host having the most used amount of CPU
  * MIPS to place a given VM, <b>disregarding energy consumption</b>.</p>
  *
  * @author Anton Beloglazov
@@ -70,7 +70,7 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
      */
     @Override
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream) {
-        /*It's ignoring the super class to intentionally avoid the additional filtering performed there
+        /*It's ignoring the super class intentionally to avoid the additional filtering performed there
         * and to apply a different method to select the Host to place the VM.*/
         return hostStream.max(Comparator.comparingDouble(Host::getUtilizationOfCpuMips));
     }

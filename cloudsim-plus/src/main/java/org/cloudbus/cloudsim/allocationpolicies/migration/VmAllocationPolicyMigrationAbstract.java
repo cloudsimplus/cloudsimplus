@@ -214,9 +214,15 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     private void printOverUtilizedHosts(final Set<Host> overloadedHosts) {
         if (!Log.isDisabled() && !overloadedHosts.isEmpty()) {
-            Log.printFormattedLine("%.2f: PowerVmAllocationPolicy: Overloaded hosts in %s: %s",
-                getDatacenter().getSimulation().clock(), getDatacenter(),
-                overloadedHosts.stream().map(h -> String.valueOf(h.getId())).collect(joining(",")));
+            Log.printFormattedLine("%.2f: PowerVmAllocationPolicy: Overloaded hosts in %s:",
+                getDatacenter().getSimulation().clock(), getDatacenter());
+
+            for (Host h : overloadedHosts) {
+                Log.printFormattedLine(
+                    "    Host %d (upper CPU threshold %.2f, current utilization: %.2f)",
+                    h.getId(), getOverUtilizationThreshold(h), h.getUtilizationOfCpu());
+            }
+            Log.printLine();
         }
     }
 
@@ -247,12 +253,13 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * otherwise
      */
     protected boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
-        boolean isHostOverUsedAfterAllocation = true;
-        if (host.createTemporaryVm(vm)) {
-            isHostOverUsedAfterAllocation = isHostOverloaded(host);
-            host.destroyTemporaryVm(vm);
+        if (!host.createTemporaryVm(vm)) {
+            return false;
         }
-        return !isHostOverUsedAfterAllocation;
+
+        final boolean isNotHostOverUsedAfterAllocation = !isHostOverloaded(host);
+        host.destroyTemporaryVm(vm);
+        return isNotHostOverUsedAfterAllocation;
     }
 
     @Override
@@ -370,7 +377,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         final Map<Vm, Host> migrationMap = new HashMap<>();
         for (final Vm vm : vmsToMigrate) {
-            findHostForVm(vm, overloadedHosts).ifPresent(host -> addVmToMigrationMap(migrationMap, vm, host, "\t%s will be migrated to %s"));
+            findHostForVm(vm, overloadedHosts).ifPresent(host -> addVmToMigrationMap(migrationMap, vm, host));
         }
         Log.printLine();
 
@@ -399,7 +406,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
                 Log.printFormattedLine("\tMigration of VMs from the underloaded %s cancelled.", vm.getHost());
                 return new HashMap<>();
             }
-            addVmToMigrationMap(migrationMap, vm, optional.get(), "\t%s will be allocated to %s");
+            addVmToMigrationMap(migrationMap, vm, optional.get());
         }
 
         return migrationMap;
@@ -416,7 +423,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         vmList.sort(comparator.reversed());
     }
 
-    private <T extends Host> void addVmToMigrationMap(final Map<Vm, T> migrationMap, final Vm vm, final T targetHost, final String msg) {
+    private <T extends Host> void addVmToMigrationMap(final Map<Vm, T> migrationMap, final Vm vm, final T targetHost) {
         /*
         Temporarily creates the VM into the target Host so that
         when the next VM is got to be migrated, if the same Host
@@ -425,7 +432,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         assessing the suitability of such a Host for the next VM.
          */
         targetHost.createTemporaryVm(vm);
-        Log.printFormattedLine(msg, vm, targetHost);
+        Log.printFormattedLine("\t\t%s will be migrated from %s to %s", vm, vm.getHost(), targetHost);
         migrationMap.put(vm, targetHost);
     }
 
@@ -534,7 +541,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     @Override
     public boolean isHostUnderloaded(final Host host) {
-        return getHostCpuUtilizationPercentage(host) < getUnderUtilizationThreshold();
+        return getHostCpuPercentUsage(host) < getUnderUtilizationThreshold();
     }
 
     /**
@@ -549,10 +556,11 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         final double upperThreshold = getOverUtilizationThreshold(host);
         addHistoryEntryIfAbsent(host, upperThreshold);
 
-        return getHostCpuUtilizationPercentage(host) > upperThreshold;
+        final double usage = getHostCpuPercentUsage(host);
+        return usage > upperThreshold;
     }
 
-    private double getHostCpuUtilizationPercentage(final Host host) {
+    private double getHostCpuPercentUsage(final Host host) {
         return getHostTotalRequestedMips(host) / host.getTotalMipsCapacity();
     }
 

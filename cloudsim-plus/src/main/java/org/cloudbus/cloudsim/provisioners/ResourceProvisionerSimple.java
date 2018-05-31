@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
@@ -15,10 +16,11 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
 import java.util.Objects;
 
 /**
- * ResourceProvisionerSimple is a {@link ResourceProvisioner} implementation
- * which uses a best-effort policy to allocate a resource to VMs:
- * if there is available amount of the resource on the host, it allocates;
- * otherwise, it fails.
+ * A best-effort {@link ResourceProvisioner} policy used by a {@link Host} to provide a resource to VMs:
+ * <ul>
+ *  <li>if there is available amount of the resource on the host, it provides;</li>
+ *  <li>otherwise, it fails.</li>
+ * </ul>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -27,10 +29,9 @@ import java.util.Objects;
  */
 public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     /**
-     * Creates a new ResourceProvisionerSimple which the {@link ResourceManageable} it will manage
-     * have to be set further.
+     * Creates a new ResourceProvisionerSimple which the {@link ResourceManageable}
+     * it will manage have to be set further.
      *
-     * @post $none
      * @see #setResource(ResourceManageable)
      */
     public ResourceProvisionerSimple() {
@@ -41,7 +42,6 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
      * Creates a new ResourceProvisionerSimple.
      *
      * @param resource the resource to be managed by the provisioner
-     * @post $none
      */
     protected ResourceProvisionerSimple(final ResourceManageable resource) {
         super(resource);
@@ -84,13 +84,13 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
 
     @Override
     public boolean deallocateResourceForVm(final Vm vm) {
-        final long amountFreed = deallocateResourceForVmSettingAllocationMapEntryToZero(vm);
+        final long amountFreed = deallocateResourceForVmAndSetAllocationMapEntryToZero(vm);
         getResourceAllocationMap().remove(vm);
         return amountFreed > 0;
     }
 
     @Override
-    protected long deallocateResourceForVmSettingAllocationMapEntryToZero(final Vm vm) {
+    protected long deallocateResourceForVmAndSetAllocationMapEntryToZero(final Vm vm) {
         if (getResourceAllocationMap().containsKey(vm)) {
             final long vmAllocatedResource = getResourceAllocationMap().get(vm);
             getResourceAllocationMap().put(vm, 0L);
@@ -111,5 +111,4 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         final long allocationDifference = newVmTotalAllocatedResource - currentAllocatedResource;
         return getResource().getAvailableResource() >=  allocationDifference;
     }
-
 }

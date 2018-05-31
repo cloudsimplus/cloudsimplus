@@ -4,8 +4,8 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * A class that represents the provisioning policy
- * used by a host to allocate its PEs to virtual machines inside it.
+ * An interface that represents the provisioning policy
+ * used by a host to provide virtual PEs to its virtual machines.
  * It gets a physical PE and manage it in order to provide this PE as virtual PEs for VMs.
  * In that way, a given PE might be shared among different VMs.
  *
@@ -35,9 +35,6 @@ public interface PeProvisioner extends ResourceProvisioner {
      * @param vm the virtual machine for which the new virtual PE is being allocated
      * @param mipsCapacity the MIPS to be allocated to the virtual PE of the given VM
      * @return $true if the virtual PE could be allocated; $false otherwise
-     *
-     * @pre $none
-     * @post $none
      */
     @Override
     boolean allocateResourceForVm(Vm vm, long mipsCapacity);
@@ -47,9 +44,6 @@ public interface PeProvisioner extends ResourceProvisioner {
      *
      * @param vm the virtual machine to get the allocated virtual Pe MIPS
      * @return the allocated virtual Pe MIPS
-     *
-     * @pre $none
-     * @post $none
      */
     @Override
     long getAllocatedResourceForVm(Vm vm);
@@ -58,18 +52,12 @@ public interface PeProvisioner extends ResourceProvisioner {
      * Releases the virtual Pe allocated to a given VM.
      *
      * @param vm the vm to release the virtual Pe
-     *
-     * @pre $none
-     * @post none
      */
     @Override
     boolean deallocateResourceForVm(Vm vm);
 
     /**
      * Releases all virtual PEs allocated to all VMs.
-     *
-     * @pre $none
-     * @post none
      */
     @Override
     void deallocateResourceForAllVms();
@@ -88,5 +76,4 @@ public interface PeProvisioner extends ResourceProvisioner {
      * @return the utilization percentage from 0 to 1
      */
     double getUtilization();
-
 }

@@ -238,6 +238,11 @@ public class VmSimple implements Vm {
     }
 
     @Override
+    public double getTotalCpuMipsUsage() {
+        return getTotalCpuMipsUsage(getSimulation().clock());
+    }
+
+    @Override
     public double getTotalCpuMipsUsage(final double time) {
         return getCpuPercentUsage(time) * getTotalMipsCapacity();
     }

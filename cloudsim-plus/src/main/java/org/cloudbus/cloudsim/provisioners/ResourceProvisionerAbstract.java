@@ -12,12 +12,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
- * An abstract class that implements the basic features of a provisioning policy used by a host
- * to allocate a given resource to virtual machines inside it.
+ * An abstract class that implements the basic features of a provisioning policy used by a {@link Host}
+ * to provide a given resource to its virtual machines.
  *
  * @see ResourceProvisioner
  * @author Rodrigo N. Calheiros
@@ -42,8 +43,6 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     /**
      * Creates a new ResourceManageable Provisioner for which the {@link #getResource() resource}
      * must be set further.
-     *
-     * @post $none
      */
     protected ResourceProvisionerAbstract() {
         this(ResourceManageable.NULL);
@@ -53,7 +52,6 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
      * Creates a new ResourceManageable Provisioner.
      *
      * @param resource The resource to be managed by the provisioner
-     * @post $none
      */
     public ResourceProvisionerAbstract(final ResourceManageable resource) {
         this.setResource(resource);
@@ -62,13 +60,13 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
 
     @Override
     public long getAllocatedResourceForVm(Vm vm) {
-        return getResourceAllocationMap().getOrDefault(vm, 0L);
+        return resourceAllocationMap.getOrDefault(vm, 0L);
     }
 
     @Override
     public void deallocateResourceForAllVms() {
-        for(final Vm vm: getResourceAllocationMap().keySet()){
-            deallocateResourceForVmSettingAllocationMapEntryToZero(vm);
+        for(final Vm vm: resourceAllocationMap.keySet()){
+            deallocateResourceForVmAndSetAllocationMapEntryToZero(vm);
         }
         getResourceAllocationMap().clear();
     }
@@ -80,7 +78,7 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
      * @param vm the VM to deallocate resource
      * @return the amount of allocated VM resource or zero if VM is not found
      */
-    protected abstract long deallocateResourceForVmSettingAllocationMapEntryToZero(Vm vm);
+    protected abstract long deallocateResourceForVmAndSetAllocationMapEntryToZero(Vm vm);
 
     @Override
     public ResourceManageable getResource() {
@@ -130,5 +128,4 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     public boolean isResourceAllocatedToVm(Vm vm) {
         return resourceAllocationMap.keySet().contains(vm);
     }
-
 }

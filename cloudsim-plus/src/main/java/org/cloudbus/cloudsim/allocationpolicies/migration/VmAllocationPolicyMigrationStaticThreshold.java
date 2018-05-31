@@ -90,7 +90,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
      * when creating an instance of the class.
      *
      * <p>
-     * <b>This method always return the same over utilization threshold for any
+     * <b>This implementation always returns the same over utilization threshold for any
      * given host</b></p>
      *
      * @param host {@inheritDoc}
