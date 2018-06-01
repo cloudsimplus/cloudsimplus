@@ -103,16 +103,16 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Get the bandwidth of the SAN network.
-     * @return the bandwidth
+     * Get the bandwidth of the SAN network (in Megabits/s).
+     * @return the bandwidth (in Megabits/s)
      */
     public double getBandwidth() {
         return bandwidth;
     }
 
     /**
-     * Gets the SAN's network latency.
-     * @return the SAN's network latency
+     * Gets the SAN's network latency (in seconds).
+     * @return the SAN's network latency (in seconds)
      */
     public double getNetworkLatency() {
         return networkLatency;
