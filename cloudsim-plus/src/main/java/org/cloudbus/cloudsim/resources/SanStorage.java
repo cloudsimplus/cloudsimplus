@@ -69,7 +69,7 @@ public class SanStorage extends HarddriveStorage {
     /**
      * Gets the maximum transfer rate of the SAN in MByte/sec.
      * It is defined as the minimum value between the disk rate and the SAN bandwidth.
-     * Even the bandwidth being faster the the disk rate, the max transfer rate
+     * Even the bandwidth being faster the disk rate, the max transfer rate
      * is limited by the disk speed.
      *
      * @return the max transfer in MByte/sec
