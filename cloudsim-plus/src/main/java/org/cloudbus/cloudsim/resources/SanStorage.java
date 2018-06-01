@@ -72,7 +72,7 @@ public class SanStorage extends HarddriveStorage {
      * Even the bandwidth being faster the the disk rate, the max transfer rate
      * is limited by the disk speed.
      *
-     * @return the max transfer in MEGABYTE/sec
+     * @return the max transfer in MByte/sec
      */
     @Override
     public double getMaxTransferRate() {

@@ -70,7 +70,7 @@ The last step before you start coding is to follow the guidelines below, so that
   as [DRY](https://en.wikipedia.org/wiki/Don't_repeat_yourself) and [KISS](https://en.wikipedia.org/wiki/KISS_principle). 
 - Code formatting also matters, really. We care about code organization and indentation to be applied uniformly throughout the code. 
   An untidy code is difficult to read and the lack of formating standards makes the code ugly. 
-  By this way, the project includes a [.editorconfig](.editorconfig) file that can be read by your IDE to auto format the code, 
+  The project includes a [.editorconfig](.editorconfig) file that can be read by your IDE to auto format the code, 
   by means of [EditorConfig IDE Plugins](http://editorconfig.org). 
   You are not required to use it, but at least, use the "auto format" option of your IDE to tidy the code after you finish working.  
 

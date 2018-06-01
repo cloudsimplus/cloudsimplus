@@ -293,10 +293,10 @@ public class HarddriveStorage implements FileStorage {
     }
 
     /**
-     * Get the seek time for a file with the defined size. Given a file size in MEGABYTE, this method
+     * Get the seek time for a file with the defined size. Given a file size in MByte, this method
      * returns a seek time for the file in seconds.
      *
-     * @param fileSize the size of a file in MEGABYTE
+     * @param fileSize the size of a file in MByte
      * @return the seek time in seconds
      */
     private double getSeekTime(final int fileSize) {
@@ -316,7 +316,7 @@ public class HarddriveStorage implements FileStorage {
     /**
      * Gets the transfer time of a given file.
      *
-     * @param fileSize the size of the transferred file
+     * @param fileSize the size of the transferred file (in MByte)
      * @return the transfer time in seconds
      */
     private double getTransferTime(final int fileSize) {
@@ -327,7 +327,6 @@ public class HarddriveStorage implements FileStorage {
 
         return result;
     }
-
 
     /**
      * {@inheritDoc}
