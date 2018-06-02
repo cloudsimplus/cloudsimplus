@@ -63,7 +63,7 @@ public class SanStorage extends HarddriveStorage {
     @Override
     public double addReservedFile(final File file) {
         final double time = super.addReservedFile(file);
-        return time + getTransferTime(file.getSize());
+        return time + getTransferTime(file);
     }
 
     /**
@@ -87,19 +87,26 @@ public class SanStorage extends HarddriveStorage {
     public double addFile(final File file) {
         final double time = super.addFile(file);
         if(time > 0)
-            return time + getTransferTime(file.getSize());
+            return time + getTransferTime(file);
 
         return time;
     }
 
-    protected double getTransferTime(final int fileSize) {
-        return fileSize*getMaxTransferRate() + getNetworkLatency();
+    /**
+     * {@inheritDoc}
+     * The network latency is added to the transfer time.
+     * @param fileSize {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public double getTransferTime(final int fileSize) {
+        return super.getTransferTime(fileSize) + getNetworkLatency();
     }
 
     @Override
     public double deleteFile(final File file) {
         final double time = super.deleteFile(file);
-        return time + getTransferTime(file.getSize());
+        return time + getTransferTime(file);
     }
 
     /**

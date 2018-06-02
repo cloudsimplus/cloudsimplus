@@ -8,6 +8,10 @@
 
 package org.cloudbus.cloudsim.resources;
 
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.network.switches.Switch;
+import org.cloudbus.cloudsim.vms.Vm;
+
 import java.util.List;
 
 /**
@@ -31,20 +35,39 @@ public interface FileStorage extends Resource {
     String getName();
 
     /**
-     * Gets the maximum transfer rate of the storage in MByte/sec.
+     * Gets the maximum transfer rate of the storage in <b>MBytes/sec</b>.
      *
-     * @return the maximum transfer rate in MByte/sec
+     *
+     * <p>Different from bandwidth in {@link Host}, {@link Vm} and {@link Switch},
+     * the FileStorage max transfer rate is defined in MBytes/sec instead of
+     * MBits/sec. That is the usual unit used for storage transfer speed.</p>
+     *
+     * @return the maximum transfer rate in <b>MBytes/sec</b>
      */
     double getMaxTransferRate();
 
     /**
-     * Sets the maximum transfer rate of this storage system in MByte/sec.
+     * Sets the latency of this hard drive in seconds.
      *
-     * @param rate the maximum transfer rate in MByte/sec
-     * @return <tt>true</tt> if the values is greater than zero and was set successfully,
-     * <tt>false</tt> otherwise
+     * @param latency the new latency in seconds
+     * @throws IllegalArgumentException if the value is lower than 0
      */
-    boolean setMaxTransferRate(int rate);
+    void setLatency(double latency);
+
+    /**
+     * Gets the latency of this hard drive in seconds.
+     *
+     * @return the latency in seconds
+     */
+    double getLatency();
+
+    /**
+     * Sets the maximum transfer rate of this storage system in <b>MBytes/sec</b>.
+     *
+     * @param maxTransferRate the maximum transfer rate in <b>MBytes/sec</b>
+     * @throws IllegalArgumentException if the value is lower than 1
+     */
+    void setMaxTransferRate(int maxTransferRate);
 
     /**
      * Gets the number of files stored on this device.
@@ -93,6 +116,22 @@ public interface FileStorage extends Resource {
      * @return a List of files
      */
     List<File> getFileList();
+
+    /**
+     * Gets the transfer time of a given file.
+     *
+     * @param file the file to compute the transfer time where its size is defined in MByte
+     * @return the transfer time in seconds
+     */
+    double getTransferTime(File file);
+
+    /**
+     * Gets the transfer time of a given file.
+     *
+     * @param fileSize the size of the file to compute the transfer time (in MByte)
+     * @return the transfer time in seconds
+     */
+    double getTransferTime(int fileSize);
 
     /**
      * Adds a file to the storage. The time taken (in seconds) for adding the specified file can

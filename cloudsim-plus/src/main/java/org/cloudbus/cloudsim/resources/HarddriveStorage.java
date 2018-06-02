@@ -115,9 +115,9 @@ public class HarddriveStorage implements FileStorage {
         fileNameList = new ArrayList<>();
         gen = null;
 
-        latency = 0.00417;     // 4.17 ms in seconds
-        avgSeekTime = 0.009;   // 9 ms
-        maxTransferRate = 133; // in MEGABYTE/sec
+        setLatency(0.00417);     // 4.17 ms in seconds
+        setAvgSeekTime(0.009);   // 9 ms
+        setMaxTransferRate(133); // in MEGABYTE/sec
     }
 
     @Override
@@ -178,38 +178,27 @@ public class HarddriveStorage implements FileStorage {
         return name;
     }
 
-    /**
-     * Sets the latency of this hard drive in seconds.
-     *
-     * @param latency the new latency in seconds
-     * @return <tt>true</tt> if the setting succeeded, <tt>false</tt> otherwise
-     */
-    public boolean setLatency(final double latency) {
+    @Override
+    public void setLatency(final double latency) {
         if (latency < 0) {
-            return false;
+            throw new IllegalArgumentException("Latency must be greater than zero.");
         }
 
         this.latency = latency;
-        return true;
     }
 
-    /**
-     * Gets the latency of this hard drive in seconds.
-     *
-     * @return the latency in seconds
-     */
+    @Override
     public double getLatency() {
         return latency;
     }
 
     @Override
-    public boolean setMaxTransferRate(final int rate) {
-        if (rate <= 0) {
-            return false;
+    public void setMaxTransferRate(final int maxTransferRate) {
+        if (maxTransferRate <= 0) {
+            throw new IllegalArgumentException("Max transfer rate must be greater than zero.");
         }
 
-        maxTransferRate = rate;
-        return true;
+        this.maxTransferRate = maxTransferRate;
     }
 
     @Override
@@ -313,19 +302,15 @@ public class HarddriveStorage implements FileStorage {
         return result;
     }
 
-    /**
-     * Gets the transfer time of a given file.
-     *
-     * @param fileSize the size of the transferred file (in MByte)
-     * @return the transfer time in seconds
-     */
-    protected double getTransferTime(final int fileSize) {
-        double result = 0;
-        if (fileSize > 0 && storage.getCapacity() != 0) {
-            result = (fileSize * getMaxTransferRate()) / (double)storage.getCapacity();
-        }
+    @Override
+    public double getTransferTime(final File file) {
+        return getTransferTime(file.getSize());
+    }
 
-        return result;
+    @Override
+    public double getTransferTime(final int fileSize) {
+        //It's ensured the maxTransferRate cannot be zero.
+        return fileSize/getMaxTransferRate() + getLatency();
     }
 
     /**
