@@ -319,10 +319,10 @@ public class HarddriveStorage implements FileStorage {
      * @param fileSize the size of the transferred file (in MByte)
      * @return the transfer time in seconds
      */
-    private double getTransferTime(final int fileSize) {
+    protected double getTransferTime(final int fileSize) {
         double result = 0;
         if (fileSize > 0 && storage.getCapacity() != 0) {
-            result = (fileSize * maxTransferRate) / (double)storage.getCapacity();
+            result = (fileSize * getMaxTransferRate()) / (double)storage.getCapacity();
         }
 
         return result;
