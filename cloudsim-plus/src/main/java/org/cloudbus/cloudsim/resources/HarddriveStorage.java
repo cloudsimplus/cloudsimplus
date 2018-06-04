@@ -193,7 +193,7 @@ public class HarddriveStorage implements FileStorage {
     }
 
     @Override
-    public void setMaxTransferRate(final int maxTransferRate) {
+    public void setMaxTransferRate(final double maxTransferRate) {
         if (maxTransferRate <= 0) {
             throw new IllegalArgumentException("Max transfer rate must be greater than zero.");
         }

@@ -37,14 +37,22 @@ public interface FileStorage extends Resource {
     /**
      * Gets the maximum transfer rate of the storage in <b>MBytes/sec</b>.
      *
+     * @return the maximum transfer rate in <b>MBytes/sec</b>
+     * @see #setMaxTransferRate(double)
+     */
+    double getMaxTransferRate();
+
+    /**
+     * Sets the maximum transfer rate of this storage system in <b>MBytes/sec</b>.
      *
      * <p>Different from bandwidth in {@link Host}, {@link Vm} and {@link Switch},
      * the FileStorage max transfer rate is defined in MBytes/sec instead of
      * MBits/sec. That is the usual unit used for storage transfer speed.</p>
      *
-     * @return the maximum transfer rate in <b>MBytes/sec</b>
+     * @param maxTransferRate the maximum transfer rate in <b>MBytes/sec</b>
+     * @throws IllegalArgumentException if the value is lower than 1
      */
-    double getMaxTransferRate();
+    void setMaxTransferRate(double maxTransferRate);
 
     /**
      * Sets the latency of this hard drive in seconds.
@@ -60,14 +68,6 @@ public interface FileStorage extends Resource {
      * @return the latency in seconds
      */
     double getLatency();
-
-    /**
-     * Sets the maximum transfer rate of this storage system in <b>MBytes/sec</b>.
-     *
-     * @param maxTransferRate the maximum transfer rate in <b>MBytes/sec</b>
-     * @throws IllegalArgumentException if the value is lower than 1
-     */
-    void setMaxTransferRate(int maxTransferRate);
 
     /**
      * Gets the number of files stored on this device.
