@@ -35,21 +35,22 @@ public interface FileStorage extends Resource {
     String getName();
 
     /**
-     * Gets the maximum transfer rate of the storage in <b>MBytes/sec</b>.
+     * Gets the maximum transfer rate of the storage in <b>Mbits/sec</b>.
      *
-     * @return the maximum transfer rate in <b>MBytes/sec</b>
+     * @return the maximum transfer rate in Mbits/sec
      * @see #setMaxTransferRate(double)
      */
     double getMaxTransferRate();
 
     /**
-     * Sets the maximum transfer rate of this storage system in <b>MBytes/sec</b>.
+     * Sets the maximum transfer rate of this storage system in <b>Mbits/sec</b>.
      *
-     * <p>Different from bandwidth in {@link Host}, {@link Vm} and {@link Switch},
-     * the FileStorage max transfer rate is defined in MBytes/sec instead of
-     * MBits/sec. That is the usual unit used for storage transfer speed.</p>
+     * <p>Despite disk transfer rate is usually defined in MBytes/sec,
+     * it's being used Mbits/sec everywhere to avoid confusions,
+     * since {@link Host}, {@link Vm}, {@link Switch}
+     * and {@link SanStorage} use such a data unit.</p>
      *
-     * @param maxTransferRate the maximum transfer rate in <b>MBytes/sec</b>
+     * @param maxTransferRate the maximum transfer rate in Mbits/sec
      * @throws IllegalArgumentException if the value is lower than 1
      */
     void setMaxTransferRate(double maxTransferRate);

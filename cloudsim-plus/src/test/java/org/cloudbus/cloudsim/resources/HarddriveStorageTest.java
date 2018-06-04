@@ -189,11 +189,11 @@ public class HarddriveStorageTest {
     public void testGetTransferTime() {
         final HarddriveStorage instance = createHardDrive(1);
         final int fileSizeInMB = 100;
+        final int maxTransferRateInMbitsSec = 10;
         final int latencyInSec = 1;
-        final int maxTransferRateInMByteSec = 10;
-        final int expectedSecs = 11;
+        final int expectedSecs = 81;
         instance.setLatency(latencyInSec);
-        instance.setMaxTransferRate(maxTransferRateInMByteSec);
+        instance.setMaxTransferRate(maxTransferRateInMbitsSec);
 
         assertEquals(expectedSecs, instance.getTransferTime(fileSizeInMB), 0.0);
     }

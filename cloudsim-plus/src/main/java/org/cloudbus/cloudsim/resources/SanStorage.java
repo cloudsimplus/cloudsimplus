@@ -21,6 +21,7 @@ package org.cloudbus.cloudsim.resources;
  * @TODO See the warning in class documentation.
  *
  * @author Rodrigo N. Calheiros
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class SanStorage extends HarddriveStorage {
@@ -67,19 +68,16 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Gets the maximum transfer rate of the SAN in MByte/sec.
+     * {@inheritDoc}
      * <b>It is defined as the minimum value between the disk rate and the SAN bandwidth.
      * Even the bandwidth being faster the disk rate, the max transfer rate
      * is limited by the disk speed.</b>
      *
-     * @return the max transfer in MByte/sec
+     * @return {@inheritDoc}
      */
     @Override
     public double getMaxTransferRate() {
         final double diskRate = super.getMaxTransferRate();
-
-        // the max transfer rate is the minimum between
-        // the network bandwidth and the disk rate
         return Math.min(diskRate, getBandwidth());
     }
 

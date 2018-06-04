@@ -13,25 +13,32 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * An implementation of a Hard Drive (HD) storage device. It simulates the behavior of a typical hard drive.
- * The default values for this storage are those of a "Maxtor DiamonMax 10 ATA" hard disk with the
- * following parameters:
+ * The default values for this storage are those of a
+ * "<a href='https://www.seagate.com/files/staticfiles/maxtor/en_us/documentation/data_sheets/diamondmax_10_data_sheet.pdf'>Maxtor DiamondMax 10 ATA</a>"
+ * hard disk with the following parameters:
  * <ul>
  *   <li>latency = 4.17 ms</li>
  *   <li>avg seek time = 9 m/s</li>
- *   <li>max transfer rate = 133 MEGABYTE/sec</li>
+ *   <li>max transfer rate = 1064 Megabits/sec (133 MBytes/sec)</li>
  * </ul>
  *
  * @author Uros Cibej
  * @author Anthony Sulistio
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class HarddriveStorage implements FileStorage {
+    private static final int DEF_MAX_TRANSFER_RATE_MBPS = 133*8;
+    public static final double DEF_LATENCY_SECS = 0.00417;
+    public static final double DEF_SEEK_TIME_SECS = 0.009;
+
     /** The internal storage that just manages
      * the HD capacity and used space.
      * The {@link HarddriveStorage} (HD) does not extends such class
@@ -83,13 +90,18 @@ public class HarddriveStorage implements FileStorage {
      * @throws IllegalArgumentException when the name and the capacity are not valid
      */
     public HarddriveStorage(final String name, final long capacity) throws IllegalArgumentException {
-        this.storage = new Storage(capacity);
-        this.reservedStorage = new Storage(capacity);
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("HarddriveStorage(): Error - invalid storage name.");
         }
 
+        this.fileList = new ArrayList<>();
+        this.fileNameList = new ArrayList<>();
+        this.gen = null;
+
+        this.storage = new Storage(capacity);
+        this.reservedStorage = new Storage(capacity);
         this.name = name;
+
         init();
     }
 
@@ -106,18 +118,13 @@ public class HarddriveStorage implements FileStorage {
 
     /**
      * Initializes the hard drive. The most common parameters, such
-     * as latency, average seek time and maximum transfer rate are set. The default values are set
-     * to simulate the "Maxtor DiamonMax 10 ATA" hard disk. Furthermore, the necessary lists are
-     * created.
+     * as latency, average seek time and maximum transfer rate are set.
+     * The default values are set to simulate the "Maxtor DiamondMax 10 ATA" hard disk.
      */
     private void init() {
-        fileList = new ArrayList<>();
-        fileNameList = new ArrayList<>();
-        gen = null;
-
-        setLatency(0.00417);     // 4.17 ms in seconds
-        setAvgSeekTime(0.009);   // 9 ms
-        setMaxTransferRate(133); // in MEGABYTE/sec
+        setLatency(DEF_LATENCY_SECS);
+        setAvgSeekTime(DEF_SEEK_TIME_SECS);
+        setMaxTransferRate(DEF_MAX_TRANSFER_RATE_MBPS);
     }
 
     @Override
@@ -310,7 +317,7 @@ public class HarddriveStorage implements FileStorage {
     @Override
     public double getTransferTime(final int fileSize) {
         //It's ensured the maxTransferRate cannot be zero.
-        return fileSize/getMaxTransferRate() + getLatency();
+        return Conversion.bytesToBits(fileSize)/getMaxTransferRate() + getLatency();
     }
 
     /**
