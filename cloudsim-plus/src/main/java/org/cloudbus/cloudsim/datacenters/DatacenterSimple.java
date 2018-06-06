@@ -558,7 +558,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             for (final FileStorage storage: getStorageList()) {
                 final File file = storage.getFile(fileName);
                 if (file != null) {
-                    time += file.getSize() / storage.getMaxTransferRate();
+                    time += storage.getTransferTime(file);
                     break;
                 }
             }

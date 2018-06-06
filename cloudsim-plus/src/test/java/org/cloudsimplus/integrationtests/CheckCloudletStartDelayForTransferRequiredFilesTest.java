@@ -151,10 +151,10 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 		/* The expected finish time considers the delay to transfer the Cloudlet
 		 * required files and the actual execution time.
 		 */
-		final long expectedFinishTime = 7;
+		final long expectedFinishTime = 17+5;
 		for(final Cloudlet c: cloudlets) {
 			//Checks if each cloudlet finished at the expected time, considering the delay to transfer the required files
-			assertEquals(c.toString(), expectedFinishTime, c.getFinishTime(), 0.3);
+			assertEquals(c.toString() + " expected finish time", expectedFinishTime, c.getFinishTime(), 0.3);
 
 			/* Checks if the cloudlet length is not being changed to simulate the
 			 * delay to transfer the cloudlet required files to the Vm.

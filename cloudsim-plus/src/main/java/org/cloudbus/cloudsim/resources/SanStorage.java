@@ -67,20 +67,6 @@ public class SanStorage extends HarddriveStorage {
         return time + getTransferTime(file);
     }
 
-    /**
-     * {@inheritDoc}
-     * <b>It is defined as the minimum value between the disk rate and the SAN bandwidth.
-     * Even the bandwidth being faster the disk rate, the max transfer rate
-     * is limited by the disk speed.</b>
-     *
-     * @return {@inheritDoc}
-     */
-    @Override
-    public double getMaxTransferRate() {
-        final double diskRate = super.getMaxTransferRate();
-        return Math.min(diskRate, getBandwidth());
-    }
-
     @Override
     public double addFile(final File file) {
         final double time = super.addFile(file);
@@ -98,7 +84,13 @@ public class SanStorage extends HarddriveStorage {
      */
     @Override
     public double getTransferTime(final int fileSize) {
-        return super.getTransferTime(fileSize) + getNetworkLatency();
+        //Gets the time to read the from from the local storage device (such as an HD or SSD).
+        final double storageDeviceReadTime = super.getTransferTime(fileSize);
+
+        //Gets the time to transfer the file through the network
+        final double networkTransferTime = getTransferTime(fileSize, bandwidth);
+
+        return storageDeviceReadTime + networkTransferTime + getNetworkLatency();
     }
 
     @Override

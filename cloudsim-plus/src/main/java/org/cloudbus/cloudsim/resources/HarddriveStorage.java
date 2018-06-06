@@ -317,7 +317,19 @@ public class HarddriveStorage implements FileStorage {
     @Override
     public double getTransferTime(final int fileSize) {
         //It's ensured the maxTransferRate cannot be zero.
-        return Conversion.bytesToBits(fileSize)/getMaxTransferRate() + getLatency();
+        return getTransferTime(fileSize, getMaxTransferRate()) + getLatency();
+    }
+
+    /**
+     * Gets the time to transfer a file (in MBytes)
+     * according to a given transfer speed (in Mbits/sec).
+     *
+     * @param fileSize the size of the file to compute the transfer time (in MBytes)
+     * @param speed the speed (in MBits/sec) to compute the time to transfer the file
+     * @return the transfer time in seconds
+     */
+    protected final double getTransferTime(final int fileSize, final double speed){
+        return Conversion.bytesToBits(fileSize)/speed;
     }
 
     /**
