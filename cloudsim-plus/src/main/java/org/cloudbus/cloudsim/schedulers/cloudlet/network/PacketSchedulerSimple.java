@@ -75,7 +75,6 @@ public class PacketSchedulerSimple implements PacketScheduler {
             return;
         }
 
-
         /*
          * @todo @author manoelcampos It should be used polymorphism to avoid
          * including these if's for each type of task.

@@ -25,7 +25,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  *
  * @todo @author manoelcampos The example isn't working yet.
  * It freezes after the cloudlets creation.
- * Maybe the problem is in the NetworkCloudletSpaceSharedScheduler class.
+ * Maybe the problem is in the CloudletSchedulerAbstract class.
  */
 public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
@@ -84,8 +84,8 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
      */
     private void addSendTask(
             NetworkCloudlet sourceCloudlet,
-            NetworkCloudlet destinationCloudlet) {
-
+            NetworkCloudlet destinationCloudlet)
+    {
         CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
         task.setMemory(NETCLOUDLET_RAM);
         sourceCloudlet.addTask(task);
