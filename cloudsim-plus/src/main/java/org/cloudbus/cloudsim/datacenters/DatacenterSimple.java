@@ -304,7 +304,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * receives the cloudlet submission
      */
     private void submitCloudletToVm(final Cloudlet cl, final boolean ack) {
-        // time to transfer cloudlet files
+        // time to transfer cloudlet's files
         final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
 
         final CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
@@ -533,7 +533,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * The ACK is sent just if the Broker is waiting for it and that condition
      * is indicated in the ack parameter.
      *
-     * @oaram ack indicates if the Broker is waiting for an ACK after the Datacenter
+     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
      * @param cl the cloudlet to respond to DatacenterBroker if it was created or not
      */
@@ -549,22 +549,34 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Predict the total time to transfer a list of files.
      *
      * @param requiredFiles the files to be transferred
-     * @return the predicted time
+     * @return the total predicted time to transfer the files
      */
     protected double predictFileTransferTime(final List<String> requiredFiles) {
-        double time = 0.0;
+        double totalTime = 0.0;
 
         for (final String fileName: requiredFiles) {
-            for (final FileStorage storage: getStorageList()) {
-                final File file = storage.getFile(fileName);
-                if (file != null) {
-                    time += storage.getTransferTime(file);
-                    break;
-                }
+            totalTime += Math.max(timeToTransferFileFromStorage(fileName), 0);
+        }
+
+        return totalTime;
+    }
+
+    /**
+     * Try to get a file from a storage device in the {@link #storageList}
+     * and computes the time to transfer it from that device.
+     *
+     * @param fileName the name of the file to try finding and get the transfer time
+     * @return the time to transfer the file or {@link FileStorage#FILE_NOT_FOUND} if not found.
+     */
+    private double timeToTransferFileFromStorage(final String fileName) {
+        for (final FileStorage storage: getStorageList()) {
+            final double transferTime = storage.getTransferTime(fileName);
+            if (transferTime != FileStorage.FILE_NOT_FOUND) {
+                return transferTime;
             }
         }
 
-        return time;
+        return FileStorage.FILE_NOT_FOUND;
     }
 
     /**

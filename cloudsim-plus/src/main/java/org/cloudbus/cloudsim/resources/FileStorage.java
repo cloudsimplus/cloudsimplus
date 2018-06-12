@@ -28,6 +28,8 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public interface FileStorage extends Resource {
+    int FILE_NOT_FOUND = -1;
+
     /**
      *
      * @return the name of the storage device
@@ -123,7 +125,15 @@ public interface FileStorage extends Resource {
     /**
      * Gets the transfer time of a given file.
      *
-     * @param file the file to compute the transfer time where its size is defined in MByte
+     * @param fileName the name of the file to compute the transfer time (where its size is defined in MByte)
+     * @return the transfer time in seconds or {@link #FILE_NOT_FOUND} if the file was not found in this storage device
+     */
+    double getTransferTime(String fileName);
+
+    /**
+     * Gets the transfer time of a given file.
+     *
+     * @param file the file to compute the transfer time (where its size is defined in MByte)
      * @return the transfer time in seconds
      */
     double getTransferTime(File file);
@@ -207,4 +217,11 @@ public interface FileStorage extends Resource {
      * @return <tt>true</tt> if enough space available, <tt>false</tt> otherwise
     */
     boolean hasPotentialAvailableSpace(int fileSize);
+
+    /**
+     * Checks if the storage device has a specific file.
+     * @param fileName the name of the file to check if it's contained in this storage device.
+     * @return true if the storage device has the file, false otherwise.
+     */
+    boolean hasFile(String fileName);
 }
