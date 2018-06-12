@@ -37,17 +37,6 @@ public final class DataCloudTags {
     public static final int PKT_SIZE = DEFAULT_MTU * 100;  // in bytes
 
     /**
-     * Sends the result of adding a master file back to sender.
-     * <p>
-     * The format of the reply is Object[3] = {String lfn, Integer uniqueID,
-     * Integer resultID}.
-     * </p>
-     * NOTE: The result id is in the form of FILE_ADD_XXXX where XXXX means the
-     * error/success message.
-     */
-    public static final int MASTERFILE_ADD_RESULT = RM_BASE + 11;
-
-    /**
      * Denotes that file addition is successful.
      */
     public static final int FILE_ADD_SUCCESSFUL = RM_BASE + 20;
@@ -62,16 +51,6 @@ public final class DataCloudTags {
      * the catalogue and it is read-only file.
      */
     public static final int FILE_ADD_ERROR_EXIST_READ_ONLY = RM_BASE + 23;
-
-    /**
-     * Sends the result of deleting a master file back to sender.
-     * <p>
-     * The format of the reply is Object[2] = {String lfn, Integer resultID}.
-     * </p>
-     * NOTE: The result id is in the form of FILE_DELETE_XXXX where XXXX means
-     * the error/success message
-     */
-    public static final int FILE_DELETE_MASTER_RESULT = RM_BASE + 31;
 
     /**
      * Denotes that file deletion is successful.
