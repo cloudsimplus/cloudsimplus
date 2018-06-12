@@ -58,11 +58,6 @@ public final class DataCloudTags {
     public static final int FILE_ADD_ERROR_STORAGE_FULL = RM_BASE + 21;
 
     /**
-     * Denotes that file addition is failed because the given file is empty.
-     */
-    public static final int FILE_ADD_ERROR_EMPTY = RM_BASE + 22;
-
-    /**
      * Denotes that file addition is failed because the file already exists in
      * the catalogue and it is read-only file.
      */

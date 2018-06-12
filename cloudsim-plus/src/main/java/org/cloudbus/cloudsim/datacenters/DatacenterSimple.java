@@ -291,7 +291,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
-        // process this Cloudlet to this Datacenter
         cl.assignToDatacenter(this);
         submitCloudletToVm(cl, ack);
     }
@@ -765,9 +764,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public int addFile(final File file) {
-        if (file == null) {
-            return DataCloudTags.FILE_ADD_ERROR_EMPTY;
-        }
+        Objects.requireNonNull(file);
 
         if (contains(file.getName())) {
             return DataCloudTags.FILE_ADD_ERROR_EXIST_READ_ONLY;
