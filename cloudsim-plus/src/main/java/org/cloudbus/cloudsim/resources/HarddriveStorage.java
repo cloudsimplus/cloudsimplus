@@ -176,6 +176,11 @@ public class HarddriveStorage implements FileStorage {
         return getDeletedFilesTotalSize() > fileSize;
     }
 
+    @Override
+    public boolean hasFile(final String fileName) {
+        return getFile(fileName) != null;
+    }
+
     private int getDeletedFilesTotalSize() {
         return fileList.stream().filter(File::isDeleted).mapToInt(File::getSize).sum();
     }
@@ -307,6 +312,16 @@ public class HarddriveStorage implements FileStorage {
         }
 
         return result;
+    }
+
+    @Override
+    public double getTransferTime(final String fileName) {
+        final File file = getFile(fileName);
+        if(file == null){
+            return FILE_NOT_FOUND;
+        }
+
+        return getTransferTime(file);
     }
 
     @Override
