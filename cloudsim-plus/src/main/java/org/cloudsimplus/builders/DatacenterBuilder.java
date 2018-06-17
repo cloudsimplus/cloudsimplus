@@ -23,15 +23,16 @@
  */
 package org.cloudsimplus.builders;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.FileStorage;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * A Builder class to createDatacenter {@link DatacenterSimple} objects.
@@ -90,7 +91,6 @@ public class DatacenterBuilder extends Builder {
         final String name = String.format(DC_NAME_FORMAT, createdDatacenters++);
         final Datacenter datacenter =
                 new DatacenterSimple(scenario.getSimulation(), hosts, new VmAllocationPolicySimple())
-                    .setStorageList(storageList)
                     .setSchedulingInterval(schedulingInterval);
 
         datacenter.getCharacteristics()
@@ -99,7 +99,8 @@ public class DatacenterBuilder extends Builder {
             .setCostPerMem(costPerMem)
             .setCostPerStorage(costPerStorage)
             .setCostPerBw(costPerBwMegabit);
-
+        
+        datacenter.getDatacenterStorage().setStorageList(storageList);
         datacenter.setName(name);
         this.datacenters.add(datacenter);
         return this;

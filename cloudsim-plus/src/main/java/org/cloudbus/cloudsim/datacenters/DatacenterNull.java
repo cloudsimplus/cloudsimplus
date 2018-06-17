@@ -1,16 +1,17 @@
 package org.cloudbus.cloudsim.datacenters;
 
+import java.util.Collections;
+import java.util.List;
+
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.vms.Vm;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A class that implements the Null Object Design Pattern for
@@ -55,11 +56,11 @@ final class DatacenterNull implements Datacenter {
     @Override public DatacenterCharacteristics getCharacteristics() {
         return DatacenterCharacteristics.NULL;
     }
-    @Override public List<FileStorage> getStorageList() {
-        return Collections.emptyList();
+    @Override public DatacenterStorage getDatacenterStorage() {
+    	return this.getDatacenterStorage();
     }
-    @Override public Datacenter setStorageList(List<FileStorage> storageList) {
-        return Datacenter.NULL;
+    @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage) {
+        this.getDatacenterStorage().setStorageList(Collections.emptyList());
     }
     @Override public double getBandwidthPercentForMigration() { return 0; }
     @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration) {/**/}

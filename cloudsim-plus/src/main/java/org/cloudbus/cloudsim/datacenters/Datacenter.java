@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.resources.FileStorage;
@@ -152,7 +153,7 @@ public interface Datacenter extends SimEntity, PowerAware {
      *
      * @return the storage list
      */
-    List<FileStorage> getStorageList();
+    DatacenterStorage getDatacenterStorage();
 
     /**
      * Sets the list of storage devices of the Datacenter.
@@ -160,7 +161,7 @@ public interface Datacenter extends SimEntity, PowerAware {
      * @param storageList the new storage list
      * @return
      */
-    Datacenter setStorageList(List<FileStorage> storageList);
+    void setDatacenterStorage(DatacenterStorage datacenterStorage);
 
     /**
      * Gets the percentage of the bandwidth allocated to a Host to
