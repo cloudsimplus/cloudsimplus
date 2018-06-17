@@ -104,9 +104,7 @@ public class DatacenterStorage {
     }
 
 	public int addFile(final File file) {
-	    if (file == null) {
-	        return DataCloudTags.FILE_ADD_ERROR_EMPTY;
-	    }
+		Objects.requireNonNull(file);
 	
 	    if (contains(file.getName())) {
 	        return DataCloudTags.FILE_ADD_ERROR_EXIST_READ_ONLY;
