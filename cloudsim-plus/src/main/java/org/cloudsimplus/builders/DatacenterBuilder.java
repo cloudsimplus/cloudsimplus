@@ -90,7 +90,6 @@ public class DatacenterBuilder extends Builder {
         final String name = String.format(DC_NAME_FORMAT, createdDatacenters++);
         final Datacenter datacenter =
                 new DatacenterSimple(scenario.getSimulation(), hosts, new VmAllocationPolicySimple())
-                    .setStorageList(storageList)
                     .setSchedulingInterval(schedulingInterval);
 
         datacenter.getCharacteristics()
@@ -99,7 +98,8 @@ public class DatacenterBuilder extends Builder {
             .setCostPerMem(costPerMem)
             .setCostPerStorage(costPerStorage)
             .setCostPerBw(costPerBwMegabit);
-
+        
+        datacenter.getDatacenterStorage().setStorageList(storageList);
         datacenter.setName(name);
         this.datacenters.add(datacenter);
         return this;
