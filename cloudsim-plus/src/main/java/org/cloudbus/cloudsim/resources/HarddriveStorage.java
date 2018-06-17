@@ -13,25 +13,32 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * An implementation of a Hard Drive (HD) storage device. It simulates the behavior of a typical hard drive.
- * The default values for this storage are those of a "Maxtor DiamonMax 10 ATA" hard disk with the
- * following parameters:
+ * The default values for this storage are those of a
+ * "<a href='https://www.seagate.com/files/staticfiles/maxtor/en_us/documentation/data_sheets/diamondmax_10_data_sheet.pdf'>Maxtor DiamondMax 10 ATA</a>"
+ * hard disk with the following parameters:
  * <ul>
  *   <li>latency = 4.17 ms</li>
  *   <li>avg seek time = 9 m/s</li>
- *   <li>max transfer rate = 133 MEGABYTE/sec</li>
+ *   <li>max transfer rate = 1064 Megabits/sec (133 MBytes/sec)</li>
  * </ul>
  *
  * @author Uros Cibej
  * @author Anthony Sulistio
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class HarddriveStorage implements FileStorage {
+    private static final int DEF_MAX_TRANSFER_RATE_MBPS = 133*8;
+    public static final double DEF_LATENCY_SECS = 0.00417;
+    public static final double DEF_SEEK_TIME_SECS = 0.009;
+
     /** The internal storage that just manages
      * the HD capacity and used space.
      * The {@link HarddriveStorage} (HD) does not extends such class
@@ -83,13 +90,18 @@ public class HarddriveStorage implements FileStorage {
      * @throws IllegalArgumentException when the name and the capacity are not valid
      */
     public HarddriveStorage(final String name, final long capacity) throws IllegalArgumentException {
-        this.storage = new Storage(capacity);
-        this.reservedStorage = new Storage(capacity);
         if (name == null || name.trim().isEmpty()) {
             throw new IllegalArgumentException("HarddriveStorage(): Error - invalid storage name.");
         }
 
+        this.fileList = new ArrayList<>();
+        this.fileNameList = new ArrayList<>();
+        this.gen = null;
+
+        this.storage = new Storage(capacity);
+        this.reservedStorage = new Storage(capacity);
         this.name = name;
+
         init();
     }
 
@@ -106,18 +118,13 @@ public class HarddriveStorage implements FileStorage {
 
     /**
      * Initializes the hard drive. The most common parameters, such
-     * as latency, average seek time and maximum transfer rate are set. The default values are set
-     * to simulate the "Maxtor DiamonMax 10 ATA" hard disk. Furthermore, the necessary lists are
-     * created.
+     * as latency, average seek time and maximum transfer rate are set.
+     * The default values are set to simulate the "Maxtor DiamondMax 10 ATA" hard disk.
      */
     private void init() {
-        fileList = new ArrayList<>();
-        fileNameList = new ArrayList<>();
-        gen = null;
-
-        latency = 0.00417;     // 4.17 ms in seconds
-        avgSeekTime = 0.009;   // 9 ms
-        maxTransferRate = 133; // in MEGABYTE/sec
+        setLatency(DEF_LATENCY_SECS);
+        setAvgSeekTime(DEF_SEEK_TIME_SECS);
+        setMaxTransferRate(DEF_MAX_TRANSFER_RATE_MBPS);
     }
 
     @Override
@@ -169,6 +176,11 @@ public class HarddriveStorage implements FileStorage {
         return getDeletedFilesTotalSize() > fileSize;
     }
 
+    @Override
+    public boolean hasFile(final String fileName) {
+        return getFile(fileName) != null;
+    }
+
     private int getDeletedFilesTotalSize() {
         return fileList.stream().filter(File::isDeleted).mapToInt(File::getSize).sum();
     }
@@ -178,38 +190,27 @@ public class HarddriveStorage implements FileStorage {
         return name;
     }
 
-    /**
-     * Sets the latency of this hard drive in seconds.
-     *
-     * @param latency the new latency in seconds
-     * @return <tt>true</tt> if the setting succeeded, <tt>false</tt> otherwise
-     */
-    public boolean setLatency(final double latency) {
+    @Override
+    public void setLatency(final double latency) {
         if (latency < 0) {
-            return false;
+            throw new IllegalArgumentException("Latency must be greater than zero.");
         }
 
         this.latency = latency;
-        return true;
     }
 
-    /**
-     * Gets the latency of this hard drive in seconds.
-     *
-     * @return the latency in seconds
-     */
+    @Override
     public double getLatency() {
         return latency;
     }
 
     @Override
-    public boolean setMaxTransferRate(final int rate) {
-        if (rate <= 0) {
-            return false;
+    public void setMaxTransferRate(final double maxTransferRate) {
+        if (maxTransferRate <= 0) {
+            throw new IllegalArgumentException("Max transfer rate must be greater than zero.");
         }
 
-        maxTransferRate = rate;
-        return true;
+        this.maxTransferRate = maxTransferRate;
     }
 
     @Override
@@ -293,10 +294,10 @@ public class HarddriveStorage implements FileStorage {
     }
 
     /**
-     * Get the seek time for a file with the defined size. Given a file size in MEGABYTE, this method
+     * Get the seek time for a file with the defined size. Given a file size in MByte, this method
      * returns a seek time for the file in seconds.
      *
-     * @param fileSize the size of a file in MEGABYTE
+     * @param fileSize the size of a file in MByte
      * @return the seek time in seconds
      */
     private double getSeekTime(final int fileSize) {
@@ -313,21 +314,38 @@ public class HarddriveStorage implements FileStorage {
         return result;
     }
 
-    /**
-     * Gets the transfer time of a given file.
-     *
-     * @param fileSize the size of the transferred file
-     * @return the transfer time in seconds
-     */
-    private double getTransferTime(final int fileSize) {
-        double result = 0;
-        if (fileSize > 0 && storage.getCapacity() != 0) {
-            result = (fileSize * maxTransferRate) / (double)storage.getCapacity();
+    @Override
+    public double getTransferTime(final String fileName) {
+        final File file = getFile(fileName);
+        if(file == null){
+            return FILE_NOT_FOUND;
         }
 
-        return result;
+        return getTransferTime(file);
     }
 
+    @Override
+    public double getTransferTime(final File file) {
+        return getTransferTime(file.getSize());
+    }
+
+    @Override
+    public double getTransferTime(final int fileSize) {
+        //It's ensured the maxTransferRate cannot be zero.
+        return getTransferTime(fileSize, getMaxTransferRate()) + getLatency();
+    }
+
+    /**
+     * Gets the time to transfer a file (in MBytes)
+     * according to a given transfer speed (in Mbits/sec).
+     *
+     * @param fileSize the size of the file to compute the transfer time (in MBytes)
+     * @param speed the speed (in MBits/sec) to compute the time to transfer the file
+     * @return the transfer time in seconds
+     */
+    protected final double getTransferTime(final int fileSize, final double speed){
+        return Conversion.bytesToBits(fileSize)/speed;
+    }
 
     /**
      * {@inheritDoc}

@@ -26,6 +26,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.File;
+import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
@@ -296,7 +297,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
-        // process this Cloudlet to this Datacenter
         cl.assignToDatacenter(this);
         submitCloudletToVm(cl, ack);
     }
@@ -538,7 +538,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * The ACK is sent just if the Broker is waiting for it and that condition
      * is indicated in the ack parameter.
      *
-     * @oaram ack indicates if the Broker is waiting for an ACK after the Datacenter
+     * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
      * @param cl the cloudlet to respond to DatacenterBroker if it was created or not
      */
@@ -548,6 +548,40 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
+    }
+
+    /**
+     * Predict the total time to transfer a list of files.
+     *
+     * @param requiredFiles the files to be transferred
+     * @return the total predicted time to transfer the files
+     */
+    protected double predictFileTransferTime(final List<String> requiredFiles) {
+        double totalTime = 0.0;
+
+        for (final String fileName: requiredFiles) {
+            totalTime += Math.max(timeToTransferFileFromStorage(fileName), 0);
+        }
+
+        return totalTime;
+    }
+
+    /**
+     * Try to get a file from a storage device in the {@link #storageList}
+     * and computes the time to transfer it from that device.
+     *
+     * @param fileName the name of the file to try finding and get the transfer time
+     * @return the time to transfer the file or {@link FileStorage#FILE_NOT_FOUND} if not found.
+     */
+    private double timeToTransferFileFromStorage(final String fileName) {
+        for (final FileStorage storage: getDatacenterStorage().getStorageList()) {
+            final double transferTime = storage.getTransferTime(fileName);
+            if (transferTime != FileStorage.FILE_NOT_FOUND) {
+                return transferTime;
+            }
+        }
+
+        return FileStorage.FILE_NOT_FOUND;
     }
 
     /**
@@ -734,7 +768,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         cloudlet.getVm().getCloudletScheduler().addCloudletToReturnedList(cloudlet);
     }
 
-    @Override
+    
     public void shutdownEntity() {
         super.shutdownEntity();
         Log.printFormattedLine("%.2f: %s is shutting down...", getSimulation().clock(), getName());

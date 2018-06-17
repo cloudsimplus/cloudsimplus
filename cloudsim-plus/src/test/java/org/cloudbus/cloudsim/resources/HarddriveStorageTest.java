@@ -186,6 +186,19 @@ public class HarddriveStorageTest {
     }
 
     @Test
+    public void testGetTransferTime() {
+        final HarddriveStorage instance = createHardDrive(1);
+        final int fileSizeInMB = 100;
+        final int maxTransferRateInMbitsSec = 10;
+        final int latencyInSec = 1;
+        final int expectedSecs = 81;
+        instance.setLatency(latencyInSec);
+        instance.setMaxTransferRate(maxTransferRateInMbitsSec);
+
+        assertEquals(expectedSecs, instance.getTransferTime(fileSizeInMB), 0.0);
+    }
+
+    @Test
     public void testAddReservedFile_spaceNotPreReserved() {
         final HarddriveStorage instance = createHardDrive(CAPACITY);
         try{
@@ -298,43 +311,46 @@ public class HarddriveStorageTest {
         assertEquals(expResult, instance.getName());
     }
 
-    @Test
-    public void testSetLatency1() {
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetLatencyNegative() {
         final HarddriveStorage instance = createHardDrive();
-        final double latency = 1;
-        assertTrue(instance.setLatency(latency));
-        assertEquals(latency, instance.getLatency(), 0);
+        instance.setLatency(-1);
     }
 
     @Test
     public void testSetLatency0() {
         final HarddriveStorage instance = createHardDrive();
-        final double latency = 0;
-        assertTrue(instance.setLatency(latency));
-        assertEquals(latency, instance.getLatency(), 0);
+        final int expected = 0;
+        instance.setLatency(expected);
+        assertEquals(expected, instance.getLatency(), 0);
     }
 
     @Test
-    public void testSetLatencyNegative() {
+    public void testSetLatency1() {
         final HarddriveStorage instance = createHardDrive();
         final double latency = 1;
         instance.setLatency(latency);
-        assertFalse(instance.setLatency(-1));
         assertEquals(latency, instance.getLatency(), 0);
     }
 
     @Test
-    public void testSetMaxTransferRate() {
+    public void testSetMaxTransferRate1() {
         final HarddriveStorage instance = createHardDrive();
         final int rate = 1;
-        assertTrue(instance.setMaxTransferRate(rate));
+        instance.setMaxTransferRate(rate);
         assertEquals(rate, instance.getMaxTransferRate(), 0);
+    }
 
-        assertFalse(instance.setMaxTransferRate(-1));
-        assertEquals(rate, instance.getMaxTransferRate(), 0);
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetMaxTransferRateNegative() {
+        final HarddriveStorage instance = createHardDrive();
+        instance.setMaxTransferRate(-1);
+    }
 
-        assertFalse(instance.setMaxTransferRate(0));
-        assertEquals(rate, instance.getMaxTransferRate(), 0);
+    @Test(expected = IllegalArgumentException.class)
+    public void testSetMaxTransferRate0() {
+        final HarddriveStorage instance = createHardDrive();
+        instance.setMaxTransferRate(0);
     }
 
     @Test

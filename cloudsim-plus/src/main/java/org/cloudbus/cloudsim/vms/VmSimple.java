@@ -264,7 +264,7 @@ public class VmSimple implements Vm {
         }
 
         return LongStream.range(0, getNumberOfPes())
-                .mapToObj(i->getMips())
+                .mapToObj(i -> getMips())
                 .collect(toList());
     }
 

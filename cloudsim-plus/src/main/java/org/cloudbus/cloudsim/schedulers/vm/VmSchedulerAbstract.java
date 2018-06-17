@@ -248,8 +248,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
      * Gets a map of MIPS requested by each VM, where each key is a VM and each value is a
      * list of MIPS requested by that VM.
+     * When a VM is going to be placed into a Host, its requested MIPS
+     * is a list where each element is the MIPS capacity of each VM {@link Pe}
+     * and the list size is the number of PEs.
      *
-     * @return
+     * @return the requested MIPS map
      */
     protected Map<Vm, List<Double>> getRequestedMipsMap() {
         return requestedMipsMap;
@@ -257,16 +260,22 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public List<Double> getRequestedMips(final Vm vm) {
-        return new ArrayList<>(requestedMipsMap.getOrDefault(vm, Collections.EMPTY_LIST));
+        return new ArrayList<>(requestedMipsMap.getOrDefault(vm, Collections.emptyList()));
     }
 
     /**
-     * Gets the map of VMs to MIPS, were each key is a VM and each value is the
+     * Gets a map of MIPS allocated to each VM, were each key is a VM and each value is the
      * List of currently allocated MIPS from the respective physical PEs which
      * are being used by such a VM.
      *
-     * @return the mips map
+     * <p>When VM is in migration, the allocated MIPS in the source Host is reduced
+     * due to migration overhead, according to the {@link #getVmMigrationCpuOverhead()}.
+     * This is a situation that the allocated MIPS will be
+     * lower than the requested MIPS.</p>
+     *
+     * @return the allocated MIPS map
      * @see #getAllocatedMips(Vm)
+     * @see #getRequestedMipsMap()
      */
     protected Map<Vm, List<Double>> getAllocatedMipsMap() {
         return allocatedMipsMap;
@@ -274,10 +283,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public double getAvailableMips() {
-        final double allocatedMips = allocatedMipsMap.entrySet()
-                                                     .stream()
-                                                     .mapToDouble(this::actualVmTotalRequestedMips)
-                                                     .sum();
+        final double allocatedMips =
+            allocatedMipsMap.entrySet()
+                            .stream()
+                            .mapToDouble(this::actualVmTotalRequestedMips)
+                            .sum();
 
         return host.getTotalMipsCapacity() - allocatedMips;
     }

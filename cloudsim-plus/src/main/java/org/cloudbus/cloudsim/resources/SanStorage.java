@@ -21,14 +21,15 @@ package org.cloudbus.cloudsim.resources;
  * @TODO See the warning in class documentation.
  *
  * @author Rodrigo N. Calheiros
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
 public class SanStorage extends HarddriveStorage {
     /** @see #getBandwidth() */
-    private final double bandwidth;
+    private double bandwidth;
 
     /** @see #getNetworkLatency()  */
-    private final double networkLatency;
+    private double networkLatency;
 
     /**
      * Creates a new SAN with a given capacity, latency, and bandwidth of the network connection.
@@ -40,8 +41,8 @@ public class SanStorage extends HarddriveStorage {
      */
     public SanStorage(final long capacity, final double bandwidth, final double networkLatency) throws IllegalArgumentException {
         super(capacity);
-        this.bandwidth = bandwidth;
-        this.networkLatency = networkLatency;
+        this.setBandwidth(bandwidth);
+        this.setNetworkLatency(networkLatency);
     }
 
     /**
@@ -63,58 +64,79 @@ public class SanStorage extends HarddriveStorage {
     @Override
     public double addReservedFile(final File file) {
         final double time = super.addReservedFile(file);
-        return time + getFileTransferTimePlusNetworkLatency(file);
-    }
-
-    /**
-     * Gets the maximum transfer rate of the SAN in MByte/sec.
-     * It is defined as the minimum value between the disk rate and the SAN bandwidth.
-     * Even the bandwidth being faster the the disk rate, the max transfer rate
-     * is limited by the disk speed.
-     *
-     * @return the max transfer in MEGABYTE/sec
-     */
-    @Override
-    public double getMaxTransferRate() {
-        final double diskRate = super.getMaxTransferRate();
-
-        // the max transfer rate is the minimum between
-        // the network bandwidth and the disk rate
-        return Math.min(diskRate, getBandwidth());
+        return time + getTransferTime(file);
     }
 
     @Override
     public double addFile(final File file) {
         final double time = super.addFile(file);
         if(time > 0)
-            return time + getFileTransferTimePlusNetworkLatency(file);
+            return time + getTransferTime(file);
 
         return time;
     }
 
-    private double getFileTransferTimePlusNetworkLatency(final File file) {
-        return file.getSize()*getBandwidth() + getNetworkLatency();
+    /**
+     * {@inheritDoc}
+     * The network latency is added to the transfer time.
+     * @param fileSize {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public double getTransferTime(final int fileSize) {
+        //Gets the time to read the from from the local storage device (such as an HD or SSD).
+        final double storageDeviceReadTime = super.getTransferTime(fileSize);
+
+        //Gets the time to transfer the file through the network
+        final double networkTransferTime = getTransferTime(fileSize, bandwidth);
+
+        return storageDeviceReadTime + networkTransferTime + getNetworkLatency();
     }
 
     @Override
     public double deleteFile(final File file) {
         final double time = super.deleteFile(file);
-        return time + getFileTransferTimePlusNetworkLatency(file);
+        return time + getTransferTime(file);
     }
 
     /**
-     * Get the bandwidth of the SAN network.
-     * @return the bandwidth
+     * Gets the bandwidth of the SAN network (in Megabits/s).
+     * @return the bandwidth (in Megabits/s)
      */
     public double getBandwidth() {
         return bandwidth;
     }
 
     /**
-     * Gets the SAN's network latency.
-     * @return the SAN's network latency
+     * Sets the bandwidth of the SAN network (in Megabits/s).
+     * @param bandwidth the bandwidth to set (in Megabits/s)
+     * @throws IllegalArgumentException when the bandwidth is lower or equal to zero
+     */
+    public final void setBandwidth(final double bandwidth) {
+        if(bandwidth <= 0){
+            throw new IllegalArgumentException("Bandwidth must be higher than zero");
+        }
+        this.bandwidth = bandwidth;
+    }
+
+    /**
+     * Gets the SAN's network latency (in seconds).
+     * @return the SAN's network latency (in seconds)
      */
     public double getNetworkLatency() {
         return networkLatency;
     }
+
+    /**
+     * Sets the latency of the SAN network (in seconds).
+     * @param networkLatency the latency to set (in seconds)
+     * @throws IllegalArgumentException when the latency is lower or equal to zero
+     */
+    public final void setNetworkLatency(final double networkLatency) {
+        if(networkLatency <= 0){
+            throw new IllegalArgumentException("Latency must be higher than zero");
+        }
+        this.networkLatency = networkLatency;
+    }
+
 }

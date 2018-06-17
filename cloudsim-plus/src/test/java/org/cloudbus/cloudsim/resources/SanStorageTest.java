@@ -33,27 +33,116 @@ public class SanStorageTest {
         return createSanStorage(bandwidth, NETWORK_LATENCY);
     }
 
-    /**
-     * The transfer time is limited to the minimum value between the disk rate
-     * (defined by the HarddriveStorage super class) and the bandwidth.
-     * If the HOST_BW is greater than the disk rate, the max transfer rate will
-     * be limited to the disk rate.
-     * If the disk rate is greater than the bandwidth, the max transfer rate will
-     * be limited to the bandwidth.
-     */
     @Test
-    public void testGetMaxTransferRate() {
-        final HarddriveStorage hd = new HarddriveStorage(CAPACITY);
-        //creates a SAN with bw greater than the disk rate of the super class HarddriveStorage
-        double bandwidth = hd.getMaxTransferRate() * 100;
-        SanStorage instance = createSanStorage(bandwidth);
-        final double diskRate = hd.getMaxTransferRate();
-        assertEquals(diskRate, instance.getMaxTransferRate(), 0.0);
+    public void testGetMaxTransferRate1() {
+        final double diskRateMbps = 10;
+        final double bwMbps = diskRateMbps*100;
+        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        instance.setMaxTransferRate(diskRateMbps);
 
-        //creates a SAN with bw lower than the disk rate of the super class HarddriveStorage
-        bandwidth = hd.getMaxTransferRate() / 2;
-        instance = createSanStorage(bandwidth);
-        assertEquals(bandwidth, instance.getMaxTransferRate(), 0.0);
+        assertEquals(diskRateMbps, instance.getMaxTransferRate(), 0.0);
+    }
+
+    @Test
+    public void testGetMaxTransferRate2() {
+        final double bwMbps = 10;
+        final double diskRateMbps = 10*bwMbps;
+        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        instance.setMaxTransferRate(diskRateMbps);
+
+        assertEquals(diskRateMbps, instance.getMaxTransferRate(), 0.0);
+    }
+
+    @Test
+    public void testGetTransferTimeWhenDiskRateAndBwAreEqual() {
+        final double bwMbps = 10;
+        final double diskRateMbps = bwMbps;
+        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        instance.setMaxTransferRate(diskRateMbps);
+
+        final int fileSizeMB = 100;
+        //Includes storage device read time, network transfer time plus network latency
+        final double expectedTime = 162;
+        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+    }
+
+    @Test
+    public void testGetTransferTimeWhenDiskReadTimeIsNegligible() {
+        final double bwMbps = 10;
+        final double diskRateMbps = 1000000;
+        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        instance.setMaxTransferRate(diskRateMbps);
+
+        final int fileSizeMB = 100;
+        //Includes storage device read time, network transfer time plus network latency
+        final double expectedTime = 82.0008;
+        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+    }
+
+    @Test
+    public void testGetTransferTimeWhenNetworkTransferTimeIsNegligible() {
+        final double bwMbps = 1000000;
+        final double diskRateMbps = 10;
+        final double latency = 0.0001;
+        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, latency);
+        instance.setMaxTransferRate(diskRateMbps);
+
+        final int fileSizeMB = 100;
+        //Includes storage device read time, network transfer time plus network latency
+        final double expectedTime = 80.0009;
+        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+    }
+
+    @Test
+    public void testGetTransferTime_whenBwIsLowerThanDiskRate() {
+        final double bwMbps = 10;
+        final double diskRateMbps = bwMbps*10;
+        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        instance.setMaxTransferRate(diskRateMbps);
+
+        final int fileSizeMB = 100;
+        //Includes storage device read time, network transfer time plus network latency
+        final double expectedTime = 90;
+        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+    }
+
+    @Test
+    public void testGetTransferTime_whenBwIsLowerThanDiskRateAndLatencyIsAlmostZero() {
+        final double bwMbps = 10;
+        final double diskRateMbps = bwMbps*10;
+        final double latency = 0.0001;
+        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, latency);
+        instance.setMaxTransferRate(diskRateMbps);
+
+        final int fileSizeMB = 100;
+        //Includes storage device read time, network transfer time plus network latency
+        final double expectedTime = 88.0;
+        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+    }
+
+    @Test
+    public void testGetTransferTime_whenDiskRateIsLowerThanBw() {
+        final double diskRateMbps = 10;
+        final double bwMbps = diskRateMbps*100;
+        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        instance.setMaxTransferRate(diskRateMbps);
+
+        final int fileSizeMB = 100;
+        //Includes storage device read time, network transfer time plus network latency
+        final double expectedTime = 82.8;
+        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+    }
+
+    @Test
+    public void testGetTransferTime_whenBwIsEqualToDiskRate() {
+        final double bwAndDiskRateMbps = 10;
+        final SanStorage instance = new SanStorage(CAPACITY, bwAndDiskRateMbps, NETWORK_LATENCY);
+        instance.setMaxTransferRate(bwAndDiskRateMbps);
+
+        final int fileSizeMB = 100;
+        //Includes storage device read time, network transfer time plus network latency
+        final double expectedTime = 162;
+        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.1);
     }
 
     @Test
