@@ -6,27 +6,32 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
-import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.core.CloudSimEntity;
+import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.PredicateType;
-import org.cloudbus.cloudsim.network.IcmpPacket;
-import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.DataCloudTags;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.network.IcmpPacket;
+import org.cloudbus.cloudsim.resources.DatacenterStorage;
+import org.cloudbus.cloudsim.resources.File;
+import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.*;
-import org.cloudbus.cloudsim.resources.File;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-
-import java.util.*;
-
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * Implements the basic features of a Virtualized Cloud Datacenter. It deals
@@ -66,7 +71,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private double lastProcessTime;
 
     /** @see #getStorageList() */
-    private List<FileStorage> storageList;
+    public DatacenterStorage datacenterStorage;
 
     /** @see #getSchedulingInterval() */
     private double schedulingInterval;
@@ -94,7 +99,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
-        setStorageList(new ArrayList<>());
+        setDatacenterStorage(new DatacenterStorage());
+        datacenterStorage.setDatacenter(this);
 
         this.characteristics = new DatacenterCharacteristicsSimple(this);
         this.bandwidthPercentForMigration = DEF_BANDWIDTH_PERCENT_FOR_MIGRATION;
@@ -303,8 +309,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * receives the cloudlet submission
      */
     private void submitCloudletToVm(final Cloudlet cl, final boolean ack) {
-        // time to transfer cloudlet's files
-        final double fileTransferTime = predictFileTransferTime(cl.getRequiredFiles());
+        // time to transfer cloudlet files
+        final double fileTransferTime = datacenterStorage.predictFileTransferTime(cl.getRequiredFiles());
 
         final CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
         final double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
@@ -545,40 +551,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Predict the total time to transfer a list of files.
-     *
-     * @param requiredFiles the files to be transferred
-     * @return the total predicted time to transfer the files
-     */
-    protected double predictFileTransferTime(final List<String> requiredFiles) {
-        double totalTime = 0.0;
-
-        for (final String fileName: requiredFiles) {
-            totalTime += Math.max(timeToTransferFileFromStorage(fileName), 0);
-        }
-
-        return totalTime;
-    }
-
-    /**
-     * Try to get a file from a storage device in the {@link #storageList}
-     * and computes the time to transfer it from that device.
-     *
-     * @param fileName the name of the file to try finding and get the transfer time
-     * @return the time to transfer the file or {@link FileStorage#FILE_NOT_FOUND} if not found.
-     */
-    private double timeToTransferFileFromStorage(final String fileName) {
-        for (final FileStorage storage: getStorageList()) {
-            final double transferTime = storage.getTransferTime(fileName);
-            if (transferTime != FileStorage.FILE_NOT_FOUND) {
-                return transferTime;
-            }
-        }
-
-        return FileStorage.FILE_NOT_FOUND;
-    }
-
-    /**
      * Updates the processing of all Hosts, meaning
      * it makes the processing of VMs running inside such hosts to be updated.
      * Finally, the processing of Cloudlets running inside such VMs is updated too.
@@ -762,55 +734,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         cloudlet.getVm().getCloudletScheduler().addCloudletToReturnedList(cloudlet);
     }
 
-    @Override
-    public int addFile(final File file) {
-        Objects.requireNonNull(file);
-
-        if (contains(file.getName())) {
-            return DataCloudTags.FILE_ADD_ERROR_EXIST_READ_ONLY;
-        }
-
-        // check storage space first
-        if (getStorageList().isEmpty()) {
-            return DataCloudTags.FILE_ADD_ERROR_STORAGE_FULL;
-        }
-
-        for (final FileStorage storage : getStorageList()) {
-            if (storage.isResourceAmountAvailable((long) file.getSize())) {
-                storage.addFile(file);
-                return DataCloudTags.FILE_ADD_SUCCESSFUL;
-            }
-        }
-
-        return DataCloudTags.FILE_ADD_ERROR_STORAGE_FULL;
-    }
-
-    /**
-     * Checks whether the Datacenter has the given file.
-     *
-     * @param file a file to be searched
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     */
-    protected boolean contains(final File file) {
-        Objects.requireNonNull(file);
-        return contains(file.getName());
-    }
-
-    /**
-     * Checks whether the Datacenter has the given file.
-     *
-     * @param fileName a file name to be searched
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
-     */
-    protected boolean contains(final String fileName) {
-        if (fileName == null || fileName.trim().isEmpty()) {
-            return false;
-        }
-
-        return storageList.stream().anyMatch(storage -> storage.contains(fileName));
-    }
-
-    @Override
+    
     public void shutdownEntity() {
         super.shutdownEntity();
         Log.printFormattedLine("%.2f: %s is shutting down...", getSimulation().clock(), getName());
@@ -872,8 +796,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public List<FileStorage> getStorageList() {
-        return Collections.unmodifiableList(storageList);
+    public DatacenterStorage getDatacenterStorage() {
+        return datacenterStorage;
     }
 
     /**
@@ -883,22 +807,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     @Override
-    public final Datacenter setStorageList(final List<FileStorage> storageList) {
-        Objects.requireNonNull(storageList);
-        this.storageList = storageList;
-        setAllFilesOfAllStoragesToThisDatacenter();
-
-        return this;
-    }
-
-    /**
-     * Assigns all files of all storage devices to this Datacenter.
-     */
-    private void setAllFilesOfAllStoragesToThisDatacenter() {
-        storageList.stream()
-                .map(FileStorage::getFileList)
-                .flatMap(List::stream)
-                .forEach(file -> file.setDatacenter(this));
+    public void setDatacenterStorage(DatacenterStorage datacenterStorage) {
+        this.datacenterStorage = datacenterStorage;
     }
 
     @Override
