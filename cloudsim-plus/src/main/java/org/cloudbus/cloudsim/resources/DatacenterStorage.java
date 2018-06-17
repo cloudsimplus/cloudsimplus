@@ -102,6 +102,24 @@ public class DatacenterStorage {
 
         return time;
     }
+    
+    /**
+     * Try to get a file from a storage device in the {@link #storageList}
+     * and computes the time to transfer it from that device.
+     *
+     * @param fileName the name of the file to try finding and get the transfer time
+     * @return the time to transfer the file or {@link FileStorage#FILE_NOT_FOUND} if not found.
+     */
+    private double timeToTransferFileFromStorage(final String fileName) {
+        for (final FileStorage storage: getStorageList()) {
+            final double transferTime = storage.getTransferTime(fileName);
+            if (transferTime != FileStorage.FILE_NOT_FOUND) {
+                return transferTime;
+            }
+        }
+
+        return FileStorage.FILE_NOT_FOUND;
+    }
 
 	public int addFile(final File file) {
 		Objects.requireNonNull(file);
