@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.resources.FileStorage;
@@ -43,16 +44,6 @@ public interface Datacenter extends SimEntity, PowerAware {
      * @see #setBandwidthPercentForMigration(double)
      */
     double DEF_BANDWIDTH_PERCENT_FOR_MIGRATION = 0.5;
-
-    /**
-     * Adds a file into the resource's storage before the experiment starts. If
-     * the file is a master file, then it will be registered to the RC when the
-     * experiment begins.
-     *
-     * @param file a DataCloud file
-     * @return a tag number denoting whether this operation is a success or not
-     */
-    int addFile(File file);
 
     /**
      * Gets an <b>unmodifiable</b> host list.
@@ -148,19 +139,19 @@ public interface Datacenter extends SimEntity, PowerAware {
     DatacenterCharacteristics getCharacteristics();
 
     /**
-     * Gets a <b>read-only</b> list of storage devices of the Datacenter.
+     * Gets a <b>read-only</b> storage of the Datacenter.
      *
-     * @return the storage list
+     * @return the storage
      */
-    List<FileStorage> getStorageList();
+    DatacenterStorage getDatacenterStorage();
 
     /**
-     * Sets the list of storage devices of the Datacenter.
+     * Sets storage of the Datacenter.
      *
-     * @param storageList the new storage list
+     * @param datacenterStorage the new storage
      * @return
      */
-    Datacenter setStorageList(List<FileStorage> storageList);
+    void setDatacenterStorage(DatacenterStorage datacenterStorage);
 
     /**
      * Gets the percentage of the bandwidth allocated to a Host to
@@ -198,4 +189,5 @@ public interface Datacenter extends SimEntity, PowerAware {
      */
     @Override
     double getPower();
+
 }

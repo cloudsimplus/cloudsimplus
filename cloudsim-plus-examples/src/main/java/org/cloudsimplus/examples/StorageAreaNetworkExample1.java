@@ -146,7 +146,7 @@ import java.util.List;
             sanList.add(san);
         }
 
-        dc.setStorageList(sanList);
+        dc.getDatacenterStorage().setStorageList(sanList);
     }
 
     /**

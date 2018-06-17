@@ -16,7 +16,6 @@ public class DatacenterTest {
     @Test
     public void testNullObject() {
         final Datacenter instance = Datacenter.NULL;
-        assertEquals(0, instance.addFile(null));
         assertEquals(-1, instance.getId());
         assertEquals(0, instance.getSchedulingInterval(), 0);
         assertTrue(instance.getHostList().isEmpty());
