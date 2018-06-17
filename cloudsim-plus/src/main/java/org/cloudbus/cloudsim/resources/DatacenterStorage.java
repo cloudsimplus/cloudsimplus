@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.util.DataCloudTags;
 
 public class DatacenterStorage {
 	
@@ -101,4 +102,28 @@ public class DatacenterStorage {
 
         return time;
     }
+
+	public int addFile(final File file) {
+	    if (file == null) {
+	        return DataCloudTags.FILE_ADD_ERROR_EMPTY;
+	    }
+	
+	    if (contains(file.getName())) {
+	        return DataCloudTags.FILE_ADD_ERROR_EXIST_READ_ONLY;
+	    }
+	
+	    // check storage space first
+	    if (getStorageList().isEmpty()) {
+	        return DataCloudTags.FILE_ADD_ERROR_STORAGE_FULL;
+	    }
+	
+	    for (final FileStorage storage : getStorageList()) {
+	        if (storage.isResourceAmountAvailable((long) file.getSize())) {
+	            storage.addFile(file);
+	            return DataCloudTags.FILE_ADD_SUCCESSFUL;
+	        }
+	    }
+	
+	    return DataCloudTags.FILE_ADD_ERROR_STORAGE_FULL;
+	}
 }

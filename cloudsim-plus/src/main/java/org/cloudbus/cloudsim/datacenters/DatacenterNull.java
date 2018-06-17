@@ -30,9 +30,6 @@ final class DatacenterNull implements Datacenter {
     @Override public String getName() {
         return "";
     }
-    @Override public int addFile(File file) {
-        return 0;
-    }
     @Override public List<Host> getHostList() {
         return Collections.emptyList();
     }

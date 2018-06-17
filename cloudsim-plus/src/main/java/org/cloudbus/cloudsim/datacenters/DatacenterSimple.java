@@ -26,10 +26,8 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.File;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -72,7 +70,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private double lastProcessTime;
 
     /** @see #getStorageList() */
-    private DatacenterStorage datacenterStorage;
+    public DatacenterStorage datacenterStorage;
 
     /** @see #getSchedulingInterval() */
     private double schedulingInterval;
@@ -734,31 +732,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private void returnFinishedCloudletToBroker(final Cloudlet cloudlet) {
         sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_RETURN, cloudlet);
         cloudlet.getVm().getCloudletScheduler().addCloudletToReturnedList(cloudlet);
-    }
-
-    @Override
-    public int addFile(final File file) {
-        if (file == null) {
-            return DataCloudTags.FILE_ADD_ERROR_EMPTY;
-        }
-
-        if (datacenterStorage.contains(file.getName())) {
-            return DataCloudTags.FILE_ADD_ERROR_EXIST_READ_ONLY;
-        }
-
-        // check storage space first
-        if (datacenterStorage.getStorageList().isEmpty()) {
-            return DataCloudTags.FILE_ADD_ERROR_STORAGE_FULL;
-        }
-
-        for (final FileStorage storage : datacenterStorage.getStorageList()) {
-            if (storage.isResourceAmountAvailable((long) file.getSize())) {
-                storage.addFile(file);
-                return DataCloudTags.FILE_ADD_SUCCESSFUL;
-            }
-        }
-
-        return DataCloudTags.FILE_ADD_ERROR_STORAGE_FULL;
     }
 
     @Override

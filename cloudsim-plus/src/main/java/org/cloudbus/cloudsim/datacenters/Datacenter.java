@@ -46,16 +46,6 @@ public interface Datacenter extends SimEntity, PowerAware {
     double DEF_BANDWIDTH_PERCENT_FOR_MIGRATION = 0.5;
 
     /**
-     * Adds a file into the resource's storage before the experiment starts. If
-     * the file is a master file, then it will be registered to the RC when the
-     * experiment begins.
-     *
-     * @param file a DataCloud file
-     * @return a tag number denoting whether this operation is a success or not
-     */
-    int addFile(File file);
-
-    /**
      * Gets an <b>unmodifiable</b> host list.
      *
      * @param <T> The generic type
