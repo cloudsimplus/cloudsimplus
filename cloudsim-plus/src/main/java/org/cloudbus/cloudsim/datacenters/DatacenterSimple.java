@@ -809,7 +809,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     @Override
-    public void setDatacenterStorage(DatacenterStorage datacenterStorage) {
+    public final void setDatacenterStorage(DatacenterStorage datacenterStorage) {
         this.datacenterStorage = datacenterStorage;
     }
 

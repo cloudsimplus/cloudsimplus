@@ -87,15 +87,9 @@ public class File {
      * @throws IllegalArgumentException This happens when the source file is <tt>null</tt>
      */
     public File(final File file) throws IllegalArgumentException {
-        Objects.requireNonNull(file);
-
-        if (file.getSize() <= 0) {
-            throw new IllegalArgumentException("File(): Error - size <= 0.");
-        }
-        datacenter = Datacenter.NULL;
-        setName(file.getName());
-        transactionTime = 0;
-        createAttribute(file.getSize()); 
+    	
+    	this(file.getName(),file.getSize());
+    	Objects.requireNonNull(file);
         
         this.setDatacenter(file.getDatacenter());
         this.deleted = file.deleted;

@@ -139,7 +139,7 @@ public interface Datacenter extends SimEntity, PowerAware {
     DatacenterCharacteristics getCharacteristics();
 
     /**
-     * Gets a <b>read-only</b> storage of the Datacenter.
+     * Gets a storage of the Datacenter.
      *
      * @return the storage
      */
