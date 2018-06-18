@@ -63,7 +63,7 @@ public class File {
      *
      * @param fileName file name
      * @param fileSize file size in MBytes
-     * @throws IllegalArgumentException This happens when one of the following scenarios occur:
+     * @throws IllegalArgumentException when one of the following scenarios occur:
      *                                  <ul>
      *                                  <li>the file name is empty or <tt>null</tt>
      *                                  <li>the file size is zero or negative numbers
@@ -76,7 +76,7 @@ public class File {
         datacenter = Datacenter.NULL;
         setName(fileName);
         transactionTime = 0;
-        createAttribute(fileSize);    
+        createAttribute(fileSize);
     }
 
     /**
@@ -84,24 +84,27 @@ public class File {
      * as a <b>replica</b>.
      *
      * @param file the source file to create a copy and that will be set as a replica
-     * @throws IllegalArgumentException This happens when the source file is <tt>null</tt>
+     * @throws IllegalArgumentException when the source file is <tt>null</tt>
      */
     public File(final File file) throws IllegalArgumentException {
-        Objects.requireNonNull(file);
+        this(Objects.requireNonNull(file), false);
+    }
 
-        if (file.getSize() <= 0) {
-            throw new IllegalArgumentException("File(): Error - size <= 0.");
-        }
-        datacenter = Datacenter.NULL;
-        setName(file.getName());
-        transactionTime = 0;
-        createAttribute(file.getSize()); 
-        
+    /**
+     * Copy constructor that creates a clone from a source file and set the given file
+     * as a <b>replica</b> or <b>master copy</b>.
+     *
+     * @param file the file to clone
+     * @param masterCopy false to set the cloned file as a replica, true to set the cloned file as a master copy
+     * @throws IllegalArgumentException
+     */
+    protected File(final File file, final boolean masterCopy) throws IllegalArgumentException {
+        this(file.getName(), file.getSize());
         this.setDatacenter(file.getDatacenter());
-        this.deleted = file.deleted;
 
+        this.deleted = file.deleted;
         file.getAttribute().copyValue(this.attribute);
-        this.attribute.setMasterCopy(false);   // set this file as a replica
+        this.attribute.setMasterCopy(masterCopy);
     }
 
     /**
@@ -174,11 +177,11 @@ public class File {
     public FileAttribute getAttribute() {
         return attribute;
     }
-    
+
     /**
      * Sets an attribute of this file.
      *
-     * @param a file attribute
+     * @param attribute file attribute
      */
     protected void setAttribute(FileAttribute attribute) {
         this.attribute = attribute;
