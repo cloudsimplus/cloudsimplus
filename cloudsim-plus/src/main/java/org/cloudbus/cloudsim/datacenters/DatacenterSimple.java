@@ -102,7 +102,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
         setDatacenterStorage(new DatacenterStorage());
-        getDatacenterStorage().setDatacenter(this);
+
 
         this.characteristics = new DatacenterCharacteristicsSimple(this);
         this.bandwidthPercentForMigration = DEF_BANDWIDTH_PERCENT_FOR_MIGRATION;
@@ -809,7 +809,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     @Override
-    public void setDatacenterStorage(DatacenterStorage datacenterStorage) {
+    public final void setDatacenterStorage(final DatacenterStorage datacenterStorage) {
+        datacenterStorage.setDatacenter(this);
         this.datacenterStorage = datacenterStorage;
     }
 

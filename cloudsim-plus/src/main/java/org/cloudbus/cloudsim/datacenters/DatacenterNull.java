@@ -20,6 +20,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @see Datacenter#NULL
  */
 final class DatacenterNull implements Datacenter {
+    private static final DatacenterStorage storage = new DatacenterStorage();
+
     @Override public int getId() {
         return -1;
     }
@@ -52,11 +54,8 @@ final class DatacenterNull implements Datacenter {
     @Override public DatacenterCharacteristics getCharacteristics() {
         return DatacenterCharacteristics.NULL;
     }
-    @Override public DatacenterStorage getDatacenterStorage() {
-    	return new DatacenterStorage().setStorageList(Collections.emptyList());
-    }
-    @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage) {
-    }
+    @Override public DatacenterStorage getDatacenterStorage() { return storage; }
+    @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage) {/**/}
     @Override public double getBandwidthPercentForMigration() { return 0; }
     @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration) {/**/}
     @Override public double getPower() { return 0; }
