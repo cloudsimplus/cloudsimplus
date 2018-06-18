@@ -8,6 +8,15 @@ import java.util.Objects;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 
+/**
+ * Implements the storage logic for a Datacenter. It keep a list of 
+ * storage devices as well as all basic storage related operations
+ * 
+ * @author Rodrigo N. Calheiros
+ * @author Anton Beloglazov
+ * @author Abderrahman Lahiaouni
+ * @since CloudSim Toolkit 1.0
+ */
 public class DatacenterStorage {
 	
 	/** @see #getStorageList() */

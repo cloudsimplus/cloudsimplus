@@ -8,7 +8,6 @@ package org.cloudbus.cloudsim.datacenters;
 
 import static java.util.stream.Collectors.toList;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +24,8 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
-import org.cloudbus.cloudsim.resources.File;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -809,7 +805,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     @Override
-    public void setDatacenterStorage(DatacenterStorage datacenterStorage) {
+    public final void setDatacenterStorage(DatacenterStorage datacenterStorage) {
         this.datacenterStorage = datacenterStorage;
     }
 

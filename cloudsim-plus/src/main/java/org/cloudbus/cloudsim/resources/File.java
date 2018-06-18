@@ -8,9 +8,9 @@
 
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-
 import java.util.Objects;
+
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 
 /**
  * A class for representing a physical file in a DataCloud environment
@@ -43,7 +43,7 @@ public class File {
     /**
      * A file attribute.
      */
-    private FileAttribute attribute;
+    private  FileAttribute attribute;
 
     /**
      * A transaction time for adding, deleting or getting the file.
@@ -70,7 +70,13 @@ public class File {
      *                                  </ul>
      */
     public File(final String fileName, final int fileSize) {
-        init(fileName, fileSize);
+    	if (fileSize <= 0) {
+            throw new IllegalArgumentException("File(): Error - size <= 0.");
+        }
+        datacenter = Datacenter.NULL;
+        setName(fileName);
+        transactionTime = 0;
+        createAttribute(fileSize);    
     }
 
     /**
@@ -81,13 +87,14 @@ public class File {
      * @throws IllegalArgumentException This happens when the source file is <tt>null</tt>
      */
     public File(final File file) throws IllegalArgumentException {
-        Objects.requireNonNull(file);
-
-        init(file.getName(), file.getSize());
+    	
+    	this(file.getName(),file.getSize());
+    	Objects.requireNonNull(file);
+        
         this.setDatacenter(file.getDatacenter());
         this.deleted = file.deleted;
 
-        file.getFileAttribute().copyValue(this.attribute);
+        file.getAttribute().copyValue(this.attribute);
         this.attribute.setMasterCopy(false);   // set this file as a replica
     }
 
@@ -112,17 +119,7 @@ public class File {
         return file != null && isValid(file.getName());
     }
 
-    private void init(final String fileName, final int fileSize) throws IllegalArgumentException {
-        if (fileSize <= 0) {
-            throw new IllegalArgumentException("File(): Error - size <= 0.");
-        }
-        datacenter = Datacenter.NULL;
-        setName(fileName);
-        transactionTime = 0;
-        createAttribute(fileSize);
-    }
-
-    private void createAttribute(final int fileSize) {
+    protected void createAttribute(final int fileSize) {
         this.attribute = new FileAttribute(this, fileSize);
     }
 
@@ -168,8 +165,17 @@ public class File {
      *
      * @return a file attribute
      */
-    public FileAttribute getFileAttribute() {
+    public FileAttribute getAttribute() {
         return attribute;
+    }
+    
+    /**
+     * Sets an attribute of this file.
+     *
+     * @param a file attribute
+     */
+    protected void setAttribute(FileAttribute attribute) {
+        this.attribute = attribute;
     }
 
     /**
@@ -271,7 +277,7 @@ public class File {
         return attribute.getLastUpdateTime();
     }
 
-    /**
+	/**
      * Sets the file registration ID (published by a Replica Catalogue entity).
      *
      * @param id registration ID

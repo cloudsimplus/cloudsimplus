@@ -7,18 +7,16 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
+import java.util.List;
+
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.models.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModel;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
-import org.cloudbus.cloudsim.resources.File;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.resources.FileStorage;
-
-import java.util.List;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * An interface to be implemented by each class that provides Datacenter
@@ -139,7 +137,7 @@ public interface Datacenter extends SimEntity, PowerAware {
     DatacenterCharacteristics getCharacteristics();
 
     /**
-     * Gets a <b>read-only</b> storage of the Datacenter.
+     * Gets a storage of the Datacenter.
      *
      * @return the storage
      */
