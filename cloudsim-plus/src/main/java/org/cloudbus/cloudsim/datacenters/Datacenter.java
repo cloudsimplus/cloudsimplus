@@ -189,5 +189,4 @@ public interface Datacenter extends SimEntity, PowerAware {
      */
     @Override
     double getPower();
-
 }
