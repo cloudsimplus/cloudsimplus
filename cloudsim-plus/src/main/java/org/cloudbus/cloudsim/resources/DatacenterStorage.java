@@ -9,17 +9,17 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 
 public class DatacenterStorage {
-	
+
 	/** @see #getStorageList() */
     private List<FileStorage> storageList;
-    
+
     /** @see #getDatacenter() */
 	private Datacenter datacenter;
 
 	public DatacenterStorage(){
     	this.storageList = new ArrayList<>();
     }
-    
+
     /**
      * Checks whether the storageList has the given file.
      *
@@ -44,7 +44,11 @@ public class DatacenterStorage {
 
         return storageList.stream().anyMatch(storage -> storage.contains(fileName));
     }
-     
+
+    /**
+     * Gets the list of storage devices of the Datacenter
+     * @return
+     */
     public List<FileStorage> getStorageList() {
         return Collections.unmodifiableList(storageList);
     }
@@ -77,10 +81,10 @@ public class DatacenterStorage {
 		return datacenter;
 	}
 
-	public void setDatacenter(Datacenter datacenter) {
+	public void setDatacenter(final Datacenter datacenter) {
 		this.datacenter = datacenter;
 	}
-	
+
 	/**
      * Predict the total time to transfer a list of files.
      *
@@ -115,6 +119,11 @@ public class DatacenterStorage {
         return FileStorage.FILE_NOT_FOUND;
     }
 
+    /**
+     * Adds a file to the first storage device that has enough capacity
+     * @param file the file to add
+     * @return a tag from {@link DataCloudTags} informing the result of the operation
+     */
     public int addFile(final File file) {
         Objects.requireNonNull(file);
 
