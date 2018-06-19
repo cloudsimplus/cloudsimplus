@@ -10,12 +10,15 @@ import org.cloudbus.cloudsim.util.DataCloudTags;
 
 /**
  * Implements the storage logic for a Datacenter. It keeps a list of
- * storage devices as well as all basic storage related operations.
+ * storage devices <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>,
+ * as well as all basic storage related operations.
+ * This disk array can be, for instance, a list of {@link HarddriveStorage}
+ * or {@link SanStorage}.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Abderrahman Lahiaouni
- * @since CloudSim Plus 1.0
+ * @since CloudSim Plus 2.3.5
  */
 public class DatacenterStorage {
 
@@ -25,8 +28,19 @@ public class DatacenterStorage {
     /** @see #getDatacenter() */
 	private Datacenter datacenter;
 
+    /**
+     * Creates a DatacenterStorage with an empty {@link #getStorageList() storage list}.
+     */
 	public DatacenterStorage(){
-    	this.storageList = new ArrayList<>();
+    	this(new ArrayList<>());
+    }
+
+    /**
+     * Creates a DatacenterStorage with a given {@link #getStorageList() storage list}.
+     * @param storageList the storage list to set
+     */
+	public DatacenterStorage(final List<FileStorage> storageList){
+    	this.storageList = storageList;
     }
 
     /**
@@ -55,7 +69,8 @@ public class DatacenterStorage {
     }
 
     /**
-     * Gets the list of storage devices of the Datacenter
+     * Gets the list of storage devices of the Datacenter,
+     * which is like a <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>.
      * @return
      */
     public List<FileStorage> getStorageList() {
@@ -63,7 +78,8 @@ public class DatacenterStorage {
     }
 
     /**
-     * Sets the list of storage devices of the Datacenter.
+     * Sets the list of storage devices of the Datacenter,
+     * which is like a <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>.
      *
      * @param storageList the new storage list
      * @return

@@ -1,7 +1,7 @@
 language: java
-install: mvn clean install -B -V -Dintegration-tests=true
+install: mvn clean install -B -V -Pintegration-tests
 script:
-  - cd cloudsim-plus && mvn clean test -Dintegration-tests=true jacoco:report; cd ..
+  - cd cloudsim-plus && mvn clean test -Pintegration-tests jacoco:report; cd ..
 cache:
   directories:
   - $HOME/.m2

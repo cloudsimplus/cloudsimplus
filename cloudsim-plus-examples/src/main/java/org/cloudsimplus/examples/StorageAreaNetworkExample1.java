@@ -30,8 +30,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -103,7 +101,6 @@ import java.util.List;
     public StorageAreaNetworkExample1() {
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
-        createSanForDatacenter(datacenter0);
 
         //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
         broker0 = new DatacenterBrokerSimple(simulation);
@@ -132,11 +129,11 @@ import java.util.List;
     }
 
     /**
-     * Creates a {@link SanStorage Storage Area Network (SAN)} array for a given Datacenter.
-     * @param dc the Datacenter for which to create the SAN array
+     * Creates a {@link SanStorage Storage Area Network (SAN)} array for a Datacenter.
+     * @return the List of storage devices (the SAN array)
      * @see <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>
      */
-    private void createSanForDatacenter(Datacenter dc) {
+    private List<FileStorage> createSanArray() {
         List<FileStorage> sanList = new ArrayList<>(SAN_COUNT);
         int initialFileNumber = 0;
         for (int i = 0; i < SAN_COUNT; i++) {
@@ -146,7 +143,7 @@ import java.util.List;
             sanList.add(san);
         }
 
-        dc.getDatacenterStorage().setStorageList(sanList);
+        return sanList;
     }
 
     /**
@@ -186,8 +183,7 @@ import java.util.List;
             hostList.add(host);
         }
 
-        final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-        return dc;
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple(), createSanArray());
     }
 
     private Host createHost() {

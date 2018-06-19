@@ -6,14 +6,6 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
-import static java.util.stream.Collectors.toList;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
@@ -25,14 +17,19 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
-import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.DataCloudTags;
 import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * Implements the basic features of a Virtualized Cloud Datacenter. It deals
@@ -79,29 +76,58 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 	private DatacenterStorage datacenterStorage;
 
     /**
-     * Creates a Datacenter.
+     * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
-     * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
-     * <br>
-     * No PEs mean the Cloudlets can't be processed. A CloudResource must
-     * contain one or more Machines. A Machine must contain one or more PEs.
-     *
-     * @post $none
      */
     public DatacenterSimple(
         final Simulation simulation,
         final List<? extends Host> hostList,
         final VmAllocationPolicy vmAllocationPolicy)
     {
+        this(simulation, hostList, vmAllocationPolicy, new DatacenterStorage());
+    }
+
+    /**
+     * Creates a Datacenter attaching a given storage list to its {@link #getDatacenterStorage() storage}.
+     *
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param hostList list of {@link Host}s that will compound the Datacenter
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @param storageList the storage list to attach to the {@link #getDatacenterStorage() datacenter storage}
+     */
+    public DatacenterSimple(
+        final Simulation simulation,
+        final List<? extends Host> hostList,
+        final VmAllocationPolicy vmAllocationPolicy,
+        final List<FileStorage> storageList)
+    {
+        this(simulation, hostList, vmAllocationPolicy, new DatacenterStorage(storageList));
+    }
+
+    /**
+     * Creates a Datacenter with a given {@link #getDatacenterStorage() storage}.
+     *
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param hostList list of {@link Host}s that will compound the Datacenter
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @param storage the {@link #getDatacenterStorage() storage} for this Datacenter
+     * @see DatacenterStorage#getStorageList()
+     */
+    public DatacenterSimple(
+        final Simulation simulation,
+        final List<? extends Host> hostList,
+        final VmAllocationPolicy vmAllocationPolicy,
+        final DatacenterStorage storage)
+    {
         super(simulation);
         setHostList(hostList);
 
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
-        setDatacenterStorage(new DatacenterStorage());
+        setDatacenterStorage(storage);
 
 
         this.characteristics = new DatacenterCharacteristicsSimple(this);
@@ -110,6 +136,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         setVmAllocationPolicy(vmAllocationPolicy);
     }
+
 
     private void setHostList(final List<? extends Host> hostList) {
         Objects.requireNonNull(hostList);
@@ -375,8 +402,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param cloudlet cloudlet to be paused
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
-     * @pre $none
-     * @post $none
      */
     protected void processCloudletPause(final Cloudlet cloudlet, final boolean ack) {
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet.getId());
@@ -390,8 +415,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Processes a Cloudlet cancel request.
      *
      * @param cloudlet cloudlet to be canceled
-     * @pre $none
-     * @post $none
      */
     protected void processCloudletCancel(final Cloudlet cloudlet) {
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet.getId());
@@ -407,9 +430,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param ackRequested indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
      * @return true if a host was allocated to the VM; false otherwise
-     *
-     * @pre ev != null
-     * @post $none
      */
     protected boolean processVmCreate(final SimEvent ev, final boolean ackRequested) {
         final Vm vm = (Vm) ev.getData();
