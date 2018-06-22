@@ -44,8 +44,9 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * <li>The default Cloudlet reader size for sending to and receiving from a Datacenter is
  * {@link DataCloudTags#DEFAULT_MTU}. However, you can
  * specify the reader size by using {@link Cloudlet#setFileSize(long)}.
- * <li>A job run time is only for 1 PE <tt>not</tt> the total number of
- * allocated PEs. Therefore, a Cloudlet length is also calculated for 1 PE.<br>
+ * <li>A job run time considers the time spent for a single PE (since all PEs will
+ * be used for the same amount of time)<tt>not</tt>
+ * not the total execution time across all PEs.
  * For example, job #1 in the trace has a run time of 100 seconds for 2
  * processors. This means each processor runs job #1 for 100 seconds, if the
  * processors have the same specification.
@@ -54,10 +55,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  *
  * @author Anthony Sulistio
  * @author Marcos Dias de Assuncao
- * @todo The last item in the list above is not true. The cloudlet length is not
- * divided by the number of PEs. If there is more than 1 PE, all PEs run the
- * same number of MI as specified in the {@link Cloudlet#getLength()}
- * attribute. See {@link Cloudlet#setNumberOfPes(long)} method documentation.
  * @see WorkloadReader
  */
 public class WorkloadFileReader implements WorkloadReader {

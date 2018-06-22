@@ -84,7 +84,6 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
     @Override
     public double getOverUtilizationThreshold(final Host host) {
         try {
-            //@todo unchecked typecast
             return 1 - getSafetyParameter() * computeHostUtilizationMeasure(host);
         } catch (IllegalArgumentException | ClassCastException e) {
             return Double.MAX_VALUE;

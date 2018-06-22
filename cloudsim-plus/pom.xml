@@ -56,7 +56,6 @@
         <system>GitHub Issues</system>
     </issueManagement>
 
-
     <profiles>
         <!-- The profiles 'default' and 'integration-tests' are specified to allow
         using the maven-surefire-plugin instead of the maven-failsafe-plugin to run

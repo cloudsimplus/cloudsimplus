@@ -35,7 +35,13 @@ public final class Conversion {
      * The value of 1 GibaByte in Bytes.
      * @see #MEGABYTE
      */
-    public static final double GIBABYTE = MEGABYTE * MEGABYTE;
+    public static final double GIGABYTE = MEGABYTE * MEGABYTE;
+
+    /**
+     * The value of 1 TeraByte in Bytes.
+     * @see #GIGABYTE
+     */
+    public static final double TERABYTE = GIGABYTE * GIGABYTE;
 
     /**
      * A private constructor to avoid class instantiation.
@@ -78,9 +84,29 @@ public final class Conversion {
      * @param bits the value in bites, Kb, Mb, Gb, etc
      * @return the value in bites, Kbytes, Mbytes, Gbytes and so on, according to the given value
      */
-    public static double bitesToBytes(double bits){
+    public static double bitesToBytes(final double bits){
         return bits / 8.0;
     }
 
+    /**
+     * Converts any value in giga to mega,
+     * doesn't matter if it's gigabits or gigabytes.
+     *
+     * @param giga the value in gigabits or gigabytes
+     * @return the value in megabits or megabytes (according to the input value)
+     */
+    public static double gigaToMega(final double giga){
+        return giga * MEGABYTE;
+    }
 
+    /**
+     * Converts any value in tera to mega,
+     * doesn't matter if it's terabits or terabytes.
+     *
+     * @param tera the value in terabits or terabytes
+     * @return the value in megabits or megabytes (according to the input value)
+     */
+    public static double teraToMega(final double tera){
+        return gigaToMega(tera * GIGABYTE);
+    }
 }

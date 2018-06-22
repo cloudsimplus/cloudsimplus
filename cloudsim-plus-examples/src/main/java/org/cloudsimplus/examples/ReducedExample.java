@@ -51,21 +51,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * An example showing the most minimal code required to create
+ * An example showing a very minimal code required to create
  * a simulation scenario in CloudSim Plus.
  *
  * <p><b>NOTICE: This example is not intended to be reused and we strongly recommend
- * you not doing that. Since all the code was put inside a single method (the main
- * method) that is completely unappropriated.</b></p>
+ * you not doing that. Since all the code is inside a single method,
+ * that is completely unappropriated.</b></p>
  *
  * <p>This code has the <b>only intention</b> to show how it's simpler
  * and easier to create cloud computing simulations using CloudSim Plus.</p>
  *
- * <p>If you want a first basic, but organized and reusable example,
+ * <p>If you want a basic, but organized and reusable first example,
  * see the {@link BasicFirstExample}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ * @see BasicFirstExample
  */
 class ReducedExample {
     public static void main(String[] args) {
