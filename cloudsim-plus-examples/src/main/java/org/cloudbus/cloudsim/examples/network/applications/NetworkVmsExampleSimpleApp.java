@@ -13,11 +13,11 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * An example of a simple fictitious application that is compounded by
- * 3 {@link NetworkCloudlet}'s with 3 {@link CloudletExecutionTask}'s each one.
+ * 3 {@link NetworkCloudlet}s with 3 {@link CloudletExecutionTask}s each one.
  *
  * The cloudlets just process data, not performing network communication,
  * running in a similar way of a regular {@link Cloudlet}.
- * The difference is that the processing is split among the NetworkCloudlet's tasks,
+ * The difference is that the processing is split among the {@link NetworkCloudlet}'s {@link CloudletTask tasks},
  * simulating a distributed application.
  *
  * @author Saurabh Kumar Garg
@@ -25,8 +25,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExampleSimpleApp extends NetworkVmExampleAbstract {
-    private static final int NETCLOUDLETS_FOR_EACH_APP = 3;
-    private static final int NUMBER_OF_NETCLOUDLET_EXECUTION_TASKS = 3;
+    private static final int NETCLOUDLETS_FOR_EACH_APP = 1;
+    private static final int NUMBER_OF_NETCLOUDLET_EXECUTION_TASKS = 2;
 
     private int currentNetworkCloudletId = -1;
 
@@ -45,27 +45,26 @@ public class NetworkVmsExampleSimpleApp extends NetworkVmExampleAbstract {
 
     /**
      * {@inheritDoc}
-     * A NetworkCloudlet will be created and assigned for each VM in the given VM list.
+     * A {@link NetworkCloudlet} will be created and assigned for each VM in the given VM list.
      *
      * @param broker {@inheritDoc }
      * @return {@inheritDoc }
      */
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker) {
-        List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP);
+        final List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP);
+        final long networkCloudletLengthMI = 1;
+        final long fileSize = 300;
+        final long outputSize = 300;
+        final long memory = 256;
+        final int pesNumber = 4;
         for (int i = 0; i < NETCLOUDLETS_FOR_EACH_APP; i++) {
-            long networkCloudletLengthMI = 1;
-            long fileSize = 300;
-            long outputSize = 300;
-            long memory = 256;
-            int pesNumber = 4;
-            UtilizationModel utilizationModel = new UtilizationModelFull();
             NetworkCloudlet cloudlet = new NetworkCloudlet(
                     ++currentNetworkCloudletId, networkCloudletLengthMI, pesNumber);
             cloudlet.setMemory(memory)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)
-                    .setUtilizationModel(utilizationModel);
+                    .setUtilizationModel(new UtilizationModelFull());
 
             createNetworkCloudletExecutionTasks(cloudlet);
             networkCloudletList.add(cloudlet);
@@ -77,11 +76,11 @@ public class NetworkVmsExampleSimpleApp extends NetworkVmExampleAbstract {
     /**
      * Creates a list of {@link CloudletExecutionTask}'s for a given {@link NetworkCloudlet}.
      *
-     * @param netCloudlet the NetworkCloudlet that the tasks will be added to
+     * @param netCloudlet the {@link NetworkCloudlet} that the tasks will be added to
      */
     private void createNetworkCloudletExecutionTasks(NetworkCloudlet netCloudlet) {
         CloudletTask task;
-        long taskLengthMI = 15000;
+        final long taskLengthMI = 15000;
         for(int i = 0; i < NUMBER_OF_NETCLOUDLET_EXECUTION_TASKS; i++){
             task = new CloudletExecutionTask(i, taskLengthMI);
             task.setMemory(netCloudlet.getMemory());

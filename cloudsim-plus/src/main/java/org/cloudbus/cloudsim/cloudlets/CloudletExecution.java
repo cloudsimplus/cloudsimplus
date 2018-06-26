@@ -245,9 +245,7 @@ public class CloudletExecution {
      * Updates the length of cloudlet that has already been completed.
      *
      * @param executedInstructions amount of instructions just executed, to be
-     * added to the {@link #instructionsFinishedSoFar}, in Instructions (instead of Million Instructions)
-     * @pre instructionsExecuted >= 0.0
-     * @post $none
+     * added to the {@link #instructionsFinishedSoFar}, in <b>Number of Instructions (instead of Million Instructions)</b>
      */
     public void updateProcessing(final long executedInstructions) {
         setLastProcessingTime(cloudlet.getSimulation().clock());
@@ -260,17 +258,14 @@ public class CloudletExecution {
         this.instructionsFinishedSoFar =
                 Math.min(this.instructionsFinishedSoFar, cloudlet.getLength()*Conversion.MILLION);
 
-        final double finishedSoFarByPeMI = instructionsFinishedSoFar / Conversion.MILLION;
-        cloudlet.setFinishedLengthSoFar((long)finishedSoFarByPeMI);
+        final double finishedMISoFarByPe = instructionsFinishedSoFar / Conversion.MILLION;
+        cloudlet.setFinishedLengthSoFar((long)finishedMISoFarByPe);
     }
 
     /**
-     * Gets the time the cloudlet arrived for execution inside the Datacenter
-     * where this execution information is related to.
+     * Gets the time the cloudlet arrived for execution inside the Datacenter.
      *
      * @return arrival time
-     * @pre $none
-     * @post $result >= 0.0
      */
     public double getCloudletArrivalTime() {
         return arrivalTime;

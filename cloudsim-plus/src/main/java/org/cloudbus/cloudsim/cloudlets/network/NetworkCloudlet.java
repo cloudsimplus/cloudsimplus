@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 
@@ -96,7 +97,13 @@ public class NetworkCloudlet extends CloudletSimple {
     /**
      * Sets the Cloudlet's RAM memory.
      * @param memory amount of RAM to set
-     *
+     * @todo Cloudlet has the {@link #getUtilizationModelRam()} that defines
+     *       how RAM is used. This way, this attribute doesn't make sense
+     *       since usage of RAM is dynamic.
+     *       The attribute would be used to know what is the maximum
+     *       memory the cloudlet can use, but that will be the
+     *       maximum VM RAM capacity or a different value
+     *       defined by a UtilizationModel.
      */
     public NetworkCloudlet setMemory(final long memory) {
         this.memory = memory;
@@ -147,7 +154,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * or it is not finished yet.
      */
     private Optional<CloudletTask> getNextTaskIfCurrentIfFinished(){
-        if(getCurrentTask().map(CloudletTask::isActive).isPresent()) {
+        if(getCurrentTask().filter(CloudletTask::isActive).isPresent()) {
             return Optional.empty();
         }
 

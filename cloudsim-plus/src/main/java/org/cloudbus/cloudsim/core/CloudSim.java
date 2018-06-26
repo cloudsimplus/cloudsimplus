@@ -201,7 +201,7 @@ public class CloudSim implements Simulation {
         if(alreadyRunOnce){
             throw new UnsupportedOperationException(
                 "You can't run a simulation that has already run previously. " +
-                "If you've paused the simulation and want to resume it, you should call resume().");
+                "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
         Log.printConcatLine("Starting CloudSim Plus ", VERSION);

@@ -26,12 +26,11 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 /**
  * A simple example showing how two {@link NetworkCloudlet}'s communicate
- * between them, each one running inside VMs of different hosts.
+ * between them, each one running inside VMs on different hosts.
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -106,7 +105,7 @@ public class NetworkVmsExample1 {
     private NetworkDatacenter createDatacenter() {
         List<Host> hostList = new ArrayList<>();
         for (int i = 0; i < NUMBER_OF_HOSTS; i++) {
-            Host host = createHost(i);
+            Host host = createHost();
             hostList.add(host);
         }
 
@@ -118,7 +117,7 @@ public class NetworkVmsExample1 {
         return newDatacenter;
     }
 
-    private Host createHost(int id) {
+    private Host createHost() {
         List<Pe> peList = createPEs(HOST_PES, HOST_MIPS);
         return new NetworkHost(HOST_RAM, HOST_BW, HOST_STORAGE, peList)
                 .setRamProvisioner(new ResourceProvisionerSimple())

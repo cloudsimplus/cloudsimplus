@@ -47,13 +47,13 @@ abstract class NetworkVmExampleAbstract {
 
     public static final int  HOST_MIPS = 1000;
     public static final int  HOST_PES = 8;
-    public static final int  HOST_RAM = 2048; // host memory (MEGABYTE)
-    public static final long HOST_STORAGE = 1000000; // host storage
+    public static final int  HOST_RAM = 2048; // MEGABYTE
+    public static final long HOST_STORAGE = 1000000; // MEGABYTE
     public static final long HOST_BW = 10000;
 
     public static final int  VM_MIPS = 1000;
     public static final long VM_SIZE = 10000; // image size (MEGABYTE)
-    public static final int  VM_RAM = 512; // vm memory (MEGABYTE)
+    public static final int  VM_RAM = 512; // MEGABYTE
     public static final long VM_BW = 1000;
     public static final int  VM_PES_NUMBER = HOST_PES / MAX_VMS_PER_HOST;
 
@@ -81,7 +81,7 @@ abstract class NetworkVmExampleAbstract {
 
     /**
      * A Map representing a list of cloudlets from different applications.
-     * Each key represents the ID of a fictitious that is composed of a list
+     * Each key represents the ID of a fictitious app that is composed of a list
      * of {@link  NetworkCloudlet}.
      */
     private Map<Integer, List<NetworkCloudlet>> appMap;
@@ -131,8 +131,8 @@ abstract class NetworkVmExampleAbstract {
     }
 
     /**
-     * Create a {@link DatacenterBroker} for each each list of {@link NetworkCloudlet}
-     * that represents cloudlets that compose the same application.
+     * Create a {@link DatacenterBroker} for each each list of {@link NetworkCloudlet},
+     * representing cloudlets that compose the same application.
      *
      * @return the list of created NetworkDatacenterBroker
      */
@@ -162,7 +162,6 @@ abstract class NetworkVmExampleAbstract {
             hostList.add(host);
         }
 
-        // 6. Finally, we need to create a NetworkDatacenter object.
         NetworkDatacenter dc =
                 new NetworkDatacenter(
                         simulation, hostList, new VmAllocationPolicySimple());
@@ -177,10 +176,7 @@ abstract class NetworkVmExampleAbstract {
         return dc;
     }
 
-    public List<Pe> createPEs(final int numberOfPEs, final long mips) {
-        // 2. A Machine contains one or more PEs or CPUs/Cores.
-        // In this example, it will have only one core.
-        // 3. Create PEs and add these into an object of PowerPeList.
+    protected List<Pe> createPEs(final int numberOfPEs, final long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < numberOfPEs; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
@@ -271,7 +267,7 @@ abstract class NetworkVmExampleAbstract {
 
     /**
      * Creates a list of {@link NetworkCloudlet}'s that represents
-     * a single application and then submit the created cloudlets to a given Broker.
+     * a single application and then submits the created cloudlets to a given Broker.
      *
      * @param broker the broker to submit the list of NetworkCloudlets of the application
      * @return the list of created  {@link NetworkCloudlet}'s

@@ -602,7 +602,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
          * called by the scheduler. If it is zero, indicates that the Cloudlet didn't use
          * the CPU in this time span, because it is waiting for its required files
-         * to be acquired from the Datacenter storage.
+         * to be transferred from the Datacenter storage.
          */
         final double actualProcessingTime = (hasCloudletFileTransferTimePassed(cl, currentTime) ? timeSpan(cl, currentTime) : 0);
         final double cloudletUsedMips =
