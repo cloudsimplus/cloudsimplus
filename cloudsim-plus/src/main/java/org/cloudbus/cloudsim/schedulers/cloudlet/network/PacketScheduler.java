@@ -87,11 +87,11 @@ public interface PacketScheduler {
     boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt);
 
     /**
-     * Process the packets to be sent from or received by a Cloudlet inside the vm.
+     * Process Cloudlet's tasks, such as tasks to send packets from or received by a Cloudlet inside a VM.
      * @param cloudlet the Cloudlet to process packets
-     * @param currentTime current simulation time
+     * @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
      */
-    void processCloudletPackets(Cloudlet cloudlet, double currentTime);
+    void processCloudletTasks(Cloudlet cloudlet, long partialFinishedMI);
 
     /**
      * Checks if is time to update the execution of a given Cloudlet.

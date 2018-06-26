@@ -218,23 +218,42 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testSetCloudletFinishedSoFar() {
+    public void testAddCloudletFinishedSoFar() {
         final CloudletSimple cloudlet = createCloudlet();
         assertEquals(0, cloudlet.getFinishedLengthSoFar(), 0);
 
         cloudlet.assignToDatacenter(Datacenter.NULL);
         final long cloudletFinishedSoFar = cloudlet.getLength() / 2;
-        assertTrue(cloudlet.setFinishedLengthSoFar(cloudletFinishedSoFar));
+        assertTrue(cloudlet.addFinishedLengthSoFar(cloudletFinishedSoFar));
         assertEquals(cloudletFinishedSoFar, cloudlet.getFinishedLengthSoFar(), 0);
-        assertFalse(cloudlet.setFinishedLengthSoFar(-1));
+        assertFalse(cloudlet.addFinishedLengthSoFar(-1));
         assertEquals(cloudletFinishedSoFar, cloudlet.getFinishedLengthSoFar(), 0);
     }
 
     @Test
-    public void testSetCloudletFinishedSoFar_lengthParamGreaterThanCloudletLength() {
+    public void testAddCloudletFinishedSoFar_WhenValueIsLowerThanLen() {
+        final CloudletSimple cloudlet = createCloudlet();
+        cloudlet.assignToDatacenter(Datacenter.NULL);
+        final long cloudletFinishedSoFar = cloudlet.getLength() / 2;
+        assertTrue(cloudlet.addFinishedLengthSoFar(cloudletFinishedSoFar));
+        assertEquals(cloudletFinishedSoFar, cloudlet.getFinishedLengthSoFar(), 0);
+    }
+
+    @Test
+    public void testAddCloudletFinishedSoFar_WhenValueIsHigherThanLen() {
+        final CloudletSimple cloudlet = createCloudlet();
+        cloudlet.assignToDatacenter(Datacenter.NULL);
+        final long cloudletFinishedSoFar = cloudlet.getLength() / 2;
+        cloudlet.addFinishedLengthSoFar(cloudletFinishedSoFar);
+        cloudlet.addFinishedLengthSoFar(cloudletFinishedSoFar*3);
+        assertEquals(cloudlet.getLength(), cloudlet.getFinishedLengthSoFar(), 0);
+    }
+
+    @Test
+    public void testAddCloudletFinishedSoFar_lengthParamGreaterThanCloudletLength() {
         final CloudletSimple cloudlet = createCloudlet();
         final long expected = cloudlet.getLength();
-        cloudlet.setFinishedLengthSoFar(expected*2);
+        cloudlet.addFinishedLengthSoFar(expected*2);
         assertEquals(expected, cloudlet.getLength(), 0);
     }
 
@@ -457,10 +476,10 @@ public class CloudletSimpleTest {
 
         c.assignToDatacenter(Datacenter.NULL);
         final long finishedSoFar = length / 10;
-        c.setFinishedLengthSoFar(finishedSoFar);
+        c.addFinishedLengthSoFar(finishedSoFar);
         assertEquals(finishedSoFar, c.getFinishedLengthSoFar());
 
-        c.setFinishedLengthSoFar(length);
+        c.addFinishedLengthSoFar(length);
         assertEquals(length, c.getFinishedLengthSoFar());
     }
 
@@ -473,10 +492,10 @@ public class CloudletSimpleTest {
 
         c.assignToDatacenter(Datacenter.NULL);
         final long finishedSoFar = length / 10;
-        c.setFinishedLengthSoFar(finishedSoFar);
+        c.addFinishedLengthSoFar(finishedSoFar);
         assertFalse(c.isFinished());
 
-        c.setFinishedLengthSoFar(length);
+        c.addFinishedLengthSoFar(length);
         assertTrue(c.isFinished());
     }
 

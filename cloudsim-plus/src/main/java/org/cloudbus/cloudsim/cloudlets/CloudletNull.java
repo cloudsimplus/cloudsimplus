@@ -218,7 +218,7 @@ final class CloudletNull implements Cloudlet {
     @Override public String toString() {
         return "Cloudlet.NULL";
     }
-    @Override public boolean setFinishedLengthSoFar(long length) {
+    @Override public boolean addFinishedLengthSoFar(long partialFinishedMI) {
         return false;
     }
     @Override public boolean setWallClockTime(double wallTime, double actualCpuTime) {

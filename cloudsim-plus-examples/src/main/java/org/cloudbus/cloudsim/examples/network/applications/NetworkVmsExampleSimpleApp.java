@@ -25,8 +25,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExampleSimpleApp extends NetworkVmExampleAbstract {
-    private static final int NETCLOUDLETS_FOR_EACH_APP = 1;
-    private static final int NUMBER_OF_NETCLOUDLET_EXECUTION_TASKS = 2;
+    private static final int NETCLOUDLETS_FOR_EACH_APP = 3;
+    private static final int NUMBER_OF_NETCLOUDLET_EXECUTION_TASKS = 3;
 
     private int currentNetworkCloudletId = -1;
 

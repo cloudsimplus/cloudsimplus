@@ -318,12 +318,14 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public boolean setFinishedLengthSoFar(final long length) {
-        if (length < 0.0 || datacenterExecutionList.isEmpty()) {
+    public boolean addFinishedLengthSoFar(final long partialFinishedMI) {
+        if (partialFinishedMI < 0.0 || datacenterExecutionList.isEmpty()) {
             return false;
         }
 
-        getLastExecutionInDatacenterInfo().setFinishedSoFar(Math.min(length, this.getLength()));
+
+        final long maxLengthToAdd = Math.min(partialFinishedMI, getLength()-getFinishedLengthSoFar());
+        getLastExecutionInDatacenterInfo().addFinishedSoFar(maxLengthToAdd);
         notifyListenersIfCloudletIsFinished();
         return true;
     }

@@ -224,42 +224,36 @@ public class CloudletExecution {
      * Datacenter.
      * <li>Cloudlet's finished time so far
      * </ul>
-     *
-     * @pre $none
-     * @post $none
      */
     public void finalizeCloudlet() {
         // Sets the wall clock time and actual CPU time
         final double wallClockTime = cloudlet.getSimulation().clock() - arrivalTime;
         cloudlet.setWallClockTime(wallClockTime, totalCompletionTime);
 
-        final long finishedLength =
+        final long finishedLengthMI =
             cloudlet.getStatus() == Cloudlet.Status.SUCCESS ?
                 cloudlet.getLength() :
                 instructionsFinishedSoFar / Conversion.MILLION;
 
-        cloudlet.setFinishedLengthSoFar(finishedLength);
+        cloudlet.addFinishedLengthSoFar(finishedLengthMI);
     }
 
     /**
      * Updates the length of cloudlet that has already been completed.
      *
-     * @param executedInstructions amount of instructions just executed, to be
+     * @param partialFinishedInstructions the partial amount of instructions just executed, to be
      * added to the {@link #instructionsFinishedSoFar}, in <b>Number of Instructions (instead of Million Instructions)</b>
      */
-    public void updateProcessing(final long executedInstructions) {
+    public void updateProcessing(final long partialFinishedInstructions) {
         setLastProcessingTime(cloudlet.getSimulation().clock());
 
-        if(executedInstructions <= 0){
+        if(partialFinishedInstructions <= 0){
             return;
         }
 
-        this.instructionsFinishedSoFar += executedInstructions;
-        this.instructionsFinishedSoFar =
-                Math.min(this.instructionsFinishedSoFar, cloudlet.getLength()*Conversion.MILLION);
-
-        final double finishedMISoFarByPe = instructionsFinishedSoFar / Conversion.MILLION;
-        cloudlet.setFinishedLengthSoFar((long)finishedMISoFarByPe);
+        this.instructionsFinishedSoFar += partialFinishedInstructions;
+        final double partialFinishedMI = partialFinishedInstructions / Conversion.MILLION;
+        cloudlet.addFinishedLengthSoFar((long)partialFinishedMI);
     }
 
     /**

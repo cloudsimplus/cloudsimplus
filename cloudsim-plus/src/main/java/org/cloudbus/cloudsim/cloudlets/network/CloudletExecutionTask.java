@@ -78,7 +78,7 @@ public class CloudletExecutionTask extends CloudletTask {
      * @param id task id
      * @param executionLength the execution length of the task (in MI)
      */
-    public CloudletExecutionTask(int id, long executionLength) {
+    public CloudletExecutionTask(final int id, final long executionLength) {
         super(id);
         this.length = executionLength;
     }
@@ -97,7 +97,7 @@ public class CloudletExecutionTask extends CloudletTask {
      *
      * @param length the length to set
      */
-    public void setLength(long length) {
+    public void setLength(final long length) {
         this.length = length;
     }
 
@@ -112,17 +112,17 @@ public class CloudletExecutionTask extends CloudletTask {
     /**
      * Sets a given number of MI to the {@link #getTotalExecutedLength() total
      * MI executed so far} by the cloudlet.
-     * @param executedLengthSoFar the total number of MI executed so far
+     * @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
      * @return {@inheritDoc}
      */
-    public boolean process(long executedLengthSoFar) {
-        if(executedLengthSoFar <= 0) {
+    public boolean process(final long partialFinishedMI) {
+        if(partialFinishedMI <= 0) {
             return false;
         }
 
-        this.totalExecutedLength = Math.min(executedLengthSoFar, length);
+        final long maxLengthToAdd = Math.min(partialFinishedMI, length-totalExecutedLength);
+        this.totalExecutedLength += maxLengthToAdd;
         setFinished(this.totalExecutedLength == length);
         return true;
     }
-
 }

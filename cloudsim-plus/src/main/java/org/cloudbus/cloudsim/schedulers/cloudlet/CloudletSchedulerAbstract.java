@@ -512,11 +512,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     private void updateCloudletProcessingAndPacketsDispatch(final CloudletExecution ce, final double currentTime) {
+        long partialFinishedMI = 0;
         if (packetScheduler.isTimeToUpdateCloudletProcessing(ce.getCloudlet())) {
+            partialFinishedMI = cloudletExecutedInstructionsForTimeSpan(ce, currentTime)/Conversion.MILLION;
             updateCloudletProcessing(ce, currentTime);
         }
 
-        packetScheduler.processCloudletPackets(ce.getCloudlet(), currentTime);
+
+        packetScheduler.processCloudletTasks(ce.getCloudlet(), partialFinishedMI);
     }
 
     /**
@@ -527,8 +530,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param currentTime current simulation time
      */
     protected void updateCloudletProcessing(final CloudletExecution ce, final double currentTime) {
-        final long executedInstructions = cloudletExecutedInstructionsForElapsedTime(ce, currentTime);
-        ce.updateProcessing(executedInstructions);
+        final long partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(ce, currentTime);
+        ce.updateProcessing(partialFinishedInstructions);
     }
 
     /**
@@ -590,7 +593,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param cl the Cloudlet to compute the executed length
      * @param currentTime current simulation time
-     * @return the executed length, in number of Instructions (I), since the last time cloudlet was processed.
+     * @return the executed length, in Number of Instructions (I), since the last time cloudlet was processed.
      * @TODO @author manoelcampos This method is being called 2 times more than required.
      * Despite it is not causing any apparent issue, it has to be
      * investigated. For instance, for simulation time 2, with 2 cloudlets, the
@@ -598,15 +601,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * that time).
      * @see #updateCloudletsProcessing(double)
      */
-    private long cloudletExecutedInstructionsForElapsedTime(final CloudletExecution cl, final double currentTime) {
+    private long cloudletExecutedInstructionsForTimeSpan(final CloudletExecution cl, final double currentTime) {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
          * called by the scheduler. If it is zero, indicates that the Cloudlet didn't use
          * the CPU in this time span, because it is waiting for its required files
          * to be transferred from the Datacenter storage.
          */
-        final double actualProcessingTime = (hasCloudletFileTransferTimePassed(cl, currentTime) ? timeSpan(cl, currentTime) : 0);
+        final double actualProcessingTime = hasCloudletFileTransferTimePassed(cl, currentTime) ? timeSpan(cl, currentTime) : 0;
         final double cloudletUsedMips =
-            getAbsoluteCloudletResourceUtilization(cl.getCloudlet().getUtilizationModelCpu(),
+            getAbsoluteCloudletResourceUtilization(
+                cl.getCloudlet().getUtilizationModelCpu(),
                 currentTime, getAvailableMipsByPe());
         return (long) (cloudletUsedMips * actualProcessingTime * Conversion.MILLION);
     }

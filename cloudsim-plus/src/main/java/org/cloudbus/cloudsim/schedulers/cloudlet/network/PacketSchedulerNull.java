@@ -27,7 +27,7 @@ final class PacketSchedulerNull implements PacketScheduler {
     @Override public boolean addPacketToListOfPacketsSentFromVm(VmPacket pkt) {
         return false;
     }
-    @Override public void processCloudletPackets(Cloudlet cloudlet, double currentTime) {/**/}
+    @Override public void processCloudletTasks(Cloudlet cloudlet, long partialFinishedMI) {/**/}
     /**
      * {@inheritDoc}
      *

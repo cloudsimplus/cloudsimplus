@@ -54,8 +54,6 @@ public class PacketSchedulerSimple implements PacketScheduler {
     /**
      * Creates a PacketSchedulerSimple object.
      *
-     * @pre $none
-     * @post $none
      */
     public PacketSchedulerSimple() {
         super();
@@ -64,7 +62,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
     }
 
     @Override
-    public void processCloudletPackets(final Cloudlet cloudlet, final double currentTime) {
+    public void processCloudletTasks(final Cloudlet cloudlet, final long partialFinishedMI) {
         if (cloudlet.isFinished() || isNotNetworkCloudlet(cloudlet)) {
             return;
         }
@@ -79,11 +77,24 @@ public class PacketSchedulerSimple implements PacketScheduler {
          * @todo @author manoelcampos It should be used polymorphism to avoid
          * including these if's for each type of task.
          */
-        if (isTimeToUpdateCloudletProcessing(netcl)) {
-            updateExecutionTask(netcl);
-            return;
-        }
+        if (isTimeToUpdateCloudletProcessing(netcl))
+            updateExecutionTask(netcl, partialFinishedMI);
+        else updateNetworkTasks(netcl);
+    }
 
+    private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
+        /*
+         * @todo @author manoelcampos It has to be checked if the task execution
+         * is considering only one cloudlet PE our all PEs.
+         * Each execution task is supposed to use just one PE.
+         */
+        cloudlet.getCurrentTask().map(task -> (CloudletExecutionTask)task).ifPresent(task -> {
+            task.process(partialFinishedMI);
+            scheduleNextTaskIfCurrentIsFinished(cloudlet);
+        });
+    }
+
+    private void updateNetworkTasks(final NetworkCloudlet netcl) {
         netcl.getCurrentTask().ifPresent(task -> {
             if (task.isSendTask())
                addPacketsToBeSentFromVm(netcl);
@@ -185,20 +196,6 @@ public class PacketSchedulerSimple implements PacketScheduler {
                 .stream()
                 .filter(pkt -> pkt.getDestination().getId() == destinationTask.getCloudlet().getVm().getId())
                 .collect(Collectors.toList());
-    }
-
-    private void updateExecutionTask(final NetworkCloudlet cloudlet) {
-        /*
-         * @todo @author manoelcampos It has to be checked if the task execution
-         * is considering only one cloudlet PE our all PEs.
-         * Each execution task is supposed to use just one PE.
-         */
-        cloudlet.getCurrentTask()
-            .map(task -> (CloudletExecutionTask)task)
-            .ifPresent(task -> {
-                task.process(cloudlet.getFinishedLengthSoFar());
-                scheduleNextTaskIfCurrentIsFinished(cloudlet);
-            });
     }
 
     /**

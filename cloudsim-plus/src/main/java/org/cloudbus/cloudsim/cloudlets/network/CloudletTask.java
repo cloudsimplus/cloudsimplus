@@ -169,8 +169,9 @@ public abstract class CloudletTask implements Identificable {
 
         //If the task was not finished before and try to set it to finished,
         //stores the finishTime
-        if(!this.finished && finished)
+        if(!this.finished && finished) {
             finishTime = cloudlet.getSimulation().clock();
+        }
 
         this.finished = finished;
     }

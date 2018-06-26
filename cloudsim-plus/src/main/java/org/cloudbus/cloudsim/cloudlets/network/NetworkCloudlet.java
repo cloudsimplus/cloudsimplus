@@ -127,9 +127,9 @@ public class NetworkCloudlet extends CloudletSimple {
      * @return true if the current task finished and the next one was started, false otherwise
      */
     public boolean startNextTaskIfCurrentIsFinished(final double nextTaskStartTime){
-        return getNextTaskIfCurrentIfFinished()
-                    .map(task -> task.setStartTime(nextTaskStartTime))
-                    .isPresent();
+        final Optional<CloudletTask> optional = getNextTaskIfCurrentIfFinished();
+        optional.ifPresent(task -> task.setStartTime(nextTaskStartTime));
+        return optional.isPresent();
     }
 
     /**

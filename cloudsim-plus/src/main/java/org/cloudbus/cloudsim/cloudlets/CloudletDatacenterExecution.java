@@ -30,7 +30,7 @@ final class CloudletDatacenterExecution {
         return arrivalTime;
     }
 
-    void setArrivalTime(double arrivalTime) {
+    void setArrivalTime(final double arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -42,7 +42,7 @@ final class CloudletDatacenterExecution {
         return wallClockTime;
     }
 
-    void setWallClockTime(double wallClockTime) {
+    void setWallClockTime(final double wallClockTime) {
         this.wallClockTime = wallClockTime;
     }
 
@@ -53,7 +53,7 @@ final class CloudletDatacenterExecution {
         return actualCpuTime;
     }
 
-    void setActualCpuTime(double actualCpuTime) {
+    void setActualCpuTime(final double actualCpuTime) {
         this.actualCpuTime = actualCpuTime;
     }
 
@@ -64,7 +64,7 @@ final class CloudletDatacenterExecution {
         return costPerSec;
     }
 
-    void setCostPerSec(double costPerSec) {
+    void setCostPerSec(final double costPerSec) {
         this.costPerSec = costPerSec;
     }
 
@@ -75,8 +75,14 @@ final class CloudletDatacenterExecution {
         return finishedSoFar;
     }
 
-    void setFinishedSoFar(long finishedSoFar) {
-        this.finishedSoFar = finishedSoFar;
+    /**
+     * Adds the partial length of this Cloudlet that has executed so far in this Datacenter (in MI).
+     *
+     * @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
+     *                          from the last time span (the last time the Cloudlet execution was updated)
+     */
+    void addFinishedSoFar(final long partialFinishedMI) {
+        this.finishedSoFar += partialFinishedMI;
     }
 
     /**
@@ -86,7 +92,7 @@ final class CloudletDatacenterExecution {
         return datacenter;
     }
 
-    void setDatacenter(Datacenter datacenter) {
+    void setDatacenter(final Datacenter datacenter) {
         this.datacenter = datacenter;
     }
 }

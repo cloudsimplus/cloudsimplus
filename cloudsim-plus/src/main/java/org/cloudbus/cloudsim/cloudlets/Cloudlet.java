@@ -714,17 +714,17 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
     long getFinishedLengthSoFar(Datacenter datacenter);
 
     /**
-     * Sets the length of this Cloudlet that has been executed so far (in MI),
-     * according to the {@link #getLength()}.
+     * Adds the partial length of this Cloudlet that has executed so far (in MI).
      *
-     * @param length executed length of this Cloudlet (in MI)
+     * @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
+     *                          from the last time span (the last time the Cloudlet execution was updated)
      * @return true if the length is valid and the cloudlet already has assigned
      * to a Datacenter, false otherwise
      * @see CloudletExecution
      * @pre length >= 0.0
      * @post $none
      */
-    boolean setFinishedLengthSoFar(long length);
+    boolean addFinishedLengthSoFar(long partialFinishedMI);
 
     /**
      * Sets the wall clock time the cloudlet spent
