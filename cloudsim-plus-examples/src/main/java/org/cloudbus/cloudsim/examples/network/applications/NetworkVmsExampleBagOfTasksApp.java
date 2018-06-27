@@ -47,9 +47,8 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
      */
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker){
-        final int NETCLOUDLETS_FOR_EACH_APP = 3;
+        final int NETCLOUDLETS_FOR_EACH_APP = 2;
         List<NetworkCloudlet> networkCloudletList = new ArrayList<>(NETCLOUDLETS_FOR_EACH_APP+1);
-        List<NetworkVm> selectedVms = randomlySelectVmsForApp(broker, NETCLOUDLETS_FOR_EACH_APP+1);
         //basically, each task runs the simulation and then data is consolidated in one task
 
         int taskStageId=0;
@@ -58,26 +57,25 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
             currentCloudletId++;
             UtilizationModel utilizationModel = new UtilizationModelFull();
             NetworkCloudlet cloudlet =
-                    new NetworkCloudlet(
-                            currentCloudletId,
-                        NETWORK_CLOUDLET_LENGTH,
-                            NETCLOUDLET_PES_NUMBER);
+                    new NetworkCloudlet(currentCloudletId, NETWORK_CLOUDLET_LENGTH, NETCLOUDLET_PES_NUMBER);
             cloudlet
                     .setMemory(CLOUDLET_TASK_MEMORY)
                     .setFileSize(NETCLOUDLET_FILE_SIZE)
                     .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                     .setUtilizationModel(utilizationModel)
-                    .setVm(selectedVms.get(i));
+                    .setVm(getVmList().get(i));
 
             cloudlet.addTask(createExecutionTask(taskStageId++));
 
-            //NetworkCloudlet 0 waits data from other cloudlets, while the other cloudlets send data
+            //NetworkCloudlet 0 waits data from other Cloudlets
             if (i==0){
                 for(int j=1; j < NETCLOUDLETS_FOR_EACH_APP; j++) {
-                    CloudletReceiveTask task = createReceiveTask(taskStageId++, selectedVms.get(j+1));
+                    CloudletReceiveTask task = createReceiveTask(taskStageId++, getVmList().get(j));
                     cloudlet.addTask(task);
                 }
-            } else {
+            }
+            //The other NetworkCloudlets send data to the first one
+            else {
                 CloudletSendTask task = createSendTask(taskStageId++);
                 cloudlet.addTask(task);
                 task.addPacket(networkCloudletList.get(0), 1000);

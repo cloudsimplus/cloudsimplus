@@ -130,6 +130,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceCloudlet cloudlet to get the list of packets to send
      */
     private void addPacketsToBeSentFromVm(final NetworkCloudlet sourceCloudlet) {
+        //@todo use Optional.map instead of this if
         if(!sourceCloudlet.getCurrentTask().isPresent()){
             return;
         }
@@ -151,6 +152,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceCloudlet cloudlet to check if there are packets to be received from.
      */
     private void receivePackets(final NetworkCloudlet sourceCloudlet) {
+        //@todo Use Optional.map instead of this if
         if(!sourceCloudlet.getCurrentTask().isPresent()){
             return;
         }

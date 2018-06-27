@@ -528,6 +528,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param ce The cloudlet to be its processing updated
      * @param currentTime current simulation time
+     * @todo make the method return the partialFinishedInstructions to use inside the updateCloudletProcessingAndPacketsDispatch
      */
     protected void updateCloudletProcessing(final CloudletExecution ce, final double currentTime) {
         final long partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(ce, currentTime);
