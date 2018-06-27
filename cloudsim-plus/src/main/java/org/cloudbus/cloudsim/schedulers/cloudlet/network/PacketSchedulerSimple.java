@@ -88,7 +88,8 @@ public class PacketSchedulerSimple implements PacketScheduler {
          * is considering only one cloudlet PE our all PEs.
          * Each execution task is supposed to use just one PE.
          */
-        cloudlet.getCurrentTask().map(task -> (CloudletExecutionTask)task).ifPresent(task -> {
+        final Optional<CloudletExecutionTask> optional = getCloudletCurrentTask(cloudlet);
+        optional.ifPresent(task -> {
             task.process(partialFinishedMI);
             scheduleNextTaskIfCurrentIsFinished(cloudlet);
         });
@@ -130,19 +131,16 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceCloudlet cloudlet to get the list of packets to send
      */
     private void addPacketsToBeSentFromVm(final NetworkCloudlet sourceCloudlet) {
-        //@todo use Optional.map instead of this if
-        if(!sourceCloudlet.getCurrentTask().isPresent()){
-            return;
-        }
+        final Optional<CloudletSendTask> optional = getCloudletCurrentTask(sourceCloudlet);
+        optional.ifPresent(task -> {
+            Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
+                "%d pkts added to be sent from cloudlet %d in VM %d",
+                task.getPacketsToSend().size(), sourceCloudlet.getId(),
+                sourceCloudlet.getVm().getId());
 
-        final CloudletSendTask task = (CloudletSendTask)sourceCloudlet.getCurrentTask().get();
-        Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
-            "%d pkts added to be sent from cloudlet %d in VM %d",
-            task.getPacketsToSend().size(), sourceCloudlet.getId(),
-            sourceCloudlet.getVm().getId());
-
-        vmPacketsToSend.addAll(task.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
-        scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
+            vmPacketsToSend.addAll(task.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
+            scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
+        });
     }
 
     /**
@@ -152,37 +150,44 @@ public class PacketSchedulerSimple implements PacketScheduler {
      * @param sourceCloudlet cloudlet to check if there are packets to be received from.
      */
     private void receivePackets(final NetworkCloudlet sourceCloudlet) {
-        //@todo Use Optional.map instead of this if
-        if(!sourceCloudlet.getCurrentTask().isPresent()){
-            return;
-        }
+        final Optional<CloudletReceiveTask> optional = getCloudletCurrentTask(sourceCloudlet);
+        optional.ifPresent(task -> {
+            final List<VmPacket> receivedPkts = getPacketsSentToGivenTask(task);
+            // Assumption: packet will not arrive in the same cycle
+            receivedPkts.forEach(task::receivePacket);
+            receivedPkts.forEach(pkt ->
+                Log.println(
+                    Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
+                    "Cloudlet %d in VM %d received pkt with %d bytes from Cloudlet %d in VM %d",
+                    pkt.getReceiverCloudlet().getId(),
+                    pkt.getDestination().getId(),
+                    pkt.getSize(),
+                    pkt.getSenderCloudlet().getId(),
+                    pkt.getSource().getId())
+            );
 
-        final CloudletReceiveTask task = (CloudletReceiveTask)sourceCloudlet.getCurrentTask().get();
-        final List<VmPacket> receivedPkts = getPacketsSentToGivenTask(task);
-        // Assumption: packet will not arrive in the same cycle
-        receivedPkts.forEach(task::receivePacket);
-        receivedPkts.forEach(pkt ->
-            Log.println(
-                Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
-                "Cloudlet %d in VM %d received pkt with %d bytes from Cloudlet %d in VM %d",
-                pkt.getReceiverCloudlet().getId(),
-                pkt.getDestination().getId(),
-                pkt.getSize(),
-                pkt.getSenderCloudlet().getId(),
-                pkt.getSource().getId())
-        );
+            /*Removes the received packets from the list of sent packets of the VM,
+            to indicate they were in fact received and have to be removed
+            from the list of the sender VM*/
+            getListOfPacketsSentFromVm(task.getSourceVm()).removeAll(receivedPkts);
 
-        /*Removes the received packets from the list of sent packets of the VM,
-        to indicate they were in fact received and have to be removed
-        from the list of the sender VM*/
-        getListOfPacketsSentFromVm(task.getSourceVm()).removeAll(receivedPkts);
+            /*
+             * @todo @author manoelcampos The task has to wait the reception
+             * of the expected packets up to a given timeout.
+             * After that, the task has to stop waiting and fail.
+             */
+            scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
+        });
+    }
 
-        /*
-         * @todo @author manoelcampos The task has to wait the reception
-         * of the expected packets up to a given timeout.
-         * After that, the task has to stop waiting and fail.
-         */
-        scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
+    /**
+     * Gets the current task by casting it to a generic type
+     * @param cloudlet the Cloudlet to get its current task by casting it
+     * @param <T> the generic type to cast the task to
+     * @return the current task after casting it
+     */
+    private <T extends CloudletTask> Optional<T> getCloudletCurrentTask(final NetworkCloudlet cloudlet) {
+        return cloudlet.getCurrentTask().map(task -> (T) task);
     }
 
     /**

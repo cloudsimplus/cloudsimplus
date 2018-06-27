@@ -514,8 +514,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private void updateCloudletProcessingAndPacketsDispatch(final CloudletExecution ce, final double currentTime) {
         long partialFinishedMI = 0;
         if (packetScheduler.isTimeToUpdateCloudletProcessing(ce.getCloudlet())) {
-            partialFinishedMI = cloudletExecutedInstructionsForTimeSpan(ce, currentTime)/Conversion.MILLION;
-            updateCloudletProcessing(ce, currentTime);
+            partialFinishedMI = updateCloudletProcessing(ce, currentTime);
         }
 
 
@@ -528,11 +527,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param ce The cloudlet to be its processing updated
      * @param currentTime current simulation time
-     * @todo make the method return the partialFinishedInstructions to use inside the updateCloudletProcessingAndPacketsDispatch
+     * @return the executed length, in <b>Million Instructions (MI)</b>, since the last time cloudlet was processed.
      */
-    protected void updateCloudletProcessing(final CloudletExecution ce, final double currentTime) {
+    protected long updateCloudletProcessing(final CloudletExecution ce, final double currentTime) {
         final long partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(ce, currentTime);
         ce.updateProcessing(partialFinishedInstructions);
+        return partialFinishedInstructions/Conversion.MILLION;
     }
 
     /**
