@@ -8,12 +8,12 @@
 package org.cloudbus.cloudsim.resources;
 
 /**
- * A class that represents simple resources such as RAM, CPU, Bandwidth or Pe,
- * storing, for instance, the resource capacity and amount of free available resource.
+ * A class that represents simple resources such as RAM, CPU, Bandwidth or Pe.
+ * It stores, for instance, the resource capacity and amount of free available resource.
  *
  * <p>The class is abstract just to ensure there will be an specific subclass
- * for each kind of resource, allowing to differentiate, for instance,
- * a RAM resource instance from a BW resource instance.
+ * for each kind of resource, allowing to differentiate, for example,
+ * a RAM Resource from a BW Resource.
  * The VM class also relies on this differentiation for generically getting a
  * required resource.</p>
  *

@@ -491,9 +491,8 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * Gets the time of this Cloudlet resides in the latest Datacenter (from
      * arrival time until departure time).
      *
-     * @return the time of this Cloudlet resides in the latest Datacenter
-     * @pre $none
-     * @post $result >= 0.0
+     * @return the wall-clock time in the latest Datacenter or 0 if the Cloudlet has never been executed
+     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
      */
     double getWallClockTimeInLastExecutedDatacenter();
 
@@ -502,9 +501,8 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * arrival time until departure time).
      *
      * @param datacenter a Datacenter entity
-     * @return the time of this Cloudlet resides in the Datacenter
-     * or 0 if the Cloudlet has never been executed there
-     * @post $result >= 0.0
+     * @return the wall-clock time or 0 if the Cloudlet has never been executed there
+     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
      */
     double getWallClockTime(Datacenter datacenter);
 

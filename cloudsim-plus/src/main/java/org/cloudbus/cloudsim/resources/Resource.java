@@ -33,7 +33,7 @@ public interface Resource extends ResourceCapacity {
      * @param classWanted the class to verify if the object is instance of
      * @return true if the object is instance of the given class, false otherwise
      */
-    static boolean isObjectSubClassOf(Object object, Class classWanted) {
+    static boolean isObjectSubClassOf(final Object object, final Class classWanted) {
         return classWanted.isAssignableFrom(object.getClass());
     }
 
@@ -42,7 +42,7 @@ public interface Resource extends ResourceCapacity {
      * @param classWanted the class to verify if the object is instance of
      * @return true if the object is instance of the given class, false otherwise
      */
-    default boolean isObjectSubClassOf(Class classWanted) {
+    default boolean isObjectSubClassOf(final Class classWanted) {
         return isObjectSubClassOf(this, classWanted);
     }
 
@@ -50,9 +50,6 @@ public interface Resource extends ResourceCapacity {
      * Gets the amount of the resource that is available (free).
      *
      * @return the amount of available resource
-     *
-     * @pre $none
-     * @post $none
      */
     long getAvailableResource();
 
@@ -60,9 +57,6 @@ public interface Resource extends ResourceCapacity {
      * Gets the current total amount of allocated resource.
      *
      * @return amount of allocated resource
-     *
-     * @pre $none
-     * @post $none
      */
     long getAllocatedResource();
 

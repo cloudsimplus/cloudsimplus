@@ -496,7 +496,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private void updateCloudletsProcessing(final double currentTime) {
         /* Uses a traditional for to avoid ConcurrentModificationException,
-         * e.g., in cases when Cloudlet is cancelled during simulation execution.*/
+         * e.g., in cases when Cloudlet is cancelled during simulation execution. */
         for (int i = 0; i < cloudletExecList.size(); i++) {
             final CloudletExecution ce = cloudletExecList.get(i);
             updateCloudletProcessingAndPacketsDispatch(ce, currentTime);

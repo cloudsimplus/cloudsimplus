@@ -35,13 +35,21 @@ final class CloudletDatacenterExecution {
     }
 
     /**
-     * The time this Cloudlet resides in a Datacenter (from arrival time
+     * Gets the time this Cloudlet resides in a Datacenter (from arrival time
      * until departure time, that may include waiting time).
+     * @return the wall-clock time
+     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
      */
     double getWallClockTime() {
         return wallClockTime;
     }
 
+    /**
+     * Sets the time this Cloudlet resides in a Datacenter (from arrival time
+     * until departure time, that may include waiting time).
+     * @param wallClockTime the wall-clock time to set
+     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
+     */
     void setWallClockTime(final double wallClockTime) {
         this.wallClockTime = wallClockTime;
     }
