@@ -395,7 +395,7 @@ public final class MigrationExample2_PowerUsage {
             Host host = createHost(pes, HOST_MIPS);
             hostList.add(host);
         }
-        Log.printLine();
+        Log.printLine("");
 
         /* Defines the fallback VmAllocationPolicy to be used
         * in case there is not enough host CPU utilization history

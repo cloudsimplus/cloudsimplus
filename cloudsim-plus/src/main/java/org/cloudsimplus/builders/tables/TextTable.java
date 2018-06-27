@@ -48,24 +48,24 @@ public class TextTable extends CsvTable {
     @Override
     public void printTitle() {
         if(!getTitle().trim().isEmpty()){
-            Log.print(getCentralizedString(getTitle()));
+            getPrintStream().println(getCentralizedString(getTitle()));
         }
     }
 
     @Override
     public void printTableOpening() {
-        Log.printLine();
+        getPrintStream().println();
     }
 
     @Override
     protected void printColumnHeaders() {
         super.printColumnHeaders();
-        Log.printFormatted("%s\n", createHorizontalLine());
+        getPrintStream().println(createHorizontalLine());
     }
 
     @Override
     public void printTableClosing() {
-        Log.printFormatted("%s\n", createHorizontalLine());
+        getPrintStream().println(createHorizontalLine());
     }
 
     /**
@@ -115,7 +115,4 @@ public class TextTable extends CsvTable {
     public TableColumn addColumn(final int index, final String columnTitle) {
         return addColumn(new TextTableColumn(this, columnTitle));
     }
-
-
-
 }

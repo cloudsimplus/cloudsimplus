@@ -552,9 +552,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             final Cloudlet cloudlet = cloudletExecution.getCloudlet();
             final long requested = (long)getCloudletRamAbsoluteUtilization(cloudlet);
             if(requested > ram.getAvailableResource()){
+                final String msg =
+                        ram.getAvailableResource() > 0 ?
+                        String.format("just %d was available and allocated to it.", ram.getAvailableResource()):
+                        "no amount is available.";
                 Log.printFormattedLine(
-                    "%.2f: %s: %s requested %d MB of RAM but just %d was available and allocated to it.",
-                    vm.getSimulation().clock(), getClass().getSimpleName(), cloudlet, requested, ram.getAvailableResource());
+                    "%.2f: %s: %s requested %d MB of RAM but %s",
+                    vm.getSimulation().clock(), getClass().getSimpleName(), cloudlet, requested, msg);
             }
             ram.allocateResource(Math.min(requested, ram.getAvailableResource()));
         }

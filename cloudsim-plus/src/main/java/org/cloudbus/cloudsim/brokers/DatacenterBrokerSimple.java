@@ -62,10 +62,11 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      * the remaining VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
      */
     protected Datacenter selectFallbackDatacenterForWaitingVms() {
-        return getDatacenterList().stream()
-            .filter(dc -> !getDatacenterRequestedList().contains(dc))
-            .findFirst()
-            .orElse(Datacenter.NULL);
+        return getDatacenterList()
+                .stream()
+                .filter(dc -> !getDatacenterRequestedList().contains(dc))
+                .findFirst()
+                .orElse(Datacenter.NULL);
     }
 
     @Override

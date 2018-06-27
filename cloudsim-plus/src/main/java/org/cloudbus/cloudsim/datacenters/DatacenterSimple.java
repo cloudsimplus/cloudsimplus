@@ -537,7 +537,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", cl.getBroker().getName(),
                 " is already completed/finished.");
         Log.printLine("Therefore, it is not being executed again");
-        Log.printLine();
+        Log.printLine("");
 
         /*
          NOTE: If a Cloudlet has finished, then it won't be processed.

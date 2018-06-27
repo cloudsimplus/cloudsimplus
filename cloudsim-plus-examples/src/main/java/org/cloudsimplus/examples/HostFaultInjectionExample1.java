@@ -186,7 +186,7 @@ public final class HostFaultInjectionExample1 {
             hostList.add(createHost());
             Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_PES);
         }
-        Log.printLine();
+        Log.printLine("");
 
         Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         dc

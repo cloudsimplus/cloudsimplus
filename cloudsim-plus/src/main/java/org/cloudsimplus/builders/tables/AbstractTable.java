@@ -23,11 +23,10 @@
  */
 package org.cloudsimplus.builders.tables;
 
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.cloudbus.cloudsim.util.Log;
 
 import static java.util.stream.Collectors.toList;
 
@@ -37,6 +36,8 @@ import static java.util.stream.Collectors.toList;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class AbstractTable implements Table {
+    private PrintStream printStream;
+
     /** @see #getColumns() */
     private final List<TableColumn> columns;
 
@@ -60,6 +61,7 @@ public abstract class AbstractTable implements Table {
      * @param title Title of the table
      */
     public AbstractTable(final String title){
+        this.printStream = System.out;
         this.columns = new ArrayList<>();
         this.rows = new ArrayList<>();
         setTitle(title);
@@ -129,7 +131,7 @@ public abstract class AbstractTable implements Table {
 
         int i = 0;
         for(final TableColumn col: cols){
-            Log.print(col.generateData(row.get(i++)));
+            getPrintStream().print(col.generateData(row.get(i++)));
         }
         printRowClosing();
     }
@@ -145,11 +147,11 @@ public abstract class AbstractTable implements Table {
 
     protected void printColumnHeaders(){
         printRowOpening();
-        columns.forEach(col -> Log.print(col.generateTitleHeader()));
+        columns.forEach(col -> getPrintStream().print(col.generateTitleHeader()));
         printRowClosing();
         if(isThereAnySubtitledColumn()){
             printRowOpening();
-            columns.forEach(col -> Log.print(col.generateSubtitleHeader()));
+            columns.forEach(col -> System.out.print(col.generateSubtitleHeader()));
             printRowClosing();
         }
     }
@@ -193,18 +195,34 @@ public abstract class AbstractTable implements Table {
     }
 
     @Override
-    public final TableColumn addColumn(String columnTitle, String columnSubTitle) {
+    public final TableColumn addColumn(final String columnTitle, final String columnSubTitle) {
         return addColumn(columnTitle).setSubTitle(columnSubTitle);
     }
 
     @Override
-    public final TableColumn addColumn(int index, TableColumn column) {
+    public final TableColumn addColumn(final int index, final TableColumn column) {
         columns.add(index, column);
         return column;
     }
 
     @Override
-    public final TableColumn addColumn(TableColumn column) {
+    public final TableColumn addColumn(final TableColumn column) {
         return addColumn(columns.size(), column);
+    }
+
+    /**
+     * Sets the {@link PrintStream} used to print the generated table.
+     * @param printStream the {@link PrintStream} to set
+     */
+    public void setPrintStream(final PrintStream printStream) {
+        this.printStream = printStream;
+    }
+
+    /**
+     * Gets the {@link PrintStream} used to print the generated table.
+     * @return the {@link PrintStream}
+     */
+    protected PrintStream getPrintStream() {
+        return printStream;
     }
 }

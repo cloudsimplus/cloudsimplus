@@ -12,7 +12,7 @@ import java.io.OutputStream;
 import java.lang.management.ManagementFactory;
 
 /**
- * Logger used for performing logging of the simulation process. It provides the
+ * Performs logging of the simulation process. It provides the
  * ability to substitute the output stream by any OutputStream subclass.
  *
  * @author Anton Beloglazov
@@ -71,7 +71,7 @@ public final class Log {
      *
      * @param message the message
      */
-    public static void print(String message) {
+    private static void print(String message) {
         if (isEnabled()) {
             try {
                 getOutput().write(message.getBytes());
@@ -82,37 +82,12 @@ public final class Log {
     }
 
     /**
-     * Prints the message passed as a non-String object.
-     *
-     * @param message the message
-     */
-    public static void print(Object message) {
-        print(String.valueOf(message));
-    }
-
-    /**
      * Prints a message and a new line.
      *
      * @param message the message
      */
     public static void printLine(String message) {
         print(message + LINE_SEPARATOR);
-    }
-
-    /**
-     * Prints an empty line.
-     */
-    public static void printLine() {
-        print(LINE_SEPARATOR);
-    }
-
-    /**
-     * Prints the message passed as a non-String object and a new line.
-     *
-     * @param message the message
-     */
-    public static void printLine(Object message) {
-        printLine(String.valueOf(message));
     }
 
     /**
@@ -127,7 +102,7 @@ public final class Log {
             for (final Object message : messages) {
                 buffer.append(String.valueOf(message));
             }
-            printLine(buffer);
+            printLine(buffer.toString());
         }
     }
 

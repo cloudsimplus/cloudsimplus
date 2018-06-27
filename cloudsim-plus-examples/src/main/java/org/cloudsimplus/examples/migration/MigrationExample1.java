@@ -352,7 +352,7 @@ public final class MigrationExample1 {
             Host host = createHost(pes, HOST_MIPS);
             hostList.add(host);
         }
-        Log.printLine();
+        Log.printLine("");
 
         /**
          * Sets an upper utilization threshold higher than the

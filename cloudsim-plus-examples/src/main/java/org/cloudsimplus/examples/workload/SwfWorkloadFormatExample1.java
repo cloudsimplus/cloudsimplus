@@ -239,7 +239,7 @@ public class SwfWorkloadFormatExample1 {
         Log.printConcatLine(
                 "#Total of created hosts: ", totalOfHosts,
                 " Total of PEs of all hosts: ", totalOfPesOfAllHosts);
-        Log.printLine();
+        Log.printLine("");
 
         return hostList;
     }
@@ -304,10 +304,9 @@ public class SwfWorkloadFormatExample1 {
             }
             //updates the number of VMs that have the given pesNumber
             vmsPesCountMap.put(pesNumber, ++numberOfVmsWithGivenPesNumber);
-
         }
 
-        Log.printLine();
+        Log.printLine("");
         long totalOfVms = 0, totalOfPes = 0;
         for(Entry<Long, Long> entry: vmsPesCountMap.entrySet()){
             totalOfVms += entry.getValue();

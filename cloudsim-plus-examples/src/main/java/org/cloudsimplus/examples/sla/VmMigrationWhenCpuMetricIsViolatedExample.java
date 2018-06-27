@@ -268,7 +268,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         for (int i = 0; i < HOSTS; i++) {
             hostList.add(createHost(HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
         }
-        Log.printLine();
+        Log.printLine("");
 
         final VmAllocationPolicyMigration allocationPolicy
                 = new VmAllocationPolicyMigrationWorstFitStaticThreshold(

@@ -389,7 +389,7 @@ public class HostFaultInjection extends CloudSimEntity {
                 lastFailedHost.getNumberOfWorkingPes());
         cyclicallyRemoveFailedHostPesFromVms();
 
-        Log.printLine();
+        Log.printLine("");
         final List<Vm> vmsWithoutPes =
             lastFailedHost.getVmList()
                 .stream()

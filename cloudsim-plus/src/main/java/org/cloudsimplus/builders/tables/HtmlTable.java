@@ -46,27 +46,27 @@ public class HtmlTable extends AbstractTable {
 
     @Override
     protected void printTableOpening() {
-        Log.printLine("\n<table>");
+        getPrintStream().println("\n<table>");
     }
 
     @Override
     protected void printTitle() {
-        Log.printFormatted("  <caption>%s</caption>\n", getTitle());
+        getPrintStream().printf("  <caption>%s</caption>\n", getTitle());
     }
 
     @Override
     protected void printRowOpening() {
-        Log.printLine("  <tr>");
+        getPrintStream().println("  <tr>");
     }
 
     @Override
     protected void printRowClosing() {
-        Log.printLine("\n  </tr>");
+        getPrintStream().println("\n  </tr>");
     }
 
     @Override
     protected void printTableClosing() {
-        Log.printLine("</table>\n");
+        getPrintStream().println("</table>\n");
     }
 
     @Override

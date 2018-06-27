@@ -23,8 +23,6 @@
  */
 package org.cloudsimplus.builders.tables;
 
-import org.cloudbus.cloudsim.util.Log;
-
 /**
  * Prints a table from a given data set, using a Comma Separated Text (CSV) format.
  *
@@ -67,7 +65,7 @@ public class CsvTable extends AbstractTable {
 
     @Override
     protected void printRowClosing() {
-        Log.printLine();
+        getPrintStream().println();
     }
 
     public String getLineSeparator() {

@@ -194,7 +194,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
                 ignoredSourceHosts.addAll(extractHostListFromMigrationMap(newVmPlacement));
                 migrationMap.putAll(newVmPlacement);
-                Log.printLine();
+                Log.printLine("");
             }
         }
     }
@@ -202,7 +202,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private void printVmIds(final List<? extends Vm> vmList) {
         if (!Log.isDisabled()) {
             vmList.forEach(vm -> Log.printFormatted("Vm %d ", vm.getId()));
-            Log.printLine();
+            Log.printLine("");
         }
     }
 
@@ -221,7 +221,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
                     "    Host %d (upper CPU threshold %.2f, current utilization: %.2f)",
                     h.getId(), getOverUtilizationThreshold(h), h.getUtilizationOfCpu());
             }
-            Log.printLine();
+            Log.printLine("");
         }
     }
 
@@ -427,7 +427,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         for (final Vm vm : vmsToMigrate) {
             findHostForVm(vm, overloadedHosts).ifPresent(host -> addVmToMigrationMap(migrationMap, vm, host));
         }
-        Log.printLine();
+        Log.printLine("");
 
         return migrationMap;
     }

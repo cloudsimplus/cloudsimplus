@@ -254,7 +254,7 @@ public final class DynamicVmAllocationPolicyBestFitExample {
             Host host = createHost(pes, HOST_MIPS);
             hostList.add(host);
         }
-        Log.printLine();
+        Log.printLine("");
 
         /*Creates a VmAllocationPolicy and changes, at runtime, the policy used to select a Host for a VM.*/
         final VmAllocationPolicySimple allocationPolicy = new VmAllocationPolicySimple(this::bestFitHostSelectionPolicy);

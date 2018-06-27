@@ -447,7 +447,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void processDatacenterListRequest(final SimEvent ev) {
         setDatacenterList((Set<Datacenter>) ev.getData());
         println(String.format(
-            "\n%.2f: %s: List of Datacenters received with %d datacenters(s).",
+            "\n%.2f: %s: List of %d datacenters(s) received.",
             getSimulation().clock(), getName(), datacenterList.size()));
         requestDatacenterToCreateWaitingVms();
     }
@@ -513,7 +513,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         lastSelectedDc = nextDatacenter;
         if (nextDatacenter != Datacenter.NULL) {
             clearVmCreationRequestsMapToTryNextDatacenter();
-            requestDatacenterToCreateWaitingVms(nextDatacenter);
+            requestDatacenterToCreateWaitingVms(nextDatacenter, true);
             return;
         }
 
@@ -569,8 +569,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void processFailedVmCreationInDatacenter(final Vm vm, final Datacenter datacenter) {
         vm.notifyOnCreationFailureListeners(datacenter);
         println(String.format(
-            "%.2f: %s: Creation of %s failed in Datacenter #%s",
-            getSimulation().clock(), getName(), vm, datacenter.getId()));
+            "%.2f: %s: Creation of %s failed in %s",
+            getSimulation().clock(), getName(), vm, datacenter));
     }
 
     /**
@@ -704,12 +704,29 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #submitVmList(java.util.List)
      */
     protected void requestDatacenterToCreateWaitingVms(final Datacenter datacenter) {
+        requestDatacenterToCreateWaitingVms(datacenter, false);
+    }
+
+    /**
+     * Request a specific Datacenter to create the VM in the
+     * {@link #getVmWaitingList() VM waiting list}.
+     *
+     * @param datacenter id of the Datacenter to request the VMs creation
+     * @param isFallbackDatacenter true to indicate that the given Datacenter is a fallback one,
+     *                             i.e., it's a next Datacenter where the creation of VMs is being tried
+     *                             (after some VMs could not be created into the previous Datacenter);
+     *                             false to indicate that this is a regular Datacenter where
+     *                             VM creation has to be tried.
+     * @see #submitVmList(java.util.List)
+     */
+    protected void requestDatacenterToCreateWaitingVms(final Datacenter datacenter, final boolean isFallbackDatacenter) {
         int requestedVms = 0;
+        final String fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
         for (final Vm vm :vmWaitingList) {
             if (!vmsToDatacentersMap.containsKey(vm) && !vmCreationRequestsMap.containsKey(vm)) {
                 println(String.format(
-                    "%.2f: %s: Trying to Create %s in %s",
-                    getSimulation().clock(), getName(), vm, datacenter.getName()));
+                    "%.2f: %s: Trying to Create %s in %s%s",
+                    getSimulation().clock(), getName(), vm, datacenter.getName(), fallbackMsg));
                 sendNow(datacenter, CloudSimTags.VM_CREATE_ACK, vm);
                 vmCreationRequestsMap.put(vm, datacenter);
                 requestedVms++;
