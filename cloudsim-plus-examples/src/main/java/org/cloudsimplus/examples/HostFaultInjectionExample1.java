@@ -61,7 +61,6 @@ import java.util.List;
  * @since CloudSim Plus 1.2.0
  */
 public final class HostFaultInjectionExample1 {
-
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 0;
 
     private static final int HOST_MIPS_BY_PE = 1000;
