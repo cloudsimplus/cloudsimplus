@@ -20,9 +20,10 @@ import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.List;
@@ -41,6 +42,7 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterSimple extends CloudSimEntity implements Datacenter {
+    private static final Logger logger = LoggerFactory.getLogger(DatacenterSimple.class.getSimpleName());
 
     /**
      * @see #getBandwidthPercentForMigration()
@@ -281,10 +283,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         Cloudlet cloudlet;
         try {
             cloudlet = (Cloudlet) ev.getData();
-        }
-        catch (ClassCastException e) {
-            Log.printConcatLine(super.getName(), ": Error in processing Cloudlet");
-            Log.printLine(e.getMessage());
+        } catch (ClassCastException e) {
+            logger.error("{}: Error in processing Cloudlet: {}", super.getName(), e.getMessage());
             return;
         }
 
@@ -306,8 +306,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 processCloudletResume(cloudlet, true);
                 break;
             default:
-                Log.printLine(this + ": Unable to handle a request from "
-                    + ev.getSource().getName() + " with event tag = " + ev.getTag());
+                logger.debug(
+                    "{}: Unable to handle a request from {} with event tag = {}",
+                    this, ev.getSource().getName(), ev.getTag());
 
         }
     }
@@ -469,10 +470,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             sendNow(vm.getBroker(), CloudSimTags.VM_DESTROY_ACK, vm);
         }
 
-        final String msg = cloudlets == 0 ? "" : String.format("It had a total of %d cloudlets (running + waiting).", cloudlets);
-        Log.printFormatted(
+        final String partialMsg = cloudlets == 0 ? "" : String.format("It had a total of %d cloudlets (running + waiting).", cloudlets);
+        final String msg = String.format(
                 "%.2f: %s: %s destroyed on %s. %s\n",
-                getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), msg);
+                getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), partialMsg);
+        if(cloudlets == 0)
+            logger.info(msg);
+        else logger.warn(msg);
     }
 
     /**
@@ -513,14 +517,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             updateHostsProcessing();
         }
 
-        if (result) {
-            Log.printFormattedLine(
-                "%.2f: Migration of %s to %s is completed",
-                getSimulation().clock(), vm, targetHost);
-        } else {
-            Log.printFormattedLine("[Datacenter] %s allocation to the destination host failed!", vm);
-
-        }
+        if (result)
+            logger.info("{}: Migration of {} to {} is completed", getSimulation().clock(), vm, targetHost);
+        else logger.error("{}: Allocation of {} to the destination Host failed!", this, vm);
     }
 
     /**
@@ -533,11 +532,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * receives the cloudlet submission
      */
     private void notifyBrokerAboutFinishedCloudlet(final Cloudlet cl, final boolean ack) {
-        Log.printConcatLine(
-                getName(), ": Warning - Cloudlet #", cl.getId(), " owned by ", cl.getBroker().getName(),
-                " is already completed/finished.");
-        Log.printLine("Therefore, it is not being executed again");
-        Log.printLine("");
+        logger.warn(
+            "{}: {} owned by {} is already completed/finished. It won't be executed again.",
+            getName(), cl, cl.getBroker());
 
         /*
          NOTE: If a Cloudlet has finished, then it won't be processed.
@@ -689,18 +686,21 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final Host targetHost = entry.getValue();
 
         final double delay = timeToMigrateVm(entry.getKey(), targetHost);
+        String msg1;
         if (sourceHost == Host.NULL) {
-            Log.printFormattedLine(
+            msg1 = String.format(
                 "%.2f: Migration of %s to %s is started.",
                 currentTime, entry.getKey(), targetHost);
         } else {
-            Log.printFormattedLine(
+            msg1 = String.format(
                 "%.2f: Migration of %s from %s to %s is started.",
                 currentTime, entry.getKey(), sourceHost, targetHost);
         }
-        Log.printFormattedLine(
-            "\tIt's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.",
+
+        final String msg2 = String.format(
+            "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.",
             delay, getBandwidthPercentForMigration()*100);
+        logger.info("{}{}{}", msg1, System.lineSeparator(), msg2);
 
 
         sourceHost.addVmMigratingOut(entry.getKey());
@@ -758,12 +758,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public void shutdownEntity() {
         super.shutdownEntity();
-        Log.printFormattedLine("%.2f: %s is shutting down...", getSimulation().clock(), getName());
+        logger.info("{}: {} is shutting down...", getSimulation().clock(), getName());
     }
 
     @Override
     protected void startEntity() {
-        Log.printConcatLine(getName(), " is starting...");
+        logger.info("{} is starting...", getName());
         sendNow(getSimulation().getCloudInfoService(), CloudSimTags.DATACENTER_REGISTRATION_REQUEST, this);
     }
 

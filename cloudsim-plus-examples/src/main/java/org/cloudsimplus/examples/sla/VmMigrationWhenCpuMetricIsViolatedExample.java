@@ -42,7 +42,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -120,7 +119,11 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     }
 
     private VmMigrationWhenCpuMetricIsViolatedExample() {
-        Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         this.contract = SlaContract.getInstance(CUSTOMER_SLA_CONTRACT);
@@ -139,7 +142,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
 
         new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
 
-        Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private void createAndSubmitCloudlets(final DatacenterBroker broker) {
@@ -268,7 +271,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         for (int i = 0; i < HOSTS; i++) {
             hostList.add(createHost(HOST_NUMBER_OF_PES, HOST_MIPS_BY_PE));
         }
-        Log.printLine("");
+        System.out.println();
 
         final VmAllocationPolicyMigration allocationPolicy
                 = new VmAllocationPolicyMigrationWorstFitStaticThreshold(

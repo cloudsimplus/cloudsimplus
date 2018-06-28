@@ -30,8 +30,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -41,14 +39,13 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +88,11 @@ public class DynamicCreationOfVmsAndCloudletsExample {
      * Default constructor that builds the simulation.
      */
     public DynamicCreationOfVmsAndCloudletsExample() {
-        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
@@ -118,7 +119,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
-        Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private void createAndSubmitVmsAndCloudlets(int vmsToCreate, int cloudletsToCreateForEachVm) {
@@ -148,7 +149,8 @@ public class DynamicCreationOfVmsAndCloudletsExample {
     private void submitNewVmsAndCloudletsToBroker(CloudletVmEventInfo eventInfo) {
         final int numberOfNewVms = 2;
         final int numberOfCloudletsByVm = 4;
-        Log.printFormattedLine("\n\t#Cloudlet %d finished. Submitting %d new VMs to the broker\n",
+        System.out.printf(
+            "\n\t# Cloudlet %d finished. Submitting %d new VMs to the broker\n",
             eventInfo.getCloudlet().getId(), numberOfNewVms);
 
         createAndSubmitVmsAndCloudlets(numberOfNewVms, numberOfCloudletsByVm);

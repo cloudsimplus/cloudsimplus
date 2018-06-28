@@ -8,33 +8,31 @@ package org.cloudbus.cloudsim.examples;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple example showing how to create a data center with 1 host and run 1
@@ -55,77 +53,73 @@ public class CloudSimExample1 {
     }
 
     public CloudSimExample1() {
-        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
-        try {
-            // First step: Initialize the CloudSim package. It should be called before creating any entities.
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
-            /*
-             * Initialize the CloudSim library.
-            */
-            simulation = new CloudSim();
+        System.out.println("Starting " + getClass().getSimpleName());
+        // First step: Initialize the CloudSim package.
+        simulation = new CloudSim();
 
-            // Second step: Create Datacenters
-            // Datacenters are the resource providers in CloudSim. We need at
-            // list one of them to run a CloudSim simulation
-            Datacenter datacenter0 = createDatacenter();
+        // Second step: Create Datacenters
+        // Datacenters are the resource providers in CloudSim. We need at
+        // list one of them to run a CloudSim simulation
+        Datacenter datacenter0 = createDatacenter();
 
-            // Third step: Create Broker
-            DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
+        // Third step: Create Broker
+        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
-            // Fourth step: Create one virtual machine
-            vmlist = new ArrayList<>();
+        // Fourth step: Create one virtual machine
+        vmlist = new ArrayList<>();
 
-            // VM description
-            int vmid = 0;
-            int mips = 1000;
-            long size = 10000; // image size (MEGABYTE)
-            int ram = 512; // vm memory (MEGABYTE)
-            long bw = 1000;
-            int pesNumber = 1; // number of cpus
+        // VM description
+        int vmid = 0;
+        int mips = 1000;
+        long size = 10000; // image size (MEGABYTE)
+        int ram = 512; // vm memory (MEGABYTE)
+        long bw = 1000;
+        int pesNumber = 1; // number of cpus
 
-            // create VM
-            Vm vm = new VmSimple(vmid, mips, pesNumber)
-                .setRam(ram).setBw(bw).setSize(size)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        // create VM
+        Vm vm = new VmSimple(vmid, mips, pesNumber)
+            .setRam(ram).setBw(bw).setSize(size)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
-            // add the VM to the vmList
-            vmlist.add(vm);
+        // add the VM to the vmList
+        vmlist.add(vm);
 
-            // submit vm list to the broker
-            broker.submitVmList(vmlist);
+        // submit vm list to the broker
+        broker.submitVmList(vmlist);
 
-            // Fifth step: Create one Cloudlet
-            cloudletList = new ArrayList<>();
+        // Fifth step: Create one Cloudlet
+        cloudletList = new ArrayList<>();
 
-            // Cloudlet properties
-            int id = 0;
-            long length = 400000;
-            long fileSize = 300;
-            long outputSize = 300;
-            UtilizationModel utilizationModel = new UtilizationModelFull();
+        // Cloudlet properties
+        int id = 0;
+        long length = 400000;
+        long fileSize = 300;
+        long outputSize = 300;
+        UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel)
-                .setVm(vm);
+        Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
+            .setUtilizationModel(utilizationModel)
+            .setVm(vm);
 
-            // add the cloudlet to the list
-            cloudletList.add(cloudlet);
+        // add the cloudlet to the list
+        cloudletList.add(cloudlet);
 
-            // submit cloudlet list to the broker
-            broker.submitCloudletList(cloudletList);
+        // submit cloudlet list to the broker
+        broker.submitCloudletList(cloudletList);
 
-            // Sixth step: Starts the simulation
-            simulation.start();
+        // Sixth step: Starts the simulation
+        simulation.start();
 
-            //Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletFinishedList();
-            new CloudletsTableBuilder(newList).build();
-            Log.printFormattedLine("%s finished!", getClass().getSimpleName());
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        //Final step: Print results when simulation is over
+        List<Cloudlet> newList = broker.getCloudletFinishedList();
+        new CloudletsTableBuilder(newList).build();
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     /**

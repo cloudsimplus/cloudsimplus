@@ -8,32 +8,30 @@
  */
 package org.cloudbus.cloudsim.examples;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple example showing how to create 2 datacenters with 1 host each one.
@@ -54,93 +52,91 @@ public class CloudSimExample4 {
     }
 
     public CloudSimExample4() {
-        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
-        try {
-            // First step: Initialize the CloudSim package. It should be called
-            // before creating any entities.
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
-            // Initialize the CloudSim library
-            simulation = new CloudSim();
+        System.out.println("Starting " + getClass().getSimpleName());
 
-            // Second step: Create Datacenters
-            //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
-            @SuppressWarnings("unused")
-            Datacenter datacenter0 = createDatacenter();
-            @SuppressWarnings("unused")
-            Datacenter datacenter1 = createDatacenter();
+        // First step: Initialize the CloudSim package.
+        simulation = new CloudSim();
 
-            //Third step: Create Broker
-            DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
+        // Second step: Create Datacenters
+        //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
+        @SuppressWarnings("unused")
+        Datacenter datacenter0 = createDatacenter();
+        @SuppressWarnings("unused")
+        Datacenter datacenter1 = createDatacenter();
 
-            //Fourth step: Create one virtual machine
-            vmlist = new ArrayList<>();
+        //Third step: Create Broker
+        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
 
-            //VM description
-            int vmid = -1;
-            int mips = 250;
-            long size = 10000; //image size (MEGABYTE)
-            int ram = 512; //vm memory (MEGABYTE)
-            long bw = 1000;
-            int pesNumber = 1; //number of cpus
+        //Fourth step: Create one virtual machine
+        vmlist = new ArrayList<>();
 
-            //create two VMs
-            Vm vm1 = new VmSimple(++vmid, mips, pesNumber)
-                .setRam(ram).setBw(bw).setSize(size)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        //VM description
+        int vmid = -1;
+        int mips = 250;
+        long size = 10000; //image size (MEGABYTE)
+        int ram = 512; //vm memory (MEGABYTE)
+        long bw = 1000;
+        int pesNumber = 1; //number of cpus
 
-            Vm vm2 = new VmSimple(++vmid, mips, pesNumber)
-                .setRam(ram).setBw(bw).setSize(size)
-                .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        //create two VMs
+        Vm vm1 = new VmSimple(++vmid, mips, pesNumber)
+            .setRam(ram).setBw(bw).setSize(size)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
-            //add the VMs to the vmList
-            vmlist.add(vm1);
-            vmlist.add(vm2);
+        Vm vm2 = new VmSimple(++vmid, mips, pesNumber)
+            .setRam(ram).setBw(bw).setSize(size)
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
-            //submit vm list to the broker
-            broker.submitVmList(vmlist);
+        //add the VMs to the vmList
+        vmlist.add(vm1);
+        vmlist.add(vm2);
 
-            //Fifth step: Create two Cloudlets
-            cloudletList = new ArrayList<>();
+        //submit vm list to the broker
+        broker.submitVmList(vmlist);
 
-            //Cloudlet properties
-            int cloudletId = -1;
-            long length = 40000;
-            long fileSize = 300;
-            long outputSize = 300;
-            UtilizationModel utilizationModel = new UtilizationModelFull();
+        //Fifth step: Create two Cloudlets
+        cloudletList = new ArrayList<>();
 
-            Cloudlet cloudlet1 = new CloudletSimple(++cloudletId, length, pesNumber)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel);
+        //Cloudlet properties
+        int cloudletId = -1;
+        long length = 40000;
+        long fileSize = 300;
+        long outputSize = 300;
+        UtilizationModel utilizationModel = new UtilizationModelFull();
 
-            Cloudlet cloudlet2 = new CloudletSimple(++cloudletId, length, pesNumber)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setUtilizationModel(utilizationModel);
+        Cloudlet cloudlet1 = new CloudletSimple(++cloudletId, length, pesNumber)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
+            .setUtilizationModel(utilizationModel);
 
-            //add the cloudlets to the list
-            cloudletList.add(cloudlet1);
-            cloudletList.add(cloudlet2);
+        Cloudlet cloudlet2 = new CloudletSimple(++cloudletId, length, pesNumber)
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
+            .setUtilizationModel(utilizationModel);
 
-            //submit cloudlet list to the broker
-            broker.submitCloudletList(cloudletList);
+        //add the cloudlets to the list
+        cloudletList.add(cloudlet1);
+        cloudletList.add(cloudlet2);
 
-            //bind the cloudlets to the vms. This way, the broker
-            // will submit the bound cloudlets only to the specific VM
-            broker.bindCloudletToVm(cloudlet1, vm1);
-            broker.bindCloudletToVm(cloudlet2, vm2);
+        //submit cloudlet list to the broker
+        broker.submitCloudletList(cloudletList);
 
-            // Sixth step: Starts the simulation
-            simulation.start();
+        //bind the cloudlets to the vms. This way, the broker
+        // will submit the bound cloudlets only to the specific VM
+        broker.bindCloudletToVm(cloudlet1, vm1);
+        broker.bindCloudletToVm(cloudlet2, vm2);
 
-            // Final step: Print results when simulation is over
-            List<Cloudlet> newList = broker.getCloudletFinishedList();
-            new CloudletsTableBuilder(newList).build();
-            Log.printFormattedLine("%s finished!", getClass().getSimpleName());
-        } catch (RuntimeException e) {
-            Log.printFormattedLine("Simulation finished due to unexpected error: %s", e);
-        }
+        // Sixth step: Starts the simulation
+        simulation.start();
+
+        // Final step: Print results when simulation is over
+        List<Cloudlet> newList = broker.getCloudletFinishedList();
+        new CloudletsTableBuilder(newList).build();
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private DatacenterSimple createDatacenter() {

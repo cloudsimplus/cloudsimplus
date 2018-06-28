@@ -8,7 +8,8 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -21,6 +22,7 @@ import java.util.function.Predicate;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudSimEntity implements SimEntity {
+    private static final Logger logger = LoggerFactory.getLogger(CloudSimEntity.class.getSimpleName());
     /**
      * @see #isStarted()
      */
@@ -427,7 +429,7 @@ public abstract class CloudSimEntity implements SimEntity {
     protected void send(final SimEntity dest, double delay, final int cloudSimTag, final Object data) {
         Objects.requireNonNull(dest);
         if (dest.getId() < 0) {
-            Log.printConcatLine(getName(), ".send(): Error - " + "invalid entity id ", dest);
+            logger.error("{}.send(): invalid entity id {} for {}", getName(), dest.getId(), dest);
             return;
         }
 
@@ -552,10 +554,4 @@ public abstract class CloudSimEntity implements SimEntity {
         this.log = log;
     }
 
-    @Override
-    public void println(final String msg){
-        if(log){
-            Log.printLine(msg);
-        }
-    }
 }

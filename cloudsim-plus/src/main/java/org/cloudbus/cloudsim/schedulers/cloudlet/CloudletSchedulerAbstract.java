@@ -7,16 +7,6 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import static java.util.stream.Collectors.collectingAndThen;
-import static java.util.stream.Collectors.toList;
-
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
@@ -24,12 +14,20 @@ import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
-
-import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
-
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
 /**
  * Implements the basic features of a {@link CloudletScheduler}, representing
@@ -44,6 +42,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
+    private static final Logger logger = LoggerFactory.getLogger(CloudletSchedulerAbstract.class.getSimpleName());
+
     /**
      * @see #getCloudletPausedList()
      */
@@ -132,7 +132,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void setCurrentMipsShare(final List<Double> currentMipsShare) {
         if(currentMipsShare.size() > vm.getNumberOfPes()){
-            Log.printFormattedLine("Requested %d PEs but %s has just %d", currentMipsShare.size(), vm, vm.getNumberOfPes());
+            logger.warn("Requested {} PEs but {} has just {}", currentMipsShare.size(), vm, vm.getNumberOfPes());
         }
         this.currentMipsShare = currentMipsShare;
     }
@@ -556,8 +556,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                         ram.getAvailableResource() > 0 ?
                         String.format("just %d was available and allocated to it.", ram.getAvailableResource()):
                         "no amount is available.";
-                Log.printFormattedLine(
-                    "%.2f: %s: %s requested %d MB of RAM but %s",
+                logger.warn(
+                    "{}: {}: {} requested {} MB of RAM but {}",
                     vm.getSimulation().clock(), getClass().getSimpleName(), cloudlet, requested, msg);
             }
             ram.allocateResource(Math.min(requested, ram.getAvailableResource()));

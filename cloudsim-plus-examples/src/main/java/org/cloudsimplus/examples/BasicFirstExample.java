@@ -30,8 +30,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -85,6 +83,10 @@ public class BasicFirstExample {
     }
 
     public BasicFirstExample() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
 

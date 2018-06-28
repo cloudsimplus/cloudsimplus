@@ -40,7 +40,6 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -99,6 +98,10 @@ import java.util.List;
     }
 
     public StorageAreaNetworkExample1() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
 
@@ -159,7 +162,7 @@ import java.util.List;
         File file;
         for (int i = 0; i < fileSizesMB.length; i++) {
             file = new File(getFileName(i + initialFileNumber), fileSizesMB[i]);
-            Log.printLine("# Created file " + file.getName() + " for SAN " + san.getName());
+            System.out.printf("# Created file %s for SAN %s\n", file, san);
             san.addFile(file);
         }
     }

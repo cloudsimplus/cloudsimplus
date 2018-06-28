@@ -8,32 +8,29 @@
  */
 package org.cloudbus.cloudsim.examples;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple example showing how to create a Datacenter with 1 host.
@@ -54,12 +51,13 @@ public class CloudSimExample2 {
     }
 
     public CloudSimExample2() {
-        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
-        // First step: Initialize the CloudSim package. It should be called
-        // before creating any entities.
+        System.out.println("Starting " + getClass().getSimpleName());
 
-        // Initialize the CloudSim library
+        // First step: Initialize the CloudSim package.
         simulation = new CloudSim();
 
         // Second step: Create Datacenters
@@ -139,7 +137,7 @@ public class CloudSimExample2 {
         List<Cloudlet> newList = broker.getCloudletFinishedList();
 
         new CloudletsTableBuilder(newList).build();
-        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private CloudSim simulation;

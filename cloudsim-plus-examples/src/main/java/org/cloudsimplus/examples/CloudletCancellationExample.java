@@ -30,8 +30,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -44,7 +42,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -97,6 +94,10 @@ public class CloudletCancellationExample {
     }
 
     public CloudletCancellationExample() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
 
@@ -131,7 +132,9 @@ public class CloudletCancellationExample {
     private void cancelCloudletIfHalfExecuted(final CloudletVmEventInfo e) {
         final Cloudlet cloudlet = e.getCloudlet();
         if(cloudlet.getFinishedLengthSoFar() >= CLOUDLET_LENGTH / 2){
-            Log.printLine("\n# " + e.getTime() + ": Intentionally cancelling " + cloudlet + " execution after it has executed half of its length.\n");
+            System.out.printf(
+                "\n# %.2f: Intentionally cancelling %s execution after it has executed half of its length.\n",
+                e.getTime(), cloudlet);
             cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet.getId());
         }
     }

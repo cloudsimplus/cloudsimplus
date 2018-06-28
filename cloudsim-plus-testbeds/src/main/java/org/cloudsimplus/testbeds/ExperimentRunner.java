@@ -23,18 +23,18 @@
  */
 package org.cloudsimplus.testbeds;
 
+import ch.qos.logback.classic.Level;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
+import org.cloudbus.cloudsim.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
-
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * A base class to run a given experiment a defined number of times and collect
@@ -45,7 +45,6 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
-
     private boolean verbose;
 
     /**
@@ -518,7 +517,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
         printSimulationParameters();
 
-        Log.disable();
+        Log.setLevel(Level.OFF);
         try {
             experimentsStartTime = System.currentTimeMillis();
             for (int i = 0; i < getSimulationRuns(); i++) {
@@ -530,13 +529,12 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
             System.out.println();
             experimentsFinishTime = (System.currentTimeMillis() - experimentsStartTime) / 1000;
         } finally {
-            Log.enable();
+            Log.setLevel(Level.INFO);
         }
 
         final Map<String, List<Double>> metricsMap = createMetricsMap();
         System.out.println("\n------------------------------------------------------------------");
         metricsMap.entrySet().forEach(this::computeAndPrintFinalResults);
-        Log.enable();
         System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());
     }
 

@@ -26,35 +26,31 @@ package org.cloudsimplus.examples.autoscaling;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudsimplus.autoscaling.HorizontalVmScaling;
-import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.autoscaling.HorizontalVmScaling;
+import org.cloudsimplus.autoscaling.HorizontalVmScalingSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -145,6 +141,10 @@ public class LoadBalancerByHorizontalVmScalingExample {
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
     public LoadBalancerByHorizontalVmScalingExample() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         /*You can remove the seed parameter to get a dynamic one, based on current computer time.
         * With a dynamic seed you will get different results at each simulation run.*/
         final long seed = 1;
@@ -205,7 +205,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
         final long time = (long) eventInfo.getTime();
         if (time % CLOUDLETS_CREATION_INTERVAL == 0 && time <= 50) {
             final int numberOfCloudlets = 4;
-            Log.printFormattedLine("\t#Creating %d Cloudlets at time %d.", numberOfCloudlets, time);
+            System.out.printf("\t#Creating %d Cloudlets at time %d.\n", numberOfCloudlets, time);
             List<Cloudlet> newCloudlets = new ArrayList<>(numberOfCloudlets);
             for (int i = 0; i < numberOfCloudlets; i++) {
                 Cloudlet cloudlet = createCloudlet();

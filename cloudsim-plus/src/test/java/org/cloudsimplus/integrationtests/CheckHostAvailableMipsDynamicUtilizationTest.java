@@ -23,23 +23,25 @@
  */
 package org.cloudsimplus.integrationtests;
 
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -50,6 +52,8 @@ import org.junit.Ignore;
  * @author Manoel Campos da Silva Filho
  */
 public final class CheckHostAvailableMipsDynamicUtilizationTest {
+    private static final Logger logger = LoggerFactory.getLogger(CheckHostAvailableMipsDynamicUtilizationTest.class.getSimpleName());
+
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 2;
     private static final int NUMBER_OF_VMS = HOST_PES;
@@ -75,10 +79,9 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
         final double expectedAvailableHostMips =
                HOST_MIPS * HOST_PES * utilizationModel.getUtilization(evt.getTime());
 
-        Log.printConcatLine(
-            "- onUpdateVmProcessing at time ", evt.getTime(), " host ", evt.getHost().getId(),
-            " available mips: ", evt.getHost().getAvailableMips(),
-            " expected availability: ", expectedAvailableHostMips);
+        logger.info(
+            "- onUpdateVmProcessing at time {}: {} available mips: {} expected availability: {}",
+            evt.getTime(), evt.getHost(), evt.getHost().getAvailableMips(), expectedAvailableHostMips);
 
         assertEquals("The amount of Host available HOST_MIPS was not as expected.",
                  expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0);

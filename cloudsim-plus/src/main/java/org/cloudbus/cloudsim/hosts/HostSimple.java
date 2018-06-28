@@ -6,21 +6,21 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.power.models.PowerModel;
-import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-
-import java.util.*;
-import java.util.function.Predicate;
-
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.resources.*;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
 
@@ -37,6 +37,7 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class HostSimple implements Host {
+    private static final Logger logger = LoggerFactory.getLogger(HostSimple.class.getSimpleName());
     /**
      * @see #getStateHistory()
      */
@@ -263,36 +264,36 @@ public class HostSimple implements Host {
     private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
         final String msg = inMigration ? "VM Migration" : "VM Creation";
         if (!storage.isResourceAmountAvailable(vm.getStorage())) {
-            Log.printFormattedLine(
-                "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of storage. Required %d but there is just %d MB available.",
+            logger.error(
+                "{}: {}: [{}] Allocation of {} to {} failed due to lack of storage. Required {} but there is just {} MB available.",
                 simulation.clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getStorage().getCapacity(), storage.getAvailableResource());
             return false;
         }
 
         if (!ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
-            Log.printFormattedLine(
-                "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of RAM. Required %d but there is just %d MB available.",
+            logger.error(
+                "{}: {}: [{}] Allocation of {} to {} failed due to lack of RAM. Required {} but there is just {} MB available.",
                 simulation.clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getRam().getCapacity(), ram.getAvailableResource());
             return false;
         }
 
         if (!bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
-            Log.printFormattedLine(
-                "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of BW. Required %d but there is just %d Mbps available.",
+            logger.error(
+                "{}: {}: [{}] Allocation of {} to {} failed due to lack of BW. Required {} but there is just {} Mbps available.",
                 simulation.clock(), getClass().getSimpleName(),
                 msg, vm, this, vm.getBw().getCapacity(), bw.getAvailableResource());
             return false;
         }
 
         if (!vmScheduler.isSuitableForVm(vm)) {
-            Log.printFormattedLine(
-                    "%.2f: %s: [%s] Allocation of %s to %s failed due to lack of PEs.\n\t  "+
-                    "Required %d PEs of %.0f MIPS (%.0f MIPS total). However, there are just %d working PEs of %.0f MIPS, from which %.0f MIPS are available.",
-                    getSimulation().clock(), getClass().getSimpleName(), msg, vm, this,
-                    vm.getNumberOfPes(), vm.getMips(), vm.getTotalMipsCapacity(),
-                    vmScheduler.getWorkingPeList().size(), getMips(), vmScheduler.getAvailableMips());
+            logger.error(
+                    "{}: {}: [{}] Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS ({} MIPS total).{}" +
+                    "\t\tHowever, there are just {} working PEs of {} MIPS, from which {} MIPS are available.",
+                    getSimulation().clock(), getClass().getSimpleName(), msg, vm, this, System.lineSeparator(),
+                    vm.getNumberOfPes(), (long)vm.getMips(), (long)vm.getTotalMipsCapacity(),
+                    System.lineSeparator(), vmScheduler.getWorkingPeList().size(), (long)getMips(), (long)vmScheduler.getAvailableMips());
             return false;
         }
 
@@ -875,17 +876,16 @@ public class HostSimple implements Host {
     private double addVmResourceUseToHistoryIfNotMigratingIn(final Vm vm, final double currentTime) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (getVmsMigratingIn().contains(vm)) {
-            Log.printFormattedLine("%.2f: [" + this + "] " + vm
-                    + " is migrating in", getSimulation().clock());
+            logger.info("{}: {}: {} is migrating in", getSimulation().clock(), this, vm);
             return totalAllocatedMips;
         }
 
         final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
             final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
-            final double notAllocatedMipsByPe = (totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes();
-            Log.printFormattedLine(
-                "%.2f: [%s] %.0f MIPS not allocated for each one of the %d PEs from %s due to %s.",
+            final long notAllocatedMipsByPe = (long)((totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes());
+            logger.error(
+                "{}: {}: {} MIPS not allocated for each one of the {} PEs from {} due to {}.",
                 getSimulation().clock(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
         }
 
@@ -897,9 +897,7 @@ public class HostSimple implements Host {
         vm.addStateHistoryEntry(entry);
 
         if (vm.isInMigration()) {
-            Log.printFormattedLine(
-                    "%.2f: [" + this + "] " + vm + " is migrating out ",
-                    getSimulation().clock());
+            logger.info("{}: {}: {} is migrating out ", getSimulation().clock(), this, vm);
             totalAllocatedMips /= getVmScheduler().getMaxCpuUsagePercentDuringOutMigration();
         }
 

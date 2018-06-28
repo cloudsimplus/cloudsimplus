@@ -25,5 +25,4 @@ final class SimEntityNull implements SimEntity {
     @Override public String getName() {  return ""; }
     @Override public int getId() { return 0; }
     @Override public void setLog(boolean log) {/**/}
-    @Override public void println(String msg) {/**/}
 }

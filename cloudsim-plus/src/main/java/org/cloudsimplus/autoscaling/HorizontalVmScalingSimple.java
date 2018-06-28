@@ -24,9 +24,10 @@
 package org.cloudsimplus.autoscaling;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
 import java.util.function.Predicate;
@@ -53,6 +54,9 @@ import java.util.function.Supplier;
  * @see HorizontalVmScaling
  */
 public class HorizontalVmScalingSimple extends VmScalingAbstract implements HorizontalVmScaling {
+    private static final Logger logger = LoggerFactory.getLogger(HorizontalVmScalingSimple.class.getSimpleName());
+
+    /** @see #getVmSupplier() */
     private Supplier<Vm> vmSupplier;
 
     /**
@@ -62,6 +66,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
      */
     private long cloudletCreationRequests;
 
+    /** @see #getOverloadPredicate() */
     private Predicate<Vm> overloadPredicate;
 
     public HorizontalVmScalingSimple(){
@@ -102,9 +107,9 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
 
         final double vmCpuUsagePercent = getVm().getCpuPercentUsage() * 100;
         final Vm newVm = getVmSupplier().get();
-        Log.printFormattedLine(
-            "\t%.2f: %s%d: Requesting creation of Vm %d to receive new Cloudlets in order to balance load of Vm %d. Vm %d CPU usage is %.2f%%",
-            time, getClass().getSimpleName(), getVm().getId(), newVm.getId(), getVm().getId(), getVm().getId(), vmCpuUsagePercent);
+        logger.info(
+            "{}: {}{}: Requesting creation of {} to receive new Cloudlets in order to balance load of {}. {} CPU usage is {}%",
+            time, getClass().getSimpleName(), getVm(), newVm, getVm(), getVm().getId(), vmCpuUsagePercent);
         getVm().getBroker().submitVm(newVm);
 
         cloudletCreationRequests = getVm().getBroker().getCloudletCreatedList().size();

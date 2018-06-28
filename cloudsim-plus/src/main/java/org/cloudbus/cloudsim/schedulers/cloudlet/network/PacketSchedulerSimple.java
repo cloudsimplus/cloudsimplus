@@ -7,17 +7,17 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.*;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.VmPacket;
-import org.cloudbus.cloudsim.util.Log;
-
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Implements a policy of scheduling performed by a
@@ -34,6 +34,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Plus 1.0
  */
 public class PacketSchedulerSimple implements PacketScheduler {
+    private static final Logger logger = LoggerFactory.getLogger(PacketSchedulerSimple.class.getSimpleName());
+
     /**
      * @see #getVm()
      */
@@ -133,10 +135,11 @@ public class PacketSchedulerSimple implements PacketScheduler {
     private void addPacketsToBeSentFromVm(final NetworkCloudlet sourceCloudlet) {
         final Optional<CloudletSendTask> optional = getCloudletCurrentTask(sourceCloudlet);
         optional.ifPresent(task -> {
-            Log.println(Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
-                "%d pkts added to be sent from cloudlet %d in VM %d",
-                task.getPacketsToSend().size(), sourceCloudlet.getId(),
-                sourceCloudlet.getVm().getId());
+            logger.trace(
+                "{}: {}: {} pkts added to be sent from {} in {}",
+                sourceCloudlet.getSimulation().clock(), getClass(),
+                task.getPacketsToSend().size(), sourceCloudlet,
+                sourceCloudlet.getVm());
 
             vmPacketsToSend.addAll(task.getPacketsToSend(sourceCloudlet.getSimulation().clock()));
             scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
@@ -156,14 +159,14 @@ public class PacketSchedulerSimple implements PacketScheduler {
             // Assumption: packet will not arrive in the same cycle
             receivedPkts.forEach(task::receivePacket);
             receivedPkts.forEach(pkt ->
-                Log.println(
-                    Log.Level.DEBUG, getClass(), sourceCloudlet.getSimulation().clock(),
-                    "Cloudlet %d in VM %d received pkt with %d bytes from Cloudlet %d in VM %d",
-                    pkt.getReceiverCloudlet().getId(),
-                    pkt.getDestination().getId(),
+                logger.trace(
+                    "{}: {}: {} in {} received pkt with {} bytes from {} in {}",
+                    sourceCloudlet.getSimulation().clock(), getClass(),
+                    pkt.getReceiverCloudlet(),
+                    pkt.getDestination(),
                     pkt.getSize(),
-                    pkt.getSenderCloudlet().getId(),
-                    pkt.getSource().getId())
+                    pkt.getSenderCloudlet(),
+                    pkt.getSource())
             );
 
             /*Removes the received packets from the list of sent packets of the VM,

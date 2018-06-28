@@ -139,4 +139,8 @@ public class SanStorage extends HarddriveStorage {
         this.networkLatency = networkLatency;
     }
 
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

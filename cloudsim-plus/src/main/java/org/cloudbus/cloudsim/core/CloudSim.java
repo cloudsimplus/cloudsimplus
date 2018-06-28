@@ -7,17 +7,17 @@
  */
 package org.cloudbus.cloudsim.core;
 
-import java.util.*;
-import java.util.stream.Stream;
-
 import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
-import org.cloudbus.cloudsim.util.Log;
-import java.util.function.Predicate;
-
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -31,11 +31,12 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudSim implements Simulation {
+    private static final Logger logger = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "2.4.0";
+    public static final String VERSION = "3.0.0";
 
     /**
      * An array that works as a circular queue with capacity for just 2 elements
@@ -204,7 +205,7 @@ public class CloudSim implements Simulation {
                 "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
-        Log.printConcatLine("Starting CloudSim Plus ", VERSION);
+        logger.info("Starting CloudSim Plus {}", VERSION);
         startEntitiesIfNotRunning();
         this.alreadyRunOnce = true;
 
@@ -214,7 +215,7 @@ public class CloudSim implements Simulation {
 
         notifyEndOfSimulationToEntities();
         running = false;
-        printMessage("\nSimulation: No more future events");
+        logger.info("Simulation: No more future events{}", System.lineSeparator());
 
         finishSimulation();
         printSimulationFinished();
@@ -233,7 +234,7 @@ public class CloudSim implements Simulation {
     private boolean eventLoop() {
         while (runClockTickAndProcessFutureEvents() || waitSimulationClockToReachTerminationTime()) {
             if(abortRequested){
-                printMessage("\n================== Simulation aborted under request at time "+ clock +" ==================");
+                logger.info("{}================== Simulation aborted under request at time {} ==================", System.lineSeparator(), clock);
                 return false;
             }
 
@@ -257,7 +258,7 @@ public class CloudSim implements Simulation {
         entities.stream()
             .filter(CloudSimEntity::isAlive)
             .forEach(e -> sendNow(e, CloudSimTags.END_OF_SIMULATION));
-        Log.printFormattedLine("%.2f: Processing last events before simulation shutdown.", clock);
+        logger.info("{}: Processing last events before simulation shutdown.", clock);
 
         while (runClockTickAndProcessFutureEvents()) {/**/}
     }
@@ -269,7 +270,7 @@ public class CloudSim implements Simulation {
                                 ? extra + " in reason of an explicit request to terminate() or terminateAt()"
                                 : "";
 
-        Log.printFormattedLine("\n================== %s%s ==================\n", msg1, msg2);
+        logger.info("{}================== {}{} =================={}", System.lineSeparator(), msg1, msg2, System.lineSeparator());
     }
 
     @Override
@@ -388,14 +389,15 @@ public class CloudSim implements Simulation {
 
     private boolean waitSimulationClockToReachTerminationTime() {
         if(isTerminationTimeSet()){
-            Log.printFormattedLine(
-                "%.2f: Simulation: Waiting more events or the clock to reach %.2f (the termination time set).",
-                clock, terminationTime);
             final double increment = minDatacentersSchedulingInterval();
             final String info = increment == minTimeBetweenEvents
-                                                ? "using getMinTimeBetweenEvents() since a Datacenter schedulingInterval was not set"
-                                                : "Datacenter.getSchedulingInterval()";
-            Log.printFormattedLine("       Checking new events in %.2f seconds (%s)", increment, info);
+                ? "using getMinTimeBetweenEvents() since a Datacenter schedulingInterval was not set"
+                : "Datacenter.getSchedulingInterval()";
+
+            logger.info(
+                "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set).{}Checking new events in {} seconds ({})",
+                clock, terminationTime, System.lineSeparator(),
+                increment, info);
             setClock(clock + increment);
             return true;
         }
@@ -626,7 +628,7 @@ public class CloudSim implements Simulation {
      */
     private void addEntityDynamically(final SimEntity e) {
         Objects.requireNonNull(e);
-        printMessage("Adding: " + e.getName());
+        logger.trace("Adding: {}", e.getName());
         e.start();
     }
 
@@ -675,7 +677,7 @@ public class CloudSim implements Simulation {
 
         running = true;
         entities.forEach(SimEntity::start);
-        printMessage("Entities started.");
+        logger.info("Entities started.");
     }
 
     @Override
@@ -810,15 +812,6 @@ public class CloudSim implements Simulation {
     @Override
     public void abort() {
         abortRequested = true;
-    }
-
-    /**
-     * Prints a message about the progress of the simulation.
-     *
-     * @param message the message
-     */
-    private void printMessage(final String message) {
-        Log.printLine(message);
     }
 
     @Override

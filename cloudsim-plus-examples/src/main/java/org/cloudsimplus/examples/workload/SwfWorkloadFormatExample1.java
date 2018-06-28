@@ -31,22 +31,16 @@ package org.cloudsimplus.examples.workload;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import java.io.IOException;
-import java.util.*;
-import java.util.Map.Entry;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -54,7 +48,13 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.WorkloadFileReader;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+
+import java.io.IOException;
+import java.util.*;
+import java.util.Map.Entry;
 
 import static java.util.Comparator.comparingLong;
 
@@ -139,7 +139,11 @@ public class SwfWorkloadFormatExample1 {
     }
 
     public SwfWorkloadFormatExample1() {
-        Log.printConcatLine("Starting ", SwfWorkloadFormatExample1.class.getSimpleName(), "...");
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
 
         simulation = new CloudSim();
         try {
@@ -162,9 +166,9 @@ public class SwfWorkloadFormatExample1 {
             List<Cloudlet> newList = broker.getCloudletFinishedList();
             new CloudletsTableBuilder(newList).build();
 
-            Log.printConcatLine(SwfWorkloadFormatExample1.class.getSimpleName(), " finished!");
+            System.out.println(getClass().getSimpleName() + " finished!");
         } catch (IOException e) {
-            Log.printConcatLine(e.getMessage());
+            System.out.printf("Erro during simulation execution: %s\n", e.getMessage());
         }
     }
 
@@ -179,7 +183,7 @@ public class SwfWorkloadFormatExample1 {
             cloudlet.setVm(vm);
         }
 
-        Log.printConcatLine("#Created ", vmlist.size(), " VMs for the broker ", broker.getName());
+        System.out.printf("# Created %d VMs for the %s\n", vmlist.size(), broker);
     }
 
     private void createCloudletsFromWorkloadFile() throws IOException {
@@ -188,7 +192,7 @@ public class SwfWorkloadFormatExample1 {
         reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();
 
-        Log.printConcatLine("#Created ", this.cloudletList.size(), " Cloudlets for broker ", broker.getName());
+        System.out.printf("# Created %d Cloudlets for %s\n", this.cloudletList.size(), broker);
     }
 
     /**
@@ -199,7 +203,7 @@ public class SwfWorkloadFormatExample1 {
     private Datacenter createDatacenterAndHostsBasedOnVmRequirements() {
         List<Host> hostList = createHostsAccordingToVmRequirements();
         Datacenter datacenter = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-        Log.printConcatLine("#Created ", hostList.size(), " Hosts at ", datacenter.getName());
+        System.out.printf("# Created %d Hosts at %s\n", hostList.size(), datacenter);
         return datacenter;
     }
 
@@ -236,10 +240,8 @@ public class SwfWorkloadFormatExample1 {
                         numberOfVmsRequiringUpToTheMinimumPesNumber,
                         MINIMUM_NUM_OF_PES_BY_HOST);
         hostList.addAll(subList);
-        Log.printConcatLine(
-                "#Total of created hosts: ", totalOfHosts,
-                " Total of PEs of all hosts: ", totalOfPesOfAllHosts);
-        Log.printLine("");
+        System.out.printf(
+                "# Total of created hosts: %d Total of PEs of all hosts: %d\n\n", totalOfHosts, totalOfPesOfAllHosts);
 
         return hostList;
     }
@@ -269,7 +271,7 @@ public class SwfWorkloadFormatExample1 {
             list.add(host);
         }
 
-        Log.printConcatLine("#Created ", numberOfHosts, " hosts with ", numberOfPes, " PEs each one");
+        System.out.printf("# Created %d hosts with %d PEs each one\n", numberOfHosts, numberOfPes);
 
         return list;
     }
@@ -306,18 +308,14 @@ public class SwfWorkloadFormatExample1 {
             vmsPesCountMap.put(pesNumber, ++numberOfVmsWithGivenPesNumber);
         }
 
-        Log.printLine("");
+        System.out.println();
         long totalOfVms = 0, totalOfPes = 0;
         for(Entry<Long, Long> entry: vmsPesCountMap.entrySet()){
             totalOfVms += entry.getValue();
             totalOfPes += entry.getKey() * entry.getValue();
-            Log.printConcatLine(
-                    "#There is ", entry.getValue(),
-                    " VMs requiring ", entry.getKey(), " PEs");
+            System.out.printf("# There are %d VMs requiring %d PEs\n", entry.getValue(),entry.getKey());
         }
-        Log.printConcatLine(
-                "#Total of VMs: ", totalOfVms,
-                " Total of required PEs of all VMs: ", totalOfPes, "\n");
+        System.out.printf("# Total of VMs: %d Total of required PEs of all VMs: %d\n", totalOfVms, totalOfPes);
         return vmsPesCountMap;
     }
 }

@@ -41,7 +41,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -190,7 +189,11 @@ public final class MigrationExample1 {
     }
 
     public MigrationExample1(){
-        Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         @SuppressWarnings("unused")
@@ -216,7 +219,7 @@ public final class MigrationExample1 {
         System.out.println("\nHosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)");
 
         hostList.stream().filter(h -> h.getId() <= 2).forEach(this::printHostHistory);
-        Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private void printHostHistory(Host host) {
@@ -352,7 +355,7 @@ public final class MigrationExample1 {
             Host host = createHost(pes, HOST_MIPS);
             hostList.add(host);
         }
-        Log.printLine("");
+        System.out.println();
 
         /**
          * Sets an upper utilization threshold higher than the

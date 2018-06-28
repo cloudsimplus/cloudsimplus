@@ -23,11 +23,6 @@
  */
 package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import static java.util.Comparator.comparingDouble;
-import java.util.List;
-
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -47,22 +42,22 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.testbeds.sla.VmCost;
-
-import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.CLOUDLETS;
-import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.CLOUDLET_LENGTHS;
-import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.VMS;
-import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.VM_PES;
-
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
+import org.cloudsimplus.testbeds.sla.VmCost;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
+import static java.util.Comparator.comparingDouble;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWithoutMinimizationRunner.*;
 
 /**
  *
@@ -114,7 +109,7 @@ public class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends Sim
         broker0.getVmExecList().sort(Comparator.comparingInt(Vm::getId));
 
         broker0.getVmExecList().forEach(vm
-                -> Log.printFormattedLine("####Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
+                -> System.out.printf("#### Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
                         vm.getCpuPercentUsage(), getCustomerMaxCpuUtilization())
         );
@@ -240,7 +235,7 @@ public class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends Sim
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .forEach(cloudletTaskCompletionTime::addValue);
 
-        Log.printFormattedLine(
+        System.out.printf(
                 "\t\t\nTaskCompletionTime simulation: %.2f \n TaskCompletionTime SLA contract: %.2f \n",
                 cloudletTaskCompletionTime.getMean(), getCustomerMaxTaskCompletionTime());
         return cloudletTaskCompletionTime.getMean();
@@ -308,8 +303,8 @@ public class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends Sim
                 vmCost = new VmCost(vm);
                 totalCost += vmCost.getTotalCost();
             } else {
-                Log.printFormattedLine(
-                        "\tVm %d didn't execute any Cloudlet.", vm.getId());
+                System.out.printf(
+                        "\t%s didn't execute any Cloudlet.\n", vm);
             }
         }
         return totalCost;

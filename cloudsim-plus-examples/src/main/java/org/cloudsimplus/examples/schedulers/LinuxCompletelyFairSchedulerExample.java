@@ -23,32 +23,31 @@
  */
 package org.cloudsimplus.examples.schedulers;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example that uses an implementation of the {@link CloudletSchedulerCompletelyFair Completely Fair Scheduler}
@@ -92,10 +91,11 @@ public class LinuxCompletelyFairSchedulerExample {
      * Default constructor which builds and runs the simulation.
      */
     public LinuxCompletelyFairSchedulerExample() {
-        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
-        //Number of cloud customers
-        int numberOfCloudUsers = 1;
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
@@ -114,7 +114,7 @@ public class LinuxCompletelyFairSchedulerExample {
         new CloudletsTableBuilder(finishedCloudlets)
             .addColumn(2, new TextTableColumn("Priority"), Cloudlet::getPriority)
             .build();
-        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private void createAndSubmitCloudlets(DatacenterBroker broker0) {

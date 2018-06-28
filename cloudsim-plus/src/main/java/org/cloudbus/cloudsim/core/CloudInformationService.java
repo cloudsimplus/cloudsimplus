@@ -9,9 +9,12 @@ package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A Cloud Information Service (CIS) is an entity that provides cloud resource
@@ -29,6 +32,7 @@ import java.util.*;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudInformationService extends CloudSimEntity {
+    private static final Logger logger = LoggerFactory.getLogger(CloudInformationService.class.getSimpleName());
 
     /**
      * A list containing all Datacenters that are registered at the
@@ -85,7 +89,7 @@ public class CloudInformationService extends CloudSimEntity {
     @Override
     public void shutdownEntity() {
         super.shutdownEntity();
-        Log.printConcatLine(super.getName(), ": Notify all CloudSim Plus entities to shutdown.\n");
+        logger.info("{}: Notify all CloudSim Plus entities to shutdown.{}", super.getName(), System.lineSeparator());
 
         signalShutdown(datacenterList);
         signalShutdown(cisList);

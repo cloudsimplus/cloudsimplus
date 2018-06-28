@@ -39,7 +39,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -90,7 +89,11 @@ public class CreateCloudletAfterLastFinishedOne {
      * Default constructor that builds and starts the simulation.
      */
     public CreateCloudletAfterLastFinishedOne() {
-        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -102,7 +105,8 @@ public class CreateCloudletAfterLastFinishedOne {
         createAndSubmitOneCloudlet();
 
         runSimulationAndPrintResults();
-        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+        System.out.println("Starting " + getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private void runSimulationAndPrintResults() {
@@ -156,7 +160,7 @@ public class CreateCloudletAfterLastFinishedOne {
 
         if(cloudletList.size() < CLOUDLETS){
             cloudlet.addOnFinishListener(info -> {
-                Log.printFormattedLine("\t# %.2f: Requesting creation of new Cloudlet after %s finishes executing.", info.getTime(), info.getCloudlet());
+                System.out.printf("\t# %.2f: Requesting creation of new Cloudlet after %s finishes executing.\n", info.getTime(), info.getCloudlet());
                 createAndSubmitOneCloudlet();
             });
         }

@@ -8,35 +8,32 @@
  */
 package org.cloudbus.cloudsim.examples.network;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.network.topologies.BriteNetworkTopology;
-import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.network.topologies.BriteNetworkTopology;
+import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple example showing how to create 2 datacenters with 1 host and a
@@ -57,11 +54,13 @@ public class NetworkExample2 {
     }
 
     public NetworkExample2() {
-        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
-        // First step: Initialize the CloudSim package. It should be called
-        // before creating any entities.
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
-        // Initialize the CloudSim library
+        System.out.println("Starting " + getClass().getSimpleName());
+
+        // First step: Initialize the CloudSim package.
         simulation = new CloudSim();
 
         // Second step: Create Datacenters
@@ -158,7 +157,7 @@ public class NetworkExample2 {
         // Final step: Print results when simulation is over
         List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
-        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private Datacenter createDatacenter() {

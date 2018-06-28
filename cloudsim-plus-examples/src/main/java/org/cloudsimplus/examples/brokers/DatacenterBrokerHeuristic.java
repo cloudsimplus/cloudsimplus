@@ -23,36 +23,35 @@
  */
 package org.cloudsimplus.examples.brokers;
 
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.HeuristicSolution;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * An example that uses a
@@ -115,7 +114,11 @@ public class DatacenterBrokerHeuristic {
      * Default constructor where the simulation is built.
      */
     public DatacenterBrokerHeuristic() {
-        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
 
@@ -181,7 +184,7 @@ public class DatacenterBrokerHeuristic {
 		System.out.printf(" Cooling Rate: %.4f", SA_COOLING_RATE);
 		System.out.printf(" Cold Temperature: %.6f", SA_COLD_TEMPERATURE);
 		System.out.printf(" Number of neighborhood searches by iteration: %d\n", SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
-		Log.printFormattedLine("\n%s finished!", getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
 	}
 
 	/**

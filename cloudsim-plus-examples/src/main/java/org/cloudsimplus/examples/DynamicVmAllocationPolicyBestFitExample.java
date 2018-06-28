@@ -63,7 +63,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -148,7 +147,11 @@ public final class DynamicVmAllocationPolicyBestFitExample {
     }
 
     public DynamicVmAllocationPolicyBestFitExample(){
-        Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         @SuppressWarnings("unused")
@@ -165,7 +168,7 @@ public final class DynamicVmAllocationPolicyBestFitExample {
             Comparator.comparingInt((Cloudlet c) -> c.getVm().getHost().getId())
                       .thenComparingInt(c -> c.getVm().getId()));
         new CloudletsTableBuilder(finishedList).build();
-        Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     /**
@@ -254,7 +257,7 @@ public final class DynamicVmAllocationPolicyBestFitExample {
             Host host = createHost(pes, HOST_MIPS);
             hostList.add(host);
         }
-        Log.printLine("");
+        System.out.println();
 
         /*Creates a VmAllocationPolicy and changes, at runtime, the policy used to select a Host for a VM.*/
         final VmAllocationPolicySimple allocationPolicy = new VmAllocationPolicySimple(this::bestFitHostSelectionPolicy);

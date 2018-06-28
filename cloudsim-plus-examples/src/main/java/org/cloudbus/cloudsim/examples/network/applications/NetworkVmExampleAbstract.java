@@ -1,29 +1,31 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
-import java.util.*;
-
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.switches.AggregateSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
-import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
-import org.cloudbus.cloudsim.hosts.network.NetworkHost;
-import org.cloudbus.cloudsim.vms.network.NetworkVm;
-import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.switches.RootSwitch;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A base class for network simulation examples
@@ -90,7 +92,11 @@ abstract class NetworkVmExampleAbstract {
      * Creates, starts, stops the simulation and shows results.
      */
     NetworkVmExampleAbstract() {
-        Log.printFormattedLine("Starting %s...", this.getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         this.datacenter = createDatacenter();
@@ -118,16 +124,16 @@ abstract class NetworkVmExampleAbstract {
             new CloudletsTableBuilder(newList)
                     .setTitle(caption)
                     .build();
-            Log.printFormattedLine(
-                "Number of NetworkCloudlets for Application %s: %d", broker.getId(), newList.size());
+            System.out.printf(
+                "Number of NetworkCloudlets for Application %s: %d\n", broker.getId(), newList.size());
         }
 
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
-            Log.printFormatted("\nHost %d data transfered: %d bytes",
+            System.out.printf("\nHost %d data transfered: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
 
-        Log.printFormattedLine("\n\n%s finished!", this.getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     /**

@@ -7,13 +7,16 @@
  */
 package org.cloudbus.cloudsim.network.topologies;
 
-import java.io.*;
-import java.util.*;
-
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.network.DelayMatrix;
 import org.cloudbus.cloudsim.network.topologies.readers.TopologyReaderBrite;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.InputStreamReader;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Implements a network layer by reading the topology from a file in the
@@ -34,6 +37,7 @@ import org.cloudbus.cloudsim.util.ResourceLoader;
  * @since CloudSim Toolkit 1.0
  */
 public final class BriteNetworkTopology implements NetworkTopology {
+    private static final Logger logger = LoggerFactory.getLogger(BriteNetworkTopology.class.getSimpleName());
 
     /**
      * The BRITE id to use for the next node to be created in the network.
@@ -82,7 +86,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      */
     public BriteNetworkTopology(final String filePath) {
         this(ResourceLoader.getFileReader(filePath));
-        Log.printConcatLine("Topology file: ", filePath);
+        logger.info("Topology file: {}", filePath);
     }
 
     private BriteNetworkTopology(final InputStreamReader streamReader) {
@@ -184,13 +188,12 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
 
         if (map.containsKey(cloudSimEntityID)) {
-            Log.printConcatLine("Warning: Network mapping. CloudSim entity ", cloudSimEntityID,
-                " already mapped.");
+            logger.warn("Network mapping: CloudSim entity {} already mapped.", cloudSimEntityID);
             return;
         }
 
         if (map.containsValue(briteID)) {
-            Log.printConcatLine("Warning: BRITE node ", briteID, " already in use.");
+            logger.warn("BRITE node {} already in use.", briteID);
             return;
         }
 

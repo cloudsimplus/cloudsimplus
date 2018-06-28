@@ -23,23 +23,23 @@
  */
 package org.cloudsimplus.integrationtests;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -63,6 +63,8 @@ import java.util.List;
  * @since CloudSim Plus 1.0.0
  */
 public final class CheckHostAvailableMipsTest {
+    private static final Logger logger = LoggerFactory.getLogger(CheckHostAvailableMipsTest.class.getSimpleName());
+
     private static final double HOST_MIPS = 1000;
     private static final int    HOST_PES = 5;
     private static final int    NUMBER_OF_VMS = 2;
@@ -120,10 +122,9 @@ public final class CheckHostAvailableMipsTest {
         final double time = (int)evt.getTime();
         final double expectedAvailableHostMips = getExpectedAvailableHostMips(time);
 
-        Log.printConcatLine(
-            "- VMs processing at time ", time, " host ", evt.getHost().getId(),
-            " available mips: ", evt.getHost().getAvailableMips(),
-            " expected availability: ", expectedAvailableHostMips);
+        logger.info(
+            "- VMs processing at time {}: {} available mips: {} expected availability: {}",
+            time, evt.getHost(), evt.getHost().getAvailableMips(), expectedAvailableHostMips);
     }
 
     private double getExpectedAvailableHostMips(final double time) {

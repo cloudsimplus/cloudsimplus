@@ -23,32 +23,31 @@
  */
 package org.cloudsimplus.examples.resourceusage;
 
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example that uses a {@link UtilizationModelDynamic} to define how a Cloudlet
@@ -80,7 +79,11 @@ public class UtilizationModelDynamicExample {
      * Default constructor that builds the simulation.
      */
     public UtilizationModelDynamicExample() {
-        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
@@ -114,7 +117,7 @@ public class UtilizationModelDynamicExample {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
-        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private DatacenterSimple createDatacenter() {

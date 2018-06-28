@@ -40,7 +40,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -51,9 +50,7 @@ import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Shows how to keep the simulation running, even
@@ -134,6 +131,10 @@ public class KeepSimulationRunningExample {
     }
 
     private KeepSimulationRunningExample() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         simulation = new CloudSim();
         simulation.terminateAt(TIME_TO_TERMINATE_SIMULATION);
         datacenter0 = createDatacenter();
@@ -231,7 +232,7 @@ public class KeepSimulationRunningExample {
      */
     private void createDynamicCloudletAndVm(EventInfo evt) {
         if((int)evt.getTime() == TIME_TO_CREATE_NEW_CLOUDLET){
-            Log.printFormattedLine("\n# Dynamically creating 1 Cloudlet and 1 VM at time %.2f\n", evt.getTime());
+            System.out.printf("\n# Dynamically creating 1 Cloudlet and 1 VM at time %.2f\n", evt.getTime());
             Vm vm = createVm(VM_PES*2);
             vmList.add(vm);
             Cloudlet cloudlet = createCloudlet();

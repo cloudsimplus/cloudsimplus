@@ -23,8 +23,6 @@
  */
 package org.cloudsimplus.builders.tables;
 
-import org.cloudbus.cloudsim.util.Log;
-
 /**
  * A generator of HTML tables.
  *

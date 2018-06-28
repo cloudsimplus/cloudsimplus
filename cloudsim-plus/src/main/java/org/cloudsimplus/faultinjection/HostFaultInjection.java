@@ -23,26 +23,29 @@
  */
 package org.cloudsimplus.faultinjection;
 
-import java.util.*;
-import static java.util.function.BinaryOperator.maxBy;
-
-import java.util.stream.Stream;
-
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.CloudSimEntity;
+import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.*;
+import java.util.stream.Stream;
+
+import static java.util.function.BinaryOperator.maxBy;
 import static java.util.function.Function.identity;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Generates random failures for the {@link Pe}'s of {@link Host}s
@@ -133,6 +136,8 @@ import static java.util.stream.Collectors.*;
  * the fault recovery. The cloner methods are fault recovery.
  */
 public class HostFaultInjection extends CloudSimEntity {
+    private static final Logger logger = LoggerFactory.getLogger(HostFaultInjection.class.getSimpleName());
+
     /**
      * Maximum number of seconds for a VM to recovery from a failure,
      * which is randomly selected based on this value.
@@ -304,13 +309,13 @@ public class HostFaultInjection extends CloudSimEntity {
             final long hostWorkingPes = lastFailedHost.getNumberOfWorkingPes();
             final long vmsRequiredPes = getPesSumOfWorkingVms();
 
-            Log.printFormattedLine("%.2f: %s: Generated %d PEs failures from %d previously working PEs for %s at minute %.2f",
-                    getSimulation().clock(), getClass().getSimpleName(),
-                lastNumberOfFailedPes, previousNumOfWorkingPes, lastFailedHost, getSimulation().clock() / 60);
-            Log.printFormattedLine("\tCurrent Working PEs: %d | Number of VMs: %d", hostWorkingPes, lastFailedHost.getVmList().size());
-            if(!lastFailedHost.getVmList().isEmpty()) {
-                Log.printFormattedLine("\tVMs required PEs: %d", vmsRequiredPes);
-            }
+            final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
+            logger.error(
+                    "{}: {}: Generated {} PEs failures from {} previously working PEs for {} at minute {}.{}" +
+                    "Current Working PEs: {} | Number of VMs: {}{}",
+                    getSimulation().clock(), getClass().getSimpleName(), lastNumberOfFailedPes,
+                    previousNumOfWorkingPes, lastFailedHost, getSimulation().clock() / 60, System.lineSeparator(),
+                    hostWorkingPes, lastFailedHost.getVmList().size(), msg);
 
             if (hostWorkingPes == 0) {
                 setAllVmsToFailed();
@@ -352,8 +357,8 @@ public class HostFaultInjection extends CloudSimEntity {
      * failed, when all Host PEs have failed.
      */
     private void setAllVmsToFailed() {
-        Log.printFormattedLine(
-                "\tAll the %d PEs failed, affecting all its %d VMs.\n",
+        logger.error(
+                "All the {} PEs failed, affecting all its {} VMs.",
                 lastFailedHost.getNumberOfPes(), lastFailedHost.getVmList().size());
         setVmListToFailed(lastFailedHost.getVmList());
     }
@@ -364,17 +369,15 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private void logNoVmFault() {
         if(lastFailedHost.getVmList().isEmpty()){
-            Log.printLine("\tThere aren't VMs running on the failed Host.");
+            logger.info("\tThere aren't VMs running on the failed Host.");
             return;
         }
 
-        Log.printFormattedLine(
-                "\tNumber of failed PEs is less than PEs required by all its %d VMs, thus it doesn't affect any VM.",
-                lastFailedHost.getVmList().size());
-
         final int vmsRequiredPes = (int) getPesSumOfWorkingVms();
-        Log.printFormattedLine(
-                "\tTotal PEs: %d | Total Failed PEs: %d | Working PEs: %d | Current PEs required by VMs: %d.\n",
+        logger.info(
+                "\tNumber of failed PEs is less than PEs required by all its {} VMs, thus it doesn't affect any VM.{}" +
+                "Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.\n",
+                lastFailedHost.getVmList().size(), System.lineSeparator(),
                 lastFailedHost.getNumberOfPes(), lastFailedHost.getNumberOfFailedPes(),
                 lastFailedHost.getNumberOfWorkingPes(), vmsRequiredPes);
     }
@@ -384,12 +387,11 @@ public class HostFaultInjection extends CloudSimEntity {
      * {@link #getLastFailedHost() last failed Host} from affected VMs.
      */
     private void deallocateFailedHostPesFromVms() {
-        Log.printFormattedLine("\t%d PEs just failed. There is a total of %d working PEs.",
+        logger.error("\t{} PEs just failed. There is a total of {} working PEs.",
                 lastNumberOfFailedPes,
                 lastFailedHost.getNumberOfWorkingPes());
         cyclicallyRemoveFailedHostPesFromVms();
 
-        Log.printLine("");
         final List<Vm> vmsWithoutPes =
             lastFailedHost.getVmList()
                 .stream()
@@ -410,7 +412,7 @@ public class HostFaultInjection extends CloudSimEntity {
         List<Vm> vmsWithPes = getVmsWithPEsFromFailedHost();
         final int affectedVms = Math.min(vmsWithPes.size(), failedPesToRemoveFromVms);
 
-        Log.printFormattedLine("\t%d VMs affected from a total of %d. %d PEs are going to be removed from them.",
+        logger.warn("\t{} VMs affected from a total of {}. {} PEs are going to be removed from them.",
                 affectedVms, lastFailedHost.getVmList().size(), failedPesToRemoveFromVms);
         int i = 0;
         while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms-- > 0) {
@@ -421,8 +423,8 @@ public class HostFaultInjection extends CloudSimEntity {
             //remove 1 failed PE from the VM
             vm.getProcessor().deallocateAndRemoveResource(1);
 
-            Log.printFormattedLine(
-                    "\tRemoving 1 PE from VM %d due to Host PE failure. New VM PEs Number: %d\n",
+            logger.warn(
+                    "\tRemoving 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}\n",
                     vm.getId(), vm.getNumberOfPes());
             i++;
             vmsWithPes = getVmsWithPEsFromFailedHost();
@@ -497,19 +499,19 @@ public class HostFaultInjection extends CloudSimEntity {
         }
 
         if(!isVmClonerSet(broker)) {
-            Log.printFormattedLine("\t# A Vm Cloner was not set for broker %d. So that VM failure will not be recovered.", broker.getId());
+            logger.warn("\tA Vm Cloner was not set for {}. So that VM failure will not be recovered.", broker);
             return;
         }
 
         final VmCloner cloner = getVmCloner(broker);
         if(cloner.isMaxClonesNumberReached()){
-            Log.printFormattedLine("\t# The maximum allowed number of %d VMs to create has been reached.", cloner.getMaxClonesNumber());
+            logger.warn("\tThe maximum allowed number of {} VMs to create has been reached.", cloner.getMaxClonesNumber());
             return;
         }
 
         registerFaultOfAllVms(broker);
         final double recoveryTimeSecs = getRandomRecoveryTimeForVmInSecs();
-        Log.printFormattedLine("\t# Time to recovery from fault by cloning the failed VM: %.2f minutes", recoveryTimeSecs/60.0);
+        logger.info("\tTime to recovery from fault by cloning the failed VM: {} minutes", recoveryTimeSecs/60.0);
 
         final Map.Entry<Vm, List<Cloudlet>> entry = cloner.clone(lastVmFailedFromBroker);
 
@@ -537,9 +539,9 @@ public class HostFaultInjection extends CloudSimEntity {
         vm.setFailed(true);
         final DatacenterBroker broker = vm.getBroker();
         if(isVmClonerSet(broker) && isSomeVmWorking(broker)){
-            Log.printFormattedLine(
-                "\n\t\t\t #VM %d destroyed but not cloned, since there are %d VMs for the broker %d yet\n",
-                vm.getId(), getRunningVmsNumber(broker), broker.getId());
+            logger.info(
+                "\t{} destroyed but not cloned, since there are {} VMs for the {} yet",
+                vm, getRunningVmsNumber(broker), broker);
         }
 
         /*

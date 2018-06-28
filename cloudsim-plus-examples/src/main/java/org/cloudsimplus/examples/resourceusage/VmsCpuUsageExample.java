@@ -39,7 +39,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -80,7 +79,11 @@ public class VmsCpuUsageExample {
     }
 
     public VmsCpuUsageExample() {
-        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         CloudSim simulation = new CloudSim();
 
         @SuppressWarnings("unused")
@@ -110,7 +113,7 @@ public class VmsCpuUsageExample {
 
         showCpuUtilizationForAllVms(finishTime);
 
-        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private Cloudlet createCloudlet(int pesNumber, int id) {
@@ -140,12 +143,12 @@ public class VmsCpuUsageExample {
     }
 
     private void showCpuUtilizationForAllVms(final double simulationFinishTime) {
-        Log.printLine("\nHosts CPU utilization history for the entire simulation period");
+        System.out.println("\nHosts CPU utilization history for the entire simulation period\n");
         int numberOfUsageHistoryEntries = 0;
         for (Vm vm : vmlist) {
-            Log.printFormattedLine("VM %d", vm.getId());
+            System.out.printf("VM %d\n", vm.getId());
             if (vm.getStateHistory().isEmpty()) {
-                Log.printLine("\tThere isn't any usage history");
+                System.out.println("\tThere isn't any usage history");
                 continue;
             }
 
@@ -153,13 +156,13 @@ public class VmsCpuUsageExample {
                 final double vmCpuUsage = getVmCpuUtilizationInMips(vm, simulationFinishTime);
                 if (vmCpuUsage > 0) {
                     numberOfUsageHistoryEntries++;
-                    Log.printFormattedLine("\tTime: %2d CPU Utilization (MIPS): %.2f", clock, vmCpuUsage);
+                    System.out.printf("\tTime: %2d CPU Utilization (MIPS): %.2f\n", clock, vmCpuUsage);
                 }
             }
         }
 
         if (numberOfUsageHistoryEntries == 0) {
-            Log.printLine(" No CPU usage history was found");
+            System.out.println("No CPU usage history was found");
         }
     }
 

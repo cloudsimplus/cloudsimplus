@@ -95,7 +95,6 @@ final class SwitchNull implements Switch {
     @Override public void shutdownEntity() {/**/}
     @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override public void setLog(boolean log) {/**/}
-    @Override public void println(String msg) {/**/}
     @Override public int compareTo(SimEntity o) { return 0; }
     @Override public String getName() { return ""; }
 }

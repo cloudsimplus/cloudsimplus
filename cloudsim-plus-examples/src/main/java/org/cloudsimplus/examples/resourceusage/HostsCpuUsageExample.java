@@ -23,32 +23,31 @@
  */
 package org.cloudsimplus.examples.resourceusage;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example showing how to create a Datacenter with two hosts,
@@ -82,8 +81,11 @@ public class HostsCpuUsageExample {
     }
 
     public HostsCpuUsageExample(){
-        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         @SuppressWarnings("unused")
@@ -119,7 +121,7 @@ public class HostsCpuUsageExample {
 
         showCpuUtilizationForAllHosts();
 
-        Log.printFormattedLine("%s finished!", getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private Cloudlet createCloudlet(int pesNumber, int id) {
@@ -147,22 +149,22 @@ public class HostsCpuUsageExample {
      * Shows CPU utilization of all hosts into a given Datacenter.
      */
     private void showCpuUtilizationForAllHosts() {
-        Log.printLine("\nHosts CPU utilization history for the entire simulation period");
+        System.out.println("\nHosts CPU utilization history for the entire simulation period");
         int numberOfUsageHistoryEntries = 0;
-        final double interval = 1;
         for (Host host : hostList) {
             double mipsByPe = host.getTotalMipsCapacity() / (double)host.getNumberOfPes();
-            Log.printFormattedLine("Host %d: Number of PEs %2d, MIPS by PE %.0f", host.getId(), host.getNumberOfPes(), mipsByPe);
+            System.out.printf("Host %d: Number of PEs %2d, MIPS by PE %.0f\n", host.getId(), host.getNumberOfPes(), mipsByPe);
             for(HostStateHistoryEntry history: host.getStateHistory()){
-                    numberOfUsageHistoryEntries++;
-                    Log.printFormattedLine(
-                            "\tTime: %2.0f CPU Utilization (MIPS): %.0f",
+                numberOfUsageHistoryEntries++;
+                System.out.printf(
+                            "\tTime: %2.0f CPU Utilization (MIPS): %.0f\n",
                             history.getTime(), history.getAllocatedMips());
             }
-            Log.printLine("--------------------------------------------------");
+            System.out.println("--------------------------------------------------");
         }
+
         if(numberOfUsageHistoryEntries == 0) {
-            Log.printLine(" No CPU usage history was found");
+            System.out.println("No CPU usage history was found");
         }
     }
 

@@ -40,15 +40,12 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.listeners.CloudletVmEventInfo;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,10 +117,15 @@ public class PauseSimulationAtGivenTimeExample2 {
      * Default constructor that builds the simulation.
      */
     public PauseSimulationAtGivenTimeExample2() {
-        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
+        this.simulation = new CloudSim();
+
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -168,7 +170,7 @@ public class PauseSimulationAtGivenTimeExample2 {
         (you can use your own code here to print what you want from this cloudlet list)*/
         printsListOfFinishedCloudlets("Finished cloudlets after simulation is complete");
 
-        Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     /**
@@ -181,9 +183,9 @@ public class PauseSimulationAtGivenTimeExample2 {
     }
 
     private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo pauseInfo) {
-        Log.printFormattedLine("\n#Simulation paused at %.2f second", pauseInfo.getTime());
+        System.out.printf("\n# Simulation paused at %.2f second\n", pauseInfo.getTime());
         printsListOfFinishedCloudlets("Cloudlets Finished So Far");
-        Log.printLine("");
+        System.out.println();
         this.simulation.resume();
     }
 

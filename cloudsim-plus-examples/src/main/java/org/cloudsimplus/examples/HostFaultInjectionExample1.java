@@ -23,20 +23,13 @@
  */
 package org.cloudsimplus.examples;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -44,14 +37,21 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.faultinjection.VmClonerSimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Example showing how to inject random {@link Pe} faults into Hosts using
@@ -118,9 +118,13 @@ public final class HostFaultInjectionExample1 {
     }
 
     public HostFaultInjectionExample1() {
-        Log.printConcatLine("Starting ", getClass().getSimpleName(), "...");
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
+
         Datacenter datacenter = createDatacenter();
 
         broker = new DatacenterBrokerSimple(simulation);
@@ -142,8 +146,7 @@ public final class HostFaultInjectionExample1 {
         System.out.printf("# Hosts MTBF: %.2f minutes\n", fault.meanTimeBetweenHostFaultsInMinutes());
         System.out.printf("# Availability: %.2f%%\n\n", fault.availability()*100);
 
-
-        Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     public void createAndSubmitVms() {
@@ -184,9 +187,8 @@ public final class HostFaultInjectionExample1 {
         hostList = new ArrayList<>();
         for (int i = 0; i < HOSTS; i++) {
             hostList.add(createHost());
-            Log.printConcatLine("#Created host ", i, " with ", HOST_MIPS_BY_PE, " mips x ", HOST_PES);
         }
-        Log.printLine("");
+        System.out.println();
 
         Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
         dc
@@ -260,7 +262,7 @@ public final class HostFaultInjectionExample1 {
             .setBw(vm.getBw().getCapacity())
             .setRam(vm.getBw().getCapacity())
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
-        Log.printFormattedLine("\n\n#Cloning VM %d\n\tMips %.2f Number of Pes: %d ", vm.getId(), clone.getMips(), clone.getNumberOfPes());
+        System.out.printf("\n\n# Cloning %s - MIPS %.2f Number of Pes: %d\n", vm, clone.getMips(), clone.getNumberOfPes());
 
         return clone;
     }
@@ -283,7 +285,7 @@ public final class HostFaultInjectionExample1 {
         for (Cloudlet cl : sourceVmCloudlets) {
             Cloudlet clone = cloneCloudlet(cl);
             clonedCloudlets.add(clone);
-            Log.printFormattedLine("#Created Cloudlet Clone for VM %d (Cloudlet Clone Id: %d)", sourceVm.getId(), clone.getId());
+            System.out.printf("# Created Cloudlet Clone for %s (Cloned Cloudlet Id: %d)\n", sourceVm, clone.getId());
         }
 
         return clonedCloudlets;

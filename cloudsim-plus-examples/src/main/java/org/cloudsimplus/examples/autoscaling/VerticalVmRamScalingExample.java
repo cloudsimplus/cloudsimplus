@@ -31,8 +31,6 @@ import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -43,9 +41,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -62,6 +58,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Comparator.comparingDouble;
+import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
 /**
  * An example that scales VM RAM up or down, according to current Cloudlets requests.
@@ -138,9 +135,10 @@ public class VerticalVmRamScalingExample {
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
     private VerticalVmRamScalingExample() {
-        /*You can remove the seed to get a dynamic one, based on current computer time.
-        * With a dynamic seed you will get different results at each simulation run.*/
-        final long seed = 1;
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         hostList = new ArrayList<>(HOSTS);
         vmList = new ArrayList<>(VMS);
         cloudletList = new ArrayList<>(CLOUDLET_LENGTHS.length);
@@ -164,11 +162,11 @@ public class VerticalVmRamScalingExample {
 
     private void onClockTickListener(EventInfo eventInfo) {
         for (Vm vm : vmList) {
-            Log.printFormatted("\t\tTime %6.1f: Vm %d Ram Usage: %6.2f%% (%4d of %4d MB)",
+            System.out.printf("\t\tTime %6.1f: Vm %d Ram Usage: %6.2f%% (%4d of %4d MB)",
                 eventInfo.getTime(), vm.getId(), vm.getRam().getPercentUtilization() * 100.0,
                 vm.getRam().getAllocatedResource(), vm.getRam().getCapacity());
 
-            Log.printFormattedLine(" | Host Ram Allocation: %6.2f%% (%5d of %5d MB). Running Cloudlets: %d",
+            System.out.printf(" | Host Ram Allocation: %6.2f%% (%5d of %5d MB). Running Cloudlets: %d",
                 vm.getHost().getRam().getPercentUtilization() * 100,
                 vm.getHost().getRam().getAllocatedResource(),
                 vm.getHost().getRam().getCapacity(), vm.getCloudletScheduler().getCloudletExecList().size());

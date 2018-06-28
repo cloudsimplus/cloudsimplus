@@ -41,7 +41,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -51,10 +50,9 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 
-import java.util.function.Function;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 /**
  * Shows how to destroy an overloaded VM during simulation runtime,
@@ -108,6 +106,10 @@ public class VmDestructionExample {
     }
 
     public VmDestructionExample() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
 
@@ -146,14 +148,13 @@ public class VmDestructionExample {
         final Vm vm = info.getVm();
         //Destroys VM 1 when its CPU usage reaches 90%
         if(vm.getCpuPercentUsage() > 0.9 && vm.isCreated()){
-            Log.printLine("\n# " + info.getTime() +
-                ": Intentionally destroying " + vm +
-                " due to CPU overload. Current VM CPU usage is " +
-                vm.getCpuPercentUsage());
+            System.out.printf(
+                "\n# %.2f: Intentionally destroying %s due to CPU overload. Current VM CPU usage is %.2f%%\n" +
+                info.getTime(), vm, vm.getCpuPercentUsage()*100);
             vm.getHost().destroyVm(vm);
         }
 
-        datacenter0.getHostList().forEach(h -> Log.printLine("# " + info.getTime() + ": " + h + " CPU Utilization " + h.getUtilizationOfCpu()));
+        datacenter0.getHostList().forEach(h -> System.out.printf("# %.2f: %s CPU Utilization %.2f%%\n", info.getTime(), h, h.getUtilizationOfCpu()*100));
     }
 
     /**

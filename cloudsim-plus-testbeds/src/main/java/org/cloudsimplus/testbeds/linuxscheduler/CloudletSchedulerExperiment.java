@@ -36,9 +36,9 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -46,7 +46,6 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,16 +98,11 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
 
     @Override
     public void printResults() {
-        Log.enable();
-        try {
-            System.out.printf("\nCloudlets: %d\n", numCloudletsToCreate);
-            final DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
-            new CloudletsTableBuilder(broker.getCloudletFinishedList())
-                .addColumn(2, new TextTableColumn("Priority"), Cloudlet::getPriority)
-                .build();
-        } finally {
-            Log.disable();
-        }
+        System.out.printf("\nCloudlets: %d\n", numCloudletsToCreate);
+        final DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
+        new CloudletsTableBuilder(broker.getCloudletFinishedList())
+            .addColumn(2, new TextTableColumn("Priority"), Cloudlet::getPriority)
+            .build();
     }
 
     @Override

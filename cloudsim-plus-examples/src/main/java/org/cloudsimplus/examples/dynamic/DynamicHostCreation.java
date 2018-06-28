@@ -42,7 +42,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -126,6 +125,10 @@ public class DynamicHostCreation {
     }
 
     public DynamicHostCreation() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
 
@@ -157,17 +160,17 @@ public class DynamicHostCreation {
         if(time == SCHEDULING_INTERVAL) {
             Host host = createHost();
             datacenter0.addHost(host);
-            Log.printLine("\n"+info.getTime() + ": # Physically expanding the " + datacenter0 + " by adding the new Host "+host.getId()+" to it.");
+            System.out.printf("\n %.2f: # Physically expanding the %s by adding the new %s to it.", info.getTime(), datacenter0, host);
 
             //Creates and submits a new VM
             Vm vm = createVm(vmList.size());
-            Log.printLine(info.getTime() + ": # Created " + vm);
+            System.out.printf("%.2f: # Created %s\n", info.getTime(), vm);
             broker0.submitVm(vm);
 
             //Creates and submits 2 Cloudlets, binding them to the new VM
             List<Cloudlet> newCloudletList = createCloudlets(2);
             broker0.submitCloudletList(newCloudletList, vm);
-            Log.printLine(info.getTime() + ": # Created " + newCloudletList.size() + " Cloudlets for "+vm+"\n");
+            System.out.printf("%.2f: # Created %d Cloudlets for %s\n", info.getTime(), newCloudletList.size(), vm);
 
             /* Removes the listener so that this event is fired just once.
              * This way, it's ensured the new Host, VMs and Cloudlets are created only one time. */

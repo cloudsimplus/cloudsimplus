@@ -31,33 +31,33 @@ package org.cloudsimplus.examples.listeners;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple example showing how to create a data center with 1 host that has
@@ -115,15 +115,18 @@ public class VmListenersExample3_DynamicVmCreation {
      * @param args command line parameters
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", VmListenersExample3_DynamicVmCreation.class.getSimpleName());
         new VmListenersExample3_DynamicVmCreation();
-        Log.printFormattedLine("%s finished!", VmListenersExample3_DynamicVmCreation.class.getSimpleName());
     }
 
     /**
      * Default constructor that builds and starts the simulation.
      */
     public VmListenersExample3_DynamicVmCreation() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -143,6 +146,7 @@ public class VmListenersExample3_DynamicVmCreation {
         createAndSubmitVmForNewBroker();
 
         runSimulationAndPrintResults();
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     /**
@@ -156,10 +160,10 @@ public class VmListenersExample3_DynamicVmCreation {
      */
     private void onHostDeallocationListener(VmHostEventInfo eventInfo) {
         numberOfFinishedVms++;
-        Log.printFormatted(
-                "\t#EventListener: Vm %d finished running all its cloudlets at time %.0f. ",
+        System.out.printf(
+                "\t# EventListener: Vm %d finished running all its cloudlets at time %.0f.\n",
                 eventInfo.getVm().getId(), eventInfo.getTime());
-        Log.printFormattedLine("VMs finished so far: %d", numberOfFinishedVms);
+        System.out.printf("\t VMs finished so far: %d\n", numberOfFinishedVms);
 
         createNextVmIfNotReachedMaxNumberOfVms();
     }
@@ -173,7 +177,7 @@ public class VmListenersExample3_DynamicVmCreation {
     private void createNextVmIfNotReachedMaxNumberOfVms() {
         if(numberOfFinishedVms < TOTAL_NUMBER_OF_VMS) {
             Vm vm = createAndSubmitVmForNewBroker();
-            Log.printFormattedLine("\tCreated VM %d at time %.0f", vm.getId(), simulation.clock());
+            System.out.printf("\tCreated VM %d at time %.0f\n", vm.getId(), simulation.clock());
         }
     }
 

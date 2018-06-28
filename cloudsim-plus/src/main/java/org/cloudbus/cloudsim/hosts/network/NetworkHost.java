@@ -7,23 +7,24 @@
  */
 package org.cloudbus.cloudsim.hosts.network;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.network.HostPacket;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketSchedulerSimple;
-import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.network.VmPacket;
+import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketSchedulerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * NetworkHost class extends {@link HostSimple} to support simulation of
@@ -48,6 +49,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
  * @since CloudSim Toolkit 3.0
  */
 public class NetworkHost extends HostSimple {
+    private static final Logger logger = LoggerFactory.getLogger(NetworkHost.class.getSimpleName());
 
     private int totalDataTransferBytes;
 
@@ -130,23 +132,23 @@ public class NetworkHost extends HostSimple {
             final Vm destinationVm = hostPkt.getVmPacket().getDestination();
             //Checks if the destinationVm is inside this host
             if(!getVmList().contains(destinationVm)){
-                Log.println(
-                    Log.Level.ERROR, getClass(), getSimulation().clock(),
-                    "Destination VM %d was not found inside the Host %d",
-                    hostPkt.getVmPacket().getDestination().getId(), getId());
+                logger.error(
+                    "{}: {}: Destination {} was not found inside {}",
+                    getSimulation().clock(), getClass(),
+                    hostPkt.getVmPacket().getDestination(), this);
                 return;
             }
 
             final PacketScheduler pktScheduler = getVmPacketScheduler(destinationVm);
             pktScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
-            Log.println(
-                Log.Level.DEBUG, getClass(), getSimulation().clock(),
-                "Host %d received pkt with %d bytes from Cloudlet %d in VM %d and forwarded it to Cloudlet %d in VM %d",
-                getId(), hostPkt.getVmPacket().getSize(),
-                hostPkt.getVmPacket().getSenderCloudlet().getId(),
-                hostPkt.getVmPacket().getSource().getId(),
-                hostPkt.getVmPacket().getReceiverCloudlet().getId(),
-                hostPkt.getVmPacket().getDestination().getId());
+            logger.trace(
+                "{}: {}: {} received pkt with {} bytes from {} in {} and forwarded it to {} in {}",
+                getSimulation().clock(), getClass(),
+                this, hostPkt.getVmPacket().getSize(),
+                hostPkt.getVmPacket().getSenderCloudlet(),
+                hostPkt.getVmPacket().getSource(),
+                hostPkt.getVmPacket().getReceiverCloudlet(),
+                hostPkt.getVmPacket().getDestination());
         }
 
         hostPktsReceived.clear();

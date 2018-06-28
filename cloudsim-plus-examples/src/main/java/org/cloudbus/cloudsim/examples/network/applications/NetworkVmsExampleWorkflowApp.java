@@ -1,18 +1,13 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
-import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
-import org.cloudbus.cloudsim.vms.network.NetworkVm;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
+import org.cloudbus.cloudsim.cloudlets.network.*;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * An example of a "Workflow Application" that is compounded by
@@ -54,8 +49,8 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
         for(int i = 0; i < networkCloudletList.length; i++){
             networkCloudletList[i] =
                     createNetworkCloudlet(selectedVms.get(i), broker);
-            Log.printFormattedLine(
-                "Created NetworkCloudlet %d for Application %d",
+            System.out.printf(
+                "Created NetworkCloudlet %d for Application %d\n",
                 networkCloudletList[i].getId(), broker.getId());
         }
 

@@ -27,11 +27,11 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,6 +46,7 @@ import java.util.stream.IntStream;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class SimulationExperiment implements Runnable {
+    protected static final Logger logger = LoggerFactory.getLogger(SimulationExperiment.class.getSimpleName());
 
     private final ExperimentRunner runner;
     private final List<Cloudlet> cloudletList;

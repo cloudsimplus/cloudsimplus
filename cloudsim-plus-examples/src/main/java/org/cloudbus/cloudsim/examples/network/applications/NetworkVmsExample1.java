@@ -1,32 +1,27 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.cloudlets.network.*;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
-import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
-import org.cloudbus.cloudsim.vms.network.NetworkVm;
-import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
+import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple example showing how two {@link NetworkCloudlet}'s communicate
@@ -71,7 +66,7 @@ public class NetworkVmsExample1 {
      * Creates, starts, stops the simulation and shows results.
      */
     public NetworkVmsExample1() {
-        Log.printFormattedLine("Starting %s...", getClass().getSimpleName());
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         datacenter = createDatacenter();
@@ -90,11 +85,11 @@ public class NetworkVmsExample1 {
         new CloudletsTableBuilder(newList).build();
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
-            Log.printFormatted("\nHost %d data transferred: %d bytes",
+            System.out.printf("\nHost %d data transferred: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
 
-        Log.printFormattedLine("\n\n%s finished!", getClass().getSimpleName());
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     /**

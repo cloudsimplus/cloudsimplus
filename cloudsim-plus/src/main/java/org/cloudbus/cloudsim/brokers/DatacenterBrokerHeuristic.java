@@ -1,13 +1,15 @@
 package org.cloudbus.cloudsim.brokers;
 
-import java.util.stream.Collectors;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.Heuristic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.stream.Collectors;
 
 /**
  * <p>A simple implementation of {@link DatacenterBroker} that uses some heuristic
@@ -20,6 +22,7 @@ import org.cloudsimplus.heuristics.Heuristic;
  * @author Manoel Campos da Silva Filho
  */
 public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
+    private static final Logger logger = LoggerFactory.getLogger(DatacenterBrokerHeuristic.class.getSimpleName());
     /**
      * @see #getHeuristic()
      */
@@ -59,14 +62,16 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         Depending on the heuristic parameters, it may take a while
         to get a solution.
         */
-        Log.printFormattedLine(
-                "\n# Broker %d started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's running %d neighborhood searches by iteration",
-                getId(), heuristic.getNumberOfNeighborhoodSearchesByIteration());
-        Log.printLine("Please wait... It may take a while, depending on heuristic parameters and number of Cloudlets and Vm's.");
+        logger.info(
+                "{} started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's running {} neighborhood searches by iteration.{}{}",
+                this, heuristic.getNumberOfNeighborhoodSearchesByIteration(),
+                System.lineSeparator(),
+                "Please wait... It may take a while, depending on heuristic parameters and number of Cloudlets and Vm's.");
+
 	    final CloudletToVmMappingSolution solution = heuristic.solve();
-        Log.printFormattedLine(
-                "# Broker %d finished the solution find for mapping Cloudlets to Vm's in %.2f seconds with a solution cost of %.2f\n",
-                getId(), heuristic.getSolveTime(), solution.getCost());
+        logger.info(
+                "{} finished the solution find for mapping Cloudlets to Vm's in {} seconds with a solution cost of {}",
+                this, heuristic.getSolveTime(), solution.getCost());
     }
 
     @Override

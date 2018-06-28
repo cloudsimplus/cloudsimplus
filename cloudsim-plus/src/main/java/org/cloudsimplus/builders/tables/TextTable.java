@@ -24,7 +24,6 @@
 package org.cloudsimplus.builders.tables;
 
 import org.apache.commons.lang3.StringUtils;
-import org.cloudbus.cloudsim.util.Log;
 
 /**
  * Prints a table from a given data set, using a simple delimited text format.

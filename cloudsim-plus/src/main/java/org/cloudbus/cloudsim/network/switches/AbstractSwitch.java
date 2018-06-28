@@ -10,14 +10,15 @@ package org.cloudbus.cloudsim.network.switches;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.core.events.PredicateType;
+import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -28,6 +29,8 @@ import java.util.*;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSwitch.class.getSimpleName());
+
     /**
      * Map of packets sent to Datacenter on the uplink, where each key is a switch
      * and the corresponding value is the list of packets to sent to that switch.
@@ -102,7 +105,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     @Override
     protected void startEntity() {
-        Log.printConcatLine(getName(), " is starting...");
+        logger.info("{} is starting...", getName());
         schedule(this, 0, CloudSimTags.DATACENTER_LIST_REQUEST);
     }
 
@@ -279,7 +282,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     @Override
     public void shutdownEntity() {
         super.shutdownEntity();
-        Log.printConcatLine(getName(), " is shutting down...");
+        logger.info("{} is shutting down...", getName());
     }
 
     @Override

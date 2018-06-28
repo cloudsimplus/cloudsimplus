@@ -8,21 +8,17 @@
 package org.cloudbus.cloudsim.datacenters.network;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.switches.AbstractSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.network.switches.Switch;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 

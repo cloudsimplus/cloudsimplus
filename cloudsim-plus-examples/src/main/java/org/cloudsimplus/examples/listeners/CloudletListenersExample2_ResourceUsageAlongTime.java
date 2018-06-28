@@ -31,34 +31,33 @@ package org.cloudsimplus.examples.listeners;
  *
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
-import org.cloudsimplus.listeners.CloudletVmEventInfo;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import java.util.ArrayList;
-import java.util.List;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.listeners.EventListener;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple example showing how to create a data center with 1 host and run
@@ -105,15 +104,18 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
      * @param args command line parameters
      */
     public static void main(String[] args) {
-        Log.printFormattedLine("Starting %s ...", CloudletListenersExample2_ResourceUsageAlongTime.class.getSimpleName());
         new CloudletListenersExample2_ResourceUsageAlongTime();
-        Log.printFormattedLine("%s finished!", CloudletListenersExample2_ResourceUsageAlongTime.class.getSimpleName());
     }
 
     /**
      * Default constructor that builds and starts the simulation.
      */
     public CloudletListenersExample2_ResourceUsageAlongTime() {
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
         this.hostList = new ArrayList<>();
@@ -126,6 +128,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         createAndSubmitCloudlets(this.vmList.get(0));
 
         runSimulationAndPrintResults();
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     /**
@@ -140,10 +143,10 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
         double cpuUsage = c.getUtilizationModelCpu().getUtilization(eventInfo.getTime())*100;
         double ramUsage = c.getUtilizationModelRam().getUtilization(eventInfo.getTime())*100;
         double bwUsage  = c.getUtilizationModelBw().getUtilization(eventInfo.getTime())*100;
-        Log.printFormattedLine(
+        System.out.printf(
                 "\t#EventListener: Time %.0f: Updated Cloudlet %d execution inside Vm %d",
                 eventInfo.getTime(), c.getId(), eventInfo.getVm().getId());
-        Log.printFormattedLine(
+        System.out.printf(
                 "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%\n",
                 cpuUsage,  ramUsage, bwUsage);
     }

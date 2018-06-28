@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.examples;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -31,8 +30,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -71,6 +68,9 @@ import java.util.List;
 class ReducedExample {
     public static void main(String[] args) {
         //tag::cloudsim-plus-reduced-example[]
+        //Enables just some level of log messages
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         //Creates a CloudSim object to initialize the simulation.
         CloudSim cloudsim = new CloudSim();
 

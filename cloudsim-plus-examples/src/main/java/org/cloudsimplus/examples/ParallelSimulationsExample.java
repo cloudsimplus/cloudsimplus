@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.examples;
 
+import ch.qos.logback.classic.Level;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -30,8 +31,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristicsSimple;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -63,7 +62,7 @@ import java.util.List;
  * in the different simulations. There will be just a difference in the number of created
  * objects.</p>
  *
- * <p>To enable such a parallel simulations execution, the {@link Log} must be
+ * <p>To enable such a parallel simulations execution, the logging must be
  * disable (as shown in the first line of the main method) and any console
  * output should be avoided during simulation execution.
  * Further, usage of static mutable attributes must be avoided.
@@ -91,8 +90,8 @@ public class ParallelSimulationsExample implements Runnable {
      * @param args
      */
     public static void main(String[] args) {
-        //IT IS MANDATORY TO DISABLE THE LOG WHEN EXECUTING PARALLEL SIMULATIONS.
-        Log.disable();
+        /*IT IS MANDATORY TO DISABLE THE LOG WHEN EXECUTING PARALLEL SIMULATIONS TO AVOID RUNTIME EXCEPTIONS.*/
+        Log.setLevel(Level.OFF);
 
         List<ParallelSimulationsExample> simulationList = new ArrayList<>(2);
 
@@ -120,8 +119,8 @@ public class ParallelSimulationsExample implements Runnable {
 
         final long finishTimeMilliSec = System.currentTimeMillis() - startTimeMilliSec;
 
-        Log.enable();
-        Log.printFormattedLine("Time to run %d simulations: %d milliseconds", simulationList.size(), finishTimeMilliSec);
+        Log.setLevel(Level.INFO);
+        System.out.printf("Time to run %d simulations: %d milliseconds\n", simulationList.size(), finishTimeMilliSec);
 
         //Prints the cloudlet list of all executed simulations
         simulationList.forEach(ParallelSimulationsExample::printResults);

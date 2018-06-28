@@ -28,35 +28,42 @@
  */
 package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.core.Machine;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.slametrics.SlaContract;
+import org.cloudsimplus.testbeds.ExperimentRunner;
+import org.cloudsimplus.testbeds.SimulationExperiment;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
 import static java.util.Comparator.comparingDouble;
-
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.brokers.*;
-import org.cloudbus.cloudsim.cloudlets.*;
-import org.cloudbus.cloudsim.core.Machine;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.distributions.*;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.provisioners.*;
-import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
-import org.cloudbus.cloudsim.schedulers.vm.*;
-import org.cloudbus.cloudsim.util.*;
-import org.cloudbus.cloudsim.utilizationmodels.*;
-import org.cloudbus.cloudsim.vms.*;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-
 import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeMinimizationRunner.*;
-
-import org.cloudsimplus.slametrics.SlaContract;
-import org.cloudsimplus.testbeds.*;
 
 /**
  * An experiment that tries to minimize task completion time,
@@ -296,10 +303,9 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
 
         final long numberOfVmFreePes = vm.getNumberOfPes() - totalPesForCloudletsOfVm;
 
-        Log.printFormattedLine(
-            "\t\tTotal pes of cloudlets in VM " + vm.getId() + ": "
-                + totalPesForCloudletsOfVm + " -> vm pes: "
-                + vm.getNumberOfPes() + " -> vm free pes: " + numberOfVmFreePes);
+        System.out.printf(
+            "\t\tTotal PEs of Cloudlets in %s: %d -> VM PEs: %d -> VM free PEs: %d",
+            vm, totalPesForCloudletsOfVm, vm.getNumberOfPes(), numberOfVmFreePes);
 
         return numberOfVmFreePes;
     }

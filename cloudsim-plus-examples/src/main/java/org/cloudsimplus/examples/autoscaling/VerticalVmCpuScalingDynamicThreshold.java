@@ -41,7 +41,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
@@ -52,12 +51,12 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScalingSimple;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -119,7 +118,6 @@ public class VerticalVmCpuScalingDynamicThreshold {
     private static final int CLOUDLETS = 10;
     private static final int CLOUDLETS_INITIAL_LENGTH = 20_000;
 
-    private int createdCloudlets;
     private int createsVms;
 
     public static void main(String[] args) {
@@ -130,9 +128,10 @@ public class VerticalVmCpuScalingDynamicThreshold {
      * Default constructor that builds the simulation scenario and starts the simulation.
      */
     private VerticalVmCpuScalingDynamicThreshold() {
-        /*You can remove the seed to get a dynamic one, based on current computer time.
-        * With a dynamic seed you will get different results at each simulation run.*/
-        final long seed = 1;
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
         hostList = new ArrayList<>(HOSTS);
         vmList = new ArrayList<>(VMS);
         cloudletList = new ArrayList<>(CLOUDLETS);
@@ -160,7 +159,7 @@ public class VerticalVmCpuScalingDynamicThreshold {
      */
     private void onClockTickListener(EventInfo evt) {
         vmList.forEach(vm -> {
-            Log.printFormatted(
+            System.out.printf(
                 "\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%02d) Upper Threshold: %.2f History Entries: %d\n",
                 evt.getTime(), vm.getId(), vm.getCpuPercentUsage()*100.0,
                 vm.getNumberOfPes(),

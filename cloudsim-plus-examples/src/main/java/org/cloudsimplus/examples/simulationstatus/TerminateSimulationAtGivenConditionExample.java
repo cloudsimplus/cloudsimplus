@@ -39,14 +39,13 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,10 +91,15 @@ public class TerminateSimulationAtGivenConditionExample {
      * Default constructor that builds the simulation.
      */
     public TerminateSimulationAtGivenConditionExample() {
-        Log.printFormattedLine("Starting %s ...", getClass().getSimpleName());
+        /*Enables just some level of log messages.
+          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+
+        System.out.println("Starting " + getClass().getSimpleName());
+        this.simulation = new CloudSim();
+
         this.vmList = new ArrayList<>();
         this.cloudletList = new ArrayList<>();
-        this.simulation = new CloudSim();
 
         Datacenter datacenter0 = createDatacenter();
 
@@ -126,7 +130,7 @@ public class TerminateSimulationAtGivenConditionExample {
         (you can use your own code here to print what you want from this cloudlet list)*/
         List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
-        Log.printConcatLine(getClass().getSimpleName(), " finished!");
+        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     /**
@@ -136,8 +140,9 @@ public class TerminateSimulationAtGivenConditionExample {
      */
     private void onClouletProcessingUpdate(CloudletVmEventInfo event) {
         if(event.getCloudlet().getFinishedLengthSoFar() >= event.getCloudlet().getLength()/2.0){
-            Log.printFormattedLine("Cloudlet %d reached 50% of execution. Intentionally requesting termination of the simulation at time %.2f",
-                event.getCloudlet().getId(), simulation.clock());
+            System.out.printf(
+                "%s reached 50%% of execution. Intentionally requesting termination of the simulation at time %.2f\n",
+                event.getCloudlet(), simulation.clock());
             simulation.terminate();
         }
     }

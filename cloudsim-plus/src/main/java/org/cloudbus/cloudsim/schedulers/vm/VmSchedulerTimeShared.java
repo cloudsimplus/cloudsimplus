@@ -6,12 +6,16 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
-import java.util.*;
-
-import static java.util.stream.Collectors.toList;
-import org.cloudbus.cloudsim.util.Log;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toList;
 
 /**
  * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM), also called Hypervisor,
@@ -51,6 +55,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSchedulerTimeShared extends VmSchedulerAbstract {
+    private static final Logger logger = LoggerFactory.getLogger(VmSchedulerTimeShared.class.getSimpleName());
 
     /**
      * Creates a time-shared VM scheduler.
@@ -161,11 +166,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         final String msg = allocatedMipsForVmPe > 0 ?
                 String.format("Only %.0f MIPS were allocated.", allocatedMipsForVmPe)
                 : "No MIPS were allocated.";
-        Log.printFormattedLine(
-                "%.2f: %s: %s is requiring a total of %.0f MIPS but the PEs of %s\n\t currently don't have such an available MIPS amount. %s",
+        logger.warn(
+                "{}: {}: {} is requiring a total of {} MIPS but the PEs of {} currently don't have such an available MIPS amount. {}",
                 getHost().getSimulation().clock(),
                 getClass().getSimpleName(), vm,
-                requestedMipsForVmPe, getHost(), msg);
+                (long)requestedMipsForVmPe, getHost(), msg);
     }
 
     /**

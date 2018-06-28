@@ -23,28 +23,30 @@
  */
 package org.cloudsimplus.integrationtests;
 
-import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.util.ExpectedCloudletExecutionResults;
-
-import java.util.List;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.util.Log;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.ExpectedCloudletExecutionResults;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.cloudsimplus.listeners.VmDatacenterEventInfo;
-import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.junit.Before;
+import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -79,6 +81,8 @@ import org.junit.Before;
  * @author Manoel Campos da Silva Filho
  */
 public final class VmCreationFailureIntegrationTest {
+    private static final Logger logger = LoggerFactory.getLogger(VmCreationFailureIntegrationTest.class.getSimpleName());
+
     /** The number of times a host was allocated to a VM. */
     private int numberOfHostAllocations;
 
@@ -101,7 +105,8 @@ public final class VmCreationFailureIntegrationTest {
      */
     private void onHostAllocation(VmHostEventInfo evt) {
         numberOfHostAllocations++;
-        Log.printFormattedLine("# Host %s allocated to Vm %s at time %3.0f",
+        logger.info(
+                "# Host {} allocated to Vm {} at time {}",
                 evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
         if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost())
                 && scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
@@ -121,9 +126,9 @@ public final class VmCreationFailureIntegrationTest {
      */
     private void onHostDeallocation(VmHostEventInfo evt) {
         numberOfHostDeallocations++;
-        Log.printFormattedLine(
-                "# Vm %s moved/removed from Host %s at time %3.0f",
-                evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
+        logger.info(
+                "# {} moved/removed from {} at time {}",
+                evt.getVm(), evt.getHost(), evt.getTime());
         if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost()) &&
             scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
             assertEquals(
@@ -155,7 +160,7 @@ public final class VmCreationFailureIntegrationTest {
      * @param evt
      */
     private void onEventProcessing(SimEvent evt) {
-        Log.printFormattedLine("* onEventProcessing at time %3.0f: %s", evt.getTime(), evt);
+        logger.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
         switch ((int) evt.getTime()) {
             case 10:
                 assertEquals(200,
@@ -179,10 +184,9 @@ public final class VmCreationFailureIntegrationTest {
      * @param evt
      */
     private void onUpdateVmProcessing(VmHostEventInfo evt) {
-        Log.printConcatLine(
-            "- onUpdateVmProcessing at time ", evt.getTime(), " - vm: ",
-            evt.getVm().getId(), " host ", evt.getHost().getId(), " available mips: ",
-            evt.getHost().getAvailableMips());
+        logger.info(
+            "- onUpdateVmProcessing at time {} for {}: {} available mips: {}",
+            evt.getTime(), evt.getVm(), evt.getHost(), evt.getHost().getAvailableMips());
         assertEquals(200, evt.getHost().getAvailableMips(), 0);
     }
 
