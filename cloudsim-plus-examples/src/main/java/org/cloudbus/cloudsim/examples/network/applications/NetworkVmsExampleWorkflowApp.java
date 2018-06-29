@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.cloudlets.network.*;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.network.NetworkVm;
@@ -19,8 +19,6 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
-    private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
-    private static final long NUMBER_OF_PACKETS_TO_SEND = 100;
     private int currentNetworkCloudletId = -1;
 
     /**
@@ -64,55 +62,6 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
         addExecutionTask(networkCloudletList[2]);
 
         return Arrays.asList(networkCloudletList);
-    }
-
-    /**
-     * Adds an execution task to the list of tasks of the given {@link NetworkCloudlet}.
-     *
-     * @param cloudlet the {@link NetworkCloudlet} the task will belong to
-     */
-    private static void addExecutionTask(NetworkCloudlet cloudlet) {
-        /**
-         * @todo @author manoelcampos It's strange to define the time of the execution task.
-         * It would be defined the length instead. In this case, the execution time will
-         * depend on the MIPS of the PE where the task is being executed.
-         */
-        CloudletTask task = new CloudletExecutionTask(
-            cloudlet.getTasks().size(), NETCLOUDLET_EXECUTION_TASK_LENGTH);
-        task.setMemory(NETCLOUDLET_RAM);
-        cloudlet.addTask(task);
-    }
-
-    /**
-     * Adds a send task to the list of tasks of the given {@link NetworkCloudlet}.
-     *
-     * @param sourceCloudlet the {@link NetworkCloudlet} that packets will be sent from
-     * @param destinationCloudlet the destination {@link NetworkCloudlet} to send packets to
-     */
-    private void addSendTask(
-        NetworkCloudlet sourceCloudlet,
-        NetworkCloudlet destinationCloudlet)
-    {
-        CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
-        task.setMemory(NETCLOUDLET_RAM);
-        sourceCloudlet.addTask(task);
-        for(int i = 0; i < NUMBER_OF_PACKETS_TO_SEND; i++) {
-            task.addPacket(destinationCloudlet, PACKET_DATA_LENGTH_IN_BYTES);
-        }
-    }
-
-    /**
-     * Adds a receive task to the list of tasks of the given {@link NetworkCloudlet}.
-     *
-     * @param cloudlet the {@link NetworkCloudlet} the task will belong to
-     * @param sourceCloudlet the {@link NetworkCloudlet} expected to receive packets from
-     */
-    private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
-        CloudletReceiveTask task = new CloudletReceiveTask(
-                cloudlet.getTasks().size(), sourceCloudlet.getVm());
-        task.setMemory(NETCLOUDLET_RAM);
-        task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
-        cloudlet.addTask(task);
     }
 
     /**

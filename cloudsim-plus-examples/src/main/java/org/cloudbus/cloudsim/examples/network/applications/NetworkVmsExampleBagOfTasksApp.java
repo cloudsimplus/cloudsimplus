@@ -1,10 +1,9 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.cloudlets.network.*;
+import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,9 +62,8 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
     }
 
     private void createTasksForNetworkCloudlets(final List<NetworkCloudlet> networkCloudletList) {
-        int taskStageId=0;
         for (NetworkCloudlet cloudlet : networkCloudletList) {
-            cloudlet.addTask(createExecutionTask(taskStageId++));
+            addExecutionTask(cloudlet);
 
             //NetworkCloudlet 0 waits data from other Cloudlets
             if (cloudlet.getId()==0){
@@ -75,42 +73,13 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
                 to wait packets from N-1 other Cloudlets.
                  */
                 for(int j=1; j < networkCloudletList.size(); j++) {
-                    CloudletReceiveTask task = createReceiveTask(taskStageId++, networkCloudletList.get(j).getVm());
-                    cloudlet.addTask(task);
+                    addReceiveTask(cloudlet, networkCloudletList.get(j));
                 }
             }
             //The other NetworkCloudlets send data to the first one
             else {
-                CloudletSendTask task = createSendTask(taskStageId++);
-                cloudlet.addTask(task);
-                task.addPacket(networkCloudletList.get(0), 1000);
-                task.addPacket(networkCloudletList.get(0), 2000);
+                addSendTask(cloudlet, networkCloudletList.get(0));
             }
         }
     }
-
-    private CloudletTask createExecutionTask(final int taskId) {
-        final CloudletTask task = new CloudletExecutionTask(taskId, NETWORK_CLOUDLET_LENGTH);
-        task.setMemory(CLOUDLET_TASK_MEMORY);
-        return task;
-    }
-
-    private CloudletSendTask createSendTask(final int taskId) {
-        CloudletSendTask task = new CloudletSendTask(taskId);
-        task.setMemory(CLOUDLET_TASK_MEMORY);
-        return task;
-    }
-
-    /**
-     * Creates a {@link CloudletReceiveTask} to be added for a {@link NetworkCloudlet}.
-     * @param taskId the id of the task
-     * @param sourceVm the VM where packets are expected to be received from
-     * @return the created task
-     */
-    private CloudletReceiveTask createReceiveTask(final int taskId, final Vm sourceVm) {
-        CloudletReceiveTask task = new CloudletReceiveTask(taskId, sourceVm);
-        task.setMemory(CLOUDLET_TASK_MEMORY);
-        return task;
-    }
-
 }

@@ -137,7 +137,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
         optional.ifPresent(task -> {
             logger.trace(
                 "{}: {}: {} pkts added to be sent from {} in {}",
-                sourceCloudlet.getSimulation().clock(), getClass(),
+                sourceCloudlet.getSimulation().clock(), getClass().getSimpleName(),
                 task.getPacketsToSend().size(), sourceCloudlet,
                 sourceCloudlet.getVm());
 
@@ -161,7 +161,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
             receivedPkts.forEach(pkt ->
                 logger.trace(
                     "{}: {}: {} in {} received pkt with {} bytes from {} in {}",
-                    sourceCloudlet.getSimulation().clock(), getClass(),
+                    sourceCloudlet.getSimulation().clock(), getClass().getSimpleName(),
                     pkt.getReceiverCloudlet(),
                     pkt.getDestination(),
                     pkt.getSize(),

@@ -65,7 +65,7 @@ public class NetworkVmsExample1 {
     /**
      * Creates, starts, stops the simulation and shows results.
      */
-    public NetworkVmsExample1() {
+    private NetworkVmsExample1() {
         System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
 
@@ -240,7 +240,7 @@ public class NetworkVmsExample1 {
     /**
      * Adds a send task to the list of tasks of the given {@link NetworkCloudlet}.
      *
-     * @param sourceCloudlet the {@link NetworkCloudlet} that packets will be sent from
+     * @param sourceCloudlet the {@link NetworkCloudlet} from which packets will be sent
      * @param destinationCloudlet the destination {@link NetworkCloudlet} to send packets to
      */
     private void addSendTask(

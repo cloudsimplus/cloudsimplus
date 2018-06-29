@@ -4,7 +4,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.*;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -71,6 +71,8 @@ abstract class NetworkVmExampleAbstract {
     public static final int  NETCLOUDLET_FILE_SIZE = 300;
     public static final int  NETCLOUDLET_OUTPUT_SIZE = 300;
     public static final long NETCLOUDLET_RAM = 100;
+    private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
+    private static final long NUMBER_OF_PACKETS_TO_SEND = 100;
 
     private final CloudSim simulation;
 
@@ -113,6 +115,18 @@ abstract class NetworkVmExampleAbstract {
         simulation.start();
 
         showSimulationResults();
+    }
+
+    /**
+     * Adds an execution task to the list of tasks of the given {@link NetworkCloudlet}.
+     *
+     * @param cloudlet the {@link NetworkCloudlet} the task will belong to
+     */
+    protected static void addExecutionTask(NetworkCloudlet cloudlet) {
+        CloudletTask task = new CloudletExecutionTask(
+            cloudlet.getTasks().size(), NETCLOUDLET_EXECUTION_TASK_LENGTH);
+        task.setMemory(NETCLOUDLET_RAM);
+        cloudlet.addTask(task);
     }
 
     private void showSimulationResults() {
@@ -293,4 +307,35 @@ abstract class NetworkVmExampleAbstract {
      */
     protected abstract List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker);
 
+    /**
+     * Adds a send task to the list of tasks of the given {@link NetworkCloudlet}.
+     *
+     * @param sourceCloudlet the {@link NetworkCloudlet} from which packets will be sent
+     * @param destinationCloudlet the destination {@link NetworkCloudlet} to send packets to
+     */
+    protected void addSendTask(
+        NetworkCloudlet sourceCloudlet,
+        NetworkCloudlet destinationCloudlet)
+    {
+        CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
+        task.setMemory(NETCLOUDLET_RAM);
+        sourceCloudlet.addTask(task);
+        for(int i = 0; i < NUMBER_OF_PACKETS_TO_SEND; i++) {
+            task.addPacket(destinationCloudlet, PACKET_DATA_LENGTH_IN_BYTES);
+        }
+    }
+
+    /**
+     * Adds a receive task to the list of tasks of the given {@link NetworkCloudlet}.
+     *
+     * @param cloudlet the {@link NetworkCloudlet} the task will belong to
+     * @param sourceCloudlet the {@link NetworkCloudlet} expected to receive packets from
+     */
+    protected void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
+        CloudletReceiveTask task = new CloudletReceiveTask(
+                cloudlet.getTasks().size(), sourceCloudlet.getVm());
+        task.setMemory(NETCLOUDLET_RAM);
+        task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
+        cloudlet.addTask(task);
+    }
 }
