@@ -147,21 +147,22 @@ public class PacketSchedulerSimple implements PacketScheduler {
     }
 
     /**
-     * Check for packets to be received by a given cloudlet
+     * Checks if there are packets to be received by a given cloudlet
      * and deliver them to it.
      *
-     * @param sourceCloudlet cloudlet to check if there are packets to be received from.
+     * @param candidateDestinationCloudlet a {@link NetworkCloudlet} that is waiting for packets,
+     *                                    which is going to be checked if there are packets targeting it.
      */
-    private void receivePackets(final NetworkCloudlet sourceCloudlet) {
-        final Optional<CloudletReceiveTask> optional = getCloudletCurrentTask(sourceCloudlet);
+    private void receivePackets(final NetworkCloudlet candidateDestinationCloudlet) {
+        final Optional<CloudletReceiveTask> optional = getCloudletCurrentTask(candidateDestinationCloudlet);
         optional.ifPresent(task -> {
-            final List<VmPacket> receivedPkts = getPacketsSentToGivenTask(task);
+            final List<VmPacket> receivedPkts = getPacketsSentToCloudlet(task);
             // Assumption: packet will not arrive in the same cycle
             receivedPkts.forEach(task::receivePacket);
             receivedPkts.forEach(pkt ->
                 logger.trace(
                     "{}: {}: {} in {} received pkt with {} bytes from {} in {}",
-                    sourceCloudlet.getSimulation().clock(), getClass().getSimpleName(),
+                    candidateDestinationCloudlet.getSimulation().clock(), getClass().getSimpleName(),
                     pkt.getReceiverCloudlet(),
                     pkt.getDestination(),
                     pkt.getSize(),
@@ -179,7 +180,7 @@ public class PacketSchedulerSimple implements PacketScheduler {
              * of the expected packets up to a given timeout.
              * After that, the task has to stop waiting and fail.
              */
-            scheduleNextTaskIfCurrentIsFinished(sourceCloudlet);
+            scheduleNextTaskIfCurrentIsFinished(candidateDestinationCloudlet);
         });
     }
 
@@ -194,17 +195,21 @@ public class PacketSchedulerSimple implements PacketScheduler {
     }
 
     /**
-     * Gets the list of packets sent to a given CloudletReceiveTask.
-     * @param destinationTask The task that is waiting for packets
-     * @return
+     * Checks if there are packets sent to a given {@link NetworkCloudlet},
+     * to be processed by a {@link CloudletReceiveTask}, and returns them to be
+     * delivered for that Cloudlet.
+     *
+     * @param receiveTask the {@link CloudletReceiveTask} that is waiting for packets
+     * @return the list of packets targeting the {@link NetworkCloudlet} or an empty list
+     *         if there are no packets received that are targeting such a Cloudlet.
      */
-    private List<VmPacket> getPacketsSentToGivenTask(final CloudletReceiveTask destinationTask) {
-        final List<VmPacket> pktsFromExpectedSenderVm =
-                getListOfPacketsSentFromVm(destinationTask.getSourceVm());
+    private List<VmPacket> getPacketsSentToCloudlet(final CloudletReceiveTask receiveTask) {
+        final List<VmPacket> pktsFromExpectedSenderVm = getListOfPacketsSentFromVm(receiveTask.getSourceVm());
 
         return pktsFromExpectedSenderVm
                 .stream()
-                .filter(pkt -> pkt.getDestination().getId() == destinationTask.getCloudlet().getVm().getId())
+                .filter(pkt -> pkt.getDestination().equals(receiveTask.getCloudlet().getVm()))
+                .filter(pkt -> pkt.getReceiverCloudlet().equals(receiveTask.getCloudlet()))
                 .collect(Collectors.toList());
     }
 
