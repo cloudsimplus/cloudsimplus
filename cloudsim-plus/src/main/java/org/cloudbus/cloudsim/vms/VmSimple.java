@@ -6,23 +6,23 @@
  */
 package org.cloudbus.cloudsim.vms;
 
-import java.util.*;
-import java.util.stream.LongStream;
-
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.resources.*;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
-import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
+
+import java.util.*;
+import java.util.stream.LongStream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -174,17 +174,14 @@ public class VmSimple implements Vm {
 
     /**
      * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
-     * It is not defined an id for the Vm. The id is defined when the Vm is submitted to
-     * a {@link DatacenterBroker}.
-     *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
      *
+     * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
+     * a {@link DatacenterBroker}.</p>
+     *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
-     *
-     * @pre numberOfPes > 0
-     * @post $none
      */
     public VmSimple(final long mipsCapacity, final long numberOfPes) {
         this(-1, mipsCapacity, numberOfPes);

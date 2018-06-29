@@ -7,17 +7,15 @@
  */
 package org.cloudbus.cloudsim.vms.network;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.VmPacket;
-import org.cloudbus.cloudsim.vms.Vm;
-
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * NetworkVm class extends {@link VmSimple} to support simulation of networked
@@ -54,54 +52,28 @@ public class NetworkVm extends VmSimple {
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
-     *
-     * @pre id >= 0
-     * @pre numberOfPes > 0
-     * @post $none
      */
-    public NetworkVm(int id, long mipsCapacity, int numberOfPes) {
+    public NetworkVm(final int id, final long mipsCapacity, final int numberOfPes) {
         super(id, mipsCapacity, numberOfPes);
         cloudletList = new ArrayList<>();
     }
 
-
     /**
-     * Creates a NetworkVm with the given parameters.
+     * Creates a NetworkVm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is not created inside a Host}, such values can be changed freely.
      *
-     * @param id unique ID of the VM
-     * @param broker ID of the VM's owner, that is represented by the id of the {@link DatacenterBroker}
+     * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
+     * a {@link DatacenterBroker}.</p>
+     *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
-     * @param ramCapacity amount of ram in Megabytes
-     * @param bwCapacity amount of bandwidth to be allocated to the VM (in Megabits/s)
-     * @param size size the VM image in Megabytes (the amount of storage it will use, at least initially).
-     * @param vmm Virtual Machine Monitor that manages the VM lifecycle
-     * @param cloudletScheduler scheduler that defines the execution policy for Cloudlets inside this Vm
-     *
-     * @deprecated Use the other available constructors with less parameters
-     * and set the remaining ones using the respective setters.
-     * This constructor will be removed in future versions.
      */
-    @Deprecated
-    public NetworkVm(
-            int id,
-            DatacenterBroker broker,
-            long mipsCapacity,
-            int numberOfPes,
-            int ramCapacity,
-            long bwCapacity,
-            long size,
-            String vmm,
-            CloudletScheduler cloudletScheduler)
-    {
-        this(id, mipsCapacity, numberOfPes);
-        setBroker(broker);
-        setRam(ramCapacity);
-        setBw(bwCapacity);
-        setSize(size);
-        setVmm(vmm);
-        setCloudletScheduler(cloudletScheduler);
+    public NetworkVm(final long mipsCapacity, final int numberOfPes) {
+        super(mipsCapacity, numberOfPes);
+        cloudletList = new ArrayList<>();
     }
+
 
     /** Indicates if the VM is free or not. */
     public boolean isFree() {
@@ -109,7 +81,7 @@ public class NetworkVm extends VmSimple {
     }
 
     @Override
-    public int compareTo(Vm o) {
+    public int compareTo(final Vm o) {
         return Double.compare(this.finishTime, ((NetworkVm) o).finishTime);
     }
 
@@ -120,7 +92,7 @@ public class NetworkVm extends VmSimple {
         return cloudletList;
     }
 
-    public void setCloudletList(List<NetworkCloudlet> cloudletList) {
+    public void setCloudletList(final List<NetworkCloudlet> cloudletList) {
         this.cloudletList = cloudletList;
     }
 
@@ -131,11 +103,11 @@ public class NetworkVm extends VmSimple {
         return receivedPacketList;
     }
 
-    public void setReceivedPacketList(List<VmPacket> receivedPacketList) {
+    public void setReceivedPacketList(final List<VmPacket> receivedPacketList) {
         this.receivedPacketList = receivedPacketList;
     }
 
-    public void setFree(boolean free) {
+    public void setFree(final boolean free) {
         this.free = free;
     }
 
@@ -146,7 +118,7 @@ public class NetworkVm extends VmSimple {
         return finishTime;
     }
 
-    public void setFinishTime(double finishTime) {
+    public void setFinishTime(final double finishTime) {
         this.finishTime = finishTime;
     }
 }
