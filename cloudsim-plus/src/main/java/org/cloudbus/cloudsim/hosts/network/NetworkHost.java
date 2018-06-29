@@ -143,7 +143,7 @@ public class NetworkHost extends HostSimple {
             pktScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
             logger.trace(
                 "{}: {}: {} received pkt with {} bytes from {} in {} and forwarded it to {} in {}",
-                getSimulation().clock(), getClass(),
+                getSimulation().clock(), getClass().getSimpleName(),
                 this, hostPkt.getVmPacket().getSize(),
                 hostPkt.getVmPacket().getSenderCloudlet(),
                 hostPkt.getVmPacket().getSource(),
