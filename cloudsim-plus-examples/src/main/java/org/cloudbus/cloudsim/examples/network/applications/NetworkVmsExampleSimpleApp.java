@@ -1,21 +1,20 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * An example of a simple fictitious application that is compounded by
+ * An example of a simple fictitious distributed application that is compounded by
  * 3 {@link NetworkCloudlet}s with 3 {@link CloudletExecutionTask}s each one.
  *
- * The cloudlets just process data, not performing network communication,
+ * <b>The cloudlets just process data, not performing network communication</b>,
  * running in a similar way of a regular {@link Cloudlet}.
  * The difference is that the processing is split among the {@link NetworkCloudlet}'s {@link CloudletTask tasks},
  * simulating a distributed application.

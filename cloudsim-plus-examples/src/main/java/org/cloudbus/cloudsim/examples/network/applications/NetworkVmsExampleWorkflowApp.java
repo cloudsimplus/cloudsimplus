@@ -10,17 +10,13 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * An example of a "Workflow Application" that is compounded by
+ * An example of a Workflow Distributed Application that is compounded by
  * 3 {@link NetworkCloudlet}, each one having different stages
  * such as sending, receiving or processing data.
  *
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
- *
- * @todo @author manoelcampos The example isn't working yet.
- * It freezes after the cloudlets creation.
- * Maybe the problem is in the CloudletSchedulerAbstract class.
  */
 public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
@@ -71,15 +67,31 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
     }
 
     /**
-     * Adds a send task to list of tasks of the given {@link NetworkCloudlet}.
+     * Adds an execution task to the list of tasks of the given {@link NetworkCloudlet}.
      *
-     * @param sourceCloudlet the {@link NetworkCloudlet} to add the task to
-     * @param destinationCloudlet the destination where to send or from which is
-     * expected to receive data
+     * @param cloudlet the {@link NetworkCloudlet} the task will belong to
+     */
+    private static void addExecutionTask(NetworkCloudlet cloudlet) {
+        /**
+         * @todo @author manoelcampos It's strange to define the time of the execution task.
+         * It would be defined the length instead. In this case, the execution time will
+         * depend on the MIPS of the PE where the task is being executed.
+         */
+        CloudletTask task = new CloudletExecutionTask(
+            cloudlet.getTasks().size(), NETCLOUDLET_EXECUTION_TASK_LENGTH);
+        task.setMemory(NETCLOUDLET_RAM);
+        cloudlet.addTask(task);
+    }
+
+    /**
+     * Adds a send task to the list of tasks of the given {@link NetworkCloudlet}.
+     *
+     * @param sourceCloudlet the {@link NetworkCloudlet} that packets will be sent from
+     * @param destinationCloudlet the destination {@link NetworkCloudlet} to send packets to
      */
     private void addSendTask(
-            NetworkCloudlet sourceCloudlet,
-            NetworkCloudlet destinationCloudlet)
+        NetworkCloudlet sourceCloudlet,
+        NetworkCloudlet destinationCloudlet)
     {
         CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
         task.setMemory(NETCLOUDLET_RAM);
@@ -90,10 +102,10 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
     }
 
     /**
-     * Adds a receive task to list of tasks of the given {@link NetworkCloudlet}.
+     * Adds a receive task to the list of tasks of the given {@link NetworkCloudlet}.
      *
-     * @param cloudlet the {@link NetworkCloudlet} that the task will belong to
-     * @param sourceCloudlet the cloudlet where it is expected to receive packets from
+     * @param cloudlet the {@link NetworkCloudlet} the task will belong to
+     * @param sourceCloudlet the {@link NetworkCloudlet} expected to receive packets from
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = new CloudletReceiveTask(
@@ -101,23 +113,6 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
         task.setMemory(NETCLOUDLET_RAM);
         task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);
-    }
-
-    /**
-     * Adds an execution task to list of tasks of the given {@link NetworkCloudlet}.
-     *
-     * @param netCloudlet the {@link NetworkCloudlet} to add the task
-     */
-    private static void addExecutionTask(NetworkCloudlet netCloudlet) {
-        /**
-         * @todo @author manoelcampos It's strange to define the time of the execution task.
-         * It would be defined the length instead. In this case, the execution time will
-         * depend on the MIPS of the PE where the task is being executed.
-         */
-        CloudletTask task = new CloudletExecutionTask(
-                netCloudlet.getTasks().size(), NETCLOUDLET_EXECUTION_TASK_LENGTH);
-        task.setMemory(NETCLOUDLET_RAM);
-        netCloudlet.addTask(task);
     }
 
     /**

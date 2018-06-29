@@ -225,15 +225,27 @@ public class NetworkVmsExample1 {
     }
 
     /**
-     * Adds a send task to list of tasks of the given {@link NetworkCloudlet}.
+     * Adds an execution task to the list of tasks of the given
+     * {@link NetworkCloudlet}.
      *
-     * @param sourceCloudlet the {@link NetworkCloudlet} to add the task to
-     * @param destinationCloudlet the destination where to send or from which is
-     * expected to receive data
+     * @param cloudlet the {@link NetworkCloudlet} the task will belong to
+     */
+    private static void addExecutionTask(NetworkCloudlet cloudlet) {
+        CloudletTask task = new CloudletExecutionTask(
+            cloudlet.getTasks().size(), CLOUDLET_EXECUTION_TASK_LENGTH);
+        task.setMemory(TASK_RAM);
+        cloudlet.addTask(task);
+    }
+
+    /**
+     * Adds a send task to the list of tasks of the given {@link NetworkCloudlet}.
+     *
+     * @param sourceCloudlet the {@link NetworkCloudlet} that packets will be sent from
+     * @param destinationCloudlet the destination {@link NetworkCloudlet} to send packets to
      */
     private void addSendTask(
-            NetworkCloudlet sourceCloudlet,
-            NetworkCloudlet destinationCloudlet) {
+        NetworkCloudlet sourceCloudlet,
+        NetworkCloudlet destinationCloudlet) {
         CloudletSendTask task = new CloudletSendTask(sourceCloudlet.getTasks().size());
         task.setMemory(TASK_RAM);
         sourceCloudlet.addTask(task);
@@ -243,12 +255,11 @@ public class NetworkVmsExample1 {
     }
 
     /**
-     * Adds a receive task to list of tasks of the given
+     * Adds a receive task to the list of tasks of the given
      * {@link NetworkCloudlet}.
      *
-     * @param cloudlet the {@link NetworkCloudlet} that the task will belong to
-     * @param sourceCloudlet the cloudlet where it is expected to receive
-     * packets from
+     * @param cloudlet the {@link NetworkCloudlet} the task will belong to
+     * @param sourceCloudlet the {@link NetworkCloudlet} expected to receive packets from
      */
     private void addReceiveTask(NetworkCloudlet cloudlet, NetworkCloudlet sourceCloudlet) {
         CloudletReceiveTask task = new CloudletReceiveTask(
@@ -256,19 +267,6 @@ public class NetworkVmsExample1 {
         task.setMemory(TASK_RAM);
         task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);
-    }
-
-    /**
-     * Adds an execution task to list of tasks of the given
-     * {@link NetworkCloudlet}.
-     *
-     * @param netCloudlet the {@link NetworkCloudlet} to add the task
-     */
-    private static void addExecutionTask(NetworkCloudlet netCloudlet) {
-        CloudletTask task = new CloudletExecutionTask(
-                netCloudlet.getTasks().size(), CLOUDLET_EXECUTION_TASK_LENGTH);
-        task.setMemory(TASK_RAM);
-        netCloudlet.addTask(task);
     }
 
 }

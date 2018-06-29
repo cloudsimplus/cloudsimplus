@@ -1,24 +1,18 @@
 package org.cloudbus.cloudsim.examples.network.applications;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.cloudlets.network.*;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.Vm;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletSendTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletReceiveTask;
-import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
-import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.network.NetworkVm;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-
 /**
- * An example of "Bag of Tasks" application that is compounded by
+ * An example of "Bag of Tasks" distributed application that is compounded by
  * 3 {@link NetworkCloudlet}, where 2 of them send data to the first created one,
- * that waits the data to be received.
+ * which waits the data to be received.
  *
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
@@ -95,6 +89,12 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
         }
     }
 
+    private CloudletTask createExecutionTask(final int taskId) {
+        final CloudletTask task = new CloudletExecutionTask(taskId, NETWORK_CLOUDLET_LENGTH);
+        task.setMemory(CLOUDLET_TASK_MEMORY);
+        return task;
+    }
+
     private CloudletSendTask createSendTask(final int taskId) {
         CloudletSendTask task = new CloudletSendTask(taskId);
         task.setMemory(CLOUDLET_TASK_MEMORY);
@@ -109,12 +109,6 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
      */
     private CloudletReceiveTask createReceiveTask(final int taskId, final Vm sourceVm) {
         CloudletReceiveTask task = new CloudletReceiveTask(taskId, sourceVm);
-        task.setMemory(CLOUDLET_TASK_MEMORY);
-        return task;
-    }
-
-    private CloudletTask createExecutionTask(final int taskId) {
-        final CloudletTask task = new CloudletExecutionTask(taskId, NETWORK_CLOUDLET_LENGTH);
         task.setMemory(CLOUDLET_TASK_MEMORY);
         return task;
     }

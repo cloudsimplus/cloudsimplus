@@ -24,6 +24,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.resources.SanStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -42,7 +43,7 @@ import java.util.List;
  * The Cloudlet requires 1 PE and has a length of 40000 MI.
  * This way, the Cloudlet will take 160 seconds to finish (40000/250).
  *
- * <p>The Cloudlet is not requiring any files from a {@link org.cloudbus.cloudsim.resources.SanStorage SAN},
+ * <p>The Cloudlet is not requiring any files from a {@link SanStorage},
  * but since a network topology is defined from the file topology.brite,
  * communication delay between network elements is simulated,
  * causing the Cloudlet to start executing just after a few seconds.</p>

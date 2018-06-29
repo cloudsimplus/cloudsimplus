@@ -129,7 +129,7 @@ abstract class NetworkVmExampleAbstract {
         }
 
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
-            System.out.printf("\nHost %d data transfered: %d bytes",
+            System.out.printf("\nHost %d data transferred: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
 
@@ -219,7 +219,7 @@ abstract class NetworkVmExampleAbstract {
         final int numberOfVms = getDatacenterHostList().size() * MAX_VMS_PER_HOST;
         final List<NetworkVm> list = new ArrayList<>();
         for (int i = 0; i < numberOfVms; i++) {
-            NetworkVm vm = new NetworkVm(i,VM_MIPS, VM_PES_NUMBER);
+            NetworkVm vm = new NetworkVm(i, VM_MIPS, VM_PES_NUMBER);
             vm.setRam(VM_RAM)
               .setBw(VM_BW)
               .setSize(VM_SIZE)
