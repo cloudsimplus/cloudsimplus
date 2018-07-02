@@ -196,7 +196,7 @@ public final class MigrationExample2_PowerUsage {
 
     public MigrationExample2_PowerUsage(){
         /*Enables just some level of log messages.
-          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+          Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         System.out.println("Starting " + getClass().getSimpleName());

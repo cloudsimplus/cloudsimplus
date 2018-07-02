@@ -29,7 +29,7 @@ import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.util.Log;
+import org.cloudsimplus.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;

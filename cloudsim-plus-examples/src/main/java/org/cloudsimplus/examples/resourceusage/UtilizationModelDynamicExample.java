@@ -80,7 +80,7 @@ public class UtilizationModelDynamicExample {
      */
     public UtilizationModelDynamicExample() {
         /*Enables just some level of log messages.
-          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+          Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         System.out.println("Starting " + getClass().getSimpleName());

@@ -142,7 +142,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
      */
     public LoadBalancerByHorizontalVmScalingExample() {
         /*Enables just some level of log messages.
-          Make sure to import org.cloudbus.cloudsim.util.Log;*/
+          Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         /*You can remove the seed parameter to get a dynamic one, based on current computer time.

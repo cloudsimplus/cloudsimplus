@@ -1,50 +1,22 @@
-/*
- * Title:        CloudSim Toolkit
- * Description:  CloudSim (Cloud Simulation) Toolkit for Modeling and Simulation of Clouds
- * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
- *
- * Copyright (c) 2009-2012, The University of Melbourne, Australia
- */
-package org.cloudbus.cloudsim.util;
+package org.cloudsimplus.util;
 
 import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.lang.management.ManagementFactory;
-
 /**
- * Performs logging of the simulation process. It provides the
- * ability to substitute the output stream by any OutputStream subclass.
+ * An utility class to enable changing logging
+ * configuration such as the logging level.
  *
- * @author Anton Beloglazov
- * @since CloudSim Toolkit 2.0
+ * @since CloudSim Plus 3.0.0
+ * @author Manoel Campos da Silva Filho
  */
 public final class Log {
-    /**
-     * Checks if application is running in debug mode.
-     * "jdwp" is the acronym for "Java Debug Wire Protocol" that
-     * may exists as an application parameter to define
-     * the application is running in debug mode.
-     *
-     * @see #isDebug()
-     */
-    private static final boolean debug =
-            ManagementFactory.getRuntimeMXBean().getInputArguments()
-                    .toString().indexOf("jdwp") > 0;
 
     /**
      * A private constructor to avoid class instantiation.
      */
     private Log(){}
-
-    /**
-     * Checks if the simulation is running in the Java debugger.
-     * @return
-     */
-    public static boolean isDebug() {
-        return debug;
-    }
 
     /**
      * Sets the logging {@link Level} for a given logger instance.

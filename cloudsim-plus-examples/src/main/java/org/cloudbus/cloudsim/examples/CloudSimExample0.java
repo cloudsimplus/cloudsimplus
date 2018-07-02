@@ -55,7 +55,7 @@ public class CloudSimExample0 {
      * Default constructor that builds the simulation.
      */
     public CloudSimExample0() {
-        //Enables just some level of log messages.//Make sure to import org.cloudbus.cloudsim.util.Log; //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+        //Enables just some level of log messages.//Make sure to import org.cloudsimplus.util.Log; //Log.setLevel(ch.qos.logback.classic.Level.WARN);
         System.out.println("Starting " + getClass().getSimpleName());
         this.simulation = new CloudSim();
 
