@@ -334,8 +334,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * that is being used by the Vm running the Cloudlet.
      *
      * @param priority priority of this Cloudlet
-     *
-     * @post $none
      */
     void setPriority(int priority);
 
@@ -345,8 +343,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * (applicable to selected CloudletTaskScheduler class only).
      *
      * @return the network service level
-     * @pre $none
-     * @post $none
      */
     int getNetServiceLevel();
 
@@ -355,9 +351,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * required to execute this cloudlet.
      *
      * @return number of PEs
-     *
-     * @pre $none
-     * @post $none
      * @see #getTotalLength()
      */
     long getNumberOfPes();
@@ -367,7 +360,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      *
      * @return the Datacenter or <tt>{@link Datacenter#NULL}</tt> if the Cloudlet
      * has not being processed yet.
-     * @pre $none
      */
     Datacenter getLastDatacenter();
 
@@ -460,8 +452,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * Gets the id of Vm that is planned to execute the cloudlet.
      *
      * @return the VM, or {@link #NOT_ASSIGNED} if the Cloudlet was not assigned to a VM yet
-     * @pre $none
-     * @post $none
      */
     Vm getVm();
 
@@ -482,8 +472,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @return the waiting time when the cloudlet waited
      * to execute; or 0 if there wasn't any waiting time
      * or the cloudlet hasn't started to execute.
-     * @pre $none
-     * @post $none
      */
     double getWaitingTime();
 
@@ -511,8 +499,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      *
      * @return <tt>true</tt> if this Cloudlet has finished execution,
      * <tt>false</tt> otherwise
-     * @pre $none
-     * @post $none
      */
     boolean isFinished();
 
@@ -523,9 +509,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @param fileSize the size to set (in bytes)
      * @return
      * @throws IllegalArgumentException when the given size is lower or equal to zero
-     *
-     * @pre fileSize > 0
-     * @post $none
      */
     Cloudlet setFileSize(long fileSize);
 
@@ -538,8 +521,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @param outputSize the output size to set (in bytes)
      * @return
      * @throws IllegalArgumentException when the given size is lower or equal to zero
-     * @pre $none
-     * @post $result >= 1
      */
     Cloudlet setOutputSize(long outputSize);
 
@@ -557,7 +538,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @param newStatus the status of this Cloudlet
      * @return true if the cloudlet status was changed,
      * i.e, if the newStatus is different from the current status; false otherwise
-     * @post $none
      */
     boolean setStatus(Status newStatus);
 
@@ -567,8 +547,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      *
      * @param netServiceLevel the new type of service (ToS) of this cloudlet
      * @return <code>true</code> if the netServiceLevel is valid, false otherwise.
-     * @pre netServiceLevel >= 0
-     * @post $none
      */
     boolean setNetServiceLevel(int netServiceLevel);
 
@@ -581,9 +559,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @param numberOfPes number of PEs
      * @return
      * @throw IllegalArgumentException when the number of PEs is lower or equal to zero
-     *
-     * @pre numPE > 0
-     * @post $none
      */
     Cloudlet setNumberOfPes(long numberOfPes);
 
@@ -643,8 +618,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * </p>
      *
      * @return the length of this Cloudlet
-     * @pre $none
-     * @post $result >= 0.0
      * @see #getTotalLength()
      * @see #getNumberOfPes()
      */
@@ -660,8 +633,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      *
      * @see #getLength()
      * @see #getTotalLength()
-     * @pre length > 0
-     * @post $none
      */
     Cloudlet setLength(long length);
 
@@ -679,8 +650,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      *
      * @see #getNumberOfPes()
      * @see #getLength()
-     * @pre $none
-     * @post $result >= 0.0
      */
     long getTotalLength();
 
@@ -691,8 +660,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      *
      * @return the length of a partially executed Cloudlet, or the full Cloudlet
      * length if it is completed
-     * @pre $none
-     * @post $result >= 0.0
      */
     long getFinishedLengthSoFar();
 
@@ -706,8 +673,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @return the length of a partially executed Cloudlet; the full Cloudlet
      * length if it is completed; or 0 if the Cloudlet has never been executed
      * in the given Datacenter
-     * @pre resId >= 0
-     * @post $result >= 0.0
      */
     long getFinishedLengthSoFar(Datacenter datacenter);
 
@@ -719,8 +684,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * @return true if the length is valid and the cloudlet already has assigned
      * to a Datacenter, false otherwise
      * @see CloudletExecution
-     * @pre length >= 0.0
-     * @post $none
      */
     boolean addFinishedLengthSoFar(long partialFinishedMI);
 
@@ -738,10 +701,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * Datacenter.
      * @return true if the submission time is valid and
      * the cloudlet has already being assigned to a Datacenter for execution
-     *
-     * @pre wallTime >= 0.0
-     * @pre actualTime >= 0.0
-     * @post $none
      */
     boolean setWallClockTime(double wallTime, double actualCpuTime);
 
@@ -753,8 +712,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * latest one. Meaning, all previous execution start time are ignored.
      *
      * @param clockTime the latest execution start time
-     * @pre clockTime >= 0.0
-     * @post $none
      */
     void setExecStartTime(double clockTime);
 
@@ -811,8 +768,6 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
      * Gets the {@link DatacenterBroker} that represents the owner of this Cloudlet.
      *
      * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
-     * @pre $none
-     * @post $none
      */
     @Override
     DatacenterBroker getBroker();
