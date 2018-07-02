@@ -21,20 +21,20 @@ import java.util.stream.Collectors;
 
 /**
  * Implements a policy of scheduling performed by a
- * virtual machine to process network packets to be sent or received by its
- * {@link NetworkCloudlet}'s.
+ * virtual machine to process {@link CloudletTask}s
+ * of a {@link NetworkCloudlet}.
  *
- * It also schedules the network communication among the cloudlets,
+ * <p>It also schedules the network communication among the cloudlets,
  * managing the time a cloudlet stays blocked waiting
- * the response of a network package sent to another cloudlet.
+ * the response of a network package sent to another cloudlet.</p>
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
  *
  * @since CloudSim Plus 1.0
  */
-public class PacketSchedulerSimple implements PacketScheduler {
-    private static final Logger logger = LoggerFactory.getLogger(PacketSchedulerSimple.class.getSimpleName());
+public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
+    private static final Logger logger = LoggerFactory.getLogger(CloudletTaskSchedulerSimple.class.getSimpleName());
 
     /**
      * @see #getVm()
@@ -54,10 +54,10 @@ public class PacketSchedulerSimple implements PacketScheduler {
     private final Map<Vm, List<VmPacket>> vmPacketsReceivedMap;
 
     /**
-     * Creates a PacketSchedulerSimple object.
+     * Creates a CloudletTaskSchedulerSimple object.
      *
      */
-    public PacketSchedulerSimple() {
+    public CloudletTaskSchedulerSimple() {
         super();
         vmPacketsToSend = new ArrayList<>();
         vmPacketsReceivedMap = new HashMap<>();

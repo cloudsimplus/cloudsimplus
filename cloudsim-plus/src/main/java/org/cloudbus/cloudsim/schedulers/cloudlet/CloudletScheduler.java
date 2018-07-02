@@ -7,19 +7,19 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Set;
-
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
-import org.cloudbus.cloudsim.network.VmPacket;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
+import org.cloudbus.cloudsim.vms.Vm;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
 
 /**
  * An interface to be implemented by each class that provides a policy
@@ -238,26 +238,26 @@ public interface CloudletScheduler extends Serializable {
     boolean hasFinishedCloudlets();
 
     /**
-     * Gets the {@link PacketScheduler} that will be used by this CloudletScheduler to process
+     * Gets the {@link CloudletTaskScheduler} that will be used by this CloudletScheduler to process
      * {@link VmPacket}s to be sent or received by the Vm that is assigned to the
      * current CloudletScheduler.
      *
-     * @return the PacketScheduler for this CloudletScheduler or {@link PacketScheduler#NULL} if this scheduler
+     * @return the CloudletTaskScheduler for this CloudletScheduler or {@link CloudletTaskScheduler#NULL} if this scheduler
      * will not deal with packets transmission.
      */
-    PacketScheduler getPacketScheduler();
+    CloudletTaskScheduler getTaskScheduler();
 
     /**
-     * Sets the {@link PacketScheduler} that will be used by this CloudletScheduler to process
+     * Sets the {@link CloudletTaskScheduler} that will be used by this CloudletScheduler to process
      * {@link VmPacket}s to be sent or received by the Vm that is assigned to the
-     * current CloudletScheduler. The Vm from the CloudletScheduler is also set to the PacketScheduler.
+     * current CloudletScheduler. The Vm from the CloudletScheduler is also set to the CloudletTaskScheduler.
      *
-     * <p><b>This attribute usually doesn't need to be set manually. See the note at the {@link PacketScheduler} interface for more details.</b></p>
+     * <p><b>This attribute usually doesn't need to be set manually. See the note at the {@link CloudletTaskScheduler} interface for more details.</b></p>
      *
-     * @param packetScheduler the PacketScheduler to set for this CloudletScheduler or {@link PacketScheduler#NULL} if this scheduler
+     * @param taskScheduler the CloudletTaskScheduler to set for this CloudletScheduler or {@link CloudletTaskScheduler#NULL} if this scheduler
      * will not deal with packets transmission.
      */
-    void setPacketScheduler(PacketScheduler packetScheduler);
+    void setTaskScheduler(CloudletTaskScheduler taskScheduler);
 
     /**
      * Checks if there is a packet scheduler assigned to this CloudletScheduler

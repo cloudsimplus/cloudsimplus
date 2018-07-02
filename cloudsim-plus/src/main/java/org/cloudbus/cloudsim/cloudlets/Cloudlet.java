@@ -6,18 +6,18 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-
-import java.util.List;
 import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.core.UniquelyIdentificable;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
+
+import java.util.List;
 
 /**
  * An interface to be implemented by each class that provides basic
@@ -342,7 +342,7 @@ public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, C
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
      * It is the ToS this cloudlet receives in the network
-     * (applicable to selected PacketScheduler class only).
+     * (applicable to selected CloudletTaskScheduler class only).
      *
      * @return the network service level
      * @pre $none

@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -57,9 +57,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private final List<CloudletExecution> cloudletFailedList;
     /**
-     * @see #getPacketScheduler()
+     * @see #getTaskScheduler()
      */
-    private PacketScheduler packetScheduler;
+    private CloudletTaskScheduler taskScheduler;
     /**
      * @see #getPreviousTime()
      */
@@ -100,7 +100,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudletWaitingList = new ArrayList<>();
         cloudletReturnedList = new HashSet<>();
         currentMipsShare = new ArrayList<>();
-        packetScheduler = PacketScheduler.NULL;
+        taskScheduler = CloudletTaskScheduler.NULL;
     }
 
     @Override
@@ -506,19 +506,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Updates the processing of a specific cloudlet of the Vm using this
      * scheduler and packets that such a Cloudlet has to send or to receive
-     * (if the CloudletScheduler has a {@link PacketScheduler} assigned to it).
+     * (if the CloudletScheduler has a {@link CloudletTaskScheduler} assigned to it).
      *
      * @param ce         The cloudlet to be its processing updated
      * @param currentTime current simulation time
      */
     private void updateCloudletProcessingAndPacketsDispatch(final CloudletExecution ce, final double currentTime) {
         long partialFinishedMI = 0;
-        if (packetScheduler.isTimeToUpdateCloudletProcessing(ce.getCloudlet())) {
+        if (taskScheduler.isTimeToUpdateCloudletProcessing(ce.getCloudlet())) {
             partialFinishedMI = updateCloudletProcessing(ce, currentTime);
         }
 
 
-        packetScheduler.processCloudletTasks(ce.getCloudlet(), partialFinishedMI);
+        taskScheduler.processCloudletTasks(ce.getCloudlet(), partialFinishedMI);
     }
 
     /**
@@ -864,20 +864,20 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public PacketScheduler getPacketScheduler() {
-        return packetScheduler;
+    public CloudletTaskScheduler getTaskScheduler() {
+        return taskScheduler;
     }
 
     @Override
-    public void setPacketScheduler(final PacketScheduler packetScheduler) {
-        Objects.requireNonNull(packetScheduler);
-        this.packetScheduler = packetScheduler;
-        this.packetScheduler.setVm(vm);
+    public void setTaskScheduler(final CloudletTaskScheduler taskScheduler) {
+        Objects.requireNonNull(taskScheduler);
+        this.taskScheduler = taskScheduler;
+        this.taskScheduler.setVm(vm);
     }
 
     @Override
     public boolean isTherePacketScheduler() {
-        return packetScheduler != null && packetScheduler != PacketScheduler.NULL;
+        return taskScheduler != null && taskScheduler != CloudletTaskScheduler.NULL;
     }
 
     @Override

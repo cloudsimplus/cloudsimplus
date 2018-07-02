@@ -9,13 +9,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link PacketScheduler}
+ * A class that implements the Null Object Design Pattern for {@link CloudletTaskScheduler}
  * class.
  *
  * @author Manoel Campos da Silva Filho
- * @see PacketScheduler#NULL
+ * @see CloudletTaskScheduler#NULL
  */
-final class PacketSchedulerNull implements PacketScheduler {
+final class CloudletTaskSchedulerNull implements CloudletTaskScheduler {
     @Override public Vm getVm() {
         return Vm.NULL;
     }

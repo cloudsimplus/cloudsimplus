@@ -2,7 +2,7 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Collections;
@@ -61,10 +61,10 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public boolean hasFinishedCloudlets() {
         return false;
     }
-    @Override public PacketScheduler getPacketScheduler() {
-        return PacketScheduler.NULL;
+    @Override public CloudletTaskScheduler getTaskScheduler() {
+        return CloudletTaskScheduler.NULL;
     }
-    @Override public void setPacketScheduler(PacketScheduler packetScheduler) {/**/}
+    @Override public void setTaskScheduler(CloudletTaskScheduler taskScheduler) {/**/}
     @Override public boolean isTherePacketScheduler() {
         return false;
     }

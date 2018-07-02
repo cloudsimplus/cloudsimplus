@@ -15,8 +15,8 @@ import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketScheduler;
-import org.cloudbus.cloudsim.schedulers.cloudlet.network.PacketSchedulerSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -139,8 +139,8 @@ public class NetworkHost extends HostSimple {
                 return;
             }
 
-            final PacketScheduler pktScheduler = getVmPacketScheduler(destinationVm);
-            pktScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
+            final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(destinationVm);
+            taskScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
             logger.trace(
                 "{}: {}: {} received pkt with {} bytes from {} in {} and forwarded it to {} in {}",
                 getSimulation().clock(), getClass().getSimpleName(),
@@ -217,14 +217,14 @@ public class NetworkHost extends HostSimple {
         return numberOfPackets == 0 ? bandwidth : bandwidth / numberOfPackets;
     }
 
-    private PacketScheduler getVmPacketScheduler(Vm vm) {
-        return vm.getCloudletScheduler().getPacketScheduler();
+    private CloudletTaskScheduler getVmPacketScheduler(Vm vm) {
+        return vm.getCloudletScheduler().getTaskScheduler();
     }
 
     /**
      * {@inheritDoc}
      *
-     * <p><b>It also creates and sets a {@link PacketScheduler} for each
+     * <p><b>It also creates and sets a {@link CloudletTaskScheduler} for each
      * Vm that doesn't have one already.</b></p>
      * @param vm {@inheritDoc}
      * @return {@inheritDoc}
@@ -239,7 +239,7 @@ public class NetworkHost extends HostSimple {
     private void setPacketScheduler(Vm vm) {
         final CloudletScheduler cs = vm.getCloudletScheduler();
         if(!cs.isTherePacketScheduler()){
-            cs.setPacketScheduler(new PacketSchedulerSimple());
+            cs.setTaskScheduler(new CloudletTaskSchedulerSimple());
         }
     }
 
@@ -250,12 +250,12 @@ public class NetworkHost extends HostSimple {
      * @param sourceVm the VM from where the packets will be sent
      */
     private void collectListOfPacketsToSendFromVm(Vm sourceVm) {
-        final PacketScheduler packetScheduler = getVmPacketScheduler(sourceVm);
-        for (final VmPacket vmPkt : packetScheduler.getVmPacketsToSend()) {
+        final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(sourceVm);
+        for (final VmPacket vmPkt : taskScheduler.getVmPacketsToSend()) {
             collectPacketToSendFromVm(vmPkt);
         }
 
-        packetScheduler.clearVmPacketsToSend();
+        taskScheduler.clearVmPacketsToSend();
     }
 
     /**

@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.network.CloudletExecutionTask;
 import org.cloudbus.cloudsim.cloudlets.network.CloudletTask;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
@@ -20,40 +21,45 @@ import org.cloudbus.cloudsim.vms.network.NetworkVm;
 import java.util.List;
 
 /**
- * Provides the functionalities to enable a {@link CloudletScheduler} to
- * send {@link VmPacket}s from the {@link Vm} of the scheduler to other ones or
- * to receive {@link VmPacket}s sent from other VMs to that {@link Vm}.
+ * Provides the features to enable a {@link CloudletScheduler} to
+ * process internal {@link CloudletTask}s such as:
+ * <ul>
+ *  <li>processing of {@link CloudletExecutionTask}s;</li>
+ *  <li>sending {@link VmPacket}s from the {@link Vm} of the scheduler to other ones;</li>
+ *  <li>or receiving {@link VmPacket}s sent from other VMs to that {@link Vm}.</li>
+ * </ul>
+ *
  * The packet dispatching is performed by processing {@link CloudletTask}s
  * inside a {@link NetworkCloudlet}.
  *
  * <p>A researcher creating its own simulations using CloudSim Plus usually doesn't have to
  * care about this class, since even creating network-enabled simulations using objects
  * such as {@link NetworkDatacenter}, {@link NetworkHost}, {@link NetworkVm}
- * and {@link NetworkCloudlet}, the {@link NetworkHost} will automatically create and instance of
- * the current interface and attach them to the {@link CloudletScheduler}
+ * and {@link NetworkCloudlet}, the {@link NetworkHost} will automatically create instances of
+ * the current interface and attach each one to the {@link CloudletScheduler}
  * that every Vm is using, doesn't matter what kind of scheduler it is.</p>
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface PacketScheduler {
+public interface CloudletTaskScheduler {
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link PacketScheduler}
+     * An attribute that implements the Null Object Design Pattern for {@link CloudletTaskScheduler}
      * objects.
      */
-    PacketScheduler NULL = new PacketSchedulerNull();
+    CloudletTaskScheduler NULL = new CloudletTaskSchedulerNull();
 
     /**
-     * Gets the Vm that the PacketScheduler will sent packets from or receive packets to.
+     * Gets the Vm that the CloudletTaskScheduler will sent packets from or receive packets to.
      * @return
      */
     Vm getVm();
 
     /**
-     * Sets the Vm that the PacketScheduler will sent packets from or receive packets to.
-     * It is not required to manually set a Vm for the PacketScheduler,
+     * Sets the Vm that the CloudletTaskScheduler will sent packets from or receive packets to.
+     * It is not required to manually set a Vm for the CloudletTaskScheduler,
      * since the {@link NetworkHost} does it when it creates a Vm.
      *
      * @param vm the Vm to set
