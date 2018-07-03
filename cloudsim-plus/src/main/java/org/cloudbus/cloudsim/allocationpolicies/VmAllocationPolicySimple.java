@@ -29,14 +29,16 @@ import java.util.function.Function;
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
-     * Creates a new VmAllocationPolicySimple object.
+     * Instantiates a VmAllocationPolicySimple.
      */
     public VmAllocationPolicySimple() {
         super();
     }
 
     /**
-     * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
+     * Instantiates a VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm
+     * in order to define a different policy.
+     *
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
      * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
      */
@@ -54,8 +56,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * The entries are being sorted just to ensure that
      * the results are always the same for a specific static simulation.
      * Without the sort, usually the allocation of Hosts to VMs
-     * is different during debug, because of the unsorted
-     * nature of the Map.
+     * is different during debug, because of the unsorted nature of the Map.
      */
     @Override
     public Optional<Host> findHostForVm(final Vm vm) {
@@ -68,11 +69,13 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             .map(Map.Entry::getKey);
     }
 
+    //It's ensured the hostFreePesMap always have an entry for each Host (avoiding NPE)
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean allocateHostForVm(final Vm vm, final Host host) {
         if(super.allocateHostForVm(vm, host)){
             addUsedPes(vm);
-            getHostFreePesMap().put(host, getHostFreePesMap().get(host) - vm.getNumberOfPes());
+            getHostFreePesMap().compute(host, (h, previousFreePes) -> previousFreePes - vm.getNumberOfPes());
             return true;
         }
 

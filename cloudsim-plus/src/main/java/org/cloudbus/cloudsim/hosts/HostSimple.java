@@ -38,6 +38,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class HostSimple implements Host {
     private static final Logger logger = LoggerFactory.getLogger(HostSimple.class.getSimpleName());
+
     /**
      * @see #getStateHistory()
      */
@@ -262,38 +263,22 @@ public class HostSimple implements Host {
      * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
      */
     private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
-        final String msg = inMigration ? "VM Migration" : "VM Creation";
         if (!storage.isAmountAvailable(vm.getStorage())) {
-            logger.error(
-                "{}: {}: [{}] Allocation of {} to {} failed due to lack of storage. Required {} but there is just {} MB available.",
-                simulation.clock(), getClass().getSimpleName(),
-                msg, vm, this, vm.getStorage().getCapacity(), storage.getAvailableResource());
+            logAllocationError(vm, inMigration,"storage", "MB", vm.getStorage());
             return false;
         }
 
         if (!ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
-            logger.error(
-                "{}: {}: [{}] Allocation of {} to {} failed due to lack of RAM. Required {} but there is just {} MB available.",
-                simulation.clock(), getClass().getSimpleName(),
-                msg, vm, this, vm.getRam().getCapacity(), ram.getAvailableResource());
+            logAllocationError(vm, inMigration,"RAM", "MB", vm.getRam());
             return false;
         }
 
         if (!bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
-            logger.error(
-                "{}: {}: [{}] Allocation of {} to {} failed due to lack of BW. Required {} but there is just {} Mbps available.",
-                simulation.clock(), getClass().getSimpleName(),
-                msg, vm, this, vm.getBw().getCapacity(), bw.getAvailableResource());
+            logAllocationError(vm, inMigration,"BW", "Mbps", vm.getBw());
             return false;
         }
 
-        if (!vmScheduler.isSuitableForVm(vm)) {
-            logger.error(
-                    "{}: {}: [{}] Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS ({} MIPS total).{}" +
-                    "\t\tHowever, there are just {} working PEs of {} MIPS, from which {} MIPS are available.",
-                    getSimulation().clock(), getClass().getSimpleName(), msg, vm, this, System.lineSeparator(),
-                    vm.getNumberOfPes(), (long)vm.getMips(), (long)vm.getTotalMipsCapacity(),
-                    System.lineSeparator(), vmScheduler.getWorkingPeList().size(), (long)getMips(), (long)vmScheduler.getAvailableMips());
+        if (!vmScheduler.isSuitableForVm(vm, true)) {
             return false;
         }
 
@@ -304,6 +289,15 @@ public class HostSimple implements Host {
         vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
 
         return true;
+    }
+
+    private void logAllocationError(final Vm vm, final boolean inMigration, final String resourceName, final String resourceUnit, final Resource resource){
+        final String migration = inMigration ? "VM Migration" : "VM Creation";
+        final String msg = resource.getAvailableResource() > 0 ? "just "+resource.getAvailableResource()+" " + resourceUnit : "no amount";
+        logger.error(
+            "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
+            simulation.clock(), getClass().getSimpleName(), migration, vm, this,
+            resourceName, resource.getCapacity(), msg);
     }
 
     @Override
@@ -322,10 +316,10 @@ public class HostSimple implements Host {
     @Override
     public boolean isSuitableForVm(final Vm vm) {
         return  active &&
-                vmScheduler.getPeCapacity() >= vm.getCurrentRequestedMaxMips() &&
-                vmScheduler.getAvailableMips() >= vm.getCurrentRequestedTotalMips() &&
-                ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()) &&
-                bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw());
+            vmScheduler.getPeCapacity() >= vm.getCurrentRequestedMaxMips() &&
+            vmScheduler.getAvailableMips() >= vm.getCurrentRequestedTotalMips() &&
+            ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()) &&
+            bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw());
     }
 
     @Override

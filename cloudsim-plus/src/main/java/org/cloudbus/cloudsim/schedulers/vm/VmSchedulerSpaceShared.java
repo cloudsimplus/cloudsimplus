@@ -7,14 +7,15 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * VmSchedulerSpaceShared is a VMM allocation policy that allocates one or more
@@ -30,6 +31,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
+    private static final Logger logger = LoggerFactory.getLogger(VmSchedulerSpaceShared.class.getSimpleName());
 
     /**
      * Creates a space-shared VM scheduler.
@@ -56,26 +58,39 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean isSuitableForVm(final List<Double> vmMipsList) {
-        return !getTotalCapacityToBeAllocatedToVm(vmMipsList).isEmpty();
+    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips, final boolean showLog) {
+        final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
+        if(selectedPes.size() >= requestedMips.size()){
+            return true;
+        }
+
+        if(showLog) {
+            logger.error(
+                "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
+                    "\t\tHowever, there are just {} available PEs with the required MIPS.",
+                getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
+                requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
+                selectedPes.size());
+        }
+        return false;
     }
 
     /**
      * Checks if the requested amount of MIPS is available to be allocated to a VM
-     * @param vmRequestedMips a VM's list of requested MIPS
-     * @return the list of PEs that can be allocated to the VM or
-     * an empty list if there isn't enough capacity that can be allocated
+     * @param requestedMips a list of MIPS requested by a VM
+     * @return the list of PEs that may be allocated to the VM. If the size of this list is
+     *         lower than the size of the requestedMips, it means there aren't enough PEs
+     *         with requested MIPS to be allocated to the VM
      */
-    private List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> vmRequestedMips) {
-        // if there is no enough free PEs, fails
-        if (getHost().getFreePeList().size() < vmRequestedMips.size()) {
-            return Collections.EMPTY_LIST;
+    private List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> requestedMips) {
+        if (getHost().getFreePeList().size() < requestedMips.size()) {
+            return getHost().getFreePeList();
         }
 
         final List<Pe> selectedPes = new ArrayList<>();
         final Iterator<Pe> peIterator = getHost().getFreePeList().iterator();
         Pe pe = peIterator.next();
-        for (final double mips : vmRequestedMips) {
+        for (final double mips : requestedMips) {
             if (mips <= pe.getCapacity()) {
                 selectedPes.add(pe);
                 if (!peIterator.hasNext()) {
@@ -85,17 +100,13 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             }
         }
 
-        if (vmRequestedMips.size() > selectedPes.size()) {
-            return Collections.EMPTY_LIST;
-        }
-
         return selectedPes;
     }
 
     @Override
     public boolean allocatePesForVmInternal(final Vm vm, final List<Double> requestedMips) {
         final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
-        if(selectedPes.isEmpty()){
+        if(selectedPes.size() < requestedMips.size()){
             return false;
         }
 

@@ -6,16 +6,18 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
-import java.util.*;
-import java.util.stream.LongStream;
-
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import static java.util.stream.Collectors.toList;
-import java.util.stream.IntStream;
 
 /**
  * An abstract class for implementation of {@link VmScheduler}s.
@@ -26,6 +28,8 @@ import java.util.stream.IntStream;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmSchedulerAbstract implements VmScheduler {
+    private static final Logger logger = LoggerFactory.getLogger(VmSchedulerSpaceShared.class.getSimpleName());
+
     /**
      * The default percentage to define the CPU overhead of VM migration
      * if one is not explicitly set.
@@ -69,9 +73,23 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean isSuitableForVm(final Vm vm) {
-        return isSuitableForVm(vm.getCurrentRequestedMips());
+    public final boolean isSuitableForVm(final Vm vm, final boolean showLog) {
+        return isSuitableForVm(vm, vm.getCurrentRequestedMips(), showLog);
     }
+
+    @Override
+    public boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog) {
+        if(requestedMips.isEmpty()){
+            logger.warn(
+                "{}: {}: It was requested an empty list of PEs for {} in {}",
+                getHost().getSimulation().clock(), getClass().getSimpleName(), vm, host);
+            return false;
+        }
+
+        return isSuitableForVmInternal(vm, requestedMips, showLog);
+    }
+
+    protected abstract boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips, final boolean showLog);
 
     @Override
     public final boolean allocatePesForVm(final Vm vm) {
@@ -403,28 +421,5 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     private boolean isOtherHostAssigned(final Host host) {
         return this.host != null && this.host != Host.NULL && !host.equals(this.host);
-    }
-
-    /**
-     * Checks if the requested amount of MIPS is available to be allocated to a
-     * VM.
-     *
-     * @param vmRequestedMipsShare a list of MIPS requested by a VM
-     * @return true if the requested MIPS List is available, false otherwise
-     */
-    @Override
-    public boolean isAllowedToAllocateMips(final List<Double> vmRequestedMipsShare) {
-        final double pmMips = getPeCapacity();
-        double totalRequestedMips = 0;
-        for (final double vmMips : vmRequestedMipsShare) {
-            // each virtual PE of a VM must require not more than the capacity of a physical PE
-            if (vmMips > pmMips) {
-                return false;
-            }
-            totalRequestedMips += vmMips;
-        }
-
-        // This scheduler does not allow over-subscription
-        return getAvailableMips() >= totalRequestedMips && getWorkingPeList().size() >= vmRequestedMipsShare.size();
     }
 }

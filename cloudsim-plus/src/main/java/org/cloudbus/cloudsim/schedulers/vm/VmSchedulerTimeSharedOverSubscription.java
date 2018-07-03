@@ -6,12 +6,14 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
+import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-
-import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A Time-Shared VM Scheduler which allows over-subscription. In other
@@ -32,6 +34,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Toolkit 3.0
  */
 public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared {
+    private static final Logger logger = LoggerFactory.getLogger(VmSchedulerTimeSharedOverSubscription.class.getSimpleName());
+
     /**
      * Creates a time-shared over-subscription VM scheduler.
      */
@@ -62,13 +66,28 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * the allocation of MIPS for the VM by reducing the allocation
      * of other VMs.</p>
      *
-     * @param vmRequestedMipsShare a list of MIPS requested by a VM
+     * @param vm {@inheritDoc}
+     * @param requestedMips {@inheritDoc}
+     * @param showLog
      * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
      * @see #allocateMipsShareForVm(Vm, List)
      */
     @Override
-    public boolean isAllowedToAllocateMips(final List<Double> vmRequestedMipsShare){
-        return getWorkingPeList().size() >= vmRequestedMipsShare.size();
+    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips, final boolean showLog){
+        final int workingPes = getWorkingPeList().size();
+        if(workingPes >= requestedMips.size()){
+            return true;
+        }
+
+        if(showLog) {
+            logger.error(
+                "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
+                    "\t\tHowever, there are just {} available PEs.",
+                getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
+                requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
+                workingPes);
+        }
+        return false;
     }
 
     @Override

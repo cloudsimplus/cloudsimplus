@@ -94,7 +94,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @return true if successful, false otherwise
      */
     private boolean allocateMipsShareForVmInternal(final Vm vm, final List<Double> requestedMips) {
-        if (!isAllowedToAllocateMips(requestedMips)) {
+        if (!isSuitableForVm(vm, requestedMips)) {
             return false;
         }
 
@@ -270,6 +270,35 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         return hostPe.getPeProvisioner().getAvailableResource();
     }
 
+    @Override
+    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips, final boolean showLog) {
+        final double pmMips = getPeCapacity();
+        double totalRequestedMips = 0;
+        for (final double vmMips : requestedMips) {
+            // each virtual PE of a VM must require not more than the capacity of a physical PE
+            if (vmMips > pmMips) {
+                return false;
+            }
+            totalRequestedMips += vmMips;
+        }
+
+        final int workingPes = getWorkingPeList().size();
+        // This scheduler does not allow over-subscription
+        if(getAvailableMips() >= totalRequestedMips && workingPes >= requestedMips.size()){
+            return true;
+        }
+
+        if(showLog) {
+            logger.error(
+                "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
+                    "\t\tHowever, there are just {} available PEs with the required MIPS.",
+                getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
+                requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
+                workingPes);
+        }
+        return false;
+    }
+
     /**
      * Allocates a given amount of MIPS from a specific PE for a given VM.
      * @param vm the VM to allocate the MIPS from a given PE
@@ -278,11 +307,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void allocateMipsFromHostPeForVm(final Vm vm, final Pe pe, final double mipsToAllocate) {
         pe.getPeProvisioner().allocateResourceForVm(vm, (long)mipsToAllocate);
-    }
-
-    @Override
-    public boolean isSuitableForVm(final List<Double> vmMipsList) {
-        return isAllowedToAllocateMips(vmMipsList);
     }
 
     /**

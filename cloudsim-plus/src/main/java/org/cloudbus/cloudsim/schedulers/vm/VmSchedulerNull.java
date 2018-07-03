@@ -43,7 +43,7 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
-    @Override public boolean isSuitableForVm(List<Double> vmMipsList) { return false; }
+    @Override public boolean isSuitableForVm(Vm vm, boolean showLog) { return false; }
     @Override public double getVmMigrationCpuOverhead() {
         return 0.0;
     }
@@ -53,7 +53,8 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public VmScheduler setHost(Host host) {
         return this;
     }
-    @Override public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare) { return false; }
+    @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips) { return false; }
+    @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog) { return false; }
     @Override public void deallocatePesFromVm(Vm vm) {/**/}
     @Override public void deallocatePesFromVm(Vm vm, int pesToRemove) {/**/}
 }

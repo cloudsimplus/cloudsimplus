@@ -143,16 +143,56 @@ public interface VmScheduler {
      *
      * @return true, if it is possible to allocate the the VM into the host; false otherwise
      */
-    boolean isSuitableForVm(Vm vm);
+    default boolean isSuitableForVm(final Vm vm) {
+        return isSuitableForVm(vm, false);
+    }
 
     /**
      * Checks if the PM using this scheduler has enough MIPS capacity
      * to host a given VM.
      *
-     * @param vmMipsList a List with the MIPS capacity required by each VM PE
+     * @param vm the vm to check if there is enough available resource on the PM to host it
+     * @param showLog if a log message should be printed when the Host isn't suitable for the given VM
      * @return true, if it is possible to allocate the the VM into the host; false otherwise
+     * @see #isSuitableForVm(Vm)
      */
-    boolean isSuitableForVm(List<Double> vmMipsList);
+    boolean isSuitableForVm(Vm vm, boolean showLog);
+
+    /**
+     * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
+     * Depending on the {@code VmScheduler} implementation, the return value
+     * of this method may have different effects:
+     * <ul>
+     * <li>true: requested MIPS can be allocated, partial or totally;</li>
+     * <li>false: requested MIPS cannot be allocated because there is no availability at all
+     * or there is just a partial amount of the requested MIPS available and the
+     * {@code VmScheduler} implementation doesn't allow allocating less than the
+     * VM is requesting. If less than the required MIPS is allocated to a VM,
+     * it will cause performance degradation.
+     * Such situation defines an over-subscription situation
+     * which just specific {@code VmSchedulers} accept.
+     * </li>
+     * </ul>
+     *
+     * @param vm the {@link Vm} to check if there are enough MIPS to allocate to
+     * @param requestedMips a list of MIPS requested by a VM
+     * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
+     */
+    default boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips) {
+        return isSuitableForVm(vm, requestedMips, false);
+    }
+
+    /**
+     * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
+     *
+     * @param vm the {@link Vm} to check if there are enough MIPS to allocate to
+     * @param requestedMips a list of MIPS requested by a VM
+     * @param showLog if a log message should be printed when the Host isn't suitable for the given VM
+     * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
+     *
+     * @see #isSuitableForVm(Vm, List)
+     */
+    boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog);
 
     /**
      * Gets the maximum available MIPS among all the host's PEs.
@@ -231,26 +271,4 @@ public interface VmScheduler {
      * @throws NullPointerException when the host parameter is null
      */
     VmScheduler setHost(Host host);
-
-    /**
-     * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
-     * Depending on the {@code VmScheduler} implementation, the return value
-     * of this method may have different effects:
-     * <ul>
-     * <li>true: requested MIPS will be allocated, partial or totally, depending
-     * on the available MIPS and the {@code VmScheduler} implementation;</li>
-     * <li>false: requested MIPS will not be allocated because there is no availability at all
-     * or there is just a partial amount of the requested MIPS available and the
-     * {@code VmScheduler} implementation doesn't allow allocating less than the
-     * VM is requesting. If less than the required MIPS is allocated to a VM,
-     * it will cause performance degradation.
-     * Such situation defines an over-subscription situation
-     * which just specific {@code VmSchedulers} accept.
-     * </li>
-     * </ul>
-     *
-     * @param vmRequestedMipsShare a list of MIPS requested by a VM
-     * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
-     */
-    boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare);
 }

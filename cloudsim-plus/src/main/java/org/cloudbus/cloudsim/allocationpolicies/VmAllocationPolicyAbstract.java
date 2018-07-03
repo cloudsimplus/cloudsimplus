@@ -251,7 +251,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final List<Double> additionalVmMips =
             LongStream.range(0, (long)numberOfPesForScaling).mapToObj(i -> vm.getMips()).collect(toList());
 
-        return !vm.getHost().getVmScheduler().isSuitableForVm(additionalVmMips);
+        return !vm.getHost().getVmScheduler().isSuitableForVm(vm, additionalVmMips);
     }
 
     /**
@@ -376,7 +376,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return allocateHostForVm(vm, optional.get());
         }
 
-        logger.warn("{}: No suitable host found for {}", vm.getSimulation().clock(), vm);
+        logger.warn("{}: {}: No suitable host found for {} in {}", vm.getSimulation().clock(), getClass().getSimpleName(), vm, datacenter);
         return false;
     }
 
