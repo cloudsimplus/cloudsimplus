@@ -527,7 +527,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         logger.error(
-            "{}: {}: {} of the requested {} VMs could be created because suitable Hosts were not found in any available Datacenter.",
+            "{}: {}: {} of the requested {} VMs could be created because suitable Hosts weren't found in any available Datacenter.",
             getSimulation().clock(), getName(), vmWaitingList.size(), getVmsNumber());
 
 
@@ -581,9 +581,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private void processFailedVmCreationInDatacenter(final Vm vm, final Datacenter datacenter) {
         vm.notifyOnCreationFailureListeners(datacenter);
-        logger.error(
-            "{}: {}: Creation of {} failed in {}",
-            getSimulation().clock(), getName(), vm, datacenter);
     }
 
     /**

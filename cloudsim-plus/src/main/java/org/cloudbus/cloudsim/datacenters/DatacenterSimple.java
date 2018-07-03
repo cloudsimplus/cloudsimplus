@@ -288,7 +288,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
-        // begins executing ....
         switch (type) {
             case CloudSimTags.CLOUDLET_CANCEL:
                 processCloudletCancel(cloudlet);
@@ -306,7 +305,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 processCloudletResume(cloudlet, true);
                 break;
             default:
-                logger.debug(
+                logger.trace(
                     "{}: Unable to handle a request from {} with event tag = {}",
                     this, ev.getSource().getName(), ev.getTag());
 
