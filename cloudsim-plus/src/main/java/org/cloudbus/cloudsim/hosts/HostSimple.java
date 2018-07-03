@@ -264,17 +264,17 @@ public class HostSimple implements Host {
      */
     private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
         if (!storage.isAmountAvailable(vm.getStorage())) {
-            logAllocationError(vm, inMigration,"storage", "MB", vm.getStorage());
+            logAllocationError(vm, inMigration, "MB", this.getStorage(), vm.getStorage());
             return false;
         }
 
         if (!ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
-            logAllocationError(vm, inMigration,"RAM", "MB", vm.getRam());
+            logAllocationError(vm, inMigration, "MB", this.getRam(), vm.getRam());
             return false;
         }
 
         if (!bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
-            logAllocationError(vm, inMigration,"BW", "Mbps", vm.getBw());
+            logAllocationError(vm, inMigration, "Mbps", this.getBw(), vm.getBw());
             return false;
         }
 
@@ -291,13 +291,16 @@ public class HostSimple implements Host {
         return true;
     }
 
-    private void logAllocationError(final Vm vm, final boolean inMigration, final String resourceName, final String resourceUnit, final Resource resource){
+    private void logAllocationError(
+        final Vm vm, final boolean inMigration, final String resourceUnit,
+        final Resource pmResource, final Resource vmRequestedResource)
+    {
         final String migration = inMigration ? "VM Migration" : "VM Creation";
-        final String msg = resource.getAvailableResource() > 0 ? "just "+resource.getAvailableResource()+" " + resourceUnit : "no amount";
+        final String msg = pmResource.getAvailableResource() > 0 ? "just "+pmResource.getAvailableResource()+" " + resourceUnit : "no amount";
         logger.error(
             "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
             simulation.clock(), getClass().getSimpleName(), migration, vm, this,
-            resourceName, resource.getCapacity(), msg);
+            pmResource.getClass().getSimpleName(), vmRequestedResource.getCapacity(), msg);
     }
 
     @Override
@@ -316,10 +319,10 @@ public class HostSimple implements Host {
     @Override
     public boolean isSuitableForVm(final Vm vm) {
         return  active &&
-            vmScheduler.getPeCapacity() >= vm.getCurrentRequestedMaxMips() &&
-            vmScheduler.getAvailableMips() >= vm.getCurrentRequestedTotalMips() &&
+            vmScheduler.isSuitableForVm(vm, vm.getCurrentRequestedMips()) &&
             ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()) &&
-            bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw());
+            bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()) &&
+            storage.isAmountAvailable(vm.getStorage());
     }
 
     @Override

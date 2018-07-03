@@ -18,6 +18,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.UtilizationHistory;
@@ -49,8 +50,8 @@ public class HostSimpleTest {
     private static final long BW = 10000;
 
     private static final int HOST_PES = 2;
-    private static final double MIPS = 1000;
-    private static final double TOTAL_HOST_MIPS = HOST_PES*MIPS;
+    private static final double MIPS = 2000;
+    private static final double TOTAL_HOST_MIPS = HOST_PES* MIPS;
 
     private HostSimple host;
 
@@ -95,6 +96,45 @@ public class HostSimpleTest {
     @Before
     public void setUp() {
         host = createHostSimple(ID, HOST_PES);
+    }
+
+    @Test
+    public void isSuitableForVm_WhenThereIsAvailableStorage(){
+        Vm vm = createVm(HOST_PES, MIPS, STORAGE);
+        assertTrue(host.isSuitableForVm(vm));
+    }
+
+    @Test
+    public void isSuitableForVm_WhenThereIsNotAvailableStorage(){
+        Vm vm = createVm(HOST_PES, MIPS, STORAGE * 2);
+        assertFalse(host.isSuitableForVm(vm));
+    }
+
+    @Test
+    public void isSuitableForVm_WhenThereIsEnoughPes(){
+        host.setVmScheduler(new VmSchedulerSpaceShared());
+        Vm vm = createVm(HOST_PES, MIPS, STORAGE);
+        assertTrue(host.isSuitableForVm(vm));
+    }
+
+    /**
+     * If the total MIPS a VM is requesting is lower or equal to the total available MIPS
+     * from the physical PEs but the number of available PEs is lower then the
+     * PEs requested, the test must fail at least for a {@link VmSchedulerSpaceShared}.
+     */
+    @Test
+    public void isSuitableForVm_WhenThereIsNotEnoughPes(){
+        host.setVmScheduler(new VmSchedulerSpaceShared());
+        Vm vm = createVm(4, 500, STORAGE);
+        assertFalse(host.isSuitableForVm(vm));
+    }
+
+    private Vm createVm(final int pes, final double mips, final long storage) {
+        Vm vm = new VmSimple((long) mips, pes);
+        vm.setRam(RAM);
+        vm.setBw(BW);
+        vm.setSize(storage);
+        return vm;
     }
 
     @Test
@@ -146,7 +186,7 @@ public class HostSimpleTest {
         final List<Vm> vms = new ArrayList<>();
         IntStream.range(0, 2).forEach(i -> {
             final Vm vm = VmSimpleTest.createVm(
-                    i, MIPS/numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms,
+                    i, MIPS /numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms,
                     new CloudletSchedulerTimeShared());
             vm.setHost(Host.NULL);
             host.addMigratingInVm(vm);
@@ -210,7 +250,7 @@ public class HostSimpleTest {
             new CloudletSchedulerTimeShared());
         assertEquals(MIPS, targetHost.getAvailableMips(), 0);
         assertTrue(targetHost.addMigratingInVm(vm));
-        final double availableMips = VM_MIPS;
+        final double availableMips = MIPS - VM_MIPS;
         assertEquals(availableMips, targetHost.getAvailableMips(), 0);
         assertEquals(0, targetHost.getAvailableStorage(), 0);
     }
@@ -229,6 +269,7 @@ public class HostSimpleTest {
         assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm), 0);
     }
 
+    //@todo It lacks the @Test annotation
     public void testAddMigratingInVm_lackOfRam() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
@@ -238,6 +279,7 @@ public class HostSimpleTest {
         assertFalse(host.addMigratingInVm(vm));
     }
 
+    //@todo It lacks the @Test annotation
     public void testAddMigratingInVm_lackOfStorage() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
@@ -245,6 +287,7 @@ public class HostSimpleTest {
         assertFalse(host.addMigratingInVm(vm));
     }
 
+    //@todo It lacks the @Test annotation
     public void testAddMigratingInVm_lackOfBw() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
@@ -252,6 +295,7 @@ public class HostSimpleTest {
         assertFalse(host.addMigratingInVm(vm));
     }
 
+    //@todo It lacks the @Test annotation
     public void testAddMigratingInVm_lackOfMips() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
@@ -451,7 +495,7 @@ public class HostSimpleTest {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
                 VmSimpleTest.createVm(
-                        0, MIPS*2, 1, RAM, BW, STORAGE,
+                        0, MIPS *2, 1, RAM, BW, STORAGE,
                         CloudletScheduler.NULL);
         assertFalse(host.createVm(vm));
     }
