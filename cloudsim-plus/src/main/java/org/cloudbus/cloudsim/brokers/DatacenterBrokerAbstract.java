@@ -67,11 +67,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private Datacenter lastSelectedDc;
 
     /**
-     * @see #getVmWaitingList()
-     */
-    private final List<Vm> vmWaitingList;
-
-    /**
      * A map of requests for VM creation sent to Datacenters.
      * The key is a VM and the value is a Datacenter to where
      * a request to create that VM was sent.
@@ -79,6 +74,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * it wasn't requested to be created yet.
      */
     private final Map<Vm, Datacenter> vmCreationRequestsMap;
+
+    /**
+     * @see #getVmWaitingList()
+     */
+    private final List<Vm> vmWaitingList;
 
     /**
      * @see #getVmExecList()
@@ -517,14 +517,29 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         /* If it gets here, it means that all datacenters were already queried
-         * and not all VMs could be created, but some of them could. */
+         * and not all VMs could be created. */
         if (vmExecList.isEmpty()) {
-            logger.error("{}: {}: none of the required VMs could be created. Aborting", getSimulation().clock(), getName());
+            logger.error(
+                "{}: {}: None of the requested {} VMs could be created because suitable Hosts were not found in any available Datacenter. Shutting broker down...",
+                getSimulation().clock(), getName(), vmWaitingList.size());
             shutdownEntity();
             return;
         }
 
+        logger.error(
+            "{}: {}: {} of the requested {} VMs could be created because suitable Hosts were not found in any available Datacenter.",
+            getSimulation().clock(), getName(), vmWaitingList.size(), getVmsNumber());
+
+
         requestDatacentersToCreateWaitingCloudlets();
+    }
+
+    /**
+     * Gets the total number of broker's VMs, including created and waiting ones.
+     * @return
+     */
+    private int getVmsNumber() {
+        return vmCreatedList.size() + vmWaitingList.size();
     }
 
     /**
