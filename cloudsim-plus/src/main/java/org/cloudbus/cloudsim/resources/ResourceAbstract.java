@@ -33,13 +33,13 @@ public abstract class ResourceAbstract implements Resource {
     }
 
     @Override
-    public boolean isResourceAmountAvailable(final long amountToCheck) {
+    public boolean isAmountAvailable(final long amountToCheck) {
         return getAvailableResource() >= amountToCheck;
     }
 
     @Override
-    public boolean isResourceAmountAvailable(double amountToCheck) {
-        return isResourceAmountAvailable((long)amountToCheck);
+    public boolean isAmountAvailable(final double amountToCheck) {
+        return isAmountAvailable((long)amountToCheck);
     }
 
     public boolean isResourceAmountBeingUsed(final long amountToCheck) {
@@ -52,6 +52,6 @@ public abstract class ResourceAbstract implements Resource {
         }
 
         final long allocationDifference = newTotalAllocatedResource - getAllocatedResource();
-        return isResourceAmountAvailable(allocationDifference);
+        return isAmountAvailable(allocationDifference);
     }
 }

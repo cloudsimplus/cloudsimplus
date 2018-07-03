@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.junit.Test;
+
 import static org.junit.Assert.*;
 
 /**
@@ -347,17 +348,17 @@ public class RamTest {
     @Test
     public void testIsResourceAmountAvailable() {
         final Ram instance = createResource();
-        assertTrue(instance.isResourceAmountAvailable(HALF_CAPACITY));
-        assertTrue(instance.isResourceAmountAvailable(CAPACITY));
+        assertTrue(instance.isAmountAvailable(HALF_CAPACITY));
+        assertTrue(instance.isAmountAvailable(CAPACITY));
 
         long allocated = HALF_CAPACITY;
         assertTrue(instance.allocateResource(allocated));
-        assertTrue(instance.isResourceAmountAvailable(allocated));
+        assertTrue(instance.isAmountAvailable(allocated));
 
         allocated = QUARTER_CAPACITY;
         assertTrue(instance.allocateResource(allocated));
-        assertTrue(instance.isResourceAmountAvailable(allocated));
-        assertFalse(instance.isResourceAmountAvailable(HALF_CAPACITY));
+        assertTrue(instance.isAmountAvailable(allocated));
+        assertFalse(instance.isAmountAvailable(HALF_CAPACITY));
     }
 
     @Test

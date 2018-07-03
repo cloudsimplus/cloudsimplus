@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.vms;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
+import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
@@ -290,7 +290,7 @@ public class VmSimple implements Vm {
 
     @Override
     public String getUid() {
-        return UniquelyIdentificable.getUid(broker.getId(), id);
+        return UniquelyIdentifiable.getUid(broker.getId(), id);
     }
 
     @Override

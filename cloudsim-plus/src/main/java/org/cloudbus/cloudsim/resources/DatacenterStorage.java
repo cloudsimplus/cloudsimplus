@@ -1,12 +1,12 @@
 package org.cloudbus.cloudsim.resources;
 
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.util.DataCloudTags;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.util.DataCloudTags;
 
 /**
  * Implements the storage logic for a Datacenter. It keeps a list of
@@ -162,7 +162,7 @@ public class DatacenterStorage {
         }
 
         for (final FileStorage storage : getStorageList()) {
-            if (storage.isResourceAmountAvailable((long) file.getSize())) {
+            if (storage.isAmountAvailable((long) file.getSize())) {
                 storage.addFile(file);
                 return DataCloudTags.FILE_ADD_SUCCESSFUL;
             }

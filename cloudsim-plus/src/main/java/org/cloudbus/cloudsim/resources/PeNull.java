@@ -17,10 +17,10 @@ final class PeNull implements Pe {
     @Override public long getAllocatedResource() {
         return 0;
     }
-    @Override public boolean isResourceAmountAvailable(long amountToCheck) {
+    @Override public boolean isAmountAvailable(long amountToCheck) {
         return false;
     }
-    @Override public boolean isResourceAmountAvailable(double amountToCheck) {
+    @Override public boolean isAmountAvailable(double amountToCheck) {
         return false;
     }
     @Override public boolean isFull() {

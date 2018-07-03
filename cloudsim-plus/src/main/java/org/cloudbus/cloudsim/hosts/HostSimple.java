@@ -263,7 +263,7 @@ public class HostSimple implements Host {
      */
     private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
         final String msg = inMigration ? "VM Migration" : "VM Creation";
-        if (!storage.isResourceAmountAvailable(vm.getStorage())) {
+        if (!storage.isAmountAvailable(vm.getStorage())) {
             logger.error(
                 "{}: {}: [{}] Allocation of {} to {} failed due to lack of storage. Required {} but there is just {} MB available.",
                 simulation.clock(), getClass().getSimpleName(),

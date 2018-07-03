@@ -101,7 +101,7 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
 
     @Override
     public boolean allocateResource(final long amountToAllocate) {
-        if(amountToAllocate <= 0 || !isResourceAmountAvailable(amountToAllocate)) {
+        if(amountToAllocate <= 0 || !isAmountAvailable(amountToAllocate)) {
             return false;
         }
 

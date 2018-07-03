@@ -7,12 +7,12 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
-import java.util.List;
-
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.Resource;
+import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.List;
 
 /**
  * An interface that represents the policy used by a
@@ -55,7 +55,7 @@ public interface VmScheduler {
      * allocation or change it? I think that the obvious action is to change the
      * allocation, however, the implementations aren't working to deal this
      * situation. For that, they have to use some method such as
-     * {@link Resource#isResourceAmountAvailable(long)}
+     * {@link Resource#isAmountAvailable(long)}
      * to first check if the difference from the current allocated mips and the
      * requested one is available. Currently the implementations wrongly check
      * if the total requested mips is available, while only the difference has

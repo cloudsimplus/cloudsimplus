@@ -68,10 +68,10 @@ public interface Resource extends ResourceCapacity {
      *
      * @param resource the resource to check if its capacity is available at the current resource
      * @return true if the capacity required by the given Resource is free; false otherwise
-     * @see #isResourceAmountAvailable(long)
+     * @see #isAmountAvailable(long)
      */
-    default boolean isResourceAmountAvailable(Resource resource){
-        return isResourceAmountAvailable(resource.getCapacity());
+    default boolean isAmountAvailable(Resource resource){
+        return isAmountAvailable(resource.getCapacity());
     }
 
     /**
@@ -79,7 +79,7 @@ public interface Resource extends ResourceCapacity {
      * @param amountToCheck the amount of resource to check if is free.
      * @return true if the specified amount is free; false otherwise
      */
-    boolean isResourceAmountAvailable(long amountToCheck);
+    boolean isAmountAvailable(long amountToCheck);
 
     /**
      * Checks if there is a specific amount of resource available (free),
@@ -90,10 +90,10 @@ public interface Resource extends ResourceCapacity {
      *
      * @param amountToCheck the amount of resource to check if is free.
      * @return true if the specified amount is free; false otherwise
-     * @see #isResourceAmountAvailable(long)
+     * @see #isAmountAvailable(long)
      */
-    default boolean isResourceAmountAvailable(double amountToCheck){
-        return isResourceAmountAvailable((long)amountToCheck);
+    default boolean isAmountAvailable(double amountToCheck){
+        return isAmountAvailable((long)amountToCheck);
     }
 
     /**

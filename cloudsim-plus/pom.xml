@@ -344,7 +344,7 @@
                         when they were introduced.
                         -->
                         <include>**/src/main/java/**/Processor.java</include>
-                        <include>**/src/main/java/**/Identificable.java</include>
+                        <include>**/src/main/java/**/Identifiable.java</include>
                         <include>**/src/main/java/**/ResourceCapacity.java</include>
                         <include>**/src/main/java/**/RawStorage.java</include>
                         <include>**/src/main/java/**/Bandwidth.java</include>
@@ -357,6 +357,7 @@
                         <include>**/src/main/java/**/UtilizationModelArithmeticProgression.java</include>
                         <include>**/src/main/java/**/Resourceful.java</include>
                         <include>**/src/main/java/**/PoissonDistr.java</include>
+                        <include>**/src/main/java/**/ResourceAbstract.java</include>
                     </includes>
 
                     <excludes>

@@ -23,10 +23,10 @@
  */
 package org.cloudsimplus.builders.tables;
 
-import java.util.List;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.core.Identifiable;
+
+import java.util.List;
 
 /**
  * Builds a table for printing simulation results from a list of Cloudlets.
@@ -70,7 +70,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     @Override
     protected void createTableColumns() {
         final String ID = "ID";
-        addColumnDataFunction(getTable().addColumn("Cloudlet", ID), Identificable::getId);
+        addColumnDataFunction(getTable().addColumn("Cloudlet", ID), Identifiable::getId);
         addColumnDataFunction(getTable().addColumn("Status "), c -> c.getStatus().name());
         addColumnDataFunction(getTable().addColumn("DC", ID), c -> c.getVm().getHost().getDatacenter().getId());
         addColumnDataFunction(getTable().addColumn("Host", ID), c -> c.getVm().getHost().getId());

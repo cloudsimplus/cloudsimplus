@@ -171,7 +171,7 @@ public class HarddriveStorage implements FileStorage {
             return false;
         }
 
-        if (storage.isResourceAmountAvailable((long)fileSize)) {
+        if (storage.isAmountAvailable((long)fileSize)) {
             return true;
         }
 
@@ -367,7 +367,7 @@ public class HarddriveStorage implements FileStorage {
         }
 
        // check the capacity
-        if (!storage.isResourceAmountAvailable((long)file.getSize())) {
+        if (!storage.isAmountAvailable((long)file.getSize())) {
             logger.error("{}.addFile(): Not enough space to store {}", name, file.getName());
             return result;
         }
@@ -493,13 +493,13 @@ public class HarddriveStorage implements FileStorage {
     }
 
     @Override
-    public boolean isResourceAmountAvailable(long amountToCheck) {
-        return storage.isResourceAmountAvailable(amountToCheck);
+    public boolean isAmountAvailable(long amountToCheck) {
+        return storage.isAmountAvailable(amountToCheck);
     }
 
     @Override
-    public boolean isResourceAmountAvailable(double amountToCheck) {
-        return isResourceAmountAvailable((long)amountToCheck);
+    public boolean isAmountAvailable(double amountToCheck) {
+        return isAmountAvailable((long)amountToCheck);
     }
 
     @Override

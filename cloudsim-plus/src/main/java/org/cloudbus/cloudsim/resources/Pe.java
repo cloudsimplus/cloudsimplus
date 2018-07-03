@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.core.Identifiable;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 
 /**
@@ -25,7 +25,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Pe extends Identificable, ResourceManageable {
+public interface Pe extends Identifiable, ResourceManageable {
     /**
      * Status of PEs.
      */
@@ -92,7 +92,7 @@ public interface Pe extends Identificable, ResourceManageable {
      * set manually.
      *
      * @param peProvisioner the new PE provisioner
-     * @return 
+     * @return
      */
     Pe setPeProvisioner(PeProvisioner peProvisioner);
 
@@ -129,28 +129,28 @@ public interface Pe extends Identificable, ResourceManageable {
      * @post $none
      */
     boolean setStatus(Status status);
-    
+
     /**
      * Checks if the PE is working (not failed).
-     * @return 
+     * @return
      */
     boolean isWorking();
-    
+
     /**
      * Checks if the PE is failed.
-     * @return 
+     * @return
      */
     boolean isFailed();
-    
+
     /**
      * Checks if the PE is free to be used (it's idle).
-     * @return 
+     * @return
      */
     boolean isFree();
-    
+
     /**
      * Checks if the PE is buzy to be used (it's being used).
-     * @return 
+     * @return
      */
     boolean isBuzy();
 }

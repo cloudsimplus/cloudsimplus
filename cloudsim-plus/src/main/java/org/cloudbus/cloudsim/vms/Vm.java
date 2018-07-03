@@ -7,24 +7,23 @@
  */
 package org.cloudbus.cloudsim.vms;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudsimplus.autoscaling.HorizontalVmScaling;
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.CustomerEntity;
+import org.cloudbus.cloudsim.core.Machine;
+import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudsimplus.autoscaling.HorizontalVmScaling;
+import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.List;
 import java.util.function.Predicate;
-import org.cloudbus.cloudsim.core.CustomerEntity;
-
-import org.cloudsimplus.autoscaling.VerticalVmScaling;
-import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.cloudsimplus.listeners.VmDatacenterEventInfo;
-import org.cloudsimplus.listeners.EventListener;
 
 /**
  * An interface to be implemented by each class that provides basic
@@ -39,7 +38,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, CustomerEntity {
+public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}

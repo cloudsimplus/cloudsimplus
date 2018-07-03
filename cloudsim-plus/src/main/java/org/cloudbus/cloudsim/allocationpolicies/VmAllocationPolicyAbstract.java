@@ -278,7 +278,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
 
         final double extraAmountToAllocate = scaling.getResourceAmountToScale();
-        if(!hostResource.isResourceAmountAvailable(extraAmountToAllocate)) {
+        if(!hostResource.isAmountAvailable(extraAmountToAllocate)) {
             return false;
         }
 

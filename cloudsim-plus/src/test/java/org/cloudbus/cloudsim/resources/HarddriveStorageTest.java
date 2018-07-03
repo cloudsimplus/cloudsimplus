@@ -519,12 +519,12 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final int capacity = CAPACITY;
 
-        assertTrue(instance.isResourceAmountAvailable(capacity));
+        assertTrue(instance.isAmountAvailable(capacity));
         final File file = new File(FILE1, capacity);
         assertTrue(instance.addFile(file)>0);
-        assertFalse(instance.isResourceAmountAvailable(capacity));
+        assertFalse(instance.isAmountAvailable(capacity));
         assertTrue(instance.deleteFile(file)>0);
-        assertTrue(instance.isResourceAmountAvailable(capacity));
+        assertTrue(instance.isAmountAvailable(capacity));
     }
 
     /**
