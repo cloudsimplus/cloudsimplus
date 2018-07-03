@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
+import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -781,7 +781,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public String getUid() {
-        return UniquelyIdentificable.getUid(broker.getId(), id);
+        return UniquelyIdentifiable.getUid(broker.getId(), id);
     }
 
     @Override

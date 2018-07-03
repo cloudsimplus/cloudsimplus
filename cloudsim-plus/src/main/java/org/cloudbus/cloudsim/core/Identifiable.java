@@ -29,6 +29,6 @@ package org.cloudbus.cloudsim.core;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Identificable {
+public interface Identifiable {
     int getId();
 }

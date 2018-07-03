@@ -14,7 +14,7 @@
 
 package org.cloudbus.cloudsim.network;
 
-import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.core.Identifiable;
 
 /**
  * Defines the structure for a network packet.
@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  *
  * @since CloudSim Toolkit 1.0
  */
-public interface NetworkPacket<T extends Identificable> {
+public interface NetworkPacket<T extends Identifiable> {
     /**
      * Gets the size of the packet in bytes.
      *

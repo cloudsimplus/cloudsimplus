@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.cloudlets;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.UniquelyIdentificable;
+import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -31,7 +31,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, CustomerEntity {
+public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, CustomerEntity {
   /**
    * Status of Cloudlets
    */

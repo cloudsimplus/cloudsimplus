@@ -7,9 +7,9 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
-import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
+import org.cloudbus.cloudsim.core.Identifiable;
 
 /**
  * Represents one of many tasks that can be executed by a {@link NetworkCloudlet}.
@@ -32,7 +32,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  * @TODO @author manoelcampos Classes {@link CloudletTask}, {@link Cloudlet}
  * and {@link CloudletExecution} share a common set of attributes that would be defined by a common interface.
  */
-public abstract class CloudletTask implements Identificable {
+public abstract class CloudletTask implements Identifiable {
     private boolean finished;
 
     /**

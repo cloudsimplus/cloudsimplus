@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
-import org.cloudbus.cloudsim.core.Identificable;
+import org.cloudbus.cloudsim.core.Identifiable;
 
 /**
  * An interface to be implemented by each class that represents
@@ -20,7 +20,7 @@ import org.cloudbus.cloudsim.core.Identificable;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface DatacenterCharacteristics extends Identificable {
+public interface DatacenterCharacteristics extends Identifiable {
 
     /**
      * The default Virtual Machine Monitor to be used if not one is set.

@@ -9,7 +9,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
  *
  * @author Manoel Campos da Silva Filho
  */
-public interface UniquelyIdentificable extends Identificable {
+public interface UniquelyIdentifiable extends Identifiable {
     /**
      * Generates an Unique Identifier (UID).
      *
