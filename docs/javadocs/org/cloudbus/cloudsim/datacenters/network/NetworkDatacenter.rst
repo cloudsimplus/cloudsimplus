@@ -1,12 +1,6 @@
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
 
-.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
-
-.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
-
 .. java:import:: org.cloudbus.cloudsim.core Simulation
-
-.. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
@@ -20,11 +14,11 @@
 
 .. java:import:: org.cloudbus.cloudsim.network.switches Switch
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+.. java:import:: java.util ArrayList
 
-.. java:import:: org.cloudbus.cloudsim.util Log
+.. java:import:: java.util Collections
 
-.. java:import:: org.cloudbus.cloudsim.vms Vm
+.. java:import:: java.util List
 
 NetworkDatacenter
 =================
@@ -86,16 +80,4 @@ getSwitchMap
    :outertype: NetworkDatacenter
 
    Gets a \ **read-only**\  list of network Datacenter's Switches.
-
-processCloudletSubmit
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override protected void processCloudletSubmit(SimEvent ev, boolean ack)
-   :outertype: NetworkDatacenter
-
-processVmCreate
-^^^^^^^^^^^^^^^
-
-.. java:method:: @Override protected boolean processVmCreate(SimEvent ev, boolean ackRequested)
-   :outertype: NetworkDatacenter
 

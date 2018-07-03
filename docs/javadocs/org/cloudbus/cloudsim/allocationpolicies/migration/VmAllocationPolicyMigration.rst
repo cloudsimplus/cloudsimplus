@@ -87,7 +87,7 @@ isHostOverloaded
 .. java:method::  boolean isHostOverloaded(Host host)
    :outertype: VmAllocationPolicyMigration
 
-   Checks if host is over utilized.
+   Checks if host is currently over utilized, according the the conditions defined by the Allocation Policy.
 
    :param host: the host to check
    :return: true, if the host is over utilized; false otherwise
@@ -98,7 +98,7 @@ isHostUnderloaded
 .. java:method::  boolean isHostUnderloaded(Host host)
    :outertype: VmAllocationPolicyMigration
 
-   Checks if host is under utilized.
+   Checks if host is currently under utilized, according the the conditions defined by the Allocation Policy.
 
    :param host: the host
    :return: true, if the host is under utilized; false otherwise

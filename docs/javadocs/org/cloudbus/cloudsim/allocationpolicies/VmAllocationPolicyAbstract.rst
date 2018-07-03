@@ -1,18 +1,26 @@
-.. java:import:: java.util.function BiFunction
-
-.. java:import:: java.util.stream LongStream
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
 
-.. java:import:: org.cloudbus.cloudsim.util Log
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
+.. java:import:: org.cloudbus.cloudsim.resources Processor
+
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util.function BiFunction
+
+.. java:import:: java.util.stream LongStream
 
 VmAllocationPolicyAbstract
 ==========================

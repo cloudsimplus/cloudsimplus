@@ -6,7 +6,7 @@ TableColumn
 
 .. java:type:: public interface TableColumn
 
-   An interface that represents a column of a table generated using a \ :java:ref:`TableBuilder`\ .
+   An interface that represents a column of a table generated using a \ :java:ref:`Table`\ .
 
    :author: Manoel Campos da Silva Filho
 
@@ -62,7 +62,7 @@ getSubTitle
 getTable
 ^^^^^^^^
 
-.. java:method::  TableBuilder getTable()
+.. java:method::  Table getTable()
    :outertype: TableColumn
 
    :return: The table that the column belongs to.
@@ -90,7 +90,7 @@ setSubTitle
 setTable
 ^^^^^^^^
 
-.. java:method::  TableColumn setTable(TableBuilder table)
+.. java:method::  TableColumn setTable(Table table)
    :outertype: TableColumn
 
 setTitle

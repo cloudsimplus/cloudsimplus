@@ -27,13 +27,13 @@ TextTableColumn
 TextTableColumn
 ^^^^^^^^^^^^^^^
 
-.. java:constructor:: public TextTableColumn(TableBuilder table, String title, String subTitle)
+.. java:constructor:: public TextTableColumn(Table table, String title, String subTitle)
    :outertype: TextTableColumn
 
 TextTableColumn
 ^^^^^^^^^^^^^^^
 
-.. java:constructor:: public TextTableColumn(TableBuilder table, String title)
+.. java:constructor:: public TextTableColumn(Table table, String title)
    :outertype: TextTableColumn
 
 Methods

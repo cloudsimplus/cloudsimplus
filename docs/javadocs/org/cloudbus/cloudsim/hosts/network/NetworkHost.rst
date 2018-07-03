@@ -1,6 +1,4 @@
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util List
+.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
@@ -8,27 +6,31 @@
 
 .. java:import:: org.cloudbus.cloudsim.network HostPacket
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketScheduler
-
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
-
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketSchedulerSimple
-
-.. java:import:: org.cloudbus.cloudsim.util Conversion
-
-.. java:import:: org.cloudbus.cloudsim.util Log
+.. java:import:: org.cloudbus.cloudsim.network VmPacket
 
 .. java:import:: org.cloudbus.cloudsim.network.switches EdgeSwitch
 
-.. java:import:: org.cloudbus.cloudsim.network VmPacket
-
 .. java:import:: org.cloudbus.cloudsim.resources Pe
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network CloudletTaskScheduler
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network CloudletTaskSchedulerSimple
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
+.. java:import:: org.cloudbus.cloudsim.util Conversion
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util ArrayList
+
+.. java:import:: java.util List
 
 NetworkHost
 ===========

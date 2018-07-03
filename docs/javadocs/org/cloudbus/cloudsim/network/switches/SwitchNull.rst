@@ -178,16 +178,22 @@ getUplinkSwitches
 .. java:method:: @Override public List<Switch> getUplinkSwitches()
    :outertype: SwitchNull
 
+isAlive
+^^^^^^^
+
+.. java:method:: @Override public boolean isAlive()
+   :outertype: SwitchNull
+
+isFinished
+^^^^^^^^^^
+
+.. java:method:: @Override public boolean isFinished()
+   :outertype: SwitchNull
+
 isStarted
 ^^^^^^^^^
 
 .. java:method:: @Override public boolean isStarted()
-   :outertype: SwitchNull
-
-println
-^^^^^^^
-
-.. java:method:: @Override public void println(String msg)
    :outertype: SwitchNull
 
 processEvent

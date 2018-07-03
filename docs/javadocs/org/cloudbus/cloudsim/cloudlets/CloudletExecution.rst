@@ -95,7 +95,7 @@ getCloudletArrivalTime
 .. java:method:: public double getCloudletArrivalTime()
    :outertype: CloudletExecution
 
-   Gets the time the cloudlet arrived for execution inside the Datacenter where this execution information is related to.
+   Gets the time the cloudlet arrived for execution inside the Datacenter.
 
    :return: arrival time
 
@@ -257,10 +257,10 @@ toString
 updateProcessing
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: public void updateProcessing(long executedInstructions)
+.. java:method:: public void updateProcessing(long partialFinishedInstructions)
    :outertype: CloudletExecution
 
    Updates the length of cloudlet that has already been completed.
 
-   :param executedInstructions: amount of instructions just executed, to be added to the \ :java:ref:`instructionsFinishedSoFar`\ , in Instructions (instead of Million Instructions)
+   :param partialFinishedInstructions: the partial amount of instructions just executed, to be added to the \ :java:ref:`instructionsFinishedSoFar`\ , in \ **Number of Instructions (instead of Million Instructions)**\
 

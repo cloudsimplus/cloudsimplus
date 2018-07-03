@@ -15,6 +15,7 @@ The most basic resources are \ :java:ref:`org.cloudbus.cloudsim.resources.Harddr
    :maxdepth: 1
 
    Bandwidth
+   DatacenterStorage
    File
    FileAttribute
    FileStorage

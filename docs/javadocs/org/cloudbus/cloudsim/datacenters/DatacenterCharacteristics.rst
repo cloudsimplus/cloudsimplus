@@ -1,4 +1,4 @@
-.. java:import:: org.cloudbus.cloudsim.core Identificable
+.. java:import:: org.cloudbus.cloudsim.core Identifiable
 
 DatacenterCharacteristics
 =========================
@@ -6,7 +6,7 @@ DatacenterCharacteristics
 .. java:package:: org.cloudbus.cloudsim.datacenters
    :noindex:
 
-.. java:type:: public interface DatacenterCharacteristics extends Identificable
+.. java:type:: public interface DatacenterCharacteristics extends Identifiable
 
    An interface to be implemented by each class that represents the physical characteristics of a Datacenter.
 

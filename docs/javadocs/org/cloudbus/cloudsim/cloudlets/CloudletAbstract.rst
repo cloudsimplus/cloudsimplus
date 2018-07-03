@@ -2,7 +2,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
-.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentificable
+.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
@@ -64,6 +64,12 @@ CloudletAbstract
 
 Methods
 -------
+addFinishedLengthSoFar
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean addFinishedLengthSoFar(long partialFinishedMI)
+   :outertype: CloudletAbstract
+
 addOnFinishListener
 ^^^^^^^^^^^^^^^^^^^
 
@@ -459,12 +465,6 @@ setFinishTime
    Sets the \ :java:ref:`finish time <getFinishTime()>`\  of this cloudlet in the latest Datacenter.
 
    :param finishTime: the finish time
-
-setFinishedLengthSoFar
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean setFinishedLengthSoFar(long length)
-   :outertype: CloudletAbstract
 
 setId
 ^^^^^

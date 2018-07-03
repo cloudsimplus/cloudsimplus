@@ -66,6 +66,12 @@ compareTo
 .. java:method:: @Override public int compareTo(SimEntity o)
    :outertype: DatacenterBrokerNull
 
+defaultVmMapper
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Vm defaultVmMapper(Cloudlet cloudlet)
+   :outertype: DatacenterBrokerNull
+
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -132,6 +138,18 @@ getWaitingVm
 .. java:method:: @Override public Vm getWaitingVm(int index)
    :outertype: DatacenterBrokerNull
 
+isAlive
+^^^^^^^
+
+.. java:method:: @Override public boolean isAlive()
+   :outertype: DatacenterBrokerNull
+
+isFinished
+^^^^^^^^^^
+
+.. java:method:: @Override public boolean isFinished()
+   :outertype: DatacenterBrokerNull
+
 isStarted
 ^^^^^^^^^
 
@@ -142,12 +160,6 @@ isThereWaitingCloudlets
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isThereWaitingCloudlets()
-   :outertype: DatacenterBrokerNull
-
-println
-^^^^^^^
-
-.. java:method:: @Override public void println(String msg)
    :outertype: DatacenterBrokerNull
 
 processEvent

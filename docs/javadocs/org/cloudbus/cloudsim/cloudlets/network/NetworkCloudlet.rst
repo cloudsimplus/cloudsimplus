@@ -6,6 +6,8 @@
 
 .. java:import:: java.util Optional
 
+.. java:import:: java.util.function Predicate
+
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletSimple
 
 NetworkCloudlet

@@ -52,6 +52,45 @@ getPercentUtilization
 
    :return: current resource utilization (allocation) percentage in scale from 0 to 1
 
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isAmountAvailable(Resource resource)
+   :outertype: Resource
+
+   Checks if there the capacity required for the given resource is available (free) at this resource. This method is commonly used to check if there is a specific amount of resource free at a physical resource (this Resource instance) that is required by a virtualized resource (the given Resource).
+
+   :param resource: the resource to check if its capacity is available at the current resource
+   :return: true if the capacity required by the given Resource is free; false otherwise
+
+   **See also:** :java:ref:`.isAmountAvailable(long)`
+
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isAmountAvailable(long amountToCheck)
+   :outertype: Resource
+
+   Checks if there is a specific amount of resource available (free).
+
+   :param amountToCheck: the amount of resource to check if is free.
+   :return: true if the specified amount is free; false otherwise
+
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isAmountAvailable(double amountToCheck)
+   :outertype: Resource
+
+   Checks if there is a specific amount of resource available (free), where such amount is a double value that will be converted to long.
+
+   This method is just a shorthand to avoid explicitly converting a double to long.
+
+   :param amountToCheck: the amount of resource to check if is free.
+   :return: true if the specified amount is free; false otherwise
+
+   **See also:** :java:ref:`.isAmountAvailable(long)`
+
 isFull
 ^^^^^^
 
@@ -84,43 +123,4 @@ isObjectSubClassOf
 
    :param classWanted: the class to verify if the object is instance of
    :return: true if the object is instance of the given class, false otherwise
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isResourceAmountAvailable(Resource resource)
-   :outertype: Resource
-
-   Checks if there the capacity required for the given resource is available (free) at this resource. This method is commonly used to check if there is a specific amount of resource free at a physical resource (this Resource instance) that is required by a virtualized resource (the given Resource).
-
-   :param resource: the resource to check if its capacity is available at the current resource
-   :return: true if the capacity required by the given Resource is free; false otherwise
-
-   **See also:** :java:ref:`.isResourceAmountAvailable(long)`
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isResourceAmountAvailable(long amountToCheck)
-   :outertype: Resource
-
-   Checks if there is a specific amount of resource available (free).
-
-   :param amountToCheck: the amount of resource to check if is free.
-   :return: true if the specified amount is free; false otherwise
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isResourceAmountAvailable(double amountToCheck)
-   :outertype: Resource
-
-   Checks if there is a specific amount of resource available (free), where such amount is a double value that will be converted to long.
-
-   This method is just a shorthand to avoid explicitly converting a double to long.
-
-   :param amountToCheck: the amount of resource to check if is free.
-   :return: true if the specified amount is free; false otherwise
-
-   **See also:** :java:ref:`.isResourceAmountAvailable(long)`
 

@@ -1,32 +1,46 @@
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
-
-.. java:import:: org.cloudbus.cloudsim.core.events SimEvent
-
-.. java:import:: org.cloudbus.cloudsim.core.events PredicateType
-
-.. java:import:: org.cloudbus.cloudsim.network IcmpPacket
-
-.. java:import:: org.cloudbus.cloudsim.util Conversion
-
-.. java:import:: org.cloudbus.cloudsim.util DataCloudTags
-
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
-.. java:import:: org.cloudbus.cloudsim.util Log
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.resources File
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
-.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
+.. java:import:: org.cloudbus.cloudsim.core CloudSimEntity
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
+
+.. java:import:: org.cloudbus.cloudsim.core Simulation
+
+.. java:import:: org.cloudbus.cloudsim.core.events PredicateType
+
+.. java:import:: org.cloudbus.cloudsim.core.events SimEvent
+
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
+.. java:import:: org.cloudbus.cloudsim.network IcmpPacket
+
+.. java:import:: org.cloudbus.cloudsim.resources DatacenterStorage
 
 .. java:import:: org.cloudbus.cloudsim.resources FileStorage
 
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+
+.. java:import:: org.cloudbus.cloudsim.util Conversion
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util Collections
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Map
+
+.. java:import:: java.util Objects
 
 DatacenterSimple
 ================
@@ -48,21 +62,42 @@ DatacenterSimple
 .. java:constructor:: public DatacenterSimple(Simulation simulation, List<? extends Host> hostList, VmAllocationPolicy vmAllocationPolicy)
    :outertype: DatacenterSimple
 
-   Creates a Datacenter.
+   Creates a Datacenter with an empty \ :java:ref:`storage <getDatacenterStorage()>`\ .
 
    :param simulation: The CloudSim instance that represents the simulation the Entity is related to
    :param hostList: list of \ :java:ref:`Host`\ s that will compound the Datacenter
    :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
-   :throws IllegalArgumentException: when this entity has \ ``zero``\  number of PEs (Processing Elements).  No PEs mean the Cloudlets can't be processed. A CloudResource must contain one or more Machines. A Machine must contain one or more PEs.
+
+DatacenterSimple
+^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public DatacenterSimple(Simulation simulation, List<? extends Host> hostList, VmAllocationPolicy vmAllocationPolicy, List<FileStorage> storageList)
+   :outertype: DatacenterSimple
+
+   Creates a Datacenter attaching a given storage list to its \ :java:ref:`storage <getDatacenterStorage()>`\ .
+
+   :param simulation: The CloudSim instance that represents the simulation the Entity is related to
+   :param hostList: list of \ :java:ref:`Host`\ s that will compound the Datacenter
+   :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
+   :param storageList: the storage list to attach to the \ :java:ref:`datacenter storage <getDatacenterStorage()>`\
+
+DatacenterSimple
+^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public DatacenterSimple(Simulation simulation, List<? extends Host> hostList, VmAllocationPolicy vmAllocationPolicy, DatacenterStorage storage)
+   :outertype: DatacenterSimple
+
+   Creates a Datacenter with a given \ :java:ref:`storage <getDatacenterStorage()>`\ .
+
+   :param simulation: The CloudSim instance that represents the simulation the Entity is related to
+   :param hostList: list of \ :java:ref:`Host`\ s that will compound the Datacenter
+   :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
+   :param storage: the \ :java:ref:`storage <getDatacenterStorage()>`\  for this Datacenter
+
+   **See also:** :java:ref:`DatacenterStorage.getStorageList()`
 
 Methods
 -------
-addFile
-^^^^^^^
-
-.. java:method:: @Override public int addFile(File file)
-   :outertype: DatacenterSimple
-
 addHost
 ^^^^^^^
 
@@ -82,28 +117,6 @@ checkCloudletsCompletionForAllHosts
    :outertype: DatacenterSimple
 
    Verifies if some cloudlet inside the hosts of this Datacenter have already finished. If yes, send them to the User/Broker
-
-contains
-^^^^^^^^
-
-.. java:method:: protected boolean contains(File file)
-   :outertype: DatacenterSimple
-
-   Checks whether the Datacenter has the given file.
-
-   :param file: a file to be searched
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
-
-contains
-^^^^^^^^
-
-.. java:method:: protected boolean contains(String fileName)
-   :outertype: DatacenterSimple
-
-   Checks whether the Datacenter has the given file.
-
-   :param fileName: a file name to be searched
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
 
 disableMigrations
 ^^^^^^^^^^^^^^^^^
@@ -163,6 +176,12 @@ getCloudletProcessingUpdateInterval
 
    **See also:** :java:ref:`.updateCloudletProcessing()`
 
+getDatacenterStorage
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterStorage getDatacenterStorage()
+   :outertype: DatacenterSimple
+
 getHost
 ^^^^^^^
 
@@ -197,12 +216,6 @@ getSchedulingInterval
 .. java:method:: @Override public double getSchedulingInterval()
    :outertype: DatacenterSimple
 
-getStorageList
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<FileStorage> getStorageList()
-   :outertype: DatacenterSimple
-
 getVmAllocationPolicy
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -230,17 +243,6 @@ isMigrationsEnabled
    Checks if migrations are enabled.
 
    :return: true, if migrations are enable; false otherwise
-
-predictFileTransferTime
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected double predictFileTransferTime(List<String> requiredFiles)
-   :outertype: DatacenterSimple
-
-   Predict the total time to transfer a list of files.
-
-   :param requiredFiles: the files to be transferred
-   :return: the predicted time
 
 processCloudlet
 ^^^^^^^^^^^^^^^
@@ -341,6 +343,12 @@ setBandwidthPercentForMigration
 .. java:method:: @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration)
    :outertype: DatacenterSimple
 
+setDatacenterStorage
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final void setDatacenterStorage(DatacenterStorage datacenterStorage)
+   :outertype: DatacenterSimple
+
 setLastProcessTime
 ^^^^^^^^^^^^^^^^^^
 
@@ -356,16 +364,6 @@ setSchedulingInterval
 
 .. java:method:: @Override public final Datacenter setSchedulingInterval(double schedulingInterval)
    :outertype: DatacenterSimple
-
-setStorageList
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public final Datacenter setStorageList(List<FileStorage> storageList)
-   :outertype: DatacenterSimple
-
-   Sets the list of storage devices of the Datacenter.
-
-   :param storageList: the new storage list
 
 setVmAllocationPolicy
 ^^^^^^^^^^^^^^^^^^^^^

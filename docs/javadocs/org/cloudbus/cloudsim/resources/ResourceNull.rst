@@ -32,15 +32,15 @@ getCapacity
 .. java:method:: @Override public long getCapacity()
    :outertype: ResourceNull
 
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isAmountAvailable(long amountToCheck)
+   :outertype: ResourceNull
+
 isFull
 ^^^^^^
 
 .. java:method:: @Override public boolean isFull()
-   :outertype: ResourceNull
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isResourceAmountAvailable(long amountToCheck)
    :outertype: ResourceNull
 

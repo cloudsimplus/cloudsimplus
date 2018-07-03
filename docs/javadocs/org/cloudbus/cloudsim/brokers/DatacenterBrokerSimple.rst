@@ -34,6 +34,12 @@ DatacenterBrokerSimple
 
 Methods
 -------
+defaultVmMapper
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Vm defaultVmMapper(Cloudlet cloudlet)
+   :outertype: DatacenterBrokerSimple
+
 selectDatacenterForWaitingVms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -55,15 +61,4 @@ selectFallbackDatacenterForWaitingVms
    It gets the first Datacenter that has not been tried yet.
 
    :return: the Datacenter selected to try creating the remaining VMs or \ :java:ref:`Datacenter.NULL`\  if no suitable Datacenter was found
-
-selectVmForWaitingCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected Vm selectVmForWaitingCloudlet(Cloudlet cloudlet)
-   :outertype: DatacenterBrokerSimple
-
-   Defines the policy used to select a Vm to host a Cloudlet that is waiting to be created. It applies a Round-Robin policy to cyclically select the next Vm from the list of waiting VMs.
-
-   :param cloudlet: the cloudlet that needs a VM to be placed into
-   :return: the selected Vm for the cloudlet or \ :java:ref:`Vm.NULL`\  if no suitable VM was found
 

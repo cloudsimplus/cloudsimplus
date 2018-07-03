@@ -34,6 +34,22 @@ getSimulation
 
    Gets the CloudSim instance that represents the simulation to each the Entity is related to.
 
+isAlive
+^^^^^^^
+
+.. java:method::  boolean isAlive()
+   :outertype: SimEntity
+
+   Checks if the entity is alive, i.e, it's not finished.
+
+isFinished
+^^^^^^^^^^
+
+.. java:method::  boolean isFinished()
+   :outertype: SimEntity
+
+   Checks if the entity is finished or not.
+
 isStarted
 ^^^^^^^^^
 
@@ -41,24 +57,6 @@ isStarted
    :outertype: SimEntity
 
    Checks if the entity already was started or not.
-
-println
-^^^^^^^
-
-.. java:method::  void println(String msg)
-   :outertype: SimEntity
-
-   Prints a given message if the logging is enabled for this entity.
-
-   :param msg: the message to be printed.
-
-println
-^^^^^^^
-
-.. java:method::  void println()
-   :outertype: SimEntity
-
-   Prints an empty line if the logging is enabled for this entity.
 
 processEvent
 ^^^^^^^^^^^^

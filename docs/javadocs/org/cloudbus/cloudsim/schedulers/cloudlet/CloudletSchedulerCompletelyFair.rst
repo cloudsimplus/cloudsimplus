@@ -63,6 +63,19 @@ canAddCloudletToExecutionList
    :param cloudlet: {@inheritDoc}
    :return: {@inheritDoc}
 
+cloudletSubmitInternal
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override protected double cloudletSubmitInternal(CloudletExecution ce, double fileTransferTime)
+   :outertype: CloudletSchedulerCompletelyFair
+
+   {@inheritDoc}
+
+   It also sets the initial virtual runtime for the given Cloudlet in order to define how long the Cloudlet has executed yet. See \ :java:ref:`computeCloudletInitialVirtualRuntime(CloudletExecution)`\  for more details.
+
+   :param ce: {@inheritDoc}
+   :param fileTransferTime: {@inheritDoc}
+
 computeCloudletTimeSlice
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -103,14 +116,14 @@ getCloudletExecList
 getCloudletNiceness
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double getCloudletNiceness(CloudletExecution cloudlet)
+.. java:method:: protected double getCloudletNiceness(CloudletExecution cl)
    :outertype: CloudletSchedulerCompletelyFair
 
    Gets the nice value from a Cloudlet based on its priority. The nice value is the opposite of the priority.
 
    As "niceness" is a terminology defined by specific schedulers (such as Linux Schedulers), it is not defined inside the Cloudlet.
 
-   :param cloudlet: Cloudlet to get the nice value
+   :param cl: Cloudlet to get the nice value
    :return: the cloudlet niceness
 
    **See also:** \ `Man Pages: Nice values for Linux processes <http://man7.org/linux/man-pages/man1/nice.1.html>`_\
@@ -178,19 +191,6 @@ moveNextCloudletsFromWaitingToExecList
 
    **See also:** :java:ref:`.preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList()`
 
-processCloudletSubmit
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double processCloudletSubmit(CloudletExecution ce, double fileTransferTime)
-   :outertype: CloudletSchedulerCompletelyFair
-
-   {@inheritDoc}
-
-   It also sets the initial virtual runtime for the given Cloudlet in order to define how long the Cloudlet has executed yet. See \ :java:ref:`computeCloudletInitialVirtualRuntime(CloudletExecution)`\  for more details.
-
-   :param ce: {@inheritDoc}
-   :param fileTransferTime: {@inheritDoc}
-
 setLatency
 ^^^^^^^^^^
 
@@ -218,7 +218,7 @@ setMinimumGranularity
 updateCloudletProcessing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void updateCloudletProcessing(CloudletExecution ce, double currentTime)
+.. java:method:: @Override public long updateCloudletProcessing(CloudletExecution ce, double currentTime)
    :outertype: CloudletSchedulerCompletelyFair
 
 updateProcessing

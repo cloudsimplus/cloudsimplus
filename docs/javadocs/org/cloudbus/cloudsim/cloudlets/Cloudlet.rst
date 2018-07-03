@@ -1,24 +1,24 @@
-.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentificable
-
-.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
-
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
-
-.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
-
-.. java:import:: java.util List
 
 .. java:import:: org.cloudbus.cloudsim.core CustomerEntity
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
+.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
+
+.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+
+.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
 .. java:import:: org.cloudsimplus.listeners CloudletVmEventInfo
 
 .. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: java.util List
 
 Cloudlet
 ========
@@ -26,7 +26,7 @@ Cloudlet
 .. java:package:: org.cloudbus.cloudsim.cloudlets
    :noindex:
 
-.. java:type:: public interface Cloudlet extends UniquelyIdentificable, Comparable<Cloudlet>, CustomerEntity
+.. java:type:: public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, CustomerEntity
 
    An interface to be implemented by each class that provides basic cloudlet features. The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Cloudlet.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Cloudlet`\  variables.
 
@@ -52,6 +52,19 @@ NULL
 
 Methods
 -------
+addFinishedLengthSoFar
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean addFinishedLengthSoFar(long partialFinishedMI)
+   :outertype: Cloudlet
+
+   Adds the partial length of this Cloudlet that has executed so far (in MI).
+
+   :param partialFinishedMI: the partial executed length of this Cloudlet (in MI) from the last time span (the last time the Cloudlet execution was updated)
+   :return: true if the length is valid and the cloudlet already has assigned to a Datacenter, false otherwise
+
+   **See also:** :java:ref:`CloudletExecution`
+
 addOnFinishListener
 ^^^^^^^^^^^^^^^^^^^
 
@@ -293,7 +306,7 @@ getNetServiceLevel
 .. java:method::  int getNetServiceLevel()
    :outertype: Cloudlet
 
-   Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network. It is the ToS this cloudlet receives in the network (applicable to selected PacketScheduler class only).
+   Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network. It is the ToS this cloudlet receives in the network (applicable to selected CloudletTaskScheduler class only).
 
    :return: the network service level
 
@@ -515,7 +528,9 @@ getWallClockTime
    Gets the time of this Cloudlet resides in a given Datacenter (from arrival time until departure time).
 
    :param datacenter: a Datacenter entity
-   :return: the time of this Cloudlet resides in the Datacenter or 0 if the Cloudlet has never been executed there
+   :return: the wall-clock time or 0 if the Cloudlet has never been executed there
+
+   **See also:** \ `Elapsed real time (wall-clock time) <https://en.wikipedia.org/wiki/Elapsed_real_time>`_\
 
 getWallClockTimeInLastExecutedDatacenter
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -525,7 +540,9 @@ getWallClockTimeInLastExecutedDatacenter
 
    Gets the time of this Cloudlet resides in the latest Datacenter (from arrival time until departure time).
 
-   :return: the time of this Cloudlet resides in the latest Datacenter
+   :return: the wall-clock time in the latest Datacenter or 0 if the Cloudlet has never been executed
+
+   **See also:** \ `Elapsed real time (wall-clock time) <https://en.wikipedia.org/wiki/Elapsed_real_time>`_\
 
 isAssignedToDatacenter
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -641,19 +658,6 @@ setFileSize
 
    :param fileSize: the size to set (in bytes)
    :throws IllegalArgumentException: when the given size is lower or equal to zero
-
-setFinishedLengthSoFar
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean setFinishedLengthSoFar(long length)
-   :outertype: Cloudlet
-
-   Sets the length of this Cloudlet that has been executed so far (in MI), according to the \ :java:ref:`getLength()`\ .
-
-   :param length: executed length of this Cloudlet (in MI)
-   :return: true if the length is valid and the cloudlet already has assigned to a Datacenter, false otherwise
-
-   **See also:** :java:ref:`CloudletExecution`
 
 setLength
 ^^^^^^^^^

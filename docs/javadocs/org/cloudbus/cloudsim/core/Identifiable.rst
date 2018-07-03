@@ -1,10 +1,10 @@
-Identificable
-=============
+Identifiable
+============
 
 .. java:package:: org.cloudbus.cloudsim.core
    :noindex:
 
-.. java:type:: public interface Identificable
+.. java:type:: public interface Identifiable
 
    An interface for objects that have to be identified by an id.
 
@@ -16,5 +16,5 @@ getId
 ^^^^^
 
 .. java:method::  int getId()
-   :outertype: Identificable
+   :outertype: Identifiable
 

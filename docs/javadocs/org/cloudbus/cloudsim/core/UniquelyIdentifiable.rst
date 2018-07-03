@@ -1,12 +1,12 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
-UniquelyIdentificable
-=====================
+UniquelyIdentifiable
+====================
 
 .. java:package:: org.cloudbus.cloudsim.core
    :noindex:
 
-.. java:type:: public interface UniquelyIdentificable extends Identificable
+.. java:type:: public interface UniquelyIdentifiable extends Identifiable
 
    An interface for objects that have an Unique Identifier (UID) that is compounded by a \ :java:ref:`DatacenterBroker`\  ID and the object ID.
 
@@ -18,7 +18,7 @@ getUid
 ^^^^^^
 
 .. java:method:: static String getUid(int brokerId, int id)
-   :outertype: UniquelyIdentificable
+   :outertype: UniquelyIdentifiable
 
    Generates an Unique Identifier (UID).
 
@@ -30,7 +30,7 @@ getUid
 ^^^^^^
 
 .. java:method::  String getUid()
-   :outertype: UniquelyIdentificable
+   :outertype: UniquelyIdentifiable
 
    Gets the Unique Identifier (UID) for the VM, that is compounded by the id of a \ :java:ref:`DatacenterBroker`\  (representing the User) and the object id.
 

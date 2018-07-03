@@ -2,7 +2,15 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: org.cloudbus.cloudsim.util Log
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util Collection
+
+.. java:import:: java.util Set
+
+.. java:import:: java.util TreeSet
 
 CloudInformationService
 =======================
@@ -51,16 +59,6 @@ shutdownEntity
 
 .. java:method:: @Override public void shutdownEntity()
    :outertype: CloudInformationService
-
-signalShutdown
-^^^^^^^^^^^^^^
-
-.. java:method:: protected void signalShutdown(Collection<? extends SimEntity> list)
-   :outertype: CloudInformationService
-
-   Sends a \ :java:ref:`CloudSimTags.END_OF_SIMULATION`\  signal to all entity IDs mentioned in the given list.
-
-   :param list: List of entities to notify about simulation end
 
 startEntity
 ^^^^^^^^^^^

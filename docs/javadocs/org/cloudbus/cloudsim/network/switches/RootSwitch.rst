@@ -8,9 +8,11 @@
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
 
 RootSwitch
 ==========

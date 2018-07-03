@@ -102,11 +102,13 @@ getAllocatedMipsMap
 .. java:method:: protected Map<Vm, List<Double>> getAllocatedMipsMap()
    :outertype: VmSchedulerAbstract
 
-   Gets the map of VMs to MIPS, were each key is a VM and each value is the List of currently allocated MIPS from the respective physical PEs which are being used by such a VM.
+   Gets a map of MIPS allocated to each VM, were each key is a VM and each value is the List of currently allocated MIPS from the respective physical PEs which are being used by such a VM.
 
-   :return: the mips map
+   When VM is in migration, the allocated MIPS in the source Host is reduced due to migration overhead, according to the \ :java:ref:`getVmMigrationCpuOverhead()`\ . This is a situation that the allocated MIPS will be lower than the requested MIPS.
 
-   **See also:** :java:ref:`.getAllocatedMips(Vm)`
+   :return: the allocated MIPS map
+
+   **See also:** :java:ref:`.getAllocatedMips(Vm)`, :java:ref:`.getRequestedMipsMap()`
 
 getAvailableMips
 ^^^^^^^^^^^^^^^^
@@ -162,7 +164,9 @@ getRequestedMipsMap
 .. java:method:: protected Map<Vm, List<Double>> getRequestedMipsMap()
    :outertype: VmSchedulerAbstract
 
-   Gets a map of MIPS requested by each VM, where each key is a VM and each value is a list of MIPS requested by that VM.
+   Gets a map of MIPS requested by each VM, where each key is a VM and each value is a list of MIPS requested by that VM. When a VM is going to be placed into a Host, its requested MIPS is a list where each element is the MIPS capacity of each VM \ :java:ref:`Pe`\  and the list size is the number of PEs.
+
+   :return: the requested MIPS map
 
 getTotalAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

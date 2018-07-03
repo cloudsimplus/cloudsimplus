@@ -10,7 +10,7 @@ PeProvisioner
 
 .. java:type:: public interface PeProvisioner extends ResourceProvisioner
 
-   A class that represents the provisioning policy used by a host to allocate its PEs to virtual machines inside it. It gets a physical PE and manage it in order to provide this PE as virtual PEs for VMs. In that way, a given PE might be shared among different VMs.
+   An interface that represents the provisioning policy used by a host to provide virtual PEs to its virtual machines. It gets a physical PE and manage it in order to provide this PE as virtual PEs for VMs. In that way, a given PE might be shared among different VMs.
 
    :author: Manoel Campos da Silva Filho
 

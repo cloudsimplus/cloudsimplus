@@ -27,13 +27,13 @@ HtmlTableColumn
 HtmlTableColumn
 ^^^^^^^^^^^^^^^
 
-.. java:constructor:: public HtmlTableColumn(TableBuilder table, String title)
+.. java:constructor:: public HtmlTableColumn(Table table, String title)
    :outertype: HtmlTableColumn
 
 HtmlTableColumn
 ^^^^^^^^^^^^^^^
 
-.. java:constructor:: public HtmlTableColumn(TableBuilder table, String title, String subTitle)
+.. java:constructor:: public HtmlTableColumn(Table table, String title, String subTitle)
    :outertype: HtmlTableColumn
 
 Methods

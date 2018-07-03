@@ -62,22 +62,22 @@ getCapacity
 .. java:method:: @Override public long getCapacity()
    :outertype: ResourceManageableNull
 
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isAmountAvailable(long amountToCheck)
+   :outertype: ResourceManageableNull
+
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isAmountAvailable(double amountToCheck)
+   :outertype: ResourceManageableNull
+
 isFull
 ^^^^^^
 
 .. java:method:: @Override public boolean isFull()
-   :outertype: ResourceManageableNull
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isResourceAmountAvailable(long amountToCheck)
-   :outertype: ResourceManageableNull
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isResourceAmountAvailable(double amountToCheck)
    :outertype: ResourceManageableNull
 
 isResourceAmountBeingUsed

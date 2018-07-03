@@ -4,6 +4,8 @@
 
 .. java:import:: java.util Objects
 
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
@@ -16,7 +18,7 @@ ResourceProvisionerAbstract
 
 .. java:type:: public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
 
-   An abstract class that implements the basic features of a provisioning policy used by a host to allocate a given resource to virtual machines inside it.
+   An abstract class that implements the basic features of a provisioning policy used by a \ :java:ref:`Host`\  to provide a given resource to its virtual machines.
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
 
@@ -50,10 +52,10 @@ deallocateResourceForAllVms
 .. java:method:: @Override public void deallocateResourceForAllVms()
    :outertype: ResourceProvisionerAbstract
 
-deallocateResourceForVmSettingAllocationMapEntryToZero
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+deallocateResourceForVmAndSetAllocationMapEntryToZero
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected abstract long deallocateResourceForVmSettingAllocationMapEntryToZero(Vm vm)
+.. java:method:: protected abstract long deallocateResourceForVmAndSetAllocationMapEntryToZero(Vm vm)
    :outertype: ResourceProvisionerAbstract
 
    Deallocate the resource for the given VM, without removing the VM fro the allocation map. The resource usage of the VM entry on the allocation map is just set to 0.

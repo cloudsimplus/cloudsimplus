@@ -67,7 +67,7 @@ getOverUtilizationThreshold
 
    Gets the static host CPU utilization threshold to detect over utilization. It is a percentage value from 0 to 1 that can be changed when creating an instance of the class.
 
-   This method always return the same over utilization threshold for any
+   This implementation always returns the same over utilization threshold for any
    given host
 
    :param host: {@inheritDoc}

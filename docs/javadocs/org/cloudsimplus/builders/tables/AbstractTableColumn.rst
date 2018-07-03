@@ -6,7 +6,7 @@ AbstractTableColumn
 
 .. java:type:: public abstract class AbstractTableColumn implements TableColumn
 
-   A column of a table to be generated using a \ :java:ref:`TableBuilder`\  class.
+   A column of a table to be generated using a \ :java:ref:`Table`\  class.
 
    :author: Manoel Campos da Silva Filho
 
@@ -15,7 +15,7 @@ Constructors
 AbstractTableColumn
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public AbstractTableColumn(TableBuilder table, String title)
+.. java:constructor:: public AbstractTableColumn(Table table, String title)
    :outertype: AbstractTableColumn
 
    Creates a column with a specific title.
@@ -37,7 +37,7 @@ AbstractTableColumn
 AbstractTableColumn
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public AbstractTableColumn(TableBuilder table, String title, String subTitle)
+.. java:constructor:: public AbstractTableColumn(Table table, String title, String subTitle)
    :outertype: AbstractTableColumn
 
    Creates a column with a specific title and sub-title for a given table.
@@ -95,7 +95,7 @@ getIndex
 .. java:method:: protected int getIndex()
    :outertype: AbstractTableColumn
 
-   :return: The index of the current column into the column list of the \ :java:ref:`TableBuilder <getTable()>`\ .
+   :return: The index of the current column into the column list of the \ :java:ref:`Table <getTable()>`\ .
 
 getSubTitle
 ^^^^^^^^^^^
@@ -108,7 +108,7 @@ getSubTitle
 getTable
 ^^^^^^^^
 
-.. java:method:: @Override public TableBuilder getTable()
+.. java:method:: @Override public Table getTable()
    :outertype: AbstractTableColumn
 
    :return: The table that the column belongs to.
@@ -127,7 +127,7 @@ isLastColumn
 .. java:method:: protected boolean isLastColumn()
    :outertype: AbstractTableColumn
 
-   Indicates if the current column is the last one in the column list of the \ :java:ref:`TableBuilder <getTable()>`\ .
+   Indicates if the current column is the last one in the column list of the \ :java:ref:`Table <getTable()>`\ .
 
    :return: true if it is the last column, false otherwise.
 
@@ -146,7 +146,7 @@ setSubTitle
 setTable
 ^^^^^^^^
 
-.. java:method:: @Override public AbstractTableColumn setTable(TableBuilder table)
+.. java:method:: @Override public AbstractTableColumn setTable(Table table)
    :outertype: AbstractTableColumn
 
 setTitle

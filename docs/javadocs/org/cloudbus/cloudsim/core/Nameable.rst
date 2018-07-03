@@ -4,7 +4,7 @@ Nameable
 .. java:package:: org.cloudbus.cloudsim.core
    :noindex:
 
-.. java:type:: public interface Nameable extends Identificable
+.. java:type:: public interface Nameable extends Identifiable
 
    An interface for objects that have to be identified by an id and that also have a name.
 

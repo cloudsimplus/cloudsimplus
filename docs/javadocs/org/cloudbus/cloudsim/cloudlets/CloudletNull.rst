@@ -32,6 +32,12 @@ CloudletNull
 
 Methods
 -------
+addFinishedLengthSoFar
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean addFinishedLengthSoFar(long partialFinishedMI)
+   :outertype: CloudletNull
+
 addOnFinishListener
 ^^^^^^^^^^^^^^^^^^^
 
@@ -384,12 +390,6 @@ setFileSize
 ^^^^^^^^^^^
 
 .. java:method:: @Override public Cloudlet setFileSize(long fileSize)
-   :outertype: CloudletNull
-
-setFinishedLengthSoFar
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean setFinishedLengthSoFar(long length)
    :outertype: CloudletNull
 
 setId

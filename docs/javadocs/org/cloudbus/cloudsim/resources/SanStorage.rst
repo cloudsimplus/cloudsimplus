@@ -10,7 +10,7 @@ SanStorage
 
    \ ``WARNING``\ : This class is not yet fully functional. Effects of network contention are not considered in the simulation. So, time for file transfer is underestimated in the presence of high network load.
 
-   :author: Rodrigo N. Calheiros
+   :author: Rodrigo N. Calheiros, Manoel Campos da Silva Filho
 
 Constructors
 ------------
@@ -67,19 +67,9 @@ getBandwidth
 .. java:method:: public double getBandwidth()
    :outertype: SanStorage
 
-   Get the bandwidth of the SAN network.
+   Gets the bandwidth of the SAN network (in Megabits/s).
 
-   :return: the bandwidth
-
-getMaxTransferRate
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getMaxTransferRate()
-   :outertype: SanStorage
-
-   Gets the maximum transfer rate of the SAN in MByte/sec. It is defined as the minimum value between the disk rate and the SAN bandwidth. Even the bandwidth being faster the the disk rate, the max transfer rate is limited by the disk speed.
-
-   :return: the max transfer in MEGABYTE/sec
+   :return: the bandwidth (in Megabits/s)
 
 getNetworkLatency
 ^^^^^^^^^^^^^^^^^
@@ -87,7 +77,46 @@ getNetworkLatency
 .. java:method:: public double getNetworkLatency()
    :outertype: SanStorage
 
-   Gets the SAN's network latency.
+   Gets the SAN's network latency (in seconds).
 
-   :return: the SAN's network latency
+   :return: the SAN's network latency (in seconds)
+
+getTransferTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTransferTime(int fileSize)
+   :outertype: SanStorage
+
+   {@inheritDoc} The network latency is added to the transfer time.
+
+   :param fileSize: {@inheritDoc}
+   :return: {@inheritDoc}
+
+setBandwidth
+^^^^^^^^^^^^
+
+.. java:method:: public final void setBandwidth(double bandwidth)
+   :outertype: SanStorage
+
+   Sets the bandwidth of the SAN network (in Megabits/s).
+
+   :param bandwidth: the bandwidth to set (in Megabits/s)
+   :throws IllegalArgumentException: when the bandwidth is lower or equal to zero
+
+setNetworkLatency
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public final void setNetworkLatency(double networkLatency)
+   :outertype: SanStorage
+
+   Sets the latency of the SAN network (in seconds).
+
+   :param networkLatency: the latency to set (in seconds)
+   :throws IllegalArgumentException: when the latency is lower or equal to zero
+
+toString
+^^^^^^^^
+
+.. java:method:: @Override public String toString()
+   :outertype: SanStorage
 

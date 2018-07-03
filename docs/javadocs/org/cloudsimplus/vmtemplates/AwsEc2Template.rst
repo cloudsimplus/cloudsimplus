@@ -18,6 +18,8 @@ AwsEc2Template
 
    Represents an \ `Amazon EC2 Instance <http://aws.amazon.com/ec2/>`_\  template. This class enables reading a template from a JSON file, containing actual configurations for VMs available in \ `Amazon Web Services <http://aws.amazon.com/>`_\ .
 
+   For more details, check \ `Raysa Oliveira's Master Thesis (only in Portuguese) <http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf>`_\ .
+
    :author: raysaoliveira
 
    **See also:** :java:ref:`.getInstance(String)`

@@ -22,7 +22,11 @@ SlaContract
 
    Represents a SLA Contract containing a list of metrics. It follows the standard used by \ `Amazon Cloudwatch <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>`_\ .
 
+   The constants inside the class define the names of SLA Metrics supported in the JSON SLA Contract format.
+
    Instances of this class can be created from a JSON file using the \ :java:ref:`getInstance(InputStream)`\  or \ :java:ref:`getInstance(String)`\  methods. This way, one doesn't need to create instances of this class using its default constructor. This one is just used by the JSON parsing library.
+
+   For more details, check \ `Raysa Oliveira's Master Thesis (only in Portuguese) <http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf>`_\ .
 
    :author: raysaoliveira
 

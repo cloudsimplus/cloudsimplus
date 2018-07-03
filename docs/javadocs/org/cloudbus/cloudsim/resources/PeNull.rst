@@ -84,6 +84,18 @@ getStatus
 .. java:method:: @Override public Status getStatus()
    :outertype: PeNull
 
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isAmountAvailable(long amountToCheck)
+   :outertype: PeNull
+
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isAmountAvailable(double amountToCheck)
+   :outertype: PeNull
+
 isBuzy
 ^^^^^^
 
@@ -106,18 +118,6 @@ isFull
 ^^^^^^
 
 .. java:method:: @Override public boolean isFull()
-   :outertype: PeNull
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isResourceAmountAvailable(long amountToCheck)
-   :outertype: PeNull
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isResourceAmountAvailable(double amountToCheck)
    :outertype: PeNull
 
 isResourceAmountBeingUsed

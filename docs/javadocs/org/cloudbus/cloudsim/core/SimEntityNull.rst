@@ -40,16 +40,22 @@ getSimulation
 .. java:method:: @Override public Simulation getSimulation()
    :outertype: SimEntityNull
 
+isAlive
+^^^^^^^
+
+.. java:method:: @Override public boolean isAlive()
+   :outertype: SimEntityNull
+
+isFinished
+^^^^^^^^^^
+
+.. java:method:: @Override public boolean isFinished()
+   :outertype: SimEntityNull
+
 isStarted
 ^^^^^^^^^
 
 .. java:method:: @Override public boolean isStarted()
-   :outertype: SimEntityNull
-
-println
-^^^^^^^
-
-.. java:method:: @Override public void println(String msg)
    :outertype: SimEntityNull
 
 processEvent

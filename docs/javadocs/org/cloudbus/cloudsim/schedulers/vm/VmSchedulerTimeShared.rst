@@ -1,8 +1,16 @@
-.. java:import:: org.cloudbus.cloudsim.util Log
-
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util Iterator
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Map
 
 VmSchedulerTimeShared
 =====================

@@ -1,26 +1,34 @@
-.. java:import:: java.util.stream Stream
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
+.. java:import:: org.cloudbus.cloudsim.core CloudSimEntity
+
+.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
+
+.. java:import:: org.cloudbus.cloudsim.core Machine
+
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
-
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
-.. java:import:: org.cloudbus.cloudsim.util Log
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.distributions ContinuousDistribution
 
+.. java:import:: org.cloudbus.cloudsim.distributions PoissonDistr
+
 .. java:import:: org.cloudbus.cloudsim.distributions UniformDistr
+
+.. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
-.. java:import:: org.cloudbus.cloudsim.distributions PoissonDistr
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util.stream Stream
 
 HostFaultInjection
 ==================
@@ -55,6 +63,8 @@ HostFaultInjection
 
    * Host PEs failures may happen after all its VMs have finished executing. This way, the presented simulation results may show that the number of PEs into a Host is lower than the required by its VMs. In this case, the VMs shown in the results finished executing before some failures have happened. Analysing the logs is easy to confirm that.
    * Failures inter-arrivals are defined in minutes, since seconds is a too small time unit to define such value. Furthermore, it doesn't make sense to define the number of failures per second. This way, the generator of failure arrival times given to the constructor considers the time in minutes, despite the simulation time unit is seconds. Since commonly Cloudlets just take some seconds to finish, mainly in simulation examples, failures may happen just after the cloudlets have finished. This way, one usually should make sure that Cloudlets' length are large enough to allow failures to happen before they end.
+
+   For more details, check \ `Raysa Oliveira's Master Thesis (only in Portuguese) <http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf>`_\ .
 
    :author: raysaoliveira
 
@@ -249,12 +259,6 @@ setMaxTimeToGenerateFailureInHours
    Sets the max time to generate a failure (in hours).
 
    :param maxTimeToGenerateFailureInHours: the maximum time to set
-
-shutdownEntity
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void shutdownEntity()
-   :outertype: HostFaultInjection
 
 startEntity
 ^^^^^^^^^^^

@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
+.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -206,10 +208,10 @@ getIdleInterval
 .. java:method:: @Override public double getIdleInterval()
    :outertype: VmNull
 
-getLastBuzyTime
+getLastBusyTime
 ^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getLastBuzyTime()
+.. java:method:: @Override public double getLastBusyTime()
    :outertype: VmNull
 
 getMips
@@ -293,6 +295,12 @@ getSubmissionDelay
 getTotalCpuMipsUsage
 ^^^^^^^^^^^^^^^^^^^^
 
+.. java:method:: @Override public double getTotalCpuMipsUsage()
+   :outertype: VmNull
+
+getTotalCpuMipsUsage
+^^^^^^^^^^^^^^^^^^^^
+
 .. java:method:: @Override public double getTotalCpuMipsUsage(double time)
    :outertype: VmNull
 
@@ -338,10 +346,28 @@ isFailed
 .. java:method:: @Override public boolean isFailed()
    :outertype: VmNull
 
+isIdle
+^^^^^^
+
+.. java:method:: @Override public boolean isIdle()
+   :outertype: VmNull
+
+isIdleEnough
+^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isIdleEnough(double time)
+   :outertype: VmNull
+
 isInMigration
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isInMigration()
+   :outertype: VmNull
+
+isSuitableForCloudlet
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isSuitableForCloudlet(Cloudlet cloudlet)
    :outertype: VmNull
 
 isWorking

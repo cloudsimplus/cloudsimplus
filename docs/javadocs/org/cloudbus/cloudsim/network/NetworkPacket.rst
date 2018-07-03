@@ -1,4 +1,4 @@
-.. java:import:: org.cloudbus.cloudsim.core Identificable
+.. java:import:: org.cloudbus.cloudsim.core Identifiable
 
 NetworkPacket
 =============
@@ -6,7 +6,7 @@ NetworkPacket
 .. java:package:: org.cloudbus.cloudsim.network
    :noindex:
 
-.. java:type:: public interface NetworkPacket<T extends Identificable>
+.. java:type:: public interface NetworkPacket<T extends Identifiable>
 
    Defines the structure for a network packet.
 

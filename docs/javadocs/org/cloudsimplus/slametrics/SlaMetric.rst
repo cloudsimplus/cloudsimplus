@@ -12,6 +12,8 @@ SlaMetric
 
    Represents a metric of a SLA contract. Follows the standard defined by \ `AWS Cloudwatch <http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html>`_\ .
 
+   For more details, check \ `Raysa Oliveira's Master Thesis (only in Portuguese) <http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf>`_\ .
+
    :author: raysaoliveira
 
 Fields

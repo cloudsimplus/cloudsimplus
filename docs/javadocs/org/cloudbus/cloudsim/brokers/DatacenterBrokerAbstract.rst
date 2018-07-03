@@ -1,7 +1,3 @@
-.. java:import:: java.util.function Function
-
-.. java:import:: java.util.function Supplier
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
@@ -14,7 +10,17 @@
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
+.. java:import:: org.cloudsimplus.listeners DatacenterBrokerEventInfo
+
 .. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util.function Function
+
+.. java:import:: java.util.function Supplier
 
 DatacenterBrokerAbstract
 ========================
@@ -84,6 +90,16 @@ getCloudletWaitingList
 .. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletWaitingList()
    :outertype: DatacenterBrokerAbstract
 
+getDatacenter
+^^^^^^^^^^^^^
+
+.. java:method:: protected Datacenter getDatacenter(Vm vm)
+   :outertype: DatacenterBrokerAbstract
+
+   Gets the Datacenter where a VM is placed.
+
+   :param vm: the VM to get its Datacenter
+
 getDatacenterList
 ^^^^^^^^^^^^^^^^^
 
@@ -136,16 +152,6 @@ getVmCreationRequests
 
    :return: the number of VM creation requests
 
-getVmDatacenter
-^^^^^^^^^^^^^^^
-
-.. java:method:: protected Datacenter getVmDatacenter(Vm vm)
-   :outertype: DatacenterBrokerAbstract
-
-   Gets the Datacenter where a VM is placed.
-
-   :param vm: the VM to get its Datacenter
-
 getVmDestructionDelayFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -187,72 +193,11 @@ isThereWaitingCloudlets
 .. java:method:: @Override public boolean isThereWaitingCloudlets()
    :outertype: DatacenterBrokerAbstract
 
-processCloudletReturn
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processCloudletReturn(SimEvent ev)
-   :outertype: DatacenterBrokerAbstract
-
-   Processes the end of execution of a given cloudlet inside a Vm.
-
-   :param ev: the cloudlet that has just finished to execute and was returned to the broker
-
-processDatacenterListRequest
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processDatacenterListRequest(SimEvent ev)
-   :outertype: DatacenterBrokerAbstract
-
-   Process a request to get the list of all Datacenters registered in the Cloud Information Service (CIS) of the \ :java:ref:`simulation <getSimulation()>`\ .
-
-   :param ev: a CloudSimEvent object
-
 processEvent
 ^^^^^^^^^^^^
 
 .. java:method:: @Override public void processEvent(SimEvent ev)
    :outertype: DatacenterBrokerAbstract
-
-processFailedVmCreationInDatacenter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processFailedVmCreationInDatacenter(Vm vm, Datacenter datacenter)
-   :outertype: DatacenterBrokerAbstract
-
-   Process a response from a Datacenter informing that it was NOT able to create the VM requested by the broker.
-
-   :param vm: id of the Vm that failed to be created inside the Datacenter
-   :param datacenter: id of the Datacenter where the request to create
-
-processSuccessVmCreationInDatacenter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void processSuccessVmCreationInDatacenter(Vm vm, Datacenter datacenter)
-   :outertype: DatacenterBrokerAbstract
-
-   Process a response from a Datacenter informing that it was able to create the VM requested by the broker.
-
-   :param vm: id of the Vm that succeeded to be created inside the Datacenter
-   :param datacenter: id of the Datacenter where the request to create the Vm succeeded
-
-processVmCreateResponseFromDatacenter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected boolean processVmCreateResponseFromDatacenter(SimEvent ev)
-   :outertype: DatacenterBrokerAbstract
-
-   Process the ack received from a Datacenter to a broker's request for creation of a Vm in that Datacenter.
-
-   :param ev: a CloudSimEvent object
-   :return: true if the VM was created successfully, false otherwise
-
-requestCreationOfWaitingVmsToFallbackDatacenter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void requestCreationOfWaitingVmsToFallbackDatacenter()
-   :outertype: DatacenterBrokerAbstract
-
-   After the response (ack) of all VM creation request were received but not all VMs could be created (what means some acks informed about Vm creation failures), try to find another Datacenter to request the creation of the VMs in the waiting list.
 
 requestDatacenterToCreateWaitingVms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -276,6 +221,19 @@ requestDatacenterToCreateWaitingVms
 
    **See also:** :java:ref:`.submitVmList(java.util.List)`
 
+requestDatacenterToCreateWaitingVms
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected void requestDatacenterToCreateWaitingVms(Datacenter datacenter, boolean isFallbackDatacenter)
+   :outertype: DatacenterBrokerAbstract
+
+   Request a specific Datacenter to create the VM in the \ :java:ref:`VM waiting list <getVmWaitingList()>`\ .
+
+   :param datacenter: id of the Datacenter to request the VMs creation
+   :param isFallbackDatacenter: true to indicate that the given Datacenter is a fallback one, i.e., it's a next Datacenter where the creation of VMs is being tried (after some VMs could not be created into the previous Datacenter); false to indicate that this is a regular Datacenter where VM creation has to be tried.
+
+   **See also:** :java:ref:`.submitVmList(java.util.List)`
+
 requestDatacentersToCreateWaitingCloudlets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -287,26 +245,6 @@ requestDatacentersToCreateWaitingCloudlets
    This method is called after all submitted VMs are created in some Datacenter.
 
    **See also:** :java:ref:`.submitCloudletList(java.util.List)`
-
-requestIdleVmsDestruction
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void requestIdleVmsDestruction(Function<Vm, Double> vmDestructionDelayFunction)
-   :outertype: DatacenterBrokerAbstract
-
-   Request all idle VMs to be destroyed at the time defined by a delay \ :java:ref:`Function`\ .
-
-   :param vmDestructionDelayFunction: a \ :java:ref:`Function`\  which indicates to time the VM will wait before being destructed
-
-   **See also:** :java:ref:`.getVmDestructionDelayFunction()`
-
-requestShutDown
-^^^^^^^^^^^^^^^
-
-.. java:method:: protected void requestShutDown()
-   :outertype: DatacenterBrokerAbstract
-
-   Send an internal event to the broker itself, communicating there is not more events to process (no more VMs to create or Cloudlets to execute).
 
 setCloudletComparator
 ^^^^^^^^^^^^^^^^^^^^^

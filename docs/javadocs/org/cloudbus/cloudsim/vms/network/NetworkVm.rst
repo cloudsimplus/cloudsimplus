@@ -1,20 +1,18 @@
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util List
+.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets.network NetworkCloudlet
 
 .. java:import:: org.cloudbus.cloudsim.network VmPacket
 
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.vms VmSimple
 
-.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
+.. java:import:: java.util ArrayList
 
-.. java:import:: org.cloudbus.cloudsim.resources Pe
-
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+.. java:import:: java.util List
 
 NetworkVm
 =========
@@ -51,20 +49,15 @@ NetworkVm
 NetworkVm
 ^^^^^^^^^
 
-.. java:constructor:: @Deprecated public NetworkVm(int id, DatacenterBroker broker, long mipsCapacity, int numberOfPes, int ramCapacity, long bwCapacity, long size, String vmm, CloudletScheduler cloudletScheduler)
+.. java:constructor:: public NetworkVm(long mipsCapacity, int numberOfPes)
    :outertype: NetworkVm
 
-   Creates a NetworkVm with the given parameters.
+   Creates a NetworkVm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is not created inside a Host <isCreated()>`\ , such values can be changed freely.
 
-   :param id: unique ID of the VM
-   :param broker: ID of the VM's owner, that is represented by the id of the \ :java:ref:`DatacenterBroker`\
+   It is not defined an id for the Vm. The id is defined when the Vm is submitted to a \ :java:ref:`DatacenterBroker`\ .
+
    :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
    :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
-   :param ramCapacity: amount of ram in Megabytes
-   :param bwCapacity: amount of bandwidth to be allocated to the VM (in Megabits/s)
-   :param size: size the VM image in Megabytes (the amount of storage it will use, at least initially).
-   :param vmm: Virtual Machine Monitor that manages the VM lifecycle
-   :param cloudletScheduler: scheduler that defines the execution policy for Cloudlets inside this Vm
 
 Methods
 -------

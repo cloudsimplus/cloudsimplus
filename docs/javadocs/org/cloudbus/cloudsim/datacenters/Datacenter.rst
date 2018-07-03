@@ -10,6 +10,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.core SimEntity
 
+.. java:import:: org.cloudbus.cloudsim.resources DatacenterStorage
+
 .. java:import:: org.cloudbus.cloudsim.resources File
 
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
@@ -52,17 +54,6 @@ NULL
 
 Methods
 -------
-addFile
-^^^^^^^
-
-.. java:method::  int addFile(File file)
-   :outertype: Datacenter
-
-   Adds a file into the resource's storage before the experiment starts. If the file is a master file, then it will be registered to the RC when the experiment begins.
-
-   :param file: a DataCloud file
-   :return: a tag number denoting whether this operation is a success or not
-
 addHost
 ^^^^^^^
 
@@ -111,6 +102,16 @@ getCharacteristics
 
    :return: the Datacenter characteristics
 
+getDatacenterStorage
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  DatacenterStorage getDatacenterStorage()
+   :outertype: Datacenter
+
+   Gets the storage of the Datacenter.
+
+   :return: the storage
+
 getHost
 ^^^^^^^
 
@@ -154,16 +155,6 @@ getSchedulingInterval
 
    :return: the scheduling interval (in seconds)
 
-getStorageList
-^^^^^^^^^^^^^^
-
-.. java:method::  List<FileStorage> getStorageList()
-   :outertype: Datacenter
-
-   Gets a \ **read-only**\  list of storage devices of the Datacenter.
-
-   :return: the storage list
-
 getVmAllocationPolicy
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -197,6 +188,16 @@ setBandwidthPercentForMigration
 
    :param bandwidthPercentForMigration: the bandwidth migration percentage to set
 
+setDatacenterStorage
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void setDatacenterStorage(DatacenterStorage datacenterStorage)
+   :outertype: Datacenter
+
+   Sets the storage of the Datacenter.
+
+   :param datacenterStorage: the new storage
+
 setSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -208,14 +209,4 @@ setSchedulingInterval
    :param schedulingInterval: the new scheduling interval (in seconds)
 
    **See also:** :java:ref:`.getSchedulingInterval()`
-
-setStorageList
-^^^^^^^^^^^^^^
-
-.. java:method::  Datacenter setStorageList(List<FileStorage> storageList)
-   :outertype: Datacenter
-
-   Sets the list of storage devices of the Datacenter.
-
-   :param storageList: the new storage list
 

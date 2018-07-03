@@ -1,3 +1,9 @@
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
+.. java:import:: org.cloudbus.cloudsim.network.switches Switch
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
 .. java:import:: java.util List
 
 FileStorage
@@ -11,6 +17,14 @@ FileStorage
    An interface which defines the desired functionality of a storage system in a Data Cloud that performs operations on a file system, such as file inclusion, exclusion and renaming. Classes that implement this interface should simulate the characteristics of different storage systems by setting the capacity of the storage and the maximum transfer rate. The transfer rate defines the time required to execute some common operations on the storage, e.g. storing a file, getting a file and deleting a file.
 
    :author: Uros Cibej, Anthony Sulistio, Manoel Campos da Silva Filho
+
+Fields
+------
+FILE_NOT_FOUND
+^^^^^^^^^^^^^^
+
+.. java:field::  int FILE_NOT_FOUND
+   :outertype: FileStorage
 
 Methods
 -------
@@ -122,15 +136,27 @@ getFileNameList
 
    :return: a List of file names
 
+getLatency
+^^^^^^^^^^
+
+.. java:method::  double getLatency()
+   :outertype: FileStorage
+
+   Gets the latency of this hard drive in seconds.
+
+   :return: the latency in seconds
+
 getMaxTransferRate
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method::  double getMaxTransferRate()
    :outertype: FileStorage
 
-   Gets the maximum transfer rate of the storage in MByte/sec.
+   Gets the maximum local transfer rate of the storage in \ **Mbits/sec**\ , i.e., the physical device reading speed.
 
-   :return: the maximum transfer rate in MEGABYTE/sec
+   :return: the maximum transfer rate in Mbits/sec
+
+   **See also:** :java:ref:`.setMaxTransferRate(double)`
 
 getName
 ^^^^^^^
@@ -150,6 +176,50 @@ getNumStoredFile
 
    :return: the number of stored files
 
+getTransferTime
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getTransferTime(String fileName)
+   :outertype: FileStorage
+
+   Gets the transfer time of a given file.
+
+   :param fileName: the name of the file to compute the transfer time (where its size is defined in MByte)
+   :return: the transfer time in seconds or \ :java:ref:`FILE_NOT_FOUND`\  if the file was not found in this storage device
+
+getTransferTime
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getTransferTime(File file)
+   :outertype: FileStorage
+
+   Gets the transfer time of a given file.
+
+   :param file: the file to compute the transfer time (where its size is defined in MByte)
+   :return: the transfer time in seconds
+
+getTransferTime
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getTransferTime(int fileSize)
+   :outertype: FileStorage
+
+   Gets the transfer time of a given file.
+
+   :param fileSize: the size of the file to compute the transfer time (in MByte)
+   :return: the transfer time in seconds
+
+hasFile
+^^^^^^^
+
+.. java:method::  boolean hasFile(String fileName)
+   :outertype: FileStorage
+
+   Checks if the storage device has a specific file.
+
+   :param fileName: the name of the file to check if it's contained in this storage device.
+   :return: true if the storage device has the file, false otherwise.
+
 hasPotentialAvailableSpace
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -158,7 +228,7 @@ hasPotentialAvailableSpace
 
    Checks whether there is enough space on the storage for a certain file
 
-   :param fileSize: to size of the file intended to be stored on the device
+   :param fileSize: size of the file intended to be stored on the device (in MByte)
    :return: \ ``true``\  if enough space available, \ ``false``\  otherwise
 
 renameFile
@@ -181,17 +251,30 @@ reserveSpace
 
    Makes reservation of space on the storage to store a file.
 
-   :param fileSize: the size to be reserved in MEGABYTE
+   :param fileSize: the size to be reserved (in MByte)
    :return: \ ``true``\  if reservation succeeded, \ ``false``\  otherwise
+
+setLatency
+^^^^^^^^^^
+
+.. java:method::  void setLatency(double latency)
+   :outertype: FileStorage
+
+   Sets the latency of this hard drive in seconds.
+
+   :param latency: the new latency in seconds
+   :throws IllegalArgumentException: if the value is lower than 0
 
 setMaxTransferRate
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean setMaxTransferRate(int rate)
+.. java:method::  void setMaxTransferRate(double maxTransferRate)
    :outertype: FileStorage
 
-   Sets the maximum transfer rate of this storage system in MByte/sec.
+   Sets the maximum transfer rate of this storage system in \ **Mbits/sec**\ , i.e., the physical device reading speed.
 
-   :param rate: the maximum transfer rate in MEGABYTE/sec
-   :return: \ ``true``\  if the values is greater than zero and was set successfully, \ ``false``\  otherwise
+   Despite disk transfer rate is usually defined in MBytes/sec, it's being used Mbits/sec everywhere to avoid confusions, since \ :java:ref:`Host`\ , \ :java:ref:`Vm`\ , \ :java:ref:`Switch`\  and \ :java:ref:`SanStorage`\  use such a data unit.
+
+   :param maxTransferRate: the maximum transfer rate in Mbits/sec
+   :throws IllegalArgumentException: if the value is lower than 1
 

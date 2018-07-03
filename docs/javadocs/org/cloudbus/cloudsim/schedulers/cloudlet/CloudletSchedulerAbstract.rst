@@ -1,11 +1,3 @@
-.. java:import:: java.util.function Consumer
-
-.. java:import:: java.util.function Function
-
-.. java:import:: java.util.stream IntStream
-
-.. java:import:: java.util.stream Stream
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet.Status
@@ -16,15 +8,25 @@
 
 .. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketScheduler
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network CloudletTaskScheduler
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion
-
-.. java:import:: org.cloudbus.cloudsim.util Log
 
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util.function Consumer
+
+.. java:import:: java.util.function Function
+
+.. java:import:: java.util.stream IntStream
+
+.. java:import:: java.util.stream Stream
 
 CloudletSchedulerAbstract
 =========================
@@ -110,14 +112,22 @@ cloudletPause
 cloudletSubmit
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double cloudletSubmit(Cloudlet cloudlet)
+.. java:method:: @Override public final double cloudletSubmit(Cloudlet cloudlet)
    :outertype: CloudletSchedulerAbstract
 
 cloudletSubmit
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime)
+.. java:method:: @Override public final double cloudletSubmit(Cloudlet cl, double fileTransferTime)
    :outertype: CloudletSchedulerAbstract
+
+cloudletSubmitInternal
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected double cloudletSubmitInternal(CloudletExecution ce, double fileTransferTime)
+   :outertype: CloudletSchedulerAbstract
+
+   **See also:** :java:ref:`.cloudletSubmit(Cloudlet,double)`
 
 deallocatePesFromVm
 ^^^^^^^^^^^^^^^^^^^
@@ -291,12 +301,6 @@ getFreePes
 
    Gets the number of PEs currently not being used.
 
-getPacketScheduler
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public PacketScheduler getPacketScheduler()
-   :outertype: CloudletSchedulerAbstract
-
 getPreviousTime
 ^^^^^^^^^^^^^^^
 
@@ -313,6 +317,12 @@ getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution ce, double time)
+   :outertype: CloudletSchedulerAbstract
+
+getTaskScheduler
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public CloudletTaskScheduler getTaskScheduler()
    :outertype: CloudletSchedulerAbstract
 
 getUsedPes
@@ -374,18 +384,6 @@ moveNextCloudletsFromWaitingToExecList
 
    This method is called internally by the \ :java:ref:`CloudletScheduler.updateProcessing(double,List)`\  one.
 
-processCloudletSubmit
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected double processCloudletSubmit(CloudletExecution ce, double fileTransferTime)
-   :outertype: CloudletSchedulerAbstract
-
-   Process a Cloudlet after it is received by the \ :java:ref:`cloudletSubmit(Cloudlet,double)`\  method, that creates a \ :java:ref:`CloudletExecution`\  object to encapsulate the submitted Cloudlet and record execution data.
-
-   :param ce: the CloudletExecutionInfo that encapsulates the Cloudlet object
-   :param fileTransferTime: time required to move the required files from the SAN to the VM
-   :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
-
 removeCloudletFromExecList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -415,12 +413,6 @@ setCurrentMipsShare
 
    **See also:** :java:ref:`.getCurrentMipsShare()`
 
-setPacketScheduler
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void setPacketScheduler(PacketScheduler packetScheduler)
-   :outertype: CloudletSchedulerAbstract
-
 setPreviousTime
 ^^^^^^^^^^^^^^^
 
@@ -430,6 +422,12 @@ setPreviousTime
    Sets the previous time when the scheduler updated the processing of cloudlets it is managing.
 
    :param previousTime: the new previous time
+
+setTaskScheduler
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setTaskScheduler(CloudletTaskScheduler taskScheduler)
+   :outertype: CloudletSchedulerAbstract
 
 setVm
 ^^^^^
@@ -461,13 +459,14 @@ timeSpan
 updateCloudletProcessing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void updateCloudletProcessing(CloudletExecution ce, double currentTime)
+.. java:method:: protected long updateCloudletProcessing(CloudletExecution ce, double currentTime)
    :outertype: CloudletSchedulerAbstract
 
    Updates the processing of a specific cloudlet of the Vm using this scheduler.
 
    :param ce: The cloudlet to be its processing updated
    :param currentTime: current simulation time
+   :return: the executed length, in \ **Million Instructions (MI)**\ , since the last time cloudlet was processed.
 
 updateProcessing
 ^^^^^^^^^^^^^^^^

@@ -1,10 +1,12 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
 
 .. java:import:: java.util Objects
 

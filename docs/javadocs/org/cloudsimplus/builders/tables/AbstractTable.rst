@@ -1,36 +1,38 @@
+.. java:import:: java.io PrintStream
+
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util List
 
-.. java:import:: org.cloudbus.cloudsim.util Log
+.. java:import:: java.util Objects
 
-AbstractTableBuilder
-====================
+AbstractTable
+=============
 
 .. java:package:: org.cloudsimplus.builders.tables
    :noindex:
 
-.. java:type:: public abstract class AbstractTableBuilder implements TableBuilder
+.. java:type:: public abstract class AbstractTable implements Table
 
-   An abstract base class for implementing table builders.
+   An abstract base class for implementing data tables.
 
    :author: Manoel Campos da Silva Filho
 
 Constructors
 ------------
-AbstractTableBuilder
-^^^^^^^^^^^^^^^^^^^^
+AbstractTable
+^^^^^^^^^^^^^
 
-.. java:constructor:: public AbstractTableBuilder()
-   :outertype: AbstractTableBuilder
+.. java:constructor:: public AbstractTable()
+   :outertype: AbstractTable
 
-AbstractTableBuilder
-^^^^^^^^^^^^^^^^^^^^
+AbstractTable
+^^^^^^^^^^^^^
 
-.. java:constructor:: public AbstractTableBuilder(String title)
-   :outertype: AbstractTableBuilder
+.. java:constructor:: public AbstractTable(String title)
+   :outertype: AbstractTable
 
-   Creates an TableBuilder
+   Creates an Table
 
    :param title: Title of the table
 
@@ -40,51 +42,61 @@ addColumn
 ^^^^^^^^^
 
 .. java:method:: @Override public final TableColumn addColumn(String columnTitle)
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 addColumn
 ^^^^^^^^^
 
 .. java:method:: @Override public final TableColumn addColumn(String columnTitle, String columnSubTitle)
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 addColumn
 ^^^^^^^^^
 
 .. java:method:: @Override public final TableColumn addColumn(int index, TableColumn column)
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 addColumn
 ^^^^^^^^^
 
 .. java:method:: @Override public final TableColumn addColumn(TableColumn column)
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 addColumnList
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public final TableBuilder addColumnList(String... columnTitles)
-   :outertype: AbstractTableBuilder
+.. java:method:: @Override public final Table addColumnList(String... columnTitles)
+   :outertype: AbstractTable
 
 getColumnSeparator
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public String getColumnSeparator()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 getColumns
 ^^^^^^^^^^
 
 .. java:method:: @Override public List<TableColumn> getColumns()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
    :return: the list of columns of the table
+
+getPrintStream
+^^^^^^^^^^^^^^
+
+.. java:method:: protected PrintStream getPrintStream()
+   :outertype: AbstractTable
+
+   Gets the \ :java:ref:`PrintStream`\  used to print the generated table.
+
+   :return: the \ :java:ref:`PrintStream`\
 
 getRows
 ^^^^^^^
 
 .. java:method:: protected List<List<Object>> getRows()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
    :return: The data to be printed, where each row contains a list of data columns.
 
@@ -92,31 +104,31 @@ getTitle
 ^^^^^^^^
 
 .. java:method:: @Override public String getTitle()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 newRow
 ^^^^^^
 
 .. java:method:: @Override public List<Object> newRow()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 print
 ^^^^^
 
 .. java:method:: @Override public void print()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 printColumnHeaders
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: protected void printColumnHeaders()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
 printRowClosing
 ^^^^^^^^^^^^^^^
 
 .. java:method:: protected abstract void printRowClosing()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
    Prints the string to close a row.
 
@@ -124,7 +136,7 @@ printRowOpening
 ^^^^^^^^^^^^^^^
 
 .. java:method:: protected abstract void printRowOpening()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
    Prints the string that has to precede each printed row.
 
@@ -132,7 +144,7 @@ printTableClosing
 ^^^^^^^^^^^^^^^^^
 
 .. java:method:: protected abstract void printTableClosing()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
    Prints the string to close the table.
 
@@ -140,7 +152,7 @@ printTableOpening
 ^^^^^^^^^^^^^^^^^
 
 .. java:method:: protected abstract void printTableOpening()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
    Prints the string to open the table.
 
@@ -148,19 +160,29 @@ printTitle
 ^^^^^^^^^^
 
 .. java:method:: protected abstract void printTitle()
-   :outertype: AbstractTableBuilder
+   :outertype: AbstractTable
 
    Prints the table title.
 
 setColumnSeparator
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final TableBuilder setColumnSeparator(String columnSeparator)
-   :outertype: AbstractTableBuilder
+.. java:method:: @Override public final Table setColumnSeparator(String columnSeparator)
+   :outertype: AbstractTable
+
+setPrintStream
+^^^^^^^^^^^^^^
+
+.. java:method:: public void setPrintStream(PrintStream printStream)
+   :outertype: AbstractTable
+
+   Sets the \ :java:ref:`PrintStream`\  used to print the generated table.
+
+   :param printStream: the \ :java:ref:`PrintStream`\  to set
 
 setTitle
 ^^^^^^^^
 
-.. java:method:: @Override public final TableBuilder setTitle(String title)
-   :outertype: AbstractTableBuilder
+.. java:method:: @Override public final Table setTitle(String title)
+   :outertype: AbstractTable
 

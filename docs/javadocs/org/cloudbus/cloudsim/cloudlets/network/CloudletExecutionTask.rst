@@ -50,12 +50,12 @@ getTotalExecutedLength
 process
 ^^^^^^^
 
-.. java:method:: public boolean process(long executedLengthSoFar)
+.. java:method:: public boolean process(long partialFinishedMI)
    :outertype: CloudletExecutionTask
 
    Sets a given number of MI to the \ :java:ref:`total MI executed so far <getTotalExecutedLength()>`\  by the cloudlet.
 
-   :param executedLengthSoFar: the total number of MI executed so far
+   :param partialFinishedMI: the partial executed length of this Cloudlet (in MI)
    :return: {@inheritDoc}
 
 setLength

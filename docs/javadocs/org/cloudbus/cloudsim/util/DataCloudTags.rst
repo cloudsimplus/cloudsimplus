@@ -52,14 +52,6 @@ DEFAULT_MTU
 
    Default Maximum Transmission Unit (MTU) of a link in bytes.
 
-FILE_ADD_ERROR_EMPTY
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:field:: public static final int FILE_ADD_ERROR_EMPTY
-   :outertype: DataCloudTags
-
-   Denotes that file addition is failed because the given file is empty.
-
 FILE_ADD_ERROR_EXIST_READ_ONLY
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -92,18 +84,6 @@ FILE_DELETE_ERROR
 
    Denotes that file deletion is failed due to an unknown error.
 
-FILE_DELETE_MASTER_RESULT
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:field:: public static final int FILE_DELETE_MASTER_RESULT
-   :outertype: DataCloudTags
-
-   Sends the result of deleting a master file back to sender.
-
-   The format of the reply is Object[2] = {String lfn, Integer resultID}.
-
-   NOTE: The result id is in the form of FILE_DELETE_XXXX where XXXX means the error/success message
-
 FILE_DELETE_SUCCESSFUL
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -111,18 +91,6 @@ FILE_DELETE_SUCCESSFUL
    :outertype: DataCloudTags
 
    Denotes that file deletion is successful.
-
-MASTERFILE_ADD_RESULT
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:field:: public static final int MASTERFILE_ADD_RESULT
-   :outertype: DataCloudTags
-
-   Sends the result of adding a master file back to sender.
-
-   The format of the reply is Object[3] = {String lfn, Integer uniqueID, Integer resultID}.
-
-   NOTE: The result id is in the form of FILE_ADD_XXXX where XXXX means the error/success message.
 
 PKT_SIZE
 ^^^^^^^^

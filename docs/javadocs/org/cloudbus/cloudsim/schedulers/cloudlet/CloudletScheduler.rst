@@ -1,26 +1,26 @@
-.. java:import:: java.io Serializable
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Set
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
-.. java:import:: org.cloudbus.cloudsim.network VmPacket
-
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketScheduler
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
 .. java:import:: org.cloudbus.cloudsim.datacenters DatacenterSimple
 
+.. java:import:: org.cloudbus.cloudsim.network VmPacket
+
 .. java:import:: org.cloudbus.cloudsim.resources Pe
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network CloudletTaskScheduler
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: java.io Serializable
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Set
 
 CloudletScheduler
 =================
@@ -268,16 +268,6 @@ getFreePes
 
    Gets the number of PEs currently not being used.
 
-getPacketScheduler
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  PacketScheduler getPacketScheduler()
-   :outertype: CloudletScheduler
-
-   Gets the \ :java:ref:`PacketScheduler`\  that will be used by this CloudletScheduler to process \ :java:ref:`VmPacket`\ s to be sent or received by the Vm that is assigned to the current CloudletScheduler.
-
-   :return: the PacketScheduler for this CloudletScheduler or \ :java:ref:`PacketScheduler.NULL`\  if this scheduler will not deal with packets transmission.
-
 getPreviousTime
 ^^^^^^^^^^^^^^^
 
@@ -310,6 +300,16 @@ getRequestedMipsForCloudlet
    :param ce: the ce
    :param time: the time
    :return: the current requested mips for the given cloudlet
+
+getTaskScheduler
+^^^^^^^^^^^^^^^^
+
+.. java:method::  CloudletTaskScheduler getTaskScheduler()
+   :outertype: CloudletScheduler
+
+   Gets the \ :java:ref:`CloudletTaskScheduler`\  that will be used by this CloudletScheduler to process \ :java:ref:`VmPacket`\ s to be sent or received by the Vm that is assigned to the current CloudletScheduler.
+
+   :return: the CloudletTaskScheduler for this CloudletScheduler or \ :java:ref:`CloudletTaskScheduler.NULL`\  if this scheduler will not deal with packets transmission.
 
 getUsedPes
 ^^^^^^^^^^
@@ -376,17 +376,17 @@ runningCloudletsNumber
 
    :return: number of cloudlets running
 
-setPacketScheduler
-^^^^^^^^^^^^^^^^^^
+setTaskScheduler
+^^^^^^^^^^^^^^^^
 
-.. java:method::  void setPacketScheduler(PacketScheduler packetScheduler)
+.. java:method::  void setTaskScheduler(CloudletTaskScheduler taskScheduler)
    :outertype: CloudletScheduler
 
-   Sets the \ :java:ref:`PacketScheduler`\  that will be used by this CloudletScheduler to process \ :java:ref:`VmPacket`\ s to be sent or received by the Vm that is assigned to the current CloudletScheduler. The Vm from the CloudletScheduler is also set to the PacketScheduler.
+   Sets the \ :java:ref:`CloudletTaskScheduler`\  that will be used by this CloudletScheduler to process \ :java:ref:`VmPacket`\ s to be sent or received by the Vm that is assigned to the current CloudletScheduler. The Vm from the CloudletScheduler is also set to the CloudletTaskScheduler.
 
    \ **This attribute usually doesn't need to be set manually. See the note at the  interface for more details.**\
 
-   :param packetScheduler: the PacketScheduler to set for this CloudletScheduler or \ :java:ref:`PacketScheduler.NULL`\  if this scheduler will not deal with packets transmission.
+   :param taskScheduler: the CloudletTaskScheduler to set for this CloudletScheduler or \ :java:ref:`CloudletTaskScheduler.NULL`\  if this scheduler will not deal with packets transmission.
 
 setVm
 ^^^^^

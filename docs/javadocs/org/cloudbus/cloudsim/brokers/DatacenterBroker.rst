@@ -42,7 +42,7 @@ DEFAULT_VM_DESTRUCTION_DELAY
 .. java:field::  double DEFAULT_VM_DESTRUCTION_DELAY
    :outertype: DatacenterBroker
 
-   A default delay value to indicate that \ **no**\  VM should be immediately destroyed after it becomes idle.
+   A default delay value to indicate that \ **no**\  VM should be immediately destroyed after it becoming idle.
 
    This is used as the default value returned by the \ :java:ref:`getVmDestructionDelayFunction()`\  if a \ :java:ref:`Function`\  is not set.
 
@@ -105,6 +105,17 @@ bindCloudletToVm
    :param cloudlet: the cloudlet to be bind to a given Vm
    :param vm: the vm to bind the Cloudlet to
    :return: true if the Cloudlet was found in the waiting list and was bind to the given Vm, false it the Cloudlet was not found in such a list (that may mean it wasn't submitted yet or was already created)
+
+defaultVmMapper
+^^^^^^^^^^^^^^^
+
+.. java:method::  Vm defaultVmMapper(Cloudlet cloudlet)
+   :outertype: DatacenterBroker
+
+   Defines the default policy used to select a Vm to host a Cloudlet that is waiting to be created. It applies a Round-Robin policy to cyclically select the next Vm from the list of waiting VMs.
+
+   :param cloudlet: the cloudlet that needs a VM to be placed into
+   :return: the selected Vm for the cloudlet or \ :java:ref:`Vm.NULL`\  if no suitable VM was found
 
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^

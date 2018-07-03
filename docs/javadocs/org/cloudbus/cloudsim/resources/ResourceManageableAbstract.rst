@@ -6,9 +6,9 @@ ResourceManageableAbstract
 
 .. java:type:: public abstract class ResourceManageableAbstract extends ResourceAbstract implements ResourceManageable
 
-   A class that represents simple resources such as RAM, CPU, Bandwidth or Pe, storing, for instance, the resource capacity and amount of free available resource.
+   A class that represents simple resources such as RAM, CPU, Bandwidth or Pe. It stores, for instance, the resource capacity and amount of free available resource.
 
-   The class is abstract just to ensure there will be an specific subclass for each kind of resource, allowing to differentiate, for instance, a RAM resource instance from a BW resource instance. The VM class also relies on this differentiation for generically getting a required resource.
+   The class is abstract just to ensure there will be an specific subclass for each kind of resource, allowing to differentiate, for example, a RAM Resource from a BW Resource. The VM class also relies on this differentiation for generically getting a required resource.
 
    :author: Uros Cibej, Anthony Sulistio, Manoel Campos da Silva Filho
 

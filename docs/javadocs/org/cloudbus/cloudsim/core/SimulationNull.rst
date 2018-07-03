@@ -158,6 +158,18 @@ isRunning
 .. java:method:: @Override public boolean isRunning()
    :outertype: SimulationNull
 
+isTerminationTimeSet
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isTerminationTimeSet()
+   :outertype: SimulationNull
+
+isTimeToTerminateSimulationUnderRequest
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isTimeToTerminateSimulationUnderRequest()
+   :outertype: SimulationNull
+
 pause
 ^^^^^
 

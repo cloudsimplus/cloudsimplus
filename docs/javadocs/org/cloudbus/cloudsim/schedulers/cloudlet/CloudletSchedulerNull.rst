@@ -2,7 +2,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network PacketScheduler
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network CloudletTaskScheduler
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -154,12 +154,6 @@ getFreePes
 .. java:method:: @Override public long getFreePes()
    :outertype: CloudletSchedulerNull
 
-getPacketScheduler
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public PacketScheduler getPacketScheduler()
-   :outertype: CloudletSchedulerNull
-
 getPreviousTime
 ^^^^^^^^^^^^^^^
 
@@ -176,6 +170,12 @@ getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution ce, double time)
+   :outertype: CloudletSchedulerNull
+
+getTaskScheduler
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public CloudletTaskScheduler getTaskScheduler()
    :outertype: CloudletSchedulerNull
 
 getUsedPes
@@ -220,10 +220,10 @@ runningCloudletsNumber
 .. java:method:: @Override public int runningCloudletsNumber()
    :outertype: CloudletSchedulerNull
 
-setPacketScheduler
-^^^^^^^^^^^^^^^^^^
+setTaskScheduler
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void setPacketScheduler(PacketScheduler packetScheduler)
+.. java:method:: @Override public void setTaskScheduler(CloudletTaskScheduler taskScheduler)
    :outertype: CloudletSchedulerNull
 
 setVm

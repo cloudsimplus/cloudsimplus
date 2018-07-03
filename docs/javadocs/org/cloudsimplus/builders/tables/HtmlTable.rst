@@ -1,12 +1,10 @@
-.. java:import:: org.cloudbus.cloudsim.util Log
-
-HtmlTableBuilder
-================
+HtmlTable
+=========
 
 .. java:package:: org.cloudsimplus.builders.tables
    :noindex:
 
-.. java:type:: public class HtmlTableBuilder extends AbstractTableBuilder
+.. java:type:: public class HtmlTable extends AbstractTable
 
    A generator of HTML tables.
 
@@ -14,19 +12,19 @@ HtmlTableBuilder
 
 Constructors
 ------------
-HtmlTableBuilder
-^^^^^^^^^^^^^^^^
+HtmlTable
+^^^^^^^^^
 
-.. java:constructor:: public HtmlTableBuilder()
-   :outertype: HtmlTableBuilder
+.. java:constructor:: public HtmlTable()
+   :outertype: HtmlTable
 
-HtmlTableBuilder
-^^^^^^^^^^^^^^^^
+HtmlTable
+^^^^^^^^^
 
-.. java:constructor:: public HtmlTableBuilder(String title)
-   :outertype: HtmlTableBuilder
+.. java:constructor:: public HtmlTable(String title)
+   :outertype: HtmlTable
 
-   Creates an TableBuilder
+   Creates an Table
 
    :param title: Title of the table
 
@@ -36,35 +34,35 @@ addColumn
 ^^^^^^^^^
 
 .. java:method:: @Override public TableColumn addColumn(int index, String columnTitle)
-   :outertype: HtmlTableBuilder
+   :outertype: HtmlTable
 
 printRowClosing
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override protected void printRowClosing()
-   :outertype: HtmlTableBuilder
+   :outertype: HtmlTable
 
 printRowOpening
 ^^^^^^^^^^^^^^^
 
 .. java:method:: @Override protected void printRowOpening()
-   :outertype: HtmlTableBuilder
+   :outertype: HtmlTable
 
 printTableClosing
 ^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override protected void printTableClosing()
-   :outertype: HtmlTableBuilder
+   :outertype: HtmlTable
 
 printTableOpening
 ^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override protected void printTableOpening()
-   :outertype: HtmlTableBuilder
+   :outertype: HtmlTable
 
 printTitle
 ^^^^^^^^^^
 
 .. java:method:: @Override protected void printTitle()
-   :outertype: HtmlTableBuilder
+   :outertype: HtmlTable
 

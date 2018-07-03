@@ -39,7 +39,7 @@ WorkloadFileReader
    * If you need to load multiple trace files, then you need to create multiple instances of this class \ ``each with a unique entity name``\ .
    * If size of the trace reader is huge or contains lots of traces, please increase the JVM heap size accordingly by using \ ``java -Xmx``\  option when running the simulation.
    * The default Cloudlet reader size for sending to and receiving from a Datacenter is \ :java:ref:`DataCloudTags.DEFAULT_MTU`\ . However, you can specify the reader size by using \ :java:ref:`Cloudlet.setFileSize(long)`\ .
-   * A job run time is only for 1 PE \ ``not``\  the total number of allocated PEs. Therefore, a Cloudlet length is also calculated for 1 PE. For example, job #1 in the trace has a run time of 100 seconds for 2 processors. This means each processor runs job #1 for 100 seconds, if the processors have the same specification.
+   * A job run time considers the time spent for a single PE (since all PEs will be used for the same amount of time)\ ``not``\  not the total execution time across all PEs. For example, job #1 in the trace has a run time of 100 seconds for 2 processors. This means each processor runs job #1 for 100 seconds, if the processors have the same specification.
 
    :author: Anthony Sulistio, Marcos Dias de Assuncao
 

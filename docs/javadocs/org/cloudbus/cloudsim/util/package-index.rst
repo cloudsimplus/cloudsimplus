@@ -11,8 +11,6 @@ Provides general purpose, helper classes used internally by CloudSim Plus.
    Conversion
    DataCloudTags
    ExecutionTimeMeasurer
-   Log
-   Log-Level
    MathUtil
    ResourceLoader
    WorkloadFileReader

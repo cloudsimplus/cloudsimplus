@@ -1,4 +1,4 @@
-.. java:import:: org.cloudbus.cloudsim.core Identificable
+.. java:import:: org.cloudbus.cloudsim.core Identifiable
 
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 
@@ -8,7 +8,7 @@ Pe
 .. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
-.. java:type:: public interface Pe extends Identificable, ResourceManageable
+.. java:type:: public interface Pe extends Identifiable, ResourceManageable
 
    A interface to be implemented by each class that provides the basic features of a virtual or physical Processing Element (PE) of a PM or VM. Each Pe represents a virtual or physical processor core.
 

@@ -1,16 +1,16 @@
-.. java:import:: java.util.stream LongStream
-
-.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentificable
-
-.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
+.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
+
+.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
+
 .. java:import:: org.cloudbus.cloudsim.hosts Host
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
 .. java:import:: org.cloudsimplus.autoscaling HorizontalVmScaling
 
@@ -18,13 +18,13 @@
 
 .. java:import:: org.cloudsimplus.autoscaling VmScaling
 
-.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+.. java:import:: org.cloudsimplus.listeners EventListener
 
 .. java:import:: org.cloudsimplus.listeners VmDatacenterEventInfo
 
-.. java:import:: org.cloudsimplus.listeners EventListener
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+.. java:import:: java.util.stream LongStream
 
 VmSimple
 ========
@@ -68,7 +68,9 @@ VmSimple
 .. java:constructor:: public VmSimple(long mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
-   Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. It is not defined an id for the Vm. The id is defined when the Vm is submitted to a \ :java:ref:`DatacenterBroker`\ . To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+   Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+
+   It is not defined an id for the Vm. The id is defined when the Vm is submitted to a \ :java:ref:`DatacenterBroker`\ .
 
    :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
    :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
@@ -268,10 +270,10 @@ getIdleInterval
 .. java:method:: @Override public double getIdleInterval()
    :outertype: VmSimple
 
-getLastBuzyTime
+getLastBusyTime
 ^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getLastBuzyTime()
+.. java:method:: @Override public double getLastBusyTime()
    :outertype: VmSimple
 
 getMips
@@ -355,6 +357,12 @@ getSubmissionDelay
 getTotalCpuMipsUsage
 ^^^^^^^^^^^^^^^^^^^^
 
+.. java:method:: @Override public double getTotalCpuMipsUsage()
+   :outertype: VmSimple
+
+getTotalCpuMipsUsage
+^^^^^^^^^^^^^^^^^^^^
+
 .. java:method:: @Override public double getTotalCpuMipsUsage(double time)
    :outertype: VmSimple
 
@@ -406,10 +414,28 @@ isFailed
 .. java:method:: @Override public boolean isFailed()
    :outertype: VmSimple
 
+isIdle
+^^^^^^
+
+.. java:method:: @Override public boolean isIdle()
+   :outertype: VmSimple
+
+isIdleEnough
+^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isIdleEnough(double time)
+   :outertype: VmSimple
+
 isInMigration
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isInMigration()
+   :outertype: VmSimple
+
+isSuitableForCloudlet
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isSuitableForCloudlet(Cloudlet cloudlet)
    :outertype: VmSimple
 
 isWorking

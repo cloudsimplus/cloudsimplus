@@ -1,6 +1,6 @@
-.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
-
 .. java:import:: java.util Objects
+
+.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 File
 ====
@@ -44,7 +44,7 @@ File
 
    :param fileName: file name
    :param fileSize: file size in MBytes
-   :throws IllegalArgumentException: This happens when one of the following scenarios occur:
+   :throws IllegalArgumentException: when one of the following scenarios occur:
 
    ..
 
@@ -60,10 +60,38 @@ File
    Copy constructor that creates a clone from a source file and set the given file as a \ **replica**\ .
 
    :param file: the source file to create a copy and that will be set as a replica
-   :throws IllegalArgumentException: This happens when the source file is \ ``null``\
+   :throws IllegalArgumentException: when the source file is \ ``null``\
+
+File
+^^^^
+
+.. java:constructor:: protected File(File file, boolean masterCopy) throws IllegalArgumentException
+   :outertype: File
+
+   Copy constructor that creates a clone from a source file and set the given file as a \ **replica**\  or \ **master copy**\ .
+
+   :param file: the file to clone
+   :param masterCopy: false to set the cloned file as a replica, true to set the cloned file as a master copy
+   :throws IllegalArgumentException:
 
 Methods
 -------
+createAttribute
+^^^^^^^^^^^^^^^
+
+.. java:method:: protected void createAttribute(int fileSize)
+   :outertype: File
+
+getAttribute
+^^^^^^^^^^^^
+
+.. java:method:: public FileAttribute getAttribute()
+   :outertype: File
+
+   Gets an attribute of this file.
+
+   :return: a file attribute
+
 getAttributeSize
 ^^^^^^^^^^^^^^^^
 
@@ -111,16 +139,6 @@ getDatacenter
    :outertype: File
 
    Gets the Datacenter that stores the file.
-
-getFileAttribute
-^^^^^^^^^^^^^^^^
-
-.. java:method:: public FileAttribute getFileAttribute()
-   :outertype: File
-
-   Gets an attribute of this file.
-
-   :return: a file attribute
 
 getLastUpdateTime
 ^^^^^^^^^^^^^^^^^
@@ -273,6 +291,16 @@ makeReplica
    Clone the current file and set the cloned one as a \ **replica**\ .
 
    :return: a clone of the current file (as a replica) or \ ``null``\  if an error occurs
+
+setAttribute
+^^^^^^^^^^^^
+
+.. java:method:: protected void setAttribute(FileAttribute attribute)
+   :outertype: File
+
+   Sets an attribute of this file.
+
+   :param attribute: file attribute
 
 setChecksum
 ^^^^^^^^^^^

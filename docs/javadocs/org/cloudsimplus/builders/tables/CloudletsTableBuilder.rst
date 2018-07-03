@@ -1,16 +1,8 @@
-.. java:import:: java.util HashMap
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Map
-
-.. java:import:: java.util Objects
-
-.. java:import:: java.util.function Function
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.core Identificable
+.. java:import:: org.cloudbus.cloudsim.core Identifiable
+
+.. java:import:: java.util List
 
 CloudletsTableBuilder
 =====================
@@ -18,7 +10,7 @@ CloudletsTableBuilder
 .. java:package:: org.cloudsimplus.builders.tables
    :noindex:
 
-.. java:type:: public class CloudletsTableBuilder
+.. java:type:: public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet>
 
    Builds a table for printing simulation results from a list of Cloudlets. It defines a set of default columns but new ones can be added dynamically using the \ ``addColumn()``\  methods.
 
@@ -34,80 +26,26 @@ CloudletsTableBuilder
 .. java:constructor:: public CloudletsTableBuilder(List<? extends Cloudlet> list)
    :outertype: CloudletsTableBuilder
 
-   Creates new helper object to print the list of cloudlets using the a default \ :java:ref:`TextTableBuilder`\ . To use a different \ :java:ref:`TableBuilder`\ , use the alternative constructors.
+   Instantiates a builder to print the list of Cloudlets using the a default \ :java:ref:`TextTable`\ . To use a different \ :java:ref:`Table`\ , check the alternative constructors.
 
-   :param list: the list of Cloudlets that the data will be included into the table to be printed
+   :param list: the list of Cloudlets to print
 
 CloudletsTableBuilder
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletsTableBuilder(List<? extends Cloudlet> list, TableBuilder table)
+.. java:constructor:: public CloudletsTableBuilder(List<? extends Cloudlet> list, Table table)
    :outertype: CloudletsTableBuilder
 
-   Creates new helper object to print the list of cloudlets using the a given \ :java:ref:`TableBuilder`\ .
+   Instantiates a builder to print the list of Cloudlets using the a given \ :java:ref:`Table`\ .
 
-   :param list: the list of Cloudlets that the data will be included into the table to be printed
-   :param table: the \ :java:ref:`TableBuilder`\  used to build the table with Cloudlet Data
+   :param list: the list of Cloudlets to print
+   :param table: the \ :java:ref:`Table`\  used to build the table with the Cloudlets data
 
 Methods
 -------
-addColumn
-^^^^^^^^^
+createTableColumns
+^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public CloudletsTableBuilder addColumn(TableColumn col, Function<Cloudlet, Object> dataFunction)
-   :outertype: CloudletsTableBuilder
-
-   Dynamically adds a column to the end of the table to be built.
-
-   :param col: the column to add
-   :param dataFunction: a function that receives a Cloudlet and returns the data to be printed for the added column
-
-addColumn
-^^^^^^^^^
-
-.. java:method:: public CloudletsTableBuilder addColumn(int index, TableColumn col, Function<Cloudlet, Object> dataFunction)
-   :outertype: CloudletsTableBuilder
-
-   Dynamically adds a column to a specific position into the table to be built.
-
-   :param index: the position to insert the column.
-   :param col: the column to add
-   :param dataFunction: a function that receives a Cloudlet and returns the data to be printed for the added column
-
-addDataToRow
-^^^^^^^^^^^^
-
-.. java:method:: protected void addDataToRow(Cloudlet cloudlet, List<Object> row)
-   :outertype: CloudletsTableBuilder
-
-   Add data to a row of the table being generated.
-
-   :param cloudlet: The cloudlet to get to data to show in the row of the table
-   :param row: The row to be added the data to
-
-build
-^^^^^
-
-.. java:method:: public void build()
-   :outertype: CloudletsTableBuilder
-
-   Builds the table with the data of the Cloudlet list and shows the results.
-
-getTable
-^^^^^^^^
-
-.. java:method:: protected TableBuilder getTable()
-   :outertype: CloudletsTableBuilder
-
-setCloudletList
-^^^^^^^^^^^^^^^
-
-.. java:method:: protected final CloudletsTableBuilder setCloudletList(List<? extends Cloudlet> cloudletList)
-   :outertype: CloudletsTableBuilder
-
-setTitle
-^^^^^^^^
-
-.. java:method:: public CloudletsTableBuilder setTitle(String title)
+.. java:method:: @Override protected void createTableColumns()
    :outertype: CloudletsTableBuilder
 

@@ -273,6 +273,18 @@ isRunning
 
    This method should be used by entities to check if they should continue executing.
 
+isTerminationTimeSet
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isTerminationTimeSet()
+   :outertype: Simulation
+
+isTimeToTerminateSimulationUnderRequest
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isTimeToTerminateSimulationUnderRequest()
+   :outertype: Simulation
+
 pause
 ^^^^^
 

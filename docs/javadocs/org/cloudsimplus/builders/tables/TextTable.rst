@@ -1,14 +1,12 @@
 .. java:import:: org.apache.commons.lang3 StringUtils
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
-TextTableBuilder
-================
+TextTable
+=========
 
 .. java:package:: org.cloudsimplus.builders.tables
    :noindex:
 
-.. java:type:: public class TextTableBuilder extends CsvTableBuilder
+.. java:type:: public class TextTable extends CsvTable
 
    Prints a table from a given data set, using a simple delimited text format.
 
@@ -16,19 +14,19 @@ TextTableBuilder
 
 Constructors
 ------------
-TextTableBuilder
-^^^^^^^^^^^^^^^^
+TextTable
+^^^^^^^^^
 
-.. java:constructor:: public TextTableBuilder()
-   :outertype: TextTableBuilder
+.. java:constructor:: public TextTable()
+   :outertype: TextTable
 
-TextTableBuilder
-^^^^^^^^^^^^^^^^
+TextTable
+^^^^^^^^^
 
-.. java:constructor:: public TextTableBuilder(String title)
-   :outertype: TextTableBuilder
+.. java:constructor:: public TextTable(String title)
+   :outertype: TextTable
 
-   Creates an TableBuilder
+   Creates an Table
 
    :param title: Title of the table
 
@@ -38,35 +36,35 @@ addColumn
 ^^^^^^^^^
 
 .. java:method:: @Override public TableColumn addColumn(int index, String columnTitle)
-   :outertype: TextTableBuilder
+   :outertype: TextTable
 
 getLineSeparator
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public String getLineSeparator()
-   :outertype: TextTableBuilder
+   :outertype: TextTable
 
 printColumnHeaders
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override protected void printColumnHeaders()
-   :outertype: TextTableBuilder
+   :outertype: TextTable
 
 printTableClosing
 ^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void printTableClosing()
-   :outertype: TextTableBuilder
+   :outertype: TextTable
 
 printTableOpening
 ^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void printTableOpening()
-   :outertype: TextTableBuilder
+   :outertype: TextTable
 
 printTitle
 ^^^^^^^^^^
 
 .. java:method:: @Override public void printTitle()
-   :outertype: TextTableBuilder
+   :outertype: TextTable
 

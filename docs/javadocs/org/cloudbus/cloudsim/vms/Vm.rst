@@ -1,10 +1,12 @@
-.. java:import:: org.cloudbus.cloudsim.core Machine
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
-.. java:import:: org.cloudsimplus.autoscaling HorizontalVmScaling
+.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentificable
+.. java:import:: org.cloudbus.cloudsim.core CustomerEntity
+
+.. java:import:: org.cloudbus.cloudsim.core Machine
+
+.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
@@ -12,19 +14,19 @@
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
-.. java:import:: java.util List
-
-.. java:import:: java.util.function Predicate
-
-.. java:import:: org.cloudbus.cloudsim.core CustomerEntity
+.. java:import:: org.cloudsimplus.autoscaling HorizontalVmScaling
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
-.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+.. java:import:: org.cloudsimplus.listeners EventListener
 
 .. java:import:: org.cloudsimplus.listeners VmDatacenterEventInfo
 
-.. java:import:: org.cloudsimplus.listeners EventListener
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
+.. java:import:: java.util List
+
+.. java:import:: java.util.function Predicate
 
 Vm
 ==
@@ -32,7 +34,7 @@ Vm
 .. java:package:: org.cloudbus.cloudsim.vms
    :noindex:
 
-.. java:type:: public interface Vm extends Machine, UniquelyIdentificable, Comparable<Vm>, CustomerEntity
+.. java:type:: public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity
 
    An interface to be implemented by each class that provides basic features of Virtual Machines (VMs). The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`Vm.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`Vm`\  variables.
 
@@ -143,7 +145,7 @@ getBw
 .. java:method:: @Override  Resource getBw()
    :outertype: Vm
 
-   Gets bandwidth resource assigned to the Vm, allowing to check its capacity (in Megabits/s) and usage.
+   Gets bandwidth resource (in Megabits/s) assigned to the Vm, allowing to check its capacity and usage.
 
    :return: bandwidth resource.
 
@@ -311,10 +313,10 @@ getIdleInterval
 
    :return: the last idle time interval (in seconds)
 
-getLastBuzyTime
+getLastBusyTime
 ^^^^^^^^^^^^^^^
 
-.. java:method::  double getLastBuzyTime()
+.. java:method::  double getLastBusyTime()
    :outertype: Vm
 
    Gets the last time the VM was running some Cloudlet.
@@ -406,6 +408,18 @@ getStorage
 getTotalCpuMipsUsage
 ^^^^^^^^^^^^^^^^^^^^
 
+.. java:method::  double getTotalCpuMipsUsage()
+   :outertype: Vm
+
+   Gets the current total CPU MIPS utilization of all PEs from all cloudlets running on this VM.
+
+   :return: total CPU utilization in MIPS
+
+   **See also:** :java:ref:`.getCpuPercentUsage(double)`
+
+getTotalCpuMipsUsage
+^^^^^^^^^^^^^^^^^^^^
+
 .. java:method::  double getTotalCpuMipsUsage(double time)
    :outertype: Vm
 
@@ -470,6 +484,27 @@ isFailed
 
    **See also:** :java:ref:`.isWorking()`
 
+isIdle
+^^^^^^
+
+.. java:method::  boolean isIdle()
+   :outertype: Vm
+
+   Checks if the VM is currently idle.
+
+   :return: true if the VM currently idle, false otherwise
+
+isIdleEnough
+^^^^^^^^^^^^
+
+.. java:method::  boolean isIdleEnough(double time)
+   :outertype: Vm
+
+   Checks if the VM has been idle for a given amount of time (in seconds).
+
+   :param time: the time interval to check if the VM has been idle (in seconds). If time is zero, it will be checked if the VM is currently idle.
+   :return: true if the VM has been idle as long as the given time, false if it's active of isn't idle as long enough
+
 isInMigration
 ^^^^^^^^^^^^^
 
@@ -477,6 +512,17 @@ isInMigration
    :outertype: Vm
 
    Checks if the VM is in migration process or not, that is, if it is migrating in or out of a Host.
+
+isSuitableForCloudlet
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isSuitableForCloudlet(Cloudlet cloudlet)
+   :outertype: Vm
+
+   Checks if the VM has enough capacity to run a Cloudlet.
+
+   :param cloudlet: the candidate Cloudlet to run inside the VM
+   :return: true if the VM can run the Cloudlet, false otherwise
 
 isWorking
 ^^^^^^^^^
@@ -582,9 +628,9 @@ setBw
 .. java:method::  Vm setBw(long bwCapacity)
    :outertype: Vm
 
-   Sets the BW capacity
+   Sets the bandwidth capacity (in Megabits/s)
 
-   :param bwCapacity: new BW capacity
+   :param bwCapacity: new BW capacity (in Megabits/s)
 
 setBwVerticalScaling
 ^^^^^^^^^^^^^^^^^^^^

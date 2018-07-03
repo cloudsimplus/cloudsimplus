@@ -1,3 +1,19 @@
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
+
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicyAbstract
+
+.. java:import:: org.cloudbus.cloudsim.core Simulation
+
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
+.. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
 .. java:import:: java.util.function BiFunction
 
 .. java:import:: java.util.function Function
@@ -7,20 +23,6 @@
 .. java:import:: java.util.stream Collectors
 
 .. java:import:: java.util.stream Stream
-
-.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
-
-.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicyAbstract
-
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
-.. java:import:: org.cloudbus.cloudsim.util Log
-
-.. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
-.. java:import:: org.cloudbus.cloudsim.core Simulation
 
 VmAllocationPolicyMigrationAbstract
 ===================================
@@ -157,16 +159,6 @@ getOptimizedAllocationMap
 .. java:method:: @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList)
    :outertype: VmAllocationPolicyMigrationAbstract
 
-getOverloadedHosts
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected Set<Host> getOverloadedHosts()
-   :outertype: VmAllocationPolicyMigrationAbstract
-
-   Gets the List of overloaded hosts. If a Host is overloaded but it has VMs migrating out, then it's not included in the returned List because the VMs to be migrated to move the Host from the overload state already are in migration.
-
-   :return: the over utilized hosts
-
 getPowerAfterAllocation
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -273,27 +265,16 @@ isHostUnderloaded
    :param host: the host
    :return: true, if the host is under utilized; false otherwise
 
-isNotAllVmsMigratingOut
-^^^^^^^^^^^^^^^^^^^^^^^
+notAllVmsAreMigratingOut
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean isNotAllVmsMigratingOut(Host host)
+.. java:method:: protected boolean notAllVmsAreMigratingOut(Host host)
    :outertype: VmAllocationPolicyMigrationAbstract
 
-   Checks if all VMs of a Host are \ **NOT**\  migrating out. In this case, the given Host will not be selected as an underloaded Host at the current moment.
+   Checks if all VMs of a Host are \ **NOT**\  migrating out. In this case, the given Host will not be selected as an underloaded Host at the current moment. That is: not all VMs are migrating out if at least one VM isn't in migration process.
 
    :param host: the host to check
-
-isNotHostOverloadedAfterAllocation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected boolean isNotHostOverloadedAfterAllocation(Host host, Vm vm)
-   :outertype: VmAllocationPolicyMigrationAbstract
-
-   Checks if a host will be over utilized after placing of a candidate VM.
-
-   :param host: the host to verify
-   :param vm: the candidate vm
-   :return: true, if the host will be over utilized after VM placement; false otherwise
+   :return: true if at least one VM isn't migrating, false if all VMs are migrating
 
 setUnderUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

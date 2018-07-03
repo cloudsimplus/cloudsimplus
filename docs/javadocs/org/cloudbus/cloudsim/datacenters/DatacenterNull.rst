@@ -8,9 +8,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.resources File
-
-.. java:import:: org.cloudbus.cloudsim.resources FileStorage
+.. java:import:: org.cloudbus.cloudsim.resources DatacenterStorage
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -34,12 +32,6 @@ DatacenterNull
 
 Methods
 -------
-addFile
-^^^^^^^
-
-.. java:method:: @Override public int addFile(File file)
-   :outertype: DatacenterNull
-
 addHost
 ^^^^^^^
 
@@ -68,6 +60,12 @@ getCharacteristics
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public DatacenterCharacteristics getCharacteristics()
+   :outertype: DatacenterNull
+
+getDatacenterStorage
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterStorage getDatacenterStorage()
    :outertype: DatacenterNull
 
 getHost
@@ -118,12 +116,6 @@ getSimulation
 .. java:method:: @Override public Simulation getSimulation()
    :outertype: DatacenterNull
 
-getStorageList
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<FileStorage> getStorageList()
-   :outertype: DatacenterNull
-
 getVmAllocationPolicy
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -136,16 +128,22 @@ getVmList
 .. java:method:: @Override public List<Vm> getVmList()
    :outertype: DatacenterNull
 
+isAlive
+^^^^^^^
+
+.. java:method:: @Override public boolean isAlive()
+   :outertype: DatacenterNull
+
+isFinished
+^^^^^^^^^^
+
+.. java:method:: @Override public boolean isFinished()
+   :outertype: DatacenterNull
+
 isStarted
 ^^^^^^^^^
 
 .. java:method:: @Override public boolean isStarted()
-   :outertype: DatacenterNull
-
-println
-^^^^^^^
-
-.. java:method:: @Override public void println(String msg)
    :outertype: DatacenterNull
 
 processEvent
@@ -170,6 +168,12 @@ setBandwidthPercentForMigration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration)
+   :outertype: DatacenterNull
+
+setDatacenterStorage
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage)
    :outertype: DatacenterNull
 
 setLog
@@ -200,12 +204,6 @@ setState
 ^^^^^^^^
 
 .. java:method:: @Override public SimEntity setState(State state)
-   :outertype: DatacenterNull
-
-setStorageList
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Datacenter setStorageList(List<FileStorage> storageList)
    :outertype: DatacenterNull
 
 shutdownEntity

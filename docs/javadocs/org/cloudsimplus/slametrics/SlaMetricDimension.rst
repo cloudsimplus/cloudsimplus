@@ -10,6 +10,8 @@ SlaMetricDimension
 
    Each dimension contains the name of the metric, the minimum and maximum acceptable values, and the metric unit. Each metric may have multiple dimensions.
 
+   For more details, check \ `Raysa Oliveira's Master Thesis (only in Portuguese) <http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf>`_\ .
+
    :author: raysaoliveira
 
 Constructors

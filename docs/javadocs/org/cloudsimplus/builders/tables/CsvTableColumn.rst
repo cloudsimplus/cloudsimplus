@@ -37,13 +37,13 @@ CsvTableColumn
 CsvTableColumn
 ^^^^^^^^^^^^^^
 
-.. java:constructor:: public CsvTableColumn(TableBuilder table, String title, String subTitle)
+.. java:constructor:: public CsvTableColumn(Table table, String title, String subTitle)
    :outertype: CsvTableColumn
 
 CsvTableColumn
 ^^^^^^^^^^^^^^
 
-.. java:constructor:: public CsvTableColumn(TableBuilder table, String title)
+.. java:constructor:: public CsvTableColumn(Table table, String title)
    :outertype: CsvTableColumn
 
 Methods

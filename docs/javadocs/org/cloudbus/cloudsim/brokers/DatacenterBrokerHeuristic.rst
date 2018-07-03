@@ -1,18 +1,20 @@
-.. java:import:: java.util.stream Collectors
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.util Log
+.. java:import:: org.cloudbus.cloudsim.core CloudSim
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
-
-.. java:import:: org.cloudbus.cloudsim.core CloudSim
 
 .. java:import:: org.cloudsimplus.heuristics CloudletToVmMappingHeuristic
 
 .. java:import:: org.cloudsimplus.heuristics CloudletToVmMappingSolution
 
 .. java:import:: org.cloudsimplus.heuristics Heuristic
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util.stream Collectors
 
 DatacenterBrokerHeuristic
 =========================
@@ -42,6 +44,12 @@ DatacenterBrokerHeuristic
 
 Methods
 -------
+defaultVmMapper
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Vm defaultVmMapper(Cloudlet cloudlet)
+   :outertype: DatacenterBrokerHeuristic
+
 getHeuristic
 ^^^^^^^^^^^^
 
@@ -54,12 +62,6 @@ requestDatacentersToCreateWaitingCloudlets
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override protected void requestDatacentersToCreateWaitingCloudlets()
-   :outertype: DatacenterBrokerHeuristic
-
-selectVmForWaitingCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override protected Vm selectVmForWaitingCloudlet(Cloudlet cloudlet)
    :outertype: DatacenterBrokerHeuristic
 
 setHeuristic

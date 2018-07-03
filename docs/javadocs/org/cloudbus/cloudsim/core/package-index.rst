@@ -15,7 +15,7 @@ Provides core classes used just internally by CloudSim Plus, except the \ :java:
    CloudSimTags
    CustomerEntity
    Delayable
-   Identificable
+   Identifiable
    Machine
    MachineNull
    Nameable
@@ -24,5 +24,5 @@ Provides core classes used just internally by CloudSim Plus, except the \ :java:
    SimEntityNull
    Simulation
    SimulationNull
-   UniquelyIdentificable
+   UniquelyIdentifiable
 

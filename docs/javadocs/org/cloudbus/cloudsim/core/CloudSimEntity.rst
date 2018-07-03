@@ -1,6 +1,8 @@
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
-.. java:import:: org.cloudbus.cloudsim.util Log
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
 
 .. java:import:: java.util Objects
 
@@ -130,6 +132,18 @@ hashCode
 .. java:method:: @Override public int hashCode()
    :outertype: CloudSimEntity
 
+isAlive
+^^^^^^^
+
+.. java:method:: @Override public boolean isAlive()
+   :outertype: CloudSimEntity
+
+isFinished
+^^^^^^^^^^
+
+.. java:method:: @Override public boolean isFinished()
+   :outertype: CloudSimEntity
+
 isStarted
 ^^^^^^^^^
 
@@ -166,12 +180,6 @@ pause
    Sets the entity to be inactive for a time period.
 
    :param delay: the time period for which the entity will be inactive
-
-println
-^^^^^^^
-
-.. java:method:: @Override public void println(String msg)
-   :outertype: CloudSimEntity
 
 run
 ^^^
@@ -385,6 +393,12 @@ setState
    Sets the entity state.
 
    :param state: the new state
+
+shutdownEntity
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void shutdownEntity()
+   :outertype: CloudSimEntity
 
 start
 ^^^^^

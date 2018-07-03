@@ -28,6 +28,16 @@ CloudletDatacenterExecution
 
 Methods
 -------
+addFinishedSoFar
+^^^^^^^^^^^^^^^^
+
+.. java:method::  void addFinishedSoFar(long partialFinishedMI)
+   :outertype: CloudletDatacenterExecution
+
+   Adds the partial length of this Cloudlet that has executed so far in this Datacenter (in MI).
+
+   :param partialFinishedMI: the partial executed length of this Cloudlet (in MI) from the last time span (the last time the Cloudlet execution was updated)
+
 getActualCpuTime
 ^^^^^^^^^^^^^^^^
 
@@ -74,7 +84,11 @@ getWallClockTime
 .. java:method::  double getWallClockTime()
    :outertype: CloudletDatacenterExecution
 
-   The time this Cloudlet resides in a Datacenter (from arrival time until departure time, that may include waiting time).
+   Gets the time this Cloudlet resides in a Datacenter (from arrival time until departure time, that may include waiting time).
+
+   :return: the wall-clock time
+
+   **See also:** \ `Elapsed real time (wall-clock time) <https://en.wikipedia.org/wiki/Elapsed_real_time>`_\
 
 setActualCpuTime
 ^^^^^^^^^^^^^^^^
@@ -100,15 +114,15 @@ setDatacenter
 .. java:method::  void setDatacenter(Datacenter datacenter)
    :outertype: CloudletDatacenterExecution
 
-setFinishedSoFar
-^^^^^^^^^^^^^^^^
-
-.. java:method::  void setFinishedSoFar(long finishedSoFar)
-   :outertype: CloudletDatacenterExecution
-
 setWallClockTime
 ^^^^^^^^^^^^^^^^
 
 .. java:method::  void setWallClockTime(double wallClockTime)
    :outertype: CloudletDatacenterExecution
+
+   Sets the time this Cloudlet resides in a Datacenter (from arrival time until departure time, that may include waiting time).
+
+   :param wallClockTime: the wall-clock time to set
+
+   **See also:** \ `Elapsed real time (wall-clock time) <https://en.wikipedia.org/wiki/Elapsed_real_time>`_\
 

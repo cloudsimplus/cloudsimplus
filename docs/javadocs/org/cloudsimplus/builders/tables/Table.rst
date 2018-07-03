@@ -1,12 +1,12 @@
 .. java:import:: java.util List
 
-TableBuilder
-============
+Table
+=====
 
 .. java:package:: org.cloudsimplus.builders.tables
    :noindex:
 
-.. java:type:: public interface TableBuilder
+.. java:type:: public interface Table
 
    An interface for classes that generate tables from a given data set, following the Builder Design Pattern.
 
@@ -18,7 +18,7 @@ addColumn
 ^^^^^^^^^
 
 .. java:method::  TableColumn addColumn(String columnTitle)
-   :outertype: TableBuilder
+   :outertype: Table
 
    Adds a column with a given to the end of the table's columns to be printed.
 
@@ -29,7 +29,7 @@ addColumn
 ^^^^^^^^^
 
 .. java:method::  TableColumn addColumn(int index, String columnTitle)
-   :outertype: TableBuilder
+   :outertype: Table
 
    Adds a column with a given title to the end of the table's columns to be printed.
 
@@ -41,7 +41,7 @@ addColumn
 ^^^^^^^^^
 
 .. java:method::  TableColumn addColumn(String columnTitle, String columnSubTitle)
-   :outertype: TableBuilder
+   :outertype: Table
 
    Adds a column with a given title and sub-title to the end of the table's columns to be printed.
 
@@ -53,7 +53,7 @@ addColumn
 ^^^^^^^^^
 
 .. java:method::  TableColumn addColumn(int index, TableColumn column)
-   :outertype: TableBuilder
+   :outertype: Table
 
    Adds a column object to a specific position of the table's columns to be printed.
 
@@ -65,7 +65,7 @@ addColumn
 ^^^^^^^^^
 
 .. java:method::  TableColumn addColumn(TableColumn column)
-   :outertype: TableBuilder
+   :outertype: Table
 
    Adds a column object to the end of the table's columns to be printed.
 
@@ -75,13 +75,13 @@ addColumn
 addColumnList
 ^^^^^^^^^^^^^
 
-.. java:method::  TableBuilder addColumnList(String... columnTitles)
-   :outertype: TableBuilder
+.. java:method::  Table addColumnList(String... columnTitles)
+   :outertype: Table
 
    Adds a list of columns (with given titles) to the end of the table's columns to be printed, where the column data will be printed without a specific format.
 
    :param columnTitles: The titles of the columns
-   :return: the \ :java:ref:`TableBuilder`\  instance.
+   :return: the \ :java:ref:`Table`\  instance.
 
    **See also:** :java:ref:`.addColumn(String)`
 
@@ -89,7 +89,7 @@ getColumnSeparator
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method::  String getColumnSeparator()
-   :outertype: TableBuilder
+   :outertype: Table
 
    Gets the string used to separate one column from another (optional).
 
@@ -97,7 +97,7 @@ getColumns
 ^^^^^^^^^^
 
 .. java:method::  List<TableColumn> getColumns()
-   :outertype: TableBuilder
+   :outertype: Table
 
    :return: the list of columns of the table
 
@@ -105,7 +105,7 @@ getTitle
 ^^^^^^^^
 
 .. java:method::  String getTitle()
-   :outertype: TableBuilder
+   :outertype: Table
 
    :return: the table title
 
@@ -113,7 +113,7 @@ newRow
 ^^^^^^
 
 .. java:method::  List<Object> newRow()
-   :outertype: TableBuilder
+   :outertype: Table
 
    Adds a new row to the list of rows containing the data to be printed.
 
@@ -121,15 +121,15 @@ print
 ^^^^^
 
 .. java:method::  void print()
-   :outertype: TableBuilder
+   :outertype: Table
 
-   Builds and prints the table.
+   Prints the table.
 
 setColumnSeparator
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method::  TableBuilder setColumnSeparator(String columnSeparator)
-   :outertype: TableBuilder
+.. java:method::  Table setColumnSeparator(String columnSeparator)
+   :outertype: Table
 
    Sets the string used to separate one column from another (optional).
 
@@ -138,9 +138,9 @@ setColumnSeparator
 setTitle
 ^^^^^^^^
 
-.. java:method::  TableBuilder setTitle(String title)
-   :outertype: TableBuilder
+.. java:method::  Table setTitle(String title)
+   :outertype: Table
 
    :param title: the table title to set
-   :return: The TableBuilder instance
+   :return: The Table instance
 

@@ -42,16 +42,16 @@ getCapacity
 .. java:method:: @Override public long getCapacity()
    :outertype: ResourceAbstract
 
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isResourceAmountAvailable(long amountToCheck)
+.. java:method:: @Override public boolean isAmountAvailable(long amountToCheck)
    :outertype: ResourceAbstract
 
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isResourceAmountAvailable(double amountToCheck)
+.. java:method:: @Override public boolean isAmountAvailable(double amountToCheck)
    :outertype: ResourceAbstract
 
 isResourceAmountBeingUsed

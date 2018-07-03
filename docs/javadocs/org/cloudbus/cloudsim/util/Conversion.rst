@@ -12,10 +12,10 @@ Conversion
 
 Fields
 ------
-GIBABYTE
+GIGABYTE
 ^^^^^^^^
 
-.. java:field:: public static final double GIBABYTE
+.. java:field:: public static final double GIGABYTE
    :outertype: Conversion
 
    The value of 1 GibaByte in Bytes.
@@ -55,6 +55,16 @@ MILLION
    :outertype: Conversion
 
    One million in absolute value, usually used to convert to and from Number of Instructions (I) and Million Instructions (MI) units.
+
+TERABYTE
+^^^^^^^^
+
+.. java:field:: public static final double TERABYTE
+   :outertype: Conversion
+
+   The value of 1 TeraByte in Bytes.
+
+   **See also:** :java:ref:`.GIGABYTE`
 
 Methods
 -------
@@ -101,4 +111,26 @@ bytesToMegaBytes
 
    :param bytes: the value in bytes
    :return: the value in MegaBytes (MB)
+
+gigaToMega
+^^^^^^^^^^
+
+.. java:method:: public static double gigaToMega(double giga)
+   :outertype: Conversion
+
+   Converts any value in giga to mega, doesn't matter if it's gigabits or gigabytes.
+
+   :param giga: the value in gigabits or gigabytes
+   :return: the value in megabits or megabytes (according to the input value)
+
+teraToMega
+^^^^^^^^^^
+
+.. java:method:: public static double teraToMega(double tera)
+   :outertype: Conversion
+
+   Converts any value in tera to mega, doesn't matter if it's terabits or terabytes.
+
+   :param tera: the value in terabits or terabytes
+   :return: the value in megabits or megabytes (according to the input value)
 

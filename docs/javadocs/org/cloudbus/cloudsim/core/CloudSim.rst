@@ -1,16 +1,18 @@
-.. java:import:: java.util.stream Stream
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies NetworkTopology
 
-.. java:import:: org.cloudbus.cloudsim.util Log
-
-.. java:import:: java.util.function Predicate
-
 .. java:import:: org.cloudsimplus.listeners EventInfo
 
 .. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util.function Predicate
+
+.. java:import:: java.util.stream Stream
 
 CloudSim
 ========
@@ -190,6 +192,18 @@ isRunning
 ^^^^^^^^^
 
 .. java:method:: @Override public boolean isRunning()
+   :outertype: CloudSim
+
+isTerminationTimeSet
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isTerminationTimeSet()
+   :outertype: CloudSim
+
+isTimeToTerminateSimulationUnderRequest
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isTimeToTerminateSimulationUnderRequest()
    :outertype: CloudSim
 
 pause

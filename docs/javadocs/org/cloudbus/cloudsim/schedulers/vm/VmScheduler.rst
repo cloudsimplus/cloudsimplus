@@ -1,12 +1,12 @@
-.. java:import:: java.util List
-
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
+.. java:import:: org.cloudbus.cloudsim.resources Resource
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: org.cloudbus.cloudsim.resources Resource
+.. java:import:: java.util List
 
 VmScheduler
 ===========

@@ -1,3 +1,11 @@
+.. java:import:: org.cloudbus.cloudsim.distributions ContinuousDistribution
+
+.. java:import:: org.cloudbus.cloudsim.util Conversion
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util Collections
@@ -5,10 +13,6 @@
 .. java:import:: java.util List
 
 .. java:import:: java.util Objects
-
-.. java:import:: org.cloudbus.cloudsim.util Log
-
-.. java:import:: org.cloudbus.cloudsim.distributions ContinuousDistribution
 
 HarddriveStorage
 ================
@@ -18,15 +22,29 @@ HarddriveStorage
 
 .. java:type:: public class HarddriveStorage implements FileStorage
 
-   An implementation of a Hard Drive (HD) storage device. It simulates the behavior of a typical hard drive. The default values for this storage are those of a "Maxtor DiamonMax 10 ATA" hard disk with the following parameters:
+   An implementation of a Hard Drive (HD) storage device. It simulates the behavior of a typical hard drive. The default values for this storage are those of a "\ `Maxtor DiamondMax 10 ATA <https://www.seagate.com/files/staticfiles/maxtor/en_us/documentation/data_sheets/diamondmax_10_data_sheet.pdf>`_\ " hard disk with the following parameters:
 
    ..
 
    * latency = 4.17 ms
    * avg seek time = 9 m/s
-   * max transfer rate = 133 MEGABYTE/sec
+   * max transfer rate = 1064 Megabits/sec (133 MBytes/sec)
 
-   :author: Uros Cibej, Anthony Sulistio
+   :author: Uros Cibej, Anthony Sulistio, Manoel Campos da Silva Filho
+
+Fields
+------
+DEF_LATENCY_SECS
+^^^^^^^^^^^^^^^^
+
+.. java:field:: public static final double DEF_LATENCY_SECS
+   :outertype: HarddriveStorage
+
+DEF_SEEK_TIME_SECS
+^^^^^^^^^^^^^^^^^^
+
+.. java:field:: public static final double DEF_SEEK_TIME_SECS
+   :outertype: HarddriveStorage
 
 Constructors
 ------------
@@ -153,12 +171,8 @@ getFileNameList
 getLatency
 ^^^^^^^^^^
 
-.. java:method:: public double getLatency()
+.. java:method:: @Override public double getLatency()
    :outertype: HarddriveStorage
-
-   Gets the latency of this hard drive in seconds.
-
-   :return: the latency in seconds
 
 getMaxTransferRate
 ^^^^^^^^^^^^^^^^^^
@@ -178,28 +192,64 @@ getNumStoredFile
 .. java:method:: @Override public int getNumStoredFile()
    :outertype: HarddriveStorage
 
+getTransferTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTransferTime(String fileName)
+   :outertype: HarddriveStorage
+
+getTransferTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTransferTime(File file)
+   :outertype: HarddriveStorage
+
+getTransferTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTransferTime(int fileSize)
+   :outertype: HarddriveStorage
+
+getTransferTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: protected final double getTransferTime(int fileSize, double speed)
+   :outertype: HarddriveStorage
+
+   Gets the time to transfer a file (in MBytes) according to a given transfer speed (in Mbits/sec).
+
+   :param fileSize: the size of the file to compute the transfer time (in MBytes)
+   :param speed: the speed (in MBits/sec) to compute the time to transfer the file
+   :return: the transfer time in seconds
+
+hasFile
+^^^^^^^
+
+.. java:method:: @Override public boolean hasFile(String fileName)
+   :outertype: HarddriveStorage
+
 hasPotentialAvailableSpace
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean hasPotentialAvailableSpace(int fileSize)
    :outertype: HarddriveStorage
 
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isAmountAvailable(long amountToCheck)
+   :outertype: HarddriveStorage
+
+isAmountAvailable
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isAmountAvailable(double amountToCheck)
+   :outertype: HarddriveStorage
+
 isFull
 ^^^^^^
 
 .. java:method:: @Override public boolean isFull()
-   :outertype: HarddriveStorage
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isResourceAmountAvailable(long amountToCheck)
-   :outertype: HarddriveStorage
-
-isResourceAmountAvailable
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isResourceAmountAvailable(double amountToCheck)
    :outertype: HarddriveStorage
 
 renameFile
@@ -240,17 +290,12 @@ setAvgSeekTime
 setLatency
 ^^^^^^^^^^
 
-.. java:method:: public boolean setLatency(double latency)
+.. java:method:: @Override public void setLatency(double latency)
    :outertype: HarddriveStorage
-
-   Sets the latency of this hard drive in seconds.
-
-   :param latency: the new latency in seconds
-   :return: \ ``true``\  if the setting succeeded, \ ``false``\  otherwise
 
 setMaxTransferRate
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean setMaxTransferRate(int rate)
+.. java:method:: @Override public void setMaxTransferRate(double maxTransferRate)
    :outertype: HarddriveStorage
 

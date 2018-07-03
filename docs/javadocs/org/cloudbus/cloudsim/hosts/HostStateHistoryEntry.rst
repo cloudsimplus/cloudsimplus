@@ -37,6 +37,14 @@ getAllocatedMips
 
    :return: the allocated mips
 
+getPercentUsage
+^^^^^^^^^^^^^^^
+
+.. java:method:: public double getPercentUsage()
+   :outertype: HostStateHistoryEntry
+
+   Gets the percentage (in scale from 0 to 1) of allocated MIPS from the total requested.
+
 getRequestedMips
 ^^^^^^^^^^^^^^^^
 

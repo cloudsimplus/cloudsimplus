@@ -1,8 +1,8 @@
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.core Identificable
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
+
+.. java:import:: org.cloudbus.cloudsim.core Identifiable
 
 CloudletTask
 ============
@@ -10,7 +10,7 @@ CloudletTask
 .. java:package:: org.cloudbus.cloudsim.cloudlets.network
    :noindex:
 
-.. java:type:: public abstract class CloudletTask implements Identificable
+.. java:type:: public abstract class CloudletTask implements Identifiable
 
    Represents one of many tasks that can be executed by a \ :java:ref:`NetworkCloudlet`\ .
 

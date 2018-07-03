@@ -1,16 +1,14 @@
-.. java:import:: org.cloudbus.cloudsim.power.models PowerModel
-
-.. java:import:: org.cloudbus.cloudsim.util Log
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
+.. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.power.models PowerModel
+
+.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
-.. java:import:: java.util.function Predicate
-
-.. java:import:: org.cloudbus.cloudsim.core Simulation
+.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.vms VmStateHistoryEntry
 
@@ -18,7 +16,11 @@
 
 .. java:import:: org.cloudsimplus.listeners HostUpdatesVmsProcessingEventInfo
 
-.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util.function Predicate
 
 HostSimple
 ==========
@@ -105,12 +107,6 @@ compareTo
 
    :param o: the Host to compare to
    :return: {@inheritDoc}
-
-computeCpuUtilizationPercent
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected double computeCpuUtilizationPercent(double mipsUsage)
-   :outertype: HostSimple
 
 createTemporaryVm
 ^^^^^^^^^^^^^^^^^
