@@ -72,8 +72,7 @@ public class HostSimpleTest {
         return host;
     }
 
-    public static HostSimple createHostSimple(final int hostId,
-            final int numberOfPes, VmScheduler vmScheduler) {
+    private static HostSimple createHostSimple(final int numberOfPes, VmScheduler vmScheduler) {
         final List<Pe> peList = createPes(numberOfPes, MIPS);
 
         final HostSimple host = new HostSimple(RAM, BW, STORAGE, peList);
@@ -84,7 +83,7 @@ public class HostSimpleTest {
 
     }
 
-    public static final List<Pe> createPes(final int numberOfPes, final double mips) {
+    private static List<Pe> createPes(final int numberOfPes, final double mips) {
         final List<Pe> peList = new ArrayList<>(numberOfPes);
         for (int i = 0; i < numberOfPes; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
@@ -300,7 +299,7 @@ public class HostSimpleTest {
             .once();
         EasyMock.replay(vmScheduler);
 
-        final HostSimple host = createHostSimple(0, numberOfVms, vmScheduler);
+        final HostSimple host = createHostSimple(numberOfVms, vmScheduler);
         vmList.forEach(host::addVmToList);
 
         final int i = 0;
