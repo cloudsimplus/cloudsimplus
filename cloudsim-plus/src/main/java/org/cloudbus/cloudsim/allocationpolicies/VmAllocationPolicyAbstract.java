@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
+import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigrationAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
@@ -380,12 +381,18 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         return false;
     }
 
+    //It's ensured the hostFreePesMap always have an entry for each Host (avoiding NullPointerException)
+    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean allocateHostForVm(final Vm vm, final Host host) {
         if (host.createVm(vm)) {
+            addUsedPes(vm);
+            getHostFreePesMap().compute(host, (h, previousFreePes) -> previousFreePes - vm.getNumberOfPes());
+
             logger.info(
                 "{}: {}: {} has been allocated to {}",
                 vm.getSimulation().clock(), getClass().getSimpleName(), vm, host);
+
             return true;
         }
 
@@ -395,7 +402,12 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public void deallocateHostForVm(final Vm vm) {
+        final Host previousHost = vm.getHost();
         vm.getHost().destroyVm(vm);
+        final long pes = removeUsedPes(vm);
+        if (previousHost != Host.NULL) {
+            getHostFreePesMap().compute(previousHost, (host, freePes) -> freePes == null ? pes : freePes + pes);
+        }
     }
 
     /**
@@ -407,5 +419,23 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public final void setFindHostForVmFunction(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         this.findHostForVmFunction = findHostForVmFunction == null ? VmAllocationPolicy::findHostForVm : findHostForVmFunction;
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p><b>This method implementation doesn't perform any
+     * VM placement optimization and, in fact, has no effect.
+     * The {@link VmAllocationPolicyMigrationAbstract} class
+     * provides an actual implementation for this method that can be overridden
+     * by subclasses.
+     * </b></p>
+     *
+     * @param vmList {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
+        return Collections.emptyMap();
     }
 }

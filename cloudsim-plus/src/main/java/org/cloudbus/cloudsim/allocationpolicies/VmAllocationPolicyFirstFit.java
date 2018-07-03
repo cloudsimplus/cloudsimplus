@@ -11,9 +11,6 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -45,17 +42,5 @@ public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract imple
                 .sorted()
                 .filter(h -> h.isSuitableForVm(vm))
                 .findFirst();
-    }
-
-    /**
-     * This implementation doesn't perform any
-     * VM placement optimization and, in fact, has no effect.
-     *
-     * @param vmList the list of VMs
-     * @return an empty map to indicate that it never performs optimization
-     */
-    @Override
-    public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
-        return Collections.EMPTY_MAP;
     }
 }

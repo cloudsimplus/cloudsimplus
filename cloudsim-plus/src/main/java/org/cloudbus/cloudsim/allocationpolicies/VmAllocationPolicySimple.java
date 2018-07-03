@@ -10,7 +10,9 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -69,38 +71,4 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
             .map(Map.Entry::getKey);
     }
 
-    //It's ensured the hostFreePesMap always have an entry for each Host (avoiding NPE)
-    @SuppressWarnings("ConstantConditions")
-    @Override
-    public boolean allocateHostForVm(final Vm vm, final Host host) {
-        if(super.allocateHostForVm(vm, host)){
-            addUsedPes(vm);
-            getHostFreePesMap().compute(host, (h, previousFreePes) -> previousFreePes - vm.getNumberOfPes());
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public void deallocateHostForVm(final Vm vm) {
-        final Host previousHost = vm.getHost();
-        super.deallocateHostForVm(vm);
-        final long pes = removeUsedPes(vm);
-        if (previousHost != Host.NULL) {
-            getHostFreePesMap().compute(previousHost, (host, freePes) -> freePes == null ? pes : freePes + pes);
-        }
-    }
-
-    /**
-     * This implementation doesn't perform any
-     * VM placement optimization and, in fact, has no effect.
-     *
-     * @param vmList the list of VMs
-     * @return an empty map to indicate that it never performs optimization
-     */
-    @Override
-    public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
-        return Collections.EMPTY_MAP;
-    }
 }
