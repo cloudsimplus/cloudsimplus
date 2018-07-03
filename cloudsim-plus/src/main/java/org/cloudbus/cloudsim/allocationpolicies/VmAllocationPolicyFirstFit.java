@@ -38,7 +38,6 @@ public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract imple
     public Optional<Host> findHostForVm(final Vm vm) {
         return this.getHostList()
                 .stream()
-                .sorted()
                 .filter(h -> h.isSuitableForVm(vm))
                 .findFirst();
     }

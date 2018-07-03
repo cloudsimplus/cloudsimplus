@@ -74,7 +74,6 @@ public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
         return map.entrySet()
             .stream()
             .filter(e -> e.getKey().isSuitableForVm(vm))
-            .sorted(Comparator.comparingInt(e -> e.getKey().getId()))
             .min(Comparator.comparingLong(Map.Entry::getValue))
             .map(Map.Entry::getKey);
     }
