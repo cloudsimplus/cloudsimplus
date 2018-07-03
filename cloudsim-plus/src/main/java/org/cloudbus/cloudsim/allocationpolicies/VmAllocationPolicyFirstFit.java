@@ -17,8 +17,7 @@ import java.util.Optional;
  * An <b>First Fit VM allocation policy</b>
  * which finds the first Host having suitable resources to place a given VM.
  *
- * <p><b>NOTE: This policy doesn't perform optimization of VM allocation (placement)
- * by means of VM migration.</b></p>
+ * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:

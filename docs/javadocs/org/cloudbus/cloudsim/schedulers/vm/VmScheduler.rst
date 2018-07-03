@@ -182,22 +182,6 @@ getWorkingPeList
 
    :param <T>: the generic type
 
-isAllowedToAllocateMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare)
-   :outertype: VmScheduler
-
-   Checks if a list of MIPS requested by a VM is allowed to be allocated or not. Depending on the \ ``VmScheduler``\  implementation, the return value of this method may have different effects:
-
-   ..
-
-   * true: requested MIPS will be allocated, partial or totally, depending on the available MIPS and the \ ``VmScheduler``\  implementation;
-   * false: requested MIPS will not be allocated because there is no availability at all or there is just a partial amount of the requested MIPS available and the \ ``VmScheduler``\  implementation doesn't allow allocating less than the VM is requesting. If less than the required MIPS is allocated to a VM, it will cause performance degradation. Such situation defines an over-subscription situation which just specific \ ``VmSchedulers``\  accept.
-
-   :param vmRequestedMipsShare: a list of MIPS requested by a VM
-   :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
-
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
@@ -212,13 +196,48 @@ isSuitableForVm
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
-.. java:method::  boolean isSuitableForVm(List<Double> vmMipsList)
+.. java:method::  boolean isSuitableForVm(Vm vm, boolean showLog)
    :outertype: VmScheduler
 
    Checks if the PM using this scheduler has enough MIPS capacity to host a given VM.
 
-   :param vmMipsList: a List with the MIPS capacity required by each VM PE
+   :param vm: the vm to check if there is enough available resource on the PM to host it
+   :param showLog: if a log message should be printed when the Host isn't suitable for the given VM
    :return: true, if it is possible to allocate the the VM into the host; false otherwise
+
+   **See also:** :java:ref:`.isSuitableForVm(Vm)`
+
+isSuitableForVm
+^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isSuitableForVm(Vm vm, List<Double> requestedMips)
+   :outertype: VmScheduler
+
+   Checks if a list of MIPS requested by a VM is allowed to be allocated or not. Depending on the \ ``VmScheduler``\  implementation, the return value of this method may have different effects:
+
+   ..
+
+   * true: requested MIPS can be allocated, partial or totally;
+   * false: requested MIPS cannot be allocated because there is no availability at all or there is just a partial amount of the requested MIPS available and the \ ``VmScheduler``\  implementation doesn't allow allocating less than the VM is requesting. If less than the required MIPS is allocated to a VM, it will cause performance degradation. Such situation defines an over-subscription situation which just specific \ ``VmSchedulers``\  accept.
+
+   :param vm: the \ :java:ref:`Vm`\  to check if there are enough MIPS to allocate to
+   :param requestedMips: a list of MIPS requested by a VM
+   :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
+
+isSuitableForVm
+^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog)
+   :outertype: VmScheduler
+
+   Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
+
+   :param vm: the \ :java:ref:`Vm`\  to check if there are enough MIPS to allocate to
+   :param requestedMips: a list of MIPS requested by a VM
+   :param showLog: if a log message should be printed when the Host isn't suitable for the given VM
+   :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
+
+   **See also:** :java:ref:`.isSuitableForVm(Vm,List)`
 
 setHost
 ^^^^^^^

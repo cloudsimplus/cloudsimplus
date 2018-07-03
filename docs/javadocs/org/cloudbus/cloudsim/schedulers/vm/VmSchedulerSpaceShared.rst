@@ -1,16 +1,18 @@
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util Collections
-
-.. java:import:: java.util Iterator
-
-.. java:import:: java.util List
-
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util ArrayList
+
+.. java:import:: java.util Iterator
+
+.. java:import:: java.util List
 
 VmSchedulerSpaceShared
 ======================
@@ -58,10 +60,10 @@ deallocatePesFromVmInternal
 .. java:method:: @Override protected void deallocatePesFromVmInternal(Vm vm, int pesToRemove)
    :outertype: VmSchedulerSpaceShared
 
-isSuitableForVm
-^^^^^^^^^^^^^^^
+isSuitableForVmInternal
+^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isSuitableForVm(List<Double> vmMipsList)
+.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
    :outertype: VmSchedulerSpaceShared
 
 setHost

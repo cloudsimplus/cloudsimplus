@@ -1,3 +1,9 @@
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
 .. java:import:: java.util HashMap
 
 .. java:import:: java.util List
@@ -5,8 +11,6 @@
 .. java:import:: java.util Map
 
 .. java:import:: java.util Map.Entry
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 VmSchedulerTimeSharedOverSubscription
 =====================================
@@ -50,17 +54,19 @@ allocateMipsShareForVm
 .. java:method:: @Override protected void allocateMipsShareForVm(Vm vm, List<Double> requestedMipsReduced)
    :outertype: VmSchedulerTimeSharedOverSubscription
 
-isAllowedToAllocateMips
+isSuitableForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare)
+.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
    :outertype: VmSchedulerTimeSharedOverSubscription
 
    Checks if a list of MIPS requested by a VM is allowed to be allocated or not. When there isn't the amount of requested MIPS available, this \ ``VmScheduler``\  allows to allocate what is available for the requesting VM, allocating less that is requested.
 
    This way, the only situation when it will not allow the allocation of MIPS for a VM is when the number of PEs required is greater than the total number of physical PEs. Even when there is not available MIPS at all, it allows the allocation of MIPS for the VM by reducing the allocation of other VMs.
 
-   :param vmRequestedMipsShare: a list of MIPS requested by a VM
+   :param vm: {@inheritDoc}
+   :param requestedMips: {@inheritDoc}
+   :param showLog:
    :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
 
    **See also:** :java:ref:`.allocateMipsShareForVm(Vm,List)`

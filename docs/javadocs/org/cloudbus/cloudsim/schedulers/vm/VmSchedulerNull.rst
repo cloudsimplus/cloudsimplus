@@ -114,12 +114,6 @@ getWorkingPeList
 .. java:method:: @Override public <T extends Pe> List<T> getWorkingPeList()
    :outertype: VmSchedulerNull
 
-isAllowedToAllocateMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare)
-   :outertype: VmSchedulerNull
-
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
@@ -129,7 +123,19 @@ isSuitableForVm
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isSuitableForVm(List<Double> vmMipsList)
+.. java:method:: @Override public boolean isSuitableForVm(Vm vm, boolean showLog)
+   :outertype: VmSchedulerNull
+
+isSuitableForVm
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips)
+   :outertype: VmSchedulerNull
+
+isSuitableForVm
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog)
    :outertype: VmSchedulerNull
 
 setHost

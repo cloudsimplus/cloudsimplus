@@ -2,12 +2,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: java.util Collections
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Map
-
 .. java:import:: java.util Optional
 
 VmAllocationPolicyFirstFit
@@ -20,8 +14,7 @@ VmAllocationPolicyFirstFit
 
    An \ **First Fit VM allocation policy**\  which finds the first Host having suitable resources to place a given VM.
 
-   NOTE: This policy doesn't perform optimization of VM allocation (placement)
-   by means of VM migration.
+   \ **NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.**\
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
@@ -38,15 +31,4 @@ findHostForVm
 
 .. java:method:: @Override public Optional<Host> findHostForVm(Vm vm)
    :outertype: VmAllocationPolicyFirstFit
-
-getOptimizedAllocationMap
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList)
-   :outertype: VmAllocationPolicyFirstFit
-
-   This implementation doesn't perform any VM placement optimization and, in fact, has no effect.
-
-   :param vmList: the list of VMs
-   :return: an empty map to indicate that it never performs optimization
 

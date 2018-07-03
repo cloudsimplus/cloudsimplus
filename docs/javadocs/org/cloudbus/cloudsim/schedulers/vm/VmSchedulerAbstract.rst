@@ -1,5 +1,3 @@
-.. java:import:: java.util.stream LongStream
-
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
@@ -8,7 +6,13 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
 .. java:import:: java.util.stream IntStream
+
+.. java:import:: java.util.stream LongStream
 
 VmSchedulerAbstract
 ===================
@@ -186,21 +190,22 @@ getWorkingPeList
 .. java:method:: @Override public final List<Pe> getWorkingPeList()
    :outertype: VmSchedulerAbstract
 
-isAllowedToAllocateMips
-^^^^^^^^^^^^^^^^^^^^^^^
+isSuitableForVm
+^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isAllowedToAllocateMips(List<Double> vmRequestedMipsShare)
+.. java:method:: @Override public final boolean isSuitableForVm(Vm vm, boolean showLog)
    :outertype: VmSchedulerAbstract
-
-   Checks if the requested amount of MIPS is available to be allocated to a VM.
-
-   :param vmRequestedMipsShare: a list of MIPS requested by a VM
-   :return: true if the requested MIPS List is available, false otherwise
 
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final boolean isSuitableForVm(Vm vm)
+.. java:method:: @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog)
+   :outertype: VmSchedulerAbstract
+
+isSuitableForVmInternal
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected abstract boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
    :outertype: VmSchedulerAbstract
 
 percentOfMipsToRequest

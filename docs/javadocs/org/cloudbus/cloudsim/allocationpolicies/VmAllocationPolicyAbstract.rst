@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies.migration VmAllocationPolicyMigrationAbstract
+
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
@@ -84,7 +86,7 @@ allocateHostForVm
 allocateHostForVm
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean allocateHostForVm(Vm vm, Host host)
+.. java:method:: @SuppressWarnings @Override public boolean allocateHostForVm(Vm vm, Host host)
    :outertype: VmAllocationPolicyAbstract
 
 deallocateHostForVm
@@ -114,6 +116,23 @@ getHostList
 
 .. java:method:: @Override public final <T extends Host> List<T> getHostList()
    :outertype: VmAllocationPolicyAbstract
+
+getOptimizedAllocationMap
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList)
+   :outertype: VmAllocationPolicyAbstract
+
+   {@inheritDoc}
+
+   This method implementation doesn't perform any
+   VM placement optimization and, in fact, has no effect.
+   The  class
+   provides an actual implementation for this method that can be overridden
+   by subclasses.
+
+   :param vmList: {@inheritDoc}
+   :return: {@inheritDoc}
 
 removeUsedPes
 ^^^^^^^^^^^^^

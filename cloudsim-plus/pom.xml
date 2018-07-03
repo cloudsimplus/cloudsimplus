@@ -358,6 +358,7 @@
                         <include>**/src/main/java/**/Resourceful.java</include>
                         <include>**/src/main/java/**/PoissonDistr.java</include>
                         <include>**/src/main/java/**/ResourceAbstract.java</include>
+                        <include>**/src/main/java/**/VmAllocationPolicyBestFit.java</include>
                     </includes>
 
                     <excludes>

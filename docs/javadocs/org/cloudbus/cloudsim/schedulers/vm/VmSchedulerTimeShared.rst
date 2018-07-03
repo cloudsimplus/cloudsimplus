@@ -112,9 +112,9 @@ getMipsShareToAllocate
    :param scalingFactor: the factor that will be used to reduce the amount of MIPS allocated to each vPE (which is a percentage value between [0 .. 1]) in case the VM is in migration
    :return: the List of MIPS allocated to the VM
 
-isSuitableForVm
-^^^^^^^^^^^^^^^
+isSuitableForVmInternal
+^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isSuitableForVm(List<Double> vmMipsList)
+.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
    :outertype: VmSchedulerTimeShared
 
