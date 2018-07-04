@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -67,8 +68,8 @@ public class VmsCpuUsageExample {
     private List<Cloudlet> cloudletList;
     private List<Vm> vmlist;
     private DatacenterBroker broker;
-    private static final int NUMBER_OF_VMS = 2;
-    private static final int NUMBER_OF_HOSTS = 2;
+    private static final int VMS_NUMBER = 2;
+    private static final int HOSTS_NUMBER = 2;
 
     /**
      * Starts the example execution.
@@ -91,12 +92,12 @@ public class VmsCpuUsageExample {
 
         broker = new DatacenterBrokerSimple(simulation);
 
-        vmlist = new ArrayList<>(NUMBER_OF_VMS);
-        cloudletList = new ArrayList<>(NUMBER_OF_VMS);
+        vmlist = new ArrayList<>(VMS_NUMBER);
+        cloudletList = new ArrayList<>(VMS_NUMBER);
 
         int mips = 1000;
         int pesNumber = 1;
-        for (int i = 1; i <= NUMBER_OF_VMS; i++) {
+        for (int i = 1; i <= VMS_NUMBER; i++) {
             Vm vm = createVm(pesNumber, mips * i, i - 1);
             vmlist.add(vm);
             Cloudlet cloudlet = createCloudlet(pesNumber, i-1);
@@ -120,12 +121,15 @@ public class VmsCpuUsageExample {
         long length = 10000;
         long fileSize = 300;
         long outputSize = 300;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
+        UtilizationModel utilizationModelDynamic = new UtilizationModelDynamic(0.25);
+        UtilizationModel utilizationModelCpu = new UtilizationModelFull();
 
         Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber);
         cloudlet.setFileSize(fileSize)
             .setOutputSize(outputSize)
-            .setUtilizationModel(utilizationModel);
+            .setUtilizationModelCpu(utilizationModelCpu)
+            .setUtilizationModelBw(utilizationModelDynamic)
+            .setUtilizationModelRam(utilizationModelDynamic);
         return cloudlet;
     }
 
@@ -182,10 +186,10 @@ public class VmsCpuUsageExample {
     }
 
     private static Datacenter createDatacenter(CloudSim simulation) {
-        List<Host> hostList = new ArrayList<>(NUMBER_OF_HOSTS);
+        List<Host> hostList = new ArrayList<>(HOSTS_NUMBER);
         final int pesNumber = 1;
         final int mips = 1000;
-        for (int i = 1; i <= NUMBER_OF_HOSTS; i++) {
+        for (int i = 1; i <= HOSTS_NUMBER; i++) {
             Host host = createHost(pesNumber, mips*i, i-1);
             hostList.add(host);
         }
