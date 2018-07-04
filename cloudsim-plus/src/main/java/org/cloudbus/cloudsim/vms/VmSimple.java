@@ -533,27 +533,6 @@ public class VmSimple implements Vm {
         this.inMigration = inMigration;
     }
 
-    /**
-     * Gets the current allocated storage size.
-     *
-     * @return the current allocated size
-     * @see Vm#getStorage()
-     */
-    @Override
-    public long getCurrentAllocatedSize() {
-        return storage.getAllocatedResource();
-    }
-
-    @Override
-    public long getCurrentAllocatedRam() {
-        return ram.getAllocatedResource();
-    }
-
-    @Override
-    public long getCurrentAllocatedBw() {
-        return bw.getAllocatedResource();
-    }
-
     @Override
     public final boolean isCreated() {
         return created;

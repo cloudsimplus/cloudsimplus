@@ -1,11 +1,12 @@
 package org.cloudbus.cloudsim.vms;
 
-import java.util.Collections;
-
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.junit.Test;
+
+import java.util.Collections;
+
 import static org.junit.Assert.*;
 
 /**
@@ -49,7 +50,7 @@ public class VmTest {
     @Test
     public void testVmNullObjectResources(){
         final Vm instance = Vm.NULL;
-        assertEquals(0, instance.getCurrentAllocatedSize());
+        assertEquals(0, instance.getBw().getAllocatedResource());
         assertEquals(0, instance.getCurrentRequestedMaxMips(), 0);
         assertEquals(0, instance.getCurrentRequestedTotalMips(), 0);
         assertEquals(0, instance.getMips(), 0);
@@ -57,12 +58,12 @@ public class VmTest {
         assertEquals(0, instance.getCpuPercentUsage(0), 0);
         assertEquals(0, instance.getTotalCpuMipsUsage(0), 0);
         assertEquals(0, instance.getBw().getCapacity());
-        assertEquals(0, instance.getCurrentAllocatedBw());
+        assertEquals(0, instance.getBw().getAllocatedResource());
         assertEquals(0, instance.getCurrentRequestedBw());
         assertTrue(instance.getCurrentRequestedMips().isEmpty());
-        assertEquals(0, instance.getCurrentAllocatedRam());
         assertEquals(0, instance.getCurrentRequestedRam());
         assertEquals(0, instance.getRam().getCapacity());
+        assertEquals(0, instance.getRam().getAllocatedResource());
         assertEquals(0, instance.getStorage().getCapacity());
     }
 

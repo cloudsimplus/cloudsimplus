@@ -39,15 +39,7 @@ final class VmNull implements Vm {
         return Resource.NULL;
     }
     @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }
-    @Override public long getCurrentAllocatedBw() {
-        return 0;
-    }
-    @Override public long getCurrentAllocatedRam() {
-        return 0;
-    }
-    @Override public long getCurrentAllocatedSize() {
-        return 0;
-    }
+
     @Override public long getCurrentRequestedBw() {
         return 0;
     }

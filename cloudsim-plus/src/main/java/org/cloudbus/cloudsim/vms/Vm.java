@@ -77,28 +77,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     CloudletScheduler getCloudletScheduler();
 
     /**
-     * Gets the current allocated bw.
-     *
-     * @return the current allocated bw
-     */
-    long getCurrentAllocatedBw();
-
-    /**
-     * Gets the current allocated ram.
-     *
-     * @return the current allocated ram
-     */
-    long getCurrentAllocatedRam();
-
-    /**
-     * Gets the current allocated storage size.
-     *
-     * @return the current allocated size
-     * @see #getStorage()
-     */
-    long getCurrentAllocatedSize();
-
-    /**
      * Gets the current requested bw.
      *
      * @return the current requested bw

@@ -9,16 +9,13 @@
 package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.resources.Ram;
-
-import static org.cloudbus.cloudsim.vms.VmSimpleTest.createVm;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.Before;
 import org.junit.Test;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
+
+import static org.cloudbus.cloudsim.vms.VmSimpleTest.createVm;
+import static org.junit.Assert.*;
 
 /**
  * @author		Anton Beloglazov
@@ -137,8 +134,8 @@ public class ResourceProvisionerSimpleTest {
         final VmSimple vm1 = createVm(0, HALF_CAPACITY);
         final VmSimple vm2 = createVm(1, HALF_CAPACITY);
 
-        assertEquals(0, vm1.getCurrentAllocatedRam());
-        assertEquals(0, vm2.getCurrentAllocatedRam());
+        assertEquals(0, vm1.getRam().getAllocatedResource());
+        assertEquals(0, vm2.getRam().getAllocatedResource());
 
         assertTrue(provisioner.isSuitableForVm(vm1, HALF_CAPACITY));
         assertTrue(provisioner.allocateResourceForVm(vm1, HALF_CAPACITY));
@@ -156,7 +153,7 @@ public class ResourceProvisionerSimpleTest {
         provisioner.deallocateResourceForVm(vm1);
         provisioner.deallocateResourceForVm(vm2);
         assertEquals(CAPACITY, provisioner.getAvailableResource());
-        assertEquals(0, vm1.getCurrentAllocatedRam());
-        assertEquals(0, vm2.getCurrentAllocatedRam());
+        assertEquals(0, vm1.getRam().getAllocatedResource());
+        assertEquals(0, vm2.getRam().getAllocatedResource());
     }
 }
