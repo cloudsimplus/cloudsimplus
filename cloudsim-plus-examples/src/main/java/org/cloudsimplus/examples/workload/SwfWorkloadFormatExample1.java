@@ -84,6 +84,7 @@ import static java.util.Comparator.comparingLong;
  * </p>
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0.0
  */
 public class SwfWorkloadFormatExample1 {
     /**
@@ -138,7 +139,7 @@ public class SwfWorkloadFormatExample1 {
         new SwfWorkloadFormatExample1();
     }
 
-    public SwfWorkloadFormatExample1() {
+    private SwfWorkloadFormatExample1() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
@@ -203,6 +204,7 @@ public class SwfWorkloadFormatExample1 {
     private Datacenter createDatacenterAndHostsBasedOnVmRequirements() {
         List<Host> hostList = createHostsAccordingToVmRequirements();
         Datacenter datacenter = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+
         System.out.printf("# Created %d Hosts at %s\n", hostList.size(), datacenter);
         return datacenter;
     }

@@ -199,14 +199,15 @@ public class VmsCpuUsageExample {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        //4. Create Hosts with its id and list of PEs and add them to the list of machines
-        int ram = 2048; //host memory (MEGABYTE)
-        long storage = 1000000; //host storage
-        int bw = 10000;
+        final int ram = 2048; //host memory (MEGABYTE)
+        final long storage = 1000000; //host storage
+        final int bw = 10000;
 
-        return new HostSimple(ram, bw, storage, peList)
+        final Host host = new HostSimple(ram, bw, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
+        host.enableStateHistory();
+        return host;
     }
 }
