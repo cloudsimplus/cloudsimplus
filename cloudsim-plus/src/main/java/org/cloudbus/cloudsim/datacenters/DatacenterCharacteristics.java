@@ -121,9 +121,6 @@ public interface DatacenterCharacteristics extends Identifiable {
      * the Datacenter.
      *
      * @return the sum of MIPS ratings
-     *
-     * @pre $none
-     * @post $result >= 0
      */
     double getMips();
 
@@ -138,8 +135,6 @@ public interface DatacenterCharacteristics extends Identifiable {
      * Gets the total number of <tt>FREE</tt> or non-busy PEs for all PMs.
      *
      * @return number of PEs
-     * @pre $none
-     * @post $result >= 0
      */
     int getNumberOfFreePes();
 
@@ -147,8 +142,6 @@ public interface DatacenterCharacteristics extends Identifiable {
      * Gets the total number of PEs for all PMs.
      *
      * @return number of PEs
-     * @pre $none
-     * @post $result >= 0
      */
     int getNumberOfPes();
 
@@ -160,64 +153,58 @@ public interface DatacenterCharacteristics extends Identifiable {
     boolean isWorking();
 
     /**
-     * Get the cost to use each each Megabit of bandwidth in the Datacenter.
+     * Get the monetary cost to use each each Megabit of bandwidth in the Datacenter.
      *
-     * @return the cost to use bw
+     * @return the cost ($) to use bw
      */
     double getCostPerBw();
 
     /**
-     * Sets cost to use each Megabit of bandwidth.
+     * Sets the monetary cost to use each Megabit of bandwidth.
      *
-     * @param costPerBw the cost to set
-     * @pre costPerBw >= 0
-     * @post $none
+     * @param costPerBw the cost ($) to set
      */
     DatacenterCharacteristics setCostPerBw(double costPerBw);
 
     /**
-     * Get the cost to use each Megabyte of RAM in the Datacenter.
+     * Get the monetary cost to use each Megabyte of RAM in the Datacenter.
      *
-     * @return the cost to use RAM
+     * @return the cost ($) to use RAM
      */
     double getCostPerMem();
 
     /**
-     * Sets the cost to use each Megabyte of RAM in the Datacenter.
+     * Sets the monetary cost to use each Megabyte of RAM in the Datacenter.
      *
-     * @param costPerMem cost to use RAM
-     * @pre costPerMem >= 0
-     * @post $none
+     * @param costPerMem cost ($) to use RAM
      */
     DatacenterCharacteristics setCostPerMem(double costPerMem);
 
     /**
-     * Gets the cost per second of CPU for using the Hosts in the Datacenter.
+     * Gets the monetary cost per second of CPU for using the Hosts in the Datacenter.
      *
-     * @return the cost per second
+     * @return the cost ($) per second
      */
     double getCostPerSecond();
 
     /**
-     * Sets the cost per second of CPU.
+     * Sets the monetary cost per second of CPU.
      *
-     * @param costPerSecond the new cost per second
+     * @param costPerSecond the new cost ($) per second
      */
     DatacenterCharacteristics setCostPerSecond(double costPerSecond);
 
     /**
-     * Get the cost to use each Megabyte of storage in the Datacenter.
+     * Get the monetary cost to use each Megabyte of storage in the Datacenter.
      *
-     * @return the cost to use storage
+     * @return the cost ($) to use storage
      */
     double getCostPerStorage();
 
     /**
-     * Sets cost to use each Megabyte of storage.
+     * Sets the monetary cost to use each Megabyte of storage.
      *
-     * @param costPerStorage cost to use storage
-     * @pre costPerStorage >= 0
-     * @post $none
+     * @param costPerStorage cost ($) to use storage
      */
     DatacenterCharacteristics setCostPerStorage(double costPerStorage);
 }
