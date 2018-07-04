@@ -160,7 +160,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @param datacenter the Datacenter entity
      * @return the total execution time of this Cloudlet in the given Datacenter
      * or 0 if the Cloudlet was not executed there
-     * @post $result >= 0.0
      */
     double getActualCpuTime(Datacenter datacenter);
 
@@ -169,8 +168,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @return time in which the Cloudlet was running
      * or {@link #NOT_ASSIGNED} if it hasn't finished yet
-     * @pre $none
-     * @post $none
      */
     double getActualCpuTime();
 
@@ -179,8 +176,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * This size has to be considered the program + input data sizes.
      *
      * @return the input file size of this Cloudlet (in bytes)
-     * @pre $none
-     * @post $result >= 1
      */
     long getFileSize();
 
@@ -210,8 +205,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * <p><b>NOTE</b>: This method <tt>should</tt> be called only by a {@link Datacenter} entity.</p>
      *
      * @param datacenter the Datacenter where the cloudlet will be executed
-     * @pre cost > 0.0
-     * @post $none
      */
     void assignToDatacenter(Datacenter datacenter);
 
@@ -220,8 +213,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * current simulation time and returns this time.
      *
      * @return the arrived time set or {@link #NOT_ASSIGNED} if the cloudlet is not assigned to a Datacenter
-     * @pre cloudlet is already assigned to a Datacenter
-     * @post $none
      */
     double registerArrivalInDatacenter();
 
@@ -243,8 +234,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if
      * was not assigned to any Datacenter yet
-     * @pre $none
-     * @post $result >= 0.0
      */
     double getCostPerSec();
 
@@ -255,7 +244,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @return the cost associated with running this Cloudlet in the given Datacenter
      * or 0 if the Cloudlet was not executed there
      * not found
-     * @post $result >= 0.0
      */
     double getCostPerSec(Datacenter datacenter);
 
@@ -265,8 +253,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * <tt>Total Cost = input data transfer + processing cost + output transfer cost</tt> .
      *
      * @return the total cost of executing the Cloudlet
-     * @pre $none
-     * @post $result >= 0.0
      */
     double getTotalCost();
 
@@ -277,8 +263,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * This time represents the simulation second when the cloudlet started.
      *
      * @return the latest execution start time
-     * @pre $none
-     * @post $result >= 0.0
      */
     double getExecStartTime();
 
@@ -288,7 +272,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @return the finish or completion time of this Cloudlet; or {@link #NOT_ASSIGNED} if
      * not finished yet.
-     * @pre $none
      */
     double getFinishTime();
 
@@ -298,8 +281,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @return the arrival time or {@link #NOT_ASSIGNED} if
      * the cloudlet has never been assigned to a Datacenter
-     * @pre $none
-     * @post $result >= 0.0
      */
     double getLastDatacenterArrivalTime();
 
@@ -309,7 +290,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @param datacenter the Datacenter entity
      * @return the arrival time or {@link #NOT_ASSIGNED} if
      * the cloudlet has never been assigned to a Datacenter
-     * @post $result >= 0.0
      */
     double getArrivalTime(Datacenter datacenter);
 
@@ -321,8 +301,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * that is being used by the Vm running the Cloudlet.
      *
      * @return priority of this cloudlet
-     * @pre $none
-     * @post $none
      */
     int getPriority();
 
