@@ -7,6 +7,11 @@
  */
 package org.cloudbus.cloudsim.util;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,28 +19,21 @@ import java.util.function.Predicate;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.ZipInputStream;
 
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-
 /**
- * Reads resource traces from a reader and
- * creates a list of ({@link Cloudlet Cloudlets}) (jobs). By default, it follows
- * the <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">Standard Workload Format (*.swf files)</a>
- * from <a href="new.huji.ac.il/en">The Hebrew University of Jerusalem</a>. However, you can use other formats by
- * calling the methods below before running the simulation:
+ * Reads resource traces and creates a list of ({@link Cloudlet Cloudlets}) (jobs).
+ * By default, it follows the <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">Standard Workload Format (*.swf files)</a>
+ * from <a href="new.huji.ac.il/en">The Hebrew University of Jerusalem</a>.
+ * However, you can use other formats by calling the methods below before running the simulation:
  * <ul>
- * <li> {@link #setComment(String)}
  * <li> {@link #setField(int, int, int, int, int)}
+ * <li> {@link #setComment(String)}
  * </ul>
  *
  * <p>
  * <b>NOTES:</b>
  * <ul>
- * <li>This class can only take <tt>one</tt> trace reader of the following format:
- * <i>ASCII text, zip, gz.</i>
+ * <li>This class can only read trace files in the following format:
+ * <b>ASCII text, zip, gz.</b>
  * <li>If you need to load multiple trace files, then you need to create
  * multiple instances of this class <tt>each with a unique entity name</tt>.
  * <li>If size of the trace reader is huge or contains lots of traces, please
@@ -133,11 +131,10 @@ public class WorkloadFileReader implements WorkloadReader {
      */
     private String[] fieldArray;
 
-    /**
-     * @see #getMaxLinesToRead()
-     */
+    /** @see #getMaxLinesToRead() */
     private int maxLinesToRead;
 
+    /** @see #setPredicate(Predicate) */
     private Predicate<Cloudlet> predicate;
 
     /**
@@ -150,9 +147,7 @@ public class WorkloadFileReader implements WorkloadReader {
      *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
      *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
      *                 for the same time as specified into the workload reader.
-     * @throws FileNotFoundException
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
-     * @pre mips > 0
      * @see #getInstance(String, int)
      */
     public WorkloadFileReader(final String filePath, final int mips) throws FileNotFoundException {
@@ -170,9 +165,7 @@ public class WorkloadFileReader implements WorkloadReader {
      *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
      *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
      *                 for the same time as specified into the workload reader.
-     * @throws FileNotFoundException
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
-     * @pre mips > 0
      * @see #getInstance(String, int)
      */
     private WorkloadFileReader(final String filePath, final InputStream reader, final int mips) {
@@ -206,8 +199,6 @@ public class WorkloadFileReader implements WorkloadReader {
      *                 for the same time as specified into the workload reader.
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
      * @throws UncheckedIOException when the file cannot be accessed (such as when it doesn't exist)
-     * @pre mips > 0
-     * @post $none
      */
     public static WorkloadFileReader getInstance(final String fileName, final int mips) {
         final InputStream reader = ResourceLoader.getInputStream(WorkloadFileReader.class, fileName);
@@ -247,8 +238,6 @@ public class WorkloadFileReader implements WorkloadReader {
      *
      * @param comment a character that denotes the start of a comment, e.g. ";" or "#"
      * @return <code>true</code> if it is successful, <code>false</code> otherwise
-     * @pre comment != null
-     * @post $none
      */
     public boolean setComment(final String comment) {
         if (comment != null && !comment.trim().isEmpty()) {
@@ -261,33 +250,27 @@ public class WorkloadFileReader implements WorkloadReader {
 
     /**
      * Tells this class what to look in the trace reader. This method should be
-     * called before the start of the simulation.
-     * <p/>
+     * called before starting the simulation.
+     *
+     * <p>
      * By default, this class follows the standard workload format as specified
-     * in <a
-     * href="http://www.cs.huji.ac.il/labs/parallel/workload/">
-     * http://www.cs.huji.ac.il/labs/parallel/workload/</a> <br>
+     * in <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">http://www.cs.huji.ac.il/labs/parallel/workload/</a>
      * However, you can use other format by calling this method.
-     * <p/>
+     * </p>
+     *
      * The parameters must be a positive integer number starting from 1. A
      * special case is where
      * <tt>jobNum == {@link #IRRELEVANT}</tt>, meaning the job or cloudlet ID
      * will be generate by the Workload class, instead of reading from the trace
      * reader.
      *
-     * @param maxField   max. number of field/column in one row
+     * @param maxField   max. number of field/column in one row (greater than 0)
      * @param jobNum     field/column number for locating the job ID
-     * @param submitTime field/column number for locating the job submit time
-     * @param runTime    field/column number for locating the job run time
-     * @param numProc    field/column number for locating the number of PEs
-     *                   required to run a job
+     * @param submitTime field/column number for locating the job submit time (greater than 0)
+     * @param runTime    field/column number for locating the job run time (greater than 0)
+     * @param numProc    field/column number for locating the number of PEs required to run a job (greater than 0)
      * @throws IllegalArgumentException if any of the arguments are not within
      *                                  the acceptable ranges
-     * @pre maxField > 0
-     * @pre submitTime > 0
-     * @pre runTime > 0
-     * @pre numProc > 0
-     * @post $none
      */
     public void setField(
         final int maxField,
