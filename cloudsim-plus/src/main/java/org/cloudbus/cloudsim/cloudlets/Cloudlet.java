@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -225,25 +226,35 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
 
     /**
      * Gets the cost of each byte of bandwidth (bw) consumed.
+     * <p>Realize costs must be defined for Datacenters by accessing the {@link DatacenterCharacteristics}
+     * object from each {@link Datacenter} instance and setting the bandwidth cost.</p>
+     *
      * @return the cost per bw
+     * @see DatacenterCharacteristics#setCostPerBw(double)
      */
     double getCostPerBw();
 
     /**
      * Gets the cost/sec of running the Cloudlet in the latest Datacenter.
+     * <p>Realize costs must be defined for Datacenters by accessing the {@link DatacenterCharacteristics}
+     * object from each {@link Datacenter} instance and setting the CPU cost.</p>
      *
      * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if
      * was not assigned to any Datacenter yet
+     * @see DatacenterCharacteristics#setCostPerSecond(double)
      */
     double getCostPerSec();
 
     /**
      * Gets the cost running this Cloudlet in a given Datacenter.
+     * <p>Realize costs must be defined for Datacenters by accessing the {@link DatacenterCharacteristics}
+     * object from each {@link Datacenter} instance and setting the CPU cost.</p>
      *
      * @param datacenter the Datacenter entity
      * @return the cost associated with running this Cloudlet in the given Datacenter
      * or 0 if the Cloudlet was not executed there
      * not found
+     * @see DatacenterCharacteristics#setCostPerSecond(double)
      */
     double getCostPerSec(Datacenter datacenter);
 
@@ -251,8 +262,12 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Gets the total cost of executing this Cloudlet.
      * <tt>Total Cost = input data transfer + processing cost + output transfer cost</tt> .
+     * <p>Realize costs must be defined for Datacenters by accessing the {@link DatacenterCharacteristics}
+     * object from each {@link Datacenter} instance and setting costs for each resource.</p>
      *
      * @return the total cost of executing the Cloudlet
+     * @see DatacenterCharacteristics#setCostPerSecond(double)
+     * @see DatacenterCharacteristics#setCostPerBw(double)
      */
     double getTotalCost();
 
