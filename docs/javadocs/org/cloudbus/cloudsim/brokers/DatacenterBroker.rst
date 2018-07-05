@@ -1,24 +1,26 @@
-.. java:import:: java.util Comparator
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Set
-
-.. java:import:: java.util.function Function
-
-.. java:import:: java.util.function Supplier
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
+
+.. java:import:: org.cloudbus.cloudsim.core SimEntity
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: org.cloudbus.cloudsim.core SimEntity
-
 .. java:import:: org.cloudsimplus.listeners DatacenterBrokerEventInfo
 
 .. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
+.. java:import:: java.util Comparator
+
+.. java:import:: java.util List
+
+.. java:import:: java.util.function Function
+
+.. java:import:: java.util.function Supplier
 
 DatacenterBroker
 ================
@@ -55,6 +57,12 @@ NULL
    :outertype: DatacenterBroker
 
    An attribute that implements the Null Object Design Pattern for \ :java:ref:`DatacenterBroker`\  objects.
+
+logger
+^^^^^^
+
+.. java:field::  Logger logger
+   :outertype: DatacenterBroker
 
 Methods
 -------
@@ -120,7 +128,7 @@ defaultVmMapper
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  Set<Cloudlet> getCloudletCreatedList()
+.. java:method::  List<Cloudlet> getCloudletCreatedList()
    :outertype: DatacenterBroker
 
    Gets a \ **read-only**\  list of cloudlets created inside some Vm.
@@ -137,6 +145,12 @@ getCloudletFinishedList
 
    :param <T>: the class of Cloudlets inside the list
    :return: the list of finished cloudlets
+
+getCloudletSubmittedList
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  List<Cloudlet> getCloudletSubmittedList()
+   :outertype: DatacenterBroker
 
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^

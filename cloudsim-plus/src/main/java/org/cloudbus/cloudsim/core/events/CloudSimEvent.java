@@ -13,6 +13,8 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
+import java.util.Objects;
+
 /**
  * This class represents a simulation event which is passed between the entities
  * in the simulation.
@@ -25,12 +27,12 @@ public final class CloudSimEvent implements SimEvent {
     /**
      * @see #getSimulation()
      */
-    private final Simulation simulation;
+    private Simulation simulation;
 
     private final Type type;
 
     /**
-     * The time that this event was scheduled, at which it should occur.
+     * The actual simulation time that this event was scheduled to (at which it should occur).
      */
     private final double time;
 
@@ -61,15 +63,25 @@ public final class CloudSimEvent implements SimEvent {
     /**
      * Creates a CloudSimEvent.
      *
-     * @param src the event to clone
+     * @param simulation the Simulation the event belongs to
+     * @param type the internal type of the event
+     * @param delay how many seconds after the current simulation time the event should be scheduled
+     * @param src the source entity which is sending the message
+     * @param dest the source entity which has to receive the message
+     * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
+     * @param data the data attached to the message, that depends on the message tag
      */
     public CloudSimEvent(
-        final CloudSim simulation, final Type type, final double time,
+        final Simulation simulation, final Type type, final double delay,
         final SimEntity src, final SimEntity dest, final int tag, final Object data)
     {
-        this.simulation = simulation;
+        if (delay < 0) {
+            throw new IllegalArgumentException("Delay can't be negative.");
+        }
+
+        this.simulation = Objects.requireNonNull(simulation);
         this.type = type;
-        this.time = time;
+        this.time = simulation.clock() + delay;
         this.src = src;
         this.dest = dest;
         this.tag = tag;
@@ -77,11 +89,61 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     /**
-     * Creates a CloudSimEvent.
+     * Creates a {@link Type#SEND} CloudSimEvent.
      *
+     * @param simulation the Simulation the event belongs to
+     * @param delay how many seconds after the current simulation time the event should be scheduled
+     * @param src the source entity which is sending the message
+     * @param dest the source entity which has to receive the message
+     * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
+     * @param data the data attached to the message, that depends on the message tag
      */
-    public CloudSimEvent(final CloudSim simulation, final Type type, final double time, final Object data) {
-        this(simulation, type, time, SimEntity.NULL, SimEntity.NULL, -1, data);
+    public CloudSimEvent(
+        final Simulation simulation, final double delay,
+        final SimEntity src, final SimEntity dest, final int tag, final Object data)
+    {
+        this(simulation, Type.SEND, delay, src, dest, tag, data);
+    }
+
+    /**
+     * Creates a {@link Type#SEND} CloudSimEvent where the sender and destination are the same entity.
+     *
+     * @param simulation the Simulation the event belongs to
+     * @param delay how many seconds after the current simulation time the event should be scheduled
+     * @param dest the source entity which has to receive the message
+     * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
+     * @param data the data attached to the message, that depends on the message tag
+     */
+    public CloudSimEvent(
+        final Simulation simulation, final double delay,
+        final SimEntity dest, final int tag, final Object data)
+    {
+        this(simulation, Type.SEND, delay, dest, dest, tag, data);
+    }
+
+    /**
+     * Creates a {@link Type#SEND} CloudSimEvent where the sender and destination are the same entity,
+     * the message has no delay and no data.
+     *
+     * @param simulation the Simulation the event belongs to
+     * @param dest the source entity which has to receive the message
+     * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
+     */
+    public CloudSimEvent(
+        final Simulation simulation, final SimEntity dest, final int tag)
+    {
+        this(simulation, Type.SEND, 0, dest, dest, tag, null);
+    }
+
+    /**
+     * Creates a CloudSimEvent where the destination entity and tag are not set yet.
+     * Furthermore, there will be not data associated to the event.
+     *
+     * @param simulation the Simulation the event belongs to
+     * @param delay how many seconds after the current simulation time the event should be scheduled
+     */
+    public CloudSimEvent(final Simulation simulation, final Type type, final double delay, final SimEntity src) {
+        this(simulation, type, delay, src, SimEntity.NULL, -1, null);
     }
 
     /**
@@ -91,12 +153,8 @@ public final class CloudSimEvent implements SimEvent {
      */
     public CloudSimEvent(final SimEvent src) {
         this(
-            (CloudSim)src.getSimulation(), src.getType(), src.getTime(),
+            src.getSimulation(), src.getType(), src.getTime(),
             src.getSource(), src.getDestination(), src.getTag(), src.getData());
-    }
-
-    public CloudSimEvent(final CloudSim simulation, final Type type, final double time, final SimEntity src) {
-        this(simulation, type, time, src, SimEntity.NULL, -1, null);
     }
 
     @Override
@@ -113,6 +171,12 @@ public final class CloudSimEvent implements SimEvent {
     public String toString() {
         return "Event tag = " + tag + " source = " + src.getName() +
                " target = " + dest.getName() + " time = " + time;
+    }
+
+    @Override
+    public SimEvent setSimulation(final CloudSim simulation) {
+        this.simulation = Objects.requireNonNull(simulation);
+        return this;
     }
 
     @Override
@@ -145,11 +209,6 @@ public final class CloudSimEvent implements SimEvent {
     @Override
     public SimEntity getSource() {
         return src;
-    }
-
-    @Override
-    public double eventTime() {
-        return time;
     }
 
     @Override

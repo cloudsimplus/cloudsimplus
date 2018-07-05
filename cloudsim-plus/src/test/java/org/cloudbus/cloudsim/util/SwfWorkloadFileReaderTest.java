@@ -1,14 +1,16 @@
 package org.cloudbus.cloudsim.util;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class WorkloadFileReaderTest {
+public class SwfWorkloadFileReaderTest {
     private static final String SWF_FILE = "LCG.swf";
     private static final String ZIP_FILE = "two-workload-files.zip";
     private static final int JOBS_AT_SWF_LCG_FILE = 188041;
@@ -35,7 +37,7 @@ public class WorkloadFileReaderTest {
     }
 
     private void readFile(String fileNameWithoutPath, int numberOfJobs) throws IOException {
-        final WorkloadReader r = new WorkloadFileReader("src"
+        final SwfWorkloadFileReader r = new SwfWorkloadFileReader("src"
                 + File.separator
                 + "test"
                 + File.separator

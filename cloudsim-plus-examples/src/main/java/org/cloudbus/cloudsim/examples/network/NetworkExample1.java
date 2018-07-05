@@ -81,8 +81,8 @@ public class NetworkExample1 {
 
         final int vmid = 0;
         final int mips = 250;
-        final long size = 10000; //image size (MEGABYTE)
-        final int ram = 512; //vm memory (MEGABYTE)
+        final long size = 10000; //image size (Megabyte)
+        final int ram = 512; //vm memory (Megabyte)
         final long bw = 1000; //in Megabits/s
         final int pesNumber = 1; //number of cpus
 

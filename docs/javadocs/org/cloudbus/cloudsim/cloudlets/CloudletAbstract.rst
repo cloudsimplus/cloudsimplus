@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
+.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
@@ -31,13 +33,13 @@ Constructors
 CloudletAbstract
 ^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletAbstract(int cloudletId, long length, long pesNumber)
+.. java:constructor:: public CloudletAbstract(int id, long length, long pesNumber)
    :outertype: CloudletAbstract
 
    Creates a Cloudlet with no priority and file size and output size equal to 1.
 
-   :param cloudletId: id of the Cloudlet
-   :param length: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param id: id of the Cloudlet
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
 
 CloudletAbstract
@@ -48,7 +50,7 @@ CloudletAbstract
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
 
-   :param length: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
 
 CloudletAbstract
@@ -59,11 +61,19 @@ CloudletAbstract
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
 
-   :param length: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
 
 Methods
 -------
+absLength
+^^^^^^^^^
+
+.. java:method:: protected long absLength()
+   :outertype: CloudletAbstract
+
+   Gets the absolute value of the length (without the signal). Check out \ :java:ref:`getLength()`\  for details.
+
 addFinishedLengthSoFar
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -194,6 +204,12 @@ getId
 ^^^^^
 
 .. java:method:: @Override public int getId()
+   :outertype: CloudletAbstract
+
+getJobId
+^^^^^^^^
+
+.. java:method:: @Override public int getJobId()
    :outertype: CloudletAbstract
 
 getLastDatacenter
@@ -469,7 +485,13 @@ setFinishTime
 setId
 ^^^^^
 
-.. java:method:: @Override public void setId(int id)
+.. java:method:: @Override public final void setId(int id)
+   :outertype: CloudletAbstract
+
+setJobId
+^^^^^^^^
+
+.. java:method:: @Override public final void setJobId(int jobId)
    :outertype: CloudletAbstract
 
 setLastExecutedDatacenterIdx

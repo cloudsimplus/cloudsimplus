@@ -86,10 +86,16 @@ addOnEventProcessingListener
 .. java:method:: @Override public final Simulation addOnEventProcessingListener(EventListener<SimEvent> listener)
    :outertype: CloudSim
 
-addOnSimulationPausedListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+addOnSimulationPauseListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener)
+.. java:method:: @Override public final Simulation addOnSimulationPauseListener(EventListener<EventInfo> listener)
+   :outertype: CloudSim
+
+addOnSimulationStartListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final Simulation addOnSimulationStartListener(EventListener<EventInfo> listener)
    :outertype: CloudSim
 
 cancel
@@ -236,10 +242,10 @@ removeOnEventProcessingListener
 .. java:method:: @Override public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener)
    :outertype: CloudSim
 
-removeOnSimulationPausedListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+removeOnSimulationPauseListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener)
+.. java:method:: @Override public boolean removeOnSimulationPauseListener(EventListener<EventInfo> listener)
    :outertype: CloudSim
 
 resume
@@ -260,10 +266,22 @@ send
 .. java:method:: @Override public void send(SimEntity src, SimEntity dest, double delay, int tag, Object data)
    :outertype: CloudSim
 
+send
+^^^^
+
+.. java:method:: @Override public void send(SimEvent evt)
+   :outertype: CloudSim
+
 sendFirst
 ^^^^^^^^^
 
 .. java:method:: @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data)
+   :outertype: CloudSim
+
+sendFirst
+^^^^^^^^^
+
+.. java:method:: @Override public void sendFirst(SimEvent evt)
    :outertype: CloudSim
 
 sendNow

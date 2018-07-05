@@ -4,6 +4,14 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
+.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
+
+.. java:import:: org.cloudbus.cloudsim.core.events CloudSimEvent
+
+.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
+
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
 .. java:import:: org.cloudbus.cloudsim.resources Ram
 
 .. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
@@ -77,7 +85,7 @@ addCloudletToReturnedList
 addCloudletToWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void addCloudletToWaitingList(CloudletExecution cloudlet)
+.. java:method:: protected void addCloudletToWaitingList(CloudletExecution ce)
    :outertype: CloudletSchedulerAbstract
 
 addWaitingCloudletToExecList
@@ -91,10 +99,24 @@ addWaitingCloudletToExecList
    :param cloudlet: the cloudlet to add to to exec list
    :return: the given cloudlet
 
+canExecuteCloudletInternal
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected abstract boolean canExecuteCloudletInternal(CloudletExecution ce)
+   :outertype: CloudletSchedulerAbstract
+
+   **See also:** :java:ref:`.canExecuteCloudlet(CloudletExecution)`
+
 cloudletCancel
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Cloudlet cloudletCancel(int cloudletId)
+.. java:method:: @Override public Cloudlet cloudletCancel(Cloudlet cloudlet)
+   :outertype: CloudletSchedulerAbstract
+
+cloudletFail
+^^^^^^^^^^^^
+
+.. java:method:: @Override public Cloudlet cloudletFail(Cloudlet cloudlet)
    :outertype: CloudletSchedulerAbstract
 
 cloudletFinish
@@ -106,7 +128,13 @@ cloudletFinish
 cloudletPause
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean cloudletPause(int cloudletId)
+.. java:method:: @Override public boolean cloudletPause(Cloudlet cloudlet)
+   :outertype: CloudletSchedulerAbstract
+
+cloudletReady
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean cloudletReady(Cloudlet cloudlet)
    :outertype: CloudletSchedulerAbstract
 
 cloudletSubmit
@@ -126,6 +154,12 @@ cloudletSubmitInternal
 
 .. java:method:: protected double cloudletSubmitInternal(CloudletExecution ce, double fileTransferTime)
    :outertype: CloudletSchedulerAbstract
+
+   Receives the execution information of a Cloudlet to be executed in the VM managed by this scheduler.
+
+   :param ce: the submitted cloudlet
+   :param fileTransferTime: time required to move the required files from the SAN to the VM
+   :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
 
    **See also:** :java:ref:`.cloudletSubmit(Cloudlet,double)`
 
@@ -149,12 +183,12 @@ findCloudletInAllLists
 findCloudletInList
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected Optional<CloudletExecution> findCloudletInList(double cloudletId, List<CloudletExecution> list)
+.. java:method:: protected Optional<CloudletExecution> findCloudletInList(Cloudlet cloudlet, List<CloudletExecution> list)
    :outertype: CloudletSchedulerAbstract
 
    Search for a Cloudlet into a given list.
 
-   :param cloudletId: the id of the Cloudlet to search for
+   :param cloudlet: the Cloudlet to search for
    :param list: the list to search the Cloudlet into
    :return: an \ :java:ref:`Optional`\  value that is able to indicate if the Cloudlet was found or not
 
@@ -164,15 +198,21 @@ findSuitableWaitingCloudlet
 .. java:method:: protected Optional<CloudletExecution> findSuitableWaitingCloudlet()
    :outertype: CloudletSchedulerAbstract
 
-   Try to find the first Cloudlet in the waiting list which the number of required PEs is not higher than the number of free PEs.
+   Try to find the first Cloudlet in the waiting list that the number of required PEs is not higher than the number of free PEs.
 
    :return: an \ :java:ref:`Optional`\  containing the found Cloudlet or an empty Optional otherwise
 
 getAllocatedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getAllocatedMipsForCloudlet(CloudletExecution ce, double time)
+.. java:method:: public double getAllocatedMipsForCloudlet(CloudletExecution ce, double time)
    :outertype: CloudletSchedulerAbstract
+
+   Gets the current allocated MIPS for cloudlet.
+
+   :param ce: the ce
+   :param time: the time
+   :return: the current allocated mips for cloudlet
 
 getAvailableMipsByPe
 ^^^^^^^^^^^^^^^^^^^^
@@ -255,8 +295,12 @@ getCloudletWaitingList
 getCurrentMipsShare
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Double> getCurrentMipsShare()
+.. java:method:: public List<Double> getCurrentMipsShare()
    :outertype: CloudletSchedulerAbstract
+
+   Gets a \ **read-only**\  list of current mips capacity from the VM that will be made available to the scheduler. This mips share will be allocated to Cloudlets as requested.
+
+   :return: the current mips share list, where each item represents the MIPS capacity of a \ :java:ref:`Pe`\ . that is available to the scheduler.
 
 getCurrentRequestedBwPercentUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -358,18 +402,18 @@ isEmpty
 isThereEnoughFreePesForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean isThereEnoughFreePesForCloudlet(CloudletExecution c)
+.. java:method:: protected boolean isThereEnoughFreePesForCloudlet(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerAbstract
 
    Checks if the amount of PEs required by a given Cloudlet is free to use.
 
-   :param c: the Cloudlet to get the number of required PEs
+   :param cloudlet: the Cloudlet to get the number of required PEs
    :return: true if there is the amount of free PEs, false otherwise
 
-isTherePacketScheduler
-^^^^^^^^^^^^^^^^^^^^^^
+isThereTaskScheduler
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isTherePacketScheduler()
+.. java:method:: @Override public boolean isThereTaskScheduler()
    :outertype: CloudletSchedulerAbstract
 
 moveNextCloudletsFromWaitingToExecList

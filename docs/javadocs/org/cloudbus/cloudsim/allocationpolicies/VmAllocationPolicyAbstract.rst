@@ -62,6 +62,14 @@ VmAllocationPolicyAbstract
 
 Methods
 -------
+addPesFromHost
+^^^^^^^^^^^^^^
+
+.. java:method:: public void addPesFromHost(Host host)
+   :outertype: VmAllocationPolicyAbstract
+
+   Gets the number of working PEs from a given Host and adds these numbers to the \ :java:ref:`list of free PEs <getHostFreePesMap()>`\ . Before the Host starts being used, the number of free PEs is the same as the number of working PEs.
+
 addUsedPes
 ^^^^^^^^^^
 
@@ -107,9 +115,9 @@ getHostFreePesMap
 .. java:method:: protected final Map<Host, Long> getHostFreePesMap()
    :outertype: VmAllocationPolicyAbstract
 
-   Gets a map with the number of free PEs for each host from \ :java:ref:`getHostList()`\ .
+   Gets a map with the number of free and working PEs for each host from \ :java:ref:`getHostList()`\ .
 
-   :return: a Map where each key is a host and each value is the number of free PEs of that host.
+   :return: a Map where each key is a host and each value is the number of free and working PEs of that host.
 
 getHostList
 ^^^^^^^^^^^

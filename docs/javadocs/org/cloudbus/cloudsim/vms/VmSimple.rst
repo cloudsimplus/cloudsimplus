@@ -56,7 +56,7 @@ VmSimple
 .. java:constructor:: public VmSimple(int id, long mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
-   Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+   Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
 
    :param id: unique ID of the VM
    :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
@@ -68,7 +68,7 @@ VmSimple
 .. java:constructor:: public VmSimple(long mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
-   Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+   Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
 
    It is not defined an id for the Vm. The id is defined when the Vm is submitted to a \ :java:ref:`DatacenterBroker`\ .
 
@@ -81,7 +81,7 @@ VmSimple
 .. java:constructor:: public VmSimple(int id, double mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
-   Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+   Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
 
    It receives the amount of MIPS as a double value but converts it internally to a long. The method is just provided as a handy-way to create a Vm using a double value for MIPS that usually is generated from some computations.
 
@@ -185,30 +185,6 @@ getCpuPercentUsage
 
 .. java:method:: @Override public double getCpuPercentUsage(double time)
    :outertype: VmSimple
-
-getCurrentAllocatedBw
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getCurrentAllocatedBw()
-   :outertype: VmSimple
-
-getCurrentAllocatedRam
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getCurrentAllocatedRam()
-   :outertype: VmSimple
-
-getCurrentAllocatedSize
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getCurrentAllocatedSize()
-   :outertype: VmSimple
-
-   Gets the current allocated storage size.
-
-   :return: the current allocated size
-
-   **See also:** :java:ref:`Vm.getStorage()`
 
 getCurrentRequestedBw
 ^^^^^^^^^^^^^^^^^^^^^

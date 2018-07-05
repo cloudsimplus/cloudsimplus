@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicyAbstract
+
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
@@ -75,13 +77,25 @@ Constructors
 HostFaultInjection
 ^^^^^^^^^^^^^^^^^^
 
+.. java:constructor:: public HostFaultInjection(Datacenter datacenter)
+   :outertype: HostFaultInjection
+
+   Creates a fault injection mechanism for the Hosts of a given \ :java:ref:`Datacenter`\ . The Hosts failures are randomly injected according to a \ :java:ref:`UniformDistr`\  pseudo random number generator, which indicates the mean of failures to be generated per \ **hour**\ , (which is also called \ **event rate**\  or \ **rate parameter**\ ).
+
+   :param datacenter: the Datacenter to which failures will be randomly injected for its Hosts
+
+   **See also:** :java:ref:`.HostFaultInjection(Datacenter,ContinuousDistribution)`
+
+HostFaultInjection
+^^^^^^^^^^^^^^^^^^
+
 .. java:constructor:: public HostFaultInjection(Datacenter datacenter, ContinuousDistribution faultArrivalTimesGeneratorInHours)
    :outertype: HostFaultInjection
 
-   Creates a fault injection mechanism for the Hosts of a given \ :java:ref:`Datacenter`\ . The failures are randomly injected according to the given mean of failures to be generated per \ **minute**\ , which is also called \ **event rate**\  or \ **rate parameter**\ .
+   Creates a fault injection mechanism for the Hosts of a given \ :java:ref:`Datacenter`\ . The Hosts failures are randomly injected according to the given pseudo random number generator, that indicates the mean of failures to be generated per \ **minute**\ , (which is also called \ **event rate**\  or \ **rate parameter**\ ).
 
    :param datacenter: the Datacenter to which failures will be randomly injected for its Hosts
-   :param faultArrivalTimesGeneratorInHours: a Pseudo Random Number Generator which generates the times (in hours) Hosts failures will occur. \ **The values returned by the generator will be considered to be hours**\ . Frequently it is used a \ :java:ref:`PoissonDistr`\  to generate failure arrivals, but any \ :java:ref:`ContinuousDistribution`\  can be used.
+   :param faultArrivalTimesGeneratorInHours: a Pseudo Random Number Generator which generates the times Hosts failures will occur (in hours). \ **The values returned by the generator will be considered to be hours**\ . Frequently it is used a \ :java:ref:`PoissonDistr`\  to generate failure arrivals, but any \ :java:ref:`ContinuousDistribution`\  can be used.
 
 Methods
 -------
@@ -115,6 +129,27 @@ availability
    Gets the availability for a given broker as a percentage value between 0 to 1, based on VMs' downtime (the times VMs took to be repaired).
 
    :param broker: the broker to get the availability of its VMs
+
+generateHostFault
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void generateHostFault(Host host)
+   :outertype: HostFaultInjection
+
+   Generates a fault for all PEs of a Host.
+
+   :param host: the Host to generate the fault to.
+
+generateHostFault
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void generateHostFault(Host host, long numberOfPesToFail)
+   :outertype: HostFaultInjection
+
+   Generates a fault for a given number of random PEs of a Host.
+
+   :param host: the Host to generate the fault to.
+   :param numberOfPesToFail: number of PEs that must fail
 
 getDatacenter
 ^^^^^^^^^^^^^

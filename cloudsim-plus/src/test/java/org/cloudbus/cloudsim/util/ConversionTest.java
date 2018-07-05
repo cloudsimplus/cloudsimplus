@@ -2,17 +2,38 @@ package org.cloudbus.cloudsim.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  * @author Manoel Campos da Silva Filho
  */
 public class ConversionTest {
-    private static final double ONE_KILOBIT_IN_BITS = 1024;
-    private static final double ONE_KILOBYTE_IN_BYTES = 1024;
-    private static final double ONE_MEGABYTE_IN_BYTES = 1024*1024;
+    private static final double ONE_MEGABYTE_IN_BYTES = 1048576;
 
+    @Test
+    public void kilo(){
+        final double expectedBytes = 1024;
+        assertEquals(expectedBytes, Conversion.KILO,0);
+    }
+
+    @Test
+    public void mega(){
+        final double expectedBytes = ONE_MEGABYTE_IN_BYTES;
+        assertEquals(expectedBytes, Conversion.MEGA,0);
+    }
+
+    @Test
+    public void giga(){
+        final double expectedBytes = 1073741824;
+        assertEquals(expectedBytes, Conversion.GIGA,0);
+    }
+
+    @Test
+    public void tera(){
+        final double expectedBytes = 1099511627776.0;
+        assertEquals(expectedBytes, Conversion.TERA,0);
+    }
 
     @Test
     public void bytesToMegaBytes(){
@@ -29,13 +50,47 @@ public class ConversionTest {
     @Test
     public void bytesToBites(){
         final double expectedBits = 8192;
-        assertEquals(expectedBits, Conversion.bytesToBits(ONE_KILOBYTE_IN_BYTES),0);
+        assertEquals(expectedBits, Conversion.bytesToBits(1024),0);
     }
 
     @Test
     public void bitesToBytes(){
         final double expectedBytes = 128;
-        assertEquals(expectedBytes, Conversion.bitesToBytes(ONE_KILOBIT_IN_BITS),0);
+        assertEquals(expectedBytes, Conversion.bitesToBytes(1024),0);
     }
 
+    @Test
+    public void gigaToMega(){
+        final double gb = 1;
+        final double expectedMB = 1024;
+        assertEquals(expectedMB, Conversion.gigaToMega(gb),0);
+    }
+
+    @Test
+    public void teraToGiga(){
+        final double tb = 1;
+        final double expectedGB = 1024;
+        assertEquals(expectedGB, Conversion.teraToGiga(tb),0);
+    }
+
+    @Test
+    public void teraToMega(){
+        final double tb = 1;
+        final double expectedMB = 1048576;
+        assertEquals(expectedMB, Conversion.teraToMega(tb),0);
+    }
+
+    @Test
+    public void microToMilli1(){
+        final double micro = 1;
+        final double expectedMilli = 0.001;
+        assertEquals(expectedMilli, Conversion.microToMilli(micro),0);
+    }
+
+    @Test
+    public void microToMilli1000(){
+        final double micro = 1000;
+        final double expectedMilli = 1;
+        assertEquals(expectedMilli, Conversion.microToMilli(micro),0);
+    }
 }

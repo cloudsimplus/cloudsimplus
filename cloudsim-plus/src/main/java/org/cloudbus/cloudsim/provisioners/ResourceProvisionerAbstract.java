@@ -8,13 +8,13 @@
 
 package org.cloudbus.cloudsim.provisioners;
 
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.vms.Vm;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
 
 /**
  * An abstract class that implements the basic features of a provisioning policy used by a {@link Host}
@@ -86,9 +86,8 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     }
 
     @Override
-    public final void setResource(ResourceManageable resource) {
-        Objects.requireNonNull(resource);
-        this.resource = resource;
+    public final void setResource(final ResourceManageable resource) {
+        this.resource = Objects.requireNonNull(resource);
         this.resourceClass = resource.getClass();
     }
 

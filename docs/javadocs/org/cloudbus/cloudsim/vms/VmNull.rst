@@ -130,24 +130,6 @@ getCpuPercentUsage
 .. java:method:: @Override public double getCpuPercentUsage()
    :outertype: VmNull
 
-getCurrentAllocatedBw
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getCurrentAllocatedBw()
-   :outertype: VmNull
-
-getCurrentAllocatedRam
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getCurrentAllocatedRam()
-   :outertype: VmNull
-
-getCurrentAllocatedSize
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getCurrentAllocatedSize()
-   :outertype: VmNull
-
 getCurrentRequestedBw
 ^^^^^^^^^^^^^^^^^^^^^
 

@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
 
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicyAbstract
+
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
@@ -26,21 +28,21 @@
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion
 
+.. java:import:: org.cloudbus.cloudsim.util MathUtil
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
+.. java:import:: org.cloudsimplus.faultinjection HostFaultInjection
+
+.. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: org.cloudsimplus.listeners HostEventInfo
+
 .. java:import:: org.slf4j Logger
 
 .. java:import:: org.slf4j LoggerFactory
-
-.. java:import:: java.util Collections
-
-.. java:import:: java.util List
-
-.. java:import:: java.util Map
-
-.. java:import:: java.util Objects
 
 DatacenterSimple
 ================
@@ -59,6 +61,19 @@ Constructors
 DatacenterSimple
 ^^^^^^^^^^^^^^^^
 
+.. java:constructor:: public DatacenterSimple(Simulation simulation, VmAllocationPolicy vmAllocationPolicy)
+   :outertype: DatacenterSimple
+
+   Creates a Datacenter with an empty \ :java:ref:`storage <getDatacenterStorage()>`\  and no Hosts.
+
+   :param simulation: The CloudSim instance that represents the simulation the Entity is related to
+   :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
+
+   **See also:** :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy)`, :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy,DatacenterStorage)`, :java:ref:`.addHostList(List)`
+
+DatacenterSimple
+^^^^^^^^^^^^^^^^
+
 .. java:constructor:: public DatacenterSimple(Simulation simulation, List<? extends Host> hostList, VmAllocationPolicy vmAllocationPolicy)
    :outertype: DatacenterSimple
 
@@ -67,6 +82,8 @@ DatacenterSimple
    :param simulation: The CloudSim instance that represents the simulation the Entity is related to
    :param hostList: list of \ :java:ref:`Host`\ s that will compound the Datacenter
    :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
+
+   **See also:** :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy,DatacenterStorage)`
 
 DatacenterSimple
 ^^^^^^^^^^^^^^^^
@@ -108,6 +125,12 @@ addHostList
 ^^^^^^^^^^^
 
 .. java:method:: @Override public <T extends Host> Datacenter addHostList(List<T> hostList)
+   :outertype: DatacenterSimple
+
+addOnHostAvailableListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener)
    :outertype: DatacenterSimple
 
 checkCloudletsCompletionForAllHosts
@@ -186,6 +209,12 @@ getHost
 ^^^^^^^
 
 .. java:method:: @Override public Host getHost(int index)
+   :outertype: DatacenterSimple
+
+getHostById
+^^^^^^^^^^^
+
+.. java:method:: @Override public Host getHostById(int id)
    :outertype: DatacenterSimple
 
 getHostList
@@ -336,6 +365,12 @@ processVmDestroy
 
    :param ev: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
+
+removeHost
+^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Host> Datacenter removeHost(T host)
+   :outertype: DatacenterSimple
 
 setBandwidthPercentForMigration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

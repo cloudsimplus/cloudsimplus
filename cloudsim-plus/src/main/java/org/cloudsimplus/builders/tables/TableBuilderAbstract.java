@@ -26,8 +26,9 @@ package org.cloudsimplus.builders.tables;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract class to build tables to print
@@ -79,8 +80,7 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     protected final TableBuilderAbstract<T> setObjectList(final List<? extends T> list) {
-        Objects.requireNonNull(list);
-        this.list = list;
+        this.list = requireNonNull(list);
         return this;
     }
 
@@ -100,8 +100,7 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     protected TableBuilderAbstract<T> setTable(final Table table) {
-        Objects.requireNonNull(table);
-        this.table = table;
+        this.table = requireNonNull(table);
         return this;
     }
 
@@ -123,8 +122,8 @@ public abstract class TableBuilderAbstract<T> {
      * @return
      */
     public TableBuilderAbstract<T> addColumn(final int index, final TableColumn col, final Function<T, Object> dataFunction){
-        Objects.requireNonNull(col);
-        Objects.requireNonNull(dataFunction);
+        requireNonNull(col);
+        requireNonNull(dataFunction);
 
         col.setTable(getTable());
         getTable().addColumn(index, col);
@@ -162,9 +161,7 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     protected TableBuilderAbstract<T> addColumnDataFunction(final TableColumn col, final Function<T, Object> function){
-        Objects.requireNonNull(col);
-        Objects.requireNonNull(function);
-        columnsDataFunctions.put(col, function);
+        columnsDataFunctions.put(requireNonNull(col), requireNonNull(function));
         return this;
     }
 }

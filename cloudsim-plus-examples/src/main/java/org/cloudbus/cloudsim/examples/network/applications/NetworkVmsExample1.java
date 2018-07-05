@@ -33,7 +33,7 @@ public class NetworkVmsExample1 {
     private static final int NUMBER_OF_HOSTS = 2;
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 4;
-    private static final int HOST_RAM = 2048; // host memory (MEGABYTE)
+    private static final int HOST_RAM = 2048; // host memory (Megabyte)
     private static final long HOST_STORAGE = 1000000; // host storage
     private static final long HOST_BW = 10000;
 

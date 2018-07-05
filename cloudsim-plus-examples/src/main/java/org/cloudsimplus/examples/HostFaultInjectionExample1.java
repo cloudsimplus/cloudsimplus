@@ -65,7 +65,7 @@ public final class HostFaultInjectionExample1 {
 
     private static final int HOST_MIPS_BY_PE = 1000;
     private static final int HOST_PES = 4;
-    private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
+    private static final long HOST_RAM = 500000; //host memory (Megabyte)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
 
@@ -76,8 +76,8 @@ public final class HostFaultInjectionExample1 {
     private List<Host> hostList;
 
     private static final int VM_MIPS = 1000;
-    private static final long VM_SIZE = 1000; //image size (MEGABYTE)
-    private static final int VM_RAM = 10000; //vm memory (MEGABYTE)
+    private static final long VM_SIZE = 1000; //image size (Megabyte)
+    private static final int VM_RAM = 10000; //vm memory (Megabyte)
     private static final long VM_BW = 100000;
     private static final int VM_PES = 2; //number of cpus
 

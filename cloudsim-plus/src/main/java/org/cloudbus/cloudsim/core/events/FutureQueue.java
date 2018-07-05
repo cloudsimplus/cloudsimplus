@@ -10,11 +10,8 @@ package org.cloudbus.cloudsim.core.events;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
@@ -38,7 +35,7 @@ public class FutureQueue implements EventQueue {
     private long serial;
 
     @Override
-    public void addEvent(SimEvent newEvent) {
+    public void addEvent(final SimEvent newEvent) {
         newEvent.setSerial(serial++);
         sortedSet.add(newEvent);
     }
@@ -48,7 +45,7 @@ public class FutureQueue implements EventQueue {
      *
      * @param newEvent The event to be put in the queue.
      */
-    public void addEventFirst(SimEvent newEvent) {
+    public void addEventFirst(final SimEvent newEvent) {
         newEvent.setSerial(0);
         sortedSet.add(newEvent);
     }
@@ -79,7 +76,7 @@ public class FutureQueue implements EventQueue {
      * @param event the event
      * @return true, if successful
      */
-    public boolean remove(SimEvent event) {
+    public boolean remove(final SimEvent event) {
         return sortedSet.remove(event);
     }
 
@@ -89,8 +86,12 @@ public class FutureQueue implements EventQueue {
      * @param events the events
      * @return true, if successful
      */
-    public boolean removeAll(Collection<SimEvent> events) {
+    public boolean removeAll(final Collection<SimEvent> events) {
         return sortedSet.removeAll(events);
+    }
+
+    public boolean removeIf(final Predicate predicate){
+        return sortedSet.removeIf(predicate);
     }
 
     @Override

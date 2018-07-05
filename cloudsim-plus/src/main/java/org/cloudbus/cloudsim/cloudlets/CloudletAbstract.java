@@ -34,6 +34,9 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private int id;
 
+    /** @see #getJobId() */
+    private int jobId;
+
     /**
      * The list of every {@link Datacenter} where the cloudlet has been executed.
      * In case it starts and finishes executing in a single Datacenter, without
@@ -145,6 +148,7 @@ public abstract class CloudletAbstract implements Cloudlet {
         this.requiredFiles = new LinkedList<>();
 
         this.setId(id);
+        this.setJobId(NOT_ASSIGNED);
 
         this.netServiceLevel = 0;
         this.execStartTime = 0.0;
@@ -550,6 +554,16 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public final void setId(final int id) {
         this.id = id;
+    }
+
+    @Override
+    public int getJobId() {
+        return jobId;
+    }
+
+    @Override
+    public final void setJobId(final int jobId) {
+        this.jobId = jobId;
     }
 
     @Override

@@ -183,8 +183,8 @@ public class CloudletListenersExample1 {
      */
     private Vm createVm(int id) {
         int mips = 1000;
-        long size = 10000; // image size (MEGABYTE)
-        int ram = 512; // vm memory (MEGABYTE)
+        long size = 10000; // image size (Megabyte)
+        int ram = 512; // vm memory (Megabyte)
         long bw = 1000;
         Vm vm = new VmSimple(id, mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
@@ -241,8 +241,8 @@ public class CloudletListenersExample1 {
         for(int i = 0; i < HOST_PES_NUMBER; i++){
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
+        long ram = 2048; // host memory (Megabyte)
+        long storage = 1000000; // host storage (Megabyte)
         long bw = 10000; //Megabits/s
 
         return new HostSimple(ram, bw, storage, peList)

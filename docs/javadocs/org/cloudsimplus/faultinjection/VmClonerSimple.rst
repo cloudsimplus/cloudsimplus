@@ -8,8 +8,6 @@
 
 .. java:import:: java.util Map
 
-.. java:import:: java.util Objects
-
 .. java:import:: java.util.function Function
 
 .. java:import:: java.util.function UnaryOperator

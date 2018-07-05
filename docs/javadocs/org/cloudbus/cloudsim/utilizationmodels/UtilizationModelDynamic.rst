@@ -71,7 +71,22 @@ UtilizationModelDynamic
    until that an increment function is defined by the .
 
    :param unit: the \ :java:ref:`Unit`\  that determines how the resource is used (for instance, if resource usage is defined in percentage of the Vm resource or in absolute values)
-   :param initialUtilization: the initial of resource utilization, that the unit depends on the \ ``unit``\  parameter
+   :param initialUtilization: the initial resource utilization, that the unit depends on the \ ``unit``\  parameter
+
+UtilizationModelDynamic
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public UtilizationModelDynamic(Unit unit, double initialUtilization, double maxResourceUtilization)
+   :outertype: UtilizationModelDynamic
+
+   Creates a UtilizationModelDynamic that the initial resource utilization, max resource utilization and the \ :java:ref:`Unit`\  will be defined according to the given parameters.
+
+   The utilization will not be dynamically incremented
+   until that an increment function is defined by the .
+
+   :param unit: the \ :java:ref:`Unit`\  that determines how the resource is used (for instance, if resource usage is defined in percentage of the Vm resource or in absolute values)
+   :param initialUtilization: the initial resource utilization, that the unit depends on the \ ``unit``\  parameter
+   :param maxResourceUtilization: the maximum resource utilization
 
 UtilizationModelDynamic
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -82,6 +97,17 @@ UtilizationModelDynamic
    A copy constructor that creates a read-only UtilizationModelDynamic based on a source object.
 
    :param source: the source UtilizationModelDynamic to create an instance from
+
+UtilizationModelDynamic
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public UtilizationModelDynamic(UtilizationModelDynamic source, double initialUtilization)
+   :outertype: UtilizationModelDynamic
+
+   A copy constructor that creates a UtilizationModelDynamic based on a source object.
+
+   :param source: the source UtilizationModelDynamic to create an instance from
+   :param initialUtilization: the initial resource utilization (in the same unit of the given UtilizationModelDynamic instance)
 
 Methods
 -------
@@ -130,7 +156,7 @@ setMaxResourceUtilization
 .. java:method:: public final UtilizationModelDynamic setMaxResourceUtilization(double maxResourceUsagePercentage)
    :outertype: UtilizationModelDynamic
 
-   Sets the maximum amount of resource of resource that will be used.
+   Sets the maximum amount of resource that will be used.
 
    Such a value can be a percentage in scale from [0 to 1] or an absolute value, depending on the \ :java:ref:`getUnit()`\ .
 

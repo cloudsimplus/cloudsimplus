@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -48,8 +49,6 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * <p>
@@ -167,8 +166,8 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
 
     private Vm createVm(int vmPes) {
         final long mips = 1000;
-        final long storage = 10000; // vm image size (MEGABYTE)
-        final int ram = 512; // vm memory (MEGABYTE)
+        final long storage = 10000; // vm image size (MEGA)
+        final int ram = 512; // vm memory (MEGA)
         final long bw = 1000; // vm bandwidth
         return new VmSimple(mips, vmPes)
                 .setRam(ram).setBw(bw).setSize(storage)
@@ -186,7 +185,7 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
 
     private Host createHost(int id) {
         final long mips = 1000;
-        final long ram = 2048; // MEGABYTE
+        final long ram = 2048; // MEGA
         final long storage = 1000000;
         final long bw = 10000;
         final List<Pe> peList = new ArrayList<>();

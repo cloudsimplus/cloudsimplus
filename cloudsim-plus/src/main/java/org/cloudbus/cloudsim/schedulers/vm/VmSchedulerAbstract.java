@@ -17,6 +17,7 @@ import java.util.*;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -401,9 +402,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public VmScheduler setHost(final Host host) {
-        Objects.requireNonNull(host);
-
-        if(isOtherHostAssigned(host)){
+        if(isOtherHostAssigned(requireNonNull(host))){
             throw new IllegalStateException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
         }
 

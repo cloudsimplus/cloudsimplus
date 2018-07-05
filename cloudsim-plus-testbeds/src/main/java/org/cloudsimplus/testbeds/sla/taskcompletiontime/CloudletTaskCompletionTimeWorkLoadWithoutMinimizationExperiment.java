@@ -28,14 +28,6 @@
  */
 package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import static java.util.Comparator.comparingDouble;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
@@ -52,17 +44,26 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.WorkloadFileReader;
+import org.cloudbus.cloudsim.util.SwfWorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-
-import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VMS;
-import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VM_PES;
-
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 import org.cloudsimplus.testbeds.SimulationExperiment;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import static java.util.Comparator.comparingDouble;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VMS;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VM_PES;
 
 /**
  *
@@ -120,12 +121,12 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment ext
 
     @Override
     protected List<Cloudlet> createCloudlets() {
-       WorkloadFileReader workloadFileReader;
+       SwfWorkloadFileReader workloadFileReader;
        cloudletList = new ArrayList<>();
         try {
-            workloadFileReader = WorkloadFileReader.getInstance("METACENTRUM-2009-2.swf", 1);
+            workloadFileReader = SwfWorkloadFileReader.getInstance("METACENTRUM-2009-2.swf", 1);
             cloudletList = workloadFileReader.generateWorkload().subList(0, 70);
-        } catch (IOException ex) {
+        } catch (UncheckedIOException ex) {
             Logger.getLogger(CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment.class.getName()).log(Level.SEVERE, null, ex);
         }
 

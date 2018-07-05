@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.core CloudSim
+
 .. java:import:: org.cloudbus.cloudsim.core SimEntity
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
@@ -26,12 +28,6 @@ compareTo
 ^^^^^^^^^
 
 .. java:method:: @Override public int compareTo(SimEvent o)
-   :outertype: SimEventNull
-
-eventTime
-^^^^^^^^^
-
-.. java:method:: @Override public double eventTime()
    :outertype: SimEventNull
 
 getData
@@ -110,6 +106,12 @@ setSerial
 ^^^^^^^^^
 
 .. java:method:: @Override public void setSerial(long serial)
+   :outertype: SimEventNull
+
+setSimulation
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public SimEvent setSimulation(CloudSim simulation)
    :outertype: SimEventNull
 
 setSource

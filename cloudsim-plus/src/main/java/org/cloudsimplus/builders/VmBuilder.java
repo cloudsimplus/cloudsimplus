@@ -23,18 +23,18 @@
  */
 package org.cloudsimplus.builders;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
-
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.cloudsimplus.listeners.VmDatacenterEventInfo;
-import org.cloudsimplus.listeners.EventListener;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 /**
  * A Builder class to create {@link Vm} objects.
@@ -57,8 +57,7 @@ public class VmBuilder {
     private EventListener<VmHostEventInfo> onUpdateVmProcessingListener;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
-        Objects.requireNonNull(broker);
-        this.broker = broker;
+        this.broker = Objects.requireNonNull(broker);
         this.numberOfCreatedVms = 0;
         this.onHostAllocationListener = EventListener.NULL;
         this.onHostDeallocationListener = EventListener.NULL;
@@ -175,8 +174,7 @@ public class VmBuilder {
     }
 
     public VmBuilder setOnUpdateVmProcessingListener(final EventListener<VmHostEventInfo> onUpdateVmProcessing) {
-        Objects.requireNonNull(onUpdateVmProcessing);
-        this.onUpdateVmProcessingListener = onUpdateVmProcessing;
+        this.onUpdateVmProcessingListener = Objects.requireNonNull(onUpdateVmProcessing);
         return this;
     }
 }

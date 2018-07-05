@@ -2,8 +2,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
-.. java:import:: java.util.function Predicate
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies NetworkTopology
@@ -13,6 +11,16 @@
 .. java:import:: org.cloudsimplus.listeners EventInfo
 
 .. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: java.util Calendar
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Objects
+
+.. java:import:: java.util Set
+
+.. java:import:: java.util.function Predicate
 
 Simulation
 ==========
@@ -89,10 +97,10 @@ addOnEventProcessingListener
 
    :param listener: the event listener to add
 
-addOnSimulationPausedListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+addOnSimulationPauseListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener)
+.. java:method::  Simulation addOnSimulationPauseListener(EventListener<EventInfo> listener)
    :outertype: Simulation
 
    Adds an \ :java:ref:`EventListener`\  object that will be notified when the simulation is paused. When this Listener is notified, it will receive an \ :java:ref:`EventInfo`\  informing the time the pause occurred.
@@ -100,6 +108,12 @@ addOnSimulationPausedListener
    This object is just information about the event that happened. In fact, it isn't generated an actual {@limk SimEvent} for a pause event because there is not need for that.
 
    :param listener: the event listener to add
+
+addOnSimulationStartListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Simulation addOnSimulationStartListener(EventListener<EventInfo> listener)
+   :outertype: Simulation
 
 cancel
 ^^^^^^
@@ -339,10 +353,10 @@ removeOnEventProcessingListener
    :param listener: the listener to remove
    :return: true if the listener was found and removed, false otherwise
 
-removeOnSimulationPausedListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+removeOnSimulationPauseListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener)
+.. java:method::  boolean removeOnSimulationPauseListener(EventListener<EventInfo> listener)
    :outertype: Simulation
 
    Removes a listener from the onSimulationPausedListener List.
@@ -375,6 +389,16 @@ select
 send
 ^^^^
 
+.. java:method::  void send(SimEvent evt)
+   :outertype: Simulation
+
+   Sends an event where all data required is defined inside the event instance.
+
+   :param evt: the event to send
+
+send
+^^^^
+
 .. java:method::  void send(SimEntity src, SimEntity dest, double delay, int tag, Object data)
    :outertype: Simulation
 
@@ -385,6 +409,16 @@ send
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: the \ :java:ref:`tag <SimEvent.getTag()>`\  that classifies the event
    :param data: the \ :java:ref:`data <SimEvent.getData()>`\  to be sent inside the event
+
+sendFirst
+^^^^^^^^^
+
+.. java:method::  void sendFirst(SimEvent evt)
+   :outertype: Simulation
+
+   Sends an event where all data required is defined inside the event instance, adding it to the beginning of the queue in order to give priority to it.
+
+   :param evt: the event to send
 
 sendFirst
 ^^^^^^^^^

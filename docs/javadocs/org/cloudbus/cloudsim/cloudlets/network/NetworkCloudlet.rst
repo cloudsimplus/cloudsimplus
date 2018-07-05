@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletSimple
+
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util Collections
@@ -5,10 +7,6 @@
 .. java:import:: java.util List
 
 .. java:import:: java.util Optional
-
-.. java:import:: java.util.function Predicate
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletSimple
 
 NetworkCloudlet
 ===============
@@ -33,13 +31,13 @@ Constructors
 NetworkCloudlet
 ^^^^^^^^^^^^^^^
 
-.. java:constructor:: public NetworkCloudlet(int id, long cloudletLength, int pesNumber)
+.. java:constructor:: public NetworkCloudlet(int id, long length, int pesNumber)
    :outertype: NetworkCloudlet
 
    Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
 
    :param id: the unique ID of this cloudlet
-   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: the pes number
 
 Methods

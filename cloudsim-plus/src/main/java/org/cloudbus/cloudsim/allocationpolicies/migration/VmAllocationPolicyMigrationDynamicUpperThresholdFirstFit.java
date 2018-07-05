@@ -111,8 +111,7 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
 
     @Override
     public final void setFallbackVmAllocationPolicy(final VmAllocationPolicyMigration fallbackPolicy) {
-        Objects.requireNonNull(fallbackPolicy);
-        this.fallbackVmAllocationPolicy = fallbackPolicy;
+        this.fallbackVmAllocationPolicy = Objects.requireNonNull(fallbackPolicy);
     }
 
     @Override

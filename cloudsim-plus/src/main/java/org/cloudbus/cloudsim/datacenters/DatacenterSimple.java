@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
@@ -20,16 +21,18 @@ import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostEventInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -77,12 +80,32 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /** @see #getDatacenterStorage() */
 	private DatacenterStorage datacenterStorage;
 
+    private List<EventListener<HostEventInfo>> onHostAvailableListeners;
+
+    /**
+     * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
+     * and no Hosts.
+     *
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy)
+     * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
+     * @see #addHostList(List)
+     */
+    public DatacenterSimple(
+        final Simulation simulation,
+        final VmAllocationPolicy vmAllocationPolicy)
+    {
+        this(simulation, new ArrayList<>(), vmAllocationPolicy, new DatacenterStorage());
+    }
+
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
      */
     public DatacenterSimple(
         final Simulation simulation,
@@ -131,17 +154,16 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         setSchedulingInterval(0);
         setDatacenterStorage(storage);
 
-
+        this.onHostAvailableListeners = new ArrayList<>();
         this.characteristics = new DatacenterCharacteristicsSimple(this);
         this.bandwidthPercentForMigration = DEF_BANDWIDTH_PERCENT_FOR_MIGRATION;
-        migrationsEnabled = true;
+        this.migrationsEnabled = true;
 
         setVmAllocationPolicy(vmAllocationPolicy);
     }
 
     private void setHostList(final List<? extends Host> hostList) {
-        Objects.requireNonNull(hostList);
-        this.hostList = hostList;
+        this.hostList = requireNonNull(hostList);
         setupHosts();
     }
 
@@ -159,6 +181,74 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         processCloudletEvents(ev);
         processVmEvents(ev);
         processNetworkEvents(ev);
+        processHostEvents(ev);
+    }
+
+    private void processHostEvents(final SimEvent ev) {
+        switch (ev.getTag()) {
+            case CloudSimTags.HOST_ADD:
+                processHostAdditionRequest(ev);
+            break;
+            case CloudSimTags.HOST_REMOVE:
+                processHostRemovalRequest(ev);
+            break;
+        }
+    }
+
+    /**
+     * Process a Host addition request received during simulation runtime.
+     * @param ev
+     */
+    private void processHostAdditionRequest(final SimEvent ev) {
+        getHostFromHostEvent(ev).ifPresent(host -> {
+            this.addHost(host);
+            logger.info(
+                "{}: {}: Host {} added to {} during simulation runtime",
+                getSimulation().clock(), getClass().getSimpleName(), host.getId(), this);
+            //Notification must be sent only for Hosts added during simulation runtime
+            notifyOnHostAvailableListeners(host);
+        });
+    }
+
+    /**
+     * Process a Host removal request received during simulation runtime.
+     * @param srcEvt the received event
+     */
+    private void processHostRemovalRequest(final SimEvent srcEvt) {
+        final int hostId = (int)srcEvt.getData();
+        final Host host = getHostById(hostId);
+        if(host == Host.NULL) {
+            logger.warn(
+                "{}: {}: Host {} was not found to be removed from {}.",
+                getSimulation().clock(), getClass().getSimpleName(), hostId, this);
+            return;
+        }
+
+        HostFaultInjection fault = new HostFaultInjection(this);
+        try {
+            logger.error(
+                "{}: {}: Host {} removed from {} due to injected failure.",
+                getSimulation().clock(), getClass().getSimpleName(), host.getId(), this);
+            fault.generateHostFault(host);
+        } finally{
+            fault.shutdownEntity();
+        }
+
+        /*If the Host was found in this Datacenter, cancel the message sent to others
+        * Datacenters to try to find the Host for removal.*/
+        getSimulation().cancelAll(
+            getSimulation().getCloudInfoService(),
+            evt -> MathUtil.same(evt.getTime(), srcEvt.getTime()) &&
+                   evt.getTag() == CloudSimTags.HOST_REMOVE &&
+                   (int)evt.getData() == host.getId());
+    }
+
+    private Optional<Host> getHostFromHostEvent(final SimEvent ev) {
+        if(ev.getData() instanceof Host){
+            return Optional.of((Host)ev.getData());
+        }
+
+        return Optional.empty();
     }
 
     private void processNetworkEvents(final SimEvent ev) {
@@ -511,7 +601,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         vm.setInMigration(false);
 
         final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTags.VM_MIGRATE));
-        if (event == null || event.eventTime() > getSimulation().clock()) {
+        if (event == null || event.getTime() > getSimulation().clock()) {
             //Updates processing of all Hosts again to get the latest state for all Hosts after the VMs migrations
             updateHostsProcessing();
         }
@@ -787,7 +877,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param vmAllocationPolicy the new vm allocation policy
      */
     public final Datacenter setVmAllocationPolicy(final VmAllocationPolicy vmAllocationPolicy) {
-        Objects.requireNonNull(vmAllocationPolicy);
+        requireNonNull(vmAllocationPolicy);
         if(vmAllocationPolicy.getDatacenter() != null && vmAllocationPolicy.getDatacenter() != Datacenter.NULL && !this.equals(vmAllocationPolicy.getDatacenter())){
             throw new IllegalStateException("The given VmAllocationPolicy is already used by another Datacenter.");
         }
@@ -855,7 +945,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
+    public Host getHostById(final int id) {
+        return hostList.stream().filter(h -> h.getId()==id).findFirst().map(h -> (Host)h).orElse(Host.NULL);
+    }
+
+    @Override
     public <T extends Host> Datacenter addHostList(final List<T> hostList) {
+        requireNonNull(hostList);
         hostList.forEach(this::addHost);
         return this;
     }
@@ -871,10 +967,24 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         host.setDatacenter(this);
+        if(host.getStartTime() <= 0) {
+            host.setStartTime((int) getSimulation().clock());
+        }
         ((List<T>)hostList).add(host);
 
         //Sets the Datacenter again so that the new Host is registered internally on the VmAllocationPolicy
         vmAllocationPolicy.setDatacenter(this);
+        return this;
+    }
+
+    private <T extends Host> void notifyOnHostAvailableListeners(final T host) {
+        onHostAvailableListeners.forEach(listener -> listener.update(HostEventInfo.of(listener, host, getSimulation().clock())));
+    }
+
+    @Override
+    public <T extends Host> Datacenter removeHost(final T host) {
+        hostList.remove(host);
+        ((VmAllocationPolicyAbstract)vmAllocationPolicy).addPesFromHost(host);
         return this;
     }
 
@@ -922,6 +1032,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public double getPower() {
         return power;
+    }
+
+    @Override
+    public Datacenter addOnHostAvailableListener(final EventListener<HostEventInfo> listener) {
+        onHostAvailableListeners.add(requireNonNull(listener));
+        return this;
     }
 
     /**

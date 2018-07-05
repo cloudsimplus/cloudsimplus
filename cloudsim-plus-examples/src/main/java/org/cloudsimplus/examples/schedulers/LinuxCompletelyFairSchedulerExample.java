@@ -143,7 +143,7 @@ public class LinuxCompletelyFairSchedulerExample {
     }
 
     private Host createHost() {
-        final long ram = 2048; // host memory (MEGABYTE)
+        final long ram = 2048; // host memory (Megabyte)
         final long storage = 1000000; // host storage
         final long bw = 10000;
 
@@ -166,8 +166,8 @@ public class LinuxCompletelyFairSchedulerExample {
     }
 
     private Vm createVm(DatacenterBroker broker) {
-        final long   storage = 10000; // vm image size (MEGABYTE)
-        final int    ram = 512; // vm memory (MEGABYTE)
+        final long   storage = 10000; // vm image size (Megabyte)
+        final int    ram = 512; // vm memory (Megabyte)
         final long   bw = 1000; // vm bandwidth
 
         return new VmSimple(numberOfCreatedVms++, VM_MIPS, VM_PES)

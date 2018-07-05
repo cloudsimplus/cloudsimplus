@@ -1,6 +1,8 @@
-.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
-
 .. java:import:: org.cloudbus.cloudsim.core CloudSim
+
+.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
+
+.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
@@ -113,7 +115,7 @@ getCloudletLength
 .. java:method:: public long getCloudletLength()
    :outertype: CloudletExecution
 
-   Gets the Cloudlet's length.
+   Gets the \ :java:ref:`Cloudlet's length <Cloudlet.getLength()>`\ .
 
    :return: Cloudlet's length
 
@@ -159,7 +161,7 @@ getRemainingCloudletLength
 
    Gets the remaining cloudlet length (in MI) that has to be execute yet, considering the \ :java:ref:`Cloudlet.getLength()`\ .
 
-   :return: cloudlet length in MI
+   :return: remaining cloudlet length in MI
 
 getTimeSlice
 ^^^^^^^^^^^^
@@ -184,17 +186,6 @@ hashCode
 
 .. java:method:: @Override public int hashCode()
    :outertype: CloudletExecution
-
-setCloudletStatus
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: public boolean setCloudletStatus(Cloudlet.Status newStatus)
-   :outertype: CloudletExecution
-
-   Sets the Cloudlet status.
-
-   :param newStatus: the Cloudlet status
-   :return: \ ``true``\  if the new status has been set, \ ``false``\  otherwise
 
 setFileTransferTime
 ^^^^^^^^^^^^^^^^^^^
@@ -225,6 +216,17 @@ setLastProcessingTime
    Sets the last time this Cloudlet was processed at a Datacenter.
 
    :param lastProcessingTime: the last processing time to set
+
+setStatus
+^^^^^^^^^
+
+.. java:method:: public boolean setStatus(Cloudlet.Status newStatus)
+   :outertype: CloudletExecution
+
+   Sets the Cloudlet status.
+
+   :param newStatus: the Cloudlet status
+   :return: \ ``true``\  if the new status has been set, \ ``false``\  otherwise
 
 setTimeSlice
 ^^^^^^^^^^^^

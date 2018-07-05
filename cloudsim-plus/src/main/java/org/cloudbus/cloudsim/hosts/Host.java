@@ -8,21 +8,23 @@
 package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.Machine;
-import org.cloudbus.cloudsim.power.models.PowerModel;
-import org.cloudbus.cloudsim.resources.*;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-
-import java.util.List;
-import java.util.Set;
-
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Pe.Status;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmUtilizationHistory;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
-import org.cloudbus.cloudsim.resources.Pe.Status;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * An interface to be implemented by each class that provides
@@ -332,6 +334,30 @@ public interface Host extends Machine, Comparable<Host> {
      * @return
      */
     Host setVmScheduler(VmScheduler vmScheduler);
+
+    /**
+     * Gets the time the Host was powered-on (in seconds).
+     * @return
+     */
+    double getStartTime();
+
+    /**
+     * Sets the time the Host was powered-on.
+     * @param startTime the time to set (in seconds)
+     */
+    void setStartTime(double startTime);
+
+    /**
+     * Gets the time the Host shut down.
+     * @return
+     */
+    double getShutdownTime();
+
+    /**
+     * Sets the time the Host shut down.
+     * @param shutdownTime the time to set
+     */
+    void setShutdownTime(double shutdownTime);
 
     /**
      * Checks if the host is working properly or has failed.

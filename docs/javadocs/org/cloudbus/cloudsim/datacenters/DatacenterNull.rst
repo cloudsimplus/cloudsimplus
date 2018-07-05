@@ -12,6 +12,10 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: org.cloudsimplus.listeners HostEventInfo
+
 .. java:import:: java.util Collections
 
 .. java:import:: java.util List
@@ -44,6 +48,12 @@ addHostList
 .. java:method:: @Override public <T extends Host> Datacenter addHostList(List<T> hostList)
    :outertype: DatacenterNull
 
+addOnHostAvailableListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener)
+   :outertype: DatacenterNull
+
 compareTo
 ^^^^^^^^^
 
@@ -72,6 +82,12 @@ getHost
 ^^^^^^^
 
 .. java:method:: @Override public Host getHost(int index)
+   :outertype: DatacenterNull
+
+getHostById
+^^^^^^^^^^^
+
+.. java:method:: @Override public Host getHostById(int id)
    :outertype: DatacenterNull
 
 getHostList
@@ -152,6 +168,12 @@ processEvent
 .. java:method:: @Override public void processEvent(SimEvent ev)
    :outertype: DatacenterNull
 
+removeHost
+^^^^^^^^^^
+
+.. java:method:: @Override public <T extends Host> Datacenter removeHost(T host)
+   :outertype: DatacenterNull
+
 run
 ^^^
 
@@ -161,7 +183,25 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
+.. java:method:: @Override public boolean schedule(SimEvent evt)
+   :outertype: DatacenterNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data)
+   :outertype: DatacenterNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(double delay, int tag, Object data)
+   :outertype: DatacenterNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag)
    :outertype: DatacenterNull
 
 setBandwidthPercentForMigration
@@ -174,12 +214,6 @@ setDatacenterStorage
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage)
-   :outertype: DatacenterNull
-
-setLog
-^^^^^^
-
-.. java:method:: @Override public void setLog(boolean log)
    :outertype: DatacenterNull
 
 setName

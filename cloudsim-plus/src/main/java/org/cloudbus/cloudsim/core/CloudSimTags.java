@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 
 /**
  * Contains various static command tags that indicate a type of action that
@@ -143,7 +144,7 @@ public final class CloudSimTags {
     public static final int CLOUDLET_RESUME_ACK = BASE + 22;
 
     /**
-     * A Cloudlet is ready to start executing inside a VM.
+     * Request a Cloudlet to be set as ready to start executing inside a VM.
      * This event is sent by a DatacenterBroker to itself to define the time when
      * a specific Cloudlet should start executing.
      * This tag is commonly used when Cloudlets are created
@@ -159,14 +160,14 @@ public final class CloudSimTags {
     public static final int CLOUDLET_READY = BASE + 23;
 
     /**
-     * Sets a Cloudlet as failed.
+     * Request a Cloudlet to be set as failed.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
     public static final int CLOUDLET_FAIL = BASE + 24;
 
     /**
-     * Finishes a Cloudlet with an indefinite length (negative value) by
+     * Requests an indefinite-length Cloudlet (negative value) to be finished by
      * setting its length as the current number of processed MI.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
@@ -182,12 +183,39 @@ public final class CloudSimTags {
     public static final int CLOUDLET_FINISH = -(BASE + 25);
 
     /**
-     * Sets a Cloudlet as cancelled by the user or because
+     * Requests a Cloudlet to be cancelled.
+     * The Cloudlet can be cancelled under user request or because
      * another Cloudlet on which this one was dependent died.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Cloudlet} object.
      */
     public static final int CLOUDLET_KILL = BASE + 26;
+
+    /**
+     * Request a Cloudlet to have its attributes changed.
+     * When an event of this type is sent, the {@link SimEvent#getData()}
+     * must be a {@link Runnable} that represents a no-argument and no-return function
+     * that will perform the Cloudlet attribute update.
+     * The Runnable most encapsulate everything needed to update
+     * the Cloudlet's attributes, including the Cloudlet
+     * which will be updated.
+     *
+     * <p>Since the logic to update the attributes of a Cloudlet
+     * can be totally customized according to the researcher needs,
+     * there is no standard way to perform such an operation.
+     * As an example, you may want to reduce by half
+     * the number of PEs required by a Cloudlet from a list at a given time.
+     * This way, the Runnable function may be defined as a Lambda Expression as follows.
+     * Realize the {@code cloudletList} is considered to be accessible anywhere in the surrounding scope.
+     * </p>
+     *
+     * <pre>
+     * {@code Runnable runnable = () -> cloudletList.forEach(cloudlet -> cloudlet.setNumberOfPes(cloudlet.getNumberOfPes()/2));}
+     * </pre>
+     *
+     * <p>The {@code runnable} variable must be set as the data for the event to be sent with this tag.</p>
+     */
+    public static final int CLOUDLET_UPDATE_ATTRIBUTES = BASE + 27;
 
     /**
      * Denotes a request to create a new VM in a {@link Datacenter}

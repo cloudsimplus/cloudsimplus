@@ -37,7 +37,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "3.0.1";
+    public static final String VERSION = "4.0.0";
 
     /**
      * An array that works as a circular queue with capacity for just 2 elements
@@ -148,7 +148,7 @@ public class CloudSim implements Simulation {
     private boolean alreadyRunOnce;
 
     private final Set<EventListener<SimEvent>> onEventProcessingListeners;
-    private final Set<EventListener<EventInfo>> onSimulationPausedListeners;
+    private final Set<EventListener<EventInfo>> onSimulationPauseListeners;
     private final Set<EventListener<EventInfo>> onClockTickListeners;
     private final Set<EventListener<EventInfo>> onSimulationStartListeners;
 
@@ -182,7 +182,7 @@ public class CloudSim implements Simulation {
         this.running = false;
         this.alreadyRunOnce = false;
         this.onEventProcessingListeners = new HashSet<>();
-        this.onSimulationPausedListeners = new HashSet<>();
+        this.onSimulationPauseListeners = new HashSet<>();
         this.onClockTickListeners = new HashSet<>();
         this.onSimulationStartListeners = new HashSet<>();
 
@@ -373,8 +373,9 @@ public class CloudSim implements Simulation {
 
     @Override
     public void addEntity(final CloudSimEntity e) {
+        requireNonNull(e);
         if (running) {
-            final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, clock, e);
+            final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, 0, e, null, -1, e);
             future.addEvent(evt);
         }
 
@@ -437,15 +438,13 @@ public class CloudSim implements Simulation {
         processEvent(firstEvent);
         future.remove(firstEvent);
 
-        final List<SimEvent> eventsToProcess =
-            future
-                .stream()
-                .filter(e -> e.eventTime() == firstEvent.eventTime())
-                .collect(toList());
-
-        for(final SimEvent evt: eventsToProcess) {
-            processEvent(evt);
-            future.remove(evt);
+        //Uses iterator to increase efficiency and avoid ConcurrentModificationException while removing
+        for(final Iterator<SimEvent> it = future.iterator(); it.hasNext();){
+            SimEvent evt = it.next();
+            if(evt.getTime() == firstEvent.getTime()){
+                processEvent(evt);
+                it.remove();
+            }
         }
     }
 
@@ -454,10 +453,14 @@ public class CloudSim implements Simulation {
      * and execute them.
      */
     private void executeRunnableEntities() {
-        entities
-            .stream()
-            .filter(ent -> ent.getState() == SimEntity.State.RUNNABLE)
-            .forEach(SimEntity::run);
+        /*Uses an indexed for instead of anything else to avoid
+        ConcurrencyModificationException when a HostFaultInjection is created inside a Datacenter*/
+        for (int i = 0; i < entities.size(); i++) {
+            CloudSimEntity ent = entities.get(i);
+            if (ent.getState() == SimEntity.State.RUNNABLE) {
+                ent.run();
+            }
+        }
     }
 
     private void sendNow(final SimEntity dest, final int tag) {
@@ -471,26 +474,26 @@ public class CloudSim implements Simulation {
 
     @Override
     public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
-        validateDelay(delay);
-        final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
+        send(new CloudSimEvent(this, SimEvent.Type.SEND, delay, src, dest, tag, data));
+    }
 
+    @Override
+    public void send(final SimEvent evt) {
+        requireNonNull(evt);
         //Events with a negative tag have higher priority (except the "end of the simulation" event)
-        if(tag < 0 && tag != CloudSimTags.END_OF_SIMULATION)
+        if(evt.getTag() < 0 && evt.getTag() != CloudSimTags.END_OF_SIMULATION)
             future.addEventFirst(evt);
         else future.addEvent(evt);
     }
 
     @Override
     public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
-        validateDelay(delay);
-        final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
-        future.addEventFirst(evt);
+        sendFirst(new CloudSimEvent(this, SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 
-    private void validateDelay(final double delay) {
-        if (delay < 0) {
-            throw new IllegalArgumentException("Send delay can't be negative.");
-        }
+    @Override
+    public void sendFirst(SimEvent evt) {
+        future.addEventFirst(evt);
     }
 
     @Override
@@ -542,22 +545,8 @@ public class CloudSim implements Simulation {
     @Override
     public boolean cancelAll(final SimEntity src, final Predicate<SimEvent> p) {
         final int previousSize = future.size();
-        final List<SimEvent> cancelList = filterEventsFromSourceEntity(src, p, future).collect(toList());
-        future.removeAll(cancelList);
+        future.removeIf(p.and(evt -> evt.getSource().equals(src)));
         return previousSize < future.size();
-    }
-
-    /**
-     * Gets a stream of events inside a specific queue that match a given predicate
-     * and from a source entity.
-     *
-     * @param src Id of entity that scheduled the event
-     * @param p the event selection predicate
-     * @param queue the queue to get the events from
-     * @return a Stream of events from the queue
-     */
-    private Stream<SimEvent> filterEventsFromSourceEntity(final SimEntity src, final Predicate<SimEvent> p, final EventQueue queue) {
-        return filterEvents(queue, p.and(e -> e.getSource().equals(src)));
     }
 
     /**
@@ -577,10 +566,10 @@ public class CloudSim implements Simulation {
      * @param e the event to be processed
      */
     private void processEvent(final SimEvent e) {
-        if (e.eventTime() < clock) {
+        if (e.getTime() < clock) {
             throw new IllegalArgumentException("Past event detected.");
         }
-        setClock(e.eventTime());
+        setClock(e.getTime());
 
         processEventByType(e);
         notifyOnEventProcessingListeners(e);
@@ -730,14 +719,14 @@ public class CloudSim implements Simulation {
 
     @Override
     public void pauseEntity(final SimEntity src, final double delay) {
-        final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, clock + delay, src);
+        final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, delay, src);
         future.addEvent(evt);
         src.setState(SimEntity.State.HOLDING);
     }
 
     @Override
     public void holdEntity(final SimEntity src, final long delay) {
-        final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, clock + delay, src);
+        final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, delay, src);
         future.addEvent(evt);
         src.setState(SimEntity.State.HOLDING);
     }
@@ -758,7 +747,7 @@ public class CloudSim implements Simulation {
         if(running && isPauseRequested()) {
             paused=true;
             setClock(pauseAt);
-            notifyOnSimulationPausedListeners();
+            notifyOnSimulationPauseListeners();
             return true;
         }
 
@@ -768,8 +757,8 @@ public class CloudSim implements Simulation {
     /**
      * Notifies all registered listeners when the simulation is paused.
      */
-    private void notifyOnSimulationPausedListeners() {
-        onSimulationPausedListeners.forEach(l -> l.update(EventInfo.of(l, clock)));
+    private void notifyOnSimulationPauseListeners() {
+        onSimulationPauseListeners.forEach(l -> l.update(EventInfo.of(l, clock)));
     }
 
     private boolean isPauseRequested() {
@@ -808,7 +797,7 @@ public class CloudSim implements Simulation {
     }
 
     private boolean isNextFutureEventHappeningAfterTimeToPause() {
-        return future.iterator().next().eventTime() >= pauseAt;
+        return future.iterator().next().getTime() >= pauseAt;
     }
 
     /**
@@ -836,9 +825,8 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public final Simulation addOnSimulationPausedListener(final EventListener<EventInfo> listener) {
-        requireNonNull(listener);
-        this.onSimulationPausedListeners.add(listener);
+    public final Simulation addOnSimulationPauseListener(final EventListener<EventInfo> listener) {
+        this.onSimulationPauseListeners.add(requireNonNull(listener));
         return this;
     }
 
@@ -849,33 +837,30 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public boolean removeOnSimulationPausedListener(final EventListener<EventInfo> listener) {
-        return this.onSimulationPausedListeners.remove(listener);
+    public boolean removeOnSimulationPauseListener(final EventListener<EventInfo> listener) {
+        return this.onSimulationPauseListeners.remove(listener);
     }
 
     @Override
     public final Simulation addOnEventProcessingListener(final EventListener<SimEvent> listener) {
-        requireNonNull(listener);
-        this.onEventProcessingListeners.add(listener);
+        this.onEventProcessingListeners.add(requireNonNull(listener));
         return this;
     }
 
     @Override
     public boolean removeOnEventProcessingListener(final EventListener<SimEvent> listener) {
-        return onEventProcessingListeners.remove(listener);
+        return onEventProcessingListeners.remove(requireNonNull(listener));
     }
 
     @Override
     public Simulation addOnClockTickListener(final EventListener<EventInfo> listener) {
-        requireNonNull(listener);
-        onClockTickListeners.add(listener);
+        onClockTickListeners.add(requireNonNull(listener));
         return this;
     }
 
     @Override
     public boolean removeOnClockTickListener(final EventListener<? extends EventInfo> listener) {
-        requireNonNull(listener);
-        return onClockTickListeners.remove(listener);
+        return onClockTickListeners.remove(requireNonNull(listener));
     }
 
     @Override

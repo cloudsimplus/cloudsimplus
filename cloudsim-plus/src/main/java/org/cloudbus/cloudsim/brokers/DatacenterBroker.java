@@ -12,6 +12,8 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 import org.cloudsimplus.listeners.EventListener;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.List;
@@ -32,6 +34,8 @@ import java.util.function.Supplier;
  * @since CloudSim Plus 1.0
  */
 public interface DatacenterBroker extends SimEntity {
+    Logger logger = LoggerFactory.getLogger(DatacenterBroker.class.getSimpleName());
+
     /**
      * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}
      * objects.

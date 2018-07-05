@@ -175,8 +175,8 @@ public class TerminateSimulationAtGivenConditionExample {
 
     private Vm createVm(DatacenterBroker broker) {
         long mips = 1000;
-        long   storage = 10000; // vm image size (MEGABYTE)
-        int    ram = 512; // vm memory (MEGABYTE)
+        long   storage = 10000; // vm image size (Megabyte)
+        int    ram = 512; // vm memory (Megabyte)
         long   bw = 1000; // vm bandwidth (Megabits/s)
         int    pesNumber = 1; // number of CPU cores
 

@@ -23,11 +23,11 @@
  */
 package org.cloudsimplus.builders;
 
-import java.util.List;
-import java.util.Objects;
-
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+
+import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>A class that implements the Decorator Design Pattern in order to
@@ -55,11 +55,8 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     private final DatacenterBroker broker;
 
     public BrokerBuilderDecorator(final BrokerBuilder builder, final DatacenterBrokerSimple broker) {
-        Objects.requireNonNull(builder);
-        Objects.requireNonNull(broker);
-
-        this.builder = builder;
-        this.broker = broker;
+        this.builder = Objects.requireNonNull(builder);
+        this.broker = Objects.requireNonNull(broker);
 
         this.vmBuilder = new VmBuilder(broker);
         this.cloudletBuilder = new CloudletBuilder(this, broker);

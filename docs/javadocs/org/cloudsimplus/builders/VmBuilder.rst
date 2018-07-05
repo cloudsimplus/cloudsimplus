@@ -1,3 +1,17 @@
+.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.cloudbus.cloudsim.vms VmSimple
+
+.. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: org.cloudsimplus.listeners VmDatacenterEventInfo
+
+.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
+
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util List
@@ -5,20 +19,6 @@
 .. java:import:: java.util Objects
 
 .. java:import:: java.util.function Supplier
-
-.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
-.. java:import:: org.cloudbus.cloudsim.vms VmSimple
-
-.. java:import:: org.cloudsimplus.listeners VmHostEventInfo
-
-.. java:import:: org.cloudsimplus.listeners VmDatacenterEventInfo
-
-.. java:import:: org.cloudsimplus.listeners EventListener
-
-.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
 VmBuilder
 =========

@@ -40,7 +40,7 @@ NetworkVm
 .. java:constructor:: public NetworkVm(int id, long mipsCapacity, int numberOfPes)
    :outertype: NetworkVm
 
-   Creates a NetworkVm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is not created inside a Host <isCreated()>`\ , such values can be changed freely.
+   Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is not created inside a Host <isCreated()>`\ , such values can be changed freely.
 
    :param id: unique ID of the VM
    :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
@@ -52,7 +52,7 @@ NetworkVm
 .. java:constructor:: public NetworkVm(long mipsCapacity, int numberOfPes)
    :outertype: NetworkVm
 
-   Creates a NetworkVm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is not created inside a Host <isCreated()>`\ , such values can be changed freely.
+   Creates a NetworkVm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is not created inside a Host <isCreated()>`\ , such values can be changed freely.
 
    It is not defined an id for the Vm. The id is defined when the Vm is submitted to a \ :java:ref:`DatacenterBroker`\ .
 

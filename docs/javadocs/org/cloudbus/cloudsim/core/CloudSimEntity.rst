@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.core.events CloudSimEvent
+
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
 .. java:import:: org.slf4j Logger
@@ -190,21 +192,38 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: public void schedule(SimEntity dest, double delay, int tag, Object data)
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data)
    :outertype: CloudSimEntity
-
-   Sends an event to another entity.
-
-   :param dest: the destination entity
-   :param delay: How many seconds after the current simulation time the event should be sent
-   :param tag: An user-defined number representing the type of event.
-   :param data: The data to be sent with the event.
 
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
+.. java:method:: @Override public boolean schedule(double delay, int tag, Object data)
    :outertype: CloudSimEntity
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag)
+   :outertype: CloudSimEntity
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEvent evt)
+   :outertype: CloudSimEntity
+
+scheduleFirst
+^^^^^^^^^^^^^
+
+.. java:method:: public void scheduleFirst(SimEntity dest, double delay, int tag)
+   :outertype: CloudSimEntity
+
+   Sends a high priority event to another entity and with \ **no**\  attached data.
+
+   :param dest: the destination entity
+   :param delay: How many seconds after the current simulation time the event should be sent
+   :param tag: An user-defined number representing the type of event.
 
 scheduleFirst
 ^^^^^^^^^^^^^
@@ -218,18 +237,6 @@ scheduleFirst
    :param delay: How many seconds after the current simulation time the event should be sent
    :param tag: An user-defined number representing the type of event.
    :param data: The data to be sent with the event.
-
-scheduleFirst
-^^^^^^^^^^^^^
-
-.. java:method:: public void scheduleFirst(SimEntity dest, double delay, int tag)
-   :outertype: CloudSimEntity
-
-   Sends a high priority event to another entity and with \ **no**\  attached data.
-
-   :param dest: the destination entity
-   :param delay: How many seconds after the current simulation time the event should be sent
-   :param tag: An user-defined number representing the type of event.
 
 scheduleFirstNow
 ^^^^^^^^^^^^^^^^
@@ -355,12 +362,6 @@ setId
    Sets the entity id and defines its name based on such ID.
 
    :param id: the new id
-
-setLog
-^^^^^^
-
-.. java:method:: @Override public void setLog(boolean log)
-   :outertype: CloudSimEntity
 
 setName
 ^^^^^^^

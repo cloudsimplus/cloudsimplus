@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.faultinjection;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
@@ -42,6 +43,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.function.BinaryOperator.maxBy;
 import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
@@ -212,14 +214,27 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /**
      * Creates a fault injection mechanism for the Hosts of a given {@link Datacenter}.
-     * The failures are randomly injected according to the given
-     * mean of failures to be generated per <b>minute</b>,
-     * which is also called <b>event rate</b> or <b>rate parameter</b>.
+     * The Hosts failures are randomly injected according to a {@link UniformDistr}
+     * pseudo random number generator, which indicates the mean of failures to be generated per <b>hour</b>,
+     * (which is also called <b>event rate</b> or <b>rate parameter</b>).
+     *
+     * @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
+     * @see #HostFaultInjection(Datacenter, ContinuousDistribution)
+     */
+    public HostFaultInjection(final Datacenter datacenter) {
+      this(datacenter, new UniformDistr());
+    }
+
+    /**
+     * Creates a fault injection mechanism for the Hosts of a given {@link Datacenter}.
+     * The Hosts failures are randomly injected according to the given
+     * pseudo random number generator, that indicates the mean of failures to be generated per <b>minute</b>,
+     * (which is also called <b>event rate</b> or <b>rate parameter</b>).
      *
      * @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
      *
      * @param faultArrivalTimesGeneratorInHours a Pseudo Random Number Generator which generates the
-     * times (in hours) Hosts failures will occur.
+     * times Hosts failures will occur (in hours).
      * <b>The values returned by the generator will be considered to be hours</b>.
      * Frequently it is used a
      * {@link PoissonDistr} to generate failure arrivals, but any {@link ContinuousDistribution}
@@ -266,7 +281,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * Gets the time delay in seconds, from the current simulation time,
      * that the next failure will be injected.
      * Since the values returned by the {@link #faultArrivalTimesGeneratorInHours}
-     * are considered to be in <b>minutes</b>, such values are converted to seconds.
+     * are considered to be in <b>hours</b>, such values are converted to seconds.
      *
      * @return the next failure injection delay in seconds
      */
@@ -278,7 +293,7 @@ public class HostFaultInjection extends CloudSimEntity {
     public void processEvent(final SimEvent ev) {
         switch (ev.getTag()) {
             case CloudSimTags.HOST_FAILURE:
-                generateHostFault();
+                generateHostFaultAndScheduleNext();
             break;
             default:
             break;
@@ -286,46 +301,62 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Generates a failure for a specific number of PEs from a
-     * randomly selected Host.
+     * Generates a fault for all PEs of a Host.
+     * @param host the Host to generate the fault to.
      */
-    private void generateHostFault() {
-        try {
-            final Host failedHost = getRandomHost();
-            if(Host.NULL == failedHost || failedHost.getVmList().isEmpty()){
-                return;
-            }
+    public void generateHostFault(final Host host){
+        generateHostFault(host, host.getNumberOfWorkingPes());
+    }
 
-            this.lastFailedHost = failedHost;
-            if (Host.NULL.equals(lastFailedHost)) {
-                return;
-            }
+    /**
+     * Generates a fault for a given number of random PEs of a Host.
+     * @param host the Host to generate the fault to.
+     * @param numberOfPesToFail number of PEs that must fail
+     */
+    public void generateHostFault(final Host host, final long numberOfPesToFail){
+        if(Host.NULL == host){
+            return;
+        }
 
-            numberOfHostFaults++;
-            registerHostFaultTime();
+        this.lastFailedHost = host;
 
-            final long previousNumOfWorkingPes = lastFailedHost.getNumberOfWorkingPes();
-            this.lastNumberOfFailedPes = generateHostPesFaults();
-            final long hostWorkingPes = lastFailedHost.getNumberOfWorkingPes();
-            final long vmsRequiredPes = getPesSumOfWorkingVms();
+        numberOfHostFaults++;
+        registerHostFaultTime();
 
-            final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
+        final long previousNumOfWorkingPes = lastFailedHost.getNumberOfWorkingPes();
+        this.lastNumberOfFailedPes = generateHostPesFaults(numberOfPesToFail);
+        final long hostWorkingPes = lastFailedHost.getNumberOfWorkingPes();
+        final long vmsRequiredPes = getPesSumOfWorkingVms();
+
+        final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
+        if(hostWorkingPes > 0) {
             logger.error(
-                    "{}: {}: Generated {} PEs failures from {} previously working PEs for {} at minute {}.{}" +
-                    "Current Working PEs: {} | Number of VMs: {}{}",
-                    getSimulation().clock(), getClass().getSimpleName(), lastNumberOfFailedPes,
-                    previousNumOfWorkingPes, lastFailedHost, getSimulation().clock() / 60, System.lineSeparator(),
-                    hostWorkingPes, lastFailedHost.getVmList().size(), msg);
+                "{}: {}: Generated {} PEs failures from {} previously working PEs for {} at minute {}.{}" +
+                    "\t  Current Working PEs: {} | Number of VMs: {}{}",
+                getSimulation().clock(), getClass().getSimpleName(), lastNumberOfFailedPes,
+                previousNumOfWorkingPes, lastFailedHost, getSimulation().clock() / 60, System.lineSeparator(),
+                hostWorkingPes, lastFailedHost.getVmList().size(), msg);
+        }
 
-            if (hostWorkingPes == 0) {
-                setAllVmsToFailed();
-            } else if (hostWorkingPes >= vmsRequiredPes) {
-                logNoVmFault();
-            } else {
-                deallocateFailedHostPesFromVms();
-            }
+        if (hostWorkingPes == 0) {
+            setAllVmsToFailed();
+        } else if (hostWorkingPes >= vmsRequiredPes) {
+            logNoVmFault();
+        } else {
+            deallocateFailedHostPesFromVms();
+        }
+    }
+
+    /**
+     * Generates a failure for a specific number of PEs from a
+     * randomly selected Host and schedules the next time to try generating a fault.
+     */
+    private void generateHostFaultAndScheduleNext() {
+        try {
+            final Host host = getRandomHost();
+            generateHostFault(host, randomNumberOfFailedPes(host));
         } finally {
-            //schedules the next failure injection
+            //schedules the next failure injection try
             scheduleFaultInjection();
         }
     }
@@ -357,9 +388,11 @@ public class HostFaultInjection extends CloudSimEntity {
      * failed, when all Host PEs have failed.
      */
     private void setAllVmsToFailed() {
+        final int vms = lastFailedHost.getVmList().size();
+        final String msg = vms > 0 ? String.format("affecting all its %d VMs", vms) : "but there was no running VM";
         logger.error(
-                "All the {} PEs failed, affecting all its {} VMs.",
-                lastFailedHost.getNumberOfPes(), lastFailedHost.getVmList().size());
+                "{}: All the {} PEs of {} failed, {}.",
+                getSimulation().clock(), lastFailedHost.getNumberOfPes(), lastFailedHost, msg);
         setVmListToFailed(lastFailedHost.getVmList());
     }
 
@@ -773,18 +806,23 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Generates random failures for the PEs from the
+     * Generates failures for a given number of PEs from the
      * {@link #getLastFailedHost() last failed Host}.
      * The minimum number of PEs to fail is 1.
      *
-     * @return the number of failed PEs for the Host
+     * @param numberOfPesToFail number of PEs to set as failed
+     * @return the number of PEs just failed for the Host, which is equals to the input number
      */
-    private int generateHostPesFaults() {
-        return (int) lastFailedHost.getWorkingPeList()
+    private int generateHostPesFaults(final long numberOfPesToFail) {
+        final int pesFaults = (int) lastFailedHost.getWorkingPeList()
                 .stream()
-                .limit(randomNumberOfFailedPes())
+                .limit(numberOfPesToFail)
                 .peek(pe -> pe.setStatus(Pe.Status.FAILED))
                 .count();
+
+        //Updates the list of working PEs inside the VmAllocationPolicy
+        ((VmAllocationPolicyAbstract)lastFailedHost.getDatacenter().getVmAllocationPolicy()).addPesFromHost(lastFailedHost);
+        return pesFaults;
     }
 
     /**
@@ -802,14 +840,15 @@ public class HostFaultInjection extends CloudSimEntity {
      * Randomly generates a number of PEs which will fail for the datacenter.
      * The minimum number of PEs to fail is 1.
      *
+     * @param host the Host to generate a number of PEs to fail
      * @return the generated number of failed PEs for the datacenter,
      * between [1 and Number of PEs].
      */
-    private int randomNumberOfFailedPes() {
+    private int randomNumberOfFailedPes(final Host host) {
         /*the random generator return values from [0 to 1]
          and multiplying by the number of PEs we get a number between
          0 and number of PEs*/
-        return (int) (random.sample() * lastFailedHost.getWorkingPeList().size()) + 1;
+        return (int) (random.sample() * host.getNumberOfWorkingPes()) + 1;
     }
 
     /**
@@ -827,8 +866,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param datacenter the datacenter to set
      */
     protected final void setDatacenter(final Datacenter datacenter) {
-        Objects.requireNonNull(datacenter);
-        this.datacenter = datacenter;
+        this.datacenter = requireNonNull(datacenter);
     }
 
     /**
@@ -842,9 +880,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param cloner the {@link VmCloner} to set
      */
     public void addVmCloner(final DatacenterBroker broker, final VmCloner cloner) {
-        Objects.requireNonNull(broker);
-        Objects.requireNonNull(cloner);
-        this.vmClonerMap.put(broker, cloner);
+        this.vmClonerMap.put(requireNonNull(broker), requireNonNull(cloner));
     }
 
     /**

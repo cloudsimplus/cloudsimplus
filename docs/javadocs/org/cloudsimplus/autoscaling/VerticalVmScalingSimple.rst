@@ -4,9 +4,9 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: org.cloudsimplus.autoscaling.resources ResourceScalingGradual
-
 .. java:import:: org.cloudsimplus.autoscaling.resources ResourceScaling
+
+.. java:import:: org.cloudsimplus.autoscaling.resources ResourceScalingGradual
 
 .. java:import:: org.cloudsimplus.autoscaling.resources ResourceScalingInstantaneous
 

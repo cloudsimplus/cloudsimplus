@@ -43,4 +43,19 @@ public interface HostEventInfo extends EventInfo {
      * @return
      */
     Host getHost();
+
+    /**
+     * Gets a EventInfo instance from the given parameters.
+     *
+     * @param listener the listener to be notified about the event
+     * @param time the time the event happened
+     * @return
+     */
+    static HostEventInfo of(final EventListener<? extends EventInfo> listener, final Host host, final double time) {
+        return new HostEventInfo() {
+            @Override public Host getHost() { return host; }
+            @Override public double getTime() { return time; }
+            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
+        };
+    }
 }

@@ -22,6 +22,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
         return Cloudlet.NULL;
     }
     @Override public void cloudletFinish(CloudletExecution ce) {/**/}
+    @Override public boolean cloudletReady(Cloudlet cloudlet) { return false; }
     @Override public boolean cloudletPause(Cloudlet cloudlet) {
         return false;
     }
@@ -40,9 +41,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public int getCloudletStatus(int cloudletId) {
         return 0;
     }
-    @Override public List<Double> getCurrentMipsShare() {
-        return Collections.emptyList();
-    }
     @Override public double getCurrentRequestedBwPercentUtilization() {
         return 0.0;
     }
@@ -50,9 +48,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
         return 0.0;
     }
     @Override public double getPreviousTime() {
-        return 0.0;
-    }
-    @Override public double getAllocatedMipsForCloudlet(CloudletExecution ce, double time) {
         return 0.0;
     }
     @Override public double getRequestedMipsForCloudlet(CloudletExecution ce, double time) {

@@ -4,6 +4,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -14,9 +16,7 @@
 
 .. java:import:: org.cloudsimplus.listeners EventListener
 
-.. java:import:: org.slf4j Logger
-
-.. java:import:: org.slf4j LoggerFactory
+.. java:import:: org.cloudsimplus.traces.google GoogleTaskEventsTraceReader
 
 .. java:import:: java.util.function Function
 
@@ -42,9 +42,20 @@ DatacenterBrokerAbstract
 .. java:constructor:: public DatacenterBrokerAbstract(CloudSim simulation)
    :outertype: DatacenterBrokerAbstract
 
-   Creates a DatacenterBroker object.
+   Creates a DatacenterBroker.
 
    :param simulation: the CloudSim instance that represents the simulation the Entity is related to
+
+DatacenterBrokerAbstract
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public DatacenterBrokerAbstract(CloudSim simulation, String name)
+   :outertype: DatacenterBrokerAbstract
+
+   Creates a DatacenterBroker giving a specific name.
+
+   :param simulation: the CloudSim instance that represents the simulation the Entity is related to
+   :param name: the DatacenterBroker name
 
 Methods
 -------
@@ -75,13 +86,19 @@ bindCloudletToVm
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Set<Cloudlet> getCloudletCreatedList()
+.. java:method:: @Override public List<Cloudlet> getCloudletCreatedList()
    :outertype: DatacenterBrokerAbstract
 
 getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletFinishedList()
+   :outertype: DatacenterBrokerAbstract
+
+getCloudletSubmittedList
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Cloudlet> getCloudletSubmittedList()
    :outertype: DatacenterBrokerAbstract
 
 getCloudletWaitingList

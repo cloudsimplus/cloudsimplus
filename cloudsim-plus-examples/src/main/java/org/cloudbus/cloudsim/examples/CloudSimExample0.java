@@ -105,8 +105,8 @@ public class CloudSimExample0 {
 
     private Host createHost() {
         final long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        final long ram = 2048; // host memory (MEGABYTE)
-        final long storage = 1000000; // host storage (MEGABYTE)
+        final long ram = 2048; // host memory (Megabyte)
+        final long storage = 1000000; // host storage (Megabyte)
         final long bw = 10000; //in Megabits/s
 
         List<Pe> pesList = new ArrayList<>(); //List of CPU cores
@@ -125,8 +125,8 @@ public class CloudSimExample0 {
 
     private Vm createVm(DatacenterBroker broker) {
         final long   mips = 1000;
-        final long   storage = 10000; // vm image size (MEGABYTE)
-        final int    ram = 512; // vm memory (MEGABYTE)
+        final long   storage = 10000; // vm image size (Megabyte)
+        final int    ram = 512; // vm memory (Megabyte)
         final long   bw = 1000; // vm bandwidth (Megabits/s)
         final long   pesNumber = 2; // number of CPU cores
 
@@ -138,7 +138,7 @@ public class CloudSimExample0 {
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
-        final long length = 10000; //in Million Structions (MI)
+        final long length = 10000; //in Million Instruction (MI)
         final long fileSize = 300; //Size (in bytes) before execution
         final long outputSize = 300; //Size (in bytes) after execution
         final int  numberOfCpuCores = 2; //cloudlet will use all the VM's CPU cores

@@ -1,10 +1,10 @@
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
+.. java:import:: org.cloudbus.cloudsim.core CloudSim
+
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
-
-.. java:import:: org.cloudbus.cloudsim.core CloudSim
 
 DatacenterBrokerSimple
 ======================
@@ -28,9 +28,20 @@ DatacenterBrokerSimple
 .. java:constructor:: public DatacenterBrokerSimple(CloudSim simulation)
    :outertype: DatacenterBrokerSimple
 
-   Creates a new DatacenterBroker object.
+   Creates a new DatacenterBroker.
 
    :param simulation: name to be associated with this entity
+
+DatacenterBrokerSimple
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public DatacenterBrokerSimple(CloudSim simulation, String name)
+   :outertype: DatacenterBrokerSimple
+
+   Creates a DatacenterBroker giving a specific name.
+
+   :param simulation: the CloudSim instance that represents the simulation the Entity is related to
+   :param name: the DatacenterBroker name
 
 Methods
 -------

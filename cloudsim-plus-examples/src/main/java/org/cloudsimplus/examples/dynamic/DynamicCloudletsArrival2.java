@@ -176,8 +176,8 @@ public class DynamicCloudletsArrival2 {
      */
     private Vm createVm(int id, DatacenterBroker broker) {
         int mips = 1000;
-        long size = 10000; // image size (MEGABYTE)
-        int ram = 512; // vm memory (MEGABYTE)
+        long size = 10000; // image size (Megabyte)
+        int ram = 512; // vm memory (Megabyte)
         long bw = 1000;
 
         return new VmSimple(id, mips, VM_PES_NUMBER)

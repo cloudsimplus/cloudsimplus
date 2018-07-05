@@ -39,7 +39,7 @@ public class DeferredQueue implements EventQueue {
 	public void addEvent(final SimEvent newEvent) {
 		// The event has to be inserted as the last of all events
 		// with the same event_time(). Yes, this matters.
-		final double eventTime = newEvent.eventTime();
+		final double eventTime = newEvent.getTime();
 		if (eventTime >= maxTime) {
 			list.add(newEvent);
 			maxTime = eventTime;
@@ -50,7 +50,7 @@ public class DeferredQueue implements EventQueue {
 		SimEvent event;
 		while (iterator.hasNext()) {
 			event = iterator.next();
-			if (event.eventTime() > eventTime) {
+			if (event.getTime() > eventTime) {
 				iterator.previous();
 				iterator.add(newEvent);
 				return;

@@ -194,8 +194,8 @@ public class CreateCloudletAfterLastFinishedOne {
         for(int i = 0; i < HOST_PES_NUMBER; i++){
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
-        long ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
+        long ram = 2048; // host memory (Megabyte)
+        long storage = 1000000; // host storage (Megabyte)
         long bw = 10000; //Megabits/s
 
        return new HostSimple(ram, bw, storage, peList)

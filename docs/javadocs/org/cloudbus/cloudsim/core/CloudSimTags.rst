@@ -6,9 +6,13 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
+.. java:import:: org.cloudsimplus.traces.google GoogleTaskEventsTraceReader
 
 CloudSimTags
 ============
@@ -32,6 +36,32 @@ CLOUDLET_CANCEL
 
    Cancels a Cloudlet submitted in the Datacenter entity. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
 
+CLOUDLET_FAIL
+^^^^^^^^^^^^^
+
+.. java:field:: public static final int CLOUDLET_FAIL
+   :outertype: CloudSimTags
+
+   Request a Cloudlet to be set as failed. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
+
+CLOUDLET_FINISH
+^^^^^^^^^^^^^^^
+
+.. java:field:: public static final int CLOUDLET_FINISH
+   :outertype: CloudSimTags
+
+   Requests an indefinite-length Cloudlet (negative value) to be finished by setting its length as the current number of processed MI. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
+
+   Events with a negative tag have higher priority. In this case, if a message with this tag is sent, it means that the Cloudlet has to be finished by replacing its negative length with an actual positive value. Only after that, the processing of Cloudlets can be updated. That is way this event must be processed before other events.
+
+CLOUDLET_KILL
+^^^^^^^^^^^^^
+
+.. java:field:: public static final int CLOUDLET_KILL
+   :outertype: CloudSimTags
+
+   Requests a Cloudlet to be cancelled. The Cloudlet can be cancelled under user request or because another Cloudlet on which this one was dependent died. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
+
 CLOUDLET_PAUSE
 ^^^^^^^^^^^^^^
 
@@ -47,6 +77,18 @@ CLOUDLET_PAUSE_ACK
    :outertype: CloudSimTags
 
    Pauses a Cloudlet submitted in the Datacenter entity with an acknowledgement. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
+
+CLOUDLET_READY
+^^^^^^^^^^^^^^
+
+.. java:field:: public static final int CLOUDLET_READY
+   :outertype: CloudSimTags
+
+   Request a Cloudlet to be set as ready to start executing inside a VM. This event is sent by a DatacenterBroker to itself to define the time when a specific Cloudlet should start executing. This tag is commonly used when Cloudlets are created from a trace file such as a \ :java:ref:`Google Cluster Trace <GoogleTaskEventsTraceReader>`\ .
+
+   When the status of a Cloudlet is set to \ :java:ref:`Cloudlet.Status.READY`\ , the Cloudlet can be selected to start running as soon as possible by a \ :java:ref:`CloudletScheduler`\ .
+
+   When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
 
 CLOUDLET_RESUME
 ^^^^^^^^^^^^^^^
@@ -78,7 +120,7 @@ CLOUDLET_SUBMIT
 .. java:field:: public static final int CLOUDLET_SUBMIT
    :outertype: CloudSimTags
 
-   Denotes the submission of a Cloudlet. This tag is normally used between CloudSim User and Datacenter entity. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
+   Denotes the submission of a Cloudlet. This tag is normally used between a DatacenterBroker and Datacenter entity. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
 
 CLOUDLET_SUBMIT_ACK
 ^^^^^^^^^^^^^^^^^^^
@@ -86,7 +128,23 @@ CLOUDLET_SUBMIT_ACK
 .. java:field:: public static final int CLOUDLET_SUBMIT_ACK
    :outertype: CloudSimTags
 
-   Denotes the submission of a Cloudlet with an acknowledgement. This tag is normally used between CloudSim User and Datacenter entity. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
+   Denotes the submission of a Cloudlet with an acknowledgement. This tag is normally used between DatacenterBroker and Datacenter entity. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Cloudlet`\  object.
+
+CLOUDLET_UPDATE_ATTRIBUTES
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:field:: public static final int CLOUDLET_UPDATE_ATTRIBUTES
+   :outertype: CloudSimTags
+
+   Request a Cloudlet to have its attributes changed. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`Runnable`\  that represents a no-argument and no-return function that will perform the Cloudlet attribute update. The Runnable most encapsulate everything needed to update the Cloudlet's attributes, including the Cloudlet which will be updated.
+
+   Since the logic to update the attributes of a Cloudlet can be totally customized according to the researcher needs, there is no standard way to perform such an operation. As an example, you may want to reduce by half the number of PEs required by a Cloudlet from a list at a given time. This way, the Runnable function may be defined as a Lambda Expression as follows. Realize the \ ``cloudletList``\  is considered to be accessible anywhere in the surrounding scope.
+
+   .. parsed-literal::
+
+      Runnable runnable = () -> cloudletList.forEach(cloudlet -> cloudlet.setNumberOfPes(cloudlet.getNumberOfPes()/2));
+
+   The \ ``runnable``\  variable must be set as the data for the event to be sent with this tag.
 
 DATACENTER_LIST_REQUEST
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -110,7 +168,7 @@ END_OF_SIMULATION
 .. java:field:: public static final int END_OF_SIMULATION
    :outertype: CloudSimTags
 
-   Denotes the end of simulation.
+   Denotes the end of simulation. Despite it has a negative value, it isn't a priority event (this is the only exception).
 
 FAILURE
 ^^^^^^^
@@ -120,6 +178,14 @@ FAILURE
 
    Defines the base tag to be used for failure events such as failure of hosts or VMs.
 
+HOST_ADD
+^^^^^^^^
+
+.. java:field:: public static final int HOST_ADD
+   :outertype: CloudSimTags
+
+   Defines the tag that represents a request to a Datacenter to add a Host or list of Hosts to a Datacenter. The \ :java:ref:`SimEvent.getData()`\  must be a Host to be added to to the Datacenter where the message is being sent to. The source of such events is the \ :java:ref:`CloudInformationService`\ .
+
 HOST_FAILURE
 ^^^^^^^^^^^^
 
@@ -127,6 +193,14 @@ HOST_FAILURE
    :outertype: CloudSimTags
 
    Defines the tag that represents a request to generate a host failure.
+
+HOST_REMOVE
+^^^^^^^^^^^
+
+.. java:field:: public static final int HOST_REMOVE
+   :outertype: CloudSimTags
+
+   Defines the tag that represents a request to a Datacenter to remove a Host or list of Hosts from a Datacenter. The \ :java:ref:`SimEvent.getData()`\  must be the ID of the Host that will be removed from the Datacenter they belong to. For this event, it's used the ID instead of the Host itself because the Host instance with the specified ID should be looked into the Datacenter Host list in order to remove it. A Host should be removed in case of maintenance or failure but there isn't such a distinction yet, so a failure is simulated to remove the Host. The source of such events is the \ :java:ref:`CloudInformationService`\ .
 
 ICMP_PKT_RETURN
 ^^^^^^^^^^^^^^^

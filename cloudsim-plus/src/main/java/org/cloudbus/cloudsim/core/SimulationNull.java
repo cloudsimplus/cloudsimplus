@@ -54,11 +54,11 @@ final class SimulationNull implements Simulation {
     @Override public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener) {
         return false;
     }
-    @Override public Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener) {
+    @Override public Simulation addOnSimulationPauseListener(EventListener<EventInfo> listener) {
         return this;
     }
     @Override public Simulation addOnSimulationStartListener(EventListener<EventInfo> listener) { return this; }
-    @Override public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener) {
+    @Override public boolean removeOnSimulationPauseListener(EventListener<EventInfo> listener) {
         return false;
     }
     @Override public void holdEntity(SimEntity src, long delay) {/**/}
@@ -81,7 +81,9 @@ final class SimulationNull implements Simulation {
     @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> p) {
         return SimEvent.NULL;
     }
+    @Override public void send(SimEvent evt) {/**/}
     @Override public void send(SimEntity src, SimEntity dest, double delay, int tag, Object data) {/**/}
+    @Override public void sendFirst(SimEvent evt) {/**/}
     @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data) {/**/}
     @Override public void sendNow(SimEntity src, SimEntity dest, int tag, Object data) {/**/}
     @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {

@@ -8,8 +8,6 @@
 
 .. java:import:: java.util List
 
-.. java:import:: java.util Objects
-
 DatacenterStorage
 =================
 

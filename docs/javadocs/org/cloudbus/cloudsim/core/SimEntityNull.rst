@@ -73,13 +73,25 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
+.. java:method:: @Override public boolean schedule(SimEvent evt)
    :outertype: SimEntityNull
 
-setLog
-^^^^^^
+schedule
+^^^^^^^^
 
-.. java:method:: @Override public void setLog(boolean log)
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data)
+   :outertype: SimEntityNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(double delay, int tag, Object data)
+   :outertype: SimEntityNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag)
    :outertype: SimEntityNull
 
 setName

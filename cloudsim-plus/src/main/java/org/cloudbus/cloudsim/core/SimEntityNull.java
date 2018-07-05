@@ -17,6 +17,7 @@ final class SimEntityNull implements SimEntity {
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public SimEntity setSimulation(Simulation simulation) { return this; }
     @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public boolean schedule(SimEvent evt) { return false; }
     @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
     @Override public boolean schedule(double delay, int tag, Object data) { return false; }
     @Override public boolean schedule(SimEntity dest, double delay, int tag) {/**/

@@ -8,9 +8,9 @@
 
 package org.cloudbus.cloudsim.resources;
 
-import java.util.Objects;
-
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class for representing a physical file in a DataCloud environment
@@ -87,7 +87,7 @@ public class File {
      * @throws IllegalArgumentException when the source file is <tt>null</tt>
      */
     public File(final File file) throws IllegalArgumentException {
-        this(Objects.requireNonNull(file), false);
+        this(requireNonNull(file), false);
     }
 
     /**
@@ -466,8 +466,7 @@ public class File {
      * @return
      */
     public final File setDatacenter(Datacenter datacenter) {
-        Objects.requireNonNull(datacenter);
-        this.datacenter = datacenter;
+        this.datacenter = requireNonNull(datacenter);
         return this;
     }
 

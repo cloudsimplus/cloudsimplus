@@ -7,16 +7,16 @@
  */
 package org.cloudbus.cloudsim.datacenters;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.models.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModel;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
-import org.cloudbus.cloudsim.resources.File;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostEventInfo;
 
 import java.util.List;
 
@@ -38,6 +38,7 @@ public interface Datacenter extends SimEntity, PowerAware {
      * {@link Datacenter} objects.
      */
     Datacenter NULL = new DatacenterNull();
+
     /**
      * The default percentage of bandwidth allocated for VM migration, is
      * a value is not set.
@@ -53,7 +54,19 @@ public interface Datacenter extends SimEntity, PowerAware {
      */
     <T extends Host> List<T> getHostList();
 
+    /**
+     * Gets a Host in a given position inside the Host List.
+     * @param index the position of the List to get the Host
+     * @return
+     */
     Host getHost(int index);
+
+    /**
+     * Gets a Host from its id.
+     * @param id the ID of the Host to get from the List.
+     * @return the Host if found or {@link Host#NULL} otherwise
+     */
+    Host getHostById(int id);
 
     /**
      * Physically expands the Datacenter by adding a List of new Hosts (physical machines) to it.
@@ -87,6 +100,14 @@ public interface Datacenter extends SimEntity, PowerAware {
      * @see #getVmAllocationPolicy()
      */
     <T extends Host> Datacenter addHost(T host);
+
+    /**
+     * Removes a Host from its Datacenter.
+     *
+     * @param host the new host to be removed from its assigned Datacenter
+     * @return
+     */
+    <T extends Host> Datacenter removeHost(T host);
 
     /**
      * Gets the policy to be used by the Datacenter to allocate VMs into hosts.
@@ -189,4 +210,15 @@ public interface Datacenter extends SimEntity, PowerAware {
      */
     @Override
     double getPower();
+
+    /**
+     * Adds a {@link EventListener} object that will be notified every time when the
+     * a new Hosts is available for the Datacenter during simulation runtime.
+     * If the {@link #addHost(Host)} or {@link #addHostList(List)} is called
+     * before the simulation starts, the listeners will not be notified.
+     *
+     * @param listener the event listener to add
+     * @return
+     */
+    Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener);
 }

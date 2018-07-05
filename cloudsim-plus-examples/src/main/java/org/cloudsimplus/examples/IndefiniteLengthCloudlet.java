@@ -65,7 +65,7 @@ import java.util.List;
  * can be defined in uncountable ways, according to developer needs.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 3.1.0
+ * @since CloudSim Plus 4.0.0
  */
 public class IndefiniteLengthCloudlet {
     private static final int HOSTS = 1;

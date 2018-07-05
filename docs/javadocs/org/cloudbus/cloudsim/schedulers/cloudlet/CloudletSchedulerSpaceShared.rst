@@ -22,10 +22,10 @@ CloudletSchedulerSpaceShared
 
 Methods
 -------
-canAddCloudletToExecutionList
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+canExecuteCloudletInternal
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
+.. java:method:: @Override protected boolean canExecuteCloudletInternal(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerSpaceShared
 
    The space-shared scheduler \ **does not**\  share the CPU time between executing cloudlets. Each CPU (\ :java:ref:`Pe`\ ) is used by another Cloudlet just when the previous Cloudlet using it has finished executing completely. By this way, if there are more Cloudlets than PEs, some Cloudlet will not be allowed to start executing immediately.
@@ -36,6 +36,6 @@ canAddCloudletToExecutionList
 cloudletResume
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double cloudletResume(int cloudletId)
+.. java:method:: @Override public double cloudletResume(Cloudlet cloudlet)
    :outertype: CloudletSchedulerSpaceShared
 

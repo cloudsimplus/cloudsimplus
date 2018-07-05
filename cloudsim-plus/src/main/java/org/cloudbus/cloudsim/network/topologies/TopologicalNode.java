@@ -37,7 +37,7 @@ public class TopologicalNode {
      *
      * @param nodeId The BRITE id of the node inside the network
      */
-    public TopologicalNode(int nodeId) {
+    public TopologicalNode(final int nodeId) {
         this(nodeId, new Point2D());
     }
 
@@ -47,7 +47,7 @@ public class TopologicalNode {
      * @param nodeId The BRITE id of the node inside the network
      * @param worldCoordinates  the x,y world-coordinates of the Node
      */
-    public TopologicalNode(int nodeId, Point2D worldCoordinates) {
+    public TopologicalNode(final int nodeId, final Point2D worldCoordinates) {
         this(nodeId, String.valueOf(nodeId), worldCoordinates);
     }
 
@@ -58,11 +58,10 @@ public class TopologicalNode {
      * @param nodeName The name of the node inside the network
      * @param worldCoordinates    the x,y world-coordinates of the Node
      */
-    public TopologicalNode(int nodeId, String nodeName, Point2D worldCoordinates) {
-        Objects.requireNonNull(worldCoordinates);
+    public TopologicalNode(final int nodeId, final String nodeName, final Point2D worldCoordinates) {
+        this.worldCoordinates = Objects.requireNonNull(worldCoordinates);
         this.nodeId = nodeId;
         this.nodeName = nodeName;
-        this.worldCoordinates = worldCoordinates;
     }
 
     /**
@@ -74,7 +73,7 @@ public class TopologicalNode {
         return nodeId;
     }
 
-    public void setNodeId(int nodeId) {
+    public void setNodeId(final int nodeId) {
         this.nodeId = nodeId;
     }
 
@@ -87,7 +86,7 @@ public class TopologicalNode {
         return nodeName;
     }
 
-    public void setNodeName(String nodeName) {
+    public void setNodeName(final String nodeName) {
         this.nodeName = nodeName;
     }
     /**
@@ -99,7 +98,7 @@ public class TopologicalNode {
         return worldCoordinates;
     }
 
-    public void setWorldCoordinates(Point2D worldCoordinates) {
+    public void setWorldCoordinates(final Point2D worldCoordinates) {
         this.worldCoordinates = worldCoordinates;
     }
 

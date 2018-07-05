@@ -32,10 +32,10 @@ CloudletSchedulerTimeShared
 
 Methods
 -------
-canAddCloudletToExecutionList
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+canExecuteCloudletInternal
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
+.. java:method:: @Override protected boolean canExecuteCloudletInternal(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerTimeShared
 
    This time-shared scheduler shares the CPU time between all executing cloudlets, giving the same CPU timeslice for each Cloudlet to execute. It always allow any submitted Cloudlets to be immediately added to the execution list. By this way, it doesn't matter what Cloudlet is being submitted, since it will always include it in the execution list.
@@ -46,7 +46,7 @@ canAddCloudletToExecutionList
 cloudletResume
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double cloudletResume(int cloudletId)
+.. java:method:: @Override public double cloudletResume(Cloudlet cloudlet)
    :outertype: CloudletSchedulerTimeShared
 
 getCloudletWaitingList

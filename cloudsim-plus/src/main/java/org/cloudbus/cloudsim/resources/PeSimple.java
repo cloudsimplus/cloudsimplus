@@ -45,7 +45,7 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
      * @pre peProvisioner != null
      * @post $none
      */
-    public PeSimple(double mipsCapacity, PeProvisioner peProvisioner) {
+    public PeSimple(final double mipsCapacity, final PeProvisioner peProvisioner) {
         super((long)mipsCapacity);
         setId(-1);
         setPeProvisioner(peProvisioner);
@@ -64,13 +64,13 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
      * @pre peProvisioner != null
      * @post $none
      */
-    public PeSimple(int id, double mipsCapacity, PeProvisioner peProvisioner) {
+    public PeSimple(final int id, final double mipsCapacity, final PeProvisioner peProvisioner) {
         this(mipsCapacity, peProvisioner);
         this.setId(id);
     }
 
     @Override
-    public final void setId(int id) {
+    public final void setId(final int id) {
         this.id = id;
     }
 
@@ -85,20 +85,19 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     }
 
     @Override
-    public final boolean setStatus(Status status) {
+    public final boolean setStatus(final Status status) {
         this.status = status;
         return true;
     }
 
     @Override
-    public boolean setCapacity(double mipsCapacity) {
+    public boolean setCapacity(final double mipsCapacity) {
         return setCapacity((long)mipsCapacity);
     }
 
     @Override
-    public final Pe setPeProvisioner(PeProvisioner peProvisioner) {
-        Objects.requireNonNull(peProvisioner);
-        this.peProvisioner = peProvisioner;
+    public final Pe setPeProvisioner(final PeProvisioner peProvisioner) {
+        this.peProvisioner = Objects.requireNonNull(peProvisioner);
         this.peProvisioner.setPe(this);
         return this;
     }

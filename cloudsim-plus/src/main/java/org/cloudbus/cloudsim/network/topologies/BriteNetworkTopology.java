@@ -35,6 +35,7 @@ import java.util.Map;
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
+ * @see #getInstance(String)
  */
 public final class BriteNetworkTopology implements NetworkTopology {
     private static final Logger logger = LoggerFactory.getLogger(BriteNetworkTopology.class.getSimpleName());
@@ -65,8 +66,20 @@ public final class BriteNetworkTopology implements NetworkTopology {
     private Map<Integer, Integer> map;
 
     /**
+     * Instantiates a new Network Topology a file inside the <b>application's resource directory</b>.
+     * @param fileName the <b>relative name</b> of the BRITE file
+     * @return the BriteNetworkTopology instance.
+     */
+    public static BriteNetworkTopology getInstance(final String fileName){
+        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(BriteNetworkTopology.class, fileName));
+        return new BriteNetworkTopology(reader);
+    }
+
+    /**
      * Creates a network topology
-     *
+     * @see #BriteNetworkTopology(String)
+     * @see #BriteNetworkTopology(InputStreamReader)
+     * @see #getInstance(String)
      */
     public BriteNetworkTopology() {
         map = new HashMap<>();
@@ -81,30 +94,30 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * topological information on simulation entities.
      *
      * @param filePath the path of the BRITE file
-     * @pre fileName != null
-     * @post $none
+     * @see #BriteNetworkTopology()
+     * @see #BriteNetworkTopology(InputStreamReader)
+     * @see #getInstance(String)
      */
     public BriteNetworkTopology(final String filePath) {
         this(ResourceLoader.getFileReader(filePath));
         logger.info("Topology file: {}", filePath);
     }
 
+    /**
+     * Creates a network topology from a given input stream reader.
+     * The file is written in the BRITE format and contains
+     * topological information on simulation entities.
+     *
+     * @param streamReader the reader to read the topology file
+     * @see #BriteNetworkTopology()
+     * @see #BriteNetworkTopology(InputStreamReader)
+     * @see #getInstance(String)
+     */
     private BriteNetworkTopology(final InputStreamReader streamReader) {
         this();
-        // try to find the file
         final TopologyReaderBrite reader = new TopologyReaderBrite();
         graph = reader.readGraphFile(streamReader);
         generateMatrices();
-    }
-
-    /**
-     * Instantiates a new Network Topology a file inside the <b>application's resource directory</b>.
-     * @param fileName the <b>relative name</b> of the BRITE file
-     * @return the BriteNetworkTopology instance.
-     */
-    public static BriteNetworkTopology getInstance(final String fileName){
-        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(BriteNetworkTopology.class, fileName));
-        return new BriteNetworkTopology(reader);
     }
 
     /**

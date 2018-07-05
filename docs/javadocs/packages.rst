@@ -40,6 +40,8 @@ JavaDocs
    org/cloudsimplus/heuristics/package-index
    org/cloudsimplus/listeners/package-index
    org/cloudsimplus/slametrics/package-index
+   org/cloudsimplus/traces/package-index
+   org/cloudsimplus/traces/google/package-index
    org/cloudsimplus/util/package-index
    org/cloudsimplus/vmtemplates/package-index
 

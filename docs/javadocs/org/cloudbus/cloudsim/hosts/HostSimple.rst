@@ -6,7 +6,11 @@
 
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
 
+.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisionerSimple
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerSpaceShared
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -42,14 +46,14 @@ HostSimple
 .. java:constructor:: public HostSimple(long ram, long bw, long storage, List<Pe> peList)
    :outertype: HostSimple
 
-   Creates a Host without a pre-defined ID. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
+   Creates a Host without a pre-defined ID and using a \ :java:ref:`ResourceProvisionerSimple`\  RAM and Bandwidth. It also sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
 
    :param ram: the RAM capacity in Megabytes
    :param bw: the Bandwidth (BW) capacity in Megabits/s
    :param storage: the storage capacity in Megabytes
    :param peList: the host's \ :java:ref:`Pe`\  list
 
-   **See also:** :java:ref:`.setId(int)`
+   **See also:** :java:ref:`.setId(int)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setVmScheduler(VmScheduler)`
 
 HostSimple
 ^^^^^^^^^^
@@ -324,10 +328,22 @@ getResources
 .. java:method:: @Override public List<ResourceManageable> getResources()
    :outertype: HostSimple
 
+getShutdownTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getShutdownTime()
+   :outertype: HostSimple
+
 getSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Simulation getSimulation()
+   :outertype: HostSimple
+
+getStartTime
+^^^^^^^^^^^^
+
+.. java:method:: @Override public double getStartTime()
    :outertype: HostSimple
 
 getStateHistory
@@ -538,10 +554,22 @@ setRamProvisioner
 .. java:method:: @Override public final Host setRamProvisioner(ResourceProvisioner ramProvisioner)
    :outertype: HostSimple
 
+setShutdownTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setShutdownTime(double shutdownTime)
+   :outertype: HostSimple
+
 setSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public final Host setSimulation(Simulation simulation)
+   :outertype: HostSimple
+
+setStartTime
+^^^^^^^^^^^^
+
+.. java:method:: @Override public void setStartTime(double startTime)
    :outertype: HostSimple
 
 setVmScheduler

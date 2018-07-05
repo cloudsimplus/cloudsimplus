@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
+.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
+
 .. java:import:: org.cloudbus.cloudsim.core CustomerEntity
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
@@ -7,6 +9,8 @@
 .. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
+
+.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterCharacteristics
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
@@ -17,6 +21,8 @@
 .. java:import:: org.cloudsimplus.listeners CloudletVmEventInfo
 
 .. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: org.cloudsimplus.traces.google GoogleTaskEventsTraceReader
 
 .. java:import:: java.util List
 
@@ -192,7 +198,11 @@ getCostPerBw
 
    Gets the cost of each byte of bandwidth (bw) consumed.
 
+   Realize costs must be defined for Datacenters by accessing the \ :java:ref:`DatacenterCharacteristics`\  object from each \ :java:ref:`Datacenter`\  instance and setting the bandwidth cost.
+
    :return: the cost per bw
+
+   **See also:** :java:ref:`DatacenterCharacteristics.setCostPerBw(double)`
 
 getCostPerSec
 ^^^^^^^^^^^^^
@@ -202,7 +212,11 @@ getCostPerSec
 
    Gets the cost/sec of running the Cloudlet in the latest Datacenter.
 
+   Realize costs must be defined for Datacenters by accessing the \ :java:ref:`DatacenterCharacteristics`\  object from each \ :java:ref:`Datacenter`\  instance and setting the CPU cost.
+
    :return: the cost associated with running this Cloudlet or \ ``0.0``\  if was not assigned to any Datacenter yet
+
+   **See also:** :java:ref:`DatacenterCharacteristics.setCostPerSecond(double)`
 
 getCostPerSec
 ^^^^^^^^^^^^^
@@ -212,8 +226,12 @@ getCostPerSec
 
    Gets the cost running this Cloudlet in a given Datacenter.
 
+   Realize costs must be defined for Datacenters by accessing the \ :java:ref:`DatacenterCharacteristics`\  object from each \ :java:ref:`Datacenter`\  instance and setting the CPU cost.
+
    :param datacenter: the Datacenter entity
    :return: the cost associated with running this Cloudlet in the given Datacenter or 0 if the Cloudlet was not executed there not found
+
+   **See also:** :java:ref:`DatacenterCharacteristics.setCostPerSecond(double)`
 
 getExecStartTime
 ^^^^^^^^^^^^^^^^
@@ -266,6 +284,16 @@ getFinishedLengthSoFar
    :param datacenter: the Datacenter entity
    :return: the length of a partially executed Cloudlet; the full Cloudlet length if it is completed; or 0 if the Cloudlet has never been executed in the given Datacenter
 
+getJobId
+^^^^^^^^
+
+.. java:method::  int getJobId()
+   :outertype: Cloudlet
+
+   Gets the id of the job that this Cloudlet belongs to, if any. This field is just used for classification. If there is an supposed job that multiple Cloudlets belong to, one can set the job id for all Cloudlets of that job in order to classify them. Besides classification, this field doesn't have any effect.
+
+   :return: the job id or \ :java:ref:`NOT_ASSIGNED`\  if the Cloudlet doesn't belong to a job
+
 getLastDatacenter
 ^^^^^^^^^^^^^^^^^
 
@@ -293,6 +321,8 @@ getLength
    :outertype: Cloudlet
 
    Gets the execution length of this Cloudlet (in Million Instructions (MI)) that will be executed in each defined PE.
+
+   In case the length is a negative value, it means the Cloudlet doesn't have a defined length, this way, it keeps running until a \ :java:ref:`CloudSimTags.CLOUDLET_FINISH`\  message is sent to the \ :java:ref:`DatacenterBroker`\ .
 
    According to this length and the power of the VM processor (in Million Instruction Per Second - MIPS) where the cloudlet will be run, the cloudlet will take a given time to finish processing. For instance, for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the cloudlet will spend 5 seconds using the processor in order to be completed (that may be uninterrupted or not, depending on the scheduling policy).
 
@@ -378,7 +408,11 @@ getTotalCost
 
    Gets the total cost of executing this Cloudlet. \ ``Total Cost = input data transfer + processing cost + output transfer cost``\  .
 
+   Realize costs must be defined for Datacenters by accessing the \ :java:ref:`DatacenterCharacteristics`\  object from each \ :java:ref:`Datacenter`\  instance and setting costs for each resource.
+
    :return: the total cost of executing the Cloudlet
+
+   **See also:** :java:ref:`DatacenterCharacteristics.setCostPerSecond(double)`, :java:ref:`DatacenterCharacteristics.setCostPerBw(double)`
 
 getTotalLength
 ^^^^^^^^^^^^^^
@@ -430,7 +464,7 @@ getUtilizationOfBw
 .. java:method::  double getUtilizationOfBw()
    :outertype: Cloudlet
 
-   Gets the utilization of Bandwidth at the current simulation time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`BW utilizaton model <getUtilizationModelBw()>`\ .
+   Gets the utilization of Bandwidth at the current simulation time, that is defined in percentage (in scale from [0 to 1]) or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`BW utilizaton model <getUtilizationModelBw()>`\ .
 
    :return: the utilization value
 
@@ -442,7 +476,7 @@ getUtilizationOfBw
 .. java:method::  double getUtilizationOfBw(double time)
    :outertype: Cloudlet
 
-   Gets the utilization of Bandwidth at a given time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelBw()`\  ()}.
+   Gets the utilization of Bandwidth at a given time, that is defined in percentage (in scale from [0 to 1]) or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelBw()`\  ()}.
 
    :param time: the time to get the utilization
    :return: the utilization value
@@ -455,7 +489,7 @@ getUtilizationOfCpu
 .. java:method::  double getUtilizationOfCpu()
    :outertype: Cloudlet
 
-   Gets the utilization of CPU at the current simulation time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`CPU utilizaton model <getUtilizationModelCpu()>`\ .
+   Gets the utilization of CPU at the current simulation time, that is defined in percentage (in scale from [0 to 1]) or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`CPU utilizaton model <getUtilizationModelCpu()>`\ .
 
    :return: the utilization value
 
@@ -467,7 +501,7 @@ getUtilizationOfCpu
 .. java:method::  double getUtilizationOfCpu(double time)
    :outertype: Cloudlet
 
-   Gets the utilization of CPU at a given time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelCpu()`\ .
+   Gets the utilization of CPU at a given time, that is defined in percentage (in scale from [0 to 1]) or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelCpu()`\ .
 
    :param time: the time to get the utilization
    :return: the utilization value
@@ -480,7 +514,7 @@ getUtilizationOfRam
 .. java:method::  double getUtilizationOfRam()
    :outertype: Cloudlet
 
-   Gets the utilization of RAM at the current simulation time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`RAM utilizaton model <getUtilizationModelRam()>`\ .
+   Gets the utilization of RAM at the current simulation time, that is defined in percentage (in scale from [0 to 1]) or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  set for the \ :java:ref:`RAM utilizaton model <getUtilizationModelRam()>`\ .
 
    :return: the utilization value
 
@@ -492,7 +526,7 @@ getUtilizationOfRam
 .. java:method::  double getUtilizationOfRam(double time)
    :outertype: Cloudlet
 
-   Gets the utilization of RAM at a given time, that is defined in percentage or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelRam()`\  ()}.
+   Gets the utilization of RAM at a given time, that is defined in percentage (in scale from [0 to 1]) or absolute values, depending of the \ :java:ref:`UtilizationModel.getUnit()`\  defined for the \ :java:ref:`getUtilizationModelRam()`\  ()}.
 
    :param time: the time to get the utilization
    :return: the utilization value
@@ -659,6 +693,16 @@ setFileSize
    :param fileSize: the size to set (in bytes)
    :throws IllegalArgumentException: when the given size is lower or equal to zero
 
+setJobId
+^^^^^^^^
+
+.. java:method::  void setJobId(int jobId)
+   :outertype: Cloudlet
+
+   Sets the id of the job that this Cloudlet belongs to, if any. This field is just used for classification. If there is an supposed job that multiple Cloudlets belong to, one can set the job id for all Cloudlets of that job in order to classify them. Besides classification, this field doesn't have any effect.
+
+   :param jobId: the job id to set
+
 setLength
 ^^^^^^^^^
 
@@ -666,6 +710,10 @@ setLength
    :outertype: Cloudlet
 
    Sets the execution length of this Cloudlet (in Million Instructions (MI)) that will be executed in each defined PE.
+
+   In case the length is a negative value, it means the Cloudlet doesn't have a defined length, this way, it keeps running until a \ :java:ref:`CloudSimTags.CLOUDLET_FINISH`\  message is sent to the \ :java:ref:`DatacenterBroker`\ .
+
+   According to this length and the power of the VM processor (in Million Instruction Per Second - MIPS) where the cloudlet will be run, the cloudlet will take a given time to finish processing. For instance, for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the cloudlet will spend 5 seconds using the processor in order to be completed (that may be uninterrupted or not, depending on the scheduling policy).
 
    :param length: the length (in MI) of this Cloudlet to be executed in a Vm
    :throws IllegalArgumentException: when the given length is lower or equal to zero

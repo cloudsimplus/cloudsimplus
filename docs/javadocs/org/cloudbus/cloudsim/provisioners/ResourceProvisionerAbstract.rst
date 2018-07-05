@@ -1,14 +1,14 @@
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
 .. java:import:: java.util HashMap
 
 .. java:import:: java.util Map
 
 .. java:import:: java.util Objects
-
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
-.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
 
 ResourceProvisionerAbstract
 ===========================

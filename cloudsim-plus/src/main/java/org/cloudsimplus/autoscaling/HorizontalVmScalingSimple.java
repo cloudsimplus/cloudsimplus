@@ -82,8 +82,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
 
     @Override
     public final HorizontalVmScaling setVmSupplier(final Supplier<Vm> supplier) {
-        Objects.requireNonNull(supplier);
-        this.vmSupplier = supplier;
+        this.vmSupplier = Objects.requireNonNull(supplier);
         return this;
     }
 
@@ -94,8 +93,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
 
     @Override
     public VmScaling setOverloadPredicate(final Predicate<Vm> predicate) {
-        Objects.requireNonNull(predicate);
-        this.overloadPredicate = predicate;
+        this.overloadPredicate = Objects.requireNonNull(predicate);
         return this;
     }
 

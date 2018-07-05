@@ -20,8 +20,6 @@
 
 .. java:import:: java.util List
 
-.. java:import:: java.util Set
-
 .. java:import:: java.util.function Function
 
 .. java:import:: java.util.function Supplier
@@ -75,13 +73,19 @@ defaultVmMapper
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Set<Cloudlet> getCloudletCreatedList()
+.. java:method:: @Override public List<Cloudlet> getCloudletCreatedList()
    :outertype: DatacenterBrokerNull
 
 getCloudletFinishedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public <T extends Cloudlet> List<T> getCloudletFinishedList()
+   :outertype: DatacenterBrokerNull
+
+getCloudletSubmittedList
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Cloudlet> getCloudletSubmittedList()
    :outertype: DatacenterBrokerNull
 
 getCloudletWaitingList
@@ -177,7 +181,25 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
+.. java:method:: @Override public boolean schedule(SimEvent evt)
+   :outertype: DatacenterBrokerNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(double delay, int tag, Object data)
+   :outertype: DatacenterBrokerNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data)
+   :outertype: DatacenterBrokerNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag)
    :outertype: DatacenterBrokerNull
 
 setCloudletComparator
@@ -196,12 +218,6 @@ setFallbackDatacenterSupplier
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier)
-   :outertype: DatacenterBrokerNull
-
-setLog
-^^^^^^
-
-.. java:method:: @Override public void setLog(boolean log)
    :outertype: DatacenterBrokerNull
 
 setName

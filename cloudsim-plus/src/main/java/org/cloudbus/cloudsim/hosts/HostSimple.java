@@ -10,8 +10,10 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudsimplus.listeners.EventListener;
@@ -22,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.function.Predicate;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -126,13 +129,21 @@ public class HostSimple implements Host {
     private List<ResourceManageable> resources;
     private List<ResourceProvisioner> provisioners;
     private final List<Vm> vmCreatedList;
+
     /**
      * The previous utilization mips.
      */
     private double previousUtilizationMips;
 
+    /** @see #getStartTime() */
+    private double startTime;
+
+    /** @see #getShutdownTime() */
+    private double shutdownTime;
+
     /**
-     * Creates a Host without a pre-defined ID.
+     * Creates a Host without a pre-defined ID and using a {@link ResourceProvisionerSimple}
+     * RAM and Bandwidth. It also sets a {@link VmSchedulerSpaceShared} as default.
      * The ID is automatically set when a List of Hosts is attached
      * to a {@link Datacenter}.
      *
@@ -140,7 +151,11 @@ public class HostSimple implements Host {
      * @param bw the Bandwidth (BW) capacity in Megabits/s
      * @param storage the storage capacity in Megabytes
      * @param peList the host's {@link Pe} list
+     *
      * @see #setId(int)
+     * @see #setRamProvisioner(ResourceProvisioner)
+     * @see #setBwProvisioner(ResourceProvisioner)
+     * @see #setVmScheduler(VmScheduler)
      */
     public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList) {
         this.setId(-1);
@@ -150,12 +165,13 @@ public class HostSimple implements Host {
         this.ram = new Ram(ram);
         this.bw = new Bandwidth(bw);
         this.setStorage(storage);
-        this.setRamProvisioner(ResourceProvisioner.NULL);
-        this.setBwProvisioner(ResourceProvisioner.NULL);
+        this.setRamProvisioner(new ResourceProvisionerSimple());
+        this.setBwProvisioner(new ResourceProvisionerSimple());
 
-        this.setVmScheduler(VmScheduler.NULL);
+        this.setVmScheduler(new VmSchedulerSpaceShared());
         this.setPeList(peList);
         this.setFailed(false);
+        this.shutdownTime = -1;
         this.setDatacenter(Datacenter.NULL);
         this.onUpdateProcessingListeners = new HashSet<>();
         this.resources = new ArrayList<>();
@@ -164,7 +180,7 @@ public class HostSimple implements Host {
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
         this.powerModel = PowerModel.NULL;
-        stateHistory = new LinkedList<>();
+        this.stateHistory = new LinkedList<>();
     }
 
     /**
@@ -349,8 +365,7 @@ public class HostSimple implements Host {
     }
 
     private void destroyVmInternal(final Vm vm) {
-        Objects.requireNonNull(vm);
-        deallocateResourcesOfVm(vm);
+        deallocateResourcesOfVm(requireNonNull(vm));
         vmList.remove(vm);
     }
 
@@ -505,11 +520,35 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setVmScheduler(final VmScheduler vmScheduler) {
-        Objects.requireNonNull(vmScheduler);
-
+        this.vmScheduler = requireNonNull(vmScheduler);
         vmScheduler.setHost(this);
-        this.vmScheduler = vmScheduler;
         return this;
+    }
+
+    @Override
+    public double getStartTime() {
+        return startTime;
+    }
+
+    @Override
+    public void setStartTime(final double startTime) {
+        if(startTime < 0){
+            throw new IllegalArgumentException("Host start time cannot be negative");
+        }
+        this.startTime = startTime;
+    }
+
+    @Override
+    public double getShutdownTime() {
+        return shutdownTime;
+    }
+
+    @Override
+    public void setShutdownTime(final double shutdownTime) {
+        if(shutdownTime < 0){
+            throw new IllegalArgumentException("Host shutdown time cannot be negative");
+        }
+        this.shutdownTime = shutdownTime;
     }
 
     @Override
@@ -524,7 +563,7 @@ public class HostSimple implements Host {
      * @return
      */
     protected final Host setPeList(final List<Pe> peList) {
-        Objects.requireNonNull(peList);
+        requireNonNull(peList);
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
         this.peList = peList;
 
@@ -548,13 +587,11 @@ public class HostSimple implements Host {
     }
 
     protected void addVmToList(final Vm vm){
-        Objects.requireNonNull(vm);
-        vmList.add(vm);
+        vmList.add(requireNonNull(vm));
     }
 
     protected void addVmToCreatedList(final Vm vm){
-        Objects.requireNonNull(vm);
-        vmCreatedList.add(vm);
+        vmCreatedList.add(requireNonNull(vm));
     }
 
     @Override
@@ -651,8 +688,7 @@ public class HostSimple implements Host {
 
     @Override
     public Host addOnUpdateProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        Objects.requireNonNull(listener);
-        this.onUpdateProcessingListeners.add(listener);
+        this.onUpdateProcessingListeners.add(requireNonNull(listener));
         return this;
     }
 
@@ -816,7 +852,7 @@ public class HostSimple implements Host {
 
     @Override
     public Host setPowerModel(final PowerModel powerModel) {
-        Objects.requireNonNull(powerModel);
+        requireNonNull(powerModel);
         if(powerModel.getHost() != null && powerModel.getHost() != Host.NULL && !powerModel.getHost().equals(this)){
             throw new IllegalStateException("The given PowerModel is already assigned to another Host. Each Host must have its own PowerModel instance.");
         }

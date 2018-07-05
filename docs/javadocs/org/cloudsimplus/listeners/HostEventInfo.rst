@@ -24,3 +24,14 @@ getHost
 
    Gets the \ :java:ref:`Host`\  for which the event happened.
 
+of
+^^
+
+.. java:method:: static HostEventInfo of(EventListener<? extends EventInfo> listener, Host host, double time)
+   :outertype: HostEventInfo
+
+   Gets a EventInfo instance from the given parameters.
+
+   :param listener: the listener to be notified about the event
+   :param time: the time the event happened
+

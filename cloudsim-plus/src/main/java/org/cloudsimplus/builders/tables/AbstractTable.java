@@ -82,8 +82,7 @@ public abstract class AbstractTable implements Table {
 
     @Override
     public final Table setTitle(final String title) {
-        Objects.requireNonNull(title);
-        this.title = title;
+        this.title = Objects.requireNonNull(title);
         return this;
     }
 

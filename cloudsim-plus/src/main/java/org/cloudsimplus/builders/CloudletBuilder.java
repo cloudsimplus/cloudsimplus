@@ -23,18 +23,18 @@
  */
 package org.cloudsimplus.builders;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.CloudletVmEventInfo;
+import org.cloudsimplus.listeners.EventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudsimplus.listeners.CloudletVmEventInfo;
-import org.cloudsimplus.listeners.EventListener;
 
 /**
  * A Builder class to create {@link Cloudlet} objects.
@@ -66,12 +66,9 @@ public class CloudletBuilder extends Builder {
 
 	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
 	    super();
-        Objects.requireNonNull(brokerBuilder);
-        Objects.requireNonNull(broker);
-
-        this.brokerBuilder = brokerBuilder;
+        this.brokerBuilder = Objects.requireNonNull(brokerBuilder);
+        this.broker = Objects.requireNonNull(broker);
         setUtilizationModelCpuRamAndBw(new UtilizationModelFull());
-        this.broker = broker;
         this.cloudlets = new ArrayList<>();
 		this.requiredFiles = new ArrayList<>();
         this.createdCloudlets = 0;
@@ -205,20 +202,17 @@ public class CloudletBuilder extends Builder {
     }
 
     public CloudletBuilder setUtilizationModelRam(final UtilizationModel utilizationModelRam) {
-        Objects.requireNonNull(utilizationModelRam);
-        this.utilizationModelRam = utilizationModelRam;
+        this.utilizationModelRam = Objects.requireNonNull(utilizationModelRam);
         return this;
     }
 
     public CloudletBuilder setUtilizationModelCpu(final UtilizationModel utilizationModelCpu) {
-        Objects.requireNonNull(utilizationModelCpu);
-        this.utilizationModelCpu = utilizationModelCpu;
+        this.utilizationModelCpu = Objects.requireNonNull(utilizationModelCpu);
         return this;
     }
 
     public CloudletBuilder setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
-        Objects.requireNonNull(utilizationModelBw);
-        this.utilizationModelBw = utilizationModelBw;
+        this.utilizationModelBw = Objects.requireNonNull(utilizationModelBw);
         return this;
     }
 }

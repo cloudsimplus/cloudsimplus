@@ -52,15 +52,13 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
      * @return
      */
     protected final UtilizationModel setUnit(final Unit unit) {
-        Objects.requireNonNull(unit);
-        this.unit = unit;
+        this.unit = Objects.requireNonNull(unit);
         return this;
     }
 
     @Override
     public UtilizationModel setSimulation(final Simulation simulation) {
-        Objects.requireNonNull(simulation);
-        this.simulation = simulation;
+        this.simulation = Objects.requireNonNull(simulation);
         return this;
     }
 

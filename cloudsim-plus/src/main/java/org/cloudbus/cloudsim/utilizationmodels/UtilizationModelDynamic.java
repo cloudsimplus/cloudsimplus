@@ -109,13 +109,30 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
-     * @param initialUtilization the initial of resource utilization, that the unit depends
+     * @param initialUtilization the initial resource utilization, that the unit depends
      *                           on the {@code unit} parameter
      */
     public UtilizationModelDynamic(final Unit unit, final double initialUtilization) {
+        this(unit, initialUtilization, unit == Unit.PERCENTAGE ? Conversion.HUNDRED_PERCENT : 0);
+    }
+
+    /**
+     * Creates a UtilizationModelDynamic that the initial resource utilization,
+     * max resource utilization and the {@link Unit}
+     * will be defined according to the given parameters.
+     *
+     * <p><b>The utilization will not be dynamically incremented
+     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
+     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
+     *             resource usage is defined in percentage of the Vm resource or in absolute values)
+     * @param initialUtilization the initial resource utilization, that the unit depends
+     *                           on the {@code unit} parameter
+     * @param maxResourceUtilization the maximum resource utilization
+     */
+    public UtilizationModelDynamic(final Unit unit, final double initialUtilization, final double maxResourceUtilization) {
         super(unit);
         this.readOnly = false;
-        this.maxResourceUtilization = (unit == Unit.PERCENTAGE ? Conversion.HUNDRED_PERCENT : 0);
+        this.setMaxResourceUtilization(maxResourceUtilization);
         this.previousUtilizationTime = 0;
         this.currentUtilizationTime = 0;
         this.setCurrentUtilization(initialUtilization);
@@ -130,11 +147,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      */
     @SuppressWarnings("CopyConstructorMissesField")
     protected UtilizationModelDynamic(final UtilizationModelDynamic source){
-        this(source.getUnit(), source.currentUtilization);
-        this.currentUtilizationTime = source.currentUtilizationTime;
-        this.previousUtilizationTime = source.previousUtilizationTime;
-        this.maxResourceUtilization = source.maxResourceUtilization;
-        this.setSimulation(source.getSimulation());
+        this(source, source.currentUtilization);
 
         /** The copy constructor doesn't copy the utilizationUpdateFunction because
          * when this constructor is used, it sets the copy
@@ -142,7 +155,23 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
          * to return the current utilization, but the last utilization value stored
          * in the {@link #currentUtilization} attribute.
          */
+        this.utilizationUpdateFunction = um -> um.currentUtilization;
         this.readOnly = true;
+    }
+
+    /**
+     * A copy constructor that creates a UtilizationModelDynamic based on a source object.
+     *
+     * @param source the source UtilizationModelDynamic to create an instance from
+     * @param initialUtilization the initial resource utilization (in the same unit of the given UtilizationModelDynamic instance)
+     */
+    public UtilizationModelDynamic(final UtilizationModelDynamic source, final double initialUtilization){
+        this(source.getUnit(), initialUtilization);
+        this.currentUtilizationTime = source.currentUtilizationTime;
+        this.previousUtilizationTime = source.previousUtilizationTime;
+        this.maxResourceUtilization = source.maxResourceUtilization;
+        this.setSimulation(source.getSimulation());
+        this.setUtilizationUpdateFunction(source.utilizationUpdateFunction);
     }
 
     /**
@@ -220,7 +249,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * Sets the maximum amount of resource of resource that will be used.
+     * Sets the maximum amount of resource that will be used.
      *
      * <p>Such a value can be a percentage in scale from [0 to 1] or an absolute value,
      * depending on the {@link #getUnit()}.</p>
@@ -266,8 +295,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      * @return
      */
     public final UtilizationModelDynamic setUtilizationUpdateFunction(final Function<UtilizationModelDynamic, Double> utilizationUpdateFunction) {
-        Objects.requireNonNull(utilizationUpdateFunction);
-        this.utilizationUpdateFunction = utilizationUpdateFunction;
+        this.utilizationUpdateFunction = Objects.requireNonNull(utilizationUpdateFunction);
         return this;
     }
 }

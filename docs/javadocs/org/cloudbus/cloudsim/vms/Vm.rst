@@ -188,38 +188,6 @@ getCpuPercentUsage
 
    :return: total utilization percentage for the current time, in scale from 0 to 1
 
-getCurrentAllocatedBw
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  long getCurrentAllocatedBw()
-   :outertype: Vm
-
-   Gets the current allocated bw.
-
-   :return: the current allocated bw
-
-getCurrentAllocatedRam
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  long getCurrentAllocatedRam()
-   :outertype: Vm
-
-   Gets the current allocated ram.
-
-   :return: the current allocated ram
-
-getCurrentAllocatedSize
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  long getCurrentAllocatedSize()
-   :outertype: Vm
-
-   Gets the current allocated storage size.
-
-   :return: the current allocated size
-
-   **See also:** :java:ref:`.getStorage()`
-
 getCurrentRequestedBw
 ^^^^^^^^^^^^^^^^^^^^^
 

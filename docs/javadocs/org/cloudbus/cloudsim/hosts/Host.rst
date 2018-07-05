@@ -1,18 +1,26 @@
 .. java:import:: org.cloudbus.cloudsim.core Machine
 
-.. java:import:: org.cloudbus.cloudsim.power.models PowerModel
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
+.. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.power.models PowerModel
+
+.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
+
+.. java:import:: org.cloudbus.cloudsim.resources Bandwidth
+
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
+.. java:import:: org.cloudbus.cloudsim.resources Pe.Status
+
+.. java:import:: org.cloudbus.cloudsim.resources Ram
+
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
-.. java:import:: java.util List
-
-.. java:import:: java.util Set
-
-.. java:import:: org.cloudbus.cloudsim.core Simulation
+.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.vms VmUtilizationHistory
 
@@ -20,9 +28,9 @@
 
 .. java:import:: org.cloudsimplus.listeners HostUpdatesVmsProcessingEventInfo
 
-.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner
+.. java:import:: java.util List
 
-.. java:import:: org.cloudbus.cloudsim.resources Pe.Status
+.. java:import:: java.util Set
 
 Host
 ====
@@ -332,6 +340,22 @@ getRamProvisioner
 
    :return: the ram provisioner
 
+getShutdownTime
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getShutdownTime()
+   :outertype: Host
+
+   Gets the time the Host shut down.
+
+getStartTime
+^^^^^^^^^^^^
+
+.. java:method::  double getStartTime()
+   :outertype: Host
+
+   Gets the time the Host was powered-on (in seconds).
+
 getStateHistory
 ^^^^^^^^^^^^^^^
 
@@ -638,6 +662,16 @@ setRamProvisioner
 
    :param ramProvisioner: the new ram provisioner
 
+setShutdownTime
+^^^^^^^^^^^^^^^
+
+.. java:method::  void setShutdownTime(double shutdownTime)
+   :outertype: Host
+
+   Sets the time the Host shut down.
+
+   :param shutdownTime: the time to set
+
 setSimulation
 ^^^^^^^^^^^^^
 
@@ -647,6 +681,16 @@ setSimulation
    Sets the CloudSim instance that represents the simulation the Entity is related to. Such attribute has to be set by the \ :java:ref:`Datacenter`\  that the host belongs to.
 
    :param simulation: The CloudSim instance that represents the simulation the Entity is related to
+
+setStartTime
+^^^^^^^^^^^^
+
+.. java:method::  void setStartTime(double startTime)
+   :outertype: Host
+
+   Sets the time the Host was powered-on.
+
+   :param startTime: the time to set (in seconds)
 
 setVmScheduler
 ^^^^^^^^^^^^^^

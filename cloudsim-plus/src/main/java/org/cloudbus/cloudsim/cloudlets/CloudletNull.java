@@ -104,6 +104,8 @@ final class CloudletNull implements Cloudlet {
     @Override public double getArrivalTime(Datacenter datacenter) {
         return 0.0;
     }
+    @Override public int getJobId() { return 0; }
+    @Override public void setJobId(int jobId) {/**/}
     @Override public UtilizationModel getUtilizationModelBw() {
         return UtilizationModel.NULL;
     }

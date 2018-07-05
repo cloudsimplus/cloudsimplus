@@ -103,12 +103,12 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     private static final int SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS = 300; // (5 seconds * 60 (1 minute))
 
     private static final int HOST_PES = 4;
-    private static final long HOST_RAM = 500000; //host memory (MEGABYTE)
+    private static final long HOST_RAM = 500000; //host memory (MEGA)
     private static final long HOST_STORAGE = 1000000; //host storage
     private static final long HOST_BW = 100000000L;
 
     private static final int VM_MIPS = 1000;
-    private static final long VM_SIZE = 1000; //image size (MEGABYTE)
+    private static final long VM_SIZE = 1000; //image size (MEGA)
     private static final long VM_BW = 100000;
 
     private static final int CLOUDLET_PES = 2;

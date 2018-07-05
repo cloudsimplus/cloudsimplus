@@ -24,11 +24,9 @@ public class CloudletSchedulerTest {
         assertFalse(instance.cloudletPause(null));
         assertEquals(0, instance.getCloudletStatus(0));
         assertTrue(instance.getCloudletFinishedList().isEmpty());
-        assertTrue(instance.getCurrentMipsShare().isEmpty());
         assertEquals(0, instance.getCurrentRequestedBwPercentUtilization(), 0);
         assertEquals(0, instance.getCurrentRequestedRamPercentUtilization(), 0);
         assertEquals(0, instance.getPreviousTime(), 0);
-        assertEquals(0, instance.getAllocatedMipsForCloudlet(null, 0), 0);
         assertEquals(0, instance.getRequestedMipsForCloudlet(null, 0), 0);
         assertEquals(0, instance.getRequestedCpuPercentUtilization(0), 0);
         assertFalse(instance.hasFinishedCloudlets());

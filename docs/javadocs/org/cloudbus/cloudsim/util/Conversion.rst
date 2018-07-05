@@ -12,15 +12,15 @@ Conversion
 
 Fields
 ------
-GIGABYTE
-^^^^^^^^
+GIGA
+^^^^
 
-.. java:field:: public static final double GIGABYTE
+.. java:field:: public static final double GIGA
    :outertype: Conversion
 
-   The value of 1 GibaByte in Bytes.
+   The value of 1 GigaByte in Bytes or 1 Gigabit in bits.
 
-   **See also:** :java:ref:`.MEGABYTE`
+   **See also:** :java:ref:`.MEGA`
 
 HUNDRED_PERCENT
 ^^^^^^^^^^^^^^^
@@ -30,23 +30,23 @@ HUNDRED_PERCENT
 
    A value that represents 100% in a scale from 0 to 1.
 
-KILOBYTE
-^^^^^^^^
+KILO
+^^^^
 
-.. java:field:: public static final double KILOBYTE
+.. java:field:: public static final double KILO
    :outertype: Conversion
 
-   The value of 1 KiloByte in Bytes. It is declared as double because such a value is commonly used in divisions. By this way, it avoids explicit double casts to ensure a double instead an integer division.
+   The value of 1 KiloByte in Bytes or 1 Kilobit in bits. It is declared as double because such a value is commonly used in divisions. This way, it avoids explicit double casts to ensure a double instead an integer division.
 
-MEGABYTE
-^^^^^^^^
+MEGA
+^^^^
 
-.. java:field:: public static final double MEGABYTE
+.. java:field:: public static final double MEGA
    :outertype: Conversion
 
-   The value of 1 MegaByte in Bytes.
+   The value of 1 MegaByte in Bytes or 1 Megabit in bits.
 
-   **See also:** :java:ref:`.KILOBYTE`
+   **See also:** :java:ref:`.KILO`
 
 MILLION
 ^^^^^^^
@@ -56,15 +56,15 @@ MILLION
 
    One million in absolute value, usually used to convert to and from Number of Instructions (I) and Million Instructions (MI) units.
 
-TERABYTE
-^^^^^^^^
+TERA
+^^^^
 
-.. java:field:: public static final double TERABYTE
+.. java:field:: public static final double TERA
    :outertype: Conversion
 
-   The value of 1 TeraByte in Bytes.
+   The value of 1 TeraByte in Bytes or 1 TeraBit in bits.
 
-   **See also:** :java:ref:`.GIGABYTE`
+   **See also:** :java:ref:`.GIGA`
 
 Methods
 -------
@@ -90,6 +90,28 @@ bytesToBits
    :param bytes: the value in bytes, KB, MB, GB, etc
    :return: the value in bites, Kbits, Mbits, Gbits and so on, according to the given value
 
+bytesToGigaBytes
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public static double bytesToGigaBytes(double bytes)
+   :outertype: Conversion
+
+   Converts a value in bytes to GigaBytes (GB)
+
+   :param bytes: the value in bytes
+   :return: the value in GigaBytes (GB)
+
+bytesToKiloBytes
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public static double bytesToKiloBytes(double bytes)
+   :outertype: Conversion
+
+   Converts a value in bytes to KiloBytes (KB)
+
+   :param bytes: the value in bytes
+   :return: the value in KiloBytes (KB)
+
 bytesToMegaBits
 ^^^^^^^^^^^^^^^
 
@@ -112,6 +134,17 @@ bytesToMegaBytes
    :param bytes: the value in bytes
    :return: the value in MegaBytes (MB)
 
+bytesToSuitableUnit
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static String bytesToSuitableUnit(double bytes)
+   :outertype: Conversion
+
+   Converts a value in bytes to the most suitable unit, such as Kilobytes (KB), MegaBytes (MB) or Gigabytes (GB)
+
+   :param bytes: the value in bytes
+   :return: the converted value concatenated with the unit converted to (KB, MB or GB)
+
 gigaToMega
 ^^^^^^^^^^
 
@@ -122,6 +155,50 @@ gigaToMega
 
    :param giga: the value in gigabits or gigabytes
    :return: the value in megabits or megabytes (according to the input value)
+
+megaBytesToBytes
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public static double megaBytesToBytes(double megaBytes)
+   :outertype: Conversion
+
+   Converts a value in MegaBytes (MB) to bytes
+
+   :param megaBytes: the value in MegaBytes (MB)
+   :return: the value in bytes
+
+microToMilli
+^^^^^^^^^^^^
+
+.. java:method:: public static double microToMilli(double micro)
+   :outertype: Conversion
+
+   Converts any value in micro (μ) to milli (m) scale, such as microseconds to milliseconds.
+
+   :param micro: the value in micro (μ) scale
+   :return: the value in milli (m) scale
+
+microToSeconds
+^^^^^^^^^^^^^^
+
+.. java:method:: public static double microToSeconds(double micro)
+   :outertype: Conversion
+
+   Converts any value in microseconds (μ) to seconds.
+
+   :param micro: the value in microseconds (μ)
+   :return: the value in seconds
+
+teraToGiga
+^^^^^^^^^^
+
+.. java:method:: public static double teraToGiga(double tera)
+   :outertype: Conversion
+
+   Converts any value in tera to giga, doesn't matter if it's terabits or terabytes.
+
+   :param tera: the value in terabits or terabytes
+   :return: the value in gigabits or gigabytes (according to the input value)
 
 teraToMega
 ^^^^^^^^^^

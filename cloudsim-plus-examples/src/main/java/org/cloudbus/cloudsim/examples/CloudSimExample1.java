@@ -75,8 +75,8 @@ public class CloudSimExample1 {
         // VM description
         int vmid = 0;
         int mips = 1000;
-        long size = 10000; // image size (MEGABYTE)
-        int ram = 512; // vm memory (MEGABYTE)
+        long size = 10000; // image size (Megabyte)
+        int ram = 512; // vm memory (Megabyte)
         long bw = 1000;
         int pesNumber = 1; // number of cpus
 

@@ -72,9 +72,9 @@ getCostPerBw
 .. java:method::  double getCostPerBw()
    :outertype: DatacenterCharacteristics
 
-   Get the cost to use each each Megabit of bandwidth in the Datacenter.
+   Get the monetary cost to use each each Megabit of bandwidth in the Datacenter.
 
-   :return: the cost to use bw
+   :return: the cost ($) to use bw
 
 getCostPerMem
 ^^^^^^^^^^^^^
@@ -82,9 +82,9 @@ getCostPerMem
 .. java:method::  double getCostPerMem()
    :outertype: DatacenterCharacteristics
 
-   Get the cost to use each Megabyte of RAM in the Datacenter.
+   Get the monetary cost to use each Megabyte of RAM in the Datacenter.
 
-   :return: the cost to use RAM
+   :return: the cost ($) to use RAM
 
 getCostPerSecond
 ^^^^^^^^^^^^^^^^
@@ -92,9 +92,9 @@ getCostPerSecond
 .. java:method::  double getCostPerSecond()
    :outertype: DatacenterCharacteristics
 
-   Gets the cost per second of CPU for using the Hosts in the Datacenter.
+   Gets the monetary cost per second of CPU for using the Hosts in the Datacenter.
 
-   :return: the cost per second
+   :return: the cost ($) per second
 
 getCostPerStorage
 ^^^^^^^^^^^^^^^^^
@@ -102,9 +102,9 @@ getCostPerStorage
 .. java:method::  double getCostPerStorage()
    :outertype: DatacenterCharacteristics
 
-   Get the cost to use each Megabyte of storage in the Datacenter.
+   Get the monetary cost to use each Megabyte of storage in the Datacenter.
 
-   :return: the cost to use storage
+   :return: the cost ($) to use storage
 
 getDatacenter
 ^^^^^^^^^^^^^
@@ -222,9 +222,9 @@ setCostPerBw
 .. java:method::  DatacenterCharacteristics setCostPerBw(double costPerBw)
    :outertype: DatacenterCharacteristics
 
-   Sets cost to use each Megabit of bandwidth.
+   Sets the monetary cost to use each Megabit of bandwidth.
 
-   :param costPerBw: the cost to set
+   :param costPerBw: the cost ($) to set
 
 setCostPerMem
 ^^^^^^^^^^^^^
@@ -232,9 +232,9 @@ setCostPerMem
 .. java:method::  DatacenterCharacteristics setCostPerMem(double costPerMem)
    :outertype: DatacenterCharacteristics
 
-   Sets the cost to use each Megabyte of RAM in the Datacenter.
+   Sets the monetary cost to use each Megabyte of RAM in the Datacenter.
 
-   :param costPerMem: cost to use RAM
+   :param costPerMem: cost ($) to use RAM
 
 setCostPerSecond
 ^^^^^^^^^^^^^^^^
@@ -242,9 +242,9 @@ setCostPerSecond
 .. java:method::  DatacenterCharacteristics setCostPerSecond(double costPerSecond)
    :outertype: DatacenterCharacteristics
 
-   Sets the cost per second of CPU.
+   Sets the monetary cost per second of CPU.
 
-   :param costPerSecond: the new cost per second
+   :param costPerSecond: the new cost ($) per second
 
 setCostPerStorage
 ^^^^^^^^^^^^^^^^^
@@ -252,9 +252,9 @@ setCostPerStorage
 .. java:method::  DatacenterCharacteristics setCostPerStorage(double costPerStorage)
    :outertype: DatacenterCharacteristics
 
-   Sets cost to use each Megabyte of storage.
+   Sets the monetary cost to use each Megabyte of storage.
 
-   :param costPerStorage: cost to use storage
+   :param costPerStorage: cost ($) to use storage
 
 setOs
 ^^^^^

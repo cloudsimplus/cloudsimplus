@@ -8,6 +8,10 @@
 
 .. java:import:: org.cloudbus.cloudsim.util MathUtil
 
+.. java:import:: java.util List
+
+.. java:import:: java.util Optional
+
 .. java:import:: java.util.function Predicate
 
 CloudletSchedulerCompletelyFair
@@ -52,10 +56,10 @@ CloudletSchedulerCompletelyFair
 
 Methods
 -------
-canAddCloudletToExecutionList
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+canExecuteCloudletInternal
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
+.. java:method:: @Override protected boolean canExecuteCloudletInternal(CloudletExecution cloudlet)
    :outertype: CloudletSchedulerCompletelyFair
 
    Checks if a Cloudlet can be submitted to the execution list. This scheduler, different from its time-shared parent, only adds submitted Cloudlets to the execution list if there is enough free PEs. Otherwise, such Cloudlets are added to the waiting list, really enabling time-sharing between running Cloudlets. By this way, some Cloudlets have to be preempted to allow other ones to be executed.
@@ -75,6 +79,7 @@ cloudletSubmitInternal
 
    :param ce: {@inheritDoc}
    :param fileTransferTime: {@inheritDoc}
+   :return: {@inheritDoc}
 
 computeCloudletTimeSlice
 ^^^^^^^^^^^^^^^^^^^^^^^^

@@ -24,6 +24,7 @@ import org.cloudsimplus.listeners.VmHostEventInfo;
 import java.util.*;
 import java.util.stream.LongStream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -122,7 +123,7 @@ public class VmSimple implements Vm {
     private double lastBusyTime;
 
     /**
-     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
+     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
@@ -173,7 +174,7 @@ public class VmSimple implements Vm {
     }
 
     /**
-     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
+     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
      *
@@ -189,7 +190,7 @@ public class VmSimple implements Vm {
 
 
     /**
-     * Creates a Vm with 1024 MEGABYTE of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGABYTE of Storage Size.
+     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
@@ -212,7 +213,7 @@ public class VmSimple implements Vm {
 
     @Override
     public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
-        Objects.requireNonNull(mipsShare);
+        requireNonNull(mipsShare);
 
         if(!cloudletScheduler.getCloudletExecList().isEmpty()){
             this.lastBusyTime = getSimulation().clock();
@@ -311,8 +312,7 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setBroker(final DatacenterBroker broker) {
-        Objects.requireNonNull(broker);
-        this.broker = broker;
+        this.broker = requireNonNull(broker);
         return this;
     }
 
@@ -419,8 +419,7 @@ public class VmSimple implements Vm {
      * @param ram the Ram resource to set
      */
     private void setRam(final Ram ram) {
-        Objects.requireNonNull(ram);
-        this.ram = ram;
+        this.ram = requireNonNull(ram);
     }
 
     @Override
@@ -443,8 +442,7 @@ public class VmSimple implements Vm {
      * @param bw the Bandwidth resource to set
      */
     private void setBw(final Bandwidth bw){
-        Objects.requireNonNull(bw);
-        this.bw = bw;
+        this.bw = requireNonNull(bw);
     }
 
     @Override
@@ -466,8 +464,7 @@ public class VmSimple implements Vm {
      * @param storage the RawStorage resource to set
      */
     private void setStorage(final Storage storage){
-        Objects.requireNonNull(storage);
-        this.storage = storage;
+        this.storage = requireNonNull(storage);
     }
 
     @Override
@@ -513,7 +510,7 @@ public class VmSimple implements Vm {
 
     @Override
     public final Vm setCloudletScheduler(final CloudletScheduler cloudletScheduler) {
-        Objects.requireNonNull(cloudletScheduler);
+        requireNonNull(cloudletScheduler);
         if(isCreated()){
             throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm was not created inside a Host yet.");
         }
@@ -593,26 +590,24 @@ public class VmSimple implements Vm {
 
     @Override
     public Vm addOnHostAllocationListener(final EventListener<VmHostEventInfo> listener) {
-        Objects.requireNonNull(listener);
-        this.onHostAllocationListeners.add(listener);
+        this.onHostAllocationListeners.add(requireNonNull(listener));
         return this;
     }
 
     @Override
     public Vm addOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
-        Objects.requireNonNull(listener);
-        this.onHostDeallocationListeners.add(listener);
+        this.onHostDeallocationListeners.add(requireNonNull(listener));
         return this;
     }
 
     @Override
     public boolean removeOnHostAllocationListener(final EventListener<VmHostEventInfo> listener) {
-        return onHostAllocationListeners.remove(listener);
+        return onHostAllocationListeners.remove(requireNonNull(listener));
     }
 
     @Override
     public boolean removeOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
-        return onHostDeallocationListeners.remove(listener);
+        return onHostDeallocationListeners.remove(requireNonNull(listener));
     }
 
     @Override
@@ -624,26 +619,24 @@ public class VmSimple implements Vm {
 
     @Override
     public Vm addOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
-        Objects.requireNonNull(listener);
-        this.onCreationFailureListeners.add(listener);
+        this.onCreationFailureListeners.add(requireNonNull(listener));
         return this;
     }
 
     @Override
     public boolean removeOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
-        return onCreationFailureListeners.remove(listener);
+        return onCreationFailureListeners.remove(requireNonNull(listener));
     }
 
     @Override
     public Vm addOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
-        Objects.requireNonNull(listener);
-        this.onUpdateProcessingListeners.add(listener);
+        this.onUpdateProcessingListeners.add(requireNonNull(listener));
         return this;
     }
 
     @Override
     public boolean removeOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
-        return onUpdateProcessingListeners.remove(listener);
+        return onUpdateProcessingListeners.remove(requireNonNull(listener));
     }
 
     /**
@@ -715,7 +708,7 @@ public class VmSimple implements Vm {
 
     @Override
     public void notifyOnHostDeallocationListeners(final Host deallocatedHost) {
-        Objects.requireNonNull(deallocatedHost);
+        requireNonNull(deallocatedHost);
         onHostDeallocationListeners.forEach(l -> l.update(VmHostEventInfo.of(l,this, deallocatedHost)));
     }
 
@@ -728,7 +721,7 @@ public class VmSimple implements Vm {
 
     @Override
     public void notifyOnCreationFailureListeners(final Datacenter failedDatacenter) {
-        Objects.requireNonNull(failedDatacenter);
+        requireNonNull(failedDatacenter);
         onCreationFailureListeners.forEach(l -> l.update(VmDatacenterEventInfo.of(l,this, failedDatacenter)));
     }
 
@@ -778,7 +771,7 @@ public class VmSimple implements Vm {
     }
 
     private <T extends VmScaling> T validateAndConfigureVmScaling(final T vmScaling) {
-        Objects.requireNonNull(vmScaling);
+        requireNonNull(vmScaling);
         if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
             final String name = vmScaling.getClass().getSimpleName();
             throw new IllegalArgumentException(

@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
+.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
+
 .. java:import:: org.cloudbus.cloudsim.core CustomerEntity
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
@@ -7,6 +9,8 @@
 .. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
+
+.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterCharacteristics
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
@@ -17,6 +21,8 @@
 .. java:import:: org.cloudsimplus.listeners CloudletVmEventInfo
 
 .. java:import:: org.cloudsimplus.listeners EventListener
+
+.. java:import:: org.cloudsimplus.traces.google GoogleTaskEventsTraceReader
 
 .. java:import:: java.util List
 
@@ -56,6 +62,14 @@ FAILED_RESOURCE_UNAVAILABLE
    :outertype: Cloudlet.Status
 
    The cloudlet has failed due to a resource failure.
+
+FROZEN
+^^^^^^
+
+.. java:field:: public static final Cloudlet.Status FROZEN
+   :outertype: Cloudlet.Status
+
+   The Cloudlet is in the waiting queue but it won't be automatically moved to the execution list (even if there are available PEs) until its status is changed to \ :java:ref:`QUEUED`\ . This status is used specifically for Cloudlets created from a trace file, such as a \ :java:ref:`Google Cluster trace <GoogleTaskEventsTraceReader>`\ , that explicitly defines when tasks must start running.
 
 INEXEC
 ^^^^^^

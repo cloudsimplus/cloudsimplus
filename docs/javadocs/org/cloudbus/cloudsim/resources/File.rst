@@ -1,5 +1,3 @@
-.. java:import:: java.util Objects
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 File

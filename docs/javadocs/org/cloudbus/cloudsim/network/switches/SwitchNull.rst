@@ -211,7 +211,25 @@ run
 schedule
 ^^^^^^^^
 
-.. java:method:: @Override public void schedule(SimEntity dest, double delay, int tag)
+.. java:method:: @Override public boolean schedule(SimEvent evt)
+   :outertype: SwitchNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data)
+   :outertype: SwitchNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(double delay, int tag, Object data)
+   :outertype: SwitchNull
+
+schedule
+^^^^^^^^
+
+.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag)
    :outertype: SwitchNull
 
 setDatacenter
@@ -224,12 +242,6 @@ setDownlinkBandwidth
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setDownlinkBandwidth(double downlinkBandwidth)
-   :outertype: SwitchNull
-
-setLog
-^^^^^^
-
-.. java:method:: @Override public void setLog(boolean log)
    :outertype: SwitchNull
 
 setName

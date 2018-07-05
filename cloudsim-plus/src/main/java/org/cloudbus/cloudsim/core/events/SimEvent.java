@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim.core.events;
 
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -21,6 +22,12 @@ import org.cloudsimplus.listeners.EventInfo;
  * @since CloudSim Plus 1.0
  */
 public interface SimEvent extends Comparable<SimEvent>, EventInfo {
+    /**
+     * Sets the simulation the event belongs to
+     * @param simulation the simulation instance to set
+     * @return
+     */
+    SimEvent setSimulation(CloudSim simulation);
 
     /**
      * Internal event types
@@ -53,13 +60,6 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * @return
      */
     SimEntity getSource();
-
-    /**
-     * Gets the simulation time that this event was scheduled.
-     *
-     * @return
-     */
-    double eventTime();
 
     /**
      * Gets the simulation time that this event was removed from the queue for service.

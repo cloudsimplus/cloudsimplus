@@ -63,7 +63,7 @@ import java.util.List;
  * the simulation was paused, allowing to collect the desired data.
  * This example uses the Java 8 Lambda Functions features
  * to pass a listener to a {@link CloudSim} instance, by means of the
- * {@link CloudSim#addOnSimulationPausedListener(EventListener)} method.
+ * {@link CloudSim#addOnSimulationPauseListener(EventListener)} method.
  * However, the same feature can be used for Java 7 passing an anonymous class
  * that implements {@code EventListener<EventInfo>}.</p>
  *
@@ -71,7 +71,7 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  *
  * @see CloudSim#pause(double)
- * @see CloudSim#addOnSimulationPausedListener(EventListener)
+ * @see CloudSim#addOnSimulationPauseListener(EventListener)
  * @see EventListener
  */
 public class PauseSimulationAtGivenTimeExample2 {
@@ -161,7 +161,7 @@ public class PauseSimulationAtGivenTimeExample2 {
         * that will be executed only when the simulation is paused.
         * */
         this.simulation
-            .addOnSimulationPausedListener(this::printCloudletsFinishedSoFarAndResumeSimulation);
+            .addOnSimulationPauseListener(this::printCloudletsFinishedSoFarAndResumeSimulation);
 
         /* Starts the simulation and waits all cloudlets to be executed. */
         this.simulation.start();
@@ -208,8 +208,8 @@ public class PauseSimulationAtGivenTimeExample2 {
 
     private Host createHost() {
         final long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        final long ram = 2048; // host memory (MEGABYTE)
-        final long storage = 1000000; // host storage (MEGABYTE)
+        final long ram = 2048; // host memory (Megabyte)
+        final long storage = 1000000; // host storage (Megabyte)
         final long bw = 10000; //in Megabits/s
 
         final List<Pe> peList = new ArrayList<>(); //List of CPU cores

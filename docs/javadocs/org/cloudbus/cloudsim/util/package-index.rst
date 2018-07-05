@@ -13,6 +13,7 @@ Provides general purpose, helper classes used internally by CloudSim Plus.
    ExecutionTimeMeasurer
    MathUtil
    ResourceLoader
-   WorkloadFileReader
-   WorkloadReader
+   SwfWorkloadFileReader
+   TraceReader
+   TraceReaderAbstract
 

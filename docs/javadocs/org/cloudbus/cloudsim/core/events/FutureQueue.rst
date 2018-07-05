@@ -1,14 +1,6 @@
 .. java:import:: org.cloudbus.cloudsim.core CloudSim
 
-.. java:import:: java.util Collection
-
-.. java:import:: java.util Iterator
-
-.. java:import:: java.util NoSuchElementException
-
-.. java:import:: java.util SortedSet
-
-.. java:import:: java.util TreeSet
+.. java:import:: java.util.function Predicate
 
 .. java:import:: java.util.stream Stream
 
@@ -91,6 +83,12 @@ removeAll
 
    :param events: the events
    :return: true, if successful
+
+removeIf
+^^^^^^^^
+
+.. java:method:: public boolean removeIf(Predicate predicate)
+   :outertype: FutureQueue
 
 size
 ^^^^

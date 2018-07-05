@@ -114,8 +114,7 @@ public class BasicFirstExample {
             hostList.add(host);
         }
 
-        final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-        return dc;
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {

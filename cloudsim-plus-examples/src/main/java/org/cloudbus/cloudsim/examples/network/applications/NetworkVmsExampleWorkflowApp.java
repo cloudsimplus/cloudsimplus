@@ -17,6 +17,7 @@ import java.util.List;
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
+ * @todo It's freezing again
  */
 public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
     private int currentNetworkCloudletId = -1;

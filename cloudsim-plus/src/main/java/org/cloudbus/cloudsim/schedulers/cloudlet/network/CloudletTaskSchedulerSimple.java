@@ -232,8 +232,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     @Override
     public void setVm(final Vm vm) {
-        Objects.requireNonNull(vm);
-        this.vm = vm;
+        this.vm = Objects.requireNonNull(vm);
     }
 
     @Override

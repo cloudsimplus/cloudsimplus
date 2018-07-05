@@ -74,8 +74,8 @@ public class CloudSimExample2 {
         //VM description
         int vmid = -1;
         int mips = 250;
-        long size = 10000; //image size (MEGABYTE)
-        int ram = 512; //vm memory (MEGABYTE)
+        long size = 10000; //image size (Megabyte)
+        int ram = 512; //vm memory (Megabyte)
         long bw = 1000;
         int pesNumber = 1; //number of cpus
 
@@ -159,7 +159,7 @@ public class CloudSimExample2 {
 
         //4. Create Host with its id and list of PEs and add them to the list of machines
         int hostId = 0;
-        int ram = 2048; //host memory (MEGABYTE)
+        int ram = 2048; //host memory (Megabyte)
         long storage = 1000000; //host storage
         long bw = 10000;
 

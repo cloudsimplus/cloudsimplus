@@ -20,8 +20,7 @@ public abstract class PowerModelAbstract implements PowerModel {
 
     @Override
     public final void setHost(final Host host) {
-        Objects.requireNonNull(host);
-        this.host = host;
+        this.host = Objects.requireNonNull(host);
     }
 
     @Override

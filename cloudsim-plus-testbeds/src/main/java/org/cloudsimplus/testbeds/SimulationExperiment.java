@@ -95,7 +95,7 @@ public abstract class SimulationExperiment implements Runnable {
      * @param seed the seed to be set. If a runner is given, this value is ignored
      *             and the seed is generated from the runner base seed.
      */
-    protected SimulationExperiment(final int index, final ExperimentRunner runner, long seed) {
+    protected SimulationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         if(seed == -1){
             Objects.requireNonNull(runner);
         }
@@ -140,8 +140,8 @@ public abstract class SimulationExperiment implements Runnable {
         return Collections.unmodifiableList(vmList);
     }
 
-    protected void setVmList(List<Vm> vmList) {
-        this.vmList = vmList;
+    protected void setVmList(final List<Vm> vmList) {
+        this.vmList = Objects.requireNonNull(vmList);
     }
 
     /**
@@ -150,7 +150,7 @@ public abstract class SimulationExperiment implements Runnable {
      * @param verbose true if the results have to be output, falser otherwise
      * @return
      */
-    public SimulationExperiment setVerbose(boolean verbose) {
+    public SimulationExperiment setVerbose(final boolean verbose) {
         this.verbose = verbose;
         return this;
     }
@@ -222,7 +222,6 @@ public abstract class SimulationExperiment implements Runnable {
      */
     protected final void buildScenario() {
         datacenter0 = createDatacenter();
-        datacenter0.setLog(verbose);
         createBrokers();
 
         brokerList.stream().sorted().forEach(b -> {
@@ -238,7 +237,6 @@ public abstract class SimulationExperiment implements Runnable {
             .range(0, numBrokersToCreate)
             .forEach(i -> {
                 DatacenterBroker broker = createBrokerAndAddToList();
-                broker.setLog(verbose);
             });
     }
 
@@ -335,12 +333,12 @@ public abstract class SimulationExperiment implements Runnable {
      *
      * <p>Setting a Consumer object is optional.</p>
      *
-     * @param <T>
+     * @param <T> the class of the experiment
      * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
      * @return
      */
-    public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentFinish(Consumer<T> afterExperimentFinishConsumer) {
-        this.afterExperimentFinish = afterExperimentFinishConsumer;
+    public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentFinish(final Consumer<T> afterExperimentFinishConsumer) {
+        this.afterExperimentFinish = Objects.requireNonNull(afterExperimentFinishConsumer);
         return this;
     }
 
@@ -353,12 +351,12 @@ public abstract class SimulationExperiment implements Runnable {
      * which is before starting the simulation.
      *
      * <p>Setting a Consumer object is optional.</p>
-     * @param <T>
+     * @param <T> the class of the experiment
      * @param afterScenarioBuild the afterScenarioBuild to set
      * @return
      */
-    public <T extends SimulationExperiment> SimulationExperiment setAfterScenarioBuild(Consumer<T> afterScenarioBuild) {
-        this.afterScenarioBuild = afterScenarioBuild;
+    public <T extends SimulationExperiment> SimulationExperiment setAfterScenarioBuild(final Consumer<T> afterScenarioBuild) {
+        this.afterScenarioBuild = Objects.requireNonNull(afterScenarioBuild);
         return this;
     }
 
@@ -387,7 +385,7 @@ public abstract class SimulationExperiment implements Runnable {
     /**
      * @param numBrokersToCreate the numBrokersToCreate to set
      */
-    public void setNumBrokersToCreate(int numBrokersToCreate) {
+    public void setNumBrokersToCreate(final int numBrokersToCreate) {
         this.numBrokersToCreate = numBrokersToCreate;
     }
 

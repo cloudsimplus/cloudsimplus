@@ -23,6 +23,7 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.LongStream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -96,8 +97,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     @Override
     public final void setDatacenter(final Datacenter datacenter){
-        Objects.requireNonNull(datacenter);
-        addPesFromHostsToFreePesList(datacenter);
+        addPesFromHostsToFreePesList(requireNonNull(datacenter));
         this.datacenter = datacenter;
     }
 
@@ -110,7 +110,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param datacenter the Datacenter to get Hosts from
      */
     private void addPesFromHostsToFreePesList(final Datacenter datacenter) {
-        Objects.requireNonNull(datacenter);
+        requireNonNull(datacenter);
         if(datacenter == Datacenter.NULL || datacenter != this.datacenter) {
             setHostFreePesMap(new HashMap<>(datacenter.getHostList().size()));
             setUsedPes(new HashMap<>());
@@ -120,19 +120,20 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     /**
-     * Gets the number of free PEs from a given Host
+     * Gets the number of working PEs from a given Host
      * and adds these numbers to the {@link #getHostFreePesMap() list of free PEs}.
      * Before the Host starts being used, the number of free PEs is
      * the same as the number of working PEs.
      */
-    private void addPesFromHost(final Host host) {
-        hostFreePesMap.putIfAbsent(host, host.getNumberOfWorkingPes());
+    public void addPesFromHost(final Host host) {
+        final long workingPes = host.getNumberOfWorkingPes();
+        hostFreePesMap.compute(host, (h, freePes) -> freePes == null ? workingPes : Math.min(freePes, workingPes));
     }
 
     /**
-     * Gets a map with the number of free PEs for each host from {@link #getHostList()}.
+     * Gets a map with the number of free and working PEs for each host from {@link #getHostList()}.
      *
-     * @return a Map where each key is a host and each value is the number of free PEs of that host.
+     * @return a Map where each key is a host and each value is the number of free and working PEs of that host.
      */
     protected final Map<Host, Long> getHostFreePesMap() {
         return hostFreePesMap;
@@ -173,8 +174,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param usedPes the used pes
      */
     protected final void setUsedPes(final Map<Vm, Long> usedPes) {
-        Objects.requireNonNull(usedPes);
-        this.usedPes = usedPes;
+        this.usedPes = requireNonNull(usedPes);
     }
 
     @Override

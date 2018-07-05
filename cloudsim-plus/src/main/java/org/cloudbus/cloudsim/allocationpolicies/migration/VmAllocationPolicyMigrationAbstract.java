@@ -739,8 +739,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param vmSelectionPolicy the new vm selection policy
      */
     protected final void setVmSelectionPolicy(final PowerVmSelectionPolicy vmSelectionPolicy) {
-        Objects.requireNonNull(vmSelectionPolicy);
-        this.vmSelectionPolicy = vmSelectionPolicy;
+        this.vmSelectionPolicy = Objects.requireNonNull(vmSelectionPolicy);
     }
 
     /**

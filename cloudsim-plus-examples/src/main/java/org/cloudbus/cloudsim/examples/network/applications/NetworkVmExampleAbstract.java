@@ -49,13 +49,13 @@ abstract class NetworkVmExampleAbstract {
 
     public static final int  HOST_MIPS = 1000;
     public static final int  HOST_PES = 8;
-    public static final int  HOST_RAM = 2048; // MEGABYTE
-    public static final long HOST_STORAGE = 1000000; // MEGABYTE
+    public static final int  HOST_RAM = 2048; // MEGA
+    public static final long HOST_STORAGE = 1000000; // MEGA
     public static final long HOST_BW = 10000;
 
     public static final int  VM_MIPS = 1000;
-    public static final long VM_SIZE = 10000; // image size (MEGABYTE)
-    public static final int  VM_RAM = 512; // MEGABYTE
+    public static final long VM_SIZE = 10000; // image size (Megabyte)
+    public static final int  VM_RAM = 512; // MEGA
     public static final long VM_BW = 1000;
     public static final int  VM_PES_NUMBER = HOST_PES / MAX_VMS_PER_HOST;
 

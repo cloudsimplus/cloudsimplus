@@ -1,10 +1,10 @@
-.. java:import:: java.util List
-
-.. java:import:: java.util Objects
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Objects
 
 BrokerBuilderDecorator
 ======================

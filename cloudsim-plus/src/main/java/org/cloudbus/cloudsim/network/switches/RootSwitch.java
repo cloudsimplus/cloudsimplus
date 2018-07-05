@@ -61,7 +61,7 @@ public class RootSwitch extends AbstractSwitch {
      * The downlink bandwidth of RootSwitch in Megabits/s.
      * It also represents the uplink bandwidth of connected aggregation Datacenter.
      */
-    public static final long DOWNLINK_BW = (long) Conversion.GIGABYTE * 40 * 8; // 40000 Megabits (40 Gigabits)
+    public static final long DOWNLINK_BW = (long) Conversion.gigaToMega(40 * 8); // 40000 Megabits (40 Gigabits)
 
     /**
      * Instantiates a Root AbstractSwitch specifying what other Datacenter are connected

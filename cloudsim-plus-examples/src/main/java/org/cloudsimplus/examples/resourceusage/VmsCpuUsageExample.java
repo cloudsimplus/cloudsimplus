@@ -134,8 +134,8 @@ public class VmsCpuUsageExample {
     }
 
     private Vm createVm(int pesNumber, int mips, int id) {
-        long size = 10000; //image size (MEGABYTE)
-        int ram = 2048; //vm memory (MEGABYTE)
+        long size = 10000; //image size (Megabyte)
+        int ram = 2048; //vm memory (Megabyte)
         long bw = 1000;
 
         //create two VMs
@@ -203,7 +203,7 @@ public class VmsCpuUsageExample {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        final int ram = 2048; //host memory (MEGABYTE)
+        final int ram = 2048; //host memory (Megabyte)
         final long storage = 1000000; //host storage
         final int bw = 10000;
 

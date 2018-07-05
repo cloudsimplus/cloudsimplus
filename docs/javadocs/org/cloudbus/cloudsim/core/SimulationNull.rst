@@ -8,6 +8,14 @@
 
 .. java:import:: org.cloudsimplus.listeners EventListener
 
+.. java:import:: java.util Calendar
+
+.. java:import:: java.util Collections
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Set
+
 .. java:import:: java.util.function Predicate
 
 SimulationNull
@@ -50,10 +58,16 @@ addOnEventProcessingListener
 .. java:method:: @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener)
    :outertype: SimulationNull
 
-addOnSimulationPausedListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+addOnSimulationPauseListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener)
+.. java:method:: @Override public Simulation addOnSimulationPauseListener(EventListener<EventInfo> listener)
+   :outertype: SimulationNull
+
+addOnSimulationStartListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Simulation addOnSimulationStartListener(EventListener<EventInfo> listener)
    :outertype: SimulationNull
 
 cancel
@@ -200,10 +214,10 @@ removeOnEventProcessingListener
 .. java:method:: @Override public boolean removeOnEventProcessingListener(EventListener<SimEvent> listener)
    :outertype: SimulationNull
 
-removeOnSimulationPausedListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+removeOnSimulationPauseListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener)
+.. java:method:: @Override public boolean removeOnSimulationPauseListener(EventListener<EventInfo> listener)
    :outertype: SimulationNull
 
 resume
@@ -221,7 +235,19 @@ select
 send
 ^^^^
 
+.. java:method:: @Override public void send(SimEvent evt)
+   :outertype: SimulationNull
+
+send
+^^^^
+
 .. java:method:: @Override public void send(SimEntity src, SimEntity dest, double delay, int tag, Object data)
+   :outertype: SimulationNull
+
+sendFirst
+^^^^^^^^^
+
+.. java:method:: @Override public void sendFirst(SimEvent evt)
    :outertype: SimulationNull
 
 sendFirst

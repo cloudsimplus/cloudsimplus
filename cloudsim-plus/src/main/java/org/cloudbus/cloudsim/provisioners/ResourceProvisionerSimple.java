@@ -10,8 +10,8 @@ package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Objects;
 
@@ -50,6 +50,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     @Override
     public boolean allocateResourceForVm(final Vm vm, final long newTotalVmResourceCapacity) {
         Objects.requireNonNull(vm);
+
         if (!isSuitableForVm(vm, newTotalVmResourceCapacity)) {
             return false;
         }

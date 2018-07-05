@@ -30,6 +30,8 @@ BriteNetworkTopology
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov
 
+   **See also:** :java:ref:`.getInstance(String)`
+
 Constructors
 ------------
 BriteNetworkTopology
@@ -40,6 +42,8 @@ BriteNetworkTopology
 
    Creates a network topology
 
+   **See also:** :java:ref:`.BriteNetworkTopology(String)`, :java:ref:`.BriteNetworkTopology(InputStreamReader)`, :java:ref:`.getInstance(String)`
+
 BriteNetworkTopology
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -49,6 +53,8 @@ BriteNetworkTopology
    Creates a network topology if the file exists and can be successfully parsed. File is written in the BRITE format and contains topological information on simulation entities.
 
    :param filePath: the path of the BRITE file
+
+   **See also:** :java:ref:`.BriteNetworkTopology()`, :java:ref:`.BriteNetworkTopology(InputStreamReader)`, :java:ref:`.getInstance(String)`
 
 Methods
 -------

@@ -92,8 +92,8 @@ public class CloudSimExample6 {
         List<Vm> list = new ArrayList<>(vms);
 
         //VM Parameters
-        long size = 10000; //image size (MEGABYTE)
-        int ram = 512; //vm memory (MEGABYTE)
+        long size = 10000; //image size (Megabyte)
+        int ram = 512; //vm memory (Megabyte)
         int mips = 1000;
         long bw = 1000;
         int pesNumber = 1; //number of cpus
@@ -159,8 +159,8 @@ public class CloudSimExample6 {
 
         //4. Create Hosts with its id and list of PEs and add them to the list of machines
         int hostId = -1;
-        long ram = 2048; //host memory (MEGABYTE)
-        long storage = 1000000; //host storage (MEGABYTE)
+        long ram = 2048; //host memory (Megabyte)
+        long storage = 1000000; //host storage (Megabyte)
         long bw = 10000; //Megabits/s
 
         Host host1 = new HostSimple(ram, bw, storage, peList1)

@@ -17,8 +17,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 
 import java.util.*;
 import java.util.function.Function;
@@ -34,7 +33,6 @@ import static java.util.Objects.requireNonNull;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
-    private static final Logger logger = LoggerFactory.getLogger(DatacenterBrokerAbstract.class.getSimpleName());
 
     /**
      * A default {@link Function} which always returns {@link #DEFAULT_VM_DESTRUCTION_DELAY} to indicate that any VM should not be
@@ -193,7 +191,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         vmDestructionDelayFunction = DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION;
     }
-
 
     /**
      * Sets the default dummy policies for {@link #datacenterSupplier},
@@ -441,6 +438,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             case CloudSimTags.CLOUDLET_READY:
                 processCloudletReady(ev);
             break;
+            /* The data of such a kind of event is a Runnable that has all
+             * the logic to update the Cloudlet's attributes.
+             * This way, it will be run to perform such an update.
+             * Check the documentation of the tag below for details.*/
+            case CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES:
+                ((Runnable) ev.getData()).run();
+            break;
             case CloudSimTags.CLOUDLET_PAUSE:
                 processCloudletPause(ev);
             break;
@@ -457,7 +461,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 shutdownEntity();
             break;
             default:
-                logger.trace("{}: {}: Unknown event {} received", getSimulation().clock(), this, ev.getTag());
+                logger.trace("{}: {}: Unknown event {} received.", getSimulation().clock(), this, ev.getTag());
             break;
         }
     }
@@ -474,16 +478,21 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private void processCloudletReady(final SimEvent ev){
         final Cloudlet cloudlet = (Cloudlet)ev.getData();
-        cloudlet.setStatus(Cloudlet.Status.READY);
+        if(cloudlet.getStatus() == Cloudlet.Status.PAUSED)
+            logger.info("{}: {}: Request to resume {} execution received.", getSimulation().clock(), this, cloudlet);
+        else logger.info("{}: {}: Request to start executing {} received.", getSimulation().clock(), this, cloudlet);
+        cloudlet.getVm().getCloudletScheduler().cloudletReady(cloudlet);
     }
 
     private void processCloudletPause(final SimEvent ev){
         final Cloudlet cloudlet = (Cloudlet)ev.getData();
+        logger.info("{}: {}: Request to deschedule (pause) {} received.", getSimulation().clock(), this, cloudlet);
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
     }
 
     private void processCloudletCancel(final SimEvent ev){
         final Cloudlet cloudlet = (Cloudlet)ev.getData();
+        logger.info("{}: {}: Request to cancel {} execution received.", getSimulation().clock(), this, cloudlet);
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
     }
 
@@ -491,10 +500,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * Process the request to finish a Cloudlet with a indefinite length,
      * setting its length as the current number of processed MI.
      * @param ev the event data
-     * @todo The method is in implementation process
      */
     private void processCloudletFinish(final SimEvent ev){
         final Cloudlet cloudlet = (Cloudlet)ev.getData();
+        logger.info("{}: {}: Request to finish running {} received.", getSimulation().clock(), this, cloudlet);
         /*If the executed length is zero, it means the cloudlet processing was not updated yet.
         * This way, calls the method to update the Cloudlet's processing.*/
         if(cloudlet.getFinishedLengthSoFar() == 0){

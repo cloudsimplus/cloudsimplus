@@ -1,8 +1,6 @@
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
-.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
+.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 CloudletSimple
 ==============
@@ -23,53 +21,36 @@ Constructors
 CloudletSimple
 ^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletSimple(long cloudletLength, int pesNumber)
+.. java:constructor:: public CloudletSimple(long length, int pesNumber)
    :outertype: CloudletSimple
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
 
-   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
 
 CloudletSimple
 ^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletSimple(long cloudletLength, long pesNumber)
+.. java:constructor:: public CloudletSimple(long length, long pesNumber)
    :outertype: CloudletSimple
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
 
-   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
 
 CloudletSimple
 ^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletSimple(int id, long cloudletLength, long pesNumber)
+.. java:constructor:: public CloudletSimple(int id, long length, long pesNumber)
    :outertype: CloudletSimple
 
    Creates a Cloudlet with no priority and file size and output size equal to 1. To change these values, use the respective setters.
 
    :param id: the unique ID of this cloudlet
-   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: the pes number
-
-CloudletSimple
-^^^^^^^^^^^^^^
-
-.. java:constructor:: @Deprecated public CloudletSimple(int id, long cloudletLength, int pesNumber, long cloudletFileSize, long cloudletOutputSize, UtilizationModel utilizationModelCpu, UtilizationModel utilizationModelRam, UtilizationModel utilizationModelBw)
-   :outertype: CloudletSimple
-
-   Creates a Cloudlet with the given parameters.
-
-   :param id: the unique ID of this cloudlet
-   :param cloudletLength: the length or size (in MI) of this cloudlet to be executed in a VM
-   :param cloudletFileSize: the file size (in bytes) of this cloudlet \ ``BEFORE``\  submitting to a Datacenter
-   :param cloudletOutputSize: the file size (in bytes) of this cloudlet \ ``AFTER``\  finish executing by a VM
-   :param pesNumber: the pes number
-   :param utilizationModelCpu: the utilization model of CPU
-   :param utilizationModelRam: the utilization model of RAM
-   :param utilizationModelBw: the utilization model of BW
 
 Methods
 -------

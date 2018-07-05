@@ -252,10 +252,22 @@ getResources
 .. java:method:: @Override public List<ResourceManageable> getResources()
    :outertype: HostNull
 
+getShutdownTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getShutdownTime()
+   :outertype: HostNull
+
 getSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Simulation getSimulation()
+   :outertype: HostNull
+
+getStartTime
+^^^^^^^^^^^^
+
+.. java:method:: @Override public double getStartTime()
    :outertype: HostNull
 
 getStateHistory
@@ -450,10 +462,22 @@ setRamProvisioner
 .. java:method:: @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner)
    :outertype: HostNull
 
+setShutdownTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setShutdownTime(double shutdownTime)
+   :outertype: HostNull
+
 setSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Host setSimulation(Simulation simulation)
+   :outertype: HostNull
+
+setStartTime
+^^^^^^^^^^^^
+
+.. java:method:: @Override public void setStartTime(double startTime)
    :outertype: HostNull
 
 setVmScheduler

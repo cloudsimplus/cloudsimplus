@@ -16,6 +16,7 @@ import java.util.List;
  * @author Saurabh Kumar Garg
  * @author Rajkumar Buyya
  * @author Manoel Campos da Silva Filho
+ * @todo It's freezing again
  */
 public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
     private static final long CLOUDLET_TASK_MEMORY = 1000;

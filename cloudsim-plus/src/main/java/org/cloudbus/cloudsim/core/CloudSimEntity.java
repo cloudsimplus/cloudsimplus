@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,23 +109,40 @@ public abstract class CloudSimEntity implements SimEntity {
     protected abstract void startEntity();
 
     @Override
+    public boolean schedule(final SimEntity dest, final double delay, final int tag, final Object data) {
+        return schedule(new CloudSimEvent(simulation, delay, this, dest, tag, data));
+    }
+
+    @Override
     public boolean schedule(final double delay, final int tag, final Object data) {
         return schedule(this, delay, tag, data);
     }
 
     @Override
-    public boolean schedule(final SimEntity dest, final double delay, final int tag, final Object data) {
-        if (!simulation.isRunning()) {
-            return false;
-        }
-
-        simulation.send(this, dest, delay, tag, data);
-        return true;
+    public boolean schedule(final SimEntity dest, final double delay, final int tag) {
+        return schedule(dest, delay, tag, null);
     }
 
     @Override
-    public boolean schedule(final SimEntity dest, final double delay, final int tag) {
-        return schedule(dest, delay, tag, null);
+    public boolean schedule(final SimEvent evt) {
+        if (!canSendEvent(evt)) {
+            return false;
+        }
+        simulation.send(evt);
+        return true;
+    }
+
+    private boolean canSendEvent(final SimEvent evt) {
+        /**
+         * If the simulation has finished and an  {@link CloudSimTags#END_OF_SIMULATION}
+         * message is sent, it has to be processed to enable entities to shutdown.
+         */
+        if (!simulation.isRunning() && evt.getTag() != CloudSimTags.END_OF_SIMULATION) {
+            logger.warn("{}: Cannot send events before simulation start. Trying to send message {} to {}", this, evt.getTag(), evt.getDestination());
+            return false;
+        }
+
+        return true;
     }
 
     /**
@@ -146,21 +164,6 @@ public abstract class CloudSimEntity implements SimEntity {
      */
     public void scheduleNow(final SimEntity dest, final int tag) {
         schedule(dest, 0, tag, null);
-    }
-
-    /**
-     * Sends a high priority event to another entity.
-     *
-     * @param dest  the destination entity
-     * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
-     * @param data  The data to be sent with the event.
-     */
-    public void scheduleFirst(final SimEntity dest, final double delay, final int tag, final Object data) {
-        if (!simulation.isRunning()) {
-            return;
-        }
-        simulation.sendFirst(this, dest, delay, tag, data);
     }
 
     /**
@@ -195,6 +198,23 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
+     * Sends a high priority event to another entity.
+     *
+     * @param dest  the destination entity
+     * @param delay How many seconds after the current simulation time the event should be sent
+     * @param tag   An user-defined number representing the type of event.
+     * @param data  The data to be sent with the event.
+     */
+    public void scheduleFirst(final SimEntity dest, final double delay, final int tag, final Object data) {
+        final CloudSimEvent evt = new CloudSimEvent(simulation, delay, this, dest, tag, data);
+        if (!canSendEvent(evt)) {
+            return;
+        }
+
+        simulation.sendFirst(evt);
+    }
+
+    /**
      * Sets the entity to be inactive for a time period.
      *
      * @param delay the time period for which the entity will be inactive
@@ -203,9 +223,11 @@ public abstract class CloudSimEntity implements SimEntity {
         if (delay < 0) {
             throw new IllegalArgumentException("Negative delay supplied.");
         }
+
         if (!simulation.isRunning()) {
             return;
         }
+
         simulation.pauseEntity(this, delay);
     }
 
@@ -429,7 +451,7 @@ public abstract class CloudSimEntity implements SimEntity {
             return;
         }
 
-        // if delay is -ve, then it doesn't make sense. So resets to 0.0
+        // if delay is negative, then it doesn't make sense. So resets to 0.0
         if (delay < 0) {
             delay = 0;
         }

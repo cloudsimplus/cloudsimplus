@@ -121,7 +121,7 @@ public class CloudletExecution {
     }
 
     /**
-     * Gets the Cloudlet's length.
+     * Gets the {@link Cloudlet#getLength() Cloudlet's length}.
      *
      * @return Cloudlet's length
      */

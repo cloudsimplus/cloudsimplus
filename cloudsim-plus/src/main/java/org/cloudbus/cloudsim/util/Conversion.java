@@ -18,30 +18,30 @@ public final class Conversion {
     public static final int MILLION = 1_000_000;
 
     /**
-     * The value of 1 KiloByte in Bytes.
+     * The value of 1 KiloByte in Bytes or 1 Kilobit in bits.
      * It is declared as double because such a value is commonly used
-     * in divisions. By this way, it avoids explicit double casts
+     * in divisions. This way, it avoids explicit double casts
      * to ensure a double instead an integer division.
      */
-    public static final double KILOBYTE = 1024;
+    public static final double KILO = 1024;
 
     /**
-     * The value of 1 MegaByte in Bytes.
-     * @see #KILOBYTE
+     * The value of 1 MegaByte in Bytes or 1 Megabit in bits.
+     * @see #KILO
      */
-    public static final double MEGABYTE = KILOBYTE * KILOBYTE;
+    public static final double MEGA = KILO * KILO;
 
     /**
-     * The value of 1 GibaByte in Bytes.
-     * @see #MEGABYTE
+     * The value of 1 GigaByte in Bytes or 1 Gigabit in bits.
+     * @see #MEGA
      */
-    public static final double GIGABYTE = MEGABYTE * MEGABYTE;
+    public static final double GIGA = MEGA * KILO;
 
     /**
-     * The value of 1 TeraByte in Bytes.
-     * @see #GIGABYTE
+     * The value of 1 TeraByte in Bytes or 1 TeraBit in bits.
+     * @see #GIGA
      */
-    public static final double TERABYTE = GIGABYTE * GIGABYTE;
+    public static final double TERA = GIGA * KILO;
 
     /**
      * A private constructor to avoid class instantiation.
@@ -54,7 +54,47 @@ public final class Conversion {
      * @return the value in MegaBytes (MB)
      */
     public static double bytesToMegaBytes(final double bytes){
-        return bytes / MEGABYTE;
+        return bytes / MEGA;
+    }
+
+    /**
+     * Converts a value in bytes to GigaBytes (GB)
+     * @param bytes the value in bytes
+     * @return the value in GigaBytes (GB)
+     */
+    public static double bytesToGigaBytes(final double bytes){
+        return bytes / GIGA;
+    }
+
+    /**
+     * Converts a value in bytes to KiloBytes (KB)
+     * @param bytes the value in bytes
+     * @return the value in KiloBytes (KB)
+     */
+    public static double bytesToKiloBytes(final double bytes){
+        return bytes / KILO;
+    }
+
+    /**
+     * Converts a value in bytes to the most suitable unit, such as Kilobytes (KB), MegaBytes (MB) or
+     * Gigabytes (GB)
+     * @param bytes the value in bytes
+     * @return the converted value concatenated with the unit converted to (KB, MB or GB)
+     */
+    public static String bytesToSuitableUnit(final double bytes){
+        if(bytes < KILO) {
+            return String.format("%.0f bytes", bytes);
+        }
+
+        if(bytes < MEGA) {
+            return String.format("%.1f KB", bytesToKiloBytes(bytes));
+        }
+
+        if(bytes < GIGA) {
+            return String.format("%.1f MB", bytesToMegaBytes(bytes));
+        }
+
+        return String.format("%.1f GB", bytesToGigaBytes(bytes));
     }
 
     /**
@@ -89,6 +129,15 @@ public final class Conversion {
     }
 
     /**
+     * Converts a value in MegaBytes (MB) to bytes
+     * @param megaBytes the value in MegaBytes (MB)
+     * @return the value in bytes
+     */
+    public static double megaBytesToBytes(final double megaBytes){
+        return megaBytes * MEGA;
+    }
+
+    /**
      * Converts any value in giga to mega,
      * doesn't matter if it's gigabits or gigabytes.
      *
@@ -96,7 +145,18 @@ public final class Conversion {
      * @return the value in megabits or megabytes (according to the input value)
      */
     public static double gigaToMega(final double giga){
-        return giga * MEGABYTE;
+        return giga * KILO;
+    }
+
+    /**
+     * Converts any value in tera to giga,
+     * doesn't matter if it's terabits or terabytes.
+     *
+     * @param tera the value in terabits or terabytes
+     * @return the value in gigabits or gigabytes (according to the input value)
+     */
+    public static double teraToGiga(final double tera){
+        return tera * KILO;
     }
 
     /**
@@ -107,6 +167,27 @@ public final class Conversion {
      * @return the value in megabits or megabytes (according to the input value)
      */
     public static double teraToMega(final double tera){
-        return gigaToMega(tera * GIGABYTE);
+        return teraToGiga(tera) * KILO;
+    }
+
+    /**
+     * Converts any value in micro (μ) to milli (m) scale,
+     * such as microseconds to milliseconds.
+     *
+     * @param micro the value in micro (μ) scale
+     * @return the value in milli (m) scale
+     */
+    public static double microToMilli(final double micro){
+        return micro/1000.0;
+    }
+
+    /**
+     * Converts any value in microseconds (μ) to seconds.
+     *
+     * @param micro the value in microseconds (μ)
+     * @return the value in seconds
+     */
+    public static double microToSeconds(final double micro) {
+        return microToMilli(micro)/1000.0;
     }
 }

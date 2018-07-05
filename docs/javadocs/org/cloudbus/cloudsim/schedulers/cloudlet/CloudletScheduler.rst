@@ -4,8 +4,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
-.. java:import:: org.cloudbus.cloudsim.core CloudSimTags
-
 .. java:import:: org.cloudbus.cloudsim.datacenters DatacenterSimple
 
 .. java:import:: org.cloudbus.cloudsim.network VmPacket
@@ -58,31 +56,27 @@ addCloudletToReturnedList
 
    :param cloudlet: the Cloudlet to be added
 
-canAddCloudletToExecutionList
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean canAddCloudletToExecutionList(CloudletExecution cloudlet)
-   :outertype: CloudletScheduler
-
-   Checks if a Cloudlet can be added to the execution list or not. Each CloudletScheduler can define a different policy to indicate if a Cloudlet can be added to the execution list or not at the moment this method is called.
-
-   For instance, time-shared implementations can put all Cloudlets in the execution list, once it uses a preemptive policy that shares the CPU time between all running Cloudlets, even there are more Cloudlets than the number of CPUs. That is, it might always add new Cloudlets to the execution list.
-
-   On the other hand, space-shared schedulers do not share the same CPUs between different Cloudlets. In this type of scheduler, a CPU is only allocated to a Cloudlet when the previous Cloudlet finished its entire execution. That is, it might not always add new Cloudlets to the execution list.
-
-   :param cloudlet: Cloudlet to check if it can be added to the execution list
-   :return: true if the Cloudlet can be added to the execution list, false otherwise
-
 cloudletCancel
 ^^^^^^^^^^^^^^
 
-.. java:method::  Cloudlet cloudletCancel(int cloudletId)
+.. java:method::  Cloudlet cloudletCancel(Cloudlet cloudlet)
    :outertype: CloudletScheduler
 
    Cancels execution of a cloudlet.
 
-   :param cloudletId: ID of the cloudlet being canceled
+   :param cloudlet: ID of the cloudlet being canceled
    :return: the canceled cloudlet or \ :java:ref:`Cloudlet.NULL`\  if not found
+
+cloudletFail
+^^^^^^^^^^^^
+
+.. java:method::  Cloudlet cloudletFail(Cloudlet cloudlet)
+   :outertype: CloudletScheduler
+
+   Sets a cloudlet as failed.
+
+   :param cloudlet: ID of the cloudlet to set as failed
+   :return: the failed cloudlet or \ :java:ref:`Cloudlet.NULL`\  if not found
 
 cloudletFinish
 ^^^^^^^^^^^^^^
@@ -97,23 +91,34 @@ cloudletFinish
 cloudletPause
 ^^^^^^^^^^^^^
 
-.. java:method::  boolean cloudletPause(int cloudletId)
+.. java:method::  boolean cloudletPause(Cloudlet cloudlet)
    :outertype: CloudletScheduler
 
    Pauses execution of a cloudlet.
 
-   :param cloudletId: ID of the cloudlet being paused
-   :return: $true if cloudlet paused, $false otherwise
+   :param cloudlet: the cloudlet being paused
+   :return: $true if cloudlet was paused, $false otherwise
+
+cloudletReady
+^^^^^^^^^^^^^
+
+.. java:method::  boolean cloudletReady(Cloudlet cloudlet)
+   :outertype: CloudletScheduler
+
+   Sets the status of a Cloudlet to \ :java:ref:`Cloudlet.Status.READY`\  so that it can start executing as soon as possible.
+
+   :param cloudlet: the cloudlet to be started
+   :return: $true if cloudlet was set to ready, $false otherwise
 
 cloudletResume
 ^^^^^^^^^^^^^^
 
-.. java:method::  double cloudletResume(int cloudletId)
+.. java:method::  double cloudletResume(Cloudlet cloudlet)
    :outertype: CloudletScheduler
 
    Resumes execution of a paused cloudlet.
 
-   :param cloudletId: ID of the cloudlet being resumed
+   :param cloudlet: the cloudlet being resumed
    :return: expected finish time of the cloudlet, 0.0 if queued or not found in the paused list
 
 cloudletSubmit
@@ -122,7 +127,7 @@ cloudletSubmit
 .. java:method::  double cloudletSubmit(Cloudlet cl, double fileTransferTime)
    :outertype: CloudletScheduler
 
-   Receives an cloudlet to be executed in the VM managed by this scheduler.
+   Receives a cloudlet to be executed in the VM managed by this scheduler.
 
    :param cl: the submitted cloudlet
    :param fileTransferTime: time required to move the required files from the SAN to the VM
@@ -148,18 +153,6 @@ deallocatePesFromVm
    Releases a given number of PEs from a VM.
 
    :param pesToRemove: number of PEs to deallocate
-
-getAllocatedMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getAllocatedMipsForCloudlet(CloudletExecution ce, double time)
-   :outertype: CloudletScheduler
-
-   Gets the current allocated MIPS for cloudlet.
-
-   :param ce: the ce
-   :param time: the time
-   :return: the current allocated mips for cloudlet
 
 getCloudletExecList
 ^^^^^^^^^^^^^^^^^^^
@@ -229,16 +222,6 @@ getCloudletWaitingList
    Gets a \ **read-only**\  List of cloudlet waiting to be executed on the VM.
 
    :return: the cloudlet waiting list
-
-getCurrentMipsShare
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  List<Double> getCurrentMipsShare()
-   :outertype: CloudletScheduler
-
-   Gets a \ **read-only**\  list of current mips capacity from the VM that will be made available to the scheduler. This mips share will be allocated to Cloudlets as requested.
-
-   :return: the current mips share list, where each item represents the MIPS capacity of a \ :java:ref:`Pe`\ . that is available to the scheduler.
 
 getCurrentRequestedBwPercentUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -358,13 +341,13 @@ isEmpty
 
    :return: true if there aren't \ **waiting**\  or \ **executing**\  Cloudlets, false otherwise.
 
-isTherePacketScheduler
-^^^^^^^^^^^^^^^^^^^^^^
+isThereTaskScheduler
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean isTherePacketScheduler()
+.. java:method::  boolean isThereTaskScheduler()
    :outertype: CloudletScheduler
 
-   Checks if there is a packet scheduler assigned to this CloudletScheduler in order to enable dispatching packets from and to the Vm of this CloudletScheduler.
+   Checks if there is a \ :java:ref:`CloudletTaskScheduler`\  assigned to this CloudletScheduler in order to enable tasks execution and dispatching packets from and to the Vm of this CloudletScheduler.
 
 runningCloudletsNumber
 ^^^^^^^^^^^^^^^^^^^^^^

@@ -7,19 +7,22 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
+import org.cloudbus.cloudsim.mocks.CloudSimMocker;
+import org.cloudbus.cloudsim.mocks.Mocks;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.VmDatacenterEventInfo;
+import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.easymock.EasyMock;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.mocks.*;
-import org.cloudsimplus.listeners.*;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.easymock.EasyMock;
-
-import org.junit.*;
 
 import static org.easymock.EasyMock.createMock;
 import static org.junit.Assert.*;
@@ -236,14 +239,14 @@ public class VmSimpleTest {
         assertTrue(vm.removeOnHostAllocationListener(listener));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRemoveOnHostAllocationListener_Null() {
-        assertFalse(vm.removeOnHostAllocationListener(null));
+        vm.removeOnHostAllocationListener(null);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRemoveOnHostDeallocationListener_Null() {
-        assertFalse(vm.removeOnHostDeallocationListener(null));
+        vm.removeOnHostDeallocationListener(null);
     }
 
     @Test
@@ -253,9 +256,9 @@ public class VmSimpleTest {
         assertTrue(vm.removeOnHostDeallocationListener(listener));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRemoveOnVmCreationFailureListener_Null() {
-        assertFalse(vm.removeOnCreationFailureListener(null));
+        vm.removeOnCreationFailureListener(null);
     }
 
     @Test
@@ -265,9 +268,9 @@ public class VmSimpleTest {
         assertTrue(vm.removeOnCreationFailureListener(listener));
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testRemoveOnUpdateVmProcessingListener_Null() {
-        assertFalse(vm.removeOnUpdateProcessingListener(null));
+        vm.removeOnUpdateProcessingListener(null);
     }
 
     @Test

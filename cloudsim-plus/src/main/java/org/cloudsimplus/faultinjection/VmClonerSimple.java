@@ -29,9 +29,10 @@ import org.cloudbus.cloudsim.vms.Vm;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A basic implementation of a {@link VmCloner}.
@@ -64,9 +65,8 @@ public class VmClonerSimple implements VmCloner {
     }
 
     @Override
-    public Map.Entry<Vm, List<Cloudlet>> clone(Vm sourceVm) {
-        Objects.requireNonNull(sourceVm);
-        final Vm clonedVm = vmClonerFunction.apply(sourceVm);
+    public Map.Entry<Vm, List<Cloudlet>> clone(final Vm sourceVm) {
+        final Vm clonedVm = vmClonerFunction.apply(requireNonNull(sourceVm));
         final List<Cloudlet> clonedCloudlets = cloudletsClonerFunction.apply(sourceVm);
         clonedCloudlets.forEach(c -> c.setVm(clonedVm));
         clonedVmsNumber++;
@@ -75,15 +75,13 @@ public class VmClonerSimple implements VmCloner {
 
     @Override
     public final VmCloner setVmClonerFunction(final UnaryOperator<Vm> vmClonerFunction) {
-        Objects.requireNonNull(vmClonerFunction);
-        this.vmClonerFunction = vmClonerFunction;
+        this.vmClonerFunction = requireNonNull(vmClonerFunction);
         return this;
     }
 
     @Override
     public final VmCloner setCloudletsClonerFunction(final Function<Vm, List<Cloudlet>> cloudletsClonerFunction) {
-        Objects.requireNonNull(cloudletsClonerFunction);
-        this.cloudletsClonerFunction = cloudletsClonerFunction;
+        this.cloudletsClonerFunction = requireNonNull(cloudletsClonerFunction);
         return this;
     }
 

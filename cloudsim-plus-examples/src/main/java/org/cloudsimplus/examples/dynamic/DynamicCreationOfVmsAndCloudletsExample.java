@@ -170,8 +170,8 @@ public class DynamicCreationOfVmsAndCloudletsExample {
 
     private Host createHost() {
         long  mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
-        long  ram = 2048; // host memory (MEGABYTE)
-        long storage = 1000000; // host storage (MEGABYTE)
+        long  ram = 2048; // host memory (Megabyte)
+        long storage = 1000000; // host storage (Megabyte)
         long bw = 10000; //in Megabits/s
 
         final int numberOfPes = 8;
@@ -188,8 +188,8 @@ public class DynamicCreationOfVmsAndCloudletsExample {
 
     private Vm createVm(DatacenterBroker broker) {
         long   mips = 1000;
-        long   storage = 10000; // vm image size (MEGABYTE)
-        int    ram = 512; // vm memory (MEGABYTE)
+        long   storage = 10000; // vm image size (Megabyte)
+        int    ram = 512; // vm memory (Megabyte)
         long   bw = 1000; // vm bandwidth (Megabits/s)
         int    pesNumber = 1; // number of CPU cores
 

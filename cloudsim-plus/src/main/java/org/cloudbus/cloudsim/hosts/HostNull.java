@@ -104,6 +104,9 @@ final class HostNull implements Host {
     @Override public Host setVmScheduler(VmScheduler vmScheduler) {
         return Host.NULL;
     }
+    @Override public double getStartTime() { return 0; }
+    @Override public void setStartTime(double startTime) {/**/}
+    @Override public double getShutdownTime() { return 0; }
     @Override public boolean isFailed() {
         return false;
     }
@@ -168,4 +171,5 @@ final class HostNull implements Host {
     @Override public boolean isStateHistoryEnabled() { return false; }
     @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.EMPTY_LIST; }
     @Override public List<Vm> getFinishedVms() { return Collections.EMPTY_LIST; }
+    @Override public void setShutdownTime(double shutdownTime) {/**/}
 }

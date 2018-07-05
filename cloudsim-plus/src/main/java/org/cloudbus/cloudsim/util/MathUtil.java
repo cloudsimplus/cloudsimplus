@@ -8,13 +8,13 @@
 
 package org.cloudbus.cloudsim.util;
 
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
+
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * A class containing multiple convenient math functions.
@@ -342,4 +342,28 @@ public final class MathUtil {
     public static int doubleToInt(final double d){
         return (int)(d < 0 ? Math.floor(d) : Math.ceil(d));
     }
+
+    /**
+     * Checks if two double numbers are equals, considering a precision error or 0.01.
+     * That is, if the different between the two numbers are lower or equal to 0.01, they are considered equal.
+     * @param a the first number to check
+     * @param b the second number to check
+     * @return true if the numbers are equal considering the precision error
+     */
+    public static boolean same(final double a, final double b){
+        return same(a,b, 0.01);
+    }
+
+    /**
+     * Checks if two double numbers are equals, considering a given precision error.
+     * That is, if the different between the two numbers are lower or equal to the precision error, they are considered equal.
+     * @param a the first number to check
+     * @param b the second number to check
+     * @param precisionError the precision error used to compare the numbers
+     * @return true if the numbers are equal considering the precision error
+     */
+    public static boolean same(final double a, final double b, final double precisionError){
+        return Math.abs(a-b) <= precisionError;
+    }
+
 }

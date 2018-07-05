@@ -27,8 +27,8 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
+import org.cloudsimplus.autoscaling.resources.ResourceScalingGradual;
 import org.cloudsimplus.autoscaling.resources.ResourceScalingInstantaneous;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 
@@ -107,8 +107,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
      */
     @Override
     public final VerticalVmScaling setResourceScaling(final ResourceScaling resourceScaling) {
-        Objects.requireNonNull(resourceScaling);
-        this.resourceScaling = resourceScaling;
+        this.resourceScaling = Objects.requireNonNull(resourceScaling);
         return this;
     }
 
@@ -145,8 +144,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
 
     @Override
     public final VerticalVmScaling setResourceClass(final Class<? extends ResourceManageable> resourceClass) {
-        Objects.requireNonNull(resourceClass);
-        this.resourceClassToScale = resourceClass;
+        this.resourceClassToScale = Objects.requireNonNull(resourceClass);
         if(Pe.class.equals(this.resourceClassToScale)){
             this.resourceClassToScale = Processor.class;
         }

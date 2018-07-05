@@ -75,6 +75,13 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
     void processEvent(SimEvent ev);
 
     /**
+     * Sends an event where all data required is defined inside the event instance.
+     * @param evt the event to send
+     * @return true if the event was sent, false if the simulation was not started yet
+     */
+    boolean schedule(SimEvent evt);
+
+    /**
      * Sends an event from the entity to itself.
      * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag   An user-defined number representing the type of event.

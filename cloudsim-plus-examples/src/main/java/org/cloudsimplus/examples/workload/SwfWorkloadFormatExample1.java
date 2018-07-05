@@ -47,12 +47,11 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.WorkloadFileReader;
+import org.cloudbus.cloudsim.util.SwfWorkloadFileReader;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -69,7 +68,7 @@ import static java.util.Comparator.comparingLong;
  *
  * <p>Considering the large number of cloudlets that can have a workload file,
  * that can cause the simulation to consume a lot of resources
- * at the developer machine and can spend a long time to finish,
+ * at the developer machine and can <b>spend a long time to finish</b>,
  * the example allow to limit the maximum number of cloudlets to be submitted
  * to the DatacenterBroker.
  * See the {@link #maximumNumberOfCloudletsToCreateFromTheWorkloadFile} attribute for more details.
@@ -144,7 +143,8 @@ public class SwfWorkloadFormatExample1 {
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
-        System.out.println("Starting " + getClass().getSimpleName());
+        System.out.println("Starting " + getClass().getSimpleName() + " in 5 seconds. Since it reads a workload file, it can take a long time to finish.");
+        sleep(5);
 
         simulation = new CloudSim();
         try {
@@ -168,8 +168,16 @@ public class SwfWorkloadFormatExample1 {
             new CloudletsTableBuilder(newList).build();
 
             System.out.println(getClass().getSimpleName() + " finished!");
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.printf("Erro during simulation execution: %s\n", e.getMessage());
+        }
+    }
+
+    private void sleep(final long seconds) {
+        try {
+            Thread.sleep(seconds * 1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 
@@ -187,9 +195,9 @@ public class SwfWorkloadFormatExample1 {
         System.out.printf("# Created %d VMs for the %s\n", vmlist.size(), broker);
     }
 
-    private void createCloudletsFromWorkloadFile() throws IOException {
-        final String fileName = "workload/swf/"+WORKLOAD_FILENAME;
-        WorkloadFileReader reader = WorkloadFileReader.getInstance(fileName, CLOUDLETS_MIPS);
+    private void createCloudletsFromWorkloadFile() {
+        final String fileName = "workload/swf/" + WORKLOAD_FILENAME;
+        SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(fileName, CLOUDLETS_MIPS);
         reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();
 
@@ -219,31 +227,30 @@ public class SwfWorkloadFormatExample1 {
         Map<Long, Long> vmsPesCountMap = getMapWithNumberOfVmsGroupedByRequiredPesNumber();
         long numberOfPesRequiredByVms, numberOfVms, numberOfVmsRequiringUpToTheMinimumPesNumber = 0;
         long totalOfHosts = 0, totalOfPesOfAllHosts = 0;
-        for (Entry<Long, Long> entry: vmsPesCountMap.entrySet()) {
+        for (Entry<Long, Long> entry : vmsPesCountMap.entrySet()) {
             numberOfPesRequiredByVms = entry.getKey();
             numberOfVms = entry.getValue();
             /*For VMs requiring MINIMUM_NUM_OF_PES_BY_HOST or less PEs,
             it will be created a set of Hosts which all of them contain
             this number of PEs.*/
-            if(numberOfPesRequiredByVms <= MINIMUM_NUM_OF_PES_BY_HOST){
+            if (numberOfPesRequiredByVms <= MINIMUM_NUM_OF_PES_BY_HOST) {
                 numberOfVmsRequiringUpToTheMinimumPesNumber += numberOfVms;
-            }
-            else {
+            } else {
                 hostList.addAll(createHostsOfSameCapacity(numberOfVms, numberOfPesRequiredByVms));
                 totalOfHosts += numberOfVms;
-                totalOfPesOfAllHosts += numberOfVms*numberOfPesRequiredByVms;
+                totalOfPesOfAllHosts += numberOfVms * numberOfPesRequiredByVms;
             }
         }
 
         totalOfHosts += numberOfVmsRequiringUpToTheMinimumPesNumber;
-        totalOfPesOfAllHosts += numberOfVmsRequiringUpToTheMinimumPesNumber*MINIMUM_NUM_OF_PES_BY_HOST;
+        totalOfPesOfAllHosts += numberOfVmsRequiringUpToTheMinimumPesNumber * MINIMUM_NUM_OF_PES_BY_HOST;
         List<Host> subList =
-                createHostsOfSameCapacity(
-                        numberOfVmsRequiringUpToTheMinimumPesNumber,
-                        MINIMUM_NUM_OF_PES_BY_HOST);
+            createHostsOfSameCapacity(
+                numberOfVmsRequiringUpToTheMinimumPesNumber,
+                MINIMUM_NUM_OF_PES_BY_HOST);
         hostList.addAll(subList);
         System.out.printf(
-                "# Total of created hosts: %d Total of PEs of all hosts: %d\n\n", totalOfHosts, totalOfPesOfAllHosts);
+            "# Total of created hosts: %d Total of PEs of all hosts: %d\n\n", totalOfHosts, totalOfPesOfAllHosts);
 
         return hostList;
     }
@@ -252,7 +259,7 @@ public class SwfWorkloadFormatExample1 {
      * Creates a specific number of PM's with the same capacity.
      *
      * @param numberOfHosts number of hosts to create
-     * @param numberOfPes number of PEs of the host
+     * @param numberOfPes   number of PEs of the host
      * @return the created host
      */
     private List<Host> createHostsOfSameCapacity(long numberOfHosts, long numberOfPes) {
@@ -261,7 +268,7 @@ public class SwfWorkloadFormatExample1 {
         final long bw = VM_BW * NUMBER_OF_VMS_PER_HOST;
 
         List<Host> list = new ArrayList<>();
-        for(int i = 0; i < numberOfHosts; i++){
+        for (int i = 0; i < numberOfHosts; i++) {
             List<Pe> peList = createPeList(numberOfPes, VM_MIPS);
 
             Host host =
@@ -312,10 +319,10 @@ public class SwfWorkloadFormatExample1 {
 
         System.out.println();
         long totalOfVms = 0, totalOfPes = 0;
-        for(Entry<Long, Long> entry: vmsPesCountMap.entrySet()){
+        for (Entry<Long, Long> entry : vmsPesCountMap.entrySet()) {
             totalOfVms += entry.getValue();
             totalOfPes += entry.getKey() * entry.getValue();
-            System.out.printf("# There are %d VMs requiring %d PEs\n", entry.getValue(),entry.getKey());
+            System.out.printf("# There are %d VMs requiring %d PEs\n", entry.getValue(), entry.getKey());
         }
         System.out.printf("# Total of VMs: %d Total of required PEs of all VMs: %d\n", totalOfVms, totalOfPes);
         return vmsPesCountMap;

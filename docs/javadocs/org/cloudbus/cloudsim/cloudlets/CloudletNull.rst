@@ -164,6 +164,12 @@ getId
 .. java:method:: @Override public int getId()
    :outertype: CloudletNull
 
+getJobId
+^^^^^^^^
+
+.. java:method:: @Override public int getJobId()
+   :outertype: CloudletNull
+
 getLastDatacenter
 ^^^^^^^^^^^^^^^^^
 
@@ -396,6 +402,12 @@ setId
 ^^^^^
 
 .. java:method:: @Override public void setId(int id)
+   :outertype: CloudletNull
+
+setJobId
+^^^^^^^^
+
+.. java:method:: @Override public void setJobId(int jobId)
    :outertype: CloudletNull
 
 setLength

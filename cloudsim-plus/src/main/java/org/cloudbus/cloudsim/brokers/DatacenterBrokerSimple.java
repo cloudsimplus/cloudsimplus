@@ -8,10 +8,9 @@
 package org.cloudbus.cloudsim.brokers;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
-
-import org.cloudbus.cloudsim.core.CloudSim;
 
 /**
  * A simple implementation of {@link DatacenterBroker} that try to host customer's VMs
@@ -29,13 +28,22 @@ import org.cloudbus.cloudsim.core.CloudSim;
  */
 public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     /**
-     * Creates a new DatacenterBroker object.
+     * Creates a new DatacenterBroker.
      *
      * @param simulation name to be associated with this entity
-     * @post $none
      */
     public DatacenterBrokerSimple(final CloudSim simulation) {
-        super(simulation);
+        this(simulation, "");
+    }
+
+    /**
+     * Creates a DatacenterBroker giving a specific name.
+     *
+     * @param simulation the CloudSim instance that represents the simulation the Entity is related to
+     * @param name the DatacenterBroker name
+     */
+    public DatacenterBrokerSimple(final CloudSim simulation, final String name) {
+        super(simulation, name);
         setDatacenterSupplier(this::selectDatacenterForWaitingVms);
         setFallbackDatacenterSupplier(this::selectFallbackDatacenterForWaitingVms);
         setVmMapper(this::defaultVmMapper);

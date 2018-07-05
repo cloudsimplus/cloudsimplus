@@ -182,7 +182,7 @@ public interface Simulation {
      * @param listener the event listener to add
      * @return
      */
-    Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener);
+    Simulation addOnSimulationPauseListener(EventListener<EventInfo> listener);
 
     Simulation addOnSimulationStartListener(EventListener<EventInfo> listener);
 
@@ -192,7 +192,7 @@ public interface Simulation {
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
      */
-     boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener);
+     boolean removeOnSimulationPauseListener(EventListener<EventInfo> listener);
 
     /**
      * Adds a {@link EventListener} object that will be notified when any event
@@ -294,8 +294,14 @@ public interface Simulation {
     SimEvent select(SimEntity dest, Predicate<SimEvent> p);
 
     /**
+     * Sends an event where all data required is defined inside the event instance.
+     * @param evt the event to send
+     */
+    void send(SimEvent evt);
+
+    /**
      * Sends an event from one entity to another.
-     *  @param src  entity that scheduled the event
+     * @param src  entity that scheduled the event
      * @param dest  entity that the event will be sent to
      * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
@@ -304,8 +310,15 @@ public interface Simulation {
     void send(SimEntity src, SimEntity dest, double delay, int tag, Object data);
 
     /**
+     * Sends an event where all data required is defined inside the event instance,
+     * adding it to the beginning of the queue in order to give priority to it.
+     * @param evt the event to send
+     */
+    void sendFirst(SimEvent evt);
+
+    /**
      * Sends an event from one entity to another, adding it to the beginning of the queue in order to give priority to it.
-     *  @param src  entity that scheduled the event
+     * @param src  entity that scheduled the event
      * @param dest  entity that the event will be sent to
      * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag   the {@link SimEvent#getTag() tag} that classifies the event
@@ -316,7 +329,7 @@ public interface Simulation {
     /**
      * Sends an event from one entity to another without delaying
      * the message.
-     *  @param src  entity that scheduled the event
+     * @param src  entity that scheduled the event
      * @param dest entity that the event will be sent to
      * @param tag  the {@link SimEvent#getTag() tag} that classifies the event
      * @param data the {@link SimEvent#getData() data} to be sent inside the event

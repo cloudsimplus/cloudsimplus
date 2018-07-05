@@ -51,8 +51,7 @@ public class PowerModelSimple extends PowerModelAbstract {
         final UnaryOperator<Double> powerIncrementFunction)
     {
         super();
-        Objects.requireNonNull(powerIncrementFunction);
-        this.powerIncrementFunction = powerIncrementFunction;
+        this.powerIncrementFunction = Objects.requireNonNull(powerIncrementFunction);
         setMaxPower(maxPower);
         setStaticPowerPercent(staticPowerPercent);
     }

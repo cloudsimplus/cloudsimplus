@@ -2,9 +2,9 @@
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
 .. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: java.util Objects
 
