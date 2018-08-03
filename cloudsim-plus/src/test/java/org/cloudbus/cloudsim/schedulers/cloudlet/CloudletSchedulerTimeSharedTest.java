@@ -1,7 +1,5 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -9,10 +7,14 @@ import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.easymock.EasyMock;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -72,7 +74,7 @@ public class CloudletSchedulerTimeSharedTest {
     public void testCloudletResume_EmptyPausedList() {
         final int cloudletId = 0;
         final double expResult = 0.0;
-        final double result = instance.cloudletResume(cloudletId);
+        final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
         assertEquals(expResult, result, 0.0);
     }
 
@@ -82,7 +84,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(1, cloudletLength);
         final int cloudletId = 0;
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
-        instance.cloudletResume(cloudletId);
+        instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
         final List<CloudletExecution> result = instance.getCloudletWaitingList();
         assertTrue(result.isEmpty());
     }
@@ -93,9 +95,8 @@ public class CloudletSchedulerTimeSharedTest {
         instance.getCloudletPausedList().add(createCloudletExecInfo(cloudletIdInTheList));
         final double expResult = 0.0;
         final int cloudletIdSearched = 2;
-        final double result = instance.cloudletResume(cloudletIdSearched);
-        assertEquals(expResult, result, 0.0);
-    }
+        final double result = instance.cloudletResume(new CloudletSimple(cloudletIdSearched, 1, 1));
+        assertEquals(expResult, result, 0.0);    }
 
     @Test
     public void testCloudletResume_CloudletInPausedList() {
@@ -104,11 +105,11 @@ public class CloudletSchedulerTimeSharedTest {
         final long mips = 1000;
         final long cloudletLength = 10000;
         final CloudletSchedulerTimeShared instance =
-                createCloudletSchedulerWithMipsList(schedulerPes, mips);
+            createCloudletSchedulerWithMipsList(schedulerPes, mips);
 
         createCloudletAndAddItToPausedList(instance, cloudletId, cloudletLength);
         final double expResult = 10;
-        final double result = instance.cloudletResume(cloudletId);
+        final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
 
         assertEquals(expResult, result, 0.0);
     }

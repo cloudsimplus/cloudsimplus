@@ -7,8 +7,9 @@
  */
 package org.cloudbus.cloudsim.cloudlets;
 
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 
@@ -123,8 +124,6 @@ public class CloudletExecution {
      * Gets the Cloudlet's length.
      *
      * @return Cloudlet's length
-     * @pre $none
-     * @post $none
      */
     public long getCloudletLength() {
         return cloudlet.getLength();
@@ -140,10 +139,8 @@ public class CloudletExecution {
      * @param newStatus the Cloudlet status
      * @return <tt>true</tt> if the new status has been set, <tt>false</tt>
      * otherwise
-     * @pre status >= 0
-     * @post $none
      */
-    public boolean setCloudletStatus(final Cloudlet.Status newStatus) {
+    public boolean setStatus(final Cloudlet.Status newStatus) {
         // gets Cloudlet's previous status
         final Cloudlet.Status prevStatus = cloudlet.getStatus();
 
@@ -205,13 +202,42 @@ public class CloudletExecution {
      * Gets the remaining cloudlet length (in MI) that has to be execute yet,
      * considering the {@link Cloudlet#getLength()}.
      *
-     * @return cloudlet length in MI
-     * @pre $none
-     * @post $result >= 0
+     * @return remaining cloudlet length in MI
      */
     public long getRemainingCloudletLength() {
-        final double remainingMI = cloudlet.getLength() - (instructionsFinishedSoFar / (double)Conversion.MILLION);
-        return (remainingMI < 0 ? 0 : (long)remainingMI);
+        final long absLength = Math.abs(cloudlet.getLength());
+        final double miFinishedSoFar = instructionsFinishedSoFar / (double) Conversion.MILLION;
+
+        if(cloudlet.getLength() > 0){
+            return (long)Math.max(absLength - miFinishedSoFar, 0);
+        }
+
+        /**
+         * If length is negative, that means it is undefined.
+         * This way, here it's ensured the remaining length keeps
+         * increasing until a {@link CloudSimTags#CLOUDLET_FINISH} message
+         * is received by the broker to finish the cloudlet.
+         */
+
+        /* Getting here, it's ensure the length is negative. This way,
+         * if the different between the length and the number of executed MI is
+         * zero, in a scenario of a regular Cloudlet with a positive length,
+         * that means the Cloudlet has finished.
+         * If the length is negative yet, that doesn't mean it is finished.
+         * In this case, we just return the absolute length to ensure the
+         * Cloudlet keeps running. */
+        if(absLength-miFinishedSoFar == 0) {
+            return absLength;
+        }
+
+        /*
+         * In case the difference above is not zero, the remaining
+         * length of the indefinite-length Cloudlet will be computed
+         * to ensure it will return the lower value as possible, so that
+         * it execute as little instructions as possible before checking
+         * if a message to finish the cloudlet was sent.
+         */
+        return (long)Math.min(Math.abs(absLength-miFinishedSoFar), absLength);
     }
 
     /**

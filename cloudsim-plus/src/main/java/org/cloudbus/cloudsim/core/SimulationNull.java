@@ -6,7 +6,10 @@ import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
-import java.util.*;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -54,6 +57,7 @@ final class SimulationNull implements Simulation {
     @Override public Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener) {
         return this;
     }
+    @Override public Simulation addOnSimulationStartListener(EventListener<EventInfo> listener) { return this; }
     @Override public boolean removeOnSimulationPausedListener(EventListener<EventInfo> listener) {
         return false;
     }

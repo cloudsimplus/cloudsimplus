@@ -156,7 +156,6 @@ public final class DynamicVmAllocationPolicyBestFitExample {
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
-        datacenter0.setLog(false);
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
         createAndSubmitCloudlets(broker);
@@ -267,7 +266,7 @@ public final class DynamicVmAllocationPolicyBestFitExample {
         hostList.forEach(host -> System.out.printf("#Created %s with %d PEs\n", host, host.getNumberOfPes()));
         System.out.println();
 
-        dc.setSchedulingInterval(SCHEDULE_INTERVAL).setLog(true);
+        dc.setSchedulingInterval(SCHEDULE_INTERVAL);
         return dc;
     }
 

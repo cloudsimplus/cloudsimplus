@@ -287,9 +287,11 @@ public class CloudletSimpleTest {
         cloudlet.setLength(0);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void testSetCloudletLengthToNegative() {
-        cloudlet.setLength(-1);
+        final long len = -1000;
+        cloudlet.setLength(len);
+        assertEquals(len, cloudlet.getLength());
     }
 
     @Test

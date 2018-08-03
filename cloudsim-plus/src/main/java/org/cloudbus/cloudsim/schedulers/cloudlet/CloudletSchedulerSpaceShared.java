@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
-
 import org.cloudbus.cloudsim.resources.Pe;
 
 /**
@@ -33,8 +32,8 @@ import org.cloudbus.cloudsim.resources.Pe;
 public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
 
     @Override
-    public double cloudletResume(int cloudletId) {
-        return findCloudletInList(cloudletId, getCloudletPausedList())
+    public double cloudletResume(Cloudlet cloudlet) {
+        return findCloudletInList(cloudlet, getCloudletPausedList())
             .map(this::movePausedCloudletToExecListOrWaitingList)
             .orElse(0.0);
     }
@@ -87,7 +86,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      * @return {@inheritDoc}
      */
     @Override
-    public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet) {
+    protected boolean canExecuteCloudletInternal(final CloudletExecution cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);
     }
 }

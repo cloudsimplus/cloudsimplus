@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
@@ -25,6 +26,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
@@ -118,7 +120,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         this.previousTime = previousTime;
     }
 
-    @Override
+    /**
+         * Gets a <b>read-only</b> list of current mips capacity from the VM that will be
+         * made available to the scheduler. This mips share will be allocated
+         * to Cloudlets as requested.
+         *
+         * @return the current mips share list, where each item represents
+         * the MIPS capacity of a {@link Pe}. that is available to the scheduler.
+         *
+         */
     public List<Double> getCurrentMipsShare() {
         return Collections.unmodifiableList(currentMipsShare);
     }
@@ -190,16 +200,17 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return Collections.unmodifiableList(cloudletExecList);
     }
 
-    protected void addCloudletToWaitingList(final CloudletExecution cloudlet) {
-        Objects.requireNonNull(cloudlet);
-        if(cloudlet == CloudletExecution.NULL){
+    protected void addCloudletToWaitingList(final CloudletExecution ce) {
+        requireNonNull(ce);
+        if(ce == CloudletExecution.NULL){
             return;
         }
 
-        cloudlet.setCloudletStatus(Cloudlet.Status.QUEUED);
-        cloudletWaitingList.add(cloudlet);
+        if(ce.getCloudlet().getStatus() != Status.FROZEN) {
+            ce.setStatus(Status.QUEUED);
+        }
+        cloudletWaitingList.add(ce);
     }
-
 
     /**
      * Gets the list of paused cloudlets.
@@ -252,14 +263,20 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
+     * Receives the execution information of a Cloudlet to be executed in the VM managed by this scheduler.
+     *
+     * @param ce the submitted cloudlet
+     * @param fileTransferTime time required to move the required files from the SAN to the VM
+     * @return expected finish time of this cloudlet (considering the time to transfer required
+     * files from the Datacenter to the Vm), or 0 if it is in a waiting queue
      * @see #cloudletSubmit(Cloudlet, double)
      */
     protected double cloudletSubmitInternal(final CloudletExecution ce, final double fileTransferTime) {
-        if (canAddCloudletToExecutionList(ce)) {
-            ce.setCloudletStatus(Status.INEXEC);
+        if (canExecuteCloudlet(ce)) {
+            ce.setStatus(Status.INEXEC);
             ce.setFileTransferTime(fileTransferTime);
             addCloudletToExecList(ce);
-            return fileTransferTime + (ce.getCloudletLength() / getPeCapacity());
+            return fileTransferTime + (Math.abs(ce.getCloudletLength()) / getPeCapacity());
         }
 
         // No enough free PEs, then add Cloudlet to the waiting queue
@@ -273,7 +290,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param cloudlet the Cloudlet to be added
      */
     protected void addCloudletToExecList(final CloudletExecution cloudlet) {
-        cloudlet.setCloudletStatus(Cloudlet.Status.INEXEC);
+        cloudlet.setStatus(Cloudlet.Status.INEXEC);
         cloudlet.setLastProcessingTime(getVm().getSimulation().clock());
         cloudletExecList.add(cloudlet);
         addUsedPes(cloudlet.getNumberOfPes());
@@ -346,34 +363,34 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Search for a Cloudlet into a given list.
      *
-     * @param cloudletId the id of the Cloudlet to search for
+     * @param cloudlet the Cloudlet to search for
      * @param list       the list to search the Cloudlet into
      * @return an {@link Optional} value that is able to indicate if the
      * Cloudlet was found or not
      */
-    protected Optional<CloudletExecution> findCloudletInList(final double cloudletId, final List<CloudletExecution> list) {
+    protected Optional<CloudletExecution> findCloudletInList(final Cloudlet cloudlet, final List<CloudletExecution> list) {
         return list.stream()
-            .filter(ce -> ce.getCloudletId() == cloudletId)
+            .filter(ce -> ce.getCloudletId() == cloudlet.getId())
             .findFirst();
     }
 
     @Override
     public void cloudletFinish(final CloudletExecution ce) {
-        ce.setCloudletStatus(Cloudlet.Status.SUCCESS);
+        ce.setStatus(Cloudlet.Status.SUCCESS);
         ce.finalizeCloudlet();
         addCloudletToFinishedList(ce);
     }
 
     @Override
-    public boolean cloudletPause(final int cloudletId) {
-        if (changeStatusOfCloudletIntoList(cloudletExecList, cloudletId, this::changeInexecToPaused) != Cloudlet.NULL) {
+    public boolean cloudletPause(final Cloudlet cloudlet) {
+        if (changeStatusOfCloudletIntoList(cloudletExecList, cloudlet, this::changeInExecToPaused)) {
             return true;
         }
 
-        return changeStatusOfCloudletIntoList(cloudletWaitingList, cloudletId, this::changeReadyToPaused) != Cloudlet.NULL;
+        return changeStatusOfCloudletIntoList(cloudletWaitingList, cloudlet, this::changeReadyToPaused);
     }
 
-    private void changeInexecToPaused(final CloudletExecution c) {
+    private void changeInExecToPaused(final CloudletExecution c) {
         changeStatusOfCloudlet(c, Status.INEXEC, Status.PAUSED);
     }
 
@@ -382,32 +399,46 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public Cloudlet cloudletCancel(final int cloudletId) {
-        Cloudlet cloudlet;
-        //Removes finished cloudlets from the list
-        cloudlet = changeStatusOfCloudletIntoList(cloudletFinishedList, cloudletId, c -> {});
-        if (cloudlet != Cloudlet.NULL) {
+    public Cloudlet cloudletFail(final Cloudlet cloudlet) {
+        return stopCloudlet(cloudlet, Status.FAILED);
+    }
+
+    @Override
+    public Cloudlet cloudletCancel(final Cloudlet cloudlet) {
+        return stopCloudlet(cloudlet, Status.CANCELED);
+    }
+
+    /**
+     * Sets a Cloudlet as {@link Status#CANCELED} or {@link Status#FAILED}.
+     * @param cloudlet the Cloudlet to stop executing
+     * @param stopStatus the stop status, either {@link Status#CANCELED} or {@link Status#FAILED}
+     * @return the stopped cloudlet or {@link Cloudlet#NULL} if not found
+     */
+    private Cloudlet stopCloudlet(final Cloudlet cloudlet, final Status stopStatus) {
+        //Removes finished cloudlets from the list without changing its status
+        boolean found = changeStatusOfCloudletIntoList(cloudletFinishedList, cloudlet, c -> {});
+        if (found) {
             return cloudlet;
         }
 
-        cloudlet = changeStatusOfCloudletIntoList(
-            cloudletExecList, cloudletId,
-            c -> changeStatusOfCloudlet(c, Status.INEXEC, Status.CANCELED));
-        if (cloudlet != Cloudlet.NULL) {
+        found = changeStatusOfCloudletIntoList(
+            cloudletExecList, cloudlet,
+            c -> changeStatusOfCloudlet(c, Status.INEXEC, stopStatus));
+        if (found) {
             return cloudlet;
         }
 
-        cloudlet = changeStatusOfCloudletIntoList(
-            cloudletPausedList, cloudletId,
-            c -> changeStatusOfCloudlet(c, Status.PAUSED, Status.CANCELED));
-        if (cloudlet != Cloudlet.NULL) {
+        found = changeStatusOfCloudletIntoList(
+            cloudletPausedList, cloudlet,
+            c -> changeStatusOfCloudlet(c, Status.PAUSED, stopStatus));
+        if (found) {
             return cloudlet;
         }
 
-        cloudlet = changeStatusOfCloudletIntoList(
-            cloudletWaitingList, cloudletId,
-            c -> changeStatusOfCloudlet(c, Status.READY, Status.CANCELED));
-        if (cloudlet != Cloudlet.NULL) {
+        changeStatusOfCloudletIntoList(
+            cloudletWaitingList, cloudlet,
+            c -> changeStatusOfCloudlet(c, Status.READY, stopStatus));
+        if (found) {
             return cloudlet;
         }
 
@@ -428,7 +459,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         if ((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cloudlet.getCloudlet().isFinished()) {
             cloudletFinish(cloudlet);
         } else {
-            cloudlet.setCloudletStatus(newStatus);
+            cloudlet.setStatus(newStatus);
         }
 
         switch (newStatus) {
@@ -443,15 +474,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * remove it from that list.
      *
      * @param cloudletList                  the list where to search the cloudlet
-     * @param cloudletId                    the id of the cloudlet to have its status changed
+     * @param cloudlet                    the id of the cloudlet to have its status changed
      * @param cloudletStatusUpdaterConsumer the {@link Consumer} that will apply
      *                                      the change in the status of the found cloudlet
-     * @return the changed cloudlet or {@link Cloudlet#NULL} if not found in the
-     * given list
+     * @return true if the Cloudlet was found, false otherwise
      */
-    private Cloudlet changeStatusOfCloudletIntoList(
+    private boolean changeStatusOfCloudletIntoList(
         final List<CloudletExecution> cloudletList,
-        final int cloudletId,
+        final Cloudlet cloudlet,
         final Consumer<CloudletExecution> cloudletStatusUpdaterConsumer)
     {
         final Function<CloudletExecution, Cloudlet> removeCloudletFromListAndUpdateItsStatus = c -> {
@@ -461,10 +491,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         };
 
         return cloudletList.stream()
-            .filter(c -> c.getCloudlet().getId() == cloudletId)
+            .filter(c -> c.getCloudlet().getId() == cloudlet.getId())
             .findFirst()
             .map(removeCloudletFromListAndUpdateItsStatus)
-            .orElse(Cloudlet.NULL);
+            .isPresent();
     }
 
     @Override
@@ -706,9 +736,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(final double currentTime) {
         return cloudletExecList
-            .stream()
-            .mapToDouble(c -> getEstimatedFinishTimeOfCloudlet(c, currentTime))
-            .min().orElse(Double.MAX_VALUE);
+                .stream()
+                .mapToDouble(c -> getEstimatedFinishTimeOfCloudlet(c, currentTime))
+                .min().orElse(Double.MAX_VALUE);
     }
 
     /**
@@ -725,10 +755,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double cloudletUsedMips =
             getAbsoluteCloudletResourceUtilization(ce.getCloudlet().getUtilizationModelCpu(),
                 currentTime, getAvailableMipsByPe());
-        double estimatedFinishTime = ce.getRemainingCloudletLength() / cloudletUsedMips;
+        final double estimatedFinishTime = ce.getRemainingCloudletLength() / cloudletUsedMips;
 
         if (estimatedFinishTime < vm.getSimulation().getMinTimeBetweenEvents()) {
-            estimatedFinishTime = vm.getSimulation().getMinTimeBetweenEvents();
+            return vm.getSimulation().getMinTimeBetweenEvents();
         }
 
         return estimatedFinishTime;
@@ -767,26 +797,28 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Try to find the first Cloudlet in the waiting list which the number of
+     * Try to find the first Cloudlet in the waiting list that the number of
      * required PEs is not higher than the number of free PEs.
      *
      * @return an {@link Optional} containing the found Cloudlet or an empty
      * Optional otherwise
      */
     protected Optional<CloudletExecution> findSuitableWaitingCloudlet() {
-        return cloudletWaitingList.stream()
-            .filter(this::isThereEnoughFreePesForCloudlet)
-            .findFirst();
+        return cloudletWaitingList
+                .stream()
+                .filter(ce -> ce.getCloudlet().getStatus() != Status.FROZEN)
+                .filter(this::isThereEnoughFreePesForCloudlet)
+                .findFirst();
     }
 
     /**
      * Checks if the amount of PEs required by a given Cloudlet is free to use.
      *
-     * @param c the Cloudlet to get the number of required PEs
+     * @param cloudlet the Cloudlet to get the number of required PEs
      * @return true if there is the amount of free PEs, false otherwise
      */
-    protected boolean isThereEnoughFreePesForCloudlet(final CloudletExecution c) {
-        return vm.getProcessor().getAvailableResource() >= c.getNumberOfPes();
+    protected boolean isThereEnoughFreePesForCloudlet(final CloudletExecution cloudlet) {
+        return vm.getProcessor().getAvailableResource() >= cloudlet.getNumberOfPes();
     }
 
     /**
@@ -809,9 +841,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public void setVm(final Vm vm) {
-        Objects.requireNonNull(vm);
-
-        if (isOtherVmAssigned(vm)) {
+        if (isOtherVmAssigned(requireNonNull(vm))) {
             throw new IllegalArgumentException(
                 "CloudletScheduler already has a Vm assigned to it. Each Vm must have its own CloudletScheduler instance.");
         }
@@ -870,13 +900,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public void setTaskScheduler(final CloudletTaskScheduler taskScheduler) {
-        Objects.requireNonNull(taskScheduler);
-        this.taskScheduler = taskScheduler;
+        this.taskScheduler = requireNonNull(taskScheduler);
         this.taskScheduler.setVm(vm);
     }
 
     @Override
-    public boolean isTherePacketScheduler() {
+    public boolean isThereTaskScheduler() {
         return taskScheduler != null && taskScheduler != CloudletTaskScheduler.NULL;
     }
 
@@ -909,7 +938,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return getAbsoluteCloudletResourceUtilization(ce.getCloudlet().getUtilizationModelCpu(), time, vm.getMips());
     }
 
-    @Override
+    /**
+         * Gets the current allocated MIPS for cloudlet.
+         *
+         * @param ce the ce
+         * @param time the time
+         * @return the current allocated mips for cloudlet
+         */
     public double getAllocatedMipsForCloudlet(final CloudletExecution ce, final double time) {
         return getAbsoluteCloudletResourceUtilization(ce.getCloudlet().getUtilizationModelCpu(), time, getAvailableMipsByPe());
     }
@@ -998,4 +1033,35 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public boolean isEmpty() {
         return cloudletExecList.isEmpty() && cloudletWaitingList.isEmpty();
     }
+
+    /**
+	 * Checks if a Cloudlet can be added to the execution list or not.
+	 * Each CloudletScheduler can define a different policy to
+	 * indicate if a Cloudlet can be added to the execution list
+	 * or not at the moment this method is called.
+	 *
+	 * <p>For instance, time-shared implementations can put all
+	 * Cloudlets in the execution list, once it uses a preemptive policy
+	 * that shares the CPU time between all running Cloudlets,
+	 * even there are more Cloudlets than the number of CPUs.
+	 * That is, it might always add new Cloudlets to the execution list.
+	 * </p>
+	 *
+	 * <p>On the other hand, space-shared schedulers do not share
+	 * the same CPUs between different Cloudlets. In this type of
+	 * scheduler, a CPU is only allocated to a Cloudlet when the previous
+	 * Cloudlet finished its entire execution.
+	 * That is, it might not always add new Cloudlets to the execution list.</p>
+	 *
+	 * @param ce Cloudlet to check if it can be added to the execution list
+	 * @return true if the Cloudlet can be added to the execution list, false otherwise
+	 */
+    private boolean canExecuteCloudlet(final CloudletExecution ce){
+        return ce.getCloudlet().getStatus().ordinal() <= Status.QUEUED.ordinal() && canExecuteCloudletInternal(ce);
+    }
+
+    /**
+     * @see #canExecuteCloudlet(CloudletExecution)
+     */
+    protected abstract boolean canExecuteCloudletInternal(final CloudletExecution ce);
 }

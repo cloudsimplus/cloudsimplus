@@ -19,6 +19,7 @@ import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
@@ -149,6 +150,7 @@ public class CloudSim implements Simulation {
     private final Set<EventListener<SimEvent>> onEventProcessingListeners;
     private final Set<EventListener<EventInfo>> onSimulationPausedListeners;
     private final Set<EventListener<EventInfo>> onClockTickListeners;
+    private final Set<EventListener<EventInfo>> onSimulationStartListeners;
 
     /**
      * Creates a CloudSim simulation.
@@ -182,6 +184,7 @@ public class CloudSim implements Simulation {
         this.onEventProcessingListeners = new HashSet<>();
         this.onSimulationPausedListeners = new HashSet<>();
         this.onClockTickListeners = new HashSet<>();
+        this.onSimulationStartListeners = new HashSet<>();
 
         // NOTE: the order for the lines below is important
         this.calendar = Calendar.getInstance();
@@ -223,6 +226,14 @@ public class CloudSim implements Simulation {
         return clock;
     }
 
+    private void notifyOnSimulationStartListeners() {
+        if(!onSimulationStartListeners.isEmpty() && clock > 0) {
+            onSimulationStartListeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
+            //Since the simulation starts just once, clear the listeners to avoid them to be notified again
+            onSimulationStartListeners.clear();
+        }
+    }
+
     /**
      * Keeps looking for new events to process, until the simulation naturally finishes,
      * is requested to finish at a given time or is aborted.
@@ -233,6 +244,7 @@ public class CloudSim implements Simulation {
      */
     private boolean eventLoop() {
         while (runClockTickAndProcessFutureEvents() || waitSimulationClockToReachTerminationTime()) {
+            notifyOnSimulationStartListeners(); //it's ensured to run just once.
             if(abortRequested){
                 logger.info("{}================== Simulation aborted under request at time {} ==================", System.lineSeparator(), clock);
                 return false;
@@ -461,7 +473,11 @@ public class CloudSim implements Simulation {
     public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
         validateDelay(delay);
         final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.SEND, clock + delay, src, dest, tag, data);
-        future.addEvent(evt);
+
+        //Events with a negative tag have higher priority (except the "end of the simulation" event)
+        if(tag < 0 && tag != CloudSimTags.END_OF_SIMULATION)
+            future.addEventFirst(evt);
+        else future.addEvent(evt);
     }
 
     @Override
@@ -627,7 +643,7 @@ public class CloudSim implements Simulation {
      * @param e The new entity
      */
     private void addEntityDynamically(final SimEntity e) {
-        Objects.requireNonNull(e);
+        requireNonNull(e);
         logger.trace("Adding: {}", e.getName());
         e.start();
     }
@@ -821,8 +837,14 @@ public class CloudSim implements Simulation {
 
     @Override
     public final Simulation addOnSimulationPausedListener(final EventListener<EventInfo> listener) {
-        Objects.requireNonNull(listener);
+        requireNonNull(listener);
         this.onSimulationPausedListeners.add(listener);
+        return this;
+    }
+
+    @Override
+    public final Simulation addOnSimulationStartListener(final EventListener<EventInfo> listener) {
+        this.onSimulationStartListeners.add(requireNonNull(listener));
         return this;
     }
 
@@ -833,7 +855,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public final Simulation addOnEventProcessingListener(final EventListener<SimEvent> listener) {
-        Objects.requireNonNull(listener);
+        requireNonNull(listener);
         this.onEventProcessingListeners.add(listener);
         return this;
     }
@@ -845,14 +867,14 @@ public class CloudSim implements Simulation {
 
     @Override
     public Simulation addOnClockTickListener(final EventListener<EventInfo> listener) {
-        Objects.requireNonNull(listener);
+        requireNonNull(listener);
         onClockTickListeners.add(listener);
         return this;
     }
 
     @Override
     public boolean removeOnClockTickListener(final EventListener<? extends EventInfo> listener) {
-        Objects.requireNonNull(listener);
+        requireNonNull(listener);
         return onClockTickListeners.remove(listener);
     }
 

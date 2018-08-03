@@ -7,13 +7,12 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Predicate;
-
-import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 
 /**
  * NetworkCloudlet class extends Cloudlet to support simulation of complex
@@ -46,28 +45,21 @@ public class NetworkCloudlet extends CloudletSimple {
      */
     private int currentTaskNum;
 
-    /**
-     * All tasks which cloudlet execution.
-     */
+    /** @see #getTasks() */
     private final List<CloudletTask> tasks;
 
-    /**
-     * @see #getMemory()
-     */
+    /** @see #getMemory() */
     private long memory;
 
     /**
      * Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
      *
      * @param id the unique ID of this cloudlet
-     * @param cloudletLength the length or size (in MI) of this cloudlet to be executed in a VM
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
      * @param pesNumber the pes number
-     * @pre id >= 0
-     * @pre cloudletLength >= 0.0
-     * @post $none
      */
-    public NetworkCloudlet(final int id,  final long cloudletLength, final int pesNumber) {
-        super(id, cloudletLength, pesNumber);
+    public NetworkCloudlet(final int id,  final long length, final int pesNumber) {
+        super(id, length, pesNumber);
         this.currentTaskNum = -1;
         this.memory = 0;
         this.tasks = new ArrayList<>();

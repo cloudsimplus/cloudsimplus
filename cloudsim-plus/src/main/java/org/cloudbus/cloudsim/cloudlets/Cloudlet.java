@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
@@ -46,6 +47,16 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
          * The Cloudlet has been assigned to a Datacenter to be executed as planned.
          */
         READY,
+
+        /**
+         * The Cloudlet is in the waiting queue but it won't be automatically moved
+         * to the execution list (even if there are available PEs) until
+         * its status is changed to {@link #QUEUED}.
+         * This status is used specifically for Cloudlets created from a
+         * trace file, such as a {@link GoogleTaskEventsTraceReader Google Cluster trace},
+         * that explicitly defines when tasks must start running.
+        */
+        FROZEN,
 
         /**
          * The Cloudlet has moved to a Vm.
@@ -601,6 +612,11 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Gets the execution length of this Cloudlet (in Million Instructions (MI))
      * that will be executed in each defined PE.
      *
+     * <p>In case the length is a negative value, it means
+     * the Cloudlet doesn't have a defined length, this way,
+     * it keeps running until a {@link CloudSimTags#CLOUDLET_FINISH}
+     * message is sent to the {@link DatacenterBroker}.</p>
+     *
      * <p>According to this length and the power of the VM processor (in
      * Million Instruction Per Second - MIPS) where the cloudlet will be run,
      * the cloudlet will take a given time to finish processing. For instance,
@@ -619,6 +635,20 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Sets the execution length of this Cloudlet (in Million Instructions (MI))
      * that will be executed in each defined PE.
+     *
+     * <p>In case the length is a negative value, it means
+     * the Cloudlet doesn't have a defined length, this way,
+     * it keeps running until a {@link CloudSimTags#CLOUDLET_FINISH}
+     * message is sent to the {@link DatacenterBroker}.</p>
+
+     * <p>According to this length and the power of the VM processor (in
+     * Million Instruction Per Second - MIPS) where the cloudlet will be run,
+     * the cloudlet will take a given time to finish processing. For instance,
+     * for a cloudlet of 10000 MI running on a processor of 2000 MIPS, the
+     * cloudlet will spend 5 seconds using the processor in order to be
+     * completed (that may be uninterrupted or not, depending on the scheduling
+     * policy).
+     * </p>
      *
      * @param length the length (in MI) of this Cloudlet to be executed in a Vm
      * @return

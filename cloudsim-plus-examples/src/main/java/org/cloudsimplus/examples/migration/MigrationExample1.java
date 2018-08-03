@@ -198,7 +198,6 @@ public final class MigrationExample1 {
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
-        datacenter0.setLog(false);
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
         createAndSubmitCloudlets(broker);
@@ -373,7 +372,7 @@ public final class MigrationExample1 {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2);
 
         DatacenterSimple dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
-        dc.setSchedulingInterval(SCHEDULING_INTERVAL).setLog(true);
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
 

@@ -12,7 +12,6 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -40,7 +39,11 @@ final class DatacenterBrokerNull implements DatacenterBroker {
         return this;
     }
     @Override public void processEvent(SimEvent ev) {/**/}
-    @Override public void schedule(SimEntity dest, double delay, int tag) {/**/}
+    @Override public boolean schedule(double delay, int tag, Object data) { return false; }
+    @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
+    @Override public boolean schedule(SimEntity dest, double delay, int tag) {/**/
+        return false;
+    }
     @Override public void run() {/**/}
     @Override public void start() {/**/}
     @Override public int getId() {
@@ -74,15 +77,15 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {/**/}
     @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {/**/}
     @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {/**/}
-    @Override public Set<Cloudlet> getCloudletCreatedList() { return Collections.EMPTY_SET; }
+    @Override public List<Cloudlet> getCloudletCreatedList() { return Collections.emptyList(); }
     @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
     @Override public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
     @Override public Function<Vm, Double> getVmDestructionDelayFunction() { return vm -> 0.0; }
     @Override public DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function) { return this; }
     @Override public Vm defaultVmMapper(Cloudlet cloudlet) { return Vm.NULL; }
+    @Override public List<Cloudlet> getCloudletSubmittedList() { return Collections.emptyList(); }
     @Override public void setVmComparator(Comparator<Vm> comparator) {/**/}
     @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
-    @Override public void setLog(boolean log) {/**/}
     @Override public void submitCloudlet(Cloudlet cloudlet) {/**/}
     @Override public void submitCloudletList(List<? extends Cloudlet> list) {/**/}
     @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {/**/}

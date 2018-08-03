@@ -50,8 +50,6 @@ public abstract class CloudSimEntity implements SimEntity {
      */
     private State state;
 
-    private boolean log;
-
     /**
      * Creates a new entity.
      *
@@ -64,7 +62,6 @@ public abstract class CloudSimEntity implements SimEntity {
         state = State.RUNNABLE;
         this.simulation.addEntity(this);
         this.started = false;
-        this.log = true;
     }
 
     /**
@@ -110,24 +107,24 @@ public abstract class CloudSimEntity implements SimEntity {
      */
     protected abstract void startEntity();
 
-    /**
-     * Sends an event to another entity.
-     *
-     * @param dest  the destination entity
-     * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
-     * @param data  The data to be sent with the event.
-     */
-    public void schedule(final SimEntity dest, final double delay, final int tag, final Object data) {
-        if (!simulation.isRunning()) {
-            return;
-        }
-        simulation.send(this, dest, delay, tag, data);
+    @Override
+    public boolean schedule(final double delay, final int tag, final Object data) {
+        return schedule(this, delay, tag, data);
     }
 
     @Override
-    public void schedule(final SimEntity dest, final double delay, final int tag) {
-        schedule(dest, delay, tag, null);
+    public boolean schedule(final SimEntity dest, final double delay, final int tag, final Object data) {
+        if (!simulation.isRunning()) {
+            return false;
+        }
+
+        simulation.send(this, dest, delay, tag, data);
+        return true;
+    }
+
+    @Override
+    public boolean schedule(final SimEntity dest, final double delay, final int tag) {
+        return schedule(dest, delay, tag, null);
     }
 
     /**
@@ -190,7 +187,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
     /**
      * Sends a high priority event to another entity with <b>no</b> attached data and no delay.
-     *  @param dest the destination entity
+     * @param dest the destination entity
      * @param tag  An user-defined number representing the type of event.
      */
     public void scheduleFirstNow(final SimEntity dest, final int tag) {
@@ -344,9 +341,8 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     @Override
-    public final SimEntity setSimulation(Simulation simulation) {
-        Objects.requireNonNull(simulation);
-        this.simulation = simulation;
+    public final SimEntity setSimulation(final Simulation simulation) {
+        this.simulation = Objects.requireNonNull(simulation);
         return this;
     }
 
@@ -547,11 +543,6 @@ public abstract class CloudSimEntity implements SimEntity {
         int result = simulation.hashCode();
         result = 31 * result + id;
         return result;
-    }
-
-    @Override
-    public void setLog(final boolean log) {
-        this.log = log;
     }
 
 }

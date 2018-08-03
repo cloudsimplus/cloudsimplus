@@ -23,14 +23,14 @@
  */
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import java.util.*;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.util.MathUtil;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.stream.Collectors.toList;
@@ -340,6 +340,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      *
      * @param ce {@inheritDoc}
      * @param fileTransferTime {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
     protected double cloudletSubmitInternal(final CloudletExecution ce, final double fileTransferTime) {
@@ -428,7 +429,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * @return {@inheritDoc}
      */
     @Override
-    public boolean canAddCloudletToExecutionList(final CloudletExecution cloudlet) {
+    protected boolean canExecuteCloudletInternal(final CloudletExecution cloudlet) {
         return isThereEnoughFreePesForCloudlet(cloudlet);
     }
 

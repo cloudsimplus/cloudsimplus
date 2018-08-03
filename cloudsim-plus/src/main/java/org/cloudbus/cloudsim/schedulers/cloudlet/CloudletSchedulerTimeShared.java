@@ -94,16 +94,16 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * @param cloudlet the Cloudlet to move from the paused to the exec lit
      * @return the Cloudlet expected finish time
      */
-    private double movePausedCloudletToExecListAndGetExpectedFinishTime(CloudletExecution cloudlet) {
+    private double movePausedCloudletToExecListAndGetExpectedFinishTime(final CloudletExecution cloudlet) {
         getCloudletPausedList().remove(cloudlet);
         addCloudletToExecList(cloudlet);
         return getEstimatedFinishTimeOfCloudlet(cloudlet, getVm().getSimulation().clock());
     }
 
     @Override
-    public double cloudletResume(int cloudletId) {
+    public double cloudletResume(final Cloudlet cloudlet) {
         return getCloudletPausedList().stream()
-                .filter(c -> c.getCloudletId() == cloudletId)
+                .filter(c -> c.getCloudletId() == cloudlet.getId())
                 .findFirst()
                 .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
                 .orElse(0.0);
@@ -121,7 +121,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * immediately added to the execution list
      */
     @Override
-    public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet) {
+    protected boolean canExecuteCloudletInternal(final CloudletExecution cloudlet) {
         return true;
     }
 

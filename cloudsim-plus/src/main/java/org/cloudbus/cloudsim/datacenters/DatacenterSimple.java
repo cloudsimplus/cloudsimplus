@@ -382,7 +382,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected void processCloudletResume(final Cloudlet cloudlet, final boolean ack) {
         final double estimatedFinishTime = cloudlet.getVm()
-            .getCloudletScheduler().cloudletResume(cloudlet.getId());
+            .getCloudletScheduler().cloudletResume(cloudlet);
 
         if (estimatedFinishTime > 0.0 && estimatedFinishTime > getSimulation().clock()) {
             schedule(this,
@@ -403,7 +403,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * acknowledge message when the event finishes to be processed
      */
     protected void processCloudletPause(final Cloudlet cloudlet, final boolean ack) {
-        cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet.getId());
+        cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
 
         if (ack) {
             sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_PAUSE_ACK, cloudlet);
@@ -416,7 +416,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param cloudlet cloudlet to be canceled
      */
     protected void processCloudletCancel(final Cloudlet cloudlet) {
-        cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet.getId());
+        cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
         sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_CANCEL, cloudlet);
     }
 

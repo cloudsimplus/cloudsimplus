@@ -17,12 +17,15 @@ final class SimEntityNull implements SimEntity {
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public SimEntity setSimulation(Simulation simulation) { return this; }
     @Override public void processEvent(SimEvent ev) {/**/}
-    @Override public void schedule(SimEntity dest, double delay, int tag) {/**/}
+    @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
+    @Override public boolean schedule(double delay, int tag, Object data) { return false; }
+    @Override public boolean schedule(SimEntity dest, double delay, int tag) {/**/
+        return false;
+    }
     @Override public void run() {/**/}
     @Override public void start() {/**/}
     @Override public void shutdownEntity() {/**/}
     @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override public String getName() {  return ""; }
     @Override public int getId() { return 0; }
-    @Override public void setLog(boolean log) {/**/}
 }

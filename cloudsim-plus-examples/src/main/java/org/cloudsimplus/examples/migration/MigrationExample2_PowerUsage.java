@@ -204,7 +204,6 @@ public final class MigrationExample2_PowerUsage {
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
-        datacenter0.setLog(false);
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
         createAndSubmitCloudlets(broker);
@@ -425,7 +424,7 @@ public final class MigrationExample2_PowerUsage {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2, fallback);
 
         Datacenter dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
-        dc.setSchedulingInterval(SCHEDULING_INTERVAL).setLog(true);
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
 

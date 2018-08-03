@@ -45,14 +45,22 @@ public interface CloudletScheduler extends Serializable {
     CloudletScheduler NULL = new CloudletSchedulerNull();
 
     /**
+     * Sets a cloudlet as failed.
+     *
+     * @param cloudlet ID of the cloudlet to set as failed
+     * @return the failed cloudlet or {@link Cloudlet#NULL} if not found
+     */
+    Cloudlet cloudletFail(Cloudlet cloudlet);
+
+    /**
      * Cancels execution of a cloudlet.
      *
-     * @param cloudletId ID of the cloudlet being canceled
+     * @param cloudlet ID of the cloudlet being canceled
      * @return the canceled cloudlet or {@link Cloudlet#NULL} if not found
      * @pre $none
      * @post $none
      */
-    Cloudlet cloudletCancel(int cloudletId);
+    Cloudlet cloudletCancel(Cloudlet cloudlet);
 
     /**
      * Processes a finished cloudlet.
@@ -66,26 +74,26 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Pauses execution of a cloudlet.
      *
-     * @param cloudletId ID of the cloudlet being paused
+     * @param cloudlet ID of the cloudlet being paused
      * @return $true if cloudlet paused, $false otherwise
      * @pre $none
      * @post $none
      */
-    boolean cloudletPause(int cloudletId);
+    boolean cloudletPause(Cloudlet cloudlet);
 
     /**
      * Resumes execution of a paused cloudlet.
      *
-     * @param cloudletId ID of the cloudlet being resumed
+     * @param cloudlet ID of the cloudlet being resumed
      * @return expected finish time of the cloudlet, 0.0 if queued or not found in the
      * paused list
      * @pre $none
      * @post $none
      */
-    double cloudletResume(int cloudletId);
+    double cloudletResume(Cloudlet cloudlet);
 
     /**
-     * Receives an cloudlet to be executed in the VM managed by this scheduler.
+     * Receives a cloudlet to be executed in the VM managed by this scheduler.
      *
      * @param cl the submitted cloudlet
      * @param fileTransferTime time required to move the required files from the SAN to the VM
@@ -260,11 +268,11 @@ public interface CloudletScheduler extends Serializable {
     void setTaskScheduler(CloudletTaskScheduler taskScheduler);
 
     /**
-     * Checks if there is a packet scheduler assigned to this CloudletScheduler
-     * in order to enable dispatching packets from and to the Vm of this CloudletScheduler.
+     * Checks if there is a {@link CloudletTaskScheduler} assigned to this CloudletScheduler
+     * in order to enable tasks execution and dispatching packets from and to the Vm of this CloudletScheduler.
      * @return
      */
-    boolean isTherePacketScheduler();
+    boolean isThereTaskScheduler();
 
     /**
      * Returns one cloudlet to migrate to another Vm.
@@ -343,30 +351,6 @@ public interface CloudletScheduler extends Serializable {
      * @return
      */
     long getFreePes();
-
-    /**
-	 * Checks if a Cloudlet can be added to the execution list or not.
-	 * Each CloudletScheduler can define a different policy to
-	 * indicate if a Cloudlet can be added to the execution list
-	 * or not at the moment this method is called.
-	 *
-	 * <p>For instance, time-shared implementations can put all
-	 * Cloudlets in the execution list, once it uses a preemptive policy
-	 * that shares the CPU time between all running Cloudlets,
-	 * even there are more Cloudlets than the number of CPUs.
-	 * That is, it might always add new Cloudlets to the execution list.
-	 * </p>
-	 *
-	 * <p>On the other hand, space-shared schedulers do not share
-	 * the same CPUs between different Cloudlets. In this type of
-	 * scheduler, a CPU is only allocated to a Cloudlet when the previous
-	 * Cloudlet finished its entire execution.
-	 * That is, it might not always add new Cloudlets to the execution list.</p>
-	 *
-	 * @param cloudlet Cloudlet to check if it can be added to the execution list
-	 * @return true if the Cloudlet can be added to the execution list, false otherwise
-	 */
-	boolean canAddCloudletToExecutionList(CloudletExecution cloudlet);
 
     /**
      * Checks if a Cloudlet has finished and was returned to its {@link DatacenterBroker}.

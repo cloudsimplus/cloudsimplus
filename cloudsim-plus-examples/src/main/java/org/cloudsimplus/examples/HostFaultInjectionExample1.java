@@ -190,9 +190,7 @@ public final class HostFaultInjectionExample1 {
         System.out.println();
 
         Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-        dc
-                .setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS)
-                .setLog(false);
+        dc.setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
         return dc;
     }
 

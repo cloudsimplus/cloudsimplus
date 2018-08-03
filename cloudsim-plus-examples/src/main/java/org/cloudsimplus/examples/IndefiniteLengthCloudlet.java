@@ -29,59 +29,54 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.listeners.CloudletVmEventInfo;
+import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Shows how to cancel the execution of a Cloudlet
- * after executing a given amount of MIPS from its total
- * MIPS length.
+ * A example showing how to create Cloudlets with an indefinite length,
+ * so that each Cloudlet stops running only if
+ * (i) it reaches {@link Long#MAX_VALUE} MI executed or
+ * (ii) {@link CloudSimTags#CLOUDLET_FINISH} message is sent to the {@link DatacenterBroker}.
  *
- * <p>Realize you can't use the {@link Cloudlet#setStatus(Cloudlet.Status)}
- * to directly change the status of a Cloudlet, such as to cancel it.
- * That is an issue inherited from CloudSim that needs to be fixed yet.
- * To change the Cloudlet status you have to use the {@link CloudletScheduler}
- * that controls the execution of the Cloudlet.</p>
+ * <p>In this example, the Cloudlets that initially have an indefinite length
+ * will have a length set when the first created Cloudlet (one with a predefined
+ * length) finishes. In such a moment, the length of the other Cloudlets is set.</p>
+ *
+ * <p>The time or event when the length of such Cloudlets are set
+ * can be defined in uncountable ways, according to developer needs.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.2.6
+ * @since CloudSim Plus 3.1.0
  */
-public class CloudletCancellationExample {
-    /**
-     * Defines, between other things, the time intervals
-     * to update the processing of Cloudlets (in seconds).
-     */
-    private static final int SCHEDULING_INTERVAL = 1;
-
+public class IndefiniteLengthCloudlet {
     private static final int HOSTS = 1;
     private static final int HOST_PES = 8;
 
     private static final int VMS = 2;
     private static final int VM_PES = 4;
+    private static final int VM_MIPS = 1000;
 
-    private static final int CLOUDLETS = 4;
+    private static final int CLOUDLETS = 1;
     private static final int CLOUDLET_PES = 2;
-    private static final int CLOUDLET_LENGTH = 10000;
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
@@ -90,10 +85,10 @@ public class CloudletCancellationExample {
     private Datacenter datacenter0;
 
     public static void main(String[] args) {
-        new CloudletCancellationExample();
+        new IndefiniteLengthCloudlet();
     }
 
-    public CloudletCancellationExample() {
+    private IndefiniteLengthCloudlet() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
@@ -105,20 +100,12 @@ public class CloudletCancellationExample {
         broker0 = new DatacenterBrokerSimple(simulation);
 
         vmList = createVms();
+
         cloudletList = createCloudlets();
-
-        /**
-         * Monitor the execution of the first Cloudlet to cancel it after it has executed 50%
-         * of its total length.
-         * In order to make this work, the {@link Datacenter#getSchedulingInterval()}
-         * most be set.
-         * See {@link #SCHEDULING_INTERVAL} for more details.
-         */
-        cloudletList.get(0).addOnUpdateProcessingListener(this::cancelCloudletIfHalfExecuted);
-
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
+        simulation.addOnSimulationStartListener(this::sendCloudletFinishMsg);
         simulation.start();
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
@@ -126,17 +113,18 @@ public class CloudletCancellationExample {
     }
 
     /**
-     * Cancel a Cloudlet if it has already executed 50% of its total MIPS length.
-     * @param e the event information about Cloudlet processing
+     * After the simulation starts, send a {@link CloudSimTags#CLOUDLET_FINISH} message
+     * with a specific delay defining the time when the Cloudlets with an indefinite length
+     * will finish.
+     *
+     * <p>This method is an {@link org.cloudsimplus.listeners.EventListener} that will be
+     * called after the simulation starts.</p>
+     * @param info the simulation start event information
+     * @see CloudSim#addOnSimulationStartListener(EventListener)
      */
-    private void cancelCloudletIfHalfExecuted(final CloudletVmEventInfo e) {
-        final Cloudlet cloudlet = e.getCloudlet();
-        if(cloudlet.getFinishedLengthSoFar() >= CLOUDLET_LENGTH / 2){
-            System.out.printf(
-                "\n# %.2f: Intentionally cancelling %s execution after it has executed half of its length.\n",
-                e.getTime(), cloudlet);
-            cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
-        }
+    private void sendCloudletFinishMsg(final EventInfo info) {
+        System.out.println("Sending cloudlets finish message");
+        cloudletList.forEach(cloudlet -> broker0.schedule(400, CloudSimTags.CLOUDLET_FINISH, cloudlet));
     }
 
     /**
@@ -149,9 +137,7 @@ public class CloudletCancellationExample {
             hostList.add(host);
         }
 
-        final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
-        return dc;
+        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
     private Host createHost() {
@@ -164,14 +150,11 @@ public class CloudletCancellationExample {
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
         final long storage = 1000000; //in Megabytes
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
         Host host = new HostSimple(ram, bw, storage, peList);
         host
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 
@@ -182,7 +165,7 @@ public class CloudletCancellationExample {
         final List<Vm> list = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm =
-                new VmSimple(i, 1000, VM_PES)
+                new VmSimple(i, VM_MIPS, VM_PES)
                     .setRam(512).setBw(1000).setSize(10000)
                     .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
@@ -193,20 +176,26 @@ public class CloudletCancellationExample {
     }
 
     /**
-     * Creates a list of Cloudlets.
+     * Creates Cloudlets with indefinite length by setting a negative value.
+     * This way, the Cloudlets keep running until a {@link CloudSimTags#CLOUDLET_FINISH}
+     * event is sent to the {@link DatacenterBroker}.
+     * @see #sendCloudletFinishMsg(EventInfo)
      */
     private List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
-        UtilizationModel utilization = new UtilizationModelFull();
+        final UtilizationModelFull utilizationFull = new UtilizationModelFull();
+        final UtilizationModelDynamic utilizationDynamic = new UtilizationModelDynamic(1.0/CLOUDLETS);
+
         for (int i = 0; i < CLOUDLETS; i++) {
             Cloudlet cloudlet =
-                new CloudletSimple(i, CLOUDLET_LENGTH, CLOUDLET_PES)
+                new CloudletSimple(-10000, CLOUDLET_PES)
                     .setFileSize(1024)
                     .setOutputSize(1024)
-                    .setUtilizationModel(utilization);
+                    .setUtilizationModelCpu(utilizationFull)
+                    .setUtilizationModelRam(utilizationDynamic)
+                    .setUtilizationModelBw(utilizationDynamic);
             list.add(cloudlet);
         }
-
         return list;
     }
 }

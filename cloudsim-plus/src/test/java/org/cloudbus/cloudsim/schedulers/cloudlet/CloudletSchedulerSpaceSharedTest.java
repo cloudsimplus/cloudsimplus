@@ -1,10 +1,8 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -12,9 +10,13 @@ import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.Mocks;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.junit.Test;
-import static org.junit.Assert.*;
 import org.junit.Ignore;
+import org.junit.Test;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.Assert.*;
 
 /**
  *
@@ -58,8 +60,8 @@ public class CloudletSchedulerSpaceSharedTest {
         instance.cloudletSubmit(cloudlet);
         instance.updateProcessing(2, mipsList);
         assertEquals(cloudletLen, cloudlet.getLength());
-        instance.cloudletPause(cloudlet.getId());
-        instance.cloudletResume(cloudlet.getId());
+        instance.cloudletPause(cloudlet);
+        instance.cloudletResume(cloudlet);
         assertEquals(cloudletLen, cloudlet.getLength());
     }
 
@@ -98,9 +100,8 @@ public class CloudletSchedulerSpaceSharedTest {
         final int cloudletId = 0;
         final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         final double expResult = 0.0;
-        final double result = instance.cloudletResume(cloudletId);
-        assertEquals(expResult, result, 0.0);
-    }
+        final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
+        assertEquals(expResult, result, 0.0);    }
 
     @Test
     public void testCloudletResume_NotEnoughPesToResume() {
@@ -119,7 +120,7 @@ public class CloudletSchedulerSpaceSharedTest {
                 CloudletSimpleTest.createCloudlet(numberOfCloudlets, cloudletPes)));
 
         final double expResult = 0.0;
-        final double result = instance.cloudletResume(cloudletId);
+        final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
         assertEquals(expResult, result, 0.0);
     }
 

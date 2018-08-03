@@ -6,18 +6,19 @@
  */
 package org.cloudbus.cloudsim.core;
 
-import java.util.*;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
-
-import java.util.function.Predicate;
-
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
+
+import java.util.Calendar;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * An interface to be implemented by a class that manages simulation
@@ -182,6 +183,8 @@ public interface Simulation {
      * @return
      */
     Simulation addOnSimulationPausedListener(EventListener<EventInfo> listener);
+
+    Simulation addOnSimulationStartListener(EventListener<EventInfo> listener);
 
     /**
      * Removes a listener from the onSimulationPausedListener List.

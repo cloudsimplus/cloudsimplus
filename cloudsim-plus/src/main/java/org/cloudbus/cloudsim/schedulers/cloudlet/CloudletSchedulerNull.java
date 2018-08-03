@@ -17,14 +17,15 @@ import java.util.Set;
  * @see CloudletScheduler#NULL
  */
 final class CloudletSchedulerNull implements CloudletScheduler {
-    @Override public Cloudlet cloudletCancel(int cloudletId) {
+    @Override public Cloudlet cloudletFail(Cloudlet cloudlet) { return Cloudlet.NULL; }
+    @Override public Cloudlet cloudletCancel(Cloudlet cloudlet) {
         return Cloudlet.NULL;
     }
     @Override public void cloudletFinish(CloudletExecution ce) {/**/}
-    @Override public boolean cloudletPause(int cloudletId) {
+    @Override public boolean cloudletPause(Cloudlet cloudlet) {
         return false;
     }
-    @Override public double cloudletResume(int cloudletId) {
+    @Override public double cloudletResume(Cloudlet cloudlet) {
         return 0.0;
     }
     @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
@@ -65,7 +66,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
         return CloudletTaskScheduler.NULL;
     }
     @Override public void setTaskScheduler(CloudletTaskScheduler taskScheduler) {/**/}
-    @Override public boolean isTherePacketScheduler() {
+    @Override public boolean isThereTaskScheduler() {
         return false;
     }
     @Override public Cloudlet getCloudletToMigrate() {
@@ -85,7 +86,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
         return 0;
     }
     @Override public long getFreePes() { return 0; }
-    @Override public boolean canAddCloudletToExecutionList(CloudletExecution cloudlet) { return false; }
     @Override public Set<Cloudlet> getCloudletReturnedList() { return Collections.EMPTY_SET; }
     @Override public boolean isCloudletReturned(Cloudlet cloudlet) { return false; }
     @Override public void addCloudletToReturnedList(Cloudlet cloudlet) {/**/}
