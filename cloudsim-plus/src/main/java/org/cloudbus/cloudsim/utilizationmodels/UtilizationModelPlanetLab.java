@@ -28,7 +28,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * This is default number of samples to try to read from the trace file
      * if a different value isn't provided to the constructors.
      */
-    private static final int DATA_SAMPLES = 289;
+    private static final int DATA_SAMPLES = 288;
 
     /**
      * @see #getSchedulingInterval()
@@ -132,7 +132,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
             while((line=input.readLine())!=null && !line.startsWith("#") && i < n){
                 utilization[i++] = Integer.valueOf(line) / 100.0;
             }
-            utilization[n - 1] = utilization[n - 2];
         }
 
         return utilization;
@@ -173,8 +172,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         return (utilization[nextIndex] - utilization[prevIndex]) / getSecondsInsideInterval(prevIndex, nextIndex);
     }
 
-    private double getSecondsInsideInterval(final int prevIndex, final int nextIndex) {
-        return getIntervalSize(prevIndex, nextIndex) * getSchedulingInterval();
+    protected final double getSecondsInsideInterval(final int prevIndex, final int nextIndex) {
+        return getIntervalSize(prevIndex, nextIndex) * schedulingInterval;
     }
 
     /**
@@ -188,7 +187,14 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @return the index of the {@link #utilization} containing the utilization for the time given
      */
     private double getUtilizationIndex(final double time) {
-        return time / getSchedulingInterval();
+        /* Since the Cloudlet that owns this utilization model instance
+         * may run longer than there is data in the trace file,
+         * we need to implement kind of a circular list to read
+         * the data from the file. This way, the modulo operation
+         * ensures we start reading data from the beginning of the
+         * file if its end is reached.
+         */
+        return (time / schedulingInterval) % utilization.length;
     }
 
     /**
@@ -216,18 +222,37 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @return the index of the {@link #utilization} containing the utilization for the next time multiple of the scheduling interval
      */
     private int getNextUtilizationIndex(final double time) {
-        return (int)Math.ceil(getUtilizationIndex(time));
+        //Computes the modulo again since the Math.ceil may return an index higher than the size of the utilization array
+        return (int)Math.ceil(getUtilizationIndex(time)) % utilization.length;
     }
 
     /**
-     * Gets the number of {@link #utilization} samples between two indexes.
+     * Gets the number of {@link #utilization} samples in between two indexes.
+     *
+     * <p>
+     * Since the utilization array is implemented as a circular list,
+     * when the last index is read, it restarts from the first index again.
+     * Accordingly, we can have situations where the end index is the last
+     * array element and the start index is the first or some subsequent index.
+     * This way, computing the difference between the two indexes would return a negative value.
+     * The method ensures that a positive value is returned, correctly
+     * computing the size of the interval between the two indexes.
+     * </p>
+     *
+     * <p>Think of the indexes of the circular list as being 0, 1, 2, 3 ...... 286, 287, 0, 1, 2, 3 ...
+     * If the start index is 286 and the end index 2, then the interval size is 4
+     * (the number of indexed in between 286 and 2).
+     *
+     * </p>
      * @param startIndex the start index in the interval
      * @param endIndex the end index in the interval
      * @return the number of samples inside such indexes interval
      */
-    private int getIntervalSize(final int startIndex, final int endIndex) {
+    protected final int getIntervalSize(final int startIndex, final int endIndex) {
         /*@todo The interval size should add 1, but this is the original formula. It needs to be checked the impact in tests.*/
-        return endIndex - startIndex;
+        final int index = endIndex - startIndex;
+
+        return index >= 0 ? index : (utilization.length - startIndex) + endIndex;
     }
 
     /**
