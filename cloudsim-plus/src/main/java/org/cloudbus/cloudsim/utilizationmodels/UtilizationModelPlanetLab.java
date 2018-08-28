@@ -2,14 +2,33 @@ package org.cloudbus.cloudsim.utilizationmodels;
 
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
+import java.util.Objects;
 
 /**
- * Defines the resource utilization model based on a
+ * Defines a resource utilization model based on a
  * <a href="https://www.planet-lab.org">PlanetLab</a>
  * Datacenter workload (trace) file.
+ *
+ * <p>
+ * Each PlanetLab trace file available contains CPU utilization measured at every 5 minutes (300 seconds) inside PlanetLab VMs.
+ * This value in seconds is commonly used for the {@link #getSchedulingInterval() scheduling interval} attribute
+ * when instantiating an object of this class.
+ * </p>
  */
 public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
+
+    /**
+     * The number of 5 minutes intervals inside one day (24 hours),
+     * since the available PlanetLab traces store resource utilization collected every
+     * 5 minutes along 24 hours.
+     * This is default number of samples to try to read from the trace file
+     * if a different value isn't provided to the constructors.
+     */
+    private static final int DATA_SAMPLES = 289;
 
     /**
      * @see #getSchedulingInterval()
@@ -26,19 +45,11 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     private final double[] utilization;
 
     /**
-     * The number of 5 minutes intervals inside one day (24 hours),
-     * since the available PlanetLab traces store resource utilization collected every
-     * 5 minutes along 24 hours.
-     * This is default number of samples to try to read from the trace file.
-     */
-    private static final int DATA_SAMPLES = 289;
-
-    /**
      * Instantiates a new PlanetLab resource utilization model from a trace
      * file inside the <b>application's resource directory</b>.
      *
-     * @param traceFilePath The <b>relative path</b> of a PlanetLab Datacenter trace file.
-     * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
+     * @param traceFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
+     * @param schedulingInterval the time interval in which precise utilization can be got from the file
      * @throws NumberFormatException the number format exception
      * @see #getSchedulingInterval()
      */
@@ -51,8 +62,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * Instantiates a new PlanetLab resource utilization model from a trace
      * file.
      *
-     * @param workloadFilePath The path of a PlanetLab Datacenter workload file.
-     * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
+     * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
+     * @param schedulingInterval the time interval in which precise utilization can be got from the file
      * @throws NumberFormatException the number format exception
      * @see #getSchedulingInterval()
      */
@@ -65,11 +76,11 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * Instantiates a new PlanetLab resource utilization model with variable
      * utilization samples from a workload file.
      *
-     * @param workloadFilePath The path of a PlanetLab Datacenter workload file.
-     * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
+     * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
+     * @param schedulingInterval the time interval in which precise utilization can be got from the file
      * @param dataSamples number of samples to read from the workload file
      * @throws NumberFormatException the number format exception
-     * @see #setSchedulingInterval(double)
+     * @see #getSchedulingInterval()
      */
     public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval, final int dataSamples) throws NumberFormatException
     {
@@ -81,9 +92,10 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * utilization samples from a workload file.
      *
      * @param reader the {@link InputStreamReader} to read the workload file
-     * @param schedulingInterval the scheduling interval that defines the time interval in which precise utilization is be got
+     * @param schedulingInterval the time interval in which precise utilization can be got from the file
      * @param dataSamples number of samples to read from the workload file
      * @throws NumberFormatException the number format exception
+     * @see #getSchedulingInterval()
      */
     private UtilizationModelPlanetLab(final InputStreamReader reader, final double schedulingInterval, final int dataSamples) throws NumberFormatException
     {
@@ -110,13 +122,14 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @throws IOException
      */
     private double[] readWorkloadFile(final InputStreamReader reader, final int dataSamples) throws IOException {
+        Objects.requireNonNull(reader);
         final double[] utilization = createEmptyArray(Math.max(2, dataSamples));
 
         try (final BufferedReader input = new BufferedReader(reader)) {
             final int n = utilization.length;
             int i = 0;
             String line;
-            while((line=input.readLine())!=null && i < n){
+            while((line=input.readLine())!=null && !line.startsWith("#") && i < n){
                 utilization[i++] = Integer.valueOf(line) / 100.0;
             }
             utilization[n - 1] = utilization[n - 2];
@@ -138,19 +151,19 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     public double getUtilization(final double time) {
         //If the time requested is multiple of the scheduling interval, gets a precise value from the trace utilization
         if (time % getSchedulingInterval() == 0) {
-            return utilization[(int)getUtilizationIndex(time)];
+            return utilization[(int) getUtilizationIndex(time)];
         }
 
         /* Otherwise, computes a utilization based the
-        *  utilization between the a interval [start - end] for which
-        *  we have the utilization stored in the trace. */
+         * utilization between the a interval [start - end] for which
+         * we have the utilization stored in the trace. */
         final int prevIndex = getPrevUtilizationIndex(time);
 
-        //elapsed time since the previous utilization index
+        //Elapsed time since the previous utilization index
         final double elapsedTimeSincePrevUsage = prevIndex * getSchedulingInterval();
 
         final double totalElapsedTime = time - elapsedTimeSincePrevUsage;
-        return utilization[prevIndex] + getUtilizationPerSec(time)*totalElapsedTime;
+        return utilization[prevIndex] + getUtilizationPerSec(time) * totalElapsedTime;
     }
 
     private double getUtilizationPerSec(final double time) {
@@ -239,6 +252,10 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @see #getSchedulingInterval()
      */
     public final void setSchedulingInterval(final double schedulingInterval) {
+        if(schedulingInterval <= 0){
+            throw new IllegalArgumentException("Scheduling interval must greater than 0. The given value is " + schedulingInterval);
+        }
+
         this.schedulingInterval = schedulingInterval;
     }
 }

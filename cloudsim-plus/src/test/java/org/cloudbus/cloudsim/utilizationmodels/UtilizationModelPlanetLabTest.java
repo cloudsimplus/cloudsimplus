@@ -1,9 +1,9 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import static org.junit.Assert.assertEquals;
-
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class UtilizationModelPlanetLabTest {
 
@@ -18,8 +18,7 @@ public class UtilizationModelPlanetLabTest {
 
     @Before
     public void setUp() {
-        utilizationModel = new UtilizationModelPlanetLab(getClass().getClassLoader()
-                .getResource(FILE).getPath(), SCHEDULING_INTERVAL);
+        utilizationModel = UtilizationModelPlanetLab.getInstance(FILE, SCHEDULING_INTERVAL);
     }
 
     @Test
