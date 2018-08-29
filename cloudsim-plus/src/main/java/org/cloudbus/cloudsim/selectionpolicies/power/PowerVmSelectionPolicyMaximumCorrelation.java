@@ -8,14 +8,15 @@
 
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.UtilizationHistory;
+import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A VM selection policy that selects for migration the VM with the Maximum Correlation Coefficient (MCC) among
@@ -90,16 +91,16 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
         final double[][] utilization = new double[numberVms][minHistorySize];
 
         for (int i = 0; i < numberVms; i++) {
-            final List<Double> vmUtilization = vmList.get(i).getUtilizationHistory().getHistory();
+            final double[] vmUtilization = vmList.get(i).getUtilizationHistory().getHistory().values().stream().mapToDouble(v -> v).toArray();
             for (int j = 0; j < minHistorySize; j++) {
-                utilization[i][j] = vmUtilization.get(j);
+                utilization[i][j] = vmUtilization[j];
             }
         }
         return utilization;
     }
 
     /**
-     * Gets the min CPU utilization percentage history size among a list of VMs.
+     * Gets the min CPU utilization percentage history size between a list of VMs.
      *
      * @param vmList the VM list
      * @return the min CPU utilization percentage history size of the VM list
@@ -108,7 +109,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
         return vmList.stream()
             .map(Vm::getUtilizationHistory)
             .map(UtilizationHistory::getHistory)
-            .mapToInt(List::size)
+            .mapToInt(Map::size)
             .min().orElse(0);
     }
 

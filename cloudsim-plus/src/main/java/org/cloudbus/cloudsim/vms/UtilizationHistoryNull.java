@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.SortedMap;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link UtilizationHistory}
@@ -16,12 +16,11 @@ final class UtilizationHistoryNull implements UtilizationHistory {
     @Override public double getUtilizationMean() { return 0; }
     @Override public double getUtilizationVariance() { return 0; }
     @Override public void addUtilizationHistory(double time) {/**/}
-    @Override public List<Double> getHistory() { return Collections.EMPTY_LIST; }
-    @Override public double getPreviousTime() { return 0; }
-    @Override public void setPreviousTime(double previousTime) {/**/}
+    @Override public SortedMap<Double, Double> getHistory() { return Collections.emptySortedMap(); }
     @Override public boolean isEnabled() { return false; }
     @Override public void enable() {/**/}
     @Override public void disable() {/**/}
     @Override public int getMaxHistoryEntries() { return 0; }
     @Override public void setMaxHistoryEntries(int maxHistoryEntries) {/**/}
+    @Override public Vm getVm() { return Vm.NULL; }
 }

@@ -15,7 +15,8 @@ import org.cloudbus.cloudsim.hosts.Host;
  * <b>This is the fundamental class to enable power-aware Hosts.
  * However, a Host just provides power usage data if a PowerModel is set using the
  * {@link Host#setPowerModel(PowerModel)}.</b>
- *
+ * The power consumption data is return in Watt-Second (Ws),
+ * which is just in a different scale than the usual Kilowatt-Hour (kWh).
  *
  * <p>The interface implements the Null Object
  * Design Pattern in order to start avoiding {@link NullPointerException} when

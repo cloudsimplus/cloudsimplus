@@ -70,7 +70,7 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
      */
     @Override
     public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
-        final double[] data = host.getUtilizationHistory();
+        final double[] data = host.getUtilizationHistorySum().values().stream().mapToDouble(v -> v).toArray();
         if (MathUtil.countNonZeroBeginning(data) >= MIN_HISTORY_ENTRIES_TO_COMPUTE_MAD) {
             return MathUtil.mad(data);
         }

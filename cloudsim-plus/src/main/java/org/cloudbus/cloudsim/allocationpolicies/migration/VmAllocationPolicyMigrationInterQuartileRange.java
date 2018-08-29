@@ -70,7 +70,7 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
      */
     @Override
     public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
-        final double[] data = host.getUtilizationHistory();
+        final double[] data = host.getUtilizationHistorySum().values().stream().mapToDouble(v -> v).toArray();
         if (MathUtil.countNonZeroBeginning(data) >= MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ) {
             return MathUtil.iqr(data);
         }

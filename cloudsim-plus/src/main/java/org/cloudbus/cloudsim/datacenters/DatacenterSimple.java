@@ -458,9 +458,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @see #updateCloudletProcessing()
      */
     protected double getCloudletProcessingUpdateInterval(final double nextFinishingCloudletTime){
-        return (schedulingInterval == 0 ?
-            nextFinishingCloudletTime :
-            Math.min(nextFinishingCloudletTime, schedulingInterval));
+        if(schedulingInterval == 0) {
+            return nextFinishingCloudletTime;
+        }
+
+        final double time = Math.floor(getSimulation().clock());
+        final double mod = time % schedulingInterval;
+        /* If a scheduling interval is set, ensures the next time that Cloudlets' processing
+         * are updated is multiple of the scheduling interval.
+         * If there is an event happening before such a time, then the event
+         * will be scheduled as usual. Otherwise, the update
+         * is scheduled to the next time multiple of the scheduling interval.*/
+        final double delay = mod == 0 ? schedulingInterval : (time - mod + schedulingInterval) - time;
+        return Math.min(nextFinishingCloudletTime, delay);
     }
 
     /**

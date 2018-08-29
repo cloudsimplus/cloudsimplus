@@ -3,8 +3,8 @@ package org.cloudbus.cloudsim.vms;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Stores resource utilization data for a specific {@link Vm}.
@@ -21,13 +21,13 @@ public class VmUtilizationHistory implements UtilizationHistory {
     /**
      * @see #getHistory()
      */
-    public final List<Double> history;
+    private final SortedMap<Double, Double> history;
     private final Vm vm;
 
     /**
-     * @see #getPreviousTime()
+     * The previous time that cloudlets were processed.
      */
-    public double previousTime;
+    private double previousTime;
 
     /**
      * Instantiates the class to store resource utilization history for a specific {@link Vm}.
@@ -39,10 +39,10 @@ public class VmUtilizationHistory implements UtilizationHistory {
      *                in order to reduce memory usage
      */
     public VmUtilizationHistory(final Vm vm, final boolean enabled) {
-        this.history = new LinkedList<>();
+        this.history = new TreeMap<>();
         this.vm = vm;
         this.enabled = enabled;
-        this.setMaxHistoryEntries(DEF_MAX_HISTORY_ENTRIES);
+        this.setMaxHistoryEntries(Integer.MAX_VALUE);
     }
 
     public VmUtilizationHistory(final Vm vm) {
@@ -53,7 +53,7 @@ public class VmUtilizationHistory implements UtilizationHistory {
     public double getUtilizationMad() {
         if (!history.isEmpty()) {
             final int n = Math.min(getMaxHistoryEntries(), getHistory().size());
-            final double median = MathUtil.median(getHistory());
+            final double median = MathUtil.median(getHistory().values());
             final double[] deviationSum = new double[n];
             for (int i = 0; i < n; i++) {
                 deviationSum[i] = Math.abs(median - getHistory().get(i));
@@ -68,7 +68,7 @@ public class VmUtilizationHistory implements UtilizationHistory {
     public double getUtilizationMean() {
         if (!history.isEmpty()) {
             final int maxEntries = Math.min(getMaxHistoryEntries(), getHistory().size());
-            final double usagePercentMean = getHistory().stream()
+            final double usagePercentMean = getHistory().values().stream()
                 .limit(maxEntries)
                 .mapToDouble(usagePercent -> usagePercent)
                 .average()
@@ -85,7 +85,7 @@ public class VmUtilizationHistory implements UtilizationHistory {
         if (!history.isEmpty()) {
             final double mean = getUtilizationMean();
             final int maxNumOfEntriesToAverage = Math.min(getMaxHistoryEntries(), getHistory().size());
-            return getHistory().stream()
+            return getHistory().values().stream()
                 .limit(maxNumOfEntriesToAverage)
                 .mapToDouble(usagePercent -> usagePercent * vm.getMips())
                 .map(usageValue -> usageValue - mean)
@@ -97,45 +97,37 @@ public class VmUtilizationHistory implements UtilizationHistory {
     }
 
     @Override
-    public void addUtilizationHistory(final double time){
+    public void addUtilizationHistory(double time){
         if(!enabled) {
             return;
         }
 
-        if (time > getPreviousTime() && (time - 0.1) % vm.getHost().getDatacenter().getSchedulingInterval() == 0) {
+        if (time > 0 && (time - previousTime >= 1 || vm.isIdle())) {
             final double utilization = vm.getCpuPercentUsage(vm.getCloudletScheduler().getPreviousTime());
-            if (time != 0 || utilization != 0) {
-                addUtilizationHistoryValue(utilization);
+            if(Math.floor(time) > previousTime || vm.isIdle()) {
+                time = vm.isIdle() ? time : (int)time;
+                addUtilizationHistoryValue(time, utilization);
+                this.previousTime = time;
             }
-            setPreviousTime(time);
         }
     }
 
     /**
-     * Adds a CPU utilization percentage history value to the beginning of the History List.
+     * Adds a CPU utilization percentage history value.
      *
-     * @param utilization the CPU utilization percentage to add
+     * @param time the time this utilization was collected
+     * @param utilizationPercent the CPU utilization percentage to add
      */
-    private void addUtilizationHistoryValue(final double utilization) {
-        history.add(0, utilization);
-        if (getHistory().size() > getMaxHistoryEntries()) {
-            history.remove(getMaxHistoryEntries());
+    private void addUtilizationHistoryValue(final double time, final double utilizationPercent) {
+        history.put(time, utilizationPercent);
+        if (getHistory().size() > maxHistoryEntires) {
+            history.remove(maxHistoryEntires);
         }
     }
 
     @Override
-    public List<Double> getHistory() {
-        return Collections.unmodifiableList(history);
-    }
-
-    @Override
-    public double getPreviousTime() {
-        return previousTime;
-    }
-
-    @Override
-    public void setPreviousTime(final double previousTime) {
-        this.previousTime = previousTime;
+    public SortedMap<Double, Double> getHistory() {
+        return Collections.unmodifiableSortedMap(history);
     }
 
     @Override
@@ -161,5 +153,10 @@ public class VmUtilizationHistory implements UtilizationHistory {
     @Override
     public void setMaxHistoryEntries(final int maxHistoryEntries) {
         this.maxHistoryEntires = maxHistoryEntries;
+    }
+
+    @Override
+    public Vm getVm() {
+        return vm;
     }
 }

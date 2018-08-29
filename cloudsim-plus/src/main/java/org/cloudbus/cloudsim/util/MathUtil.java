@@ -13,6 +13,7 @@ import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -49,7 +50,7 @@ public final class MathUtil {
      * @param list the list of numbers
      * @return the median
      */
-    public static double median(final List<Double> list) {
+    public static double median(final Collection<Double> list) {
         return getStatistics(list).getPercentile(50);
     }
 
@@ -69,7 +70,7 @@ public final class MathUtil {
      * @param list the list of numbers. Must not be null.
      * @return descriptive statistics for the list of numbers.
      */
-    public static DescriptiveStatistics getStatistics(final List<Double> list) {
+    public static DescriptiveStatistics getStatistics(final Collection<Double> list) {
         final DescriptiveStatistics stats = new DescriptiveStatistics();
         list.forEach(stats::addValue);
         return stats;

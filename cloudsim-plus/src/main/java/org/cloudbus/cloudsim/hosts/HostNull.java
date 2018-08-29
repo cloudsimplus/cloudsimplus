@@ -12,9 +12,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link Host}
@@ -155,14 +153,15 @@ final class HostNull implements Host {
     @Override public void setId(int id) {/**/}
     @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public long getNumberOfFailedPes() { return 0; }
-    @Override public List<Pe> getWorkingPeList() { return Collections.EMPTY_LIST; }
-    @Override public List<Pe> getBuzyPeList() { return Collections.EMPTY_LIST; }
-    @Override public List<Pe> getFreePeList() { return Collections.EMPTY_LIST; }
+    @Override public List<Pe> getWorkingPeList() { return Collections.emptyList(); }
+    @Override public List<Pe> getBuzyPeList() { return Collections.emptyList(); }
+    @Override public List<Pe> getFreePeList() { return Collections.emptyList(); }
     @Override public double getUtilizationOfCpu() { return 0.0; }
     @Override public double getUtilizationOfCpuMips() { return 0.0; }
     @Override public long getUtilizationOfBw() { return 0; }
     @Override public long getUtilizationOfRam() { return 0; }
-    @Override public double[] getUtilizationHistory() { return new double[0]; }
+    @Override public SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory() { return Collections.emptySortedMap(); }
+    @Override public SortedMap<Double, Double> getUtilizationHistorySum() { return Collections.emptySortedMap(); }
     @Override public PowerModel getPowerModel() { return PowerModel.NULL; }
     @Override public Host setPowerModel(PowerModel powerModel) { return this; }
     @Override public double getPreviousUtilizationOfCpu() { return 0; }

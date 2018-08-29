@@ -3,7 +3,7 @@ package org.cloudbus.cloudsim.vms;
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 
-import java.util.List;
+import java.util.SortedMap;
 
 /**
  * Stores resource utilization data for a specific {@link Machine}.
@@ -18,11 +18,6 @@ public interface UtilizationHistory {
      * objects.
      */
     UtilizationHistory NULL = new UtilizationHistoryNull();
-
-    /**
-     * The maximum number of entries that will be stored.
-     */
-    int DEF_MAX_HISTORY_ENTRIES = 30;
 
     /**
      * Gets the utilization Median Absolute Deviation (MAD) in MIPS.
@@ -55,29 +50,14 @@ public interface UtilizationHistory {
     void addUtilizationHistory(double time);
 
     /**
-     * Gets a <b>read-only</b> CPU utilization percentage history (between [0 and 1], where 1 is 100%).
-     * Each value into the returned array is the CPU utilization percentage for
-     * a time interval equal to the {@link Datacenter#getSchedulingInterval()}.
-     *
-     * <p><b>The values are stored in the reverse chronological order.</b></p>
-     *
-     * @return
-     */
-    List<Double> getHistory();
-
-    /**
-     * Gets the previous time that cloudlets were processed.
+     * Gets a <b>read-only</b> CPU utilization percentage history map
+     * where each key is the time the utilization was collected and
+     * each value is the utilization percentage (between [0 and 1]).
+     * There is an entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
      *
      * @return
      */
-    double getPreviousTime();
-
-    /**
-     * Sets the previous time that cloudlets were processed.
-     *
-     * @param previousTime the new previous time
-     */
-    void setPreviousTime(double previousTime);
+    SortedMap<Double, Double> getHistory();
 
     /**
      * Checks if the object is enabled to add data to the history.
@@ -109,4 +89,5 @@ public interface UtilizationHistory {
      */
     void setMaxHistoryEntries(int maxHistoryEntries);
 
+    Vm getVm();
 }

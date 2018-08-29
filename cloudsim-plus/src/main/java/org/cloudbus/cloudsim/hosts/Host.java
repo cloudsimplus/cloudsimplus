@@ -23,8 +23,10 @@ import org.cloudbus.cloudsim.vms.VmUtilizationHistory;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Set;
+import java.util.SortedMap;
 
 /**
  * An interface to be implemented by each class that provides
@@ -510,21 +512,50 @@ public interface Host extends Machine, Comparable<Host> {
     long getUtilizationOfRam();
 
     /**
-     * <p>Gets the host CPU utilization percentage history (between [0 and 1], where 1 is 100%),
+     * <p>Gets a map containing the host CPU utilization percentage history (between [0 and 1]),
      * based on its VM utilization history.
-     * Each value into the returned array is the CPU utilization percentage for
-     * a time interval equal to the {@link Datacenter#getSchedulingInterval()}.
+     * Each key is a time when the data collection was performed
+     * and each value is a {@link DoubleSummaryStatistics}
+     * from where some operations over the CPU utilization entries for every VM inside the Host
+     * can be performed, such as counting, summing, averaging, etc.
+     * There is an entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
      * </p>
-     *
-     * <p><b>The values are stored in the reverse chronological order.</b></p>
      *
      * <p><b>In order to enable the Host to get utilization history,
      * utilization history of its VMs should be enabled
      * by calling {@link VmUtilizationHistory#enable() enable()} from
      * the {@link Vm#getUtilizationHistory()}.</b></p>
-     * @return
+     * @return a Map where keys are the data collection time
+     * and each value is a {@link DoubleSummaryStatistics} objects
+     * that provides lots of useful methods to get
+     * max, min, average, count and sum of utilization values.
+     *
+     * @see #getUtilizationHistorySum()
      */
-    double[] getUtilizationHistory();
+    SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory();
+
+    /**
+     * <p>Gets a map containing the host CPU utilization percentage history (between [0 and 1]),
+     * based on its VM utilization history.
+     * Each key is a time when the data collection was performed
+     * and each value is the sum of all CPU utilization of the VMs running in this Host.
+     * This way, the value represents the total Host's CPU utilization for each time
+     * that data was collected.
+     * There is an entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
+     * </p>
+     *
+     * <p><b>In order to enable the Host to get utilization history,
+     * utilization history of its VMs should be enabled
+     * by calling {@link VmUtilizationHistory#enable() enable()} from
+     * the {@link Vm#getUtilizationHistory()}.</b></p>
+     * @return a Map where keys are the data collection time
+     * and each value is a {@link DoubleSummaryStatistics} objects
+     * that provides lots of useful methods to get
+     * max, min, average, count and sum of utilization values.
+     *
+     * @see #getUtilizationHistory()
+     */
+    SortedMap<Double, Double> getUtilizationHistorySum();
 
     /**
      * Gets the {@link PowerModel} used by the host
