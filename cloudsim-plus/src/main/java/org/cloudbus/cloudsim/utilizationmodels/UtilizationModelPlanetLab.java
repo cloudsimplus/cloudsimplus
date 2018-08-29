@@ -227,7 +227,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the number of {@link #utilization} samples in between two indexes.
+     * Gets the number of {@link #utilization} samples between two indexes.
      *
      * <p>
      * Since the utilization array is implemented as a circular list,
@@ -239,9 +239,10 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * computing the size of the interval between the two indexes.
      * </p>
      *
-     * <p>Think of the indexes of the circular list as being 0, 1, 2, 3 ...... 286, 287, 0, 1, 2, 3 ...
+     * <p>Consider that the trace file has 288 lines, indexed from line 0 to 287.
+     * Think of the trace as a circular list with indexes 0, 1, 2, 3 ...... 286, 287, 0, 1, 2, 3 ...
      * If the start index is 286 and the end index 2, then the interval size is 4
-     * (the number of indexed in between 286 and 2).
+     * (the number of indexes between 286 and 2).
      *
      * </p>
      * @param startIndex the start index in the interval
@@ -256,7 +257,9 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Gets the time interval (in seconds) in which precise utilization can be got from the workload file.
+     * Gets the time interval (in seconds) in which precise
+     * utilization can be got from the workload file.
+     *
      * <p>That means if the {@link #getUtilization(double)} is called
      * passing any time that is multiple of this scheduling interval,
      * the utilization returned will be the value stored for that

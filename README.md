@@ -7,7 +7,7 @@
 <p align="center">
 <b><a href="#overview">Overview</a></b>
 |
-<b><a href="#exclusive-features">Exclusive Features</a></b>
+<b><a href="#main-exclusive-features">Exclusive Features</a></b>
 |
 <b><a href="#projects-structure">Structure</a></b>
 |
