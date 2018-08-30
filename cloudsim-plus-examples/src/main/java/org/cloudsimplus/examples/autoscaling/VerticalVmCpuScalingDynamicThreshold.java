@@ -61,6 +61,7 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparingDouble;
 
@@ -331,7 +332,7 @@ public class VerticalVmCpuScalingDynamicThreshold {
      * @see #createVerticalPeScaling()
      */
     private double upperCpuUtilizationThreshold(Vm vm) {
-        final List<Double> history = vm.getUtilizationHistory().getHistory();
+        final List<Double> history = vm.getUtilizationHistory().getHistory().values().stream().collect(Collectors.toList());
         return history.size() > 10 ? MathUtil.median(history) * 1.2 : 0.7;
     }
 

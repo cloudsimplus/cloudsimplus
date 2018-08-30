@@ -518,13 +518,22 @@ public interface Host extends Machine, Comparable<Host> {
      * and each value is a {@link DoubleSummaryStatistics}
      * from where some operations over the CPU utilization entries for every VM inside the Host
      * can be performed, such as counting, summing, averaging, etc.
+     * For instance, if you call the {@link DoubleSummaryStatistics#getSum()},
+     * you'll get the total Host's CPU utilization for the time specified
+     * by the map key.
+     * </p>
+     *
+     * <p>
      * There is an entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
+     * <b>This way, it's required to set a Datacenter scheduling interval with the desired value.</b>
      * </p>
      *
      * <p><b>In order to enable the Host to get utilization history,
-     * utilization history of its VMs should be enabled
+     * its VMs' utilization history must be enabled
      * by calling {@link VmUtilizationHistory#enable() enable()} from
-     * the {@link Vm#getUtilizationHistory()}.</b></p>
+     * the {@link Vm#getUtilizationHistory()}.</b>
+     * </p>
+     *
      * @return a Map where keys are the data collection time
      * and each value is a {@link DoubleSummaryStatistics} objects
      * that provides lots of useful methods to get
@@ -541,13 +550,19 @@ public interface Host extends Machine, Comparable<Host> {
      * and each value is the sum of all CPU utilization of the VMs running in this Host.
      * This way, the value represents the total Host's CPU utilization for each time
      * that data was collected.
+     * </p>
+     *
+     * <p>
      * There is an entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
+     * <b>This way, it's required to set a Datacenter scheduling interval with the desired value.</b>
      * </p>
      *
      * <p><b>In order to enable the Host to get utilization history,
-     * utilization history of its VMs should be enabled
+     * its VMs' utilization history must be enabled
      * by calling {@link VmUtilizationHistory#enable() enable()} from
-     * the {@link Vm#getUtilizationHistory()}.</b></p>
+     * the {@link Vm#getUtilizationHistory()}.</b>
+     * </p>
+     *
      * @return a Map where keys are the data collection time
      * and each value is a {@link DoubleSummaryStatistics} objects
      * that provides lots of useful methods to get

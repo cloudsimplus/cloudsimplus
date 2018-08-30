@@ -75,6 +75,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.DoubleSummaryStatistics;
 import java.util.List;
 
 /**
@@ -259,7 +260,7 @@ public final class MigrationExample2_PowerUsage {
     private void printHostCpuUsageAndPowerConsumption(final Host host) {
         System.out.printf("Host: %6d | CPU Usage | Power Consumption\n", host.getId());
         System.out.println("-------------------------------------------------------------------------------------------");
-        final double[] utilizationHistory = host.getUtilizationHistory();
+        final double[] utilizationHistory = host.getUtilizationHistory().values().stream().mapToDouble(DoubleSummaryStatistics::getSum).toArray();
         double time = simulation.clock();
         for (int i = 0; i < utilizationHistory.length; i++) {
             final double cpuUsage = utilizationHistory[i];

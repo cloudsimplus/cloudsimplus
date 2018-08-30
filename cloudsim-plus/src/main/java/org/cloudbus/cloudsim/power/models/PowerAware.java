@@ -36,7 +36,8 @@ public interface PowerAware {
      * @param power the value in Watts-Second
      * @return the value converted to Kilowatt-hour (kWh)
      */
-    static double wattsSecToKWattsHour(double power) {
-        return power / (3600 * 1000);
+    static double wattsSecToKWattsHour(final double power) {
+        return power / (3600.0 * 1000.0);
     }
+
 }

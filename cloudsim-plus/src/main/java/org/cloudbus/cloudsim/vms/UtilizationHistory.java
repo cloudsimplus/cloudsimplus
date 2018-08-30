@@ -53,7 +53,8 @@ public interface UtilizationHistory {
      * Gets a <b>read-only</b> CPU utilization percentage history map
      * where each key is the time the utilization was collected and
      * each value is the utilization percentage (between [0 and 1]).
-     * There is an entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
+     * There will be at least one entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
+     * <b>This way, it's required to set a Datacenter scheduling interval with the desired value.</b>
      *
      * @return
      */
