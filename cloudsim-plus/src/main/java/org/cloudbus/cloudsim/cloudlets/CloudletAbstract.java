@@ -452,7 +452,9 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @return
      */
     protected long absLength(){
-        return Math.abs(length);
+        /*Since the getLength is overridden by classes such as the NetworkCloudlet,
+        * we have to call the method instead of directly using the length attribute.*/
+        return Math.abs(getLength());
     }
 
     @Override
