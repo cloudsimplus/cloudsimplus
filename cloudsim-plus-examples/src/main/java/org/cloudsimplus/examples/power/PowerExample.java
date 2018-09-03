@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples;
+package org.cloudsimplus.examples.power;
 
 import ch.qos.logback.classic.Level;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
@@ -35,18 +35,22 @@ import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.power.models.PowerAware;
+import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.power.models.PowerModelLinear;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.util.Log;
 
 import java.util.ArrayList;
@@ -55,30 +59,56 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An example to show how the accuracy of power consumption may change
- * according to different Datacenter scheduling intervals.
- * As lower is its value, higher is the power consumption accuracy
- * because power consumption data will be collected in smaller intervals.
+ * An example to show power consumption of Hosts.
+ * Realize that for this goal, you define a {@link PowerModel}
+ * for each Host by calling {@code host.setPowerModel(powerModel)}.
  *
- * <p>CloudSim Plus has a very accurate and consistent power consumption computation.
- * This way, you can see in this example that the values just change
- * when a scheduling interval equals to the time of the last finished
- * Cloudlet is set.</p>
+ * <p>It creates the number of cloudlets defined in
+ * {@link #CLOUDLETS}. All cloudlets will required 100% of PEs they are using all the time.
+ * Half of these cloudlets are created with the length defined by {@link #CLOUDLET_LENGTH}
+ * and the other half will have the double of this length.
+ * This way, it's possible to see that for the last half of the
+ * simulation time, a Host doesn't use the entire CPU capacity,
+ * and therefore doesn't consume the maximum power.</p>
  *
- * <p>You are strongly recommended to firstly check the {@link PowerExample} to understand the details.</p>
+ * <p>However, you may notice in this case that the power usage isn't
+ * half of the maximum consumption, because there is a minimum
+ * amount of power to use, even if the Host is idle,
+ * which is defined by {@link #STATIC_POWER_PERCENT}.
+ * In the case of the {@link PowerModelLinear},
+ * there is a constant power which is computed
+ * and added to consumer power when it
+ * is lower or equal to the minimum usage percentage.</p>
+ *
+ * <p>Realize that the Host CPU Utilization History is only computed
+ * if VMs utilization history is enabled by calling
+ * {@code vm.getUtilizationHistory().enable()}</p>
+ *
+ * <p>Each line in the table with CPU utilization and power consumption shows
+ * the data from the time specified in the line up to the time before the value in the next line.
+ * For instance, consider the scheduling interval is 10, the time in the first line is 0 and
+ * it shows 100% CPU utilization and 100 Watt-Sec of power consumption.
+ * Then, the next line contains data for time 10.
+ * That means between time 0 and time 9 (from time 0 to 9 we have 10 samples),
+ * the CPU utilization and power consumption
+ * is the one provided for time 0.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @author Alexandre Henrique Teixeira Dias
- * @since CloudSim Plus 4.0.0
+ * @since CloudSim Plus 1.2.4
  */
-public class PowerExampleSchedulingInterval {
-    private static final int HOSTS = 1;
+public class PowerExample {
+    /**
+     * Defines, between other things, the time intervals
+     * to keep Hosts CPU utilization history records.
+     */
+    private static final int SCHEDULING_INTERVAL = 10;
+    private static final int HOSTS = 2;
     private static final int HOST_PES = 8;
 
-    private static final int VMS = 2;
+    private static final int VMS = 4;
     private static final int VM_PES = 4;
 
-    private static final int CLOUDLETS = 4;
+    private static final int CLOUDLETS = 8;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 50000;
 
@@ -93,34 +123,33 @@ public class PowerExampleSchedulingInterval {
      */
     private static final int MAX_POWER_WATTS_SEC = 100;
 
-    private final int schedulingInterval;
-    private boolean showAllHostUtilizationHistoryEntries;
-
-    private CloudSim simulation;
+    private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
     private Datacenter datacenter0;
-    private List<Host> hostList;
+    private final List<Host> hostList;
+
+    /**
+     * If set to false, consecutive lines with the the same CPU utilization and power consumption
+     * will be shown only once, at the time that such metrics started to return those values.
+     * The last history line is always shown, independent of any condition.
+     */
+    private boolean showAllHostUtilizationHistoryEntries;
+
 
     public static void main(String[] args) {
-        Log.setLevel(Level.WARN);
-        final int[] SCHEDULING_INTERVALS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100};
-        for(final int interval : SCHEDULING_INTERVALS) {
-            //if(interval == 5)
-            new PowerExampleSchedulingInterval(interval, true);
-        }
+        new PowerExample(true);
     }
 
-    private PowerExampleSchedulingInterval(
-        final int schedulingInterval,
-        final boolean showAllHostUtilizationHistoryEntries)
-    {
+    private PowerExample(boolean showAllHostUtilizationHistoryEntries) {
+        Log.setLevel(Level.WARN);
         this.showAllHostUtilizationHistoryEntries = showAllHostUtilizationHistoryEntries;
+
         simulation = new CloudSim();
         hostList = new ArrayList<>(HOSTS);
-        this.schedulingInterval = schedulingInterval;
         datacenter0 = createDatacenterSimple();
+        //Creates a broker that is a software acting on behalf of a cloud customer to manage his/her VMs and Cloudlets
         broker0 = new DatacenterBrokerSimple(simulation);
 
         vmList = createVms();
@@ -130,10 +159,11 @@ public class PowerExampleSchedulingInterval {
 
         simulation.start();
 
-        System.out.println("------------------------------- SIMULATION FOR SCHEDULING INTERVAL = " + schedulingInterval+" -------------------------------");
-        //new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
+        System.out.println("------------------------------- SIMULATION FOR SCHEDULING INTERVAL = " + SCHEDULING_INTERVAL+" -------------------------------");
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+
+        new CloudletsTableBuilder(finishedCloudlets).build();
         printHostsCpuUtilizationAndPowerConsumption();
-        System.out.println();
     }
 
     /**
@@ -151,6 +181,7 @@ public class PowerExampleSchedulingInterval {
 
     private void printHostCpuUtilizationAndPowerConsumption(final Host host) {
         System.out.printf("Host %d CPU utilization and power consumption\n", host.getId());
+        System.out.println("-------------------------------------------------------------------------------------------------------------");
         final Map<Double, DoubleSummaryStatistics> utilizationPercentHistory = host.getUtilizationHistory();
         double totalPowerWattsSec = 0;
         double prevUtilizationPercent = -1, prevWattsPerInterval = -1;
@@ -181,8 +212,12 @@ public class PowerExampleSchedulingInterval {
         System.out.printf(
             "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)\n",
             powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
+        System.out.println("-------------------------------------------------------------------------------------------------------------\n");
     }
 
+    /**
+     * Creates a {@link Datacenter} and its {@link Host}s.
+     */
     private Datacenter createDatacenterSimple() {
         for(int i = 0; i < HOSTS; i++) {
             Host host = createPowerHost();
@@ -190,35 +225,44 @@ public class PowerExampleSchedulingInterval {
         }
 
         final Datacenter dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-        dc.setSchedulingInterval(schedulingInterval);
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }
 
     private Host createPowerHost() {
         final List<Pe> peList = new ArrayList<>(HOST_PES);
+        //List of Host's CPUs (Processing Elements, PEs)
         for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
+        final PowerModel powerModel = new PowerModelLinear(MAX_POWER_WATTS_SEC, STATIC_POWER_PERCENT);
+
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
         final long storage = 1000000; //in Megabytes
+        final ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
+        final ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
+        final VmScheduler vmScheduler = new VmSchedulerTimeShared();
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.setPowerModel(new PowerModelLinear(MAX_POWER_WATTS_SEC, STATIC_POWER_PERCENT));
+        host.setPowerModel(powerModel);
         host
-            .setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(new VmSchedulerTimeShared());
+            .setRamProvisioner(ramProvisioner)
+            .setBwProvisioner(bwProvisioner)
+            .setVmScheduler(vmScheduler);
         return host;
     }
 
+    /**
+     * Creates a list of VMs.
+     */
     private List<Vm> createVms() {
         final List<Vm> list = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
-            final Vm vm = new VmSimple(i, 1000, VM_PES);
-            vm.setRam(512).setBw(1000).setSize(10000);
-            vm.setCloudletScheduler(new CloudletSchedulerTimeShared());
+            Vm vm = new VmSimple(i, 1000, VM_PES);
+            vm.setRam(512).setBw(1000).setSize(10000)
+              .setCloudletScheduler(new CloudletSchedulerTimeShared());
             vm.getUtilizationHistory().enable();
             list.add(vm);
         }
@@ -226,12 +270,15 @@ public class PowerExampleSchedulingInterval {
         return list;
     }
 
+    /**
+     * Creates a list of Cloudlets.
+     */
     private List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
         final UtilizationModel utilization = new UtilizationModelDynamic(0.2);
         for (int i = 0; i < CLOUDLETS; i++) {
             //Sets half of the cloudlets with the defined length and the other half with the double of it
-            final long length = i < CLOUDLETS/2 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH*2;
+            final long length = i < CLOUDLETS / 2 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH * 2;
             Cloudlet cloudlet =
                 new CloudletSimple(i, length, CLOUDLET_PES)
                     .setFileSize(1024)
@@ -244,4 +291,5 @@ public class PowerExampleSchedulingInterval {
 
         return list;
     }
+
 }
