@@ -87,7 +87,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
         /*
          * @todo @author manoelcampos It has to be checked if the task execution
-         * is considering only one cloudlet PE our all PEs.
+         * is considering only one cloudlet PE or all PEs.
          * Each execution task is supposed to use just one PE.
          */
         final Optional<CloudletExecutionTask> optional = getCloudletCurrentTask(cloudlet);

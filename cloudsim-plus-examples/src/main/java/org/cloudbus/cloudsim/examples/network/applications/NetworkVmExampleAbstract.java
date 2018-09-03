@@ -73,6 +73,7 @@ abstract class NetworkVmExampleAbstract {
     public static final long NETCLOUDLET_RAM = 100;
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final long NUMBER_OF_PACKETS_TO_SEND = 100;
+    private static final int SCHEDULING_INTERVAL = 5;
 
     private final CloudSim simulation;
 
@@ -185,7 +186,7 @@ abstract class NetworkVmExampleAbstract {
         NetworkDatacenter dc =
                 new NetworkDatacenter(
                         simulation, hostList, new VmAllocationPolicySimple());
-        dc.setSchedulingInterval(5);
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         dc.getCharacteristics()
             .setCostPerSecond(COST)
             .setCostPerMem(COST_PER_MEM)

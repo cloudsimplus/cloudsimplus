@@ -10,6 +10,7 @@ Use the dependency snippet below to include it into your project's `pom.xml` fil
 <dependency>
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
-    <version>INSERT-THE-VERSION-NUMBER-HERE</version>
+    <!-- Set a specific version or use the latest one -->
+    <version>LATEST</version>
 </dependency>
 ```

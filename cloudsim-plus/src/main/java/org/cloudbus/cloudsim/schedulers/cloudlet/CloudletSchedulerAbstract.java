@@ -570,7 +570,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Updates the processing of a specific cloudlet of the Vm using this
-     * scheduler and packets that such a Cloudlet has to send or to receive
+     * scheduler. Then process tasks such a Cloudlet may have
      * (if the CloudletScheduler has a {@link CloudletTaskScheduler} assigned to it).
      *
      * @param ce         The cloudlet to be its processing updated

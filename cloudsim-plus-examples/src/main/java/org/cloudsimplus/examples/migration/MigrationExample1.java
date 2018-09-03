@@ -107,6 +107,7 @@ import java.util.List;
  * by calling {@link Host#enableStateHistory()}.</p>
  *
  * @author Manoel Campos da Silva Filho
+ * @todo Verify if inter-datacenter VM migration is working by default using the DatacenterBroker class.
  */
 public final class MigrationExample1 {
     /**

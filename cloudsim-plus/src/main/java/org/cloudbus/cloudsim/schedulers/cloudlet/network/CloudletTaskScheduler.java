@@ -100,7 +100,7 @@ public interface CloudletTaskScheduler {
     void processCloudletTasks(Cloudlet cloudlet, long partialFinishedMI);
 
     /**
-     * Checks if is time to update the execution of a given Cloudlet.
+     * Checks if it's time to update the execution of a given Cloudlet.
      * If the Cloudlet is waiting for packets to be sent or received,
      * then it isn't time to update its processing.
      *
