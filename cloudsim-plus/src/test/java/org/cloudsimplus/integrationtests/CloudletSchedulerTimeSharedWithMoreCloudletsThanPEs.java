@@ -70,7 +70,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
             new HostBuilder()
                 .setVmSchedulerClass(VmSchedulerSpaceShared.class)
-                .setRam(4000).setBw(400000)
+                .setRam(4000).setBandwidth(400000)
                 .setPes(HOST_PES).setMips(HOST_MIPS)
                 .createOneHost()
                 .getHosts()

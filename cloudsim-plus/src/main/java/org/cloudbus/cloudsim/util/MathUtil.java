@@ -150,16 +150,17 @@ public final class MathUtil {
     }
 
     /**
-     * Gets the Interquartile Range (IQR) from an array of numbers.
+     * Gets the <a href="https://en.wikipedia.org/wiki/Interquartile_range">Interquartile Range (IQR)</a>
+     * from an array of numbers.
      *
      * @param data the array of numbers
      * @return the IQR
      */
     public static double iqr(final double... data) {
         Arrays.sort(data);
-        final int q1 = (int) Math.round(0.25 * (data.length + 1)) - 1;
-        final int q3 = (int) Math.round(0.75 * (data.length + 1)) - 1;
-        return data[q3] - data[q1];
+        final int quartile1 = (int) Math.round(0.25 * (data.length + 1)) - 1;
+        final int quartile3 = (int) Math.round(0.75 * (data.length + 1)) - 1;
+        return data[quartile3] - data[quartile1];
     }
 
     /**
@@ -287,11 +288,10 @@ public final class MathUtil {
      * @return the tricube bisquare weigths
      */
     public static double[] getTricubeBisquareWeights(final double... residuals) {
-        final int n = residuals.length;
-        final double[] weights = getTricubeWeights(n);
-        final double[] weights2 = new double[n];
+        final double[] weights = getTricubeWeights(residuals.length);
+        final double[] weights2 = new double[residuals.length];
         final double s6 = median(abs(residuals)) * 6;
-        for (int i = 2; i < n; i++) {
+        for (int i = 2; i < residuals.length; i++) {
             final double k = Math.pow(1 - Math.pow(residuals[i] / s6, 2), 2);
             weights2[i] = k > 0 ? (1 / k) * weights[i] : Double.MAX_VALUE;
         }

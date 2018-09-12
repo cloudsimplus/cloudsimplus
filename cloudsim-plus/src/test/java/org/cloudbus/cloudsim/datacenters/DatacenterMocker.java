@@ -6,50 +6,50 @@ import org.easymock.IExpectationSetters;
 import java.util.function.Consumer;
 
 /**
- * A class that provides a set of methods to dc the {@link Datacenter} class
- * using {@link EasyMock}. Each method in this class provides a dc for a
+ * A class that provides a set of methods to datacenter the {@link Datacenter} class
+ * using {@link EasyMock}. Each method in this class provides a datacenter for a
  * method with the same name in the Datacenter class.
  *
  * @author Manoel Campos da Silva Filho
  */
 public final class DatacenterMocker {
     /**
-     * The created Datacenter dc object.
+     * The created Datacenter datacenter object.
      */
-    private final Datacenter dc;
-    private final DatacenterCharacteristics c;
+    private final Datacenter datacenter;
+    private final DatacenterCharacteristics characteristics;
 
     private DatacenterMocker() {
-        this.dc = EasyMock.createMock(Datacenter.class);
-        this.c = EasyMock.createMock(DatacenterCharacteristics.class);
+        this.datacenter = EasyMock.createMock(Datacenter.class);
+        this.characteristics = EasyMock.createMock(DatacenterCharacteristics.class);
     }
 
     public static Datacenter createMock(final Consumer<DatacenterMocker> consumer) {
         final DatacenterMocker mocker = new DatacenterMocker();
         consumer.accept(mocker);
-        DatacenterMocker.replay(mocker.c);
-        DatacenterMocker.replay(mocker.dc);
-        return mocker.dc;
+        DatacenterMocker.replay(mocker.characteristics);
+        DatacenterMocker.replay(mocker.datacenter);
+        return mocker.datacenter;
     }
 
     public IExpectationSetters<DatacenterCharacteristics> getCharacteristics() {
-        return EasyMock.expect(dc.getCharacteristics()).andReturn(c);
+        return EasyMock.expect(datacenter.getCharacteristics()).andReturn(characteristics);
     }
 
     public IExpectationSetters<Double> getCostPerBw(final double cost) {
-        return EasyMock.expect(c.getCostPerBw()).andReturn(cost);
+        return EasyMock.expect(characteristics.getCostPerBw()).andReturn(cost);
     }
 
     public IExpectationSetters<Double> getCostPerSecond(final double cost) {
-        return EasyMock.expect(c.getCostPerSecond()).andReturn(cost);
+        return EasyMock.expect(characteristics.getCostPerSecond()).andReturn(cost);
     }
 
     public IExpectationSetters<Double> getCostPerMem(final double cost) {
-        return EasyMock.expect(c.getCostPerMem()).andReturn(cost);
+        return EasyMock.expect(characteristics.getCostPerMem()).andReturn(cost);
     }
 
     public IExpectationSetters<Double> getCostPerStorage(final double cost) {
-        return EasyMock.expect(c.getCostPerStorage()).andReturn(cost);
+        return EasyMock.expect(characteristics.getCostPerStorage()).andReturn(cost);
     }
 
     private static <T extends Object> void replay(final T mock) {

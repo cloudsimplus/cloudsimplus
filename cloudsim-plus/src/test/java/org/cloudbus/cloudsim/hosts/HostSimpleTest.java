@@ -99,20 +99,20 @@ public class HostSimpleTest {
 
     @Test
     public void isSuitableForVm_WhenThereIsAvailableStorage(){
-        Vm vm = createVm(HOST_PES, HOST_MIPS, STORAGE);
+        final Vm vm = createVm(HOST_PES, HOST_MIPS, STORAGE);
         assertTrue(host.isSuitableForVm(vm));
     }
 
     @Test
     public void isSuitableForVm_WhenThereIsNotAvailableStorage(){
-        Vm vm = createVm(HOST_PES, HOST_MIPS, STORAGE * 2);
+        final Vm vm = createVm(HOST_PES, HOST_MIPS, STORAGE * 2);
         assertFalse(host.isSuitableForVm(vm));
     }
 
     @Test
     public void isSuitableForVm_WhenThereIsEnoughPes(){
         host.setVmScheduler(new VmSchedulerSpaceShared());
-        Vm vm = createVm(HOST_PES, HOST_MIPS, STORAGE);
+        final Vm vm = createVm(HOST_PES, HOST_MIPS, STORAGE);
         assertTrue(host.isSuitableForVm(vm));
     }
 
@@ -124,12 +124,12 @@ public class HostSimpleTest {
     @Test
     public void isSuitableForVm_WhenThereIsNotEnoughPes(){
         host.setVmScheduler(new VmSchedulerSpaceShared());
-        Vm vm = createVm(4, 500, STORAGE);
+        final Vm vm = createVm(4, 500, STORAGE);
         assertFalse(host.isSuitableForVm(vm));
     }
 
     private Vm createVm(final int pes, final double mips, final long storage) {
-        Vm vm = new VmSimple((long) mips, pes);
+        final Vm vm = new VmSimple((long) mips, pes);
         vm.setRam(RAM);
         vm.setBw(BW);
         vm.setSize(storage);

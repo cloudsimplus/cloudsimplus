@@ -85,7 +85,7 @@ public final class CheckHostAvailableMipsTest {
         scenario = new SimulationScenarioBuilder(simulation);
         final List<Host> hosts = new HostBuilder()
             .setVmSchedulerClass(VmSchedulerSpaceShared.class)
-            .setRam(4000).setBw(400000)
+            .setRam(4000).setBandwidth(400000)
             .setOnUpdateVmsProcessingListener(this::onUpdateVmsProcessing)
             .setPes(HOST_PES).setMips(HOST_MIPS)
             .createOneHost()

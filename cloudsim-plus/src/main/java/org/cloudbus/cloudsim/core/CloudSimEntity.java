@@ -546,16 +546,16 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     @Override
-    public int compareTo(final SimEntity o) {
-        return Integer.compare(this.getId(), o.getId());
+    public int compareTo(final SimEntity entity) {
+        return Integer.compare(this.getId(), entity.getId());
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
 
-        final CloudSimEntity that = (CloudSimEntity) o;
+        final CloudSimEntity that = (CloudSimEntity) object;
 
         if (id != that.id) return false;
         return simulation.equals(that.simulation);

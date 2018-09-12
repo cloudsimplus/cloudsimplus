@@ -366,14 +366,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         cloudlets.forEach(c -> c.setVm(vm));
     }
 
-    private void sortCloudletsIfComparatorIsSet(final List<? extends Cloudlet> list) {
+    private void sortCloudletsIfComparatorIsSet(final List<? extends Cloudlet> cloudlets) {
         if (cloudletComparator != null) {
-            list.sort(cloudletComparator);
+            cloudlets.sort(cloudletComparator);
         }
     }
 
-    private void setSimulationForCloudletUtilizationModels(final List<? extends Cloudlet> list) {
-        for (final Cloudlet c : list) {
+    private void setSimulationForCloudletUtilizationModels(final List<? extends Cloudlet> cloudlets) {
+        for (final Cloudlet c : cloudlets) {
             setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelCpu());
             setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelBw());
             setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelRam());
@@ -394,17 +394,17 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * <p>If the delay is defined as a negative number, objects' delay
      * won't be changed.</p>
      *
-     * @param list            list of objects to set their delays
+     * @param entities list of objects to set their delays
      * @param submissionDelay the submission delay to set
      */
-    private void setDelayForEntitiesWithNoDelay(final List<? extends CustomerEntity> list, final double submissionDelay) {
+    private void setDelayForEntitiesWithNoDelay(final List<? extends CustomerEntity> entities, final double submissionDelay) {
         if (submissionDelay < 0) {
             return;
         }
 
-        list.stream()
-            .filter(e -> e.getSubmissionDelay() <= 0)
-            .forEach(e -> e.setSubmissionDelay(submissionDelay));
+        entities.stream()
+            .filter(entity -> entity.getSubmissionDelay() <= 0)
+            .forEach(entity -> entity.setSubmissionDelay(submissionDelay));
     }
 
     @Override

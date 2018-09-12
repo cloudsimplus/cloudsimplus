@@ -23,21 +23,21 @@
  */
 package org.cloudsimplus.builders;
 
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
+import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerAbstract;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudsimplus.listeners.EventListener;
-import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerAbstract;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 
 /**
  * A Builder class to create {@link Host} objects.
@@ -48,7 +48,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 public class HostBuilder extends Builder {
     private double mips = 2000;
     private int    pes = 1;
-    private long   bw = 10000;
+    private long   bandwidth = 10000;
     private long   storage = Conversion.MILLION;
     private long   ram = 1024;
     private Class<? extends VmSchedulerAbstract> vmSchedulerClass = VmSchedulerTimeShared.class;
@@ -71,7 +71,7 @@ public class HostBuilder extends Builder {
             final Constructor cons = vmSchedulerClass.getConstructor();
 
             final Host host =
-                     new HostSimple(ram, bw, storage, peList)
+                     new HostSimple(ram, bandwidth, storage, peList)
                         .setRamProvisioner(new ResourceProvisionerSimple())
                         .setBwProvisioner(new ResourceProvisionerSimple())
                         .setVmScheduler((VmScheduler) cons.newInstance())
@@ -114,12 +114,12 @@ public class HostBuilder extends Builder {
         return this;
     }
 
-    public long getBw() {
-        return bw;
+    public long getBandwidth() {
+        return bandwidth;
     }
 
-    public HostBuilder setBw(long defaultBw) {
-        this.bw = defaultBw;
+    public HostBuilder setBandwidth(long defaultBw) {
+        this.bandwidth = defaultBw;
         return this;
     }
 

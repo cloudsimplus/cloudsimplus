@@ -354,7 +354,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         //returning the first Cloudlet with the given id
         return streamOfAllLists
             .flatMap(List::stream)
-            .filter(c -> c.getCloudletId() == cloudletId)
+            .filter(cle -> cle.getCloudletId() == cloudletId)
             .findFirst();
     }
 
@@ -368,7 +368,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected Optional<CloudletExecution> findCloudletInList(final Cloudlet cloudlet, final List<CloudletExecution> list) {
         return list.stream()
-            .filter(ce -> ce.getCloudletId() == cloudlet.getId())
+            .filter(cle -> cle.getCloudletId() == cloudlet.getId())
             .findFirst();
     }
 
@@ -444,28 +444,28 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private Cloudlet stopCloudlet(final Cloudlet cloudlet, final Status stopStatus) {
         //Removes finished cloudlets from the list without changing its status
-        boolean found = changeStatusOfCloudletIntoList(cloudletFinishedList, cloudlet, c -> {});
+        boolean found = changeStatusOfCloudletIntoList(cloudletFinishedList, cloudlet, cle -> {});
         if (found) {
             return cloudlet;
         }
 
         found = changeStatusOfCloudletIntoList(
             cloudletExecList, cloudlet,
-            c -> changeStatusOfCloudlet(c, Status.INEXEC, stopStatus));
+            cle -> changeStatusOfCloudlet(cle, Status.INEXEC, stopStatus));
         if (found) {
             return cloudlet;
         }
 
         found = changeStatusOfCloudletIntoList(
             cloudletPausedList, cloudlet,
-            c -> changeStatusOfCloudlet(c, Status.PAUSED, stopStatus));
+            cle -> changeStatusOfCloudlet(cle, Status.PAUSED, stopStatus));
         if (found) {
             return cloudlet;
         }
 
         changeStatusOfCloudletIntoList(
             cloudletWaitingList, cloudlet,
-            c -> changeStatusOfCloudlet(c, Status.READY, stopStatus));
+            cle -> changeStatusOfCloudlet(cle, Status.READY, stopStatus));
         if (found) {
             return cloudlet;
         }
@@ -515,10 +515,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final Cloudlet cloudlet,
         final Consumer<CloudletExecution> cloudletStatusUpdaterConsumer)
     {
-        final Function<CloudletExecution, Cloudlet> removeCloudletAndUpdateStatus = c -> {
-            cloudletList.remove(c);
-            cloudletStatusUpdaterConsumer.accept(c);
-            return c.getCloudlet();
+        final Function<CloudletExecution, Cloudlet> removeCloudletAndUpdateStatus = cle -> {
+            cloudletList.remove(cle);
+            cloudletStatusUpdaterConsumer.accept(cle);
+            return cle.getCloudlet();
         };
 
         return cloudletList.stream()
@@ -720,7 +720,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private int addCloudletsToFinishedList() {
         final List<CloudletExecution> finishedCloudlets
             = cloudletExecList.stream()
-            .filter(c -> c.getCloudlet().isFinished())
+            .filter(cle -> cle.getCloudlet().isFinished())
             .collect(toList());
 
         for (final CloudletExecution c : finishedCloudlets) {
@@ -837,7 +837,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected Optional<CloudletExecution> findSuitableWaitingCloudlet() {
         return cloudletWaitingList
                 .stream()
-                .filter(ce -> ce.getCloudlet().getStatus() != Status.FROZEN)
+                .filter(cle -> cle.getCloudlet().getStatus() != Status.FROZEN)
                 .filter(this::isThereEnoughFreePesForCloudlet)
                 .findFirst();
     }
@@ -944,7 +944,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public double getRequestedCpuPercentUtilization(final double time) {
         return cloudletExecList.stream()
             .map(CloudletExecution::getCloudlet)
-            .mapToDouble(c -> getAbsoluteCloudletCpuUtilizationForAllPes(time, c))
+            .mapToDouble(cloudlet -> getAbsoluteCloudletCpuUtilizationForAllPes(time, cloudlet))
             .sum() / vm.getTotalMipsCapacity();
     }
 
@@ -1050,7 +1050,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public void deallocatePesFromVm(int pesToRemove) {
         pesToRemove = Math.min(pesToRemove, currentMipsShare.size());
         removeUsedPes(pesToRemove);
-        IntStream.range(0, pesToRemove).forEach(i -> currentMipsShare.remove(0));
+        IntStream.range(0, pesToRemove).forEach(idx -> currentMipsShare.remove(0));
     }
 
     @Override

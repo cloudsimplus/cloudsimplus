@@ -123,13 +123,13 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Gets the number of working PEs from a given Host
-     * and adds these numbers to the {@link #getHostFreePesMap() list of free PEs}.
+     * and adds this number to the {@link #getHostFreePesMap() list of free PEs}.
      * Before the Host starts being used, the number of free PEs is
      * the same as the number of working PEs.
      */
     public void addPesFromHost(final Host host) {
         final long workingPes = host.getNumberOfWorkingPes();
-        hostFreePesMap.compute(host, (h, freePes) -> freePes == null ? workingPes : Math.min(freePes, workingPes));
+        hostFreePesMap.compute(host, (mapHost, freePes) -> freePes == null ? workingPes : Math.min(freePes, workingPes));
     }
 
     /**

@@ -238,7 +238,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public void notifyOnUpdateProcessingListeners(double time) {
-        onUpdateProcessingListeners.forEach(l -> l.update(CloudletVmEventInfo.of(l, time, this)));
+        onUpdateProcessingListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, time, this)));
     }
 
     @Override
@@ -364,7 +364,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      */
     private void notifyListenersIfCloudletIsFinished() {
         if (isFinished()) {
-            onFinishListeners.forEach(l -> l.update(CloudletVmEventInfo.of(l, this)));
+            onFinishListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, this)));
             onFinishListeners.clear();
         }
     }

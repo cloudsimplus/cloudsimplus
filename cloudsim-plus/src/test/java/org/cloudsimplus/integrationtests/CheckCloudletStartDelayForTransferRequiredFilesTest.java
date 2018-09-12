@@ -93,7 +93,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	        .createDatacenter(
 	            new HostBuilder()
 	                .setVmSchedulerClass(VmSchedulerSpaceShared.class)
-	                .setRam(4000).setBw(400000)
+	                .setRam(4000).setBandwidth(400000)
 	                .setPes(HOST_PES).setMips(HOST_MIPS)
 	                .createOneHost()
 	                .getHosts()

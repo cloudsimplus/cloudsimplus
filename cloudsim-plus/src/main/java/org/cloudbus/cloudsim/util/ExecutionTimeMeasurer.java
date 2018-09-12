@@ -26,7 +26,7 @@ public final class ExecutionTimeMeasurer {
      * Usually, this name is the method/process name, making
      * it easy to identify the execution start times into the map.
      */
-    private static final Map<String, Long> executionStartTimes = new HashMap<>();
+    private static final Map<String, Long> EXECUTION_START_TIMES = new HashMap<>();
 
     /**
      * A private constructor to avoid class instantiation.
@@ -42,7 +42,7 @@ public final class ExecutionTimeMeasurer {
      * @see #getExecutionStartTimes()
      */
     public static void start(final String name) {
-        executionStartTimes.put(name, System.currentTimeMillis());
+        EXECUTION_START_TIMES.put(name, System.currentTimeMillis());
     }
 
     /**
@@ -53,17 +53,17 @@ public final class ExecutionTimeMeasurer {
      * @see #getExecutionStartTimes()
      */
     public static double end(final String name) {
-        return (System.currentTimeMillis() - executionStartTimes.remove(name)) / 1000.0;
+        return (System.currentTimeMillis() - EXECUTION_START_TIMES.remove(name)) / 1000.0;
     }
 
     /**
      * Gets the map of execution times.
      *
      * @return the execution times map
-     * @see #executionStartTimes
+     * @see #EXECUTION_START_TIMES
      */
     static Map<String, Long> getExecutionStartTimes() {
-        return executionStartTimes;
+        return EXECUTION_START_TIMES;
     }
 
     /**
@@ -71,10 +71,10 @@ public final class ExecutionTimeMeasurer {
      *
      * @param name the name of the method/process to get the execution start time
      * @return the execution start time for the the given method/process
-     * @see #executionStartTimes
+     * @see #EXECUTION_START_TIMES
      */
     static Long getExecutionStartTime(final String name){
-        return executionStartTimes.get(name);
+        return EXECUTION_START_TIMES.get(name);
     }
 
 }

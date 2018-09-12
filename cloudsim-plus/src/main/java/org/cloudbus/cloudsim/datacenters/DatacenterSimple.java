@@ -1005,12 +1005,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
+    public boolean equals(final Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        if (!super.equals(object)) return false;
 
-        final DatacenterSimple that = (DatacenterSimple) o;
+        final DatacenterSimple that = (DatacenterSimple) object;
 
         return !characteristics.equals(that.characteristics);
     }

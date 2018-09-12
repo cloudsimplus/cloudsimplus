@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.network.switches.AbstractSwitch;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.network.switches.Switch;
 
@@ -63,9 +62,9 @@ public class NetworkDatacenter extends DatacenterSimple {
      * contain one or more Machines. A Machine must contain one or more PEs.
      */
     public NetworkDatacenter(
-        Simulation simulation,
+        final Simulation simulation,
         final List<? extends Host> hostList,
-        VmAllocationPolicy vmAllocationPolicy)
+        final VmAllocationPolicy vmAllocationPolicy)
     {
         super(simulation, hostList, vmAllocationPolicy);
 
@@ -81,16 +80,16 @@ public class NetworkDatacenter extends DatacenterSimple {
      */
     public List<Switch> getEdgeSwitch() {
         return switchMap.stream()
-                .filter(sw -> sw.getLevel() == EdgeSwitch.LEVEL)
+                .filter(swt -> swt.getLevel() == EdgeSwitch.LEVEL)
                 .collect(toList());
     }
 
     /**
-     * Adds a {@link AbstractSwitch} to the Datacenter.
-     * @param sw the AbstractSwitch to be added
+     * Adds a {@link Switch} to the Datacenter.
+     * @param swt the Switch to be added
      */
-    public void addSwitch(Switch sw){
-        switchMap.add(sw);
+    public void addSwitch(final Switch swt){
+        switchMap.add(swt);
     }
 
     /**

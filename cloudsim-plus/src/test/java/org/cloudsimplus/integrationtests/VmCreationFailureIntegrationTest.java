@@ -192,7 +192,7 @@ public final class VmCreationFailureIntegrationTest {
         scenario.getDatacenterBuilder().createDatacenter(
                 new HostBuilder()
                 .setVmSchedulerClass(VmSchedulerTimeShared.class)
-                .setRam(2048).setBw(10000)
+                .setRam(2048).setBandwidth(10000)
                 .setPes(1).setMips(1200)
                 .createOneHost()
                 .getHosts()
