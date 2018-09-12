@@ -210,7 +210,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private final Map<DatacenterBroker, Integer> faultsOfAllVmsByBroker;
 
 
-    private double maxTimeToGenerateFailureInHours;
+    private double maxTimeToFailInHours;
 
     /**
      * Creates a fault injection mechanism for the Hosts of a given {@link Datacenter}.
@@ -250,7 +250,7 @@ public class HostFaultInjection extends CloudSimEntity {
         this.hostFaultsTimeSecsMap = new HashMap<>();
         this.faultsOfAllVmsByBroker = new HashMap<>();
         this.vmClonerMap = new HashMap<>();
-        this.maxTimeToGenerateFailureInHours = Double.MAX_VALUE;
+        this.maxTimeToFailInHours = Double.MAX_VALUE;
     }
 
     @Override
@@ -272,7 +272,7 @@ public class HostFaultInjection extends CloudSimEntity {
         Otherwise, the simulation has finished and no more failures should be scheduled.
         */
 
-        if (numOfOtherEvents > 0 || getSimulation().clock() < getMaxTimeToGenerateFailureInSeconds()) {
+        if (numOfOtherEvents > 0 || getSimulation().clock() < getMaxTimeToFailInSecs()) {
             schedule(this, getTimeDelayForNextFault(), CloudSimTags.HOST_FAILURE);
         }
     }
@@ -899,24 +899,30 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the max time to generate a failure (in hours)
+     * Gets the maximum time to generate a failure (in hours).
+     * After that time, no failure will be generated.
+     * @see #getMaxTimeToFailInSecs()
      */
-    public double getMaxTimeToGenerateFailureInHours() {
-        return maxTimeToGenerateFailureInHours;
+    public double getMaxTimeToFailInHours() {
+        return maxTimeToFailInHours;
     }
 
     /**
-     * Gets the max time to generate a failure (in seconds)
+     * Gets the maximum time to generate a failure (in seconds).
+     * After that time, no failure will be generated.
+     * @see #getMaxTimeToFailInHours()
      */
-    private double getMaxTimeToGenerateFailureInSeconds() {
-        return maxTimeToGenerateFailureInHours*3600;
+    private double getMaxTimeToFailInSecs() {
+        return maxTimeToFailInHours *3600;
     }
 
     /**
-     * Sets the max time to generate a failure (in hours).
-     * @param maxTimeToGenerateFailureInHours the maximum time to set
+     * Sets the maximum time to generate a failure (in hours).
+     * After that time, no failure will be generated.
+     *
+     * @param maxTimeToFailInHours the maximum time to set (in hours)
      */
-    public void setMaxTimeToGenerateFailureInHours(final double maxTimeToGenerateFailureInHours) {
-        this.maxTimeToGenerateFailureInHours = maxTimeToGenerateFailureInHours;
+    public void setMaxTimeToFailInHours(final double maxTimeToFailInHours) {
+        this.maxTimeToFailInHours = maxTimeToFailInHours;
     }
 }

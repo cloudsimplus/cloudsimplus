@@ -393,7 +393,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
         PoissonDistr poisson = new PoissonDistr(MEAN_FAILURE_NUMBER_PER_HOUR, getSeed());
 
         faultInjection = new HostFaultInjection(datacenter, poisson);
-        getFaultInjection().setMaxTimeToGenerateFailureInHours(MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS);
+        getFaultInjection().setMaxTimeToFailInHours(MAX_TIME_TO_GENERATE_FAILURE_IN_HOURS);
 
         for (DatacenterBroker broker : getBrokerList()) {
             getFaultInjection().addVmCloner (broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets));

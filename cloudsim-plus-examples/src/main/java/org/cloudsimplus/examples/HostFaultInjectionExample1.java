@@ -231,7 +231,7 @@ public final class HostFaultInjectionExample1 {
         this.poisson = new PoissonDistr(MEAN_FAILURE_NUMBER_PER_HOUR, seed);
 
         fault = new HostFaultInjection(datacenter, poisson);
-        fault.setMaxTimeToGenerateFailureInHours(800);
+        fault.setMaxTimeToFailInHours(800);
 
         this.vmList.forEach(vm -> fault.addVmCloner(broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets)));
     }
