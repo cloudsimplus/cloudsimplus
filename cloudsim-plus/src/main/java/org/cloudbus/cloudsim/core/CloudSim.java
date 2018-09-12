@@ -372,16 +372,16 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void addEntity(final CloudSimEntity e) {
-        requireNonNull(e);
+    public void addEntity(final CloudSimEntity entity) {
+        requireNonNull(entity);
         if (running) {
-            final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, 0, e, null, -1, e);
+            final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, 0, entity, null, -1, entity);
             future.addEvent(evt);
         }
 
-        if (e.getId() == -1) { // Only add once!
-            e.setId(entities.size());
-            entities.add(e);
+        if (entity.getId() == -1) { // Only add once!
+            entity.setId(entities.size());
+            entities.add(entity);
         }
     }
 
@@ -563,16 +563,16 @@ public class CloudSim implements Simulation {
     /**
      * Processes an event.
      *
-     * @param e the event to be processed
+     * @param evt the event to be processed
      */
-    private void processEvent(final SimEvent e) {
-        if (e.getTime() < clock) {
+    private void processEvent(final SimEvent evt) {
+        if (evt.getTime() < clock) {
             throw new IllegalArgumentException("Past event detected.");
         }
-        setClock(e.getTime());
+        setClock(evt.getTime());
 
-        processEventByType(e);
-        notifyOnEventProcessingListeners(e);
+        processEventByType(evt);
+        notifyOnEventProcessingListeners(evt);
     }
 
     /**
@@ -603,24 +603,24 @@ public class CloudSim implements Simulation {
         circularClockTimeQueue[1] = clock;
     }
 
-    private void processEventByType(final SimEvent e) {
-        switch (e.getType()) {
+    private void processEventByType(final SimEvent evt) {
+        switch (evt.getType()) {
             case NULL:
                 throw new IllegalArgumentException("Event has a null type.");
             case CREATE:
-                processCreateEvent(e);
+                processCreateEvent(evt);
             break;
             case SEND:
-                processSendEvent(e);
+                processSendEvent(evt);
             break;
             case HOLD_DONE:
-                processHoldEvent(e);
+                processHoldEvent(evt);
             break;
         }
     }
 
-    private void processCreateEvent(final SimEvent e) {
-        addEntityDynamically((SimEntity) e.getData());
+    private void processCreateEvent(final SimEvent evt) {
+        addEntityDynamically((SimEntity) evt.getData());
     }
 
     /**
@@ -629,50 +629,50 @@ public class CloudSim implements Simulation {
      *
      * <b>It should not be called from user simulations.</b>
      *
-     * @param e The new entity
+     * @param entity The new entity
      */
-    private void addEntityDynamically(final SimEntity e) {
-        requireNonNull(e);
-        LOGGER.trace("Adding: {}", e.getName());
-        e.start();
+    private void addEntityDynamically(final SimEntity entity) {
+        requireNonNull(entity);
+        LOGGER.trace("Adding: {}", entity.getName());
+        entity.start();
     }
 
-    private void processHoldEvent(final SimEvent e) {
-        if (e.getSource() == SimEntity.NULL) {
+    private void processHoldEvent(final SimEvent evt) {
+        if (evt.getSource() == SimEntity.NULL) {
             throw new IllegalArgumentException("Null entity holding.");
         }
 
-        e.getSource().setState(SimEntity.State.RUNNABLE);
+        evt.getSource().setState(SimEntity.State.RUNNABLE);
     }
 
-    private void processSendEvent(final SimEvent e) {
-        if (e.getDestination() == SimEntity.NULL) {
+    private void processSendEvent(final SimEvent evt) {
+        if (evt.getDestination() == SimEntity.NULL) {
             throw new IllegalArgumentException("Attempt to send to a null entity detected.");
         }
 
-        final CloudSimEntity destEnt = entities.get(e.getDestination().getId());
+        final CloudSimEntity destEnt = entities.get(evt.getDestination().getId());
         if (destEnt.getState() == SimEntity.State.WAITING) {
             final Predicate<SimEvent> p = waitPredicates.get(destEnt);
-            if (p == null || e.getTag() == 9999 || p.test(e)) {
-                destEnt.setEventBuffer(new CloudSimEvent(e));
+            if (p == null || evt.getTag() == 9999 || p.test(evt)) {
+                destEnt.setEventBuffer(new CloudSimEvent(evt));
                 destEnt.setState(SimEntity.State.RUNNABLE);
                 waitPredicates.remove(destEnt);
             } else {
-                deferred.addEvent(e);
+                deferred.addEvent(evt);
             }
 
             return;
         }
 
-        deferred.addEvent(e);
+        deferred.addEvent(evt);
     }
 
     /**
      * Notifies all registered listeners when a {@link SimEvent} is processed by the simulation.
-     * @param e the processed event
+     * @param evt the processed event
      */
-    private void notifyOnEventProcessingListeners(final SimEvent e) {
-        onEventProcessingListeners.forEach(l -> l.update(e));
+    private void notifyOnEventProcessingListeners(final SimEvent evt) {
+        onEventProcessingListeners.forEach(l -> l.update(evt));
     }
 
     private void startEntitiesIfNotRunning() {

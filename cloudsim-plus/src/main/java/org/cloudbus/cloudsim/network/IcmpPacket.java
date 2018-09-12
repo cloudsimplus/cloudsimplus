@@ -174,10 +174,10 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
             final int resID = entities.get(i).getId();
             final String entry = getData(entryTimes, i);
             final String exit = getData(exitTimes, i);
-            final String bw = getData(baudRates, i);
+            final String bandwidth = getData(baudRates, i);
 
             sb.append("Entity ").append(resID).append("\t\t")
-              .append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bw));
+              .append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bandwidth));
         }
 
         sb.append("\nRound Trip Time : ")

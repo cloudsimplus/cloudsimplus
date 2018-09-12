@@ -401,8 +401,8 @@ public class HarddriveStorageTest {
         assertFalse(instance.addFile(fileList)>0);
 
         //try to add already existing files, one by one
-        fileList.forEach(f -> assertFalse(instance.addFile(f)>0));
-        fileList.forEach(f -> assertEquals(f, instance.getFile(f.getName())));
+        fileList.forEach(file -> assertFalse(instance.addFile(file)>0));
+        fileList.forEach(file -> assertEquals(file, instance.getFile(file.getName())));
         assertEquals(null, instance.getFile(INEXISTENT_FILE));
     }
 
@@ -439,7 +439,7 @@ public class HarddriveStorageTest {
         final List<String> fileNameList = new ArrayList<>();
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
-        fileList.forEach(f -> fileNameList.add(f.getName()));
+        fileList.forEach(file -> fileNameList.add(file.getName()));
         assertEquals(fileNameList, instance.getFileNameList());
     }
 
@@ -448,7 +448,7 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
-        fileList.forEach(f ->  assertEquals(f, instance.deleteFile(f.getName())));
+        fileList.forEach(file ->  assertEquals(file, instance.deleteFile(file.getName())));
 
         assertEquals(null, instance.deleteFile(""));
         assertEquals(null, instance.deleteFile(INEXISTENT_FILE));
@@ -470,7 +470,7 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
-        fileList.forEach(f -> assertTrue(instance.contains(f.getName())));
+        fileList.forEach(file -> assertTrue(instance.contains(file.getName())));
 
         assertFalse(instance.contains(INEXISTENT_FILE));
         final String nullStr = null;
@@ -483,7 +483,7 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
-        fileList.forEach(f -> assertTrue(instance.contains(f)));
+        fileList.forEach(file -> assertTrue(instance.contains(file)));
 
         assertFalse(instance.contains(new File(INEXISTENT_FILE, FILE_SIZE)));
         final File nullFile = null;

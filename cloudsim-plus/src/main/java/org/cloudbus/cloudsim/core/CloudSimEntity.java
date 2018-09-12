@@ -236,11 +236,11 @@ public abstract class CloudSimEntity implements SimEntity {
      * Counts how many events matching a predicate are waiting in the entity's
      * deferred queue.
      *
-     * @param p The event selection predicate
+     * @param predicate The event selection predicate
      * @return The count of matching events
      */
-    public long numEventsWaiting(final Predicate<SimEvent> p) {
-        return simulation.waiting(this, p);
+    public long numEventsWaiting(final Predicate<SimEvent> predicate) {
+        return simulation.waiting(this, predicate);
     }
 
     /**
@@ -256,42 +256,42 @@ public abstract class CloudSimEntity implements SimEntity {
      * Extracts the first event matching a predicate waiting in the entity's
      * deferred queue.
      *
-     * @param p The event selection predicate
+     * @param predicate The event selection predicate
      * @return the simulation event
      */
-    public SimEvent selectEvent(final Predicate<SimEvent> p) {
+    public SimEvent selectEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
             return null;
         }
 
-        return simulation.select(this, p);
+        return simulation.select(this, predicate);
     }
 
     /**
      * Cancels the first event from the future event queue that matches a given predicate
      * and that was submitted by this entity, then removes it from the queue.
      *
-     * @param p the event selection predicate
+     * @param predicate the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    public SimEvent cancelEvent(final Predicate<SimEvent> p) {
-        return (simulation.isRunning() ? simulation.cancel(this, p) : SimEvent.NULL);
+    public SimEvent cancelEvent(final Predicate<SimEvent> predicate) {
+        return (simulation.isRunning() ? simulation.cancel(this, predicate) : SimEvent.NULL);
     }
 
     /**
      * Gets the first event matching a predicate from the deferred queue, or if
      * none match, wait for a matching event to arrive.
      *
-     * @param p The predicate to match
+     * @param predicate The predicate to match
      * @return the simulation event
      */
-    public SimEvent getNextEvent(final Predicate<SimEvent> p) {
+    public SimEvent getNextEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
             return null;
         }
 
-        if (numEventsWaiting(p) > 0) {
-            return selectEvent(p);
+        if (numEventsWaiting(predicate) > 0) {
+            return selectEvent(predicate);
         }
 
         return null;
@@ -311,14 +311,14 @@ public abstract class CloudSimEntity implements SimEntity {
      * Waits for an event matching a specific predicate. This method does not
      * check the entity's deferred queue.
      *
-     * @param p The predicate to match
+     * @param predicate The predicate to match
      */
-    public void waitForEvent(final Predicate<SimEvent> p) {
+    public void waitForEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
             return;
         }
 
-        simulation.wait(this, p);
+        simulation.wait(this, predicate);
         state = State.WAITING;
     }
 

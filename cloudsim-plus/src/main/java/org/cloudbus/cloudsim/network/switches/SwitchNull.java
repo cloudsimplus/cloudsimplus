@@ -20,9 +20,10 @@ import java.util.Map;
  * @see Switch#NULL
  */
 final class SwitchNull implements Switch {
-    private static final Simulation s = Simulation.NULL;
-    private static final VmAllocationPolicy p = VmAllocationPolicy.NULL;
-    private final NetworkDatacenter dc = new NetworkDatacenter(s, Collections.emptyList(), p);
+    private static final Simulation SIM = Simulation.NULL;
+    private static final VmAllocationPolicy POLICY = VmAllocationPolicy.NULL;
+    private static final NetworkDatacenter dc = new NetworkDatacenter(SIM, Collections.emptyList(), POLICY);
+
     @Override public int getId() {
         return 0;
     }
@@ -43,10 +44,10 @@ final class SwitchNull implements Switch {
     }
     @Override public void setSwitchingDelay(double switchingDelay) {/**/}
     @Override public List<Switch> getUplinkSwitches() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
     @Override public List<NetworkHost> getHostList() {
-        return Collections.EMPTY_LIST;
+        return Collections.emptyList();
     }
     @Override public void connectHost(NetworkHost host) {/**/}
     @Override public boolean disconnectHost(NetworkHost host) {
@@ -87,7 +88,7 @@ final class SwitchNull implements Switch {
     @Override public boolean isFinished() { return false; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public SimEntity setSimulation(Simulation simulation) { return this; }
-    @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public void processEvent(SimEvent evt) {/**/}
     @Override public boolean schedule(SimEvent evt) { return false; }
     @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
     @Override public boolean schedule(double delay, int tag, Object data) { return false; }
@@ -98,6 +99,6 @@ final class SwitchNull implements Switch {
     @Override public void start() {/**/}
     @Override public void shutdownEntity() {/**/}
     @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
-    @Override public int compareTo(SimEntity o) { return 0; }
+    @Override public int compareTo(SimEntity entity) { return 0; }
     @Override public String getName() { return ""; }
 }
