@@ -14,7 +14,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.cloudbus.cloudsim.vms.VmSimpleTest.createVm;
+import static org.cloudbus.cloudsim.vms.VmTestUtil.createVm;
 import static org.junit.Assert.*;
 
 /**

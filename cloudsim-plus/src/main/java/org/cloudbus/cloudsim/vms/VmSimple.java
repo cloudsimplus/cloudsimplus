@@ -250,12 +250,12 @@ public class VmSimple implements Vm {
 
     @Override
     public double getCurrentRequestedMaxMips() {
-        return getCurrentRequestedMips().stream().mapToDouble(m->m).max().orElse(0.0);
+        return getCurrentRequestedMips().stream().mapToDouble(mips->mips).max().orElse(0.0);
     }
 
     @Override
     public double getCurrentRequestedTotalMips() {
-        return getCurrentRequestedMips().stream().mapToDouble(m->m).sum();
+        return getCurrentRequestedMips().stream().mapToDouble(mips->mips).sum();
     }
 
     @Override

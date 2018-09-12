@@ -9,24 +9,20 @@ package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmTestUtil;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.LongStream;
 
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
-
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.junit.Before;
-import org.junit.Test;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author Anton Beloglazov
@@ -42,8 +38,8 @@ public class VmSchedulerTimeSharedTest {
     @Before
     public void setUp() throws Exception {
         vmScheduler = createVmScheduler(MIPS, 2);
-        vm0 = VmSimpleTest.createVm(0, MIPS / 4, 2);
-        vm1 = VmSimpleTest.createVm(1, MIPS / 2, 2);
+        vm0 = VmTestUtil.createVm(0, MIPS / 4, 2);
+        vm1 = VmTestUtil.createVm(1, MIPS / 2, 2);
     }
 
     private VmScheduler createVmScheduler(double mips, int pesNumber) {
@@ -61,21 +57,21 @@ public class VmSchedulerTimeSharedTest {
 
     @Test
     public void testIsSuitableForVm0() {
-        final Vm vm0 = VmSimpleTest.createVm(0, MIPS / 4, 2);
+        final Vm vm0 = VmTestUtil.createVm(0, MIPS / 4, 2);
         vm0.setCreated(false);
         assertTrue(vmScheduler.isSuitableForVm(vm0));
     }
 
     @Test
     public void testIsSuitableForVm1() {
-        final Vm vm1 = VmSimpleTest.createVm(1, MIPS / 2, 2);
+        final Vm vm1 = VmTestUtil.createVm(1, MIPS / 2, 2);
         vm1.setCreated(false);
         assertTrue(vmScheduler.isSuitableForVm(vm1));
     }
 
     @Test
     public void testIsSuitableForVm2() {
-        final Vm vm2 = VmSimpleTest.createVm(2, MIPS * 2, 2);
+        final Vm vm2 = VmTestUtil.createVm(2, MIPS * 2, 2);
         vm2.setCreated(false);
         assertFalse(vmScheduler.isSuitableForVm(vm2));
     }
@@ -137,7 +133,7 @@ public class VmSchedulerTimeSharedTest {
     public void testAllocatePes_forVmMigrationOut() {
         vmScheduler = createVmScheduler(MIPS, 2);
         final double vmMips = MIPS / 4;
-        final Vm vm0 = VmSimpleTest.createVm(0, vmMips, 2);
+        final Vm vm0 = VmTestUtil.createVm(0, vmMips, 2);
         vmScheduler.getHost().addVmMigratingOut(vm0);
 
         final List<Double> mipsShare = new ArrayList<>(1);

@@ -237,9 +237,9 @@ public class NetworkHost extends HostSimple {
     }
 
     private void setPacketScheduler(final Vm vm) {
-        final CloudletScheduler cs = vm.getCloudletScheduler();
-        if(!cs.isThereTaskScheduler()){
-            cs.setTaskScheduler(new CloudletTaskSchedulerSimple());
+        final CloudletScheduler scheduler = vm.getCloudletScheduler();
+        if(!scheduler.isThereTaskScheduler()){
+            scheduler.setTaskScheduler(new CloudletTaskSchedulerSimple());
         }
     }
 

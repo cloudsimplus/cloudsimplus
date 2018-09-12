@@ -40,7 +40,7 @@ final class SimEventNull implements SimEvent {
         return 0;
     }
     @Override public EventListener<EventInfo> getListener() { return EventListener.NULL; }
-    @Override public int compareTo(SimEvent o) {
+    @Override public int compareTo(SimEvent evt) {
         return 0;
     }
     @Override public long getSerial() {

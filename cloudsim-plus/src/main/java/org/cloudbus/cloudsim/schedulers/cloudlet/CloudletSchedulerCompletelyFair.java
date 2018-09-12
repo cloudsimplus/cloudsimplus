@@ -498,14 +498,14 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      *
      */
     private List<CloudletExecution> preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList() {
-        final Predicate<CloudletExecution> vrtReachedTimeSlice = c -> c.getVirtualRuntime() >= c.getTimeSlice();
+        final Predicate<CloudletExecution> vrtReachedTimeSlice = cle -> cle.getVirtualRuntime() >= cle.getTimeSlice();
         final List<CloudletExecution> expiredVrtCloudlets =
             getCloudletExecList()
                 .stream()
                 .filter(vrtReachedTimeSlice)
                 .collect(toList());
 
-        expiredVrtCloudlets.forEach(c -> addCloudletToWaitingList(removeCloudletFromExecList(c)));
+        expiredVrtCloudlets.forEach(cle -> addCloudletToWaitingList(removeCloudletFromExecList(cle)));
         return expiredVrtCloudlets;
     }
 

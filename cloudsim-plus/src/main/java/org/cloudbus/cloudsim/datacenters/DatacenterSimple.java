@@ -289,7 +289,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             case CloudSimTags.VM_MIGRATE_ACK:
                 finishVmMigration(evt, true);
                 return true;
-            case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT:
+            case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING:
                 updateCloudletProcessing();
                 checkCloudletsCompletionForAllHosts();
                 return true;
@@ -438,7 +438,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
             send(this,
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
 
         sendCloudletSubmitAckToBroker(cloudlet, ack);
@@ -488,7 +488,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (estimatedFinishTime > 0.0 && estimatedFinishTime > getSimulation().clock()) {
             schedule(this,
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
-                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
 
         if (ack) {
@@ -745,7 +745,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             nextSimulationTime = getCloudletProcessingUpdateInterval(nextSimulationTime);
             schedule(this,
                 nextSimulationTime,
-                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+                CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
         setLastProcessTime(getSimulation().clock());
 

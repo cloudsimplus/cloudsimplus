@@ -23,12 +23,12 @@
  */
 package org.cloudsimplus.builders;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 /**
  * A Builder class to createBroker {@link DatacenterBrokerSimple} objects.
@@ -66,7 +66,7 @@ public class BrokerBuilder extends Builder implements BrokerBuilderInterface {
     @Override
     public DatacenterBroker findBroker(final int id) {
         return brokers.stream()
-            .filter(b -> b.getId() == id)
+            .filter(broker -> broker.getId() == id)
             .findFirst()
             .orElseThrow(() -> new NoSuchElementException(String.format("There isn't a broker with id %d", id)));
     }

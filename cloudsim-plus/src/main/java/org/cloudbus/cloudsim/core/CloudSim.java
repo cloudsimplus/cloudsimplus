@@ -63,10 +63,10 @@ public class CloudSim implements Simulation {
     private final double[] circularClockTimeQueue;
 
     /**
-     * The last time the OnClockTickListeners were updated.
+     * The last time OnClockTickListeners were updated.
      * @see #addOnClockTickListener(EventListener)
      */
-    private double lastTimeClockTickListenersUpdated;
+    private double lastClockTickListenersUpdate;
 
     /**
      * @see #getNetworkTopology()
@@ -196,7 +196,7 @@ public class CloudSim implements Simulation {
 
         this.minTimeBetweenEvents = minTimeBetweenEvents;
 
-        this.lastTimeClockTickListenersUpdated = minTimeBetweenEvents;
+        this.lastClockTickListenersUpdate = minTimeBetweenEvents;
         this.circularClockTimeQueue = new double[]{minTimeBetweenEvents, minTimeBetweenEvents};
     }
 
@@ -584,12 +584,12 @@ public class CloudSim implements Simulation {
      * the Listeners will have access to the most updated simulation state.
      */
     private void notifyOnClockTickListenersIfClockChanged() {
-        if(clock > lastTimeClockTickListenersUpdated) {
+        if(clock > lastClockTickListenersUpdate) {
             addCurrentTimeToCircularQueue();
             if (circularClockTimeQueue[0] < circularClockTimeQueue[1])
             {
-                lastTimeClockTickListenersUpdated = circularClockTimeQueue[0];
-                onClockTickListeners.forEach(l -> l.update(EventInfo.of(l, lastTimeClockTickListenersUpdated)));
+                lastClockTickListenersUpdate = circularClockTimeQueue[0];
+                onClockTickListeners.forEach(l -> l.update(EventInfo.of(l, lastClockTickListenersUpdate)));
             }
         }
     }

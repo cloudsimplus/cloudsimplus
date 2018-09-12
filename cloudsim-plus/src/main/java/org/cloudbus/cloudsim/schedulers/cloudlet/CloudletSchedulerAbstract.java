@@ -400,7 +400,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          the processing update is requested right away.
          */
         final Datacenter dc = vm.getHost().getDatacenter();
-        vm.getSimulation().send(new CloudSimEvent(vm.getSimulation(), dc, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT));
+        vm.getSimulation().send(new CloudSimEvent(vm.getSimulation(), dc, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING));
         return true;
     }
 

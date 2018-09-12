@@ -17,6 +17,11 @@ import static org.junit.Assert.assertEquals;
  * @since CloudSim Plus 4.0.0
  */
 final class TestUtil {
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private TestUtil(){/**/}
+
     static UtilizationModelDynamic createUtilizationModel(
         final double usagePercentInc,
         final double initUsage,

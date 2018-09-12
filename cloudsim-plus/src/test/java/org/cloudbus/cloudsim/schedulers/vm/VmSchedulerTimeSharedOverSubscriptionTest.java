@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.LongStream;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -44,14 +45,15 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     @Before
     public void setUp() throws Exception {
         vmScheduler = createVmScheduler(MIPS, HOST_PES);
-        vm1 = VmSimpleTest.createVm(0, MIPS / 4, 1);
-        vm2 = VmSimpleTest.createVm(1, MIPS / 2, 2);
+        vm1 = VmTestUtil.createVm(0, MIPS / 4, 1);
+        vm2 = VmTestUtil.createVm(1, MIPS / 2, 2);
     }
 
     private VmSchedulerTimeSharedOverSubscription createVmScheduler(double mips, int hostPesNumber) {
         final VmSchedulerTimeSharedOverSubscription scheduler = new VmSchedulerTimeSharedOverSubscription();
-        final List<Pe> peList = new ArrayList<>(hostPesNumber);
-        LongStream.range(0, hostPesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
+        final List<Pe> peList = LongStream.range(0, hostPesNumber)
+                                          .mapToObj(idx -> new PeSimple(mips, new PeProvisionerSimple()))
+                                          .collect(toList());
         final Host host = new HostSimple(RAM, BANDWIDTH, STORAGE, peList);
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
@@ -118,10 +120,10 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     @Test
     public void testAllocatePesForVmShortageEqualsToAllocatedMips() {
         final VmScheduler vmScheduler = createVmScheduler(3500, 1);
-        final Vm vm1 = VmSimpleTest.createVm(0, 170, 1);
-        final Vm vm2 = VmSimpleTest.createVm(1, 2000, 1);
-        final Vm vm3 = VmSimpleTest.createVm(2, 10, 1);
-        final Vm vm4 = VmSimpleTest.createVm(3, 2000, 1);
+        final Vm vm1 = VmTestUtil.createVm(0, 170, 1);
+        final Vm vm2 = VmTestUtil.createVm(1, 2000, 1);
+        final Vm vm3 = VmTestUtil.createVm(2, 10, 1);
+        final Vm vm4 = VmTestUtil.createVm(3, 2000, 1);
 
         final List<Double> mipsShare1 = new ArrayList<>();
         mipsShare1.add(170.0);
@@ -160,9 +162,9 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
     @Test
     public void testAllocatePesForSameSizedVmsOversubscribed() {
         final VmScheduler vmScheduler = createVmScheduler(MIPS, 1);
-        final VmSimple vm1 = VmSimpleTest.createVm(0, 1500, 1);
-        final VmSimple vm2 = VmSimpleTest.createVm(1, 1000, 1);
-        final VmSimple vm3 = VmSimpleTest.createVm(2, 1000, 1);
+        final VmSimple vm1 = VmTestUtil.createVm(0, 1500, 1);
+        final VmSimple vm2 = VmTestUtil.createVm(1, 1000, 1);
+        final VmSimple vm3 = VmTestUtil.createVm(2, 1000, 1);
 
         final List<Double> mipsShare1 = new ArrayList<>(1);
         mipsShare1.add(1500.0);

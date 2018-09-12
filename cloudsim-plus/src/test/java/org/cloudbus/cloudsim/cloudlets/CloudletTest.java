@@ -4,7 +4,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.cloudsimplus.listeners.EventListener;
 import org.easymock.EasyMock;
 import org.junit.Test;
@@ -23,9 +23,9 @@ public class CloudletTest {
         assertFalse(cloudlet.isBindToVm());
         cloudlet.setVm(Vm.NULL);
         assertFalse(cloudlet.isBindToVm());
-        cloudlet.setVm(VmSimpleTest.createVm(0, 1));
+        cloudlet.setVm(VmTestUtil.createVm(0, 1));
         assertTrue(cloudlet.isBindToVm());
-        cloudlet.setVm(VmSimpleTest.createVm(1, 1));
+        cloudlet.setVm(VmTestUtil.createVm(1, 1));
         assertTrue(cloudlet.isBindToVm());
     }
 

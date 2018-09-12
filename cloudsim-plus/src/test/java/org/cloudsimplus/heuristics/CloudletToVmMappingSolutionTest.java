@@ -24,9 +24,9 @@
 package org.cloudsimplus.heuristics;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
+import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.junit.Test;
 
 import java.util.AbstractMap;
@@ -57,32 +57,32 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     private CloudletToVmMappingSolution createSolutionWithOneVmForEachCloudlet(
-            int numberOfCloudlets, int cloudletAndVmPes) {
+        final int numberOfCloudlets, final int cloudletAndVmPes) {
         return createSolutionWithOneVmForEachCloudlet(
                 numberOfCloudlets, cloudletAndVmPes, cloudletAndVmPes);
     }
 
     private CloudletToVmMappingSolution createSolutionWithOneVmForEachCloudlet(
-            int numberOfCloudlets, int cloudletPes, int vmPes) {
+        final int numberOfCloudlets, final int cloudletPes, final int vmPes) {
         final int VM_MIPS = 1000;
         final int CLOUDLET_LEN = 10000;
         final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
 
         for (int i = 0; i < numberOfCloudlets; i++) {
-            final Vm vm = VmSimpleTest.createVm(i, VM_MIPS, vmPes);
+            final Vm vm = VmTestUtil.createVm(i, VM_MIPS, vmPes);
 
             final long len = (long) (CLOUDLET_LEN * (i + 1));
-            final Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(i, len, cloudletPes);
+            final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(i, len, cloudletPes);
             instance.bindCloudletToVm(cloudlet, vm);
         }
 
         return instance;
     }
 
-    private Vm[] createVms(int numberOfVms){
+    private Vm[] createVms(final int numberOfVms){
         Vm[] array = new Vm[numberOfVms];
         for(int i = 0; i < numberOfVms; i++){
-            array[i] = VmSimpleTest.createVm(i, 1);
+            array[i] = VmTestUtil.createVm(i, 1);
         }
         return array;
     }
@@ -158,7 +158,7 @@ public class CloudletToVmMappingSolutionTest {
         final Cloudlet[] cloudlets = new Cloudlet[numberOfEntries];
 
         for(int i = 1; i <= numberOfEntries; i++){
-            cloudlets[i-1] = CloudletSimpleTest.createCloudlet(i, i*1000, i);
+            cloudlets[i-1] = CloudletTestUtil.createCloudlet(i, i*1000, i);
         }
 
         final Vm[] vms = createVms(numberOfEntries);

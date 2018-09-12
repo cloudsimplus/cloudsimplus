@@ -45,9 +45,9 @@ public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPo
         final Comparator<? super Vm> cpuUsageComparator =
             Comparator.comparingDouble(vm -> vm.getCpuPercentUsage(vm.getSimulation().clock()));
         final Optional<? extends Vm> optional = migratableVms.stream()
-            .filter(inMigration.negate())
-            .min(cpuUsageComparator);
-        return (optional.isPresent() ? optional.get() : Vm.NULL);
+                                                             .filter(inMigration.negate())
+                                                             .min(cpuUsageComparator);
+        return optional.isPresent() ? optional.get() : Vm.NULL;
     }
 
 }

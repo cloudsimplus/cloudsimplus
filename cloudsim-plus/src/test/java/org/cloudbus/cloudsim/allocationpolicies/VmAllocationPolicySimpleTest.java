@@ -5,12 +5,15 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.*;
 
@@ -60,7 +63,7 @@ public class VmAllocationPolicySimpleTest {
 
     @Test
     public void allocateHostForVm_WhenOneVmIsGiven_AllocateHostWithLessUsedPesToIt() {
-        final Vm vm = VmSimpleTest.createVm(0, 1000, 2);
+        final Vm vm = VmTestUtil.createVm(0, 1000, 2);
         assertTrue(policy.allocateHostForVm(vm));
 
         final Host allocatedHostForVm = vm.getHost();
@@ -71,7 +74,7 @@ public class VmAllocationPolicySimpleTest {
     @Test
     public void allocateHostForVm_WhenOneVmIsGivenAndSelectedHostDoesntHaveStorage_AllocateOtherHost() {
         final Host hostWithMoreFreePes = policy.getDatacenter().getHostList().get(2);
-        final Vm vm = VmSimpleTest.createVm(
+        final Vm vm = VmTestUtil.createVm(
             0, 1000, 2, 1, 1,
             HOST_BASE_STORAGE, CloudletScheduler.NULL);
         assertTrue(vm + " couldn't be allocated to " + hostWithMoreFreePes, policy.allocateHostForVm(vm));
@@ -82,7 +85,7 @@ public class VmAllocationPolicySimpleTest {
 
     @Test
     public void allocateHostForVm_WhenOneVmIsGivenAndNoHostHasResourcesToRunIt() {
-        final Vm vm = VmSimpleTest.createVm(0, 1000, 10);
+        final Vm vm = VmTestUtil.createVm(0, 1000, 10);
         assertFalse(policy.allocateHostForVm(vm));
     }
 }

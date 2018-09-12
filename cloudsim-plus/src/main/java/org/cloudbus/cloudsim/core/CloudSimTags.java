@@ -275,7 +275,7 @@ public final class CloudSimTags {
      * means that all Hosts from the Datacenter will have
      * its cloudlets updated.
      */
-    public static final int VM_UPDATE_CLOUDLET_PROCESSING_EVENT = BASE + 41;
+    public static final int VM_UPDATE_CLOUDLET_PROCESSING = BASE + 41;
 
     /**
      * Defines the tag to be used to request vertical scaling of VM resources

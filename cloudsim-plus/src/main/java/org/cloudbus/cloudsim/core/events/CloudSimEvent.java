@@ -185,16 +185,16 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public int compareTo(final SimEvent event) {
-        if (event == null) {
+    public int compareTo(final SimEvent evt) {
+        if (evt == null) {
             return 1;
-        } else if (time < event.getTime()) {
+        } else if (time < evt.getTime()) {
             return -1;
-        } else if (time > event.getTime()) {
+        } else if (time > evt.getTime()) {
             return 1;
-        } else if (serial < event.getSerial()) {
+        } else if (serial < evt.getSerial()) {
             return -1;
-        } else if (this == event) {
+        } else if (this == evt) {
             return 0;
         } else {
             return 1;

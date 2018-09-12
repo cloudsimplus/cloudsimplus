@@ -54,21 +54,24 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
 
     /**
      * Field index of job number.
+     * Jub number values start from 1.
      */
     private static final int JOB_NUM_INDEX = 0;
 
     /**
-     * Field index of submit time of a job.
+     * Field index of submit time of a job (in seconds).
      */
     private static final int SUBMIT_TIME_INDEX = 1;
 
     /**
-     * Field index of execution time of a job.
+     * Field index of execution time of a job (in seconds).
+     * The wall clock time the job was running (end time minus start time).
      */
     private static final int RUN_TIME_INDEX = 3;
 
     /**
      * Field index of number of processors needed for a job.
+     * In most cases this is also the number of processors the job uses; if the job does not use all of them, we typically don't know about it.
      */
     private static final int NUM_PROC_INDEX = 4;
 
@@ -79,6 +82,9 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
 
     /**
      * Field index of required running time.
+     * This can be either runtime (measured in wallclock seconds), or average CPU time per processor (also in seconds)
+     * -- the exact meaning is determined by a header comment.
+     * If a log contains a request for total CPU time, it is divided by the number of requested processors.
      */
     private static final int REQ_RUN_TIME_INDEX = 8;
 

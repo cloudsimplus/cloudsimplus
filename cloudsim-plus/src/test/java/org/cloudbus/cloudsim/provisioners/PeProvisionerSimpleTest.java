@@ -9,13 +9,11 @@ package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * @author	Anton Beloglazov
@@ -53,9 +51,9 @@ public class PeProvisionerSimpleTest {
 
     @Test
     public void testAllocateMipsForVm() {
-        final Vm vm1 = VmSimpleTest.createVm(0, HALF_MIPS, 1);
-        final Vm vm2 = VmSimpleTest.createVm(1, HALF_MIPS, 1);
-        final Vm vm3 = VmSimpleTest.createVm(2, HALF_MIPS, 2);
+        final Vm vm1 = VmTestUtil.createVm(0, HALF_MIPS, 1);
+        final Vm vm2 = VmTestUtil.createVm(1, HALF_MIPS, 1);
+        final Vm vm3 = VmTestUtil.createVm(2, HALF_MIPS, 2);
 
         assertTrue(peProvisioner.allocateResourceForVm(vm1, HALF_MIPS));
         assertEquals(HALF_MIPS, peProvisioner.getAvailableResource(), 0);
@@ -89,8 +87,8 @@ public class PeProvisionerSimpleTest {
 
     @Test
     public void testDeallocateMipsForVM() {
-        final Vm vm1 = VmSimpleTest.createVm(0, HALF_MIPS, 1);
-        final Vm vm2 = VmSimpleTest.createVm(1, HALF_MIPS, 1);
+        final Vm vm1 = VmTestUtil.createVm(0, HALF_MIPS, 1);
+        final Vm vm2 = VmTestUtil.createVm(1, HALF_MIPS, 1);
 
         peProvisioner.allocateResourceForVm(vm1, HALF_MIPS);
         peProvisioner.allocateResourceForVm(vm2, ONE_FORTH_MIPS);

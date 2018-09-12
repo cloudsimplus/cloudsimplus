@@ -8,9 +8,8 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest.*;
+import static org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest.PES_NUMBER;
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertTrue;
 
 /**
  * @author	Anton Beloglazov
@@ -33,9 +32,9 @@ public class CloudletSimpleFilesTest {
         utilizationModelCpu = new UtilizationModelStochastic();
         utilizationModelRam = new UtilizationModelStochastic();
         utilizationModelBw = new UtilizationModelStochastic();
-        cloudlet = new CloudletSimple(0, CLOUDLET_LENGTH, PES_NUMBER);
-        cloudlet.setFileSize(CLOUDLET_FILE_SIZE)
-            .setOutputSize(CLOUDLET_OUTPUT_SIZE)
+        cloudlet = new CloudletSimple(0, CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
+        cloudlet.setFileSize(CloudletTestUtil.CLOUDLET_FILE_SIZE)
+            .setOutputSize(CloudletTestUtil.CLOUDLET_OUTPUT_SIZE)
             .setUtilizationModelCpu(utilizationModelCpu)
             .setUtilizationModelRam(utilizationModelRam)
             .setUtilizationModelBw(utilizationModelBw);
@@ -43,7 +42,7 @@ public class CloudletSimpleFilesTest {
 
     @Test
     public void testAddRequiredFile() {
-        final CloudletSimple c = createCloudlet();
+        final CloudletSimple c = CloudletTestUtil.createCloudlet();
         final String files[] = {FILE1, FILE2};
         for (final String file : files) {
             assertTrue("Method file should be added",
@@ -55,7 +54,7 @@ public class CloudletSimpleFilesTest {
 
     @Test
     public void testDeleteRequiredFile() {
-        final CloudletSimple c = createCloudlet();
+        final CloudletSimple c = CloudletTestUtil.createCloudlet();
         final String files[] = {FILE1, FILE2, FILE3};
         for (final String file : files) {
             c.addRequiredFile(file);
@@ -78,14 +77,14 @@ public class CloudletSimpleFilesTest {
 
     @Test(expected = NullPointerException.class)
     public void testRequiredFiles1() {
-        final CloudletSimple c = createCloudlet();
+        final CloudletSimple c = CloudletTestUtil.createCloudlet();
         c.setRequiredFiles(null);
         assertNotNull(c.getRequiredFiles());
     }
 
     @Test
     public void testRequiredFiles2() {
-        final CloudletSimple c = createCloudlet();
+        final CloudletSimple c = CloudletTestUtil.createCloudlet();
         final String files[] = {FILE1, FILE2, FILE3};
 
         for (final String file : files) {

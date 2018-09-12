@@ -619,7 +619,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public boolean addRequiredFile(final String fileName) {
-        if (getRequiredFiles().stream().anyMatch(s -> s.equals(fileName))) {
+        if (getRequiredFiles().stream().anyMatch(reqFile -> reqFile.equals(fileName))) {
             return false;
         }
 

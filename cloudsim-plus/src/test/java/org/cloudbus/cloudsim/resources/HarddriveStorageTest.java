@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  * @author Manoel Campos da Silva Filho
  */
 public class HarddriveStorageTest {
-    private static final String RESERVED_FILE_WITHOUT_PREVIOUS_SPACE = "The reserved file was added but its space was not previously reserved.";
+    private static final String NO_PREVIOUS_SPACE = "The reserved file was added but its space was not previously reserved.";
     private static final int CAPACITY = 1000;
     private static final int FILE_SIZE = 100;
     private static final int TOTAL_FILES_TO_CREATE = 5;
@@ -203,7 +203,7 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive(CAPACITY);
         try{
             instance.addReservedFile(new File(FILE1, 100));
-            fail(RESERVED_FILE_WITHOUT_PREVIOUS_SPACE);
+            fail(NO_PREVIOUS_SPACE);
         } catch(Exception e){
             /*if the exception was thrown, indicates that the file
             was accordingly not added.
@@ -237,7 +237,7 @@ public class HarddriveStorageTest {
         final File file = createNumberedFile(1, fileSize);
         try{
             instance.addReservedFile(file);
-            fail(RESERVED_FILE_WITHOUT_PREVIOUS_SPACE);
+            fail(NO_PREVIOUS_SPACE);
         } catch(Exception e){
             /*if the exception was thrown, indicates that the file
             was accordingly not added.
@@ -459,7 +459,7 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
-        fileList.forEach(f-> assertTrue(instance.deleteFile(f)>0));
+        fileList.forEach(file -> assertTrue(instance.deleteFile(file)>0));
 
         final File nullFile = null;
         assertEquals(0.0, instance.deleteFile(nullFile), 0.0);
@@ -495,7 +495,8 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
         for(final File file: fileList){
-            final String oldName = file.getName(), newName = String.format("renamed-%s", oldName);
+            final String oldName = file.getName();
+            final String newName = String.format("renamed-%s", oldName);
             assertTrue(instance.contains(oldName));
             assertTrue(instance.renameFile(file, newName));
             assertFalse(instance.contains(oldName));

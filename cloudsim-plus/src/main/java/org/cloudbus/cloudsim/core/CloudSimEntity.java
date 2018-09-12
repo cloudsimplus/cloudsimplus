@@ -324,15 +324,15 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public void run() {
-        SimEvent ev = buffer == null ? getNextEvent() : buffer;
+        SimEvent evt = buffer == null ? getNextEvent() : buffer;
 
-        while (ev != null) {
-            processEvent(ev);
+        while (evt != null) {
+            processEvent(evt);
             if (state != State.RUNNABLE) {
                 break;
             }
 
-            ev = getNextEvent();
+            evt = getNextEvent();
         }
 
         buffer = null;
@@ -425,10 +425,10 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * Sets the event buffer.
      *
-     * @param e the new event buffer
+     * @param evt the new event buffer
      */
-    protected void setEventBuffer(final SimEvent e) {
-        buffer = e;
+    protected void setEventBuffer(final SimEvent evt) {
+        buffer = evt;
     }
 
     // --------------- EVENT / MESSAGE SEND WITH NETWORK DELAY METHODS ------------------

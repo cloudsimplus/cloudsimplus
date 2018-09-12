@@ -136,5 +136,5 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      */
     Simulation getSimulation();
 
-    @Override int compareTo(SimEvent o);
+    @Override int compareTo(SimEvent evt);
 }

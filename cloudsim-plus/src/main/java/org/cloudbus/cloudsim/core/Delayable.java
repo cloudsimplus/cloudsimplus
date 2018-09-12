@@ -17,7 +17,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface Delayable {
     /**
      * Gets the delay (in seconds) that a {@link DatacenterBroker} has to include
-     * when submitting the Cloudlet, in order that it will be assigned
+     * when submitting the object, in order that it will be assigned
      * to a VM only after this delay has expired.
      *
      * @return the submission delay
@@ -26,12 +26,11 @@ public interface Delayable {
 
     /**
      * Sets the delay (in seconds) that a {@link DatacenterBroker} has to include
-     * when submitting the Cloudlet, in order that it will be assigned
+     * when submitting the object, in order that it will be assigned
      * to a VM only after this delay has expired. The delay should be greater or equal to zero.
      *
      * @param submissionDelay the amount of seconds from the current simulation
-     * time that the cloudlet will wait to be submitted to be created and
-     * assigned to a VM
+     * time that the object will wait to be submitted
      */
     void setSubmissionDelay(double submissionDelay);
 }

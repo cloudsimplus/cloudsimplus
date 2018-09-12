@@ -222,7 +222,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         }
 
         final Datacenter dc = getVm().getHost().getDatacenter();
-        dc.schedule(dc, dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
+        dc.schedule(dc, dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
     }
 
     @Override

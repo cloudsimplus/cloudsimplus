@@ -373,10 +373,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void setSimulationForCloudletUtilizationModels(final List<? extends Cloudlet> cloudlets) {
-        for (final Cloudlet c : cloudlets) {
-            setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelCpu());
-            setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelBw());
-            setSimulationForUtilizationModelIfNotSet(c.getUtilizationModelRam());
+        for (final Cloudlet cloudlet : cloudlets) {
+            setSimulationForUtilizationModelIfNotSet(cloudlet.getUtilizationModelCpu());
+            setSimulationForUtilizationModelIfNotSet(cloudlet.getUtilizationModelBw());
+            setSimulationForUtilizationModelIfNotSet(cloudlet.getUtilizationModelRam());
         }
     }
 
@@ -703,12 +703,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param evt the cloudlet that has just finished to execute and was returned to the broker
      */
     private void processCloudletReturn(final SimEvent evt) {
-        final Cloudlet c = (Cloudlet) evt.getData();
-        cloudletsFinishedList.add(c);
-        LOGGER.info("{}: {}: {} finished and returned to broker.", getSimulation().clock(), getName(), c);
+        final Cloudlet cloudlet = (Cloudlet) evt.getData();
+        cloudletsFinishedList.add(cloudlet);
+        LOGGER.info("{}: {}: {} finished and returned to broker.", getSimulation().clock(), getName(), cloudlet);
 
-        if (c.getVm().getCloudletScheduler().isEmpty()) {
-            requestIdleVmDestruction(c.getVm());
+        if (cloudlet.getVm().getCloudletScheduler().isEmpty()) {
+            requestIdleVmDestruction(cloudlet.getVm());
             return;
         }
 

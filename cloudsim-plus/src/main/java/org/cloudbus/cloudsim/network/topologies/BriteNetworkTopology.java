@@ -166,7 +166,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
 
     @Override
-    public void addLink(final int srcId, final int destId, final double bw, final double lat) {
+    public void addLink(final int srcId, final int destId, final double bandwidth, final double latency) {
         if (getTopologycalGraph() == null) {
             graph = new TopologicalGraph();
         }
@@ -189,7 +189,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
 
         // generate a new link
-        getTopologycalGraph().addLink(new TopologicalLink(map.get(srcId), map.get(destId), (float) lat, (float) bw));
+        getTopologycalGraph().addLink(new TopologicalLink(map.get(srcId), map.get(destId), (float) latency, (float) bandwidth));
 
         generateMatrices();
     }

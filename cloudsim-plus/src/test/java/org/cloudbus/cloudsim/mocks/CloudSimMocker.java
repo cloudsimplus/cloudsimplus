@@ -1,10 +1,11 @@
 package org.cloudbus.cloudsim.mocks;
 
-import java.util.List;
-import java.util.function.Consumer;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.easymock.EasyMock;
 import org.easymock.IExpectationSetters;
+
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A class that provides a set of methods to mock the {@link CloudSim} class
@@ -94,7 +95,7 @@ public final class CloudSimMocker {
      * method will return in each call
      */
     public void clock(final List<Integer> clockTimesToReturn) {
-        clockTimesToReturn.stream().mapToDouble(t -> t).forEach(t -> EasyMock.expect(mock.clock()).andReturn(t).once());
+        clockTimesToReturn.stream().mapToDouble(time -> time).forEach(t -> EasyMock.expect(mock.clock()).andReturn(t).once());
     }
 
     /**

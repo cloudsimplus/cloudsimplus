@@ -24,7 +24,7 @@ import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmSimpleTest;
+import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.easymock.EasyMock;
@@ -195,7 +195,7 @@ public class HostSimpleTest {
 
         final List<Vm> vms = new ArrayList<>();
         IntStream.range(0, 2).forEach(i -> {
-            final Vm vm = VmSimpleTest.createVm(
+            final Vm vm = VmTestUtil.createVm(
                     i, HOST_MIPS /numberOfVms, 1, RAM/numberOfVms, BW/numberOfVms, STORAGE/numberOfVms,
                     new CloudletSchedulerTimeShared());
             vm.setHost(Host.NULL);
@@ -215,7 +215,7 @@ public class HostSimpleTest {
 
         final List<Vm> vms = new ArrayList<>(numberOfVms);
         for (int i = 0; i < numberOfVms; i++) {
-            final Vm vm = VmSimpleTest.createVm(
+            final Vm vm = VmTestUtil.createVm(
                 i, HOST_MIPS / numberOfVms, 1, RAM / numberOfVms, BW / numberOfVms, STORAGE / numberOfVms);
             if (i == 0) {
                 /*considers that one of the migrating in VMs already was placed at the host,
@@ -239,7 +239,7 @@ public class HostSimpleTest {
     public void testAddMigratingInVm_checkVmWasChangedToInMigration() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
-        final VmSimple vm = VmSimpleTest.createVm(
+        final VmSimple vm = VmTestUtil.createVm(
                 0, HOST_MIPS, numberOfPes, RAM, BW, STORAGE,
                 new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
@@ -255,7 +255,7 @@ public class HostSimpleTest {
         final int numberOfPes = 1;
         final Host targetHost = createHostSimple(0, numberOfPes);
         final double VM_MIPS = 500;
-        final VmSimple vm = VmSimpleTest.createVm(
+        final VmSimple vm = VmTestUtil.createVm(
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
         assertEquals(HOST_MIPS, targetHost.getAvailableMips(), 0);
@@ -270,7 +270,7 @@ public class HostSimpleTest {
         final int numberOfPes = 1;
         final Host targetHost = createHostSimple(0, numberOfPes);
         final double VM_MIPS = 500;
-        final VmSimple vm = VmSimpleTest.createVm(
+        final VmSimple vm = VmTestUtil.createVm(
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
         targetHost.addMigratingInVm(vm);
@@ -283,7 +283,7 @@ public class HostSimpleTest {
     public void testAddMigratingInVm_lackOfRam() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
-        final Vm vm = VmSimpleTest.createVm(
+        final Vm vm = VmTestUtil.createVm(
             0, HOST_MIPS, numberOfPes, RAM * 2,
             BW, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
@@ -293,7 +293,7 @@ public class HostSimpleTest {
     public void testAddMigratingInVm_lackOfStorage() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
-        final Vm vm = VmSimpleTest.createVm(0, HOST_MIPS, numberOfPes, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
+        final Vm vm = VmTestUtil.createVm(0, HOST_MIPS, numberOfPes, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
@@ -301,7 +301,7 @@ public class HostSimpleTest {
     public void testAddMigratingInVm_lackOfBw() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
-        final Vm vm = VmSimpleTest.createVm(0, HOST_MIPS, numberOfPes, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
+        final Vm vm = VmTestUtil.createVm(0, HOST_MIPS, numberOfPes, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
@@ -309,7 +309,7 @@ public class HostSimpleTest {
     public void testAddMigratingInVm_lackOfMips() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
-        final Vm vm = VmSimpleTest.createVm(0, HOST_MIPS * 2, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        final Vm vm = VmTestUtil.createVm(0, HOST_MIPS * 2, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.addMigratingInVm(vm));
     }
 
@@ -317,7 +317,7 @@ public class HostSimpleTest {
     public void testRemoveMigratingInVm() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
-        final VmSimple vm = VmSimpleTest.createVm(0, HOST_MIPS, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
+        final VmSimple vm = VmTestUtil.createVm(0, HOST_MIPS, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
         vm.setHost(Host.NULL);
         host.addMigratingInVm(vm);
         host.removeMigratingInVm(vm);
@@ -327,8 +327,8 @@ public class HostSimpleTest {
 
     @Test
     public void testIsSuitableForVm() {
-        final VmSimple vm0 = VmSimpleTest.createVm(0, HOST_MIPS, 2, RAM, BW, HALF_STORAGE, new CloudletSchedulerTimeShared());
-        final VmSimple vm1 = VmSimpleTest.createVm(1, HOST_MIPS * 2, 1, RAM * 2, BW * 2, HALF_STORAGE, new CloudletSchedulerTimeShared());
+        final VmSimple vm0 = VmTestUtil.createVm(0, HOST_MIPS, 2, RAM, BW, HALF_STORAGE, new CloudletSchedulerTimeShared());
+        final VmSimple vm1 = VmTestUtil.createVm(1, HOST_MIPS * 2, 1, RAM * 2, BW * 2, HALF_STORAGE, new CloudletSchedulerTimeShared());
 
         assertTrue(host.isSuitableForVm(vm0));
         assertFalse(host.isSuitableForVm(vm1));
@@ -407,19 +407,19 @@ public class HostSimpleTest {
 
     @Test
     public void testVmCreate() {
-        final VmSimple vm0 = VmSimpleTest.createVm(0, HOST_MIPS / 2, 1, RAM / 2, BW / 2,
+        final VmSimple vm0 = VmTestUtil.createVm(0, HOST_MIPS / 2, 1, RAM / 2, BW / 2,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
         assertTrue(host.createVm(vm0));
 
-        final VmSimple vm1 = VmSimpleTest.createVm(1, HOST_MIPS, 1, RAM, BW,
+        final VmSimple vm1 = VmTestUtil.createVm(1, HOST_MIPS, 1, RAM, BW,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.createVm(vm1));
 
-        final VmSimple vm2 = VmSimpleTest.createVm(2, HOST_MIPS * 2, 1, RAM, BW,
+        final VmSimple vm2 = VmTestUtil.createVm(2, HOST_MIPS * 2, 1, RAM, BW,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
         assertFalse(host.createVm(vm2));
 
-        final VmSimple vm3 = VmSimpleTest.createVm(3, HOST_MIPS / 2, 2, RAM / 2, BW / 2,
+        final VmSimple vm3 = VmTestUtil.createVm(3, HOST_MIPS / 2, 2, RAM / 2, BW / 2,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
         assertTrue(host.createVm(vm3));
     }
@@ -428,7 +428,7 @@ public class HostSimpleTest {
     public void testVmCreate_unavailableStorageSpace() {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
-                VmSimpleTest.createVm(
+                VmTestUtil.createVm(
                         0, HOST_MIPS, 1, RAM, BW, STORAGE*2,
                         CloudletScheduler.NULL);
         assertFalse(host.createVm(vm));
@@ -438,7 +438,7 @@ public class HostSimpleTest {
     public void testVmCreate_unavailableBw() {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
-                VmSimpleTest.createVm(
+                VmTestUtil.createVm(
                         0, HOST_MIPS, 1, RAM, BW*2, STORAGE,
                         CloudletScheduler.NULL);
         assertFalse(host.createVm(vm));
@@ -494,7 +494,7 @@ public class HostSimpleTest {
     public void testVmCreate_unavailableRam() {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
-                VmSimpleTest.createVm(
+                VmTestUtil.createVm(
                         0, HOST_MIPS, 1, RAM*2, BW, STORAGE,
                         CloudletScheduler.NULL);
         assertFalse(host.createVm(vm));
@@ -504,7 +504,7 @@ public class HostSimpleTest {
     public void testVmCreate_unavailableMips() {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
-                VmSimpleTest.createVm(
+                VmTestUtil.createVm(
                         0, HOST_MIPS *2, 1, RAM, BW, STORAGE,
                         CloudletScheduler.NULL);
         assertFalse(host.createVm(vm));
@@ -514,7 +514,7 @@ public class HostSimpleTest {
     public void testVmDestroy() {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
-        final VmSimple vm = VmSimpleTest.createVm(
+        final VmSimple vm = VmTestUtil.createVm(
                 0, HOST_MIPS, 1, RAM / 2, BW / 2, STORAGE,
                 new CloudletSchedulerTimeShared());
         vm.setBroker(broker);
@@ -533,11 +533,11 @@ public class HostSimpleTest {
     public void testVmDestroyAll() {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
-        final VmSimple vm0 = VmSimpleTest.createVm(
+        final VmSimple vm0 = VmTestUtil.createVm(
                 0, HOST_MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
                 new CloudletSchedulerTimeShared());
         vm0.setBroker(broker);
-        final VmSimple vm1 = VmSimpleTest.createVm(
+        final VmSimple vm1 = VmTestUtil.createVm(
                 1, HOST_MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
                 new CloudletSchedulerTimeShared());
         vm1.setBroker(broker);

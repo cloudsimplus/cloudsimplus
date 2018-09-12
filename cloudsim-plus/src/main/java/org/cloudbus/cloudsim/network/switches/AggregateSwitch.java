@@ -101,8 +101,8 @@ public class AggregateSwitch extends AbstractSwitch {
         if (findConnectedEdgeSwitch(edgeSwitch)) {
             addPacketToBeSentToDownlinkSwitch(edgeSwitch, netPkt);
         } else { // send to up
-            final Switch sw = getUplinkSwitches().get(0);
-            addPacketToBeSentToUplinkSwitch(sw, netPkt);
+            final Switch uplinkSw = getUplinkSwitches().get(0);
+            addPacketToBeSentToUplinkSwitch(uplinkSw, netPkt);
         }
     }
 
