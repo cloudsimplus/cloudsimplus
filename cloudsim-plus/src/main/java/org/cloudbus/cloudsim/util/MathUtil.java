@@ -192,7 +192,7 @@ public final class MathUtil {
             x[i] = i + 1;
         }
 
-        return createWeigthedLinearRegression(x, y, getTricubeWeights(y.length))
+        return createWeightedLinearRegression(x, y, getTricubeWeights(y.length))
                 .regress().getParameterEstimates();
     }
 
@@ -212,26 +212,28 @@ public final class MathUtil {
         return regression;
     }
 
-    private static SimpleRegression createWeigthedLinearRegression(
-        final double[] x, final double[] y, final double[] weigths)
+    private static SimpleRegression createWeightedLinearRegression(
+        final double[] x,
+        final double[] y,
+        final double[] weights)
     {
-        final double[] xW = new double[x.length];
-        final double[] yW = new double[y.length];
+        final double[] weightedX = new double[x.length];
+        final double[] weightedY = new double[y.length];
 
-        final long numZeroWeigths = Arrays.stream(weigths).filter(weigth -> weigth <= 0).count();
+        final long numZeroWeigths = Arrays.stream(weights).filter(weigth -> weigth <= 0).count();
 
         for (int i = 0; i < x.length; i++) {
-            if (numZeroWeigths >= 0.4 * weigths.length) {
+            if (numZeroWeigths >= 0.4 * weights.length) {
                 // See: http://www.ncsu.edu/crsc/events/ugw07/Presentations/Crooks_Qiao/Crooks_Qiao_Alt_Presentation.pdf
-                xW[i] = Math.sqrt(weigths[i]) * x[i];
-                yW[i] = Math.sqrt(weigths[i]) * y[i];
+                weightedX[i] = Math.sqrt(weights[i]) * x[i];
+                weightedY[i] = Math.sqrt(weights[i]) * y[i];
             } else {
-                xW[i] = x[i];
-                yW[i] = y[i];
+                weightedX[i] = x[i];
+                weightedY[i] = y[i];
             }
         }
 
-        return createLinearRegression(xW, yW);
+        return createLinearRegression(weightedX, weightedY);
     }
 
     /**
@@ -246,13 +248,13 @@ public final class MathUtil {
         for (int i = 0; i < n; i++) {
             x[i] = i + 1;
         }
-        final SimpleRegression tricubeRegression = createWeigthedLinearRegression(x,
+        final SimpleRegression tricubeRegression = createWeightedLinearRegression(x,
             y, getTricubeWeights(n));
         final double[] residuals = new double[n];
         for (int i = 0; i < n; i++) {
             residuals[i] = y[i] - tricubeRegression.predict(x[i]);
         }
-        final SimpleRegression tricubeBySqrRegression = createWeigthedLinearRegression(
+        final SimpleRegression tricubeBySqrRegression = createWeightedLinearRegression(
             x, y, getTricubeBisquareWeights(residuals));
 
         final double[] estimates = tricubeBySqrRegression.regress()

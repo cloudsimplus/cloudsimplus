@@ -279,7 +279,7 @@ public class HostSimpleTest {
         assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm), 0);
     }
 
-    //@todo It lacks the @Test annotation
+    @Test
     public void testAddMigratingInVm_lackOfRam() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
@@ -289,7 +289,7 @@ public class HostSimpleTest {
         assertFalse(host.addMigratingInVm(vm));
     }
 
-    //@todo It lacks the @Test annotation
+    @Test
     public void testAddMigratingInVm_lackOfStorage() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
@@ -297,7 +297,7 @@ public class HostSimpleTest {
         assertFalse(host.addMigratingInVm(vm));
     }
 
-    //@todo It lacks the @Test annotation
+    @Test
     public void testAddMigratingInVm_lackOfBw() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
@@ -305,7 +305,7 @@ public class HostSimpleTest {
         assertFalse(host.addMigratingInVm(vm));
     }
 
-    //@todo It lacks the @Test annotation
+    @Test
     public void testAddMigratingInVm_lackOfMips() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
