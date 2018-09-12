@@ -47,7 +47,7 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
-    private static final Logger logger = LoggerFactory.getLogger(CloudletSchedulerAbstract.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudletSchedulerAbstract.class.getSimpleName());
 
     /**
      * @see #getCloudletPausedList()
@@ -145,7 +145,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void setCurrentMipsShare(final List<Double> currentMipsShare) {
         if(currentMipsShare.size() > vm.getNumberOfPes()){
-            logger.warn("Requested {} PEs but {} has just {}", currentMipsShare.size(), vm, vm.getNumberOfPes());
+            LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.size(), vm, vm.getNumberOfPes());
         }
         this.currentMipsShare = currentMipsShare;
     }
@@ -621,7 +621,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                         ram.getAvailableResource() > 0 ?
                         String.format("just %d was available and allocated to it.", ram.getAvailableResource()):
                         "no amount is available.";
-                logger.warn(
+                LOGGER.warn(
                     "{}: {}: {} requested {} MB of RAM but {}",
                     vm.getSimulation().clock(), getClass().getSimpleName(), cloudlet, requested, msg);
             }

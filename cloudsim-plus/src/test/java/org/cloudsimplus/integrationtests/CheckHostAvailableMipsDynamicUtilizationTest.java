@@ -52,7 +52,7 @@ import static org.junit.Assert.assertEquals;
  * @author Manoel Campos da Silva Filho
  */
 public final class CheckHostAvailableMipsDynamicUtilizationTest {
-    private static final Logger logger = LoggerFactory.getLogger(CheckHostAvailableMipsDynamicUtilizationTest.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckHostAvailableMipsDynamicUtilizationTest.class.getSimpleName());
 
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 2;
@@ -79,7 +79,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
         final double expectedAvailableHostMips =
                HOST_MIPS * HOST_PES * utilizationModel.getUtilization(evt.getTime());
 
-        logger.info(
+        LOGGER.info(
             "- onUpdateVmProcessing at time {}: {} available mips: {} expected availability: {}",
             evt.getTime(), evt.getHost(), evt.getHost().getAvailableMips(), expectedAvailableHostMips);
 

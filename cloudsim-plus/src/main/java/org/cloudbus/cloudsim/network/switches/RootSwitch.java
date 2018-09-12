@@ -39,7 +39,6 @@ import org.slf4j.LoggerFactory;
  * @since CloudSim Toolkit 3.0
  */
 public class RootSwitch extends AbstractSwitch {
-    private static final Logger logger = LoggerFactory.getLogger(RootSwitch.class.getSimpleName());
 
     /**
      * The level (layer) of the switch in the network topology.
@@ -63,6 +62,8 @@ public class RootSwitch extends AbstractSwitch {
      */
     public static final long DOWNLINK_BW = (long) Conversion.gigaToMega(40 * 8); // 40000 Megabits (40 Gigabits)
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(RootSwitch.class.getSimpleName());
+
     /**
      * Instantiates a Root AbstractSwitch specifying what other Datacenter are connected
      * to its downlink ports, and corresponding bandwidths.
@@ -78,16 +79,16 @@ public class RootSwitch extends AbstractSwitch {
     }
 
     @Override
-    protected void processPacketUp(SimEvent ev) {
-        super.processPacketUp(ev);
+    protected void processPacketUp(SimEvent evt) {
+        super.processPacketUp(evt);
 
-        final HostPacket netPkt = (HostPacket) ev.getData();
+        final HostPacket netPkt = (HostPacket) evt.getData();
         final Vm receiverVm = netPkt.getVmPacket().getDestination();
         final Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
         final Switch aggSwitch = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitch);
 
         if (aggSwitch == Switch.NULL) {
-            logger.error("No destination switch for this packet");
+            LOGGER.error("No destination switch for this packet");
             return;
         }
 

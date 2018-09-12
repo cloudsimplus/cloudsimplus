@@ -73,7 +73,7 @@ public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
         final Map<Host, Long> map = getHostFreePesMap();
         return map.entrySet()
             .stream()
-            .filter(e -> e.getKey().isSuitableForVm(vm))
+            .filter(entry -> entry.getKey().isSuitableForVm(vm))
             .min(Comparator.comparingLong(Map.Entry::getValue))
             .map(Map.Entry::getKey);
     }

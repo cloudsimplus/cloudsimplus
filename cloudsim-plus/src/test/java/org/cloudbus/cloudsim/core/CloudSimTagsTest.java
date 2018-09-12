@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Manoel Campos da Silva Filho
@@ -77,7 +77,8 @@ public class CloudSimTagsTest {
      * the same value of the given field.
      */
     public static Field getAnotherConstWithSameValue(final List<Field> fields, final Field field){
-        Object fValue = null, fieldValue = null;
+        Object fValue = null;
+        Object fieldValue = null;
         for (final Field f : fields) {
             try {
                 fValue = f.get(fValue);

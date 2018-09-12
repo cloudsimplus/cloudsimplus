@@ -23,10 +23,11 @@
  */
 package org.cloudbus.cloudsim.distributions;
 
+import org.apache.commons.math3.util.CombinatoricsUtils;
+
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
-import org.apache.commons.math3.util.CombinatoricsUtils;
 
 /**
  * A pseudo random number generator which returns numbers
@@ -200,7 +201,7 @@ public class PoissonDistr implements ContinuousDistribution {
          * It means that 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes.
          * This is the interarrival time (in average).
          */
-        final double MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE=0.4;
+        final double MEAN_CUSTOMERS_ARRIVAL_MINUTE=0.4;
 
         /*
          * Time length of each simulation in minutes.
@@ -233,9 +234,9 @@ public class PoissonDistr implements ContinuousDistribution {
             single minute. The default k value is 1, so we dont need to set it.*/
             final int totalArrivedCustomers =
                 IntStream.range(0, SIMULATION_TIME_LENGHT)
-                    .filter(i -> poisson.eventsHappened())
-                    .peek(i -> printArrivals.accept(poisson, i))
-                    .map(i -> poisson.getK())
+                    .filter(time -> poisson.eventsHappened())
+                    .peek(time -> printArrivals.accept(poisson, time))
+                    .map(time -> poisson.getK())
                     .sum();
 
             System.out.printf(
@@ -250,7 +251,7 @@ public class PoissonDistr implements ContinuousDistribution {
         PoissonDistr poisson = null;
         final long seed=System.currentTimeMillis();
         for(int i = 0; i < NUMBER_OF_SIMULATIONS; i++){
-            poisson = new PoissonDistr(MEAN_CUSTOMERS_ARRIVAL_PER_MINUTE, seed+i);
+            poisson = new PoissonDistr(MEAN_CUSTOMERS_ARRIVAL_MINUTE, seed+i);
             System.out.printf("Simulation number %d\n", i);
             customersArrivedInAllSimulations += runSimulation.apply(poisson);
         }

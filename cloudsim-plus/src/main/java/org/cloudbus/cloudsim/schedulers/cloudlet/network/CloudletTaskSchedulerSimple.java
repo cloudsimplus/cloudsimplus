@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
  * @since CloudSim Plus 1.0
  */
 public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
-    private static final Logger logger = LoggerFactory.getLogger(CloudletTaskSchedulerSimple.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudletTaskSchedulerSimple.class.getSimpleName());
 
     /**
      * @see #getVm()
@@ -135,7 +135,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private void addPacketsToBeSentFromVm(final NetworkCloudlet sourceCloudlet) {
         final Optional<CloudletSendTask> optional = getCloudletCurrentTask(sourceCloudlet);
         optional.ifPresent(task -> {
-            logger.trace(
+            LOGGER.trace(
                 "{}: {}: {} pkts added to be sent from {} in {}",
                 sourceCloudlet.getSimulation().clock(), getClass().getSimpleName(),
                 task.getPacketsToSend().size(), sourceCloudlet,
@@ -160,7 +160,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             // Assumption: packet will not arrive in the same cycle
             receivedPkts.forEach(task::receivePacket);
             receivedPkts.forEach(pkt ->
-                logger.trace(
+                LOGGER.trace(
                     "{}: {}: {} in {} received pkt with {} bytes from {} in {}",
                     candidateDestinationCloudlet.getSimulation().clock(), getClass().getSimpleName(),
                     pkt.getReceiverCloudlet(),

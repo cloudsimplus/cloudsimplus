@@ -23,7 +23,8 @@ import java.util.function.Predicate;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudSimEntity implements SimEntity {
-    private static final Logger logger = LoggerFactory.getLogger(CloudSimEntity.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudSimEntity.class.getSimpleName());
+
     /**
      * @see #isStarted()
      */
@@ -138,7 +139,7 @@ public abstract class CloudSimEntity implements SimEntity {
          * message is sent, it has to be processed to enable entities to shutdown.
          */
         if (!simulation.isRunning() && evt.getTag() != CloudSimTags.END_OF_SIMULATION) {
-            logger.warn("{}: Cannot send events before simulation start. Trying to send message {} to {}", this, evt.getTag(), evt.getDestination());
+            LOGGER.warn("{}: Cannot send events before simulation start. Trying to send message {} to {}", this, evt.getTag(), evt.getDestination());
             return false;
         }
 
@@ -167,17 +168,6 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
-     * Sends a high priority event to another entity and with <b>no</b> attached data.
-     *
-     * @param dest  the destination entity
-     * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
-     */
-    public void scheduleFirst(final SimEntity dest, final double delay, final int tag) {
-        scheduleFirst(dest, delay, tag, null);
-    }
-
-    /**
      * Sends a high priority event to another entity with no delay.
      *
      * @param dest the destination entity
@@ -195,6 +185,17 @@ public abstract class CloudSimEntity implements SimEntity {
      */
     public void scheduleFirstNow(final SimEntity dest, final int tag) {
         scheduleFirst(dest, 0, tag, null);
+    }
+
+    /**
+     * Sends a high priority event to another entity and with <b>no</b> attached data.
+     *
+     * @param dest  the destination entity
+     * @param delay How many seconds after the current simulation time the event should be sent
+     * @param tag   An user-defined number representing the type of event.
+     */
+    public void scheduleFirst(final SimEntity dest, final double delay, final int tag) {
+        scheduleFirst(dest, delay, tag, null);
     }
 
     /**
@@ -447,7 +448,7 @@ public abstract class CloudSimEntity implements SimEntity {
     protected void send(final SimEntity dest, double delay, final int cloudSimTag, final Object data) {
         Objects.requireNonNull(dest);
         if (dest.getId() < 0) {
-            logger.error("{}.send(): invalid entity id {} for {}", getName(), dest.getId(), dest);
+            LOGGER.error("{}.send(): invalid entity id {} for {}", getName(), dest.getId(), dest);
             return;
         }
 

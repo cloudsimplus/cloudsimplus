@@ -81,7 +81,7 @@ import static org.junit.Assert.assertEquals;
  * @author Manoel Campos da Silva Filho
  */
 public final class VmCreationFailureIntegrationTest {
-    private static final Logger logger = LoggerFactory.getLogger(VmCreationFailureIntegrationTest.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(VmCreationFailureIntegrationTest.class.getSimpleName());
 
     /** The number of times a host was allocated to a VM. */
     private int numberOfHostAllocations;
@@ -105,7 +105,7 @@ public final class VmCreationFailureIntegrationTest {
      */
     private void onHostAllocation(VmHostEventInfo evt) {
         numberOfHostAllocations++;
-        logger.info(
+        LOGGER.info(
                 "# Host {} allocated to Vm {} at time {}",
                 evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
         if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost())
@@ -126,7 +126,7 @@ public final class VmCreationFailureIntegrationTest {
      */
     private void onHostDeallocation(VmHostEventInfo evt) {
         numberOfHostDeallocations++;
-        logger.info(
+        LOGGER.info(
                 "# {} moved/removed from {} at time {}",
                 evt.getVm(), evt.getHost(), evt.getTime());
         if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost()) &&
@@ -160,19 +160,13 @@ public final class VmCreationFailureIntegrationTest {
      * @param evt
      */
     private void onEventProcessing(SimEvent evt) {
-        logger.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
-        switch ((int) evt.getTime()) {
-            case 10:
-                assertEquals(200,
-                        scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
-            break;
-            case 20:
-                assertEquals(200,
-                        scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
-            break;
+        LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
+        int i = (int) evt.getTime();
+        if (i == 10 || i == 20) {
+            assertEquals(200,
+                scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
         }
     }
-
 
     /**
      * A lambda function used by an {@link Vm#addOnUpdateProcessingListener(EventListener)}  }
@@ -184,7 +178,7 @@ public final class VmCreationFailureIntegrationTest {
      * @param evt
      */
     private void onUpdateVmProcessing(VmHostEventInfo evt) {
-        logger.info(
+        LOGGER.info(
             "- onUpdateVmProcessing at time {} for {}: {} available mips: {}",
             evt.getTime(), evt.getVm(), evt.getHost(), evt.getHost().getAvailableMips());
         assertEquals(200, evt.getHost().getAvailableMips(), 0);

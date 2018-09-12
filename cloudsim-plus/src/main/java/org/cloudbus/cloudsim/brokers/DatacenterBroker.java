@@ -34,7 +34,7 @@ import java.util.function.Supplier;
  * @since CloudSim Plus 1.0
  */
 public interface DatacenterBroker extends SimEntity {
-    Logger logger = LoggerFactory.getLogger(DatacenterBroker.class.getSimpleName());
+    Logger LOGGER = LoggerFactory.getLogger(DatacenterBroker.class.getSimpleName());
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link DatacenterBroker}

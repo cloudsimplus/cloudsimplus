@@ -29,7 +29,7 @@ import java.util.*;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
-    private static final Logger logger = LoggerFactory.getLogger(AbstractSwitch.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(AbstractSwitch.class.getSimpleName());
 
     /**
      * Map of packets sent to Datacenter on the uplink, where each key is a switch
@@ -105,29 +105,29 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     @Override
     protected void startEntity() {
-        logger.info("{} is starting...", getName());
+        LOGGER.info("{} is starting...", getName());
         schedule(this, 0, CloudSimTags.DATACENTER_LIST_REQUEST);
     }
 
     @Override
-    public void processEvent(final SimEvent ev) {
-        switch (ev.getTag()) {
+    public void processEvent(final SimEvent evt) {
+        switch (evt.getTag()) {
             case CloudSimTags.NETWORK_EVENT_UP:
                 // process the packet from down switch or host
-                processPacketUp(ev);
+                processPacketUp(evt);
             break;
             case CloudSimTags.NETWORK_EVENT_DOWN:
                 // process the packet from uplink
-                processPacketDown(ev);
+                processPacketDown(evt);
             break;
             case CloudSimTags.NETWORK_EVENT_SEND:
                 processPacketForward();
             break;
             case CloudSimTags.NETWORK_EVENT_HOST:
-                processHostPacket(ev);
+                processHostPacket(evt);
             break;
             case CloudSimTags.NETWORK_HOST_REGISTER:
-                registerHost(ev);
+                registerHost(evt);
             break;
         }
     }
@@ -135,10 +135,10 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Process a packet sent to a host.
      *
-     * @param ev The packet sent.
+     * @param evt The packet sent.
      */
-    protected void processHostPacket(final SimEvent ev) {
-        final HostPacket pkt = (HostPacket) ev.getData();
+    protected void processHostPacket(final SimEvent evt) {
+        final HostPacket pkt = (HostPacket) evt.getData();
         final NetworkHost host = pkt.getDestination();
         host.addReceivedNetworkPacket(pkt);
     }
@@ -146,9 +146,9 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Sends a packet to Datacenter connected through a downlink port.
      *
-     * @param ev Event/packet to process
+     * @param evt Event/packet to process
      */
-    protected void processPacketDown(final SimEvent ev) {
+    protected void processPacketDown(final SimEvent evt) {
         // packet coming from up level router
         // has to send downward.
         // check which switch to forward to
@@ -171,9 +171,9 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Sends a packet to Datacenter connected through a uplink port.
      *
-     * @param ev Event/packet to process
+     * @param evt Event/packet to process
      */
-    protected void processPacketUp(final SimEvent ev) {
+    protected void processPacketUp(final SimEvent evt) {
         // packet coming from down level router has to be sent up.
         // check which switch to forward to and add packet in the switch list
         getSimulation().cancelAll(this, new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
@@ -183,10 +183,10 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Register a host that is connected to the switch.
      *
-     * @param ev the event containing the host to be registered
+     * @param evt the event containing the host to be registered
      */
-    private void registerHost(final SimEvent ev) {
-        final NetworkHost host = (NetworkHost) ev.getData();
+    private void registerHost(final SimEvent evt) {
+        final NetworkHost host = (NetworkHost) evt.getData();
         hostList.add(host);
     }
 
@@ -276,13 +276,13 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * or the total bandwidth capacity if the packet list has 0 or 1 element
      */
     private double getAvailableBwForEachPacket(final double bwCapacity, final List<HostPacket> netPktList) {
-        return (netPktList.isEmpty() ? bwCapacity : bwCapacity / netPktList.size());
+        return netPktList.isEmpty() ? bwCapacity : bwCapacity / netPktList.size();
     }
 
     @Override
     public void shutdownEntity() {
         super.shutdownEntity();
-        logger.info("{} is shutting down...", getName());
+        LOGGER.info("{} is shutting down...", getName());
     }
 
     @Override

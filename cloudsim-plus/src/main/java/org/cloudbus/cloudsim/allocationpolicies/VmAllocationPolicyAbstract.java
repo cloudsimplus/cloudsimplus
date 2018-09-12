@@ -41,7 +41,6 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
-    private static final Logger logger = LoggerFactory.getLogger(VmAllocationPolicyAbstract.class.getSimpleName());
     private BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
 
     /**
@@ -64,15 +63,17 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private Map<Vm, Long> usedPes;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicyAbstract.class.getSimpleName());
+
     /**
-     * Creates a new VmAllocationPolicy.
+     * Creates a VmAllocationPolicy.
      */
     public VmAllocationPolicyAbstract() {
         this(null);
     }
 
     /**
-     * Creates a new VmAllocationPolicy, changing the {@link BiFunction} to select a Host for a Vm.
+     * Creates a VmAllocationPolicy, changing the {@link BiFunction} to select a Host for a Vm.
      * @param findHostForVmFunction a {@link BiFunction} to select a Host for a given Vm.
      * @see VmAllocationPolicy#setFindHostForVmFunction(BiFunction)
      */
@@ -291,7 +292,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return false;
         }
 
-        logger.info(
+        LOGGER.info(
             "{}: {}: {} more {} allocated to {}: new capacity is {}. Current resource usage is {}%",
             scaling.getVm().getSimulation().clock(),
             scaling.getClass().getSimpleName(),
@@ -305,7 +306,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClass();
         final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
         final double extraAmountToAllocate = scaling.getResourceAmountToScale();
-        logger.warn(
+        LOGGER.warn(
             "{}: {}: {} requested more {} of {} capacity but the {} has just {} of available {}",
             scaling.getVm().getSimulation().clock(),
             scaling.getClass().getSimpleName(),
@@ -328,7 +329,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
         final double newTotalVmResource = vmResource.getCapacity() - amountToDeallocate;
         if(!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)){
-            logger.error(
+            LOGGER.error(
                 "{}: {}: {} requested to reduce {} capacity by {} but an unexpected error occurred and the resource was not resized",
                 scaling.getVm().getSimulation().clock(),
                 scaling.getClass().getSimpleName(),
@@ -337,7 +338,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return false;
         }
 
-        logger.info(
+        LOGGER.info(
             "{}: {}: {} {} deallocated from {}: new capacity is {}. Current resource usage is {}%",
             scaling.getVm().getSimulation().clock(),
             scaling.getClass().getSimpleName(),
@@ -356,7 +357,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public boolean allocateHostForVm(final Vm vm) {
         if(getHostList().isEmpty()){
-            logger.warn(
+            LOGGER.warn(
                 "{}: {}: {} could not be allocated because there isn't any Host for Datacenter {}",
                 vm.getSimulation().clock(), vm, getDatacenter().getId());
             return false;
@@ -377,7 +378,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return allocateHostForVm(vm, optional.get());
         }
 
-        logger.warn("{}: {}: No suitable host found for {} in {}", vm.getSimulation().clock(), getClass().getSimpleName(), vm, datacenter);
+        LOGGER.warn("{}: {}: No suitable host found for {} in {}", vm.getSimulation().clock(), getClass().getSimpleName(), vm, datacenter);
         return false;
     }
 
@@ -389,14 +390,14 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             addUsedPes(vm);
             getHostFreePesMap().compute(host, (h, previousFreePes) -> previousFreePes - vm.getNumberOfPes());
 
-            logger.info(
+            LOGGER.info(
                 "{}: {}: {} has been allocated to {}",
                 vm.getSimulation().clock(), getClass().getSimpleName(), vm, host);
 
             return true;
         }
 
-        logger.error("{}: Creation of {} on {} failed", vm.getSimulation().clock(), vm, host);
+        LOGGER.error("{}: Creation of {} on {} failed", vm.getSimulation().clock(), vm, host);
         return false;
     }
 

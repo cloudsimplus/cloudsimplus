@@ -94,7 +94,7 @@ final class HostNull implements Host {
     @Override public Vm getVm(int vmId, int brokerId) {
         return Vm.NULL;
     }
-    @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.EMPTY_LIST; }
+    @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
     @Override public List<Vm> getVmList() { return Collections.emptyList(); }
     @Override public VmScheduler getVmScheduler() {
         return VmScheduler.NULL;
@@ -114,7 +114,7 @@ final class HostNull implements Host {
     @Override public boolean isActive() { return false; }
     @Override public Host setActive(boolean active) { return this; }
     @Override public <T extends Vm> Set<T> getVmsMigratingIn() {
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
     @Override public void reallocateMigratingInVms() {/**/}
     @Override public void removeMigratingInVm(Vm vm) {/**/}
@@ -130,7 +130,7 @@ final class HostNull implements Host {
     @Override public void destroyVm(Vm vm) {/**/}
     @Override public void destroyAllVms() {/**/}
     @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return false; }
-    @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return Host.NULL; }
+    @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
     @Override public long getAvailableStorage() {
         return 0L;
     }
@@ -168,7 +168,7 @@ final class HostNull implements Host {
     @Override public void enableStateHistory() {/**/}
     @Override public void disableStateHistory() {/**/}
     @Override public boolean isStateHistoryEnabled() { return false; }
-    @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.EMPTY_LIST; }
-    @Override public List<Vm> getFinishedVms() { return Collections.EMPTY_LIST; }
+    @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
+    @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
     @Override public void setShutdownTime(double shutdownTime) {/**/}
 }

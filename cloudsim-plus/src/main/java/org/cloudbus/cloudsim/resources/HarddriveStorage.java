@@ -35,11 +35,11 @@ import java.util.Objects;
  * @since CloudSim Toolkit 1.0
  */
 public class HarddriveStorage implements FileStorage {
-    private static final Logger logger = LoggerFactory.getLogger(HarddriveStorage.class.getSimpleName());
-
-    private static final int DEF_MAX_TRANSFER_RATE_MBPS = 133*8;
     public static final double DEF_LATENCY_SECS = 0.00417;
     public static final double DEF_SEEK_TIME_SECS = 0.009;
+    private static final int   DEF_MAX_TRANSFER_RATE_MBPS = 133*8;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HarddriveStorage.class.getSimpleName());
 
     /** The internal storage that just manages
      * the HD capacity and used space.
@@ -262,7 +262,7 @@ public class HarddriveStorage implements FileStorage {
     @Override
     public File getFile(final String fileName) {
         if (!File.isValid(fileName)) {
-            logger.warn("{}.getFile(): Invalid file name {}.", name, fileName);
+            LOGGER.warn("{}.getFile(): Invalid file name {}.", name, fileName);
             return null;
         }
 
@@ -362,13 +362,13 @@ public class HarddriveStorage implements FileStorage {
     public double addFile(final File file) {
         double result = 0.0;
         if (!File.isValid(file)) {
-            logger.warn("{}.addFile(): Invalid file {}", name, file);
+            LOGGER.warn("{}.addFile(): Invalid file {}", name, file);
             return result;
         }
 
        // check the capacity
         if (!storage.isAmountAvailable((long)file.getSize())) {
-            logger.error("{}.addFile(): Not enough space to store {}", name, file.getName());
+            LOGGER.error("{}.addFile(): Not enough space to store {}", name, file.getName());
             return result;
         }
 
@@ -390,7 +390,7 @@ public class HarddriveStorage implements FileStorage {
     public double addFile(final List<File> list) {
         Objects.requireNonNull(list);
         if (list.isEmpty()) {
-            logger.debug("{}.addFile(): File list is empty.", getName());
+            LOGGER.debug("{}.addFile(): File list is empty.", getName());
             return 0.0;
         }
 
@@ -440,7 +440,7 @@ public class HarddriveStorage implements FileStorage {
     @Override
     public boolean contains(final String fileName) {
         if (fileName == null || fileName.trim().isEmpty()) {
-            logger.warn("{}.contains(): Invalid file name {}", name, fileName);
+            LOGGER.warn("{}.contains(): Invalid file name {}", name, fileName);
             return false;
         }
 

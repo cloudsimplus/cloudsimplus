@@ -32,12 +32,12 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudSim implements Simulation {
-    private static final Logger logger = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
-
     /**
      * CloudSim Plus current version.
      */
     public static final String VERSION = "4.0.0";
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
     /**
      * An array that works as a circular queue with capacity for just 2 elements
@@ -208,7 +208,7 @@ public class CloudSim implements Simulation {
                 "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
-        logger.info("Starting CloudSim Plus {}", VERSION);
+        LOGGER.info("Starting CloudSim Plus {}", VERSION);
         startEntitiesIfNotRunning();
         this.alreadyRunOnce = true;
 
@@ -218,7 +218,7 @@ public class CloudSim implements Simulation {
 
         notifyEndOfSimulationToEntities();
         running = false;
-        logger.info("Simulation: No more future events{}", System.lineSeparator());
+        LOGGER.info("Simulation: No more future events{}", System.lineSeparator());
 
         finishSimulation();
         printSimulationFinished();
@@ -246,7 +246,7 @@ public class CloudSim implements Simulation {
         while (runClockTickAndProcessFutureEvents() || waitSimulationClockToReachTerminationTime()) {
             notifyOnSimulationStartListeners(); //it's ensured to run just once.
             if(abortRequested){
-                logger.info("{}================== Simulation aborted under request at time {} ==================", System.lineSeparator(), clock);
+                LOGGER.info("{}================== Simulation aborted under request at time {} ==================", System.lineSeparator(), clock);
                 return false;
             }
 
@@ -270,7 +270,7 @@ public class CloudSim implements Simulation {
         entities.stream()
             .filter(CloudSimEntity::isAlive)
             .forEach(e -> sendNow(e, CloudSimTags.END_OF_SIMULATION));
-        logger.info("{}: Processing last events before simulation shutdown.", clock);
+        LOGGER.info("{}: Processing last events before simulation shutdown.", clock);
 
         while (runClockTickAndProcessFutureEvents()) {/**/}
     }
@@ -282,7 +282,7 @@ public class CloudSim implements Simulation {
                                 ? extra + " in reason of an explicit request to terminate() or terminateAt()"
                                 : "";
 
-        logger.info("{}================== {}{} =================={}", System.lineSeparator(), msg1, msg2, System.lineSeparator());
+        LOGGER.info("{}================== {}{} =================={}", System.lineSeparator(), msg1, msg2, System.lineSeparator());
     }
 
     @Override
@@ -407,7 +407,7 @@ public class CloudSim implements Simulation {
                 ? "using getMinTimeBetweenEvents() since a Datacenter schedulingInterval was not set"
                 : "Datacenter.getSchedulingInterval()";
 
-            logger.info(
+            LOGGER.info(
                 "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set).{}Checking new events in {} seconds ({})",
                 clock, terminationTime, System.lineSeparator(),
                 increment, info);
@@ -633,7 +633,7 @@ public class CloudSim implements Simulation {
      */
     private void addEntityDynamically(final SimEntity e) {
         requireNonNull(e);
-        logger.trace("Adding: {}", e.getName());
+        LOGGER.trace("Adding: {}", e.getName());
         e.start();
     }
 
@@ -682,7 +682,7 @@ public class CloudSim implements Simulation {
 
         running = true;
         entities.forEach(SimEntity::start);
-        logger.info("Entities started.");
+        LOGGER.info("Entities started.");
     }
 
     @Override

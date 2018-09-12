@@ -560,7 +560,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
             /* We don't need to check if some Cloudlet attribute was changed because
              * if this Runnable is executed is because something was.
              * An event to execute such Runnable is just sent in such a condition.*/
-            broker.logger.trace("{}: {}: {} attributes updated: {}", getSimulation().clock(), broker.getName(), cloudlet, sb);
+            broker.LOGGER.trace("{}: {}: {} attributes updated: {}", getSimulation().clock(), broker.getName(), cloudlet, sb);
         };
 
         /* The Runnable is the data of the event that is sent to the broker.

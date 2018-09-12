@@ -55,7 +55,7 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSchedulerTimeShared extends VmSchedulerAbstract {
-    private static final Logger logger = LoggerFactory.getLogger(VmSchedulerTimeShared.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(VmSchedulerTimeShared.class.getSimpleName());
 
     /**
      * Creates a time-shared VM scheduler.
@@ -166,7 +166,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         final String msg = allocatedMipsForVmPe > 0 ?
                 String.format("Only %.0f MIPS were allocated.", allocatedMipsForVmPe)
                 : "No MIPS were allocated.";
-        logger.warn(
+        LOGGER.warn(
                 "{}: {}: {} is requiring a total of {} MIPS but the PEs of {} currently don't have such an available MIPS amount. {}",
                 getHost().getSimulation().clock(),
                 getClass().getSimpleName(), vm,
@@ -289,7 +289,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         }
 
         if(showLog) {
-            logger.error(
+            LOGGER.error(
                 "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
                     "\t\tHowever, there are just {} available PEs with the required MIPS.",
                 getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),

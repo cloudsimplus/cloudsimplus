@@ -38,7 +38,7 @@ import java.util.Map;
  * @see #getInstance(String)
  */
 public final class BriteNetworkTopology implements NetworkTopology {
-    private static final Logger logger = LoggerFactory.getLogger(BriteNetworkTopology.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(BriteNetworkTopology.class.getSimpleName());
 
     /**
      * The BRITE id to use for the next node to be created in the network.
@@ -66,7 +66,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     private Map<Integer, Integer> map;
 
     /**
-     * Instantiates a new Network Topology a file inside the <b>application's resource directory</b>.
+     * Instantiates a Network Topology from a file inside the <b>application's resource directory</b>.
      * @param fileName the <b>relative name</b> of the BRITE file
      * @return the BriteNetworkTopology instance.
      */
@@ -76,7 +76,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Creates a network topology
+     * Instantiates a Network Topology.
      * @see #BriteNetworkTopology(String)
      * @see #BriteNetworkTopology(InputStreamReader)
      * @see #getInstance(String)
@@ -89,7 +89,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Creates a network topology if the file exists and can be successfully
+     * Instantiates a Network Topology if a given file exists and can be successfully
      * parsed. File is written in the BRITE format and contains
      * topological information on simulation entities.
      *
@@ -100,7 +100,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      */
     public BriteNetworkTopology(final String filePath) {
         this(ResourceLoader.getFileReader(filePath));
-        logger.info("Topology file: {}", filePath);
+        LOGGER.info("Topology file: {}", filePath);
     }
 
     /**
@@ -201,12 +201,12 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
 
         if (map.containsKey(cloudSimEntityID)) {
-            logger.warn("Network mapping: CloudSim entity {} already mapped.", cloudSimEntityID);
+            LOGGER.warn("Network mapping: CloudSim entity {} already mapped.", cloudSimEntityID);
             return;
         }
 
         if (map.containsValue(briteID)) {
-            logger.warn("BRITE node {} already in use.", briteID);
+            LOGGER.warn("BRITE node {} already in use.", briteID);
             return;
         }
 

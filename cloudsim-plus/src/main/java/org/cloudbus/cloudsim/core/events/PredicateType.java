@@ -33,13 +33,13 @@ public class PredicateType implements Predicate<SimEvent> {
     /**
      * Matches any event that has one of the specified {@link #tag}.
      *
-     * @param ev {@inheritDoc}
+     * @param evt {@inheritDoc}
      * @return {@inheritDoc}
      * @see #tag
      */
     @Override
-    public boolean test(final SimEvent ev) {
-        return tag == ev.getTag();
+    public boolean test(final SimEvent evt) {
+        return tag == evt.getTag();
     }
 
 }

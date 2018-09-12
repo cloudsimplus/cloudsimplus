@@ -32,7 +32,7 @@ import java.util.TreeSet;
  * @since CloudSim Toolkit 1.0
  */
 public class CloudInformationService extends CloudSimEntity {
-    private static final Logger logger = LoggerFactory.getLogger(CloudInformationService.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudInformationService.class.getSimpleName());
 
     /**
      * A list containing all Datacenters that are registered at the
@@ -89,7 +89,7 @@ public class CloudInformationService extends CloudSimEntity {
     @Override
     public void shutdownEntity() {
         super.shutdownEntity();
-        logger.info("{}: Notify all CloudSim Plus entities to shutdown.{}", super.getName(), System.lineSeparator());
+        LOGGER.info("{}: Notify all CloudSim Plus entities to shutdown.{}", super.getName(), System.lineSeparator());
 
         signalShutdown(datacenterList);
         signalShutdown(cisList);

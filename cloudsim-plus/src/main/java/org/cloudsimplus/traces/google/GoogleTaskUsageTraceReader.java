@@ -35,10 +35,11 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.listeners.EventInfo;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -285,9 +286,9 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      */
     public GoogleTaskUsageTraceReader(
         final List<DatacenterBroker> brokers,
-        final String filePath) throws FileNotFoundException
+        final String filePath) throws IOException
     {
-        this(brokers, filePath, new FileInputStream(filePath));
+        this(brokers, filePath, Files.newInputStream(Paths.get(filePath)));
     }
 
     /**
@@ -425,7 +426,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
              * if this Runnable is executed is because something was.
              * An event to execute such Runnable is just sent in such a condition.*/
             final DatacenterBroker broker = cloudlet.getBroker();
-            broker.logger.trace("{}: {}: {} resource usage changed: {}", simulation.clock(), broker.getName(), cloudlet, sb);
+            broker.LOGGER.trace("{}: {}: {} resource usage changed: {}", simulation.clock(), broker.getName(), cloudlet, sb);
             cloudlet.getVm().getHost().updateProcessing(simulation.clock());
         };
 

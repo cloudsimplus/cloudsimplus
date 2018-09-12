@@ -63,7 +63,7 @@ import java.util.List;
  * @since CloudSim Plus 1.0.0
  */
 public final class CheckHostAvailableMipsTest {
-    private static final Logger logger = LoggerFactory.getLogger(CheckHostAvailableMipsTest.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckHostAvailableMipsTest.class.getSimpleName());
 
     private static final double HOST_MIPS = 1000;
     private static final int    HOST_PES = 5;
@@ -122,7 +122,7 @@ public final class CheckHostAvailableMipsTest {
         final double time = (int)evt.getTime();
         final double expectedAvailableHostMips = getExpectedAvailableHostMips(time);
 
-        logger.info(
+        LOGGER.info(
             "- VMs processing at time {}: {} available mips: {} expected availability: {}",
             time, evt.getHost(), evt.getHost().getAvailableMips(), expectedAvailableHostMips);
     }

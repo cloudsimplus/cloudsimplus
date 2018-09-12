@@ -138,8 +138,6 @@ import static java.util.stream.Collectors.toMap;
  * the fault recovery. The cloner methods are fault recovery.
  */
 public class HostFaultInjection extends CloudSimEntity {
-    private static final Logger logger = LoggerFactory.getLogger(HostFaultInjection.class.getSimpleName());
-
     /**
      * Maximum number of seconds for a VM to recovery from a failure,
      * which is randomly selected based on this value.
@@ -147,6 +145,8 @@ public class HostFaultInjection extends CloudSimEntity {
      * to start a clone from a failed VM.
      */
     private static final int MAX_VM_RECOVERY_TIME_SECS = 450;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HostFaultInjection.class.getSimpleName());
 
     /**
      * @see #getLastFailedHost()
@@ -181,7 +181,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * A Pseudo Random Number Generator which generates the times (in hours)
      * that Hosts failures will occur.
      */
-    private final ContinuousDistribution faultArrivalTimesGeneratorInHours;
+    private final ContinuousDistribution faultArrivalHoursGenerator;
 
     /**
      * The attribute counts how many host failures the simulation had
@@ -233,19 +233,19 @@ public class HostFaultInjection extends CloudSimEntity {
      *
      * @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
      *
-     * @param faultArrivalTimesGeneratorInHours a Pseudo Random Number Generator which generates the
+     * @param faultArrivalHoursGenerator a Pseudo Random Number Generator which generates the
      * times Hosts failures will occur (in hours).
      * <b>The values returned by the generator will be considered to be hours</b>.
      * Frequently it is used a
      * {@link PoissonDistr} to generate failure arrivals, but any {@link ContinuousDistribution}
      * can be used.
      */
-    public HostFaultInjection(final Datacenter datacenter, final ContinuousDistribution faultArrivalTimesGeneratorInHours) {
+    public HostFaultInjection(final Datacenter datacenter, final ContinuousDistribution faultArrivalHoursGenerator) {
         super(datacenter.getSimulation());
         this.setDatacenter(datacenter);
         this.lastFailedHost = Host.NULL;
-        this.faultArrivalTimesGeneratorInHours = faultArrivalTimesGeneratorInHours;
-        this.random = new UniformDistr(faultArrivalTimesGeneratorInHours.getSeed()+1);
+        this.faultArrivalHoursGenerator = faultArrivalHoursGenerator;
+        this.random = new UniformDistr(faultArrivalHoursGenerator.getSeed()+1);
         this.vmRecoveryTimeSecsMap = new HashMap<>();
         this.hostFaultsTimeSecsMap = new HashMap<>();
         this.faultsOfAllVmsByBroker = new HashMap<>();
@@ -280,23 +280,19 @@ public class HostFaultInjection extends CloudSimEntity {
     /**
      * Gets the time delay in seconds, from the current simulation time,
      * that the next failure will be injected.
-     * Since the values returned by the {@link #faultArrivalTimesGeneratorInHours}
+     * Since the values returned by the {@link #faultArrivalHoursGenerator}
      * are considered to be in <b>hours</b>, such values are converted to seconds.
      *
      * @return the next failure injection delay in seconds
      */
     private double getTimeDelayForNextFault() {
-        return faultArrivalTimesGeneratorInHours.sample() * 3600;
+        return faultArrivalHoursGenerator.sample() * 3600;
     }
 
     @Override
-    public void processEvent(final SimEvent ev) {
-        switch (ev.getTag()) {
-            case CloudSimTags.HOST_FAILURE:
-                generateHostFaultAndScheduleNext();
-            break;
-            default:
-            break;
+    public void processEvent(final SimEvent evt) {
+        if (evt.getTag() == CloudSimTags.HOST_FAILURE) {
+            generateHostFaultAndScheduleNext();
         }
     }
 
@@ -330,7 +326,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
         final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
         if(hostWorkingPes > 0) {
-            logger.error(
+            LOGGER.error(
                 "{}: {}: Generated {} PEs failures from {} previously working PEs for {} at minute {}.{}" +
                     "\t  Current Working PEs: {} | Number of VMs: {}{}",
                 getSimulation().clock(), getClass().getSimpleName(), lastNumberOfFailedPes,
@@ -390,7 +386,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private void setAllVmsToFailed() {
         final int vms = lastFailedHost.getVmList().size();
         final String msg = vms > 0 ? String.format("affecting all its %d VMs", vms) : "but there was no running VM";
-        logger.error(
+        LOGGER.error(
                 "{}: All the {} PEs of {} failed, {}.",
                 getSimulation().clock(), lastFailedHost.getNumberOfPes(), lastFailedHost, msg);
         setVmListToFailed(lastFailedHost.getVmList());
@@ -402,12 +398,12 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private void logNoVmFault() {
         if(lastFailedHost.getVmList().isEmpty()){
-            logger.info("\tThere aren't VMs running on the failed Host.");
+            LOGGER.info("\tThere aren't VMs running on the failed Host.");
             return;
         }
 
         final int vmsRequiredPes = (int) getPesSumOfWorkingVms();
-        logger.info(
+        LOGGER.info(
                 "\tNumber of failed PEs is less than PEs required by all its {} VMs, thus it doesn't affect any VM.{}" +
                 "Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.\n",
                 lastFailedHost.getVmList().size(), System.lineSeparator(),
@@ -420,7 +416,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * {@link #getLastFailedHost() last failed Host} from affected VMs.
      */
     private void deallocateFailedHostPesFromVms() {
-        logger.error("\t{} PEs just failed. There is a total of {} working PEs.",
+        LOGGER.error("\t{} PEs just failed. There is a total of {} working PEs.",
                 lastNumberOfFailedPes,
                 lastFailedHost.getNumberOfWorkingPes());
         cyclicallyRemoveFailedHostPesFromVms();
@@ -445,7 +441,7 @@ public class HostFaultInjection extends CloudSimEntity {
         List<Vm> vmsWithPes = getVmsWithPEsFromFailedHost();
         final int affectedVms = Math.min(vmsWithPes.size(), failedPesToRemoveFromVms);
 
-        logger.warn("\t{} VMs affected from a total of {}. {} PEs are going to be removed from them.",
+        LOGGER.warn("\t{} VMs affected from a total of {}. {} PEs are going to be removed from them.",
                 affectedVms, lastFailedHost.getVmList().size(), failedPesToRemoveFromVms);
         int i = 0;
         while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms-- > 0) {
@@ -456,7 +452,7 @@ public class HostFaultInjection extends CloudSimEntity {
             //remove 1 failed PE from the VM
             vm.getProcessor().deallocateAndRemoveResource(1);
 
-            logger.warn(
+            LOGGER.warn(
                     "\tRemoving 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}\n",
                     vm.getId(), vm.getNumberOfPes());
             i++;
@@ -532,19 +528,19 @@ public class HostFaultInjection extends CloudSimEntity {
         }
 
         if(!isVmClonerSet(broker)) {
-            logger.warn("\tA Vm Cloner was not set for {}. So that VM failure will not be recovered.", broker);
+            LOGGER.warn("\tA Vm Cloner was not set for {}. So that VM failure will not be recovered.", broker);
             return;
         }
 
         final VmCloner cloner = getVmCloner(broker);
         if(cloner.isMaxClonesNumberReached()){
-            logger.warn("\tThe maximum allowed number of {} VMs to create has been reached.", cloner.getMaxClonesNumber());
+            LOGGER.warn("\tThe maximum allowed number of {} VMs to create has been reached.", cloner.getMaxClonesNumber());
             return;
         }
 
         registerFaultOfAllVms(broker);
         final double recoveryTimeSecs = getRandomRecoveryTimeForVmInSecs();
-        logger.info("\tTime to recovery from fault by cloning the failed VM: {} minutes", recoveryTimeSecs/60.0);
+        LOGGER.info("\tTime to recovery from fault by cloning the failed VM: {} minutes", recoveryTimeSecs/60.0);
 
         final Map.Entry<Vm, List<Cloudlet>> entry = cloner.clone(lastVmFailedFromBroker);
 
@@ -572,7 +568,7 @@ public class HostFaultInjection extends CloudSimEntity {
         vm.setFailed(true);
         final DatacenterBroker broker = vm.getBroker();
         if(isVmClonerSet(broker) && isSomeVmWorking(broker)){
-            logger.info(
+            LOGGER.info(
                 "\t{} destroyed but not cloned, since there are {} VMs for the {} yet",
                 vm, getRunningVmsNumber(broker), broker);
         }

@@ -44,22 +44,18 @@ import static java.util.stream.Collectors.*;
  * @since CloudSim Toolkit 1.0
  */
 public class HostSimple implements Host {
-    private static final Logger logger = LoggerFactory.getLogger(HostSimple.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(HostSimple.class.getSimpleName());
 
-    /**
-     * @see #getStateHistory()
-     */
+    /** @see #getStateHistory() */
     private final List<HostStateHistoryEntry> stateHistory;
+
+    /**@see #getPowerModel() */
     private PowerModel powerModel;
 
-    /**
-     * @see #getId()
-     */
+    /** @see #getId() */
     private int id;
 
-    /**
-     * @see #isFailed()
-     */
+    /** @see #isFailed() */
     private boolean failed;
 
     private boolean active;
@@ -69,59 +65,37 @@ public class HostSimple implements Host {
 
     private final Bandwidth bw;
 
-    /**
-     * @see #getStorage()
-     */
+    /** @see #getStorage() */
     private Storage storage;
 
-    /**
-     * @see #getRamProvisioner()
-     */
+    /** @see #getRamProvisioner() */
     private ResourceProvisioner ramProvisioner;
 
-    /**
-     * @see #getBwProvisioner()
-     */
+    /** @see #getBwProvisioner() */
     private ResourceProvisioner bwProvisioner;
 
-    /**
-     * @see #getVmScheduler()
-     */
+    /** @see #getVmScheduler() */
     private VmScheduler vmScheduler;
 
-    /**
-     * @see #getVmList()
-     */
+    /** @see #getVmList() */
     private final List<Vm> vmList = new ArrayList<>();
 
-    /**
-     * @see #getPeList()
-     */
+    /** @see #getPeList() */
     private List<Pe> peList;
 
-    /**
-     * @see #getVmsMigratingIn()
-     */
+    /** @see #getVmsMigratingIn() */
     private final Set<Vm> vmsMigratingIn;
 
-    /**
-     * @see #getVmsMigratingOut()
-     */
+    /** @see #getVmsMigratingOut() */
     private final Set<Vm> vmsMigratingOut;
 
-    /**
-     * @see #getDatacenter()
-     */
+    /** @see #getDatacenter() */
     private Datacenter datacenter;
 
-    /**
-     * @see Host#removeOnUpdateProcessingListener(EventListener)
-     */
+    /** @see Host#removeOnUpdateProcessingListener(EventListener) */
     private final Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
 
-    /**
-     * @see #getSimulation()
-     */
+    /** @see #getSimulation() */
     private Simulation simulation;
 
     /**
@@ -131,6 +105,7 @@ public class HostSimple implements Host {
      * @see #getResource(Class)
      */
     private List<ResourceManageable> resources;
+    
     private List<ResourceProvisioner> provisioners;
     private final List<Vm> vmCreatedList;
 
@@ -317,7 +292,7 @@ public class HostSimple implements Host {
     {
         final String migration = inMigration ? "VM Migration" : "VM Creation";
         final String msg = pmResource.getAvailableResource() > 0 ? "just "+pmResource.getAvailableResource()+" " + resourceUnit : "no amount";
-        logger.error(
+        LOGGER.error(
             "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
             simulation.clock(), getClass().getSimpleName(), migration, vm, this,
             pmResource.getClass().getSimpleName(), vmRequestedResource.getCapacity(), msg);
@@ -338,8 +313,11 @@ public class HostSimple implements Host {
 
     @Override
     public boolean isSuitableForVm(final Vm vm) {
-        return  active &&
-            vmScheduler.isSuitableForVm(vm, vm.getCurrentRequestedMips()) &&
+        return active && hasEnoughResources(vm);
+    }
+
+    private boolean hasEnoughResources(final Vm vm) {
+        return vmScheduler.isSuitableForVm(vm, vm.getCurrentRequestedMips()) &&
             ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()) &&
             bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()) &&
             storage.isAmountAvailable(vm.getStorage());
@@ -954,7 +932,7 @@ public class HostSimple implements Host {
     private double addVmResourceUseToHistoryIfNotMigratingIn(final Vm vm, final double currentTime) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (getVmsMigratingIn().contains(vm)) {
-            logger.info("{}: {}: {} is migrating in", getSimulation().clock(), this, vm);
+            LOGGER.info("{}: {}: {} is migrating in", getSimulation().clock(), this, vm);
             return totalAllocatedMips;
         }
 
@@ -962,7 +940,7 @@ public class HostSimple implements Host {
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
             final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
             final long notAllocatedMipsByPe = (long)((totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes());
-            logger.error(
+            LOGGER.error(
                 "{}: {}: {} MIPS not allocated for each one of the {} PEs from {} due to {}.",
                 getSimulation().clock(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
         }
@@ -975,7 +953,7 @@ public class HostSimple implements Host {
         vm.addStateHistoryEntry(entry);
 
         if (vm.isInMigration()) {
-            logger.info("{}: {}: {} is migrating out ", getSimulation().clock(), this, vm);
+            LOGGER.info("{}: {}: {} is migrating out ", getSimulation().clock(), this, vm);
             totalAllocatedMips /= getVmScheduler().getMaxCpuUsagePercentDuringOutMigration();
         }
 

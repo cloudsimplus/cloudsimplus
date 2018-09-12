@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.toList;
  */
 public class VmSimple implements Vm {
     /** @see #getUtilizationHistory() */
-    protected final UtilizationHistory utilizationHistory;
+    private final UtilizationHistory utilizationHistory;
 
     /** @see #getStateHistory() */
     private final List<VmStateHistoryEntry> stateHistory;

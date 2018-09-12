@@ -75,10 +75,10 @@ public class AggregateSwitch extends AbstractSwitch {
     }
 
     @Override
-    protected void processPacketDown(SimEvent ev) {
-        super.processPacketDown(ev);
+    protected void processPacketDown(SimEvent evt) {
+        super.processPacketDown(evt);
 
-        final HostPacket netPkt = (HostPacket) ev.getData();
+        final HostPacket netPkt = (HostPacket) evt.getData();
         final Vm receiverVm = netPkt.getVmPacket().getDestination();
 
         // packet is coming from root so need to be sent to edgelevel swich
@@ -88,10 +88,10 @@ public class AggregateSwitch extends AbstractSwitch {
     }
 
     @Override
-    protected void processPacketUp(SimEvent ev) {
-        super.processPacketUp(ev);
+    protected void processPacketUp(SimEvent evt) {
+        super.processPacketUp(evt);
 
-        final HostPacket netPkt = (HostPacket) ev.getData();
+        final HostPacket netPkt = (HostPacket) evt.getData();
         final Vm receiverVm = netPkt.getVmPacket().getDestination();
 
         // packet is coming from edge level router so need to be sent to

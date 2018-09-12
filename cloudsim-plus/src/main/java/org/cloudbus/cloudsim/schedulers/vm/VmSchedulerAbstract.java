@@ -29,7 +29,6 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmSchedulerAbstract implements VmScheduler {
-    private static final Logger logger = LoggerFactory.getLogger(VmSchedulerSpaceShared.class.getSimpleName());
 
     /**
      * The default percentage to define the CPU overhead of VM migration
@@ -38,6 +37,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     public static final double DEFAULT_VM_MIGRATION_CPU_OVERHEAD = 0.1;
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(VmSchedulerSpaceShared.class.getSimpleName());
+    
     /**
      * @see #getRequestedMipsMap()
      */
@@ -81,7 +82,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog) {
         if(requestedMips.isEmpty()){
-            logger.warn(
+            LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
                 getHost().getSimulation().clock(), getClass().getSimpleName(), vm, host);
             return false;

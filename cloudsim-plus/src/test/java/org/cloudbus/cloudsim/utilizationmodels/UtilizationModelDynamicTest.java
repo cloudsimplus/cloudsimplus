@@ -40,7 +40,9 @@ public class UtilizationModelDynamicTest {
     }
 
     private UtilizationModelDynamic createUtilizationModel(double usagePercentInc, double initUsage, int initSimulationTime) {
-        final List<Integer> times = IntStream.rangeClosed(initSimulationTime, NUM_TIMES_TEST_USAGE).mapToObj(i -> i).collect(toList());
+        final List<Integer> times = IntStream.rangeClosed(initSimulationTime, NUM_TIMES_TEST_USAGE)
+                                             .mapToObj(time -> time)
+                                             .collect(toList());
         final CloudSim simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
 
         final UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(initUsage);

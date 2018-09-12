@@ -23,11 +23,10 @@ import org.cloudsimplus.listeners.EventInfo;
  */
 public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     /**
-     * Sets the simulation the event belongs to
-     * @param simulation the simulation instance to set
-     * @return
+     * An attribute that implements the Null Object Design Pattern for {@link SimEvent}
+     * objects.
      */
-    SimEvent setSimulation(CloudSim simulation);
+    SimEvent NULL = new SimEventNull();
 
     /**
      * Internal event types
@@ -35,10 +34,11 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     enum Type {NULL, SEND, HOLD_DONE, CREATE}
 
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link SimEvent}
-     * objects.
+     * Sets the simulation the event belongs to
+     * @param simulation the simulation instance to set
+     * @return
      */
-    SimEvent NULL = new SimEventNull();
+    SimEvent setSimulation(CloudSim simulation);
 
     /**
      * Gets the internal type

@@ -34,7 +34,7 @@ import java.util.Map.Entry;
  * @since CloudSim Toolkit 3.0
  */
 public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared {
-    private static final Logger logger = LoggerFactory.getLogger(VmSchedulerTimeSharedOverSubscription.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(VmSchedulerTimeSharedOverSubscription.class.getSimpleName());
 
     /**
      * Creates a time-shared over-subscription VM scheduler.
@@ -80,7 +80,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         }
 
         if(showLog) {
-            logger.error(
+            LOGGER.error(
                 "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
                     "\t\tHowever, there are just {} available PEs.",
                 getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),

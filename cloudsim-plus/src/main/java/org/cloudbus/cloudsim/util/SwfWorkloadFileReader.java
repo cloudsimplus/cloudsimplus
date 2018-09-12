@@ -291,7 +291,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      *
      * @param mips the MIPS value to set
      */
-    public final SwfWorkloadFileReader setMips(final int mips) {
+    public SwfWorkloadFileReader setMips(final int mips) {
         if (mips <= 0) {
             throw new IllegalArgumentException("MIPS must be greater than 0.");
         }

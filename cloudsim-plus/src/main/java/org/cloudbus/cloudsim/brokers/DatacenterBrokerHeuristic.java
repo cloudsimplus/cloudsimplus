@@ -6,8 +6,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.Heuristic;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.stream.Collectors;
 
@@ -22,7 +20,6 @@ import java.util.stream.Collectors;
  * @author Manoel Campos da Silva Filho
  */
 public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
-    private static final Logger logger = LoggerFactory.getLogger(DatacenterBrokerHeuristic.class.getSimpleName());
     /**
      * @see #getHeuristic()
      */
@@ -62,14 +59,14 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         Depending on the heuristic parameters, it may take a while
         to get a solution.
         */
-        logger.info(
+        LOGGER.info(
                 "{} started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's running {} neighborhood searches by iteration.{}{}",
                 this, heuristic.getNumberOfNeighborhoodSearchesByIteration(),
                 System.lineSeparator(),
                 "Please wait... It may take a while, depending on heuristic parameters and number of Cloudlets and Vm's.");
 
 	    final CloudletToVmMappingSolution solution = heuristic.solve();
-        logger.info(
+        LOGGER.info(
                 "{} finished the solution find for mapping Cloudlets to Vm's in {} seconds with a solution cost of {}",
                 this, heuristic.getSolveTime(), solution.getCost());
     }

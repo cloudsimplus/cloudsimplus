@@ -49,7 +49,7 @@ import java.util.List;
  * @since CloudSim Toolkit 3.0
  */
 public class NetworkHost extends HostSimple {
-    private static final Logger logger = LoggerFactory.getLogger(NetworkHost.class.getSimpleName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NetworkHost.class.getSimpleName());
 
     private int totalDataTransferBytes;
 
@@ -132,7 +132,7 @@ public class NetworkHost extends HostSimple {
             final Vm destinationVm = hostPkt.getVmPacket().getDestination();
             //Checks if the destinationVm is inside this host
             if(!getVmList().contains(destinationVm)){
-                logger.error(
+                LOGGER.error(
                     "{}: {}: Destination {} was not found inside {}",
                     getSimulation().clock(), getClass(),
                     hostPkt.getVmPacket().getDestination(), this);
@@ -141,7 +141,7 @@ public class NetworkHost extends HostSimple {
 
             final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(destinationVm);
             taskScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
-            logger.trace(
+            LOGGER.trace(
                 "{}: {}: {} received pkt with {} bytes from {} in {} and forwarded it to {} in {}",
                 getSimulation().clock(), getClass().getSimpleName(),
                 this, hostPkt.getVmPacket().getSize(),

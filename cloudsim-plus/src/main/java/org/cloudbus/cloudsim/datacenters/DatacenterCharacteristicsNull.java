@@ -26,7 +26,7 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public double getCostPerStorage() {
         return 0;
     }
-    @Override public DatacenterCharacteristics setCostPerSecond(double c) { return DatacenterCharacteristics.NULL; }
+    @Override public DatacenterCharacteristics setCostPerSecond(double cost) { return DatacenterCharacteristics.NULL; }
     @Override public DatacenterCharacteristics setVmm(String vmm) {
         return DatacenterCharacteristics.NULL;
     }
@@ -36,7 +36,7 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public String getArchitecture() {
         return "";
     }
-    @Override public DatacenterCharacteristics setArchitecture(String a) { return DatacenterCharacteristics.NULL; }
+    @Override public DatacenterCharacteristics setArchitecture(String arch) { return DatacenterCharacteristics.NULL; }
     @Override public String getOs() {
         return "";
     }
@@ -62,9 +62,9 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public boolean isWorking() {
         return false;
     }
-    @Override public DatacenterCharacteristics setCostPerBw(double c) {
+    @Override public DatacenterCharacteristics setCostPerBw(double cost) {
         return DatacenterCharacteristics.NULL;
     }
-    @Override public DatacenterCharacteristics setCostPerMem(double c) { return DatacenterCharacteristics.NULL; }
-    @Override public DatacenterCharacteristics setCostPerStorage(double c) { return DatacenterCharacteristics.NULL; }
+    @Override public DatacenterCharacteristics setCostPerMem(double cost) { return DatacenterCharacteristics.NULL; }
+    @Override public DatacenterCharacteristics setCostPerStorage(double cost) { return DatacenterCharacteristics.NULL; }
 }

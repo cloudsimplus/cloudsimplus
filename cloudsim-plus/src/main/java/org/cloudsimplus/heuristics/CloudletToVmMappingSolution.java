@@ -23,11 +23,11 @@
  */
 package org.cloudsimplus.heuristics;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * A possible solution for mapping a set of Cloudlets to a set of Vm's.
@@ -114,19 +114,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return heuristic;
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * It computes the cost of the entire mapping between Vm's and Cloudlets.
-     *
-     * @return {@inheritDoc}
-     */
-    @Override
-    public double getCost() {
-        recomputeCostIfRequested();
-        return this.lastCost;
-    }
-
     private void recomputeCostIfRequested() {
         if(!this.recomputeCost) {
             return;
@@ -156,6 +143,19 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     /**
+     * {@inheritDoc}
+     *
+     * It computes the cost of the entire mapping between Vm's and Cloudlets.
+     *
+     * @return {@inheritDoc}
+     */
+    @Override
+    public double getCost() {
+        recomputeCostIfRequested();
+        return this.lastCost;
+    }
+
+    /**
      * It computes the costs of the entire mapping between Vm's and cloudlets.
      *
      * @param forceRecompute indicate if the cost has to be recomputed anyway
@@ -182,13 +182,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         return getVmCost(vm, cloudlets);
     }
 
-    private List<Cloudlet> convertListOfMapEntriesToListOfCloudlets(final List<Map.Entry<Cloudlet, Vm>> entriesList) {
-        return entriesList
-            .stream()
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toList());
-    }
-
     /**
      * Computes the cost of all Cloudlets hosted by a given Vm.
      * The cost is based on the number of PEs from the VM that
@@ -200,6 +193,13 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     public double getVmCost(final Vm vm, final List<Cloudlet> cloudlets) {
         return Math.abs(vm.getNumberOfPes() - getTotalCloudletsPes(cloudlets));
+    }
+
+    private List<Cloudlet> convertListOfMapEntriesToListOfCloudlets(final List<Map.Entry<Cloudlet, Vm>> entriesList) {
+        return entriesList
+            .stream()
+            .map(Map.Entry::getKey)
+            .collect(Collectors.toList());
     }
 
     /**
