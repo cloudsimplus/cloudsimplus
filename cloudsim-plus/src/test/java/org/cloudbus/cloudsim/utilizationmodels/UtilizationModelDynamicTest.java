@@ -1,14 +1,10 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.junit.Test;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toList;
+import static org.cloudbus.cloudsim.utilizationmodels.TestUtil.checkUtilization;
+import static org.cloudbus.cloudsim.utilizationmodels.TestUtil.createUtilizationModel;
 import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 import static org.junit.Assert.assertEquals;
 
@@ -22,7 +18,7 @@ public class UtilizationModelDynamicTest {
      * For each second from 0 to this number, a {@link UtilizationModelDynamic#getUtilization(double)}
      * will be called to test the expected value.
      */
-    public static final int NUM_TIMES_TEST_USAGE = 10;
+    static final int NUM_TIMES_TEST_USAGE = 10;
 
     @Test
     public void testGetUtilization_defaultConstructor() {
@@ -37,24 +33,6 @@ public class UtilizationModelDynamicTest {
         final double usagePercentInc = -0.1, initialUtilization = 0.5;
         final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initialUtilization);
         checkUtilization(initialUtilization, usagePercentInc, instance);
-    }
-
-    private UtilizationModelDynamic createUtilizationModel(double usagePercentInc, double initUsage, int initSimulationTime) {
-        final List<Integer> times = IntStream.rangeClosed(initSimulationTime, NUM_TIMES_TEST_USAGE)
-                                             .mapToObj(time -> time)
-                                             .collect(toList());
-        final CloudSim simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
-
-        final UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(initUsage);
-        utilizationModel
-          .setUtilizationUpdateFunction(um -> um.getUtilization() + um.getTimeSpan() * usagePercentInc)
-          .setSimulation(simulation);
-
-        return utilizationModel;
-    }
-
-    private UtilizationModelDynamic createUtilizationModel(double usagePercentInc, double initUsage) {
-        return createUtilizationModel(usagePercentInc, initUsage, 0);
     }
 
     @Test
@@ -79,41 +57,6 @@ public class UtilizationModelDynamicTest {
         checkUtilization(
             initUsage, usagePercentInc,
             maxUsagePercent, instance);
-    }
-
-    private void checkUtilization(final double initUsage, final double usagePercentInc, UtilizationModelDynamic instance) {
-        checkUtilization(initUsage, usagePercentInc,
-            Conversion.HUNDRED_PERCENT, instance);
-    }
-
-    private void checkUtilization(final double initUsage,
-                                  final double usagePercentInc,
-                                  final double maxUsagePercent,
-                                  UtilizationModelDynamic instance)
-    {
-        instance.setMaxResourceUtilization(maxUsagePercent);
-        IntStream.rangeClosed(0, NUM_TIMES_TEST_USAGE).forEach(time -> {
-            final double expResult =
-                computeExpectedUtilization(
-                    time, initUsage,
-                    usagePercentInc,
-                    maxUsagePercent);
-            final double result = instance.getUtilization(time);
-            final String msg = String.format("The utilization at time %d", time);
-            assertEquals(msg, expResult, result, 0.001);
-        });
-    }
-
-    private double computeExpectedUtilization(double time, double initialUtilizationPercentage,
-                                              double usagePercentInc, double maxUsagePercent) {
-        final double utilizationPercentage =
-            initialUtilizationPercentage + (time * usagePercentInc);
-
-        if (usagePercentInc >= 0) {
-            return Math.min(utilizationPercentage, maxUsagePercent);
-        }
-
-        return Math.max(0, utilizationPercentage);
     }
 
     @Test
