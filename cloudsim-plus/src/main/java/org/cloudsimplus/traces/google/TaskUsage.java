@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-public final class TaskUsage extends TaskDataAbstract {
+public final class TaskUsage extends TaskData {
     private double startTime;
     private double endTime;
     private double meanCpuUsageRate;

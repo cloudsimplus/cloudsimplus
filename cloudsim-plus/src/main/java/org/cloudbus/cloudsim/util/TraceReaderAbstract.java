@@ -67,9 +67,14 @@ public abstract class TraceReaderAbstract implements TraceReader {
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * <p>It's returned a defensive copy of the array.</p>
+     * @return {@inheritDoc}
+     */
     @Override
     public String[] getCommentString() {
-        return commentString;
+        return Arrays.copyOf(commentString, commentString.length);
     }
 
     @Override

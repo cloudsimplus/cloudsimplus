@@ -120,13 +120,13 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
      * @return the correlation coefficients
      */
     protected List<Double> getCorrelationCoefficients(final double[][] data) {
-        final int n = data.length;
-        final int m = data[0].length;
+        final int rows = data.length;
+        final int cols = data[0].length;
         final List<Double> correlationCoefficients = new LinkedList<>();
-        for (int i = 0; i < n; i++) {
-            final double[][] x = new double[n - 1][m];
+        for (int i = 0; i < rows; i++) {
+            final double[][] x = new double[rows - 1][cols];
             int k = 0;
-            for (int j = 0; j < n; j++) {
+            for (int j = 0; j < rows; j++) {
                 if (j != i) {
                     x[k++] = data[j];
                 }

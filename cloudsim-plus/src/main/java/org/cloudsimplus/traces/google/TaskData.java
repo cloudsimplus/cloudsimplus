@@ -30,10 +30,15 @@ package org.cloudsimplus.traces.google;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-public abstract class TaskDataAbstract extends MachineDataAbstract {
+class TaskData extends MachineData {
     private int jobId;
     private int taskIndex;
 
+    /**
+     * A protected constructor to avoid class instantiation,
+     * since only subclasses of this class must be used.
+     */
+    protected TaskData(){/**/}
 
     /**
      * Gets the id of the job this task belongs to.
@@ -41,7 +46,7 @@ public abstract class TaskDataAbstract extends MachineDataAbstract {
      */
     public int getJobId(){ return jobId; }
 
-    protected TaskDataAbstract setJobId(final int jobId) {
+    protected TaskData setJobId(final int jobId) {
         this.jobId = jobId;
         return this;
     }
@@ -54,7 +59,7 @@ public abstract class TaskDataAbstract extends MachineDataAbstract {
         return taskIndex;
     }
 
-    protected TaskDataAbstract setTaskIndex(final int taskIndex) {
+    protected TaskData setTaskIndex(final int taskIndex) {
         this.taskIndex = taskIndex;
         return this;
     }

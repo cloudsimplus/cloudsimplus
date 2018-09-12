@@ -35,10 +35,11 @@ import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.listeners.EventInfo;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -348,9 +349,9 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
     public GoogleTaskEventsTraceReader(
         final CloudSim simulation,
         final String filePath,
-        final Function<TaskEvent, Cloudlet> cloudletCreationFunction) throws FileNotFoundException
+        final Function<TaskEvent, Cloudlet> cloudletCreationFunction) throws IOException
     {
-        this(simulation, filePath, new FileInputStream(filePath), cloudletCreationFunction);
+        this(simulation, filePath, Files.newInputStream(Paths.get(filePath)), cloudletCreationFunction);
     }
 
     /**

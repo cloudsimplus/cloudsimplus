@@ -25,15 +25,13 @@ final class HostNull implements Host {
     @Override public List<ResourceManageable> getResources() {
         return Collections.emptyList();
     }
-    @Override public int compareTo(Host o) {
-        return 0;
-    }
+    @Override public int compareTo(Host host) { return 0; }
     @Override public boolean addMigratingInVm(Vm vm) {
         return false;
     }
     @Override public boolean removeVmMigratingIn(Vm vm) { return false; }
     @Override public Set<Vm> getVmsMigratingOut() {
-        return Collections.EMPTY_SET;
+        return Collections.emptySet();
     }
     @Override public boolean addVmMigratingOut(Vm vm) {
         return false;
@@ -129,7 +127,7 @@ final class HostNull implements Host {
     @Override public void destroyTemporaryVm(Vm vm) {/**/}
     @Override public void destroyVm(Vm vm) {/**/}
     @Override public void destroyAllVms() {/**/}
-    @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> l) { return false; }
+    @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return false; }
     @Override public Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener) { return Host.NULL; }
     @Override public long getAvailableStorage() {
         return 0L;
@@ -143,7 +141,7 @@ final class HostNull implements Host {
     @Override public Host setSimulation(Simulation simulation) {
         return this;
     }
-    @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> c) { return ResourceProvisioner.NULL; }
+    @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
     @Override public long getNumberOfWorkingPes() {
         return 0;
     }

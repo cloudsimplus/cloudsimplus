@@ -356,9 +356,9 @@ public class HostSimpleTest {
         final HostSimple host = createHostSimple(numberOfVms, vmScheduler);
         vmList.forEach(host::addVmToList);
 
-        final int i = 0;
-        final Vm vm = vmList.get(i);
-        final double nextCloudletCompletionTimeOfCurrentVm = i+1;
+        final int idx = 0;
+        final Vm vm = vmList.get(idx);
+        final double nextCloudletCompletionTimeOfCurrentVm = idx+1;
         assertEquals(
                 nextCloudletCompletionTimeOfCurrentVm,
                 host.updateProcessing(time), 0);

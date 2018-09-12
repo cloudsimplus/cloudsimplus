@@ -54,7 +54,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-public final class MachineEvent extends MachineDataAbstract {
+public final class MachineEvent extends MachineData {
     private double timestamp;
     private long ram;
     private int cpuCores;

@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
  */
 public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit {
     // 12 has been suggested as a safe value
-    private static final int MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ = 12;
+    private static final int MIN_HISTORY_ENTRIES_TO_COMPUTE_IRQ = 12;
 
     /**
      * Creates a VmAllocationPolicyMigrationInterQuartileRange
@@ -71,7 +71,7 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
     @Override
     public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
         final double[] data = host.getUtilizationHistorySum().values().stream().mapToDouble(v -> v).toArray();
-        if (MathUtil.countNonZeroBeginning(data) >= MIN_NUM_OF_HISTORY_ENTRIES_TO_COMPUTE_IRQ) {
+        if (MathUtil.countNonZeroBeginning(data) >= MIN_HISTORY_ENTRIES_TO_COMPUTE_IRQ) {
             return MathUtil.iqr(data);
         }
 

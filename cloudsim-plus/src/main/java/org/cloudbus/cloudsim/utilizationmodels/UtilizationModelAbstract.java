@@ -77,7 +77,7 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
     }
 
     protected void validateUtilizationField(final String fieldName, final double fieldValue, double minValue) {
-        minValue = (minValue <= ALMOST_ZERO ? 0 : minValue);
+        minValue = minValue <= ALMOST_ZERO ? 0 : minValue;
         if(fieldValue < minValue) {
             throw new IllegalArgumentException(fieldName + " cannot be lower than " + minValue);
         }

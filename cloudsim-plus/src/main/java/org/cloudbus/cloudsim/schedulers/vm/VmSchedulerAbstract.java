@@ -402,7 +402,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public VmScheduler setHost(final Host host) {
+    public final VmScheduler setHost(final Host host) {
         if(isOtherHostAssigned(requireNonNull(host))){
             throw new IllegalStateException("VmScheduler already has a Host assigned to it. Each Host must have its own VmScheduler instance.");
         }

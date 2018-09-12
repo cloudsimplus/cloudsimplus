@@ -104,19 +104,19 @@ public final class MathUtil {
      * @return the variance
      */
     public static double variance(final List<Double> list) {
-        long n = 0;
+        long count = 0;
         double mean = mean(list);
         double s = 0.0;
 
         for(final double x : list) {
-            n++;
+            count++;
             final double delta = x - mean;
-            mean += delta / n;
+            mean += delta / count;
             s += delta * (x - mean);
         }
         // if you want to calculate std deviation
         // of a sample change this to (s/(n-1))
-        return s / (n - 1);
+        return s / (count - 1);
     }
 
     /**

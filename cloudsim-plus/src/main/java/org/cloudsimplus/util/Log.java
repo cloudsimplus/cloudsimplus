@@ -60,7 +60,7 @@ public final class Log {
      * @param level the logging level to set
      */
     public static void setLevel(final Level level){
-        Logger root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
+        final Logger root = LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
         setLevel(root, level);
     }
 }

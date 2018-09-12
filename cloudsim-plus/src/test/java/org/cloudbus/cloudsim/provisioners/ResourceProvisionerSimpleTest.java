@@ -63,14 +63,14 @@ public class ResourceProvisionerSimpleTest {
 
     @Test
     public void testGetTotalAllocatedResource() {
-        final ResourceProvisioner p = createSimpleProvisioner();
-        assertEquals(p.getCapacity(), p.getAvailableResource());
-        assertEquals(0, p.getTotalAllocatedResource());
+        final ResourceProvisioner provisioner = createSimpleProvisioner();
+        assertEquals(provisioner.getCapacity(), provisioner.getAvailableResource());
+        assertEquals(0, provisioner.getTotalAllocatedResource());
 
         final VmSimple vm = createVm(1, CAPACITY);
         final long allocatedResource = HALF_CAPACITY;
-        p.allocateResourceForVm(vm, allocatedResource);
-        assertEquals(allocatedResource, p.getTotalAllocatedResource());
+        provisioner.allocateResourceForVm(vm, allocatedResource);
+        assertEquals(allocatedResource, provisioner.getTotalAllocatedResource());
     }
 
     @Test

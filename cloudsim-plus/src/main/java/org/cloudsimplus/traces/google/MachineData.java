@@ -31,8 +31,14 @@ package org.cloudsimplus.traces.google;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-public abstract class MachineDataAbstract {
+class MachineData {
     private int machineId;
+
+    /**
+     * A protected constructor to avoid class instantiation,
+     * since only subclasses of this class must be used.
+     */
+    protected MachineData(){/**/}
 
     /**
      * Gets the machineID that indicates the machine onto which the task was scheduled.
@@ -41,7 +47,7 @@ public abstract class MachineDataAbstract {
      */
     public int getMachineId(){ return machineId; }
 
-    protected MachineDataAbstract setMachineId(final int machineId) {
+    protected MachineData setMachineId(final int machineId) {
         this.machineId = machineId;
         return this;
     }

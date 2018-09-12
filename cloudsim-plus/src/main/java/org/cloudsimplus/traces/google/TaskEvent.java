@@ -57,7 +57,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-public final class TaskEvent extends TaskDataAbstract {
+public final class TaskEvent extends TaskData {
     private int priority;
     private int schedulingClass;
     private double resourceRequestForCpuCores;

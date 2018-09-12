@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
@@ -49,12 +48,6 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      */
     public VmSchedulerSpaceShared(final double vmMigrationCpuOverhead){
         super(vmMigrationCpuOverhead);
-    }
-
-    @Override
-    public VmScheduler setHost(final Host host) {
-        super.setHost(host);
-        return this;
     }
 
     @Override

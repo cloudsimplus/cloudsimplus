@@ -25,9 +25,10 @@ package org.cloudsimplus.traces.google;
 
 import org.cloudsimplus.traces.TraceReaderBase;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,8 +54,8 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      */
     protected final Set<T> availableObjects;
 
-    protected GoogleTraceReaderAbstract(final String filePath) throws FileNotFoundException {
-        this(filePath, new FileInputStream(filePath));
+    protected GoogleTraceReaderAbstract(final String filePath) throws IOException {
+        this(filePath, Files.newInputStream(Paths.get(filePath)));
     }
 
     protected GoogleTraceReaderAbstract(final String filePath, final InputStream reader) {
