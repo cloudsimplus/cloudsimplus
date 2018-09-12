@@ -347,9 +347,9 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     /**
      * Defines if the VM is in migration process or not.
      *
-     * @param inMigration true to indicate the VM is migrating into a Host, false otherwise
+     * @param migrating true to indicate the VM is migrating into a Host, false otherwise
      */
-    void setInMigration(boolean inMigration);
+    void setInMigration(boolean migrating);
 
     /**
      * Sets the bandwidth capacity (in Megabits/s)

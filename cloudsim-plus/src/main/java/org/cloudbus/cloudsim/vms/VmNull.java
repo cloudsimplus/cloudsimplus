@@ -142,7 +142,7 @@ final class VmNull implements Vm {
         return this;
     }
     @Override public void setHost(Host host) {/**/}
-    @Override public void setInMigration(boolean inMigration) {/**/}
+    @Override public void setInMigration(boolean migrating) {/**/}
     @Override public Vm setRam(long ramCapacity) {
         return this;
     }

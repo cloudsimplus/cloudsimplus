@@ -538,8 +538,8 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public final void setInMigration(final boolean inMigration) {
-        this.inMigration = inMigration;
+    public final void setInMigration(final boolean migrating) {
+        this.inMigration = migrating;
     }
 
     @Override
