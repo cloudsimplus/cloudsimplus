@@ -23,8 +23,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Map.Entry;
@@ -824,14 +827,13 @@ public class HostSimple implements Host {
 
     @Override
     public SortedMap<Double, Double> getUtilizationHistorySum() {
-        /* If there are two values for the same key, the last value is used.
-         * However, since we are just remapping an existing map, there won't be such a situation.*/
+        /*Remaps the value of an entry inside the Utilization History map.*/
+        final Function<Entry<Double, DoubleSummaryStatistics>, Double> valueMapper = entry -> entry.getValue().getSum();
+
         return getUtilizationHistory()
                     .entrySet()
                     .stream()
-                    .collect(
-                        toMap(Entry::getKey, entry -> entry.getValue().getSum(), (v1, v2) -> v2, TreeMap::new)
-                    );
+                    .collect(toMap(Entry::getKey, valueMapper, this::mergeFunction, TreeMap::new));
     }
 
     /**
@@ -842,15 +844,31 @@ public class HostSimple implements Host {
      * @return
      */
     private SortedMap<Double, Double> remapUtilizationHistory(final UtilizationHistory utilizationHistory) {
-        /* If there are two values for the same key, the last value is used.
-         * However, since we are just remapping an existing map, there won't be such a situation.*/
         return utilizationHistory
                     .getHistory()
                     .entrySet()
                     .stream()
                     .collect(
-                        toMap(Entry::getKey, vmUtilizationMapper(utilizationHistory), (v1, v2) -> v2, TreeMap::new)
+                        toMap(Entry::getKey, vmUtilizationMapper(utilizationHistory), this::mergeFunction, TreeMap::new)
                     );
+    }
+
+    /**
+     * A merge {@link BinaryOperator} used to resolve conflicts when remapping the values of the utilization history map
+     * using the {@link Collectors#toMap(Function, Function, BinaryOperator, Supplier)}.
+     *
+     * If there are two values for the same key, the last value is used.
+     * However, since we are just remapping an existing map, there won't be such a situation.
+     *
+     * @param usage1 the 1st CPU utilization value found for a key
+     * @param usage2 the 2dn CPU utilization value found for the same key
+     * @return the higher value between the given two ones
+     *
+     * @see #getUtilizationHistorySum()
+     * @see #remapUtilizationHistory(UtilizationHistory)
+     */
+    private double mergeFunction(final double usage1, final double usage2) {
+        return Math.max(usage1, usage2);
     }
 
     /**

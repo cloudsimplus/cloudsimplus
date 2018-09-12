@@ -109,5 +109,5 @@ public enum MachineEventType {
      * @param reader the trace file reader
      * @return true if trace line for the event type was processed, false otherwise
      */
-    protected abstract boolean process(final GoogleMachineEventsTraceReader reader);
+    protected abstract boolean process(GoogleMachineEventsTraceReader reader);
 }

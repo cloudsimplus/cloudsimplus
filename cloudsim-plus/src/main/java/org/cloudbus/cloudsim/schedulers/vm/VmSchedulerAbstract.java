@@ -91,7 +91,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return isSuitableForVmInternal(vm, requestedMips, showLog);
     }
 
-    protected abstract boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips, final boolean showLog);
+    protected abstract boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog);
 
     @Override
     public final boolean allocatePesForVm(final Vm vm) {
@@ -146,7 +146,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
               .forEach(pe -> pe.setStatus(status));
     }
 
-    protected abstract boolean allocatePesForVmInternal(final Vm vm, final List<Double> mipsShareRequested);
+    protected abstract boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested);
 
     @Override
     public void deallocatePesFromVm(final Vm vm) {
@@ -206,7 +206,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return pesToRemove;
     }
 
-    protected abstract void deallocatePesFromVmInternal(final Vm vm, final int pesToRemove);
+    protected abstract void deallocatePesFromVmInternal(Vm vm, int pesToRemove);
 
     @Override
     public void deallocatePesForAllVms() {

@@ -535,15 +535,15 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
              * the output size. This may be performed by the researcher if he/she needs.*/
             if(clone.getPriority() != cloudlet.getPriority()){
                 sb.append("priority: ")
-                    .append(cloudlet.getPriority()).append(" -> ")
-                    .append(clone.getPriority()).append(" | ");
+                    .append(cloudlet.getPriority()).append(VAL_SEPARATOR)
+                    .append(clone.getPriority()).append(COL_SEPARATOR);
                 cloudlet.setFileSize(clone.getFileSize());
             }
 
             if(clone.getNumberOfPes() != cloudlet.getNumberOfPes()){
                 sb.append("PEs: ")
-                    .append(cloudlet.getNumberOfPes()).append(" -> ")
-                    .append(clone.getNumberOfPes()).append(" | ");
+                    .append(cloudlet.getNumberOfPes()).append(VAL_SEPARATOR)
+                    .append(clone.getNumberOfPes()).append(COL_SEPARATOR);
                 cloudlet.setNumberOfPes(clone.getNumberOfPes());
             }
 
@@ -552,7 +552,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
             final UtilizationModelDynamic cloudletRamUM = (UtilizationModelDynamic)cloudlet.getUtilizationModelRam();
             if(cloneRamUM.getMaxResourceUtilization() != cloudletRamUM.getMaxResourceUtilization()){
                 sb.append("Max RAM Usage: ")
-                    .append(formatPercentValue(cloudletRamUM.getMaxResourceUtilization())).append(" -> ")
+                    .append(formatPercentValue(cloudletRamUM.getMaxResourceUtilization())).append(VAL_SEPARATOR)
                     .append(formatPercentValue(cloneRamUM.getMaxResourceUtilization())).append("% | ");
                 cloudletRamUM.setMaxResourceUtilization(cloneRamUM.getMaxResourceUtilization());
             }

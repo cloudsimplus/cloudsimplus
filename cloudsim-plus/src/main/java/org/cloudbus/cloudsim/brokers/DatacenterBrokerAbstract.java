@@ -419,51 +419,73 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public void processEvent(final SimEvent evt) {
+        if (processCloudletEvents(evt) || processVmEvents(evt) || processGeneralEvents(evt)) {
+            return;
+        }
+
+        LOGGER.trace("{}: {}: Unknown event {} received.", getSimulation().clock(), this, evt.getTag());
+    }
+
+    private boolean processCloudletEvents(final SimEvent evt) {
         switch (evt.getTag()) {
-            case CloudSimTags.DATACENTER_LIST_REQUEST:
-                processDatacenterListRequest(evt);
-            break;
-            case CloudSimTags.VM_CREATE_ACK:
-                processVmCreateResponseFromDatacenter(evt);
-            break;
-            case CloudSimTags.VM_DESTROY:
-                requestIdleVmDestruction((Vm) evt.getData());
-            break;
-            case CloudSimTags.VM_VERTICAL_SCALING:
-                requestVmVerticalScaling(evt);
-            break;
             case CloudSimTags.CLOUDLET_RETURN:
                 processCloudletReturn(evt);
-            break;
+                return true;
             case CloudSimTags.CLOUDLET_READY:
                 processCloudletReady(evt);
-            break;
+                return true;
             /* The data of such a kind of event is a Runnable that has all
              * the logic to update the Cloudlet's attributes.
              * This way, it will be run to perform such an update.
              * Check the documentation of the tag below for details.*/
             case CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES:
                 ((Runnable) evt.getData()).run();
-            break;
+                return true;
             case CloudSimTags.CLOUDLET_PAUSE:
                 processCloudletPause(evt);
-            break;
+                return true;
             case CloudSimTags.CLOUDLET_CANCEL:
                 processCloudletCancel(evt);
-            break;
+                return true;
             case CloudSimTags.CLOUDLET_FINISH:
                 processCloudletFinish(evt);
-            break;
+                return true;
             case CloudSimTags.CLOUDLET_FAIL:
                 processCloudletFail(evt);
-            break;
-            case CloudSimTags.END_OF_SIMULATION:
-                shutdownEntity();
-            break;
-            default:
-                LOGGER.trace("{}: {}: Unknown event {} received.", getSimulation().clock(), this, evt.getTag());
-            break;
+                return true;
         }
+
+        return false;
+    }
+
+    private boolean processVmEvents(final SimEvent evt) {
+        switch (evt.getTag()) {
+            case CloudSimTags.VM_CREATE_ACK:
+                processVmCreateResponseFromDatacenter(evt);
+                return true;
+            case CloudSimTags.VM_DESTROY:
+                requestIdleVmDestruction((Vm) evt.getData());
+                return true;
+            case CloudSimTags.VM_VERTICAL_SCALING:
+                requestVmVerticalScaling(evt);
+                return true;
+        }
+
+        return false;
+    }
+
+    private boolean processGeneralEvents(final SimEvent evt) {
+        if (evt.getTag() == CloudSimTags.DATACENTER_LIST_REQUEST) {
+            processDatacenterListRequest(evt);
+            return true;
+        }
+
+        if (evt.getTag() == CloudSimTags.END_OF_SIMULATION) {
+            shutdownEntity();
+            return true;
+        }
+
+        return false;
     }
 
     /**

@@ -409,16 +409,18 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             final StringBuilder sb = new StringBuilder();
             if (cloudlet.getUtilizationOfCpu() != taskUsage.getMeanCpuUsageRate()) {
                 sb.append("CPU Utilization: ")
-                    .append(formatPercentValue(cloudlet.getUtilizationOfCpu())).append(" -> ")
-                    .append(formatPercentValue(taskUsage.getMeanCpuUsageRate())).append("% | ");
+                    .append(formatPercentValue(cloudlet.getUtilizationOfCpu())).append(VAL_SEPARATOR)
+                    .append(formatPercentValue(taskUsage.getMeanCpuUsageRate())).append("%").append(COL_SEPARATOR);
 
                 cloudlet.setUtilizationModelCpu(createUtilizationModel(cloudlet.getUtilizationModelCpu(), taskUsage.getMeanCpuUsageRate()));
             }
 
             if (cloudlet.getUtilizationOfRam() != taskUsage.getCanonicalMemoryUsage()) {
                 sb.append("RAM Utilization: ")
-                    .append(formatPercentValue(cloudlet.getUtilizationOfRam())).append(" -> ")
-                    .append(formatPercentValue(taskUsage.getCanonicalMemoryUsage())).append("% | ");
+                    .append(formatPercentValue(cloudlet.getUtilizationOfRam())).append(VAL_SEPARATOR)
+                    .append(formatPercentValue(taskUsage.getCanonicalMemoryUsage()))
+                    .append("%")
+                    .append(COL_SEPARATOR);
                 cloudlet.setUtilizationModelRam(createUtilizationModel(cloudlet.getUtilizationModelRam(), taskUsage.getCanonicalMemoryUsage()));
             }
 

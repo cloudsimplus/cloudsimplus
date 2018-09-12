@@ -222,7 +222,7 @@ public class PoissonDistr implements ContinuousDistribution {
             }
         };
 
-        /*
+        /**
          * A {@link Function} to simulate the arrival of customers for a given time period.
          * This is just a method to test the implementation.
          *

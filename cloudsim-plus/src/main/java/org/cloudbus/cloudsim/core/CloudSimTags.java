@@ -30,7 +30,7 @@ public final class CloudSimTags {
 
     /**
      * Denotes the end of simulation.
-     * Despite it has a negative value, it isn't a priority event (this is the only exception).
+     * Despite it has a negative value, it isn't a priority event.
      */
     public static final int END_OF_SIMULATION = -1;
 

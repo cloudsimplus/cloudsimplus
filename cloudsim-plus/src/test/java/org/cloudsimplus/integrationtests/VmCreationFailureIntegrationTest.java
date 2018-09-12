@@ -103,7 +103,7 @@ public final class VmCreationFailureIntegrationTest {
      *
      * @param evt
      */
-    private void onHostAllocation(VmHostEventInfo evt) {
+    private void onHostAllocation(final VmHostEventInfo evt) {
         numberOfHostAllocations++;
         LOGGER.info(
                 "# Host {} allocated to Vm {} at time {}",
@@ -124,7 +124,7 @@ public final class VmCreationFailureIntegrationTest {
      *
      * @param evt
      */
-    private void onHostDeallocation(VmHostEventInfo evt) {
+    private void onHostDeallocation(final VmHostEventInfo evt) {
         numberOfHostDeallocations++;
         LOGGER.info(
                 "# {} moved/removed from {} at time {}",
@@ -144,7 +144,7 @@ public final class VmCreationFailureIntegrationTest {
      *
      * @param evt
      */
-    private void onVmCreationFailure(VmDatacenterEventInfo evt) {
+    private void onVmCreationFailure(final VmDatacenterEventInfo evt) {
         numberOfVmCreationFailures++;
         final int expectedVmId = 1;
 
@@ -159,10 +159,10 @@ public final class VmCreationFailureIntegrationTest {
      * that will be called every time an event is processed by {@link CloudSim}.
      * @param evt
      */
-    private void onEventProcessing(SimEvent evt) {
+    private void onEventProcessing(final SimEvent evt) {
         LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
-        int i = (int) evt.getTime();
-        if (i == 10 || i == 20) {
+        final int time = (int) evt.getTime();
+        if (time == 10 || time == 20) {
             assertEquals(200,
                 scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
         }
@@ -177,7 +177,7 @@ public final class VmCreationFailureIntegrationTest {
      *
      * @param evt
      */
-    private void onUpdateVmProcessing(VmHostEventInfo evt) {
+    private void onUpdateVmProcessing(final VmHostEventInfo evt) {
         LOGGER.info(
             "- onUpdateVmProcessing at time {} for {}: {} available mips: {}",
             evt.getTime(), evt.getVm(), evt.getHost(), evt.getHost().getAvailableMips());

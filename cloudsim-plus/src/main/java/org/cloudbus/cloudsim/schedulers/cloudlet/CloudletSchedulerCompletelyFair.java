@@ -265,12 +265,12 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * <p>As "niceness" is a terminology defined by specific schedulers
      * (such as Linux Schedulers), it is not defined inside the Cloudlet.</p>
      *
-     * @param cl Cloudlet to get the nice value
+     * @param cloudlet Cloudlet to get the nice value
      * @return the cloudlet niceness
      * @see <a href="http://man7.org/linux/man-pages/man1/nice.1.html">Man Pages: Nice values for Linux processes</a>
      */
-    protected double getCloudletNiceness(final CloudletExecution cl){
-        return -cl.getCloudlet().getPriority();
+    protected double getCloudletNiceness(final CloudletExecution cloudlet){
+        return -cloudlet.getCloudlet().getPriority();
     }
 
     /**
@@ -338,15 +338,15 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * See {@link #computeCloudletInitialVirtualRuntime(CloudletExecution)}
      * for more details.</p>
      *
-     * @param ce {@inheritDoc}
+     * @param cle {@inheritDoc}
      * @param fileTransferTime {@inheritDoc}
      * @return {@inheritDoc}
      */
     @Override
-    protected double cloudletSubmitInternal(final CloudletExecution ce, final double fileTransferTime) {
-        ce.setVirtualRuntime(computeCloudletInitialVirtualRuntime(ce));
-        ce.setTimeSlice(computeCloudletTimeSlice(ce));
-        return super.cloudletSubmitInternal(ce, fileTransferTime);
+    protected double cloudletSubmitInternal(final CloudletExecution cle, final double fileTransferTime) {
+        cle.setVirtualRuntime(computeCloudletInitialVirtualRuntime(cle));
+        cle.setTimeSlice(computeCloudletTimeSlice(cle));
+        return super.cloudletSubmitInternal(cle, fileTransferTime);
     }
 
     /**
@@ -365,20 +365,20 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     @Override
-    public long updateCloudletProcessing(final CloudletExecution ce, final double currentTime) {
+    public long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
         /*
         Cloudlet has never been executed yet and it will start executing now,
         sets its actual virtual runtime. The negative value was used so far
         just to sort Cloudlets in the waiting list according to their priorities.
         */
-        if(ce.getVirtualRuntime() < 0){
-            ce.setVirtualRuntime(0);
+        if(cle.getVirtualRuntime() < 0){
+            cle.setVirtualRuntime(0);
         }
 
-        final double cloudletTimeSpan = currentTime - ce.getLastProcessingTime();
-        final long partialFinishedMI = super.updateCloudletProcessing(ce, currentTime);
+        final double cloudletTimeSpan = currentTime - cle.getLastProcessingTime();
+        final long partialFinishedMI = super.updateCloudletProcessing(cle, currentTime);
 
-        ce.addVirtualRuntime(cloudletTimeSpan);
+        cle.addVirtualRuntime(cloudletTimeSpan);
         return partialFinishedMI;
     }
 
@@ -388,11 +388,11 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * The initial value is negative to indicate the Cloudlet hasn't started
      * executing yet. The virtual runtime is computed based on the Cloudlet priority.
      *
-     * @param cl Cloudlet to compute the initial virtual runtime
+     * @param cloudlet Cloudlet to compute the initial virtual runtime
      * @return the computed initial virtual runtime as a negative value
      * to indicate that the Cloudlet hasn't started executing yet
      */
-    private double computeCloudletInitialVirtualRuntime(final CloudletExecution cl) {
+    private double computeCloudletInitialVirtualRuntime(final CloudletExecution cloudlet) {
         /*
         A negative virtual runtime indicates the cloudlet has never been executed yet.
         This math was used just to ensure that the first added cloudlets
@@ -410,9 +410,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         can be understood as resulting in "higher negative" values, that is,
         extreme negative values.
         */
-        final double inverseOfCloudletId = Integer.MAX_VALUE/(cl.getCloudletId()+1.0);
+        final double inverseOfCloudletId = Integer.MAX_VALUE/(cloudlet.getCloudletId()+1.0);
 
-        return -Math.abs(cl.getCloudlet().getPriority() + inverseOfCloudletId);
+        return -Math.abs(cloudlet.getCloudlet().getPriority() + inverseOfCloudletId);
     }
 
     /**

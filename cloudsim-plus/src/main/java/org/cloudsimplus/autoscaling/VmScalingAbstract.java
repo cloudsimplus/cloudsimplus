@@ -72,7 +72,7 @@ public abstract class VmScalingAbstract implements VmScaling {
      * @param time current simulation time
      * @return true if the request was actually sent, false otherwise
      */
-    protected abstract boolean requestUpScaling(final double time);
+    protected abstract boolean requestUpScaling(double time);
 
     /**
      * Sets the last time the scheduler checked for VM overload.

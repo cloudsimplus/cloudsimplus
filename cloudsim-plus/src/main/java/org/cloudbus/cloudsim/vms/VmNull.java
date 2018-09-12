@@ -161,8 +161,8 @@ final class VmNull implements Vm {
     @Override public double getTotalMipsCapacity() {
         return 0.0;
     }
-    @Override public void allocateResource(Class<? extends ResourceManageable> c, long amount) {/**/}
-    @Override public void deallocateResource(Class<? extends ResourceManageable> c) {/**/}
+    @Override public void allocateResource(Class<? extends ResourceManageable> clazz, long amount) {/**/}
+    @Override public void deallocateResource(Class<? extends ResourceManageable> clazz) {/**/}
     @Override public void setFailed(boolean failed) {/**/}
     @Override public boolean isFailed() {
         return true;
@@ -180,10 +180,10 @@ final class VmNull implements Vm {
     @Override public HorizontalVmScaling getHorizontalScaling() {
         return HorizontalVmScaling.NULL;
     }
-    @Override public Vm setHorizontalScaling(HorizontalVmScaling h) throws IllegalArgumentException { return this; }
-    @Override public Vm setRamVerticalScaling(VerticalVmScaling v) throws IllegalArgumentException { return this; }
-    @Override public Vm setBwVerticalScaling(VerticalVmScaling v) throws IllegalArgumentException { return this; }
-    @Override public Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException { return this; }
+    @Override public Vm setHorizontalScaling(HorizontalVmScaling scaling) throws IllegalArgumentException { return this; }
+    @Override public Vm setRamVerticalScaling(VerticalVmScaling scaling) throws IllegalArgumentException { return this; }
+    @Override public Vm setBwVerticalScaling(VerticalVmScaling scaling) throws IllegalArgumentException { return this; }
+    @Override public Vm setPeVerticalScaling(VerticalVmScaling scaling) throws IllegalArgumentException { return this; }
     @Override public VerticalVmScaling getRamVerticalScaling() {
         return VerticalVmScaling.NULL;
     }

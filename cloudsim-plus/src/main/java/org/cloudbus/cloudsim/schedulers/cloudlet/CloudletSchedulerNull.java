@@ -29,10 +29,10 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public double cloudletResume(Cloudlet cloudlet) {
         return 0.0;
     }
-    @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime) {
+    @Override public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime) {
         return 0.0;
     }
-    @Override public double cloudletSubmit(Cloudlet cl) {
+    @Override public double cloudletSubmit(Cloudlet cloudlet) {
         return 0.0;
     }
     @Override public List<CloudletExecution> getCloudletExecList() {

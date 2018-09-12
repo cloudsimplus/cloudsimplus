@@ -195,7 +195,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     private double getTotalMipsShare(){
-        return currentMipsShare.stream().mapToDouble(d -> d).sum();
+        return currentMipsShare.stream().mapToDouble(mips -> mips).sum();
     }
 
     @Override
@@ -203,15 +203,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return Collections.unmodifiableList(cloudletExecList);
     }
 
-    protected void addCloudletToWaitingList(final CloudletExecution ce) {
-        if(requireNonNull(ce) == CloudletExecution.NULL){
+    protected void addCloudletToWaitingList(final CloudletExecution cle) {
+        if(requireNonNull(cle) == CloudletExecution.NULL){
             return;
         }
 
-        if(ce.getCloudlet().getStatus() != Status.FROZEN) {
-            ce.setStatus(Status.QUEUED);
+        if(cle.getCloudlet().getStatus() != Status.FROZEN) {
+            cle.setStatus(Status.QUEUED);
         }
-        cloudletWaitingList.add(ce);
+        cloudletWaitingList.add(cle);
     }
 
     /**
@@ -226,10 +226,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @Override
     public List<CloudletExecution> getCloudletFinishedList() {
         return cloudletFinishedList;
-    }
-
-    protected void addCloudletToFinishedList(final CloudletExecution cloudlet) {
-        cloudletFinishedList.add(cloudlet);
     }
 
     /**
@@ -260,42 +256,42 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public final double cloudletSubmit(final Cloudlet cl, final double fileTransferTime) {
-        return cloudletSubmitInternal(new CloudletExecution(cl), fileTransferTime);
+    public final double cloudletSubmit(final Cloudlet cloudlet, final double fileTransferTime) {
+        return cloudletSubmitInternal(new CloudletExecution(cloudlet), fileTransferTime);
     }
 
     /**
      * Receives the execution information of a Cloudlet to be executed in the VM managed by this scheduler.
      *
-     * @param ce the submitted cloudlet
+     * @param cle the submitted cloudlet
      * @param fileTransferTime time required to move the required files from the SAN to the VM
      * @return expected finish time of this cloudlet (considering the time to transfer required
      * files from the Datacenter to the Vm), or 0 if it is in a waiting queue
      * @see #cloudletSubmit(Cloudlet, double)
      */
-    protected double cloudletSubmitInternal(final CloudletExecution ce, final double fileTransferTime) {
-        if (canExecuteCloudlet(ce)) {
-            ce.setStatus(Status.INEXEC);
-            ce.setFileTransferTime(fileTransferTime);
-            addCloudletToExecList(ce);
-            return fileTransferTime + Math.abs(ce.getCloudletLength()/getPeCapacity()) ;
+    protected double cloudletSubmitInternal(final CloudletExecution cle, final double fileTransferTime) {
+        if (canExecuteCloudlet(cle)) {
+            cle.setStatus(Status.INEXEC);
+            cle.setFileTransferTime(fileTransferTime);
+            addCloudletToExecList(cle);
+            return fileTransferTime + Math.abs(cle.getCloudletLength()/getPeCapacity()) ;
         }
 
         // No enough free PEs, then add Cloudlet to the waiting queue
-        addCloudletToWaitingList(ce);
+        addCloudletToWaitingList(cle);
         return 0.0;
     }
 
     /**
      * Adds a Cloudlet to the list of cloudlets in execution.
      *
-     * @param cloudlet the Cloudlet to be added
+     * @param cle the Cloudlet to be added
      */
-    protected void addCloudletToExecList(final CloudletExecution cloudlet) {
-        cloudlet.setStatus(Cloudlet.Status.INEXEC);
-        cloudlet.setLastProcessingTime(getVm().getSimulation().clock());
-        cloudletExecList.add(cloudlet);
-        addUsedPes(cloudlet.getNumberOfPes());
+    protected void addCloudletToExecList(final CloudletExecution cle) {
+        cle.setStatus(Cloudlet.Status.INEXEC);
+        cle.setLastProcessingTime(getVm().getSimulation().clock());
+        cloudletExecList.add(cle);
+        addUsedPes(cle.getNumberOfPes());
     }
 
     @Override
@@ -325,10 +321,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             .orElse(Cloudlet.NULL);
     }
 
-    private Cloudlet finishCloudletMigration(final CloudletExecution ce) {
-        removeCloudletFromExecListAndAddToFinishedList(ce);
-        ce.finalizeCloudlet();
-        return ce.getCloudlet();
+    private Cloudlet finishCloudletMigration(final CloudletExecution cle) {
+        addCloudletToFinishedList(cle);
+        cle.finalizeCloudlet();
+        return cle.getCloudlet();
     }
 
     @Override
@@ -377,10 +373,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public void cloudletFinish(final CloudletExecution ce) {
-        ce.setStatus(Status.SUCCESS);
-        ce.finalizeCloudlet();
-        addCloudletToFinishedList(ce);
+    public void cloudletFinish(final CloudletExecution cle) {
+        cle.setStatus(Status.SUCCESS);
+        cle.finalizeCloudlet();
+        cloudletFinishedList.add(cle);
     }
 
     @Override
@@ -408,8 +404,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return true;
     }
 
-    private void changeToReady(final CloudletExecution ce) {
-        changeStatusOfCloudlet(ce, ce.getCloudlet().getStatus(), Status.READY);
+    private void changeToReady(final CloudletExecution cle) {
+        changeStatusOfCloudlet(cle, cle.getCloudlet().getStatus(), Status.READY);
     }
 
     @Override
@@ -421,13 +417,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return changeStatusOfCloudletIntoList(cloudletWaitingList, cloudlet, this::changeReadyToPaused);
     }
 
-    private void changeInExecToPaused(final CloudletExecution ce) {
-        changeStatusOfCloudlet(ce, Status.INEXEC, Status.PAUSED);
-        removeUsedPes(ce.getNumberOfPes());
+    private void changeInExecToPaused(final CloudletExecution cle) {
+        changeStatusOfCloudlet(cle, Status.INEXEC, Status.PAUSED);
+        removeUsedPes(cle.getNumberOfPes());
     }
 
-    private void changeReadyToPaused(final CloudletExecution ce) {
-        changeStatusOfCloudlet(ce, Status.READY, Status.PAUSED);
+    private void changeReadyToPaused(final CloudletExecution cle) {
+        changeStatusOfCloudlet(cle, Status.READY, Status.PAUSED);
     }
 
     @Override
@@ -480,26 +476,26 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Changes the status of a given cloudlet.
      *
-     * @param cloudlet      Cloudlet to set its status
+     * @param cle      Cloudlet to set its status
      * @param currentStatus the current cloudlet status
      * @param newStatus     the new status to set
      * @todo @author manoelcampos The parameter currentStatus only exists
      * because apparently, the cloudlet status is not being accordingly changed
      * along the simulation run.
      */
-    private void changeStatusOfCloudlet(final CloudletExecution cloudlet, final Status currentStatus, final Status newStatus) {
-        if ((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cloudlet.getCloudlet().isFinished()) {
-            cloudletFinish(cloudlet);
+    private void changeStatusOfCloudlet(final CloudletExecution cle, final Status currentStatus, final Status newStatus) {
+        if ((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cle.getCloudlet().isFinished()) {
+            cloudletFinish(cle);
         } else {
-            cloudlet.setStatus(newStatus);
+            cle.setStatus(newStatus);
         }
 
         switch (newStatus) {
             case PAUSED:
-                cloudletPausedList.add(cloudlet);
+                cloudletPausedList.add(cle);
             break;
             case READY:
-                addCloudletToWaitingList(cloudlet);
+                addCloudletToWaitingList(cle);
             break;
         }
     }
@@ -519,16 +515,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final Cloudlet cloudlet,
         final Consumer<CloudletExecution> cloudletStatusUpdaterConsumer)
     {
-        final Function<CloudletExecution, Cloudlet> removeCloudletFromListAndUpdateStatus = c -> {
+        final Function<CloudletExecution, Cloudlet> removeCloudletAndUpdateStatus = c -> {
             cloudletList.remove(c);
             cloudletStatusUpdaterConsumer.accept(c);
             return c.getCloudlet();
         };
 
         return cloudletList.stream()
-            .filter(c -> c.getCloudlet().getId() == cloudlet.getId())
+            .filter(cle -> cle.getCloudletId() == cloudlet.getId())
             .findFirst()
-            .map(removeCloudletFromListAndUpdateStatus)
+            .map(removeCloudletAndUpdateStatus)
             .isPresent();
     }
 
@@ -543,7 +539,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
         updateCloudletsProcessing(currentTime);
         updateVmRamAbsoluteUtilization();
-        removeFinishedCloudletsFromExecListAndAddToFinishedList();
+        addCloudletsToFinishedList();
         moveNextCloudletsFromWaitingToExecList();
 
         final double nextSimulationTime = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
@@ -563,8 +559,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         /* Uses a traditional for to avoid ConcurrentModificationException,
          * e.g., in cases when Cloudlet is cancelled during simulation execution. */
         for (int i = 0; i < cloudletExecList.size(); i++) {
-            final CloudletExecution ce = cloudletExecList.get(i);
-            updateCloudletProcessingAndPacketsDispatch(ce, currentTime);
+            final CloudletExecution cle = cloudletExecList.get(i);
+            updateCloudletProcessingAndPacketsDispatch(cle, currentTime);
         }
     }
 
@@ -573,30 +569,30 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * scheduler. Then process tasks such a Cloudlet may have
      * (if the CloudletScheduler has a {@link CloudletTaskScheduler} assigned to it).
      *
-     * @param ce         The cloudlet to be its processing updated
+     * @param cle         The cloudlet to be its processing updated
      * @param currentTime current simulation time
      */
-    private void updateCloudletProcessingAndPacketsDispatch(final CloudletExecution ce, final double currentTime) {
+    private void updateCloudletProcessingAndPacketsDispatch(final CloudletExecution cle, final double currentTime) {
         long partialFinishedMI = 0;
-        if (taskScheduler.isTimeToUpdateCloudletProcessing(ce.getCloudlet())) {
-            partialFinishedMI = updateCloudletProcessing(ce, currentTime);
+        if (taskScheduler.isTimeToUpdateCloudletProcessing(cle.getCloudlet())) {
+            partialFinishedMI = updateCloudletProcessing(cle, currentTime);
         }
 
 
-        taskScheduler.processCloudletTasks(ce.getCloudlet(), partialFinishedMI);
+        taskScheduler.processCloudletTasks(cle.getCloudlet(), partialFinishedMI);
     }
 
     /**
      * Updates the processing of a specific cloudlet of the Vm using this
      * scheduler.
      *
-     * @param ce The cloudlet to be its processing updated
+     * @param cle The cloudlet to be its processing updated
      * @param currentTime current simulation time
      * @return the executed length, in <b>Million Instructions (MI)</b>, since the last time cloudlet was processed.
      */
-    protected long updateCloudletProcessing(final CloudletExecution ce, final double currentTime) {
-        final long partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(ce, currentTime);
-        ce.updateProcessing(partialFinishedInstructions);
+    protected long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
+        final long partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(cle, currentTime);
+        cle.updateProcessing(partialFinishedInstructions);
         return partialFinishedInstructions/Conversion.MILLION;
     }
 
@@ -613,8 +609,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private void updateVmRamAbsoluteUtilization() {
         final ResourceManageable ram = vm.getResource(Ram.class);
         ram.deallocateAllResources();
-        for (final CloudletExecution cloudletExecution : cloudletExecList) {
-            final Cloudlet cloudlet = cloudletExecution.getCloudlet();
+        for (final CloudletExecution cle : cloudletExecList) {
+            final Cloudlet cloudlet = cle.getCloudlet();
             final long requested = (long)getCloudletRamAbsoluteUtilization(cloudlet);
             if(requested > ram.getAvailableResource()){
                 final String msg =
@@ -661,7 +657,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * stored in the {@link CloudletExecution#getFileTransferTime()}
      * attribute and is set when the Cloudlet is submitted to the scheduler.</p>
      *
-     * @param cl the Cloudlet to compute the executed length
+     * @param cle the Cloudlet to compute the executed length
      * @param currentTime current simulation time
      * @return the executed length, in Number of Instructions (I), since the last time cloudlet was processed.
      * @TODO @author manoelcampos This method is being called 2 times more than required.
@@ -671,16 +667,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * that time).
      * @see #updateCloudletsProcessing(double)
      */
-    private long cloudletExecutedInstructionsForTimeSpan(final CloudletExecution cl, final double currentTime) {
+    private long cloudletExecutedInstructionsForTimeSpan(final CloudletExecution cle, final double currentTime) {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
          * called by the scheduler. If it is zero, indicates that the Cloudlet didn't use
          * the CPU in this time span, because it is waiting for its required files
          * to be transferred from the Datacenter storage.
          */
-        final double actualProcessingTime = hasCloudletFileTransferTimePassed(cl, currentTime) ? timeSpan(cl, currentTime) : 0;
+        final double actualProcessingTime = hasCloudletFileTransferTimePassed(cle, currentTime) ? timeSpan(cle, currentTime) : 0;
         final double cloudletUsedMips =
             getAbsoluteCloudletResourceUtilization(
-                cl.getCloudlet().getUtilizationModelCpu(),
+                cle.getCloudlet().getUtilizationModelCpu(),
                 currentTime, getAvailableMipsByPe());
         return (long) (cloudletUsedMips * actualProcessingTime * Conversion.MILLION);
     }
@@ -690,27 +686,27 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * execute has already passed, in order to start executing the Cloudlet in
      * fact.
      *
-     * @param ce         Cloudlet to check if the time to transfer the files has passed
+     * @param cle         Cloudlet to check if the time to transfer the files has passed
      * @param currentTime the current simulation time
      * @return true if the time to transfer the files has passed, false
      * otherwise
      */
-    private boolean hasCloudletFileTransferTimePassed(final CloudletExecution ce, final double currentTime) {
-        return ce.getFileTransferTime() == 0 ||
-               currentTime - ce.getCloudletArrivalTime() > ce.getFileTransferTime() ||
-               ce.getCloudlet().getFinishedLengthSoFar() > 0;
+    private boolean hasCloudletFileTransferTimePassed(final CloudletExecution cle, final double currentTime) {
+        return cle.getFileTransferTime() == 0 ||
+               currentTime - cle.getCloudletArrivalTime() > cle.getFileTransferTime() ||
+               cle.getCloudlet().getFinishedLengthSoFar() > 0;
     }
 
     /**
      * Computes the time span between the current simulation time and the last
      * time the processing of a cloudlet was updated.
      *
-     * @param cl the cloudlet to compute the execution time span
+     * @param cle the cloudlet to compute the execution time span
      * @param currentTime the current simulation time
      * @return
      */
-    protected double timeSpan(final CloudletExecution cl, final double currentTime) {
-        return currentTime - cl.getLastProcessingTime();
+    protected double timeSpan(final CloudletExecution cle, final double currentTime) {
+        return currentTime - cle.getLastProcessingTime();
     }
 
     /**
@@ -721,45 +717,45 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the number of finished cloudlets removed from the
      * {@link #getCloudletExecList() execution list}
      */
-    private int removeFinishedCloudletsFromExecListAndAddToFinishedList() {
+    private int addCloudletsToFinishedList() {
         final List<CloudletExecution> finishedCloudlets
             = cloudletExecList.stream()
             .filter(c -> c.getCloudlet().isFinished())
             .collect(toList());
 
         for (final CloudletExecution c : finishedCloudlets) {
-            removeCloudletFromExecListAndAddToFinishedList(c);
+            addCloudletToFinishedList(c);
         }
 
         return finishedCloudlets.size();
     }
 
-    private void removeCloudletFromExecListAndAddToFinishedList(final CloudletExecution cloudlet) {
-        setCloudletFinishTimeAndAddToFinishedList(cloudlet);
-        removeCloudletFromExecList(cloudlet);
+    private void addCloudletToFinishedList(final CloudletExecution cle) {
+        setCloudletFinishTimeAndAddToFinishedList(cle);
+        removeCloudletFromExecList(cle);
     }
 
     /**
      * Removes a Cloudlet from the list of cloudlets in execution.
      *
-     * @param cloudlet the Cloudlet to be removed
+     * @param cle the Cloudlet to be removed
      * @return the removed Cloudlet or {@link CloudletExecution#NULL} if not found
      */
-    protected CloudletExecution removeCloudletFromExecList(final CloudletExecution cloudlet) {
-        removeUsedPes(cloudlet.getNumberOfPes());
-        return cloudletExecList.remove(cloudlet) ? cloudlet : CloudletExecution.NULL;
+    protected CloudletExecution removeCloudletFromExecList(final CloudletExecution cle) {
+        removeUsedPes(cle.getNumberOfPes());
+        return cloudletExecList.remove(cle) ? cle : CloudletExecution.NULL;
     }
 
     /**
      * Sets the finish time of a cloudlet and adds it to the
      * finished list.
      *
-     * @param ce the cloudlet to set the finish time
+     * @param cle the cloudlet to set the finish time
      */
-    private void setCloudletFinishTimeAndAddToFinishedList(final CloudletExecution ce) {
+    private void setCloudletFinishTimeAndAddToFinishedList(final CloudletExecution cle) {
         final double clock = vm.getSimulation().clock();
-        ce.setFinishTime(clock);
-        cloudletFinish(ce);
+        cle.setFinishTime(clock);
+        cloudletFinish(cle);
     }
 
     /**
@@ -772,7 +768,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(final double currentTime) {
         return cloudletExecList
                 .stream()
-                .mapToDouble(c -> getEstimatedFinishTimeOfCloudlet(c, currentTime))
+                .mapToDouble(cle -> getEstimatedFinishTimeOfCloudlet(cle, currentTime))
                 .min().orElse(Double.MAX_VALUE);
     }
 
@@ -781,16 +777,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
      *
-     * @param ce         cloudlet to get the estimated finish time
+     * @param cle         cloudlet to get the estimated finish time
      * @param currentTime current simulation time
      * @return the estimated finish time of the given cloudlet
      * (which is a relative delay from the current simulation time)
      */
-    protected double getEstimatedFinishTimeOfCloudlet(final CloudletExecution ce, final double currentTime) {
+    protected double getEstimatedFinishTimeOfCloudlet(final CloudletExecution cle, final double currentTime) {
         final double cloudletUsedMips =
-            getAbsoluteCloudletResourceUtilization(ce.getCloudlet().getUtilizationModelCpu(),
+            getAbsoluteCloudletResourceUtilization(cle.getCloudlet().getUtilizationModelCpu(),
                 currentTime, getAvailableMipsByPe());
-        final double estimatedFinishTime = ce.getRemainingCloudletLength() / cloudletUsedMips;
+        final double estimatedFinishTime = cle.getRemainingCloudletLength() / cloudletUsedMips;
 
         if (estimatedFinishTime < vm.getSimulation().getMinTimeBetweenEvents()) {
             return vm.getSimulation().getMinTimeBetweenEvents();
@@ -849,24 +845,24 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * Checks if the amount of PEs required by a given Cloudlet is free to use.
      *
-     * @param cloudlet the Cloudlet to get the number of required PEs
+     * @param cle the Cloudlet to get the number of required PEs
      * @return true if there is the amount of free PEs, false otherwise
      */
-    protected boolean isThereEnoughFreePesForCloudlet(final CloudletExecution cloudlet) {
-        return vm.getProcessor().getAvailableResource() >= cloudlet.getNumberOfPes();
+    protected boolean isThereEnoughFreePesForCloudlet(final CloudletExecution cle) {
+        return vm.getProcessor().getAvailableResource() >= cle.getNumberOfPes();
     }
 
     /**
      * Removes a Cloudlet from waiting list and adds it to the exec list.
-     * @param cloudlet the cloudlet to add to to exec list
+     * @param cle the cloudlet to add to to exec list
      * @return the given cloudlet
      */
-    protected CloudletExecution addWaitingCloudletToExecList(final CloudletExecution cloudlet) {
+    protected CloudletExecution addWaitingCloudletToExecList(final CloudletExecution cle) {
         /*If the Cloudlet is not found in the waiting List, there is no problem.
         * Just add it to the exec List.*/
-        cloudletWaitingList.remove(cloudlet);
-        addCloudletToExecList(cloudlet);
-        return cloudlet;
+        cloudletWaitingList.remove(cle);
+        addCloudletToExecList(cle);
+        return cle;
     }
 
     @Override
@@ -969,19 +965,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public double getRequestedMipsForCloudlet(final CloudletExecution ce, final double time) {
-        return getAbsoluteCloudletResourceUtilization(ce.getCloudlet().getUtilizationModelCpu(), time, vm.getMips());
+    public double getRequestedMipsForCloudlet(final CloudletExecution cle, final double time) {
+        return getAbsoluteCloudletResourceUtilization(cle.getCloudlet().getUtilizationModelCpu(), time, vm.getMips());
     }
 
     /**
      * Gets the current allocated MIPS for cloudlet.
      *
-     * @param ce the ce
+     * @param cle the ce
      * @param time the time
      * @return the current allocated mips for cloudlet
      */
-    public double getAllocatedMipsForCloudlet(final CloudletExecution ce, final double time) {
-        return getAbsoluteCloudletResourceUtilization(ce.getCloudlet().getUtilizationModelCpu(), time, getAvailableMipsByPe());
+    public double getAllocatedMipsForCloudlet(final CloudletExecution cle, final double time) {
+        return getAbsoluteCloudletResourceUtilization(cle.getCloudlet().getUtilizationModelCpu(), time, getAvailableMipsByPe());
     }
 
     @Override
@@ -1088,15 +1084,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 	 * Cloudlet finished its entire execution.
 	 * That is, it might not always add new Cloudlets to the execution list.</p>
 	 *
-	 * @param ce Cloudlet to check if it can be added to the execution list
+	 * @param cle Cloudlet to check if it can be added to the execution list
 	 * @return true if the Cloudlet can be added to the execution list, false otherwise
 	 */
-    private boolean canExecuteCloudlet(final CloudletExecution ce){
-        return ce.getCloudlet().getStatus().ordinal() < Status.FROZEN.ordinal() && canExecuteCloudletInternal(ce);
+    private boolean canExecuteCloudlet(final CloudletExecution cle){
+        return cle.getCloudlet().getStatus().ordinal() < Status.FROZEN.ordinal() && canExecuteCloudletInternal(cle);
     }
 
     /**
      * @see #canExecuteCloudlet(CloudletExecution)
      */
-    protected abstract boolean canExecuteCloudletInternal(final CloudletExecution ce);
+    protected abstract boolean canExecuteCloudletInternal(CloudletExecution cle);
 }

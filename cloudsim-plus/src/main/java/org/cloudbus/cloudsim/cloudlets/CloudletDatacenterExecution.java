@@ -17,6 +17,9 @@ final class CloudletDatacenterExecution {
     private long finishedSoFar;
     private Datacenter datacenter;
 
+    /**
+     * A default package-level constructor.
+     */
     CloudletDatacenterExecution() {
         this.datacenter = Datacenter.NULL;
         this.arrivalTime = Cloudlet.NOT_ASSIGNED;

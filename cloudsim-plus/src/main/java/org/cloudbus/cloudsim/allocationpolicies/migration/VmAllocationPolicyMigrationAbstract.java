@@ -424,14 +424,14 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         final Map<Vm, Host> migrationMap = new HashMap<>();
 
-        final StringBuilder sb = new StringBuilder();
+        final StringBuilder builder = new StringBuilder();
         for (final Vm vm : vmsToMigrate) {
             findHostForVm(vm, overloadedHosts).ifPresent(targetHost -> {
                 addVmToMigrationMap(migrationMap, vm, targetHost);
-                appendVmMigrationMsgToStringBuilder(sb, vm, targetHost);
+                appendVmMigrationMsgToStringBuilder(builder, vm, targetHost);
             });
         }
-        LOGGER.info("Reallocation of VMs from overloaded hosts: {}{}", System.lineSeparator(), sb.toString());
+        LOGGER.info("Reallocation of VMs from overloaded hosts: {}{}", System.lineSeparator(), builder.toString());
 
         return migrationMap;
     }

@@ -116,31 +116,6 @@ public abstract class TraceReaderAbstract implements TraceReader {
     }
 
     /**
-     * Reads traces from the file indicated by the {@link #getFilePath()},
-     * then creates a Cloudlet for each line read.
-     *
-     * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
-     *                          and performs an operation over it, returning true if the operation was executed
-     * @return <code>true</code> if successful, <code>false</code> otherwise.
-     * @throws UncheckedIOException if the there was any error reading the reader
-     */
-    protected void readFile(final Function<String[], Boolean> processParsedLineFunction) {
-        /*@todo It would be implemented using specific classes to avoid this if chain.
-        If a new format is included, the code has to be changed to include another if*/
-        try {
-            if (getFilePath().endsWith(".gz")) {
-                readGZIPFile(getReader(), processParsedLineFunction);
-            } else if (getFilePath().endsWith(".zip")) {
-                readZipFile(getReader(), processParsedLineFunction);
-            } else {
-                readTextFile(getReader(), processParsedLineFunction);
-            }
-        } catch(IOException e){
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    /**
      * Reads traces from a text reader, then creates a Cloudlet for each line read.
      *
      * @param inputStream a {@link InputStream} to read the file
@@ -182,6 +157,31 @@ public abstract class TraceReaderAbstract implements TraceReader {
                 readFile(zipInputStream, processParsedLineFunction);
             }
             return true;
+        }
+    }
+
+    /**
+     * Reads traces from the file indicated by the {@link #getFilePath()},
+     * then creates a Cloudlet for each line read.
+     *
+     * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
+     *                          and performs an operation over it, returning true if the operation was executed
+     * @return <code>true</code> if successful, <code>false</code> otherwise.
+     * @throws UncheckedIOException if the there was any error reading the reader
+     */
+    protected void readFile(final Function<String[], Boolean> processParsedLineFunction) {
+        /*@todo It would be implemented using specific classes to avoid this if chain.
+        If a new format is included, the code has to be changed to include another if*/
+        try {
+            if (getFilePath().endsWith(".gz")) {
+                readGZIPFile(getReader(), processParsedLineFunction);
+            } else if (getFilePath().endsWith(".zip")) {
+                readZipFile(getReader(), processParsedLineFunction);
+            } else {
+                readTextFile(getReader(), processParsedLineFunction);
+            }
+        } catch(IOException e){
+            throw new UncheckedIOException(e);
         }
     }
 

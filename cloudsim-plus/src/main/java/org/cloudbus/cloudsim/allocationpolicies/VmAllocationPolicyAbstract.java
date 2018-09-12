@@ -41,6 +41,8 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
+    private static final Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicyAbstract.class.getSimpleName());
+
     private BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
 
     /**
@@ -63,7 +65,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private Map<Vm, Long> usedPes;
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicyAbstract.class.getSimpleName());
 
     /**
      * Creates a VmAllocationPolicy.

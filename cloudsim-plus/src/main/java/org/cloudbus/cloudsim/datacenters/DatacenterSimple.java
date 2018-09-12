@@ -178,21 +178,23 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public void processEvent(final SimEvent evt) {
-        processCloudletEvents(evt);
-        processVmEvents(evt);
-        processNetworkEvents(evt);
-        processHostEvents(evt);
+        if (processCloudletEvents(evt) || processVmEvents(evt) || processNetworkEvents(evt) || processHostEvents(evt)) {
+            return;
+        }
+
+        LOGGER.trace("{}: {}: Unknown event {} received.", getSimulation().clock(), this, evt.getTag());
     }
 
-    private void processHostEvents(final SimEvent evt) {
-        switch (evt.getTag()) {
-            case CloudSimTags.HOST_ADD:
-                processHostAdditionRequest(evt);
-            break;
-            case CloudSimTags.HOST_REMOVE:
-                processHostRemovalRequest(evt);
-            break;
+    private boolean processHostEvents(final SimEvent evt) {
+        if (evt.getTag() == CloudSimTags.HOST_ADD) {
+            processHostAdditionRequest(evt);
+            return true;
+        } else if (evt.getTag() == CloudSimTags.HOST_REMOVE) {
+            processHostRemovalRequest(evt);
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -251,46 +253,49 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return Optional.empty();
     }
 
-    private void processNetworkEvents(final SimEvent evt) {
-        switch (evt.getTag()) {
-            case CloudSimTags.ICMP_PKT_SUBMIT:
-                processPingRequest(evt);
-            break;
+    private boolean processNetworkEvents(final SimEvent evt) {
+        if (evt.getTag() == CloudSimTags.ICMP_PKT_SUBMIT) {
+            processPingRequest(evt);
+            return true;
         }
+
+        return false;
     }
 
     /**
      * Process a received event.
      * @param evt the event to be processed
      */
-    private void processVmEvents(final SimEvent evt) {
+    private boolean processVmEvents(final SimEvent evt) {
         switch (evt.getTag()) {
             case CloudSimTags.VM_CREATE:
                 processVmCreate(evt, false);
-            break;
+                return true;
             case CloudSimTags.VM_CREATE_ACK:
                 processVmCreate(evt, true);
-            break;
+                return true;
             case CloudSimTags.VM_VERTICAL_SCALING:
                 requestVmVerticalScaling(evt);
-            break;
+                return true;
             case CloudSimTags.VM_DESTROY:
                 processVmDestroy(evt, false);
-            break;
+                return true;
             case CloudSimTags.VM_DESTROY_ACK:
                 processVmDestroy(evt, true);
-            break;
+                return true;
             case CloudSimTags.VM_MIGRATE:
                 finishVmMigration(evt, false);
-            break;
+                return true;
             case CloudSimTags.VM_MIGRATE_ACK:
                 finishVmMigration(evt, true);
-            break;
+                return true;
             case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT:
                 updateCloudletProcessing();
                 checkCloudletsCompletionForAllHosts();
-            break;
+                return true;
         }
+
+        return false;
     }
 
     /**
@@ -308,45 +313,41 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return vmAllocationPolicy.scaleVmVertically((VerticalVmScaling)evt.getData());
     }
 
-    private void processCloudletEvents(final SimEvent evt) {
+    private boolean processCloudletEvents(final SimEvent evt) {
         switch (evt.getTag()) {
             // New Cloudlet arrives
             case CloudSimTags.CLOUDLET_SUBMIT:
                 processCloudletSubmit(evt, false);
-            break;
-
+                return true;
             // New Cloudlet arrives, but the sender asks for an ack
             case CloudSimTags.CLOUDLET_SUBMIT_ACK:
                 processCloudletSubmit(evt, true);
-            break;
-
+                return true;
             // Cancels a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_CANCEL:
                 processCloudlet(evt, CloudSimTags.CLOUDLET_CANCEL);
-            break;
-
+                return true;
             // Pauses a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_PAUSE:
                 processCloudlet(evt, CloudSimTags.CLOUDLET_PAUSE);
-            break;
-
+                return true;
             // Pauses a previously submitted Cloudlet, but the sender
             // asks for an acknowledgement
             case CloudSimTags.CLOUDLET_PAUSE_ACK:
                 processCloudlet(evt, CloudSimTags.CLOUDLET_PAUSE_ACK);
-            break;
-
+                return true;
             // Resumes a previously submitted Cloudlet
             case CloudSimTags.CLOUDLET_RESUME:
                 processCloudlet(evt, CloudSimTags.CLOUDLET_RESUME);
-            break;
-
+                return true;
             // Resumes a previously submitted Cloudlet, but the sender
             // asks for an acknowledgement
             case CloudSimTags.CLOUDLET_RESUME_ACK:
                 processCloudlet(evt, CloudSimTags.CLOUDLET_RESUME_ACK);
-            break;
+                return true;
         }
+
+        return false;
     }
 
     /**
@@ -409,29 +410,29 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * acknowledge message when the event finishes to be processed
      */
     protected void processCloudletSubmit(final SimEvent evt, final boolean ack) {
-        final Cloudlet cl = (Cloudlet) evt.getData();
-        if (cl.isFinished()) {
-            notifyBrokerAboutFinishedCloudlet(cl, ack);
+        final Cloudlet cloudlet = (Cloudlet) evt.getData();
+        if (cloudlet.isFinished()) {
+            notifyBrokerAboutFinishedCloudlet(cloudlet, ack);
             return;
         }
 
-        cl.assignToDatacenter(this);
-        submitCloudletToVm(cl, ack);
+        cloudlet.assignToDatacenter(this);
+        submitCloudletToVm(cloudlet, ack);
     }
 
     /**
      * Submits a cloudlet to be executed inside its bind VM.
      *
-     * @param cl the cloudlet to the executed
+     * @param cloudlet the cloudlet to the executed
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
      */
-    private void submitCloudletToVm(final Cloudlet cl, final boolean ack) {
+    private void submitCloudletToVm(final Cloudlet cloudlet, final boolean ack) {
         // time to transfer cloudlet's files
-        final double fileTransferTime = getDatacenterStorage().predictFileTransferTime(cl.getRequiredFiles());
+        final double fileTransferTime = getDatacenterStorage().predictFileTransferTime(cloudlet.getRequiredFiles());
 
-        final CloudletScheduler scheduler = cl.getVm().getCloudletScheduler();
-        final double estimatedFinishTime = scheduler.cloudletSubmit(cl, fileTransferTime);
+        final CloudletScheduler scheduler = cloudlet.getVm().getCloudletScheduler();
+        final double estimatedFinishTime = scheduler.cloudletSubmit(cloudlet, fileTransferTime);
 
         // if this cloudlet is in the exec queue
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
@@ -440,7 +441,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING_EVENT);
         }
 
-        sendCloudletSubmitAckToBroker(ack, cl);
+        sendCloudletSubmitAckToBroker(cloudlet, ack);
     }
 
     /**
@@ -626,14 +627,14 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * If it is the case, the Datacenter notifies the Broker that
      * the Cloudlet cannot be created again because it has already finished.
      *
-     * @param cl the finished cloudlet
+     * @param cloudlet the finished cloudlet
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
      */
-    private void notifyBrokerAboutFinishedCloudlet(final Cloudlet cl, final boolean ack) {
+    private void notifyBrokerAboutFinishedCloudlet(final Cloudlet cloudlet, final boolean ack) {
         LOGGER.warn(
             "{}: {} owned by {} is already completed/finished. It won't be executed again.",
-            getName(), cl, cl.getBroker());
+            getName(), cloudlet, cloudlet.getBroker());
 
         /*
          NOTE: If a Cloudlet has finished, then it won't be processed.
@@ -642,9 +643,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
          Hence, this might cause CloudSim to be hanged since waiting
          for this Cloudlet back.
         */
-        sendCloudletSubmitAckToBroker(ack, cl);
+        sendCloudletSubmitAckToBroker(cloudlet, ack);
 
-        sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_RETURN, cl);
+        sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_RETURN, cloudlet);
     }
 
     /**
@@ -655,16 +656,16 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * The ACK is sent just if the Broker is waiting for it and that condition
      * is indicated in the ack parameter.
      *
+     * @param cloudlet the cloudlet to respond to DatacenterBroker if it was created or not
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
-     * @param cl the cloudlet to respond to DatacenterBroker if it was created or not
      */
-    private void sendCloudletSubmitAckToBroker(final boolean ack, final Cloudlet cl) {
+    private void sendCloudletSubmitAckToBroker(final Cloudlet cloudlet, final boolean ack) {
         if(!ack){
             return;
         }
 
-        sendNow(cl.getBroker(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cl);
+        sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_SUBMIT_ACK, cloudlet);
     }
 
     /**

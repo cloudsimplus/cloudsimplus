@@ -95,21 +95,21 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Receives a cloudlet to be executed in the VM managed by this scheduler.
      *
-     * @param cl the submitted cloudlet
+     * @param cloudlet the submitted cloudlet
      * @param fileTransferTime time required to move the required files from the SAN to the VM
      * @return expected finish time of this cloudlet (considering the time to transfer required
      * files from the Datacenter to the Vm), or 0 if it is in a waiting queue
      */
-    double cloudletSubmit(Cloudlet cl, double fileTransferTime);
+    double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime);
 
     /**
      * Receives an cloudlet to be executed in the VM managed by this scheduler.
      *
-     * @param cl the submitted cloudlet
+     * @param cloudlet the submitted cloudlet
      * @return expected finish time of this cloudlet (considering the time to transfer required
      * files from the Datacenter to the Vm), or 0 if it is in a waiting queue
      */
-    double cloudletSubmit(Cloudlet cl);
+    double cloudletSubmit(Cloudlet cloudlet);
 
     /**
      * Gets a <b>read-only</b> List of cloudlets being executed on the VM.

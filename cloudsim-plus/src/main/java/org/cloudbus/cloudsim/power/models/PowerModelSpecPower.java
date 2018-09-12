@@ -52,6 +52,6 @@ public abstract class PowerModelSpecPower extends PowerModelAbstract {
          * where 10 means 100% of utilization.
 	 * @return the power consumption for the given utilization percentage
 	 */
-	protected abstract double getPowerData(final int index);
+	protected abstract double getPowerData(int index);
 
 }

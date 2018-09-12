@@ -183,5 +183,5 @@ public enum TaskEventType {
      *
      * @return true if trace line for the event type was processed, false otherwise
      */
-    protected abstract boolean process(final GoogleTaskEventsTraceReader reader);
+    protected abstract boolean process(GoogleTaskEventsTraceReader reader);
 }

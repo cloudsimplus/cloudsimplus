@@ -23,9 +23,7 @@ import java.util.function.Supplier;
  * @see DatacenterBroker#NULL
  */
 final class DatacenterBrokerNull implements DatacenterBroker {
-    @Override public int compareTo(SimEntity o) {
-        return 0;
-    }
+    @Override public int compareTo(SimEntity entity) { return 0; }
     @Override public SimEntity setState(State state) { return this; }
     @Override public boolean isStarted() {
         return false;

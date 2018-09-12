@@ -30,7 +30,6 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
 
 /**
  * An abstract class for creating <a href="https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md">Google Cluster Trace</a>
@@ -42,7 +41,8 @@ import java.util.function.Consumer;
  * @since CloudSim Plus 4.0.0
  */
 abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
-    private Consumer<? extends GoogleTraceReaderAbstract> preProcess;
+    protected static final String VAL_SEPARATOR = " -> ";
+    protected static final String COL_SEPARATOR = " | ";
 
     /** A Set of objects immediately created from the trace file.
      * The type <T> of the objects depends on each concrete class.
@@ -112,11 +112,6 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      * @see #getLastParsedLineArray()
      */
     protected abstract boolean processParsedLineInternal();
-
-
-    public void setPreProcess(Consumer<? extends GoogleTraceReaderAbstract> preProcess) {
-        this.preProcess = preProcess;
-    }
 
     protected String formatPercentValue(final double percent){
         return String.format("%.1f", percent*100);

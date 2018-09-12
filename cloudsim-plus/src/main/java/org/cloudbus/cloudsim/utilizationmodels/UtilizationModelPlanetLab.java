@@ -125,7 +125,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         Objects.requireNonNull(reader);
         final double[] utilization = createEmptyArray(Math.max(2, dataSamples));
 
-        try (final BufferedReader input = new BufferedReader(reader)) {
+        try (BufferedReader input = new BufferedReader(reader)) {
             final int n = utilization.length;
             int i = 0;
             String line;
