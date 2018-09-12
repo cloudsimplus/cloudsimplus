@@ -57,16 +57,23 @@ public final class ExecutionTimeMeasurer {
     }
 
     /**
-     * Gets map the execution times.
+     * Gets the map of execution times.
      *
      * @return the execution times map
      * @see #executionStartTimes
      */
-    protected static Map<String, Long> getExecutionStartTimes() {
+    static Map<String, Long> getExecutionStartTimes() {
         return executionStartTimes;
     }
 
-    protected static Long getExecutionStartTime(final String name){
+    /**
+     * Gets the execution start time
+     *
+     * @param name the name of the method/process to get the execution start time
+     * @return the execution start time for the the given method/process
+     * @see #executionStartTimes
+     */
+    static Long getExecutionStartTime(final String name){
         return executionStartTimes.get(name);
     }
 

@@ -156,7 +156,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         this.onHostAvailableListeners = new ArrayList<>();
         this.characteristics = new DatacenterCharacteristicsSimple(this);
-        this.bandwidthPercentForMigration = DEF_BANDWIDTH_PERCENT_FOR_MIGRATION;
+        this.bandwidthPercentForMigration = DEF_BW_PERCENT_FOR_MIGRATION;
         this.migrationsEnabled = true;
 
         setVmAllocationPolicy(vmAllocationPolicy);

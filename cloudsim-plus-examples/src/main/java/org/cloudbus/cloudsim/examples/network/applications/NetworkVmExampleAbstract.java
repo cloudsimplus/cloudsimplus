@@ -336,7 +336,7 @@ abstract class NetworkVmExampleAbstract {
         CloudletReceiveTask task = new CloudletReceiveTask(
                 cloudlet.getTasks().size(), sourceCloudlet.getVm());
         task.setMemory(NETCLOUDLET_RAM);
-        task.setNumberOfExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
+        task.setExpectedPacketsToReceive(NUMBER_OF_PACKETS_TO_SEND);
         cloudlet.addTask(task);
     }
 }

@@ -117,7 +117,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * Save the utilization history to a file.
      *
      * @param filename the filename
-     * @throws Exception the exception
+     * @throws IOException when the file cannot be accessed
      */
     public void saveHistory(String filename) {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
@@ -131,7 +131,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * Load an utilization history from a file.
      *
      * @param filename the filename
-     * @throws Exception the exception
+     * @throws IOException when the file cannot be accessed
      */
     @SuppressWarnings("unchecked")
     public void loadHistory(String filename) {

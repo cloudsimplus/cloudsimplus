@@ -44,7 +44,7 @@ public interface Datacenter extends SimEntity, PowerAware {
      * a value is not set.
      * @see #setBandwidthPercentForMigration(double)
      */
-    double DEF_BANDWIDTH_PERCENT_FOR_MIGRATION = 0.5;
+    double DEF_BW_PERCENT_FOR_MIGRATION = 0.5;
 
     /**
      * Gets an <b>unmodifiable</b> host list.
@@ -182,7 +182,7 @@ public interface Datacenter extends SimEntity, PowerAware {
      * will be used for VM services.
      *
      * @return
-     * @see #DEF_BANDWIDTH_PERCENT_FOR_MIGRATION
+     * @see #DEF_BW_PERCENT_FOR_MIGRATION
      */
     double getBandwidthPercentForMigration();
 

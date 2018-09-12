@@ -441,13 +441,13 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @param maxValue the maximum value the generator will return (exclusive)
      * @return the created PRNG
      *
-     * @see UniformDistr#isApplyAntitheticVariatesTechnique()
+     * @see UniformDistr#isApplyAntitheticVariates()
      */
     public ContinuousDistribution createRandomGen(int experimentIndex, double minValue, double maxValue) {
         if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
             final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
             return new UniformDistr(minValue, maxValue, seeds.get(expIndexFromFirstHalf))
-                    .setApplyAntitheticVariatesTechnique(true);
+                    .setApplyAntitheticVariates(true);
         }
 
         return new UniformDistr(minValue, maxValue, seeds.get(experimentIndex));
@@ -463,7 +463,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @param experimentIndex
      * @return the created PRNG
      *
-     * @see UniformDistr#isApplyAntitheticVariatesTechnique()
+     * @see UniformDistr#isApplyAntitheticVariates()
      */
     public ContinuousDistribution createRandomGen(int experimentIndex) {
         return createRandomGen(experimentIndex, 0, 1);

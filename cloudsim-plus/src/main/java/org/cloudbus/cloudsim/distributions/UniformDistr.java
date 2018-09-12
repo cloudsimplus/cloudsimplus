@@ -7,9 +7,9 @@
  */
 package org.cloudbus.cloudsim.distributions;
 
-import java.util.Random;
-
 import org.apache.commons.math3.distribution.UniformRealDistribution;
+
+import java.util.Random;
 
 /**
  * A pseudo random number generator following the
@@ -21,9 +21,9 @@ import org.apache.commons.math3.distribution.UniformRealDistribution;
  */
 public class UniformDistr extends ContinuousDistributionAbstract {
     /**
-     * @see #isApplyAntitheticVariatesTechnique()
+     * @see #isApplyAntitheticVariates()
      */
-    private boolean applyAntitheticVariatesTechnique;
+    private boolean applyAntitheticVariates;
 
     /**
      * Creates new uniform pseudo random number generator
@@ -75,12 +75,12 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      */
     public UniformDistr(double min, double max, long seed) {
         super(new UniformRealDistribution(min, max), seed);
-        applyAntitheticVariatesTechnique = false;
+        applyAntitheticVariates = false;
     }
 
     @Override
     public double sample() {
-        return (applyAntitheticVariatesTechnique ? 1 - super.sample() : super.sample());
+        return (applyAntitheticVariates ? 1 - super.sample() : super.sample());
     }
 
     /**
@@ -102,7 +102,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
 
     /**
      * Indicates if the pseudo random number generator (PRNG) has to apply the
-     * "Antithetic Variates Technique" in order to reduce variance
+     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
      * of experiments using this PRNG.
      *
      * This technique doesn't work for all the cases. However,
@@ -110,7 +110,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * perform some actions. Consider an experiment that has to run "n" times.
      * The first half of these experiments has to use the seeds the developer
      * want. However, the second half of the experiments have to
-     * set the applyAntitheticVariatesTechnique attribute to true
+     * set the applyAntitheticVariates attribute to true
      * and use the seeds of the first half of experiments.
      *
      * Thus, the first half of experiments are run using PRNGs that return
@@ -120,22 +120,21 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * 1 - U(0, 1)[seed_1], ..., 1 - U(0, 1)[seed_n].
      *
      * @return true if the technique has to be applied, false otherwise
-     * @see <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic variates</a>
      */
-    public boolean isApplyAntitheticVariatesTechnique() {
-        return applyAntitheticVariatesTechnique;
+    public boolean isApplyAntitheticVariates() {
+        return applyAntitheticVariates;
     }
 
     /**
      * Defines if the pseudo random number generator (PRNG) has to apply the
-     * "Antithetic Variates Technique" in order to reduce variance
+     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
      * of experiments using this PRNG.
      *
-     * @param applyAntitheticVariatesTechnique true if the technique has to be applied, false otherwise
-     * @see #isApplyAntitheticVariatesTechnique()
+     * @param applyAntitheticVariates true if the technique has to be applied, false otherwise
+     * @see #isApplyAntitheticVariates()
      */
-    public UniformDistr setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique) {
-        this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
+    public UniformDistr setApplyAntitheticVariates(boolean applyAntitheticVariates) {
+        this.applyAntitheticVariates = applyAntitheticVariates;
 	    return this;
     }
 

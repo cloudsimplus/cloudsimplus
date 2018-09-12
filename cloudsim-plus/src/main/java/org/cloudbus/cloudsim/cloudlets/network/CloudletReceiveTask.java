@@ -7,12 +7,12 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
+import org.cloudbus.cloudsim.network.VmPacket;
+import org.cloudbus.cloudsim.vms.Vm;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.cloudbus.cloudsim.network.VmPacket;
-import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * A task executed by a {@link NetworkCloudlet} that
@@ -70,9 +70,9 @@ public class CloudletReceiveTask extends CloudletTask {
     private final List<VmPacket> packetsReceived;
 
     /**
-     * @see #getNumberOfExpectedPacketsToReceive()
+     * @see #getExpectedPacketsToReceive()
      */
-    private long numberOfExpectedPacketsToReceive;
+    private long expectedPacketsToReceive;
 
     /**
      * @see #getSourceVm()
@@ -100,7 +100,7 @@ public class CloudletReceiveTask extends CloudletTask {
     public void receivePacket(VmPacket packet) {
         packet.setReceiveTime(getCloudlet().getSimulation().clock());
         this.packetsReceived.add(packet);
-        final boolean finished = this.packetsReceived.size() >= numberOfExpectedPacketsToReceive;
+        final boolean finished = this.packetsReceived.size() >= expectedPacketsToReceive;
         setFinished(finished);
     }
 
@@ -121,17 +121,23 @@ public class CloudletReceiveTask extends CloudletTask {
     }
 
     /**
-     * The number of packets that are expected to be received.
+     * Gets the number of packets that are expected to be received.
      * After this number of packets is received, the task
      * is marked as finished.
      * @return
      */
-    public long getNumberOfExpectedPacketsToReceive() {
-        return numberOfExpectedPacketsToReceive;
+    public long getExpectedPacketsToReceive() {
+        return expectedPacketsToReceive;
     }
 
-    public void setNumberOfExpectedPacketsToReceive(long numberOfExpectedPacketsToReceive) {
-        this.numberOfExpectedPacketsToReceive = numberOfExpectedPacketsToReceive;
+    /**
+     * Sets the number of packets that are expected to be received.
+     * After this number of packets is received, the task
+     * is marked as finished.
+     * @param expectedPacketsToReceive the number of expected packets to set
+     */
+    public void setExpectedPacketsToReceive(long expectedPacketsToReceive) {
+        this.expectedPacketsToReceive = expectedPacketsToReceive;
     }
 
 }

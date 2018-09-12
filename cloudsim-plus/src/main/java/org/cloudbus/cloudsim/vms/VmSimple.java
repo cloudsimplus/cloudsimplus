@@ -131,10 +131,6 @@ public class VmSimple implements Vm {
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
-     *
-     * @pre id >= 0
-     * @pre numberOfPes > 0
-     * @post $none
      */
     public VmSimple(final int id, final long mipsCapacity, final long numberOfPes) {
         this.resources = new ArrayList<>(4);
@@ -188,7 +184,6 @@ public class VmSimple implements Vm {
         this(-1, mipsCapacity, numberOfPes);
     }
 
-
     /**
      * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      *
@@ -202,10 +197,6 @@ public class VmSimple implements Vm {
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
-     *
-     * @pre id >= 0
-     * @pre numberOfPes > 0
-     * @post $none
      */
     public VmSimple(final int id, final double mipsCapacity, final long numberOfPes) {
         this(id, (long)mipsCapacity, numberOfPes);
