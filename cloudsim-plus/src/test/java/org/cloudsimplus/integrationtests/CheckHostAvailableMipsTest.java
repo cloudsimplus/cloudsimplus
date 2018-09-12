@@ -98,7 +98,7 @@ public final class CheckHostAvailableMipsTest {
         for(int i = 0; i < NUMBER_OF_VMS; i++){
             final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
             brokerBuilder.getVmBuilder()
-                .setRam(1000).setBw(100000)
+                .setRam(1000).setBandwidth(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
                 .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
                 .createAndSubmitOneVm();

@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
-import org.cloudbus.cloudsim.mocks.Mocks;
+import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.listeners.EventListener;
@@ -48,7 +48,7 @@ public class VmSimpleTest {
     public void setUp() throws Exception {
         cloudletScheduler = new CloudletSchedulerTimeShared();
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
-        final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         vm = VmSimpleTest.createVm(cloudletScheduler);
         vm.setBroker(broker);
     }
@@ -127,7 +127,7 @@ public class VmSimpleTest {
             final long ram, final long bw, final long storage)
     {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
-        final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
@@ -142,7 +142,7 @@ public class VmSimpleTest {
             final CloudletScheduler scheduler)
     {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
-        final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)

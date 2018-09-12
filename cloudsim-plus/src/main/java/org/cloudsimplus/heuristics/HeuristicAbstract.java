@@ -47,9 +47,9 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 
 	private final ContinuousDistribution random;
 	/**
-	 * @see #getNumberOfNeighborhoodSearchesByIteration()
+	 * @see #getNeighborhoodSearchesByIteration()
 	 */
-    private int numberOfNeighborhoodSearchesByIteration;
+    private int neighborhoodSearchesByIteration;
 	/**
 	 * @see #getBestSolutionSoFar()
 	 */
@@ -73,7 +73,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	HeuristicAbstract(final ContinuousDistribution random, final Class<S> solutionClass){
 		this.solutionClass = solutionClass;
 		this.random = random;
-		this.numberOfNeighborhoodSearchesByIteration = 1;
+		this.neighborhoodSearchesByIteration = 1;
 		setBestSolutionSoFar(newSolutionInstance());
 		setNeighborSolution(bestSolutionSoFar);
 	}
@@ -138,7 +138,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	}
 
     private void searchSolutionInNeighborhood() {
-        for (int i = 0; i < getNumberOfNeighborhoodSearchesByIteration(); i++) {
+        for (int i = 0; i < getNeighborhoodSearchesByIteration(); i++) {
             setNeighborSolution(createNeighbor(getBestSolutionSoFar()));
             if (getAcceptanceProbability() > getRandomValue(1)) {
                 setBestSolutionSoFar(getNeighborSolution());
@@ -172,11 +172,19 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
         this.neighborSolution = neighborSolution;
     }
 
-	public int getNumberOfNeighborhoodSearchesByIteration() {
-        return numberOfNeighborhoodSearchesByIteration;
+    /**
+     * Gets the number of neighborhood searches by each iteration of the heuristic.
+     * @return
+     */
+	public int getNeighborhoodSearchesByIteration() {
+        return neighborhoodSearchesByIteration;
     }
 
-	public void setNumberOfNeighborhoodSearchesByIteration(final int numberOfNeighborhoodSearches) {
-        this.numberOfNeighborhoodSearchesByIteration = numberOfNeighborhoodSearches;
+    /**
+     * Sets the number of neighborhood searches by each iteration of the heuristic.
+     * @param neighborhoodSearches the number of neighborhood searches to set
+     */
+	public void setNeighborhoodSearchesByIteration(final int neighborhoodSearches) {
+        this.neighborhoodSearchesByIteration = neighborhoodSearches;
     }
 }

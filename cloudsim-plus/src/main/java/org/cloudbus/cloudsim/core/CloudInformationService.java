@@ -61,8 +61,7 @@ public class CloudInformationService extends CloudSimEntity {
      * The method has no effect at the current class.
      */
     @Override
-    protected void startEntity() {
-    }
+    protected void startEntity() {/**/}
 
     @Override
     public void processEvent(SimEvent ev) {

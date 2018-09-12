@@ -79,7 +79,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
         final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
         broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
-            .setRam(1000).setBw(100000)
+            .setRam(1000).setBandwidth(100000)
             .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
             .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
             .createAndSubmitVms(NUMBER_OF_VMS);

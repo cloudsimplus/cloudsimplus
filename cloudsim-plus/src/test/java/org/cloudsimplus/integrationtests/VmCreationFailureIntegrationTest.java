@@ -201,7 +201,7 @@ public final class VmCreationFailureIntegrationTest {
         final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
 
         brokerBuilder.getVmBuilder()
-                .setRam(512).setBw(1000)
+                .setRam(512).setBandwidth(1000)
                 .setPes(1).setMips(1000).setSize(10000)
                 .setCloudletSchedulerSupplier(() -> new CloudletSchedulerSpaceShared())
                 .setOnHostAllocationListener(evt -> onHostAllocation(evt))

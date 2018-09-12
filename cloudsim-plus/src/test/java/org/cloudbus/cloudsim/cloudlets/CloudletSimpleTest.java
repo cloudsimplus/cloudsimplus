@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterMocker;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
-import org.cloudbus.cloudsim.mocks.Mocks;
+import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
@@ -97,7 +97,7 @@ public class CloudletSimpleTest {
         });
 
         final CloudletSimple cloudlet = createCloudlet();
-        cloudlet.setBroker(Mocks.createMockBroker(cloudsim));
+        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         assertEquals(0, cloudlet.getWaitingTime(), 0);
         cloudlet.assignToDatacenter(Datacenter.NULL);
         final double expectedWaitingTime = execStartTime - arrivalTime;
@@ -142,7 +142,7 @@ public class CloudletSimpleTest {
         });
 
         final CloudletSimple cloudlet = createCloudlet();
-        cloudlet.setBroker(Mocks.createMockBroker(cloudsim));
+        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getLastDatacenterArrivalTime(), 0);
 
         cloudlet.assignToDatacenter(Datacenter.NULL);
@@ -178,7 +178,7 @@ public class CloudletSimpleTest {
         });
 
         final CloudletSimple cloudlet = createCloudlet();
-        cloudlet.setBroker(Mocks.createMockBroker(cloudsim));
+        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         assertEquals(Cloudlet.NOT_ASSIGNED, cloudlet.getActualCpuTime(), 0);
 
         cloudlet.assignToDatacenter(Datacenter.NULL);
@@ -385,7 +385,7 @@ public class CloudletSimpleTest {
             .setUtilizationModelCpu(utilizationModelCPU)
             .setUtilizationModelRam(utilizationModelRAM)
             .setUtilizationModelBw(utilizationModelBW);
-        cloudlet.setBroker(Mocks.createMockBroker(cloudsim));
+        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         return cloudlet;
     }
 

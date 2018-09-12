@@ -306,9 +306,9 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(numberOfVmPes, mips);
 
         for(int i = 0; i < numberOfCloudlets; i++) {
-            final Cloudlet c = CloudletSimpleTest.createCloudlet(i, mips, numberOfCloudletPes);
-            c.assignToDatacenter(Datacenter.NULL);
-            instance.cloudletSubmit(c);
+            final Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(i, mips, numberOfCloudletPes);
+            cloudlet.assignToDatacenter(Datacenter.NULL);
+            instance.cloudletSubmit(cloudlet);
         }
 
         return instance;
@@ -362,9 +362,9 @@ public class CloudletSchedulerTimeSharedTest {
 
     @Test
     public void testRemoveCloudletFromExecList() {
-        final CloudletExecution c = new CloudletExecution(Cloudlet.NULL);
-        instance.addCloudletToExecList(c);
-        assertSame(c, instance.removeCloudletFromExecList(c));
+        final CloudletExecution cle = new CloudletExecution(Cloudlet.NULL);
+        instance.addCloudletToExecList(cle);
+        assertSame(cle, instance.removeCloudletFromExecList(cle));
         assertTrue(instance.getCloudletExecList().isEmpty());
     }
 

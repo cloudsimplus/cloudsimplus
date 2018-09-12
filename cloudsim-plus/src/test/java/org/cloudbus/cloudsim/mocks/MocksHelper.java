@@ -9,11 +9,11 @@ import org.easymock.EasyMock;
  *
  * @author Manoel Campos da Silva Filho
  */
-public final class Mocks {
+public final class MocksHelper {
     /**
      * A private constructor to avoid the class to be instantiated.
      */
-    private Mocks() {}
+    private MocksHelper() {}
 
     /**
      * Creates a mocked DatacenterBroker where the {@link DatacenterBroker#getId()}

@@ -104,7 +104,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
         final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
 
         brokerBuilder.getVmBuilder()
-                .setRam(1000).setBw(100000)
+                .setRam(1000).setBandwidth(100000)
                 .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
                 .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
                 .createAndSubmitVms(NUMBER_OF_VMS);

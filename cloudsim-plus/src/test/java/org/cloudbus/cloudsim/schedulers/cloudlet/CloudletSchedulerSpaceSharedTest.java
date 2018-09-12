@@ -7,7 +7,7 @@ import org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
-import org.cloudbus.cloudsim.mocks.Mocks;
+import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.Test;
@@ -31,7 +31,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final CloudSim cloudsim = CloudSimMocker.createMock(
                 mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         final Cloudlet c = CloudletSimpleTest.createCloudlet(0, 1000, 1);
-        c.setBroker(Mocks.createMockBroker(cloudsim));
+        c.setBroker(MocksHelper.createMockBroker(cloudsim));
         final CloudletExecution cle = new CloudletExecution(c);
         final CloudletSchedulerSpaceShared instance = createScheduler();
         instance.cloudletFinish(cle);
@@ -49,7 +49,7 @@ public class CloudletSchedulerSpaceSharedTest {
         });
 
         final Vm vm = new VmSimple(0, mips, 1);
-        vm.setBroker(Mocks.createMockBroker(cloudsim));
+        vm.setBroker(MocksHelper.createMockBroker(cloudsim));
         final CloudletSchedulerSpaceShared instance = createScheduler(vm);
         final List<Double> mipsList = Arrays.asList(mips);
         instance.setCurrentMipsShare(mipsList);
@@ -70,7 +70,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final CloudSim cloudsim = CloudSimMocker.createMock(
                 mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         final Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, 1000, 1);
-        cloudlet.setBroker(Mocks.createMockBroker(cloudsim));
+        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         final CloudletExecution cle = new CloudletExecution(cloudlet);
         final CloudletSchedulerSpaceShared instance = createScheduler();
         instance.cloudletFinish(cle);

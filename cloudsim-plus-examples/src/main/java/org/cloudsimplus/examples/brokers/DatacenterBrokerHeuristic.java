@@ -166,7 +166,7 @@ public class DatacenterBrokerHeuristic {
 		        new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, new UniformDistr(0, 1));
 		heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
 		heuristic.setCoolingRate(SA_COOLING_RATE);
-		heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+		heuristic.setNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
 	}
 
 	private void print(org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0) {

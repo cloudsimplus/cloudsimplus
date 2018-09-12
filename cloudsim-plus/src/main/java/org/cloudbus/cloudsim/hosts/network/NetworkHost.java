@@ -90,7 +90,7 @@ public class NetworkHost extends HostSimple {
      * @param peList the host's {@link Pe} list
      *
      */
-    public NetworkHost(long ram, long bw, long storage, List<Pe> peList) {
+    public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList) {
         super(ram, bw, storage, peList);
         hostPktsReceived = new ArrayList<>();
         pktsToSendForExternalVms = new ArrayList<>();
@@ -107,14 +107,14 @@ public class NetworkHost extends HostSimple {
      * @param vmScheduler the VM scheduler
      *
      */
-    public NetworkHost(long ram, long bw, long storage, List<Pe> peList, final VmScheduler vmScheduler)
+    public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList, final VmScheduler vmScheduler)
     {
         this(ram, bw, storage, peList);
         setVmScheduler(vmScheduler);
     }
 
     @Override
-    public double updateProcessing(double currentTime) {
+    public double updateProcessing(final double currentTime) {
         final double timeOfNextFinishingCloudlet = super.updateProcessing(currentTime);
         receivePackets();
         sendAllPacketListsOfAllVms();
@@ -213,7 +213,7 @@ public class NetworkHost extends HostSimple {
      * @param numberOfPackets the expected number of packets to sent
      * @return the available bandwidth (in  Megabits/s) for each packet or the total bandwidth if the number of packets is 0 or 1
      */
-    private double getBandwidthByPacket(double numberOfPackets) {
+    private double getBandwidthByPacket(final double numberOfPackets) {
         return numberOfPackets == 0 ? bandwidth : bandwidth / numberOfPackets;
     }
 
@@ -230,13 +230,13 @@ public class NetworkHost extends HostSimple {
      * @return {@inheritDoc}
      */
     @Override
-    public boolean createVm(Vm vm) {
+    public boolean createVm(final Vm vm) {
         final boolean isVmCreated = super.createVm(vm);
         setPacketScheduler(vm);
         return isVmCreated;
     }
 
-    private void setPacketScheduler(Vm vm) {
+    private void setPacketScheduler(final Vm vm) {
         final CloudletScheduler cs = vm.getCloudletScheduler();
         if(!cs.isThereTaskScheduler()){
             cs.setTaskScheduler(new CloudletTaskSchedulerSimple());
@@ -249,7 +249,7 @@ public class NetworkHost extends HostSimple {
      *
      * @param sourceVm the VM from where the packets will be sent
      */
-    private void collectListOfPacketsToSendFromVm(Vm sourceVm) {
+    private void collectListOfPacketsToSendFromVm(final Vm sourceVm) {
         final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(sourceVm);
         for (final VmPacket vmPkt : taskScheduler.getVmPacketsToSend()) {
             collectPacketToSendFromVm(vmPkt);
@@ -265,7 +265,7 @@ public class NetworkHost extends HostSimple {
      * @param vmPkt a packet to be sent from a Vm to another one
      * @see #collectListOfPacketsToSendFromVm(Vm)
      */
-    private void collectPacketToSendFromVm(VmPacket vmPkt) {
+    private void collectPacketToSendFromVm(final VmPacket vmPkt) {
         final HostPacket hostPkt = new HostPacket(this, vmPkt);
         final Vm receiverVm = vmPkt.getDestination();
         //Checks if the VM is inside this Host
@@ -280,9 +280,9 @@ public class NetworkHost extends HostSimple {
         return edgeSwitch;
     }
 
-    public void setEdgeSwitch(EdgeSwitch sw) {
-        this.edgeSwitch = sw;
-        this.bandwidth = sw.getDownlinkBandwidth();
+    public void setEdgeSwitch(final EdgeSwitch edgeSwitch) {
+        this.edgeSwitch = edgeSwitch;
+        this.bandwidth = edgeSwitch.getDownlinkBandwidth();
     }
 
     public int getTotalDataTransferBytes() {
@@ -295,7 +295,7 @@ public class NetworkHost extends HostSimple {
      *
      * @param hostPacket received network packet
      */
-    public void addReceivedNetworkPacket(HostPacket hostPacket){
+    public void addReceivedNetworkPacket(final HostPacket hostPacket){
         hostPktsReceived.add(hostPacket);
     }
 
@@ -311,7 +311,7 @@ public class NetworkHost extends HostSimple {
      * Sets the Host bandwidth capacity in  Megabits/s.
      * @param bandwidth the bandwidth to set
      */
-    public void setBandwidth(double bandwidth) {
+    public void setBandwidth(final double bandwidth) {
         this.bandwidth = bandwidth;
     }
 }

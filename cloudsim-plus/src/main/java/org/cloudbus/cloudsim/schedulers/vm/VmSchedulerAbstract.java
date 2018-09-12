@@ -198,7 +198,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         pesToRemove = Math.min((int)vm.getNumberOfPes(), pesToRemove);
         pesToRemove = Math.min(pesToRemove, values.size());
-        IntStream.range(0, pesToRemove).forEach(i -> values.remove(0));
+        IntStream.range(0, pesToRemove).forEach(idx -> values.remove(0));
         if(values.isEmpty()){
             map.remove(vm);
         }

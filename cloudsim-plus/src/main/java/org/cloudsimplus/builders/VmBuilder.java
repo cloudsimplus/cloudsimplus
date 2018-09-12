@@ -47,7 +47,7 @@ public class VmBuilder {
     private long size = 10000;
     private long  ram = 512;
     private double mips = 1000;
-    private long bw = 1000;
+    private long bandwidth = 1000;
     private int  pes = 1;
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
@@ -76,8 +76,8 @@ public class VmBuilder {
         return this;
     }
 
-    public VmBuilder setBw(long defaultBW) {
-        this.bw = defaultBW;
+    public VmBuilder setBandwidth(long defaultBW) {
+        this.bandwidth = defaultBW;
         return this;
     }
 
@@ -109,7 +109,7 @@ public class VmBuilder {
         final List<Vm> vms = new ArrayList<>();
         for (int i = 0; i < amount; i++) {
             final Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes)
-                    .setRam(ram).setBw(bw).setSize(size)
+                    .setRam(ram).setBw(bandwidth).setSize(size)
                     .setCloudletScheduler(cloudletSchedulerSupplier.get())
                     .setBroker(broker)
                     .addOnHostAllocationListener(onHostAllocationListener)
@@ -122,8 +122,8 @@ public class VmBuilder {
         return this;
     }
 
-    public long getBw() {
-        return bw;
+    public long getBandwidth() {
+        return bandwidth;
     }
 
     public VmBuilder setPes(int defaultPEs) {

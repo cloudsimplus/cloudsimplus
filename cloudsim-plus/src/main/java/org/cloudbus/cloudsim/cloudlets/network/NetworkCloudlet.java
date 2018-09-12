@@ -173,7 +173,7 @@ public class NetworkCloudlet extends CloudletSimple {
     public long getLength() {
         return getTasks().stream()
                 .filter(CloudletTask::isExecutionTask)
-                .map(t -> (CloudletExecutionTask)t)
+                .map(task -> (CloudletExecutionTask)task)
                 .mapToLong(CloudletExecutionTask::getLength)
                 .sum();
     }

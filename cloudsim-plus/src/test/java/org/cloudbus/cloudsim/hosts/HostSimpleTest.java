@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
-import org.cloudbus.cloudsim.mocks.Mocks;
+import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -372,7 +372,7 @@ public class HostSimpleTest {
         final double simulationClock)
     {
         final List<Vm> vmList = new ArrayList<>(numberOfVms);
-        final double totalMipsCapacity = mipsShare.stream().mapToDouble(v -> v).sum();
+        final double totalMipsCapacity = mipsShare.stream().mapToDouble(mips -> mips).sum();
         for(int i = 0; i < numberOfVms; i++) {
             final double nextCloudletCompletionTimeOfCurrentVm = i+1;
 
@@ -513,7 +513,7 @@ public class HostSimpleTest {
     @Test
     public void testVmDestroy() {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
-        final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final VmSimple vm = VmSimpleTest.createVm(
                 0, HOST_MIPS, 1, RAM / 2, BW / 2, STORAGE,
                 new CloudletSchedulerTimeShared());
@@ -532,7 +532,7 @@ public class HostSimpleTest {
     @Test
     public void testVmDestroyAll() {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
-        final DatacenterBroker broker = Mocks.createMockBroker(cloudsim);
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final VmSimple vm0 = VmSimpleTest.createVm(
                 0, HOST_MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
                 new CloudletSchedulerTimeShared());

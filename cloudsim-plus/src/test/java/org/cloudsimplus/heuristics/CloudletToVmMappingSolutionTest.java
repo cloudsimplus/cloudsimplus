@@ -33,7 +33,6 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -69,13 +68,13 @@ public class CloudletToVmMappingSolutionTest {
         final int CLOUDLET_LEN = 10000;
         final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
 
-        IntStream.range(0, numberOfCloudlets).forEach(i -> {
+        for (int i = 0; i < numberOfCloudlets; i++) {
             final Vm vm = VmSimpleTest.createVm(i, VM_MIPS, vmPes);
 
-            final long len = (long)(CLOUDLET_LEN*(i+1));
+            final long len = (long) (CLOUDLET_LEN * (i + 1));
             final Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(i, len, cloudletPes);
             instance.bindCloudletToVm(cloudlet, vm);
-        });
+        }
 
         return instance;
     }

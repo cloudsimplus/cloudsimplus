@@ -119,7 +119,7 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
      * @return the number of times a neighbor solution will be searched
      * at each iteration of the {@link #solve() solution find}.
      */
-    int getNumberOfNeighborhoodSearchesByIteration();
+    int getNeighborhoodSearchesByIteration();
 
     /**
      * Sets the number of times a neighbor solution will be searched
@@ -128,7 +128,7 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
      * @param numberOfNeighborhoodSearches number of neighbor searches to perform
      * at each iteration
      */
-    void setNumberOfNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches);
+    void setNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches);
 
 	/**
 	 * Starts the heuristic to find a suboptimal solution.

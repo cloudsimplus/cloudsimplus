@@ -117,7 +117,7 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
         heuristic = new CloudletToVmMappingSimulatedAnnealing(SA_INIT_TEMPERATURE, randomGen);
         heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
         heuristic.setCoolingRate(SA_COOLING_RATE);
-        heuristic.setNumberOfNeighborhoodSearchesByIteration(SA_NEIGHBORHOOD_SEARCHES);
+        heuristic.setNeighborhoodSearchesByIteration(SA_NEIGHBORHOOD_SEARCHES);
     }
 
     @Override
