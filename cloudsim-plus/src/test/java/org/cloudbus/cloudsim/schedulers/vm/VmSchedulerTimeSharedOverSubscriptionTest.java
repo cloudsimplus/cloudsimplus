@@ -9,21 +9,19 @@ package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.LongStream;
-
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmSimpleTest;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.LongStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -33,11 +31,12 @@ import static org.junit.Assert.assertTrue;
  * @since CloudSim Toolkit 2.0
  */
 public class VmSchedulerTimeSharedOverSubscriptionTest {
-    private static final int HOST_PES = 2;
+    private static final int    HOST_PES = 2;
     private static final double MIPS = 1000;
-    private static final long RAM = 2048;
-    private static final long BW = 20000;
-    private static final long STORAGE = 2000;
+    private static final long   RAM = 2048;
+    private static final long   BANDWIDTH = 20000;
+    private static final long   STORAGE = 2000;
+
     private VmSchedulerTimeSharedOverSubscription vmScheduler;
     private Vm vm1;
     private Vm vm2;
@@ -53,7 +52,7 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         final VmSchedulerTimeSharedOverSubscription scheduler = new VmSchedulerTimeSharedOverSubscription();
         final List<Pe> peList = new ArrayList<>(hostPesNumber);
         LongStream.range(0, hostPesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
-        final Host host = new HostSimple(RAM, BW, STORAGE, peList);
+        final Host host = new HostSimple(RAM, BANDWIDTH, STORAGE, peList);
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(scheduler);

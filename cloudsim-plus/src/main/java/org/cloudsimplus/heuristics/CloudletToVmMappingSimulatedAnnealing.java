@@ -23,11 +23,11 @@
  */
 package org.cloudsimplus.heuristics;
 
-import java.util.List;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.List;
 
 /**
  * A heuristic that uses <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
@@ -110,8 +110,8 @@ public class CloudletToVmMappingSimulatedAnnealing
      * @return a random Vm from the {@link #getVmList() available Vm's list}.
      */
     private Vm getRandomVm() {
-        final int i = getRandomValue(vmList.size());
-        return vmList.get(i);
+        final int idx = getRandomValue(vmList.size());
+        return vmList.get(idx);
     }
 
     @Override

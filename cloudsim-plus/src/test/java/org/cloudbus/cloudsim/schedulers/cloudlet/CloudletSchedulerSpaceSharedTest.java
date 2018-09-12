@@ -33,9 +33,9 @@ public class CloudletSchedulerSpaceSharedTest {
                 mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         final Cloudlet c = CloudletSimpleTest.createCloudlet(0, 1000, 1);
         c.setBroker(Mocks.createMockBroker(cloudsim));
-        final CloudletExecution ce = new CloudletExecution(c);
+        final CloudletExecution cle = new CloudletExecution(c);
         final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.cloudletFinish(ce);
+        instance.cloudletFinish(cle);
         assertEquals(Cloudlet.Status.SUCCESS, c.getStatus());
         CloudSimMocker.verify(cloudsim);
     }
@@ -73,10 +73,10 @@ public class CloudletSchedulerSpaceSharedTest {
                 mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
         final Cloudlet cloudlet = CloudletSimpleTest.createCloudlet(0, 1000, 1);
         cloudlet.setBroker(Mocks.createMockBroker(cloudsim));
-        final CloudletExecution ce = new CloudletExecution(cloudlet);
+        final CloudletExecution cle = new CloudletExecution(cloudlet);
         final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
-        instance.cloudletFinish(ce);
-        assertTrue(instance.getCloudletFinishedList().contains(ce));
+        instance.cloudletFinish(cle);
+        assertTrue(instance.getCloudletFinishedList().contains(cle));
         CloudSimMocker.verify(cloudsim);
     }
 
@@ -339,21 +339,21 @@ public class CloudletSchedulerSpaceSharedTest {
 
     @Test @Ignore("See the todo inside the tested method")
     public void testGetTotalCurrentAllocatedMipsForCloudlet() {
-        final CloudletExecution ce = new CloudletExecution(Cloudlet.NULL);
+        final CloudletExecution cle = new CloudletExecution(Cloudlet.NULL);
         final double time = 0.0;
         final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         final double expResult = 0.0;
-        final double result = instance.getAllocatedMipsForCloudlet(ce, time);
+        final double result = instance.getAllocatedMipsForCloudlet(cle, time);
         assertEquals(expResult, result, 0.0);
     }
 
     @Test @Ignore("See the todo inside the tested method")
     public void testGetTotalCurrentRequestedMipsForCloudlet() {
-        final CloudletExecution ce = new CloudletExecution(Cloudlet.NULL);
+        final CloudletExecution cle = new CloudletExecution(Cloudlet.NULL);
         final double time = 0.0;
         final CloudletSchedulerSpaceShared instance = new CloudletSchedulerSpaceShared();
         final double expResult = 0.0;
-        final double result = instance.getRequestedMipsForCloudlet(ce, time);
+        final double result = instance.getRequestedMipsForCloudlet(cle, time);
         assertEquals(expResult, result, 0.0);
     }
 

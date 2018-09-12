@@ -221,12 +221,12 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * greater than the given object if it has a lower cost;
      * lower than the given object if it has a higher cost;
      *
-     * @param o the solution to compare this instance to
+     * @param solution the solution to compare this instance to
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(final HeuristicSolution o) {
-        final double diff = this.getCost() - o.getCost();
+    public int compareTo(final HeuristicSolution solution) {
+        final double diff = this.getCost() - solution.getCost();
 
         if(Math.abs(diff) <= MIN_DIFF) {
             return 0;
