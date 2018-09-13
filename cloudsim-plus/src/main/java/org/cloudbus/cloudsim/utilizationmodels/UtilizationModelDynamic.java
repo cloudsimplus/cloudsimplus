@@ -155,7 +155,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
          * to return the current utilization, but the last utilization value stored
          * in the {@link #currentUtilization} attribute.
          */
-        this.utilizationUpdateFunction = um -> um.currentUtilization;
+        this.utilizationUpdateFunction = modelInstance -> modelInstance.currentUtilization;
         this.readOnly = true;
     }
 

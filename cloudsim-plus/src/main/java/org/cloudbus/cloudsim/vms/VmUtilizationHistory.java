@@ -52,10 +52,10 @@ public class VmUtilizationHistory implements UtilizationHistory {
     @Override
     public double getUtilizationMad() {
         if (!history.isEmpty()) {
-            final int n = Math.min(getMaxHistoryEntries(), getHistory().size());
+            final int length = Math.min(getMaxHistoryEntries(), getHistory().size());
             final double median = MathUtil.median(getHistory().values());
-            final double[] deviationSum = new double[n];
-            for (int i = 0; i < n; i++) {
+            final double[] deviationSum = new double[length];
+            for (int i = 0; i < length; i++) {
                 deviationSum[i] = Math.abs(median - getHistory().get(i));
             }
             return MathUtil.median(deviationSum);

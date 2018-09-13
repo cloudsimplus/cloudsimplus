@@ -21,14 +21,12 @@ import java.util.List;
  * @see Datacenter#NULL
  */
 final class DatacenterNull implements Datacenter {
-    private static final DatacenterStorage storage = new DatacenterStorage();
+    private static final DatacenterStorage STORAGE = new DatacenterStorage();
 
     @Override public int getId() {
         return -1;
     }
-    @Override public int compareTo(SimEntity o) {
-        return 0;
-    }
+    @Override public int compareTo(SimEntity entity) { return 0; }
     @Override public String getName() {
         return "";
     }
@@ -57,7 +55,7 @@ final class DatacenterNull implements Datacenter {
     @Override public DatacenterCharacteristics getCharacteristics() {
         return DatacenterCharacteristics.NULL;
     }
-    @Override public DatacenterStorage getDatacenterStorage() { return storage; }
+    @Override public DatacenterStorage getDatacenterStorage() { return STORAGE; }
     @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage) {/**/}
     @Override public double getBandwidthPercentForMigration() { return 0; }
     @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration) {/**/}
@@ -70,7 +68,7 @@ final class DatacenterNull implements Datacenter {
     @Override public boolean isFinished() { return false; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public SimEntity setSimulation(Simulation simulation) { return this; }
-    @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public void processEvent(SimEvent evt) {/**/}
     @Override public boolean schedule(SimEvent evt) { return false; }
     @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
     @Override public boolean schedule(double delay, int tag, Object data) { return false; }

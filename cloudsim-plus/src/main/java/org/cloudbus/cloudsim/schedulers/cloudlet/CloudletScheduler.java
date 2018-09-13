@@ -62,9 +62,9 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Processes a finished cloudlet.
      *
-     * @param ce finished cloudlet
+     * @param cle finished cloudlet
      */
-    void cloudletFinish(CloudletExecution ce);
+    void cloudletFinish(CloudletExecution cle);
 
     /**
      * Sets the status of a Cloudlet to {@link Cloudlet.Status#READY}
@@ -194,11 +194,11 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Gets the current requested MIPS for a given cloudlet.
      *
-     * @param ce the ce
+     * @param cle the ce
      * @param time the time
      * @return the current requested mips for the given cloudlet
      */
-    double getRequestedMipsForCloudlet(CloudletExecution ce, double time);
+    double getRequestedMipsForCloudlet(CloudletExecution cle, double time);
 
     /**
      * Gets total CPU utilization percentage of all cloudlets,

@@ -83,17 +83,6 @@ public enum MachineEventType {
     };
 
     /**
-     * Checks if the ordinal value of the current enum instance
-     * is equals to a given ordinal value.
-     *
-     * @param ordinal the ordinal value to check it's equal to the ordinal value of this enum instance
-     * @return true if the ordinal values are equals, false if they aren't
-     */
-    public boolean equals(final int ordinal){
-        return this.ordinal() == ordinal;
-    }
-
-    /**
      * Gets an enum instance from its ordinal value.
      * @param ordinal the ordinal value to get the enum instance from
      * @return the enum instance

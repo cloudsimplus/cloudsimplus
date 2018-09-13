@@ -219,10 +219,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         }
     }
 
-    private String overloadedHostToString(final Host h) {
+    private String overloadedHostToString(final Host host) {
         return String.format(
             "    Host %d (upper CPU threshold %.2f, current utilization: %.2f)",
-            h.getId(), getOverUtilizationThreshold(h), h.getUtilizationOfCpu());
+            host.getId(), getOverUtilizationThreshold(host), host.getUtilizationOfCpu());
     }
 
     /**
@@ -257,9 +257,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         }
 
         final double usagePercent = getHostCpuPercentRequested(host);
-        final boolean isNotHostOverUsedAfterAllocation = !isHostOverloaded(host, usagePercent);
+        final boolean notOverloadedAfterAllocation = !isHostOverloaded(host, usagePercent);
         host.destroyTemporaryVm(vm);
-        return isNotHostOverUsedAfterAllocation;
+        return notOverloadedAfterAllocation;
     }
 
     /**
@@ -375,7 +375,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream){
         final Comparator<Host> hostPowerConsumptionComparator =
-            comparingDouble(h -> getPowerAfterAllocationDifference(h, vm));
+            comparingDouble(host -> getPowerAfterAllocationDifference(host, vm));
 
         return additionalHostFilters(vm, hostStream).min(hostPowerConsumptionComparator);
     }
@@ -392,7 +392,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return the Hosts {@link Stream} after applying the additional filters
      */
     private Stream<Host> additionalHostFilters(final Vm vm, final Stream<Host> hostStream){
-        return hostStream.filter(h -> getPowerAfterAllocation(h, vm) > 0);
+        return hostStream.filter(host -> getPowerAfterAllocation(host, vm) > 0);
     }
 
     /**
@@ -436,9 +436,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         return migrationMap;
     }
 
-    private void appendVmMigrationMsgToStringBuilder(final StringBuilder sb, final Vm vm, final Host targetHost) {
+    private void appendVmMigrationMsgToStringBuilder(final StringBuilder builder, final Vm vm, final Host targetHost) {
         if(LOGGER.isInfoEnabled()) {
-            sb.append("     ").append(vm).append(" will be migrated from ")
+            builder.append("     ").append(vm).append(" will be migrated from ")
               .append(vm.getHost()).append(" to ").append(targetHost)
               .append(System.lineSeparator());
         }
@@ -565,7 +565,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private Set<Host> getOverloadedHosts() {
         return this.getHostList().stream()
             .filter(this::isHostOverloaded)
-            .filter(h -> h.getVmsMigratingOut().isEmpty())
+            .filter(host -> host.getVmsMigratingOut().isEmpty())
             .collect(toSet());
     }
 
@@ -584,10 +584,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     private Host getUnderloadedHost(final Set<? extends Host> excludedHosts) {
         return this.getHostList().stream()
-            .filter(h -> !excludedHosts.contains(h))
+            .filter(host -> !excludedHosts.contains(host))
             .filter(Host::isActive)
             .filter(this::isHostUnderloaded)
-            .filter(h -> h.getVmsMigratingIn().isEmpty())
+            .filter(host -> host.getVmsMigratingIn().isEmpty())
             .filter(this::notAllVmsAreMigratingOut)
             .min(comparingDouble(Host::getUtilizationOfCpu))
             .orElse(Host.NULL);

@@ -71,12 +71,12 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     protected void createTableColumns() {
         final String ID = "ID";
         addColumnDataFunction(getTable().addColumn("Cloudlet", ID), Identifiable::getId);
-        addColumnDataFunction(getTable().addColumn("Status "), c -> c.getStatus().name());
-        addColumnDataFunction(getTable().addColumn("DC", ID), c -> c.getVm().getHost().getDatacenter().getId());
-        addColumnDataFunction(getTable().addColumn("Host", ID), c -> c.getVm().getHost().getId());
-        addColumnDataFunction(getTable().addColumn("Host PEs ", CPU_CORES), c -> c.getVm().getHost().getNumberOfWorkingPes());
-        addColumnDataFunction(getTable().addColumn("VM", ID), c -> c.getVm().getId());
-        addColumnDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES), c -> c.getVm().getNumberOfPes());
+        addColumnDataFunction(getTable().addColumn("Status "), cloudlet -> cloudlet.getStatus().name());
+        addColumnDataFunction(getTable().addColumn("DC", ID), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
+        addColumnDataFunction(getTable().addColumn("Host", ID), cloudlet -> cloudlet.getVm().getHost().getId());
+        addColumnDataFunction(getTable().addColumn("Host PEs ", CPU_CORES), cloudlet -> cloudlet.getVm().getHost().getNumberOfWorkingPes());
+        addColumnDataFunction(getTable().addColumn("VM", ID), cloudlet -> cloudlet.getVm().getId());
+        addColumnDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES), cloudlet -> cloudlet.getVm().getNumberOfPes());
         addColumnDataFunction(getTable().addColumn("CloudletLen", "MI"), Cloudlet::getLength);
         addColumnDataFunction(getTable().addColumn("CloudletPEs", CPU_CORES), Cloudlet::getNumberOfPes);
 

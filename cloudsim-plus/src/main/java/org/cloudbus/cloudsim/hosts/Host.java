@@ -547,7 +547,7 @@ public interface Host extends Machine, Comparable<Host> {
      * <p>Gets a map containing the host CPU utilization percentage history (between [0 and 1]),
      * based on its VM utilization history.
      * Each key is a time when the data collection was performed
-     * and each value is the sum of all CPU utilization of the VMs running in this Host.
+     * and each value is the sum of all CPU utilization of the VMs running inside this Host for that time.
      * This way, the value represents the total Host's CPU utilization for each time
      * that data was collected.
      * </p>

@@ -158,7 +158,7 @@ public class CloudletBuilder extends Builder {
         final List<Cloudlet> localList = createCloudletsInternal(amount, initialId);
         broker.submitCloudletList(localList);
         if(vm != Vm.NULL){
-            localList.forEach(c -> broker.bindCloudletToVm(c, vm));
+            localList.forEach(cloudlet -> broker.bindCloudletToVm(cloudlet, vm));
         }
         return this;
     }

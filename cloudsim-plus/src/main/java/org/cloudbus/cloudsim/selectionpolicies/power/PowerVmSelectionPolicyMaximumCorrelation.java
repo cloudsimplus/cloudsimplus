@@ -92,8 +92,8 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
         for (int i = 0; i < numberVms; i++) {
             final double[] vmUtilization = vmList.get(i).getUtilizationHistory().getHistory().values().stream().mapToDouble(v -> v).toArray();
-            for (int j = 0; j < minHistorySize; j++) {
-                utilization[i][j] = vmUtilization[j];
+            if (minHistorySize >= 0) {
+                System.arraycopy(vmUtilization, 0, utilization[i], 0, minHistorySize);
             }
         }
         return utilization;

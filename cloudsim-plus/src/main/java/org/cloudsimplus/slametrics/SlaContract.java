@@ -40,7 +40,7 @@ import java.util.List;
  * of SLA Metrics supported in the JSON SLA Contract format.</p>
  *
  * <p>Instances of this class can be created from a JSON file
- * using the {@link #getInstance(InputStream)} or
+ * using the {@link #getInstanceInternal(InputStream)} or
  * {@link #getInstance(String)} methods.
  * This way, one doesn't need to create instances
  * of this class using its default constructor.
@@ -71,10 +71,18 @@ public class SlaContract {
      * to use reflection to instantiate a SlaContract.</p>
      *
      * @see #getInstance(String)
-     * @see #getInstance(InputStream)
      */
     public SlaContract() {
         this.metrics = new ArrayList<>();
+    }
+
+    /**
+     * Gets an {@link SlaContract} from a JSON file inside the <b>application's resource directory</b>.
+     * @param jsonFilePath the <b>relative path</b> to the JSON file representing the SLA contract to read
+     * @return a {@link SlaContract} read from the JSON file
+     */
+    public static SlaContract getInstance(final String jsonFilePath) {
+        return getInstanceInternal(ResourceLoader.getInputStream(SlaContract.class, jsonFilePath));
     }
 
     /**
@@ -84,17 +92,8 @@ public class SlaContract {
      * @param inputStream a {@link InputStream} to read the file
      * @return a {@link SlaContract} read from the JSON file
      */
-    private static SlaContract getInstance(final InputStream inputStream) {
+    private static SlaContract getInstanceInternal(final InputStream inputStream) {
         return new Gson().fromJson(new InputStreamReader(inputStream), SlaContract.class);
-    }
-
-    /**
-     * Gets an {@link SlaContract} from a JSON file inside the <b>application's resource directory</b>.
-     * @param jsonFilePath the <b>relative path</b> to the JSON file representing the SLA contract to read
-     * @return a {@link SlaContract} read from the JSON file
-     */
-    public static SlaContract getInstance(final String jsonFilePath) {
-        return getInstance(ResourceLoader.getInputStream(SlaContract.class, jsonFilePath));
     }
 
     /**
@@ -107,15 +106,19 @@ public class SlaContract {
     /**
      * @param metrics the metrics to set
      */
-    public void setMetrics(List<SlaMetric> metrics) {
+    public void setMetrics(final List<SlaMetric> metrics) {
+        /*Since the contract can be read from a file, the metrics
+        * can be in fact null. This way, instantiates an empty list
+        * instead of using Objects.requiredNonNull().*/
         this.metrics = metrics == null ? new ArrayList<>() : metrics;
     }
 
     private SlaMetric getSlaMetric(final String metricName) {
-        return this.metrics.stream()
-            .filter(m -> metricName.equals(m.getName()))
-            .findFirst()
-            .orElse(SlaMetric.NULL);
+        return metrics
+                .stream()
+                .filter(metric -> metricName.equals(metric.getName()))
+                .findFirst()
+                .orElse(SlaMetric.NULL);
     }
 
     public SlaMetric getAvailabilityMetric() {
@@ -168,19 +171,5 @@ public class SlaContract {
     @Override
     public String toString() {
         return metrics.toString();
-    }
-
-    /**
-     * A main method just to try the class implementation.
-     * @param args
-     */
-    public static void main(String[] args) {
-        final String file = "SampleCustomerSLA.json";
-        final SlaContract contract = SlaContract.getInstance(file);
-        System.out.println("Contract file: " + file);
-        System.out.println(contract);
-        System.out.println("Minimum Price Metric Value: " + contract.getPriceMetric().getMinDimension());
-        System.out.println("Maximum Price Metric Value: " + contract.getPriceMetric().getMaxDimension());
-        System.out.println("Maximum CPU   Metric Value: " + contract.getCpuUtilizationMetric().getMaxDimension());
     }
 }

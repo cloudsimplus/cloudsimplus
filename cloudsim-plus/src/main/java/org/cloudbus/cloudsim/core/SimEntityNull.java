@@ -9,14 +9,14 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @see SimEntity#NULL
  */
 final class SimEntityNull implements SimEntity {
-    @Override public int compareTo(SimEntity o) { return 0; }
+    @Override public int compareTo(SimEntity entity) { return 0; }
     @Override public SimEntity setState(State state) { return this; }
     @Override public boolean isStarted() { return false; }
     @Override public boolean isAlive() { return false; }
     @Override public boolean isFinished() { return false; }
     @Override public Simulation getSimulation() { return Simulation.NULL; }
     @Override public SimEntity setSimulation(Simulation simulation) { return this; }
-    @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public void processEvent(SimEvent evt) {/**/}
     @Override public boolean schedule(SimEvent evt) { return false; }
     @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
     @Override public boolean schedule(double delay, int tag, Object data) { return false; }

@@ -31,7 +31,7 @@ package org.cloudsimplus.heuristics;
  * @see HeuristicSolution#NULL
  */
 final class HeuristicSolutionNull implements HeuristicSolution {
-    private static final Object object = new Object();
+    private static final Object OBJ = new Object();
     @Override public double getFitness() {
         return 0.0;
     }
@@ -42,7 +42,7 @@ final class HeuristicSolutionNull implements HeuristicSolution {
         return 0;
     }
     @Override public Object getResult() {
-        return object;
+        return OBJ;
     }
     @Override public Heuristic getHeuristic() {
         return Heuristic.NULL;

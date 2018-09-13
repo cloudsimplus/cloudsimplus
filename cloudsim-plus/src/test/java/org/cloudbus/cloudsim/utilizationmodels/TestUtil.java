@@ -18,6 +18,13 @@ import static org.junit.Assert.assertEquals;
  */
 final class TestUtil {
     /**
+     * The number of seconds that the utilization will be tested.
+     * For each second from 0 to this number, a {@link UtilizationModelDynamic#getUtilization(double)}
+     * will be called to test the expected value.
+     */
+    private static final int NUM_TIMES_TEST_USAGE = 10;
+
+    /**
      * A private constructor to avoid class instantiation.
      */
     private TestUtil(){/**/}
@@ -27,7 +34,7 @@ final class TestUtil {
         final double initUsage,
         final int initSimulationTime)
     {
-        final List<Integer> times = IntStream.rangeClosed(initSimulationTime, UtilizationModelDynamicTest.NUM_TIMES_TEST_USAGE)
+        final List<Integer> times = IntStream.rangeClosed(initSimulationTime, NUM_TIMES_TEST_USAGE)
             .boxed()
             .collect(toList());
         final CloudSim simulation = CloudSimMocker.createMock(mocker -> mocker.clock(times));
@@ -66,7 +73,7 @@ final class TestUtil {
                                         final UtilizationModelDynamic instance)
     {
         instance.setMaxResourceUtilization(maxUsagePercent);
-        IntStream.rangeClosed(0, UtilizationModelDynamicTest.NUM_TIMES_TEST_USAGE).forEach(time -> {
+        IntStream.rangeClosed(0, NUM_TIMES_TEST_USAGE).forEach(time -> {
             final double expResult =
                 computeExpectedUtilization(
                     time, initUsage,

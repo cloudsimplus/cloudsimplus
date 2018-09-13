@@ -69,7 +69,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * @see #setK(int)
      * @see #setLambda(double)
      */
-    public PoissonDistr(double lambda, long seed){
+    public PoissonDistr(final double lambda, final long seed){
         this.rand = new UniformDistr(seed);
         this.k = 1;
         this.setLambda(lambda);
@@ -86,7 +86,7 @@ public class PoissonDistr implements ContinuousDistribution {
      *
      * @see #setK(int)
      */
-    public PoissonDistr(double lambda){
+    public PoissonDistr(final double lambda){
         this(lambda, -1);
     }
 
@@ -96,7 +96,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * also called the <b>event rate</b> or <b>rate parameter</b>.
      *
      * <p>If the unit is minute, this value means the average number of arrivals
-     * at each minute. It's the inverse of the {@link #getInterarrivalMeanTime()}.</p>
+     * at each minute. It's the inverse of the {@link #getInterArrivalMeanTime()}.</p>
      * @return
      */
     public double getLambda(){
@@ -109,10 +109,10 @@ public class PoissonDistr implements ContinuousDistribution {
      * also called the <b>event rate</b> or <b>rate parameter</b>.
      *
      * <p>If one considers the unit as minute, this value means the average number of arrivals
-     * at each minute. It's the inverse of the {@link #getInterarrivalMeanTime()}.</p>
+     * at each minute. It's the inverse of the {@link #getInterArrivalMeanTime()}.</p>
      * @param lambda the value to set
      */
-    private void setLambda(double lambda) {
+    private void setLambda(final double lambda) {
         this.lambda = lambda;
     }
 
@@ -135,8 +135,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * @return true if the K events have happened at current time, false otherwise
      */
     public boolean eventsHappened(){
-        final double r = rand.sample();
-        return r <= eventsArrivalProbability();
+        return rand.sample() <= eventsArrivalProbability();
     }
 
     /**
@@ -168,7 +167,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * in a time time.
      * @param k the value to set
      */
-    public void setK(int k) {
+    public void setK(final int k) {
         this.k = k;
     }
 
@@ -180,7 +179,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * parameter.
      * @return
      */
-    public double getInterarrivalMeanTime(){
+    public double getInterArrivalMeanTime(){
         return 1.0/lambda;
     }
 
@@ -192,14 +191,16 @@ public class PoissonDistr implements ContinuousDistribution {
      * at the class level and just calling them.
      *
      * @param args
+     * @todo This method should be moved to a meaningful example class
+     * that creates Cloudlets instead of customers.
      */
-    public static void main(String args[]){
+    public static void main(final String args[]){
         /*
          * Average number of customers that arrives per minute.
          * The value of 0.4 customers per minute means that 1 customer will arrive
          * at every 2.5 minutes.
          * It means that 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes.
-         * This is the interarrival time (in average).
+         * This is the inter-arrival time (in average).
          */
         final double MEAN_CUSTOMERS_ARRIVAL_MINUTE=0.4;
 
@@ -242,27 +243,27 @@ public class PoissonDistr implements ContinuousDistribution {
             System.out.printf(
                     "\t%d customers arrived in %d minutes\n", totalArrivedCustomers, SIMULATION_TIME_LENGHT);
             System.out.printf("\tArrival rate: %.2f customers per minute. Customers interarrival time: %.2f minutes in average\n",
-                    poisson.getLambda(), poisson.getInterarrivalMeanTime());
+                    poisson.getLambda(), poisson.getInterArrivalMeanTime());
 
             return totalArrivedCustomers;
         };
 
-        double customersArrivedInAllSimulations = 0;
+        double customersInAllSimulations = 0;
         PoissonDistr poisson = null;
         final long seed=System.currentTimeMillis();
         for(int i = 0; i < NUMBER_OF_SIMULATIONS; i++){
             poisson = new PoissonDistr(MEAN_CUSTOMERS_ARRIVAL_MINUTE, seed+i);
             System.out.printf("Simulation number %d\n", i);
-            customersArrivedInAllSimulations += runSimulation.apply(poisson);
+            customersInAllSimulations += runSimulation.apply(poisson);
         }
 
-        final double mean = customersArrivedInAllSimulations/NUMBER_OF_SIMULATIONS;
+        final double mean = customersInAllSimulations/NUMBER_OF_SIMULATIONS;
         System.out.printf("\nArrived customers average after %d simulations: %.2f\n",
                 NUMBER_OF_SIMULATIONS, mean);
         System.out.printf(
             "%.2f customers expected by each %d minutes of simulation with interarrival time of %.2f minutes\n",
              poisson.getLambda()*SIMULATION_TIME_LENGHT, SIMULATION_TIME_LENGHT,
-             poisson.getInterarrivalMeanTime());
+             poisson.getInterArrivalMeanTime());
     }
 
 }

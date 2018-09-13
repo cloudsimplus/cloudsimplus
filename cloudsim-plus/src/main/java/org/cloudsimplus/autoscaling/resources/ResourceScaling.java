@@ -50,7 +50,7 @@ public interface ResourceScaling {
      * An attribute that implements the Null Object Design Pattern for {@link ResourceScaling}
      * objects.
      */
-    ResourceScaling NULL = s -> 0;
+    ResourceScaling NULL = scalingInstance -> 0;
 
     /**
      * Computes the amount of resource to scale up or down,

@@ -67,12 +67,12 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * method is invoked by the {@link CloudSim} class whenever there is an
      * event in the deferred queue, which needs to be processed by the entity.
      *
-     * @param ev information about the event just happened
+     * @param evt information about the event just happened
      *
      * @pre ev != null
      * @post $none
      */
-    void processEvent(SimEvent ev);
+    void processEvent(SimEvent evt);
 
     /**
      * Sends an event where all data required is defined inside the event instance.

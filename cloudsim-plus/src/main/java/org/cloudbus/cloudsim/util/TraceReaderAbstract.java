@@ -1,6 +1,8 @@
 package org.cloudbus.cloudsim.util;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.function.Function;
 import java.util.zip.GZIPInputStream;
@@ -36,8 +38,8 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @throws FileNotFoundException    when the trace file is not found
      * @throws IllegalArgumentException when the workload trace file name is null or empty
      */
-    public TraceReaderAbstract(final String filePath) throws FileNotFoundException {
-        this(filePath, new FileInputStream(filePath));
+    public TraceReaderAbstract(final String filePath) throws IOException {
+        this(filePath, Files.newInputStream(Paths.get(filePath)));
     }
 
     /**
@@ -63,7 +65,8 @@ public abstract class TraceReaderAbstract implements TraceReader {
         if (requireNonNull(commentString).length == 0) {
             throw new IllegalArgumentException("A comment String is required");
         }
-        this.commentString = commentString;
+        //Creates a defensive copy of the array to avoid directly change its values after storing it
+        this.commentString = Arrays.copyOf(commentString, commentString.length);
         return this;
     }
 
@@ -206,12 +209,12 @@ public abstract class TraceReaderAbstract implements TraceReader {
 
         //The reader is safely closed by the caller
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        int i = 1;
+        int lineNum = 1;
         String line;
-        while ((line = readNextLine(reader, i)) != null) {
+        while ((line = readNextLine(reader, lineNum)) != null) {
             final String[] parsedTraceLine = parseTraceLine(line);
             if(parsedTraceLine.length > 0 && processParsedLineFunction.apply(parsedTraceLine)) {
-                i++;
+                lineNum++;
             }
         }
     }

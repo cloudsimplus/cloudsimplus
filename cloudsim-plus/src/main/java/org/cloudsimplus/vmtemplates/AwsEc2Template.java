@@ -59,8 +59,10 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      *
      * <p>This constructor is just provided to enable the {@link Gson} object
      * to use reflection to instantiate a AwsEc2Template.</p>
+     * @see #getInstance(String)
      */
     public AwsEc2Template(){
+        super();
     }
 
     /**
@@ -81,9 +83,10 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      *
      * @param jsonFilePath the full path to the JSON file representing the template with
      *                     configurations for an AWS EC2 Instance
+     * @see #getInstance(String)
      */
     public AwsEc2Template(final String jsonFilePath) {
-        this(getInstance(jsonFilePath, ResourceLoader.getFileReader(jsonFilePath)));
+        this(getInstanceInternal(jsonFilePath, ResourceLoader.getFileReader(jsonFilePath)));
     }
 
     /**
@@ -96,7 +99,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      */
     public static AwsEc2Template getInstance(final String jsonFilePath) {
         final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(AwsEc2Template.class, jsonFilePath));
-        return getInstance(jsonFilePath, reader);
+        return getInstanceInternal(jsonFilePath, reader);
     }
 
     /**
@@ -106,7 +109,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * @param reader a {@link InputStreamReader} to read the file
      * @return the AWS EC2 Instance from the JSON file
      */
-    private static AwsEc2Template getInstance(final String jsonFilePath, final InputStreamReader reader) {
+    private static AwsEc2Template getInstanceInternal(final String jsonFilePath, final InputStreamReader reader) {
         final AwsEc2Template template = new Gson().fromJson(reader, AwsEc2Template.class);
         template.path = Paths.get(jsonFilePath);
         return template;
@@ -173,30 +176,19 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
 
 
     @Override
-    public int compareTo(final AwsEc2Template o) {
-        int comparison = Double.compare(this.cpus, o.cpus);
+    public int compareTo(final AwsEc2Template template) {
+        int comparison = Double.compare(this.cpus, template.cpus);
         if(comparison != 0){
             return comparison;
         }
 
-        comparison = Double.compare(this.memoryInMB, o.memoryInMB);
+        comparison = Double.compare(this.memoryInMB, template.memoryInMB);
         if(comparison != 0){
             return comparison;
         }
 
-        comparison = Double.compare(this.pricePerHour, o.pricePerHour);
+        comparison = Double.compare(this.pricePerHour, template.pricePerHour);
         return comparison;
-    }
-
-    /**
-     * A main method just to try the class implementation.
-     * @param args
-     */
-    public static void main(String[] args) {
-        final String file = "vmtemplates/aws/t2.nano.json";
-        final AwsEc2Template template = AwsEc2Template.getInstance(file);
-        System.out.println("Template file: " + file);
-        System.out.println(template);
     }
 
 }

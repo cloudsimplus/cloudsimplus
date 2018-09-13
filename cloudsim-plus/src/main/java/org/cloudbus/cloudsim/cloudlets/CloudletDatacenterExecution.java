@@ -8,7 +8,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * execution history on each Datacenter is registered at {@link CloudletAbstract#getLastExecutionInDatacenterInfo()}
  */
 final class CloudletDatacenterExecution {
-    protected static final CloudletDatacenterExecution NULL = new CloudletDatacenterExecution();
+    /* default */ static final CloudletDatacenterExecution NULL = new CloudletDatacenterExecution();
 
     private double arrivalTime;
     private double wallClockTime;
@@ -20,7 +20,7 @@ final class CloudletDatacenterExecution {
     /**
      * A default package-level constructor.
      */
-    CloudletDatacenterExecution() {
+    /* default */ CloudletDatacenterExecution() {
         this.datacenter = Datacenter.NULL;
         this.arrivalTime = Cloudlet.NOT_ASSIGNED;
     }
@@ -29,11 +29,11 @@ final class CloudletDatacenterExecution {
      * Cloudlet's submission (arrival) time to a Datacenter
      * or {@link Cloudlet#NOT_ASSIGNED} if the Cloudlet was not assigned to a Datacenter yet.
      */
-    double getArrivalTime() {
+    /* default */ double getArrivalTime() {
         return arrivalTime;
     }
 
-    void setArrivalTime(final double arrivalTime) {
+    /* default */ void setArrivalTime(final double arrivalTime) {
         this.arrivalTime = arrivalTime;
     }
 
@@ -43,7 +43,7 @@ final class CloudletDatacenterExecution {
      * @return the wall-clock time
      * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
      */
-    double getWallClockTime() {
+    /* default */ double getWallClockTime() {
         return wallClockTime;
     }
 
@@ -53,36 +53,36 @@ final class CloudletDatacenterExecution {
      * @param wallClockTime the wall-clock time to set
      * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
      */
-    void setWallClockTime(final double wallClockTime) {
+    /* default */ void setWallClockTime(final double wallClockTime) {
         this.wallClockTime = wallClockTime;
     }
 
     /**
      * The total time the Cloudlet spent being executed in a Datacenter.
      */
-    double getActualCpuTime() {
+    /* default */ double getActualCpuTime() {
         return actualCpuTime;
     }
 
-    void setActualCpuTime(final double actualCpuTime) {
+    /* default */ void setActualCpuTime(final double actualCpuTime) {
         this.actualCpuTime = actualCpuTime;
     }
 
     /**
      * Cost per second a Datacenter charge to execute this Cloudlet.
      */
-    double getCostPerSec() {
+    /* default */ double getCostPerSec() {
         return costPerSec;
     }
 
-    void setCostPerSec(final double costPerSec) {
+    /* default */ void setCostPerSec(final double costPerSec) {
         this.costPerSec = costPerSec;
     }
 
     /**
      * Cloudlet's length finished so far (in MI).
      */
-    long getFinishedSoFar() {
+    /* default */ long getFinishedSoFar() {
         return finishedSoFar;
     }
 
@@ -92,18 +92,18 @@ final class CloudletDatacenterExecution {
      * @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
      *                          from the last time span (the last time the Cloudlet execution was updated)
      */
-    void addFinishedSoFar(final long partialFinishedMI) {
+    /* default */ void addFinishedSoFar(final long partialFinishedMI) {
         this.finishedSoFar += partialFinishedMI;
     }
 
     /**
      * a Datacenter where the Cloudlet will be executed
      */
-    Datacenter getDatacenter() {
+    /* default */ Datacenter getDatacenter() {
         return datacenter;
     }
 
-    void setDatacenter(final Datacenter datacenter) {
+    /* default */ void setDatacenter(final Datacenter datacenter) {
         this.datacenter = datacenter;
     }
 }

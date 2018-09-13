@@ -55,7 +55,7 @@ import java.util.function.Function;
  * @since CloudSim Plus 1.2.0
  */
 public class ResourceScalingInstantaneous implements ResourceScaling {
-    private static final ResourceScaling gradual = new ResourceScalingGradual();
+    private static final ResourceScaling GRADUAL = new ResourceScalingGradual();
 
     @Override
     public double getResourceAmountToScale(final VerticalVmScaling vmScaling) {
@@ -70,7 +70,7 @@ public class ResourceScalingInstantaneous implements ResourceScaling {
         * This way, if the resource usage increases again up to this extra amount,
         * there is no need to re-scale the resource.
         * If the scale factor is zero, no extra safety amount is included.*/
-        final double extraSafetyCapacity = gradual.getResourceAmountToScale(vmScaling);
+        final double extraSafetyCapacity = GRADUAL.getResourceAmountToScale(vmScaling);
         return newResourceSize + extraSafetyCapacity;
     }
 }

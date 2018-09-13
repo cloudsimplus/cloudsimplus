@@ -361,7 +361,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * Register the time for a Host failure.
      */
     private void registerHostFaultTime() {
-        hostFaultsTimeSecsMap.computeIfAbsent(lastFailedHost, h -> new ArrayList<>()).add(getSimulation().clock());
+        hostFaultsTimeSecsMap.computeIfAbsent(lastFailedHost, host -> new ArrayList<>()).add(getSimulation().clock());
     }
 
     /**
@@ -375,8 +375,8 @@ public class HostFaultInjection extends CloudSimEntity {
             return Host.NULL;
         }
 
-        final int i = (int) (random.sample() * datacenter.getHostList().size());
-        return datacenter.getHost(i);
+        final int idx = (int) (random.sample() * datacenter.getHostList().size());
+        return datacenter.getHost(idx);
     }
 
     /**
@@ -443,10 +443,10 @@ public class HostFaultInjection extends CloudSimEntity {
 
         LOGGER.warn("\t{} VMs affected from a total of {}. {} PEs are going to be removed from them.",
                 affectedVms, lastFailedHost.getVmList().size(), failedPesToRemoveFromVms);
-        int i = 0;
+        int idx = 0;
         while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms-- > 0) {
-            i = i % vmsWithPes.size();
-            final Vm vm = vmsWithPes.get(i);
+            idx = idx % vmsWithPes.size();
+            final Vm vm = vmsWithPes.get(idx);
             lastFailedHost.getVmScheduler().deallocatePesFromVm(vm, 1);
             vm.getCloudletScheduler().deallocatePesFromVm(1);
             //remove 1 failed PE from the VM
@@ -455,7 +455,7 @@ public class HostFaultInjection extends CloudSimEntity {
             LOGGER.warn(
                     "\tRemoving 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}\n",
                     vm.getId(), vm.getNumberOfPes());
-            i++;
+            idx++;
             vmsWithPes = getVmsWithPEsFromFailedHost();
         }
     }
@@ -696,9 +696,12 @@ public class HostFaultInjection extends CloudSimEntity {
                     .filter(entry -> broker.equals(entry.getKey().getBroker()))
                     .map(Map.Entry::getValue);
 
-        final double seconds = stream.map(rt -> rt >= 0 ? rt : getSimulation().clock() - Math.abs(rt)).reduce(0.0, Double::sum);
+        final double recoverySeconds = stream
+                                        .map(secs -> secs >= 0 ? secs : getSimulation().clock() - Math.abs(secs))
+                                        .reduce(0.0, Double::sum);
 
-        return (long)(seconds/60.0);
+        //@todo why is it converted to long if the method return is double?
+        return (long)(recoverySeconds/60.0);
     }
 
     /**
@@ -716,7 +719,7 @@ public class HostFaultInjection extends CloudSimEntity {
             .values()
             .stream()
             .flatMap(Collection::stream)
-            .mapToDouble(v -> v)
+            .mapToDouble(time -> time)
             .sorted()
             .toArray();
 
@@ -727,9 +730,9 @@ public class HostFaultInjection extends CloudSimEntity {
         //computes the differences between failure times t2 - t1
         double sum=0;
         double previous=faultTimes[0];
-        for(final double v: faultTimes) {
-            sum += (v - previous);
-            previous = v;
+        for(final double time: faultTimes) {
+            sum += time - previous;
+            previous = time;
         }
 
         final double seconds = sum/faultTimes.length;

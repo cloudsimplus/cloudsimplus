@@ -37,13 +37,13 @@ public class SwfWorkloadFileReaderTest {
     }
 
     private void readFile(String fileNameWithoutPath, int numberOfJobs) throws IOException {
-        final SwfWorkloadFileReader r = new SwfWorkloadFileReader("src"
+        final SwfWorkloadFileReader reader = new SwfWorkloadFileReader("src"
                 + File.separator
                 + "test"
                 + File.separator
                 + fileNameWithoutPath, 1);
         final long milisecs = System.currentTimeMillis();
-        final List<Cloudlet> cloudletlist = r.generateWorkload();
+        final List<Cloudlet> cloudletlist = reader.generateWorkload();
         final double seconds = (System.currentTimeMillis() - milisecs)/1000.0;
         assertEquals(numberOfJobs, cloudletlist.size());
         System.out.printf(

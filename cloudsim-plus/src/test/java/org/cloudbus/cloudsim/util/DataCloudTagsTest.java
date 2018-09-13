@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.lang.reflect.Field;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Manoel Campos da Silva Filho
@@ -31,7 +31,7 @@ public class DataCloudTagsTest {
     public void testConstantsWithSameValue(){
         for (final Field field : constants) {
             final Field anotherField = CloudSimTagsTest.getAnotherConstWithSameValue(constants, field);
-            assertEquals(CloudSimTagsTest.getFieldsWithDuplicatedValueMsg(field, anotherField), field, anotherField);
+            assertEquals(CloudSimTagsTest.msgFieldsWithDuplicatedValue(field, anotherField), field, anotherField);
         }
     }
 

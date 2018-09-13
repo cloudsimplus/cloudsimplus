@@ -97,7 +97,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     public final boolean allocatePesForVm(final Vm vm) {
         final List<Double> mipsShareRequested =
                 LongStream.range(0, vm.getNumberOfPes())
-                        .mapToObj(i -> vm.getMips())
+                        .mapToObj(idx -> vm.getMips())
                         .collect(toList());
         return allocatePesForVm(vm, mipsShareRequested);
     }

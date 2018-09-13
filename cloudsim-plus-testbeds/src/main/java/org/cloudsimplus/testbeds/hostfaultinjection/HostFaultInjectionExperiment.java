@@ -401,7 +401,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
 
         System.out.printf(
             "\tFault Injection created for %s.\n\tMean Number of Failures per hour: %.6f (1 failure expected at each %.4f hours).\n",
-            datacenter, MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterarrivalMeanTime());
+            datacenter, MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterArrivalMeanTime());
     }
 
     /**

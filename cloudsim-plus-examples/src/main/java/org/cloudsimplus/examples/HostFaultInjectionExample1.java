@@ -136,7 +136,7 @@ public final class HostFaultInjectionExample1 {
 
         System.out.printf(
             "\n# Mean Number of Failures per Hour: %.3f (1 failure expected at each %.2f hours).\n",
-            MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterarrivalMeanTime());
+            MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterArrivalMeanTime());
         System.out.printf("# Number of Host faults: %d\n", fault.getNumberOfHostFaults());
         System.out.printf("# Number of VM faults (VMs destroyed): %d\n", fault.getNumberOfFaults());
         System.out.printf("# Time the simulations finished: %.4f hours\n", simulation.clockInHours());

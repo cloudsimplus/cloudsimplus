@@ -128,9 +128,9 @@ public abstract class AbstractTable implements Table {
                 .limit( Math.min(columns.size(), row.size()))
                 .collect(toList());
 
-        int i = 0;
+        int idxCol = 0;
         for(final TableColumn col: cols){
-            getPrintStream().print(col.generateData(row.get(i++)));
+            getPrintStream().print(col.generateData(row.get(idxCol++)));
         }
         printRowClosing();
     }

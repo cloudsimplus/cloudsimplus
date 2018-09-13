@@ -155,9 +155,7 @@ final class VmNull implements Vm {
     @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         return this;
     }
-    @Override public int compareTo(Vm o) {
-        return 0;
-    }
+    @Override public int compareTo(Vm vm) { return 0; }
     @Override public double getTotalMipsCapacity() {
         return 0.0;
     }

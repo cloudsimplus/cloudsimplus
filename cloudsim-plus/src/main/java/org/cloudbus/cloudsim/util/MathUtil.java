@@ -130,7 +130,7 @@ public final class MathUtil {
     }
 
     /**
-     * Gets the Median absolute deviation (MAD) from a array of numbers.
+     * Gets the Median Absolute Deviation (MAD) from a array of numbers.
      *
      * @param data the array of numbers
      * @return the mad
@@ -243,22 +243,20 @@ public final class MathUtil {
      * @return the robust loess parameter estimates
      */
     public static double[] getRobustLoessParameterEstimates(final double... y) {
-        final int n = y.length;
-        final double[] x = new double[n];
-        for (int i = 0; i < n; i++) {
+        final double[] x = new double[y.length];
+        for (int i = 0; i < y.length; i++) {
             x[i] = i + 1;
         }
-        final SimpleRegression tricubeRegression = createWeightedLinearRegression(x,
-            y, getTricubeWeights(n));
-        final double[] residuals = new double[n];
-        for (int i = 0; i < n; i++) {
+        final SimpleRegression tricubeRegression =
+                createWeightedLinearRegression(x, y, getTricubeWeights(y.length));
+        final double[] residuals = new double[y.length];
+        for (int i = 0; i < y.length; i++) {
             residuals[i] = y[i] - tricubeRegression.predict(x[i]);
         }
-        final SimpleRegression tricubeBySqrRegression = createWeightedLinearRegression(
-            x, y, getTricubeBisquareWeights(residuals));
+        final SimpleRegression tricubeBySqrRegression =
+                createWeightedLinearRegression(x, y, getTricubeBisquareWeights(residuals));
 
-        final double[] estimates = tricubeBySqrRegression.regress()
-            .getParameterEstimates();
+        final double[] estimates = tricubeBySqrRegression.regress().getParameterEstimates();
         if (Double.isNaN(estimates[0]) || Double.isNaN(estimates[1])) {
             return tricubeRegression.regress().getParameterEstimates();
         }
@@ -268,13 +266,13 @@ public final class MathUtil {
     /**
      * Gets the tricube weigths.
      *
-     * @param n the number of weights
+     * @param weightsNumber the number of weights
      * @return an array of tricube weigths with n elements
      */
-    public static double[] getTricubeWeights(final int n) {
-        final double[] weights = new double[n];
-        final double top = n - 1; //spread
-        for (int i = 2; i < n; i++) {
+    public static double[] getTricubeWeights(final int weightsNumber) {
+        final double[] weights = new double[weightsNumber];
+        final double top = weightsNumber - 1; //spread
+        for (int i = 2; i < weightsNumber; i++) {
             final double k = Math.pow(1 - Math.pow((top - i) / top, 3), 3);
             weights[i] = k > 0 ? 1 / k : Double.MAX_VALUE;
         }
@@ -338,35 +336,35 @@ public final class MathUtil {
      * converts a double to an int value which can be used by
      * a Comparator.</p>
      *
-     * @param d the double value to convert
+     * @param value the double value to convert
      * @return zero if the double value is zero, a negative int if the double is negative,
      * or a positive int if the double is positive.
      */
-    public static int doubleToInt(final double d){
-        return (int)(d < 0 ? Math.floor(d) : Math.ceil(d));
+    public static int doubleToInt(final double value){
+        return (int)(value < 0 ? Math.floor(value) : Math.ceil(value));
     }
 
     /**
      * Checks if two double numbers are equals, considering a precision error or 0.01.
      * That is, if the different between the two numbers are lower or equal to 0.01, they are considered equal.
-     * @param a the first number to check
-     * @param b the second number to check
+     * @param first the first number to check
+     * @param second the second number to check
      * @return true if the numbers are equal considering the precision error
      */
-    public static boolean same(final double a, final double b){
-        return same(a,b, 0.01);
+    public static boolean same(final double first, final double second){
+        return same(first,second, 0.01);
     }
 
     /**
      * Checks if two double numbers are equals, considering a given precision error.
      * That is, if the different between the two numbers are lower or equal to the precision error, they are considered equal.
-     * @param a the first number to check
-     * @param b the second number to check
+     * @param first the first number to check
+     * @param second the second number to check
      * @param precisionError the precision error used to compare the numbers
      * @return true if the numbers are equal considering the precision error
      */
-    public static boolean same(final double a, final double b, final double precisionError){
-        return Math.abs(a-b) <= precisionError;
+    public static boolean same(final double first, final double second, final double precisionError){
+        return Math.abs(first-second) <= precisionError;
     }
 
 }

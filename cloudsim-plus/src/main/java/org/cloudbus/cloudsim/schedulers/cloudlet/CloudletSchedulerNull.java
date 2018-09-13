@@ -21,7 +21,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public Cloudlet cloudletCancel(Cloudlet cloudlet) {
         return Cloudlet.NULL;
     }
-    @Override public void cloudletFinish(CloudletExecution ce) {/**/}
+    @Override public void cloudletFinish(CloudletExecution cle) {/**/}
     @Override public boolean cloudletReady(Cloudlet cloudlet) { return false; }
     @Override public boolean cloudletPause(Cloudlet cloudlet) {
         return false;
@@ -44,15 +44,11 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public double getCurrentRequestedBwPercentUtilization() {
         return 0.0;
     }
-    @Override public double getCurrentRequestedRamPercentUtilization() {
-        return 0.0;
-    }
+    @Override public double getCurrentRequestedRamPercentUtilization() { return 0.0; }
     @Override public double getPreviousTime() {
         return 0.0;
     }
-    @Override public double getRequestedMipsForCloudlet(CloudletExecution ce, double time) {
-        return 0.0;
-    }
+    @Override public double getRequestedMipsForCloudlet(CloudletExecution cle, double time) { return 0.0; }
     @Override public double getRequestedCpuPercentUtilization(double time) { return 0.0; }
     @Override public boolean hasFinishedCloudlets() {
         return false;
@@ -81,12 +77,12 @@ final class CloudletSchedulerNull implements CloudletScheduler {
         return 0;
     }
     @Override public long getFreePes() { return 0; }
-    @Override public Set<Cloudlet> getCloudletReturnedList() { return Collections.EMPTY_SET; }
+    @Override public Set<Cloudlet> getCloudletReturnedList() { return Collections.emptySet(); }
     @Override public boolean isCloudletReturned(Cloudlet cloudlet) { return false; }
     @Override public void addCloudletToReturnedList(Cloudlet cloudlet) {/**/}
     @Override public List<CloudletExecution> getCloudletFinishedList() { return Collections.emptyList(); }
     @Override public boolean isEmpty() { return false; }
-    @Override public List<CloudletExecution> getCloudletWaitingList() { return Collections.EMPTY_LIST; }
+    @Override public List<CloudletExecution> getCloudletWaitingList() { return Collections.emptyList(); }
     @Override public void deallocatePesFromVm(int pesToRemove) {/**/}
-    @Override public List<Cloudlet> getCloudletList() { return Collections.EMPTY_LIST; }
+    @Override public List<Cloudlet> getCloudletList() { return Collections.emptyList(); }
 }

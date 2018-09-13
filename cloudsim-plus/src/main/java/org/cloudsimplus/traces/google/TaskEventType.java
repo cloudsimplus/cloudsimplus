@@ -47,22 +47,22 @@ public enum TaskEventType {
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
             final TaskEvent event = reader.createTaskEventFromTraceLine();
-            final Cloudlet c = reader.createCloudlet(event);
-            c.setId(event.getUniqueTaskId());
-            c.setJobId(event.getJobId());
+            final Cloudlet cloudlet = reader.createCloudlet(event);
+            cloudlet.setId(event.getUniqueTaskId());
+            cloudlet.setJobId(event.getJobId());
             final double delay = FieldIndex.TIMESTAMP.getValue(reader);
-            c.setSubmissionDelay(delay);
+            cloudlet.setSubmissionDelay(delay);
 
             // Since Cloudlet id must be unique, it will be the concatenation of the job and task id
-            c.setId(event.getUniqueTaskId());
+            cloudlet.setId(event.getUniqueTaskId());
 
             /* Set status to FROZEN to avoid the cloudlet to start running after being submitted.
             The execution must start only after a SCHEDULE event happens. */
-            c.setStatus(Cloudlet.Status.FROZEN);
+            cloudlet.setStatus(Cloudlet.Status.FROZEN);
 
-            DatacenterBroker broker = reader.createBrokerIfAbsent(event.getUserName());
-            broker.submitCloudlet(c);
-            return reader.addAvailableCloudlet(c);
+            final DatacenterBroker broker = reader.createBrokerIfAbsent(event.getUserName());
+            broker.submitCloudlet(cloudlet);
+            return reader.addAvailableCloudlet(cloudlet);
         }
     },
 
@@ -165,7 +165,7 @@ public enum TaskEventType {
      * @return an {@link Optional} containing the Cloudlet or an empty {@link Optional} if the Cloudlet was not found
      */
     protected Optional<Cloudlet> cloudletLookup(final DatacenterBroker broker, final int uniqueId) {
-        return broker.getCloudletSubmittedList().stream().filter(c -> c.getId() == uniqueId).findFirst();
+        return broker.getCloudletSubmittedList().stream().filter(cloudlet -> cloudlet.getId() == uniqueId).findFirst();
     }
 
     /**

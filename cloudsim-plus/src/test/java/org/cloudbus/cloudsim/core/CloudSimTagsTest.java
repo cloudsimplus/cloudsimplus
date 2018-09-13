@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Manoel Campos da Silva Filho
@@ -32,7 +32,7 @@ public class CloudSimTagsTest {
     public void testConstantsWithSameValue(){
         for (final Field field : constants) {
             final Field anotherField = getAnotherConstWithSameValue(constants, field);
-            assertTrue(getFieldsWithDuplicatedValueMsg(field, anotherField), field.equals(anotherField));
+            assertEquals(msgFieldsWithDuplicatedValue(field, anotherField), field, anotherField);
         }
     }
 
@@ -45,7 +45,7 @@ public class CloudSimTagsTest {
         return list;
     }
 
-    public static String getFieldsWithDuplicatedValueMsg(final Field field, final Field anotherField) {
+    public static String msgFieldsWithDuplicatedValue(final Field field, final Field anotherField) {
         return "The constant " + field.getName() + " has the same value of the constant " + anotherField.getName();
     }
 

@@ -31,8 +31,12 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @since CloudSim Toolkit 3.0
  */
 public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit {
-    // 12 has been suggested as a safe value
-    private static final int MIN_HISTORY_ENTRIES_TO_COMPUTE_MAD = 12;
+    /**
+     * The minimum number of history entries required to compute
+     * the Median Absolute Deviation (MAD).
+     * 12 has been suggested as a safe value.
+     */
+    private static final int MIN_HISTORY_ENTRIES_FOR_MAD = 12;
 
     /**
      * Creates a VmAllocationPolicyMigrationMedianAbsoluteDeviation
@@ -70,9 +74,9 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
      */
     @Override
     public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
-        final double[] data = host.getUtilizationHistorySum().values().stream().mapToDouble(v -> v).toArray();
-        if (MathUtil.countNonZeroBeginning(data) >= MIN_HISTORY_ENTRIES_TO_COMPUTE_MAD) {
-            return MathUtil.mad(data);
+        final double[] cpuUsageArray = host.getUtilizationHistorySum().values().stream().mapToDouble(cpuUsage -> cpuUsage).toArray();
+        if (MathUtil.countNonZeroBeginning(cpuUsageArray) >= MIN_HISTORY_ENTRIES_FOR_MAD) {
+            return MathUtil.mad(cpuUsageArray);
         }
 
         throw new IllegalArgumentException("There is not enough Host history to compute Host utilization MAD");

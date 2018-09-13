@@ -406,9 +406,9 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     private boolean requestCloudletUsageChange(final Cloudlet cloudlet, final TaskUsage taskUsage)
     {
         final Runnable resourceUsageUpdateRunnable = () -> {
-            final StringBuilder sb = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             if (cloudlet.getUtilizationOfCpu() != taskUsage.getMeanCpuUsageRate()) {
-                sb.append("CPU Utilization: ")
+                builder.append("CPU Utilization: ")
                     .append(formatPercentValue(cloudlet.getUtilizationOfCpu())).append(VAL_SEPARATOR)
                     .append(formatPercentValue(taskUsage.getMeanCpuUsageRate())).append("%").append(COL_SEPARATOR);
 
@@ -416,10 +416,10 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             }
 
             if (cloudlet.getUtilizationOfRam() != taskUsage.getCanonicalMemoryUsage()) {
-                sb.append("RAM Utilization: ")
+                builder.append("RAM Utilization: ")
                     .append(formatPercentValue(cloudlet.getUtilizationOfRam())).append(VAL_SEPARATOR)
                     .append(formatPercentValue(taskUsage.getCanonicalMemoryUsage()))
-                    .append("%")
+                    .append('%')
                     .append(COL_SEPARATOR);
                 cloudlet.setUtilizationModelRam(createUtilizationModel(cloudlet.getUtilizationModelRam(), taskUsage.getCanonicalMemoryUsage()));
             }
@@ -428,7 +428,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
              * if this Runnable is executed is because something was.
              * An event to execute such Runnable is just sent in such a condition.*/
             final DatacenterBroker broker = cloudlet.getBroker();
-            broker.LOGGER.trace("{}: {}: {} resource usage changed: {}", simulation.clock(), broker.getName(), cloudlet, sb);
+            broker.LOGGER.trace("{}: {}: {} resource usage changed: {}", simulation.clock(), broker.getName(), cloudlet, builder);
             cloudlet.getVm().getHost().updateProcessing(simulation.clock());
         };
 

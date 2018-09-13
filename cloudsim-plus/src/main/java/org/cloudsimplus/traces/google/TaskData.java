@@ -38,7 +38,9 @@ class TaskData extends MachineData {
      * A protected constructor to avoid class instantiation,
      * since only subclasses of this class must be used.
      */
-    protected TaskData(){/**/}
+    protected TaskData(){
+        super();
+    }
 
     /**
      * Gets the id of the job this task belongs to.

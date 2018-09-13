@@ -98,8 +98,6 @@ public class HarddriveStorage implements FileStorage {
 
         this.fileList = new ArrayList<>();
         this.fileNameList = new ArrayList<>();
-        this.gen = null;
-
         this.storage = new Storage(capacity);
         this.reservedStorage = new Storage(capacity);
         this.name = name;

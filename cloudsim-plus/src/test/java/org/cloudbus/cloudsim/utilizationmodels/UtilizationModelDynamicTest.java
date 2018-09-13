@@ -13,13 +13,6 @@ import static org.junit.Assert.assertEquals;
  */
 public class UtilizationModelDynamicTest {
 
-    /**
-     * The number of seconds that the utilization will be tested.
-     * For each second from 0 to this number, a {@link UtilizationModelDynamic#getUtilization(double)}
-     * will be called to test the expected value.
-     */
-    static final int NUM_TIMES_TEST_USAGE = 10;
-
     @Test
     public void testGetUtilization_defaultConstructor() {
         final double usagePercentInc = 0.1;
@@ -93,8 +86,8 @@ public class UtilizationModelDynamicTest {
     @Test
     public void testConstructor_UtilizationPercentageIncrementGreaterThan1() {
         final double initialUtilizationPercent = 1.1;
-        final UtilizationModelDynamic um = new UtilizationModelDynamic(initialUtilizationPercent);
-        assertEquals(initialUtilizationPercent, um.getUtilization(), 0);
+        final UtilizationModelDynamic model = new UtilizationModelDynamic(initialUtilizationPercent);
+        assertEquals(initialUtilizationPercent, model.getUtilization(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -105,8 +98,8 @@ public class UtilizationModelDynamicTest {
     @Test
     public void testConstructor_InitialValueGreaterThan1() {
         final int initialUtilization = 2;
-        final UtilizationModelDynamic um = new UtilizationModelDynamic(Unit.PERCENTAGE, initialUtilization);
-        assertEquals(initialUtilization, um.getUtilization(), 0);
+        final UtilizationModelDynamic model = new UtilizationModelDynamic(Unit.PERCENTAGE, initialUtilization);
+        assertEquals(initialUtilization, model.getUtilization(), 0);
     }
 
     @Test

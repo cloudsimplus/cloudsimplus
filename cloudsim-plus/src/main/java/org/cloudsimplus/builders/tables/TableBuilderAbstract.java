@@ -99,7 +99,7 @@ public abstract class TableBuilderAbstract<T> {
      * @param table the  {@link Table} to set
      * @return
      */
-    protected TableBuilderAbstract<T> setTable(final Table table) {
+    protected final TableBuilderAbstract<T> setTable(final Table table) {
         this.table = requireNonNull(table);
         return this;
     }

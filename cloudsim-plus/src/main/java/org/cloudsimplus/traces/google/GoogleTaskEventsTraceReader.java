@@ -530,19 +530,19 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
          */
         final Runnable attributesUpdateRunnable = () -> {
             final DatacenterBroker broker = cloudlet.getBroker();
-            final StringBuilder sb = new StringBuilder();
+            final StringBuilder builder = new StringBuilder();
             /* The output size doesn't always have a relation with file size.
              * This way, if the file size is changed, we don't change
              * the output size. This may be performed by the researcher if he/she needs.*/
             if(clone.getPriority() != cloudlet.getPriority()){
-                sb.append("priority: ")
+                builder.append("priority: ")
                     .append(cloudlet.getPriority()).append(VAL_SEPARATOR)
                     .append(clone.getPriority()).append(COL_SEPARATOR);
                 cloudlet.setFileSize(clone.getFileSize());
             }
 
             if(clone.getNumberOfPes() != cloudlet.getNumberOfPes()){
-                sb.append("PEs: ")
+                builder.append("PEs: ")
                     .append(cloudlet.getNumberOfPes()).append(VAL_SEPARATOR)
                     .append(clone.getNumberOfPes()).append(COL_SEPARATOR);
                 cloudlet.setNumberOfPes(clone.getNumberOfPes());
@@ -552,7 +552,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
             final UtilizationModelDynamic cloneRamUM = (UtilizationModelDynamic)clone.getUtilizationModelRam();
             final UtilizationModelDynamic cloudletRamUM = (UtilizationModelDynamic)cloudlet.getUtilizationModelRam();
             if(cloneRamUM.getMaxResourceUtilization() != cloudletRamUM.getMaxResourceUtilization()){
-                sb.append("Max RAM Usage: ")
+                builder.append("Max RAM Usage: ")
                     .append(formatPercentValue(cloudletRamUM.getMaxResourceUtilization())).append(VAL_SEPARATOR)
                     .append(formatPercentValue(cloneRamUM.getMaxResourceUtilization())).append("% | ");
                 cloudletRamUM.setMaxResourceUtilization(cloneRamUM.getMaxResourceUtilization());
@@ -561,7 +561,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
             /* We don't need to check if some Cloudlet attribute was changed because
              * if this Runnable is executed is because something was.
              * An event to execute such Runnable is just sent in such a condition.*/
-            broker.LOGGER.trace("{}: {}: {} attributes updated: {}", getSimulation().clock(), broker.getName(), cloudlet, sb);
+            broker.LOGGER.trace("{}: {}: {} attributes updated: {}", getSimulation().clock(), broker.getName(), cloudlet, builder);
         };
 
         /* The Runnable is the data of the event that is sent to the broker.

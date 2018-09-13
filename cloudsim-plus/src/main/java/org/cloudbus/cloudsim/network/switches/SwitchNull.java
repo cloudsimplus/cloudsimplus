@@ -22,7 +22,7 @@ import java.util.Map;
 final class SwitchNull implements Switch {
     private static final Simulation SIM = Simulation.NULL;
     private static final VmAllocationPolicy POLICY = VmAllocationPolicy.NULL;
-    private static final NetworkDatacenter dc = new NetworkDatacenter(SIM, Collections.emptyList(), POLICY);
+    private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(SIM, Collections.emptyList(), POLICY);
 
     @Override public int getId() {
         return 0;
@@ -73,7 +73,7 @@ final class SwitchNull implements Switch {
     @Override public void addPacketToBeSentToUplinkSwitch(Switch uplinkSwitch, HostPacket packet) {/**/}
     @Override public void addPacketToBeSentToHost(NetworkHost host, HostPacket packet) {/**/}
     @Override public NetworkDatacenter getDatacenter() {
-        return dc;
+        return DATACENTER;
     }
     @Override public void setDatacenter(NetworkDatacenter datacenter) {/**/}
     @Override public List<HostPacket> getPacketList() {

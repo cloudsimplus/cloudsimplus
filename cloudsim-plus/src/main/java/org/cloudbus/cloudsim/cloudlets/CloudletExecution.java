@@ -154,12 +154,12 @@ public class CloudletExecution {
         cloudlet.setStatus(newStatus);
 
         if (prevStatus == Cloudlet.Status.INEXEC && isNotRunning(newStatus)) {
-            totalCompletionTime += (clock - startExecTime);
+            totalCompletionTime += clock - startExecTime;
             return true;
         }
 
         if (prevStatus == Cloudlet.Status.RESUMED && newStatus == Cloudlet.Status.SUCCESS) {
-            totalCompletionTime += (clock - startExecTime);
+            totalCompletionTime += clock - startExecTime;
             return true;
         }
 

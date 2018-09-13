@@ -36,7 +36,7 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public SimEntity setSimulation(Simulation simulation) {
         return this;
     }
-    @Override public void processEvent(SimEvent ev) {/**/}
+    @Override public void processEvent(SimEvent evt) {/**/}
     @Override public boolean schedule(SimEvent evt) { return false; }
     @Override public boolean schedule(double delay, int tag, Object data) { return false; }
     @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }

@@ -61,23 +61,23 @@ public class ConversionTest {
 
     @Test
     public void gigaToMega(){
-        final double gb = 1;
+        final double giga = 1;
         final double expectedMB = 1024;
-        assertEquals(expectedMB, Conversion.gigaToMega(gb),0);
+        assertEquals(expectedMB, Conversion.gigaToMega(giga),0);
     }
 
     @Test
     public void teraToGiga(){
-        final double tb = 1;
+        final double tera = 1;
         final double expectedGB = 1024;
-        assertEquals(expectedGB, Conversion.teraToGiga(tb),0);
+        assertEquals(expectedGB, Conversion.teraToGiga(tera),0);
     }
 
     @Test
     public void teraToMega(){
-        final double tb = 1;
+        final double tera = 1;
         final double expectedMB = 1048576;
-        assertEquals(expectedMB, Conversion.teraToMega(tb),0);
+        assertEquals(expectedMB, Conversion.teraToMega(tera),0);
     }
 
     @Test

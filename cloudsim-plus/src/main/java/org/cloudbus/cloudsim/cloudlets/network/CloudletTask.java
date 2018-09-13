@@ -181,7 +181,7 @@ public abstract class CloudletTask implements Identifiable {
      * @return the time the task spent executing, or -1 if not finished yet
      */
     public double getExecutionTime(){
-        return (finished ? finishTime - startTime : -1);
+        return finished ? finishTime - startTime : -1;
     }
 
     /**

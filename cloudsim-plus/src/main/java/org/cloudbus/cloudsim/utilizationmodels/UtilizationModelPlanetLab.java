@@ -126,11 +126,10 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         final double[] utilization = createEmptyArray(Math.max(2, dataSamples));
 
         try (BufferedReader input = new BufferedReader(reader)) {
-            final int n = utilization.length;
-            int i = 0;
+            int lineNum = 0;
             String line;
-            while((line=input.readLine())!=null && !line.startsWith("#") && i < n){
-                utilization[i++] = Integer.valueOf(line) / 100.0;
+            while((line=input.readLine())!=null && !line.startsWith("#") && lineNum < utilization.length){
+                utilization[lineNum++] = Integer.valueOf(line) / 100.0;
             }
         }
 

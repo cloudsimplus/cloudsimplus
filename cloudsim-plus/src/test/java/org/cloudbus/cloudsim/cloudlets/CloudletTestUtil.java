@@ -30,24 +30,24 @@ public final class CloudletTestUtil {
         return createCloudlet(id, new UtilizationModelFull());
     }
 
-    static CloudletSimple createCloudlet(
-        final int id, UtilizationModel cpuRamAndBwUtilizationModel) {
+    static CloudletSimple createCloudlet(final int id, UtilizationModel cpuRamAndBwUtilizationModel)
+    {
         return createCloudlet(id, cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel);
     }
 
-    public static CloudletSimple createCloudlet(
-        final int id, long length, int numberOfPes)
+    public static CloudletSimple createCloudlet(final int id, long length, int numberOfPes)
     {
         final UtilizationModel um = new UtilizationModelFull();
         return createCloudlet(id, um, um, um, length, numberOfPes);
     }
 
-    private static CloudletSimple createCloudlet(final int id,
-                                                 final UtilizationModel utilizationModelCPU,
-                                                 final UtilizationModel utilizationModelRAM,
-                                                 final UtilizationModel utilizationModelBW)
+    private static CloudletSimple createCloudlet(
+         final int id,
+         final UtilizationModel utilizationModelCPU,
+         final UtilizationModel utilizationModelRAM,
+         final UtilizationModel utilizationModelBW)
     {
         return createCloudlet(
                 id, utilizationModelCPU, utilizationModelRAM, utilizationModelBW,
@@ -62,10 +62,6 @@ public final class CloudletTestUtil {
         return createCloudlet(id, CLOUDLET_LENGTH, 1);
     }
 
-    public static CloudletSimple createCloudletWithOnePe(final int id, final long length) {
-        return createCloudlet(id, length, 1);
-    }
-
     /**
      * Creates a Cloudlet with id equals to 0.
      *
@@ -77,11 +73,12 @@ public final class CloudletTestUtil {
         return createCloudlet(0, length, numberOfPes);
     }
 
-    private static CloudletSimple createCloudlet(final int id,
-                                                 final UtilizationModel utilizationModelCPU,
-                                                 final UtilizationModel utilizationModelRAM,
-                                                 final UtilizationModel utilizationModelBW,
-                                                 final long length, final int numberOfPes)
+    private static CloudletSimple createCloudlet(
+         final int id,
+         final UtilizationModel utilizationModelCPU,
+         final UtilizationModel utilizationModelRAM,
+         final UtilizationModel utilizationModelBW,
+         final long length, final int numberOfPes)
     {
         final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {

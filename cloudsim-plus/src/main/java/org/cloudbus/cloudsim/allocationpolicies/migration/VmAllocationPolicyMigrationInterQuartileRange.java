@@ -32,8 +32,12 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * @since CloudSim Toolkit 3.0
  */
 public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit {
-    // 12 has been suggested as a safe value
-    private static final int MIN_HISTORY_ENTRIES_TO_COMPUTE_IRQ = 12;
+    /**
+     * The minimum number of history entries required to compute
+     * the Inter Quartile Range (IQR).
+     * 12 has been suggested as a safe value.
+     */
+    private static final int MIN_HISTORY_ENTRIES_FOR_IRQ = 12;
 
     /**
      * Creates a VmAllocationPolicyMigrationInterQuartileRange
@@ -70,9 +74,9 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
      */
     @Override
     public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
-        final double[] data = host.getUtilizationHistorySum().values().stream().mapToDouble(v -> v).toArray();
-        if (MathUtil.countNonZeroBeginning(data) >= MIN_HISTORY_ENTRIES_TO_COMPUTE_IRQ) {
-            return MathUtil.iqr(data);
+        final double[] cpuUsageArray = host.getUtilizationHistorySum().values().stream().mapToDouble(cpuUsage -> cpuUsage).toArray();
+        if (MathUtil.countNonZeroBeginning(cpuUsageArray) >= MIN_HISTORY_ENTRIES_FOR_IRQ) {
+            return MathUtil.iqr(cpuUsageArray);
         }
 
         throw new IllegalArgumentException("There is not enough Host history to compute Host utilization IRQ");

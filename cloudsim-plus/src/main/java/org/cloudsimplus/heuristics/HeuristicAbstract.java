@@ -101,8 +101,8 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 
 	private S newSolutionInstance() {
 	    try {
-	        final Constructor<S> c = solutionClass.getConstructor(Heuristic.class);
-	        return c.newInstance(this);
+	        final Constructor<S> constructor = solutionClass.getConstructor(Heuristic.class);
+	        return constructor.newInstance(this);
 	    } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException ex) {
 	        throw new RuntimeException(ex);
 	    }
