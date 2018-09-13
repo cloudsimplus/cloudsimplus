@@ -8,6 +8,7 @@
 
 package org.cloudbus.cloudsim.resources;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.slf4j.Logger;
@@ -92,8 +93,8 @@ public class HarddriveStorage implements FileStorage {
      * @throws IllegalArgumentException when the name and the capacity are not valid
      */
     public HarddriveStorage(final String name, final long capacity) throws IllegalArgumentException {
-        if (name == null || name.trim().isEmpty()) {
-            throw new IllegalArgumentException("HarddriveStorage(): Error - invalid storage name.");
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException("Storage name cannot be empty.");
         }
 
         this.fileList = new ArrayList<>();
@@ -437,7 +438,7 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public boolean contains(final String fileName) {
-        if (fileName == null || fileName.trim().isEmpty()) {
+        if (StringUtils.isBlank(fileName)) {
             LOGGER.warn("{}.contains(): Invalid file name {}", name, fileName);
             return false;
         }

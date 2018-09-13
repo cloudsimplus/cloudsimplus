@@ -46,7 +46,7 @@ public class TextTable extends CsvTable {
 
     @Override
     public void printTitle() {
-        if(!getTitle().trim().isEmpty()){
+        if(StringUtils.isNotBlank(getTitle())){
             getPrintStream().println(getCentralizedString(getTitle()));
         }
     }

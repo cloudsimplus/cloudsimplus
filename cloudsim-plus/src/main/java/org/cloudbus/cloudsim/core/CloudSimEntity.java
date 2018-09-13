@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.slf4j.Logger;
@@ -371,13 +372,12 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public SimEntity setName(final String name) throws IllegalArgumentException {
-        Objects.requireNonNull(name);
-        if (name.contains(" ")) {
-            throw new IllegalArgumentException("Entity names can't contain spaces.");
+        if (StringUtils.isBlank(name)) {
+            throw new IllegalArgumentException("Entity names cannot be empty.");
         }
 
-        if (name.trim().isEmpty()) {
-            throw new IllegalArgumentException("Entity names can't be empty.");
+        if (name.contains(" ")) {
+            throw new IllegalArgumentException("Entity names cannot contain spaces.");
         }
 
         this.name = name;

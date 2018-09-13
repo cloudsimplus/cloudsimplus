@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -615,7 +616,7 @@ public class VmSimple implements Vm {
 
     @Override
     public String toString() {
-        final String desc = description.trim().isEmpty() ? "" : String.format(" (%s)", description);
+        final String desc = StringUtils.isBlank(description) ? "" : String.format(" (%s)", description);
         final String brokerName = broker == DatacenterBroker.NULL ? "" : "/Broker " + broker.getId();
         return String.format("Vm %d%s%s", getId(), brokerName, desc);
     }

@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.resources;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.util.DataCloudTags;
 
@@ -61,7 +62,7 @@ public class DatacenterStorage {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean contains(final String fileName) {
-        if (fileName == null || fileName.trim().isEmpty()) {
+        if (StringUtils.isBlank(fileName)) {
             return false;
         }
 

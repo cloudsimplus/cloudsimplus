@@ -23,6 +23,8 @@
  */
 package org.cloudsimplus.builders.tables;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * A column of a table to be generated using a {@link Table} class.
  * @author Manoel Campos da Silva Filho
@@ -153,8 +155,9 @@ public abstract class AbstractTableColumn implements TableColumn {
      */
     @Override
     public String generateData(final Object data){
-        if(format.trim().isEmpty())
+        if(StringUtils.isBlank(format)) {
             return String.valueOf(data);
+        }
 
         return String.format(format, data);
     }

@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.resources;
 
+import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.ExponentialDistr;
 import org.junit.Test;
@@ -541,7 +542,7 @@ public class HarddriveStorageTest {
     }
 
     private HarddriveStorage createHardDrive(final long capacity, final String name) {
-        if(name == null || name.trim().isEmpty()) {
+        if(StringUtils.isBlank(name)) {
             return new HarddriveStorage(capacity);
         }
 

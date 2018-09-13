@@ -7,12 +7,13 @@
  */
 package org.cloudbus.cloudsim.resources;
 
+import org.apache.commons.lang3.StringUtils;
+import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.DataCloudTags;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Objects;
-
-import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.util.DataCloudTags;
 
 
 /**
@@ -154,11 +155,11 @@ public class FileAttribute {
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
     public boolean setOwnerName(final String name) {
-        if (name == null || name.trim().isEmpty()) {
+        if (StringUtils.isBlank(name)) {
             return false;
         }
 
-        ownerName = name;
+        this.ownerName = name;
         return true;
     }
 
@@ -381,6 +382,6 @@ public class FileAttribute {
      * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
      */
     public static boolean isValid(final String fileName) {
-        return fileName != null && !fileName.trim().isEmpty();
+        return !StringUtils.isBlank(fileName);
     }
 }
