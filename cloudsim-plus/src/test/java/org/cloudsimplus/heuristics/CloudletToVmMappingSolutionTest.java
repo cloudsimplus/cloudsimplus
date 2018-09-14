@@ -88,7 +88,7 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     @Test
-    public void testCompareTo_InstanceIsGreater() {
+    public void testCompareToWhenInstanceIsGreater() {
         final int NUMBER_OF_CLOUDLETS = 3;
         final int PES = 2;
         final CloudletToVmMappingSolution instance =
@@ -106,7 +106,7 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     @Test
-    public void testCompareTo_InstanceIsEquals() {
+    public void testCompareToWhenInstanceIsEquals() {
         final int NUMBER_OF_CLOUDLETS = 3;
         final int PES = 2;
         final CloudletToVmMappingSolution instance =
@@ -123,7 +123,7 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     @Test
-    public void testCompareTo_InstanceIsLower() {
+    public void testCompareToWhenInstanceIsLower() {
         final int NUMBER_OF_CLOUDLETS = 3;
         final int PES = 2;
         final CloudletToVmMappingSolution instance =
@@ -140,14 +140,14 @@ public class CloudletToVmMappingSolutionTest {
     }
 
     @Test(expected = UnsupportedOperationException.class)
-    public void testGetCloudletVmMap_TryToModifyReadonlyMap() {
+    public void testGetCloudletVmMapWhenModifyReadonlyMap() {
         final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         final Map<Cloudlet, Vm> result = instance.getResult();
         result.put(Cloudlet.NULL, Vm.NULL);
     }
 
     @Test
-    public void testGetCloudletVmMap_NotNullMap() {
+    public void testGetCloudletVmMapWhenNotNullMap() {
         final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         assertNotNull(instance.getResult());
     }

@@ -41,7 +41,7 @@ final class TestUtil {
 
         final UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(initUsage);
         utilizationModel
-            .setUtilizationUpdateFunction(um -> um.getUtilization() + um.getTimeSpan() * usagePercentInc)
+            .setUtilizationUpdateFunction(model -> model.getUtilization() + model.getTimeSpan() * usagePercentInc)
             .setSimulation(simulation);
 
         return utilizationModel;
@@ -67,10 +67,11 @@ final class TestUtil {
         return Math.max(0, utilizationPercentage);
     }
 
-    public static void checkUtilization(final double initUsage,
-                                        final double usagePercentInc,
-                                        final double maxUsagePercent,
-                                        final UtilizationModelDynamic instance)
+    public static void checkUtilization(
+        final double initUsage,
+        final double usagePercentInc,
+        final double maxUsagePercent,
+        final UtilizationModelDynamic instance)
     {
         instance.setMaxResourceUtilization(maxUsagePercent);
         IntStream.rangeClosed(0, NUM_TIMES_TEST_USAGE).forEach(time -> {

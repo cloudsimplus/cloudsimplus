@@ -70,7 +70,7 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testAddStateHistoryEntry_addEntryToEmptyList(){
+    public void testAddStateHistoryEntryWhenAddEntryToEmptyList(){
         final double time=0;
         final double allocatedMips=1000;
         final double requestedMips=100;
@@ -82,14 +82,14 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testAddStateHistoryEntry_checkAddedEntryValues(){
+    public void testAddStateHistoryEntryCheckAddedEntryValues(){
         final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         assertEquals(entry, vm.getStateHistory().get(vm.getStateHistory().size()-1));
     }
 
     @Test
-    public void testAddStateHistoryEntry_tryToAddEntryWithSameTime(){
+    public void testAddStateHistoryEntryWhenAddEntryWithSameTime(){
         final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         vm.addStateHistoryEntry(entry);
@@ -97,7 +97,7 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testAddStateHistoryEntry_changeAddedEntry(){
+    public void testAddStateHistoryEntryWhenChangeAddedEntry(){
         final VmStateHistoryEntry entry = new VmStateHistoryEntry(0, 1000, 100, false);
         vm.addStateHistoryEntry(entry);
         entry.setInMigration(true);
@@ -107,8 +107,8 @@ public class VmSimpleTest {
 
     @Test
     public void testSetBw() {
-        vm.setBw(VmTestUtil.BW / 2);
-        assertEquals(VmTestUtil.BW / 2, vm.getBw().getCapacity(), 0);
+        vm.setBw(VmTestUtil.BANDWIDTH / 2);
+        assertEquals(VmTestUtil.BANDWIDTH / 2, vm.getBw().getCapacity(), 0);
     }
 
     @Test
@@ -119,12 +119,12 @@ public class VmSimpleTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRemoveOnHostAllocationListener_Null() {
+    public void testRemoveOnHostAllocationListenerWhenNull() {
         vm.removeOnHostAllocationListener(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRemoveOnHostDeallocationListener_Null() {
+    public void testRemoveOnHostDeallocationListenerWhenNull() {
         vm.removeOnHostDeallocationListener(null);
     }
 
@@ -136,7 +136,7 @@ public class VmSimpleTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRemoveOnVmCreationFailureListener_Null() {
+    public void testRemoveOnVmCreationFailureListenerWhenNull() {
         vm.removeOnCreationFailureListener(null);
     }
 
@@ -148,7 +148,7 @@ public class VmSimpleTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testRemoveOnUpdateVmProcessingListener_Null() {
+    public void testRemoveOnUpdateVmProcessingListenerWhenNull() {
         vm.removeOnUpdateProcessingListener(null);
     }
 
@@ -171,7 +171,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetBw() {
-        assertEquals(VmTestUtil.BW, vm.getBw().getCapacity());
+        assertEquals(VmTestUtil.BANDWIDTH, vm.getBw().getCapacity());
     }
 
     @Test
@@ -230,7 +230,7 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetCurrentRequestedBw_WhenVmWasCreatedInsideHost() {
+    public void testGetCurrentRequestedBwWhenVmWasCreatedInsideHost() {
         final double currentBwUsagePercent = 0.5;
 
         final CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
@@ -243,21 +243,21 @@ public class VmSimpleTest {
         final Vm vm0 = VmTestUtil.createVm(cloudletScheduler);
         vm0.setCreated(true);
 
-        final long expectedCurrentBwUtilization = (long)(currentBwUsagePercent* VmTestUtil.BW);
+        final long expectedCurrentBwUtilization = (long)(currentBwUsagePercent* VmTestUtil.BANDWIDTH);
         assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
         EasyMock.verify(cloudletScheduler);
     }
 
     @Test
-    public void testGetCurrentRequestedBw_WhenVmWasNotCreatedInsideHost() {
+    public void testGetCurrentRequestedBwWhenVmWasNotCreatedInsideHost() {
         final Vm vm0 = VmTestUtil.createVm(CloudletScheduler.NULL);
         vm0.setCreated(false);
-        final long expectedCurrentBwUsage = VmTestUtil.BW;
+        final long expectedCurrentBwUsage = VmTestUtil.BANDWIDTH;
         assertEquals(expectedCurrentBwUsage, vm0.getCurrentRequestedBw());
     }
 
     @Test
-    public void testGetCurrentRequestedRam_WhenVmWasCreatedInsideHost() {
+    public void testGetCurrentRequestedRamWhenVmWasCreatedInsideHost() {
         final double currentRamUsagePercent = 0.5;
         final long expectedCurrentRamUsage = (long)(currentRamUsagePercent* VmTestUtil.RAM);
 
@@ -275,7 +275,7 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetCurrentRequestedRam_WhenVmWasNotCreatedInsideHost() {
+    public void testGetCurrentRequestedRamWhenVmWasNotCreatedInsideHost() {
         final Vm vm0 = VmTestUtil.createVm(CloudletScheduler.NULL);
         vm0.setCreated(false);
         final long expectedCurrentRamUsage = VmTestUtil.RAM;
@@ -283,7 +283,7 @@ public class VmSimpleTest {
     }
 
     @Test
-    public void testGetCurrentRequestedMips_ForTimeSharedScheduler_WhenVmWasCreatedInsideHost() {
+    public void testGetCurrentRequestedMipsTimeSharedSchedulerWhenVmWasCreatedInsideHost() {
         final CloudletScheduler cloudletScheduler = new CloudletSchedulerTimeShared();
         final Vm vm = VmTestUtil.createVm(cloudletScheduler);
         vm.setCreated(true);

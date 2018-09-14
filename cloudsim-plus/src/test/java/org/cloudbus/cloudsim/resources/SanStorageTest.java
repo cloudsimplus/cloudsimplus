@@ -97,7 +97,7 @@ public class SanStorageTest {
     }
 
     @Test
-    public void testGetTransferTime_whenBwIsLowerThanDiskRate() {
+    public void testGetTransferTimeWhenBwIsLowerThanDiskRate() {
         final double bwMbps = 10;
         final double diskRateMbps = bwMbps*10;
         final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
@@ -110,7 +110,7 @@ public class SanStorageTest {
     }
 
     @Test
-    public void testGetTransferTime_whenBwIsLowerThanDiskRateAndLatencyIsAlmostZero() {
+    public void testGetTransferTimeWhenBwIsLowerThanDiskRateAndLatencyIsAlmostZero() {
         final double bwMbps = 10;
         final double diskRateMbps = bwMbps*10;
         final double latency = 0.0001;
@@ -124,7 +124,7 @@ public class SanStorageTest {
     }
 
     @Test
-    public void testGetTransferTime_whenDiskRateIsLowerThanBw() {
+    public void testGetTransferTimeWhenDiskRateIsLowerThanBw() {
         final double diskRateMbps = 10;
         final double bwMbps = diskRateMbps*100;
         final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
@@ -137,7 +137,7 @@ public class SanStorageTest {
     }
 
     @Test
-    public void testGetTransferTime_whenBwIsEqualToDiskRate() {
+    public void testGetTransferTimeWhenBwIsEqualToDiskRate() {
         final double bwAndDiskRateMbps = 10;
         final SanStorage instance = new SanStorage(CAPACITY, bwAndDiskRateMbps, NETWORK_LATENCY);
         instance.setMaxTransferRate(bwAndDiskRateMbps);
@@ -149,14 +149,14 @@ public class SanStorageTest {
     }
 
     @Test
-    public void testNew_namedSanStorage() {
+    public void testNewNamedSanStorage() {
         final String name = "san1";
         final SanStorage san = new SanStorage(name, CAPACITY, BANDWIDTH, NETWORK_LATENCY);
         assertEquals(name, san.getName());
     }
 
     @Test
-    public void testAddFile_File() {
+    public void testAddFileWhenParamIsFile() {
         final SanStorage instance = createSanStorage(BANDWIDTH);
 
         //try invalid file
@@ -169,7 +169,7 @@ public class SanStorageTest {
     }
 
     @Test
-    public void testAddFile_List() {
+    public void testAddFileWhenParamIsList() {
         final SanStorage instance = createSanStorage(BANDWIDTH);
         final List<File> list = HarddriveStorageTest.createFileList(TOTAL_FILES, FILE_SIZE);
         final double transferTimeOfAllFiles = FILE_TRANSFER_TIME * TOTAL_FILES;
@@ -177,7 +177,7 @@ public class SanStorageTest {
     }
 
     @Test
-    public void testDeleteFile_File() {
+    public void testDeleteFileWhenParamIsFile() {
         final SanStorage instance = createSanStorage(BANDWIDTH);
         final File file = new File(FILE1, FILE_SIZE);
         instance.addFile(file);

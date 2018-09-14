@@ -13,6 +13,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -159,8 +161,8 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      * @throws FileNotFoundException    when the file is not found
      * @see #getInstance(String, int)
      */
-    public SwfWorkloadFileReader(final String filePath, final int mips) throws FileNotFoundException {
-        this(filePath, new FileInputStream(filePath), mips);
+    public SwfWorkloadFileReader(final String filePath, final int mips) throws IOException {
+        this(filePath, Files.newInputStream(Paths.get(filePath)), mips);
     }
 
     /**
@@ -188,7 +190,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
         created for any job read from the workload reader.
         That is, there isn't an actual condition to create a Cloudlet.
         */
-        this.predicate = c -> true;
+        this.predicate = cloudlet -> true;
     }
 
     /**

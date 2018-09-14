@@ -27,35 +27,35 @@ public class FileTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testCreateFile_nullFileParameter() {
+    public void testCopyConstructorWhenFileParameterIsNull() {
         final File nullFile = null;
         new File(nullFile);
     }
 
     @Test()
-    public void testCreateFile_FileParameter() {
+    public void testCreateFileWithFileParameter() {
         final File originalFile = new File(NAME, 100);
         final File copyFile = new File(originalFile);
         assertFalse(copyFile.isMasterCopy());
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreate_nullName() {
+    public void testCreateWhenNameIsNull() {
         new File(null, 100);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreate_zeroSize() {
+    public void testCreateWhenZeroSize() {
         new File(NAME, 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreate_negativeSize() {
+    public void testCreateWhenNegativeSize() {
         new File(NAME, -1);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testCreateFile_emptyName() {
+    public void testCreateFileWhenEmptyName() {
         new File("", 100);
     }
 
@@ -106,7 +106,7 @@ public class FileTest {
     }
 
     @Test
-    public void testIsValid_String() {
+    public void testIsValidWhenParamString() {
         assertTrue(File.isValid("new-file.txt"));
         assertTrue(File.isValid(NAME));
         assertFalse(File.isValid(""));
@@ -118,7 +118,7 @@ public class FileTest {
     }
 
     @Test
-    public void testIsValid_File() {
+    public void testIsValidWhenParamNullFile() {
         final File nullFile = null;
         assertFalse(File.isValid(nullFile));
     }

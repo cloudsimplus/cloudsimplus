@@ -4,15 +4,14 @@ import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.easymock.PowerMock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-
-import static org.junit.Assert.*;
-import org.powermock.api.easymock.PowerMock;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author Manoel Campos da Silva Filho
@@ -24,27 +23,8 @@ public class ExecutionTimeMeasurerTest {
     private static final long START_TIME = 1000;
     private static final long FINISH_TIME = 3000;
 
-    @Before
-    public void setUp(){
-        PowerMock.mockStatic(System.class);
-        expectCurrentTimeMillis(START_TIME);
-    }
-
     private void expectCurrentTimeMillis(final long timeMillis) {
         EasyMock.expect(System.currentTimeMillis()).andReturn(timeMillis);
-    }
-
-    @Test
-    public void testGetExecutionStartTimes_HasOneEntry(){
-        start(true);
-        final int entries = 1;
-        assertEquals(entries, ExecutionTimeMeasurer.getExecutionStartTimes().size());
-    }
-
-    @Test
-    public void testGetExecutionStartTime(){
-        start(true);
-        assertEquals(START_TIME, ExecutionTimeMeasurer.getExecutionStartTime(ENTRY_NAME), 0);
     }
 
     private void start(boolean replyAndVerifyAll) {
@@ -57,6 +37,25 @@ public class ExecutionTimeMeasurerTest {
         if(replyAndVerifyAll) {
             PowerMock.verifyAll();
         }
+    }
+
+    @Before
+    public void setUp(){
+        PowerMock.mockStatic(System.class);
+        expectCurrentTimeMillis(START_TIME);
+    }
+
+    @Test
+    public void testGetExecutionStartTimesWhenHasOneEntry(){
+        start(true);
+        final int entries = 1;
+        assertEquals(entries, ExecutionTimeMeasurer.getExecutionStartTimes().size());
+    }
+
+    @Test
+    public void testGetExecutionStartTime(){
+        start(true);
+        assertEquals(START_TIME, ExecutionTimeMeasurer.getExecutionStartTime(ENTRY_NAME), 0);
     }
 
     @Test

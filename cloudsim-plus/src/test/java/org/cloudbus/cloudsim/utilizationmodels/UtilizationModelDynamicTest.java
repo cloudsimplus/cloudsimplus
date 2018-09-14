@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class UtilizationModelDynamicTest {
 
     @Test
-    public void testGetUtilization_defaultConstructor() {
+    public void testGetUtilizationWhenDefaultConstructor() {
         final double usagePercentInc = 0.1;
         final double initialUtilization = 0;
         final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initialUtilization);
@@ -22,28 +22,28 @@ public class UtilizationModelDynamicTest {
     }
 
     @Test
-    public void testGetUtilization_twoParamConstructorDecreasingUtilization() {
+    public void testGetUtilizationWhenTwoParamConstructorAndDecreasingUtilization() {
         final double usagePercentInc = -0.1, initialUtilization = 0.5;
         final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initialUtilization);
         checkUtilization(initialUtilization, usagePercentInc, instance);
     }
 
     @Test
-    public void testGetUtilization_oneParamConstructor() {
+    public void testGetUtilizationWhenOneParamConstructor() {
         final double usagePercentInc = 0.2, initUsage = 0;
         final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initUsage);
         checkUtilization(initUsage, usagePercentInc, instance);
     }
 
     @Test
-    public void testGetUtilization_twoParamConstructor() {
+    public void testGetUtilizationWhenTwoParamConstructor() {
         final double usagePercentInc = 0.2, initUsage = 0.5;
         final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initUsage);
         checkUtilization(initUsage, usagePercentInc, instance);
     }
 
     @Test
-    public void testGetUtilization_twoParamConstructorAndMaxUtilization() {
+    public void testGetUtilizationWhenTwoParamConstructorAndMaxUtilization() {
         final double usagePercentInc = 0.2, initUsage = 0.5;
         final double maxUsagePercent = 0.7;
         final UtilizationModelDynamic instance = createUtilizationModel(usagePercentInc, initUsage);
@@ -61,7 +61,7 @@ public class UtilizationModelDynamicTest {
     }
 
     @Test
-    public void testGetUtilization_NegativeIncrement() {
+    public void testGetUtilizationWhenNegativeIncrement() {
         final double increment = -0.1, initialUsage = 1;
         final double expResult = 0.9;
         final int initialTime = 1;
@@ -70,7 +70,7 @@ public class UtilizationModelDynamicTest {
     }
 
     @Test
-    public void testConstructor_zeroUtilizationPercentageIncrementPerSecond() {
+    public void testConstructorWhenZeroUtilizationPercentageIncrementPerSecond() {
         final double increment = 0;
         final double initialUsage = 0.1;
         final int initialTime = 1;
@@ -79,31 +79,31 @@ public class UtilizationModelDynamicTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testConstructor_utilizationPercentageIncrementPerSecondLowerThanMinusOne() {
+    public void testConstructorWhenUtilizationPercentageIncrementPerSecondLowerThanMinusOne() {
         new UtilizationModelDynamic(-1.1);
     }
 
     @Test
-    public void testConstructor_UtilizationPercentageIncrementGreaterThan1() {
+    public void testConstructorWhenUtilizationPercentageIncrementGreaterThan1() {
         final double initialUtilizationPercent = 1.1;
         final UtilizationModelDynamic model = new UtilizationModelDynamic(initialUtilizationPercent);
         assertEquals(initialUtilizationPercent, model.getUtilization(), 0);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void constructor_NegativeInitialValue() {
+    public void testConstructorWhenNegativeInitialValue() {
         new UtilizationModelDynamic(Unit.PERCENTAGE, -1.1);
     }
 
     @Test
-    public void testConstructor_InitialValueGreaterThan1() {
+    public void testConstructorWhenInitialValueGreaterThan1() {
         final int initialUtilization = 2;
         final UtilizationModelDynamic model = new UtilizationModelDynamic(Unit.PERCENTAGE, initialUtilization);
         assertEquals(initialUtilization, model.getUtilization(), 0);
     }
 
     @Test
-    public void testTwoParamsConstructor_zeroInitialUtilization() {
+    public void testTwoParamsConstructorWhenZeroInitialUtilization() {
         final double expResult = 0;
         final UtilizationModelDynamic instance = new UtilizationModelDynamic(0);
         assertEquals(expResult, instance.getUtilization(), 0.0);
@@ -123,7 +123,7 @@ public class UtilizationModelDynamicTest {
     }
 
     @Test
-    public void testSetMaxResourceUsagePercentage_valueGreaterThanOne() {
+    public void testSetMaxResourceUsagePercentageWhenValueGreaterThanOne() {
         final UtilizationModelDynamic instance = new UtilizationModelDynamic();
         final double maxResourceUsagePercentage = 1.1;
         instance.setMaxResourceUtilization(maxResourceUsagePercentage);
@@ -131,7 +131,7 @@ public class UtilizationModelDynamicTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testSetMaxResourceUsagePercentage_negativeValue() {
+    public void testSetMaxResourceUsagePercentageWhenNegativeValue() {
         final UtilizationModelDynamic instance = new UtilizationModelDynamic();
         instance.setMaxResourceUtilization(-1);
         instance.setMaxResourceUtilization(-0.1);

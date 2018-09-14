@@ -62,7 +62,7 @@ public enum TaskEventType {
 
             final DatacenterBroker broker = reader.createBrokerIfAbsent(event.getUserName());
             broker.submitCloudlet(cloudlet);
-            return reader.addAvailableCloudlet(cloudlet);
+            return reader.addAvailableObject(cloudlet);
         }
     },
 

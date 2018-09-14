@@ -58,27 +58,12 @@ public final class CloudletTestUtil {
         return createCloudlet(id, CLOUDLET_LENGTH, numberOfPes);
     }
 
-    public static CloudletSimple createCloudletWithOnePe(final int id) {
-        return createCloudlet(id, CLOUDLET_LENGTH, 1);
-    }
-
-    /**
-     * Creates a Cloudlet with id equals to 0.
-     *
-     * @param length the length of the Cloudlet to create
-     * @param numberOfPes the number of PEs of the Cloudlet to create
-     * @return the created Cloudlet
-     */
-    public static CloudletSimple createCloudlet0(final long length, final int numberOfPes) {
-        return createCloudlet(0, length, numberOfPes);
-    }
-
     private static CloudletSimple createCloudlet(
-         final int id,
-         final UtilizationModel utilizationModelCPU,
-         final UtilizationModel utilizationModelRAM,
-         final UtilizationModel utilizationModelBW,
-         final long length, final int numberOfPes)
+        final int id,
+        final UtilizationModel utilizationModelCPU,
+        final UtilizationModel utilizationModelRAM,
+        final UtilizationModel utilizationModelBW,
+        final long length, final int numberOfPes)
     {
         final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
@@ -94,4 +79,20 @@ public final class CloudletTestUtil {
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         return cloudlet;
     }
+
+    /**
+     * Creates a Cloudlet with id equals to 0.
+     *
+     * @param length the length of the Cloudlet to create
+     * @param numberOfPes the number of PEs of the Cloudlet to create
+     * @return the created Cloudlet
+     */
+    public static CloudletSimple createCloudlet0(final long length, final int numberOfPes) {
+        return createCloudlet(0, length, numberOfPes);
+    }
+
+    public static CloudletSimple createCloudletWithOnePe(final int id) {
+        return createCloudlet(id, CLOUDLET_LENGTH, 1);
+    }
+
 }

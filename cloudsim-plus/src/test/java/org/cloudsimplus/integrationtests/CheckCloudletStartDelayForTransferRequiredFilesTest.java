@@ -40,9 +40,9 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.junit.Assert.assertEquals;
 
@@ -138,10 +138,9 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	 * by the created cloudlet.
 	 */
 	private void createListOfFiles() {
-		files = new ArrayList<>();
-		for(int i = 0; i < NUMBER_OF_FILES_TO_CREATE; i++) {
-			files.add(new File(String.format("file%d", i), FILE_SIZE_MB));
-		}
+		files = IntStream.range(0, NUMBER_OF_FILES_TO_CREATE)
+                         .mapToObj(i -> new File(String.format("file%d", i), FILE_SIZE_MB))
+                         .collect(Collectors.toList());
 	}
 
 	@Test

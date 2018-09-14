@@ -68,7 +68,7 @@ public class CloudletSimpleTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testAddOnCloudletFinishEventListener_Null() {
+    public void testAddOnCloudletFinishEventListenerWhenNull() {
         cloudlet.addOnFinishListener(null);
     }
 
@@ -80,7 +80,7 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testRemoveOnCloudletFinishEventListener_Null() {
+    public void testRemoveOnCloudletFinishEventListenerWhenNull() {
         cloudlet.addOnFinishListener(e->{});
         assertFalse(cloudlet.removeOnFinishListener(null));
     }
@@ -103,14 +103,14 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterNotAssigned() {
+    public void testAssignCloudletToDataCenterWhenRecordLogEnabledDatacenterNotAssigned() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet(0);
         cloudlet.assignToDatacenter(Datacenter.NULL);
         assertEquals(Datacenter.NULL, cloudlet.getLastDatacenter());
     }
 
     @Test
-    public void testAssignCloudletToDataCenter_recodLogEnabledDatacenterAlreadAssigned() {
+    public void testAssignCloudletToDataCenterWhenRecordLogEnabledDatacenterAlreadyAssigned() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet(0);
         cloudlet.assignToDatacenter(Datacenter.NULL);
 
@@ -227,7 +227,7 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testAddCloudletFinishedSoFar_WhenValueIsLowerThanLen() {
+    public void testAddCloudletFinishedSoFarWhenValueIsLowerThanLen() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.assignToDatacenter(Datacenter.NULL);
         final long cloudletFinishedSoFar = cloudlet.getLength() / 2;
@@ -236,7 +236,7 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testAddCloudletFinishedSoFar_WhenValueIsHigherThanLen() {
+    public void testAddCloudletFinishedSoFarWhenValueIsHigherThanLen() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.assignToDatacenter(Datacenter.NULL);
         final long cloudletFinishedSoFar = cloudlet.getLength() / 2;
@@ -246,7 +246,7 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testAddCloudletFinishedSoFar_lengthParamGreaterThanCloudletLength() {
+    public void testAddCloudletFinishedSoFarWhenLengthParamGreaterThanCloudletLength() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         final long expected = cloudlet.getLength();
         cloudlet.addFinishedLengthSoFar(expected*2);
@@ -338,25 +338,25 @@ public class CloudletSimpleTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testSetUtilizationModelBw_null() {
+    public void testSetUtilizationModelBwWhenNull() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.setUtilizationModelBw(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testSetUtilizationModelRam_null() {
+    public void testSetUtilizationModelRamWhenNull() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.setUtilizationModelRam(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testSetUtilizationModelCpu_null() {
+    public void testSetUtilizationModelCpuWhenNull() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         cloudlet.setUtilizationModelCpu(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNew_nullUtilizationModel() {
+    public void testConstructorWhenNullUtilizationModel() {
         CloudletTestUtil.createCloudlet(0, null);
     }
 

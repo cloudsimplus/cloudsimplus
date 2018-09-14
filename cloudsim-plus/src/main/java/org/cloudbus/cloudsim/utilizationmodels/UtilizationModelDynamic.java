@@ -137,7 +137,7 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         this.currentUtilizationTime = 0;
         this.setCurrentUtilization(initialUtilization);
 
-        utilizationUpdateFunction = um -> um.currentUtilization;
+        utilizationUpdateFunction = modelInstance -> modelInstance.currentUtilization;
     }
 
     /**

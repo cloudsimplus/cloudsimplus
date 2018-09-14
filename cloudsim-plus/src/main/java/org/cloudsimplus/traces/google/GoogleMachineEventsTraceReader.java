@@ -335,10 +335,6 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         hostsForRemoval.forEach(host -> cis.schedule(dc, host.getShutdownTime() + dc.getId() * 0.00001, CloudSimTags.HOST_REMOVE, host.getId()));
     }
 
-    /* default */ boolean addAvailableHost(final Host host) {
-        return availableObjects.add(requireNonNull(host));
-    }
-
     @Override
     protected boolean processParsedLineInternal() {
         return getEventType().process(this);

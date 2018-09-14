@@ -29,20 +29,12 @@ import static org.junit.Assert.*;
  * @since CloudSim Toolkit 2.0
  */
 public class VmSchedulerTimeSharedTest {
-
     private static final double MIPS = 1000;
     private VmScheduler vmScheduler;
     private Vm vm0;
     private Vm vm1;
 
-    @Before
-    public void setUp() throws Exception {
-        vmScheduler = createVmScheduler(MIPS, 2);
-        vm0 = VmTestUtil.createVm(0, MIPS / 4, 2);
-        vm1 = VmTestUtil.createVm(1, MIPS / 2, 2);
-    }
-
-    private VmScheduler createVmScheduler(double mips, int pesNumber) {
+    private VmScheduler createVmScheduler(final double mips, final int pesNumber) {
         final VmSchedulerTimeShared scheduler = new VmSchedulerTimeShared();
         final List<Pe> peList = new ArrayList<>(pesNumber);
         LongStream.range(0, pesNumber).forEach(i -> peList.add(new PeSimple(mips, new PeProvisionerSimple())));
@@ -53,6 +45,22 @@ public class VmSchedulerTimeSharedTest {
             .setVmScheduler(scheduler)
             .setId(0);
         return scheduler;
+    }
+
+    @Before
+    public void setUp() {
+        vmScheduler = createVmScheduler(MIPS, 2);
+        vm0 = VmTestUtil.createVm(0, MIPS / 4, 2);
+        vm1 = VmTestUtil.createVm(1, MIPS / 2, 2);
+    }
+
+    @Test
+    public void testInit() {
+        final List<Pe> peList = vmScheduler.getHost().getWorkingPeList();
+        assertEquals(peList, vmScheduler.getWorkingPeList());
+        assertEquals(2000, vmScheduler.getAvailableMips(), 0);
+        assertEquals(1000, vmScheduler.getMaxAvailableMips(), 0);
+        assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm0), 0);
     }
 
     @Test
@@ -74,15 +82,6 @@ public class VmSchedulerTimeSharedTest {
         final Vm vm2 = VmTestUtil.createVm(2, MIPS * 2, 2);
         vm2.setCreated(false);
         assertFalse(vmScheduler.isSuitableForVm(vm2));
-    }
-
-    @Test
-    public void testInit() {
-        final List<Pe> peList = vmScheduler.getHost().getWorkingPeList();
-        assertEquals(peList, vmScheduler.getWorkingPeList());
-        assertEquals(2000, vmScheduler.getAvailableMips(), 0);
-        assertEquals(1000, vmScheduler.getMaxAvailableMips(), 0);
-        assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm0), 0);
     }
 
     @Test
@@ -113,7 +112,7 @@ public class VmSchedulerTimeSharedTest {
     }
 
     @Test
-    public void testAllocatePes_forVmMigrationIn() {
+    public void testAllocatePesWhenVmMigrationIn() {
         vm0.setInMigration(true);
 
         vmScheduler.getHost().addMigratingInVm(vm0);
@@ -130,7 +129,7 @@ public class VmSchedulerTimeSharedTest {
     }
 
     @Test
-    public void testAllocatePes_forVmMigrationOut() {
+    public void testAllocatePesWhenVmMigrationOut() {
         vmScheduler = createVmScheduler(MIPS, 2);
         final double vmMips = MIPS / 4;
         final Vm vm0 = VmTestUtil.createVm(0, vmMips, 2);

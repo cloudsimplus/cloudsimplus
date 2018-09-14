@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -52,7 +53,7 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      * The {@link GoogleTaskEventsTraceReader} creates
      * {@link org.cloudbus.cloudsim.cloudlets.Cloudlet}s.
      */
-    protected final Set<T> availableObjects;
+    private final Set<T> availableObjects;
 
     protected GoogleTraceReaderAbstract(final String filePath) throws IOException {
         this(filePath, Files.newInputStream(Paths.get(filePath)));
@@ -116,5 +117,15 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
 
     protected String formatPercentValue(final double percent){
         return String.format("%.1f", percent*100);
+    }
+
+    /**
+     * Adds an object T to the list of available objects.
+     * @param object the object T to add
+     * @return true if the object was added, false otherwise
+     * @see #availableObjects
+     */
+    /* default */ final boolean addAvailableObject(final T object){
+        return availableObjects.add(Objects.requireNonNull(object));
     }
 }

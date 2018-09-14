@@ -74,13 +74,13 @@ public class PeTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testSetPeProvisioner_null() {
+    public void testSetPeProvisionerWhenNull() {
         final PeSimple pe = createPe();
         pe.setPeProvisioner(null);
     }
 
     @Test(expected = NullPointerException.class)
-    public void testNewPe_nullPeProvisioner() {
+    public void testNewPeWhenNullProvisioner() {
         createPe(null);
     }
 

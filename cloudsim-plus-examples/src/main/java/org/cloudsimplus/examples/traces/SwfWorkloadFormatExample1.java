@@ -92,6 +92,11 @@ public class SwfWorkloadFormatExample1 {
     private static final String WORKLOAD_FILENAME = "NASA-iPSC-1993-3.1-cln.swf.gz";
 
     /**
+     * The base dir inside the resource directory to get SWF workload files.
+     */
+    private static final String WORKLOAD_BASE_DIR = "workload/swf/";
+
+    /**
      * A {@link Comparator} that sorts VMs submitted to a broker
      * by the VM's required PEs number in decreasing order.
      * This way, VMs requiring more PEs are created first.
@@ -196,7 +201,7 @@ public class SwfWorkloadFormatExample1 {
     }
 
     private void createCloudletsFromWorkloadFile() {
-        final String fileName = "workload/swf/" + WORKLOAD_FILENAME;
+        final String fileName = WORKLOAD_BASE_DIR + WORKLOAD_FILENAME;
         SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(fileName, CLOUDLETS_MIPS);
         reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();

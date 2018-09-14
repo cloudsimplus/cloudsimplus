@@ -625,10 +625,6 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
         this.cloudletCreationFunction = requireNonNull(cloudletCreationFunction);
     }
 
-    boolean addAvailableCloudlet(final Cloudlet cloudlet){
-        return availableObjects.add(requireNonNull(cloudlet));
-    }
-
     /**
      * Gets the List of brokers created according to the username from the trace file,
      * representing a customer.

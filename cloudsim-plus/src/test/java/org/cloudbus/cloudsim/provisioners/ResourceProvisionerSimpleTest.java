@@ -47,7 +47,7 @@ public class ResourceProvisionerSimpleTest {
     }
 
     @Test(expected = NullPointerException.class)
-    public void testCreateProvisioner_null() {
+    public void testCreateProvisionerWhenResourceNull() {
         createSimpleProvisioner(null);
     }
 

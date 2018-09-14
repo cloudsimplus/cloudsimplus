@@ -4,6 +4,7 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.nio.file.FileSystem;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -79,7 +80,7 @@ public final class ResourceLoader {
         try {
             uri = getResourceUrl(klass, resourceDir).toURI();
         } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException(e);
         }
 
         try {

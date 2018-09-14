@@ -189,7 +189,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testReallocateMigratingInVms_allVmsAllocatedToTheHost() {
+    public void testReallocateMigratingInVmsWhenAllVmsAllocatedToTheHost() {
         final int numberOfVms = 4;
         final Host host = createHostSimple(0, numberOfVms);
 
@@ -209,7 +209,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testReallocateMigratingInVms_oneVmAlreadyAllocatedToTheHost() {
+    public void testReallocateMigratingInVmsWhenOneVmAlreadyAllocatedToTheHost() {
         final int numberOfVms = 4;
         final HostSimple host = createHostSimple(0, numberOfVms);
 
@@ -236,7 +236,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testAddMigratingInVm_checkVmWasChangedToInMigration() {
+    public void testAddMigratingInVmAndCheckVmWasChangedToInMigration() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
         final VmSimple vm = VmTestUtil.createVm(
@@ -251,7 +251,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testAddMigratingInVm_checkAvailableMipsAndStorage() {
+    public void testAddMigratingInVmAndCheckAvailableMipsAndStorage() {
         final int numberOfPes = 1;
         final Host targetHost = createHostSimple(0, numberOfPes);
         final double VM_MIPS = 500;
@@ -266,7 +266,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testAddMigratingInVm_checkAllocatedMips() {
+    public void testAddMigratingInVmAndCheckAllocatedMips() {
         final int numberOfPes = 1;
         final Host targetHost = createHostSimple(0, numberOfPes);
         final double VM_MIPS = 500;
@@ -280,7 +280,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testAddMigratingInVm_lackOfRam() {
+    public void testAddMigratingInVmWhenLackRam() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
         final Vm vm = VmTestUtil.createVm(
@@ -290,7 +290,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testAddMigratingInVm_lackOfStorage() {
+    public void testAddMigratingInVmWhenLackStorage() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
         final Vm vm = VmTestUtil.createVm(0, HOST_MIPS, numberOfPes, RAM, BW, STORAGE * 2, new CloudletSchedulerTimeShared());
@@ -298,7 +298,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testAddMigratingInVm_lackOfBw() {
+    public void testAddMigratingInVmWhenLackBw() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
         final Vm vm = VmTestUtil.createVm(0, HOST_MIPS, numberOfPes, RAM, BW * 2, STORAGE, new CloudletSchedulerTimeShared());
@@ -306,7 +306,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testAddMigratingInVm_lackOfMips() {
+    public void testAddMigratingInVmWhenLackMips() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
         final Vm vm = VmTestUtil.createVm(0, HOST_MIPS * 2, numberOfPes, RAM, BW, STORAGE, new CloudletSchedulerTimeShared());
@@ -425,7 +425,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testVmCreate_unavailableStorageSpace() {
+    public void testVmCreateWhenUnavailableStorageSpace() {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
                 VmTestUtil.createVm(
@@ -435,7 +435,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testVmCreate_unavailableBw() {
+    public void testVmCreateWhenUnavailableBw() {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
                 VmTestUtil.createVm(
@@ -474,7 +474,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testGetNumberOfFreePes_oneBusyPes() {
+    public void testGetNumberOfFreePesWhenOneBusyPes() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
         host.getPeList().get(0).setStatus(Pe.Status.BUSY);
@@ -482,7 +482,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testGetNumberOfFreePes_noFreePes() {
+    public void testGetNumberOfFreePesWhenNoFreePes() {
         final int numberOfPes = 4;
         final Host host = createHostSimple(0, numberOfPes);
 
@@ -491,7 +491,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testVmCreate_unavailableRam() {
+    public void testVmCreateWhenUnavailableRam() {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
                 VmTestUtil.createVm(
@@ -501,7 +501,7 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void testVmCreate_unavailableMips() {
+    public void testVmCreateWhenUnavailableMips() {
         final Host host = createHostSimple(0, 1);
         final VmSimple vm =
                 VmTestUtil.createVm(

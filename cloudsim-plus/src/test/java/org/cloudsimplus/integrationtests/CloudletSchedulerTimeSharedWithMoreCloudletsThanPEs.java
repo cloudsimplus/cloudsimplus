@@ -65,8 +65,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     @Before
     public void setUp() {
         simulation = new CloudSim();
-        UtilizationModel utilizationModel = new UtilizationModelFull();
-        SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
+        final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
         scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
             new HostBuilder()
                 .setVmSchedulerClass(VmSchedulerSpaceShared.class)
@@ -84,6 +83,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
             .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
             .createAndSubmitVms(NUMBER_OF_VMS);
 
+        final UtilizationModel utilizationModel = new UtilizationModelFull();
         brokerBuilder.getCloudletBuilder()
             .setLength(CLOUDLET_LENGTH)
             .setUtilizationModelCpu(utilizationModel)

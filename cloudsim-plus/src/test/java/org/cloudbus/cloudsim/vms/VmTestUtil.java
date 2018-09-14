@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * @since CloudSim Plus 4.0.0
  */
 public final class VmTestUtil {
-    static final long BW = 10000;
+    static final long BANDWIDTH = 10000;
     static final long SIZE = 1000;
     static final String VMM = "Xen";
     static final double MIPS = 1000;
@@ -25,28 +25,6 @@ public final class VmTestUtil {
      * A private constructor to avoid class instantiation.
      */
     private VmTestUtil(){/**/}
-
-    /**
-     * Creates a VM with the 1 PE and half mips capacity defined in
-     * {@link #MIPS}.
-     *
-     * @param vmId the id of the VM
-     * @return
-     */
-    public static Vm createVmWithOnePeAndHalfMips(final int vmId) {
-        return createVm(vmId, MIPS / 2, 1, RAM, BW, SIZE, CloudletScheduler.NULL);
-    }
-
-    /**
-     * Creates a VM with 1 PE and the total mips capacity defined in
-     * {@link #MIPS}.
-     *
-     * @param vmId the id of the VM
-     * @return
-     */
-    public static Vm createVmWithOnePeAndTotalMips(final int vmId) {
-        return createVm(vmId, MIPS, 1, RAM, BW, SIZE, CloudletScheduler.NULL);
-    }
 
     /**
      * Creates a VM with the given numberOfPes and default configuration for
@@ -68,7 +46,7 @@ public final class VmTestUtil {
      * @return
      */
     public static VmSimple createVm(CloudletScheduler cloudletScheduler) {
-        return createVm(ID, MIPS, PES_NUMBER, RAM, BW, SIZE, cloudletScheduler);
+        return createVm(ID, MIPS, PES_NUMBER, RAM, BANDWIDTH, SIZE, cloudletScheduler);
     }
 
     /**
@@ -81,7 +59,7 @@ public final class VmTestUtil {
      * @return
      */
     public static VmSimple createVm(final int vmId, final double mips, final int numberOfPes) {
-        return createVm(vmId, mips, numberOfPes, RAM, BW, SIZE, CloudletScheduler.NULL);
+        return createVm(vmId, mips, numberOfPes, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL);
     }
 
     /**
@@ -124,19 +102,4 @@ public final class VmTestUtil {
         return vm;
     }
 
-    /**
-     * Creates a VM with the given numberOfPes for a given user and default
-     * configuration for HOST_MIPS, HOST_RAM, HOST_BW and Storage.
-     *
-     * @param vmId
-     * @param broker
-     * @param numberOfPes
-     * @return
-     */
-    public static VmSimple createVmWithSpecificNumberOfPEsForSpecificUser(
-        final int vmId, final DatacenterBroker broker, final int numberOfPes) {
-        final VmSimple vm = createVm(vmId, MIPS, numberOfPes, RAM, BW, SIZE, CloudletScheduler.NULL);
-        vm.setBroker(broker);
-        return vm;
-    }
 }

@@ -41,11 +41,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.function.BinaryOperator.maxBy;
-import static java.util.function.Function.identity;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
@@ -444,7 +444,8 @@ public class HostFaultInjection extends CloudSimEntity {
         LOGGER.warn("\t{} VMs affected from a total of {}. {} PEs are going to be removed from them.",
                 affectedVms, lastFailedHost.getVmList().size(), failedPesToRemoveFromVms);
         int idx = 0;
-        while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms-- > 0) {
+        while (!vmsWithPes.isEmpty() && failedPesToRemoveFromVms > 0) {
+            failedPesToRemoveFromVms--;
             idx = idx % vmsWithPes.size();
             final Vm vm = vmsWithPes.get(idx);
             lastFailedHost.getVmScheduler().deallocatePesFromVm(vm, 1);
@@ -458,6 +459,7 @@ public class HostFaultInjection extends CloudSimEntity {
             idx++;
             vmsWithPes = getVmsWithPEsFromFailedHost();
         }
+        failedPesToRemoveFromVms--;
     }
 
     private int numberOfFailedPesToRemoveFromVms() {
@@ -493,7 +495,9 @@ public class HostFaultInjection extends CloudSimEntity {
         final Comparator<Vm> comparator = Comparator.comparingInt(Vm::getId);
         return vmsWithoutPes
                     .stream()
-                    .collect(toMap(Vm::getBroker, identity(), maxBy(comparator)));
+                    .collect(
+                        toMap(Vm::getBroker, Function.identity(), BinaryOperator.maxBy(comparator))
+                    );
     }
 
     /**
