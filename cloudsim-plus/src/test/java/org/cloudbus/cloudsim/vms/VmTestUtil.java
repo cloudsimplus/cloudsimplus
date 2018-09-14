@@ -31,11 +31,11 @@ public final class VmTestUtil {
      * HOST_MIPS, HOST_RAM, HOST_BW and Storage.
      *
      * @param vmId
-     * @param numberOfPes
+     * @param pesNumber
      * @return
      */
-    public static VmSimple createVm(final int vmId, final int numberOfPes) {
-        return createVm(vmId, MIPS, numberOfPes);
+    public static VmSimple createVm(final int vmId, final int pesNumber) {
+        return createVm(vmId, MIPS, pesNumber);
     }
 
     /**
@@ -45,7 +45,7 @@ public final class VmTestUtil {
      * @param cloudletScheduler
      * @return
      */
-    public static VmSimple createVm(CloudletScheduler cloudletScheduler) {
+    public static VmSimple createVm(final CloudletScheduler cloudletScheduler) {
         return createVm(ID, MIPS, PES_NUMBER, RAM, BANDWIDTH, SIZE, cloudletScheduler);
     }
 
@@ -55,11 +55,11 @@ public final class VmTestUtil {
      *
      * @param vmId
      * @param mips
-     * @param numberOfPes
+     * @param pesNumber
      * @return
      */
-    public static VmSimple createVm(final int vmId, final double mips, final int numberOfPes) {
-        return createVm(vmId, mips, numberOfPes, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL);
+    public static VmSimple createVm(final int vmId, final double mips, final int pesNumber) {
+        return createVm(vmId, mips, pesNumber, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL);
     }
 
     /**
@@ -69,17 +69,18 @@ public final class VmTestUtil {
      * @param capacity a capacity that will be set to all resources, such as CPU, HOST_RAM, HOST_BW, etc.
      * @return
      */
-    public static VmSimple createVm(final int vmId, long capacity) {
+    public static VmSimple createVm(final int vmId, final long capacity) {
         return createVm(vmId, capacity, 1, capacity, capacity, capacity, CloudletScheduler.NULL);
     }
 
-    public static VmSimple createVm(final int vmId,
-                                    final double mips, final int numberOfPes,
-                                    final long ram, final long bw, final long storage)
+    public static VmSimple createVm(
+        final int vmId,
+        final double mips, final int pesNumber,
+        final long ram, final long bw, final long storage)
     {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
-        final VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
+        final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
                 .setCloudletScheduler(CloudletScheduler.NULL)
@@ -87,14 +88,15 @@ public final class VmTestUtil {
         return vm;
     }
 
-    public static VmSimple createVm(final int vmId,
-                                    final double mips, final int numberOfPes,
-                                    final long ram, final long bw, final long storage,
-                                    final CloudletScheduler scheduler)
+    public static VmSimple createVm(
+        final int vmId,
+        final double mips, final int pesNumber,
+        final long ram, final long bw, final long storage,
+        final CloudletScheduler scheduler)
     {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
-        final VmSimple vm = new VmSimple(vmId, mips, numberOfPes);
+        final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)
                 .setCloudletScheduler(scheduler)
