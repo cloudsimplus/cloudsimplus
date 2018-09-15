@@ -624,7 +624,7 @@ CloudletSchedulerSpaceShared and CloudletSchedulerTimeShared to CloudletSchedule
     - The class used a lot of hard-coded values for creating objects such as Cloudlets and VMs,
     that doesn't make sense once these values have to be defined by the developer creating
     the simulation. It was clear that the values were defined just to perform the simulations
-    presented at the paper ["NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations"](http://dx.doi.org/10.1109/UCC.2011.24). 
+    presented at the paper ["NetworkCloudSim: Modelling Parallel Applications in Cloud Simulations"](https://doi.org/10.1109/UCC.2011.24). 
     By this way, they aren't useful for other users
     which desire to create their own simulations. Further, the creation of hard-coded Cloudlets and VMs inside
     the NetDatacenterBroker doesn't make it to be reusable and even violates the 
