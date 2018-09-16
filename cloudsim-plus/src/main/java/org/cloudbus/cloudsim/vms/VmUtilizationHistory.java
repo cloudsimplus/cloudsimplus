@@ -16,7 +16,7 @@ import java.util.TreeMap;
 public class VmUtilizationHistory implements UtilizationHistory {
 
     private boolean enabled;
-    private int maxHistoryEntires;
+    private int maxHistoryEntries;
 
     /**
      * @see #getHistory()
@@ -51,65 +51,87 @@ public class VmUtilizationHistory implements UtilizationHistory {
 
     @Override
     public double getUtilizationMad() {
-        if (!history.isEmpty()) {
-            final int length = Math.min(getMaxHistoryEntries(), getHistory().size());
-            final double median = MathUtil.median(getHistory().values());
-            final double[] deviationSum = new double[length];
-            for (int i = 0; i < length; i++) {
-                deviationSum[i] = Math.abs(median - getHistory().get(i));
-            }
-            return MathUtil.median(deviationSum);
+        if (history.isEmpty()) {
+            return 0;
         }
 
-        return 0;
+        final int length = Math.min(getMaxHistoryEntries(), getHistory().size());
+        final double median = MathUtil.median(getHistory().values());
+        final double[] deviationSum = new double[length];
+        for (int i = 0; i < length; i++) {
+            deviationSum[i] = Math.abs(median - getHistory().get(i));
+        }
+
+        return MathUtil.median(deviationSum);
     }
 
     @Override
     public double getUtilizationMean() {
-        if (!history.isEmpty()) {
-            final int maxEntries = Math.min(getMaxHistoryEntries(), getHistory().size());
-            final double usagePercentMean = getHistory().values().stream()
-                .limit(maxEntries)
-                .mapToDouble(usagePercent -> usagePercent)
-                .average()
-                .orElse(0);
-
-            return usagePercentMean * vm.getMips();
+        if (history.isEmpty()) {
+            return 0;
         }
 
-        return 0;
+        final int maxEntries = Math.min(getMaxHistoryEntries(), getHistory().size());
+        final double usagePercentMean = getHistory().values().stream()
+            .limit(maxEntries)
+            .mapToDouble(usagePercent -> usagePercent)
+            .average()
+            .orElse(0);
+
+        return usagePercentMean * vm.getMips();
     }
 
     @Override
     public double getUtilizationVariance() {
-        if (!history.isEmpty()) {
-            final double mean = getUtilizationMean();
-            final int maxNumOfEntriesToAverage = Math.min(getMaxHistoryEntries(), getHistory().size());
-            return getHistory().values().stream()
-                .limit(maxNumOfEntriesToAverage)
-                .mapToDouble(usagePercent -> usagePercent * vm.getMips())
-                .map(usageValue -> usageValue - mean)
-                .map(usageValue -> usageValue * usageValue)
-                .average().orElse(0);
+        if (history.isEmpty()) {
+            return 0;
         }
 
-        return 0;
+        final double mean = getUtilizationMean();
+        final int maxNumOfEntriesToAverage = Math.min(getMaxHistoryEntries(), getHistory().size());
+        return getHistory().values().stream()
+            .limit(maxNumOfEntriesToAverage)
+            .mapToDouble(usagePercent -> usagePercent * vm.getMips())
+            .map(usageValue -> usageValue - mean)
+            .map(usageValue -> usageValue * usageValue)
+            .average().orElse(0);
     }
 
     @Override
-    public void addUtilizationHistory(double time){
-        if(!enabled) {
+    public void addUtilizationHistory(double time) {
+        if (!enabled || isNotTimeToAddHistory(time)) {
             return;
         }
 
-        if (time > 0 && (time - previousTime >= 1 || vm.isIdle())) {
-            final double utilization = vm.getCpuPercentUsage(vm.getCloudletScheduler().getPreviousTime());
-            if(Math.floor(time) > previousTime || vm.isIdle()) {
-                time = vm.isIdle() ? time : (int)time;
-                addUtilizationHistoryValue(time, utilization);
-                this.previousTime = time;
-            }
-        }
+        final double utilization = vm.getCpuPercentUsage(vm.getCloudletScheduler().getPreviousTime());
+        time = vm.isIdle() ? time : (int)time;
+        addUtilizationHistoryValue(time, utilization);
+        this.previousTime = time;
+    }
+
+    /**
+     * Defines that it isn't time to add utilization history in any one of the following conditions:
+     * - the simulation clock was not changed yet;
+     * - the time passed is smaller than one second and the VM is not idle;
+     * - the floor time is equal to the previous time and VM is not idle.
+     *
+     * If the time is smaller than one second and the VM became idle,
+     * the history will be added so that we know what is the resource
+     * utilization when the VM became idle.
+     * This way, we can see clearly in the history when the VM was busy
+     * and when it became idle.
+     *
+     * If the floor time is equal to the previous time and VM is not idle,
+     * that means not even a second has passed. This way,
+     * that utilization will not be stored.
+     *
+     * @param time the current simulation time
+     * @return true if it's time to add utilization history, false otherwise
+     */
+    private boolean isNotTimeToAddHistory(final double time) {
+        return time <= 0 ||
+               (time - previousTime < 1 && !vm.isIdle()) ||
+               (Math.floor(time) == previousTime && !vm.isIdle());
     }
 
     /**
@@ -120,8 +142,8 @@ public class VmUtilizationHistory implements UtilizationHistory {
      */
     private void addUtilizationHistoryValue(final double time, final double utilizationPercent) {
         history.put(time, utilizationPercent);
-        if (getHistory().size() > maxHistoryEntires) {
-            history.remove(maxHistoryEntires);
+        if (getHistory().size() > maxHistoryEntries) {
+            history.remove(maxHistoryEntries);
         }
     }
 
@@ -147,12 +169,12 @@ public class VmUtilizationHistory implements UtilizationHistory {
 
     @Override
     public int getMaxHistoryEntries() {
-        return maxHistoryEntires;
+        return maxHistoryEntries;
     }
 
     @Override
     public void setMaxHistoryEntries(final int maxHistoryEntries) {
-        this.maxHistoryEntires = maxHistoryEntries;
+        this.maxHistoryEntries = maxHistoryEntries;
     }
 
     @Override
