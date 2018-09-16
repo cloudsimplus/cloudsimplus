@@ -29,7 +29,7 @@ SimulatedAnnealing
    :author: Manoel Campos da Silva Filho
    :param <S>: the class of solutions the heuristic will deal with, starting with a random solution and execute the solution search in order to achieve a satisfying solution (defined by a stop criteria)
 
-   **See also:** \ `[1] R. A. Rutenbar, “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5, pp. 19–26, 1989. <http://dx.doi.org/10.1109/101.17235>`_\
+   **See also:** \ `[1] R. A. Rutenbar, “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5, pp. 19–26, 1989. <https://doi.org/10.1109/101.17235>`_\
 
 Constructors
 ------------

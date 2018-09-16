@@ -111,8 +111,8 @@ import static java.util.stream.Collectors.toList;
  *
  * @see <a href="http://www.ibm.com/developerworks/library/l-completely-fair-scheduler/">Inside the Linux 2.6 Completely Fair Scheduler</a>
  * @see <a href="http://www.ibm.com/developerworks/library/l-lpic1-103-6/index.html">Learn Linux, 101: Process execution priorities</a>
- * @see <a href="http://dx.doi.org/10.1145/1400097.1400102">Towards achieving fairness in the Linux scheduler</a>
- * @see <a href="http://dx.doi.org/10.1145/10.1145/2901318.2901326">The Linux scheduler</a>
+ * @see <a href="https://doi.org/10.1145/1400097.1400102">Towards achieving fairness in the Linux scheduler</a>
+ * @see <a href="https://doi.org/10.1145/10.1145/2901318.2901326">The Linux scheduler</a>
  * @see <a href="https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt">kernel.org: CFS Scheduler Design</a>
  * @see <a href="https://oakbytes.wordpress.com/linux-scheduler/">Linux Scheduler FAQ</a>
  */

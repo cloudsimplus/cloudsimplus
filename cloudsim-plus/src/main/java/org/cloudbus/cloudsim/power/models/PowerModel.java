@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * power package please cite the following paper:</p>
  *
  * <ul>
- * <li><a href="http://dx.doi.org/10.1002/cpe.1867">Anton Beloglazov, and
+ * <li><a href="https://doi.org/10.1002/cpe.1867">Anton Beloglazov, and
  * Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of
  * Virtual Machines in Cloud Data Centers", Concurrency and Computation:

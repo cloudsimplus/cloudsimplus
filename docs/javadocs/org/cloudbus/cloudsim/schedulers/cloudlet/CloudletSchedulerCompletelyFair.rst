@@ -52,7 +52,7 @@ CloudletSchedulerCompletelyFair
 
    :author: Manoel Campos da Silva Filho
 
-   **See also:** \ `Inside the Linux 2.6 Completely Fair Scheduler <http://www.ibm.com/developerworks/library/l-completely-fair-scheduler/>`_\, \ `Learn Linux, 101: Process execution priorities <http://www.ibm.com/developerworks/library/l-lpic1-103-6/index.html>`_\, \ `Towards achieving fairness in the Linux scheduler <http://dx.doi.org/10.1145/1400097.1400102>`_\, \ `The Linux scheduler <http://dx.doi.org/10.1145/10.1145/2901318.2901326>`_\, \ `kernel.org: CFS Scheduler Design <https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt>`_\, \ `Linux Scheduler FAQ <https://oakbytes.wordpress.com/linux-scheduler/>`_\
+   **See also:** \ `Inside the Linux 2.6 Completely Fair Scheduler <http://www.ibm.com/developerworks/library/l-completely-fair-scheduler/>`_\, \ `Learn Linux, 101: Process execution priorities <http://www.ibm.com/developerworks/library/l-lpic1-103-6/index.html>`_\, \ `Towards achieving fairness in the Linux scheduler <https://doi.org/10.1145/1400097.1400102>`_\, \ `The Linux scheduler <https://doi.org/10.1145/10.1145/2901318.2901326>`_\, \ `kernel.org: CFS Scheduler Design <https://www.kernel.org/doc/Documentation/scheduler/sched-design-CFS.txt>`_\, \ `Linux Scheduler FAQ <https://oakbytes.wordpress.com/linux-scheduler/>`_\
 
 Methods
 -------

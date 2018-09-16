@@ -56,7 +56,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * @param <S> the class of solutions the heuristic will deal with, starting with a random solution
  *           and execute the solution search in order to achieve a satisfying solution (defined by a stop criteria)
  * @author Manoel Campos da Silva Filho
- * @see <a href="http://dx.doi.org/10.1109/101.17235">[1] R. A. Rutenbar,
+ * @see <a href="https://doi.org/10.1109/101.17235">[1] R. A. Rutenbar,
  * “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5,
  * pp. 19–26, 1989.</a>
  * @since CloudSim Plus 1.0

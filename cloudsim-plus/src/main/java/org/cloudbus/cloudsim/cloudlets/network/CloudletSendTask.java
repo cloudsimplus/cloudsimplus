@@ -22,7 +22,7 @@ import org.cloudbus.cloudsim.network.VmPacket;
  * Please refer to following publication for more details:
  * <ul>
  * <li>
- * <a href="http://dx.doi.org/10.1109/UCC.2011.24">
+ * <a href="https://doi.org/10.1109/UCC.2011.24">
  * Saurabh Kumar Garg and Rajkumar Buyya, NetworkCloudSim: Modelling Parallel
  * Applications in Cloud Simulations, Proceedings of the 4th IEEE/ACM
  * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
