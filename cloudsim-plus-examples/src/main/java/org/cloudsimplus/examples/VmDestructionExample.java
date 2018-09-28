@@ -56,11 +56,11 @@ import java.util.function.Function;
 
 /**
  * Shows how to destroy an overloaded VM during simulation runtime,
- * after its CPU usage reaches a defined percentage.
+ * after its CPU usage reaches a defined threshold.
  *
  * <p>The example uses the {@link UtilizationModelDynamic} to
  * increase VM CPU usage over time (in seconds).
- * This {@link UtilizationModelDynamic} uses a {@link Function}
+ * This {@link UtilizationModelDynamic} relies on a {@link Function}
  * to increase resource usage. Such a Function is defined using a Lambda Expression.</p>
  *
  * <p>It shows Host CPU utilization every second, so that when the overloaded VM
@@ -80,6 +80,9 @@ public class VmDestructionExample {
      * This way, simulation clock increases according to this time.
      * Since a {@link UtilizationModelDynamic} is being used to define CPU usage of VMs,
      * the utilization is updated at this time interval.
+     *
+     * Setting the Datacenter scheduling interval is required to allow
+     * the CPU utilization to increase along the simulation execution.
      *
      * @see Datacenter#setSchedulingInterval(double)
      */
@@ -119,12 +122,12 @@ public class VmDestructionExample {
         vmList = createVms();
         cloudletList = createCloudlets();
 
-        /*Adds a Listener to track the execution update of VM 1.
-        * If you want to track the update processing of multiple VMs, you can
-        * add this event listener for each desired VM that it will work
-        * transparently for any VM.
-        */
-        vmList.get(1).addOnUpdateProcessingListener(this::vmProcessingUpdate);
+        /* Adds a Listener to track the execution update of VM 1.
+         * If you want to track the update processing of multiple VMs, you can
+         * add this event listener for each desired VM that it will work
+         * transparently for any VM.
+         */
+        vmList.get(1).addOnUpdateProcessingListener(this::vmProcessingUpdateListener);
 
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
@@ -144,12 +147,12 @@ public class VmDestructionExample {
      *
      * @param info event information, including the VM that was updated
      */
-    private void vmProcessingUpdate(VmHostEventInfo info) {
+    private void vmProcessingUpdateListener(VmHostEventInfo info) {
         final Vm vm = info.getVm();
         //Destroys VM 1 when its CPU usage reaches 90%
         if(vm.getCpuPercentUsage() > 0.9 && vm.isCreated()){
             System.out.printf(
-                "\n# %.2f: Intentionally destroying %s due to CPU overload. Current VM CPU usage is %.2f%%\n" +
+                "\n# %.2f: Intentionally destroying %s due to CPU overload. Current VM CPU usage is %.2f%%\n",
                 info.getTime(), vm, vm.getCpuPercentUsage()*100);
             vm.getHost().destroyVm(vm);
         }
