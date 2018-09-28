@@ -65,7 +65,7 @@ import java.util.Map;
  * when a scheduling interval equals to the time of the last finished
  * Cloudlet is set.</p>
  *
- * <p>You are strongly recommended to firstly check the {@link PowerExample} to understand the details.</p>
+ * <p>You are strongly encouraged to firstly check the {@link PowerExample} to understand the details.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @author Alexandre Henrique Teixeira Dias
@@ -107,7 +107,6 @@ public class PowerExampleSchedulingInterval {
         Log.setLevel(Level.WARN);
         final int[] SCHEDULING_INTERVALS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100};
         for(final int interval : SCHEDULING_INTERVALS) {
-            //if(interval == 5)
             new PowerExampleSchedulingInterval(interval, true);
         }
     }

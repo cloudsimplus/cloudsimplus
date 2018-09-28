@@ -94,7 +94,7 @@ public final class MathUtil {
      * @return the average
      */
     public static double mean(final List<Double> list) {
-        return list.stream().mapToDouble(n->n).average().orElse(0);
+        return list.stream().mapToDouble(number->number).average().orElse(0);
     }
 
     /**
@@ -106,17 +106,16 @@ public final class MathUtil {
     public static double variance(final List<Double> list) {
         long count = 0;
         double mean = mean(list);
-        double s = 0.0;
+        double deltaSum = 0.0;
 
         for(final double x : list) {
             count++;
             final double delta = x - mean;
             mean += delta / count;
-            s += delta * (x - mean);
+            deltaSum += delta * (x - mean);
         }
-        // if you want to calculate std deviation
-        // of a sample change this to (s/(n-1))
-        return s / (count - 1);
+
+        return deltaSum / (count - 1);
     }
 
     /**
