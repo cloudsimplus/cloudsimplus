@@ -60,6 +60,7 @@ CloudSim Plus provides a lot of exclusive features, from the most basic ones to 
 1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/VerticalVmCpuScalingExample.java) that performs on-demand up and down allocation of VM resources such as Ram, Bandwidth and PEs (CPUs) ([#7](https://github.com/manoelcampos/cloudsim-plus/issues/7));
 1. [Horizontal VM scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/LoadBalancerByHorizontalVmScalingExample.java), allowing dynamic creation of VMs according to an overload condition. Such a condition is defined by a predicate that can check different VM resources usage such as CPU, RAM or BW ([#41](https://github.com/manoelcampos/cloudsim-plus/issues/41));
 1. Creation of joint power- and network-aware simulations. Regular classes such as `DatacenterSimple`, `HostSimple` and `VmSimple` now allow power-aware simulations. By using the network version of such classes, simulations that are both power- and network-aware can be created. ([#45](https://github.com/manoelcampos/cloudsim-plus/issues/45));
+1. [Highly accurate power usage computation for different Datacenter's scheduling intervals](https://github.com/manoelcampos/cloudsim-plus/blob/master/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/power/PowerExampleSchedulingInterval.java) ([#153](https://github.com/manoelcampos/cloudsim-plus/issues/153)).
 1. [Parallel execution of simulations in multi-core computers](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/ParallelSimulationsExample.java), allowing multiple simulations to be run simultaneously in an isolated way ([#38](https://github.com/manoelcampos/cloudsim-plus/issues/38));
 1. Delay creation of submitted VMs and [Cloudlets](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/DynamicCloudletsArrival1.java), enabling simulation of dynamic arrival of tasks ([#11](https://github.com/manoelcampos/cloudsim-plus/issues/11), [#23](https://github.com/manoelcampos/cloudsim-plus/issues/23)); 
 1. [Allow dynamic creation of VMs and Cloudlets without requiring creation of Datacenter Brokers at runtime](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/dynamic/DynamicCreationOfVmsAndCloudletsExample.java), enabling VMs to be created on-demand according to arrived cloudlets ([#43](https://github.com/manoelcampos/cloudsim-plus/issues/43));
@@ -121,7 +122,7 @@ download the project source by cloning the repository issuing the command `git c
 at a terminal. 
 
 The project has a [bash script](script/bootstrap.sh) you can use to build and run CloudSim Plus examples. 
-This is a script for Unix-like systems such as Linux, FreeBDS and Mac OSX.
+This is a script for Unix-like systems such as Linux, FreeBDS and macOS.
 
 To run some example type the command: `sh script/bootstrap.sh package.ExampleClassName`.
 For instance, to run the `CloudSimExample0` you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample0`. 
