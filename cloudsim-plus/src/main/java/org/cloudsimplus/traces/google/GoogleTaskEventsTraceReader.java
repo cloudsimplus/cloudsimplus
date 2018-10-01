@@ -114,7 +114,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
              */
             @Override
             public Double getValue(final GoogleTaskEventsTraceReader reader) {
-                return Conversion.microToSeconds(reader.getFieldIntValue(this));
+                return Conversion.microToSeconds(reader.getFieldDoubleValue(this));
             }
         },
 
@@ -400,7 +400,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
     }
 
     /**
-     * There is not pre-process for this implementation.
+     * There is no pre-process requirements for this implementation.
      */
     @Override
     protected void preProcess(){/**/}

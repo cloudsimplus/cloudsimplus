@@ -84,7 +84,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
              */
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return Conversion.microToSeconds(reader.getFieldIntValue(this));
+                return Conversion.microToSeconds(reader.getFieldDoubleValue(this));
             }
         },
 
@@ -100,7 +100,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
              */
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return Conversion.microToSeconds(reader.getFieldIntValue(this));
+                return Conversion.microToSeconds(reader.getFieldDoubleValue(this));
             }
         },
 
