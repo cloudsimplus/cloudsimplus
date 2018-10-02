@@ -23,6 +23,8 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.cloudbus.cloudsim.examples.network.applications.NetworkVmExampleAbstract.getSwitchIndex;
+
 /**
  * A simple example showing how two {@link NetworkCloudlet}'s communicate
  * between them, each one running inside VMs on different hosts.
@@ -141,7 +143,7 @@ public class NetworkVmsExample1 {
         }
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
-            int switchNum = host.getId() / edgeSwitches[0].getPorts();
+            final int switchNum = getSwitchIndex(host, edgeSwitches[0].getPorts());
             /*
             @TODO these two calls below are redundant.
             When connecting a host to a switch, the

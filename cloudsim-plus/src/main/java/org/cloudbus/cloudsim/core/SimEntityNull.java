@@ -10,6 +10,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  */
 final class SimEntityNull implements SimEntity {
     @Override public int compareTo(SimEntity entity) { return 0; }
+    @Override public State getState() { return State.FINISHED; }
     @Override public SimEntity setState(State state) { return this; }
     @Override public boolean isStarted() { return false; }
     @Override public boolean isAlive() { return false; }
@@ -28,5 +29,5 @@ final class SimEntityNull implements SimEntity {
     @Override public void shutdownEntity() {/**/}
     @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override public String getName() {  return ""; }
-    @Override public int getId() { return 0; }
+    @Override public long getId() { return 0; }
 }

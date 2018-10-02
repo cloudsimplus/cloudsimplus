@@ -164,8 +164,8 @@ public final class DynamicVmAllocationPolicyBestFitExample {
 
         final List<Cloudlet> finishedList = broker.getCloudletFinishedList();
         finishedList.sort(
-            Comparator.comparingInt((Cloudlet c) -> c.getVm().getHost().getId())
-                      .thenComparingInt(c -> c.getVm().getId()));
+            Comparator.comparingLong((Cloudlet c) -> c.getVm().getHost().getId())
+                      .thenComparingLong(c -> c.getVm().getId()));
         new CloudletsTableBuilder(finishedList).build();
         System.out.println(getClass().getSimpleName() + " finished!");
     }

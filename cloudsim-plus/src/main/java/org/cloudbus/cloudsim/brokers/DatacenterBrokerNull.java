@@ -24,6 +24,7 @@ import java.util.function.Supplier;
  */
 final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public int compareTo(SimEntity entity) { return 0; }
+    @Override public State getState() { return State.FINISHED; }
     @Override public SimEntity setState(State state) { return this; }
     @Override public boolean isStarted() {
         return false;
@@ -45,7 +46,7 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     }
     @Override public void run() {/**/}
     @Override public void start() {/**/}
-    @Override public int getId() {
+    @Override public long getId() {
         return -1;
     }
     @Override public String getName() {

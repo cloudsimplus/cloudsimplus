@@ -50,7 +50,8 @@ public interface DatacenterCharacteristics extends Identifiable {
      *
      * @return the id
      */
-    @Override int getId();
+    @Override
+    long getId();
 
     /**
      * Gets the {@link Datacenter} that owns these characteristics

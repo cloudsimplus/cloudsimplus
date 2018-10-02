@@ -27,7 +27,7 @@ final class CloudletSchedulerTimeSharedTestUtil {
      * @param id Cloudlet id
      * @return the created mock Cloudlet
      */
-    static CloudletExecution createCloudletExecInfo(final int id){
+    static CloudletExecution createCloudletExecInfo(final long id){
         final CloudletExecution cloudlet = EasyMock.createMock(CloudletExecution.class);
         EasyMock.expect(cloudlet.getCloudletId()).andReturn(id).anyTimes();
         EasyMock.replay(cloudlet);

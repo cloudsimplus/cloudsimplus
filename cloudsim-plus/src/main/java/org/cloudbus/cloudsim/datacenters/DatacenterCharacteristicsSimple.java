@@ -161,7 +161,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * @return
      */
     @Override
-    public int getId() {
+    public long getId() {
         return datacenter.getId();
     }
 

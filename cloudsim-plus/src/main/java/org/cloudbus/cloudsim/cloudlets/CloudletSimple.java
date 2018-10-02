@@ -46,12 +46,11 @@ public class CloudletSimple extends CloudletAbstract {
     /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
      * To change these values, use the respective setters.
-     *
-     * @param id  the unique ID of this cloudlet
+     *  @param id  the unique ID of this cloudlet
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
      * @param pesNumber the pes number
      */
-    public CloudletSimple(final int id,  final long length, final long pesNumber) {
+    public CloudletSimple(final long id, final long length, final long pesNumber) {
         super(id, length, pesNumber);
     }
 

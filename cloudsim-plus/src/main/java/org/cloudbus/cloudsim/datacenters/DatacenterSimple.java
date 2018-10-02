@@ -217,7 +217,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param srcEvt the received event
      */
     private void processHostRemovalRequest(final SimEvent srcEvt) {
-        final int hostId = (int)srcEvt.getData();
+        final long hostId = (long)srcEvt.getData();
         final Host host = getHostById(hostId);
         if(host == Host.NULL) {
             LOGGER.warn(
@@ -242,7 +242,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             getSimulation().getCloudInfoService(),
             evt -> MathUtil.same(evt.getTime(), srcEvt.getTime()) &&
                    evt.getTag() == CloudSimTags.HOST_REMOVE &&
-                   (int)evt.getData() == host.getId());
+                   (long)evt.getData() == host.getId());
     }
 
     private Optional<Host> getHostFromHostEvent(final SimEvent evt) {
@@ -956,7 +956,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public Host getHostById(final int id) {
+    public Host getHostById(final long id) {
         return hostList.stream().filter(h -> h.getId()==id).findFirst().map(h -> (Host)h).orElse(Host.NULL);
     }
 

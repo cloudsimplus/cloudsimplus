@@ -33,8 +33,8 @@ final class MachineNull implements Machine {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-    @Override public void setId(int id) {/**/}
-    @Override public int getId() {
+    @Override public void setId(long id) {/**/}
+    @Override public long getId() {
         return 0;
     }
     @Override public List<ResourceManageable> getResources() {

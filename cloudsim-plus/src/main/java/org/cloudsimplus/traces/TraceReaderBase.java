@@ -60,7 +60,7 @@ public abstract class TraceReaderBase extends TraceReaderAbstract {
      * @return
      */
     protected <T extends Enum> double getFieldDoubleValue(final T field){
-        return Double.valueOf(getFieldValue(field));
+        return Double.parseDouble(getFieldValue(field));
     }
 
     /**
@@ -82,7 +82,29 @@ public abstract class TraceReaderBase extends TraceReaderAbstract {
      * @return
      */
     protected <T extends Enum> int getFieldIntValue(final T field){
-        return Integer.valueOf(getFieldValue(field));
+        return Integer.parseInt(getFieldValue(field));
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
+     *
+     * @param field a enum value representing the index of the field to get the value
+     * @return
+     */
+    protected <T extends Enum> long getFieldLongValue(final T field){
+        return Long.parseLong(getFieldValue(field));
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
+     *
+     * @param field a enum value representing the index of the field to get the value
+     * @param defaultValue the default value to be returned if the field value is not an int
+     * @return
+     */
+    protected <T extends Enum> long getFieldLongValue(final T field, final long defaultValue){
+        final String value = getFieldValue(field);
+        return  value.matches("^-?\\d+$") ? Long.parseLong(value) : defaultValue;
     }
 
     /**

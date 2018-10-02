@@ -26,7 +26,7 @@ final class PeNull implements Pe {
     @Override public boolean isFull() {
         return false;
     }
-    @Override public int getId() {
+    @Override public long getId() {
         return -1;
     }
     @Override public long getCapacity() {
@@ -38,10 +38,7 @@ final class PeNull implements Pe {
     @Override public Status getStatus() {
         return Status.FAILED;
     }
-    @Override public void setId(int id) {/**/}
-    @Override public boolean setCapacity(long mipsCapacity) {
-        return false;
-    }
+    @Override public boolean setCapacity(long mipsCapacity) { return false; }
     @Override public boolean setCapacity(double mipsCapacity) {
         return false;
     }
@@ -72,9 +69,9 @@ final class PeNull implements Pe {
     @Override public boolean setStatus(Status status) {
         return false;
     }
-
     @Override public boolean isWorking() { return false; }
     @Override public boolean isFailed() { return true; }
     @Override public boolean isFree() { return false; }
     @Override public boolean isBuzy() { return false; }
+    @Override public void setId(long id) {/**/}
 }

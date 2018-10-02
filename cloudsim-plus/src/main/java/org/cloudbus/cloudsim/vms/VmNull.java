@@ -26,8 +26,8 @@ import java.util.List;
  * @see Vm#NULL
  */
 final class VmNull implements Vm {
-    @Override public void setId(int id) {/**/}
-    @Override public int getId() {
+    @Override public void setId(long id) {/**/}
+    @Override public long getId() {
         return -1;
     }
     @Override public double getSubmissionDelay() {

@@ -133,7 +133,7 @@ public class CloudletListenersExample1 {
      * finishes running into a VM. All cloudlets will use this same listener.
      *
      * @param eventInfo information about the happened event
-     * @see #createCloudlet(int, Vm, long)
+     * @see #createCloudlet(long, Vm, long)
      */
     private void onCloudletFinishListener(CloudletVmEventInfo eventInfo) {
         System.out.printf(
@@ -152,10 +152,10 @@ public class CloudletListenersExample1 {
      * Creates cloudlets and submit them to the broker.
      * @param vm Vm to run the cloudlets to be created
      *
-     * @see #createCloudlet(int, Vm, long)
+     * @see #createCloudlet(long, Vm, long)
      */
     private void createAndSubmitCloudlets(Vm vm) {
-        int cloudletId;
+        long cloudletId;
         long length = 10000;
         for(int i = 0; i < NUMBER_OF_CLOUDLETS; i++){
             cloudletId = vm.getId() + i;
@@ -201,7 +201,7 @@ public class CloudletListenersExample1 {
      * @param length the cloudlet length in number of Million Instructions (MI)
      * @return the created cloudlet
      */
-    private Cloudlet createCloudlet(int id, Vm vm, long length) {
+    private Cloudlet createCloudlet(long id, Vm vm, long length) {
         long fileSize = 300;
         long outputSize = 300;
         int pesNumber = 1;

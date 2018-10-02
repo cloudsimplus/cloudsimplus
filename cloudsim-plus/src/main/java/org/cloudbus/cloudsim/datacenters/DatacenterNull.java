@@ -23,7 +23,7 @@ import java.util.List;
 final class DatacenterNull implements Datacenter {
     private static final DatacenterStorage STORAGE = new DatacenterStorage();
 
-    @Override public int getId() {
+    @Override public long getId() {
         return -1;
     }
     @Override public int compareTo(SimEntity entity) { return 0; }
@@ -42,7 +42,7 @@ final class DatacenterNull implements Datacenter {
     @Override public Host getHost(final int index) {
         return Host.NULL;
     }
-    @Override public Host getHostById(int id) { return Host.NULL; }
+    @Override public Host getHostById(long id) { return Host.NULL; }
     @Override public <T extends Host> Datacenter addHostList(List<T> hostList) { return this; }
     @Override public <T extends Host> Datacenter removeHost(T host) { return this; }
     @Override public Datacenter addHost(Host host) { return this; }
@@ -62,6 +62,7 @@ final class DatacenterNull implements Datacenter {
     @Override public double getPower() { return 0; }
     @Override public Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener) { return this; }
     @Override public double getPowerInKWattsHour() { return 0; }
+    @Override public State getState() { return State.FINISHED; }
     @Override public SimEntity setState(State state) { return SimEntity.NULL; }
     @Override public boolean isStarted() { return false; }
     @Override public boolean isAlive() { return false; }

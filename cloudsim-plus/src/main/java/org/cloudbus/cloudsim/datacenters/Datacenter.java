@@ -66,7 +66,7 @@ public interface Datacenter extends SimEntity, PowerAware {
      * @param id the ID of the Host to get from the List.
      * @return the Host if found or {@link Host#NULL} otherwise
      */
-    Host getHostById(int id);
+    Host getHostById(long id);
 
     /**
      * Physically expands the Datacenter by adding a List of new Hosts (physical machines) to it.

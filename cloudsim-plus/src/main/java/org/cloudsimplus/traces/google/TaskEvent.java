@@ -116,7 +116,7 @@ public final class TaskEvent extends TaskData {
         return (long)(resourceRequestForCpuCores*maxCpuCores);
     }
 
-    protected TaskEvent setResourceRequestForCpuCores(final double resourceRequestForCpuCores) {
+    /* default */ TaskEvent setResourceRequestForCpuCores(final double resourceRequestForCpuCores) {
         this.resourceRequestForCpuCores = resourceRequestForCpuCores;
         return this;
     }
@@ -147,7 +147,7 @@ public final class TaskEvent extends TaskData {
         return resourceRequestForRam;
     }
 
-    protected TaskEvent setResourceRequestForRam(final double resourceRequestForRam) {
+    /* default */ TaskEvent setResourceRequestForRam(final double resourceRequestForRam) {
         this.resourceRequestForRam = resourceRequestForRam;
         return this;
     }
@@ -172,7 +172,7 @@ public final class TaskEvent extends TaskData {
         return resourceRequestForLocalDiskSpace;
     }
 
-    protected TaskEvent setResourceRequestForLocalDiskSpace(final double resourceRequestForLocalDiskSpace) {
+    /* default */ TaskEvent setResourceRequestForLocalDiskSpace(final double resourceRequestForLocalDiskSpace) {
         this.resourceRequestForLocalDiskSpace = resourceRequestForLocalDiskSpace;
         return this;
     }
@@ -186,7 +186,7 @@ public final class TaskEvent extends TaskData {
         return userName;
     }
 
-    protected TaskEvent setUserName(final String userName) {
+    /* default */ TaskEvent setUserName(final String userName) {
         this.userName = userName;
         return this;
     }
@@ -217,7 +217,7 @@ public final class TaskEvent extends TaskData {
         return schedulingClass;
     }
 
-    protected TaskEvent setSchedulingClass(final int schedulingClass) {
+    /* default */ TaskEvent setSchedulingClass(final int schedulingClass) {
         this.schedulingClass = schedulingClass;
         return this;
     }

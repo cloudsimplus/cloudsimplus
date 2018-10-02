@@ -32,10 +32,10 @@ public abstract class CloudletAbstract implements Cloudlet {
     /**
      * @see #getId()
      */
-    private int id;
+    private long id;
 
     /** @see #getJobId() */
-    private int jobId;
+    private long jobId;
 
     /**
      * The list of every {@link Datacenter} where the cloudlet has been executed.
@@ -133,12 +133,11 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     /**
      * Creates a Cloudlet with no priority and file size and output size equal to 1.
-     *
-     * @param id     id of the Cloudlet
+     *  @param id     id of the Cloudlet
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
      * @param pesNumber      number of PEs that Cloudlet will require
      */
-    public CloudletAbstract(final int id, final long length, final long pesNumber) {
+    public CloudletAbstract(final long id, final long length, final long pesNumber) {
         /*
         Normally, a Cloudlet is only executed on a Datacenter without being
         migrated to others. Hence, to reduce memory consumption, set the
@@ -510,7 +509,7 @@ public abstract class CloudletAbstract implements Cloudlet {
      * @pre dc >= 0
      * @post $none
      */
-    private CloudletDatacenterExecution getDatacenterInfo(final int datacenterId) {
+    private CloudletDatacenterExecution getDatacenterInfo(final long datacenterId) {
         return datacenterExecutionList.stream()
             .filter(info -> info.getDatacenter().getId() == datacenterId)
             .findFirst().orElse(CloudletDatacenterExecution.NULL);
@@ -549,22 +548,22 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     @Override
-    public final void setId(final int id) {
+    public final void setId(final long id) {
         this.id = id;
     }
 
     @Override
-    public int getJobId() {
+    public long getJobId() {
         return jobId;
     }
 
     @Override
-    public final void setJobId(final int jobId) {
+    public final void setJobId(final long jobId) {
         this.jobId = jobId;
     }
 
@@ -844,7 +843,7 @@ public abstract class CloudletAbstract implements Cloudlet {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = Long.hashCode(id);
         result = 31 * result + broker.hashCode();
         return result;
     }

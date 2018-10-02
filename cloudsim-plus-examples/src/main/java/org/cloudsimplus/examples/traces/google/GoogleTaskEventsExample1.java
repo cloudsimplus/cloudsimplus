@@ -264,7 +264,7 @@ public class GoogleTaskEventsExample1 {
     private void printCloudlets(final DatacenterBroker broker) {
         final String username = broker.getName().replace("Broker_", "");
         final List<Cloudlet> list = broker.getCloudletFinishedList();
-        list.sort(Comparator.comparingInt(Cloudlet::getId));
+        list.sort(Comparator.comparingLong(Cloudlet::getId));
         new CloudletsTableBuilder(list)
             .addColumn(0, new TextTableColumn("Job", "ID"), Cloudlet::getJobId)
             .addColumn(7, new TextTableColumn("VM Size", "MB"), this::getVmSize)

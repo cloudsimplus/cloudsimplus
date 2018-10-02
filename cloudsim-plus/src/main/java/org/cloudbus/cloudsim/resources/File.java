@@ -301,7 +301,7 @@ public class File {
      *
      * @return registration ID
      */
-    public int getRegistrationID() {
+    public long getRegistrationID() {
         return attribute.getRegistrationID();
     }
 

@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.resources;
 
-import org.cloudbus.cloudsim.core.Identifiable;
+import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 
 /**
@@ -25,7 +25,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Pe extends Identifiable, ResourceManageable {
+public interface Pe extends ChangeableId, ResourceManageable {
     /**
      * Status of PEs.
      */
@@ -53,8 +53,6 @@ public interface Pe extends Identifiable, ResourceManageable {
      * Gets the capacity of this Pe in MIPS (Million Instructions Per Second).
      *
      * @return the MIPS capacity
-     * @pre $none
-     * @post $result >= 0
      */
     @Override
     long getCapacity();
@@ -64,8 +62,6 @@ public interface Pe extends Identifiable, ResourceManageable {
      *
      * @param mipsCapacity the MIPS capacity to set
      * @return true if mipsCapacity > 0, false otherwise
-     * @pre mipsCapacity >= 0
-     * @post $none
      */
     @Override
     boolean setCapacity(long mipsCapacity);
@@ -79,8 +75,6 @@ public interface Pe extends Identifiable, ResourceManageable {
      *
      * @param mipsCapacity the MIPS capacity to set
      * @return true if mipsCapacity > 0, false otherwise
-     * @pre mipsCapacity >= 0
-     * @post $none
      */
     boolean setCapacity(double mipsCapacity);
 
@@ -108,25 +102,14 @@ public interface Pe extends Identifiable, ResourceManageable {
      * Gets the status of the PE.
      *
      * @return the PE status
-     * @pre $none
-     * @post $none
      */
     Status getStatus();
-
-    /**
-     * Sets the {@link #getId()}.
-     *
-     * @param id the new PE id
-     */
-    void setId(int id);
 
     /**
      * Sets the {@link #getStatus() status} of the PE.
      *
      * @param status the new PE status
      * @return true if the status was set, false otherwise
-     * @pre $none
-     * @post $none
      */
     boolean setStatus(Status status);
 

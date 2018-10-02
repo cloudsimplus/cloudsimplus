@@ -171,7 +171,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
 
         final String tab = "    ";  // 4 spaces
         for (int i = 0; i < entities.size(); i++) {
-            final int resID = entities.get(i).getId();
+            final long resID = entities.get(i).getId();
             final String entry = getData(entryTimes, i);
             final String exit = getData(exitTimes, i);
             final String bandwidth = getData(baudRates, i);

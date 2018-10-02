@@ -31,5 +31,5 @@ package org.cloudbus.cloudsim.core;
  * @since CloudSim Plus 1.0
  */
 public interface ChangeableId extends Identifiable {
-    void setId(int id);
+    void setId(long id);
 }

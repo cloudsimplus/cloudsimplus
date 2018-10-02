@@ -34,7 +34,7 @@ public class FileAttribute {
     /**
      * File ID given by a Replica Catalogue.
      */
-    private int id;
+    private long id;
 
     /**
      * File type, for instance raw, reconstructed, etc.
@@ -256,7 +256,7 @@ public class FileAttribute {
      * @param id registration ID
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setRegistrationId(int id) {
+    public boolean setRegistrationId(long id) {
         if (id < 0) {
             return false;
         }
@@ -270,7 +270,7 @@ public class FileAttribute {
      *
      * @return registration ID
      */
-    public int getRegistrationID() {
+    public long getRegistrationID() {
         return id;
     }
 

@@ -24,21 +24,21 @@
 package org.cloudsimplus.traces.google;
 
 /**
- * A base class that stores data to identify a task. It has to be extended by classes that read task's events
- * from a trace file.
+ * A base class that stores data to identify a task.
+ * It has to be extended by classes that read task's events from a trace file.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-class TaskData extends MachineData {
-    private int jobId;
-    private int taskIndex;
+class TaskData extends MachineDataAbstract {
+    private long jobId;
+    private long taskIndex;
 
     /**
      * A protected constructor to avoid class instantiation,
      * since only subclasses of this class must be used.
      */
-    protected TaskData(){
+    /* default */ TaskData(){
         super();
     }
 
@@ -46,9 +46,9 @@ class TaskData extends MachineData {
      * Gets the id of the job this task belongs to.
      * @return
      */
-    public int getJobId(){ return jobId; }
+    /* default */ long getJobId(){ return jobId; }
 
-    protected TaskData setJobId(final int jobId) {
+    /* default */ TaskData setJobId(final long jobId) {
         this.jobId = jobId;
         return this;
     }
@@ -57,22 +57,21 @@ class TaskData extends MachineData {
      * Gets the task index within the job.
      * @return
      */
-    public int getTaskIndex() {
+    /* default */ long getTaskIndex() {
         return taskIndex;
     }
 
-    protected TaskData setTaskIndex(final int taskIndex) {
+    /* default */ TaskData setTaskIndex(final long taskIndex) {
         this.taskIndex = taskIndex;
         return this;
     }
 
     /**
      * An unique ID to be used to identify Cloudlets.
-     * The ID is composed of the {@link #getJobId() Job ID} concatenated with the {@link #getTaskIndex() Task Index}.
+     * The ID is composed of the {@link #getJobId() Job ID} plus the {@link #getTaskIndex() Task Index}.
      * @return
      */
-    public int getUniqueTaskId(){
-        return Integer.valueOf(String.format("%d%d", getJobId(), getTaskIndex()));
+    /* default */ long getUniqueTaskId(){
+        return getJobId() + getTaskIndex();
     }
-
 }

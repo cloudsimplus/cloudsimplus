@@ -164,7 +164,7 @@ public enum TaskEventType {
      * @param uniqueId the Cloudlet unique ID read from the trace line
      * @return an {@link Optional} containing the Cloudlet or an empty {@link Optional} if the Cloudlet was not found
      */
-    protected Optional<Cloudlet> cloudletLookup(final DatacenterBroker broker, final int uniqueId) {
+    protected Optional<Cloudlet> cloudletLookup(final DatacenterBroker broker, final long uniqueId) {
         return broker.getCloudletSubmittedList().stream().filter(cloudlet -> cloudlet.getId() == uniqueId).findFirst();
     }
 
@@ -183,5 +183,5 @@ public enum TaskEventType {
      *
      * @return true if trace line for the event type was processed, false otherwise
      */
-    protected abstract boolean process(GoogleTaskEventsTraceReader reader);
+    protected abstract boolean process(final GoogleTaskEventsTraceReader reader);
 }

@@ -492,7 +492,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     private Map<DatacenterBroker, Vm> getLastFailedVmByBroker(final List<Vm> vmsWithoutPes) {
-        final Comparator<Vm> comparator = Comparator.comparingInt(Vm::getId);
+        final Comparator<Vm> comparator = Comparator.comparingLong(Vm::getId);
         return vmsWithoutPes
                     .stream()
                     .collect(

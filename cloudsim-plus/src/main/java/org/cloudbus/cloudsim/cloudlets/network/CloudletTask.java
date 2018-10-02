@@ -38,7 +38,7 @@ public abstract class CloudletTask implements Identifiable {
     /**
      * @see #getId()
      */
-    private int id;
+    private long id;
 
     /**
      * @see #getStartTime()
@@ -77,7 +77,7 @@ public abstract class CloudletTask implements Identifiable {
      * @return
      */
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 

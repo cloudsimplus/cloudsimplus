@@ -213,8 +213,8 @@ public final class MigrationExample1 {
 
         final List<Cloudlet> finishedList = broker.getCloudletFinishedList();
         finishedList.sort(
-            Comparator.comparingInt((Cloudlet c) -> c.getVm().getHost().getId())
-                      .thenComparingInt(c -> c.getVm().getId()));
+            Comparator.comparingLong((Cloudlet c) -> c.getVm().getHost().getId())
+                      .thenComparingLong(c -> c.getVm().getId()));
         new CloudletsTableBuilder(finishedList).build();
         System.out.println("\nHosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)");
 

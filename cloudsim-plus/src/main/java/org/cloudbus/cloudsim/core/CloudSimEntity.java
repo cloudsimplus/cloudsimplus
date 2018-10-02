@@ -41,7 +41,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * The entity id.
      */
-    private int id;
+    private long id;
 
     /**
      * The buffer for selected incoming events.
@@ -83,7 +83,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return The id number
      */
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -384,11 +384,7 @@ public abstract class CloudSimEntity implements SimEntity {
         return this;
     }
 
-    /**
-     * Gets the entity state.
-     *
-     * @return the state
-     */
+    @Override
     public State getState() {
         return state;
     }
@@ -418,7 +414,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * Sets an automatic generated name for the entity.
      */
     private void setAutomaticName() {
-        final int id = this.id >= 0 ? this.id : this.simulation.getNumEntities();
+        final long id = this.id >= 0 ? this.id : this.simulation.getNumEntities();
         this.name = String.format("%s%d", getClass().getSimpleName(), id);
     }
 
@@ -517,7 +513,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param dst destination of the message
      * @return delay to send a message from src to dst
      */
-    private double getNetworkDelay(final int src, final int dst) {
+    private double getNetworkDelay(final long src, final long dst) {
         return getSimulation().getNetworkTopology().getDelay(src, dst);
     }
 
@@ -547,7 +543,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public int compareTo(final SimEntity entity) {
-        return Integer.compare(this.getId(), entity.getId());
+        return Long.compare(this.getId(), entity.getId());
     }
 
     @Override
@@ -564,7 +560,7 @@ public abstract class CloudSimEntity implements SimEntity {
     @Override
     public int hashCode() {
         int result = simulation.hashCode();
-        result = 31 * result + id;
+        result = 31 * result + Long.hashCode(id);
         return result;
     }
 

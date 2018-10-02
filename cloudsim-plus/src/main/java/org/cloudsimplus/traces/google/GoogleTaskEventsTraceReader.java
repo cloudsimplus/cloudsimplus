@@ -140,8 +140,8 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
          */
         JOB_ID{
             @Override
-            public Integer getValue(final GoogleTaskEventsTraceReader reader) {
-                return reader.getFieldIntValue(this);
+            public Long getValue(final GoogleTaskEventsTraceReader reader) {
+                return reader.getFieldLongValue(this);
             }
         },
 
@@ -150,8 +150,8 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
          */
         TASK_INDEX{
             @Override
-            public Integer getValue(final GoogleTaskEventsTraceReader reader) {
-                return reader.getFieldIntValue(this);
+            public Long getValue(final GoogleTaskEventsTraceReader reader) {
+                return reader.getFieldLongValue(this);
             }
         },
 
@@ -162,8 +162,8 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
          */
         MACHINE_ID{
             @Override
-            public Integer getValue(final GoogleTaskEventsTraceReader reader) {
-                return reader.getFieldIntValue(this, -1);
+            public Long getValue(final GoogleTaskEventsTraceReader reader) {
+                return reader.getFieldLongValue(this, -1);
             }
         },
 
@@ -465,8 +465,8 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      *            such as {@link CloudSimTags#CLOUDLET_FINISH}
      * @return true if the request was created, false otherwise
      */
-    protected boolean requestCloudletStatusChange(
-        final BiFunction<DatacenterBroker, Integer, Optional<Cloudlet>> cloudletLookupFunction,
+    /* default */ boolean requestCloudletStatusChange(
+        final BiFunction<DatacenterBroker, Long, Optional<Cloudlet>> cloudletLookupFunction,
         final int tag)
     {
         final TaskEvent taskEvent = createTaskEventFromTraceLine();

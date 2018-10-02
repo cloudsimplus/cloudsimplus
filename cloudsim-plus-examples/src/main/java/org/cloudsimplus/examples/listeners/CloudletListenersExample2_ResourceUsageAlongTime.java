@@ -136,7 +136,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
      * is updated into a VM. All cloudlets will use this same listener.
      *
      * @param eventInfo information about the happened event
-     * @see #createCloudlet(int, Vm, long)
+     * @see #createCloudlet(long, Vm, long)
      */
     private void onUpdateCloudletProcessingListener(CloudletVmEventInfo eventInfo) {
         Cloudlet c = eventInfo.getCloudlet();
@@ -162,10 +162,10 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
      * Creates cloudlets and submit them to the broker.
      * @param vm Vm to run the cloudlets to be created
      *
-     * @see #createCloudlet(int, Vm, long)
+     * @see #createCloudlet(long, Vm, long)
      */
     private void createAndSubmitCloudlets(Vm vm) {
-        int cloudletId;
+        long cloudletId;
         long length = 10000;
         for(int i = 0; i < NUMBER_OF_CLOUDLETS; i++){
             cloudletId = vm.getId() + i;
@@ -211,7 +211,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
      * @param length the cloudlet length in number of Million Instructions (MI)
      * @return the created cloudlet
      */
-    private Cloudlet createCloudlet(int id, Vm vm, long length) {
+    private Cloudlet createCloudlet(long id, Vm vm, long length) {
         long fileSize = 300;
         long outputSize = 300;
         int pesNumber = 1;

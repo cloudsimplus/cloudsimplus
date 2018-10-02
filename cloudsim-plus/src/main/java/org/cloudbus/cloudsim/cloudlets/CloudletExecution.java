@@ -336,7 +336,7 @@ public class CloudletExecution {
      * Gets the ID of the Cloudlet this execution info is related to.
      * @return
      */
-    public int getCloudletId(){
+    public long getCloudletId(){
         return cloudlet.getId();
     }
 

@@ -109,8 +109,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
          */
         JOB_ID{
             @Override
-            public Integer getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldIntValue(this);
+            public Long getValue(final GoogleTaskUsageTraceReader reader) {
+                return reader.getFieldLongValue(this);
             }
         },
 
@@ -119,8 +119,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
          */
         TASK_INDEX{
             @Override
-            public Integer getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldIntValue(this);
+            public Long getValue(final GoogleTaskUsageTraceReader reader) {
+                return reader.getFieldLongValue(this);
             }
         },
 
@@ -131,8 +131,8 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
          */
         MACHINE_ID{
             @Override
-            public Integer getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldIntValue(this, -1);
+            public Long getValue(final GoogleTaskUsageTraceReader reader) {
+                return reader.getFieldLongValue(this, -1);
             }
         },
 
@@ -142,7 +142,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         MEAN_CPU_USAGE_RATE{
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, 0);
             }
         },
 
@@ -154,7 +154,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         CANONICAL_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, 0);
             }
         },
 
@@ -167,7 +167,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         ASSIGNED_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, 0);
             }
         },
 
@@ -178,7 +178,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         UNMAPPED_PAGE_CACHE_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, 0);
             }
         },
 
@@ -189,7 +189,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         TOTAL_PAGE_CACHE_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, 0);
             }
         },
 
@@ -202,7 +202,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         MAXIMUM_MEMORY_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, -1);
             }
         },
 
@@ -212,7 +212,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         MEAN_DISK_IO_TIME {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, 0);
             }
         },
 
@@ -226,7 +226,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         MEAN_LOCAL_DISK_SPACE_USED {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, 0);
             }
         },
 
@@ -237,7 +237,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         MAXIMUM_CPU_USAGE {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, -1);
             }
         },
 
@@ -248,7 +248,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         MAXIMUM_DISK_IO_TIME {
             @Override
             public Double getValue(final GoogleTaskUsageTraceReader reader) {
-                return reader.getFieldDoubleValue(this);
+                return reader.getFieldDoubleValue(this, -1);
             }
         }
     }

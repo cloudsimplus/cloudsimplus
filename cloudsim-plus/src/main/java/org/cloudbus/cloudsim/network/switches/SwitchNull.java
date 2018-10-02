@@ -24,7 +24,7 @@ final class SwitchNull implements Switch {
     private static final VmAllocationPolicy POLICY = VmAllocationPolicy.NULL;
     private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(SIM, Collections.emptyList(), POLICY);
 
-    @Override public int getId() {
+    @Override public long getId() {
         return 0;
     }
     @Override public double getUplinkBandwidth() {
@@ -82,6 +82,7 @@ final class SwitchNull implements Switch {
     @Override public int getLevel() {
         return 0;
     }
+    @Override public State getState() { return State.FINISHED; }
     @Override public SimEntity setState(State state) { return this; }
     @Override public boolean isStarted() { return false; }
     @Override public boolean isAlive() { return false; }

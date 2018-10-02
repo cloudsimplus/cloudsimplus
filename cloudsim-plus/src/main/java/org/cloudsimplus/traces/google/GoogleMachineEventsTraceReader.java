@@ -94,8 +94,8 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
          */
         MACHINE_ID{
             @Override
-            public Integer getValue(final GoogleMachineEventsTraceReader reader) {
-                return reader.getFieldIntValue(this);
+            public Long getValue(final GoogleMachineEventsTraceReader reader) {
+                return reader.getFieldLongValue(this);
             }
         },
 

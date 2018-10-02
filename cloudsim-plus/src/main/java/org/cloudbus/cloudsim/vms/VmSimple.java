@@ -52,7 +52,7 @@ public class VmSimple implements Vm {
     /**
      * @see #getId()
      */
-    private int id;
+    private long id;
 
     private DatacenterBroker broker;
 
@@ -299,7 +299,7 @@ public class VmSimple implements Vm {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -310,7 +310,7 @@ public class VmSimple implements Vm {
      * @todo The uniqueness of VM id for a given user is not being ensured
      */
     @Override
-    public final void setId(int id) {
+    public final void setId(long id) {
         this.id = id;
     }
 
@@ -667,7 +667,7 @@ public class VmSimple implements Vm {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = Long.hashCode(id);
         result = 31 * result + broker.hashCode();
         return result;
     }

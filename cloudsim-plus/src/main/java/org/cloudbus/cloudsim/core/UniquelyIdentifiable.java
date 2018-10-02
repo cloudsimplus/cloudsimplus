@@ -17,7 +17,7 @@ public interface UniquelyIdentifiable extends Identifiable {
      * @param id the object id
      * @return the generated UID
      */
-    static String getUid(int brokerId, int id) {
+    static String getUid(long brokerId, long id) {
         return brokerId + "-" + id;
     }
 

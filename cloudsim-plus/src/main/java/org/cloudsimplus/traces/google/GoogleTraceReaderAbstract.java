@@ -25,10 +25,7 @@ package org.cloudsimplus.traces.google;
 
 import org.cloudsimplus.traces.TraceReaderBase;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -43,8 +40,8 @@ import java.util.Set;
  * @since CloudSim Plus 4.0.0
  */
 abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
-    protected static final String VAL_SEPARATOR = " -> ";
-    protected static final String COL_SEPARATOR = " | ";
+    /* default */ static final String VAL_SEPARATOR = " -> ";
+    /* default */ static final String COL_SEPARATOR = " | ";
 
     /** A Set of objects immediately created from the trace file.
      * The type <T> of the objects depends on each concrete class.
@@ -55,11 +52,7 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      */
     private final Set<T> availableObjects;
 
-    protected GoogleTraceReaderAbstract(final String filePath) throws IOException {
-        this(filePath, Files.newInputStream(Paths.get(filePath)));
-    }
-
-    protected GoogleTraceReaderAbstract(final String filePath, final InputStream reader) {
+    /* default */  GoogleTraceReaderAbstract(final String filePath, final InputStream reader) {
         super(filePath, reader);
         this.setFieldDelimiterRegex(",");
         availableObjects = new HashSet<>();
@@ -85,13 +78,19 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
     }
 
     /**
-     * Executes the pre-process before starting to read the trace file,
+     * Executes any pre-process before starting to read the trace file,
      * such as checking if required attributes were set.
+     * @todo Such a method should be defined as a Functional attribute.
+     *       Since it won't be implemented by every subclass, by it being abstract,
+     *       forces to subclasses to implement it (even if just including an empty method).
      */
     protected abstract void preProcess();
 
     /**
-     * Executes some post-process after the trace file was totally parsed.
+     * Executes any post-process after the trace file was totally parsed.
+     * @todo Such a method should be defined as a Functional attribute.
+     *       Since it won't be implemented by every subclass, by it being abstract,
+     *       forces to subclasses to implement it (even if just including an empty method).
      */
     protected abstract void postProcess();
 
@@ -101,7 +100,7 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      * @param parsedLineArray an array containing the field values from the last parsed trace line.
      * @return true if the parsed line was processed, false otherwise
      */
-    protected final boolean processParsedLine(final String[] parsedLineArray) {
+    /* default */ final boolean processParsedLine(final String[] parsedLineArray) {
         this.setLastParsedLineArray(parsedLineArray);
         return processParsedLineInternal();
     }
@@ -115,7 +114,7 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      */
     protected abstract boolean processParsedLineInternal();
 
-    protected String formatPercentValue(final double percent){
+    /* default */ String formatPercentValue(final double percent){
         return String.format("%.1f", percent*100);
     }
 

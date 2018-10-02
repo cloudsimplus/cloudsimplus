@@ -234,22 +234,22 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
             return false;
         }
 
-        final int id = JOB_NUM_INDEX <= IRRELEVANT ? cloudlets.size() + 1 : Integer.valueOf(parsedLineArray[JOB_NUM_INDEX].trim());
+        final int id = JOB_NUM_INDEX <= IRRELEVANT ? cloudlets.size() + 1 : Integer.parseInt(parsedLineArray[JOB_NUM_INDEX].trim());
 
         /* according to the SWF manual, runtime of 0 is possible due
          to rounding down. E.g. runtime is 0.4 seconds -> runtime = 0*/
-        final int runTime = Math.max(Integer.valueOf(parsedLineArray[RUN_TIME_INDEX].trim()), 1);
+        final int runTime = Math.max(Integer.parseInt(parsedLineArray[RUN_TIME_INDEX].trim()), 1);
 
         /* if the required num of allocated processors field is ignored
         or zero, then use the actual field*/
         final int maxNumProc = Math.max(
-                                    Integer.valueOf(parsedLineArray[REQ_NUM_PROC_INDEX].trim()),
-                                    Integer.valueOf(parsedLineArray[this.NUM_PROC_INDEX].trim())
+                                    Integer.parseInt(parsedLineArray[REQ_NUM_PROC_INDEX].trim()),
+                                    Integer.parseInt(parsedLineArray[this.NUM_PROC_INDEX].trim())
                                );
         final int numProc = Math.max(maxNumProc, 1);
 
         final Cloudlet cloudlet = createCloudlet(id, runTime, numProc);
-        final long submitTime = Long.valueOf(parsedLineArray[this.SUBMIT_TIME_INDEX].trim()).intValue();
+        final long submitTime = Long.parseLong(parsedLineArray[this.SUBMIT_TIME_INDEX].trim());
         cloudlet.setSubmissionDelay(submitTime);
 
         if(predicate.test(cloudlet)){

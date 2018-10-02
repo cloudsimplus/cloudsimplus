@@ -29,6 +29,13 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      */
     SimEntity NULL = new SimEntityNull();
 
+    /**
+     * Gets the entity state.
+     *
+     * @return the state
+     */
+    State getState();
+
     SimEntity setState(State state);
 
     /**

@@ -69,7 +69,7 @@ public final class TaskUsage extends TaskData {
         return endTime;
     }
 
-    protected TaskUsage setEndTime(final double endTime) {
+    /* default */ TaskUsage setEndTime(final double endTime) {
         this.endTime = endTime;
         return this;
     }
@@ -83,7 +83,7 @@ public final class TaskUsage extends TaskData {
         return meanCpuUsageRate;
     }
 
-    protected TaskUsage setMeanCpuUsageRate(final double meanCpuUsageRate) {
+    /* default */ TaskUsage setMeanCpuUsageRate(final double meanCpuUsageRate) {
         this.meanCpuUsageRate = meanCpuUsageRate;
         return this;
     }
@@ -99,7 +99,7 @@ public final class TaskUsage extends TaskData {
         return canonicalMemoryUsage;
     }
 
-    protected TaskUsage setCanonicalMemoryUsage(final double canonicalMemoryUsage) {
+    /* default */ TaskUsage setCanonicalMemoryUsage(final double canonicalMemoryUsage) {
         this.canonicalMemoryUsage = canonicalMemoryUsage;
         return this;
     }
@@ -116,7 +116,7 @@ public final class TaskUsage extends TaskData {
         return assignedMemoryUsage;
     }
 
-    protected TaskUsage setAssignedMemoryUsage(final double assignedMemoryUsage) {
+    /* default */ TaskUsage setAssignedMemoryUsage(final double assignedMemoryUsage) {
         this.assignedMemoryUsage = assignedMemoryUsage;
         return this;
     }
@@ -133,7 +133,7 @@ public final class TaskUsage extends TaskData {
         return maximumMemoryUsage;
     }
 
-    protected TaskUsage setMaximumMemoryUsage(final double maximumMemoryUsage) {
+    /* default */ TaskUsage setMaximumMemoryUsage(final double maximumMemoryUsage) {
         this.maximumMemoryUsage = maximumMemoryUsage;
         return this;
     }
@@ -147,7 +147,7 @@ public final class TaskUsage extends TaskData {
         return meanDiskIoTime;
     }
 
-    protected TaskUsage setMeanDiskIoTime(final double meanDiskIoTime) {
+    /* default */ TaskUsage setMeanDiskIoTime(final double meanDiskIoTime) {
         this.meanDiskIoTime = meanDiskIoTime;
         return this;
     }
@@ -165,7 +165,7 @@ public final class TaskUsage extends TaskData {
         return meanLocalDiskSpaceUsed;
     }
 
-    protected TaskUsage setMeanLocalDiskSpaceUsed(final double meanLocalDiskSpaceUsed) {
+    /* default */ TaskUsage setMeanLocalDiskSpaceUsed(final double meanLocalDiskSpaceUsed) {
         this.meanLocalDiskSpaceUsed = meanLocalDiskSpaceUsed;
         return this;
     }
@@ -179,7 +179,7 @@ public final class TaskUsage extends TaskData {
         return maximumCpuUsage;
     }
 
-    protected TaskUsage setMaximumCpuUsage(final double maximumCpuUsage) {
+    /* default */ TaskUsage setMaximumCpuUsage(final double maximumCpuUsage) {
         this.maximumCpuUsage = maximumCpuUsage;
         return this;
     }
@@ -193,7 +193,7 @@ public final class TaskUsage extends TaskData {
         return maximumDiskIoTime;
     }
 
-    protected TaskUsage setMaximumDiskIoTime(final double maximumDiskIoTime) {
+    /* default */ TaskUsage setMaximumDiskIoTime(final double maximumDiskIoTime) {
         this.maximumDiskIoTime = maximumDiskIoTime;
         return this;
     }

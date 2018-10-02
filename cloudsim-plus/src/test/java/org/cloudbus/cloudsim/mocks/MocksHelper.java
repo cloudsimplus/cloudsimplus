@@ -36,7 +36,7 @@ public final class MocksHelper {
      * @param expectedCallsToGetId the number of times the {@link DatacenterBroker#getId()} is expected to be called
      * @return a mocked DatacenterBroker
      */
-    public static DatacenterBroker createMockBroker(int brokerId, int expectedCallsToGetId) {
+    public static DatacenterBroker createMockBroker(long brokerId, int expectedCallsToGetId) {
         final DatacenterBroker broker = EasyMock.createMock(DatacenterBroker.class);
         EasyMock.expect(broker.getId()).andReturn(brokerId).times(expectedCallsToGetId);
         EasyMock.replay(broker);
@@ -46,7 +46,7 @@ public final class MocksHelper {
     public static DatacenterBroker createMockBroker(CloudSim cloudsim) {
         final DatacenterBroker broker = EasyMock.createMock(DatacenterBroker.class);
         EasyMock.expect(broker.getSimulation()).andReturn(cloudsim).anyTimes();
-        EasyMock.expect(broker.getId()).andReturn(0).anyTimes();
+        EasyMock.expect(broker.getId()).andReturn(0L).anyTimes();
         EasyMock.replay(broker);
         return broker;
     }

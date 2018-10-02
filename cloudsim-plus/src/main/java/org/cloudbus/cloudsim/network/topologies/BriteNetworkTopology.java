@@ -60,10 +60,10 @@ public final class BriteNetworkTopology implements NetworkTopology {
     private TopologicalGraph graph;
 
     /**
-     * The map between CloudSim entities and BRITE entities. Each key is a
-     * CloudSim entity ID and each value the corresponding BRITE entity ID.
+     * The map between CloudSim entities and BRITE entities.
+     * Each key is a CloudSim entity ID and each value the corresponding BRITE entity ID.
      */
-    private Map<Integer, Integer> map;
+    private Map<Long, Integer> map;
 
     /**
      * Instantiates a Network Topology from a file inside the <b>application's resource directory</b>.
@@ -166,7 +166,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
 
     @Override
-    public void addLink(final int srcId, final int destId, final double bandwidth, final double latency) {
+    public void addLink(final long srcId, final long destId, final double bandwidth, final double latency) {
         if (getTopologycalGraph() == null) {
             graph = new TopologicalGraph();
         }
@@ -195,7 +195,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public void mapNode(final int cloudSimEntityID, final int briteID) {
+    public void mapNode(final long cloudSimEntityID, final int briteID) {
         if (!networkEnabled) {
             return;
         }
@@ -214,7 +214,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public void unmapNode(final int cloudSimEntityID) {
+    public void unmapNode(final long cloudSimEntityID) {
         if (!networkEnabled) {
             return;
         }
@@ -223,7 +223,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public double getDelay(final int srcID, final int destID) {
+    public double getDelay(final long srcID, final long destID) {
         if (!networkEnabled) {
             return 0.0;
         }

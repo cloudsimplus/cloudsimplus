@@ -444,7 +444,7 @@ public interface Simulation {
             return false;
         }
 
-        int id = lastEntity == null ? list.get(list.size()-1).getId() : lastEntity.getId();
+        long id = lastEntity == null ? list.get(list.size()-1).getId() : lastEntity.getId();
         //if the ID is a negative number lower than -1, it's set as -1 to start the first ID as 0
         id = Math.max(id, -1);
         for (final ChangeableId entity : list) {

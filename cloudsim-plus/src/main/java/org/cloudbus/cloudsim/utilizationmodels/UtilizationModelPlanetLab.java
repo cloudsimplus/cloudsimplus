@@ -129,7 +129,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
             int lineNum = 0;
             String line;
             while((line=input.readLine())!=null && !line.startsWith("#") && lineNum < utilization.length){
-                utilization[lineNum++] = Integer.valueOf(line) / 100.0;
+                utilization[lineNum++] = Double.parseDouble(line) / 100.0;
             }
         }
 

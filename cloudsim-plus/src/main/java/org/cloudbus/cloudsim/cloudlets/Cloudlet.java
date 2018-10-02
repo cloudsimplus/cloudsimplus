@@ -328,7 +328,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @return the job id or {@link #NOT_ASSIGNED} if the Cloudlet doesn't belong to a job
      */
-    int getJobId();
+    long getJobId();
 
     /**
      * Sets the id of the job that this Cloudlet belongs to, if any.
@@ -340,7 +340,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @param jobId the job id to set
      */
-    void setJobId(int jobId);
+    void setJobId(long jobId);
 
     /**
      * Gets the priority of this Cloudlet for scheduling inside a Vm.

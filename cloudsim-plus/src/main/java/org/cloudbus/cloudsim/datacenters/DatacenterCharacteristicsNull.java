@@ -43,7 +43,7 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public DatacenterCharacteristics setOs(String os) {
         return DatacenterCharacteristics.NULL;
     }
-    @Override public int getId() {
+    @Override public long getId() {
         return 0;
     }
     @Override public double getMips() { return 0; }

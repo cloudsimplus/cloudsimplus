@@ -35,7 +35,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "4.0.1";
+    public static final String VERSION = "4.0.2";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
@@ -650,7 +650,7 @@ public class CloudSim implements Simulation {
             throw new IllegalArgumentException("Attempt to send to a null entity detected.");
         }
 
-        final CloudSimEntity destEnt = entities.get(evt.getDestination().getId());
+        final CloudSimEntity destEnt = (CloudSimEntity)evt.getDestination();
         if (destEnt.getState() == SimEntity.State.WAITING) {
             final Predicate<SimEvent> p = waitPredicates.get(destEnt);
             if (p == null || evt.getTag() == 9999 || p.test(evt)) {

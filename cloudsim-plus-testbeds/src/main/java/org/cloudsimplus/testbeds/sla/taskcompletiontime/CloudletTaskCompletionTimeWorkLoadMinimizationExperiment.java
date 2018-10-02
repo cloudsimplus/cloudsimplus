@@ -58,7 +58,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.*;
 
-import static java.util.Comparator.*;
+import static java.util.Comparator.comparingDouble;
+import static java.util.Comparator.comparingLong;
 import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadMinimizationRunner.*;
 
@@ -141,7 +142,7 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Si
     public final void printResults() {
         final DatacenterBroker broker0 = getFirstBroker();
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        finishedCloudlets.sort(comparingInt(Cloudlet::getId));
+        finishedCloudlets.sort(comparingLong(Cloudlet::getId));
 
         new CloudletsTableBuilder(finishedCloudlets)
             .addColumn(7, new TextTableColumn("VM    ", "MIPS  "), c -> (long)c.getVm().getMips())

@@ -6,6 +6,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModel;
@@ -56,7 +57,7 @@ public class HostSimple implements Host {
     private PowerModel powerModel;
 
     /** @see #getId() */
-    private int id;
+    private long id;
 
     /** @see #isFailed() */
     private boolean failed;
@@ -134,7 +135,7 @@ public class HostSimple implements Host {
      * @param storage the storage capacity in Megabytes
      * @param peList the host's {@link Pe} list
      *
-     * @see #setId(int)
+     * @see ChangeableId#setId(long)
      * @see #setRamProvisioner(ResourceProvisioner)
      * @see #setBwProvisioner(ResourceProvisioner)
      * @see #setVmScheduler(VmScheduler)
@@ -457,12 +458,12 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
     @Override
-    public final void setId(int id) {
+    public final void setId(long id) {
         this.id = id;
     }
 
@@ -552,7 +553,7 @@ public class HostSimple implements Host {
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
         this.peList = peList;
 
-        int peId = this.peList.stream().filter(pe -> pe.getId() > 0).mapToInt(Pe::getId).max().orElse(-1);
+        long peId = this.peList.stream().filter(pe -> pe.getId() > 0).mapToLong(Pe::getId).max().orElse(-1);
         final List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
         for(final Pe pe: pesWithoutIds){
             pe.setId(++peId);
@@ -734,7 +735,7 @@ public class HostSimple implements Host {
 
     @Override
     public int hashCode() {
-        int result = id;
+        int result = Long.hashCode(id);
         result = 31 * result + simulation.hashCode();
         return result;
     }

@@ -31,40 +31,29 @@ public interface NetworkTopology {
      * Adds a new link in the network topology. The CloudSim entities that
      * represent the source and destination of the link will be mapped to BRITE
      * entities.
-     *
-     * @param srcId ID of the CloudSim entity that represents the link's source
+     *  @param srcId ID of the CloudSim entity that represents the link's source
      * node
      * @param destId ID of the CloudSim entity that represents the link's
      * destination node
      * @param bw Link's bandwidth
      * @param lat link's latency
-     * @pre srcId > 0
-     * @pre destId > 0
-     * @post $none
      */
-    void addLink(int srcId, int destId, double bw, double lat);
+    void addLink(long srcId, long destId, double bw, double lat);
 
     /**
      * Maps a CloudSim entity to a BRITE node in the network topology.
-     *
-     * @param cloudSimEntityID ID of the entity being mapped
+     *  @param cloudSimEntityID ID of the entity being mapped
      * @param briteID ID of the BRITE node that corresponds to the CloudSim
-     * entity
-     * @pre cloudSimEntityID >= 0
-     * @pre briteID >= 0
-     * @post $none
      */
-    void mapNode(int cloudSimEntityID, int briteID);
+    void mapNode(long cloudSimEntityID, int briteID);
 
     /**
      * Unmaps a previously mapped CloudSim entity to a BRITE node in the network
      * topology.
      *
      * @param cloudSimEntityID ID of the entity being unmapped
-     * @pre cloudSimEntityID >= 0
-     * @post $none
      */
-    void unmapNode(int cloudSimEntityID);
+    void unmapNode(long cloudSimEntityID);
 
     /**
      * Calculates the delay between two nodes.
@@ -74,11 +63,8 @@ public interface NetworkTopology {
      * @param destID ID of the CloudSim entity that represents the link's
      * destination node
      * @return communication delay between the two nodes
-     * @pre srcID >= 0
-     * @pre destID >= 0
-     * @post $none
      */
-    double getDelay(int srcID, int destID);
+    double getDelay(long srcID, long destID);
 
     /**
      * Checks if the network simulation is working. If there were some problem
@@ -86,8 +72,6 @@ public interface NetworkTopology {
      * not allow a proper simulation of the network, this method returns false.
      *
      * @return $true if network simulation is working, $false otherwise
-     * @pre $none
-     * @post $none
      */
     boolean isNetworkEnabled();
 

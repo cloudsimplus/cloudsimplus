@@ -106,7 +106,7 @@ public class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends Sim
 
     private void printVmsCpuUsage(EventInfo eventInfo) {
         DatacenterBroker broker0 = getFirstBroker();
-        broker0.getVmExecList().sort(Comparator.comparingInt(Vm::getId));
+        broker0.getVmExecList().sort(Comparator.comparingLong(Vm::getId));
 
         broker0.getVmExecList().forEach(vm
                 -> System.out.printf("#### Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",

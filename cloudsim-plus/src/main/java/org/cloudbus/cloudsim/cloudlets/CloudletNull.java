@@ -19,8 +19,8 @@ import java.util.List;
  * @see Cloudlet#NULL
  */
 final class CloudletNull implements Cloudlet {
-    @Override public void setId(int id) {/**/}
-    @Override public int getId() {
+    @Override public void setId(long id) {/**/}
+    @Override public long getId() {
         return -1;
     }
     @Override public String getUid() {
@@ -104,8 +104,8 @@ final class CloudletNull implements Cloudlet {
     @Override public double getArrivalTime(Datacenter datacenter) {
         return 0.0;
     }
-    @Override public int getJobId() { return 0; }
-    @Override public void setJobId(int jobId) {/**/}
+    @Override public long getJobId() { return 0; }
+    @Override public void setJobId(long jobId) {/**/}
     @Override public UtilizationModel getUtilizationModelBw() {
         return UtilizationModel.NULL;
     }

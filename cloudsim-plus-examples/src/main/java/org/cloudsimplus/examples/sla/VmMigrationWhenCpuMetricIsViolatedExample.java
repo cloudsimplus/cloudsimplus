@@ -181,7 +181,7 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
         final boolean progressiveCpuUsage)
     {
         final UtilizationModel um = new UtilizationModelDynamic(UtilizationModel.Unit.ABSOLUTE, 50);
-        int cloudletId;
+        long cloudletId;
         for (int i = 0; i < CLOUDLETS_BY_VM; i++) {
             cloudletId = hostingVm.getId() + i;
             UtilizationModelDynamic cpuUtilizationModel =

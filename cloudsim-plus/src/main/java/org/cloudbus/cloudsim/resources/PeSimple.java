@@ -28,7 +28,7 @@ import java.util.Objects;
  */
 public class PeSimple extends ResourceManageableAbstract implements Pe {
     /** @see #getId()  */
-    private int id;
+    private long id;
 
     /** @see #getStatus()  */
     private Status status;
@@ -61,8 +61,6 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
      * @param id the PE id
      * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
      * @param peProvisioner the provisioner that will manage the allocation of this physical Pe for VMs
-     * @pre peProvisioner != null
-     * @post $none
      */
     public PeSimple(final int id, final double mipsCapacity, final PeProvisioner peProvisioner) {
         this(mipsCapacity, peProvisioner);
@@ -70,12 +68,12 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     }
 
     @Override
-    public final void setId(final int id) {
+    public final void setId(final long id) {
         this.id = id;
     }
 
     @Override
-    public int getId() {
+    public long getId() {
         return id;
     }
 
