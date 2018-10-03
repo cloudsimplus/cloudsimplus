@@ -820,7 +820,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     protected void moveNextCloudletsFromWaitingToExecList() {
         Optional<CloudletExecution> optional = Optional.of(CloudletExecution.NULL);
-        while (!cloudletWaitingList.isEmpty() && optional.isPresent() && getFreePes() > 0) {
+        while (!cloudletWaitingList.isEmpty() && optional.isPresent()) {
             optional = findSuitableWaitingCloudlet();
             optional.ifPresent(this::addWaitingCloudletToExecList);
         }
@@ -837,7 +837,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return cloudletWaitingList
                 .stream()
                 .filter(cle -> cle.getCloudlet().getStatus() != Status.FROZEN)
-                .filter(this::isThereEnoughFreePesForCloudlet)
+                .filter(this::canExecuteCloudlet)
                 .findFirst();
     }
 

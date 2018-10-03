@@ -50,6 +50,11 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
         READY,
 
         /**
+         * The Cloudlet has moved to a Vm but it is in the waiting queue.
+         */
+        QUEUED,
+
+        /**
          * The Cloudlet is in the waiting queue but it won't be automatically moved
          * to the execution list (even if there are available PEs) until
          * its status is changed to {@link #QUEUED}.
@@ -58,11 +63,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
          * that explicitly defines when tasks must start running.
          */
         FROZEN,
-
-        /**
-         * The Cloudlet has moved to a Vm.
-         */
-        QUEUED,
 
         /**
          * The Cloudlet is in execution in a Vm.
