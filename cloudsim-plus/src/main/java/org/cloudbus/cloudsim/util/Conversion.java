@@ -176,6 +176,7 @@ public final class Conversion {
      *
      * @param micro the value in micro (μ) scale
      * @return the value in milli (m) scale
+     * @todo Should use TimeUnits class to perform such a conversion
      */
     public static double microToMilli(final double micro){
         return micro/1000.0;
@@ -186,6 +187,7 @@ public final class Conversion {
      *
      * @param micro the value in microseconds (μ)
      * @return the value in seconds
+     * @todo Should use TimeUnits class to perform such a conversion
      */
     public static double microToSeconds(final double micro) {
         return microToMilli(micro)/1000.0;

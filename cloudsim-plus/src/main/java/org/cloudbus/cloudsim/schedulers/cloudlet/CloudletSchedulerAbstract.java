@@ -385,10 +385,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return true;
         }
 
-        /*If the Cloudlet was not found in the paused list, it hasn't started executing yet.
+        /*
+         If the Cloudlet was not found in the paused list, it hasn't started executing yet.
          It may have been frozen waiting for a READY message.
          This way, just changes its status to ready so
-         that it can be scheduled naturally to start executing.*/
+         that it can be scheduled naturally to start executing.
+         */
         cloudlet.setStatus(Status.READY);
 
         /*
@@ -809,15 +811,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * <a href="https://en.wikipedia.org/wiki/Context_switch">context switch</a>.
      * However, each CloudletScheduler implementation decides how
      * such a process is implemented. For instance, Space-Shared schedulers may
-     * just perform context switch just after currently running Cloudlets
+     * perform context switch just after the currently running Cloudlets
      * completely finish executing.
      * <p>
      * <p>
      * This method is called internally by the
-     * {@link CloudletScheduler#updateProcessing(double, List)} one.</p>
-     *
-     * @pre currentTime >= 0
-     * @post $none
+     * {@link CloudletScheduler#updateProcessing(double, List)}.</p>
      */
     protected void moveNextCloudletsFromWaitingToExecList() {
         Optional<CloudletExecution> optional = Optional.of(CloudletExecution.NULL);
@@ -1068,8 +1067,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
 	 * Checks if a Cloudlet can be added to the execution list or not.
 	 * Each CloudletScheduler can define a different policy to
-	 * indicate if a Cloudlet can be added to the execution list
-	 * or not at the moment this method is called.
+	 * indicate if a Cloudlet can be added to that list at the moment this method is called.
 	 *
 	 * <p>For instance, time-shared implementations can put all
 	 * Cloudlets in the execution list, once it uses a preemptive policy

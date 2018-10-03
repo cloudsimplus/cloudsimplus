@@ -74,6 +74,7 @@ import java.util.function.Function;
  * @todo {@link MachineEventType#UPDATE} events are not being processed yet.
  */
 public class GoogleMachineEventsExample1 {
+    private static final String TRACE_FILENAME = "workload/google-traces/machine-events-sample-1.csv";
     private static final int HOST_BW = 10;
     private static final long HOST_STORAGE = 100000;
     private static final double HOST_MIPS = 1000;
@@ -147,9 +148,7 @@ public class GoogleMachineEventsExample1 {
         datacenters = new ArrayList<>(DATACENTERS_NUMBER);
 
         final GoogleMachineEventsTraceReader reader =
-            GoogleMachineEventsTraceReader.getInstance(
-                "workload/google-traces/machine-events-sample-1.csv",
-                this::createHost);
+            GoogleMachineEventsTraceReader.getInstance(TRACE_FILENAME, this::createHost);
         reader.setMaxRamCapacity(32);
         reader.setMaxCpuCores(10);
 

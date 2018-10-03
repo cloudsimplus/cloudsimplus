@@ -39,7 +39,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Conversion;
@@ -84,6 +84,8 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
  * @todo It has to be checked the task-usage trace files too.
  */
 public class GoogleTaskEventsExample1 {
+    private static final String TRACE_FILENAME = "workload/google-traces/task-events-sample-1.csv";
+
     private static final int HOSTS = 10;
     private static final int VMS = 8;
     private static final int HOST_PES = 8;
@@ -144,19 +146,15 @@ public class GoogleTaskEventsExample1 {
      * </p>
      */
     private void createCloudletsAndBrokersFromTraceFile() {
-        final String fileName = "workload/google-traces/task-events-sample-1.csv";
         final GoogleTaskEventsTraceReader reader =
-            GoogleTaskEventsTraceReader.getInstance(
-                simulation,
-                fileName,
-                this::createCloudlet);
+            GoogleTaskEventsTraceReader.getInstance(simulation, TRACE_FILENAME, this::createCloudlet);
 
         /*The created Cloudlets are automatically submitted to their respective brokers,
         so you don't have to submit them manually.*/
         cloudlets = reader.process();
         brokers = reader.getBrokers();
         System.out.printf("%d Cloudlets and %d Brokers created from the %s trace file.%s",
-            cloudlets.size(), brokers.size(), fileName, System.lineSeparator());
+            cloudlets.size(), brokers.size(), TRACE_FILENAME, System.lineSeparator());
     }
 
     /**
@@ -257,9 +255,8 @@ public class GoogleTaskEventsExample1 {
     private Vm createVm(final int id) {
         return new VmSimple(VM_MIPS, VM_PES)
             .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-            .setCloudletScheduler(new CloudletSchedulerSpaceShared());
+            .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
-
 
     private void printCloudlets(final DatacenterBroker broker) {
         final String username = broker.getName().replace("Broker_", "");

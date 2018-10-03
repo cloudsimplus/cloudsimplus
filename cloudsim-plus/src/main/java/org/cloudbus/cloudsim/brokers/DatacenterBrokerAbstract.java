@@ -501,20 +501,21 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void processCloudletReady(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
         if(cloudlet.getStatus() == Cloudlet.Status.PAUSED)
-            LOGGER.info("{}: {}: Request to resume {} execution received.", getSimulation().clock(), this, cloudlet);
-        else LOGGER.info("{}: {}: Request to start executing {} received.", getSimulation().clock(), this, cloudlet);
+             logCloudletStatusChange(cloudlet, "resume execution of");
+        else logCloudletStatusChange(cloudlet, "start executing");
+
         cloudlet.getVm().getCloudletScheduler().cloudletReady(cloudlet);
     }
 
     private void processCloudletPause(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
-        LOGGER.info("{}: {}: Request to deschedule (pause) {} received.", getSimulation().clock(), this, cloudlet);
+        logCloudletStatusChange(cloudlet, "deschedule (pause)");
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
     }
 
     private void processCloudletCancel(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
-        LOGGER.info("{}: {}: Request to cancel {} execution received.", getSimulation().clock(), this, cloudlet);
+        logCloudletStatusChange(cloudlet, "cancel execution of");
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
     }
 
@@ -525,9 +526,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private void processCloudletFinish(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
-        LOGGER.info("{}: {}: Request to finish running {} received.", getSimulation().clock(), this, cloudlet);
-        /*If the executed length is zero, it means the cloudlet processing was not updated yet.
-        * This way, calls the method to update the Cloudlet's processing.*/
+        logCloudletStatusChange(cloudlet, "finish running");
+        /* If the executed length is zero, it means the cloudlet processing was not updated yet.
+         * This way, calls the method to update the Cloudlet's processing.*/
         if(cloudlet.getFinishedLengthSoFar() == 0){
             cloudlet.getVm().getHost().updateProcessing(getSimulation().clock());
         }
@@ -535,6 +536,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         /*After defining the Cloudlet length, updates the Cloudlet processing again so that the Cloudlet status
         * is updated at this clock tick instead of the next one.*/
         cloudlet.getVm().getHost().updateProcessing(getSimulation().clock());
+    }
+
+    private void logCloudletStatusChange(final Cloudlet cloudlet, final String status) {
+        final String msg = cloudlet.getJobId() > 0 ? String.format("(job %d) ", cloudlet.getJobId()) : "";
+        LOGGER.info("{}: {}: Request to {} {} {}received.", getSimulation().clock(), this, status, cloudlet, msg);
     }
 
     private void processCloudletFail(final SimEvent evt){

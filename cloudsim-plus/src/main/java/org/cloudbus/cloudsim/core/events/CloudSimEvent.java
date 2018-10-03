@@ -128,6 +128,7 @@ public final class CloudSimEvent implements SimEvent {
      * @param simulation the Simulation the event belongs to
      * @param dest the source entity which has to receive the message
      * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
+     * @todo the simulation object may be got from the destination entity
      */
     public CloudSimEvent(
         final Simulation simulation, final SimEntity dest, final int tag)

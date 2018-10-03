@@ -466,9 +466,9 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
     }
 
     /**
-     * Checks which Cloudlets in the execution list has the virtual runtime
-     * equals to its allocated time slice and preempt them, getting
-     * the most priority Cloudlets in the waiting list (that is those ones
+     * Checks which Cloudlets in the execution list have the virtual runtime
+     * equals to their allocated time slice and preempt them, getting
+     * the most priority Cloudlets in the waiting list (i.e., those ones
      * in the beginning of the list).
      *
      * @see #preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList()
