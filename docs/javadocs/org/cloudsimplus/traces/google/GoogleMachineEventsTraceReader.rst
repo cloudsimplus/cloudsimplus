@@ -12,13 +12,17 @@
 
 .. java:import:: org.cloudbus.cloudsim.util ResourceLoader
 
-.. java:import:: java.io FileInputStream
-
 .. java:import:: java.io FileNotFoundException
+
+.. java:import:: java.io IOException
 
 .. java:import:: java.io InputStream
 
 .. java:import:: java.io UncheckedIOException
+
+.. java:import:: java.nio.file Files
+
+.. java:import:: java.nio.file Paths
 
 .. java:import:: java.util ArrayList
 
@@ -40,7 +44,7 @@ GoogleMachineEventsTraceReader
 
    Process "machine events" trace files from \ `Google Cluster Data <https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md>`_\ . When a trace file is \ :java:ref:`processed <process()>`\ , it creates a list of available \ :java:ref:`Host`\ s for every line with a zero timestamp and the \ :java:ref:`event type <getEventType()>`\  equals to \ :java:ref:`MachineEventType.ADD`\ , meaning that such Hosts will be immediately available at the simulation start. Hosts addition events with timestamp greater than zero will be scheduled to be added just at the specified type. In the same way, Hosts removal are accordingly scheduled.
 
-   Such trace files are the ones inside the machine_events sub-directory of downloaded Google traces. The instructions to download the traces are provided in the link above. A spreadsheet that makes it easier to understand the trace files structure is provided in docs/google-cluster-data-samples.xlsx
+   Such trace files are the ones inside the machine_events sub-directory of downloaded Google traces. The instructions to download the traces are provided in the link above. A spreadsheet that makes it easier to understand the structure of trace files is provided in docs/google-cluster-data-samples.xlsx
 
    The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above. It's strongly recommended to read such a documentation before trying to use this class.
 
@@ -53,7 +57,7 @@ Constructors
 GoogleMachineEventsTraceReader
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public GoogleMachineEventsTraceReader(String filePath, Function<MachineEvent, Host> hostCreationFunction) throws FileNotFoundException
+.. java:constructor:: public GoogleMachineEventsTraceReader(String filePath, Function<MachineEvent, Host> hostCreationFunction) throws IOException
    :outertype: GoogleMachineEventsTraceReader
 
    Instantiates a GoogleMachineEventsTraceReader to read a "machine events" trace file. Created Hosts will have 16GB of maximum RAM and the maximum of 8 \ :java:ref:`Pe`\ s.
@@ -67,12 +71,6 @@ GoogleMachineEventsTraceReader
 
 Methods
 -------
-addAvailableHost
-^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean addAvailableHost(Host host)
-   :outertype: GoogleMachineEventsTraceReader
-
 addHostToRemovalList
 ^^^^^^^^^^^^^^^^^^^^
 

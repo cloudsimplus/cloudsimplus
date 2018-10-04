@@ -1,3 +1,5 @@
+.. java:import:: org.apache.commons.lang3 StringUtils
+
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
@@ -37,16 +39,6 @@ VmSimple
    Implements the basic features of a Virtual Machine (VM) that runs inside a \ :java:ref:`Host`\  that may be shared among other VMs. It processes \ :java:ref:`cloudlets <Cloudlet>`\ . This processing happens according to a policy, defined by the \ :java:ref:`CloudletScheduler`\ . Each VM has a owner (user), which can submit cloudlets to the VM to execute them.
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov
-
-Fields
-------
-utilizationHistory
-^^^^^^^^^^^^^^^^^^
-
-.. java:field:: protected final UtilizationHistory utilizationHistory
-   :outertype: VmSimple
-
-   **See also:** :java:ref:`.getUtilizationHistory()`
 
 Constructors
 ------------
@@ -237,7 +229,7 @@ getHost
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: VmSimple
 
 getIdleInterval
@@ -527,7 +519,7 @@ setHost
 setId
 ^^^^^
 
-.. java:method:: @Override public final void setId(int id)
+.. java:method:: @Override public final void setId(long id)
    :outertype: VmSimple
 
    Sets the VM id.
@@ -537,7 +529,7 @@ setId
 setInMigration
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final void setInMigration(boolean inMigration)
+.. java:method:: @Override public final void setInMigration(boolean migrating)
    :outertype: VmSimple
 
 setMips

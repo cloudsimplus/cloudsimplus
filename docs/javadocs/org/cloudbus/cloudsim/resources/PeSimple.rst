@@ -46,7 +46,7 @@ Methods
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: PeSimple
 
 getPeProvisioner
@@ -98,7 +98,7 @@ setCapacity
 setId
 ^^^^^
 
-.. java:method:: @Override public final void setId(int id)
+.. java:method:: @Override public final void setId(long id)
    :outertype: PeSimple
 
 setPeProvisioner

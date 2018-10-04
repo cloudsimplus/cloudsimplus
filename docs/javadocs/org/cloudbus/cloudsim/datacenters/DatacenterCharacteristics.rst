@@ -119,7 +119,7 @@ getDatacenter
 getId
 ^^^^^
 
-.. java:method:: @Override  int getId()
+.. java:method:: @Override  long getId()
    :outertype: DatacenterCharacteristics
 
    Gets the Datacenter id.

@@ -54,10 +54,10 @@ createAndSubmitVms
 .. java:method:: public VmBuilder createAndSubmitVms(int amount)
    :outertype: VmBuilder
 
-getBw
-^^^^^
+getBandwidth
+^^^^^^^^^^^^
 
-.. java:method:: public long getBw()
+.. java:method:: public long getBandwidth()
    :outertype: VmBuilder
 
 getMips
@@ -102,10 +102,10 @@ getVms
 .. java:method:: public List<Vm> getVms()
    :outertype: VmBuilder
 
-setBw
-^^^^^
+setBandwidth
+^^^^^^^^^^^^
 
-.. java:method:: public VmBuilder setBw(long defaultBW)
+.. java:method:: public VmBuilder setBandwidth(long defaultBW)
    :outertype: VmBuilder
 
 setCloudletSchedulerSupplier

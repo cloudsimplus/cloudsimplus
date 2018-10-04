@@ -30,6 +30,10 @@
 
 .. java:import:: org.slf4j LoggerFactory
 
+.. java:import:: java.util.function BinaryOperator
+
+.. java:import:: java.util.function Function
+
 .. java:import:: java.util.stream Stream
 
 HostFaultInjection
@@ -89,13 +93,13 @@ HostFaultInjection
 HostFaultInjection
 ^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public HostFaultInjection(Datacenter datacenter, ContinuousDistribution faultArrivalTimesGeneratorInHours)
+.. java:constructor:: public HostFaultInjection(Datacenter datacenter, ContinuousDistribution faultArrivalHoursGenerator)
    :outertype: HostFaultInjection
 
    Creates a fault injection mechanism for the Hosts of a given \ :java:ref:`Datacenter`\ . The Hosts failures are randomly injected according to the given pseudo random number generator, that indicates the mean of failures to be generated per \ **minute**\ , (which is also called \ **event rate**\  or \ **rate parameter**\ ).
 
    :param datacenter: the Datacenter to which failures will be randomly injected for its Hosts
-   :param faultArrivalTimesGeneratorInHours: a Pseudo Random Number Generator which generates the times Hosts failures will occur (in hours). \ **The values returned by the generator will be considered to be hours**\ . Frequently it is used a \ :java:ref:`PoissonDistr`\  to generate failure arrivals, but any \ :java:ref:`ContinuousDistribution`\  can be used.
+   :param faultArrivalHoursGenerator: a Pseudo Random Number Generator which generates the times Hosts failures will occur (in hours). \ **The values returned by the generator will be considered to be hours**\ . Frequently it is used a \ :java:ref:`PoissonDistr`\  to generate failure arrivals, but any \ :java:ref:`ContinuousDistribution`\  can be used.
 
 Methods
 -------
@@ -169,13 +173,15 @@ getLastFailedHost
 
    :return: the last failed Host or \ :java:ref:`Host.NULL`\  if not Host has failed yet.
 
-getMaxTimeToGenerateFailureInHours
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getMaxTimeToFailInHours
+^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public double getMaxTimeToGenerateFailureInHours()
+.. java:method:: public double getMaxTimeToFailInHours()
    :outertype: HostFaultInjection
 
-   Gets the max time to generate a failure (in hours)
+   Gets the maximum time to generate a failure (in hours). After that time, no failure will be generated.
+
+   **See also:** :java:ref:`.getMaxTimeToFailInSecs()`
 
 getNumberOfFaults
 ^^^^^^^^^^^^^^^^^
@@ -272,7 +278,7 @@ meanTimeToRepairVmFaultsInMinutes
 processEvent
 ^^^^^^^^^^^^
 
-.. java:method:: @Override public void processEvent(SimEvent ev)
+.. java:method:: @Override public void processEvent(SimEvent evt)
    :outertype: HostFaultInjection
 
 setDatacenter
@@ -285,15 +291,15 @@ setDatacenter
 
    :param datacenter: the datacenter to set
 
-setMaxTimeToGenerateFailureInHours
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+setMaxTimeToFailInHours
+^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public void setMaxTimeToGenerateFailureInHours(double maxTimeToGenerateFailureInHours)
+.. java:method:: public void setMaxTimeToFailInHours(double maxTimeToFailInHours)
    :outertype: HostFaultInjection
 
-   Sets the max time to generate a failure (in hours).
+   Sets the maximum time to generate a failure (in hours). After that time, no failure will be generated.
 
-   :param maxTimeToGenerateFailureInHours: the maximum time to set
+   :param maxTimeToFailInHours: the maximum time to set (in hours)
 
 startEntity
 ^^^^^^^^^^^

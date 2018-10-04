@@ -1,12 +1,12 @@
+.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
+
+.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
+
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util List
 
 .. java:import:: java.util NoSuchElementException
-
-.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
-
-.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
 
 BrokerBuilder
 =============

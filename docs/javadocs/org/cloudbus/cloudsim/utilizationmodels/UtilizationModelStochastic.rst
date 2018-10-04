@@ -96,7 +96,7 @@ loadHistory
    Load an utilization history from a file.
 
    :param filename: the filename
-   :throws Exception: the exception
+   :throws IOException: when the file cannot be accessed
 
 saveHistory
 ^^^^^^^^^^^
@@ -107,7 +107,7 @@ saveHistory
    Save the utilization history to a file.
 
    :param filename: the filename
-   :throws Exception: the exception
+   :throws IOException: when the file cannot be accessed
 
 setHistory
 ^^^^^^^^^^

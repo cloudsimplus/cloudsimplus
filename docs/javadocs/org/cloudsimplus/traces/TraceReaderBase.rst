@@ -68,6 +68,27 @@ getFieldIntValue
    :param field: a enum value representing the index of the field to get the value
    :param defaultValue: the default value to be returned if the field value is not an int
 
+getFieldLongValue
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected <T extends Enum> long getFieldLongValue(T field)
+   :outertype: TraceReaderBase
+
+   Gets a field's value from the \ :java:ref:`last parsed line <getLastParsedLineArray()>`\  as an int.
+
+   :param field: a enum value representing the index of the field to get the value
+
+getFieldLongValue
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected <T extends Enum> long getFieldLongValue(T field, long defaultValue)
+   :outertype: TraceReaderBase
+
+   Gets a field's value from the \ :java:ref:`last parsed line <getLastParsedLineArray()>`\  as an int.
+
+   :param field: a enum value representing the index of the field to get the value
+   :param defaultValue: the default value to be returned if the field value is not an int
+
 getFieldValue
 ^^^^^^^^^^^^^
 

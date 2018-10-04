@@ -104,7 +104,7 @@ getCloudletArrivalTime
 getCloudletId
 ^^^^^^^^^^^^^
 
-.. java:method:: public int getCloudletId()
+.. java:method:: public long getCloudletId()
    :outertype: CloudletExecution
 
    Gets the ID of the Cloudlet this execution info is related to.

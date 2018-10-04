@@ -1,3 +1,5 @@
+.. java:import:: org.apache.commons.lang3 StringUtils
+
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.util DataCloudTags

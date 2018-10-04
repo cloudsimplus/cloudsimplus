@@ -171,7 +171,7 @@ getOwnerName
 getRegistrationID
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: public int getRegistrationID()
+.. java:method:: public long getRegistrationID()
    :outertype: File
 
    Gets the file registration ID.

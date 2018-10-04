@@ -1,10 +1,10 @@
-.. java:import:: java.util List
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
+
+.. java:import:: org.cloudbus.cloudsim.distributions ContinuousDistribution
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: org.cloudbus.cloudsim.distributions ContinuousDistribution
+.. java:import:: java.util List
 
 CloudletToVmMappingSimulatedAnnealing
 =====================================

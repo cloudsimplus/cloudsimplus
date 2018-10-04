@@ -1,5 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -64,11 +62,5 @@ isSuitableForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
-   :outertype: VmSchedulerSpaceShared
-
-setHost
-^^^^^^^
-
-.. java:method:: @Override public VmScheduler setHost(Host host)
    :outertype: VmSchedulerSpaceShared
 

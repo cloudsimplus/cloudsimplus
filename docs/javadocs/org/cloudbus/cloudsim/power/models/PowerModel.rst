@@ -10,7 +10,7 @@ PowerModel
 
    Provides a model for power consumption of hosts, depending on utilization of a critical system component, such as CPU. This is the fundamental class to enable power-aware Hosts.
    However, a Host just provides power usage data if a PowerModel is set using the
-   .
+   . The power consumption data is return in Watt-Second (Ws), which is just in a different scale than the usual Kilowatt-Hour (kWh).
 
    The interface implements the Null Object Design Pattern in order to start avoiding \ :java:ref:`NullPointerException`\  when using the \ :java:ref:`PowerModel.NULL`\  object instead of attributing \ ``null``\  to \ :java:ref:`PowerModel`\  variables.
 

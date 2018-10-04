@@ -34,10 +34,10 @@ Datacenter
 
 Fields
 ------
-DEF_BANDWIDTH_PERCENT_FOR_MIGRATION
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+DEF_BW_PERCENT_FOR_MIGRATION
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:field::  double DEF_BANDWIDTH_PERCENT_FOR_MIGRATION
+.. java:field::  double DEF_BW_PERCENT_FOR_MIGRATION
    :outertype: Datacenter
 
    The default percentage of bandwidth allocated for VM migration, is a value is not set.
@@ -100,7 +100,7 @@ getBandwidthPercentForMigration
 
    Gets the percentage of the bandwidth allocated to a Host to migrate VMs. It's a value between [0 and 1] (where 1 is 100%). The default value is 0.5, meaning only 50% of the bandwidth will be allowed for migration, while the remaining will be used for VM services.
 
-   **See also:** :java:ref:`.DEF_BANDWIDTH_PERCENT_FOR_MIGRATION`
+   **See also:** :java:ref:`.DEF_BW_PERCENT_FOR_MIGRATION`
 
 getCharacteristics
 ^^^^^^^^^^^^^^^^^^
@@ -135,7 +135,7 @@ getHost
 getHostById
 ^^^^^^^^^^^
 
-.. java:method::  Host getHostById(int id)
+.. java:method::  Host getHostById(long id)
    :outertype: Datacenter
 
    Gets a Host from its id.

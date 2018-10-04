@@ -42,10 +42,10 @@ getNeighborSolution
 .. java:method:: @Override public S getNeighborSolution()
    :outertype: HeuristicNull
 
-getNumberOfNeighborhoodSearchesByIteration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getNeighborhoodSearchesByIteration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public int getNumberOfNeighborhoodSearchesByIteration()
+.. java:method:: @Override public int getNeighborhoodSearchesByIteration()
    :outertype: HeuristicNull
 
 getRandomValue
@@ -66,10 +66,10 @@ isToStopSearch
 .. java:method:: @Override public boolean isToStopSearch()
    :outertype: HeuristicNull
 
-setNumberOfNeighborhoodSearchesByIteration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+setNeighborhoodSearchesByIteration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void setNumberOfNeighborhoodSearchesByIteration(int neighborhoodSearches)
+.. java:method:: @Override public void setNeighborhoodSearchesByIteration(int neighborhoodSearches)
    :outertype: HeuristicNull
 
 solve

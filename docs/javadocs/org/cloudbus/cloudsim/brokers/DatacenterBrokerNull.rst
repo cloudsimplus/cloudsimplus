@@ -61,7 +61,7 @@ bindCloudletToVm
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(SimEntity o)
+.. java:method:: @Override public int compareTo(SimEntity entity)
    :outertype: DatacenterBrokerNull
 
 defaultVmMapper
@@ -97,7 +97,7 @@ getCloudletWaitingList
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: DatacenterBrokerNull
 
 getName
@@ -110,6 +110,12 @@ getSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Simulation getSimulation()
+   :outertype: DatacenterBrokerNull
+
+getState
+^^^^^^^^
+
+.. java:method:: @Override public State getState()
    :outertype: DatacenterBrokerNull
 
 getVmCreatedList
@@ -169,7 +175,7 @@ isThereWaitingCloudlets
 processEvent
 ^^^^^^^^^^^^
 
-.. java:method:: @Override public void processEvent(SimEvent ev)
+.. java:method:: @Override public void processEvent(SimEvent evt)
    :outertype: DatacenterBrokerNull
 
 run

@@ -15,6 +15,6 @@ Methods
 setId
 ^^^^^
 
-.. java:method::  void setId(int id)
+.. java:method::  void setId(long id)
    :outertype: ChangeableId
 

@@ -46,7 +46,7 @@ VmAllocationPolicyAbstract
 .. java:constructor:: public VmAllocationPolicyAbstract()
    :outertype: VmAllocationPolicyAbstract
 
-   Creates a new VmAllocationPolicy.
+   Creates a VmAllocationPolicy.
 
 VmAllocationPolicyAbstract
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -54,7 +54,7 @@ VmAllocationPolicyAbstract
 .. java:constructor:: public VmAllocationPolicyAbstract(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
    :outertype: VmAllocationPolicyAbstract
 
-   Creates a new VmAllocationPolicy, changing the \ :java:ref:`BiFunction`\  to select a Host for a Vm.
+   Creates a VmAllocationPolicy, changing the \ :java:ref:`BiFunction`\  to select a Host for a Vm.
 
    :param findHostForVmFunction: a \ :java:ref:`BiFunction`\  to select a Host for a given Vm.
 
@@ -68,7 +68,7 @@ addPesFromHost
 .. java:method:: public void addPesFromHost(Host host)
    :outertype: VmAllocationPolicyAbstract
 
-   Gets the number of working PEs from a given Host and adds these numbers to the \ :java:ref:`list of free PEs <getHostFreePesMap()>`\ . Before the Host starts being used, the number of free PEs is the same as the number of working PEs.
+   Gets the number of working PEs from a given Host and adds this number to the \ :java:ref:`list of free PEs <getHostFreePesMap()>`\ . Before the Host starts being used, the number of free PEs is the same as the number of working PEs.
 
 addUsedPes
 ^^^^^^^^^^

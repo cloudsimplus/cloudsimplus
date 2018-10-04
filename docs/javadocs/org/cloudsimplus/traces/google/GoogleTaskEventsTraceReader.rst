@@ -20,13 +20,15 @@
 
 .. java:import:: org.cloudsimplus.listeners EventInfo
 
-.. java:import:: java.io FileInputStream
-
-.. java:import:: java.io FileNotFoundException
+.. java:import:: java.io IOException
 
 .. java:import:: java.io InputStream
 
 .. java:import:: java.io UncheckedIOException
+
+.. java:import:: java.nio.file Files
+
+.. java:import:: java.nio.file Paths
 
 .. java:import:: java.util.function BiFunction
 
@@ -44,7 +46,7 @@ GoogleTaskEventsTraceReader
 
    The class also creates the required brokers to represent the customers (users) defined by the username field inside the trace file.
 
-   A spreadsheet that makes it easier to understand the trace files structure is provided in docs/google-cluster-data-samples.xlsx
+   A spreadsheet that makes it easier to understand the structure of trace files is provided in docs/google-cluster-data-samples.xlsx
 
    The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above. It's strongly recommended to read such a documentation before trying to use this class.
 
@@ -57,7 +59,7 @@ Constructors
 GoogleTaskEventsTraceReader
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public GoogleTaskEventsTraceReader(CloudSim simulation, String filePath, Function<TaskEvent, Cloudlet> cloudletCreationFunction) throws FileNotFoundException
+.. java:constructor:: public GoogleTaskEventsTraceReader(CloudSim simulation, String filePath, Function<TaskEvent, Cloudlet> cloudletCreationFunction) throws IOException
    :outertype: GoogleTaskEventsTraceReader
 
    Instantiates a \ :java:ref:`GoogleTaskEventsTraceReader`\  to read a "task events" file.
@@ -72,12 +74,6 @@ GoogleTaskEventsTraceReader
 
 Methods
 -------
-addAvailableCloudlet
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean addAvailableCloudlet(Cloudlet cloudlet)
-   :outertype: GoogleTaskEventsTraceReader
-
 createBrokerIfAbsent
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -163,7 +159,7 @@ preProcess
 .. java:method:: @Override protected void preProcess()
    :outertype: GoogleTaskEventsTraceReader
 
-   There is not pre-process for this implementation.
+   There is no pre-process requirements for this implementation.
 
 process
 ^^^^^^^
@@ -189,7 +185,7 @@ processParsedLineInternal
 requestCloudletStatusChange
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean requestCloudletStatusChange(BiFunction<DatacenterBroker, Integer, Optional<Cloudlet>> cloudletLookupFunction, int tag)
+.. java:method::  boolean requestCloudletStatusChange(BiFunction<DatacenterBroker, Long, Optional<Cloudlet>> cloudletLookupFunction, int tag)
    :outertype: GoogleTaskEventsTraceReader
 
    Send a message to the broker to request change in a Cloudlet status, using some tags from \ :java:ref:`CloudSimTags`\  such as \ :java:ref:`CloudSimTags.CLOUDLET_READY`\ .

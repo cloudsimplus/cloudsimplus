@@ -1,6 +1,6 @@
-.. java:import:: java.util Random
-
 .. java:import:: org.apache.commons.math3.distribution UniformRealDistribution
+
+.. java:import:: java.util Random
 
 UniformDistr
 ============
@@ -69,17 +69,15 @@ UniformDistr
 
 Methods
 -------
-isApplyAntitheticVariatesTechnique
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+isApplyAntitheticVariates
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public boolean isApplyAntitheticVariatesTechnique()
+.. java:method:: public boolean isApplyAntitheticVariates()
    :outertype: UniformDistr
 
-   Indicates if the pseudo random number generator (PRNG) has to apply the "Antithetic Variates Technique" in order to reduce variance of experiments using this PRNG. This technique doesn't work for all the cases. However, in the cases it can be applied, in order to it work, one have to perform some actions. Consider an experiment that has to run "n" times. The first half of these experiments has to use the seeds the developer want. However, the second half of the experiments have to set the applyAntitheticVariatesTechnique attribute to true and use the seeds of the first half of experiments. Thus, the first half of experiments are run using PRNGs that return random numbers as U(0, 1)[seed_1], ..., U(0, 1)[seed_n]. The second half of experiments then uses the seeds of the first half of experiments, returning random numbers as 1 - U(0, 1)[seed_1], ..., 1 - U(0, 1)[seed_n].
+   Indicates if the pseudo random number generator (PRNG) has to apply the \ `Antithetic Variates Technique <https://en.wikipedia.org/wiki/Antithetic_variates>`_\  in order to reduce variance of experiments using this PRNG. This technique doesn't work for all the cases. However, in the cases it can be applied, in order to it work, one have to perform some actions. Consider an experiment that has to run "n" times. The first half of these experiments has to use the seeds the developer want. However, the second half of the experiments have to set the applyAntitheticVariates attribute to true and use the seeds of the first half of experiments. Thus, the first half of experiments are run using PRNGs that return random numbers as U(0, 1)[seed_1], ..., U(0, 1)[seed_n]. The second half of experiments then uses the seeds of the first half of experiments, returning random numbers as 1 - U(0, 1)[seed_1], ..., 1 - U(0, 1)[seed_n].
 
    :return: true if the technique has to be applied, false otherwise
-
-   **See also:** \ `Antithetic variates <https://en.wikipedia.org/wiki/Antithetic_variates>`_\
 
 sample
 ^^^^^^
@@ -100,15 +98,15 @@ sample
    :param max: the maximum value
    :return: the next random number in the sequence
 
-setApplyAntitheticVariatesTechnique
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+setApplyAntitheticVariates
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public UniformDistr setApplyAntitheticVariatesTechnique(boolean applyAntitheticVariatesTechnique)
+.. java:method:: public UniformDistr setApplyAntitheticVariates(boolean applyAntitheticVariates)
    :outertype: UniformDistr
 
-   Defines if the pseudo random number generator (PRNG) has to apply the "Antithetic Variates Technique" in order to reduce variance of experiments using this PRNG.
+   Defines if the pseudo random number generator (PRNG) has to apply the \ `Antithetic Variates Technique <https://en.wikipedia.org/wiki/Antithetic_variates>`_\  in order to reduce variance of experiments using this PRNG.
 
-   :param applyAntitheticVariatesTechnique: true if the technique has to be applied, false otherwise
+   :param applyAntitheticVariates: true if the technique has to be applied, false otherwise
 
-   **See also:** :java:ref:`.isApplyAntitheticVariatesTechnique()`
+   **See also:** :java:ref:`.isApplyAntitheticVariates()`
 

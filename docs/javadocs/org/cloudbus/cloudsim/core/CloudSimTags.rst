@@ -168,7 +168,7 @@ END_OF_SIMULATION
 .. java:field:: public static final int END_OF_SIMULATION
    :outertype: CloudSimTags
 
-   Denotes the end of simulation. Despite it has a negative value, it isn't a priority event (this is the only exception).
+   Denotes the end of simulation. Despite it has a negative value, it isn't a priority event.
 
 FAILURE
 ^^^^^^^
@@ -312,10 +312,10 @@ VM_MIGRATE_ACK
 
    Denotes a request to migrate a new VM in a \ :java:ref:`Datacenter`\  with acknowledgement information sent by the Datacenter. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ ``Map.Entry<Vm, Host>``\  representing to which Host a VM must be migrated.
 
-VM_UPDATE_CLOUDLET_PROCESSING_EVENT
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+VM_UPDATE_CLOUDLET_PROCESSING
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:field:: public static final int VM_UPDATE_CLOUDLET_PROCESSING_EVENT
+.. java:field:: public static final int VM_UPDATE_CLOUDLET_PROCESSING
    :outertype: CloudSimTags
 
    Denotes an internal event generated in a \ :java:ref:`Datacenter`\  to notify itself to update the processing of cloudlets. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  can be a \ :java:ref:`Host`\  object to indicate that just the Cloudlets running in VMs inside such a Host must be updated. The Host is an optional parameter which if omitted, means that all Hosts from the Datacenter will have its cloudlets updated.

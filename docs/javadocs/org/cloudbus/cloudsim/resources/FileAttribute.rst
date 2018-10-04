@@ -1,12 +1,14 @@
+.. java:import:: org.apache.commons.lang3 StringUtils
+
+.. java:import:: org.cloudbus.cloudsim.util Conversion
+
+.. java:import:: org.cloudbus.cloudsim.util DataCloudTags
+
 .. java:import:: java.util Calendar
 
 .. java:import:: java.util Date
 
 .. java:import:: java.util Objects
-
-.. java:import:: org.cloudbus.cloudsim.util Conversion
-
-.. java:import:: org.cloudbus.cloudsim.util DataCloudTags
 
 FileAttribute
 =============
@@ -128,7 +130,7 @@ getOwnerName
 getRegistrationID
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: public int getRegistrationID()
+.. java:method:: public long getRegistrationID()
    :outertype: FileAttribute
 
    Gets the file registration ID.
@@ -244,7 +246,7 @@ setOwnerName
 setRegistrationId
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: public boolean setRegistrationId(int id)
+.. java:method:: public boolean setRegistrationId(long id)
    :outertype: FileAttribute
 
    Sets the file registration ID (published by a Replica Catalogue entity).

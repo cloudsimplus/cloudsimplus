@@ -71,7 +71,7 @@ abort
 addEntity
 ^^^^^^^^^
 
-.. java:method:: @Override public void addEntity(CloudSimEntity e)
+.. java:method:: @Override public void addEntity(CloudSimEntity entity)
    :outertype: CloudSim
 
 addOnClockTickListener

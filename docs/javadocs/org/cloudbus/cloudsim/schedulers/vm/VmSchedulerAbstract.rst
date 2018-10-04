@@ -244,6 +244,6 @@ removePesFromMap
 setHost
 ^^^^^^^
 
-.. java:method:: @Override public VmScheduler setHost(Host host)
+.. java:method:: @Override public final VmScheduler setHost(Host host)
    :outertype: VmSchedulerAbstract
 

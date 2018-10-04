@@ -1,3 +1,7 @@
+.. java:import:: java.nio.file Files
+
+.. java:import:: java.nio.file Paths
+
 .. java:import:: java.util Arrays
 
 .. java:import:: java.util.function Function
@@ -23,7 +27,7 @@ Constructors
 TraceReaderAbstract
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public TraceReaderAbstract(String filePath) throws FileNotFoundException
+.. java:constructor:: public TraceReaderAbstract(String filePath) throws IOException
    :outertype: TraceReaderAbstract
 
    Create a new SwfWorkloadFileReader object.
@@ -51,6 +55,12 @@ getCommentString
 
 .. java:method:: @Override public String[] getCommentString()
    :outertype: TraceReaderAbstract
+
+   {@inheritDoc}
+
+   It's returned a defensive copy of the array.
+
+   :return: {@inheritDoc}
 
 getFieldDelimiterRegex
 ^^^^^^^^^^^^^^^^^^^^^^

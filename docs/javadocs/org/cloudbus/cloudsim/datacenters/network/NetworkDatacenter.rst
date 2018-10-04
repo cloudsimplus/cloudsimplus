@@ -8,8 +8,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.network.switches AbstractSwitch
-
 .. java:import:: org.cloudbus.cloudsim.network.switches EdgeSwitch
 
 .. java:import:: org.cloudbus.cloudsim.network.switches Switch
@@ -58,12 +56,12 @@ Methods
 addSwitch
 ^^^^^^^^^
 
-.. java:method:: public void addSwitch(Switch sw)
+.. java:method:: public void addSwitch(Switch swt)
    :outertype: NetworkDatacenter
 
-   Adds a \ :java:ref:`AbstractSwitch`\  to the Datacenter.
+   Adds a \ :java:ref:`Switch`\  to the Datacenter.
 
-   :param sw: the AbstractSwitch to be added
+   :param swt: the Switch to be added
 
 getEdgeSwitch
 ^^^^^^^^^^^^^

@@ -1,6 +1,6 @@
 .. java:import:: java.util Collections
 
-.. java:import:: java.util List
+.. java:import:: java.util SortedMap
 
 UtilizationHistoryNull
 ======================
@@ -39,19 +39,13 @@ enable
 getHistory
 ^^^^^^^^^^
 
-.. java:method:: @Override public List<Double> getHistory()
+.. java:method:: @Override public SortedMap<Double, Double> getHistory()
    :outertype: UtilizationHistoryNull
 
 getMaxHistoryEntries
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public int getMaxHistoryEntries()
-   :outertype: UtilizationHistoryNull
-
-getPreviousTime
-^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getPreviousTime()
    :outertype: UtilizationHistoryNull
 
 getUtilizationMad
@@ -72,6 +66,12 @@ getUtilizationVariance
 .. java:method:: @Override public double getUtilizationVariance()
    :outertype: UtilizationHistoryNull
 
+getVm
+^^^^^
+
+.. java:method:: @Override public Vm getVm()
+   :outertype: UtilizationHistoryNull
+
 isEnabled
 ^^^^^^^^^
 
@@ -82,11 +82,5 @@ setMaxHistoryEntries
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setMaxHistoryEntries(int maxHistoryEntries)
-   :outertype: UtilizationHistoryNull
-
-setPreviousTime
-^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void setPreviousTime(double previousTime)
    :outertype: UtilizationHistoryNull
 

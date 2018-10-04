@@ -34,6 +34,16 @@ getSimulation
 
    Gets the CloudSim instance that represents the simulation to each the Entity is related to.
 
+getState
+^^^^^^^^
+
+.. java:method::  State getState()
+   :outertype: SimEntity
+
+   Gets the entity state.
+
+   :return: the state
+
 isAlive
 ^^^^^^^
 
@@ -61,12 +71,12 @@ isStarted
 processEvent
 ^^^^^^^^^^^^
 
-.. java:method::  void processEvent(SimEvent ev)
+.. java:method::  void processEvent(SimEvent evt)
    :outertype: SimEntity
 
    Processes events or services that are available for the entity. This method is invoked by the \ :java:ref:`CloudSim`\  class whenever there is an event in the deferred queue, which needs to be processed by the entity.
 
-   :param ev: information about the event just happened
+   :param evt: information about the event just happened
 
 run
 ^^^

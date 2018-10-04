@@ -90,6 +90,6 @@ getLevel
 processPacketUp
 ^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected void processPacketUp(SimEvent ev)
+.. java:method:: @Override protected void processPacketUp(SimEvent evt)
    :outertype: RootSwitch
 

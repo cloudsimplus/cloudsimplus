@@ -49,7 +49,7 @@ cloudletFail
 cloudletFinish
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void cloudletFinish(CloudletExecution ce)
+.. java:method:: @Override public void cloudletFinish(CloudletExecution cle)
    :outertype: CloudletSchedulerNull
 
 cloudletPause
@@ -73,13 +73,13 @@ cloudletResume
 cloudletSubmit
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double cloudletSubmit(Cloudlet cl, double fileTransferTime)
+.. java:method:: @Override public double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime)
    :outertype: CloudletSchedulerNull
 
 cloudletSubmit
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double cloudletSubmit(Cloudlet cl)
+.. java:method:: @Override public double cloudletSubmit(Cloudlet cloudlet)
    :outertype: CloudletSchedulerNull
 
 deallocatePesFromVm
@@ -163,7 +163,7 @@ getRequestedCpuPercentUtilization
 getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution ce, double time)
+.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution cle, double time)
    :outertype: CloudletSchedulerNull
 
 getTaskScheduler

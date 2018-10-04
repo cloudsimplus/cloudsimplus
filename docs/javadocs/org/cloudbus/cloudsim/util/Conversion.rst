@@ -175,6 +175,8 @@ microToMilli
 
    Converts any value in micro (μ) to milli (m) scale, such as microseconds to milliseconds.
 
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
    :param micro: the value in micro (μ) scale
    :return: the value in milli (m) scale
 
@@ -185,6 +187,8 @@ microToSeconds
    :outertype: Conversion
 
    Converts any value in microseconds (μ) to seconds.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
 
    :param micro: the value in microseconds (μ)
    :return: the value in seconds

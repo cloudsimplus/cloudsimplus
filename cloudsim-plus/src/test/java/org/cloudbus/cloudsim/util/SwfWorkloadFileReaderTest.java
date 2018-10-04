@@ -2,8 +2,9 @@ package org.cloudbus.cloudsim.util;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -11,9 +12,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class SwfWorkloadFileReaderTest {
+    private static final Logger LOGGER = LoggerFactory.getLogger(SwfWorkloadFileReaderTest.class.getSimpleName());
+    private static final int JOBS_AT_SWF_LCG_FILE = 188041;
     private static final String SWF_FILE = "LCG.swf";
     private static final String ZIP_FILE = "two-workload-files.zip";
-    private static final int JOBS_AT_SWF_LCG_FILE = 188041;
 
     /**
      * Number of jobs of the NASA file inside the zip archive.
@@ -32,23 +34,18 @@ public class SwfWorkloadFileReaderTest {
 
     @Test
     public void readZipWithTwoSwfFiles() throws IOException {
-	    readFile(ZIP_FILE,
-                JOBS_AT_SWF_LCG_FILE + JOBS_AT_SWF_NASA_FILE);
+	    readFile(ZIP_FILE, JOBS_AT_SWF_LCG_FILE + JOBS_AT_SWF_NASA_FILE);
     }
 
-    private void readFile(String fileNameWithoutPath, int numberOfJobs) throws IOException {
-        final SwfWorkloadFileReader reader = new SwfWorkloadFileReader("src"
-                + File.separator
-                + "test"
-                + File.separator
-                + fileNameWithoutPath, 1);
+    private void readFile(String fileNameWithoutPath, int numberOfJobs) {
+        final SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(fileNameWithoutPath, 1);
         final long milisecs = System.currentTimeMillis();
         final List<Cloudlet> cloudletlist = reader.generateWorkload();
         final double seconds = (System.currentTimeMillis() - milisecs)/1000.0;
         assertEquals(numberOfJobs, cloudletlist.size());
-        System.out.printf(
-                "Time taken to read the file %s: %.2f seconds\n",
-                fileNameWithoutPath, seconds);
+        LOGGER.info(
+            "Time taken to read the file {}: {} seconds",
+            fileNameWithoutPath, seconds);
 
         for (final Cloudlet cloudlet : cloudletlist) {
             assertTrue(cloudlet.getLength() > 0);

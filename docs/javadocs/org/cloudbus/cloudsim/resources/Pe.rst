@@ -1,4 +1,4 @@
-.. java:import:: org.cloudbus.cloudsim.core Identifiable
+.. java:import:: org.cloudbus.cloudsim.core ChangeableId
 
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 
@@ -8,7 +8,7 @@ Pe
 .. java:package:: org.cloudbus.cloudsim.resources
    :noindex:
 
-.. java:type:: public interface Pe extends Identifiable, ResourceManageable
+.. java:type:: public interface Pe extends ChangeableId, ResourceManageable
 
    A interface to be implemented by each class that provides the basic features of a virtual or physical Processing Element (PE) of a PM or VM. Each Pe represents a virtual or physical processor core.
 
@@ -113,16 +113,6 @@ setCapacity
 
    :param mipsCapacity: the MIPS capacity to set
    :return: true if mipsCapacity > 0, false otherwise
-
-setId
-^^^^^
-
-.. java:method::  void setId(int id)
-   :outertype: Pe
-
-   Sets the \ :java:ref:`getId()`\ .
-
-   :param id: the new PE id
 
 setPeProvisioner
 ^^^^^^^^^^^^^^^^

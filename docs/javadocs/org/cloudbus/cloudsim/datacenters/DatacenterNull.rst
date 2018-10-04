@@ -57,7 +57,7 @@ addOnHostAvailableListener
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(SimEntity o)
+.. java:method:: @Override public int compareTo(SimEntity entity)
    :outertype: DatacenterNull
 
 getBandwidthPercentForMigration
@@ -87,7 +87,7 @@ getHost
 getHostById
 ^^^^^^^^^^^
 
-.. java:method:: @Override public Host getHostById(int id)
+.. java:method:: @Override public Host getHostById(long id)
    :outertype: DatacenterNull
 
 getHostList
@@ -99,7 +99,7 @@ getHostList
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: DatacenterNull
 
 getName
@@ -130,6 +130,12 @@ getSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Simulation getSimulation()
+   :outertype: DatacenterNull
+
+getState
+^^^^^^^^
+
+.. java:method:: @Override public State getState()
    :outertype: DatacenterNull
 
 getVmAllocationPolicy
@@ -165,7 +171,7 @@ isStarted
 processEvent
 ^^^^^^^^^^^^
 
-.. java:method:: @Override public void processEvent(SimEvent ev)
+.. java:method:: @Override public void processEvent(SimEvent evt)
    :outertype: DatacenterNull
 
 removeHost

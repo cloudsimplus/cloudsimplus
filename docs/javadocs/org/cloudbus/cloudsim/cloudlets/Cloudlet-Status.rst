@@ -101,7 +101,7 @@ QUEUED
 .. java:field:: public static final Cloudlet.Status QUEUED
    :outertype: Cloudlet.Status
 
-   The Cloudlet has moved to a Vm.
+   The Cloudlet has moved to a Vm but it is in the waiting queue.
 
 READY
 ^^^^^

@@ -53,7 +53,7 @@ getDatacenter
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: DatacenterCharacteristicsNull
 
 getMips
@@ -107,31 +107,31 @@ isWorking
 setArchitecture
 ^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public DatacenterCharacteristics setArchitecture(String a)
+.. java:method:: @Override public DatacenterCharacteristics setArchitecture(String arch)
    :outertype: DatacenterCharacteristicsNull
 
 setCostPerBw
 ^^^^^^^^^^^^
 
-.. java:method:: @Override public DatacenterCharacteristics setCostPerBw(double c)
+.. java:method:: @Override public DatacenterCharacteristics setCostPerBw(double cost)
    :outertype: DatacenterCharacteristicsNull
 
 setCostPerMem
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public DatacenterCharacteristics setCostPerMem(double c)
+.. java:method:: @Override public DatacenterCharacteristics setCostPerMem(double cost)
    :outertype: DatacenterCharacteristicsNull
 
 setCostPerSecond
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public DatacenterCharacteristics setCostPerSecond(double c)
+.. java:method:: @Override public DatacenterCharacteristics setCostPerSecond(double cost)
    :outertype: DatacenterCharacteristicsNull
 
 setCostPerStorage
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public DatacenterCharacteristics setCostPerStorage(double c)
+.. java:method:: @Override public DatacenterCharacteristics setCostPerStorage(double cost)
    :outertype: DatacenterCharacteristicsNull
 
 setOs

@@ -1,5 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.core CloudSim
-
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
 .. java:import:: org.cloudbus.cloudsim.core SimEntity

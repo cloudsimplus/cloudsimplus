@@ -63,7 +63,7 @@ getDatacenter
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: DatacenterCharacteristicsSimple
 
    Gets the Datacenter id, setup when Datacenter is created.

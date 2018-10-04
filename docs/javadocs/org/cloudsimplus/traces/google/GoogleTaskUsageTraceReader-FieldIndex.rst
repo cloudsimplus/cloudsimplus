@@ -20,13 +20,15 @@
 
 .. java:import:: org.cloudsimplus.listeners EventInfo
 
-.. java:import:: java.io FileInputStream
-
-.. java:import:: java.io FileNotFoundException
+.. java:import:: java.io IOException
 
 .. java:import:: java.io InputStream
 
 .. java:import:: java.io UncheckedIOException
+
+.. java:import:: java.nio.file Files
+
+.. java:import:: java.nio.file Paths
 
 .. java:import:: java.util ArrayList
 

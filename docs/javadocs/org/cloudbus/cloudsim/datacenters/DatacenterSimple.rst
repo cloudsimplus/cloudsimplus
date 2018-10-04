@@ -160,18 +160,18 @@ enableMigrations
 equals
 ^^^^^^
 
-.. java:method:: @Override public boolean equals(Object o)
+.. java:method:: @Override public boolean equals(Object object)
    :outertype: DatacenterSimple
 
 finishVmMigration
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void finishVmMigration(SimEvent ev, boolean ack)
+.. java:method:: protected void finishVmMigration(SimEvent evt, boolean ack)
    :outertype: DatacenterSimple
 
    Finishes the process of migrating a VM.
 
-   :param ev: information about the event just happened
+   :param evt: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
 
 getBandwidthPercentForMigration
@@ -214,7 +214,7 @@ getHost
 getHostById
 ^^^^^^^^^^^
 
-.. java:method:: @Override public Host getHostById(int id)
+.. java:method:: @Override public Host getHostById(long id)
    :outertype: DatacenterSimple
 
 getHostList
@@ -276,12 +276,12 @@ isMigrationsEnabled
 processCloudlet
 ^^^^^^^^^^^^^^^
 
-.. java:method:: protected void processCloudlet(SimEvent ev, int type)
+.. java:method:: protected void processCloudlet(SimEvent evt, int type)
    :outertype: DatacenterSimple
 
    Processes a Cloudlet based on the event type.
 
-   :param ev: information about the event just happened
+   :param evt: information about the event just happened
    :param type: event type
 
 processCloudletCancel
@@ -319,51 +319,51 @@ processCloudletResume
 processCloudletSubmit
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void processCloudletSubmit(SimEvent ev, boolean ack)
+.. java:method:: protected void processCloudletSubmit(SimEvent evt, boolean ack)
    :outertype: DatacenterSimple
 
    Processes the submission of a Cloudlet by a DatacenterBroker.
 
-   :param ev: information about the event just happened
+   :param evt: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
 
 processEvent
 ^^^^^^^^^^^^
 
-.. java:method:: @Override public void processEvent(SimEvent ev)
+.. java:method:: @Override public void processEvent(SimEvent evt)
    :outertype: DatacenterSimple
 
 processPingRequest
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void processPingRequest(SimEvent ev)
+.. java:method:: protected void processPingRequest(SimEvent evt)
    :outertype: DatacenterSimple
 
    Processes a ping request.
 
-   :param ev: information about the event just happened
+   :param evt: information about the event just happened
 
 processVmCreate
 ^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean processVmCreate(SimEvent ev, boolean ackRequested)
+.. java:method:: protected boolean processVmCreate(SimEvent evt, boolean ackRequested)
    :outertype: DatacenterSimple
 
    Process the event for a Broker which wants to create a VM in this Datacenter. This Datacenter will then send the status back to the Broker.
 
-   :param ev: information about the event just happened
+   :param evt: information about the event just happened
    :param ackRequested: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
    :return: true if a host was allocated to the VM; false otherwise
 
 processVmDestroy
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void processVmDestroy(SimEvent ev, boolean ack)
+.. java:method:: protected void processVmDestroy(SimEvent evt, boolean ack)
    :outertype: DatacenterSimple
 
    Process the event sent by a Broker, requesting the destruction of a given VM created in this Datacenter. This Datacenter may send, upon request, the status back to the Broker.
 
-   :param ev: information about the event just happened
+   :param evt: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
 
 removeHost

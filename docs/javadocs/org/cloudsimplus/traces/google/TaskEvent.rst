@@ -14,7 +14,7 @@ TaskEvent
 .. java:package:: org.cloudsimplus.traces.google
    :noindex:
 
-.. java:type:: public final class TaskEvent extends TaskDataAbstract
+.. java:type:: public final class TaskEvent extends TaskData
 
    A data class to store the attributes to create a \ :java:ref:`Cloudlet`\ , according to the data read from a line inside a "task events" trace file. Instance of this class are created by the \ :java:ref:`GoogleTaskEventsTraceReader`\  and provided to the user's simulation.
 
@@ -124,25 +124,25 @@ setPriority
 setResourceRequestForCpuCores
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskEvent setResourceRequestForCpuCores(double resourceRequestForCpuCores)
+.. java:method::  TaskEvent setResourceRequestForCpuCores(double resourceRequestForCpuCores)
    :outertype: TaskEvent
 
 setResourceRequestForLocalDiskSpace
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskEvent setResourceRequestForLocalDiskSpace(double resourceRequestForLocalDiskSpace)
+.. java:method::  TaskEvent setResourceRequestForLocalDiskSpace(double resourceRequestForLocalDiskSpace)
    :outertype: TaskEvent
 
 setResourceRequestForRam
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskEvent setResourceRequestForRam(double resourceRequestForRam)
+.. java:method::  TaskEvent setResourceRequestForRam(double resourceRequestForRam)
    :outertype: TaskEvent
 
 setSchedulingClass
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskEvent setSchedulingClass(int schedulingClass)
+.. java:method::  TaskEvent setSchedulingClass(int schedulingClass)
    :outertype: TaskEvent
 
 setTimestamp
@@ -154,6 +154,6 @@ setTimestamp
 setUserName
 ^^^^^^^^^^^
 
-.. java:method:: protected TaskEvent setUserName(String userName)
+.. java:method::  TaskEvent setUserName(String userName)
    :outertype: TaskEvent
 

@@ -19,13 +19,13 @@ Methods
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(SimEntity o)
+.. java:method:: @Override public int compareTo(SimEntity entity)
    :outertype: SimEntityNull
 
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: SimEntityNull
 
 getName
@@ -38,6 +38,12 @@ getSimulation
 ^^^^^^^^^^^^^
 
 .. java:method:: @Override public Simulation getSimulation()
+   :outertype: SimEntityNull
+
+getState
+^^^^^^^^
+
+.. java:method:: @Override public State getState()
    :outertype: SimEntityNull
 
 isAlive
@@ -61,7 +67,7 @@ isStarted
 processEvent
 ^^^^^^^^^^^^
 
-.. java:method:: @Override public void processEvent(SimEvent ev)
+.. java:method:: @Override public void processEvent(SimEvent evt)
    :outertype: SimEntityNull
 
 run

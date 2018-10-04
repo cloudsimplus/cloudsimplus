@@ -6,7 +6,7 @@ TraceField
 
 .. java:type:: public interface TraceField<R extends GoogleTraceReaderAbstract>
 
-   An interface to be implemented by \ :java:ref:`Enum`\ s that represent a field in a Google Trace File to get values from fields of the trace in the correct generic type T and possibly make some unit conversions (if required by the specific field represented by the enum instance).
+   An interface to be implemented by \ :java:ref:`Enum`\ s representing a field in a Google Trace File. Each enum instance is used to get values from fields of the trace in the correct generic type T and possibly making some unit conversions (if required by the specific field represented by the enum instance).
 
    :author: Manoel Campos da Silva Filho
 

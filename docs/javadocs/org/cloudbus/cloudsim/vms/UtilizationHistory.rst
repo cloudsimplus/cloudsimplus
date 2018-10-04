@@ -2,7 +2,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: java.util List
+.. java:import:: java.util SortedMap
 
 UtilizationHistory
 ==================
@@ -18,14 +18,6 @@ UtilizationHistory
 
 Fields
 ------
-DEF_MAX_HISTORY_ENTRIES
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:field::  int DEF_MAX_HISTORY_ENTRIES
-   :outertype: UtilizationHistory
-
-   The maximum number of entries that will be stored.
-
 NULL
 ^^^^
 
@@ -65,12 +57,10 @@ enable
 getHistory
 ^^^^^^^^^^
 
-.. java:method::  List<Double> getHistory()
+.. java:method::  SortedMap<Double, Double> getHistory()
    :outertype: UtilizationHistory
 
-   Gets a \ **read-only**\  CPU utilization percentage history (between [0 and 1], where 1 is 100%). Each value into the returned array is the CPU utilization percentage for a time interval equal to the \ :java:ref:`Datacenter.getSchedulingInterval()`\ .
-
-   \ **The values are stored in the reverse chronological order.**\
+   Gets a \ **read-only**\  CPU utilization percentage history map where each key is the time the utilization was collected and each value is the utilization percentage (between [0 and 1]). There will be at least one entry for each time multiple of the \ :java:ref:`Datacenter.getSchedulingInterval()`\ . \ **This way, it's required to set a Datacenter scheduling interval with the desired value.**\
 
 getMaxHistoryEntries
 ^^^^^^^^^^^^^^^^^^^^
@@ -79,14 +69,6 @@ getMaxHistoryEntries
    :outertype: UtilizationHistory
 
    Gets the maximum number of entries to store in the history.
-
-getPreviousTime
-^^^^^^^^^^^^^^^
-
-.. java:method::  double getPreviousTime()
-   :outertype: UtilizationHistory
-
-   Gets the previous time that cloudlets were processed.
 
 getUtilizationMad
 ^^^^^^^^^^^^^^^^^
@@ -114,6 +96,12 @@ getUtilizationVariance
 
    :return: the utilization variance in MIPS
 
+getVm
+^^^^^
+
+.. java:method::  Vm getVm()
+   :outertype: UtilizationHistory
+
 isEnabled
 ^^^^^^^^^
 
@@ -131,14 +119,4 @@ setMaxHistoryEntries
    Sets the maximum number of entries to store in the history.
 
    :param maxHistoryEntries: the value to set
-
-setPreviousTime
-^^^^^^^^^^^^^^^
-
-.. java:method::  void setPreviousTime(double previousTime)
-   :outertype: UtilizationHistory
-
-   Sets the previous time that cloudlets were processed.
-
-   :param previousTime: the new previous time
 

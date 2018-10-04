@@ -20,13 +20,15 @@
 
 .. java:import:: org.cloudsimplus.listeners EventInfo
 
-.. java:import:: java.io FileInputStream
-
-.. java:import:: java.io FileNotFoundException
+.. java:import:: java.io IOException
 
 .. java:import:: java.io InputStream
 
 .. java:import:: java.io UncheckedIOException
+
+.. java:import:: java.nio.file Files
+
+.. java:import:: java.nio.file Paths
 
 .. java:import:: java.util ArrayList
 
@@ -44,7 +46,7 @@ GoogleTaskUsageTraceReader
 
    Process "task usage" trace files from \ `Google Cluster Data <https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md>`_\  to change the resource utilization of \ :java:ref:`Cloudlet`\ s. The trace files are the ones inside the task_usage sub-directory of downloaded Google traces. The instructions to download the traces are provided in the link above.
 
-   A spreadsheet that makes it easier to understand the trace files structure is provided in docs/google-cluster-data-samples.xlsx
+   A spreadsheet that makes it easier to understand the structure of trace files is provided in docs/google-cluster-data-samples.xlsx
 
    The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above. It's strongly recommended to read such a documentation before trying to use this class.
 
@@ -57,7 +59,7 @@ Constructors
 GoogleTaskUsageTraceReader
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public GoogleTaskUsageTraceReader(List<DatacenterBroker> brokers, String filePath) throws FileNotFoundException
+.. java:constructor:: public GoogleTaskUsageTraceReader(List<DatacenterBroker> brokers, String filePath) throws IOException
    :outertype: GoogleTaskUsageTraceReader
 
    Instantiates a \ :java:ref:`GoogleTaskUsageTraceReader`\  to read a "task usage" trace file.

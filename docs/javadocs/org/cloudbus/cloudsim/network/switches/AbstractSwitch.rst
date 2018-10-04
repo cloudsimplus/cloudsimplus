@@ -196,38 +196,38 @@ networkDelayForPacketTransmission
 processEvent
 ^^^^^^^^^^^^
 
-.. java:method:: @Override public void processEvent(SimEvent ev)
+.. java:method:: @Override public void processEvent(SimEvent evt)
    :outertype: AbstractSwitch
 
 processHostPacket
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void processHostPacket(SimEvent ev)
+.. java:method:: protected void processHostPacket(SimEvent evt)
    :outertype: AbstractSwitch
 
    Process a packet sent to a host.
 
-   :param ev: The packet sent.
+   :param evt: The packet sent.
 
 processPacketDown
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void processPacketDown(SimEvent ev)
+.. java:method:: protected void processPacketDown(SimEvent evt)
    :outertype: AbstractSwitch
 
    Sends a packet to Datacenter connected through a downlink port.
 
-   :param ev: Event/packet to process
+   :param evt: Event/packet to process
 
 processPacketUp
 ^^^^^^^^^^^^^^^
 
-.. java:method:: protected void processPacketUp(SimEvent ev)
+.. java:method:: protected void processPacketUp(SimEvent evt)
    :outertype: AbstractSwitch
 
    Sends a packet to Datacenter connected through a uplink port.
 
-   :param ev: Event/packet to process
+   :param evt: Event/packet to process
 
 setDatacenter
 ^^^^^^^^^^^^^

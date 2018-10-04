@@ -1,5 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.core CloudSim
-
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
 .. java:import:: org.cloudbus.cloudsim.core SimEntity
@@ -37,7 +35,7 @@ Methods
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override  int compareTo(SimEvent o)
+.. java:method:: @Override  int compareTo(SimEvent evt)
    :outertype: SimEvent
 
 getData
@@ -137,7 +135,7 @@ setSerial
 setSimulation
 ^^^^^^^^^^^^^
 
-.. java:method::  SimEvent setSimulation(CloudSim simulation)
+.. java:method::  SimEvent setSimulation(Simulation simulation)
    :outertype: SimEvent
 
    Sets the simulation the event belongs to

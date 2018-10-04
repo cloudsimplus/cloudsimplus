@@ -15,7 +15,7 @@ Constructors
 TopologicalLink
 ^^^^^^^^^^^^^^^
 
-.. java:constructor:: public TopologicalLink(int srcNode, int destNode, double delay, double bw)
+.. java:constructor:: public TopologicalLink(int srcNode, int destNode, double delay, double bandwidth)
    :outertype: TopologicalLink
 
    Creates a new Topological Link.
@@ -23,7 +23,7 @@ TopologicalLink
    :param srcNode: the BRITE id of the source node of the link.
    :param destNode: the BRITE id of the destination node of the link.
    :param delay: the link delay of the connection.
-   :param bw: the link bandwidth (bw)
+   :param bandwidth: the link bandwidth (bw)
 
 Methods
 -------

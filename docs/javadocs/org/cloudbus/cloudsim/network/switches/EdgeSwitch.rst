@@ -86,12 +86,12 @@ getLevel
 processPacketDown
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected void processPacketDown(SimEvent ev)
+.. java:method:: @Override protected void processPacketDown(SimEvent evt)
    :outertype: EdgeSwitch
 
 processPacketUp
 ^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected void processPacketUp(SimEvent ev)
+.. java:method:: @Override protected void processPacketUp(SimEvent evt)
    :outertype: EdgeSwitch
 

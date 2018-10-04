@@ -17,13 +17,13 @@ Methods
 addLink
 ^^^^^^^
 
-.. java:method:: @Override public void addLink(int srcId, int destId, double bw, double lat)
+.. java:method:: @Override public void addLink(long srcId, long destId, double bandwidth, double lat)
    :outertype: NetworkTopologyNull
 
 getDelay
 ^^^^^^^^
 
-.. java:method:: @Override public double getDelay(int srcID, int destID)
+.. java:method:: @Override public double getDelay(long srcID, long destID)
    :outertype: NetworkTopologyNull
 
 getTopologycalGraph
@@ -41,12 +41,12 @@ isNetworkEnabled
 mapNode
 ^^^^^^^
 
-.. java:method:: @Override public void mapNode(int cloudSimEntityID, int briteID)
+.. java:method:: @Override public void mapNode(long cloudSimEntityID, int briteID)
    :outertype: NetworkTopologyNull
 
 unmapNode
 ^^^^^^^^^
 
-.. java:method:: @Override public void unmapNode(int cloudSimEntityID)
+.. java:method:: @Override public void unmapNode(long cloudSimEntityID)
    :outertype: NetworkTopologyNull
 

@@ -1,5 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.core CloudSim
-
 .. java:import:: org.cloudbus.cloudsim.core SimEntity
 
 .. java:import:: org.cloudbus.cloudsim.core Simulation
@@ -27,7 +25,7 @@ Methods
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(SimEvent o)
+.. java:method:: @Override public int compareTo(SimEvent evt)
    :outertype: SimEventNull
 
 getData
@@ -111,7 +109,7 @@ setSerial
 setSimulation
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent setSimulation(CloudSim simulation)
+.. java:method:: @Override public SimEvent setSimulation(Simulation simulation)
    :outertype: SimEventNull
 
 setSource

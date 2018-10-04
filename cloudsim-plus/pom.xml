@@ -80,6 +80,9 @@
                             <excludes>
                                 <exclude>**/integrationtests/*.java</exclude>
                             </excludes>
+                            <!-- Forking the process was causing runtime exceptions
+                             when running tests with Java 10+ -->
+                            <forkCount>0</forkCount>
                         </configuration>
                     </plugin>
 
@@ -104,6 +107,11 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- Forking the process was causing runtime exceptions
+                             when running tests with Java 10+ -->
+                            <forkCount>0</forkCount>
+                        </configuration>
                     </plugin>
 
                     <plugin>
@@ -127,6 +135,16 @@
             <id>all</id>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <!-- Forking the process was causing runtime exceptions
+                             when running tests with Java 10+ -->
+                            <forkCount>0</forkCount>
+                        </configuration>
+                    </plugin>
+
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-source-plugin</artifactId>
@@ -154,7 +172,6 @@
                         </executions>
 
                         <configuration>
-
                             <tags>
                                 <direction>
                                     <name>pre</name>
@@ -236,13 +253,13 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <!-- There is some problem with the version 2.19.1 or with
                     Netbeans 8.0.2 that the JUnit GUI is not shown at the IDE-->
-                    <version>2.21.0</version>
+                    <version>2.22.0</version>
                 </plugin>
 
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-javadoc-plugin</artifactId>
-                    <version>3.0.0</version>
+                    <version>3.0.1</version>
 
                     <configuration>
                         <failOnError>false</failOnError>
@@ -292,7 +309,7 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.7.9</version>
+                <version>0.8.1</version>
                 <executions>
                     <execution>
                         <id>prepare-agent</id>
@@ -309,7 +326,6 @@
                     </execution>
                 </executions>
             </plugin>
-
 
             <!--
             Adds License Information to project source and binaries using com.mycila.maven-license-plugin.
@@ -467,7 +483,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.0</version>
+                <version>3.0.1</version>
                 <reportSets>
                     <!-- https://maven.apache.org/plugins/maven-javadoc-plugin/examples/javadoc-nofork.html -->
                     <reportSet>
@@ -486,7 +502,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.20.1</version>
+                <version>2.22.0</version>
             </plugin>
         </plugins>
     </reporting>

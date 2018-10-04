@@ -31,12 +31,12 @@ Methods
 test
 ^^^^
 
-.. java:method:: @Override public boolean test(SimEvent ev)
+.. java:method:: @Override public boolean test(SimEvent evt)
    :outertype: PredicateType
 
    Matches any event that has one of the specified \ :java:ref:`tag`\ .
 
-   :param ev: {@inheritDoc}
+   :param evt: {@inheritDoc}
    :return: {@inheritDoc}
 
    **See also:** :java:ref:`.tag`

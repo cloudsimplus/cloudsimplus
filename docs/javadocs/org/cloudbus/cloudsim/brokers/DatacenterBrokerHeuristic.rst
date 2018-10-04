@@ -10,10 +10,6 @@
 
 .. java:import:: org.cloudsimplus.heuristics Heuristic
 
-.. java:import:: org.slf4j Logger
-
-.. java:import:: org.slf4j LoggerFactory
-
 .. java:import:: java.util.stream Collectors
 
 DatacenterBrokerHeuristic

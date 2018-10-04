@@ -1,16 +1,16 @@
-.. java:import:: java.lang.reflect Constructor
-
-.. java:import:: java.lang.reflect InvocationTargetException
-
-.. java:import:: java.util ArrayList
-
-.. java:import:: java.util List
-
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.hosts HostSimple
 
+.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisionerSimple
+
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerAbstract
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerTimeShared
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion
 
@@ -18,13 +18,13 @@
 
 .. java:import:: org.cloudsimplus.listeners HostUpdatesVmsProcessingEventInfo
 
-.. java:import:: org.cloudbus.cloudsim.resources Pe
+.. java:import:: java.lang.reflect Constructor
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerAbstract
+.. java:import:: java.lang.reflect InvocationTargetException
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerTimeShared
+.. java:import:: java.util ArrayList
 
-.. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisionerSimple
+.. java:import:: java.util List
 
 HostBuilder
 ===========
@@ -60,10 +60,10 @@ createOneHost
 .. java:method:: public HostBuilder createOneHost()
    :outertype: HostBuilder
 
-getBw
-^^^^^
+getBandwidth
+^^^^^^^^^^^^
 
-.. java:method:: public long getBw()
+.. java:method:: public long getBandwidth()
    :outertype: HostBuilder
 
 getHosts
@@ -108,10 +108,10 @@ getVmSchedulerClass
 .. java:method:: public Class<? extends VmSchedulerAbstract> getVmSchedulerClass()
    :outertype: HostBuilder
 
-setBw
-^^^^^
+setBandwidth
+^^^^^^^^^^^^
 
-.. java:method:: public HostBuilder setBw(long defaultBw)
+.. java:method:: public HostBuilder setBandwidth(long defaultBw)
    :outertype: HostBuilder
 
 setMips

@@ -1,3 +1,5 @@
+.. java:import:: org.apache.commons.lang3 StringUtils
+
 .. java:import:: org.cloudbus.cloudsim.core.events CloudSimEvent
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
@@ -40,12 +42,12 @@ Methods
 cancelEvent
 ^^^^^^^^^^^
 
-.. java:method:: public SimEvent cancelEvent(Predicate<SimEvent> p)
+.. java:method:: public SimEvent cancelEvent(Predicate<SimEvent> predicate)
    :outertype: CloudSimEntity
 
    Cancels the first event from the future event queue that matches a given predicate and that was submitted by this entity, then removes it from the queue.
 
-   :param p: the event selection predicate
+   :param predicate: the event selection predicate
    :return: the removed event or \ :java:ref:`SimEvent.NULL`\  if not found
 
 clone
@@ -62,19 +64,19 @@ clone
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(SimEntity o)
+.. java:method:: @Override public int compareTo(SimEntity entity)
    :outertype: CloudSimEntity
 
 equals
 ^^^^^^
 
-.. java:method:: @Override public boolean equals(Object o)
+.. java:method:: @Override public boolean equals(Object object)
    :outertype: CloudSimEntity
 
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: CloudSimEntity
 
    Gets the unique id number assigned to this entity.
@@ -94,12 +96,12 @@ getName
 getNextEvent
 ^^^^^^^^^^^^
 
-.. java:method:: public SimEvent getNextEvent(Predicate<SimEvent> p)
+.. java:method:: public SimEvent getNextEvent(Predicate<SimEvent> predicate)
    :outertype: CloudSimEntity
 
    Gets the first event matching a predicate from the deferred queue, or if none match, wait for a matching event to arrive.
 
-   :param p: The predicate to match
+   :param predicate: The predicate to match
    :return: the simulation event
 
 getNextEvent
@@ -121,12 +123,8 @@ getSimulation
 getState
 ^^^^^^^^
 
-.. java:method:: public State getState()
+.. java:method:: @Override public State getState()
    :outertype: CloudSimEntity
-
-   Gets the entity state.
-
-   :return: the state
 
 hashCode
 ^^^^^^^^
@@ -155,12 +153,12 @@ isStarted
 numEventsWaiting
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: public long numEventsWaiting(Predicate<SimEvent> p)
+.. java:method:: public long numEventsWaiting(Predicate<SimEvent> predicate)
    :outertype: CloudSimEntity
 
    Counts how many events matching a predicate are waiting in the entity's deferred queue.
 
-   :param p: The event selection predicate
+   :param predicate: The event selection predicate
    :return: The count of matching events
 
 numEventsWaiting
@@ -287,12 +285,12 @@ scheduleNow
 selectEvent
 ^^^^^^^^^^^
 
-.. java:method:: public SimEvent selectEvent(Predicate<SimEvent> p)
+.. java:method:: public SimEvent selectEvent(Predicate<SimEvent> predicate)
    :outertype: CloudSimEntity
 
    Extracts the first event matching a predicate waiting in the entity's deferred queue.
 
-   :param p: The event selection predicate
+   :param predicate: The event selection predicate
    :return: the simulation event
 
 send
@@ -346,12 +344,12 @@ sendNow
 setEventBuffer
 ^^^^^^^^^^^^^^
 
-.. java:method:: protected void setEventBuffer(SimEvent e)
+.. java:method:: protected void setEventBuffer(SimEvent evt)
    :outertype: CloudSimEntity
 
    Sets the event buffer.
 
-   :param e: the new event buffer
+   :param evt: the new event buffer
 
 setId
 ^^^^^
@@ -422,10 +420,10 @@ startEntity
 waitForEvent
 ^^^^^^^^^^^^
 
-.. java:method:: public void waitForEvent(Predicate<SimEvent> p)
+.. java:method:: public void waitForEvent(Predicate<SimEvent> predicate)
    :outertype: CloudSimEntity
 
    Waits for an event matching a specific predicate. This method does not check the entity's deferred queue.
 
-   :param p: The predicate to match
+   :param predicate: The predicate to match
 

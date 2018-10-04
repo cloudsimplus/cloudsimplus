@@ -6,6 +6,8 @@
 
 .. java:import:: java.util Arrays
 
+.. java:import:: java.util Collection
+
 .. java:import:: java.util Comparator
 
 .. java:import:: java.util List
@@ -71,7 +73,7 @@ createLinearRegression
 doubleToInt
 ^^^^^^^^^^^
 
-.. java:method:: public static int doubleToInt(double d)
+.. java:method:: public static int doubleToInt(double value)
    :outertype: MathUtil
 
    Converts a double value to an int, using an appropriate rounding function. If the double is negative, it applies \ :java:ref:`Math.floor(double)`\  to round the number down. If it' a positive value, it applies \ :java:ref:`Math.ceil(double)`\  to round the number up. This way, a negative double will be converted to a negative int and a positive double will be converted to a positive int.
@@ -80,7 +82,7 @@ doubleToInt
 
    This method is useful to be used by \ :java:ref:`Comparator`\ s which rely on a double attribute to compare a list of objects. Since the \ :java:ref:`Comparator.compare(Object,Object)`\  method must return an int, the method being implemented here converts a double to an int value which can be used by a Comparator.
 
-   :param d: the double value to convert
+   :param value: the double value to convert
    :return: zero if the double value is zero, a negative int if the double is negative, or a positive int if the double is positive.
 
 getLoessParameterEstimates
@@ -108,7 +110,7 @@ getRobustLoessParameterEstimates
 getStatistics
 ^^^^^^^^^^^^^
 
-.. java:method:: public static DescriptiveStatistics getStatistics(List<Double> list)
+.. java:method:: public static DescriptiveStatistics getStatistics(Collection<Double> list)
    :outertype: MathUtil
 
    Gets an object to compute descriptive statistics for an list of numbers.
@@ -141,12 +143,12 @@ getTricubeBisquareWeights
 getTricubeWeights
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: public static double[] getTricubeWeights(int n)
+.. java:method:: public static double[] getTricubeWeights(int weightsNumber)
    :outertype: MathUtil
 
    Gets the tricube weigths.
 
-   :param n: the number of weights
+   :param weightsNumber: the number of weights
    :return: an array of tricube weigths with n elements
 
 iqr
@@ -155,7 +157,7 @@ iqr
 .. java:method:: public static double iqr(double... data)
    :outertype: MathUtil
 
-   Gets the Interquartile Range (IQR) from an array of numbers.
+   Gets the \ `Interquartile Range (IQR) <https://en.wikipedia.org/wiki/Interquartile_range>`_\  from an array of numbers.
 
    :param data: the array of numbers
    :return: the IQR
@@ -166,7 +168,7 @@ mad
 .. java:method:: public static double mad(double... data)
    :outertype: MathUtil
 
-   Gets the Median absolute deviation (MAD) from a array of numbers.
+   Gets the Median Absolute Deviation (MAD) from a array of numbers.
 
    :param data: the array of numbers
    :return: the mad
@@ -185,7 +187,7 @@ mean
 median
 ^^^^^^
 
-.. java:method:: public static double median(List<Double> list)
+.. java:method:: public static double median(Collection<Double> list)
    :outertype: MathUtil
 
    Gets the median from a list of numbers.
@@ -207,25 +209,25 @@ median
 same
 ^^^^
 
-.. java:method:: public static boolean same(double a, double b)
+.. java:method:: public static boolean same(double first, double second)
    :outertype: MathUtil
 
    Checks if two double numbers are equals, considering a precision error or 0.01. That is, if the different between the two numbers are lower or equal to 0.01, they are considered equal.
 
-   :param a: the first number to check
-   :param b: the second number to check
+   :param first: the first number to check
+   :param second: the second number to check
    :return: true if the numbers are equal considering the precision error
 
 same
 ^^^^
 
-.. java:method:: public static boolean same(double a, double b, double precisionError)
+.. java:method:: public static boolean same(double first, double second, double precisionError)
    :outertype: MathUtil
 
    Checks if two double numbers are equals, considering a given precision error. That is, if the different between the two numbers are lower or equal to the precision error, they are considered equal.
 
-   :param a: the first number to check
-   :param b: the second number to check
+   :param first: the first number to check
+   :param second: the second number to check
    :param precisionError: the precision error used to compare the numbers
    :return: true if the numbers are equal considering the precision error
 

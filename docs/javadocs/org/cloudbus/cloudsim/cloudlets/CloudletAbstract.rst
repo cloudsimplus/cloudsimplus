@@ -33,7 +33,7 @@ Constructors
 CloudletAbstract
 ^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletAbstract(int id, long length, long pesNumber)
+.. java:constructor:: public CloudletAbstract(long id, long length, long pesNumber)
    :outertype: CloudletAbstract
 
    Creates a Cloudlet with no priority and file size and output size equal to 1.
@@ -203,13 +203,13 @@ getFinishedLengthSoFar
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: CloudletAbstract
 
 getJobId
 ^^^^^^^^
 
-.. java:method:: @Override public int getJobId()
+.. java:method:: @Override public long getJobId()
    :outertype: CloudletAbstract
 
 getLastDatacenter
@@ -485,13 +485,13 @@ setFinishTime
 setId
 ^^^^^
 
-.. java:method:: @Override public final void setId(int id)
+.. java:method:: @Override public final void setId(long id)
    :outertype: CloudletAbstract
 
 setJobId
 ^^^^^^^^
 
-.. java:method:: @Override public final void setJobId(int jobId)
+.. java:method:: @Override public final void setJobId(long jobId)
    :outertype: CloudletAbstract
 
 setLastExecutedDatacenterIdx

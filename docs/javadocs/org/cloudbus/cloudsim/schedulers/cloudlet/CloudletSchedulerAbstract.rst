@@ -63,18 +63,12 @@ Methods
 addCloudletToExecList
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void addCloudletToExecList(CloudletExecution cloudlet)
+.. java:method:: protected void addCloudletToExecList(CloudletExecution cle)
    :outertype: CloudletSchedulerAbstract
 
    Adds a Cloudlet to the list of cloudlets in execution.
 
-   :param cloudlet: the Cloudlet to be added
-
-addCloudletToFinishedList
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void addCloudletToFinishedList(CloudletExecution cloudlet)
-   :outertype: CloudletSchedulerAbstract
+   :param cle: the Cloudlet to be added
 
 addCloudletToReturnedList
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -85,24 +79,24 @@ addCloudletToReturnedList
 addCloudletToWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void addCloudletToWaitingList(CloudletExecution ce)
+.. java:method:: protected void addCloudletToWaitingList(CloudletExecution cle)
    :outertype: CloudletSchedulerAbstract
 
 addWaitingCloudletToExecList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected CloudletExecution addWaitingCloudletToExecList(CloudletExecution cloudlet)
+.. java:method:: protected CloudletExecution addWaitingCloudletToExecList(CloudletExecution cle)
    :outertype: CloudletSchedulerAbstract
 
    Removes a Cloudlet from waiting list and adds it to the exec list.
 
-   :param cloudlet: the cloudlet to add to to exec list
+   :param cle: the cloudlet to add to to exec list
    :return: the given cloudlet
 
 canExecuteCloudletInternal
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected abstract boolean canExecuteCloudletInternal(CloudletExecution ce)
+.. java:method:: protected abstract boolean canExecuteCloudletInternal(CloudletExecution cle)
    :outertype: CloudletSchedulerAbstract
 
    **See also:** :java:ref:`.canExecuteCloudlet(CloudletExecution)`
@@ -122,7 +116,7 @@ cloudletFail
 cloudletFinish
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void cloudletFinish(CloudletExecution ce)
+.. java:method:: @Override public void cloudletFinish(CloudletExecution cle)
    :outertype: CloudletSchedulerAbstract
 
 cloudletPause
@@ -146,18 +140,18 @@ cloudletSubmit
 cloudletSubmit
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final double cloudletSubmit(Cloudlet cl, double fileTransferTime)
+.. java:method:: @Override public final double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime)
    :outertype: CloudletSchedulerAbstract
 
 cloudletSubmitInternal
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double cloudletSubmitInternal(CloudletExecution ce, double fileTransferTime)
+.. java:method:: protected double cloudletSubmitInternal(CloudletExecution cle, double fileTransferTime)
    :outertype: CloudletSchedulerAbstract
 
    Receives the execution information of a Cloudlet to be executed in the VM managed by this scheduler.
 
-   :param ce: the submitted cloudlet
+   :param cle: the submitted cloudlet
    :param fileTransferTime: time required to move the required files from the SAN to the VM
    :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
 
@@ -205,12 +199,12 @@ findSuitableWaitingCloudlet
 getAllocatedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public double getAllocatedMipsForCloudlet(CloudletExecution ce, double time)
+.. java:method:: public double getAllocatedMipsForCloudlet(CloudletExecution cle, double time)
    :outertype: CloudletSchedulerAbstract
 
    Gets the current allocated MIPS for cloudlet.
 
-   :param ce: the ce
+   :param cle: the ce
    :param time: the time
    :return: the current allocated mips for cloudlet
 
@@ -317,12 +311,12 @@ getCurrentRequestedRamPercentUtilization
 getEstimatedFinishTimeOfCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double getEstimatedFinishTimeOfCloudlet(CloudletExecution ce, double currentTime)
+.. java:method:: protected double getEstimatedFinishTimeOfCloudlet(CloudletExecution cle, double currentTime)
    :outertype: CloudletSchedulerAbstract
 
    Gets the estimated time when a given cloudlet is supposed to finish executing. It considers the amount of Vm PES and the sum of PEs required by all VMs running inside the VM.
 
-   :param ce: cloudlet to get the estimated finish time
+   :param cle: cloudlet to get the estimated finish time
    :param currentTime: current simulation time
    :return: the estimated finish time of the given cloudlet (which is a relative delay from the current simulation time)
 
@@ -360,7 +354,7 @@ getRequestedCpuPercentUtilization
 getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution ce, double time)
+.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution cle, double time)
    :outertype: CloudletSchedulerAbstract
 
 getTaskScheduler
@@ -402,12 +396,12 @@ isEmpty
 isThereEnoughFreePesForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected boolean isThereEnoughFreePesForCloudlet(CloudletExecution cloudlet)
+.. java:method:: protected boolean isThereEnoughFreePesForCloudlet(CloudletExecution cle)
    :outertype: CloudletSchedulerAbstract
 
    Checks if the amount of PEs required by a given Cloudlet is free to use.
 
-   :param cloudlet: the Cloudlet to get the number of required PEs
+   :param cle: the Cloudlet to get the number of required PEs
    :return: true if there is the amount of free PEs, false otherwise
 
 isThereTaskScheduler
@@ -424,19 +418,19 @@ moveNextCloudletsFromWaitingToExecList
 
    Selects the next Cloudlets in the waiting list to move to the execution list in order to start executing them. While there is enough free PEs, the method try to find a suitable Cloudlet in the list, until it reaches the end of such a list.
 
-   The method might also exchange some cloudlets in the execution list with some in the waiting list. Thus, some running cloudlets may be preempted to give opportunity to previously waiting cloudlets to run. This is a process called \ `context switch <https://en.wikipedia.org/wiki/Context_switch>`_\ . However, each CloudletScheduler implementation decides how such a process is implemented. For instance, Space-Shared schedulers may just perform context switch just after currently running Cloudlets completely finish executing.
+   The method might also exchange some cloudlets in the execution list with some in the waiting list. Thus, some running cloudlets may be preempted to give opportunity to previously waiting cloudlets to run. This is a process called \ `context switch <https://en.wikipedia.org/wiki/Context_switch>`_\ . However, each CloudletScheduler implementation decides how such a process is implemented. For instance, Space-Shared schedulers may perform context switch just after the currently running Cloudlets completely finish executing.
 
-   This method is called internally by the \ :java:ref:`CloudletScheduler.updateProcessing(double,List)`\  one.
+   This method is called internally by the \ :java:ref:`CloudletScheduler.updateProcessing(double,List)`\ .
 
 removeCloudletFromExecList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected CloudletExecution removeCloudletFromExecList(CloudletExecution cloudlet)
+.. java:method:: protected CloudletExecution removeCloudletFromExecList(CloudletExecution cle)
    :outertype: CloudletSchedulerAbstract
 
    Removes a Cloudlet from the list of cloudlets in execution.
 
-   :param cloudlet: the Cloudlet to be removed
+   :param cle: the Cloudlet to be removed
    :return: the removed Cloudlet or \ :java:ref:`CloudletExecution.NULL`\  if not found
 
 runningCloudletsNumber
@@ -492,23 +486,23 @@ sortCloudletWaitingList
 timeSpan
 ^^^^^^^^
 
-.. java:method:: protected double timeSpan(CloudletExecution cl, double currentTime)
+.. java:method:: protected double timeSpan(CloudletExecution cle, double currentTime)
    :outertype: CloudletSchedulerAbstract
 
    Computes the time span between the current simulation time and the last time the processing of a cloudlet was updated.
 
-   :param cl: the cloudlet to compute the execution time span
+   :param cle: the cloudlet to compute the execution time span
    :param currentTime: the current simulation time
 
 updateCloudletProcessing
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected long updateCloudletProcessing(CloudletExecution ce, double currentTime)
+.. java:method:: protected long updateCloudletProcessing(CloudletExecution cle, double currentTime)
    :outertype: CloudletSchedulerAbstract
 
    Updates the processing of a specific cloudlet of the Vm using this scheduler.
 
-   :param ce: The cloudlet to be its processing updated
+   :param cle: The cloudlet to be its processing updated
    :param currentTime: current simulation time
    :return: the executed length, in \ **Million Instructions (MI)**\ , since the last time cloudlet was processed.
 

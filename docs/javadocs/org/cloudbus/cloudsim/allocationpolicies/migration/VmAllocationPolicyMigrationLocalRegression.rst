@@ -4,9 +4,15 @@
 
 .. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
 
+.. java:import:: org.cloudbus.cloudsim.util MathUtil
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
-.. java:import:: org.cloudbus.cloudsim.util MathUtil
+.. java:import:: java.util Comparator
+
+.. java:import:: java.util DoubleSummaryStatistics
+
+.. java:import:: java.util Map
 
 VmAllocationPolicyMigrationLocalRegression
 ==========================================

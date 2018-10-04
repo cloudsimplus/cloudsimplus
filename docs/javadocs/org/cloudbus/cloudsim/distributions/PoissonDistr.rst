@@ -1,10 +1,10 @@
+.. java:import:: org.apache.commons.math3.util CombinatoricsUtils
+
 .. java:import:: java.util.function BiConsumer
 
 .. java:import:: java.util.function Function
 
 .. java:import:: java.util.stream IntStream
-
-.. java:import:: org.apache.commons.math3.util CombinatoricsUtils
 
 PoissonDistr
 ============
@@ -69,10 +69,10 @@ eventsHappened
 
    :return: true if the K events have happened at current time, false otherwise
 
-getInterarrivalMeanTime
+getInterArrivalMeanTime
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public double getInterarrivalMeanTime()
+.. java:method:: public double getInterArrivalMeanTime()
    :outertype: PoissonDistr
 
    Gets the mean time between arrival of two events, which is the inverse of lambda. The time unit (if seconds, minutes, hours, etc) is the same considered when setting a value to the \ :java:ref:`lambda <getLambda()>`\  parameter.
@@ -93,7 +93,7 @@ getLambda
 
    Gets the average number of events that are expected to happen at each 1 time unit. It is the expected number of events to happen each time, also called the \ **event rate**\  or \ **rate parameter**\ .
 
-   If the unit is minute, this value means the average number of arrivals at each minute. It's the inverse of the \ :java:ref:`getInterarrivalMeanTime()`\ .
+   If the unit is minute, this value means the average number of arrivals at each minute. It's the inverse of the \ :java:ref:`getInterArrivalMeanTime()`\ .
 
 getSeed
 ^^^^^^^

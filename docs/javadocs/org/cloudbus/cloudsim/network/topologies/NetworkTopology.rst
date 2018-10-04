@@ -27,7 +27,7 @@ Methods
 addLink
 ^^^^^^^
 
-.. java:method::  void addLink(int srcId, int destId, double bw, double lat)
+.. java:method::  void addLink(long srcId, long destId, double bw, double lat)
    :outertype: NetworkTopology
 
    Adds a new link in the network topology. The CloudSim entities that represent the source and destination of the link will be mapped to BRITE entities.
@@ -40,7 +40,7 @@ addLink
 getDelay
 ^^^^^^^^
 
-.. java:method::  double getDelay(int srcID, int destID)
+.. java:method::  double getDelay(long srcID, long destID)
    :outertype: NetworkTopology
 
    Calculates the delay between two nodes.
@@ -70,18 +70,18 @@ isNetworkEnabled
 mapNode
 ^^^^^^^
 
-.. java:method::  void mapNode(int cloudSimEntityID, int briteID)
+.. java:method::  void mapNode(long cloudSimEntityID, int briteID)
    :outertype: NetworkTopology
 
    Maps a CloudSim entity to a BRITE node in the network topology.
 
    :param cloudSimEntityID: ID of the entity being mapped
-   :param briteID: ID of the BRITE node that corresponds to the CloudSim entity
+   :param briteID: ID of the BRITE node that corresponds to the CloudSim
 
 unmapNode
 ^^^^^^^^^
 
-.. java:method::  void unmapNode(int cloudSimEntityID)
+.. java:method::  void unmapNode(long cloudSimEntityID)
    :outertype: NetworkTopology
 
    Unmaps a previously mapped CloudSim entity to a BRITE node in the network topology.

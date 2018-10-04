@@ -677,12 +677,12 @@ setHost
 setInMigration
 ^^^^^^^^^^^^^^
 
-.. java:method::  void setInMigration(boolean inMigration)
+.. java:method::  void setInMigration(boolean migrating)
    :outertype: Vm
 
    Defines if the VM is in migration process or not.
 
-   :param inMigration: true to indicate the VM is migrating into a Host, false otherwise
+   :param migrating: true to indicate the VM is migrating into a Host, false otherwise
 
 setPeVerticalScaling
 ^^^^^^^^^^^^^^^^^^^^

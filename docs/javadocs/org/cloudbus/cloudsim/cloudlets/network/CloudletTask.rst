@@ -63,7 +63,7 @@ getFinishTime
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: CloudletTask
 
    Gets the id of the CloudletTask.

@@ -1,8 +1,8 @@
-.. java:import:: java.util.stream Collectors
-
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: java.util.stream Collectors
 
 CloudletToVmMappingSolution
 ===========================
@@ -66,12 +66,12 @@ bindCloudletToVm
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(HeuristicSolution o)
+.. java:method:: @Override public int compareTo(HeuristicSolution solution)
    :outertype: CloudletToVmMappingSolution
 
    Compares this solution with another given one, based on the solution cost. The current object is considered to be: equal to the given object if they have the same cost; greater than the given object if it has a lower cost; lower than the given object if it has a higher cost;
 
-   :param o: the solution to compare this instance to
+   :param solution: the solution to compare this instance to
    :return: {@inheritDoc}
 
 getCost

@@ -1,4 +1,4 @@
-.. java:import:: org.cloudbus.cloudsim.core Identifiable
+.. java:import:: org.cloudbus.cloudsim.core ChangeableId
 
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 

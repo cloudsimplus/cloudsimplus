@@ -2,9 +2,9 @@
 
 .. java:import:: java.util Collections
 
-.. java:import:: java.util LinkedList
+.. java:import:: java.util SortedMap
 
-.. java:import:: java.util List
+.. java:import:: java.util TreeMap
 
 VmUtilizationHistory
 ====================
@@ -17,24 +17,6 @@ VmUtilizationHistory
    Stores resource utilization data for a specific \ :java:ref:`Vm`\ .
 
    :author: Anton Beloglazov, Manoel Campos da Silva Filho
-
-Fields
-------
-history
-^^^^^^^
-
-.. java:field:: public final List<Double> history
-   :outertype: VmUtilizationHistory
-
-   **See also:** :java:ref:`.getHistory()`
-
-previousTime
-^^^^^^^^^^^^
-
-.. java:field:: public double previousTime
-   :outertype: VmUtilizationHistory
-
-   **See also:** :java:ref:`.getPreviousTime()`
 
 Constructors
 ------------
@@ -78,19 +60,13 @@ enable
 getHistory
 ^^^^^^^^^^
 
-.. java:method:: @Override public List<Double> getHistory()
+.. java:method:: @Override public SortedMap<Double, Double> getHistory()
    :outertype: VmUtilizationHistory
 
 getMaxHistoryEntries
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public int getMaxHistoryEntries()
-   :outertype: VmUtilizationHistory
-
-getPreviousTime
-^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getPreviousTime()
    :outertype: VmUtilizationHistory
 
 getUtilizationMad
@@ -111,6 +87,12 @@ getUtilizationVariance
 .. java:method:: @Override public double getUtilizationVariance()
    :outertype: VmUtilizationHistory
 
+getVm
+^^^^^
+
+.. java:method:: @Override public Vm getVm()
+   :outertype: VmUtilizationHistory
+
 isEnabled
 ^^^^^^^^^
 
@@ -121,11 +103,5 @@ setMaxHistoryEntries
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setMaxHistoryEntries(int maxHistoryEntries)
-   :outertype: VmUtilizationHistory
-
-setPreviousTime
-^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void setPreviousTime(double previousTime)
    :outertype: VmUtilizationHistory
 

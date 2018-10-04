@@ -1,16 +1,12 @@
 .. java:import:: org.cloudsimplus.traces TraceReaderBase
 
-.. java:import:: java.io FileInputStream
-
-.. java:import:: java.io FileNotFoundException
-
 .. java:import:: java.io InputStream
 
 .. java:import:: java.util HashSet
 
-.. java:import:: java.util Set
+.. java:import:: java.util Objects
 
-.. java:import:: java.util.function Consumer
+.. java:import:: java.util Set
 
 GoogleTraceReaderAbstract
 =========================
@@ -27,34 +23,45 @@ GoogleTraceReaderAbstract
 
 Fields
 ------
-availableObjects
-^^^^^^^^^^^^^^^^
+COL_SEPARATOR
+^^^^^^^^^^^^^
 
-.. java:field:: protected final Set<T> availableObjects
+.. java:field:: static final String COL_SEPARATOR
    :outertype: GoogleTraceReaderAbstract
 
-   A Set of objects immediately created from the trace file. The type  of the objects depends on each concrete class. For instance, the \ :java:ref:`GoogleMachineEventsTraceReader`\  creates \ :java:ref:`org.cloudbus.cloudsim.hosts.Host`\ s. The \ :java:ref:`GoogleTaskEventsTraceReader`\  creates \ :java:ref:`org.cloudbus.cloudsim.cloudlets.Cloudlet`\ s.
+VAL_SEPARATOR
+^^^^^^^^^^^^^
+
+.. java:field:: static final String VAL_SEPARATOR
+   :outertype: GoogleTraceReaderAbstract
 
 Constructors
 ------------
 GoogleTraceReaderAbstract
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: protected GoogleTraceReaderAbstract(String filePath) throws FileNotFoundException
-   :outertype: GoogleTraceReaderAbstract
-
-GoogleTraceReaderAbstract
-^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:constructor:: protected GoogleTraceReaderAbstract(String filePath, InputStream reader)
+.. java:constructor::  GoogleTraceReaderAbstract(String filePath, InputStream reader)
    :outertype: GoogleTraceReaderAbstract
 
 Methods
 -------
+addAvailableObject
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: final boolean addAvailableObject(T object)
+   :outertype: GoogleTraceReaderAbstract
+
+   Adds an object T to the list of available objects.
+
+   :param object: the object T to add
+   :return: true if the object was added, false otherwise
+
+   **See also:** :java:ref:`.availableObjects`
+
 formatPercentValue
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected String formatPercentValue(double percent)
+.. java:method::  String formatPercentValue(double percent)
    :outertype: GoogleTraceReaderAbstract
 
 postProcess
@@ -63,7 +70,7 @@ postProcess
 .. java:method:: protected abstract void postProcess()
    :outertype: GoogleTraceReaderAbstract
 
-   Executes some post-process after the trace file was totally parsed.
+   Executes any post-process after the trace file was totally parsed.
 
 preProcess
 ^^^^^^^^^^
@@ -71,7 +78,7 @@ preProcess
 .. java:method:: protected abstract void preProcess()
    :outertype: GoogleTraceReaderAbstract
 
-   Executes the pre-process before starting to read the trace file, such as checking if required attributes were set.
+   Executes any pre-process before starting to read the trace file, such as checking if required attributes were set.
 
 process
 ^^^^^^^
@@ -88,7 +95,7 @@ process
 processParsedLine
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected final boolean processParsedLine(String[] parsedLineArray)
+.. java:method:: final boolean processParsedLine(String[] parsedLineArray)
    :outertype: GoogleTraceReaderAbstract
 
    Process the parsed line according to the event type.
@@ -107,10 +114,4 @@ processParsedLineInternal
    :return: true if the parsed line was processed, false otherwise
 
    **See also:** :java:ref:`.processParsedLine(String[])`, :java:ref:`.getLastParsedLineArray()`
-
-setPreProcess
-^^^^^^^^^^^^^
-
-.. java:method:: public void setPreProcess(Consumer<? extends GoogleTraceReaderAbstract> preProcess)
-   :outertype: GoogleTraceReaderAbstract
 

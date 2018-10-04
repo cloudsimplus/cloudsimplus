@@ -6,6 +6,10 @@
 
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModelFull
 
+.. java:import:: java.nio.file Files
+
+.. java:import:: java.nio.file Paths
+
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util List
@@ -41,7 +45,7 @@ Constructors
 SwfWorkloadFileReader
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public SwfWorkloadFileReader(String filePath, int mips) throws FileNotFoundException
+.. java:constructor:: public SwfWorkloadFileReader(String filePath, int mips) throws IOException
    :outertype: SwfWorkloadFileReader
 
    Create a new SwfWorkloadFileReader object.
@@ -89,7 +93,7 @@ getMips
 setMips
 ^^^^^^^
 
-.. java:method:: public final SwfWorkloadFileReader setMips(int mips)
+.. java:method:: public SwfWorkloadFileReader setMips(int mips)
    :outertype: SwfWorkloadFileReader
 
    Sets the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run. Considering the workload reader provides the run time for each application registered inside the reader, the MIPS value will be used to compute the \ :java:ref:`length of the Cloudlet (in MI) <Cloudlet.getLength()>`\  so that it's expected to execute, inside the VM with the given MIPS capacity, for the same time as specified into the workload reader.

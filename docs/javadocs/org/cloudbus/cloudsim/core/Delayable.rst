@@ -28,7 +28,7 @@ getSubmissionDelay
 .. java:method::  double getSubmissionDelay()
    :outertype: Delayable
 
-   Gets the delay (in seconds) that a \ :java:ref:`DatacenterBroker`\  has to include when submitting the Cloudlet, in order that it will be assigned to a VM only after this delay has expired.
+   Gets the delay (in seconds) that a \ :java:ref:`DatacenterBroker`\  has to include when submitting the object, in order that it will be assigned to a VM only after this delay has expired.
 
    :return: the submission delay
 
@@ -38,7 +38,7 @@ setSubmissionDelay
 .. java:method::  void setSubmissionDelay(double submissionDelay)
    :outertype: Delayable
 
-   Sets the delay (in seconds) that a \ :java:ref:`DatacenterBroker`\  has to include when submitting the Cloudlet, in order that it will be assigned to a VM only after this delay has expired. The delay should be greater or equal to zero.
+   Sets the delay (in seconds) that a \ :java:ref:`DatacenterBroker`\  has to include when submitting the object, in order that it will be assigned to a VM only after this delay has expired. The delay should be greater or equal to zero.
 
-   :param submissionDelay: the amount of seconds from the current simulation time that the cloudlet will wait to be submitted to be created and assigned to a VM
+   :param submissionDelay: the amount of seconds from the current simulation time that the object will wait to be submitted
 

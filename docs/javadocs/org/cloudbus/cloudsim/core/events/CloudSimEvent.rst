@@ -29,28 +29,11 @@ Constructors
 CloudSimEvent
 ^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudSimEvent(Simulation simulation, Type type, double delay, SimEntity src, SimEntity dest, int tag, Object data)
-   :outertype: CloudSimEvent
-
-   Creates a CloudSimEvent.
-
-   :param simulation: the Simulation the event belongs to
-   :param type: the internal type of the event
-   :param delay: how many seconds after the current simulation time the event should be scheduled
-   :param src: the source entity which is sending the message
-   :param dest: the source entity which has to receive the message
-   :param tag: the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
-   :param data: the data attached to the message, that depends on the message tag
-
-CloudSimEvent
-^^^^^^^^^^^^^
-
-.. java:constructor:: public CloudSimEvent(Simulation simulation, double delay, SimEntity src, SimEntity dest, int tag, Object data)
+.. java:constructor:: public CloudSimEvent(double delay, SimEntity src, SimEntity dest, int tag, Object data)
    :outertype: CloudSimEvent
 
    Creates a \ :java:ref:`Type.SEND`\  CloudSimEvent.
 
-   :param simulation: the Simulation the event belongs to
    :param delay: how many seconds after the current simulation time the event should be scheduled
    :param src: the source entity which is sending the message
    :param dest: the source entity which has to receive the message
@@ -60,12 +43,11 @@ CloudSimEvent
 CloudSimEvent
 ^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudSimEvent(Simulation simulation, double delay, SimEntity dest, int tag, Object data)
+.. java:constructor:: public CloudSimEvent(double delay, SimEntity dest, int tag, Object data)
    :outertype: CloudSimEvent
 
    Creates a \ :java:ref:`Type.SEND`\  CloudSimEvent where the sender and destination are the same entity.
 
-   :param simulation: the Simulation the event belongs to
    :param delay: how many seconds after the current simulation time the event should be scheduled
    :param dest: the source entity which has to receive the message
    :param tag: the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
@@ -74,24 +56,22 @@ CloudSimEvent
 CloudSimEvent
 ^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudSimEvent(Simulation simulation, SimEntity dest, int tag)
+.. java:constructor:: public CloudSimEvent(SimEntity dest, int tag)
    :outertype: CloudSimEvent
 
    Creates a \ :java:ref:`Type.SEND`\  CloudSimEvent where the sender and destination are the same entity, the message has no delay and no data.
 
-   :param simulation: the Simulation the event belongs to
    :param dest: the source entity which has to receive the message
    :param tag: the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
 
 CloudSimEvent
 ^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudSimEvent(Simulation simulation, Type type, double delay, SimEntity src)
+.. java:constructor:: public CloudSimEvent(Type type, double delay, SimEntity src)
    :outertype: CloudSimEvent
 
    Creates a CloudSimEvent where the destination entity and tag are not set yet. Furthermore, there will be not data associated to the event.
 
-   :param simulation: the Simulation the event belongs to
    :param delay: how many seconds after the current simulation time the event should be scheduled
 
 CloudSimEvent
@@ -104,12 +84,27 @@ CloudSimEvent
 
    :param src: the event to clone
 
+CloudSimEvent
+^^^^^^^^^^^^^
+
+.. java:constructor:: public CloudSimEvent(Type type, double delay, SimEntity src, SimEntity dest, int tag, Object data)
+   :outertype: CloudSimEvent
+
+   Creates a CloudSimEvent.
+
+   :param type: the internal type of the event
+   :param delay: how many seconds after the current simulation time the event should be scheduled
+   :param src: the source entity which is sending the message
+   :param dest: the source entity which has to receive the message
+   :param tag: the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
+   :param data: the data attached to the message, that depends on the message tag
+
 Methods
 -------
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(SimEvent event)
+.. java:method:: @Override public int compareTo(SimEvent evt)
    :outertype: CloudSimEvent
 
 getData
@@ -181,7 +176,7 @@ scheduledBy
 setDestination
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent setDestination(SimEntity destination)
+.. java:method:: @Override public final SimEvent setDestination(SimEntity destination)
    :outertype: CloudSimEvent
 
 setSerial
@@ -193,13 +188,13 @@ setSerial
 setSimulation
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent setSimulation(CloudSim simulation)
+.. java:method:: @Override public final SimEvent setSimulation(Simulation simulation)
    :outertype: CloudSimEvent
 
 setSource
 ^^^^^^^^^
 
-.. java:method:: @Override public SimEvent setSource(SimEntity source)
+.. java:method:: @Override public final SimEvent setSource(SimEntity source)
    :outertype: CloudSimEvent
 
 toString

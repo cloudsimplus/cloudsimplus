@@ -43,7 +43,7 @@ abort
 addEntity
 ^^^^^^^^^
 
-.. java:method:: @Override public void addEntity(CloudSimEntity e)
+.. java:method:: @Override public void addEntity(CloudSimEntity entity)
    :outertype: SimulationNull
 
 addOnClockTickListener
@@ -73,13 +73,13 @@ addOnSimulationStartListener
 cancel
 ^^^^^^
 
-.. java:method:: @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> predicate)
    :outertype: SimulationNull
 
 cancelAll
 ^^^^^^^^^
 
-.. java:method:: @Override public boolean cancelAll(SimEntity src, Predicate<SimEvent> p)
+.. java:method:: @Override public boolean cancelAll(SimEntity src, Predicate<SimEvent> predicate)
    :outertype: SimulationNull
 
 clock
@@ -103,7 +103,7 @@ clockInMinutes
 findFirstDeferred
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> predicate)
    :outertype: SimulationNull
 
 getCalendar
@@ -229,7 +229,7 @@ resume
 select
 ^^^^^^
 
-.. java:method:: @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> predicate)
    :outertype: SimulationNull
 
 send
@@ -289,12 +289,12 @@ terminateAt
 wait
 ^^^^
 
-.. java:method:: @Override public void wait(CloudSimEntity src, Predicate<SimEvent> p)
+.. java:method:: @Override public void wait(CloudSimEntity src, Predicate<SimEvent> predicate)
    :outertype: SimulationNull
 
 waiting
 ^^^^^^^
 
-.. java:method:: @Override public long waiting(SimEntity dest, Predicate<SimEvent> p)
+.. java:method:: @Override public long waiting(SimEntity dest, Predicate<SimEvent> predicate)
    :outertype: SimulationNull
 

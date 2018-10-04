@@ -138,7 +138,7 @@ setBandwidth
 setEdgeSwitch
 ^^^^^^^^^^^^^
 
-.. java:method:: public void setEdgeSwitch(EdgeSwitch sw)
+.. java:method:: public void setEdgeSwitch(EdgeSwitch edgeSwitch)
    :outertype: NetworkHost
 
 updateProcessing

@@ -59,7 +59,7 @@ getTimestamp
 setCpuCores
 ^^^^^^^^^^^
 
-.. java:method:: protected MachineEvent setCpuCores(int cpuCores)
+.. java:method::  MachineEvent setCpuCores(int cpuCores)
    :outertype: MachineEvent
 
 setRam
@@ -71,6 +71,6 @@ setRam
 setTimestamp
 ^^^^^^^^^^^^
 
-.. java:method:: protected MachineEvent setTimestamp(double timestamp)
+.. java:method::  MachineEvent setTimestamp(double timestamp)
    :outertype: MachineEvent
 

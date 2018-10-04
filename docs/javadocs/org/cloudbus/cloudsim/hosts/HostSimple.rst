@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.core ChangeableId
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -12,6 +14,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerSpaceShared
 
+.. java:import:: org.cloudbus.cloudsim.vms UtilizationHistory
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudbus.cloudsim.vms VmStateHistoryEntry
@@ -24,7 +28,17 @@
 
 .. java:import:: org.slf4j LoggerFactory
 
+.. java:import:: java.util.function BinaryOperator
+
+.. java:import:: java.util.function Function
+
 .. java:import:: java.util.function Predicate
+
+.. java:import:: java.util.function Supplier
+
+.. java:import:: java.util.stream Collectors
+
+.. java:import:: java.util.stream Stream
 
 HostSimple
 ==========
@@ -53,7 +67,7 @@ HostSimple
    :param storage: the storage capacity in Megabytes
    :param peList: the host's \ :java:ref:`Pe`\  list
 
-   **See also:** :java:ref:`.setId(int)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setVmScheduler(VmScheduler)`
+   **See also:** :java:ref:`ChangeableId.setId(long)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setVmScheduler(VmScheduler)`
 
 HostSimple
 ^^^^^^^^^^
@@ -241,7 +255,7 @@ getFreePeList
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: HostSimple
 
 getMaxAvailableMips
@@ -373,7 +387,13 @@ getTotalMipsCapacity
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double[] getUtilizationHistory()
+.. java:method:: @Override public SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory()
+   :outertype: HostSimple
+
+getUtilizationHistorySum
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public SortedMap<Double, Double> getUtilizationHistorySum()
    :outertype: HostSimple
 
 getUtilizationOfBw
@@ -529,7 +549,7 @@ setFailed
 setId
 ^^^^^
 
-.. java:method:: @Override public final void setId(int id)
+.. java:method:: @Override public final void setId(long id)
    :outertype: HostSimple
 
 setPeList

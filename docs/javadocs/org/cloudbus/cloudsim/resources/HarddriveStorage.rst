@@ -1,3 +1,5 @@
+.. java:import:: org.apache.commons.lang3 StringUtils
+
 .. java:import:: org.cloudbus.cloudsim.distributions ContinuousDistribution
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion

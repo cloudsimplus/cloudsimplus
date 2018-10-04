@@ -6,7 +6,7 @@ TaskUsage
 .. java:package:: org.cloudsimplus.traces.google
    :noindex:
 
-.. java:type:: public final class TaskUsage extends TaskDataAbstract
+.. java:type:: public final class TaskUsage extends TaskData
 
    A data class to store the attributes representing the resource usage of a \ :java:ref:`Cloudlet`\ , according to the data read from a line inside a "task usage" trace file. Instance of this class are created by the \ :java:ref:`GoogleTaskUsageTraceReader`\  and provided to the user's simulation.
 
@@ -117,55 +117,55 @@ getStartTime
 setAssignedMemoryUsage
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setAssignedMemoryUsage(double assignedMemoryUsage)
+.. java:method::  TaskUsage setAssignedMemoryUsage(double assignedMemoryUsage)
    :outertype: TaskUsage
 
 setCanonicalMemoryUsage
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setCanonicalMemoryUsage(double canonicalMemoryUsage)
+.. java:method::  TaskUsage setCanonicalMemoryUsage(double canonicalMemoryUsage)
    :outertype: TaskUsage
 
 setEndTime
 ^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setEndTime(double endTime)
+.. java:method::  TaskUsage setEndTime(double endTime)
    :outertype: TaskUsage
 
 setMaximumCpuUsage
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setMaximumCpuUsage(double maximumCpuUsage)
+.. java:method::  TaskUsage setMaximumCpuUsage(double maximumCpuUsage)
    :outertype: TaskUsage
 
 setMaximumDiskIoTime
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setMaximumDiskIoTime(double maximumDiskIoTime)
+.. java:method::  TaskUsage setMaximumDiskIoTime(double maximumDiskIoTime)
    :outertype: TaskUsage
 
 setMaximumMemoryUsage
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setMaximumMemoryUsage(double maximumMemoryUsage)
+.. java:method::  TaskUsage setMaximumMemoryUsage(double maximumMemoryUsage)
    :outertype: TaskUsage
 
 setMeanCpuUsageRate
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setMeanCpuUsageRate(double meanCpuUsageRate)
+.. java:method::  TaskUsage setMeanCpuUsageRate(double meanCpuUsageRate)
    :outertype: TaskUsage
 
 setMeanDiskIoTime
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setMeanDiskIoTime(double meanDiskIoTime)
+.. java:method::  TaskUsage setMeanDiskIoTime(double meanDiskIoTime)
    :outertype: TaskUsage
 
 setMeanLocalDiskSpaceUsed
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected TaskUsage setMeanLocalDiskSpaceUsed(double meanLocalDiskSpaceUsed)
+.. java:method::  TaskUsage setMeanLocalDiskSpaceUsed(double meanLocalDiskSpaceUsed)
    :outertype: TaskUsage
 
 setStartTime

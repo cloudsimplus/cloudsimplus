@@ -44,11 +44,13 @@ getNeighborSolution
 .. java:method:: @Override public S getNeighborSolution()
    :outertype: HeuristicAbstract
 
-getNumberOfNeighborhoodSearchesByIteration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getNeighborhoodSearchesByIteration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public int getNumberOfNeighborhoodSearchesByIteration()
+.. java:method:: public int getNeighborhoodSearchesByIteration()
    :outertype: HeuristicAbstract
+
+   Gets the number of neighborhood searches by each iteration of the heuristic.
 
 getRandom
 ^^^^^^^^^
@@ -90,11 +92,15 @@ setNeighborSolution
 
    :param neighborSolution: the solution to set as the neighbor one.
 
-setNumberOfNeighborhoodSearchesByIteration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+setNeighborhoodSearchesByIteration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public void setNumberOfNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches)
+.. java:method:: public void setNeighborhoodSearchesByIteration(int neighborhoodSearches)
    :outertype: HeuristicAbstract
+
+   Sets the number of neighborhood searches by each iteration of the heuristic.
+
+   :param neighborhoodSearches: the number of neighborhood searches to set
 
 setSolveTime
 ^^^^^^^^^^^^

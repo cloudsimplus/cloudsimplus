@@ -44,6 +44,8 @@ AwsEc2Template
 
    This constructor is just provided to enable the \ :java:ref:`Gson`\  object to use reflection to instantiate a AwsEc2Template.
 
+   **See also:** :java:ref:`.getInstance(String)`
+
 AwsEc2Template
 ^^^^^^^^^^^^^^
 
@@ -64,12 +66,14 @@ AwsEc2Template
 
    :param jsonFilePath: the full path to the JSON file representing the template with configurations for an AWS EC2 Instance
 
+   **See also:** :java:ref:`.getInstance(String)`
+
 Methods
 -------
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(AwsEc2Template o)
+.. java:method:: @Override public int compareTo(AwsEc2Template template)
    :outertype: AwsEc2Template
 
 getCpus
@@ -124,16 +128,6 @@ getPricePerHour
    :outertype: AwsEc2Template
 
    Gets the price per hour of a VM created from this template
-
-main
-^^^^
-
-.. java:method:: public static void main(String[] args)
-   :outertype: AwsEc2Template
-
-   A main method just to try the class implementation.
-
-   :param args:
 
 setCpus
 ^^^^^^^

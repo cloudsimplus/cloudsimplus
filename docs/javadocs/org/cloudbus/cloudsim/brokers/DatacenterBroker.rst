@@ -50,6 +50,12 @@ DEFAULT_VM_DESTRUCTION_DELAY
 
    **See also:** :java:ref:`.setVmDestructionDelayFunction(Function)`
 
+LOGGER
+^^^^^^
+
+.. java:field::  Logger LOGGER
+   :outertype: DatacenterBroker
+
 NULL
 ^^^^
 
@@ -57,12 +63,6 @@ NULL
    :outertype: DatacenterBroker
 
    An attribute that implements the Null Object Design Pattern for \ :java:ref:`DatacenterBroker`\  objects.
-
-logger
-^^^^^^
-
-.. java:field::  Logger logger
-   :outertype: DatacenterBroker
 
 Methods
 -------

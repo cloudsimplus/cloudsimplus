@@ -24,7 +24,7 @@ SlaContract
 
    The constants inside the class define the names of SLA Metrics supported in the JSON SLA Contract format.
 
-   Instances of this class can be created from a JSON file using the \ :java:ref:`getInstance(InputStream)`\  or \ :java:ref:`getInstance(String)`\  methods. This way, one doesn't need to create instances of this class using its default constructor. This one is just used by the JSON parsing library.
+   Instances of this class can be created from a JSON file using the \ :java:ref:`getInstanceInternal(InputStream)`\  or \ :java:ref:`getInstance(String)`\  methods. This way, one doesn't need to create instances of this class using its default constructor. This one is just used by the JSON parsing library.
 
    For more details, check \ `Raysa Oliveira's Master Thesis (only in Portuguese) <http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf>`_\ .
 
@@ -42,7 +42,7 @@ SlaContract
 
    This constructor is just provided to enable the \ :java:ref:`Gson`\  object to use reflection to instantiate a SlaContract.
 
-   **See also:** :java:ref:`.getInstance(String)`, :java:ref:`.getInstance(InputStream)`
+   **See also:** :java:ref:`.getInstance(String)`
 
 Methods
 -------
@@ -124,16 +124,6 @@ getWaitTimeMetric
 
 .. java:method:: public SlaMetric getWaitTimeMetric()
    :outertype: SlaContract
-
-main
-^^^^
-
-.. java:method:: public static void main(String[] args)
-   :outertype: SlaContract
-
-   A main method just to try the class implementation.
-
-   :param args:
 
 setMetrics
 ^^^^^^^^^^

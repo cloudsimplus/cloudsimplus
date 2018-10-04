@@ -1,16 +1,18 @@
-.. java:import:: java.util LinkedList
-
-.. java:import:: java.util List
-
 .. java:import:: org.apache.commons.math3.linear Array2DRowRealMatrix
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
 .. java:import:: org.cloudbus.cloudsim.util MathUtil
 
 .. java:import:: org.cloudbus.cloudsim.vms UtilizationHistory
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: java.util LinkedList
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Map
 
 PowerVmSelectionPolicyMaximumCorrelation
 ========================================
@@ -71,7 +73,7 @@ getMinUtilizationHistorySize
 .. java:method:: protected int getMinUtilizationHistorySize(List<Vm> vmList)
    :outertype: PowerVmSelectionPolicyMaximumCorrelation
 
-   Gets the min CPU utilization percentage history size among a list of VMs.
+   Gets the min CPU utilization percentage history size between a list of VMs.
 
    :param vmList: the VM list
    :return: the min CPU utilization percentage history size of the VM list

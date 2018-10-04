@@ -74,10 +74,10 @@ getNeighborSolution
 
    **See also:** :java:ref:`.createNeighbor(HeuristicSolution)`
 
-getNumberOfNeighborhoodSearchesByIteration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+getNeighborhoodSearchesByIteration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  int getNumberOfNeighborhoodSearchesByIteration()
+.. java:method::  int getNeighborhoodSearchesByIteration()
    :outertype: Heuristic
 
    :return: the number of times a neighbor solution will be searched at each iteration of the \ :java:ref:`solution find <solve()>`\ .
@@ -113,10 +113,10 @@ isToStopSearch
 
    :return: true if the solution search can be stopped, false otherwise.
 
-setNumberOfNeighborhoodSearchesByIteration
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+setNeighborhoodSearchesByIteration
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  void setNumberOfNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches)
+.. java:method::  void setNeighborhoodSearchesByIteration(int numberOfNeighborhoodSearches)
    :outertype: Heuristic
 
    Sets the number of times a neighbor solution will be searched at each iteration of the \ :java:ref:`solution find <solve()>`\ .

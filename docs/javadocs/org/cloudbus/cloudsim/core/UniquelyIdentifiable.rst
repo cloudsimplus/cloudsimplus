@@ -17,7 +17,7 @@ Methods
 getUid
 ^^^^^^
 
-.. java:method:: static String getUid(int brokerId, int id)
+.. java:method:: static String getUid(long brokerId, long id)
    :outertype: UniquelyIdentifiable
 
    Generates an Unique Identifier (UID).

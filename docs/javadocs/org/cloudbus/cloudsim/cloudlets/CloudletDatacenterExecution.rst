@@ -15,7 +15,7 @@ Fields
 NULL
 ^^^^
 
-.. java:field:: protected static final CloudletDatacenterExecution NULL
+.. java:field:: static final CloudletDatacenterExecution NULL
    :outertype: CloudletDatacenterExecution
 
 Constructors
@@ -25,6 +25,8 @@ CloudletDatacenterExecution
 
 .. java:constructor::  CloudletDatacenterExecution()
    :outertype: CloudletDatacenterExecution
+
+   A default package-level constructor.
 
 Methods
 -------

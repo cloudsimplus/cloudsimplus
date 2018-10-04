@@ -81,12 +81,12 @@ cloudletFail
 cloudletFinish
 ^^^^^^^^^^^^^^
 
-.. java:method::  void cloudletFinish(CloudletExecution ce)
+.. java:method::  void cloudletFinish(CloudletExecution cle)
    :outertype: CloudletScheduler
 
    Processes a finished cloudlet.
 
-   :param ce: finished cloudlet
+   :param cle: finished cloudlet
 
 cloudletPause
 ^^^^^^^^^^^^^
@@ -124,24 +124,24 @@ cloudletResume
 cloudletSubmit
 ^^^^^^^^^^^^^^
 
-.. java:method::  double cloudletSubmit(Cloudlet cl, double fileTransferTime)
+.. java:method::  double cloudletSubmit(Cloudlet cloudlet, double fileTransferTime)
    :outertype: CloudletScheduler
 
    Receives a cloudlet to be executed in the VM managed by this scheduler.
 
-   :param cl: the submitted cloudlet
+   :param cloudlet: the submitted cloudlet
    :param fileTransferTime: time required to move the required files from the SAN to the VM
    :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
 
 cloudletSubmit
 ^^^^^^^^^^^^^^
 
-.. java:method::  double cloudletSubmit(Cloudlet cl)
+.. java:method::  double cloudletSubmit(Cloudlet cloudlet)
    :outertype: CloudletScheduler
 
    Receives an cloudlet to be executed in the VM managed by this scheduler.
 
-   :param cl: the submitted cloudlet
+   :param cloudlet: the submitted cloudlet
    :return: expected finish time of this cloudlet (considering the time to transfer required files from the Datacenter to the Vm), or 0 if it is in a waiting queue
 
 deallocatePesFromVm
@@ -275,12 +275,12 @@ getRequestedCpuPercentUtilization
 getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getRequestedMipsForCloudlet(CloudletExecution ce, double time)
+.. java:method::  double getRequestedMipsForCloudlet(CloudletExecution cle, double time)
    :outertype: CloudletScheduler
 
    Gets the current requested MIPS for a given cloudlet.
 
-   :param ce: the ce
+   :param cle: the ce
    :param time: the time
    :return: the current requested mips for the given cloudlet
 

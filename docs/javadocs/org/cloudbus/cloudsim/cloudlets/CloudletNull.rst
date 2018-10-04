@@ -41,13 +41,13 @@ addFinishedLengthSoFar
 addOnFinishListener
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> l)
+.. java:method:: @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: CloudletNull
 
 addOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> l)
+.. java:method:: @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: CloudletNull
 
 addRequiredFile
@@ -71,7 +71,7 @@ assignToDatacenter
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(Cloudlet o)
+.. java:method:: @Override public int compareTo(Cloudlet cloudlet)
    :outertype: CloudletNull
 
 deleteRequiredFile
@@ -161,13 +161,13 @@ getFinishedLengthSoFar
 getId
 ^^^^^
 
-.. java:method:: @Override public int getId()
+.. java:method:: @Override public long getId()
    :outertype: CloudletNull
 
 getJobId
 ^^^^^^^^
 
-.. java:method:: @Override public int getJobId()
+.. java:method:: @Override public long getJobId()
    :outertype: CloudletNull
 
 getLastDatacenter
@@ -365,13 +365,13 @@ registerArrivalInDatacenter
 removeOnFinishListener
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> l)
+.. java:method:: @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: CloudletNull
 
 removeOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> l)
+.. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: CloudletNull
 
 requiresFiles
@@ -401,13 +401,13 @@ setFileSize
 setId
 ^^^^^
 
-.. java:method:: @Override public void setId(int id)
+.. java:method:: @Override public void setId(long id)
    :outertype: CloudletNull
 
 setJobId
 ^^^^^^^^
 
-.. java:method:: @Override public void setJobId(int jobId)
+.. java:method:: @Override public void setJobId(long jobId)
    :outertype: CloudletNull
 
 setLength

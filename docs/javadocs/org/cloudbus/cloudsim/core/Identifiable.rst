@@ -15,6 +15,6 @@ Methods
 getId
 ^^^^^
 
-.. java:method::  int getId()
+.. java:method::  long getId()
    :outertype: Identifiable
 

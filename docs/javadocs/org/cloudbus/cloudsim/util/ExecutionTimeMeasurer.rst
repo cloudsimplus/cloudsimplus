@@ -32,20 +32,27 @@ end
 getExecutionStartTime
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected static Long getExecutionStartTime(String name)
+.. java:method:: static Long getExecutionStartTime(String name)
    :outertype: ExecutionTimeMeasurer
+
+   Gets the execution start time
+
+   :param name: the name of the method/process to get the execution start time
+   :return: the execution start time for the the given method/process
+
+   **See also:** :java:ref:`.EXECUTION_START_TIMES`
 
 getExecutionStartTimes
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected static Map<String, Long> getExecutionStartTimes()
+.. java:method:: static Map<String, Long> getExecutionStartTimes()
    :outertype: ExecutionTimeMeasurer
 
-   Gets map the execution times.
+   Gets the map of execution times.
 
    :return: the execution times map
 
-   **See also:** :java:ref:`.executionStartTimes`
+   **See also:** :java:ref:`.EXECUTION_START_TIMES`
 
 start
 ^^^^^

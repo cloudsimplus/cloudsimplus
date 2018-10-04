@@ -28,9 +28,13 @@
 
 .. java:import:: org.cloudsimplus.listeners HostUpdatesVmsProcessingEventInfo
 
+.. java:import:: java.util DoubleSummaryStatistics
+
 .. java:import:: java.util List
 
 .. java:import:: java.util Set
+
+.. java:import:: java.util SortedMap
 
 Host
 ====
@@ -392,17 +396,40 @@ getTotalMipsCapacity
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double[] getUtilizationHistory()
+.. java:method::  SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory()
    :outertype: Host
 
-   Gets the host CPU utilization percentage history (between [0 and 1], where 1 is 100%), based on its VM utilization history. Each value into the returned array is the CPU utilization percentage for a time interval equal to the \ :java:ref:`Datacenter.getSchedulingInterval()`\ .
+   Gets a map containing the host CPU utilization percentage history (between [0 and 1]), based on its VM utilization history. Each key is a time when the data collection was performed and each value is a \ :java:ref:`DoubleSummaryStatistics`\  from where some operations over the CPU utilization entries for every VM inside the Host can be performed, such as counting, summing, averaging, etc. For instance, if you call the \ :java:ref:`DoubleSummaryStatistics.getSum()`\ , you'll get the total Host's CPU utilization for the time specified by the map key.
 
-   \ **The values are stored in the reverse chronological order.**\
+   There is an entry for each time multiple of the \ :java:ref:`Datacenter.getSchedulingInterval()`\ . \ **This way, it's required to set a Datacenter scheduling interval with the desired value.**\
 
    In order to enable the Host to get utilization history,
-   utilization history of its VMs should be enabled
+   its VMs' utilization history must be enabled
    by calling enable() from
    the .
+
+   :return: a Map where keys are the data collection time and each value is a \ :java:ref:`DoubleSummaryStatistics`\  objects that provides lots of useful methods to get max, min, average, count and sum of utilization values.
+
+   **See also:** :java:ref:`.getUtilizationHistorySum()`
+
+getUtilizationHistorySum
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  SortedMap<Double, Double> getUtilizationHistorySum()
+   :outertype: Host
+
+   Gets a map containing the host CPU utilization percentage history (between [0 and 1]), based on its VM utilization history. Each key is a time when the data collection was performed and each value is the sum of all CPU utilization of the VMs running inside this Host for that time. This way, the value represents the total Host's CPU utilization for each time that data was collected.
+
+   There is an entry for each time multiple of the \ :java:ref:`Datacenter.getSchedulingInterval()`\ . \ **This way, it's required to set a Datacenter scheduling interval with the desired value.**\
+
+   In order to enable the Host to get utilization history,
+   its VMs' utilization history must be enabled
+   by calling enable() from
+   the .
+
+   :return: a Map where keys are the data collection time and each value is a \ :java:ref:`DoubleSummaryStatistics`\  objects that provides lots of useful methods to get max, min, average, count and sum of utilization values.
+
+   **See also:** :java:ref:`.getUtilizationHistory()`
 
 getUtilizationOfBw
 ^^^^^^^^^^^^^^^^^^

@@ -43,7 +43,7 @@ CloudletSimple
 CloudletSimple
 ^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletSimple(int id, long length, long pesNumber)
+.. java:constructor:: public CloudletSimple(long id, long length, long pesNumber)
    :outertype: CloudletSimple
 
    Creates a Cloudlet with no priority and file size and output size equal to 1. To change these values, use the respective setters.

@@ -4,6 +4,8 @@
 
 .. java:import:: java.net URL
 
+.. java:import:: java.nio.file FileSystem
+
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util Collections
