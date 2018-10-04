@@ -56,7 +56,7 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>Such trace files are the ones inside the machine_events sub-directory of downloaded Google traces.
  * The instructions to download the traces are provided in the link above.
- * A spreadsheet that makes it easier to understand the trace files structure is provided
+ * A spreadsheet that makes it easier to understand the structure of trace files is provided
  * in docs/google-cluster-data-samples.xlsx</p>
  *
  * <p>The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above.

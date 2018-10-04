@@ -57,7 +57,7 @@ import static java.util.Objects.requireNonNull;
  * <p>The class also creates the required brokers to represent the customers (users)
  * defined by the username field inside the trace file.</p>
  *
- * <p>A spreadsheet that makes it easier to understand the trace files structure is provided
+ * <p>A spreadsheet that makes it easier to understand the structure of trace files is provided
  * in docs/google-cluster-data-samples.xlsx</p>
  *
  * <p>The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above.
