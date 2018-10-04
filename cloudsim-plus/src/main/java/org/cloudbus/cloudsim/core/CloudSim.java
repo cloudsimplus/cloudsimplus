@@ -375,7 +375,7 @@ public class CloudSim implements Simulation {
     public void addEntity(final CloudSimEntity entity) {
         requireNonNull(entity);
         if (running) {
-            final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.CREATE, 0, entity, null, -1, entity);
+            final SimEvent evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, null, -1, entity);
             future.addEvent(evt);
         }
 
@@ -474,7 +474,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public void send(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
-        send(new CloudSimEvent(this, SimEvent.Type.SEND, delay, src, dest, tag, data));
+        send(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 
     @Override
@@ -488,7 +488,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public void sendFirst(final SimEntity src, final SimEntity dest, final double delay, final int tag, final Object data) {
-        sendFirst(new CloudSimEvent(this, SimEvent.Type.SEND, delay, src, dest, tag, data));
+        sendFirst(new CloudSimEvent(SimEvent.Type.SEND, delay, src, dest, tag, data));
     }
 
     @Override
@@ -719,14 +719,14 @@ public class CloudSim implements Simulation {
 
     @Override
     public void pauseEntity(final SimEntity src, final double delay) {
-        final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, delay, src);
+        final SimEvent evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
         future.addEvent(evt);
         src.setState(SimEntity.State.HOLDING);
     }
 
     @Override
     public void holdEntity(final SimEntity src, final long delay) {
-        final SimEvent evt = new CloudSimEvent(this, SimEvent.Type.HOLD_DONE, delay, src);
+        final SimEvent evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
         future.addEvent(evt);
         src.setState(SimEntity.State.HOLDING);
     }

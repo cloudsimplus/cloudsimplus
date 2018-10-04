@@ -475,7 +475,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
 
         return cloudletLookupFunction
                 .apply(broker, taskEvent.getUniqueTaskId())
-                .map(cloudlet -> addCloudletStatusChangeEvents(new CloudSimEvent(simulation, delay, broker, tag, cloudlet), taskEvent))
+                .map(cloudlet -> addCloudletStatusChangeEvents(new CloudSimEvent(delay, broker, tag, cloudlet), taskEvent))
                 .isPresent();
     }
 
@@ -568,7 +568,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
          * This way, it will be executed only when the event is processed.*/
         final CloudSimEvent attrsChangeSimEvt =
             new CloudSimEvent(
-                simulation, taskEvent.getTimestamp(),
+                taskEvent.getTimestamp(),
                 statusChangeSimEvt.getDestination(),
                 CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES, attributesUpdateRunnable);
 

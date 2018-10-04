@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.core.events;
 
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudsimplus.listeners.EventInfo;
@@ -14,7 +13,7 @@ import org.cloudsimplus.listeners.EventListener;
  * @see SimEvent#NULL
  */
 final class SimEventNull implements SimEvent {
-    @Override public SimEvent setSimulation(CloudSim simulation) { return this; }
+    @Override public SimEvent setSimulation(Simulation simulation) { return this; }
     @Override public Type getType() { return Type.NULL; }
     @Override public SimEntity getDestination() { return SimEntity.NULL; }
     @Override public SimEntity getSource() {

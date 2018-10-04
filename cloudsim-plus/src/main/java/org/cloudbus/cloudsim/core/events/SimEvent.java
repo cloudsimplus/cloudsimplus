@@ -6,7 +6,6 @@
  */
 package org.cloudbus.cloudsim.core.events;
 
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -38,7 +37,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * @param simulation the simulation instance to set
      * @return
      */
-    SimEvent setSimulation(CloudSim simulation);
+    SimEvent setSimulation(Simulation simulation);
 
     /**
      * Gets the internal type

@@ -112,7 +112,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public boolean schedule(final SimEntity dest, final double delay, final int tag, final Object data) {
-        return schedule(new CloudSimEvent(simulation, delay, this, dest, tag, data));
+        return schedule(new CloudSimEvent(delay, this, dest, tag, data));
     }
 
     @Override
@@ -208,7 +208,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param data  The data to be sent with the event.
      */
     public void scheduleFirst(final SimEntity dest, final double delay, final int tag, final Object data) {
-        final CloudSimEvent evt = new CloudSimEvent(simulation, delay, this, dest, tag, data);
+        final CloudSimEvent evt = new CloudSimEvent(delay, this, dest, tag, data);
         if (!canSendEvent(evt)) {
             return;
         }

@@ -85,7 +85,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
              */
             @Override
             public Double getValue(final GoogleMachineEventsTraceReader reader) {
-                return Conversion.microToMilli(reader.getFieldIntValue(this));
+                return Conversion.microToSeconds(reader.getFieldDoubleValue(this));
             }
         },
 

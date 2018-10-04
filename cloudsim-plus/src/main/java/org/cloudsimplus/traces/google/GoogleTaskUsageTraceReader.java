@@ -437,7 +437,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             addAvailableObject(cloudlet);
             final CloudSimEvent evt =
                 new CloudSimEvent(
-                    simulation, taskUsage.getStartTime(), cloudlet.getBroker(),
+                    taskUsage.getStartTime(), cloudlet.getBroker(),
                     CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES, resourceUsageUpdateRunnable);
             return cloudletUsageChangeEvents.add(evt);
         }
