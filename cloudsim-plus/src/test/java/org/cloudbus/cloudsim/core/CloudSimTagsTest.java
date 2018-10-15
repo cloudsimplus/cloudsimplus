@@ -21,7 +21,7 @@ public class CloudSimTagsTest {
     private static List<Field> constants;
 
     @BeforeClass
-    public static void setUp(){
+    public static void setUpClass(){
         constants = getDeclaredConstants(CloudSimTags.class);
     }
 
@@ -67,7 +67,7 @@ public class CloudSimTagsTest {
     }
 
     /**
-     * Try to get a constant with the same value of the given constant.
+     * Try to get a constant with the same value of the given one.
      *
      * @param fields The list of Fields referring to the constants belonging to a class
      * @param field the {@link Field} object that gives access to the

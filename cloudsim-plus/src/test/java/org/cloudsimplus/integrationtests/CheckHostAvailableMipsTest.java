@@ -73,8 +73,8 @@ public final class CheckHostAvailableMipsTest {
     private static final int    CLOUDLET_PES = VM_PES;
     private static final long   CLOUDLET_LENGTH = (long)HOST_MIPS*10;
     private static final int    NUMBER_OF_CLOUDLETS = NUMBER_OF_VMS;
-    public static final int FIRST_VM_FINISH_TIME = 6;
-    public static final int LAST_VM_FINISH_TIME = 10;
+    private static final int    FIRST_VM_FINISH_TIME = 6;
+    private static final int    LAST_VM_FINISH_TIME = 10;
 
     private SimulationScenarioBuilder scenario;
     private UtilizationModel utilizationModel;
@@ -103,7 +103,7 @@ public final class CheckHostAvailableMipsTest {
                 .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
                 .createAndSubmitOneVm();
 
-            final long cloudletLength = (i == 0 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH/2);
+            final long cloudletLength = i == 0 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH/2;
             brokerBuilder.getCloudletBuilder()
                 .setLength(cloudletLength)
                 .setUtilizationModelCpu(utilizationModel)

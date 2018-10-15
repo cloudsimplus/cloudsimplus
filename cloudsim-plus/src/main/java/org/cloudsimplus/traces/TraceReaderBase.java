@@ -36,6 +36,11 @@ import java.util.Objects;
  * @since CloudSim Plus 4.0.0
  */
 public abstract class TraceReaderBase extends TraceReaderAbstract {
+    /**
+     * Regular expression to check if a String corresponds to an integer number.
+     */
+    private static final String INT_REGEX = "^-?\\d+$";
+
     /** @see #getLastParsedLineArray() */
     private String[] lastParsedLineArray;
 
@@ -89,6 +94,18 @@ public abstract class TraceReaderBase extends TraceReaderAbstract {
      * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
      *
      * @param field a enum value representing the index of the field to get the value
+     * @param defaultValue the default value to be returned if the field value is not an int
+     * @return
+     */
+    protected <T extends Enum> int getFieldIntValue(final T field, final int defaultValue){
+        final String value = getFieldValue(field);
+        return  value.matches(INT_REGEX) ? Integer.parseInt(value) : defaultValue;
+    }
+
+    /**
+     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
+     *
+     * @param field a enum value representing the index of the field to get the value
      * @return
      */
     protected <T extends Enum> long getFieldLongValue(final T field){
@@ -104,19 +121,7 @@ public abstract class TraceReaderBase extends TraceReaderAbstract {
      */
     protected <T extends Enum> long getFieldLongValue(final T field, final long defaultValue){
         final String value = getFieldValue(field);
-        return  value.matches("^-?\\d+$") ? Long.parseLong(value) : defaultValue;
-    }
-
-    /**
-     * Gets a field's value from the {@link #getLastParsedLineArray() last parsed line} as an int.
-     *
-     * @param field a enum value representing the index of the field to get the value
-     * @param defaultValue the default value to be returned if the field value is not an int
-     * @return
-     */
-    protected <T extends Enum> int getFieldIntValue(final T field, final int defaultValue){
-        final String value = getFieldValue(field);
-        return  value.matches("^-?\\d+$") ? Integer.parseInt(value) : defaultValue;
+        return  value.matches(INT_REGEX) ? Long.parseLong(value) : defaultValue;
     }
 
     /**

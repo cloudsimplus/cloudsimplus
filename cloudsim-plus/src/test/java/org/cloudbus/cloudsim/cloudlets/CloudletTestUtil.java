@@ -22,15 +22,15 @@ public final class CloudletTestUtil {
      */
     private CloudletTestUtil(){/**/}
 
-    static CloudletSimple createCloudlet() {
+    /* default */ static CloudletSimple createCloudlet() {
         return createCloudlet(0);
     }
 
-    static CloudletSimple createCloudlet(final int id) {
+    /* default */ static CloudletSimple createCloudlet(final int id) {
         return createCloudlet(id, new UtilizationModelFull());
     }
 
-    static CloudletSimple createCloudlet(final int id, UtilizationModel cpuRamAndBwUtilizationModel)
+    /* default */ static CloudletSimple createCloudlet(final int id, UtilizationModel cpuRamAndBwUtilizationModel)
     {
         return createCloudlet(id, cpuRamAndBwUtilizationModel,
                 cpuRamAndBwUtilizationModel,
@@ -39,8 +39,8 @@ public final class CloudletTestUtil {
 
     public static CloudletSimple createCloudlet(final int id, long length, int numberOfPes)
     {
-        final UtilizationModel um = new UtilizationModelFull();
-        return createCloudlet(id, um, um, um, length, numberOfPes);
+        final UtilizationModel model = new UtilizationModelFull();
+        return createCloudlet(id, model, model, model, length, numberOfPes);
     }
 
     private static CloudletSimple createCloudlet(
@@ -94,5 +94,4 @@ public final class CloudletTestUtil {
     public static CloudletSimple createCloudletWithOnePe(final int id) {
         return createCloudlet(id, CLOUDLET_LENGTH, 1);
     }
-
 }

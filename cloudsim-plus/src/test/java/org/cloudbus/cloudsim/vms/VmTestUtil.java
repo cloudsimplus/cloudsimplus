@@ -13,13 +13,13 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
  * @since CloudSim Plus 4.0.0
  */
 public final class VmTestUtil {
-    static final long BANDWIDTH = 10000;
-    static final long SIZE = 1000;
-    static final String VMM = "Xen";
-    static final double MIPS = 1000;
-    static final int RAM = 1024;
-    static final int ID = 1;
-    static final int PES_NUMBER = 2;
+    /* default */ static final long BANDWIDTH = 10000;
+    /* default */ static final long SIZE = 1000;
+    /* default */ static final String VMM = "Xen";
+    /* default */ static final double MIPS = 1000;
+    /* default */ static final int RAM = 1024;
+    /* default */ static final int ID = 1;
+    /* default */ static final int PES_NUMBER = 2;
 
     /**
      * A private constructor to avoid class instantiation.
@@ -98,10 +98,9 @@ public final class VmTestUtil {
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
         vm.setRam(ram).setBw(bw)
-                .setSize(storage)
-                .setCloudletScheduler(scheduler)
-                .setBroker(broker);
+           .setSize(storage)
+           .setCloudletScheduler(scheduler)
+           .setBroker(broker);
         return vm;
     }
-
 }

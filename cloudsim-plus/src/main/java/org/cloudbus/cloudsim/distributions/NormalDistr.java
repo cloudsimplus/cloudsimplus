@@ -16,7 +16,7 @@ public class NormalDistr extends ContinuousDistributionAbstract {
 	 * @param mean the mean for the distribution.
 	 * @param standardDeviation the standard deviation for the distribution.
 	 */
-	public NormalDistr(long seed, double mean, double standardDeviation) {
+	public NormalDistr(final long seed, final double mean, final double standardDeviation) {
 		super(new NormalDistribution(mean, standardDeviation), seed);
 	}
 

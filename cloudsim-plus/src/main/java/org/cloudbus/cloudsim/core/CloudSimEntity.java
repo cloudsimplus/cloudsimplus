@@ -276,7 +276,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
     public SimEvent cancelEvent(final Predicate<SimEvent> predicate) {
-        return (simulation.isRunning() ? simulation.cancel(this, predicate) : SimEvent.NULL);
+        return simulation.isRunning() ? simulation.cancel(this, predicate) : SimEvent.NULL;
     }
 
     /**

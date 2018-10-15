@@ -27,14 +27,14 @@ final class CloudletSchedulerTimeSharedTestUtil {
      * @param id Cloudlet id
      * @return the created mock Cloudlet
      */
-    static CloudletExecution createCloudletExecInfo(final long id){
+    /* default */ static CloudletExecution createCloudletExecInfo(final long id){
         final CloudletExecution cloudlet = EasyMock.createMock(CloudletExecution.class);
         EasyMock.expect(cloudlet.getCloudletId()).andReturn(id).anyTimes();
         EasyMock.replay(cloudlet);
         return cloudlet;
     }
 
-    static CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(final int pesNumber, final long mips) {
+    /* default */ static CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(final int pesNumber, final long mips) {
         final CloudletSchedulerTimeShared scheduler = new CloudletSchedulerTimeShared();
         final List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pesNumber, mips);
         scheduler.setCurrentMipsShare(mipsList);
@@ -42,7 +42,7 @@ final class CloudletSchedulerTimeSharedTestUtil {
         return scheduler;
     }
 
-    static void createCloudletAndAddItToPausedList(
+    /* default */ static void createCloudletAndAddItToPausedList(
         final CloudletSchedulerTimeShared instance, final int cloudletId, final long cloudletLength)
     {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet(cloudletId, cloudletLength, 1);
@@ -58,7 +58,7 @@ final class CloudletSchedulerTimeSharedTestUtil {
      * @param cloudlets number of Cloudlets to create
      * @return the new scheduler
      */
-    static CloudletSchedulerTimeShared newSchedulerWithSingleCoreRunningCloudlets(
+    /* default */ static CloudletSchedulerTimeShared newSchedulerWithSingleCoreRunningCloudlets(
         final long mips, final int vmPes, final int cloudlets)
     {
         return newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, 1);
@@ -72,7 +72,7 @@ final class CloudletSchedulerTimeSharedTestUtil {
      * @param cloudletPes the number of PEs for each Cloudlet
      * @return the new scheduler
      */
-    static CloudletSchedulerTimeShared newSchedulerWithRunningCloudlets(
+    /* default */ static CloudletSchedulerTimeShared newSchedulerWithRunningCloudlets(
         final long mips, final int vmPes, final int cloudlets, final int cloudletPes)
     {
         final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(vmPes, mips);

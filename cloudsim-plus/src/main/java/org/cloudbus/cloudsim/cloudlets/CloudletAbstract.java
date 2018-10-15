@@ -831,11 +831,11 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof CloudletAbstract)) return false;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (!(other instanceof CloudletAbstract)) return false;
 
-        final CloudletAbstract that = (CloudletAbstract) o;
+        final CloudletAbstract that = (CloudletAbstract) other;
 
         if (id != that.id) return false;
         return broker.equals(that.broker);
@@ -847,5 +847,4 @@ public abstract class CloudletAbstract implements Cloudlet {
         result = 31 * result + broker.hashCode();
         return result;
     }
-
 }

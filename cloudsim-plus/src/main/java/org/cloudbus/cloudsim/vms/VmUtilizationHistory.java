@@ -110,28 +110,39 @@ public class VmUtilizationHistory implements UtilizationHistory {
     }
 
     /**
-     * Defines that it isn't time to add utilization history in any one of the following conditions:
-     * - the simulation clock was not changed yet;
-     * - the time passed is smaller than one second and the VM is not idle;
-     * - the floor time is equal to the previous time and VM is not idle.
+     * Checks if it isn't time to add a value to the utilization history.
+     * The utilization history is not updated in any one of the following conditions is met:
+     * <ul>
+     * <li>the simulation clock was not changed yet;</li>
+     * <li>the time passed is smaller than one second and the VM is not idle;</li>
+     * <li>the floor time is equal to the previous time and VM is not idle.</li>
+     * </ul>
      *
-     * If the time is smaller than one second and the VM became idle,
+     * <p>If the time is smaller than one second and the VM became idle,
      * the history will be added so that we know what is the resource
      * utilization when the VM became idle.
      * This way, we can see clearly in the history when the VM was busy
-     * and when it became idle.
+     * and when it became idle.</p>
      *
-     * If the floor time is equal to the previous time and VM is not idle,
+     * <p>If the floor time is equal to the previous time and VM is not idle,
      * that means not even a second has passed. This way,
-     * that utilization will not be stored.
+     * that utilization will not be stored.</p>
      *
      * @param time the current simulation time
      * @return true if it's time to add utilization history, false otherwise
      */
     private boolean isNotTimeToAddHistory(final double time) {
         return time <= 0 ||
-               (time - previousTime < 1 && !vm.isIdle()) ||
-               (Math.floor(time) == previousTime && !vm.isIdle());
+               isElapsedTimeSmall(time) ||
+               isNotEntireSecondElapsed(time);
+    }
+
+    private boolean isElapsedTimeSmall(final double time) {
+        return time - previousTime < 1 && !vm.isIdle();
+    }
+
+    private boolean isNotEntireSecondElapsed(final double time) {
+        return Math.floor(time) == previousTime && !vm.isIdle();
     }
 
     /**

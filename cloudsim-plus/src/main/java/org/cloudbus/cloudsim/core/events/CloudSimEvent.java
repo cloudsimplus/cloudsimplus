@@ -162,7 +162,7 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public final SimEvent setSimulation(final Simulation simulation) {
+    public SimEvent setSimulation(final Simulation simulation) {
         this.simulation = Objects.requireNonNull(simulation);
         return this;
     }
@@ -215,13 +215,13 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public final SimEvent setSource(final SimEntity source) {
+    public SimEvent setSource(final SimEntity source) {
         this.src = Objects.requireNonNull(source);
         return this;
     }
 
     @Override
-    public final SimEvent setDestination(final SimEntity destination) {
+    public SimEvent setDestination(final SimEntity destination) {
         this.dest = Objects.requireNonNull(destination);
         return this;
     }

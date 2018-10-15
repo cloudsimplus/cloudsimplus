@@ -35,14 +35,6 @@ class TaskData extends MachineDataAbstract {
     private long taskIndex;
 
     /**
-     * A protected constructor to avoid class instantiation,
-     * since only subclasses of this class must be used.
-     */
-    /* default */ TaskData(){
-        super();
-    }
-
-    /**
      * Gets the id of the job this task belongs to.
      * @return
      */

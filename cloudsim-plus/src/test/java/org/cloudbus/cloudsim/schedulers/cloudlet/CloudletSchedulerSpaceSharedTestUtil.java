@@ -18,6 +18,11 @@ final class CloudletSchedulerSpaceSharedTestUtil {
 
     static final long SCHEDULER_MIPS = 1000;
 
+    /**
+     * A private constructor to avoid class instantiation.
+     */
+    private CloudletSchedulerSpaceSharedTestUtil(){/**/}
+
     private static CloudletSchedulerSpaceShared createCloudletSchedulerWithMipsList(int pes, long mips) {
         final CloudletSchedulerSpaceShared instance = createScheduler(mips, pes);
         final List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, mips);
@@ -33,7 +38,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
      * @param numberOfCloudlets number of Cloudlets to create
      * @return the new scheduler
      */
-    static CloudletSchedulerSpaceShared newSchedulerWithSingleCoreRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets) {
+    /* default */ static CloudletSchedulerSpaceShared newSchedulerWithSingleCoreRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets) {
         return newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, 1);
     }
 
@@ -45,7 +50,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
      * @param numberOfCloudletPes the number of PEs for each Cloudlet
      * @return the new scheduler
      */
-    static CloudletSchedulerSpaceShared newSchedulerWithRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets, int numberOfCloudletPes) {
+    /* default */ static CloudletSchedulerSpaceShared newSchedulerWithRunningCloudlets(long mips, int numberOfVmPes, int numberOfCloudlets, int numberOfCloudletPes) {
         final CloudletSchedulerSpaceShared instance = createCloudletSchedulerWithMipsList(numberOfVmPes, mips);
 
         for(int i = 0; i < numberOfCloudlets; i++) {
@@ -57,11 +62,11 @@ final class CloudletSchedulerSpaceSharedTestUtil {
         return instance;
     }
 
-    static CloudletSchedulerSpaceShared createScheduler() {
+    /* default */ static CloudletSchedulerSpaceShared createScheduler() {
         return createScheduler(2);
     }
 
-    static CloudletSchedulerSpaceShared createScheduler(final int pes) {
+    /* default */ static CloudletSchedulerSpaceShared createScheduler(final int pes) {
         return createScheduler(SCHEDULER_MIPS, pes);
     }
 
@@ -69,7 +74,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
         return createScheduler(new VmSimple(mips, pes));
     }
 
-    static CloudletSchedulerSpaceShared createScheduler(final Vm vm) {
+    /* default */ static CloudletSchedulerSpaceShared createScheduler(final Vm vm) {
         final CloudletSchedulerSpaceShared scheduler = new CloudletSchedulerSpaceShared();
         scheduler.setVm(vm);
         scheduler.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList((int)vm.getNumberOfPes(), vm.getMips()));

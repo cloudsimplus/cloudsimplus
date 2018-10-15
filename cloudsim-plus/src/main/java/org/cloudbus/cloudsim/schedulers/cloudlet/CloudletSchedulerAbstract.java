@@ -1002,12 +1002,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * for the current simulation time, based on the maximum amount of resource that the Cloudlet can use
      * this time.
      *
-     * @param um                      the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
+     * @param model                   the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
      * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
      * @return the absolute amount of resource that the Cloudlet will use
      */
-    private double getAbsoluteCloudletResourceUtilization(final UtilizationModel um, final double maxResourceAllowedToUse) {
-        return getAbsoluteCloudletResourceUtilization(um, vm.getSimulation().clock(), maxResourceAllowedToUse);
+    private double getAbsoluteCloudletResourceUtilization(final UtilizationModel model, final double maxResourceAllowedToUse) {
+        return getAbsoluteCloudletResourceUtilization(model, vm.getSimulation().clock(), maxResourceAllowedToUse);
     }
 
     /**
@@ -1015,19 +1015,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * for a given time, based on the maximum amount of resource that the Cloudlet can use
      * this time.
      *
-     * @param um                      the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
+     * @param model                   the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
      * @param time                    the simulation time
      * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
      * @return the absolute amount of resource that the Cloudlet will use
      */
     private double getAbsoluteCloudletResourceUtilization(
-        final UtilizationModel um,
+        final UtilizationModel model,
         final double time,
         final double maxResourceAllowedToUse)
     {
-        return um.getUnit() == Unit.ABSOLUTE ?
-            Math.min(um.getUtilization(time), maxResourceAllowedToUse) :
-            um.getUtilization() * maxResourceAllowedToUse;
+        return model.getUnit() == Unit.ABSOLUTE ?
+            Math.min(model.getUtilization(time), maxResourceAllowedToUse) :
+            model.getUtilization() * maxResourceAllowedToUse;
     }
 
     @Override

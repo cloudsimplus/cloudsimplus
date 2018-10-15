@@ -38,7 +38,7 @@ final class HeuristicSolutionNull implements HeuristicSolution {
     @Override public double getCost() {
         return 0.0;
     }
-    @Override public int compareTo(Object o) {
+    @Override public int compareTo(Object other) {
         return 0;
     }
     @Override public Object getResult() {

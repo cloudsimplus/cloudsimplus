@@ -20,7 +20,7 @@ public class DataCloudTagsTest {
     private static List<Field> constants;
 
     @BeforeClass
-    public static void setUp(){
+    public static void setUpClass(){
         constants = CloudSimTagsTest.getDeclaredConstants(CloudSimTags.class);
     }
 
@@ -34,5 +34,4 @@ public class DataCloudTagsTest {
             assertEquals(CloudSimTagsTest.msgFieldsWithDuplicatedValue(field, anotherField), field, anotherField);
         }
     }
-
 }

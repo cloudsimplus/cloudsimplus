@@ -168,7 +168,7 @@ public class CloudletToVmMappingSolutionTest {
         for (int i = 0; i < numberOfEntries; i++) {
             originalEntries.add(new AbstractMap.SimpleEntry<>(cloudlets[i], vms[i]));
 
-            /*After swapping VMs that are hosting given cloudlets,
+            /*After swapping VMs that are hosting the given cloudlets,
             cloudlet 0 that was in VM 0 will be placed into VM 1,
             and cloudlet 1 that was in VM 1 will be placed into VM 0.
             The line below makes this change in the index of the VM

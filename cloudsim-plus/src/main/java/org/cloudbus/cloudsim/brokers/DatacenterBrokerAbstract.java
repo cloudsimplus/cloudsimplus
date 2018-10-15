@@ -35,7 +35,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
 
     /**
-     * A default {@link Function} which always returns {@link #DEFAULT_VM_DESTRUCTION_DELAY} to indicate that any VM should not be
+     * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY} to indicate that any VM should not be
      * immediately destroyed after it becomes idle.
      * This way, using this Function the broker will destroy VMs only after:
      * <ul>
@@ -45,7 +45,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @see #setVmDestructionDelayFunction(Function)
      */
-    private static final Function<Vm, Double> DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION = vm -> DEFAULT_VM_DESTRUCTION_DELAY;
+    private static final Function<Vm, Double> DEF_VM_DESTRUCTION_DELAY_FUNCTION = vm -> DEF_VM_DESTRUCTION_DELAY;
 
     /**
      * A map of registered event listeners for the onVmsCreatedListeners event
@@ -189,7 +189,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         setDefaultPolicies();
 
-        vmDestructionDelayFunction = DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION;
+        vmDestructionDelayFunction = DEF_VM_DESTRUCTION_DELAY_FUNCTION;
     }
 
     /**
@@ -760,7 +760,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * Request an idle VM to be destroyed at the time defined by a delay {@link Function}.
      * The request will be sent if the given delay function returns a value
-     * greater than {@link #DEFAULT_VM_DESTRUCTION_DELAY}.
+     * greater than {@link #DEF_VM_DESTRUCTION_DELAY}.
      * Otherwise, it doesn't send the request, meaning the VM should not be destroyed according to a specific delay.
      *
      * @param vm the VM to destroy
@@ -770,7 +770,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         final double delay = vmDestructionDelayFunction.apply(vm);
 
         boolean vmAlive = vmExecList.contains(vm);
-        if (vmAlive && ((delay > DEFAULT_VM_DESTRUCTION_DELAY && vm.isIdleEnough(delay)) || isFinished())) {
+        if (vmAlive && ((delay > DEF_VM_DESTRUCTION_DELAY && vm.isIdleEnough(delay)) || isFinished())) {
             LOGGER.info("{}: {}: Requesting {} destruction.", getSimulation().clock(), getName(), vm);
             sendNow(getDatacenter(vm), CloudSimTags.VM_DESTROY, vm);
             vmExecList.remove(vm);
@@ -782,7 +782,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
-        if (vmAlive && delay > DEFAULT_VM_DESTRUCTION_DELAY) {
+        if (vmAlive && delay > DEF_VM_DESTRUCTION_DELAY) {
             send(this, getDelayToCheckVmIdleness(vm), CloudSimTags.VM_DESTROY, vm);
         }
 
@@ -1121,7 +1121,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public DatacenterBroker setVmDestructionDelayFunction(final Function<Vm, Double> function) {
-        this.vmDestructionDelayFunction = function == null ? DEFAULT_VM_DESTRUCTION_DELAY_FUNCTION : function;
+        this.vmDestructionDelayFunction = function == null ? DEF_VM_DESTRUCTION_DELAY_FUNCTION : function;
         return this;
     }
 

@@ -272,7 +272,11 @@ public class CloudSim implements Simulation {
             .forEach(e -> sendNow(e, CloudSimTags.END_OF_SIMULATION));
         LOGGER.info("{}: Processing last events before simulation shutdown.", clock);
 
-        while (runClockTickAndProcessFutureEvents()) {/**/}
+        while (true) {
+            if(!runClockTickAndProcessFutureEvents()){
+                return;
+            }
+        }
     }
 
     private void printSimulationFinished() {
@@ -497,29 +501,29 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public void wait(final CloudSimEntity src, final Predicate<SimEvent> p) {
+    public void wait(final CloudSimEntity src, final Predicate<SimEvent> predicate) {
         src.setState(SimEntity.State.WAITING);
-        if (p != ANY_EVT) {
+        if (predicate != ANY_EVT) {
             // If a predicate has been used, store it in order to check incoming events that matches it
-            waitPredicates.put(src, p);
+            waitPredicates.put(src, predicate);
         }
     }
 
     @Override
-    public long waiting(final SimEntity dest, final Predicate<SimEvent> p) {
-        return filterEventsToDestinationEntity(deferred, p, dest).count();
+    public long waiting(final SimEntity dest, final Predicate<SimEvent> predicate) {
+        return filterEventsToDestinationEntity(deferred, predicate, dest).count();
     }
 
     @Override
-    public SimEvent select(final SimEntity dest, final Predicate<SimEvent> p) {
-        final SimEvent evt = findFirstDeferred(dest, p);
+    public SimEvent select(final SimEntity dest, final Predicate<SimEvent> predicate) {
+        final SimEvent evt = findFirstDeferred(dest, predicate);
         deferred.remove(evt);
         return evt;
     }
 
     @Override
-    public SimEvent findFirstDeferred(final SimEntity dest, final Predicate<SimEvent> p) {
-        return filterEventsToDestinationEntity(deferred, p, dest).findFirst().orElse(SimEvent.NULL);
+    public SimEvent findFirstDeferred(final SimEntity dest, final Predicate<SimEvent> predicate) {
+        return filterEventsToDestinationEntity(deferred, predicate, dest).findFirst().orElse(SimEvent.NULL);
     }
 
     /**
@@ -527,25 +531,29 @@ public class CloudSim implements Simulation {
      * and are targeted to an specific entity.
      *
      * @param queue the queue to get the events from
-     * @param p the event selection predicate
+     * @param predicate the event selection predicate
      * @param dest Id of entity that the event has to be sent to
      * @return a Stream of events from the queue
      */
-    private Stream<SimEvent> filterEventsToDestinationEntity(final EventQueue queue, final Predicate<SimEvent> p, final SimEntity dest) {
-        return filterEvents(queue, p.and(e -> e.getDestination() == dest));
+    private Stream<SimEvent> filterEventsToDestinationEntity(final EventQueue queue, final Predicate<SimEvent> predicate, final SimEntity dest) {
+        return filterEvents(queue, predicate.and(evt -> evt.getDestination() == dest));
     }
 
     @Override
-    public SimEvent cancel(final SimEntity src, final Predicate<SimEvent> p) {
-        final SimEvent evt = future.stream().filter(p.and(e -> e.getSource().equals(src))).findFirst().orElse(SimEvent.NULL);
-        future.remove(evt);
-        return evt;
+    public SimEvent cancel(final SimEntity src, final Predicate<SimEvent> predicate) {
+        final SimEvent canceled =
+                future.stream()
+                      .filter(predicate.and(evt -> evt.getSource().equals(src)))
+                      .findFirst()
+                      .orElse(SimEvent.NULL);
+        future.remove(canceled);
+        return canceled;
     }
 
     @Override
-    public boolean cancelAll(final SimEntity src, final Predicate<SimEvent> p) {
+    public boolean cancelAll(final SimEntity src, final Predicate<SimEvent> predicate) {
         final int previousSize = future.size();
-        future.removeIf(p.and(evt -> evt.getSource().equals(src)));
+        future.removeIf(predicate.and(evt -> evt.getSource().equals(src)));
         return previousSize < future.size();
     }
 
@@ -553,11 +561,11 @@ public class CloudSim implements Simulation {
      * Gets a stream of events inside a specific queue that match a given predicate.
      *
      * @param queue the queue to get the events from
-     * @param p the event selection predicate
-     * @return a Strem of events from the queue
+     * @param predicate the event selection predicate
+     * @return a Stream of events from the queue
      */
-    private Stream<SimEvent> filterEvents(final EventQueue queue, final Predicate<SimEvent> p) {
-        return queue.stream().filter(p);
+    private Stream<SimEvent> filterEvents(final EventQueue queue, final Predicate<SimEvent> predicate) {
+        return queue.stream().filter(predicate);
     }
 
     /**
@@ -589,7 +597,7 @@ public class CloudSim implements Simulation {
             if (circularClockTimeQueue[0] < circularClockTimeQueue[1])
             {
                 lastClockTickListenersUpdate = circularClockTimeQueue[0];
-                onClockTickListeners.forEach(l -> l.update(EventInfo.of(l, lastClockTickListenersUpdate)));
+                onClockTickListeners.forEach(listener -> listener.update(EventInfo.of(listener, lastClockTickListenersUpdate)));
             }
         }
     }
@@ -672,7 +680,7 @@ public class CloudSim implements Simulation {
      * @param evt the processed event
      */
     private void notifyOnEventProcessingListeners(final SimEvent evt) {
-        onEventProcessingListeners.forEach(l -> l.update(evt));
+        onEventProcessingListeners.forEach(listener -> listener.update(evt));
     }
 
     private void startEntitiesIfNotRunning() {
@@ -758,7 +766,7 @@ public class CloudSim implements Simulation {
      * Notifies all registered listeners when the simulation is paused.
      */
     private void notifyOnSimulationPauseListeners() {
-        onSimulationPauseListeners.forEach(l -> l.update(EventInfo.of(l, clock)));
+        onSimulationPauseListeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
     }
 
     private boolean isPauseRequested() {

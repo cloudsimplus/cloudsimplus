@@ -43,15 +43,15 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker NULL = new DatacenterBrokerNull();
 
     /**
-     * A default delay value to indicate that <b>no</b> VM should be
-     * immediately destroyed after it becoming idle.
+     * A default delay value to indicate that <b>NO</b> VM should be
+     * immediately destroyed after becoming idle.
      *
      * <p>This is used as the default value returned by the {@link #getVmDestructionDelayFunction()}
      * if a {@link Function} is not set.</p>
      *
      * @see #setVmDestructionDelayFunction(Function)
      */
-    double DEFAULT_VM_DESTRUCTION_DELAY = -1.0;
+    double DEF_VM_DESTRUCTION_DELAY = -1.0;
 
     /**
      * Specifies that an already submitted cloudlet, which is in the {@link #getCloudletWaitingList() waiting list},
@@ -346,7 +346,7 @@ public interface DatacenterBroker extends SimEntity {
      * after the VM becomes idle, to destroy it.
      *
      * @return
-     * @see #DEFAULT_VM_DESTRUCTION_DELAY
+     * @see #DEF_VM_DESTRUCTION_DELAY
      * @see Vm#getIdleInterval()
      */
     Function<Vm, Double> getVmDestructionDelayFunction();
@@ -358,7 +358,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param function the {@link Function} to set (if null is given, it sets the default Function)
      * @return
-     * @see #DEFAULT_VM_DESTRUCTION_DELAY
+     * @see #DEF_VM_DESTRUCTION_DELAY
      * @see Vm#getIdleInterval()
      */
     DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function);

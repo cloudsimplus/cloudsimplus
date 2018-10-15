@@ -49,7 +49,6 @@ public class CloudInformationService extends CloudSimEntity {
      * Instantiates a new CloudInformationService object.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @pre name != null
      */
     CloudInformationService(CloudSim simulation) {
         super(simulation);

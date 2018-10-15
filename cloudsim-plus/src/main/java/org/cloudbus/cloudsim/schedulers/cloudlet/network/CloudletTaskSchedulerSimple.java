@@ -117,8 +117,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             return true;
         }
 
-        final NetworkCloudlet nc = (NetworkCloudlet)cloudlet;
-        return nc.getCurrentTask().filter(CloudletTask::isExecutionTask).isPresent();
+        return ((NetworkCloudlet)cloudlet).getCurrentTask().filter(CloudletTask::isExecutionTask).isPresent();
     }
 
     private boolean isNotNetworkCloudlet(final Cloudlet cloudlet) {

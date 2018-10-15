@@ -213,17 +213,15 @@ public class VmSimple implements Vm {
         final double nextEventDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
 
-        /* If the current time is some value with the decimals greater than .0
+        /* If the current time is some value with the decimals greater than x.0
          * (such as 45.1) and the next event delay is any integer number such as 5,
          * then the next simulation time will be 50.1.
-         * Since usually Cloudlets finish at integer times, if there is
-         * a Cloudlet finishing at time 50, this update will be skipped
-         * and the simulation will only be updated at time 50.1.
-         * This small difference stops the simulator to collect utilization data
-         * to keep in the history. Since at time 50 the Cloudlet is still running,
-         * there is some CPU utilization. At time 50.1 the utilization will
-         * be reduced due to the completion of the Cloudlet.
-         * This way, the CPU utilization at time 50 is not collected. */
+         * At time 50.1 the utilization will be reduced due to the completion of the Cloudlet.
+         * At time 50.0 the Cloudlet is still running, so there is some CPU utilization.
+         * But since the next update will be only at time 50.1, the utilization
+         * at time 50.0 won't be collected to enable knowing the exact time
+         * before the utilization dropped.
+         */
         final double decimals = currentTime - (int) currentTime;
         utilizationHistory.addUtilizationHistory(currentTime);
         return nextEventDelay - decimals;

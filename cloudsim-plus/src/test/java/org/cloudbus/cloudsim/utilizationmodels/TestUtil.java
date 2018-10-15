@@ -29,7 +29,7 @@ final class TestUtil {
      */
     private TestUtil(){/**/}
 
-    static UtilizationModelDynamic createUtilizationModel(
+    /* default */ static UtilizationModelDynamic createUtilizationModel(
         final double usagePercentInc,
         final double initUsage,
         final int initSimulationTime)
@@ -47,7 +47,7 @@ final class TestUtil {
         return utilizationModel;
     }
 
-    static UtilizationModelDynamic createUtilizationModel(final double usagePercentInc, final double initUsage) {
+    /* default */ static UtilizationModelDynamic createUtilizationModel(final double usagePercentInc, final double initUsage) {
         return createUtilizationModel(usagePercentInc, initUsage, 0);
     }
 
@@ -86,7 +86,7 @@ final class TestUtil {
         });
     }
 
-    static void checkUtilization(
+    /* default */ static void checkUtilization(
         final double initUsage,
         final double usagePercentInc,
         final UtilizationModelDynamic instance)
@@ -94,6 +94,4 @@ final class TestUtil {
         TestUtil.checkUtilization(initUsage, usagePercentInc,
             Conversion.HUNDRED_PERCENT, instance);
     }
-
-
 }

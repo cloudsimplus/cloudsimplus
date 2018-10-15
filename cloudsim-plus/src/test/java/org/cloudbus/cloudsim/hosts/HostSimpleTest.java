@@ -32,6 +32,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.Assert.*;
@@ -84,12 +85,9 @@ public class HostSimpleTest {
     }
 
     private static List<Pe> createPes(final int numberOfPes, final double mips) {
-        final List<Pe> peList = new ArrayList<>(numberOfPes);
-        for (int i = 0; i < numberOfPes; i++) {
-            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
-        }
-
-        return peList;
+        return IntStream.range(0, numberOfPes)
+                        .mapToObj(id -> new PeSimple(mips, new PeProvisionerSimple()))
+                        .collect(Collectors.toCollection(() -> new ArrayList<>(numberOfPes)));
     }
 
     @Before

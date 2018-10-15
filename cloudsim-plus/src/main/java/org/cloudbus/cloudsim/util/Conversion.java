@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.util;
 
 /**
- * Provides a set of methods for unit conversion.
+ * An utility class that provides a set of methods for unit conversion.
  *
  * @author Manoel Campos da Silva Filho
  */

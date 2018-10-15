@@ -375,7 +375,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         final TaskUsage taskUsage = createTaskUsageFromTraceLine();
         return brokers.stream()
                .flatMap(broker -> broker.getCloudletSubmittedList().stream())
-               .filter(c -> c.getId() == taskUsage.getUniqueTaskId())
+               .filter(cloudlet -> cloudlet.getId() == taskUsage.getUniqueTaskId())
                .findFirst()
                .map(cloudlet -> requestCloudletUsageChange(cloudlet, taskUsage)).isPresent();
     }
@@ -410,7 +410,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
             if (cloudlet.getUtilizationOfCpu() != taskUsage.getMeanCpuUsageRate()) {
                 builder.append("CPU Utilization: ")
                     .append(formatPercentValue(cloudlet.getUtilizationOfCpu())).append(VAL_SEPARATOR)
-                    .append(formatPercentValue(taskUsage.getMeanCpuUsageRate())).append("%").append(COL_SEPARATOR);
+                    .append(formatPercentValue(taskUsage.getMeanCpuUsageRate())).append('%').append(COL_SEPARATOR);
 
                 cloudlet.setUtilizationModelCpu(createUtilizationModel(cloudlet.getUtilizationModelCpu(), taskUsage.getMeanCpuUsageRate()));
             }

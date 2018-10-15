@@ -147,11 +147,11 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
         this(0, null, seed);
     }
 
-    HostFaultInjectionExperiment(int index, ExperimentRunner runner) {
+    HostFaultInjectionExperiment(final int index, final ExperimentRunner runner) {
         this(index, runner, -1);
     }
 
-    private HostFaultInjectionExperiment(int index, ExperimentRunner runner, long seed) {
+    private HostFaultInjectionExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
         setNumBrokersToCreate(readContractList().size());
         setAfterScenarioBuild(exp -> createFaultInjectionForHosts(getDatacenter0()));
@@ -197,7 +197,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return the selected {@link AwsEc2Template} which will allow the customer
      * to run the maximum number of VMs
      */
-    private AwsEc2Template getSuitableAwsEc2InstanceTemplate(DatacenterBroker broker, List<AwsEc2Template> all) throws IOException {
+    private AwsEc2Template getSuitableAwsEc2InstanceTemplate(final DatacenterBroker broker, final List<AwsEc2Template> all) {
         if(all.isEmpty()){
             throw new RuntimeException("There aren't VM templates to create VMs for customer " + broker.getId());
         }
@@ -208,7 +208,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
             return selected;
         }
 
-        selected = getCheaperVmTemplate(broker, all);
+        selected = getCheapestVmTemplate(broker, all);
 
         return selected;
     }
@@ -220,7 +220,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return the most powerful VM according to customer contract or {@link AwsEc2Template#NULL}
      *         if a suitable template could not be found
      */
-    private AwsEc2Template getMostPowerfulVmTemplateForCustomerPrice(SlaContract contract, List<AwsEc2Template> all) {
+    private AwsEc2Template getMostPowerfulVmTemplateForCustomerPrice(final SlaContract contract, final List<AwsEc2Template> all) {
         final Comparator<AwsEc2Template> comparator = Comparator.naturalOrder();
         return all.stream()
             .filter(t -> getActualPriceForAllVms(contract, t) <= contract.getMaxPrice())
@@ -230,7 +230,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     /**
      * If a VM template matching the customer contract cannot be found,
-     * gets the cheaper VM from the entire list and
+     * gets the cheapest VM from the entire list and
      * computes the new k-fault-tolerance level which is possible using such a VM.
      * That is, computes the k number of VMs which can be created
      * from that template, that will not exceed the total price the customer
@@ -238,9 +238,12 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      *
      * At the end, updates the customer contract.
      *
+     * @param broker the broker representing a customer to get the cheapest {@link AwsEc2Template}
+     *               which maximizes the number of VMs for the customer's expected price
+     * @param all the list of all existing {@link AwsEc2Template}s
      * @return the cheaper VM template
      */
-    private AwsEc2Template getCheaperVmTemplate(DatacenterBroker broker, List<AwsEc2Template> all) {
+    private AwsEc2Template getCheapestVmTemplate(final DatacenterBroker broker, final List<AwsEc2Template> all) {
         final SlaContract contract = getContract(broker);
         final AwsEc2Template instance =
             all.stream()
@@ -273,12 +276,12 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param instance the instance type to compute the k-fault-tolerance level
      * @return the computed k-fault-tolerance level, where the minimum value for k will be 1
      */
-    private int getFaultToleranceLevelForTemplate(SlaContract contract, AwsEc2Template instance) {
+    private int getFaultToleranceLevelForTemplate(final SlaContract contract, final AwsEc2Template instance) {
         final int faultToleranceLevel = (int)Math.floor(contract.getMaxPrice() / instance.getPricePerHour());
         return Math.max(faultToleranceLevel, 1);
     }
 
-    private SlaContract getContract(DatacenterBroker broker){
+    private SlaContract getContract(final DatacenterBroker broker){
         return contractsMap.get(broker);
     }
 
@@ -296,7 +299,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms(final DatacenterBroker broker) {
         numVms = getContract(broker).getMinFaultToleranceLevel();
         final List<Vm> list = new ArrayList<>(numVms);
         final int id = getVmList().size();
@@ -308,7 +311,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     }
 
-    public Vm createVm(DatacenterBroker broker, int id, AwsEc2Template template) {
+    public Vm createVm(final DatacenterBroker broker, final int id, final AwsEc2Template template) {
         final Vm vm = new VmSimple(id, VM_MIPS, template.getCpus());
         vm
             .setRam(template.getMemoryInMB()).setBw(VM_BW).setSize(VM_SIZE)
@@ -389,7 +392,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      *
      * @param datacenter
      */
-    private void createFaultInjectionForHosts(Datacenter datacenter) {
+    private void createFaultInjectionForHosts(final Datacenter datacenter) {
         PoissonDistr poisson = new PoissonDistr(MEAN_FAILURE_NUMBER_PER_HOUR, getSeed());
 
         faultInjection = new HostFaultInjection(datacenter, poisson);
@@ -445,7 +448,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @return the List of cloned Cloudlets.
      * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter)
      */
-    private List<Cloudlet> cloneCloudlets(Vm sourceVm) {
+    private List<Cloudlet> cloneCloudlets(final Vm sourceVm) {
         final List<Cloudlet> sourceVmCloudlets = sourceVm.getCloudletScheduler().getCloudletList();
         final List<Cloudlet> clonedCloudlets = new ArrayList<>(sourceVmCloudlets.size());
         for (Cloudlet cl : sourceVmCloudlets) {
@@ -480,7 +483,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
 
     @Override
     public void printResults() {
-        for (DatacenterBroker broker : getBrokerList()) {
+        for (final DatacenterBroker broker : getBrokerList()) {
             new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
         }
     }
@@ -523,7 +526,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param broker
      * @return minimum customer availability
      */
-    private double getCustomerMinAvailability(DatacenterBroker broker) {
+    private double getCustomerMinAvailability(final DatacenterBroker broker) {
         return contractsMap.get(broker).getAvailabilityMetric().getMinDimension().getValue();
 
     }
@@ -532,7 +535,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * Calculates the total cost of all VMs a given broker executed,
      * for the entire simulation time.
      */
-    public double getTotalCost(DatacenterBroker broker) {
+    public double getTotalCost(final DatacenterBroker broker) {
         final SlaContract contract = getContract(broker);
 
         final AwsEc2Template template = templatesMap.get(broker);
@@ -548,7 +551,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param template the template to compute the total price for that contract
      * @return
      */
-    private double getActualPriceForAllVms(SlaContract contract, AwsEc2Template template) {
+    private double getActualPriceForAllVms(final SlaContract contract, final AwsEc2Template template) {
         return template.getPricePerHour()*contract.getMinFaultToleranceLevel();
     }
 
@@ -558,7 +561,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param broker
      * @return
      */
-    public double getCustomerActualPricePerHour(DatacenterBroker broker) {
+    public double getCustomerActualPricePerHour(final DatacenterBroker broker) {
         return getTotalCost(broker)/getTotalExecutionTimeForVmsInHours(broker);
     }
 
@@ -567,14 +570,14 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @param broker
      * @return
      */
-    private double getTotalExecutionTimeForVmsInHours(DatacenterBroker broker) {
+    private double getTotalExecutionTimeForVmsInHours(final DatacenterBroker broker) {
         return broker.getVmCreatedList().stream().mapToDouble(Vm::getTotalExecutionTime).sum()/3600.0;
     }
 
     /**
      * Gets the price per hour for the AWS EC2 Template to be used for a given customer.
      */
-    public Double getTemplatesMap(DatacenterBroker broker) {
+    public Double getTemplatesMap(final DatacenterBroker broker) {
         return templatesMap.get(broker).getPricePerHour();
     }
 

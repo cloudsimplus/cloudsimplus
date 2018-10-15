@@ -66,8 +66,8 @@ public class HarddriveStorageTest {
     public void testIsFull() {
         final int numberOfFiles = (int)(CAPACITY/FILE_SIZE);
         final HarddriveStorage instance = createHardDrive(CAPACITY+FILE_SIZE);
-        IntStream.range(0, numberOfFiles).forEach(i -> {
-            instance.addFile(createNumberedFile(i, FILE_SIZE));
+        IntStream.range(0, numberOfFiles).forEach(id -> {
+            instance.addFile(createNumberedFile(id, FILE_SIZE));
             assertFalse(instance.isFull());
         });
 

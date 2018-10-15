@@ -6,14 +6,13 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.FileSystem;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Stream;
+import java.util.stream.Collectors;
 
 /**
- * Loads a resource file/directory that is contained inside the directory of a given class.
+ * An utility class that loads a resource file/directory that is contained inside
+ * the directory of a given class.
  *
  * @author Manoel Campos da Silva Filho
  */
@@ -84,13 +83,11 @@ public final class ResourceLoader {
         }
 
         try {
-            final Path path = uriToPath(resourceDir, uri);
-            final Stream<Path> walk = Files.walk(path, 1);
-
-            final List<String> list = new ArrayList<>();
-            for (final Iterator<Path> it = walk.iterator(); it.hasNext();){
-                list.add(resourceDir + "/" + it.next().getFileName().toString());
-            }
+            final Path fullPath = uriToPath(resourceDir, uri);
+            final List<String> list =
+                Files.walk(fullPath, 1)
+                     .map(path -> resourceDir + "/" + path.getFileName().toString())
+                     .collect(Collectors.toList());
 
             //Removes the first element which is the name of the containing directory
             if(!list.isEmpty()) {
@@ -156,5 +153,4 @@ public final class ResourceLoader {
             throw new UncheckedIOException(e);
         }
     }
-
 }

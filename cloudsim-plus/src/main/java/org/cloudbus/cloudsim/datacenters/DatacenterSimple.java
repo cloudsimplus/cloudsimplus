@@ -838,7 +838,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final List<Cloudlet> nonReturnedCloudlets =
             vm.getCloudletScheduler().getCloudletFinishedList().stream()
                 .map(CloudletExecution::getCloudlet)
-                .filter(c -> !vm.getCloudletScheduler().isCloudletReturned(c))
+                .filter(cloudlet -> !vm.getCloudletScheduler().isCloudletReturned(cloudlet))
                 .collect(toList());
 
         nonReturnedCloudlets.forEach(this::returnFinishedCloudletToBroker);
@@ -957,7 +957,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public Host getHostById(final long id) {
-        return hostList.stream().filter(h -> h.getId()==id).findFirst().map(h -> (Host)h).orElse(Host.NULL);
+        return hostList.stream().filter(host -> host.getId()==id).findFirst().map(host -> (Host)host).orElse(Host.NULL);
     }
 
     @Override

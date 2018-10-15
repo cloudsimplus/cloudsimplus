@@ -69,7 +69,7 @@ import java.util.function.Function;
  * period of time to balance the load of arrived Cloudlets
  * or even to enable fault tolerance.</p>
  *
- * <p>See the {@link DatacenterBroker#DEFAULT_VM_DESTRUCTION_DELAY}
+ * <p>See the {@link DatacenterBroker#DEF_VM_DESTRUCTION_DELAY}
  * for details about the default behaviour.</p>
  *
  * <p>For details about Fault Injection, check the {@link org.cloudsimplus.faultinjection} package.</p>
