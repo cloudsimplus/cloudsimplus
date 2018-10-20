@@ -41,14 +41,14 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.builders.tables.TextTableColumn;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An example showing how to create a Datacenter with two hosts and run
@@ -68,8 +68,8 @@ public class VmsCpuUsageExample {
     private List<Cloudlet> cloudletList;
     private List<Vm> vmlist;
     private DatacenterBroker broker;
-    private static final int VMS_NUMBER = 2;
-    private static final int HOSTS_NUMBER = 2;
+    private static final int VMS = 2;
+    private static final int HOSTS = 2;
 
     /**
      * Starts the example execution.
@@ -92,39 +92,42 @@ public class VmsCpuUsageExample {
 
         broker = new DatacenterBrokerSimple(simulation);
 
-        vmlist = new ArrayList<>(VMS_NUMBER);
-        cloudletList = new ArrayList<>(VMS_NUMBER);
+        vmlist = new ArrayList<>(VMS);
+        cloudletList = new ArrayList<>(VMS);
 
-        int mips = 1000;
-        int pesNumber = 1;
-        for (int i = 1; i <= VMS_NUMBER; i++) {
-            Vm vm = createVm(pesNumber, mips * i, i - 1);
+        final int mips = 1000;
+        final int pesNumber = 2;
+        for (int i = 1; i <= VMS; i++) {
+            Vm vm = createVm(pesNumber*2, mips * i, i - 1);
             vmlist.add(vm);
-            Cloudlet cloudlet = createCloudlet(pesNumber, i-1);
+            Cloudlet cloudlet = createCloudlet(pesNumber);
             cloudletList.add(cloudlet);
             cloudlet.setVm(vm);
         }
+        cloudletList.add(createCloudlet(pesNumber));
 
         broker.submitVmList(vmlist);
         broker.submitCloudletList(cloudletList);
 
         final double finishTime = simulation.start();
 
-        new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
+        new CloudletsTableBuilder(broker.getCloudletFinishedList())
+            .addColumn(7, new TextTableColumn("VM MIPS"), cloudlet -> cloudlet.getVm().getMips())
+            .build();
 
         showCpuUtilizationForAllVms(finishTime);
 
         System.out.println(getClass().getSimpleName() + " finished!");
     }
 
-    private Cloudlet createCloudlet(int pesNumber, int id) {
+    private Cloudlet createCloudlet(final int pesNumber) {
         long length = 10000;
         long fileSize = 300;
         long outputSize = 300;
         UtilizationModel utilizationModelDynamic = new UtilizationModelDynamic(0.25);
-        UtilizationModel utilizationModelCpu = new UtilizationModelFull();
+        UtilizationModel utilizationModelCpu = new UtilizationModelDynamic(0.5);
 
-        Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber);
+        Cloudlet cloudlet = new CloudletSimple(length, pesNumber);
         cloudlet.setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModelCpu(utilizationModelCpu)
@@ -133,7 +136,14 @@ public class VmsCpuUsageExample {
         return cloudlet;
     }
 
-    private Vm createVm(int pesNumber, int mips, int id) {
+    /**
+     * Creates a VM enabling the collection of CPU utilization history.
+     * @param pesNumber
+     * @param mips
+     * @param id
+     * @return
+     */
+    private Vm createVm(final int pesNumber, final int mips, final int id) {
         long size = 10000; //image size (Megabyte)
         int ram = 2048; //vm memory (Megabyte)
         long bw = 1000;
@@ -143,6 +153,7 @@ public class VmsCpuUsageExample {
         vm.setRam(ram).setBw(bw)
             .setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        vm.getUtilizationHistory().enable();;
         return vm;
     }
 
@@ -151,16 +162,17 @@ public class VmsCpuUsageExample {
         int numberOfUsageHistoryEntries = 0;
         for (Vm vm : vmlist) {
             System.out.printf("VM %d\n", vm.getId());
-            if (vm.getStateHistory().isEmpty()) {
+            if (vm.getUtilizationHistory().getHistory().isEmpty()) {
                 System.out.println("\tThere isn't any usage history");
                 continue;
             }
 
-            for (int clock = 0; clock <= simulationFinishTime; clock+=5) {
-                final double vmCpuUsage = getVmCpuUtilizationInMips(vm, simulationFinishTime);
+            for (Map.Entry<Double, Double> entry : vm.getUtilizationHistory().getHistory().entrySet()) {
+                final double time = entry.getKey();
+                final double vmCpuUsage = entry.getValue()*100;
                 if (vmCpuUsage > 0) {
                     numberOfUsageHistoryEntries++;
-                    System.out.printf("\tTime: %2d CPU Utilization (MIPS): %.2f\n", clock, vmCpuUsage);
+                    System.out.printf("\tTime: %2.0f CPU Utilization: %.2f%%\n", time, vmCpuUsage);
                 }
             }
         }
@@ -170,34 +182,29 @@ public class VmsCpuUsageExample {
         }
     }
 
-    private double getVmCpuUtilizationInMips(Vm vm, double time) {
-        for (VmStateHistoryEntry state : vm.getStateHistory()) {
-            /*subtract the two times just to avoid precision issues.
-            For instance, the registered time in the history
-            may be 160.1 while the desired time may be 160.0.
-            This if ignores this difference and considers the times are equals.
-            */
-            if (Math.abs(state.getTime() - time) <= 0.1) {
-                return state.getAllocatedMips();
-            }
-        }
-
-        return 0;
-    }
-
+    /**
+     * Creates a datacenter setting the scheduling interval
+     * that, between other things, defines the times to collect
+     * VM CPU utilization.
+     *
+     * @param simulation
+     * @return
+     */
     private static Datacenter createDatacenter(CloudSim simulation) {
-        List<Host> hostList = new ArrayList<>(HOSTS_NUMBER);
-        final int pesNumber = 1;
+        List<Host> hostList = new ArrayList<>(HOSTS);
+        final int pesNumber = 4;
         final int mips = 1000;
-        for (int i = 1; i <= HOSTS_NUMBER; i++) {
-            Host host = createHost(pesNumber, mips*i, i-1);
+        for (int i = 1; i <= HOSTS; i++) {
+            Host host = createHost(pesNumber, mips*i);
             hostList.add(host);
         }
 
-        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        DatacenterSimple dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        dc.setSchedulingInterval(2);
+        return dc;
     }
 
-    private static Host createHost(int pesNumber, long mips, int hostId) {
+    private static Host createHost(final int pesNumber, final long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
