@@ -33,7 +33,6 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -48,6 +47,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * An example showing how to create a Datacenter with two hosts,
@@ -114,13 +114,12 @@ public class HostsCpuUsageExample {
         broker.submitVmList(vmlist);
         broker.submitCloudletList(cloudletList);
 
-        final double finishTime = simulation.start();
+        simulation.start();
 
         List<Cloudlet> newList = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(newList).build();
 
         showCpuUtilizationForAllHosts();
-
         System.out.println(getClass().getSimpleName() + " finished!");
     }
 
@@ -136,13 +135,23 @@ public class HostsCpuUsageExample {
             .setUtilizationModel(utilizationModel);
     }
 
-    private Vm createVm(int pesNumber, long mips, int id) {
+    /**
+     * Creates a VM enabling the collection of CPU utilization history.
+     * This way, hosts can get the CPU utilization based on VM utilization.
+     * @param pesNumber
+     * @param mips
+     * @param id
+     * @return
+     */
+    private Vm createVm(final int pesNumber, final long mips, final int id) {
         long size = 10000; //image size (Megabyte)
         int ram = 2048; //vm memory (Megabyte)
         long bw = 1000;
-        return new VmSimple(id, mips, pesNumber)
+        Vm vm = new VmSimple(id, mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        vm.getUtilizationHistory().enable();
+        return vm;
     }
 
     /**
@@ -154,11 +163,11 @@ public class HostsCpuUsageExample {
         for (Host host : hostList) {
             double mipsByPe = host.getTotalMipsCapacity() / (double)host.getNumberOfPes();
             System.out.printf("Host %d: Number of PEs %2d, MIPS by PE %.0f\n", host.getId(), host.getNumberOfPes(), mipsByPe);
-            for(HostStateHistoryEntry history: host.getStateHistory()){
+            for (Map.Entry<Double, Double> entry : host.getUtilizationHistorySum().entrySet()) {
+                final double time = entry.getKey();
+                final double cpuUsage = entry.getValue()*100;
                 numberOfUsageHistoryEntries++;
-                System.out.printf(
-                            "\tTime: %2.0f CPU Utilization (MIPS): %.0f\n",
-                            history.getTime(), history.getAllocatedMips());
+                System.out.printf("\tTime: %4.1f CPU Utilization: %6.2f%%\n", time, cpuUsage);
             }
             System.out.println("--------------------------------------------------");
         }
@@ -168,19 +177,28 @@ public class HostsCpuUsageExample {
         }
     }
 
+    /**
+     * Creates a datacenter setting the scheduling interval
+     * that, between other things, defines the times to collect
+     * VM CPU utilization.
+     *
+     * @return
+     */
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>(NUMBER_OF_HOSTS);
         int pesNumber = 1;
         int mips = 1200;
         for (int i = 1; i <= 2; i++) {
-            Host host = createHosts(pesNumber, mips*i, i-1);
+            Host host = createHost(pesNumber, mips*i);
             hostList.add(host);
         }
 
-        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        DatacenterSimple dc = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        dc.setSchedulingInterval(2);
+        return dc;
     }
 
-    private Host createHosts(int pesNumber, long mips, int hostId) {
+    private Host createHost(int pesNumber, long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));

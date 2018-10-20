@@ -172,7 +172,7 @@ public class VmsCpuUsageExample {
                 final double vmCpuUsage = entry.getValue()*100;
                 if (vmCpuUsage > 0) {
                     numberOfUsageHistoryEntries++;
-                    System.out.printf("\tTime: %2.0f CPU Utilization: %.2f%%\n", time, vmCpuUsage);
+                    System.out.printf("\tTime: %2.0f CPU Utilization: %6.2f%%\n", time, vmCpuUsage);
                 }
             }
         }
