@@ -111,11 +111,11 @@ public class VmBuilder {
             final Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes)
                     .setRam(ram).setBw(bandwidth).setSize(size)
                     .setCloudletScheduler(cloudletSchedulerSupplier.get())
-                    .setBroker(broker)
                     .addOnHostAllocationListener(onHostAllocationListener)
                     .addOnHostDeallocationListener(onHostDeallocationListener)
                     .addOnCreationFailureListener(onVmCreationFailureListener)
                     .addOnUpdateProcessingListener(onUpdateVmProcessingListener);
+            vm.setBroker(broker);
             vms.add(vm);
         }
         broker.submitVmList(vms);

@@ -5,6 +5,7 @@ import org.cloudbus.cloudsim.util.MathUtil;
 import java.util.Collections;
 import java.util.SortedMap;
 import java.util.TreeMap;
+import java.util.stream.Stream;
 
 /**
  * Stores resource utilization data for a specific {@link Vm}.
@@ -55,30 +56,37 @@ public class VmUtilizationHistory implements UtilizationHistory {
             return 0;
         }
 
-        final int length = Math.min(getMaxHistoryEntries(), getHistory().size());
+        final int maxEntries = getNumEntriesToComputeStats();
         final double median = MathUtil.median(getHistory().values());
-        final double[] deviationSum = new double[length];
-        for (int i = 0; i < length; i++) {
+        final double[] deviationSum = new double[maxEntries];
+        for (int i = 0; i < maxEntries; i++) {
             deviationSum[i] = Math.abs(median - getHistory().get(i));
         }
 
         return MathUtil.median(deviationSum);
     }
 
+    /**
+     * Gets the actual number of entries to be used to compute statistics.
+     * @return
+     */
+    private int getNumEntriesToComputeStats() {
+        return Math.min(getMaxHistoryEntries(), getHistory().size());
+    }
+
     @Override
     public double getUtilizationMean() {
-        if (history.isEmpty()) {
-            return 0;
-        }
-
-        final int maxEntries = Math.min(getMaxHistoryEntries(), getHistory().size());
-        final double usagePercentMean = getHistory().values().stream()
-            .limit(maxEntries)
+        final int maxEntries = getNumEntriesToComputeStats();
+        final double usagePercentMean = getHistoryLimitedStream(maxEntries)
             .mapToDouble(usagePercent -> usagePercent)
             .average()
             .orElse(0);
 
         return usagePercentMean * vm.getMips();
+    }
+
+    private Stream<Double> getHistoryLimitedStream(final int maxEntries) {
+        return getHistory().values().stream().limit(maxEntries);
     }
 
     @Override
@@ -88,9 +96,8 @@ public class VmUtilizationHistory implements UtilizationHistory {
         }
 
         final double mean = getUtilizationMean();
-        final int maxNumOfEntriesToAverage = Math.min(getMaxHistoryEntries(), getHistory().size());
-        return getHistory().values().stream()
-            .limit(maxNumOfEntriesToAverage)
+        final int maxEntries = getNumEntriesToComputeStats();
+        return getHistoryLimitedStream(maxEntries)
             .mapToDouble(usagePercent -> usagePercent * vm.getMips())
             .map(usageValue -> usageValue - mean)
             .map(usageValue -> usageValue * usageValue)

@@ -284,7 +284,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * none match, wait for a matching event to arrive.
      *
      * @param predicate The predicate to match
-     * @return the simulation event
+     * @return the simulation event; or null if not found or the simulation is not running
      */
     public SimEvent getNextEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
@@ -347,8 +347,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * not be called by the user.
      *
      * @return A clone of the entity
-     * @throws CloneNotSupportedException when the entity doesn't support
-     *                                    cloning
+     * @throws CloneNotSupportedException when the entity doesn't support cloning
      */
     @Override
     protected final Object clone() throws CloneNotSupportedException {
@@ -437,8 +436,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param dest the destination entity
      * @param delay       How many seconds after the current simulation time the event should be sent.
      *                    If delay is a negative number, then it will be changed to 0
-     * @param cloudSimTag an user-defined number representing the type of an
-     *                    event/message
+     * @param cloudSimTag an user-defined number representing the type of an event/message
      * @param data        A reference to data to be sent with the event
      */
     protected void send(final SimEntity dest, double delay, final int cloudSimTag, final Object data) {
@@ -498,8 +496,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * event type.
      *
      * @param dest    the destination entity
-     * @param cloudSimTag an user-defined number representing the type of an
-     *                    event/message
+     * @param cloudSimTag an user-defined number representing the type of an event/message
      */
     protected void sendNow(final SimEntity dest, final int cloudSimTag) {
         send(dest, 0, cloudSimTag, null);

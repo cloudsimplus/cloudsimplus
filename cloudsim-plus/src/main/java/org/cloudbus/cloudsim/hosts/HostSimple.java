@@ -282,12 +282,16 @@ public class HostSimple implements Host {
         }
 
         vm.setInMigration(inMigration);
-        storage.allocateResource(vm.getStorage());
+        allocateResourcesForVm(vm);
+
+        return true;
+    }
+
+    private void allocateResourcesForVm(Vm vm) {
         ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
         bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
         vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
-
-        return true;
+        storage.allocateResource(vm.getStorage());
     }
 
     private void logAllocationError(
@@ -308,10 +312,7 @@ public class HostSimple implements Host {
             if (!vmList.contains(vm)) {
                 vmList.add(vm);
             }
-            ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
-            bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
-            vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
-            storage.allocateResource(vm.getStorage());
+            allocateResourcesForVm(vm);
         }
     }
 
@@ -1026,4 +1027,10 @@ public class HostSimple implements Host {
         return Collections.unmodifiableList(stateHistory);
     }
 
+    @Override
+    public List<Vm> getMigratableVms() {
+        return vmList.stream()
+            .filter(vm -> !vm.isInMigration())
+            .collect(Collectors.toList());
+    }
 }

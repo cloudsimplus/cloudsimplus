@@ -102,9 +102,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     @Override
     public double cloudletResume(final Cloudlet cloudlet) {
-        return getCloudletPausedList().stream()
-                .filter(c -> c.getCloudletId() == cloudlet.getId())
-                .findFirst()
+        return findCloudletInList(cloudlet, getCloudletPausedList())
                 .map(this::movePausedCloudletToExecListAndGetExpectedFinishTime)
                 .orElse(0.0);
     }

@@ -168,5 +168,6 @@ final class HostNull implements Host {
     @Override public boolean isStateHistoryEnabled() { return false; }
     @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
     @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
+    @Override public List<Vm> getMigratableVms() { return Collections.emptyList(); }
     @Override public void setShutdownTime(double shutdownTime) {/**/}
 }

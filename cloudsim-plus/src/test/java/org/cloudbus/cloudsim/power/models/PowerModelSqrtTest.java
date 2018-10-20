@@ -24,7 +24,7 @@ public class PowerModelSqrtTest {
     private PowerModelSqrt powerModel;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         powerModel = new PowerModelSqrt(MAX_POWER, STATIC_POWER_PERCENT);
         powerModel.setHost(PowerModelTest.createHostWithOneVm());
     }

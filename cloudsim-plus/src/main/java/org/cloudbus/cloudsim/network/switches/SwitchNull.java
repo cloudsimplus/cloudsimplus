@@ -2,8 +2,8 @@ package org.cloudbus.cloudsim.network.switches;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.core.SimEntityNullBase;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
@@ -19,14 +19,9 @@ import java.util.Map;
  * @author Manoel Campos da Silva Filho
  * @see Switch#NULL
  */
-final class SwitchNull implements Switch {
-    private static final Simulation SIM = Simulation.NULL;
-    private static final VmAllocationPolicy POLICY = VmAllocationPolicy.NULL;
-    private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(SIM, Collections.emptyList(), POLICY);
+final class SwitchNull implements Switch, SimEntityNullBase {
+    private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(Simulation.NULL, Collections.emptyList(), VmAllocationPolicy.NULL);
 
-    @Override public long getId() {
-        return 0;
-    }
     @Override public double getUplinkBandwidth() {
         return 0;
     }
@@ -82,24 +77,5 @@ final class SwitchNull implements Switch {
     @Override public int getLevel() {
         return 0;
     }
-    @Override public State getState() { return State.FINISHED; }
-    @Override public SimEntity setState(State state) { return this; }
-    @Override public boolean isStarted() { return false; }
-    @Override public boolean isAlive() { return false; }
-    @Override public boolean isFinished() { return false; }
-    @Override public Simulation getSimulation() { return Simulation.NULL; }
-    @Override public SimEntity setSimulation(Simulation simulation) { return this; }
-    @Override public void processEvent(SimEvent evt) {/**/}
-    @Override public boolean schedule(SimEvent evt) { return false; }
-    @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
-    @Override public boolean schedule(double delay, int tag, Object data) { return false; }
-    @Override public boolean schedule(SimEntity dest, double delay, int tag) {/**/
-        return false;
-    }
-    @Override public void run() {/**/}
-    @Override public void start() {/**/}
-    @Override public void shutdownEntity() {/**/}
-    @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override public int compareTo(SimEntity entity) { return 0; }
-    @Override public String getName() { return ""; }
 }

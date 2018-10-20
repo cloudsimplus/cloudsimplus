@@ -8,10 +8,10 @@
 
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
-import java.util.List;
-
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.List;
 
 /**
  * A VM selection policy that selects for migration the VM with Minimum Migration Time (MMT).
@@ -32,7 +32,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelectionPolicy {
 	@Override
 	public Vm getVmToMigrate(final Host host) {
-		final List<Vm> migratableVms = getMigratableVms(host);
+		final List<Vm> migratableVms = host.getMigratableVms();
 		if (migratableVms.isEmpty()) {
 			return Vm.NULL;
 		}

@@ -9,8 +9,7 @@ package org.cloudbus.cloudsim.vms;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
+import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
@@ -23,6 +22,7 @@ import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.*;
+import java.util.stream.DoubleStream;
 import java.util.stream.LongStream;
 
 import static java.util.Objects.requireNonNull;
@@ -39,7 +39,7 @@ import static java.util.stream.Collectors.toList;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  */
-public class VmSimple implements Vm {
+public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #getUtilizationHistory() */
     private final UtilizationHistory utilizationHistory;
 
@@ -48,13 +48,6 @@ public class VmSimple implements Vm {
 
     private HorizontalVmScaling horizontalScaling;
     private boolean failed;
-
-    /**
-     * @see #getId()
-     */
-    private long id;
-
-    private DatacenterBroker broker;
 
     private final Processor processor;
 
@@ -249,12 +242,16 @@ public class VmSimple implements Vm {
 
     @Override
     public double getCurrentRequestedMaxMips() {
-        return getCurrentRequestedMips().stream().mapToDouble(mips->mips).max().orElse(0.0);
+        return getCurrentRequestedMipsStream().max().orElse(0.0);
     }
 
     @Override
     public double getCurrentRequestedTotalMips() {
-        return getCurrentRequestedMips().stream().mapToDouble(mips->mips).sum();
+        return getCurrentRequestedMipsStream().sum();
+    }
+
+    private DoubleStream getCurrentRequestedMipsStream() {
+        return getCurrentRequestedMips().stream().mapToDouble(mips -> mips);
     }
 
     @Override
@@ -289,33 +286,6 @@ public class VmSimple implements Vm {
         }
 
         return (long) (cloudletScheduler.getCurrentRequestedRamPercentUtilization() * ram.getCapacity());
-    }
-
-    @Override
-    public String getUid() {
-        return UniquelyIdentifiable.getUid(broker.getId(), id);
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    /**
-     * Sets the VM id.
-     *
-     * @param id the new VM id, that has to be unique for the current {@link #getBroker() broker}
-     * @todo The uniqueness of VM id for a given user is not being ensured
-     */
-    @Override
-    public final void setId(long id) {
-        this.id = id;
-    }
-
-    @Override
-    public final Vm setBroker(final DatacenterBroker broker) {
-        this.broker = requireNonNull(broker);
-        return this;
     }
 
     @Override
@@ -375,11 +345,6 @@ public class VmSimple implements Vm {
         }
 
         return stopTime < 0 ? getSimulation().clock() - startTime : stopTime - startTime;
-    }
-
-    @Override
-    public DatacenterBroker getBroker() {
-        return broker;
     }
 
     @Override
@@ -615,7 +580,7 @@ public class VmSimple implements Vm {
     @Override
     public String toString() {
         final String desc = StringUtils.isBlank(description) ? "" : String.format(" (%s)", description);
-        final String brokerName = broker == DatacenterBroker.NULL ? "" : "/Broker " + broker.getId();
+        final String brokerName = getBroker() == DatacenterBroker.NULL ? "" : "/Broker " + getBroker().getId();
         return String.format("Vm %d%s%s", getId(), brokerName, desc);
     }
 
@@ -659,15 +624,8 @@ public class VmSimple implements Vm {
 
         final VmSimple vmSimple = (VmSimple) o;
 
-        if (id != vmSimple.id) return false;
-        return broker.equals(vmSimple.broker);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Long.hashCode(id);
-        result = 31 * result + broker.hashCode();
-        return result;
+        if (getId() != vmSimple.getId()) return false;
+        return getBroker().equals(vmSimple.getBroker());
     }
 
     @Override
@@ -683,11 +641,6 @@ public class VmSimple implements Vm {
     @Override
     public boolean isWorking() {
         return !isFailed();
-    }
-
-    @Override
-    public Simulation getSimulation() {
-        return broker.getSimulation();
     }
 
     @Override

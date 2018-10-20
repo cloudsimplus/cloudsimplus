@@ -182,19 +182,36 @@ public final class MathUtil {
     /**
      * Gets the Local Regression (Loess) parameter estimates.
      *
-     * @param y the y array
+     * @param y the dependent variable
      * @return the Loess parameter estimates
      */
     public static double[] getLoessParameterEstimates(final double... y) {
-        final double[] x = new double[y.length];
-        for (int i = 0; i < y.length; i++) {
-            x[i] = i + 1;
-        }
-
+        final double[] x = createIndependentArray(y.length);
         return createWeightedLinearRegression(x, y, getTricubeWeights(y.length))
                 .regress().getParameterEstimates();
     }
 
+    /**
+     * Creates an array representing the independent variable for
+     * computing a linear regression.
+     *
+     * @param length the length of the array to create
+     * @return
+     */
+    private static double[] createIndependentArray(final int length) {
+        final double[] x = new double[length];
+        for (int i = 0; i < length; i++) {
+            x[i] = i + 1;
+        }
+        return x;
+    }
+
+    /**
+     * Creates a a simple linear regression.
+     * @param x the independent variable
+     * @param y the dependent variable
+     * @return
+     */
     public static SimpleRegression createLinearRegression(final double[] x, final double[] y) {
         final SimpleRegression regression = new SimpleRegression();
         for (int i = 0; i < x.length; i++) {
@@ -203,26 +220,36 @@ public final class MathUtil {
         return regression;
     }
 
-    public static OLSMultipleLinearRegression createLinearRegression(
-        final double[][] x, final double[] y)
+    /**
+     * Creates a a multiple linear regression.
+     * @param x the independent variable
+     * @param y the dependent variable
+     * @return
+     */
+    public static OLSMultipleLinearRegression createLinearRegression(final double[][] x, final double[] y)
     {
         final OLSMultipleLinearRegression regression = new OLSMultipleLinearRegression();
         regression.newSampleData(y, x);
         return regression;
     }
 
+    /**
+     * Creates a a weighted linear regression.
+     * @param x the independent variable
+     * @param y the dependent variable
+     * @param weights the weights to apply to x and y
+     * @return
+     */
     private static SimpleRegression createWeightedLinearRegression(
-        final double[] x,
-        final double[] y,
-        final double[] weights)
+        final double[] x, final double[] y, final double[] weights)
     {
         final double[] weightedX = new double[x.length];
         final double[] weightedY = new double[y.length];
 
-        final long numZeroWeigths = Arrays.stream(weights).filter(weigth -> weigth <= 0).count();
+        final long numZeroWeights = Arrays.stream(weights).filter(weight -> weight <= 0).count();
 
         for (int i = 0; i < x.length; i++) {
-            if (numZeroWeigths >= 0.4 * weights.length) {
+            if (numZeroWeights >= 0.4 * weights.length) {
                 // See: http://www.ncsu.edu/crsc/events/ugw07/Presentations/Crooks_Qiao/Crooks_Qiao_Alt_Presentation.pdf
                 weightedX[i] = Math.sqrt(weights[i]) * x[i];
                 weightedY[i] = Math.sqrt(weights[i]) * y[i];
@@ -238,14 +265,11 @@ public final class MathUtil {
     /**
      * Gets the robust loess parameter estimates.
      *
-     * @param y the y array
+     * @param y the dependent variable
      * @return the robust loess parameter estimates
      */
     public static double[] getRobustLoessParameterEstimates(final double... y) {
-        final double[] x = new double[y.length];
-        for (int i = 0; i < y.length; i++) {
-            x[i] = i + 1;
-        }
+        final double[] x = createIndependentArray(y.length);
         final SimpleRegression tricubeRegression =
                 createWeightedLinearRegression(x, y, getTricubeWeights(y.length));
         final double[] residuals = new double[y.length];

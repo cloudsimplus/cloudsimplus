@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.cloudlets;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.CustomerEntity;
-import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
@@ -804,13 +803,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     void notifyOnUpdateProcessingListeners(double time);
 
     /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     *
-     * @return
-     */
-    Simulation getSimulation();
-
-    /**
      * Gets the {@link DatacenterBroker} that represents the owner of this Cloudlet.
      *
      * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
@@ -822,8 +814,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Sets a {@link DatacenterBroker} that represents the owner of this Cloudlet.
      *
      * @param broker the {@link DatacenterBroker} to set
-     * @return
      */
     @Override
-    Cloudlet setBroker(DatacenterBroker broker);
+    void setBroker(DatacenterBroker broker);
 }

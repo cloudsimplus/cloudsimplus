@@ -12,7 +12,6 @@ import static org.junit.Assert.assertTrue;
  * @author Manoel Campos da Silva Filho
  */
 public class DatacenterTest {
-
     @Test
     public void testNullObject() {
         final Datacenter instance = Datacenter.NULL;
@@ -23,5 +22,4 @@ public class DatacenterTest {
         assertEquals(VmAllocationPolicy.NULL, instance.getVmAllocationPolicy());
         assertTrue(instance.getVmList().isEmpty());
     }
-
 }

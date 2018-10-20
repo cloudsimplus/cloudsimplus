@@ -373,16 +373,24 @@ public class HarddriveStorage implements FileStorage {
 
         // check if the same file name is alredy taken
         if (!contains(file.getName())) {
-            final double seekTime = getSeekTime(file.getSize());
-            final double transferTime = getTransferTime(file.getSize());
-
             fileList.add(file);               // add the file into the HD
             fileNameList.add(file.getName());     // add the name to the name list
             storage.allocateResource((long)file.getSize());    // increment the current HD space
-            result = seekTime + transferTime;  // add total time
+            result = getTotalFileAddTime(file);
             file.setTransactionTime(result);
         }
         return result;
+    }
+
+    /**
+     * Gets the total time to add a file to the storage.
+     * @param file the file to compute the total addition time
+     * @return
+     */
+    private double getTotalFileAddTime(final File file) {
+        final double seekTime = getSeekTime(file.getSize());
+        final double transferTime = getTransferTime(file.getSize());
+        return seekTime + transferTime;
     }
 
     @Override
@@ -420,15 +428,12 @@ public class HarddriveStorage implements FileStorage {
             return 0.0;
         }
 
-        final double seekTime = getSeekTime(file.getSize());
-        final double transferTime = getTransferTime(file.getSize());
-
         // check if the file is in the storage
         if (contains(file)) {
             fileList.remove(file);            // remove the file HD
             fileNameList.remove(file.getName());  // remove the name from name list
             storage.deallocateResource((long)file.getSize());    // decrement the current HD space
-            final double result = seekTime + transferTime;  // total time
+            final double result = getTotalFileAddTime(file);  // total time
             file.setTransactionTime(result);
             return result;
         }

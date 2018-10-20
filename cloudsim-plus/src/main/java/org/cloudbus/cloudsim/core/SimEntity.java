@@ -27,7 +27,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * An attribute that implements the Null Object Design Pattern for {@link SimEntity}
      * objects.
      */
-    SimEntity NULL = new SimEntityNull();
+    SimEntity NULL = (SimEntityNullBase) o -> 0;
 
     /**
      * Gets the entity state.

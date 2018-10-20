@@ -8,12 +8,12 @@
 
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
-import java.util.List;
-
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.List;
 
 /**
  * A VM selection policy that randomly select VMs to migrate from a host.
@@ -41,7 +41,7 @@ public class PowerVmSelectionPolicyRandomSelection extends PowerVmSelectionPolic
 
 	@Override
 	public Vm getVmToMigrate(Host host) {
-		final List<Vm> migratableVms = getMigratableVms(host);
+		final List<Vm> migratableVms = host.getMigratableVms();
 		if (migratableVms.isEmpty()) {
 			return Vm.NULL;
 		}

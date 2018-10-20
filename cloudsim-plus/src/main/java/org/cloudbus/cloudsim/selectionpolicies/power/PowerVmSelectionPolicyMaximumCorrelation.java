@@ -55,7 +55,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
 
     @Override
     public Vm getVmToMigrate(final Host host) {
-        final List<Vm> migratableVms = getMigratableVms(host);
+        final List<Vm> migratableVms = host.getMigratableVms();
         if (migratableVms.isEmpty()) {
             return Vm.NULL;
         }

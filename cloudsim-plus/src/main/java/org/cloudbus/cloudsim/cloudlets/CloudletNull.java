@@ -171,9 +171,7 @@ final class CloudletNull implements Cloudlet {
         return Cloudlet.NULL;
     }
     @Override public void assignToDatacenter(Datacenter datacenter) {/**/}
-    @Override public Cloudlet setBroker(DatacenterBroker broker) {
-        return Cloudlet.NULL;
-    }
+    @Override public void setBroker(DatacenterBroker broker) {/**/}
     @Override public DatacenterBroker getBroker() {
         return DatacenterBroker.NULL;
     }

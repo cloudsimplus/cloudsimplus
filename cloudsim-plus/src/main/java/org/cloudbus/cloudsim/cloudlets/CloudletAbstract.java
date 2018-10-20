@@ -9,8 +9,7 @@ package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
+import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -28,11 +27,7 @@ import static java.util.Objects.requireNonNull;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  */
-public abstract class CloudletAbstract implements Cloudlet {
-    /**
-     * @see #getId()
-     */
-    private long id;
+public abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet {
 
     /** @see #getJobId() */
     private long jobId;
@@ -46,10 +41,6 @@ public abstract class CloudletAbstract implements Cloudlet {
      * But since a lot of methods uses this attribute, it's removal has to be carefully assessed.
      */
     private final List<CloudletDatacenterExecution> datacenterExecutionList;
-    /**
-     * @see #getBroker()
-     */
-    private DatacenterBroker broker;
     /**
      * @see #getLength()
      */
@@ -369,17 +360,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public final Cloudlet setBroker(final DatacenterBroker broker) {
-        this.broker = requireNonNull(broker);
-        return this;
-    }
-
-    @Override
-    public DatacenterBroker getBroker() {
-        return broker;
-    }
-
-    @Override
     public Datacenter getLastDatacenter() {
         return getLastExecutionInDatacenterInfo().getDatacenter();
     }
@@ -545,16 +525,6 @@ public abstract class CloudletAbstract implements Cloudlet {
     @Override
     public Status getStatus() {
         return status;
-    }
-
-    @Override
-    public long getId() {
-        return id;
-    }
-
-    @Override
-    public final void setId(final long id) {
-        this.id = id;
     }
 
     @Override
@@ -821,30 +791,13 @@ public abstract class CloudletAbstract implements Cloudlet {
     }
 
     @Override
-    public String getUid() {
-        return UniquelyIdentifiable.getUid(broker.getId(), id);
-    }
-
-    @Override
-    public Simulation getSimulation() {
-        return broker.getSimulation();
-    }
-
-    @Override
     public boolean equals(Object other) {
         if (this == other) return true;
         if (!(other instanceof CloudletAbstract)) return false;
 
         final CloudletAbstract that = (CloudletAbstract) other;
 
-        if (id != that.id) return false;
-        return broker.equals(that.broker);
-    }
-
-    @Override
-    public int hashCode() {
-        int result = Long.hashCode(id);
-        result = 31 * result + broker.hashCode();
-        return result;
+        if (getId() != that.getId()) return false;
+        return getBroker().equals(that.getBroker());
     }
 }

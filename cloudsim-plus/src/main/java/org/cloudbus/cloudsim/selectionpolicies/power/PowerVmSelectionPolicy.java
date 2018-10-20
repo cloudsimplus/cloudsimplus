@@ -8,9 +8,6 @@
 
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -39,18 +36,5 @@ public abstract class PowerVmSelectionPolicy {
 	 * @param host the host to get a Vm to migrate from
 	 * @return the vm to migrate or {@link Vm#NULL} if there is not Vm to migrate
 	 */
-	public abstract Vm getVmToMigrate(Host host);
-
-	/**
-	 * Gets the list of migratable VMs from a given host.
-	 *
-	 * @param host the host to get VMs to migrate from
-	 * @return the list of migratable VMs
-	 */
-	protected List<Vm> getMigratableVms(Host host) {
-        return host.getVmList().stream()
-            .filter(vm -> !vm.isInMigration())
-            .collect(Collectors.toList());
-	}
-
+	public abstract Vm getVmToMigrate(final Host host);
 }

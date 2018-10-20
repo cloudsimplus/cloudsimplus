@@ -139,10 +139,18 @@ public class VmStateHistoryEntry {
     @Override
     public int hashCode() {
         int hash = 7;
-        hash = 89 * hash + (int) (Double.doubleToLongBits(this.time) ^ (Double.doubleToLongBits(this.time) >>> 32));
-        hash = 89 * hash + (int) (Double.doubleToLongBits(this.allocatedMips) ^ (Double.doubleToLongBits(this.allocatedMips) >>> 32));
-        hash = 89 * hash + (int) (Double.doubleToLongBits(this.requestedMips) ^ (Double.doubleToLongBits(this.requestedMips) >>> 32));
-        hash = 89 * hash + (this.inMigration ? 1 : 0);
+        hash = hash(hash, toBits(this.time));
+        hash = hash(hash, toBits(this.allocatedMips));
+        hash = hash(hash, toBits(this.requestedMips));
+        hash = hash(hash, this.inMigration ? 1 : 0);
         return hash;
+    }
+
+    private int hash(final int hash, final int value) {
+        return 89 * hash + value;
+    }
+
+    private int toBits(final double value){
+        return (int) (Double.doubleToLongBits(value) ^ (Double.doubleToLongBits(value) >>> 32));
     }
 }

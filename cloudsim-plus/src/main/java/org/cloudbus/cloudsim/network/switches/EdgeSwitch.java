@@ -80,29 +80,30 @@ public class EdgeSwitch extends AbstractSwitch {
     protected void processPacketDown(SimEvent evt) {
         super.processPacketDown(evt);
 
-        final HostPacket netPkt = (HostPacket) evt.getData();
-        final Vm receiverVm = netPkt.getVmPacket().getDestination();
         // packet is to be received by host
+        final HostPacket pkt = extractReceivedHostPacket(evt);
+        addPacketToBeSentToHost(pkt.getDestination(), pkt);
+    }
+
+    private HostPacket extractReceivedHostPacket(final SimEvent evt) {
+        final HostPacket pkt = (HostPacket) evt.getData();
+        final Vm receiverVm = pkt.getVmPacket().getDestination();
         final NetworkHost host = getVmHost(receiverVm);
-        netPkt.setDestination(host);
-        addPacketToBeSentToHost(host, netPkt);
+        pkt.setDestination(host);
+        return pkt;
     }
 
     @Override
     protected void processPacketUp(SimEvent evt) {
         super.processPacketUp(evt);
 
-        final HostPacket hostPkt = (HostPacket) evt.getData();
-        final Vm receiverVm = hostPkt.getVmPacket().getDestination();
-
         // packet is received from host
         // packet is to be sent to aggregate level or to another host in the same level
-        final NetworkHost host = getVmHost(receiverVm);
-        hostPkt.setDestination(host);
+        final HostPacket pkt = extractReceivedHostPacket(evt);
 
         // packet needs to go to a host which is connected directly to switch
-        if (host != null && host != Host.NULL) {
-            addPacketToBeSentToHost(host, hostPkt);
+        if (pkt.getDestination() != null && pkt.getDestination() != Host.NULL) {
+            addPacketToBeSentToHost(pkt.getDestination(), pkt);
             return;
         }
 
@@ -111,8 +112,7 @@ public class EdgeSwitch extends AbstractSwitch {
          * ASSUMPTION: Each Edge is connected to one Aggregate Switch.
          * If there are more than one Aggregate Switch, the following code has to be modified.
         */
-        final Switch aggregateSwitch = getUplinkSwitches().get(0);
-        addPacketToBeSentToUplinkSwitch(aggregateSwitch, hostPkt);
+        addPacketToBeSentToFirstUplinkSwitch(pkt);
     }
 
     @Override

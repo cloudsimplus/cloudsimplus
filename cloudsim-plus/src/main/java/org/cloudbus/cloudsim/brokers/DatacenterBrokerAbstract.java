@@ -530,7 +530,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         /* If the executed length is zero, it means the cloudlet processing was not updated yet.
          * This way, calls the method to update the Cloudlet's processing.*/
         if(cloudlet.getFinishedLengthSoFar() == 0){
-            cloudlet.getVm().getHost().updateProcessing(getSimulation().clock());
+            updateHostProcessing(cloudlet);
         }
 
         /* If after updating the host processing, the cloudlet executed length is still zero,
@@ -545,6 +545,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         cloudlet.setLength(cloudlet.getFinishedLengthSoFar());
         /* After defining the Cloudlet length, updates the Cloudlet processing again so that the Cloudlet status
          * is updated at this clock tick instead of the next one.*/
+        updateHostProcessing(cloudlet);
+    }
+
+    /**
+     * Updates the processing of the Host where a Cloudlet's VM is running.
+     * @param cloudlet
+     */
+    private void updateHostProcessing(final Cloudlet cloudlet) {
         cloudlet.getVm().getHost().updateProcessing(getSimulation().clock());
     }
 

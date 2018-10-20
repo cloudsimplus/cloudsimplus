@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * This class represents an Aggregate AbstractSwitch in a Datacenter network. It
@@ -76,33 +75,27 @@ public class AggregateSwitch extends AbstractSwitch {
 
     @Override
     protected void processPacketDown(SimEvent evt) {
-        super.processPacketDown(evt);
-
-        final HostPacket netPkt = (HostPacket) evt.getData();
-        final Vm receiverVm = netPkt.getVmPacket().getDestination();
-
         // packet is coming from root so need to be sent to edgelevel swich
         // find the id for edgelevel switch
-        final Switch netSwitch = getVmEdgeSwitch(receiverVm);
-        addPacketToBeSentToDownlinkSwitch(netSwitch, netPkt);
+        super.processPacketDown(evt);
+        final HostPacket netPkt = (HostPacket) evt.getData();
+        final Switch downlinkSw = getVmEdgeSwitch(netPkt);
+        addPacketToBeSentToDownlinkSwitch(downlinkSw, netPkt);
     }
 
     @Override
     protected void processPacketUp(SimEvent evt) {
-        super.processPacketUp(evt);
-
-        final HostPacket netPkt = (HostPacket) evt.getData();
-        final Vm receiverVm = netPkt.getVmPacket().getDestination();
-
         // packet is coming from edge level router so need to be sent to
         // either root or another edge level swich
         // find the id for edge level switch
-        final Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
-        if (findConnectedEdgeSwitch(edgeSwitch)) {
-            addPacketToBeSentToDownlinkSwitch(edgeSwitch, netPkt);
+        super.processPacketUp(evt);
+        final HostPacket netPkt = (HostPacket) evt.getData();
+        final Switch downlinkSw = getVmEdgeSwitch(netPkt);
+
+        if (findConnectedEdgeSwitch(downlinkSw)) {
+            addPacketToBeSentToDownlinkSwitch(downlinkSw, netPkt);
         } else { // send to up
-            final Switch uplinkSw = getUplinkSwitches().get(0);
-            addPacketToBeSentToUplinkSwitch(uplinkSw, netPkt);
+            addPacketToBeSentToFirstUplinkSwitch(netPkt);
         }
     }
 

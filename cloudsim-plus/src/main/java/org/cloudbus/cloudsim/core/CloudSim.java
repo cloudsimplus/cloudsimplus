@@ -228,10 +228,14 @@ public class CloudSim implements Simulation {
 
     private void notifyOnSimulationStartListeners() {
         if(!onSimulationStartListeners.isEmpty() && clock > 0) {
-            onSimulationStartListeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
+            notifyEventListeners(onSimulationStartListeners, clock);
             //Since the simulation starts just once, clear the listeners to avoid them to be notified again
             onSimulationStartListeners.clear();
         }
+    }
+
+    private void notifyEventListeners(Set<EventListener<EventInfo>> onSimulationStartListeners, double clock) {
+        onSimulationStartListeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
     }
 
     /**
@@ -543,7 +547,7 @@ public class CloudSim implements Simulation {
     public SimEvent cancel(final SimEntity src, final Predicate<SimEvent> predicate) {
         final SimEvent canceled =
                 future.stream()
-                      .filter(predicate.and(evt -> evt.getSource().equals(src)))
+                      .filter(isEventSourceEqualsTo(predicate, src))
                       .findFirst()
                       .orElse(SimEvent.NULL);
         future.remove(canceled);
@@ -553,8 +557,12 @@ public class CloudSim implements Simulation {
     @Override
     public boolean cancelAll(final SimEntity src, final Predicate<SimEvent> predicate) {
         final int previousSize = future.size();
-        future.removeIf(predicate.and(evt -> evt.getSource().equals(src)));
+        future.removeIf(isEventSourceEqualsTo(predicate, src));
         return previousSize < future.size();
+    }
+
+    private Predicate<SimEvent> isEventSourceEqualsTo(final Predicate<SimEvent> predicate, final SimEntity src) {
+        return predicate.and(evt -> evt.getSource().equals(src));
     }
 
     /**
@@ -580,7 +588,7 @@ public class CloudSim implements Simulation {
         setClock(evt.getTime());
 
         processEventByType(evt);
-        notifyOnEventProcessingListeners(evt);
+        onEventProcessingListeners.forEach(listener -> listener.update(evt));
     }
 
     /**
@@ -597,7 +605,7 @@ public class CloudSim implements Simulation {
             if (circularClockTimeQueue[0] < circularClockTimeQueue[1])
             {
                 lastClockTickListenersUpdate = circularClockTimeQueue[0];
-                onClockTickListeners.forEach(listener -> listener.update(EventInfo.of(listener, lastClockTickListenersUpdate)));
+                notifyEventListeners(onClockTickListeners, lastClockTickListenersUpdate);
             }
         }
     }
@@ -675,14 +683,6 @@ public class CloudSim implements Simulation {
         deferred.addEvent(evt);
     }
 
-    /**
-     * Notifies all registered listeners when a {@link SimEvent} is processed by the simulation.
-     * @param evt the processed event
-     */
-    private void notifyOnEventProcessingListeners(final SimEvent evt) {
-        onEventProcessingListeners.forEach(listener -> listener.update(evt));
-    }
-
     private void startEntitiesIfNotRunning() {
         if (running) {
             return;
@@ -728,6 +728,10 @@ public class CloudSim implements Simulation {
     @Override
     public void pauseEntity(final SimEntity src, final double delay) {
         final SimEvent evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
+        addHoldingFutureEvent(src, evt);
+    }
+
+    private void addHoldingFutureEvent(SimEntity src, SimEvent evt) {
         future.addEvent(evt);
         src.setState(SimEntity.State.HOLDING);
     }
@@ -735,8 +739,7 @@ public class CloudSim implements Simulation {
     @Override
     public void holdEntity(final SimEntity src, final long delay) {
         final SimEvent evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
-        future.addEvent(evt);
-        src.setState(SimEntity.State.HOLDING);
+        addHoldingFutureEvent(src, evt);
     }
 
     private void checkIfSimulationPauseRequested() {
@@ -755,18 +758,11 @@ public class CloudSim implements Simulation {
         if(running && isPauseRequested()) {
             paused=true;
             setClock(pauseAt);
-            notifyOnSimulationPauseListeners();
+            notifyEventListeners(onSimulationPauseListeners, clock);
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * Notifies all registered listeners when the simulation is paused.
-     */
-    private void notifyOnSimulationPauseListeners() {
-        onSimulationPauseListeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
     }
 
     private boolean isPauseRequested() {

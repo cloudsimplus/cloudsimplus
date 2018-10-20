@@ -176,22 +176,21 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
 
         // maybe add the nodes
-        if (!map.containsKey(srcId)) {
-            getTopologycalGraph().addNode(new TopologicalNode(nextIdx));
-            map.put(srcId, nextIdx);
-            nextIdx++;
-        }
-
-        if (!map.containsKey(destId)) {
-            getTopologycalGraph().addNode(new TopologicalNode(nextIdx));
-            map.put(destId, nextIdx);
-            nextIdx++;
-        }
+        addNodeMapping(srcId);
+        addNodeMapping(destId);
 
         // generate a new link
         getTopologycalGraph().addLink(new TopologicalLink(map.get(srcId), map.get(destId), (float) latency, (float) bandwidth));
 
         generateMatrices();
+    }
+
+    private void addNodeMapping(final long cloudSimEntityId) {
+        if (!map.containsKey(cloudSimEntityId)) {
+            getTopologycalGraph().addNode(new TopologicalNode(nextIdx));
+            map.put(cloudSimEntityId, nextIdx);
+            nextIdx++;
+        }
     }
 
     @Override

@@ -147,9 +147,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         final List<Host> switchedOffHosts = getSwitchedOffHosts();
 
         // overloaded hosts + hosts that are selected to migrate VMs from overloaded hosts
-        final Set<Host> ignoredSourceHosts = new HashSet<>();
-        ignoredSourceHosts.addAll(overloadedHosts);
-        ignoredSourceHosts.addAll(switchedOffHosts);
+        final Set<Host> ignoredSourceHosts = getIgnoredHosts(overloadedHosts, switchedOffHosts);
 
         /*
         During the computation of the new placement for VMs
@@ -164,9 +162,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         ignoredSourceHosts.addAll(migrationMap.values());
 
         // overloaded + underloaded hosts
-        final Set<Host> ignoredTargetHosts = new HashSet<>();
-        ignoredTargetHosts.addAll(overloadedHosts);
-        ignoredTargetHosts.addAll(switchedOffHosts);
+        final Set<Host> ignoredTargetHosts = getIgnoredHosts(overloadedHosts, switchedOffHosts);
 
         final int numberOfHosts = getHostList().size();
 
@@ -200,6 +196,13 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
                 migrationMap.putAll(newVmPlacement);
             }
         }
+    }
+
+    private Set<Host> getIgnoredHosts(final Set<Host> overloadedHosts, final List<Host> switchedOffHosts) {
+        final Set<Host> ignoredHosts = new HashSet<>();
+        ignoredHosts.addAll(overloadedHosts);
+        ignoredHosts.addAll(switchedOffHosts);
+        return ignoredHosts;
     }
 
     private String getVmIds(final List<? extends Vm> vmList) {
@@ -537,9 +540,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return the vms to migrate from under utilized host
      */
     protected List<? extends Vm> getVmsToMigrateFromUnderUtilizedHost(final Host host) {
-        return host.getVmList().stream()
-            .filter(vm -> !vm.isInMigration())
-            .collect(Collectors.toCollection(LinkedList::new));
+        return host.getMigratableVms();
     }
 
     /**
@@ -774,5 +775,15 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     @Override
     public void setUnderUtilizationThreshold(final double underUtilizationThreshold) {
         this.underUtilizationThreshold = underUtilizationThreshold;
+    }
+
+    /**
+     * Gets all CPU utilization values from the {@link Host#getUtilizationHistorySum()}
+     * as an array.
+     * @param host the Host to get the CPU utilization values
+     * @return the utilization values array
+     */
+    protected double[] getHostCpuUsageArray(final Host host) {
+        return host.getUtilizationHistorySum().values().stream().mapToDouble(cpuUsage -> cpuUsage).toArray();
     }
 }

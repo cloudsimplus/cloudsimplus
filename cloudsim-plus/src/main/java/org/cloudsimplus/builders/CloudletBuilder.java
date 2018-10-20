@@ -174,8 +174,8 @@ public class CloudletBuilder extends Builder {
                     .setUtilizationModelCpu(utilizationModelCpu)
                     .setUtilizationModelRam(utilizationModelRam)
                     .setUtilizationModelBw(utilizationModelBw)
-                    .setBroker(broker)
                     .addOnFinishListener(onCloudletFinishEventListener);
+            cloudlet.setBroker(broker);
             cloudlet.addRequiredFiles(requiredFiles);
             localList.add(cloudlet);
         }

@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -81,10 +80,9 @@ public class RootSwitch extends AbstractSwitch {
     @Override
     protected void processPacketUp(SimEvent evt) {
         super.processPacketUp(evt);
-
         final HostPacket netPkt = (HostPacket) evt.getData();
-        final Vm receiverVm = netPkt.getVmPacket().getDestination();
-        final Switch edgeSwitch = getVmEdgeSwitch(receiverVm);
+        final Switch edgeSwitch = getVmEdgeSwitch(netPkt);
+
         final Switch aggSwitch = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitch);
 
         if (aggSwitch == Switch.NULL) {

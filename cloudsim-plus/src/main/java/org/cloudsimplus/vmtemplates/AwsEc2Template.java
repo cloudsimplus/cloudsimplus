@@ -177,7 +177,8 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
 
     @Override
     public int compareTo(final AwsEc2Template template) {
-        int comparison = Double.compare(this.cpus, template.cpus);
+        int comparison;
+        comparison = Double.compare(this.cpus, template.cpus);
         if(comparison != 0){
             return comparison;
         }
@@ -190,5 +191,4 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
         comparison = Double.compare(this.pricePerHour, template.pricePerHour);
         return comparison;
     }
-
 }

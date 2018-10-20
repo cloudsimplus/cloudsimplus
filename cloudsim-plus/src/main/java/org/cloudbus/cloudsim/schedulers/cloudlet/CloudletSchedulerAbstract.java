@@ -523,9 +523,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return cle.getCloudlet();
         };
 
-        return cloudletList.stream()
-            .filter(cle -> cle.getCloudletId() == cloudlet.getId())
-            .findFirst()
+        return findCloudletInList(cloudlet, cloudletList)
             .map(removeCloudletAndUpdateStatus)
             .isPresent();
     }
@@ -676,10 +674,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          * to be transferred from the Datacenter storage.
          */
         final double actualProcessingTime = hasCloudletFileTransferTimePassed(cle, currentTime) ? timeSpan(cle, currentTime) : 0;
-        final double cloudletUsedMips =
-            getAbsoluteCloudletResourceUtilization(
-                cle.getCloudlet().getUtilizationModelCpu(),
-                currentTime, getAvailableMipsByPe());
+        final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime);
         return (long) (cloudletUsedMips * actualProcessingTime * Conversion.MILLION);
     }
 
@@ -785,9 +780,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * (which is a relative delay from the current simulation time)
      */
     protected double getEstimatedFinishTimeOfCloudlet(final CloudletExecution cle, final double currentTime) {
-        final double cloudletUsedMips =
-            getAbsoluteCloudletResourceUtilization(cle.getCloudlet().getUtilizationModelCpu(),
-                currentTime, getAvailableMipsByPe());
+        final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime);
         final double estimatedFinishTime = cle.getRemainingCloudletLength() / cloudletUsedMips;
 
         if (estimatedFinishTime < vm.getSimulation().getMinTimeBetweenEvents()) {

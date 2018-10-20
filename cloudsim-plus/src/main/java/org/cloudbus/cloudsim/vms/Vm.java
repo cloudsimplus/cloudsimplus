@@ -550,7 +550,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      * @return
      */
     @Override
-    Vm setBroker(DatacenterBroker broker);
+    void setBroker(DatacenterBroker broker);
 
     /**
      * Gets the time the VM was created into some Host for the first time (in seconds).

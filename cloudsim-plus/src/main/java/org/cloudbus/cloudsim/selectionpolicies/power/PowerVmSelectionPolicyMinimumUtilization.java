@@ -36,7 +36,7 @@ import java.util.function.Predicate;
 public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPolicy {
     @Override
     public Vm getVmToMigrate(Host host) {
-        final List<? extends Vm> migratableVms = getMigratableVms(host);
+        final List<? extends Vm> migratableVms = host.getMigratableVms();
         if (migratableVms.isEmpty()) {
             return Vm.NULL;
         }

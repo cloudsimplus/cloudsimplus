@@ -2,8 +2,7 @@ package org.cloudbus.cloudsim.brokers;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
-import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.core.SimEntityNullBase;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
@@ -22,36 +21,9 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @see DatacenterBroker#NULL
  */
-final class DatacenterBrokerNull implements DatacenterBroker {
+final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase {
     @Override public int compareTo(SimEntity entity) { return 0; }
-    @Override public State getState() { return State.FINISHED; }
-    @Override public SimEntity setState(State state) { return this; }
-    @Override public boolean isStarted() {
-        return false;
-    }
-    @Override public boolean isAlive() { return false; }
-    @Override public boolean isFinished() { return false; }
-    @Override public Simulation getSimulation() {
-        return Simulation.NULL;
-    }
-    @Override public SimEntity setSimulation(Simulation simulation) {
-        return this;
-    }
-    @Override public void processEvent(SimEvent evt) {/**/}
-    @Override public boolean schedule(SimEvent evt) { return false; }
-    @Override public boolean schedule(double delay, int tag, Object data) { return false; }
-    @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
-    @Override public boolean schedule(SimEntity dest, double delay, int tag) {/**/
-        return false;
-    }
-    @Override public void run() {/**/}
-    @Override public void start() {/**/}
-    @Override public long getId() {
-        return -1;
-    }
-    @Override public String getName() {
-        return "";
-    }
+
     @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {
         return false;
     }
@@ -70,10 +42,8 @@ final class DatacenterBrokerNull implements DatacenterBroker {
     @Override public <T extends Vm> List<T> getVmExecList() {
         return Collections.emptyList();
     }
-    @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.EMPTY_LIST; }
+    @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
     @Override public boolean isThereWaitingCloudlets() { return false; }
-    @Override public void shutdownEntity() {/**/}
-    @Override public SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {/**/}
     @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {/**/}
     @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {/**/}

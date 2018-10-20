@@ -130,7 +130,7 @@ public class FileAttribute {
      * @param creationTime the file creation time (in millisecond)
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setCreationTime(long creationTime) {
+    public boolean setCreationTime(final long creationTime) {
         if (creationTime <= 0) {
             return false;
         }
@@ -196,7 +196,7 @@ public class FileAttribute {
      * @param fileSize the file size (in MBytes)
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public final boolean setFileSize(int fileSize) {
+    public final boolean setFileSize(final int fileSize) {
         if (fileSize < 0) {
             return false;
         }
@@ -232,7 +232,7 @@ public class FileAttribute {
      * @param time the last update time (in seconds)
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setUpdateTime(double time) {
+    public boolean setUpdateTime(final double time) {
         if (time <= 0 || time < lastUpdateTime) {
             return false;
         }
@@ -256,7 +256,7 @@ public class FileAttribute {
      * @param id registration ID
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setRegistrationId(long id) {
+    public boolean setRegistrationId(final long id) {
         if (id < 0) {
             return false;
         }
@@ -280,7 +280,7 @@ public class FileAttribute {
      * @param type a file type
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setType(int type) {
+    public boolean setType(final int type) {
         if (type < 0) {
             return false;
         }
@@ -304,7 +304,7 @@ public class FileAttribute {
      * @param checksum the checksum of this file
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setChecksum(int checksum) {
+    public boolean setChecksum(final int checksum) {
         if (checksum < 0) {
             return false;
         }
@@ -328,7 +328,7 @@ public class FileAttribute {
      * @param cost cost of this file
      * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
      */
-    public boolean setCost(double cost) {
+    public boolean setCost(final double cost) {
         if (cost < 0) {
             return false;
         }
@@ -361,7 +361,7 @@ public class FileAttribute {
      * @param masterCopy a flag denotes <tt>true</tt> for master copy or
      * <tt>false</tt> for a replica
      */
-    public void setMasterCopy(boolean masterCopy) {
+    public void setMasterCopy(final boolean masterCopy) {
         this.masterCopy = masterCopy;
     }
 

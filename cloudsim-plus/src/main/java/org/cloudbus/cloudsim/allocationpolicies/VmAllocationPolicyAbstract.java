@@ -279,7 +279,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     private boolean upScaleVmNonCpuResource(final VerticalVmScaling scaling) {
         final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClass();
         final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
-
         final double extraAmountToAllocate = scaling.getResourceAmountToScale();
         if(!hostResource.isAmountAvailable(extraAmountToAllocate)) {
             return false;

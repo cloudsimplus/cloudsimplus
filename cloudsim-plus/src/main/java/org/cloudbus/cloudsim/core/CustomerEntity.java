@@ -1,15 +1,15 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * Represents an object that is owned by a {@link DatacenterBroker},
  * namely {@link Vm} and {@link Cloudlet}.
  * @author raysaoliveira
  */
-public interface CustomerEntity extends ChangeableId, Delayable {
+public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Delayable {
     /**
      * Gets the {@link DatacenterBroker} that represents the owner of this object.
      *
@@ -23,7 +23,13 @@ public interface CustomerEntity extends ChangeableId, Delayable {
      * Sets a {@link DatacenterBroker} that represents the owner of this object.
      *
      * @param broker the {@link DatacenterBroker} to set
+     */
+    void setBroker(DatacenterBroker broker);
+
+    /**
+     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     *
      * @return
      */
-    CustomerEntity setBroker(DatacenterBroker broker);
+    Simulation getSimulation();
 }

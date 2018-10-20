@@ -491,8 +491,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
 
+        sendAck(ack, cloudlet, CloudSimTags.CLOUDLET_RESUME_ACK);
+    }
+
+    private void sendAck(boolean ack, Cloudlet cloudlet, int cloudSimTagAck) {
         if (ack) {
-            sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_RESUME_ACK, cloudlet);
+            sendNow(cloudlet.getBroker(), cloudSimTagAck, cloudlet);
         }
     }
 
@@ -505,10 +509,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected void processCloudletPause(final Cloudlet cloudlet, final boolean ack) {
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
-
-        if (ack) {
-            sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_PAUSE_ACK, cloudlet);
-        }
+        sendAck(ack, cloudlet, CloudSimTags.CLOUDLET_PAUSE_ACK);
     }
 
     /**

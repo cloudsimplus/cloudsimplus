@@ -625,4 +625,11 @@ public interface Host extends Machine, Comparable<Host> {
      * @return
      */
     List<Vm> getFinishedVms();
+
+    /**
+     * Gets the list of migratable VMs from a given host.
+     *
+     * @return the list of migratable VMs
+     */
+    List<Vm> getMigratableVms();
 }

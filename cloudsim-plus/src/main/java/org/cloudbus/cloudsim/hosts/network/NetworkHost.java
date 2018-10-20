@@ -127,9 +127,7 @@ public class NetworkHost extends HostSimple {
      */
     private void receivePackets() {
         for (final HostPacket hostPkt : hostPktsReceived) {
-            hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
-
-            final Vm destinationVm = hostPkt.getVmPacket().getDestination();
+            final Vm destinationVm = receiveVmPacket(hostPkt);
             //Checks if the destinationVm is inside this host
             if(!getVmList().contains(destinationVm)){
                 LOGGER.error(
@@ -155,6 +153,18 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
+     * Receives a packet from a Host that is targeting some VM
+     * and sets the packet receive time.
+     *
+     * @param hostPkt the {@link HostPacket} to receive
+     * @return the targeting VM
+     */
+    private Vm receiveVmPacket(final HostPacket hostPkt) {
+        hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
+        return hostPkt.getVmPacket().getDestination();
+    }
+
+    /**
      * Gets all packet lists of all VMs placed into the host and send them all.
      * It checks whether a packet belongs to a local VM or to a VM hosted on other machine.
      */
@@ -171,9 +181,8 @@ public class NetworkHost extends HostSimple {
     private void sendPacketsToLocalVms() {
         for (final HostPacket hostPkt : pktsToSendForLocalVms) {
             hostPkt.setSendTime(hostPkt.getReceiveTime());
-            hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
+            final Vm destinationVm = receiveVmPacket(hostPkt);
             // insert the packet in receivedlist
-            final Vm destinationVm = hostPkt.getVmPacket().getDestination();
             getVmPacketScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
         }
 
