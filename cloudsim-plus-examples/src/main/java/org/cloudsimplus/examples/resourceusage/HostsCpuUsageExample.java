@@ -44,6 +44,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.builders.tables.TextTableColumn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -99,10 +100,10 @@ public class HostsCpuUsageExample {
         final int pesNumber = 1; //number of cpus
         final int mips = 1000;
         for (int i = 1; i <= NUMBER_OF_VMS; i++) {
-            Vm vm = createVm(pesNumber, mips*i,i-1);
+            Vm vm = createVm(pesNumber, mips);
             vmlist.add(vm);
 
-            Cloudlet cloudlet = createCloudlet(pesNumber, i-1);
+            Cloudlet cloudlet = createCloudlet(pesNumber);
             cloudletList.add(cloudlet);
         }
 
@@ -117,19 +118,22 @@ public class HostsCpuUsageExample {
         simulation.start();
 
         List<Cloudlet> newList = broker.getCloudletFinishedList();
-        new CloudletsTableBuilder(newList).build();
+        new CloudletsTableBuilder(newList)
+            .addColumn(5, new TextTableColumn("Host  ", "MIPS  "), cloudlet -> cloudlet.getVm().getHost().getMips())
+            .addColumn(7, new TextTableColumn("VM MIPS"), cloudlet -> cloudlet.getVm().getMips())
+            .build();
 
         showCpuUtilizationForAllHosts();
         System.out.println(getClass().getSimpleName() + " finished!");
     }
 
-    private Cloudlet createCloudlet(int pesNumber, int id) {
+    private Cloudlet createCloudlet(final int pesNumber) {
         long length = 10000;
         long fileSize = 300;
         long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
-        return new CloudletSimple(id, length, pesNumber)
+        return new CloudletSimple(length, pesNumber)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilizationModel);
@@ -140,14 +144,13 @@ public class HostsCpuUsageExample {
      * This way, hosts can get the CPU utilization based on VM utilization.
      * @param pesNumber
      * @param mips
-     * @param id
      * @return
      */
-    private Vm createVm(final int pesNumber, final long mips, final int id) {
+    private Vm createVm(final int pesNumber, final long mips) {
         long size = 10000; //image size (Megabyte)
         int ram = 2048; //vm memory (Megabyte)
         long bw = 1000;
-        Vm vm = new VmSimple(id, mips, pesNumber)
+        Vm vm = new VmSimple(mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
         vm.getUtilizationHistory().enable();
@@ -186,8 +189,8 @@ public class HostsCpuUsageExample {
      */
     private Datacenter createDatacenter() {
         hostList = new ArrayList<>(NUMBER_OF_HOSTS);
-        int pesNumber = 1;
-        int mips = 1200;
+        final int pesNumber = 1;
+        final int mips = 2000;
         for (int i = 1; i <= 2; i++) {
             Host host = createHost(pesNumber, mips*i);
             hostList.add(host);
