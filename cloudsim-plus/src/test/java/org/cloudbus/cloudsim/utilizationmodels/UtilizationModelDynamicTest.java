@@ -119,7 +119,6 @@ public class UtilizationModelDynamicTest {
         final double maxResourceUsagePercentage = 0.9;
         instance.setMaxResourceUtilization(maxResourceUsagePercentage);
         assertEquals(maxResourceUsagePercentage, instance.getMaxResourceUtilization(), 0);
-
     }
 
     @Test

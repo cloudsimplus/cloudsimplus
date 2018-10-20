@@ -42,7 +42,7 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class VmBuilder {
+public class VmBuilder implements Builder {
     private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
     private long size = 10000;
     private long  ram = 512;

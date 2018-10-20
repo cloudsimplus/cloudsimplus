@@ -74,16 +74,14 @@ final class TestUtil {
         final UtilizationModelDynamic instance)
     {
         instance.setMaxResourceUtilization(maxUsagePercent);
-        IntStream.rangeClosed(0, NUM_TIMES_TEST_USAGE).forEach(time -> {
+        for (int time = 0; time <= NUM_TIMES_TEST_USAGE; time++) {
             final double expResult =
                 computeExpectedUtilization(
-                    time, initUsage,
-                    usagePercentInc,
-                    maxUsagePercent);
+                    time, initUsage,usagePercentInc, maxUsagePercent);
             final double result = instance.getUtilization(time);
             final String msg = String.format("The utilization at time %d", time);
             assertEquals(msg, expResult, result, 0.001);
-        });
+        }
     }
 
     /* default */ static void checkUtilization(
@@ -91,7 +89,6 @@ final class TestUtil {
         final double usagePercentInc,
         final UtilizationModelDynamic instance)
     {
-        TestUtil.checkUtilization(initUsage, usagePercentInc,
-            Conversion.HUNDRED_PERCENT, instance);
+        TestUtil.checkUtilization(initUsage, usagePercentInc, Conversion.HUNDRED_PERCENT, instance);
     }
 }

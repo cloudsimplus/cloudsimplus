@@ -10,7 +10,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @see ResourceProvisioner#NULL
  */
-final class ResourceProvisionerNull implements ResourceProvisioner {
+class ResourceProvisionerNull implements ResourceProvisioner {
     @Override public boolean allocateResourceForVm(Vm vm, long newTotalVmResourceCapacity) {
         return false;
     }

@@ -36,7 +36,7 @@ import java.util.NoSuchElementException;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class BrokerBuilder extends Builder implements BrokerBuilderInterface {
+public class BrokerBuilder implements BrokerBuilderInterface {
     private final List<DatacenterBroker> brokers;
     private final SimulationScenarioBuilder scenario;
 

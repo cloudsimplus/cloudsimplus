@@ -23,10 +23,10 @@
  */
 package org.cloudsimplus.builders;
 
-import java.util.List;
-
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+
+import java.util.List;
 
 /**
  * An interface to classes that build {@link DatacenterBrokerSimple} objects.
@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface BrokerBuilderInterface {
+public interface BrokerBuilderInterface extends Builder{
     BrokerBuilderDecorator createBroker();
     DatacenterBroker findBroker(int id);
     List<DatacenterBroker> getBrokers();

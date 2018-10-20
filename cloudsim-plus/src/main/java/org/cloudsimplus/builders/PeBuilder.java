@@ -23,15 +23,15 @@
  */
 package org.cloudsimplus.builders;
 
+import org.cloudbus.cloudsim.provisioners.PeProvisioner;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 /**
  * A Builder class to create {@link PeSimple} objects.
@@ -39,7 +39,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class PeBuilder extends Builder {
+public class PeBuilder implements Builder {
     private Class<? extends PeProvisioner> provisionerClass = PeProvisionerSimple.class;
 
     public List<Pe> create(final double amount, final double mipsOfEachPe) {

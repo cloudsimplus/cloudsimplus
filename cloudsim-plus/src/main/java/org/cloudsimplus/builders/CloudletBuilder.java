@@ -42,7 +42,7 @@ import java.util.Objects;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class CloudletBuilder extends Builder {
+public class CloudletBuilder implements Builder {
     private long length = 10000;
     private long outputSize = 300;
     private long fileSize = 300;

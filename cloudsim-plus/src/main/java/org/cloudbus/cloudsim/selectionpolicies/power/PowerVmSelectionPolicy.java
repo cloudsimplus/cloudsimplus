@@ -36,5 +36,5 @@ public abstract class PowerVmSelectionPolicy {
 	 * @param host the host to get a Vm to migrate from
 	 * @return the vm to migrate or {@link Vm#NULL} if there is not Vm to migrate
 	 */
-	public abstract Vm getVmToMigrate(final Host host);
+	public abstract Vm getVmToMigrate(Host host);
 }

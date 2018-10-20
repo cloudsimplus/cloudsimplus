@@ -121,9 +121,9 @@ public class VmsCpuUsageExample {
     }
 
     private Cloudlet createCloudlet(final int pesNumber) {
-        long length = 10000;
-        long fileSize = 300;
-        long outputSize = 300;
+        final long length = 10000;
+        final long fileSize = 300;
+        final long outputSize = 300;
         UtilizationModel utilizationModelDynamic = new UtilizationModelDynamic(0.25);
         UtilizationModel utilizationModelCpu = new UtilizationModelDynamic(0.5);
 
@@ -144,9 +144,9 @@ public class VmsCpuUsageExample {
      * @return
      */
     private Vm createVm(final int pesNumber, final int mips, final int id) {
-        long size = 10000; //image size (Megabyte)
-        int ram = 2048; //vm memory (Megabyte)
-        long bw = 1000;
+        final long size = 10000; //image size (Megabyte)
+        final int ram = 2048; //vm memory (Megabyte)
+        final long bw = 1000;
 
         //create two VMs
         Vm vm = new VmSimple(id, mips, pesNumber);

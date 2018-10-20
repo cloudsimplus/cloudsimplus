@@ -30,7 +30,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * An abstract Builder for creation of CloudSim objects,
+ * A Builder interface for creation of simulation objects,
  * such as {@link Datacenter},
  * {@link Host},
  * {@link Vm}
@@ -44,8 +44,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class Builder {
-    public void validateAmount(final double amount){
+public interface Builder {
+    default void validateAmount(final double amount){
         if(amount <= 0)
             throw new IllegalArgumentException("The amount has to be greater than 0.");
     }

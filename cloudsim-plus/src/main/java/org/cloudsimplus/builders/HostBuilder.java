@@ -45,7 +45,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class HostBuilder extends Builder {
+public class HostBuilder implements Builder {
     private double mips = 2000;
     private int    pes = 1;
     private long   bandwidth = 10000;

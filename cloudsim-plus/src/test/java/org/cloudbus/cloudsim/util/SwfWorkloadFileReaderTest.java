@@ -5,7 +5,6 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -23,17 +22,17 @@ public class SwfWorkloadFileReaderTest {
     private static final int JOBS_AT_SWF_NASA_FILE = 18239;
 
     @Test
-    public void readGz() throws IOException {
+    public void readGz() {
 	    readFile(SWF_FILE+".gz", JOBS_AT_SWF_LCG_FILE);
     }
 
     @Test
-    public void readSwf() throws IOException {
+    public void readSwf() {
 	    readFile(SWF_FILE, JOBS_AT_SWF_LCG_FILE);
     }
 
     @Test
-    public void readZipWithTwoSwfFiles() throws IOException {
+    public void readZipWithTwoSwfFiles() {
 	    readFile(ZIP_FILE, JOBS_AT_SWF_LCG_FILE + JOBS_AT_SWF_NASA_FILE);
     }
 

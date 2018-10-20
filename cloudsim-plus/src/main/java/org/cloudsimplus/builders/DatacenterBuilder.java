@@ -39,7 +39,7 @@ import java.util.Objects;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class DatacenterBuilder extends Builder {
+public class DatacenterBuilder implements Builder {
     private static final String DC_NAME_FORMAT = "Datacenter%d";
     private final SimulationScenarioBuilder scenario;
 

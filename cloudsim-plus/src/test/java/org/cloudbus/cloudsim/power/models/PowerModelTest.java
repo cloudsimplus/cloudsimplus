@@ -1,11 +1,12 @@
 package org.cloudbus.cloudsim.power.models;
 
-import java.util.stream.IntStream;
-
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import java.util.stream.IntStream;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
@@ -21,18 +22,24 @@ public class PowerModelTest {
             String.format(
                 "For any time (even a randomly defined one), the power usage has to be equals to %.2f",
                 EXPECTED_POWER);
-        IntStream.range(0, 10000).forEach(utilization -> {
-            assertEquals(msg,
-                    EXPECTED_POWER, instance.getPower(utilization), 0.0);
-        });
+        IntStream.range(0, 10000).forEach(usage -> assertEquals(msg, EXPECTED_POWER, instance.getPower(usage), 0.0));
 
     }
 
-    static Host createHostWithOneVm(){
+    /* default */ static Host createHostWithOneVm(){
         final Host host = HostPowerTest.createPowerHost(10);
         host.createVm(new VmSimple(0, 1000, 1));
         return host;
     }
 
-
+    /**
+     * Assigns a Host to a given PowerModel.
+     * @param powerModel the PowerModel to assign a Host to
+     * @param <T> the PowerModel generic class
+     * @return the given PowerModel after has been assigned a Host
+     */
+    /* default */ static <T extends PowerModel> T assignHostForPowerModel(final T powerModel){
+        powerModel.setHost(PowerModelTest.createHostWithOneVm());
+        return powerModel;
+    }
 }

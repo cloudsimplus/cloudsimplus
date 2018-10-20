@@ -128,9 +128,9 @@ public class HostsCpuUsageExample {
     }
 
     private Cloudlet createCloudlet(final int pesNumber) {
-        long length = 10000;
-        long fileSize = 300;
-        long outputSize = 300;
+        final long length = 10000;
+        final long fileSize = 300;
+        final long outputSize = 300;
         UtilizationModel utilizationModel = new UtilizationModelFull();
 
         return new CloudletSimple(length, pesNumber)
@@ -147,9 +147,9 @@ public class HostsCpuUsageExample {
      * @return
      */
     private Vm createVm(final int pesNumber, final long mips) {
-        long size = 10000; //image size (Megabyte)
-        int ram = 2048; //vm memory (Megabyte)
-        long bw = 1000;
+        final long size = 10000; //image size (Megabyte)
+        final int ram = 2048; //vm memory (Megabyte)
+        final long bw = 1000;
         Vm vm = new VmSimple(mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
@@ -201,15 +201,15 @@ public class HostsCpuUsageExample {
         return dc;
     }
 
-    private Host createHost(int pesNumber, long mips) {
+    private Host createHost(final int pesNumber, final long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        long ram = 2048; //host memory (Megabyte)
-        long storage = 1000000; //host storage (Megabyte)
-        long bw = 10000; //Megabits/s
+        final long ram = 2048; //host memory (Megabyte)
+        final long storage = 1000000; //host storage (Megabyte)
+        final long bw = 10000; //Megabits/s
 
         Host host = new HostSimple(ram, bw, storage, peList);
         host
@@ -218,5 +218,4 @@ public class HostsCpuUsageExample {
             .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
-
 }

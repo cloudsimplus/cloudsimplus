@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.power.models;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.cloudbus.cloudsim.power.models.PowerModelTest.assignHostForPowerModel;
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -24,9 +25,8 @@ public class PowerModelSquareTest {
     private PowerModelSquare powerModel;
 
     @Before
-    public void setUp() throws Exception {
-        powerModel = new PowerModelSquare(MAX_POWER, STATIC_POWER_PERCENT);
-        powerModel.setHost(PowerModelTest.createHostWithOneVm());
+    public void setUp() {
+        powerModel = assignHostForPowerModel(new PowerModelSquare(MAX_POWER, STATIC_POWER_PERCENT));
     }
 
     @Test
