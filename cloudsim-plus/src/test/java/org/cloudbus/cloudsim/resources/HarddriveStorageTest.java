@@ -3,13 +3,14 @@ package org.cloudbus.cloudsim.resources;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.ExponentialDistr;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -23,24 +24,24 @@ public class HarddriveStorageTest {
     private static final String INEXISTENT_FILE = "inexistent-file.txt";
     private static final String FILE1 = "file1.txt";
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testNewHarddriveStorageWhenOnlyWhiteSpacesName() {
-        new HarddriveStorage("   ", CAPACITY);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage("   ", CAPACITY));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testNewHarddriveStorageWhenEmptyName() {
-        new HarddriveStorage("", CAPACITY);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage("", CAPACITY));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testNewHarddriveStorageWheNullName() {
-        new HarddriveStorage(null, CAPACITY);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage(null, CAPACITY));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testNewHarddriveStorageWhenNegativeSize() {
-        new HarddriveStorage(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage(-1));
     }
 
     @Test
@@ -85,11 +86,10 @@ public class HarddriveStorageTest {
         assertEquals(totalFiles, instance.getNumStoredFile());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testGetNumStoredFileWhenNullList() {
         final HarddriveStorage instance = createHardDrive();
-
-        assertEquals(0, instance.addFile((List<File>) null), 0.0);
+        Assertions.assertThrows(NullPointerException.class, () -> instance.addFile((List<File>) null));
     }
 
     @Test
@@ -171,7 +171,7 @@ public class HarddriveStorageTest {
         assertEquals(available, instance.getAvailableResource());
 
         //file larger than the available capacity
-        assertEquals(0, instance.addFile(new File("too-big-file.txt", FILE_SIZE*10)), 0.0);
+        assertEquals(0, instance.addFile(new File("too-big-file.txt", FILE_SIZE*10)));
 
         //accordingly, reserves space previously and then adds the reserved file
         assertTrue(instance.reserveSpace(fileSize));
@@ -180,10 +180,10 @@ public class HarddriveStorageTest {
         assertEquals(0, instance.getAvailableResource());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testAddFileWhenNullFile() {
         final HarddriveStorage instance = createHardDrive(1);
-        assertEquals(0, instance.addReservedFile(null), 0.0);
+        Assertions.assertThrows(NullPointerException.class, () -> instance.addReservedFile(null));
     }
 
     @Test
@@ -196,7 +196,7 @@ public class HarddriveStorageTest {
         instance.setLatency(latencyInSec);
         instance.setMaxTransferRate(maxTransferRateInMbitsSec);
 
-        assertEquals(expectedSecs, instance.getTransferTime(fileSizeInMB), 0.0);
+        assertEquals(expectedSecs, instance.getTransferTime(fileSizeInMB));
     }
 
     @Test
@@ -312,10 +312,10 @@ public class HarddriveStorageTest {
         assertEquals(expResult, instance.getName());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testSetLatencyNegative() {
         final HarddriveStorage instance = createHardDrive();
-        instance.setLatency(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> instance.setLatency(-1));
     }
 
     @Test
@@ -323,7 +323,7 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final int expected = 0;
         instance.setLatency(expected);
-        assertEquals(expected, instance.getLatency(), 0);
+        assertEquals(expected, instance.getLatency());
     }
 
     @Test
@@ -331,7 +331,7 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final double latency = 1;
         instance.setLatency(latency);
-        assertEquals(latency, instance.getLatency(), 0);
+        assertEquals(latency, instance.getLatency());
     }
 
     @Test
@@ -339,19 +339,19 @@ public class HarddriveStorageTest {
         final HarddriveStorage instance = createHardDrive();
         final int rate = 1;
         instance.setMaxTransferRate(rate);
-        assertEquals(rate, instance.getMaxTransferRate(), 0);
+        assertEquals(rate, instance.getMaxTransferRate());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testSetMaxTransferRateNegative() {
         final HarddriveStorage instance = createHardDrive();
-        instance.setMaxTransferRate(-1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> instance.setMaxTransferRate(-1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testSetMaxTransferRate0() {
         final HarddriveStorage instance = createHardDrive();
-        instance.setMaxTransferRate(0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> instance.setMaxTransferRate(0));
     }
 
     @Test
@@ -374,14 +374,14 @@ public class HarddriveStorageTest {
     private void testSetAvgSeekTime(final ContinuousDistribution gen) {
         final HarddriveStorage instance = createHardDrive();
         final double seekTime = 1;
-        assertTrue(setAvgSeekTime(instance, seekTime, gen));
-        assertEquals(seekTime, instance.getAvgSeekTime(), 0);
-
-        assertFalse(setAvgSeekTime(instance, 0, gen));
-        assertEquals(seekTime, instance.getAvgSeekTime(), 0);
-
-        assertFalse(setAvgSeekTime(instance, -1, gen));
-        assertEquals(seekTime, instance.getAvgSeekTime(), 0);
+        assertAll(
+            () -> assertTrue(setAvgSeekTime(instance, seekTime, gen)),
+            () -> assertEquals(seekTime, instance.getAvgSeekTime()),
+            () -> assertFalse(setAvgSeekTime(instance, 0, gen)),
+            () -> assertEquals(seekTime, instance.getAvgSeekTime()),
+            () -> assertFalse(setAvgSeekTime(instance, -1, gen)),
+            () -> assertEquals(seekTime, instance.getAvgSeekTime())
+        );
     }
 
     private static boolean setAvgSeekTime(
@@ -463,7 +463,7 @@ public class HarddriveStorageTest {
         fileList.forEach(file -> assertTrue(instance.deleteFile(file)>0));
 
         final File nullFile = null;
-        assertEquals(0.0, instance.deleteFile(nullFile), 0.0);
+        assertEquals(0.0, instance.deleteFile(nullFile));
     }
 
     @Test

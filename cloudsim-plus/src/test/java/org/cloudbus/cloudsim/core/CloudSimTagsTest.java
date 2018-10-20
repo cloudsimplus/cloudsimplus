@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.core;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Manoel Campos da Silva Filho
@@ -20,7 +20,7 @@ public class CloudSimTagsTest {
      */
     private static List<Field> constants;
 
-    @BeforeClass
+    @BeforeAll
     public static void setUpClass(){
         constants = getDeclaredConstants(CloudSimTags.class);
     }
@@ -32,7 +32,7 @@ public class CloudSimTagsTest {
     public void testConstantsWithSameValue(){
         for (final Field field : constants) {
             final Field anotherField = getAnotherConstWithSameValue(constants, field);
-            assertEquals(msgFieldsWithDuplicatedValue(field, anotherField), field, anotherField);
+            assertEquals(field, anotherField, msgFieldsWithDuplicatedValue(field, anotherField));
         }
     }
 

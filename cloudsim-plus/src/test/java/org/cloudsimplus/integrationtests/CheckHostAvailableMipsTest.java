@@ -36,8 +36,8 @@ import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -80,7 +80,7 @@ public final class CheckHostAvailableMipsTest {
     private UtilizationModel utilizationModel;
     private CloudSim simulation;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.simulation = new  CloudSim();
         utilizationModel = new UtilizationModelFull();

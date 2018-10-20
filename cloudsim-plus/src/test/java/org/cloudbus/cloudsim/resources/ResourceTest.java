@@ -1,7 +1,8 @@
 package org.cloudbus.cloudsim.resources;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -12,13 +13,15 @@ public class ResourceTest {
     @Test
     public void testNullObject() {
         final ResourceManageable instance = ResourceManageable.NULL;
-        assertFalse(instance.setCapacity(0));
-        assertFalse(instance.allocateResource(0));
-        assertFalse(instance.setAllocatedResource(0));
-        assertFalse(instance.deallocateResource(0));
-        assertEquals(0, instance.deallocateAllResources(), 0.0);
-        assertFalse(instance.isResourceAmountBeingUsed(0));
-        assertFalse(instance.isSuitable(0));
+        assertAll(
+            () -> assertFalse(instance.setCapacity(0)),
+            () -> assertFalse(instance.allocateResource(0)),
+            () -> assertFalse(instance.setAllocatedResource(0)),
+            () -> assertFalse(instance.deallocateResource(0)),
+            () -> assertEquals(0, instance.deallocateAllResources()),
+            () -> assertFalse(instance.isResourceAmountBeingUsed(0)),
+            () -> assertFalse(instance.isSuitable(0))
+        );
     }
 
 }

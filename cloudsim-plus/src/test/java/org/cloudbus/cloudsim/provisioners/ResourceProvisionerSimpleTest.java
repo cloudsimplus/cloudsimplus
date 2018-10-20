@@ -11,11 +11,12 @@ package org.cloudbus.cloudsim.provisioners;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import static org.cloudbus.cloudsim.vms.VmTestUtil.createVm;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author		Anton Beloglazov
@@ -29,7 +30,7 @@ public class ResourceProvisionerSimpleTest {
     /** @see #createSimpleProvisioner()  */
     private ResourceProvisionerSimple provisioner;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         provisioner = createSimpleProvisioner();
     }
@@ -46,9 +47,9 @@ public class ResourceProvisionerSimpleTest {
         return new ResourceProvisionerSimple(resource);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testCreateProvisionerWhenResourceNull() {
-        createSimpleProvisioner(null);
+        Assertions.assertThrows(NullPointerException.class, () -> createSimpleProvisioner(null));
     }
 
     @Test

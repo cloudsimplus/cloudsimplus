@@ -1,8 +1,8 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -20,8 +20,7 @@ public class UtilizationModelNullTest {
                 EXPECTED_UTILIZATION);
 
         for (int time = 0; time < 10000; time++) {
-            assertEquals(msg, EXPECTED_UTILIZATION, instance.getUtilization(time), 0.0);
+            assertEquals(EXPECTED_UTILIZATION, instance.getUtilization(time), msg);
         }
     }
-
 }

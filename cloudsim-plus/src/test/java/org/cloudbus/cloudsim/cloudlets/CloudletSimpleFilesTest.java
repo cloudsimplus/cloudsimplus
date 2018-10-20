@@ -1,14 +1,15 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.cloudbus.cloudsim.cloudlets.CloudletSimpleTest.PES_NUMBER;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author	Anton Beloglazov
@@ -23,7 +24,7 @@ public class CloudletSimpleFilesTest {
 
     private CloudletSimple cloudlet;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cloudlet = new CloudletSimple(0, CloudletTestUtil.CLOUDLET_LENGTH, PES_NUMBER);
         cloudlet.setFileSize(CloudletTestUtil.CLOUDLET_FILE_SIZE)
@@ -38,10 +39,8 @@ public class CloudletSimpleFilesTest {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         final String files[] = {FILE1, FILE2};
         for (final String file : files) {
-            assertTrue("Method file should be added",
-                cloudlet.addRequiredFile(file));  //file doesn't previously added
-            assertFalse("Method file shouldn't be added",
-                cloudlet.addRequiredFile(file)); //file already added
+            assertTrue(cloudlet.addRequiredFile(file), "file should be added");  //file doesn't previously added
+            assertFalse(cloudlet.addRequiredFile(file), "file shouldn't be added"); //file already added
         }
     }
 
@@ -68,10 +67,10 @@ public class CloudletSimpleFilesTest {
         assertEquals(files, cloudlet.getRequiredFiles());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testRequiredFiles1() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        cloudlet.setRequiredFiles(null);
+        Assertions.assertThrows(NullPointerException.class, () ->  cloudlet.setRequiredFiles(null));
         assertNotNull(cloudlet.getRequiredFiles());
     }
 

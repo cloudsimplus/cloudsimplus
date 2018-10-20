@@ -7,10 +7,11 @@
  */
 package org.cloudbus.cloudsim.power.models;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author	Anton Beloglazov
@@ -20,32 +21,34 @@ public class PowerModelSpecPowerIbmX3550XeonX5675Test {
 
     private PowerModel powerModel;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() {
         powerModel = new PowerModelSpecPowerIbmX3550XeonX5675();
         powerModel.setHost(PowerModelTest.createHostWithOneVm());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetPowerArgumentLessThenZero() throws IllegalArgumentException {
-        powerModel.getPower(-1);
+    @Test()
+    public void testGetPowerArgumentLessThenZero() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> powerModel.getPower(-1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetPowerArgumentLargerThenOne() throws IllegalArgumentException {
-        powerModel.getPower(2);
+    @Test()
+    public void testGetPowerArgumentLargerThenOne() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> powerModel.getPower(2));
     }
 
     @Test
     public void testGetPower() {
-        assertEquals(58.4, powerModel.getPower(0), 0);
-        assertEquals(58.4 + (98 - 58.4) / 5, powerModel.getPower(0.02), 0);
-        assertEquals(98, powerModel.getPower(0.1), 0);
-        assertEquals(140, powerModel.getPower(0.5), 0);
-        assertEquals(189, powerModel.getPower(0.8), 0);
-        assertEquals(189 + 0.7 * 10 * (205 - 189) / 10, powerModel.getPower(0.87), 0);
-        assertEquals(205, powerModel.getPower(0.9), 0);
-        assertEquals(222, powerModel.getPower(1), 0);
+        Assertions.assertAll(
+            () -> assertEquals(58.4, powerModel.getPower(0)),
+            () -> assertEquals(58.4 + (98 - 58.4) / 5, powerModel.getPower(0.02)),
+            () -> assertEquals(98, powerModel.getPower(0.1)),
+            () -> assertEquals(140, powerModel.getPower(0.5)),
+            () -> assertEquals(189, powerModel.getPower(0.8)),
+            () -> assertEquals(189 + 0.7 * 10 * (205 - 189) / 10, powerModel.getPower(0.87)),
+            () -> assertEquals(205, powerModel.getPower(0.9)),
+            () -> assertEquals(222, powerModel.getPower(1))
+        );
     }
 
 }

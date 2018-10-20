@@ -7,9 +7,9 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.cloudsimplus.listeners.EventListener;
 import org.easymock.EasyMock;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -37,21 +37,21 @@ public class CloudletTest {
     public void testNullObject(){
         assertFalse(Cloudlet.NULL.addRequiredFile(""));
         assertFalse(Cloudlet.NULL.deleteRequiredFile(""));
-        assertEquals(0, Cloudlet.NULL.getPriority(), 0);
-        assertEquals(0, Cloudlet.NULL.getFileSize(), 0);
+        assertEquals(0, Cloudlet.NULL.getPriority());
+        assertEquals(0, Cloudlet.NULL.getFileSize());
         assertEquals(-1, Cloudlet.NULL.getId());
-        assertEquals(0, Cloudlet.NULL.getLength(), 0);
-        assertEquals(0, Cloudlet.NULL.getOutputSize(), 0);
-        assertEquals(0, Cloudlet.NULL.getTotalLength(), 0);
+        assertEquals(0, Cloudlet.NULL.getLength());
+        assertEquals(0, Cloudlet.NULL.getOutputSize());
+        assertEquals(0, Cloudlet.NULL.getTotalLength());
 
-        assertEquals(0, Cloudlet.NULL.getNetServiceLevel(), 0);
-        assertEquals(0, Cloudlet.NULL.getNumberOfPes(), 0);
+        assertEquals(0, Cloudlet.NULL.getNetServiceLevel());
+        assertEquals(0, Cloudlet.NULL.getNumberOfPes());
 
         assertSame(DatacenterBroker.NULL, Cloudlet.NULL.getBroker());
 
         assertEquals(Vm.NULL, Cloudlet.NULL.getVm());
         assertFalse(Cloudlet.NULL.requiresFiles());
-        assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalInDatacenter(), 0);
+        assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalInDatacenter());
         assertFalse(Cloudlet.NULL.removeOnFinishListener(null));
         final EventListener listener = EasyMock.createMock(EventListener.class);
         EasyMock.replay(listener);
@@ -65,9 +65,9 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.setStatus(Cloudlet.Status.SUCCESS));
         assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getStatus());
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
-        assertEquals(0, Cloudlet.NULL.getFinishedLengthSoFar(), 0);
+        assertEquals(0, Cloudlet.NULL.getFinishedLengthSoFar());
         assertEquals(Datacenter.NULL, Cloudlet.NULL.getLastDatacenter());
-        assertEquals(0, Cloudlet.NULL.getLastDatacenterArrivalTime(), 0);
+        assertEquals(0, Cloudlet.NULL.getLastDatacenterArrivalTime());
         assertFalse(Cloudlet.NULL.isFinished());
         Cloudlet.NULL.assignToDatacenter(Datacenter.NULL);
         assertEquals(Datacenter.NULL, Cloudlet.NULL.getLastDatacenter());
@@ -76,26 +76,33 @@ public class CloudletTest {
 
     @Test
     public void testNullObjectTimes(){
-        assertEquals(0, Cloudlet.NULL.getArrivalTime(Datacenter.NULL), 0);
-        assertEquals(0, Cloudlet.NULL.getActualCpuTime(Datacenter.NULL), 0);
-        assertEquals(0, Cloudlet.NULL.getActualCpuTime(), 0);
-        assertEquals(0, Cloudlet.NULL.getExecStartTime(), 0);
-        assertEquals(0, Cloudlet.NULL.getWaitingTime(), 0);
-        assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter(), 0);
-        assertEquals(0, Cloudlet.NULL.getWallClockTime(Datacenter.NULL), 0);
-        Cloudlet.NULL.setSubmissionDelay(10);
-        assertEquals(0, Cloudlet.NULL.getSubmissionDelay(), 0);
+        assertAll(
+            () -> assertEquals(0, Cloudlet.NULL.getArrivalTime(Datacenter.NULL)),
+            () -> assertEquals(0, Cloudlet.NULL.getActualCpuTime(Datacenter.NULL)),
+            () -> assertEquals(0, Cloudlet.NULL.getActualCpuTime()),
+            () -> assertEquals(0, Cloudlet.NULL.getExecStartTime()),
+            () -> assertEquals(0, Cloudlet.NULL.getWaitingTime()),
+            () -> assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter()),
+            () -> assertEquals(0, Cloudlet.NULL.getWallClockTime(Datacenter.NULL)),
+            () -> Cloudlet.NULL.setSubmissionDelay(10),
+            () -> assertEquals(0, Cloudlet.NULL.getSubmissionDelay())
+        );
     }
 
     @Test
-    public void testNullObjectUtilization(){
-        assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
-        assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelCpu());
-        assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam());
-        assertEquals(0, Cloudlet.NULL.getUtilizationOfBw(0), 0);
-        assertEquals(0, Cloudlet.NULL.getUtilizationOfCpu(0), 0);
-        assertEquals(0, Cloudlet.NULL.getUtilizationOfRam(0), 0);
+    public void testNullObjectUtilization1() {
+        assertAll(
+            () -> assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw()),
+            () -> assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelCpu()),
+            () -> assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelRam()),
+            () -> assertEquals(0, Cloudlet.NULL.getUtilizationOfBw(0)),
+            () -> assertEquals(0, Cloudlet.NULL.getUtilizationOfCpu(0)),
+            () -> assertEquals(0, Cloudlet.NULL.getUtilizationOfRam(0))
+        );
+    }
 
+    @Test
+    public void testNullObjectUtilization2(){
         final UtilizationModel model = EasyMock.createMock(UtilizationModel.class);
         EasyMock.replay(model);
         Cloudlet.NULL.setUtilizationModelBw(model);
@@ -110,11 +117,13 @@ public class CloudletTest {
 
     @Test
     public void testNullObjectCost(){
-        assertEquals(0, Cloudlet.NULL.getAccumulatedBwCost(), 0);
-        assertEquals(0, Cloudlet.NULL.getCostPerBw(), 0);
-        assertEquals(0, Cloudlet.NULL.getCostPerSec(), 0);
-        assertEquals(0, Cloudlet.NULL.getCostPerSec(Datacenter.NULL), 0);
-        assertEquals(0, Cloudlet.NULL.getTotalCost(), 0);
+        assertAll(
+            () -> assertEquals(0, Cloudlet.NULL.getAccumulatedBwCost()),
+            () -> assertEquals(0, Cloudlet.NULL.getCostPerBw()),
+            () -> assertEquals(0, Cloudlet.NULL.getCostPerSec()),
+            () -> assertEquals(0, Cloudlet.NULL.getCostPerSec(Datacenter.NULL)),
+            () -> assertEquals(0, Cloudlet.NULL.getTotalCost())
+        );
     }
 
 

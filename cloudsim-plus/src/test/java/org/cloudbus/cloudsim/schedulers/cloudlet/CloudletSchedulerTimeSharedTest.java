@@ -4,14 +4,14 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
 public class CloudletSchedulerTimeSharedTest {
     private CloudletSchedulerTimeShared instance;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         instance = new CloudletSchedulerTimeShared();
     }
@@ -60,7 +60,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int cloudletId = 0;
         final double expResult = 0.0;
         final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result);
     }
 
     @Test
@@ -81,7 +81,8 @@ public class CloudletSchedulerTimeSharedTest {
         final double expResult = 0.0;
         final int cloudletIdSearched = 2;
         final double result = instance.cloudletResume(new CloudletSimple(cloudletIdSearched, 1, 1));
-        assertEquals(expResult, result, 0.0);    }
+        assertEquals(expResult, result);
+    }
 
     @Test
     public void testCloudletResumeWhenCloudletInPausedList() {
@@ -96,7 +97,7 @@ public class CloudletSchedulerTimeSharedTest {
         final double expResult = 10;
         final double result = instance.cloudletResume(new CloudletSimple(cloudletId, 1, 1));
 
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result);
     }
 
     @Test
@@ -120,22 +121,22 @@ public class CloudletSchedulerTimeSharedTest {
         assertTrue(instance.isThereEnoughFreePesForCloudlet(new CloudletExecution(cloudlet0)));
     }
 
-    @Test @Ignore("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
+    @Test @Disabled("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
     public void testGetTotalCurrentAllocatedMipsForCloudlet() {
         final CloudletExecution ce = new CloudletExecution(Cloudlet.NULL);
         final double time = 0.0;
         final double expResult = 0.0;
         final double result = instance.getAllocatedMipsForCloudlet(ce, time);
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result);
     }
 
-    @Test @Ignore("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
+    @Test @Disabled("The test is being ignored because the tested method in fact is always returning zero. It doesn't have an actual implementation.")
     public void testGetTotalCurrentRequestedMipsForCloudlet() {
         final CloudletExecution ce = new CloudletExecution(Cloudlet.NULL);
         final double time = 0.0;
         final double expResult = 0.0;
         final double result = instance.getRequestedMipsForCloudlet(ce, time);
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result);
     }
 
     @Test
@@ -145,7 +146,7 @@ public class CloudletSchedulerTimeSharedTest {
 
         final double expResult = 2.0; //200% of RAM usage
         final double result = instance.getCurrentRequestedRamPercentUtilization();
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result);
     }
 
     @Test
@@ -158,7 +159,7 @@ public class CloudletSchedulerTimeSharedTest {
 
         final double expResult = 1.0;
         final double result = instance.getCurrentRequestedBwPercentUtilization();
-        assertEquals(expResult, result, 0.0);
+        assertEquals(expResult, result);
     }
 
     @Test
@@ -176,7 +177,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 1.0;
-        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0));
     }
 
     @Test
@@ -188,7 +189,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 1;
-        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0));
     }
 
     @Test
@@ -200,7 +201,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.5;
-        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0));
     }
 
     @Test
@@ -212,7 +213,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.75;
-        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0));
     }
 
     @Test
@@ -224,7 +225,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
 
         final double expected = 0.8;
-        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0));
     }
 
     @Test
@@ -237,7 +238,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, cloudletPes);
 
         final double expected = 1;
-        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0), 0);
+        assertEquals(expected, instance.getRequestedCpuPercentUtilization(0));
     }
 
     /**
@@ -313,5 +314,4 @@ public class CloudletSchedulerTimeSharedTest {
         instance.addCloudletToExecList(cloudlet);
         assertEquals(list.size(), instance.getCloudletExecList().size());
     }
-
 }

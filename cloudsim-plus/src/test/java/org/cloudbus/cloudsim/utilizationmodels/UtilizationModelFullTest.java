@@ -1,8 +1,8 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -19,7 +19,7 @@ public class UtilizationModelFullTest {
                 "For any time (even a randomly defined one), the utilization has to be equals to %d",
                 EXPECTED_UTILIZATION);
         for (int time = 0; time < 10000; time++) {
-            assertEquals(msg, EXPECTED_UTILIZATION, instance.getUtilization(time), 0.0);
+            assertEquals(EXPECTED_UTILIZATION, instance.getUtilization(time), msg);
         }
     }
 

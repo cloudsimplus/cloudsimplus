@@ -37,14 +37,14 @@ import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -81,7 +81,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	private FileStorage storage;
     private CloudSim simulation;
 
-	@Before
+	@BeforeEach
     public void setUp() {
 		createStorage();
 
@@ -153,14 +153,14 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 		final long expectedFinishTime = 17+5;
 		for(final Cloudlet c: cloudlets) {
 			//Checks if each cloudlet finished at the expected time, considering the delay to transfer the required files
-			assertEquals(c.toString() + " expected finish time", expectedFinishTime, c.getFinishTime(), 0.3);
+			assertEquals(expectedFinishTime, c.getFinishTime(), 0.3, c.toString() + " expected finish time");
 
 			/* Checks if the cloudlet length is not being changed to simulate the
 			 * delay to transfer the cloudlet required files to the Vm.
 			 * The transfer time has to be implemented delaying the cloudlet processing
 			 * not increasing the cloudlet length.
 			 */
-			assertEquals(c.toString(), CLOUDLET_LENGTH, c.getLength(), 0.1);
+			assertEquals( CLOUDLET_LENGTH, c.getLength(), 0.1, c.toString());
 		}
 
 	    printCloudletsExecutionResults();

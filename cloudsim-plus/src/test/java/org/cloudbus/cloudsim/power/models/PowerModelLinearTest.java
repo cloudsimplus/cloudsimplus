@@ -7,10 +7,11 @@
  */
 package org.cloudbus.cloudsim.power.models;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author	Anton Beloglazov
@@ -23,40 +24,41 @@ public class PowerModelLinearTest {
 
     private PowerModelLinear powerModel;
 
-    @Before
-    public void setUp() throws Exception {
+    @BeforeEach
+    public void setUp() {
         powerModel = new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT);
         powerModel.setHost(PowerModelTest.createHostWithOneVm());
     }
 
     @Test
     public void testGetMaxPower() {
-        assertEquals(MAX_POWER, powerModel.getMaxPower(), 0);
+        assertEquals(MAX_POWER, powerModel.getMaxPower());
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetPowerArgumentLessThenZero() throws IllegalArgumentException {
-        powerModel.getPower(-1);
+    @Test()
+    public void testGetPowerArgumentLessThenZero()  {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> powerModel.getPower(-1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testGetPowerArgumentLargerThenOne() throws IllegalArgumentException {
-        powerModel.getPower(2);
+    @Test()
+    public void testGetPowerArgumentLargerThenOne()  {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> powerModel.getPower(2));
     }
 
     @Test
     public void testGetPowerForZeroUsage() {
-        assertEquals(175, powerModel.getPower(0.0), 0);
+        assertEquals(175, powerModel.getPower(0.0));
     }
 
     @Test
     public void testGetPowerForHundredPercentUsage() {
-        assertEquals(MAX_POWER, powerModel.getPower(1.0), 0);
+        assertEquals(MAX_POWER, powerModel.getPower(1.0));
     }
 
     @Test
     public void testGetPowerForCustomUsage() {
-        assertEquals(MAX_POWER * STATIC_POWER_PERCENT + ((MAX_POWER - MAX_POWER * STATIC_POWER_PERCENT) / 100) * 0.5 * 100, powerModel.getPower(0.5), 0);
+        final double expected = MAX_POWER * STATIC_POWER_PERCENT + ((MAX_POWER - MAX_POWER * STATIC_POWER_PERCENT) / 100) * 0.5 * 100;
+        assertEquals(expected, powerModel.getPower(0.5));
     }
 
 }

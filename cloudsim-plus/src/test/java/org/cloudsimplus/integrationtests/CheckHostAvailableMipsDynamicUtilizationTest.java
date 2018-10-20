@@ -35,14 +35,13 @@ import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static org.junit.Assert.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  *
  * An Integration Test (IT) running a simulation scenario with 1 PM, 2 VMs
@@ -83,11 +82,12 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
             "- onUpdateVmProcessing at time {}: {} available mips: {} expected availability: {}",
             evt.getTime(), evt.getHost(), evt.getHost().getAvailableMips(), expectedAvailableHostMips);
 
-        assertEquals("The amount of Host available HOST_MIPS was not as expected.",
-                 expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0);
+        assertEquals(
+                 expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0,
+                 "The amount of Host available HOST_MIPS was not as expected.");
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         this.simulation = new  CloudSim();
         scenario = new SimulationScenarioBuilder(simulation);
@@ -118,7 +118,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 .createAndSubmitCloudlets(NUMBER_OF_CLOUDLETS);
     }
 
-    @Test @Ignore("WARNING: It has to be checked if it is really required to use the "
+    @Test @Disabled("WARNING: It has to be checked if it is really required to use the "
                 + " PowerDatacenter, PowerHostUtilizationHistory, Vm"
                 + " and CloudletSchedulerDynamicWorkload to make the host CPU usage"
                 + " to be correctly updated.")

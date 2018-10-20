@@ -41,14 +41,14 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.cloudsimplus.util.Log;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -112,9 +112,7 @@ public final class VmCreationFailureIntegrationTest {
                 evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
         if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost())
                 && scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
-            assertEquals(
-                "Host wasn't allocated to Vm at the expected time",
-                0, evt.getTime(), 0.2);
+            assertEquals(0, evt.getTime(), 0.2, "Host wasn't allocated to Vm at the expected time");
         }
     }
 
@@ -133,9 +131,7 @@ public final class VmCreationFailureIntegrationTest {
                 evt.getVm(), evt.getHost(), evt.getTime());
         if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost()) &&
             scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
-            assertEquals(
-                    "Vm wasn't removed from the Host at the expected time",
-                    20, evt.getTime(), 0.2);
+            assertEquals(20, evt.getTime(), 0.2, "Vm wasn't removed from the Host at the expected time");
         }
     }
 
@@ -153,7 +149,7 @@ public final class VmCreationFailureIntegrationTest {
         final String msg = String.format(
                 "Only Vm %d should had failed to be created due to lack of resources",
                 expectedVmId);
-        assertEquals(msg, expectedVmId, evt.getVm().getId());
+        assertEquals(expectedVmId, evt.getVm().getId(), msg);
     }
 
     /**
@@ -165,8 +161,7 @@ public final class VmCreationFailureIntegrationTest {
         LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
         final int time = (int) evt.getTime();
         if (time == 10 || time == 20) {
-            assertEquals(200,
-                scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
+            assertEquals(200, scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
         }
     }
 
@@ -183,10 +178,10 @@ public final class VmCreationFailureIntegrationTest {
         LOGGER.info(
             "- onUpdateVmProcessing at time {} for {}: {} available mips: {}",
             evt.getTime(), evt.getVm(), evt.getHost(), evt.getHost().getAvailableMips());
-        assertEquals(200, evt.getHost().getAvailableMips(), 0);
+        assertEquals(200, evt.getHost().getAvailableMips());
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         Log.setLevel(Level.WARN);
         simulation = new CloudSim();
@@ -245,7 +240,7 @@ public final class VmCreationFailureIntegrationTest {
                 };
 
         final List<Cloudlet> cloudletList = broker.getCloudletFinishedList();
-        assertEquals("The number of finished cloudlets was not as expected", expectedResults.length, cloudletList.size());
+        assertEquals(expectedResults.length, cloudletList.size(), "The number of finished cloudlets was not as expected");
         int idx = -1;
         for (final Cloudlet cloudlet : cloudletList) {
             expectedResults[++idx].setCloudlet(cloudlet);
@@ -254,22 +249,25 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     private void assertThatOneGivenCloudletHasTheExpectedExecutionTimes(final ExpectedCloudletExecutionResults results) {
-        assertEquals("cloudlet.getActualCPUTime", results.getExpectedExecTime(), results.getCloudlet().getActualCpuTime(), 0.3);
-        assertEquals("cloudlet.getExecStartTime", results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), 0.3);
-        assertEquals("cloudlet.getFinishTime", results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.3);
-        assertEquals(0, results.getCloudlet().getVm().getId(), 0);
-        assertEquals("Cloudlet wasn't executed at the expected Datacenter",
-                1, results.getCloudlet().getLastDatacenter().getId(), 0);
+        assertEquals(results.getExpectedExecTime(), results.getCloudlet().getActualCpuTime(), 0.3, "cloudlet.getActualCPUTime");
+        assertEquals(results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), 0.3, "cloudlet.getExecStartTime");
+        assertEquals(results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.3, "cloudlet.getFinishTime");
+        assertEquals(0, results.getCloudlet().getVm().getId());
+        assertEquals(
+                1, results.getCloudlet().getLastDatacenter().getId(),
+                "Cloudlet wasn't executed at the expected Datacenter");
         assertEquals(Cloudlet.Status.SUCCESS, results.getCloudlet().getStatus());
     }
 
     private void assertThatListenersWereCalledTheExpectedAmountOfTimes() {
-        assertEquals("The number of times a Host was allocated to a VM isn't as expected",
-                1, numberOfHostAllocations);
-        assertEquals("The number of times a Host was deallocated to a VM isn't as expected",
-                1, numberOfHostDeallocations);
         assertEquals(
-                "The number of times a Vm failed to be created due to lack of resources wasn't as expected",
-                1, numberOfVmCreationFailures);
+            1, numberOfHostAllocations,
+            "The number of times a Host was allocated to a VM isn't as expected");
+        assertEquals(
+                1, numberOfHostDeallocations,
+                "The number of times a Host was deallocated to a VM isn't as expected");
+        assertEquals(
+                1, numberOfVmCreationFailures,
+                "The number of times a Vm failed to be created due to lack of resources wasn't as expected");
     }
 }

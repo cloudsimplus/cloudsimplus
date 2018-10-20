@@ -1,9 +1,9 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.vms.Vm;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -14,17 +14,17 @@ public class VmSchedulerTest {
     @Test
     public void testNullObject() {
         final VmScheduler instance = VmScheduler.NULL;
-        instance.deallocatePesForAllVms();
-        instance.deallocatePesFromVm(null);
-        assertFalse(instance.allocatePesForVm(null, null));
-        assertTrue(instance.getAllocatedMips(null).isEmpty());
-        assertEquals(0, instance.getAvailableMips(), 0);
-        assertFalse(instance.isSuitableForVm(Vm.NULL));
-        assertEquals(0, instance.getMaxAvailableMips(), 0);
-        assertEquals(0, instance.getPeCapacity(), 0);
-        assertTrue(instance.getWorkingPeList().isEmpty());
-        assertEquals(0, instance.getTotalAllocatedMipsForVm(null), 0);
-        assertEquals(0, instance.getVmMigrationCpuOverhead(), 0);
+        assertAll(
+            () -> assertFalse(instance.allocatePesForVm(null, null)),
+            () -> assertTrue(instance.getAllocatedMips(null).isEmpty()),
+            () -> assertEquals(0, instance.getAvailableMips()),
+            () -> assertFalse(instance.isSuitableForVm(Vm.NULL)),
+            () -> assertEquals(0, instance.getMaxAvailableMips()),
+            () -> assertEquals(0, instance.getPeCapacity()),
+            () -> assertTrue(instance.getWorkingPeList().isEmpty()),
+            () -> assertEquals(0, instance.getTotalAllocatedMipsForVm(null)),
+            () -> assertEquals(0, instance.getVmMigrationCpuOverhead())
+        );
     }
 
 }

@@ -10,10 +10,11 @@ package org.cloudbus.cloudsim.resources;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe.Status;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author	Anton Beloglazov
@@ -24,7 +25,7 @@ public class PeTest {
     private static final double MIPS = 1000;
     private PeProvisionerSimple peProvisioner;
 
-    @Before
+    @BeforeEach
     public void setUp() throws Exception {
         peProvisioner = new PeProvisionerSimple();
     }
@@ -42,7 +43,7 @@ public class PeTest {
     public void testGetPeProvisioner() {
         final PeSimple pe = createPe();
         assertSame(peProvisioner, pe.getPeProvisioner());
-        assertEquals(MIPS, pe.getPeProvisioner().getAvailableResource(), 0);
+        assertEquals(MIPS, pe.getPeProvisioner().getAvailableResource());
     }
 
     @Test
@@ -56,9 +57,9 @@ public class PeTest {
     @Test
     public void testSetMips() {
         final PeSimple pe = createPe();
-        assertEquals(MIPS, pe.getCapacity(), 0);
+        assertEquals(MIPS, pe.getCapacity());
         pe.setCapacity(MIPS / 2);
-        assertEquals(MIPS / 2, pe.getCapacity(), 0);
+        assertEquals(MIPS / 2, pe.getCapacity());
     }
 
     @Test
@@ -73,27 +74,26 @@ public class PeTest {
         assertEquals(PeSimple.Status.FREE, pe.getStatus());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testSetPeProvisionerWhenNull() {
         final PeSimple pe = createPe();
-        pe.setPeProvisioner(null);
+        Assertions.assertThrows(NullPointerException.class, () -> pe.setPeProvisioner(null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testNewPeWhenNullProvisioner() {
-        createPe(null);
+        Assertions.assertThrows(NullPointerException.class, () -> createPe(null));
     }
 
     @Test
     public void testNullObject(){
-        assertEquals(-1, Pe.NULL.getId(), 0);
-        assertEquals(0, Pe.NULL.getCapacity(), 0);
-        assertEquals(Status.FAILED, Pe.NULL.getStatus());
-        assertFalse(Pe.NULL.setCapacity(1000));
-        assertEquals(0, Pe.NULL.getCapacity(), 0);
-
-        //setters haven't any effect on Null Object Design Pattern
-        Pe.NULL.setStatus(Status.FREE);
-        assertEquals(Status.FAILED, Pe.NULL.getStatus());
+        assertAll(
+            () -> assertEquals(-1, Pe.NULL.getId()),
+            () -> assertEquals(0, Pe.NULL.getCapacity()),
+            () -> assertEquals(Status.FAILED, Pe.NULL.getStatus()),
+            () -> assertFalse(Pe.NULL.setCapacity(1000)),
+            () -> assertEquals(0, Pe.NULL.getCapacity()),
+            () -> assertEquals(Status.FAILED, Pe.NULL.getStatus())
+        );
     }
 }

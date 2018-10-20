@@ -1,14 +1,14 @@
 package org.cloudbus.cloudsim.util;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SwfWorkloadFileReaderTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(SwfWorkloadFileReaderTest.class.getSimpleName());

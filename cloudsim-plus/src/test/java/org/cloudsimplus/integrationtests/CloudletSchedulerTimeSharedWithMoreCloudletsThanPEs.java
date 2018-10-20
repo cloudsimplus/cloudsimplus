@@ -34,10 +34,10 @@ import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -62,7 +62,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
     private DatacenterBroker broker;
     private CloudSim simulation;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         simulation = new CloudSim();
         final SimulationScenarioBuilder scenario = new SimulationScenarioBuilder(simulation);
@@ -98,13 +98,11 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
 
         final double time = 20;
         for(final Cloudlet c: broker.getCloudletFinishedList()){
-            assertEquals(
-                String.format("Cloudlet %d doesn't have the expected finish time.", c.getId()),
-                time, c.getFinishTime(), 0.3);
+            final String msg1 = String.format("Cloudlet %d doesn't have the expected finish time.", c.getId());
+            assertEquals(time, c.getFinishTime(), 0.3, msg1);
 
-            assertEquals(
-                String.format("Cloudlet %d doesn't have the expected exec time.", c.getId()),
-                time, c.getActualCpuTime(), 0.3);
+            final String msg2 = String.format("Cloudlet %d doesn't have the expected exec time.", c.getId());
+            assertEquals(time, c.getActualCpuTime(), 0.3, msg2);
         }
     }
 

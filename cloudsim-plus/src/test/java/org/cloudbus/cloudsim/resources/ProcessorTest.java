@@ -1,9 +1,9 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.vms.Vm;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -17,7 +17,7 @@ public class ProcessorTest {
     public void testGetTotalMipsCapacity() {
         final Processor instance = createDefaultProcessor();
         final double expResult = PE_MIPS * NUMBER_OF_PES;
-        assertEquals(expResult, instance.getTotalMips(), 0);
+        assertEquals(expResult, instance.getTotalMips());
     }
 
     /**
@@ -32,7 +32,7 @@ public class ProcessorTest {
     public void testGetCapacity() {
         final Processor instance = createDefaultProcessor();
         final double expResult = PE_MIPS;
-        assertEquals(expResult, instance.getMips(), 0);
+        assertEquals(expResult, instance.getMips());
     }
 
     @Test
@@ -55,7 +55,7 @@ public class ProcessorTest {
         final long expResult = (long)PE_MIPS*2;
         final Processor instance = createDefaultProcessor();
         instance.setMips(expResult);
-        assertEquals(expResult, instance.getMips(), 0.0);
+        assertEquals(expResult, instance.getMips());
     }
 
 }

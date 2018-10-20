@@ -2,11 +2,9 @@ package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.util.stream.IntStream;
-
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
@@ -22,7 +20,9 @@ public class PowerModelTest {
             String.format(
                 "For any time (even a randomly defined one), the power usage has to be equals to %.2f",
                 EXPECTED_POWER);
-        IntStream.range(0, 10000).forEach(usage -> assertEquals(msg, EXPECTED_POWER, instance.getPower(usage), 0.0));
+        for (int usage = 0; usage < 10000; usage++) {
+            assertEquals(EXPECTED_POWER, instance.getPower(usage), msg);
+        }
 
     }
 

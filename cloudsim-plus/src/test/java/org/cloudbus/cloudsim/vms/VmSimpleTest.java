@@ -18,14 +18,15 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.easymock.EasyMock.createMock;
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Anton Beloglazov
@@ -37,7 +38,7 @@ public class VmSimpleTest {
     private CloudletSchedulerTimeShared cloudletScheduler;
     private VmSimple vm;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         cloudletScheduler = new CloudletSchedulerTimeShared();
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
@@ -49,7 +50,7 @@ public class VmSimpleTest {
 
     @Test
     public void testGetMips() {
-        assertEquals(VmTestUtil.MIPS, vm.getMips(), 0);
+        assertEquals(VmTestUtil.MIPS, vm.getMips());
     }
 
     @Test
@@ -60,13 +61,13 @@ public class VmSimpleTest {
     @Test
     public void testSetMips() {
         vm.setMips(VmTestUtil.MIPS / 2);
-        assertEquals(VmTestUtil.MIPS / 2, vm.getMips(), 0);
+        assertEquals(VmTestUtil.MIPS / 2, vm.getMips());
     }
 
     @Test
     public void testSetRam() {
         vm.setRam(VmTestUtil.RAM / 2);
-        assertEquals(VmTestUtil.RAM / 2, vm.getRam().getCapacity(), 0);
+        assertEquals(VmTestUtil.RAM / 2, vm.getRam().getCapacity());
     }
 
     @Test
@@ -108,7 +109,7 @@ public class VmSimpleTest {
     @Test
     public void testSetBw() {
         vm.setBw(VmTestUtil.BANDWIDTH / 2);
-        assertEquals(VmTestUtil.BANDWIDTH / 2, vm.getBw().getCapacity(), 0);
+        assertEquals(VmTestUtil.BANDWIDTH / 2, vm.getBw().getCapacity());
     }
 
     @Test
@@ -118,14 +119,14 @@ public class VmSimpleTest {
         assertTrue(vm.removeOnHostAllocationListener(listener));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testRemoveOnHostAllocationListenerWhenNull() {
-        vm.removeOnHostAllocationListener(null);
+        Assertions.assertThrows(NullPointerException.class, () -> vm.removeOnHostAllocationListener(null));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testRemoveOnHostDeallocationListenerWhenNull() {
-        vm.removeOnHostDeallocationListener(null);
+        Assertions.assertThrows(NullPointerException.class, () -> vm.removeOnHostDeallocationListener(null));
     }
 
     @Test
@@ -135,9 +136,9 @@ public class VmSimpleTest {
         assertTrue(vm.removeOnHostDeallocationListener(listener));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testRemoveOnVmCreationFailureListenerWhenNull() {
-        vm.removeOnCreationFailureListener(null);
+        Assertions.assertThrows(NullPointerException.class, () -> vm.removeOnCreationFailureListener(null));
     }
 
     @Test
@@ -147,9 +148,9 @@ public class VmSimpleTest {
         assertTrue(vm.removeOnCreationFailureListener(listener));
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testRemoveOnUpdateVmProcessingListenerWhenNull() {
-        vm.removeOnUpdateProcessingListener(null);
+        Assertions.assertThrows(NullPointerException.class, () -> vm.removeOnUpdateProcessingListener(null));
     }
 
     @Test
@@ -199,12 +200,12 @@ public class VmSimpleTest {
 
     @Test
     public void testGetTotalUtilization() {
-        assertEquals(0, vm.getCpuPercentUsage(0), 0);
+        assertEquals(0, vm.getCpuPercentUsage(0));
     }
 
     @Test
     public void testGetTotalUtilizationMips() {
-        assertEquals(0, vm.getTotalCpuMipsUsage(0), 0);
+        assertEquals(0, vm.getTotalCpuMipsUsage(0));
     }
 
     @Test
@@ -220,7 +221,7 @@ public class VmSimpleTest {
         mipsShare2.add(1.0);
         final double expectedNextCompletionTime = cloudletScheduler.updateProcessing(0, mipsShare1);
         final double actualNextCompletionTime = vm.updateProcessing(0, mipsShare2);
-        assertEquals(expectedNextCompletionTime, actualNextCompletionTime, 0);
+        assertEquals(expectedNextCompletionTime, actualNextCompletionTime);
     }
 
     @Test

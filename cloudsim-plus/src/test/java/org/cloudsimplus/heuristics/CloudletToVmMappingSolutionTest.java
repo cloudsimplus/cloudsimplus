@@ -27,15 +27,16 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  *
@@ -52,8 +53,8 @@ public class CloudletToVmMappingSolutionTest {
         final double expResult = 1.0/3.0;
         final double result = instance.getFitness();
         assertEquals(
-            String.format("Fitness is not as expected for the cost %.2f", instance.getCost()),
-            expResult, result, 0.01);
+            expResult, result, 0.01,
+            String.format("Fitness is not as expected for the cost %.2f", instance.getCost()));
     }
 
     private CloudletToVmMappingSolution createSolutionWithOneVmForEachCloudlet(
@@ -98,11 +99,10 @@ public class CloudletToVmMappingSolutionTest {
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES/2);
         final int expResult = 1;
         final int result = instance.compareTo(o);
-        assertEquals(
-            String.format(
-                "The instance was expected to be greater than the compared object. Instance fitness: %f Compared object fitness: %f",
-                instance.getFitness(), o.getFitness()),
-            expResult, result);
+        final String msg = String.format(
+            "The instance was expected to be greater than the compared object. Instance fitness: %f Compared object fitness: %f",
+            instance.getFitness(), o.getFitness());
+        assertEquals(expResult, result, msg);
     }
 
     @Test
@@ -115,11 +115,10 @@ public class CloudletToVmMappingSolutionTest {
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES, PES+1);
         final int expResult = 0;
         final int result = instance.compareTo(o);
-        assertEquals(
-            String.format(
-                "The instances should be equals. Instance fitness: %f Compared object fitness: %f",
-                instance.getFitness(), o.getFitness()),
-        expResult, result);
+        final String msg = String.format(
+            "The instances should be equals. Instance fitness: %f Compared object fitness: %f",
+            instance.getFitness(), o.getFitness());
+        assertEquals(expResult, result, msg);
     }
 
     @Test
@@ -132,18 +131,17 @@ public class CloudletToVmMappingSolutionTest {
                 createSolutionWithOneVmForEachCloudlet(NUMBER_OF_CLOUDLETS, PES);
         final int expResult = -1;
         final int result = instance.compareTo(o);
-        assertEquals(
-            String.format(
-                "The instance was expected to be lower than the compared object. Instance fitness: %.2f Compared object fitness: %.2f",
-                instance.getFitness(), o.getFitness()),
-            expResult, result);
+        final String msg = String.format(
+            "The instance was expected to be lower than the compared object. Instance fitness: %.2f Compared object fitness: %.2f",
+            instance.getFitness(), o.getFitness());
+        assertEquals(expResult, result, msg);
     }
 
-    @Test(expected = UnsupportedOperationException.class)
+    @Test()
     public void testGetCloudletVmMapWhenModifyReadonlyMap() {
         final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         final Map<Cloudlet, Vm> result = instance.getResult();
-        result.put(Cloudlet.NULL, Vm.NULL);
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> result.put(Cloudlet.NULL, Vm.NULL));
     }
 
     @Test
@@ -180,13 +178,12 @@ public class CloudletToVmMappingSolutionTest {
         final CloudletToVmMappingSolution instance = new CloudletToVmMappingSolution(Heuristic.NULL);
         instance.swapVmsOfTwoMapEntries(originalEntries);
 
-        assertEquals(
-            String.format(
-                "The VMs of the given cloudlets were not swapped. It was expected the cloudlet %d to move to VM %d and cloudlet %d to move to VM %d.",
-                swappedVmsEntries.get(0).getKey().getId(),
-                swappedVmsEntries.get(0).getValue().getId(),
-                swappedVmsEntries.get(1).getKey().getId(),
-                swappedVmsEntries.get(1).getValue().getId()),
-            swappedVmsEntries, originalEntries);
+        final String msg = String.format(
+            "The VMs of the given cloudlets were not swapped. It was expected the cloudlet %d to move to VM %d and cloudlet %d to move to VM %d.",
+            swappedVmsEntries.get(0).getKey().getId(),
+            swappedVmsEntries.get(0).getValue().getId(),
+            swappedVmsEntries.get(1).getKey().getId(),
+            swappedVmsEntries.get(1).getValue().getId());
+        assertEquals(swappedVmsEntries, originalEntries, msg);
     }
 }

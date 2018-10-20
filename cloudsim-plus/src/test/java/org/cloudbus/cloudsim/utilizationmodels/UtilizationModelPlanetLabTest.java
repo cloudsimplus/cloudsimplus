@@ -1,9 +1,10 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UtilizationModelPlanetLabTest {
 
@@ -16,7 +17,7 @@ public class UtilizationModelPlanetLabTest {
 
     private UtilizationModelPlanetLab instance;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         instance = UtilizationModelPlanetLab.getInstance(FILE, SCHEDULING_INTERVAL);
     }
@@ -60,45 +61,41 @@ public class UtilizationModelPlanetLabTest {
     @Test
     public void testGetSecondsInsideInterval1() {
         final int expected = 300;
-        assertEquals(expected, instance.getSecondsInsideInterval(1, 2), 0);
+        assertEquals(expected, instance.getSecondsInsideInterval(1, 2));
     }
 
     @Test
     public void testGetSecondsInsideInterval10() {
         final int expected = 300;
-        assertEquals(expected, instance.getSecondsInsideInterval(1, 2), 0);
+        assertEquals(expected, instance.getSecondsInsideInterval(1, 2));
     }
 
     @Test
     public void testGetSecondsInsideInterval10EndLowerThanStart() {
         final int expected = 3000;
-        assertEquals(expected, instance.getSecondsInsideInterval(287, 9), 0);
+        assertEquals(expected, instance.getSecondsInsideInterval(287, 9));
     }
 
     @Test
     public void testGetSecondsInsideInterval20EndLowerThanStart() {
         final int expected = 6000;
-        assertEquals(expected, instance.getSecondsInsideInterval(277, 9), 0);
+        assertEquals(expected, instance.getSecondsInsideInterval(277, 9));
     }
 
     @Test
     public void testGetUtilization() {
-        assertEquals(0.24, instance.getUtilization(0), 0);
-        assertEquals(0.34, instance.getUtilization(1 * SCHEDULING_INTERVAL), 0);
+        final double expected1 = (24 + 0.2 * SCHEDULING_INTERVAL * (34 - 24) / SCHEDULING_INTERVAL) / 100;
+        final double expected2 = (18 + 0.7 * SCHEDULING_INTERVAL * (21 - 18) / SCHEDULING_INTERVAL) / 100;
 
-        assertEquals(
-                (24 + 0.2 * SCHEDULING_INTERVAL * (34 - 24) / SCHEDULING_INTERVAL) / 100,
-                instance.getUtilization(0.2 * SCHEDULING_INTERVAL),
-                0.01);
-
-        assertEquals(0.29, instance.getUtilization(2 * SCHEDULING_INTERVAL), 0);
-        assertEquals(0.18, instance.getUtilization(136 * SCHEDULING_INTERVAL), 0);
-
-        assertEquals(
-                (18 + 0.7 * SCHEDULING_INTERVAL * (21 - 18) / SCHEDULING_INTERVAL) / 100,
-                instance.getUtilization(136.7 * SCHEDULING_INTERVAL),
-                0.01);
-        assertEquals(0.51, instance.getUtilization(287 * SCHEDULING_INTERVAL), 0);
+        assertAll(
+            () -> assertEquals(0.24, instance.getUtilization(0)),
+            () -> assertEquals(0.34, instance.getUtilization(1 * SCHEDULING_INTERVAL)),
+            () -> assertEquals(expected1, instance.getUtilization(0.2 * SCHEDULING_INTERVAL), 0.01),
+            () -> assertEquals(0.29, instance.getUtilization(2 * SCHEDULING_INTERVAL)),
+            () -> assertEquals(0.18, instance.getUtilization(136 * SCHEDULING_INTERVAL)),
+            () -> assertEquals(expected2, instance.getUtilization(136.7 * SCHEDULING_INTERVAL), 0.01),
+            () -> assertEquals(0.51, instance.getUtilization(287 * SCHEDULING_INTERVAL))
+        );
     }
 
 }

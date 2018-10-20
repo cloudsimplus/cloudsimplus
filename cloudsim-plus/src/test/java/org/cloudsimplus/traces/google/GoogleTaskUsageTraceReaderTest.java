@@ -24,9 +24,9 @@
 package org.cloudsimplus.traces.google;
 
 import org.cloudsimplus.traces.google.GoogleTaskUsageTraceReader.FieldIndex;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Manoel Campos da Silva Filho

@@ -7,15 +7,15 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Manoel Campos da Silva Filho
@@ -27,7 +27,7 @@ public class VmAllocationPolicySimpleTest {
     public static final int HOST_BASE_STORAGE = 1000;
     private VmAllocationPolicySimple policy;
 
-    @Before
+    @BeforeEach
     public void setUp(){
         policy = createVmAllocationPolicy(4, 2, 6, 5);
     }
@@ -77,7 +77,7 @@ public class VmAllocationPolicySimpleTest {
         final Vm vm = VmTestUtil.createVm(
             0, 1000, 2, 1, 1,
             HOST_BASE_STORAGE, CloudletScheduler.NULL);
-        assertTrue(vm + " couldn't be allocated to " + hostWithMoreFreePes, policy.allocateHostForVm(vm));
+        assertTrue(policy.allocateHostForVm(vm), vm + " couldn't be allocated to " + hostWithMoreFreePes);
 
         final Host allocatedHostForVm = vm.getHost();
         assertEquals(hostWithMoreFreePes, allocatedHostForVm);

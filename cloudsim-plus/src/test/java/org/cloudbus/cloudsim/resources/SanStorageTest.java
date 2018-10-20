@@ -1,11 +1,11 @@
 package org.cloudbus.cloudsim.resources;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -43,7 +43,7 @@ public class SanStorageTest {
         final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
         instance.setMaxTransferRate(diskRateMbps);
 
-        assertEquals(diskRateMbps, instance.getMaxTransferRate(), 0.0);
+        assertEquals(diskRateMbps, instance.getMaxTransferRate());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class SanStorageTest {
         final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
         instance.setMaxTransferRate(diskRateMbps);
 
-        assertEquals(diskRateMbps, instance.getMaxTransferRate(), 0.0);
+        assertEquals(diskRateMbps, instance.getMaxTransferRate());
     }
 
     @Test
@@ -161,7 +161,7 @@ public class SanStorageTest {
 
         //try invalid file
         File file = null;
-        assertEquals(0, instance.addFile(file), 0);
+        assertEquals(0, instance.addFile(file));
 
         //add a valid file
         file = new File(FILE1, FILE_SIZE);
@@ -188,13 +188,13 @@ public class SanStorageTest {
     public void testGetBandwidth() {
         final double bandwidth = BANDWIDTH;
         final SanStorage instance = createSanStorage(bandwidth);
-        assertEquals(bandwidth, instance.getBandwidth(), 0.0);
+        assertEquals(bandwidth, instance.getBandwidth());
     }
 
     @Test
     public void testGetNetworkLatency() {
         final double networkLatency = NETWORK_LATENCY;
         final SanStorage instance = createSanStorage(BANDWIDTH, networkLatency);
-        assertEquals(networkLatency, instance.getNetworkLatency(), 0.0);
+        assertEquals(networkLatency, instance.getNetworkLatency());
     }
 }

@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 import static java.util.stream.Collectors.toList;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * An utility class used by {@link UtilizationModelDynamic} tests.
@@ -80,7 +80,7 @@ final class TestUtil {
                     time, initUsage,usagePercentInc, maxUsagePercent);
             final double result = instance.getUtilization(time);
             final String msg = String.format("The utilization at time %d", time);
-            assertEquals(msg, expResult, result, 0.001);
+            assertEquals(expResult, result, 0.001, msg);
         }
     }
 

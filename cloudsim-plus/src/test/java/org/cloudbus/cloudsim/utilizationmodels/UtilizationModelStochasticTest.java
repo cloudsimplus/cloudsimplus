@@ -7,12 +7,10 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author	Anton Beloglazov
@@ -22,7 +20,7 @@ public class UtilizationModelStochasticTest {
 
     private UtilizationModelStochastic utilizationModel;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         utilizationModel = new UtilizationModelStochastic();
     }
@@ -31,11 +29,13 @@ public class UtilizationModelStochasticTest {
     public void testGetUtilization() {
         final double utilization0 = utilizationModel.getUtilization(0);
         final double utilization1 = utilizationModel.getUtilization(1);
-        assertNotNull(utilization0);
-        assertNotNull(utilization1);
-        assertNotSame(utilization0, utilization1);
-        assertEquals(utilization0, utilizationModel.getUtilization(0), 0);
-        assertEquals(utilization1, utilizationModel.getUtilization(1), 0);
+        assertAll(
+            () -> assertNotNull(utilization0),
+            () -> assertNotNull(utilization1),
+            () -> assertNotSame(utilization0, utilization1),
+            () -> assertEquals(utilization0, utilizationModel.getUtilization(0)),
+            () -> assertEquals(utilization1, utilizationModel.getUtilization(1))
+        );
     }
 
 }

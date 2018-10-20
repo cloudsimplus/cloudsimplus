@@ -1,9 +1,10 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.util.DataCloudTags;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -26,10 +27,10 @@ public class FileTest {
         return new File(NAME, size);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testCopyConstructorWhenFileParameterIsNull() {
         final File nullFile = null;
-        new File(nullFile);
+        Assertions.assertThrows(NullPointerException.class, () -> new File(nullFile));
     }
 
     @Test()
@@ -39,34 +40,36 @@ public class FileTest {
         assertFalse(copyFile.isMasterCopy());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testCreateWhenNameIsNull() {
-        new File(null, 100);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new File(null, 100));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testCreateWhenZeroSize() {
-        new File(NAME, 0);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new File(NAME, 0));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testCreateWhenNegativeSize() {
-        new File(NAME, -1);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new File(NAME, -1));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test()
     public void testCreateFileWhenEmptyName() {
-        new File("", 100);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new File("", 100));
     }
 
     @Test
     public void testMakeReplica() {
         final File instance = createFile();
         final File replica = instance.makeReplica();
-        assertEquals(instance.getName(), replica.getName());
-        assertEquals(instance.getSize(), replica.getSize());
-        assertTrue(instance.isMasterCopy());
-        assertFalse(replica.isMasterCopy());
+        Assertions.assertAll(
+            () -> assertEquals(instance.getName(), replica.getName()),
+            () -> assertEquals(instance.getSize(), replica.getSize()),
+            () -> assertTrue(instance.isMasterCopy()),
+            () -> assertFalse(replica.isMasterCopy())
+        );
     }
 
     @Test
@@ -91,10 +94,10 @@ public class FileTest {
         assertEquals(attributeSize, instance.getAttributeSize());
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test()
     public void testSetDatacenterToNull() {
         final File instance = createFile();
-        instance.setDatacenter(null);
+        Assertions.assertThrows(NullPointerException.class, () -> instance.setDatacenter(null));
     }
 
     @Test
@@ -151,10 +154,10 @@ public class FileTest {
     public void testSetUpdateTime() {
         final double time = 10;
         final File instance = createFile();
-        assertEquals(0, instance.getLastUpdateTime(), 0.0);
+        assertEquals(0, instance.getLastUpdateTime());
 
         assertTrue(instance.setUpdateTime(time));
-        assertEquals(time, instance.getLastUpdateTime(), 0.0);
+        assertEquals(time, instance.getLastUpdateTime());
     }
 
     @Test
@@ -183,18 +186,18 @@ public class FileTest {
 
         final int type1 = 1;
         assertTrue(instance.setType(type1));
-        assertEquals(type1, instance.getType(), 0);
+        assertEquals(type1, instance.getType());
 
         final int type0 = 0;
         assertTrue(instance.setType(type0));
-        assertEquals(type0, instance.getType(), 0);
+        assertEquals(type0, instance.getType());
 
         final int type2 = 2;
         assertTrue(instance.setType(type2));
-        assertEquals(type2, instance.getType(), 0);
+        assertEquals(type2, instance.getType());
 
         assertFalse(instance.setType(-1));
-        assertEquals(type2, instance.getType(), 0);
+        assertEquals(type2, instance.getType());
     }
 
     @Test
@@ -203,18 +206,18 @@ public class FileTest {
 
         final int checksum1 = 1;
         assertTrue(instance.setChecksum(checksum1));
-        assertEquals(checksum1, instance.getChecksum(), 0);
+        assertEquals(checksum1, instance.getChecksum());
 
         final int checksum0 = 0;
         assertTrue(instance.setChecksum(checksum0));
-        assertEquals(checksum0, instance.getChecksum(), 0);
+        assertEquals(checksum0, instance.getChecksum());
 
         final int checksum2 = 2;
         assertTrue(instance.setChecksum(checksum2));
-        assertEquals(checksum2, instance.getChecksum(), 0);
+        assertEquals(checksum2, instance.getChecksum());
 
         assertFalse(instance.setChecksum(-1));
-        assertEquals(checksum2, instance.getChecksum(), 0);
+        assertEquals(checksum2, instance.getChecksum());
     }
 
     @Test
@@ -223,16 +226,16 @@ public class FileTest {
         final File instance = createFile();
 
         assertTrue(instance.setCost(cost));
-        assertEquals(cost, instance.getCost(), 0.0);
+        assertEquals(cost, instance.getCost());
         assertFalse(instance.setCost(-1));
 
         final double zero = 0;
         assertTrue(instance.setCost(zero));
-        assertEquals(zero, instance.getCost(), 0.0);
+        assertEquals(zero, instance.getCost());
 
         final double newCost = 20;
         assertTrue(instance.setCost(newCost));
-        assertEquals(newCost, instance.getCost(), 0.0);
+        assertEquals(newCost, instance.getCost());
     }
 
     @Test
@@ -264,20 +267,20 @@ public class FileTest {
     public void testSetTransactionTime() {
         final double time1 = 1, zero = 0;
         final File instance = createFile();
-        assertEquals(zero, instance.getTransactionTime(), zero);
+        assertEquals(zero, instance.getTransactionTime());
 
         assertTrue(instance.setTransactionTime(time1));
-        assertEquals(time1, instance.getTransactionTime(), 0);
+        assertEquals(time1, instance.getTransactionTime());
 
         assertTrue(instance.setTransactionTime(zero));
-        assertEquals(zero, instance.getTransactionTime(), 0);
+        assertEquals(zero, instance.getTransactionTime());
 
         final double time2 = 2;
         assertTrue(instance.setTransactionTime(time2));
-        assertEquals(time2, instance.getTransactionTime(), 0);
+        assertEquals(time2, instance.getTransactionTime());
 
         assertFalse(instance.setTransactionTime(-1));
-        assertEquals(time2, instance.getTransactionTime(), 0);
+        assertEquals(time2, instance.getTransactionTime());
     }
 
     @Test

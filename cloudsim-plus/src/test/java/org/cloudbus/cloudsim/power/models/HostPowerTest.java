@@ -15,14 +15,14 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author		Anton Beloglazov
@@ -54,28 +54,28 @@ public class HostPowerTest {
         return host;
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         host = createPowerHost(1);
     }
 
     @Test
     public void testGetMaxPower() {
-        assertEquals(MAX_POWER, host.getPowerModel().getMaxPower(), 0);
+        assertEquals(MAX_POWER, host.getPowerModel().getMaxPower());
     }
 
     @Test
     public void testGetEnergyUtilization() {
         final PowerModel model = host.getPowerModel();
         final double expected = 1370;
-        assertEquals(expected, model.getEnergyLinearInterpolation(0.2, 0.9, TIME), 0);
+        assertEquals(expected, model.getEnergyLinearInterpolation(0.2, 0.9, TIME));
     }
 
     @Test
     public void testGetEnergyUtilizationZero() {
         final PowerModel model = host.getPowerModel();
         final double expected = 600;
-        assertEquals(expected, model.getEnergyLinearInterpolation(0, 0, TIME), 0);
+        assertEquals(expected, model.getEnergyLinearInterpolation(0, 0, TIME));
     }
 
 }

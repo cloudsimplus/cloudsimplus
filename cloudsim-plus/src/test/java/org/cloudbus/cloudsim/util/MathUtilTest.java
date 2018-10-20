@@ -1,11 +1,11 @@
 package org.cloudbus.cloudsim.util;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class MathUtilTest {
 	public static final double[] DATA1 = { 105, 109, 107, 112, 102, 118, 115, 104, 110, 116, 108 };
@@ -21,17 +21,17 @@ public class MathUtilTest {
 
 	@Test
 	public void testMad() {
-		assertEquals(MAD, MathUtil.mad(DATA3), 0);
+		assertEquals(MAD, MathUtil.mad(DATA3));
 	}
 
 	@Test
 	public void testIqr1() {
-		assertEquals(IQR1, MathUtil.iqr(DATA1), 0);
+		assertEquals(IQR1, MathUtil.iqr(DATA1));
 	}
 
     @Test
     public void testIqr2() {
-        assertEquals(IQR2, MathUtil.iqr(DATA2), 0);
+        assertEquals(IQR2, MathUtil.iqr(DATA2));
     }
 
 	@Test
@@ -46,13 +46,13 @@ public class MathUtilTest {
 			data1.add(number);
 		}
 
-		assertEquals(SUM1, MathUtil.sum(data1), 0);
+		assertEquals(SUM1, MathUtil.sum(data1));
 
         final List<Double> data2 = new ArrayList<Double>();
 		for (final Double number : DATA1) {
 			data2.add(number / 10);
 		}
 
-		assertEquals(SUM1 / 10, MathUtil.sum(data2), 0);
+		assertEquals(SUM1 / 10, MathUtil.sum(data2));
 	}
 }

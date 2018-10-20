@@ -28,14 +28,14 @@ import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.easymock.EasyMock;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Anton Beloglazov
@@ -90,7 +90,7 @@ public class HostSimpleTest {
                         .collect(Collectors.toCollection(() -> new ArrayList<>(numberOfPes)));
     }
 
-    @Before
+    @BeforeEach
     public void setUp() {
         host = createHostSimple(ID, HOST_PES);
     }
@@ -142,9 +142,9 @@ public class HostSimpleTest {
 
         final double expected[] = {0.0, 0.75, 0.5, 0.25};
         final double[] result = host.getUtilizationHistory().values().stream().mapToDouble(DoubleSummaryStatistics::getSum).toArray();
-        assertEquals("The number of history entries is not equal", expected.length, result.length);
+        assertEquals(expected.length, result.length, "The number of history entries is not equal");
         for (int i = 0; i < result.length; i++) {
-            assertEquals("Utilization History at position " + i, expected[i], result[i], 0);
+            assertEquals(expected[i], result[i], "Utilization History at position " + i);
         }
     }
 
@@ -256,11 +256,11 @@ public class HostSimpleTest {
         final VmSimple vm = VmTestUtil.createVm(
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
-        assertEquals(HOST_MIPS, targetHost.getAvailableMips(), 0);
+        assertEquals(HOST_MIPS, targetHost.getAvailableMips());
         assertTrue(targetHost.addMigratingInVm(vm));
         final double availableMips = HOST_MIPS - VM_MIPS;
-        assertEquals(availableMips, targetHost.getAvailableMips(), 0);
-        assertEquals(0, targetHost.getAvailableStorage(), 0);
+        assertEquals(availableMips, targetHost.getAvailableMips());
+        assertEquals(0, targetHost.getAvailableStorage());
     }
 
     @Test
@@ -274,7 +274,7 @@ public class HostSimpleTest {
         targetHost.addMigratingInVm(vm);
         //During migration, just  10% of capacity is allocated (it's the migration overhead)
         final double allocatedMips = 50;
-        assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm), 0);
+        assertEquals(allocatedMips, targetHost.getTotalAllocatedMipsForVm(vm));
     }
 
     @Test
@@ -359,7 +359,7 @@ public class HostSimpleTest {
         final double nextCloudletCompletionTimeOfCurrentVm = idx+1;
         assertEquals(
                 nextCloudletCompletionTimeOfCurrentVm,
-                host.updateProcessing(time), 0);
+                host.updateProcessing(time));
         EasyMock.verify(vm);
 
         EasyMock.verify(vmScheduler);
@@ -519,12 +519,12 @@ public class HostSimpleTest {
 
         assertTrue(host.createVm(vm));
         assertSame(vm, host.getVm(0, 0));
-        assertEquals(HOST_MIPS, host.getVmScheduler().getAvailableMips(), 0);
+        assertEquals(HOST_MIPS, host.getVmScheduler().getAvailableMips());
 
         host.destroyVm(vm);
         assertSame(Vm.NULL, host.getVm(0, 0));
         assertEquals(0, host.getVmList().size());
-        assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips(), 0);
+        assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips());
     }
 
     @Test
@@ -542,16 +542,16 @@ public class HostSimpleTest {
 
         assertTrue(host.createVm(vm0));
         assertSame(vm0, host.getVm(0, 0));
-        assertEquals(HOST_MIPS, host.getVmScheduler().getAvailableMips(), 0);
+        assertEquals(HOST_MIPS, host.getVmScheduler().getAvailableMips());
 
         assertTrue(host.createVm(vm1));
         assertSame(vm1, host.getVm(1, 0));
-        assertEquals(0, host.getVmScheduler().getAvailableMips(), 0);
+        assertEquals(0, host.getVmScheduler().getAvailableMips());
 
         host.destroyAllVms();
         assertSame(Vm.NULL, host.getVm(0, 0));
         assertSame(Vm.NULL, host.getVm(1, 0));
         assertEquals(0, host.getVmList().size());
-        assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips(), 0);
+        assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips());
     }
 }
