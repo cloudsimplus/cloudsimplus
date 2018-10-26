@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -70,7 +69,7 @@ public class CloudletSimpleFilesTest {
     @Test()
     public void testRequiredFiles1() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        Assertions.assertThrows(NullPointerException.class, () ->  cloudlet.setRequiredFiles(null));
+        assertThrows(NullPointerException.class, () ->  cloudlet.setRequiredFiles(null));
         assertNotNull(cloudlet.getRequiredFiles());
     }
 

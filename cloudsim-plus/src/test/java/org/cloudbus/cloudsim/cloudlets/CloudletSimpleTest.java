@@ -17,7 +17,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.easymock.EasyMock;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -70,7 +69,7 @@ public class CloudletSimpleTest {
 
     @Test()
     public void testAddOnCloudletFinishEventListenerWhenNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> cloudlet.addOnFinishListener(null));
+        assertThrows(NullPointerException.class, () -> cloudlet.addOnFinishListener(null));
     }
 
     @Test
@@ -281,7 +280,7 @@ public class CloudletSimpleTest {
 
     @Test()
     public void testSetCloudletLengthToZero() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cloudlet.setLength(0));
+        assertThrows(IllegalArgumentException.class, () -> cloudlet.setLength(0));
     }
 
     @Test
@@ -300,12 +299,12 @@ public class CloudletSimpleTest {
 
     @Test()
     public void testSetNumberOfPesToZero() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cloudlet.setNumberOfPes(0));
+        assertThrows(IllegalArgumentException.class, () -> cloudlet.setNumberOfPes(0));
     }
 
     @Test()
     public void testSetNumberOfPesToNegative() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> cloudlet.setNumberOfPes(-1));
+        assertThrows(IllegalArgumentException.class, () -> cloudlet.setNumberOfPes(-1));
     }
 
     @Test
@@ -341,24 +340,24 @@ public class CloudletSimpleTest {
     @Test()
     public void testSetUtilizationModelBwWhenNull() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        Assertions.assertThrows(NullPointerException.class, () -> cloudlet.setUtilizationModelBw(null));
+        assertThrows(NullPointerException.class, () -> cloudlet.setUtilizationModelBw(null));
     }
 
     @Test()
     public void testSetUtilizationModelRamWhenNull() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        Assertions.assertThrows(NullPointerException.class, () -> cloudlet.setUtilizationModelRam(null));
+        assertThrows(NullPointerException.class, () -> cloudlet.setUtilizationModelRam(null));
     }
 
     @Test()
     public void testSetUtilizationModelCpuWhenNull() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        Assertions.assertThrows(NullPointerException.class, () -> cloudlet.setUtilizationModelCpu(null));
+        assertThrows(NullPointerException.class, () -> cloudlet.setUtilizationModelCpu(null));
     }
 
     @Test()
     public void testConstructorWhenNullUtilizationModel() {
-        Assertions.assertThrows(NullPointerException.class, () -> CloudletTestUtil.createCloudlet(0, null));
+        assertThrows(NullPointerException.class, () -> CloudletTestUtil.createCloudlet(0, null));
     }
 
     @Test
