@@ -48,6 +48,8 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -102,9 +104,12 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
      * The file containing the SLA Contract in JSON format.
      */
     private static final String SLA_CONTRACTS_LIST = "sla-files.txt";
-    private Map<DatacenterBroker, SlaContract> contractsMap;
 
-    private double taskCompletionTimeSlaContract;
+    /**
+     * A map where the key is a {@link DatacenterBroker} and each value
+     * the {@link SlaContract} of that broker.
+     */
+    private Map<DatacenterBroker, SlaContract> contractsMap;
 
     /**
      * Sorts the Cloudlets before submitting them to the Broker, so that
@@ -117,11 +122,11 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
         this(0, null, seed);
     }
 
-    CloudletTaskCompletionTimeMinimizationExperiment(int index, ExperimentRunner runner) {
+    CloudletTaskCompletionTimeMinimizationExperiment(final int index, final ExperimentRunner runner) {
         this(index, runner, -1);
     }
 
-    private CloudletTaskCompletionTimeMinimizationExperiment(int index, ExperimentRunner runner, long seed) {
+    private CloudletTaskCompletionTimeMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
         this.randCloudlet = new UniformDistr(getSeed());
         this.randVm = new UniformDistr(getSeed()+2);
@@ -177,6 +182,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
     }
 
     private Cloudlet createCloudlet() {
+        final UtilizationModel model = new UtilizationModelDynamic(0.1);
         final int id = createdCloudlets++;
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
         final int p = (int) (randCloudletPes.sample() * CLOUDLET_PES.length);
@@ -185,7 +191,9 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
         return new CloudletSimple(id, length, pes)
                 .setFileSize(1024)
                 .setOutputSize(1024)
-                .setUtilizationModel(new UtilizationModelFull());
+                .setUtilizationModelBw(model)
+                .setUtilizationModelRam(model)
+                .setUtilizationModelCpu(new UtilizationModelFull());
     }
 
     @Override
@@ -196,7 +204,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
+    protected List<Vm> createVms(final DatacenterBroker broker) {
         vmList = new ArrayList<>(VMS);
         for (int i = 0; i < VMS; i++) {
             Vm vm = createVm();
@@ -271,7 +279,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
      * @param cloudlet the Cloudlet to select a VM to
      * @return the selected Vm
      */
-    private Vm selectVmForCloudlet(Cloudlet cloudlet) {
+    private Vm selectVmForCloudlet(final Cloudlet cloudlet) {
         final List<Vm> execVms = cloudlet.getBroker().getVmExecList();
 
         final Comparator<Vm> sortByFreePesNumber = comparingLong(this::getExpectedNumberOfFreeVmPes);
@@ -281,7 +289,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
         );
         final Vm mostFreePesVm = execVms.stream().findFirst().orElse(Vm.NULL);
 
-        taskCompletionTimeSlaContract = contractsMap.get(cloudlet.getBroker()).getTaskCompletionTimeMetric().getMaxDimension().getValue();
+        final double taskCompletionTimeSlaContract = getTaskCompletionTimeFromContract(cloudlet.getBroker());
 
         return execVms.stream()
             .filter(vm -> getExpectedNumberOfFreeVmPes(vm) >= cloudlet.getNumberOfPes())
@@ -303,7 +311,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
      * there aren't free PEs (this negative number indicates the amount of
      * overloaded PEs)
      */
-    private long getExpectedNumberOfFreeVmPes(Vm vm) {
+    private long getExpectedNumberOfFreeVmPes(final Vm vm) {
         final long totalPesForCloudletsOfVm
             = vm.getBroker().getCloudletCreatedList().stream()
             .filter(c -> c.getVm().equals(vm))
@@ -329,7 +337,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
      *
      * @return the Task Completion Time
      */
-    double getCloudletsTaskCompletionTimeAverage() {
+    double getTaskCompletionTimeAverage() {
         final SummaryStatistics cloudletTaskCompletionTime = new SummaryStatistics();
         final DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
@@ -338,20 +346,30 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .forEach(cloudletTaskCompletionTime::addValue);
 
-        taskCompletionTimeSlaContract = getTaskCompletionTimeFromContract(broker);
-
         return cloudletTaskCompletionTime.getMean();
     }
 
-    private double getTaskCompletionTimeFromContract(DatacenterBroker broker) {
+    /**
+     * Gets the Task Completion Time (TCT) defined in a {@link DatacenterBroker}'s {@link SlaContract}.
+     * @param broker the {@link DatacenterBroker} to the TCT from the {@link SlaContract}
+     * @return the broker SLA's TCT
+     * @see #contractsMap
+     */
+    private double getTaskCompletionTimeFromContract(final DatacenterBroker broker) {
         return contractsMap.get(broker).getTaskCompletionTimeMetric().getMaxDimension().getValue();
     }
 
+    /**
+     * Gets the percentage of Cloudlets that met the task completion time,
+     * according the the broker {@link #contractsMap SLA Contract}.
+     * @return
+     */
     double getPercentageOfCloudletsMeetingTaskCompletionTime() {
         final DatacenterBroker broker = getBrokerList().stream()
                 .findFirst()
                 .orElse(DatacenterBroker.NULL);
-        taskCompletionTimeSlaContract = contractsMap.get(broker).getTaskCompletionTimeMetric().getMaxDimension().getValue();
+
+        final double taskCompletionTimeSlaContract = getTaskCompletionTimeFromContract(broker);
         double totalOfCloudletSlaSatisfied = broker.getCloudletFinishedList().stream()
                 .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
                 .filter(rt -> rt <= taskCompletionTimeSlaContract)
@@ -359,6 +377,10 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
         return (totalOfCloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
     }
 
+    /**
+     * Gets the total number of vPEs (VM PEs) across all existing VMs.
+     * @return
+     */
     private double getSumPesVms() {
         return vmList.stream()
                 .mapToDouble(Machine::getNumberOfPes)
@@ -372,11 +394,14 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
     }
 
     /**
-     * Gets the ratio of existing vPEs (VM PEs) divided by the number of
-     * required PEs of all Cloudlets, which indicates the mean number of vPEs
+     * Gets the ratio of the total number of vPEs (VM PEs across all existing VMs) divided by the
+     * total number of required PEs of all Cloudlets.
+     * That indicates the mean number of vPEs
      * that are available for each PE required by a Cloudlet, considering all
      * the existing Cloudlets. For instance, if the ratio is 0.5, in average,
      * two Cloudlets requiring one vPE will share that same vPE.
+     * If the ratio is greater than one, there is more vPE that the required by all Cloudlets.
+     * For instance, a ratio of 2 means there is 2 vPE for each PE required by a Cloudlet.
      *
      * @return the average of vPEs/CloudletsPEs ratio
      */
@@ -392,12 +417,16 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
      * @param args
      */
     public static void main(String[] args) {
-        final CloudletTaskCompletionTimeMinimizationExperiment exp =
-            new CloudletTaskCompletionTimeMinimizationExperiment(34475098589739L);
+        final CloudletTaskCompletionTimeMinimizationExperiment exp = new CloudletTaskCompletionTimeMinimizationExperiment(344L);
         exp.setVerbose(true);
         exp.run();
-        exp.getCloudletsTaskCompletionTimeAverage();
-        exp.getPercentageOfCloudletsMeetingTaskCompletionTime();
-        exp.getRatioOfExistingVmPesToRequiredCloudletPes();
+        System.out.println();
+        System.out.printf("Average Task Completion Time (TCT): %.2f seconds\n", exp.getTaskCompletionTimeAverage());
+        for (DatacenterBroker broker : exp.getBrokerList()) {
+            System.out.printf("%s SLA's TCT: %.2f seconds\n", broker, exp.getTaskCompletionTimeFromContract(broker));
+        }
+
+        System.out.printf("Percentage of cloudlet that met TCT (i.e, the execution time was less or equal to the TCT defined in the SLA): %.2f%%\n",  exp.getPercentageOfCloudletsMeetingTaskCompletionTime());
+        System.out.printf("Ratio of existing total VM PEs to required Cloudlets PEs: %.2f\n", exp.getRatioOfExistingVmPesToRequiredCloudletPes());
     }
 }

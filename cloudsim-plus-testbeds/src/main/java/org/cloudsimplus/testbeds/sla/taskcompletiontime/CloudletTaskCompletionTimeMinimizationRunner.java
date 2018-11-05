@@ -23,12 +23,11 @@
  */
 package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -110,7 +109,7 @@ final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunne
      * @param exp the finished experiment
      */
     private void afterExperimentFinish(CloudletTaskCompletionTimeMinimizationExperiment exp) {
-        cloudletTaskCompletionTime.add(exp.getCloudletsTaskCompletionTimeAverage());
+        cloudletTaskCompletionTime.add(exp.getTaskCompletionTimeAverage());
         percentageOfCloudletsMeetingTaskCompletionTime.add(
                 exp.getPercentageOfCloudletsMeetingTaskCompletionTime());
         ratioOfVmPesToRequiredCloudletPesList.add(exp.getRatioOfExistingVmPesToRequiredCloudletPes());
