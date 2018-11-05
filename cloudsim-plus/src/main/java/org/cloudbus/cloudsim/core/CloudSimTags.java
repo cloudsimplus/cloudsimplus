@@ -285,12 +285,20 @@ public final class CloudSimTags {
      */
     public static final int VM_VERTICAL_SCALING = BASE + 42;
 
+    /**
+     * Defines the tag to be used to send packets
+     * up through the network topology.
+     */
     public static final int NETWORK_EVENT_UP = BASE + 43;
 
     public static final int NETWORK_EVENT_SEND = BASE + 44;
 
     public static final int NETWORK_HOST_REGISTER = BASE + 45;
 
+    /**
+     * Defines the tag to be used to send packets
+     * down through the network topology.
+     */
     public static final int NETWORK_EVENT_DOWN = BASE + 46;
 
     public static final int NETWORK_EVENT_HOST = BASE + 47;

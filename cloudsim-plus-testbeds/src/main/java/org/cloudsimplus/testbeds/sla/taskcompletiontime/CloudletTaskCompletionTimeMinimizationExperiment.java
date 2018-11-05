@@ -59,6 +59,7 @@ import org.cloudsimplus.testbeds.SimulationExperiment;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
+import java.util.function.Function;
 
 import static java.util.Comparator.comparingDouble;
 import static java.util.Comparator.comparingLong;
@@ -66,13 +67,21 @@ import static java.util.stream.Collectors.toList;
 import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeMinimizationRunner.*;
 
 /**
- * An experiment that tries to minimize task completion time,
- * where workload imposed by Cloudlets is defined randomly.
+ * An experiment that tries to minimize task completion time
+ * by selecting as the VM to run a Cloudlet,
+ * that one that minimizes the Cloudlet completion time.
+ *
+ * <p>
+ * It uses the {@link DatacenterBroker#setVmMapper(Function)}
+ * method to define the policy used to map Cloudlets to VMs.
+ * The workload is defined as a set of randomly created Cloudlets.
+ * </p>
  *
  * <p>For more details, check
  * <a href="http://www.di.ubi.pt/~mario/files/MScDissertation-RaysaOliveira.pdf">Raysa Oliveira's Master Thesis (only in Portuguese)</a>.</p>
  *
  * @author raysaoliveira
+ * @see #selectVmForCloudlet(Cloudlet)
  */
 public final class CloudletTaskCompletionTimeMinimizationExperiment extends SimulationExperiment {
     private static final int SCHEDULING_INTERVAL = 5;
@@ -259,24 +268,24 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
      * Selects a VM to run a Cloudlet which minimizes the Cloudlet completion
      * time.
      *
-     * @param cl the Cloudlet to select a VM to
+     * @param cloudlet the Cloudlet to select a VM to
      * @return the selected Vm
      */
-    private Vm selectVmForCloudlet(Cloudlet cl) {
-        final List<Vm> execVms = cl.getBroker().getVmExecList();
+    private Vm selectVmForCloudlet(Cloudlet cloudlet) {
+        final List<Vm> execVms = cloudlet.getBroker().getVmExecList();
 
         final Comparator<Vm> sortByFreePesNumber = comparingLong(this::getExpectedNumberOfFreeVmPes);
-        final Comparator<Vm> sortByExpectedCloudletCompletionTime = comparingDouble(vm -> getExpectedCloudletCompletionTime(cl, vm));
+        final Comparator<Vm> sortByExpectedCloudletCompletionTime = comparingDouble(vm -> getExpectedCloudletCompletionTime(cloudlet, vm));
         execVms.sort(
             sortByExpectedCloudletCompletionTime.thenComparing(sortByFreePesNumber.reversed())
         );
         final Vm mostFreePesVm = execVms.stream().findFirst().orElse(Vm.NULL);
 
-        taskCompletionTimeSlaContract = contractsMap.get(cl.getBroker()).getTaskCompletionTimeMetric().getMaxDimension().getValue();
+        taskCompletionTimeSlaContract = contractsMap.get(cloudlet.getBroker()).getTaskCompletionTimeMetric().getMaxDimension().getValue();
 
         return execVms.stream()
-            .filter(vm -> getExpectedNumberOfFreeVmPes(vm) >= cl.getNumberOfPes())
-            .filter(vm -> getExpectedCloudletCompletionTime(cl, vm) <= taskCompletionTimeSlaContract)
+            .filter(vm -> getExpectedNumberOfFreeVmPes(vm) >= cloudlet.getNumberOfPes())
+            .filter(vm -> getExpectedCloudletCompletionTime(cloudlet, vm) <= taskCompletionTimeSlaContract)
             .findFirst()
             .orElse(mostFreePesVm);
     }

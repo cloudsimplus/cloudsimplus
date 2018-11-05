@@ -21,8 +21,10 @@ import java.util.Map;
 /**
  * Implements a network layer by reading the topology from a file in the
  * <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE
- * format</a>, the <a href="http://www.cs.bu.edu/brite/">Boston university
- * Representative Topology gEnerator</a>, and generates a topological network
+ * format</a>, the <b>B</b>oston university
+ * <b>R</b>epresentative <b>I</b>nternet <b>T</b>opology g<b>E</b>nerator
+ * <a href="http://www.cs.bu.edu/brite/">(http://www.cs.bu.edu/brite/)</a>,
+ * and generates a topological network
  * from it. Information of this network is used to simulate latency in network
  * traffic of CloudSim.
  * <p/>

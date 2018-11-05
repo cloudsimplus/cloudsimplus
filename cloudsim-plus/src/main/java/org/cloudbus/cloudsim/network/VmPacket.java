@@ -73,7 +73,7 @@ public class VmPacket implements NetworkPacket<Vm> {
     /**
      * Creates a packet to be sent to to a VM inside the
      * Host of the sender VM.
-     *  @param sourceVm id of the VM sending the packet
+     * @param sourceVm id of the VM sending the packet
      * @param destinationVm id of the VM that has to receive the packet
      * @param size data length of the packet in bytes
      * @param senderCloudlet cloudlet sending the packet
