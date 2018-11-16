@@ -40,6 +40,11 @@ import java.util.List;
  * cloudlets of 2 users with network topology on them.
  */
 public class NetworkExample3 {
+    private final Datacenter datacenter0;
+    private final Datacenter datacenter1;
+    private final DatacenterBroker broker1;
+    private final DatacenterBroker broker2;
+
     private List<Cloudlet> cloudletList1;
     private List<Cloudlet> cloudletList2;
     private List<Vm> vmlist1;
@@ -67,12 +72,12 @@ public class NetworkExample3 {
 
         // Second step: Create Datacenters
         //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
-        Datacenter datacenter0 = createDatacenter();
-        Datacenter datacenter1 = createDatacenter();
+        datacenter0 = createDatacenter();
+        datacenter1 = createDatacenter();
 
         //Third step: Create Brokers
-        DatacenterBroker broker1 = createBroker(1);
-        DatacenterBroker broker2 = createBroker(2);
+        broker1 = createBroker(1);
+        broker2 = createBroker(2);
 
         //Fourth step: Create one virtual machine for each broker/user
         vmlist1 = new ArrayList<>();
@@ -136,6 +141,28 @@ public class NetworkExample3 {
         broker2.submitCloudletList(cloudletList2);
 
         //Sixth step: configure network
+        createNetwork();
+
+        // Sixth step: Starts the simulation
+        simulation.start();
+
+        // Final step: Print results when simulation is over
+        List<Cloudlet> newList1 = broker1.getCloudletFinishedList();
+        List<Cloudlet> newList2 = broker2.getCloudletFinishedList();
+
+        new CloudletsTableBuilder(newList1)
+                .setTitle("Broker " + broker1)
+                .build();
+        new CloudletsTableBuilder(newList2)
+                .setTitle("Broker " + broker2)
+                .build();
+        System.out.println(getClass().getSimpleName() + " finished!");
+    }
+
+    /**
+     * Creates the network topology from a brite file.
+     */
+    private void createNetwork() {
         //load the network topology file
         NetworkTopology networkTopology = BriteNetworkTopology.getInstance("topology.brite");
         simulation.setNetworkTopology(networkTopology);
@@ -156,21 +183,6 @@ public class NetworkExample3 {
         //Broker2 will correspond to BRITE node 4
         briteNode = 4;
         networkTopology.mapNode(broker2.getId(), briteNode);
-
-        // Sixth step: Starts the simulation
-        simulation.start();
-
-        // Final step: Print results when simulation is over
-        List<Cloudlet> newList1 = broker1.getCloudletFinishedList();
-        List<Cloudlet> newList2 = broker2.getCloudletFinishedList();
-
-        new CloudletsTableBuilder(newList1)
-                .setTitle("Broker " + broker1)
-                .build();
-        new CloudletsTableBuilder(newList2)
-                .setTitle("Broker " + broker2)
-                .build();
-        System.out.println(getClass().getSimpleName() + " finished!");
     }
 
     private Datacenter createDatacenter() {

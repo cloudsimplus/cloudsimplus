@@ -71,7 +71,7 @@ import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompl
 /**
  * An experiment that tries to minimize task completion time
  * by selecting as the VM to run a Cloudlet,
- * that one that minimizes the Cloudlet completion time.
+ * one that minimizes the Task Completion Time (TCT): the time a cloudlet spends to finish.
  *
  * <p>
  * It uses the {@link DatacenterBroker#setVmMapper(Function)}

@@ -122,7 +122,7 @@ download the project source by cloning the repository issuing the command `git c
 at a terminal. 
 
 The project has a [bash script](script/bootstrap.sh) you can use to build and run CloudSim Plus examples. 
-This is a script for Unix-like systems such as Linux, FreeBDS and macOS.
+This is a script for Unix-like systems such as Linux, FreeBSD and macOS.
 
 To run some example type the command: `sh script/bootstrap.sh package.ExampleClassName`.
 For instance, to run the `CloudSimExample0` you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample0`. 

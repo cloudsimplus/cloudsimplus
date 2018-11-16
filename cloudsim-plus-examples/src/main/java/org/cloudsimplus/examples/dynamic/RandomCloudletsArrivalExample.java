@@ -32,6 +32,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -59,18 +61,14 @@ import java.util.List;
  * the time the simulation must be terminated.
  *
  * <p>The example is useful when you want to run a simulation
- * for a specific amount of time.
+ * for a specific amount of time, for instance, to wait random arrival
+ * or requests (such as Cloudlets and VMs).
  * For instance, if you want to run a simulation for 24 hours,
  * you just need to call {@code simulation.terminateAt(60*60*24)} (realize the value is in seconds).</p>
  *
- * <p>It creates 4 Cloudlets and 2 VMs statically.
- * These Cloudlets will take 10 seconds to finish, but
- * the simulation is set to terminate
- * only after the time defined in {@link #TIME_TO_TERMINATE_SIMULATION}.
- *
- * This way, the simulation keeps waiting for dynamically
- * arrived events (such as runtime creation of VMs and Cloudlets).
- * </p>
+ * <p>It creates Cloudlets randomly, according to a pseudo random number generator (PRNG) following the
+ * {@link UniformDistr uniform distribution}. You can change the PRNG as you wich,
+ * for instance, to use a {@link org.cloudbus.cloudsim.distributions.PoissonDistr} arrival process.</p>
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
  * to enable monitoring the simulation and dynamically creating Cloudlets and VMs at runtime.
@@ -84,75 +82,76 @@ import java.util.List;
  * until a defined time, the clock will be updated
  * even if no event arrives, to simulate time passing.
  * Check the {@link Simulation#terminateAt(double)} for details.
- * </p>
- *
- * <p>At the time defined in {@link #TIME_TO_CREATE_NEW_CLOUDLET},
- * 1 Cloudlet and 1 VM is created, so the results will show 5 Cloudlets.
  * The simulation will just end at the specified time.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 2.3.0
+ * @since CloudSim Plus 4.0.4
  */
-public class KeepSimulationRunningExample {
-    /**
-     * @see #createDynamicCloudletAndVm(EventInfo)
-     */
-    private static final double TIME_TO_CREATE_NEW_CLOUDLET = 15;
-
+public class RandomCloudletsArrivalExample {
     /**
      * @see Simulation#terminateAt(double)
      */
-    private static final double TIME_TO_TERMINATE_SIMULATION = TIME_TO_CREATE_NEW_CLOUDLET*2;
+    private static final double TIME_TO_TERMINATE_SIMULATION = 30;
 
     /**
      * @see Datacenter#getSchedulingInterval()
      */
     private static final int SCHEDULING_INTERVAL = 1;
 
-    private static final int HOSTS = 3;
+    private static final int HOSTS = 8;
     private static final int HOST_PES = 8;
 
-    private static final int VMS = 2;
+    private static final int VMS = 10;
     private static final int VM_PES = 4;
 
-    private static final int CLOUDLETS = 4;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 10000;
+    /**
+     * Number of Cloudlets to be statically created when the simulation starts.
+     */
+    private static final int INITIAL_CLOUDLETS_NUMBER = 5;
 
     private final CloudSim simulation;
     private final DatacenterBroker broker0;
     private final List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
     private final Datacenter datacenter0;
+    private final ContinuousDistribution random;
 
     public static void main(String[] args) {
-        new KeepSimulationRunningExample();
+        new RandomCloudletsArrivalExample();
     }
 
-    private KeepSimulationRunningExample() {
+    private RandomCloudletsArrivalExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSim();
+        random = new UniformDistr();
         simulation.terminateAt(TIME_TO_TERMINATE_SIMULATION);
         datacenter0 = createDatacenter();
 
         broker0 = new DatacenterBrokerSimple(simulation);
 
         vmList = createVms();
-        cloudletList = createCloudlets();
-        broker0.setVmDestructionDelayFunction(vm -> 0.0);
+        cloudletList = createCloudlets(INITIAL_CLOUDLETS_NUMBER);
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
-        simulation.addOnClockTickListener(this::createDynamicCloudletAndVm);
+        simulation.addOnClockTickListener(this::createRandomCloudlets);
 
         simulation.start();
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
+
+        final int randomCloudlets = cloudletList.size()-INITIAL_CLOUDLETS_NUMBER;
+        System.out.println(
+            "Number of Arrived Cloudlets: " +
+            cloudletList.size() + " ("+INITIAL_CLOUDLETS_NUMBER+" statically created and "+
+            randomCloudlets+" randomly created during simulation runtime)");
     }
 
     /**
@@ -207,10 +206,11 @@ public class KeepSimulationRunningExample {
 
     /**
      * Creates a list of Cloudlets.
+     * @param count number of Cloudlets to create statically
      */
-    private List<Cloudlet> createCloudlets() {
-        final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
-        for (int i = 0; i < CLOUDLETS; i++) {
+    private List<Cloudlet> createCloudlets(final int count) {
+        final List<Cloudlet> list = new ArrayList<>(count);
+        for (int i = 0; i < count; i++) {
             list.add(createCloudlet());
         }
 
@@ -228,18 +228,17 @@ public class KeepSimulationRunningExample {
     }
 
     /**
-     * Simulates the dynamic arrival of a Cloudlet and a VM during simulation runtime.
+     * Simulates the dynamic arrival of Cloudlets, randomly during simulation runtime.
+     * At any time the simulation clock updates, a new Cloudlet will be
+     * created with a probability of 30%.
+     *
      * @param evt
      */
-    private void createDynamicCloudletAndVm(final EventInfo evt) {
-        if((int)evt.getTime() == TIME_TO_CREATE_NEW_CLOUDLET){
-            System.out.printf("\n# Dynamically creating 1 Cloudlet and 1 VM at time %.2f\n", evt.getTime());
-            Vm vm = createVm(VM_PES*2);
-            vmList.add(vm);
+    private void createRandomCloudlets(final EventInfo evt) {
+        if(random.sample() <= 0.3){
+            System.out.printf("\n# Randomly creating 1 Cloudlet at time %.2f\n", evt.getTime());
             Cloudlet cloudlet = createCloudlet();
             cloudletList.add(cloudlet);
-
-            broker0.submitVm(vm);
             broker0.submitCloudlet(cloudlet);
         }
     }
