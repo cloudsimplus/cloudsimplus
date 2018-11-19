@@ -170,10 +170,13 @@ public class UtilizationModelDynamicExample {
         long outputSize = 300; //Size (in bytes) after execution
         long numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores
 
-        //Defines how RAM and Bandwidth resources are used
+        //Defines that the Cloudlet will use all the VM's RAM and Bandwidth.
         UtilizationModel utilizationFull = new UtilizationModelFull();
-        /*Defines that the Cloudlet will use just 50% of VM CPU capacity all the time.*/
-        UtilizationModel utilizationHalfCapacity = new UtilizationModelDynamic( 0.5);
+
+        /* Defines that the Cloudlet will use just 50% of the vPEs' MIPS capacity.
+        *  Virtual PEs or simply vPEs are the PEs allocated to a given VM,
+        *  which will be used to run Cloudlets.*/
+        UtilizationModel utilizationHalfCapacity = new UtilizationModelDynamic(0.5);
         Cloudlet cloudlet
                 = new CloudletSimple(
                         cloudletList.size(), length, numberOfCpuCores)
