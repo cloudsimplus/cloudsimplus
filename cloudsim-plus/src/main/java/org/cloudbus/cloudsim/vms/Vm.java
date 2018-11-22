@@ -325,6 +325,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      *
      * @param cloudlet the candidate Cloudlet to run inside the VM
      * @return true if the VM can run the Cloudlet, false otherwise
+     * @todo the Method is not being called anywhere to check if a VM has enough capacity to run a Cloudlet
      */
     boolean isSuitableForCloudlet(Cloudlet cloudlet);
 

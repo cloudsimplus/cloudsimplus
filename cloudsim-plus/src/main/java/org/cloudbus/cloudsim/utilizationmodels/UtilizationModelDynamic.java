@@ -42,6 +42,17 @@ import java.util.function.Function;
  * @since CloudSim Plus 1.0
  */
 public class UtilizationModelDynamic extends UtilizationModelAbstract {
+    /**
+     * Indicates whether the utilization model is readonly.
+     * It's set to true when using the
+     * {@link #UtilizationModelDynamic(UtilizationModelDynamic) copy constructor}
+     * to clone the current UtilizationModel instance.
+     * Such a clone is given as parameter when the
+     * {@link #utilizationUpdateFunction} is called to inform
+     * the researcher's simulation that the utilization has changed.
+     * Check the copy constructor documentation for more details
+     * on how this attribute is used.
+     */
     private boolean readOnly;
     private double currentUtilization;
 
@@ -64,10 +75,10 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     private double currentUtilizationTime;
 
     /**
-     * Creates a UtilizationModelDynamic with no initial utilization and resource utilization
-     * unit defined in {@link Unit#PERCENTAGE}.
+     * Creates a UtilizationModelDynamic with no initial utilization.
+     * The resource utilization unit is defined in {@link Unit#PERCENTAGE}.
      *
-     * <p><b>The utilization will not be dynamically incremented
+     * <p><b>The utilization won't be dynamically incremented
      * until an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
      * @see #setUtilizationUpdateFunction(Function)
      */
@@ -76,10 +87,10 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * Creates a UtilizationModelDynamic with no initial utilization and resource utilization
-     * {@link Unit} be defined according to the given parameter.
+     * Creates a UtilizationModelDynamic with no initial utilization.
+     * The resource utilization {@link Unit} is defined according to the given parameter.
      *
-     * <p><b>The utilization will not be dynamically incremented
+     * <p><b>The utilization won't be dynamically incremented
      * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
@@ -154,6 +165,10 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
          * to readonly. This way, the  {@link #getUtilization()} doesn't use such a function
          * to return the current utilization, but the last utilization value stored
          * in the {@link #currentUtilization} attribute.
+         * Without such a trick, if the researcher calls the {@link #getUtilization(double)} method inside
+         * the the update function he/she assigned to the UtilizationModel,
+         * that will cause an infinite loop, since the {@link #getUtilization(double)} will call
+         * the given function to increase the current utilization and return the current value.
          */
         this.utilizationUpdateFunction = modelInstance -> modelInstance.currentUtilization;
         this.readOnly = true;
