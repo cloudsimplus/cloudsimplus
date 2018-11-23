@@ -54,7 +54,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @see #getSchedulingInterval()
      */
     public static UtilizationModelPlanetLab getInstance(final String traceFilePath, final double schedulingInterval) {
-        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(UtilizationModelPlanetLab.class, traceFilePath));
+        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(traceFilePath, UtilizationModelPlanetLab.class));
         return new UtilizationModelPlanetLab(reader, schedulingInterval, DATA_SAMPLES);
     }
 

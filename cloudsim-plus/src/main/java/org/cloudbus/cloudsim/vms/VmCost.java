@@ -21,62 +21,71 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package org.cloudsimplus.testbeds.sla;
+package org.cloudbus.cloudsim.vms;
 
-import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * This class contains the methods needed to calculate the cost of vms
+ * Computes the monetary cost to run a given VM,
+ * including the {@link #getTotalCost() total cost}
+ * and individual resource cost, namely
+ * the processing power, bandwidth, memory and storage cost.
+ *
  * @author raysaoliveira
+ * @since CloudSim Plus 1.0
  */
 public class VmCost {
-
+    /** @see #getVm()  */
     private Vm vm;
 
+    /**
+     * Creates a VmCost object to compute the monetary cost to run a given VM.
+     * @param vm the VM to compute its monetary cost
+     */
     public VmCost(Vm vm) {
         this.vm = vm;
     }
 
     /**
-     * @return the vm
+     * Gets the VM for which the total monetary cost will be computed.
+     * @return
      */
     public Vm getVm() {
         return vm;
     }
 
     /**
-     * Return the cost of memory
+     * Gets the characteristics of the Datacenter where the VM is running.
+     * Such characteristics include the price to run a VM in such a Datacenter.
+     * @return
+     */
+    private DatacenterCharacteristics getDcCharacteristics() {
+        return vm.getHost().getDatacenter().getCharacteristics();
+    }
+
+    /**
+     * Gets the total monetary cost of the VM's allocated memory.
      *
-     * @return getMemoryCost
+     * @return
      */
     public double getMemoryCost() {
-        return getDatacenter().getCharacteristics().getCostPerMem() * vm.getRam().getCapacity();
-    }
-
-    private Datacenter getDatacenter() {
-        return vm.getHost().getDatacenter();
+        return getDcCharacteristics().getCostPerMem() * vm.getRam().getCapacity();
     }
 
     /**
-     * Return the cost of BW
+     * Gets the total monetary cost of the VM's allocated BW.
      *
-     * @return getBwCost
+     * @return
      */
     public double getBwCost() {
-        return getDatacenter().getCharacteristics().getCostPerBw() * vm.getBw().getCapacity();
+        return getDcCharacteristics().getCostPerBw() * vm.getBw().getCapacity();
     }
 
     /**
-     * Return the cost of processing for a given host
+     * Gets the total monetary cost of processing power allocated from the PM hosting the VM.
      *
-     * @return getProcessingCost
+     * @return
      */
     public double getProcessingCost() {
         final double hostMips = vm.getHost().getPeList().stream()
@@ -84,36 +93,29 @@ public class VmCost {
                 .map(Pe::getCapacity)
                 .orElse(0L);
 
-        final double costPerMI = (hostMips > 0 ?
-                getDatacenter().getCharacteristics().getCostPerSecond()/hostMips :
-                0.0);
+        final double costPerMI = hostMips > 0 ?
+                                    getDcCharacteristics().getCostPerSecond()/hostMips :
+                                    0.0;
 
         return costPerMI * getVm().getMips() * getVm().getNumberOfPes();
     }
 
     /**
-     * Return the cost of storage
+     * Gets the total monetary cost of the VM's allocated storage.
      *
      * @return getStorageCost
      */
     public double getStorageCost() {
-        return getDatacenter().getCharacteristics().getCostPerStorage() * vm.getStorage().getCapacity();
+        return getDcCharacteristics().getCostPerStorage() * vm.getStorage().getCapacity();
     }
 
     /**
-     * Gets the total cost of a vm,
-     * that includes the processing, bandwidth, memory and storage cost.
+     * Gets the total monetary cost of all resources allocated to the VM,
+     * namely the processing power, bandwidth, memory and storage.
      *
      * @return
      */
     public double getTotalCost() {
         return getProcessingCost() + getStorageCost() + getMemoryCost() + getBwCost();
-    }
-
-    /**
-     * @param vm the vm to set
-     */
-    public void setVm(Vm vm) {
-        this.vm = vm;
     }
 }

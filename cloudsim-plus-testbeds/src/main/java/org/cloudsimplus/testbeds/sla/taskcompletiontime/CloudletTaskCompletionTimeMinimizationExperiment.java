@@ -21,45 +21,24 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.slametrics.SlaContract;
 import org.cloudsimplus.testbeds.ExperimentRunner;
-import org.cloudsimplus.testbeds.SimulationExperiment;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 import java.util.function.Function;
 
@@ -85,15 +64,11 @@ import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompl
  * @author raysaoliveira
  * @see #selectVmForCloudlet(Cloudlet)
  */
-public final class CloudletTaskCompletionTimeMinimizationExperiment extends SimulationExperiment {
+public final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractCloudletTaskCompletionTimeExperiment {
     private static final int SCHEDULING_INTERVAL = 5;
 
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
-
-    private List<Host> hostList;
-    private static List<Vm> vmList;
-    private List<Cloudlet> cloudletList;
 
     private final ContinuousDistribution randCloudlet, randVm, randCloudletPes, randMipsVm;
 
@@ -128,6 +103,8 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
 
     private CloudletTaskCompletionTimeMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
+        setHostsNumber(HOSTS);
+        setVmsNumber(VMS);
         this.randCloudlet = new UniformDistr(getSeed());
         this.randVm = new UniformDistr(getSeed()+2);
         this.randCloudletPes = new UniformDistr(getSeed()+3);
@@ -135,19 +112,24 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
         contractsMap = new HashMap<>();
     }
 
+    @Override
+    public void printResults() {
+        printBrokerFinishedCloudlets(getFirstBroker());
+    }
+
     /**
      * Read all SLA contracts registered in the {@link #SLA_CONTRACTS_LIST}.
      * When the brokers are created, it is ensured the number of brokers
      * is equals to the number of SLA contracts in the {@link #SLA_CONTRACTS_LIST}.
      */
-    private void readTheSlaContracts() throws IOException {
+    private void readTheSlaContracts() {
         for (final String file: readContractList()) {
             SlaContract contract = SlaContract.getInstance(file);
             contractsMap.put(getFirstBroker(), contract);
         }
     }
 
-    private List<String> readContractList() throws FileNotFoundException {
+    private List<String> readContractList() {
         return ResourceLoader
             .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
             .lines()
@@ -156,24 +138,9 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
             .collect(toList());
     }
 
-    private DatacenterBroker getFirstBroker() {
-        return getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
-    }
-
-    @Override
-    public final void printResults() {
-        final DatacenterBroker broker0 = getFirstBroker();
-        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        final Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
-        final Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
-        finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
-
-        new CloudletsTableBuilder(finishedCloudlets).build();
-    }
-
     @Override
     protected List<Cloudlet> createCloudlets() {
-        cloudletList = new ArrayList<>(CLOUDLETS);
+        final List<Cloudlet> cloudletList = new ArrayList<>(CLOUDLETS);
         for (int i = 0; i < CLOUDLETS; i++) {
             cloudletList.add(createCloudlet());
         }
@@ -204,58 +171,19 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
     }
 
     @Override
-    protected List<Vm> createVms(final DatacenterBroker broker) {
-        vmList = new ArrayList<>(VMS);
-        for (int i = 0; i < VMS; i++) {
-            Vm vm = createVm();
-            //  createHorizontalVmScaling(vm);
-            vmList.add(vm);
-        }
-        return vmList;
-    }
-
-    /**
-     * Creates a Vm object.
-     *
-     * @return the created Vm
-     */
-    private Vm createVm() {
+    protected Vm createVm() {
         final int id = createsVms++;
-        final int i = (int) (randVm.sample() * VM_PES.length);
-        final int m = (int) (randMipsVm.sample() * MIPS_VM.length);
-        final int pes = VM_PES[i];
-        final int mips = MIPS_VM[m];
+        final int pesId = (int) (randVm.sample() * VM_PES.length);
+        final int mipdsId = (int) (randMipsVm.sample() * MIPS_VM.length);
+
+        final int pes = VM_PES[pesId];
+        final int mips = MIPS_VM[mipdsId];
 
 
-        Vm vm = new VmSimple(id, mips, pes)
+        final Vm vm = new VmSimple(id, mips, pes)
                 .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
         return vm;
-    }
-
-    @Override
-    protected List<Host> createHosts() {
-        hostList = new ArrayList<>(HOSTS);
-        for (int i = 0; i < HOSTS; i++) {
-            hostList.add(createHost());
-        }
-        return hostList;
-    }
-
-    private Host createHost() {
-        final List<Pe> pesList = new ArrayList<>(HOST_PES);
-        for (int i = 0; i < HOST_PES; i++) {
-            pesList.add(new PeSimple(10000, new PeProvisionerSimple()));
-        }
-
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
-        final int id = hostList.size();
-        return new HostSimple(40960, 100000, 100000, pesList)
-                .setRamProvisioner(ramProvisioner)
-                .setBwProvisioner(bwProvisioner)
-                .setVmScheduler(vmScheduler);
     }
 
     @Override
@@ -264,12 +192,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
         final DatacenterBroker broker0 = getFirstBroker();
         broker0.setVmMapper(this::selectVmForCloudlet);
         broker0.setCloudletComparator(SORT_CLOUDLETS_BY_LENGTH_REVERSED);
-
-        try {
-            readTheSlaContracts();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        readTheSlaContracts();
     }
 
     /**
@@ -296,11 +219,6 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
             .filter(vm -> getExpectedCloudletCompletionTime(cloudlet, vm) <= taskCompletionTimeSlaContract)
             .findFirst()
             .orElse(mostFreePesVm);
-    }
-
-    @Override
-    protected DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(getCloudSim());
     }
 
     /**
@@ -332,24 +250,6 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
     }
 
     /**
-     * Computes the Task Completion Time average for all finished Cloudlets on
-     * this experiment.
-     *
-     * @return the Task Completion Time
-     */
-    double getTaskCompletionTimeAverage() {
-        final SummaryStatistics cloudletTaskCompletionTime = new SummaryStatistics();
-        final DatacenterBroker broker = getBrokerList().stream()
-                .findFirst()
-                .orElse(DatacenterBroker.NULL);
-        broker.getCloudletFinishedList().stream()
-                .map(c -> c.getFinishTime() - c.getLastDatacenterArrivalTime())
-                .forEach(cloudletTaskCompletionTime::addValue);
-
-        return cloudletTaskCompletionTime.getMean();
-    }
-
-    /**
      * Gets the Task Completion Time (TCT) defined in a {@link DatacenterBroker}'s {@link SlaContract}.
      * @param broker the {@link DatacenterBroker} to the TCT from the {@link SlaContract}
      * @return the broker SLA's TCT
@@ -375,22 +275,6 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Simu
                 .filter(rt -> rt <= taskCompletionTimeSlaContract)
                 .count();
         return (totalOfCloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
-    }
-
-    /**
-     * Gets the total number of vPEs (VM PEs) across all existing VMs.
-     * @return
-     */
-    private double getSumPesVms() {
-        return vmList.stream()
-                .mapToDouble(Machine::getNumberOfPes)
-                .sum();
-    }
-
-    private double getSumPesCloudlets() {
-        return cloudletList.stream()
-                .mapToDouble(Cloudlet::getNumberOfPes)
-                .sum();
     }
 
     /**

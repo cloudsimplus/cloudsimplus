@@ -23,12 +23,13 @@
  */
 package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudsimplus.testbeds.ExperimentRunner;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
  * Runs the {@link CloudletTaskCompletionTimeWorkLoadMinimizationExperiment} the number of
@@ -102,7 +103,7 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends Experi
      * @param experiment the finished experiment
      */
     private void afterExperimentFinish(CloudletTaskCompletionTimeWorkLoadMinimizationExperiment experiment) {
-        cloudletsCompletionTime.add(experiment.getAverageCloudletCompletionTime());
+        cloudletsCompletionTime.add(experiment.getTaskCompletionTimeAverage());
         percentOfCloudletsMeetingCompletionTime.add(
                 experiment.getPercentageOfCloudletsMeetingCompletionTime());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());

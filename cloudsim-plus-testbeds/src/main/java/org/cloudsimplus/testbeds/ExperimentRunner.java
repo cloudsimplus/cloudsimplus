@@ -43,6 +43,7 @@ import java.util.stream.IntStream;
  *
  * @param <T> the class of experiment the runner will execute
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
     private boolean verbose;
@@ -53,6 +54,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     private long baseSeed;
 
     private List<Long> seeds;
+
     /**
      * @see #getSimulationRuns()
      */
@@ -81,7 +83,8 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Creates an experiment runner, setting the
      * {@link #getBaseSeed() base seed} as the current time.
-     * @param antitheticVariatesTechnique indicates if it's to be applied the <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
+     * @param antitheticVariatesTechnique indicates if it's to be applied the
+     *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
      */
     public ExperimentRunner(final boolean antitheticVariatesTechnique) {
         this(antitheticVariatesTechnique, System.currentTimeMillis());
@@ -89,7 +92,8 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
     /**
      * Creates an experiment runner with a given {@link #getBaseSeed() base seed}.
-     * @param antitheticVariatesTechnique indicates if it's to be applied the <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
+     * @param antitheticVariatesTechnique indicates if it's to be applied the
+     *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
      * @param baseSeed the seed to be used as base for each experiment seed
      */
     public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
@@ -433,21 +437,20 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * Creates a pseudo random number generator (PRNG) for a experiment run that
      * generates uniform values between [min and max[. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-     * to reduce results variance, the second half of experiments will use the
+     * to reduce results' variance, the second half of experiments will use the
      * seeds from the first half.
      *
-     * @param experimentIndex
+     * @param experimentIndex index of the experiment run to create a PRNG
      * @param minValue the minimum value the generator will return (inclusive)
      * @param maxValue the maximum value the generator will return (exclusive)
      * @return the created PRNG
      *
      * @see UniformDistr#isApplyAntitheticVariates()
      */
-    public ContinuousDistribution createRandomGen(int experimentIndex, double minValue, double maxValue) {
+    protected ContinuousDistribution createRandomGen(final int experimentIndex, final double minValue, final double maxValue) {
         if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
             final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
-            return new UniformDistr(minValue, maxValue, seeds.get(expIndexFromFirstHalf))
-                    .setApplyAntitheticVariates(true);
+            return new UniformDistr(minValue, maxValue, seeds.get(expIndexFromFirstHalf)).setApplyAntitheticVariates(true);
         }
 
         return new UniformDistr(minValue, maxValue, seeds.get(experimentIndex));
@@ -460,16 +463,16 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * to reduce results variance, the second half of experiments will used the
      * seeds from the first half.
      *
-     * @param experimentIndex
+     * @param experimentIndex index of the experiment run to create a PRNG
      * @return the created PRNG
      *
      * @see UniformDistr#isApplyAntitheticVariates()
      */
-    public ContinuousDistribution createRandomGen(int experimentIndex) {
+    protected ContinuousDistribution createRandomGen(final int experimentIndex) {
         return createRandomGen(experimentIndex, 0, 1);
     }
 
-    public boolean isToReuseSeedFromFirstHalfOfExperiments(int currentExperimentIndex) {
+    public boolean isToReuseSeedFromFirstHalfOfExperiments(final int currentExperimentIndex) {
         return isApplyAntitheticVariatesTechnique() &&
         simulationRuns > 1 && currentExperimentIndex >= halfSimulationRuns();
     }

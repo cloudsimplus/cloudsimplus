@@ -73,7 +73,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * @return the BriteNetworkTopology instance.
      */
     public static BriteNetworkTopology getInstance(final String fileName){
-        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(BriteNetworkTopology.class, fileName));
+        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(fileName, BriteNetworkTopology.class));
         return new BriteNetworkTopology(reader);
     }
 

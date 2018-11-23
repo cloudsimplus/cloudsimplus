@@ -21,20 +21,15 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.testbeds.sla.taskcompletiontime;
+
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
  * Runs the {@link CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment} the number of
@@ -43,10 +38,9 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  * @author raysaoliveira
  */
 public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment> {
-
-    static final int[] VM_PES = {2, 4};
+    private static final int CLOUDLETS = 100;
     static final int VMS = 30;
-    static final int CLOUDLETS = 100;
+    static final int[] VM_PES = {2, 4};
 
     /**
      * The Task Completion Time average for all the experiments.
@@ -82,7 +76,7 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends
                 .run();
     }
 
-    CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+    private CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
         cloudletCompletionTime = new ArrayList<>();
         percentageOfCloudletsMeetingTaskCompletionTime = new ArrayList<>();
@@ -97,8 +91,11 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends
         return exp;
     }
 
+    /**
+     * There is no setup for this experiment.
+     */
     @Override
-    protected void setup() {}
+    protected void setup() {/**/}
 
     /**
      * Method automatically called after every experiment finishes running. It
@@ -108,7 +105,7 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends
      * @param experiment the finished experiment
      */
     private void afterExperimentFinish(CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment experiment) {
-        cloudletCompletionTime.add(experiment.getCloudletsTaskCompletionTimeAverage());
+        cloudletCompletionTime.add(experiment.getTaskCompletionTimeAverage());
         percentageOfCloudletsMeetingTaskCompletionTime.add(
                 experiment.getPercentageOfCloudletsMeetingTaskCompletionTime());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());

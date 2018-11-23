@@ -21,24 +21,19 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.cloudsimplus.testbeds.sla.taskcompletiontime;
+
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudsimplus.testbeds.ExperimentRunner;
 
 /**
  * Runs the {@link CloudletTaskCompletionTimeWithoutMinimizationExperiment} the number of
- * times defines by {@link #getSimulationRuns()} and compute statistics.
+ * times defined by {@link #getSimulationRuns()} and computes statistics.
  *
  * @author raysaoliveira
  */
@@ -48,9 +43,9 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     static final long[] CLOUDLET_LENGTHS = {10000, 14000, 20000, 40000};
-    public static final int[] VM_PES = {2, 4};
+    static final int CLOUDLETS = 90;
     public static final int VMS = 30;
-    public static final int CLOUDLETS = 90;
+    public static final int[] VM_PES = {2, 4};
 
     /**
      * The Task Completion Time average for all the experiments.
@@ -92,7 +87,7 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
                 .run();
     }
 
-    CloudletTaskCompletionTimeWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+    private CloudletTaskCompletionTimeWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
         cloudletTaskTimesCompletion = new ArrayList<>();
         percentageOfCloudletsMeetingTaskTimesCompletion = new ArrayList<>();
@@ -104,15 +99,15 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
     protected CloudletTaskCompletionTimeWithoutMinimizationExperiment createExperiment(int i) {
         CloudletTaskCompletionTimeWithoutMinimizationExperiment exp
                 = new CloudletTaskCompletionTimeWithoutMinimizationExperiment(i, this);
-        ContinuousDistribution randCloudlet = createRandomGen(i);
-        ContinuousDistribution randVm = createRandomGen(i);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 
+    /**
+     * There is no setup for this runner.
+     */
     @Override
-    protected void setup() {
-    }
+    protected void setup() {/**/}
 
     /**
      * Method automatically called after every experiment finishes running. It
@@ -122,7 +117,7 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
      * @param experiment the finished experiment
      */
     private void afterExperimentFinish(CloudletTaskCompletionTimeWithoutMinimizationExperiment experiment) {
-        cloudletTaskTimesCompletion.add(experiment.getCloudletsTaskCompletionTimeAverage());
+        cloudletTaskTimesCompletion.add(experiment.getTaskCompletionTimeAverage());
         percentageOfCloudletsMeetingTaskTimesCompletion.add(
                 experiment.getPercentageOfCloudletsMeetingTaskCompletionTime());
         ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());

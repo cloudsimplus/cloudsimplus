@@ -62,7 +62,7 @@ public class SlaContract {
     private List<SlaMetric> metrics;
 
     /**
-     * Default constructor used to create a {@link SlaContract} instance.
+     * Creates a {@link SlaContract}.
      * If you want to get a contract from a JSON file,
      * you shouldn't call the constructor directly.
      * Instead, use some methods of the class methods.
@@ -71,6 +71,7 @@ public class SlaContract {
      * to use reflection to instantiate a SlaContract.</p>
      *
      * @see #getInstance(String)
+     *
      */
     public SlaContract() {
         this.metrics = new ArrayList<>();
@@ -82,7 +83,7 @@ public class SlaContract {
      * @return a {@link SlaContract} read from the JSON file
      */
     public static SlaContract getInstance(final String jsonFilePath) {
-        return getInstanceInternal(ResourceLoader.getInputStream(SlaContract.class, jsonFilePath));
+        return getInstanceInternal(ResourceLoader.getInputStream(jsonFilePath, SlaContract.class));
     }
 
     /**

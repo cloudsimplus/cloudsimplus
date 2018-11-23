@@ -30,15 +30,12 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
 
 /**
  * A base class to implement simulation experiments.
@@ -46,8 +43,6 @@ import java.util.stream.IntStream;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class SimulationExperiment implements Runnable {
-    protected static final Logger logger = LoggerFactory.getLogger(SimulationExperiment.class.getSimpleName());
-
     private final ExperimentRunner runner;
     private final List<Cloudlet> cloudletList;
     private final long seed;
@@ -140,10 +135,6 @@ public abstract class SimulationExperiment implements Runnable {
         return Collections.unmodifiableList(vmList);
     }
 
-    protected void setVmList(final List<Vm> vmList) {
-        this.vmList = Objects.requireNonNull(vmList);
-    }
-
     /**
      * Defines if simulation results of the experiment have to be output or not.
      *
@@ -233,11 +224,9 @@ public abstract class SimulationExperiment implements Runnable {
     }
 
     protected void createBrokers() {
-        IntStream
-            .range(0, numBrokersToCreate)
-            .forEach(i -> {
-                DatacenterBroker broker = createBrokerAndAddToList();
-            });
+        for (int i = 0; i < numBrokersToCreate; i++) {
+            createBrokerAndAddToList();
+        }
     }
 
     /**

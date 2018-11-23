@@ -119,7 +119,7 @@ public final class ResourceLoader {
      * @throws FileNotFoundException when the file doesn't exist
      */
     public static BufferedReader getBufferedReader(final Class klass, final String resourceName) {
-        return new BufferedReader(new InputStreamReader(getInputStream(klass, resourceName)));
+        return new BufferedReader(new InputStreamReader(getInputStream(resourceName, klass)));
     }
 
     /**
@@ -128,12 +128,12 @@ public final class ResourceLoader {
      * If the input is null, the simulation is not being executed from a jar file,
      * so try to load the resource from a directory in the filesystem.
      *
-     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
      * @param resourceName the name of the resource to get a {@link BufferedReader} for it
+     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
      * @return a {@link InputStream} to read the resource
      * @throws UncheckedIOException when the file cannot be accessed (such as when it doesn't exist)
      */
-    public static InputStream getInputStream(final Class klass, final String resourceName) {
+    public static InputStream getInputStream(final String resourceName, final Class klass) {
         //Try to load the resource from the resource directory in the filesystem
         InputStream input = klass.getClassLoader().getResourceAsStream("/"+resourceName);
         if(input != null){
