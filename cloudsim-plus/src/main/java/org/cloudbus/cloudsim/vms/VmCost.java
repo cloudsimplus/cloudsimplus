@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 /**
  * Computes the monetary cost to run a given VM,
  * including the {@link #getTotalCost() total cost}
- * and individual resource cost, namely
+ * and individual resource cost, namely:
  * the processing power, bandwidth, memory and storage cost.
  *
  * @author raysaoliveira

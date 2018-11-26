@@ -22,7 +22,16 @@ public class PowerModelSimple extends PowerModelAbstract {
      */
     private static final double ONE_HUNDRED = 100.0;
 
-    private final UnaryOperator<Double> powerIncrementFunction;
+    /**
+     * A function defining how the power consumption is computed based on the CPU utilization.
+     * When called, this function receives the utilization percentage in scale from [0 to 100]
+     * and must return the base power consumption for that CPU utilization.
+     * The function is only accountable to compute the base energy consumption
+     * because the total energy consumption depends on other factors such as
+     * the {@link #getStaticPower() static power} consumed by the Host,
+     * independent of its CPU usage.
+     */
+    private final UnaryOperator<Double> powerFunction;
 
     /**
      * @see #getMaxPower()
@@ -37,21 +46,23 @@ public class PowerModelSimple extends PowerModelAbstract {
     /**
      * Instantiates a PowerModelSimple.
      *
-     * @param maxPower the max power that can be consumed in Watt-Second (Ws).
-     * @param staticPowerPercent the static power usage percentage between 0 and 1.
-     * @param powerIncrementFunction a function that defines how the power consumption increases along the time.
-     *                               This function receives the utilization percentage in scale from 0 to 100
-     *                               and returns a factor representing how the power consumption will
-     *                               increase for the given utilization percentage.
-     *                               The function return is again a percentage value between [0 and 1].
+     * @param maxPower           the max power that can be consumed in Watt-Second (Ws).
+     * @param staticPowerPercent the static power usage percentage between [0 and 1].
+     * @param powerFunction      A function defining how the power consumption is computed based on the CPU utilization.
+     *                           When called, this function receives the utilization percentage in scale from [0 to 100]
+     *                           and must return the base power consumption for that CPU utilization.
+     *                           The function is only accountable to compute the base energy consumption
+     *                           because the total energy consumption depends on other factors such as
+     *                           the {@link #getStaticPower() static power} consumed by the Host,
+     *                           independent of its CPU usage.
      */
     public PowerModelSimple(
         final double maxPower,
         final double staticPowerPercent,
-        final UnaryOperator<Double> powerIncrementFunction)
+        final UnaryOperator<Double> powerFunction)
     {
         super();
-        this.powerIncrementFunction = Objects.requireNonNull(powerIncrementFunction);
+        this.powerFunction = Objects.requireNonNull(powerFunction);
         setMaxPower(maxPower);
         setStaticPowerPercent(staticPowerPercent);
     }
@@ -114,11 +125,11 @@ public class PowerModelSimple extends PowerModelAbstract {
      * @return the power consumption constant in Watt-Second (Ws)
      */
     protected double getConstant() {
-        return (maxPower - getStaticPower()) / powerIncrementFunction.apply(ONE_HUNDRED);
+        return (maxPower - getStaticPower()) / powerFunction.apply(ONE_HUNDRED);
     }
 
     @Override
     protected double getPowerInternal(final double utilization) throws IllegalArgumentException {
-        return getStaticPower() + getConstant() * powerIncrementFunction.apply(utilization* ONE_HUNDRED);
+        return getStaticPower() + getConstant() * powerFunction.apply(utilization*ONE_HUNDRED);
     }
 }

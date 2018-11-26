@@ -33,6 +33,8 @@ public class PowerModelLinear  extends PowerModelSimple {
 	 * @param staticPowerPercent the static power usage percentage between 0 and 1.
 	 */
 	public PowerModelLinear(final double maxPower, final double staticPowerPercent) {
+	    /** Calls the super constructor passing a {@link #powerFunction}
+         * that indicates the base power consumption is linear to CPU utilization.*/
 	    super(maxPower, staticPowerPercent, utilizationPercent -> utilizationPercent);
 	}
 }
