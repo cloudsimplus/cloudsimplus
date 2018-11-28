@@ -38,7 +38,7 @@ class TaskData extends MachineDataAbstract {
      * Gets the id of the job this task belongs to.
      * @return
      */
-    /* default */ long getJobId(){ return jobId; }
+    public long getJobId(){ return jobId; }
 
     /* default */ TaskData setJobId(final long jobId) {
         this.jobId = jobId;
@@ -49,7 +49,7 @@ class TaskData extends MachineDataAbstract {
      * Gets the task index within the job.
      * @return
      */
-    /* default */ long getTaskIndex() {
+    public long getTaskIndex() {
         return taskIndex;
     }
 
@@ -63,7 +63,7 @@ class TaskData extends MachineDataAbstract {
      * The ID is composed of the {@link #getJobId() Job ID} plus the {@link #getTaskIndex() Task Index}.
      * @return
      */
-    /* default */ long getUniqueTaskId(){
+    public long getUniqueTaskId(){
         return getJobId() + getTaskIndex();
     }
 }
