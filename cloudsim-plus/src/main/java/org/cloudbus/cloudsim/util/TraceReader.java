@@ -69,4 +69,10 @@ public interface TraceReader {
      * @return
      */
     String getFilePath();
+
+    /**
+     * Gets the number of the last line read from the trace file (starting from 0).
+     * @return
+     */
+    int getLastLineNumber();
 }

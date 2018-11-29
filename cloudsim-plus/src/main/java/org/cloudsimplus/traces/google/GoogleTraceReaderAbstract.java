@@ -70,7 +70,12 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
         preProcess();
         //If the file was not processed yet, process it
         if (availableObjects.isEmpty()) {
-            readFile(this::processParsedLine);
+            try {
+                readFile(this::processParsedLine);
+            } catch (Exception e) {
+                throw new RuntimeException("Error when processing the trace file. Current trace line: " + getLastLineNumber(), e);
+            }
+
             postProcess();
         }
 

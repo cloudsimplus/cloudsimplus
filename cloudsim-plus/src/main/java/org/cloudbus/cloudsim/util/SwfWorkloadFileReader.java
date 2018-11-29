@@ -118,7 +118,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
     private int mips;
 
     /**
-     * List of Cloudlets created from the trace {@link #getReader()}.
+     * List of Cloudlets created from the trace {@link #getInputStream()}.
      */
     private final List<Cloudlet> cloudlets;
 

@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class TraceReaderAbstract implements TraceReader {
     private final String filePath;
-    private final InputStream reader;
+    private final InputStream inputStream;
 
     /** @see #getFieldDelimiterRegex() */
     private String fieldDelimiterRegex;
@@ -29,6 +29,9 @@ public abstract class TraceReaderAbstract implements TraceReader {
     private int maxLinesToRead;
 
     private String[] commentString = {";", "#"};
+
+    /** @see #getLastLineNumber() */
+    private int lastLineNumber;
 
     /**
      * Create a new SwfWorkloadFileReader object.
@@ -46,17 +49,17 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * Create a new SwfWorkloadFileReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @param reader   a {@link InputStreamReader} object to read the file
+     * @param inputStream   a {@link InputStreamReader} object to read the file
      * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
      */
-    protected TraceReaderAbstract(final String filePath, final InputStream reader) {
+    protected TraceReaderAbstract(final String filePath, final InputStream inputStream) {
         if (filePath == null || filePath.isEmpty()) {
-            throw new IllegalArgumentException("Invalid trace reader name.");
+            throw new IllegalArgumentException("Invalid trace file name.");
         }
 
         this.fieldDelimiterRegex = "\\s+";
         this.maxLinesToRead = -1;
-        this.reader = reader;
+        this.inputStream = inputStream;
         this.filePath = filePath;
     }
 
@@ -107,8 +110,8 @@ public abstract class TraceReaderAbstract implements TraceReader {
         return filePath;
     }
 
-    protected InputStream getReader() {
-        return reader;
+    protected InputStream getInputStream() {
+        return inputStream;
     }
 
     protected String[] parseTraceLine(final String line){
@@ -116,7 +119,8 @@ public abstract class TraceReaderAbstract implements TraceReader {
             return new String[0];
         }
 
-        return line.trim().split(fieldDelimiterRegex);
+        //Splits the string, ensuring that empty fields won't be discarded
+        return line.trim().split(fieldDelimiterRegex, -1);
     }
 
     private boolean isComment(final String line) {
@@ -124,40 +128,40 @@ public abstract class TraceReaderAbstract implements TraceReader {
     }
 
     /**
-     * Reads traces from a text reader, then creates a Cloudlet for each line read.
+     * Reads traces from a text file, then creates a Cloudlet for each line read.
      *
      * @param inputStream a {@link InputStream} to read the file
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
      * @return <code>true</code> if successful, <code>false</code> otherwise.
-     * @throws IOException if the there was any error reading the reader
+     * @throws IOException if the there was any error reading the file
      */
     protected void readTextFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
         readFile(inputStream, processParsedLineFunction);
     }
 
     /**
-     * Reads traces from a gzip reader, then creates a Cloudlet for each line read.
+     * Reads traces from a gzip file, then creates a Cloudlet for each line read.
      *
      * @param inputStream a {@link InputStream} to read the file
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
      * @return <code>true</code> if successful; <code>false</code> otherwise.
-     * @throws IOException if the there was any error reading the reader
+     * @throws IOException if the there was any error reading the file
      */
     protected void readGZIPFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
         readFile(new GZIPInputStream(inputStream), processParsedLineFunction);
     }
 
     /**
-     * Reads a set of trace files inside a Zip reader, then creates a Cloudlet for each line read.
+     * Reads a set of trace files inside a Zip file, then creates a Cloudlet for each line read.
      *
      * @param inputStream a {@link InputStream} to read the file
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
-     * @return <code>true</code> if reading a reader is successful;
+     * @return <code>true</code> if reading a file is successful;
      * <code>false</code> otherwise.
-     * @throws IOException if the there was any error reading the reader
+     * @throws IOException if the there was any error reading the file
      */
     protected boolean readZipFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
         try (ZipInputStream zipInputStream = new ZipInputStream(requireNonNull(inputStream))) {
@@ -175,18 +179,18 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
      * @return <code>true</code> if successful, <code>false</code> otherwise.
-     * @throws UncheckedIOException if the there was any error reading the reader
+     * @throws UncheckedIOException if the there was any error reading the file
      */
     protected void readFile(final Function<String[], Boolean> processParsedLineFunction) {
-        /*@todo It would be implemented using specific classes to avoid this if chain.
+        /*@todo It would be implemented using specific classes to avoid this "if" chain.
         If a new format is included, the code has to be changed to include another if*/
         try {
             if (getFilePath().endsWith(".gz")) {
-                readGZIPFile(getReader(), processParsedLineFunction);
+                readGZIPFile(getInputStream(), processParsedLineFunction);
             } else if (getFilePath().endsWith(".zip")) {
-                readZipFile(getReader(), processParsedLineFunction);
+                readZipFile(getInputStream(), processParsedLineFunction);
             } else {
-                readTextFile(getReader(), processParsedLineFunction);
+                readTextFile(getInputStream(), processParsedLineFunction);
             }
         } catch(IOException e){
             throw new UncheckedIOException(e);
@@ -194,14 +198,14 @@ public abstract class TraceReaderAbstract implements TraceReader {
     }
 
     /**
-     * Reads traces from a InputStream linked to a file in any supported format,
+     * Reads traces from an {@link InputStream} linked to a file in any supported format,
      * then creates a Cloudlet for each line read.
      *
      * @param inputStream a {@link InputStream} to read the file
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
      * @return <code>true</code> if successful, <code>false</code> otherwise.
-     * @throws IOException if the there was any error reading the reader
+     * @throws IOException if the there was any error reading the file
      */
     private void readFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
         requireNonNull(inputStream);
@@ -209,29 +213,34 @@ public abstract class TraceReaderAbstract implements TraceReader {
 
         //The reader is safely closed by the caller
         final BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        int lineNum = 1;
+        lastLineNumber = 0;
         String line;
-        while ((line = readNextLine(reader, lineNum)) != null) {
+        while ((line = readNextLine(reader, lastLineNumber)) != null) {
             final String[] parsedTraceLine = parseTraceLine(line);
             if(parsedTraceLine.length > 0 && processParsedLineFunction.apply(parsedTraceLine)) {
-                lineNum++;
+                lastLineNumber++;
             }
         }
     }
 
     /**
-     * Reads the next line of the workload reader.
+     * Reads the next line of the workload file.
      *
-     * @param reader     the object that is reading the workload reader
-     * @param lineNumber the number of the line that that will be read from the workload reader
+     * @param reader     the object that is reading the workload file
+     * @param lineNumber the number of the line that that will be read from the workload file (starting from 0)
      * @return the line read; or null if there isn't any more lines to read or if
      * the number of lines read reached the {@link #getMaxLinesToRead()}
      */
     private String readNextLine(final BufferedReader reader, final int lineNumber) throws IOException {
-        if (reader.ready() && (maxLinesToRead == -1 || lineNumber <= maxLinesToRead)) {
+        if (reader.ready() && (maxLinesToRead == -1 || lineNumber <= maxLinesToRead-1)) {
             return reader.readLine();
         }
 
         return null;
+    }
+
+    @Override
+    public int getLastLineNumber() {
+        return lastLineNumber;
     }
 }
