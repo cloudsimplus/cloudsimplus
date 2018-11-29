@@ -323,12 +323,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public void submitCloudletList(final List<? extends Cloudlet> list) {
-        sortCloudletsIfComparatorIsSet(list);
-        setBrokerForEntities(list);
-        lastSubmittedCloudlet = setIdForEntitiesWithoutOne(list, lastSubmittedCloudlet);
         if (list.isEmpty()) {
             return;
         }
+        sortCloudletsIfComparatorIsSet(list);
+        setBrokerForEntities(list);
+        lastSubmittedCloudlet = setIdForEntitiesWithoutOne(list, lastSubmittedCloudlet);
         cloudletSubmittedList.addAll(list);
         setSimulationForCloudletUtilizationModels(list);
         cloudletWaitingList.addAll(list);

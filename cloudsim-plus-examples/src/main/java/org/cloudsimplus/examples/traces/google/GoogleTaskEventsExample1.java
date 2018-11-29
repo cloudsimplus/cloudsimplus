@@ -81,7 +81,6 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
  * @todo See https://github.com/manoelcampos/cloudsim-plus/issues/151
  * @todo {@link CloudSimTags#CLOUDLET_FAIL} events aren't been processed.
  * @todo It has to be checked how to make the Cloudlet to be executed in the Host specified in the trace file.
- * @todo It has to be checked the task-usage trace files too.
  */
 public class GoogleTaskEventsExample1 {
     private static final String TRACE_FILENAME = "workload/google-traces/task-events-sample-1.csv";
