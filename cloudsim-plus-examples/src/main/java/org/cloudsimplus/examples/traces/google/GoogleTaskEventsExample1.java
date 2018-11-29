@@ -43,6 +43,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -72,6 +73,8 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
  *
  * <p>The trace are located in resources/workload/google-traces/.
  * Each line in the "task events" trace defines the scheduling of tasks (Cloudlets) inside a Datacenter.</p>
+ *
+ * <p>Check important details at {@link TraceReaderAbstract}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0

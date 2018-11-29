@@ -48,6 +48,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.SwfWorkloadFileReader;
+import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
@@ -81,6 +82,9 @@ import static java.util.Comparator.comparingLong;
  * <a href="http://www.cs.huji.ac.il/labs/parallel/workload/swf.html">this
  * page</a>.
  * </p>
+ *
+ * <p>Check important details at {@link SwfWorkloadFileReader}
+ * and {@link TraceReaderAbstract}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0.0

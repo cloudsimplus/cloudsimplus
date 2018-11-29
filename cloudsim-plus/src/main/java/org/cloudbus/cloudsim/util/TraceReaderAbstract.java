@@ -22,8 +22,8 @@ import static java.util.Objects.requireNonNull;
  *   <li>If you need to load multiple trace files, create multiple instances of this class.</li>
  *   <li>If size of the trace reader is huge or contains lots of traces, please
  *       increase the JVM heap size accordingly by using <b>java -Xmx</b> option
- *       when running the simulation. For instance, you can use <b>java -Xmx80m</b>
- *       to define the JVM heap size will be 80MB.
+ *       when running the simulation. For instance, you can use <b>java -Xmx200M</b>
+ *       to define the JVM heap size will be 200MB.
  *   </li>
  * </ul>
  *

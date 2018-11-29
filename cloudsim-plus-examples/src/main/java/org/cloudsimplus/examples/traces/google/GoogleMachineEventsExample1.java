@@ -37,6 +37,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
+import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -64,9 +65,10 @@ import java.util.function.Function;
  * This way, CloudSim Plus considers that any Host removal is due to a failure
  * and injects that failure for the Host at the specified timestamp.
  * The same Host can fail and recover as specified in the trace.
- * CloudSim Plus accordingly process such events.</p>
+ * CloudSim Plus accordingly process such events.
+ * You can confirm in the logs that Host 3 is added and removed multiple times.</p>
  *
- * <p>You can check in the logs that Host 3 is added and removed multiple times.</p>
+ * <p>Check important details at {@link TraceReaderAbstract}.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
