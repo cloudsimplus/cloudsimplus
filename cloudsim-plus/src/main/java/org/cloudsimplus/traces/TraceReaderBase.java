@@ -32,6 +32,8 @@ import java.util.Objects;
  * An abstract class providing additional features for subclasses implementing trace file
  * readers for specific file formats.
  *
+ * <p>Check important details at {@link TraceReaderAbstract}.</p>
+ *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */

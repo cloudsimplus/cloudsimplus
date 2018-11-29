@@ -13,6 +13,20 @@ import static java.util.Objects.requireNonNull;
 /**
  * An abstract class providing features for subclasses implementing trace file readers for specific file formats.
  *
+ *
+ * <h4>NOTES:</h4>
+ * <ul>
+ *   <li>This class can only read trace files in the following format:
+ *       <b>ASCII text, zip, gz.</b>
+ *   </li>
+ *   <li>If you need to load multiple trace files, create multiple instances of this class.</li>
+ *   <li>If size of the trace reader is huge or contains lots of traces, please
+ *       increase the JVM heap size accordingly by using <b>java -Xmx</b> option
+ *       when running the simulation. For instance, you can use <b>java -Xmx80m</b>
+ *       to define the JVM heap size will be 80MB.
+ *   </li>
+ * </ul>
+ *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */

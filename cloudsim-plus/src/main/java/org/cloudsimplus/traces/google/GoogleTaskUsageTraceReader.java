@@ -30,6 +30,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -58,6 +59,8 @@ import static java.util.Objects.requireNonNull;
  *
  * <p>The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above.
  * It's strongly recommended to read such a documentation before trying to use this class.</p>
+ *
+ * <p>Check important details at {@link TraceReaderAbstract}.</p>
  *
  * @see #process()
  *

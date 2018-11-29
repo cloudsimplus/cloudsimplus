@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.traces.google;
 
+import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudsimplus.traces.TraceReaderBase;
 
 import java.io.InputStream;
@@ -33,6 +34,8 @@ import java.util.Set;
 /**
  * An abstract class for creating <a href="https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md">Google Cluster Trace</a>
  * readers.
+ *
+ * <p>Check important details at {@link TraceReaderAbstract}.</p>
  *
  * @param <T> the type of objects that will be created for each line read from the trace file
  *

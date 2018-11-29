@@ -24,27 +24,23 @@ import java.util.function.Predicate;
  * It follows the <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">Standard Workload Format (*.swf files)</a>
  * from <a href="new.huji.ac.il/en">The Hebrew University of Jerusalem</a>.
  *
- * <p>
- * <b>NOTES:</b>
+ * <p>Check important details at {@link TraceReaderAbstract}.</p>
+ *
+ *
+ * <h4>NOTES:</h4>
  * <ul>
- * <li>This class can only read trace files in the following format:
- * <b>ASCII text, zip, gz.</b>
- * <li>If you need to load multiple trace files, then you need to create
- * multiple instances of this class <tt>each with a unique entity name</tt>.
- * <li>If size of the trace reader is huge or contains lots of traces, please
- * increase the JVM heap size accordingly by using <tt>java -Xmx</tt> option
- * when running the simulation.
- * <li>The default Cloudlet reader size for sending to and receiving from a Datacenter is
- * {@link DataCloudTags#DEFAULT_MTU}. However, you can
- * specify the reader size by using {@link Cloudlet#setFileSize(long)}.
- * <li>A job run time considers the time spent for a single PE (since all PEs will
- * be used for the same amount of time)<tt>not</tt>
- * not the total execution time across all PEs.
- * For example, job #1 in the trace has a run time of 100 seconds for 2
- * processors. This means each processor runs job #1 for 100 seconds, if the
- * processors have the same specification.
+ *   <li>The default Cloudlet reader size for sending to and receiving from a Datacenter is
+ *       {@link DataCloudTags#DEFAULT_MTU}. However, you can
+ *       specify the reader size by using {@link Cloudlet#setFileSize(long)}.
+ *   </li>
+ *   <li>A job run time considers the time spent for a single PE (since all PEs will
+ *       be used for the same amount of time)<tt>not</tt>
+ *       not the total execution time across all PEs.
+ *       For example, job #1 in the trace has a run time of 100 seconds for 2
+ *       processors. This means each processor runs job #1 for 100 seconds, if the
+ *       processors have the same specification.
+ *   </li>
  * </ul>
- * </p>
  *
  * @author Anthony Sulistio
  * @author Marcos Dias de Assuncao
