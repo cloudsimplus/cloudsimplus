@@ -63,11 +63,11 @@ import java.util.List;
  * <p>The example is useful when you want to run a simulation
  * for a specific amount of time, for instance, to wait random arrival
  * or requests (such as Cloudlets and VMs).
- * For instance, if you want to run a simulation for 24 hours,
- * you just need to call {@code simulation.terminateAt(60*60*24)} (realize the value is in seconds).</p>
+ * Lets say you want to run a simulation for 24 hours.
+ * This way, you just need to call {@code simulation.terminateAt(60*60*24)} (realize the value is in seconds).</p>
  *
  * <p>It creates Cloudlets randomly, according to a pseudo random number generator (PRNG) following the
- * {@link UniformDistr uniform distribution}. You can change the PRNG as you wich,
+ * {@link UniformDistr uniform distribution}. You can change the PRNG as you wish,
  * for instance, to use a {@link org.cloudbus.cloudsim.distributions.PoissonDistr} arrival process.</p>
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature

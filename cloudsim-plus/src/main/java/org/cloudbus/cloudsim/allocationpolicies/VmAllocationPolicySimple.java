@@ -18,7 +18,7 @@ import java.util.function.Function;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with fewer PEs in use.
+ * the host for a VM, that one with the fewest PEs in use.
  * <b>It is therefore a Worst Fit policy</b>, allocating each VM into the host with most available PEs.
  *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
@@ -51,7 +51,6 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * Gets the first suitable host from the {@link #getHostList()} that has the fewest number of used PEs (i.e, higher free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      *
-     * @todo Sorting the Host list may degrade performance for large scale simulations.
      * @todo The number of free PEs may be taken directly from each Host in a List,
      * avoiding the use of Maps that doesn't ensure order.
      * The entries are being sorted just to ensure that
