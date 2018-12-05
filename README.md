@@ -44,7 +44,7 @@ The efforts dedicated to this project have been recognized by the [EU/Brasil Clo
 
 CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). It is supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
 
-**There are different ways you can contribute to CloudSim Plus, as it is shown in the [contribution guide](CONTRIBUTING.md). One easy way is to click on the "Star" button at the top of the project's GitHub page. It cost nothing to you and helps promote the project.**
+**There are different ways you can contribute to CloudSim Plus, as it is shown in the [contribution guide](CONTRIBUTING.md). One easy way is to click on the "Star" button at the top of the project's GitHub page. It costs you nothing and helps promoting the project.**
 
 The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is developed in the [Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), at the [Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) of the [University of Melbourne](http://www.unimelb.edu.au/).
 

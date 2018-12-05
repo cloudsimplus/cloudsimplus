@@ -143,6 +143,10 @@ public class RandomVmAllocationPolicyExample {
 
     /**
      * Define a specific policy to randomly select a suitable Host to place a given VM.
+     * It implements a {@link Comparator} that randomly sorts the Hosts by returning a value between [-1..1]
+     * (according to comparator requirements).
+     * Hosts' attributes aren't even considered to ensure the randomness.
+     *
      * @param vmAllocationPolicy the {@link VmAllocationPolicy} containing Host allocation information
      * @param vm the {@link Vm} to find a host to be placed
      * @return an {@link Optional} that may contain a Host in which to place a Vm, or an {@link Optional#empty()}
@@ -167,14 +171,11 @@ public class RandomVmAllocationPolicyExample {
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
         final long storage = 1000000; //in Megabytes
-        ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
-        VmScheduler vmScheduler = new VmSchedulerTimeShared();
         Host host = new HostSimple(ram, bw, storage, peList);
         host
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 
