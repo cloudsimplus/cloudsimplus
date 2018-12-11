@@ -71,7 +71,7 @@ public final class HostFaultInjectionExample1 {
 
     /*The average number of failures expected to happen each hour
     in a Poisson Process, which is also called event rate or rate parameter.*/
-    private static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.02;
+    private static final double MEAN_FAILURE_NUMBER_PER_HOUR = 0.01;
 
     private List<Host> hostList;
 
@@ -233,7 +233,7 @@ public final class HostFaultInjectionExample1 {
         fault = new HostFaultInjection(datacenter, poisson);
         fault.setMaxTimeToFailInHours(800);
 
-        this.vmList.forEach(vm -> fault.addVmCloner(broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets)));
+        fault.addVmCloner(broker, new VmClonerSimple(this::cloneVm, this::cloneCloudlets));
     }
 
     /**
