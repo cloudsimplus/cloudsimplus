@@ -91,7 +91,7 @@ public class PowerExampleSchedulingInterval {
     /**
      * The max number of watt-second (Ws) of power a Host uses.
      */
-    private static final int MAX_POWER_WATTS_SEC = 100;
+    private static final int MAX_POWER_WATTS_SEC = 50;
 
     private final int schedulingInterval;
     private boolean showAllHostUtilizationHistoryEntries;

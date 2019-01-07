@@ -97,7 +97,7 @@ public final class HostStateHistoryEntry {
 
     @Override
     public String toString() {
-        return String.format("Time: %6.0f | Requested: %10.0f MIPS | Allocated: %10.0f MIPS | Used: %3.0f%% Host Active: %s\n",
+        return String.format("Time: %6.1f | Requested: %10.0f MIPS | Allocated: %10.0f MIPS | Used: %3.0f%% Host Active: %s\n",
                             time, requestedMips, allocatedMips, getPercentUsage()*100, active);
     }
 }

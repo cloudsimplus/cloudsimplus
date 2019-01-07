@@ -73,10 +73,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.DoubleSummaryStatistics;
-import java.util.List;
+import java.util.*;
 
 /**
  * An example showing how to create 1 Datacenter with 5 hosts,
@@ -258,15 +255,19 @@ public final class MigrationExample2_PowerUsage {
      * @param host the Host to print information
      */
     private void printHostCpuUsageAndPowerConsumption(final Host host) {
-        System.out.printf("Host: %6d | CPU Usage | Power Consumption\n", host.getId());
+        System.out.printf("Host: %6d | CPU Usage | Power Consumption in Watt-Second (Ws)\n", host.getId());
         System.out.println("-------------------------------------------------------------------------------------------");
-        final double[] utilizationHistory = host.getUtilizationHistory().values().stream().mapToDouble(DoubleSummaryStatistics::getSum).toArray();
-        double time = simulation.clock();
-        for (int i = 0; i < utilizationHistory.length; i++) {
-            final double cpuUsage = utilizationHistory[i];
-            System.out.printf("Time: %6.0f | %9.2f | %.2f\n", time, cpuUsage, host.getPowerModel().getPower(cpuUsage));
-            time -= SCHEDULING_INTERVAL;
+        SortedMap<Double, DoubleSummaryStatistics> utilizationHistory = host.getUtilizationHistory();
+        //The total power the Host consumed in the period (in Watt-Sec)
+        double totalHostPowerConsumptionWattSec = 0;
+        for (Map.Entry<Double, DoubleSummaryStatistics> entry : utilizationHistory.entrySet()) {
+            final double time = entry.getKey();
+            //The sum of CPU usage of every VM which has run in the Host
+            final double hostCpuUsage = entry.getValue().getSum();
+            System.out.printf("Time: %6.1f | %9.2f | %.2f\n", time, hostCpuUsage, host.getPowerModel().getPower(hostCpuUsage));
+            totalHostPowerConsumptionWattSec += host.getPowerModel().getPower(hostCpuUsage);
         }
+        System.out.printf("Total Host power consumption in the period: %.2f Watt-Sec\n", totalHostPowerConsumptionWattSec);
         System.out.println();
     }
 
@@ -438,7 +439,7 @@ public final class MigrationExample2_PowerUsage {
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
             host.enableStateHistory();
-            host.setPowerModel(new PowerModelLinear(800, 0.3));
+            host.setPowerModel(new PowerModelLinear(50, 0.3));
             return host;
     }
 
