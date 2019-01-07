@@ -38,7 +38,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * being migrated, this list will have only one item.
      *
      * @todo There isn't Cloudlet migration, so this attribute doesn't make sense.
-     * But since a lot of methods uses this attribute, it's removal has to be carefully assessed.
+     * But since a lot of methods uses it, it's removal has to be carefully assessed.
      */
     private final List<CloudletDatacenterExecution> datacenterExecutionList;
     /**
@@ -205,13 +205,13 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) {
+    public Cloudlet addOnUpdateProcessingListener(final EventListener<CloudletVmEventInfo> listener) {
         this.onUpdateProcessingListeners.add(requireNonNull(listener));
         return this;
     }
 
     @Override
-    public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) {
+    public boolean removeOnUpdateProcessingListener(final EventListener<CloudletVmEventInfo> listener) {
         return this.onUpdateProcessingListeners.remove(listener);
     }
 
@@ -222,12 +222,12 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener) {
+    public boolean removeOnFinishListener(final EventListener<CloudletVmEventInfo> listener) {
         return onFinishListeners.remove(listener);
     }
 
     @Override
-    public void notifyOnUpdateProcessingListeners(double time) {
+    public void notifyOnUpdateProcessingListeners(final double time) {
         onUpdateProcessingListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, time, this)));
     }
 
@@ -567,9 +567,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * @return
      */
     private double getTotalCpuCostForAllDatacenters() {
-        return datacenterExecutionList.stream()
-            .mapToDouble(dcInfo -> dcInfo.getActualCpuTime() * dcInfo.getCostPerSec())
-            .sum();
+        return datacenterExecutionList
+                .stream()
+                .mapToDouble(dcInfo -> dcInfo.getActualCpuTime() * dcInfo.getCostPerSec())
+                .sum();
     }
 
     @Override
@@ -697,7 +698,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      *
      * @param costPerBw the new cost per bw to set
      */
-    protected final void setCostPerBw(double costPerBw) {
+    protected final void setCostPerBw(final double costPerBw) {
         this.costPerBw = costPerBw;
     }
 
@@ -711,7 +712,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      *
      * @param accumulatedBwCost the accumulated bw cost to set
      */
-    protected final void setAccumulatedBwCost(double accumulatedBwCost) {
+    protected final void setAccumulatedBwCost(final double accumulatedBwCost) {
         this.accumulatedBwCost = accumulatedBwCost;
     }
 
@@ -791,7 +792,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public boolean equals(Object other) {
+    public boolean equals(final Object other) {
         if (this == other) return true;
         if (!(other instanceof CloudletAbstract)) return false;
 

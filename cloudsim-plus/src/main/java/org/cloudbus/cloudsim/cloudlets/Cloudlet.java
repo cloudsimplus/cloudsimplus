@@ -750,9 +750,9 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
      * <br>
-     * <b>NOTE:</b> With new functionalities, such as being able to cancel / to
-     * pause / to resume this Cloudlet, the execution start time only holds the
-     * latest one. Meaning, all previous execution start time are ignored.
+     * <b>NOTE:</b> With new functionalities, such as being able to cancel,
+     * pause or resume this Cloudlet, the execution start time only holds the
+     * latest one. Meaning all previous execution start times are ignored.
      *
      * @param clockTime the latest execution start time
      */
