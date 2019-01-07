@@ -759,6 +759,22 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     void setExecStartTime(double clockTime);
 
     /**
+     * Adds a Listener object that will be notified when
+     * the Cloudlet starts executing in some {@link Vm}.
+     *
+     * @param listener the listener to add
+     */
+    Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener);
+
+    /**
+     * Removes a listener from the onStartListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener);
+
+    /**
      * Adds a Listener object that will be notified every time
      * the processing of the Cloudlet is updated in its {@link Vm}.
      *

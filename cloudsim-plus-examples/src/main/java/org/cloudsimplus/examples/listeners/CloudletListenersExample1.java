@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -71,12 +72,12 @@ public class CloudletListenersExample1 {
     /**
      * Number of Processor Elements (CPU Cores) of each VM and cloudlet.
      */
-    private static final int VM_PES_NUMBER = HOST_PES_NUMBER;
+    private static final int VM_PES_NUMBER = 2;
 
     /**
      * Number of Cloudlets to create.
      */
-    private static final int NUMBER_OF_CLOUDLETS = VM_PES_NUMBER;
+    private static final int NUMBER_OF_CLOUDLETS = 4;
 
     private final List<Host> hostList;
     private final List<Vm> vmList;
@@ -120,7 +121,20 @@ public class CloudletListenersExample1 {
     }
 
     /**
-     * A Listener function that will be called everytime when a cloudlet
+     * A Listener function that will be called every time a cloudlet
+     * starts running into a VM. All cloudlets will use this same listener.
+     *
+     * @param eventInfo information about the happened event
+     * @see #createCloudlet(long, Vm, long)
+     */
+    private void onCloudletStartListener(CloudletVmEventInfo eventInfo) {
+        System.out.printf(
+            "\n\t#EventListener: Cloudlet %d just started running at Vm %d at time %.2f\n",
+            eventInfo.getCloudlet().getId(), eventInfo.getVm().getId(), eventInfo.getTime());
+    }
+
+    /**
+     * A Listener function that will be called every time a cloudlet
      * finishes running into a VM. All cloudlets will use this same listener.
      *
      * @param eventInfo information about the happened event
@@ -193,18 +207,20 @@ public class CloudletListenersExample1 {
      * @return the created cloudlet
      */
     private Cloudlet createCloudlet(long id, Vm vm, long length) {
-        long fileSize = 300;
-        long outputSize = 300;
-        int pesNumber = 1;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
+        final long fileSize = 300;
+        final long outputSize = 300;
+        final int pesNumber = 1;
+        final UtilizationModel utilizationModel = new UtilizationModelDynamic(0.2);
         Cloudlet cloudlet
             = new CloudletSimple(id, length, pesNumber)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)
-                    .setUtilizationModel(utilizationModel)
+                    .setUtilizationModelCpu(new UtilizationModelFull())
+                    .setUtilizationModelBw(utilizationModel)
+                    .setUtilizationModelRam(utilizationModel)
                     .setVm(vm)
+                    .addOnStartListener(this::onCloudletStartListener)
                     .addOnFinishListener(this::onCloudletFinishListener);
-
         return cloudlet;
     }
 

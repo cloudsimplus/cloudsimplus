@@ -114,6 +114,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      */
     private UtilizationModel utilizationModelBw;
 
+    private final Set<EventListener<CloudletVmEventInfo>> onStartListeners;
     private final Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
     private final Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
 
@@ -162,6 +163,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         setUtilizationModelCpu(UtilizationModel.NULL);
         setUtilizationModelRam(UtilizationModel.NULL);
         setUtilizationModelBw(UtilizationModel.NULL);
+        onStartListeners = new HashSet<>();
         onFinishListeners = new HashSet<>();
         onUpdateProcessingListeners = new HashSet<>();
     }
@@ -216,7 +218,18 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener) {
+    public Cloudlet addOnStartListener(final EventListener<CloudletVmEventInfo> listener) {
+        this.onStartListeners.add(requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public boolean removeOnStartListener(final EventListener<CloudletVmEventInfo> listener) {
+        return onStartListeners.remove(listener);
+    }
+
+    @Override
+    public Cloudlet addOnFinishListener(final EventListener<CloudletVmEventInfo> listener) {
         this.onFinishListeners.add(requireNonNull(listener));
         return this;
     }
@@ -389,7 +402,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public void setExecStartTime(final double clockTime) {
+        final boolean isStartingInSomeVm = this.execStartTime <= 0 && clockTime > 0 && vm != Vm.NULL && vm != null;
         this.execStartTime = clockTime;
+        if(isStartingInSomeVm){
+            onStartListeners.forEach(listener -> listener.update(CloudletVmEventInfo.of(listener, clockTime, this)));
+        }
     }
 
     @Override

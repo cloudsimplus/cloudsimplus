@@ -219,6 +219,8 @@ final class CloudletNull implements Cloudlet {
         return false;
     }
     @Override public void setExecStartTime(double clockTime) {/**/}
+    @Override public Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener) { return this; }
+    @Override public boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public double registerArrivalInDatacenter() {
         return -1;
     }
