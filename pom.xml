@@ -3,7 +3,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-package</artifactId>
-    <version>4.0.5</version>
+    <version>4.0.6</version>
     <packaging>pom</packaging>
 
     <name>CloudSim Plus Modules (All)</name>
