@@ -1,10 +1,12 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link UtilizationModel}
- * class.
+ * class. A {@link Cloudlet} using such a utilization model for one of its resources
+ * will not consume any amount of that resource ever.
  *
  * @author Manoel Campos da Silva Filho
  * @see UtilizationModel#NULL
@@ -16,10 +18,10 @@ final class UtilizationModelNull implements UtilizationModel {
     @Override public Unit getUnit() {
         return Unit.PERCENTAGE;
     }
-    @Override public UtilizationModel setSimulation(Simulation simulation) {
+    @Override public UtilizationModel setSimulation(final Simulation simulation) {
         return this;
     }
-    @Override public double getUtilization(double time) {
+    @Override public double getUtilization(final double time) {
         return 0;
     }
     @Override public double getUtilization() {

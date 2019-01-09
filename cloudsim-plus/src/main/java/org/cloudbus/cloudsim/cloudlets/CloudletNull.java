@@ -161,6 +161,7 @@ final class CloudletNull implements Cloudlet {
     @Override public Cloudlet setOutputSize(long outputSize) {
         return Cloudlet.NULL;
     }
+    @Override public Cloudlet setSizes(long size) { return this; }
     @Override public boolean setStatus(Status newStatus) {
         return false;
     }

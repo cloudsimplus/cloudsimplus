@@ -42,7 +42,8 @@ public interface UtilizationModel {
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link UtilizationModel}
-     * objects using a Lambda Expression.
+     * objects using a Lambda Expression. A {@link Cloudlet} using such a utilization model for one of its resources
+     * will not consume any amount of that resource ever.
      */
     UtilizationModel NULL = new UtilizationModelNull();
 

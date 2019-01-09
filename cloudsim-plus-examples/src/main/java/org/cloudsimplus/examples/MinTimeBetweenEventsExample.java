@@ -42,7 +42,6 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
@@ -134,6 +133,24 @@ public class MinTimeBetweenEventsExample {
         return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
     }
 
+    private Host createHost() {
+        final long mips = 10000;
+        final List<Pe> peList = new ArrayList<>();
+        for (int i = 0; i < HOST_PES_NUMBER; i++) {
+            PeSimple peSimple = new PeSimple(mips, new PeProvisionerSimple());
+            peList.add(peSimple);
+        }
+
+        final long ram = 4096; // host memory (Megabyte)
+        final long storage = 1000000; // host storage (Megabyte)
+        final long bw = 10000; //Megabits/s
+
+        return new HostSimple(ram, bw, storage, peList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerSpaceShared());
+    }
+
     private Vm createAndSubmitVm() {
         final List<Vm> list = new ArrayList<>();
         final Vm vm = createVm(this.vmList.size());
@@ -151,9 +168,10 @@ public class MinTimeBetweenEventsExample {
         final int ram = 4096;    // vm memory (Megabyte)
         final long bw = 1000;
 
-        return new VmSimple(id, mips, VM_PES_NUMBER)
-            .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
+        //It uses a CloudletSchedulerTimeShared by default
+        final Vm vm = new VmSimple(id, mips, VM_PES_NUMBER);
+        vm.setRam(ram).setBw(bw).setSize(size);
+        return vm;
     }
 
     /**
@@ -195,24 +213,6 @@ public class MinTimeBetweenEventsExample {
         cloudlet.setSubmissionDelay(delay);
 
         return cloudlet;
-    }
-
-    private Host createHost() {
-        final long mips = 10000;
-        final List<Pe> peList = new ArrayList<>();
-        for (int i = 0; i < HOST_PES_NUMBER; i++) {
-            PeSimple peSimple = new PeSimple(mips, new PeProvisionerSimple());
-            peList.add(peSimple);
-        }
-
-        final long ram = 4096; // host memory (Megabyte)
-        final long storage = 1000000; // host storage (Megabyte)
-        final long bw = 10000; //Megabits/s
-
-        return new HostSimple(ram, bw, storage, peList)
-            .setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(new VmSchedulerSpaceShared());
     }
 
     private void runSimulationAndPrintResults() {

@@ -535,8 +535,10 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @param fileSize the size to set (in bytes)
      * @return
      * @throws IllegalArgumentException when the given size is lower or equal to zero
+     * @see #setSizes(long)
      */
     Cloudlet setFileSize(long fileSize);
+
 
     /**
      * Sets the output file size of this Cloudlet after execution (in bytes).
@@ -547,8 +549,21 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @param outputSize the output size to set (in bytes)
      * @return
      * @throws IllegalArgumentException when the given size is lower or equal to zero
+     * @see #setSizes(long)
      */
     Cloudlet setOutputSize(long outputSize);
+
+    /**
+     * Sets the input and output file sizes of this Cloudlet to <b>the same value (in bytes)</b>.
+     *
+     * @param size the value to set (in bytes) for input and output size
+     * @return
+     * @throws IllegalArgumentException when the given size is lower or equal to zero
+     *
+     * @see #setFileSize(long)
+     * @see #setOutputSize(long)
+     */
+    Cloudlet setSizes(long size);
 
     /**
      * Sets the status of this Cloudlet.

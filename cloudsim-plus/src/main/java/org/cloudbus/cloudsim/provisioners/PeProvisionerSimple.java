@@ -7,10 +7,10 @@
  */
 package org.cloudbus.cloudsim.provisioners;
 
-import java.util.*;
-
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
+
+import java.util.Objects;
 
 /**
  * A best-effort {@link PeProvisioner} policy used by a {@link Host} to provide virtual PEs to VMs from its physical PEs:
@@ -32,7 +32,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 public class PeProvisionerSimple extends ResourceProvisionerSimple implements PeProvisioner {
 
     /**
-     * Instantiates a new PeProvisionerSimple that the {@link Pe} it will manage will be set
+     * Instantiates a new PeProvisionerSimple. The {@link Pe} it will manage will be set
      * just at Pe instantiation.
      */
     public PeProvisionerSimple() {

@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
@@ -84,20 +85,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
-     * and no Hosts.
+     * and a {@link VmAllocationPolicySimple} by default.
+     *
+     * <p><b>NOTE:</b> To change such attributes, just call the respective setters.</p>
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
-     * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy)
+     * @param hostList list of {@link Host}s that will compound the Datacenter
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
-     * @see #addHostList(List)
      */
-    public DatacenterSimple(
-        final Simulation simulation,
-        final VmAllocationPolicy vmAllocationPolicy)
-    {
-        this(simulation, new ArrayList<>(), vmAllocationPolicy, new DatacenterStorage());
+    public DatacenterSimple(final Simulation simulation, final List<? extends Host> hostList) {
+        this(simulation, hostList, new VmAllocationPolicySimple(), new DatacenterStorage());
     }
+
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}.
@@ -113,6 +112,23 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final VmAllocationPolicy vmAllocationPolicy)
     {
         this(simulation, hostList, vmAllocationPolicy, new DatacenterStorage());
+    }
+
+    /**
+     * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
+     * and no Hosts.
+     *
+     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
+     * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy)
+     * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
+     * @see #addHostList(List)
+     */
+    public DatacenterSimple(
+        final Simulation simulation,
+        final VmAllocationPolicy vmAllocationPolicy)
+    {
+        this(simulation, new ArrayList<>(), vmAllocationPolicy, new DatacenterStorage());
     }
 
     /**

@@ -8,6 +8,8 @@
 package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -26,6 +28,27 @@ public class CloudletSimple extends CloudletAbstract {
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param pesNumber number of PEs that Cloudlet will require
+     * @param utilizationModel a {@link UtilizationModel} to define how the Cloudlet uses CPU, RAM and BW.
+     *                         To define an independent utilization model for each resource, call the respective setters.
+     *
+     * @see #setUtilizationModelCpu(UtilizationModel)
+     * @see #setUtilizationModelRam(UtilizationModel)
+     * @see #setUtilizationModelBw(UtilizationModel)
+     */
+    public CloudletSimple(final long length, final int pesNumber, final UtilizationModel utilizationModel) {
+        super(length, pesNumber, utilizationModel);
+    }
+
+    /**
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     *
+     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
+     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
+     * To change the default values, use the respective setters.</p>
+     *
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
      * @param pesNumber      number of PEs that Cloudlet will require
      */
     public CloudletSimple(final long length, final int pesNumber) {
@@ -36,6 +59,10 @@ public class CloudletSimple extends CloudletAbstract {
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
+     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
+     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
+     * To change the default values, use the respective setters.</p>
+     *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
      * @param pesNumber      number of PEs that Cloudlet will require
      */
@@ -44,9 +71,13 @@ public class CloudletSimple extends CloudletAbstract {
     }
 
     /**
-     * Creates a Cloudlet with no priority and file size and output size equal to 1.
-     * To change these values, use the respective setters.
-     *  @param id  the unique ID of this cloudlet
+     * Creates a Cloudlet with no priority, file size and output size equal to 1.
+     *
+     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
+     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
+     * To change the default values, use the respective setters.</p>
+     *
+     * @param id  the unique ID of this cloudlet
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
      * @param pesNumber the pes number
      */

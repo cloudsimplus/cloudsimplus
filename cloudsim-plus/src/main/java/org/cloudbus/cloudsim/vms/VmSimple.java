@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.autoscaling.VmScaling;
@@ -118,9 +119,45 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     /**
      * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is being instantiated}, such values can be changed freely.
+     *
+     * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
+     * a {@link DatacenterBroker}.</p>
+     *
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     */
+    public VmSimple(final long mipsCapacity, final long numberOfPes) {
+        this(-1, mipsCapacity, numberOfPes);
+    }
+
+    /**
+     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
+     *
+     * <p>It receives the amount of MIPS as a double value but converts it internally
+     * to a long. The method is just provided as a handy-way to create a Vm
+     * using a double value for MIPS that usually is generated from some computations.</p>
+     *
+     * @param id unique ID of the VM
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     */
+    public VmSimple(final int id, final double mipsCapacity, final long numberOfPes) {
+        this(id, (long)mipsCapacity, numberOfPes);
+    }
+
+    /**
+     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     *
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is being instantiated}, such values can be changed freely.
+     *
+     * <p><b>NOTE:</b> The Vm will use a {@link CloudletSchedulerTimeShared} by default. If you need to change that,
+     * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
      *
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
@@ -130,7 +167,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         this.resources = new ArrayList<>(4);
         setInMigration(false);
         setHost(Host.NULL);
-        setCloudletScheduler(CloudletScheduler.NULL);
+        setCloudletScheduler(new CloudletSchedulerTimeShared());
         this.processor = new Processor(this, mipsCapacity, numberOfPes);
         this.description = "";
         this.startTime = -1;
@@ -161,39 +198,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
         //By default, the VM doesn't store utilization history. This has to be enabled by the user as wanted
         utilizationHistory = new VmUtilizationHistory(this, false);
-    }
-
-    /**
-     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
-     * To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is being instantiated}, such values can be changed freely.
-     *
-     * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
-     * a {@link DatacenterBroker}.</p>
-     *
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
-     */
-    public VmSimple(final long mipsCapacity, final long numberOfPes) {
-        this(-1, mipsCapacity, numberOfPes);
-    }
-
-    /**
-     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
-     *
-     * To change these values, use the respective setters. While the Vm {@link #isCreated()
-     * is being instantiated}, such values can be changed freely.
-     *
-     * <p>It receives the amount of MIPS as a double value but converts it internally
-     * to a long. The method is just provided as a handy-way to create a Vm
-     * using a double value for MIPS that usually is generated from some computations.</p>
-     *
-     * @param id unique ID of the VM
-     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
-     */
-    public VmSimple(final int id, final double mipsCapacity, final long numberOfPes) {
-        this(id, (long)mipsCapacity, numberOfPes);
     }
 
     @Override

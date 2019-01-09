@@ -125,6 +125,29 @@ public class HostSimple implements Host {
     private double shutdownTime;
 
     /**
+     * Creates a Host with the given parameters.
+     *
+     * @param ramProvisioner the ram provisioner with capacity in Megabytes
+     * @param bwProvisioner the bw provisioner with capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's PEs list
+     * @param vmScheduler the vm scheduler
+     */
+    public HostSimple(
+        final ResourceProvisioner ramProvisioner,
+        final ResourceProvisioner bwProvisioner,
+        final long storage,
+        final List<Pe> peList,
+        final VmScheduler vmScheduler)
+    {
+        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
+        setRamProvisioner(ramProvisioner);
+        setBwProvisioner(bwProvisioner);
+        setPeList(peList);
+        setVmScheduler(vmScheduler);
+    }
+
+    /**
      * Creates a Host without a pre-defined ID and using a {@link ResourceProvisionerSimple}
      * RAM and Bandwidth. It also sets a {@link VmSchedulerSpaceShared} as default.
      * The ID is automatically set when a List of Hosts is attached
@@ -164,29 +187,6 @@ public class HostSimple implements Host {
         this.vmsMigratingOut = new HashSet<>();
         this.powerModel = PowerModel.NULL;
         this.stateHistory = new LinkedList<>();
-    }
-
-    /**
-     * Creates a Host with the given parameters.
-     *
-     * @param ramProvisioner the ram provisioner with capacity in Megabytes
-     * @param bwProvisioner the bw provisioner with capacity in Megabits/s
-     * @param storage the storage capacity in Megabytes
-     * @param peList the host's PEs list
-     * @param vmScheduler the vm scheduler
-     */
-    public HostSimple(
-        final ResourceProvisioner ramProvisioner,
-        final ResourceProvisioner bwProvisioner,
-        final long storage,
-        final List<Pe> peList,
-        final VmScheduler vmScheduler)
-    {
-        this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
-        setRamProvisioner(ramProvisioner);
-        setBwProvisioner(bwProvisioner);
-        setPeList(peList);
-        setVmScheduler(vmScheduler);
     }
 
     @Override

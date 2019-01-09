@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -124,10 +125,63 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     private double submissionDelay;
 
     /**
-     * Creates a Cloudlet with no priority and file size and output size equal to 1.
-     *  @param id     id of the Cloudlet
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
-     * @param pesNumber      number of PEs that Cloudlet will require
+     * @param pesNumber number of PEs that Cloudlet will require
+     * @param utilizationModel a {@link UtilizationModel} to define how the Cloudlet uses CPU, RAM and BW.
+     *                         To define an independent utilization model for each resource, call the respective setters.
+     *
+     * @see #setUtilizationModelCpu(UtilizationModel)
+     * @see #setUtilizationModelRam(UtilizationModel)
+     * @see #setUtilizationModelBw(UtilizationModel)
+     */
+    public CloudletAbstract(final long length, final int pesNumber, final UtilizationModel utilizationModel) {
+        this(-1, length, pesNumber);
+        setUtilizationModel(utilizationModel);
+    }
+
+    /**
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     *
+     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
+     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
+     * To change the default values, use the respective setters.</p>
+     *
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param pesNumber number of PEs that Cloudlet will require
+     */
+    public CloudletAbstract(final long length, final int pesNumber) {
+        this(-1, length, pesNumber);
+    }
+
+    /**
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     *
+     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
+     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
+     * To change the default values, use the respective setters.</p>
+     *
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param pesNumber number of PEs that Cloudlet will require
+     */
+    public CloudletAbstract(final long length, final long pesNumber) {
+        this(-1, length, pesNumber);
+    }
+
+    /**
+     * Creates a Cloudlet with no priority, file size and output size equal to 1.
+     *
+     * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
+     * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
+     * To change the default values, use the respective setters.</p>
+     *
+     * @param id     id of the Cloudlet
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param pesNumber number of PEs that Cloudlet will require
      */
     public CloudletAbstract(final long id, final long length, final long pesNumber) {
         /*
@@ -149,7 +203,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
         this.lastExecutedDatacenterIdx = NOT_ASSIGNED;
         setBroker(DatacenterBroker.NULL);
-        setFinishTime(NOT_ASSIGNED);    // meaning this Cloudlet hasn't finished yet
+        setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
         setVm(Vm.NULL);
 
         this.setLength(length);
@@ -160,7 +214,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         setCostPerBw(0.0);
         setSubmissionDelay(0.0);
 
-        setUtilizationModelCpu(UtilizationModel.NULL);
+        setUtilizationModelCpu(new UtilizationModelFull());
         setUtilizationModelRam(UtilizationModel.NULL);
         setUtilizationModelBw(UtilizationModel.NULL);
         onStartListeners = new HashSet<>();
@@ -168,38 +222,16 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         onUpdateProcessingListeners = new HashSet<>();
     }
 
-    /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
-     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
-     *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
-     */
-    public CloudletAbstract(final long length, final int pesNumber) {
-        this(-1, length, pesNumber);
-    }
-
-    /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
-     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
-     *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
-     * @param pesNumber number of PEs that Cloudlet will require
-     */
-    public CloudletAbstract(final long length, final long pesNumber) {
-        this(-1, length, pesNumber);
-    }
-
     protected int getLastExecutedDatacenterIdx() {
         return lastExecutedDatacenterIdx;
     }
 
-    protected void setLastExecutedDatacenterIdx(int lastExecutedDatacenterIdx) {
+    protected void setLastExecutedDatacenterIdx(final int lastExecutedDatacenterIdx) {
         this.lastExecutedDatacenterIdx = lastExecutedDatacenterIdx;
     }
 
     @Override
-    public Cloudlet setUtilizationModel(UtilizationModel utilizationModel) {
+    public Cloudlet setUtilizationModel(final UtilizationModel utilizationModel) {
         setUtilizationModelBw(utilizationModel);
         setUtilizationModelRam(utilizationModel);
         setUtilizationModelCpu(utilizationModel);
@@ -768,6 +800,13 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
             throw new IllegalArgumentException("Cloudlet output size has to be greater than zero.");
         }
         this.outputSize = outputSize;
+        return this;
+    }
+
+    @Override
+    public Cloudlet setSizes(final long size) {
+        setFileSize(size);
+        setOutputSize(size);
         return this;
     }
 

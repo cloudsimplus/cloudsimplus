@@ -9,6 +9,7 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
+import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 
 import java.util.Objects;
 
@@ -37,13 +38,22 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     private PeProvisioner peProvisioner;
 
     /**
+     * Instantiates a new PE object using a {@link PeProvisionerSimple}.
+     * The id of the PE is just set when a List of PEs is assigned to a Host.
+     *
+     * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
+     * @see #PeSimple(double, PeProvisioner)
+     */
+    public PeSimple(final double mipsCapacity) {
+        this(mipsCapacity, new PeProvisionerSimple());
+    }
+    /**
      * Instantiates a new PE object.
      * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
      * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
      * @param peProvisioner the provisioner that will manage the allocation of this physical Pe for VMs
-     * @pre peProvisioner != null
-     * @post $none
+     * @see #PeSimple(double)
      */
     public PeSimple(final double mipsCapacity, final PeProvisioner peProvisioner) {
         super((long)mipsCapacity);

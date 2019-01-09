@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.examples;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -33,13 +32,9 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
@@ -80,32 +75,33 @@ class ReducedExample {
         //Creates one Hosts with a specific list of CPU cores (PEs).
         List<Host> hostList = new ArrayList<>(1);
         List<Pe> hostPes = new ArrayList<>(1);
-        hostPes.add(new PeSimple(20000, new PeProvisionerSimple()));
+        //Uses a PeProvisionerSimple by default to provision PEs for VMs
+        hostPes.add(new PeSimple(20000));
         final long ram = 10000; //in Megabytes
         final long storage = 100000; //in Megabytes
         final long bw = 100000; //in Megabits/s
+        //Uses ResourceProvisionerSimple by default for RAM and BW provisioning
+        //Uses VmSchedulerSpaceShared by default for VM scheduling
         Host host0 = new HostSimple(ram, bw, storage, hostPes);
-        host0.setRamProvisioner(new ResourceProvisionerSimple())
-             .setBwProvisioner(new ResourceProvisionerSimple())
-             .setVmScheduler(new VmSchedulerSpaceShared());
         hostList.add(host0);
 
-        //Creates one Datacenter with a list of Hosts.
-        Datacenter dc0 = new DatacenterSimple(cloudsim, hostList, new VmAllocationPolicySimple());
+        //Creates one Datacenter with a list of Hosts
+        //Uses a VmAllocationPolicySimple by default to allocate VMs
+        Datacenter dc0 = new DatacenterSimple(cloudsim, hostList);
 
         //Creates one Vm to run applications (Cloudlets).
         List<Vm> vmList = new ArrayList<>(1);
-        Vm vm0 = new VmSimple(0, 1000, 1);
-        vm0.setRam(1000).setBw(1000).setSize(1000)
-           .setCloudletScheduler(new CloudletSchedulerSpaceShared());
+        //Uses a CloudletSchedulerTimeShared by default to schedule Cloudlets
+        Vm vm0 = new VmSimple(1000, 1);
+        vm0.setRam(1000).setBw(1000).setSize(1000);
         vmList.add(vm0);
 
         //Creates two Cloudlets that represent applications to be run inside a Vm.
         List<Cloudlet> cloudlets = new ArrayList<>(1);
-        Cloudlet cloudlet0 = new CloudletSimple(0, 10000, 1);
-        cloudlet0.setUtilizationModel(new UtilizationModelFull());
-        Cloudlet cloudlet1 = new CloudletSimple(1, 10000, 1);
-        cloudlet1.setUtilizationModel(new UtilizationModelFull());
+        //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
+        UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(0.5);
+        Cloudlet cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
+        Cloudlet cloudlet1 = new CloudletSimple(10000, 1, utilizationModel);
         cloudlets.add(cloudlet0);
         cloudlets.add(cloudlet1);
 
