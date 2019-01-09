@@ -564,20 +564,30 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected void processVmDestroy(final SimEvent evt, final boolean ack) {
         final Vm vm = (Vm) evt.getData();
-        final int cloudlets = vm.getCloudletScheduler().getCloudletList().size();
         vmAllocationPolicy.deallocateHostForVm(vm);
 
         if (ack) {
             sendNow(vm.getBroker(), CloudSimTags.VM_DESTROY_ACK, vm);
         }
 
-        final String partialMsg = cloudlets == 0 ? "" : String.format("It had a total of %d cloudlets (running + waiting).", cloudlets);
+        final String warningMsg = generateNotFinishedCloudletsWarning(vm);
         final String msg = String.format(
                 "%.2f: %s: %s destroyed on %s. %s\n",
-                getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), partialMsg);
-        if(cloudlets == 0)
+                getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
+        if(warningMsg.isEmpty())
             LOGGER.info(msg);
         else LOGGER.warn(msg);
+    }
+
+    private String generateNotFinishedCloudletsWarning(final Vm vm) {
+        final int cloudletsNoFinished = vm.getCloudletScheduler().getCloudletList().size();
+        if(cloudletsNoFinished == 0) {
+            return "";
+        }
+
+        return String.format(
+                "It had a total of %d cloudlets (running + waiting). %s", cloudletsNoFinished,
+                "Some events may have been missed. Try decreasing CloudSim's minTimeBetweenEvents attribute.");
     }
 
     /**
