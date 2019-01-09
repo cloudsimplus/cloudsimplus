@@ -93,6 +93,10 @@ public abstract class TableBuilderAbstract<T> {
         return table;
     }
 
+    public final TableColumn getColumn(final int index){
+        return table.getColumns().get(index);
+    }
+
     /**
      * Sets the {@link Table} used to build the table with Cloudlet Data.
      * The default table builder is {@link TextTable}.
@@ -112,6 +116,28 @@ public abstract class TableBuilderAbstract<T> {
      */
     public TableBuilderAbstract<T> addColumn(final TableColumn col, final Function<T, Object> dataFunction){
         return addColumn(getTable().getColumns().size(), col, dataFunction);
+    }
+
+    /**
+     * Removes columns from given positions.
+     * @param indexes the indexes of the columns to remove
+     * @return
+     */
+    public final TableBuilderAbstract<T> removeColumn(final int ...indexes){
+        for (final int i : indexes) {
+            removeColumn(i);
+        }
+        return this;
+    }
+
+    /**
+     * Removes a column from a given position.
+     * @param index the index of the column to remove
+     * @return
+     */
+    public final TableBuilderAbstract<T> removeColumn(final int index){
+        getTable().getColumns().remove(index);
+        return this;
     }
 
     /**

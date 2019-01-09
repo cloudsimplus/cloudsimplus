@@ -7,7 +7,7 @@
     <packaging>pom</packaging>
 
     <name>CloudSim Plus Modules (All)</name>
-    <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
+    <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
     <url>http://cloudsimplus.org</url>
 
     <organization>
