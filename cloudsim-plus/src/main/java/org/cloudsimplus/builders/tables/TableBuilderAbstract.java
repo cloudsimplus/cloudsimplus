@@ -131,6 +131,7 @@ public abstract class TableBuilderAbstract<T> {
      * Removes columns from given positions.
      * @param indexes the indexes of the columns to remove
      * @return
+     * @see #removeColumn(int)
      */
     public final TableBuilderAbstract<T> removeColumn(final int ...indexes){
         for (final int i : indexes) {
@@ -143,6 +144,7 @@ public abstract class TableBuilderAbstract<T> {
      * Removes a column from a given position.
      * @param index the index of the column to remove
      * @return
+     * @see #removeColumn(int...)
      */
     public final TableBuilderAbstract<T> removeColumn(final int index){
         getTable().getColumns().remove(index);
