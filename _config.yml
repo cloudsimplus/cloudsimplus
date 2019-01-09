@@ -1,5 +1,5 @@
 title: "CloudSim Plus" 
-description: "A modern, full-featured, highly extensible and easier-to-use Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services" 
+description: "A modern, full-featured, highly extensible and easier-to-use Java 8+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services" 
 google_analytics: 
 show_downloads: true
 theme: jekyll-theme-architect
