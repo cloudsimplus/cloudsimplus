@@ -8,7 +8,7 @@ To report an issue or feature request, you have to provide the information below
 
 ## If the issue is related to a specific method, provide a test case that fails in order to show the problem
 
-## If it is a more wide problem or you don't know where it happens, please provide a minimal simulation example which reproduces the problem
+## If it is a wider problem or you don't know where it happens, please provide a minimal simulation example which reproduces the problem
 
 ## Specifications like the version of the project, operating system or workload file used
 

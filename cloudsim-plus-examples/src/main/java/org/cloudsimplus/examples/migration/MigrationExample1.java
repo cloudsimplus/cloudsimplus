@@ -48,6 +48,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.HostHistoryTableBuilder;
+import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -175,6 +176,7 @@ public final class MigrationExample1 {
      * List of all created VMs.
      */
     private final List<Vm> vmList = new ArrayList<>();
+    private final DatacenterBrokerSimple broker;
 
     private CloudSim simulation;
     private VmAllocationPolicyMigrationStaticThreshold allocationPolicy;
@@ -199,15 +201,11 @@ public final class MigrationExample1 {
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
-        DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
+        broker = new DatacenterBrokerSimple(simulation);
         createAndSubmitVms(broker);
         createAndSubmitCloudlets(broker);
 
-        /*
-        After all VMs are created, sets the allocation policy to the default value
-        so that some Hosts will be overloaded with the placed VMs and migration will be fired.
-        */
-        broker.addOneTimeOnVmsCreatedListener(evt -> allocationPolicy.setOverUtilizationThreshold(HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION));
+        broker.addOnVmsCreatedListener(this::onVmsCreatedListener);
 
         simulation.start();
 
@@ -395,5 +393,19 @@ public final class MigrationExample1 {
             list.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
         return list;
+    }
+
+
+    /**
+     * A listener that is called after all VMs from a broker are created,
+     * setting the allocation policy to the default value
+     * so that some Hosts will be overloaded with the placed VMs and migration will be fired.
+     *
+     * The listener is removed after finishing, so that it's called just once,
+     * even if new VMs are submitted and created latter on.
+    */
+    private void onVmsCreatedListener(final DatacenterBrokerEventInfo evt) {
+        allocationPolicy.setOverUtilizationThreshold(HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
+        broker.removeOnVmsCreatedListener(evt.getListener());
     }
 }

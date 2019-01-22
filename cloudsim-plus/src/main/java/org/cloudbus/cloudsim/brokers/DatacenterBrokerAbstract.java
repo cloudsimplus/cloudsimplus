@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
+import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 
@@ -53,9 +54,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * time listener (which is removed from the list after being notified for the first time).
      *
      * @see #addOnVmsCreatedListener(EventListener)
-     * @see #addOneTimeOnVmsCreatedListener(EventListener)
      */
-    private final Map<EventListener<DatacenterBrokerEventInfo>, Boolean> onVmsCreatedListeners;
+    private final List<EventListener<DatacenterBrokerEventInfo>> onVmsCreatedListeners;
 
     /**
      * @see #getLastSelectedVm()
@@ -164,7 +164,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             setName(name);
         }
 
-        this.onVmsCreatedListeners = new HashMap<>();
+        this.onVmsCreatedListeners = new ArrayList<>();
         this.lastSubmittedCloudlet = Cloudlet.NULL;
         this.lastSubmittedVm = Vm.NULL;
         this.lastSelectedVm = Vm.NULL;
@@ -621,20 +621,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void notifyOnVmsCreatedListeners() {
-        onVmsCreatedListeners.forEach((key, value) -> key.update(DatacenterBrokerEventInfo.of(key, this)));
-        onVmsCreatedListeners.entrySet().removeIf(this::isOneTimeListener);
-    }
-
-    /**
-     * Checks if an EventListener from the {@link #onVmsCreatedListeners}
-     * is a one-time listener, that after being notified for the first time,
-     * must be removed from the map of registered listeners.
-     *
-     * @param eventListenerBooleanEntry the entry for the listener to check
-     * @return true if it is a one-time listener, false otherwise
-     */
-    private boolean isOneTimeListener(final Map.Entry<EventListener<DatacenterBrokerEventInfo>, Boolean> eventListenerBooleanEntry) {
-        return eventListenerBooleanEntry.getValue();
+        onVmsCreatedListeners.forEach(listener -> listener.update(DatacenterBrokerEventInfo.of(listener, this)));
     }
 
     /**
@@ -1104,16 +1091,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public DatacenterBroker addOnVmsCreatedListener(final EventListener<DatacenterBrokerEventInfo> listener) {
-        return addOneTimeOnCreationOfWaitingVmsFinishListener(listener, false);
+        this.onVmsCreatedListeners.add(requireNonNull(listener));
+        return this;
     }
 
     @Override
-    public DatacenterBroker addOneTimeOnVmsCreatedListener(final EventListener<DatacenterBrokerEventInfo> listener) {
-        return addOneTimeOnCreationOfWaitingVmsFinishListener(listener, true);
-    }
-
-    public DatacenterBroker addOneTimeOnCreationOfWaitingVmsFinishListener(final EventListener<DatacenterBrokerEventInfo> listener, final Boolean oneTimeListener) {
-        this.onVmsCreatedListeners.put(requireNonNull(listener), oneTimeListener);
+    public DatacenterBroker removeOnVmsCreatedListener(final EventListener<? extends EventInfo> listener) {
+        this.onVmsCreatedListeners.remove(requireNonNull(listener));
         return this;
     }
 

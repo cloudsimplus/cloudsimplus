@@ -6,6 +6,7 @@ import org.cloudbus.cloudsim.core.SimEntityNullBase;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
+import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 import java.util.Collections;
@@ -49,7 +50,7 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {/**/}
     @Override public List<Cloudlet> getCloudletCreatedList() { return Collections.emptyList(); }
     @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
-    @Override public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
+    @Override public DatacenterBroker removeOnVmsCreatedListener(EventListener<? extends EventInfo> listener) { return this; }
     @Override public Function<Vm, Double> getVmDestructionDelayFunction() { return vm -> 0.0; }
     @Override public DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function) { return this; }
     @Override public Vm defaultVmMapper(Cloudlet cloudlet) { return Vm.NULL; }
