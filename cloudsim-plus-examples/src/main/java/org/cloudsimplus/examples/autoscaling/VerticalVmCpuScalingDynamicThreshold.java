@@ -309,7 +309,7 @@ public class VerticalVmCpuScalingDynamicThreshold {
      * @return the lower CPU utilization threshold
      * @see #createVerticalPeScaling()
      */
-    private double lowerCpuUtilizationThreshold(Vm vm) {
+    private double lowerCpuUtilizationThreshold(final Vm vm) {
         return 0.4;
     }
 
@@ -331,8 +331,8 @@ public class VerticalVmCpuScalingDynamicThreshold {
      * @return the upper dynamic CPU utilization threshold
      * @see #createVerticalPeScaling()
      */
-    private double upperCpuUtilizationThreshold(Vm vm) {
-        final List<Double> history = vm.getUtilizationHistory().getHistory().values().stream().collect(Collectors.toList());
+    private double upperCpuUtilizationThreshold(final Vm vm) {
+        final List<Double> history = new ArrayList<>(vm.getUtilizationHistory().getHistory().values());
         return history.size() > 10 ? MathUtil.median(history) * 1.2 : 0.7;
     }
 
@@ -411,11 +411,11 @@ public class VerticalVmCpuScalingDynamicThreshold {
         final UtilizationModel utilizationModelDynamic = new UtilizationModelDynamic(1.0/CLOUDLETS);
         Cloudlet cl = new CloudletSimple(length, numberOfPes);
         cl.setFileSize(1024)
-            .setOutputSize(1024)
-            .setUtilizationModelBw(utilizationModelDynamic)
-            .setUtilizationModelRam(utilizationModelDynamic)
-            .setUtilizationModelCpu(utilizationCpu)
-            .setSubmissionDelay(delay);
+          .setOutputSize(1024)
+          .setUtilizationModelBw(utilizationModelDynamic)
+          .setUtilizationModelRam(utilizationModelDynamic)
+          .setUtilizationModelCpu(utilizationCpu)
+          .setSubmissionDelay(delay);
         return cl;
     }
 }

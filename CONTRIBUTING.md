@@ -50,15 +50,15 @@ The last step before you start coding is to follow the guidelines below, so that
 
 - Completely avoid code duplication. A single line of code that is called twice, requires you to create a method to allow [code reuse](https://en.wikipedia.org/wiki/Code_reuse). 
   Some recommendations are:
-    - Methods should be very short, usually no more that 20 lines. Big methods are confusing and difficult to maintain. 
+    - Methods should be very short, usually no more than 20 lines. Big methods are confusing and difficult to maintain. 
       Usually they just contribute to code duplication.
     - Most of the times, each method has to make just a single thing. For instance, if a given method computes the number of 
       million instructions (MI) that a Cloudlet has to execute across all its Processor Elements (PEs) and also compute the time that the 
       Cloudlet is expected to finish, you must create a method for each one of these computations.
-    - Identifier names have to be strongly meaningful. Avoid abbreviated names, unless the abbreviation is already part of CloudSim Plus 
+    - Identifier names have to be strongly meaningful. Avoid abbreviations, unless the abbreviation is already part of CloudSim Plus 
       vocabulary (such as VM, PM, PE, etc).
     - If you have to write a comment to explain a portion of the code, probably you should use the 
-      [Extract Method refactor](http://refactoring.com/catalog/extractMethod.html) using your IDE to create a new method to that portion of code. 
+      [Extract Method refactor](http://refactoring.com/catalog/extractMethod.html) in your IDE to create a new method for that portion of code. 
       Commonly, you may be able to reduce and adjust your comment, using it as the method name.
 - You are strongly recommended to follow [Clean Coding practices](http://cleancoder.com/books).   
 - You are encouraged to design your solution before start programming. Along the entire development cycle, you have to check if there is 

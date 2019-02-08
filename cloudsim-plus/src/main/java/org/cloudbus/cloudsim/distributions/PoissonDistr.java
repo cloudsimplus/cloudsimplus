@@ -59,7 +59,7 @@ public class PoissonDistr implements ContinuousDistribution {
 
     /**
      * Creates a new Poisson random number generator to check
-     * the probability of 1 event ({@link #getK() k}) to happen at each time
+     * the probability of 1 event ({@link #getK() k = 1}) to happen at each time
      * interval.
      *
      * @param lambda the average number of events that happen at each 1 time unit.
@@ -104,11 +104,11 @@ public class PoissonDistr implements ContinuousDistribution {
     }
 
     /**
-     * Sets the average number of events that are expected to happen at each 1 time unit.
+     * Sets the mean number of events that are expected to happen at each 1 time unit.
      * It is the expected number of events to happen each time,
      * also called the <b>event rate</b> or <b>rate parameter</b>.
      *
-     * <p>If one considers the unit as minute, this value means the average number of arrivals
+     * <p>If one considers the unit as minute, this value is the mean number of arrivals
      * at each minute. It's the inverse of the {@link #getInterArrivalMeanTime()}.</p>
      * @param lambda the value to set
      */
@@ -118,7 +118,7 @@ public class PoissonDistr implements ContinuousDistribution {
 
     /**
      * Gets the probability to arrive {@link #getK() K} events in the current time,
-     * considering the expected average arrival time {@link #getLambda() lambda}.
+     * considering the mean arrival time {@link #getLambda() lambda}.
      * It computes the Probability Mass Function (PMF) of the Poisson distribution.
      * @return
      * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson distribution</a>
@@ -196,7 +196,7 @@ public class PoissonDistr implements ContinuousDistribution {
      */
     public static void main(final String args[]){
         /*
-         * Average number of customers that arrives per minute.
+         * Mean number of customers that arrives per minute.
          * The value of 0.4 customers per minute means that 1 customer will arrive
          * at every 2.5 minutes.
          * It means that 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes.
