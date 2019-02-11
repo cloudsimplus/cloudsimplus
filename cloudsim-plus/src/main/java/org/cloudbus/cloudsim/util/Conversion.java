@@ -185,7 +185,7 @@ public final class Conversion {
     }
 
     /**
-     * Converts any value in microseconds (μ) to seconds.
+     * Converts a value in microseconds (μ) to seconds.
      * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
      * don't provide the double precision required here.</p>
      *
@@ -195,4 +195,17 @@ public final class Conversion {
     public static double microToSeconds(final double micro) {
         return microToMilli(micro)/1000.0;
     }
+
+    /**
+     * Converts a value in milliseconds to minutes.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param milli the value in milliseconds
+     * @return the value in minutes
+     */
+    public static double millisecsToMinutes(final long milli) {
+        return milli/(1000.0*60);
+    }
+
 }

@@ -80,7 +80,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog) {
+    public boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips, final boolean showLog) {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
