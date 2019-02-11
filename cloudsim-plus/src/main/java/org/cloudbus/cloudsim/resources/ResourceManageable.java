@@ -35,11 +35,22 @@ public interface ResourceManageable extends Resource {
     boolean setCapacity(long newCapacity);
 
     /**
+     * Sum a given amount (negative or positive) of capacity to the total
+     * resource capacity.
+     *
+     * @param amountToSum the amount to sum in the current total capacity.
+     * If given a positive number, increases the total capacity; otherwise, decreases it.
+     * @return true if the total capacity was changed; false otherwise
+     */
+    boolean sumCapacity(long amountToSum);
+
+    /**
      * Try to add a given amount to the {@link #getCapacity() resource capacity}.
      *
      * @param capacityToAdd the amount to add
      * @return true if capacityToAdd > 0, false otherwise
      * @see #getAllocatedResource()
+     * @throws IllegalArgumentException when the capacity to add is negative
      */
     boolean addCapacity(long capacityToAdd);
 
@@ -51,6 +62,8 @@ public interface ResourceManageable extends Resource {
      *         to the expected new capacity and the capacity to remove is not higher than
      *         the current capacity; false otherwise
      * @see #getAllocatedResource()
+     * @throws IllegalArgumentException when the capacity to remove is negative
+     * @throws IllegalStateException when the capacity to remove is higher than the current total capacity
      */
     boolean removeCapacity(long capacityToRemove);
 

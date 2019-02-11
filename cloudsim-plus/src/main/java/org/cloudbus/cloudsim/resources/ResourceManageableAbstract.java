@@ -33,7 +33,7 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     }
 
     @Override
-    public boolean setCapacity(long newCapacity){
+    public boolean setCapacity(final long newCapacity){
         if(newCapacity < 0 || getAllocatedResource() > newCapacity) {
             return false;
         }
@@ -45,7 +45,17 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     }
 
     @Override
-    public boolean addCapacity(long capacityToAdd) {
+    public boolean sumCapacity(final long amountToSum){
+        if(amountToSum < 0){
+            return removeCapacity(-1 * amountToSum);
+        }
+
+        return addCapacity(amountToSum);
+    }
+
+
+    @Override
+    public boolean addCapacity(final long capacityToAdd) {
         if(capacityToAdd < 0){
             throw new IllegalArgumentException("The number of PEs to add cannot be negative.");
         }
@@ -54,12 +64,12 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     }
 
     @Override
-    public boolean removeCapacity(long capacityToRemove) {
+    public boolean removeCapacity(final long capacityToRemove) {
         if(capacityToRemove < 0){
             throw new IllegalArgumentException("The number of PEs to remove cannot be negative.");
         }
         if(capacityToRemove > this.getCapacity()){
-            throw new IllegalArgumentException(
+            throw new IllegalStateException(
                 "The number of PEs to remove cannot be higher than the number of existing PEs. "+
                 "Requested to remove: " + capacityToRemove + " PEs. Existing: " + this.getCapacity() + " PEs.");
         }
@@ -127,7 +137,6 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
         }
 
         return removeCapacity(amountToDeallocate);
-
     }
 
     /**
@@ -137,7 +146,7 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
      * @param amountToDeallocate the amount requested to deallocate
      * @return the actual amount do deallocate
      */
-    private long getActualAmountToDeallocate(long amountToDeallocate) {
+    private long getActualAmountToDeallocate(final long amountToDeallocate) {
         return Math.min(amountToDeallocate, this.getAllocatedResource());
     }
 

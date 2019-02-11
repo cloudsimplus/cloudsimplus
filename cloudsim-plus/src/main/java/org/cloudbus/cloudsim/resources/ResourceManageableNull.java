@@ -11,6 +11,7 @@ final class ResourceManageableNull implements ResourceManageable {
     @Override public boolean setCapacity(long newCapacity) {
         return false;
     }
+    @Override public boolean sumCapacity(long amountToSum) { return false; }
     @Override public boolean addCapacity(long capacityToAdd) { return false; }
     @Override public boolean removeCapacity(long capacityToRemove) { return false; }
     @Override public boolean allocateResource(long amountToAllocate) {

@@ -237,12 +237,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
         final Vm vm = scaling.getVm();
         vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
-        if(scaling.isVmUnderloaded()) {
-            vm.getProcessor().removeCapacity((long)numberOfPesForScaling);
-        }
-        else {
-            vm.getProcessor().addCapacity((long)numberOfPesForScaling);
-        }
+        final int signal = scaling.isVmUnderloaded() ? -1 : 1;
+        //Removes or adds some capacity from/to the resource, respectively if the VM is under or overloaded
+        vm.getProcessor().sumCapacity((long)numberOfPesForScaling * signal);
 
         vm.getHost().getVmScheduler().allocatePesForVm(vm);
         return true;
