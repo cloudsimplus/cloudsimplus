@@ -39,6 +39,7 @@ final class PeNull implements Pe {
         return Status.FAILED;
     }
     @Override public boolean setCapacity(long mipsCapacity) { return false; }
+    @Override public boolean sumCapacity(long amountToSum) { return false; }
     @Override public boolean setCapacity(double mipsCapacity) {
         return false;
     }
