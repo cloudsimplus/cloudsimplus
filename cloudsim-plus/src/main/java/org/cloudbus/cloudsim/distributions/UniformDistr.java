@@ -41,18 +41,8 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      *
      * @param seed simulation seed to be used
      */
-    public UniformDistr(long seed) {
+    public UniformDistr(final long seed) {
         this(0, 1, seed);
-    }
-
-    /**
-     * Creates new uniform pseudo random number generator
-     * that produces values between a 0 (inclusive) and max (exclusive).
-     *
-     * @param max maximum value (exclusive)
-     */
-    public UniformDistr(double max) {
-        this(0, max, -1);
     }
 
     /**
@@ -62,7 +52,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * @param min minimum value (inclusive)
      * @param max maximum value (exclusive)
      */
-    public UniformDistr(double min, double max) {
+    public UniformDistr(final double min, final double max) {
         this(min, max, -1);
     }
 
@@ -73,7 +63,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * @param max maximum value (exclusive)
      * @param seed simulation seed to be used
      */
-    public UniformDistr(double min, double max, long seed) {
+    public UniformDistr(final double min, final double max, final long seed) {
         super(new UniformRealDistribution(min, max), seed);
         applyAntitheticVariates = false;
     }
@@ -92,7 +82,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * @param max the maximum value
      * @return the next random number in the sequence
      */
-    public static double sample(Random rd, double min, double max) {
+    public static double sample(final Random rd, final double min, final double max) {
         if (min >= max) {
             throw new IllegalArgumentException("Maximum must be greater than the minimum.");
         }
@@ -133,7 +123,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * @param applyAntitheticVariates true if the technique has to be applied, false otherwise
      * @see #isApplyAntitheticVariates()
      */
-    public UniformDistr setApplyAntitheticVariates(boolean applyAntitheticVariates) {
+    public UniformDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
         this.applyAntitheticVariates = applyAntitheticVariates;
 	    return this;
     }

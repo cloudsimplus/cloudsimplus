@@ -146,7 +146,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
      */
-    public VmSimple(final int id, final double mipsCapacity, final long numberOfPes) {
+    public VmSimple(final long id, final double mipsCapacity, final long numberOfPes) {
         this(id, (long)mipsCapacity, numberOfPes);
     }
 
@@ -163,7 +163,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
      */
-    public VmSimple(final int id, final long mipsCapacity, final long numberOfPes) {
+    public VmSimple(final long id, final long mipsCapacity, final long numberOfPes) {
         this.resources = new ArrayList<>(4);
         setInMigration(false);
         setHost(Host.NULL);

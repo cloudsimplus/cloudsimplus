@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Implements a model, according to which a Cloudlet generates
@@ -52,7 +53,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      */
-    public UtilizationModelStochastic(Unit unit) {
+    public UtilizationModelStochastic(final Unit unit) {
         this();
         setUnit(unit);
     }
@@ -65,24 +66,33 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param seed the seed to generate the pseudo random utilization values
      */
-    public UtilizationModelStochastic(Unit unit, long seed) {
+    public UtilizationModelStochastic(final Unit unit, final long seed) {
         this(seed);
         setUnit(unit);
     }
 
     /**
-     * Instantiates a new utilization model stochastic.
+     * Instantiates a new utilization model stochastic with a specific seed.
      *
      * @param seed the seed to generate the pseudo random utilization values
      */
-    public UtilizationModelStochastic(long seed) {
+    public UtilizationModelStochastic(final long seed) {
+        this(new UniformDistr(seed));
+    }
+
+    /**
+     * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG).
+     *
+     * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
+     */
+    public UtilizationModelStochastic(final ContinuousDistribution prng) {
         super();
         setHistory(new HashMap<>());
-        setRandomGenerator(new UniformDistr(seed));
+        setRandomGenerator(prng);
     }
 
     @Override
-    public double getUtilization(double time) {
+    public double getUtilization(final double time) {
         if (getHistory().containsKey(time)) {
             return getHistory().get(time);
         }
@@ -109,7 +119,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @param history the history to set
      */
-    protected final void setHistory(Map<Double, Double> history) {
+    protected final void setHistory(final Map<Double, Double> history) {
         this.history = history;
     }
 
@@ -119,8 +129,8 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @param filename the filename
      * @throws IOException when the file cannot be accessed
      */
-    public void saveHistory(String filename) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
+    public void saveHistory(final String filename) {
+        try (final ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
             oos.writeObject(getHistory());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -134,8 +144,8 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @throws IOException when the file cannot be accessed
      */
     @SuppressWarnings("unchecked")
-    public void loadHistory(String filename) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+    public void loadHistory(final String filename) {
+        try (final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             setHistory((Map<Double, Double>) ois.readObject());
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -158,8 +168,8 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @param randomGenerator the new random number generator
      */
-    public final void setRandomGenerator(ContinuousDistribution randomGenerator) {
-        this.randomGenerator = randomGenerator;
+    public final void setRandomGenerator(final ContinuousDistribution randomGenerator) {
+        this.randomGenerator = Objects.requireNonNull(randomGenerator);
     }
 
 }
