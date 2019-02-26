@@ -196,8 +196,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @param v     a list
      * @param index the location in a list
      * @return the data
-     * @pre v != null
-     * @post index > 0
      */
     private String getData(final List<Double> v, final int index) {
         try {
@@ -217,9 +215,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Sets the size of the packet.
      *
      * @param size the size to set
-     * @return <tt>true</tt> if a positive value was given, <tt>false</tt> otherwise
-     * @pre size >= 0
-     * @post $none
+     * @return true if a positive value was given, false otherwise
      */
     public boolean setSize(final long size) {
         if (size < 0) {
@@ -285,12 +281,9 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Gets the total time that the packet has spent in the network. This is
      * basically the Round-Trip Time (RTT). Dividing this by half should be the
      * approximate latency.
-     * <p/>
      * RTT is taken as the "final entry time" - "first exit time".
      *
      * @return total round-trip time
-     * @pre $none
-     * @post $none
      */
     public double getTotalResponseTime() {
         try {
@@ -306,8 +299,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Gets the bottleneck bandwidth between the source and the destination.
      *
      * @return the bottleneck bandwidth
-     * @pre $none
-     * @post $none
      */
     public double getBaudRate() {
         return bandwidth;
@@ -319,7 +310,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * CloudResources. It should not be called by links etc.
      *
      * @param entity the id of the hop that this IcmpPacket is traversing
-     * @post $none
      */
     public void addHop(final SimEntity entity) {
         entities.add(entity);
@@ -332,8 +322,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      *
      * @param time current simulation time, use
      *             {@link org.cloudbus.cloudsim.core.CloudSim#clock()} to obtain this
-     * @pre time >= 0
-     * @post $none
      */
     public void addEntryTime(final double time) {
         entryTimes.add(Math.min(time, 0));
@@ -347,8 +335,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      *
      * @param time current simulation time, use
      *             {@link org.cloudbus.cloudsim.core.CloudSim#clock()} to obtain this
-     * @pre time >= 0
-     * @post $none
      */
     public void addExitTime(final double time) {
         exitTimes.add(Math.min(time, 0));
@@ -361,8 +347,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * be sent out next.
      *
      * @param baudRate the entity's baud rate in bits/s
-     * @pre baudRate > 0
-     * @post $none
      */
     public void addBaudRate(final double baudRate) {
         baudRates.add(baudRate);
@@ -375,8 +359,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Gets a <b>read-only</b> list of all the bandwidths that this packet has traversed.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     public List<Double> getDetailBaudRate() {
         return Collections.unmodifiableList(baudRates);
@@ -387,8 +369,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * that defines the hops it has made.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     public List<SimEntity> getHopsList() {
         return Collections.unmodifiableList(entities);
@@ -398,8 +378,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Gets a <b>read-only</b> list of all entry times that the packet has traversed.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     public List<Double> getDetailEntryTimes() {
         return Collections.unmodifiableList(entryTimes);
@@ -410,8 +388,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * traversed.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     public List<Double> getDetailExitTimes() {
         return Collections.unmodifiableList(exitTimes);
@@ -421,8 +397,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Gets the entity that was the last hop where this packet has traversed.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     public SimEntity getLastHop() {
         return lastHop;
@@ -432,7 +406,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Sets the entity that was the last hop where this packet has traversed.
      *
      * @param entity the entity to set as the last hop
-     * @post $none
      */
     public void setLastHop(final SimEntity entity) {
         this.lastHop = entity;
@@ -442,8 +415,6 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * Gets the network service type of this packet
      *
      * @return the network service type
-     * @pre $none
-     * @post $none
      */
     public int getNetServiceLevel() {
         return netServiceLevel;

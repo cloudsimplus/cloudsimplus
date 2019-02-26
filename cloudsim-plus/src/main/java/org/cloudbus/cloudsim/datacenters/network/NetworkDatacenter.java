@@ -56,7 +56,7 @@ public class NetworkDatacenter extends DatacenterSimple {
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
-     * @throws IllegalArgumentException when this entity has <tt>zero</tt> number of PEs (Processing Elements).
+     * @throws IllegalArgumentException when this entity has zero number of PEs (Processing Elements).
      * <br>
      * No PEs mean the Cloudlets can't be processed. A CloudResource must
      * contain one or more Machines. A Machine must contain one or more PEs.

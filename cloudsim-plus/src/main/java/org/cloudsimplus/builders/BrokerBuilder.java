@@ -47,7 +47,7 @@ public class BrokerBuilder implements BrokerBuilderInterface {
     }
 
     @Override
-    public BrokerBuilderDecorator createBroker() {
+    public BrokerBuilderDecorator create() {
         final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(scenario.getSimulation());
         brokers.add(broker);
         return new BrokerBuilderDecorator(this, broker);

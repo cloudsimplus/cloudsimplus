@@ -115,8 +115,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Adds a file to the list or required files.
      *
      * @param fileName the name of the required file
-     * @return <tt>true</tt> if the file was added (it didn't exist in the
-     * list of required files), <tt>false</tt> otherwise (it did already exist)
+     * @return true if the file was added (it didn't exist in the
+     * list of required files), false otherwise (it did already exist)
      */
     boolean addRequiredFile(String fileName);
 
@@ -126,7 +126,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * will be added.
      *
      * @param fileNames the list of files to be added
-     * @return <tt>true</tt> if at leat one file was added,
+     * @return true if at least one file was added,
      * false if no file was added (in the case that all given files
      * already exist in the current required list)
      */
@@ -136,7 +136,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * Deletes the given filename from the list.
      *
      * @param filename the given filename to be deleted
-     * @return <tt>true</tt> if the file was found and removed, <tt>false</tt>
+     * @return true if the file was found and removed, false
      * if not found
      */
     boolean deleteRequiredFile(String filename);
@@ -144,7 +144,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Checks whether this cloudlet requires any files or not.
      *
-     * @return <tt>true</tt> if required, <tt>false</tt> otherwise
+     * @return true if required, false otherwise
      */
     boolean requiresFiles();
 
@@ -523,8 +523,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Checks whether this Cloudlet has finished executing or not.
      *
-     * @return <tt>true</tt> if this Cloudlet has finished execution,
-     * <tt>false</tt> otherwise
+     * @return true if this Cloudlet has finished execution,
+     * false otherwise
      */
     boolean isFinished();
 

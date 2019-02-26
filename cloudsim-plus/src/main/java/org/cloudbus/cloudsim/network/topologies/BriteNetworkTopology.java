@@ -27,12 +27,12 @@ import java.util.Map;
  * and generates a topological network
  * from it. Information of this network is used to simulate latency in network
  * traffic of CloudSim.
- * <p/>
- * The topology file may contain more nodes than the number of entities in the
+ *
+ * <p>The topology file may contain more nodes than the number of entities in the
  * simulation. It allows users to increase the scale of the simulation without
  * changing the topology file. Nevertheless, each CloudSim entity must be mapped
  * to one (and only one) BRITE node to allow proper work of the network
- * simulation. Each BRITE node can be mapped to only one entity at a time.
+ * simulation. Each BRITE node can be mapped to only one entity at a time.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov

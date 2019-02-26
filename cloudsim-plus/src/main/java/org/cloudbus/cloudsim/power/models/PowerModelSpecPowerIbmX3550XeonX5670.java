@@ -9,7 +9,7 @@
 package org.cloudbus.cloudsim.power.models;
 
 /**
- * The power model of an IBM server x3550 (2 x [Xeon X5670 2933 MHz, 6 cores], 12GB).<br/>
+ * The power model of an IBM server x3550 (2 x [Xeon X5670 2933 MHz, 6 cores], 12GB).<br>
  * <a href="http://www.spec.org/power_ssj2008/results/res2010q2/power_ssj2008-20100315-00239.html">
  * http://www.spec.org/power_ssj2008/results/res2010q2/power_ssj2008-20100315-00239.html</a>
  *
@@ -20,7 +20,7 @@ package org.cloudbus.cloudsim.power.models;
  * <li><a href="https://doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
- * Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012</a></li>
+ * Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012</a></li>
  * </ul>
  *
  * @author Anton Beloglazov

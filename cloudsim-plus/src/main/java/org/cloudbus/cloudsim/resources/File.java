@@ -111,7 +111,7 @@ public class File {
      * Check if the name of a file is valid or not.
      *
      * @param fileName the file name to be checked for validity
-     * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
+     * @return true if the file name is valid, false otherwise
      */
     public static boolean isValid(final String fileName) {
         return FileAttribute.isValid(fileName);
@@ -122,7 +122,7 @@ public class File {
      * itself and its file name are valid.
      *
      * @param file the file to be checked for validity
-     * @return <tt>true</tt> if the file is valid, <tt>false</tt> otherwise
+     * @return true if the file is valid, false otherwise
      */
     public static boolean isValid(final File file) {
         return file != null && isValid(file.getName());
@@ -188,7 +188,7 @@ public class File {
     }
 
     /**
-     * Gets the size of this object (in byte). <br/>
+     * Gets the size of this object (in byte). <br>
      * NOTE: This object size is NOT the actual file size. Moreover, this size is used for
      * transferring this object over a network.
      *
@@ -222,7 +222,7 @@ public class File {
      * Sets the owner name of this file.
      *
      * @param name the owner name
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setOwnerName(String name) {
         return attribute.setOwnerName(name);
@@ -259,19 +259,19 @@ public class File {
      * Sets the file size (in MBytes).
      *
      * @param fileSize the file size (in MBytes)
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setSize(int fileSize) {
         return attribute.setFileSize(fileSize);
     }
 
     /**
-     * Sets the last update time of this file (in seconds). <br/>
+     * Sets the last update time of this file (in seconds). <br>
      * NOTE: This time is relative to the start time. Preferably use
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()} method.
      *
      * @param time the last update time (in seconds)
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setUpdateTime(double time) {
         return attribute.setUpdateTime(time);
@@ -290,7 +290,7 @@ public class File {
      * Sets the file registration ID (published by a Replica Catalogue entity).
      *
      * @param id registration ID
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setRegistrationID(int id) {
         return attribute.setRegistrationId(id);
@@ -309,7 +309,7 @@ public class File {
      * Sets the file type (for instance, raw, tag, etc).
      *
      * @param type a file type
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setType(int type) {
         return attribute.setType(type);
@@ -328,7 +328,7 @@ public class File {
      * Sets the checksum of the file.
      *
      * @param checksum the checksum of this file
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setChecksum(int checksum) {
         return attribute.setChecksum(checksum);
@@ -347,7 +347,7 @@ public class File {
      * Sets the cost associated with the file.
      *
      * @param cost cost of this file
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setCost(double cost) {
         return attribute.setCost(cost);
@@ -374,7 +374,7 @@ public class File {
     /**
      * Checks if the file is already registered to a Replica Catalogue.
      *
-     * @return <tt>true</tt> if it is registered, <tt>false</tt> otherwise
+     * @return true if it is registered, false otherwise
      */
     public boolean isRegistered() {
         return attribute.isRegistered();
@@ -383,7 +383,7 @@ public class File {
     /**
      * Checks whether the file is a master copy or replica.
      *
-     * @return <tt>true</tt> if it is a master copy or <tt>false</tt> otherwise
+     * @return true if it is a master copy or false otherwise
      */
     public boolean isMasterCopy() {
         return attribute.isMasterCopy();
@@ -392,7 +392,7 @@ public class File {
     /**
      * Marks the file as a master copy or replica.
      *
-     * @param masterCopy a flag denotes <tt>true</tt> for master copy or <tt>false</tt> for a
+     * @param masterCopy a flag denotes true for master copy or false for a
      *                   replica
      */
     public void setMasterCopy(boolean masterCopy) {
@@ -402,7 +402,7 @@ public class File {
     /**
      * Checks if the file was deleted or not.
      *
-     * @return <tt>true</tt> if it was deleted, false otherwise
+     * @return true if it was deleted, false otherwise
      */
     public boolean isDeleted() {
         return deleted;
@@ -411,7 +411,7 @@ public class File {
     /**
      * Sets the file as deleted or not.
      *
-     * @param deleted <tt>true</tt> if it was deleted, false otherwise
+     * @param deleted true if it was deleted, false otherwise
      */
     public void setDeleted(boolean deleted) {
         this.deleted = deleted;
@@ -422,7 +422,7 @@ public class File {
      * related to the operation of adding, deleting or getting the file on a Datacenter's storage.
      *
      * @param time the transaction time (in second)
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setTransactionTime(double time) {
         if (time < 0) {

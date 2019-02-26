@@ -137,7 +137,7 @@ public class CloudletExecution {
      * Sets the Cloudlet status.
      *
      * @param newStatus the Cloudlet status
-     * @return <tt>true</tt> if the new status has been set, <tt>false</tt>
+     * @return true if the new status has been set, false
      * otherwise
      */
     public boolean setStatus(final Cloudlet.Status newStatus) {

@@ -262,6 +262,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public Cloudlet addOnFinishListener(final EventListener<CloudletVmEventInfo> listener) {
+        if(listener.equals(EventListener.NULL)){
+            return this;
+        }
+
         this.onFinishListeners.add(requireNonNull(listener));
         return this;
     }

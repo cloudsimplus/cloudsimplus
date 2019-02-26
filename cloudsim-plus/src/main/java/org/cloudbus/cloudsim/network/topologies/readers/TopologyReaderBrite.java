@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * A network graph (topology) readers that creates a network topology from
  * a file in the <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE format</a>.
- * A BRITE file is structured as follows:<br/>
+ * A BRITE file is structured as follows:<br>
  * <ul>
  * <li>Node-section: NodeID, xpos, ypos, indegree, outdegree, ASid, type(router/AS)
  * <li>Edge-section: EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwith, AS_from, AS_to,

@@ -24,6 +24,7 @@
 package org.cloudsimplus.builders;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -34,99 +35,85 @@ import org.cloudsimplus.listeners.VmHostEventInfo;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 /**
- * A Builder class to create {@link Vm} objects.
+ * A Builder class to create {@link Vm} objects using the default
+ * values defined in {@link Vm} class.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ *
+ * @see VmSimple#setDefaultRamCapacity(long)
+ * @see VmSimple#setDefaultBwCapacity(long)
+ * @see VmSimple#setDefaultStorageCapacity(long)
+ *
  */
 public class VmBuilder implements Builder {
-    private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
-    private long size = 10000;
-    private long  ram = 512;
+    private BiFunction<Double, Long, Vm> vmCreationFunction;
     private double mips = 1000;
-    private long bandwidth = 1000;
-    private int  pes = 1;
+    private long pes = 1;
     private int numberOfCreatedVms;
     private final DatacenterBrokerSimple broker;
-    private EventListener<VmHostEventInfo> onHostAllocationListener;
-    private EventListener<VmHostEventInfo> onHostDeallocationListener;
-    private EventListener<VmDatacenterEventInfo> onVmCreationFailureListener;
-    private EventListener<VmHostEventInfo> onUpdateVmProcessingListener;
+    private Supplier<CloudletScheduler> cloudletSchedulerSupplier;
+    private EventListener<VmHostEventInfo> onHostAllocationListener = EventListener.NULL;
+    private EventListener<VmHostEventInfo> onHostDeallocationListener = EventListener.NULL;
+    private EventListener<VmDatacenterEventInfo> onVmCreationFailureListener = EventListener.NULL;
+    private EventListener<VmHostEventInfo> onUpdateVmProcessingListener = EventListener.NULL;
 
     public VmBuilder(final DatacenterBrokerSimple broker) {
         this.broker = Objects.requireNonNull(broker);
         this.numberOfCreatedVms = 0;
-        this.onHostAllocationListener = EventListener.NULL;
-        this.onHostDeallocationListener = EventListener.NULL;
-        this.onVmCreationFailureListener = EventListener.NULL;
-        this.onUpdateVmProcessingListener = EventListener.NULL;
-        this.cloudletSchedulerSupplier = () -> CloudletScheduler.NULL;
+        this.vmCreationFunction = this::defaultVmCreationFunction;
     }
 
-    public VmBuilder setOnHostDeallocationListener(final EventListener<VmHostEventInfo> onHostDeallocationListener) {
-        this.onHostDeallocationListener = onHostDeallocationListener;
-        return this;
+    /**
+     * Creates and submits one VM to its broker.
+     * @return
+     */
+    public VmBuilder createAndSubmit() {
+        return createAndSubmit(1);
     }
 
-    public VmBuilder setMips(double defaultMIPS) {
-        this.mips = defaultMIPS;
-        return this;
-    }
-
-    public VmBuilder setBandwidth(long defaultBW) {
-        this.bandwidth = defaultBW;
-        return this;
-    }
-
-    public VmBuilder setRam(int defaultRAM) {
-        this.ram = defaultRAM;
-        return this;
-    }
-
-    public VmBuilder setOnHostAllocationListener(final EventListener<VmHostEventInfo> onHostAllocationListener) {
-        this.onHostAllocationListener  = onHostAllocationListener;
-        return this;
-    }
-
-    public VmBuilder setSize(long defaultSize) {
-        this.size = defaultSize;
-        return this;
-    }
-
-    public VmBuilder setOnVmCreationFilatureListenerForAllVms(final EventListener<VmDatacenterEventInfo> onVmCreationFailureListener) {
-        this.onVmCreationFailureListener = onVmCreationFailureListener;
-        return this;
-    }
-
-    public VmBuilder createAndSubmitOneVm() {
-        return createAndSubmitVms(1);
-    }
-
-    public VmBuilder createAndSubmitVms(final int amount) {
-        final List<Vm> vms = new ArrayList<>();
+    /**
+     * Creates and submits a list of VM to its broker.
+     * @return
+     */
+    public VmBuilder createAndSubmit(final int amount) {
+        final List<Vm> vms = new ArrayList<>(amount);
         for (int i = 0; i < amount; i++) {
-            final Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes)
-                    .setRam(ram).setBw(bandwidth).setSize(size)
-                    .setCloudletScheduler(cloudletSchedulerSupplier.get())
-                    .addOnHostAllocationListener(onHostAllocationListener)
-                    .addOnHostDeallocationListener(onHostDeallocationListener)
-                    .addOnCreationFailureListener(onVmCreationFailureListener)
-                    .addOnUpdateProcessingListener(onUpdateVmProcessingListener);
-            vm.setBroker(broker);
+            final Vm vm = vmCreationFunction.apply(mips, pes);
+            if(cloudletSchedulerSupplier != null) {
+                vm.setCloudletScheduler(cloudletSchedulerSupplier.get());
+            }
+
+            vm.addOnHostAllocationListener(onHostAllocationListener)
+              .addOnHostDeallocationListener(onHostDeallocationListener)
+              .addOnCreationFailureListener(onVmCreationFailureListener)
+              .addOnUpdateProcessingListener(onUpdateVmProcessingListener)
+              .setBroker(broker);
             vms.add(vm);
         }
         broker.submitVmList(vms);
         return this;
     }
 
-    public long getBandwidth() {
-        return bandwidth;
+    public List<Vm> getVms() {
+        return broker.getVmWaitingList();
     }
 
-    public VmBuilder setPes(int defaultPEs) {
+    private Vm defaultVmCreationFunction(final double mips, final long pes) {
+        final Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes);
+        return vm;
+    }
+
+    public VmBuilder setMips(final double defaultMIPS) {
+        this.mips = defaultMIPS;
+        return this;
+    }
+
+    public VmBuilder setPes(final long defaultPEs) {
         this.pes = defaultPEs;
         return this;
     }
@@ -137,44 +124,46 @@ public class VmBuilder implements Builder {
             .findFirst().orElse(Vm.NULL);
     }
 
-    public long getSize() {
-        return size;
-    }
-
-    public List<Vm> getVms() {
-        return broker.getVmWaitingList();
-    }
-
-    public long getRam() {
-        return ram;
-    }
-
     public double getMips() {
         return mips;
     }
 
-    public int getPes() {
+    public long getPes() {
         return pes;
     }
 
     /**
-     * Sets a {@link Supplier} that is accountable to create CloudletScheduler
-     * for requested VMs.
-     *
-     * @param cloudletSchedulerSupplier the CloudletScheduler Supplier to set
-     * @return
+     * Sets a {@link BiFunction} used to create VMs.
+     * It must receive the MIPS capacity of each {@link Pe} and the number of PEs for the VM it will create.
+     * @param vmCreationFunction
      */
-    public VmBuilder setCloudletSchedulerSupplier(Supplier<CloudletScheduler> cloudletSchedulerSupplier) {
-        this.cloudletSchedulerSupplier = cloudletSchedulerSupplier;
+    public VmBuilder setVmCreationFunction(final BiFunction<Double, Long, Vm> vmCreationFunction) {
+        this.vmCreationFunction = Objects.requireNonNull(vmCreationFunction);
         return this;
     }
 
-    public EventListener<VmHostEventInfo> getOnUpdateVmProcessingListener() {
-        return onUpdateVmProcessingListener;
+    public VmBuilder setCloudletSchedulerSupplier(final Supplier<CloudletScheduler> cloudletSchedulerSupplier) {
+        this.cloudletSchedulerSupplier = Objects.requireNonNull(cloudletSchedulerSupplier);
+        return this;
     }
 
-    public VmBuilder setOnUpdateVmProcessingListener(final EventListener<VmHostEventInfo> onUpdateVmProcessing) {
-        this.onUpdateVmProcessingListener = Objects.requireNonNull(onUpdateVmProcessing);
+    public VmBuilder setOnHostAllocationListener(final EventListener<VmHostEventInfo> listener) {
+        this.onHostAllocationListener = Objects.requireNonNull(listener);
+        return this;
+    }
+
+    public VmBuilder setOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
+        this.onHostDeallocationListener = Objects.requireNonNull(listener);
+        return this;
+    }
+
+    public VmBuilder setOnVmCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
+        this.onVmCreationFailureListener = Objects.requireNonNull(listener);
+        return this;
+    }
+
+    public VmBuilder setOnUpdateVmProcessingListener(final EventListener<VmHostEventInfo> listener) {
+        this.onUpdateVmProcessingListener = Objects.requireNonNull(listener);
         return this;
     }
 }

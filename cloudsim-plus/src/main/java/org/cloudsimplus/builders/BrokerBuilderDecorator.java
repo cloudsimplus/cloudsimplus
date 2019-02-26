@@ -38,12 +38,12 @@ import java.util.Objects;
  * For instance, the methods {@link #getVmBuilder()} and
  * {@link #getCloudletBuilder()} can only be called after
  * some {@link DatacenterBrokerSimple} was created by calling
- * the method {@link #createBroker()}.<br>
+ * the method {@link #create()}.<br>
  * By this way, after the method is called, it returns
  * an instance of this decorator that allow
  * chained call to the specific decorator methods
  * as the following example:
- * <ul><li>{@link #createBroker() createBroker()}.{@link #getVmBuilder() getVmBuilder()}</li></ul>
+ * <ul><li>{@link #create() createBroker()}.{@link #getVmBuilder() getVmBuilder()}</li></ul>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -63,13 +63,8 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     }
 
     @Override
-    public BrokerBuilderDecorator createBroker() {
-        return builder.createBroker();
-    }
-
-    @Override
-    public DatacenterBroker findBroker(int id) {
-        return builder.findBroker(id);
+    public BrokerBuilderDecorator create() {
+        return builder.create();
     }
 
     @Override
@@ -78,7 +73,12 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     }
 
     @Override
-    public DatacenterBroker get(int index) {
+    public DatacenterBroker findBroker(final int id) {
+        return builder.findBroker(id);
+    }
+
+    @Override
+    public DatacenterBroker get(final int index) {
        return builder.get(index);
     }
 

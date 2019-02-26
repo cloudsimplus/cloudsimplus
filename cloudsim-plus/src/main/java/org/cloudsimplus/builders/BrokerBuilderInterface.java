@@ -35,7 +35,7 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public interface BrokerBuilderInterface extends Builder{
-    BrokerBuilderDecorator createBroker();
+    BrokerBuilderDecorator create();
     DatacenterBroker findBroker(int id);
     List<DatacenterBroker> getBrokers();
     DatacenterBroker get(int index);

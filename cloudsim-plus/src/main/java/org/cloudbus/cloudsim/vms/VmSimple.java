@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
@@ -41,6 +42,10 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSimple extends CustomerEntityAbstract implements Vm {
+    private static long defaultRamCapacity = 1024;
+    private static long defaultBwCapacity = 1000;
+    private static long defaultStorageCapacity = 1024;
+
     /** @see #getUtilizationHistory() */
     private final UtilizationHistory utilizationHistory;
 
@@ -127,8 +132,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @see #setDefaultRamCapacity(long)
+     * @see #setDefaultBwCapacity(long)
+     * @see #setDefaultStorageCapacity(long)
      */
-    public VmSimple(final long mipsCapacity, final long numberOfPes) {
+    public VmSimple(final double mipsCapacity, final long numberOfPes) {
         this(-1, mipsCapacity, numberOfPes);
     }
 
@@ -145,6 +153,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @see #setDefaultRamCapacity(long)
+     * @see #setDefaultBwCapacity(long)
+     * @see #setDefaultStorageCapacity(long)
      */
     public VmSimple(final long id, final double mipsCapacity, final long numberOfPes) {
         this(id, (long)mipsCapacity, numberOfPes);
@@ -162,6 +173,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @see #setDefaultRamCapacity(long)
+     * @see #setDefaultBwCapacity(long)
+     * @see #setDefaultStorageCapacity(long)
      */
     public VmSimple(final long id, final long mipsCapacity, final long numberOfPes) {
         this.resources = new ArrayList<>(4);
@@ -179,9 +193,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         setMips(mipsCapacity);
         setNumberOfPes(numberOfPes);
 
-        setRam(new Ram(1024));
-        setBw(new Bandwidth(1000));
-        setStorage(new Storage(1024));
+        setRam(new Ram(defaultRamCapacity));
+        setBw(new Bandwidth(defaultBwCapacity));
+        setStorage(new Storage(defaultStorageCapacity));
 
         setSubmissionDelay(0);
         setVmm("Xen");
@@ -567,8 +581,42 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public Vm addOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
+        if(listener.equals(EventListener.NULL)){
+            return this;
+        }
+
         this.onHostDeallocationListeners.add(requireNonNull(listener));
         return this;
+    }
+
+    @Override
+    public Vm addOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
+        if(listener.equals(EventListener.NULL)){
+            return this;
+        }
+
+        this.onCreationFailureListeners.add(requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public Vm addOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
+        if(listener.equals(EventListener.NULL)){
+            return this;
+        }
+
+        this.onUpdateProcessingListeners.add(requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public boolean removeOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
+        return onCreationFailureListeners.remove(requireNonNull(listener));
+    }
+
+    @Override
+    public boolean removeOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
+        return onUpdateProcessingListeners.remove(requireNonNull(listener));
     }
 
     @Override
@@ -586,28 +634,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         final String desc = StringUtils.isBlank(description) ? "" : String.format(" (%s)", description);
         final String brokerName = getBroker() == DatacenterBroker.NULL ? "" : "/Broker " + getBroker().getId();
         return String.format("Vm %d%s%s", getId(), brokerName, desc);
-    }
-
-    @Override
-    public Vm addOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
-        this.onCreationFailureListeners.add(requireNonNull(listener));
-        return this;
-    }
-
-    @Override
-    public boolean removeOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
-        return onCreationFailureListeners.remove(requireNonNull(listener));
-    }
-
-    @Override
-    public Vm addOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
-        this.onUpdateProcessingListeners.add(requireNonNull(listener));
-        return this;
-    }
-
-    @Override
-    public boolean removeOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
-        return onUpdateProcessingListeners.remove(requireNonNull(listener));
     }
 
     /**
@@ -759,4 +785,56 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public UtilizationHistory getUtilizationHistory() {
         return utilizationHistory;
     }
+
+    /**
+     * Gets the Default RAM capacity (in MB) for creating VMs.
+     * This value is used when the RAM capacity is not given in a VM constructor.
+     */
+    public static long getDefaultRamCapacity() {
+        return defaultRamCapacity;
+    }
+
+    /**
+     * Sets the Default RAM capacity (in MB) for creating VMs.
+     * This value is used when the RAM capacity is not given in a VM constructor.
+     */
+    public static void setDefaultRamCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultRamCapacity = defaultCapacity;
+    }
+
+    /**
+     * Gets the Default Bandwidth capacity (in Mbps) for creating VMs.
+     * This value is used when the BW capacity is not given in a VM constructor.
+     */
+    public static long getDefaultBwCapacity() {
+        return defaultBwCapacity;
+    }
+
+    /**
+     * Sets the Default Bandwidth capacity (in Mbps) for creating VMs.
+     * This value is used when the BW capacity is not given in a VM constructor.
+     */
+    public static void setDefaultBwCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultBwCapacity = defaultCapacity;
+    }
+
+    /**
+     * Gets the Default Storage capacity (in MB) for creating VMs.
+     * This value is used when the Storage capacity is not given in a VM constructor.
+     */
+    public static long getDefaultStorageCapacity() {
+        return defaultStorageCapacity;
+    }
+
+    /**
+     * Sets the Default Storage capacity (in MB) for creating VMs.
+     * This value is used when the Storage capacity is not given in a VM constructor.
+     */
+    public static void setDefaultStorageCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultStorageCapacity = defaultCapacity;
+    }
+
 }

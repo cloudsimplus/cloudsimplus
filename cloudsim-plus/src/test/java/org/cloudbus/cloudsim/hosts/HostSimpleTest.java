@@ -127,7 +127,7 @@ public class HostSimpleTest {
     }
 
     private Vm createVm(final int pes, final double mips, final long storage) {
-        final Vm vm = new VmSimple((long) mips, pes);
+        final Vm vm = new VmSimple(mips, pes);
         vm.setRam(RAM);
         vm.setBw(BW);
         vm.setSize(storage);

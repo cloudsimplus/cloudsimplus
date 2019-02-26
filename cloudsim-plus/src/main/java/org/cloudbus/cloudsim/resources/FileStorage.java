@@ -85,7 +85,7 @@ public interface FileStorage extends Resource {
      * Makes reservation of space on the storage to store a file.
      *
      * @param fileSize the size to be reserved (in MByte)
-     * @return <tt>true</tt> if reservation succeeded, <tt>false</tt> otherwise
+     * @return true if reservation succeeded, false otherwise
      */
     boolean reserveSpace(int fileSize);
 
@@ -188,7 +188,7 @@ public interface FileStorage extends Resource {
      * Checks whether a file exists in the storage or not.
      *
      * @param fileName the name of the file we are looking for
-     * @return <tt>true</tt> if the file is in the storage, <tt>false</tt> otherwise
+     * @return true if the file is in the storage, false otherwise
      */
     boolean contains(String fileName);
 
@@ -196,7 +196,7 @@ public interface FileStorage extends Resource {
      * Checks whether a file is stored in the storage or not.
      *
      * @param file the file we are looking for
-     * @return <tt>true</tt> if the file is in the storage, <tt>false</tt> otherwise
+     * @return true if the file is in the storage, false otherwise
      */
     boolean contains(File file);
 
@@ -206,7 +206,7 @@ public interface FileStorage extends Resource {
      *
      * @param file the file we would like to rename
      * @param newName the new name of the file
-     * @return <tt>true</tt> if the renaming succeeded, <tt>false</tt> otherwise
+     * @return true if the renaming succeeded, false otherwise
      */
     boolean renameFile(File file, String newName);
 
@@ -214,7 +214,7 @@ public interface FileStorage extends Resource {
      * Checks whether there is enough space on the storage for a certain file
      *
      * @param fileSize size of the file intended to be stored on the device (in MByte)
-     * @return <tt>true</tt> if enough space available, <tt>false</tt> otherwise
+     * @return true if enough space available, false otherwise
     */
     boolean hasPotentialAvailableSpace(int fileSize);
 

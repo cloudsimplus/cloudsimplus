@@ -28,8 +28,8 @@ public interface ResourceManageable extends Resource {
      * Try to set the {@link #getCapacity() resource capacity}.
      *
      * @param newCapacity the new resource capacity
-     * @return true if capacity >= 0 and capacity >= current allocated resource,
-     * false otherwise
+     * @return true if capacity is greater or equal to 0 and capacity greater or equal to
+     * current allocated resource, false otherwise
      * @see #getAllocatedResource()
      */
     boolean setCapacity(long newCapacity);

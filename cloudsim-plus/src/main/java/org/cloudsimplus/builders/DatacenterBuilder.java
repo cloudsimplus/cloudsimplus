@@ -32,6 +32,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A Builder class to createDatacenter {@link DatacenterSimple} objects.
@@ -53,13 +54,37 @@ public class DatacenterBuilder implements Builder {
     private final List<Datacenter> datacenters;
     private int createdDatacenters;
 	private List<FileStorage> storageList;
+	private Function<List<Host>, Datacenter> datacenterCreationFunction;
 
-	public DatacenterBuilder(SimulationScenarioBuilder scenario) {
+	public DatacenterBuilder(final SimulationScenarioBuilder scenario) {
 	    super();
 	    this.scenario = scenario;
         this.datacenters = new ArrayList<>();
 		this.storageList = new ArrayList<>();
         this.createdDatacenters = 0;
+        this.datacenterCreationFunction = this::defaultDatacenterCreationFunction;
+    }
+
+    public DatacenterBuilder create(final List<Host> hosts) {
+        Objects.requireNonNull(hosts);
+        if (hosts.isEmpty()) {
+            throw new IllegalArgumentException("The hosts parameter has to have at least 1 host.");
+        }
+
+        final String name = String.format(DC_NAME_FORMAT, createdDatacenters++);
+        final Datacenter datacenter = datacenterCreationFunction.apply(hosts);
+
+        datacenter.getCharacteristics()
+            .setTimeZone(timezone)
+            .setCostPerSecond(costPerCpuSecond)
+            .setCostPerMem(costPerMem)
+            .setCostPerStorage(costPerStorage)
+            .setCostPerBw(costPerBwMegabit);
+
+        datacenter.getDatacenterStorage().setStorageList(storageList);
+        datacenter.setName(name);
+        this.datacenters.add(datacenter);
+        return this;
     }
 
     public List<Datacenter> getDatacenters() {
@@ -81,35 +106,17 @@ public class DatacenterBuilder implements Builder {
         return getHostOfDatacenter(0,0);
     }
 
-    public DatacenterBuilder createDatacenter(final List<Host> hosts) {
-        Objects.requireNonNull(hosts);
-        if (hosts.isEmpty()) {
-            throw new IllegalArgumentException("The hosts parameter has to have at least 1 host.");
-        }
-
-        final String name = String.format(DC_NAME_FORMAT, createdDatacenters++);
-        final Datacenter datacenter =
-                new DatacenterSimple(scenario.getSimulation(), hosts, new VmAllocationPolicySimple())
-                    .setSchedulingInterval(schedulingInterval);
-
-        datacenter.getCharacteristics()
-            .setTimeZone(timezone)
-            .setCostPerSecond(costPerCpuSecond)
-            .setCostPerMem(costPerMem)
-            .setCostPerStorage(costPerStorage)
-            .setCostPerBw(costPerBwMegabit);
-        
-        datacenter.getDatacenterStorage().setStorageList(storageList);
-        datacenter.setName(name);
-        this.datacenters.add(datacenter);
-        return this;
+    private Datacenter defaultDatacenterCreationFunction(final List<Host> hosts) {
+        final DatacenterSimple dc = new DatacenterSimple(scenario.getSimulation(), hosts, new VmAllocationPolicySimple());
+        dc.setSchedulingInterval(schedulingInterval);
+        return dc;
     }
 
     public double getCostPerBwMegabit() {
         return costPerBwMegabit;
     }
 
-    public DatacenterBuilder setCostPerBwMegabit(double defaultCostPerBwByte) {
+    public DatacenterBuilder setCostPerBwMegabit(final double defaultCostPerBwByte) {
         this.costPerBwMegabit = defaultCostPerBwByte;
         return this;
     }
@@ -118,7 +125,7 @@ public class DatacenterBuilder implements Builder {
         return costPerCpuSecond;
     }
 
-    public DatacenterBuilder setCostPerCpuSecond(double defaultCostPerCpuSecond) {
+    public DatacenterBuilder setCostPerCpuSecond(final double defaultCostPerCpuSecond) {
         this.costPerCpuSecond = defaultCostPerCpuSecond;
         return this;
     }
@@ -127,7 +134,7 @@ public class DatacenterBuilder implements Builder {
         return costPerStorage;
     }
 
-    public DatacenterBuilder setCostPerStorage(double defaultCostPerStorage) {
+    public DatacenterBuilder setCostPerStorage(final double defaultCostPerStorage) {
         this.costPerStorage = defaultCostPerStorage;
         return this;
     }
@@ -136,7 +143,7 @@ public class DatacenterBuilder implements Builder {
         return costPerMem;
     }
 
-    public DatacenterBuilder setCostPerMem(double defaultCostPerMem) {
+    public DatacenterBuilder setCostPerMem(final double defaultCostPerMem) {
         this.costPerMem = defaultCostPerMem;
         return this;
     }
@@ -145,7 +152,7 @@ public class DatacenterBuilder implements Builder {
         return timezone;
     }
 
-    public DatacenterBuilder setTimezone(double defaultTimezone) {
+    public DatacenterBuilder setTimezone(final double defaultTimezone) {
         this.timezone = defaultTimezone;
         return this;
     }
@@ -154,19 +161,27 @@ public class DatacenterBuilder implements Builder {
         return schedulingInterval;
     }
 
-    public DatacenterBuilder setSchedulingInterval(double schedulingInterval) {
+    public DatacenterBuilder setSchedulingInterval(final double schedulingInterval) {
         this.schedulingInterval = schedulingInterval;
         return this;
     }
 
-	public DatacenterBuilder setStorageList(List<FileStorage> storageList) {
+	public DatacenterBuilder setStorageList(final List<FileStorage> storageList) {
 		this.storageList = storageList;
 		return this;
 	}
 
-	public DatacenterBuilder addStorageToList(FileStorage storage) {
+	public DatacenterBuilder addStorageToList(final FileStorage storage) {
 		this.storageList.add(storage);
 		return this;
 	}
 
+    /**
+     * Sets a {@link Function} used to create Datacenters.
+     * It must receive a list of {@link Host} for the Datacenter it will create.
+     * @param datacenterCreationFunction
+     */
+    public void setDatacenterCreationFunction(final Function<List<Host>, Datacenter> datacenterCreationFunction) {
+        this.datacenterCreationFunction = Objects.requireNonNull(datacenterCreationFunction);
+    }
 }

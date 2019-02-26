@@ -49,7 +49,7 @@ public class DatacenterStorage {
      * Checks whether the storageList has the given file.
      *
      * @param file a file to be searched
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean contains(final File file) {
         return contains(requireNonNull(file).getName());
@@ -59,7 +59,7 @@ public class DatacenterStorage {
      * Checks whether the storageList has the given file.
      *
      * @param fileName a file name to be searched
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean contains(final String fileName) {
         if (StringUtils.isBlank(fileName)) {

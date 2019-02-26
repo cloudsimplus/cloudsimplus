@@ -35,6 +35,7 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 /**
  * A Builder class to create {@link Cloudlet} objects.
@@ -60,6 +61,7 @@ public class CloudletBuilder implements Builder {
 
     private final BrokerBuilderDecorator brokerBuilder;
     private final DatacenterBrokerSimple broker;
+    private BiFunction<Long,Integer, Cloudlet> cloudletCreationFunction;
 
     private EventListener<CloudletVmEventInfo> onCloudletFinishEventListener = EventListener.NULL;
 	private List<String> requiredFiles;
@@ -72,6 +74,64 @@ public class CloudletBuilder implements Builder {
         this.cloudlets = new ArrayList<>();
 		this.requiredFiles = new ArrayList<>();
         this.createdCloudlets = 0;
+        this.cloudletCreationFunction = this::defaultCloudletCreationFunction;
+    }
+
+    public CloudletBuilder create(final int amount, final int initialId) {
+        createCloudletsInternal(amount, initialId);
+        return this;
+
+    }
+
+    public CloudletBuilder create(final int amount) {
+        createCloudletsInternal(amount, 0);
+        return this;
+    }
+
+    public CloudletBuilder createAndSubmit(final int amount) {
+        return createAndSubmit(amount, 0);
+    }
+
+    public CloudletBuilder createAndSubmit(final int amount, final int initialId) {
+        final List<Cloudlet> localList = createCloudletsInternal(amount, initialId);
+        broker.submitCloudletList(localList);
+        if(vm != Vm.NULL){
+            localList.forEach(cloudlet -> broker.bindCloudletToVm(cloudlet, vm));
+        }
+        return this;
+    }
+
+    private List<Cloudlet> createCloudletsInternal(final int amount, final int initialId) {
+        final List<Cloudlet> localList = new ArrayList<>();
+        for (int i = 0; i < amount; i++) {
+            final int cloudletId = initialId + createdCloudlets++;
+            final Cloudlet cloudlet = cloudletCreationFunction.apply(length, pes)
+                    .setFileSize(fileSize)
+                    .setOutputSize(outputSize)
+                    .setUtilizationModelCpu(utilizationModelCpu)
+                    .setUtilizationModelRam(utilizationModelRam)
+                    .setUtilizationModelBw(utilizationModelBw)
+                    .addOnFinishListener(onCloudletFinishEventListener);
+            cloudlet.setId(cloudletId);
+            cloudlet.setBroker(broker);
+            cloudlet.addRequiredFiles(requiredFiles);
+            localList.add(cloudlet);
+        }
+        cloudlets.addAll(localList);
+        return localList;
+    }
+
+    private Cloudlet defaultCloudletCreationFunction(final long length, final int pes){
+	    return new CloudletSimple(length, pes);
+    }
+
+    /**
+     * Submits the list of created cloudlets to the latest created broker.
+     * @return the CloudletBuilder instance
+     */
+    public CloudletBuilder submitCloudlets(){
+        broker.submitCloudletList(cloudlets);
+        return this;
     }
 
     /**
@@ -139,59 +199,6 @@ public class CloudletBuilder implements Builder {
         this.length = defaultLength;
         return this;
     }
-    public CloudletBuilder createCloudlets(final int amount, final int initialId) {
-        createCloudletsInternal(amount, initialId);
-        return this;
-
-    }
-
-    public CloudletBuilder createCloudlets(final int amount) {
-        createCloudletsInternal(amount, 0);
-        return this;
-    }
-
-    public CloudletBuilder createAndSubmitCloudlets(final int amount) {
-        return createAndSubmitCloudlets(amount, 0);
-    }
-
-    public CloudletBuilder createAndSubmitCloudlets(final int amount, final int initialId) {
-        final List<Cloudlet> localList = createCloudletsInternal(amount, initialId);
-        broker.submitCloudletList(localList);
-        if(vm != Vm.NULL){
-            localList.forEach(cloudlet -> broker.bindCloudletToVm(cloudlet, vm));
-        }
-        return this;
-    }
-
-    private List<Cloudlet> createCloudletsInternal(final int amount, final int initialId) {
-        final List<Cloudlet> localList = new ArrayList<>();
-        for (int i = 0; i < amount; i++) {
-            final int cloudletId = initialId + createdCloudlets++;
-            final Cloudlet cloudlet =
-                new CloudletSimple(cloudletId, length, pes)
-                    .setFileSize(fileSize)
-                    .setOutputSize(outputSize)
-                    .setUtilizationModelCpu(utilizationModelCpu)
-                    .setUtilizationModelRam(utilizationModelRam)
-                    .setUtilizationModelBw(utilizationModelBw)
-                    .addOnFinishListener(onCloudletFinishEventListener);
-            cloudlet.setBroker(broker);
-            cloudlet.addRequiredFiles(requiredFiles);
-            localList.add(cloudlet);
-        }
-        cloudlets.addAll(localList);
-        return localList;
-    }
-
-    /**
-     * Submits the list of created cloudlets to the latest created broker.
-     * @return the CloudletBuilder instance
-     */
-    public CloudletBuilder submitCloudlets(){
-        broker.submitCloudletList(cloudlets);
-        return this;
-    }
-
     public BrokerBuilderDecorator getBrokerBuilder() {
         return brokerBuilder;
     }
@@ -214,5 +221,14 @@ public class CloudletBuilder implements Builder {
     public CloudletBuilder setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
         this.utilizationModelBw = Objects.requireNonNull(utilizationModelBw);
         return this;
+    }
+
+    /**
+     * Sets a {@link BiFunction} used to create Cloudlets.
+     * It must length of the Cloudlet (in MI) and the number of PEs it will require.
+     * @param cloudletCreationFunction
+     */
+    public void setCloudletCreationFunction(final BiFunction<Long, Integer, Cloudlet> cloudletCreationFunction) {
+        this.cloudletCreationFunction = Objects.requireNonNull(cloudletCreationFunction);
     }
 }

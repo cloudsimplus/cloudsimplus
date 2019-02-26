@@ -28,11 +28,13 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.ExpectedCloudletExecutionResults;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
@@ -49,6 +51,7 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -136,26 +139,28 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link Vm#addOnCreationFailureListener(EventListener)}  }
+     * A lambda function used by an VM creation failure listener
      * that will be called every time a Vm failed to be created
      * due to lack of host resources.
      *
      * @param evt
+     * @see Vm#addOnCreationFailureListener(EventListener)}
      */
     private void onVmCreationFailure(final VmDatacenterEventInfo evt) {
         numberOfVmCreationFailures++;
-        final int expectedVmId = 1;
+        final int expectedFailedVms = 1;
 
         final String msg = String.format(
-                "Only Vm %d should had failed to be created due to lack of resources",
-                expectedVmId);
-        assertEquals(expectedVmId, evt.getVm().getId(), msg);
+                "Only %d VMs should had failed to be created due to lack of resources but %d failed",
+                expectedFailedVms, numberOfVmCreationFailures);
+        assertTrue(expectedFailedVms == numberOfVmCreationFailures, msg);
     }
 
     /**
-     * A lambda function used by an {@link CloudSim#onEventProcessingListeners}
+     * A lambda function used by an event processing listener
      * that will be called every time an event is processed by {@link CloudSim}.
      * @param evt
+     * @see CloudSim#addOnEventProcessingListener(EventListener)
      */
     private void onEventProcessing(final SimEvent evt) {
         LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
@@ -166,13 +171,14 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link Vm#addOnUpdateProcessingListener(EventListener)}  }
+     * A lambda function used by a VM update processing listener
      * that will be called every time the processing of a Vm is updated inside its host.
      * Considering there is only one Host and only 1 VM where its cloudlets use a
      * {@link UtilizationModelFull} for CPU utilization model,
      * at any time, the amount of available Host CPU should be the same.
      *
      * @param evt
+     * @see Vm#addOnUpdateProcessingListener(EventListener)}
      */
     private void onUpdateVmProcessing(final VmHostEventInfo evt) {
         LOGGER.info(
@@ -187,34 +193,41 @@ public final class VmCreationFailureIntegrationTest {
         simulation = new CloudSim();
         simulation.addOnEventProcessingListener(this::onEventProcessing);
         scenario = new SimulationScenarioBuilder(simulation);
-        scenario.getDatacenterBuilder().createDatacenter(
+        scenario.getDatacenterBuilder().create(
                 new HostBuilder()
-                    .setVmSchedulerClass(VmSchedulerTimeShared.class)
-                    .setRam(2048).setBandwidth(10000)
+                    .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
                     .setPes(1).setMips(1200)
-                    .createOneHost()
+                    .create()
                     .getHosts()
         );
 
-        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
 
         brokerBuilder.getVmBuilder()
-                .setRam(512).setBandwidth(1000)
-                .setPes(1).setMips(1000).setSize(10000)
+                .setPes(1)
+                .setMips(1000)
+                .setVmCreationFunction(this::createVm)
                 .setCloudletSchedulerSupplier(CloudletSchedulerSpaceShared::new)
                 .setOnHostAllocationListener(this::onHostAllocation)
                 .setOnHostDeallocationListener(this::onHostDeallocation)
-                .setOnVmCreationFilatureListenerForAllVms(this::onVmCreationFailure)
+                .setOnVmCreationFailureListener(this::onVmCreationFailure)
                 .setOnUpdateVmProcessingListener(this::onUpdateVmProcessing)
-                /*try to create 2 VMs where there is capacity to only one,
+                /*Try to create 2 VMs where there is capacity to only one,
                  thus, 1 will fail being created*/
-                .createAndSubmitVms(2);
+                .createAndSubmit(2);
 
         brokerBuilder.getCloudletBuilder()
                 .setLength(10000)
                 .setUtilizationModelCpuRamAndBw(new UtilizationModelFull())
                 .setPEs(1)
-                .createAndSubmitCloudlets(2);
+                .createAndSubmit(2);
+    }
+
+    private Vm createVm(final double mips, final long pes) {
+        return new VmSimple(mips, pes)
+                        .setRam(HostSimple.getDefaultRamCapacity())
+                        .setBw(HostSimple.getDefaultBwCapacity())
+                        .setSize(HostSimple.getDefaultStorageCapacity());
     }
 
     @Test
@@ -249,9 +262,9 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     private void assertThatOneGivenCloudletHasTheExpectedExecutionTimes(final ExpectedCloudletExecutionResults results) {
-        assertEquals(results.getExpectedExecTime(), results.getCloudlet().getActualCpuTime(), 0.3, "cloudlet.getActualCPUTime");
-        assertEquals(results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), 0.3, "cloudlet.getExecStartTime");
-        assertEquals(results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.3, "cloudlet.getFinishTime");
+        assertEquals(results.getExpectedExecTime(), results.getCloudlet().getActualCpuTime(), 0.3, results.getCloudlet()+" getActualCPUTime");
+        assertEquals(results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), 0.3, results.getCloudlet()+" getExecStartTime");
+        assertEquals(results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.3, results.getCloudlet()+" getFinishTime");
         assertEquals(0, results.getCloudlet().getVm().getId());
         assertEquals(
                 1, results.getCloudlet().getLastDatacenter().getId(),

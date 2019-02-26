@@ -26,8 +26,6 @@ package org.cloudsimplus.integrationtests;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
@@ -86,29 +84,25 @@ public final class CheckHostAvailableMipsTest {
         utilizationModel = new UtilizationModelFull();
         scenario = new SimulationScenarioBuilder(simulation);
         final List<Host> hosts = new HostBuilder()
-            .setVmSchedulerClass(VmSchedulerSpaceShared.class)
-            .setRam(4000).setBandwidth(400000)
             .setOnUpdateVmsProcessingListener(this::onUpdateVmsProcessing)
             .setPes(HOST_PES).setMips(HOST_MIPS)
-            .createOneHost()
+            .create()
             .getHosts();
-        scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(hosts);
+        scenario.getDatacenterBuilder().setSchedulingInterval(2).create(hosts);
 
         //Create VMs and cloudlets for different brokers
         for(int i = 0; i < NUMBER_OF_VMS; i++){
-            final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+            final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
             brokerBuilder.getVmBuilder()
-                .setRam(1000).setBandwidth(100000)
-                .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
-                .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
-                .createAndSubmitOneVm();
+                .setPes(VM_PES).setMips(VM_MIPS)
+                .createAndSubmit();
 
             final long cloudletLength = i == 0 ? CLOUDLET_LENGTH : CLOUDLET_LENGTH/2;
             brokerBuilder.getCloudletBuilder()
                 .setLength(cloudletLength)
                 .setUtilizationModelCpu(utilizationModel)
                 .setPEs(CLOUDLET_PES)
-                .createAndSubmitCloudlets(1, i);
+                .createAndSubmit(1, i);
         }
     }
 

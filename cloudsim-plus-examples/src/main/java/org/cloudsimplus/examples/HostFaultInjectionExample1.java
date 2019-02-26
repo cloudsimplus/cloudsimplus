@@ -246,7 +246,7 @@ public final class HostFaultInjectionExample1 {
      * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter)
      */
     private Vm cloneVm(Vm vm) {
-        Vm clone = new VmSimple((long) vm.getMips(), (int) vm.getNumberOfPes());
+        Vm clone = new VmSimple(vm.getMips(), (int) vm.getNumberOfPes());
         /*It' not required to set an ID for the clone.
         It is being set here just to make it easy to
         relate the ID of the vm to its clone,

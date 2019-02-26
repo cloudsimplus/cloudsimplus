@@ -24,8 +24,6 @@ public interface Machine extends ChangeableId, Resourceful {
      * Gets the machine bandwidth (bw) capacity in Megabits/s.
      *
      * @return the machine bw capacity
-     * @pre $none
-     * @post $result > 0
      */
     Resource getBw();
 
@@ -33,8 +31,6 @@ public interface Machine extends ChangeableId, Resourceful {
      * Gets the machine memory resource in Megabytes.
      *
      * @return the machine memory
-     * @pre $none
-     * @post $result > 0
      */
     Resource getRam();
 
@@ -42,8 +38,6 @@ public interface Machine extends ChangeableId, Resourceful {
      * Gets the storage device of the machine with capacity in Megabytes.
      *
      * @return the machine storage device
-     * @pre $none
-     * @post $result >= 0
      */
     Resource getStorage();
 
@@ -75,4 +69,16 @@ public interface Machine extends ChangeableId, Resourceful {
      * @return
      */
     Simulation getSimulation();
+
+    /**
+     * Validates a capacity for a machine resource.
+     * @param capacity the capacity to check
+     */
+    static void validateCapacity(final double capacity){
+        if(capacity <= 0){
+            throw new IllegalArgumentException("Capacity must be greater than zero");
+        }
+    }
+
+
 }

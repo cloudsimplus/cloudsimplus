@@ -91,23 +91,21 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
     public void setUp() {
         this.simulation = new  CloudSim();
         scenario = new SimulationScenarioBuilder(simulation);
-        scenario.getDatacenterBuilder().setSchedulingInterval(2).createDatacenter(
+        scenario.getDatacenterBuilder().setSchedulingInterval(2).create(
                 new HostBuilder()
-                    .setVmSchedulerClass(VmSchedulerSpaceShared.class)
-                    .setRam(4000).setBandwidth(400000)
+                    .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
                     .setPes(HOST_PES).setMips(HOST_MIPS)
                     .setOnUpdateVmsProcessingListener(this::onUpdateVmsProcessing)
-                    .createOneHost()
+                    .create()
                     .getHosts()
         );
 
-        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
 
         brokerBuilder.getVmBuilder()
-                .setRam(1000).setBandwidth(100000)
-                .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
+                .setPes(VM_PES).setMips(VM_MIPS)
                 .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
-                .createAndSubmitVms(NUMBER_OF_VMS);
+                .createAndSubmit(NUMBER_OF_VMS);
 
         utilizationModel = new UtilizationModelDynamic();
         utilizationModel.setUtilizationUpdateFunction(instance -> instance.getUtilization() + instance.getTimeSpan()*0.25);
@@ -115,7 +113,7 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(utilizationModel)
                 .setPEs(CLOUDLET_PES)
-                .createAndSubmitCloudlets(NUMBER_OF_CLOUDLETS);
+                .createAndSubmit(NUMBER_OF_CLOUDLETS);
     }
 
     @Test @Disabled("WARNING: It has to be checked if it is really required to use the "

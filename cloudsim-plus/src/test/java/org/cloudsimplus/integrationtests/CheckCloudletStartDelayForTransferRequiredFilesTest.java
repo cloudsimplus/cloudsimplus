@@ -90,34 +90,32 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
         scenario.getDatacenterBuilder()
 	        .setSchedulingInterval(1)
 	        .addStorageToList(storage)
-	        .createDatacenter(
+	        .create(
 	            new HostBuilder()
-	                .setVmSchedulerClass(VmSchedulerSpaceShared.class)
-	                .setRam(4000).setBandwidth(400000)
+	                .setVmSchedulerSupplier(VmSchedulerSpaceShared::new)
 	                .setPes(HOST_PES).setMips(HOST_MIPS)
-	                .createOneHost()
+	                .create()
 	                .getHosts()
 	        );
 
 
-        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().createBroker();
+        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
 	    this.broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
-                .setRam(1000).setBandwidth(100000)
-                .setPes(VM_PES).setMips(VM_MIPS).setSize(50000)
+                .setPes(VM_PES).setMips(VM_MIPS)
                 .setCloudletSchedulerSupplier(CloudletSchedulerSpaceShared::new)
-                .createAndSubmitOneVm();
+                .createAndSubmit();
 
 		brokerBuilder.getVmBuilder()
             .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
-            .createAndSubmitOneVm();
+            .createAndSubmit();
 
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(new UtilizationModelFull())
                 .setPEs(CLOUDLET_PES)
 	            .setRequiredFiles(getFileNames())
-                .createAndSubmitCloudlets(NUMBER_OF_CLOUDLETS);
+                .createAndSubmit(NUMBER_OF_CLOUDLETS);
     }
 
 	private void createStorage() {

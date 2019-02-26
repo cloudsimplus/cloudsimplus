@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.ChangeableId;
+import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModel;
@@ -15,6 +16,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
@@ -49,6 +51,10 @@ import static java.util.stream.Collectors.*;
  */
 public class HostSimple implements Host {
     private static final Logger LOGGER = LoggerFactory.getLogger(HostSimple.class.getSimpleName());
+
+    private static long defaultRamCapacity = (long)Conversion.gigaToMega(10);
+    private static long defaultBwCapacity = 100;
+    private static long defaultStorageCapacity = (long)Conversion.gigaToMega(500);
 
     /** @see #getStateHistory() */
     private final List<HostStateHistoryEntry> stateHistory;
@@ -125,6 +131,28 @@ public class HostSimple implements Host {
     private double shutdownTime;
 
     /**
+     * Creates a Host without a pre-defined ID,
+     * 10GB of RAM, 100Mbps of Bandwidth and 500GB of Storage.
+     * It creates a {@link ResourceProvisionerSimple}
+     * for RAM and Bandwidth. Finally, it sets a {@link VmSchedulerSpaceShared} as default.
+     * The ID is automatically set when a List of Hosts is attached
+     * to a {@link Datacenter}.
+     *
+     * @param peList the host's {@link Pe} list
+     *
+     * @see ChangeableId#setId(long)
+     * @see #setDefaultRamCapacity(long)
+     * @see #setDefaultBwCapacity(long)
+     * @see #setDefaultStorageCapacity(long)
+     * @see #setRamProvisioner(ResourceProvisioner)
+     * @see #setBwProvisioner(ResourceProvisioner)
+     * @see #setVmScheduler(VmScheduler)
+     */
+    public HostSimple(final List<Pe> peList) {
+        this(defaultRamCapacity, defaultBwCapacity, defaultStorageCapacity, peList);
+    }
+
+    /**
      * Creates a Host with the given parameters.
      *
      * @param ramProvisioner the ram provisioner with capacity in Megabytes
@@ -148,8 +176,8 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Creates a Host without a pre-defined ID and using a {@link ResourceProvisionerSimple}
-     * RAM and Bandwidth. It also sets a {@link VmSchedulerSpaceShared} as default.
+     * Creates a Host without a pre-defined ID and a {@link ResourceProvisionerSimple}
+     * for RAM and Bandwidth. It also sets a {@link VmSchedulerSpaceShared} as default.
      * The ID is automatically set when a List of Hosts is attached
      * to a {@link Datacenter}.
      *
@@ -187,6 +215,57 @@ public class HostSimple implements Host {
         this.vmsMigratingOut = new HashSet<>();
         this.powerModel = PowerModel.NULL;
         this.stateHistory = new LinkedList<>();
+    }
+
+    /**
+     * Gets the Default RAM capacity (in MB) for creating Hosts.
+     * This value is used when the RAM capacity is not given in a Host constructor.
+     */
+    public static long getDefaultRamCapacity() {
+        return defaultRamCapacity;
+    }
+
+    /**
+     * Sets the Default RAM capacity (in MB) for creating Hosts.
+     * This value is used when the RAM capacity is not given in a Host constructor.
+     */
+    public static void setDefaultRamCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultRamCapacity = defaultCapacity;
+    }
+
+    /**
+     * Gets the Default Bandwidth capacity (in Mbps) for creating Hosts.
+     * This value is used when the BW capacity is not given in a Host constructor.
+     */
+    public static long getDefaultBwCapacity() {
+        return defaultBwCapacity;
+    }
+
+    /**
+     * Sets the Default Bandwidth capacity (in Mbps) for creating Hosts.
+     * This value is used when the BW capacity is not given in a Host constructor.
+     */
+    public static void setDefaultBwCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultBwCapacity = defaultCapacity;
+    }
+
+    /**
+     * Gets the Default Storage capacity (in MB) for creating Hosts.
+     * This value is used when the Storage capacity is not given in a Host constructor.
+     */
+    public static long getDefaultStorageCapacity() {
+        return defaultStorageCapacity;
+    }
+
+    /**
+     * Sets the Default Storage capacity (in MB) for creating Hosts.
+     * This value is used when the Storage capacity is not given in a Host constructor.
+     */
+    public static void setDefaultStorageCapacity(final long defaultCapacity) {
+        Machine.validateCapacity(defaultCapacity);
+        defaultStorageCapacity = defaultCapacity;
     }
 
     @Override
@@ -675,6 +754,10 @@ public class HostSimple implements Host {
 
     @Override
     public Host addOnUpdateProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
+        if(listener.equals(EventListener.NULL)){
+            return this;
+        }
+
         this.onUpdateProcessingListeners.add(requireNonNull(listener));
         return this;
     }

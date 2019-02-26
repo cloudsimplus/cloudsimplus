@@ -416,7 +416,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
      * @see #createFaultInjectionForHosts(org.cloudbus.cloudsim.datacenters.Datacenter)
      */
     private Vm cloneVm(final Vm vm) {
-        final Vm clone = new VmSimple((long) vm.getMips(), (int) vm.getNumberOfPes());
+        final Vm clone = new VmSimple(vm.getMips(), (int) vm.getNumberOfPes());
         /*
         It' not required to set an ID for the clone.
         It is being set here just to make it easy to

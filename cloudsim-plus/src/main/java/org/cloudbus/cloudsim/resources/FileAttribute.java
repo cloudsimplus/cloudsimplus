@@ -128,7 +128,7 @@ public class FileAttribute {
      * Sets the file creation time (in millisecond).
      *
      * @param creationTime the file creation time (in millisecond)
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setCreationTime(final long creationTime) {
         if (creationTime <= 0) {
@@ -152,7 +152,7 @@ public class FileAttribute {
      * Sets the owner name of the file.
      *
      * @param name the owner name
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setOwnerName(final String name) {
         if (StringUtils.isBlank(name)) {
@@ -173,7 +173,7 @@ public class FileAttribute {
     }
 
     /**
-     * Gets the size of the object (in byte). <br/>
+     * Gets the size of the object (in byte). <br>
      * NOTE: This object size is NOT the actual file size. Moreover, this size
      * is used for transferring this object over a network.
      *
@@ -194,7 +194,7 @@ public class FileAttribute {
      * Sets the file size (in MBytes).
      *
      * @param fileSize the file size (in MBytes)
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public final boolean setFileSize(final int fileSize) {
         if (fileSize < 0) {
@@ -225,12 +225,12 @@ public class FileAttribute {
     }
 
     /**
-     * Sets the last update time of the file (in seconds). <br/>
+     * Sets the last update time of the file (in seconds). <br>
      * NOTE: This time is relative to the start time. Preferably use
      * {@link org.cloudbus.cloudsim.core.CloudSim#clock()} method.
      *
      * @param time the last update time (in seconds)
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setUpdateTime(final double time) {
         if (time <= 0 || time < lastUpdateTime) {
@@ -254,7 +254,7 @@ public class FileAttribute {
      * Sets the file registration ID (published by a Replica Catalogue entity).
      *
      * @param id registration ID
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setRegistrationId(final long id) {
         if (id < 0) {
@@ -278,7 +278,7 @@ public class FileAttribute {
      * Sets the file type (for instance raw, tag, etc).
      *
      * @param type a file type
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setType(final int type) {
         if (type < 0) {
@@ -302,7 +302,7 @@ public class FileAttribute {
      * Sets the checksum of the file.
      *
      * @param checksum the checksum of this file
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setChecksum(final int checksum) {
         if (checksum < 0) {
@@ -326,7 +326,7 @@ public class FileAttribute {
      * Sets the cost associated with the file.
      *
      * @param cost cost of this file
-     * @return <tt>true</tt> if successful, <tt>false</tt> otherwise
+     * @return true if successful, false otherwise
      */
     public boolean setCost(final double cost) {
         if (cost < 0) {
@@ -349,7 +349,7 @@ public class FileAttribute {
     /**
      * Checks if the file is already registered to a Replica Catalogue.
      *
-     * @return <tt>true</tt> if it is registered, <tt>false</tt> otherwise
+     * @return true if it is registered, false otherwise
      */
     public boolean isRegistered() {
         return id != File.NOT_REGISTERED;
@@ -358,8 +358,8 @@ public class FileAttribute {
     /**
      * Marks the file as a master copy or replica.
      *
-     * @param masterCopy a flag denotes <tt>true</tt> for master copy or
-     * <tt>false</tt> for a replica
+     * @param masterCopy a flag denotes true for master copy or
+     * false for a replica
      */
     public void setMasterCopy(final boolean masterCopy) {
         this.masterCopy = masterCopy;
@@ -368,7 +368,7 @@ public class FileAttribute {
     /**
      * Checks whether the file is a master copy or replica.
      *
-     * @return <tt>true</tt> if it is a master copy or <tt>false</tt> if it is a
+     * @return true if it is a master copy or false if it is a
      * replica
      */
     public boolean isMasterCopy() {
@@ -379,7 +379,7 @@ public class FileAttribute {
      * Check if the name of a file is valid or not.
      *
      * @param fileName the file name to be checked for validity
-     * @return <tt>true</tt> if the file name is valid, <tt>false</tt> otherwise
+     * @return true if the file name is valid, false otherwise
      */
     public static boolean isValid(final String fileName) {
         return !StringUtils.isBlank(fileName);

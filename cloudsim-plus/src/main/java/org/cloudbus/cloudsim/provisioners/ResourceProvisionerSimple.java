@@ -39,7 +39,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     }
 
     /**
-     * Creates a new ResourceProvisionerSimple.
+     * Creates a ResourceProvisionerSimple for a given {@link ResourceManageable}.
      *
      * @param resource the resource to be managed by the provisioner
      */

@@ -99,7 +99,7 @@ public interface Resource extends ResourceCapacity {
     /**
      * Checks if the resource is full or not.
      *
-     * @return <tt>true</tt> if the storage is full, <tt>false</tt> otherwise
+     * @return true if the storage is full, false otherwise
      */
     default boolean isFull() {
         return getAvailableResource() <= 0;

@@ -42,7 +42,7 @@ import static java.util.stream.Collectors.toSet;
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of
  * Virtual Machines in Cloud Data Centers", Concurrency and Computation:
  * Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John
- * Wiley & Sons, Ltd, New York, USA, 2012</a>
+ * Wiley and Sons, Ltd, New York, USA, 2012</a>
  * </ul>
  * </p>
  *

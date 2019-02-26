@@ -23,46 +23,45 @@
  */
 package org.cloudsimplus.builders;
 
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
 
 /**
- * A Builder class to create {@link PeSimple} objects.
+ * A Builder class to create {@link Pe} objects.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
 public class PeBuilder implements Builder {
-    private Class<? extends PeProvisioner> provisionerClass = PeProvisionerSimple.class;
+    private Function<Double, Pe> peSupplier;
 
-    public List<Pe> create(final double amount, final double mipsOfEachPe) {
-        try {
-            validateAmount(amount);
-            final List<Pe> peList = new ArrayList<>();
-            final Constructor cons =
-                    provisionerClass.getConstructor();
-            for (int i = 0; i < amount; i++) {
-                peList.add(new PeSimple(mipsOfEachPe, (PeProvisioner) cons.newInstance()));
-            }
-            return peList;
-        } catch (NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-            throw new RuntimeException("It wasn't possible to instantiate a list of Pe", ex);
+    public PeBuilder(){
+        peSupplier = mips -> new PeSimple(mips, new PeProvisionerSimple());
+    }
+
+    public List<Pe> create(final int amount, final double peMips) {
+        validateAmount(amount);
+        final List<Pe> peList = new ArrayList<>(amount);
+        for (int i = 0; i < amount; i++) {
+            peList.add(peSupplier.apply(peMips));
         }
+        return peList;
     }
 
-    public Class<? extends PeProvisioner> getProvisionerClass() {
-        return provisionerClass;
-    }
-
-    public PeBuilder setProvisioner(Class<? extends PeProvisioner> defaultProvisioner) {
-        this.provisionerClass = defaultProvisioner;
-        return this;
+    /**
+     * Sets a {@link Function} that is accountable to create {@link Pe}
+     * by this builder.
+     * The  {@link Function} receives the MIPS for each PE.
+     *
+     * @param peSupplier
+     */
+    public void setPeSupplier(final Function<Double, Pe> peSupplier) {
+        this.peSupplier = Objects.requireNonNull(peSupplier);
     }
 }

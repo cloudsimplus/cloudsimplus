@@ -223,8 +223,8 @@ public class HarddriveStorage implements FileStorage {
      * Sets the average seek time of the storage in seconds.
      *
      * @param seekTime the average seek time in seconds
-     * @return <tt>true</tt> if the values is greater than zero and was set successfully,
-     * <tt>false</tt> otherwise
+     * @return true if the values is greater than zero and was set successfully,
+     * false otherwise
      */
     public boolean setAvgSeekTime(final double seekTime) {
         return setAvgSeekTime(seekTime, null);
@@ -236,8 +236,8 @@ public class HarddriveStorage implements FileStorage {
      *
      * @param seekTime the average seek time in seconds
      * @param gen the ContinuousGenerator which generates seek times
-     * @return <tt>true</tt> if the values is greater than zero and was set successfully,
-     * <tt>false</tt> otherwise
+     * @return true if the values is greater than zero and was set successfully,
+     * false otherwise
      */
     public boolean setAvgSeekTime(final double seekTime, final ContinuousDistribution gen) {
         if (seekTime <= 0.0) {
@@ -351,8 +351,8 @@ public class HarddriveStorage implements FileStorage {
     /**
      * {@inheritDoc}
      *
-     * <p/>First, the method checks if there is enough space on the storage,
-     * then it checks if the file with the same name is already taken to avoid duplicate filenames.
+     * <p>First, the method checks if there is enough space on the storage,
+     * then it checks if the file with the same name is already taken to avoid duplicate filenames.</p>
      *
      * @param file {@inheritDoc}
      * @return {@inheritDoc}

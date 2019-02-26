@@ -191,10 +191,11 @@ public class PoissonDistr implements ContinuousDistribution {
      * at the class level and just calling them.
      *
      * @param args
-     * @todo This method should be moved to a meaningful example class
-     * that creates Cloudlets instead of customers.
      */
     public static void main(final String args[]){
+        /*@todo This method should be moved to a meaningful example class
+        that creates Cloudlets instead of customers.*/
+
         /*
          * Mean number of customers that arrives per minute.
          * The value of 0.4 customers per minute means that 1 customer will arrive
