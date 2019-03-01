@@ -101,8 +101,7 @@ public final class VmCreationFailureIntegrationTest {
     private CloudSim simulation;
 
     /**
-     * A lambda function used by an {@link Vm#addOnHostAllocationListener(EventListener)}  }
-     * that will be called every time a Host is
+     * A Listener that will be called every time a Host is
      * allocated to a given VM. It tries to assert that the Host 0 was allocated
      * to the Vm 0 at the expected time.
      *
@@ -120,8 +119,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an {@link Vm#addOnHostDeallocationListener(EventListener)}  }
-     * that will be called every time a Host is
+     * A Listener that will be called every time a Host is
      * deallocated to a given VM. It tries to assert that the Host 0 was
      * deallocated to the Vm 0 at the expected time.
      *
@@ -139,8 +137,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an VM creation failure listener
-     * that will be called every time a Vm failed to be created
+     * A listener that will be called every time a Vm failed to be created
      * due to lack of host resources.
      *
      * @param evt
@@ -157,7 +154,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by an event processing listener
+     * A function used by an event processing listener
      * that will be called every time an event is processed by {@link CloudSim}.
      * @param evt
      * @see CloudSim#addOnEventProcessingListener(EventListener)
@@ -171,7 +168,7 @@ public final class VmCreationFailureIntegrationTest {
     }
 
     /**
-     * A lambda function used by a VM update processing listener
+     * A function used by a VM update processing listener
      * that will be called every time the processing of a Vm is updated inside its host.
      * Considering there is only one Host and only 1 VM where its cloudlets use a
      * {@link UtilizationModelFull} for CPU utilization model,

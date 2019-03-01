@@ -53,7 +53,7 @@ public class UtilizationModelStochasticTest {
     }
 
     /**
-     * A Pseudo Random Number Generator (PRNG) that always return -1.
+     * A Pseudo Random Number Generator (PRNG) that always returns -1.
      */
     private final class NegativePrng extends UniformDistr{
         @Override

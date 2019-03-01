@@ -1018,9 +1018,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double time,
         final double maxResourceAllowedToUse)
     {
-        return model.getUnit() == Unit.ABSOLUTE ?
-            Math.min(model.getUtilization(time), maxResourceAllowedToUse) :
-            model.getUtilization() * maxResourceAllowedToUse;
+        if (model.getUnit() == Unit.ABSOLUTE) {
+            return Math.min(model.getUtilization(time), maxResourceAllowedToUse);
+        }
+
+        return model.getUtilization() * maxResourceAllowedToUse;
     }
 
     @Override
