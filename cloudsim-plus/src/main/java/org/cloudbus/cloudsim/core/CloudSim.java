@@ -208,7 +208,7 @@ public class CloudSim implements Simulation {
                 "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
-        LOGGER.info("Starting CloudSim Plus {}", VERSION);
+        System.out.println("Starting CloudSim Plus " + VERSION);
         startEntitiesIfNotRunning();
         this.alreadyRunOnce = true;
 
@@ -290,7 +290,7 @@ public class CloudSim implements Simulation {
                                 ? extra + " in reason of an explicit request to terminate() or terminateAt()"
                                 : "";
 
-        LOGGER.info("{}================== {}{} =================={}", System.lineSeparator(), msg1, msg2, System.lineSeparator());
+        System.out.printf("%s================== %s%s ==================%s", System.lineSeparator(), msg1, msg2, System.lineSeparator());
     }
 
     @Override

@@ -42,8 +42,11 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSimple extends CustomerEntityAbstract implements Vm {
+    /** @see #setDefaultRamCapacity(long) */
     private static long defaultRamCapacity = 1024;
-    private static long defaultBwCapacity = 1000;
+    /** @see #setDefaultBwCapacity(long) */
+    private static long defaultBwCapacity = 100;
+    /** @see #setDefaultStorageCapacity(long) */
     private static long defaultStorageCapacity = 1024;
 
     /** @see #getUtilizationHistory() */
@@ -123,7 +126,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private double lastBusyTime;
 
     /**
-     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
      *
@@ -141,7 +144,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     /**
-     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
@@ -162,7 +165,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     /**
-     * Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      *
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.

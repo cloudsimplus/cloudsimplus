@@ -53,7 +53,7 @@ public class HostSimple implements Host {
     private static final Logger LOGGER = LoggerFactory.getLogger(HostSimple.class.getSimpleName());
 
     private static long defaultRamCapacity = (long)Conversion.gigaToMega(10);
-    private static long defaultBwCapacity = 100;
+    private static long defaultBwCapacity = 1000;
     private static long defaultStorageCapacity = (long)Conversion.gigaToMega(500);
 
     /** @see #getStateHistory() */
@@ -132,7 +132,7 @@ public class HostSimple implements Host {
 
     /**
      * Creates a Host without a pre-defined ID,
-     * 10GB of RAM, 100Mbps of Bandwidth and 500GB of Storage.
+     * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage.
      * It creates a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth. Finally, it sets a {@link VmSchedulerSpaceShared} as default.
      * The ID is automatically set when a List of Hosts is attached
@@ -959,7 +959,7 @@ public class HostSimple implements Host {
     /**
      * Receives a Vm {@link UtilizationHistory} and returns a {@link Function} that
      * requires a map entry from the history (representing a VM's CPU utilization for a given time),
-     * and returns the percentage of the Host CPU capacity that Vm is using at that time.
+     * and returns the percentage of the Host CPU capacity that such a Vm is using at that time.
      * This way, the value that represents how much of the VM's CPU is being used
      * will be converted to how much that VM is using from the Host's CPU.
      *
@@ -967,8 +967,7 @@ public class HostSimple implements Host {
      * @return
      */
     private Function<Entry<Double, Double>, Double> vmUtilizationMapper(final UtilizationHistory utilizationHistory) {
-        final double totalMipsCapacity = getTotalMipsCapacity();
-        return entry -> entry.getValue() * utilizationHistory.getVm().getTotalMipsCapacity() / totalMipsCapacity;
+        return entry -> entry.getValue() * utilizationHistory.getVm().getTotalMipsCapacity() / getTotalMipsCapacity();
     }
 
     @Override
