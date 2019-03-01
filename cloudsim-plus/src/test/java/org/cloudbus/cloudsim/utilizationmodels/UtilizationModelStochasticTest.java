@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -38,4 +39,26 @@ public class UtilizationModelStochasticTest {
         );
     }
 
+    @Test
+    public void testGetUtilizationNegativeRandomNumber() {
+        final NegativePrng negativePrng = new NegativePrng();
+        utilizationModel.setRandomGenerator(negativePrng);
+        /*Even if the PRNG always return a negative value (-1 in this case),
+        * the UtilizationModel must get its absolute value to
+        * return the resource utilization.*/
+        System.out.println("Generated Pseudo Random Number: " + negativePrng.sample());
+        final double expected = 1;
+        final double result = utilizationModel.getUtilization();
+        assertEquals(expected, result);
+    }
+
+    /**
+     * A Pseudo Random Number Generator (PRNG) that always return -1.
+     */
+    private final class NegativePrng extends UniformDistr{
+        @Override
+        public double sample() {
+            return -1;
+        }
+    }
 }

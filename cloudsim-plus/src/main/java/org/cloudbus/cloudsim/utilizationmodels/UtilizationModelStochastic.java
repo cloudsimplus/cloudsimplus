@@ -97,7 +97,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
             return getHistory().get(time);
         }
 
-        final double utilization = getRandomGenerator().sample();
+        final double utilization = Math.abs(randomGenerator.sample());
         getHistory().put(time, utilization);
         return utilization;
     }
@@ -127,7 +127,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * Save the utilization history to a file.
      *
      * @param filename the filename
-     * @throws IOException when the file cannot be accessed
+     * @throws UncheckedIOException when the file cannot be accessed
      */
     public void saveHistory(final String filename) {
         try (final ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))){
@@ -141,7 +141,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * Load an utilization history from a file.
      *
      * @param filename the filename
-     * @throws IOException when the file cannot be accessed
+     * @throws UncheckedIOException when the file cannot be accessed
      */
     @SuppressWarnings("unchecked")
     public void loadHistory(final String filename) {

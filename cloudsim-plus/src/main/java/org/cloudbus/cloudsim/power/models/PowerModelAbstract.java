@@ -33,7 +33,7 @@ public abstract class PowerModelAbstract implements PowerModel {
 		if (utilization < 0 || utilization > 1) {
 			throw new IllegalArgumentException(
                 String.format(
-                    "Utilization value must be between 0 and 1. The given value was %.2f",
+                    "Utilization value must be between 0 and 1. The given value was %f",
                     utilization));
 		}
 
