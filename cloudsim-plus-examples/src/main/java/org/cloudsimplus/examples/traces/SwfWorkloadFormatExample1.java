@@ -125,8 +125,7 @@ public class SwfWorkloadFormatExample1 {
      */
     private final int MINIMUM_NUM_OF_PES_BY_HOST = 8;
 
-    private static final int CLOUDLETS_MIPS = 10000;
-    private static final int VM_MIPS = CLOUDLETS_MIPS;
+    private static final int VM_MIPS = 10000;
     private static final long VM_SIZE = 2000;
     private static final int VM_RAM = 1000;
     private static final long VM_BW = 50000;
@@ -206,7 +205,7 @@ public class SwfWorkloadFormatExample1 {
 
     private void createCloudletsFromWorkloadFile() {
         final String fileName = WORKLOAD_BASE_DIR + WORKLOAD_FILENAME;
-        SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(fileName, CLOUDLETS_MIPS);
+        SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(fileName, VM_MIPS);
         reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();
 
