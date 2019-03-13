@@ -75,9 +75,6 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * event in the deferred queue, which needs to be processed by the entity.
      *
      * @param evt information about the event just happened
-     *
-     * @pre ev != null
-     * @post $none
      */
     void processEvent(SimEvent evt);
 

@@ -111,7 +111,6 @@ public class CloudInformationService extends CloudSimEntity {
      * mentioned in the given list.
      *
      * @param list List of entities to notify about simulation end
-     * @pre list != null
      */
     private void signalShutdown(final Collection<? extends SimEntity> list) {
         // checks whether a list is empty or not

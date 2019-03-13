@@ -25,7 +25,7 @@ import java.util.List;
  * Cloudlets to the waiting list in order to make room for other already waiting
  * Cloudlets to run. It just imposes there is not waiting Cloudlet,
  * <b>oversimplifying</b> the problem considering that for a given simulation
- * second <tt>t</tt>, the total processing capacity of the processor cores (in
+ * second <i>t</i>, the total processing capacity of the processor cores (in
  * MIPS) is equally divided by the applications that are using them.
  * </p>
  *

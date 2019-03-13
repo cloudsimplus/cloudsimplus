@@ -48,7 +48,7 @@ public interface ResourceManageable extends Resource {
      * Try to add a given amount to the {@link #getCapacity() resource capacity}.
      *
      * @param capacityToAdd the amount to add
-     * @return true if capacityToAdd > 0, false otherwise
+     * @return true if capacityToAdd is greater than 0, false otherwise
      * @see #getAllocatedResource()
      * @throws IllegalArgumentException when the capacity to add is negative
      */
@@ -58,7 +58,7 @@ public interface ResourceManageable extends Resource {
      * Try to remove a given amount to the {@link #getCapacity() resource capacity}.
      *
      * @param capacityToRemove the amount to remove
-     * @return true if capacityToRemove > 0, the current allocated resource is less or equal
+     * @return true if capacityToRemove is greater than 0, the current allocated resource is less or equal
      *         to the expected new capacity and the capacity to remove is not higher than
      *         the current capacity; false otherwise
      * @see #getAllocatedResource()
@@ -72,7 +72,7 @@ public interface ResourceManageable extends Resource {
      * total available resource.
      *
      * @param amountToAllocate the amount of resource to be allocated
-     * @return true if amountToAllocate > 0 and there is enough resource to
+     * @return true if amountToAllocate is greater than 0 and there is enough resource to
      * allocate, false otherwise
      */
     boolean allocateResource(long amountToAllocate);
@@ -84,7 +84,7 @@ public interface ResourceManageable extends Resource {
      * to a virtualized resource (the given Resource).
      *
      * @param resource the resource to try to allocate its capacity from the current resource
-     * @return true if required capacity from the given resource > 0 and there is enough resource to
+     * @return true if required capacity from the given resource is greater than 0 and there is enough resource to
      * allocate, false otherwise
      * @see #allocateResource(long)
      */
@@ -130,7 +130,7 @@ public interface ResourceManageable extends Resource {
      * that was being used by a virtualized resource (the given Resource).
      *
      * @param resource the resource that its capacity will be deallocated
-     * @return true if capacity of the given resource > 0 and there is enough resource to
+     * @return true if capacity of the given resource is greater than 0 and there is enough resource to
      * deallocate, false otherwise
      * @see #deallocateResource(long)
      */
@@ -142,7 +142,7 @@ public interface ResourceManageable extends Resource {
      * Try to deallocate a given amount of the resource.
      *
      * @param amountToDeallocate the amount of resource to be deallocated
-     * @return true if amountToDeallocate > 0 and there is enough resource to
+     * @return true if amountToDeallocate is greater than 0 and there is enough resource to
      * deallocate, false otherwise
      */
     boolean deallocateResource(long amountToDeallocate);
@@ -156,7 +156,7 @@ public interface ResourceManageable extends Resource {
      *
      * @param amountToDeallocate the amount of resource to be deallocated and then removed from
      *                           the total capacity
-     * @return true if amountToDeallocate > 0 and there is enough resource to
+     * @return true if amountToDeallocate is greater than 0 and there is enough resource to
      * deallocate, false otherwise
      */
     boolean deallocateAndRemoveResource(long amountToDeallocate);

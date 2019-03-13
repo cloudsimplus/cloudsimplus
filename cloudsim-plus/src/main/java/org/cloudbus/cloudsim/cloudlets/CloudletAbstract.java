@@ -539,8 +539,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * @param datacenterId the Datacenter entity ID
      * @return the Cloudlet execution information on the given Datacenter
      * or {@link CloudletDatacenterExecution#NULL} if the Cloudlet has never been executed there
-     * @pre dc >= 0
-     * @post $none
      */
     private CloudletDatacenterExecution getDatacenterInfo(final long datacenterId) {
         return datacenterExecutionList.stream()
@@ -554,8 +552,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * @param datacenter the Datacenter entity
      * @return the Cloudlet execution information on the given Datacenter
      * or {@link CloudletDatacenterExecution#NULL} if the Cloudlet has never been executed there
-     * @pre dc >= 0
-     * @post $none
      */
     private CloudletDatacenterExecution getDatacenterInfo(final Datacenter datacenter) {
         return getDatacenterInfo(datacenter.getId());

@@ -32,8 +32,6 @@ public interface NetworkPacket<T extends Identifiable> {
      * Gets the size of the packet in bytes.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     long getSize();
 
@@ -41,8 +39,6 @@ public interface NetworkPacket<T extends Identifiable> {
      * Gets the entity that this packet is coming from (the sender).
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     T getSource();
 
@@ -56,8 +52,6 @@ public interface NetworkPacket<T extends Identifiable> {
      * Gets the entity that the packet is going to.
      *
      * @return
-     * @pre $none
-     * @post $none
      */
     T getDestination();
 
@@ -65,7 +59,6 @@ public interface NetworkPacket<T extends Identifiable> {
      * Sets the entity that the packet is going to (the receiver).
      *
      * @param destination the destination to set
-     * @post $none
      */
     void setDestination(T destination);
 

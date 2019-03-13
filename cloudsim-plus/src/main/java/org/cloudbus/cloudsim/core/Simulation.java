@@ -118,8 +118,6 @@ public interface Simulation {
      * Gets a new copy of initial simulation Calendar.
      *
      * @return a new copy of Calendar object
-     * @pre $none
-     * @post $none
      */
     Calendar getCalendar();
 
@@ -135,8 +133,6 @@ public interface Simulation {
      * of all Cloud Datacenter IDs.
      *
      * @return a List containing Datacenter IDs
-     * @pre $none
-     * @post $none
      */
     Set<Datacenter> getDatacenterList();
 
@@ -176,7 +172,7 @@ public interface Simulation {
      * the time the pause occurred.
      *
      * <p>This object is just information about the event
-     * that happened. In fact, it isn't generated an actual {@limk SimEvent} for a pause event
+     * that happened. In fact, it isn't generated an actual {@link SimEvent} for a pause event
      * because there is not need for that.</p>
      *
      * @param listener the event listener to add
@@ -226,14 +222,14 @@ public interface Simulation {
 
     /**
      * Pauses an entity for some time.
-     *  @param src   id of entity to be paused
+     * @param src   id of entity to be paused
      * @param delay the time period for which the entity will be inactive
      */
     void pauseEntity(SimEntity src, double delay);
 
     /**
      * Holds an entity for some time.
-     *  @param src   id of entity to be held
+     * @param src   id of entity to be held
      * @param delay How many seconds after the current time the entity has to be held
      */
     void holdEntity(SimEntity src, long delay);

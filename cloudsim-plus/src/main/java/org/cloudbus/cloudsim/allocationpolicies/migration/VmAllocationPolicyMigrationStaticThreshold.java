@@ -21,16 +21,13 @@ import java.util.function.Function;
  * host over utilization.
  * <b>It's a First Fit policy which selects the first found Host with most efficient power usage to place a given VM.</b>
  *
- * <p>
- * If you are using any algorithms, policies or workload included in the power
- * package please cite the following paper:
+ * <p>If you are using any algorithms, policies or workload included in the power package please cite
+ * the following paper:
  * <ul>
- * <li><a href="https://doi.org/10.1002/cpe.1867">Anton Beloglazov, and
- * Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
- * Heuristics for Energy and Performance Efficient Dynamic Consolidation of
- * Virtual Machines in Cloud Data Centers", Concurrency and Computation:
- * Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John
- * Wiley and Sons, Ltd, New York, USA, 2012</a>
+ * <li><a href="https://doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
+ * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
+ * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
+ * Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012</a></li>
  * </ul>
  * </p>
  *

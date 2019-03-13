@@ -8,7 +8,8 @@ import java.util.Objects;
 /**
  * An abstract class that is the base for implementation of VM allocation policies which use
  * a dynamic over utilization threshold.
- * <b>It's a <b>Best Fit</b> policy which selects the Host with most efficient power usage to place a given VM.</b>
+ *
+ * It's a <b>Best Fit</b> policy which selects the Host with most efficient power usage to place a given VM.
  * Such a behaviour can be overridden by sub-classes.
  *
  * @author Manoel Campos da Silva Filho

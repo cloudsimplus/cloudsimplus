@@ -125,6 +125,16 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-javadoc-plugin</artifactId>
+                        <configuration>
+                            <tags>
+                                <tag>
+                                    <name>TODO</name>
+                                    <!-- TODO tag for all places -->
+                                    <placement>a</placement>
+                                    <head>To do something:</head>
+                                </tag>
+                            </tags>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
@@ -181,16 +191,12 @@
 
                         <configuration>
                             <tags>
-                                <direction>
-                                    <name>pre</name>
+                                <tag>
+                                    <name>TODO</name>
+                                    <!-- TODO tag for all places -->
                                     <placement>a</placement>
-                                    <head>Precondition:</head>
-                                </direction>
-                                <direction>
-                                    <name>post</name>
-                                    <placement>a</placement>
-                                    <head>Postcondition:</head>
-                                </direction>
+                                    <head>To do something:</head>
+                                </tag>
                             </tags>
                         </configuration>
                     </plugin>
@@ -271,7 +277,16 @@
 
                     <configuration>
                         <failOnError>false</failOnError>
+                        <tags>
+                            <tag>
+                                <name>TODO</name>
+                                <!-- TODO tag for all places -->
+                                <placement>a</placement>
+                                <head>To do something:</head>
+                            </tag>
+                        </tags>
                     </configuration>
+
                 </plugin>
             </plugins>
         </pluginManagement>
@@ -520,6 +535,17 @@
                         </reports>
                     </reportSet>
                 </reportSets>
+
+                <configuration>
+                    <tags>
+                        <tag>
+                            <name>TODO</name>
+                            <!-- TODO tag for all places -->
+                            <placement>a</placement>
+                            <head>To do something:</head>
+                        </tag>
+                    </tags>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

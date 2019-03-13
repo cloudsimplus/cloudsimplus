@@ -23,24 +23,24 @@ import java.util.function.Predicate;
  * Reads resource traces and creates a list of ({@link Cloudlet Cloudlets}) (jobs).
  * It follows the <a href="http://www.cs.huji.ac.il/labs/parallel/workload/">Standard Workload Format (*.swf files)</a>
  * from <a href="new.huji.ac.il/en">The Hebrew University of Jerusalem</a>.
+ * Check important details at {@link TraceReaderAbstract}.
  *
- * <p>Check important details at {@link TraceReaderAbstract}.</p>
- *
- *
- * <h4>NOTES:</h4>
+ * <p>
+ * <b>NOTES:</b>
  * <ul>
  *   <li>The default Cloudlet reader size for sending to and receiving from a Datacenter is
  *       {@link DataCloudTags#DEFAULT_MTU}. However, you can
  *       specify the reader size by using {@link Cloudlet#setFileSize(long)}.
  *   </li>
  *   <li>A job run time considers the time spent for a single PE (since all PEs will
- *       be used for the same amount of time)<tt>not</tt>
+ *       be used for the same amount of time)<b>not</b>
  *       not the total execution time across all PEs.
  *       For example, job #1 in the trace has a run time of 100 seconds for 2
  *       processors. This means each processor runs job #1 for 100 seconds, if the
  *       processors have the same specification.
  *   </li>
  * </ul>
+ * </p>
  *
  * @author Anthony Sulistio
  * @author Marcos Dias de Assuncao
@@ -135,7 +135,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
      *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
      *                 for the same time as specified into the workload reader.
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
+     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
      * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
      */
     public static SwfWorkloadFileReader getInstance(final String fileName, final int mips) {
@@ -153,7 +153,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
      *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
      *                 for the same time as specified into the workload reader.
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
+     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
      * @throws FileNotFoundException    when the file is not found
      * @see #getInstance(String, int)
      */
@@ -172,7 +172,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      *                 to compute the {@link Cloudlet#getLength() length of the Cloudlet (in MI)}
      *                 so that it's expected to execute, inside the VM with the given MIPS capacity,
      *                 for the same time as specified into the workload reader.
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
+     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
      * @see #getInstance(String, int)
      */
     private SwfWorkloadFileReader(final String filePath, final InputStream reader, final int mips) {

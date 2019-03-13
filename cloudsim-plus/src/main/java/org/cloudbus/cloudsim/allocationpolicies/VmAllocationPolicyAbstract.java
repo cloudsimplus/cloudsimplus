@@ -126,6 +126,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * and adds this number to the {@link #getHostFreePesMap() list of free PEs}.
      * Before the Host starts being used, the number of free PEs is
      * the same as the number of working PEs.
+     * @param host the Host to add PEs from
      */
     public void addPesFromHost(final Host host) {
         final long workingPes = host.getNumberOfWorkingPes();
@@ -162,8 +163,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
-     * @param vm
-     * @return the used PEs number
+     * @param vm the VM to remove used PEs from
+     * @return the number of used PEs removed
      */
     protected long removeUsedPes(final Vm vm) {
         final Long pes = usedPes.remove(vm);

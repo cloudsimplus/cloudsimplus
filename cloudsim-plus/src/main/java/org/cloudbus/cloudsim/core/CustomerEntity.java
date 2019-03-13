@@ -13,9 +13,7 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
     /**
      * Gets the {@link DatacenterBroker} that represents the owner of this object.
      *
-     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
-     * @pre $none
-     * @post $none
+     * @return the broker or <b>{@link DatacenterBroker#NULL}</b> if a broker has not been set yet
      */
     DatacenterBroker getBroker();
 

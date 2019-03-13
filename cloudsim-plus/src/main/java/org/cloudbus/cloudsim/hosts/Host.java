@@ -163,8 +163,6 @@ public interface Host extends Machine, Comparable<Host> {
      * Releases PEs allocated to a VM.
      *
      * @param vm the vm
-     * @pre $none
-     * @post $none
      */
     void deallocatePesForVm(Vm vm);
 
@@ -173,8 +171,6 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @param vm the vm
      * @return an array containing the amount of MIPS of each pe that is available to the VM
-     * @pre $none
-     * @post $none
      */
     List<Double> getAllocatedMipsForVm(Vm vm);
 
@@ -296,8 +292,6 @@ public interface Host extends Machine, Comparable<Host> {
      * @param vmId the vm id
      * @param brokerId ID of VM's owner
      * @return the virtual machine object, $null if not found
-     * @pre $none
-     * @post $none
      */
     Vm getVm(int vmId, int brokerId);
 
@@ -384,8 +378,6 @@ public interface Host extends Machine, Comparable<Host> {
      * @return the predicted completion time of the earliest finishing cloudlet
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
-     * @pre currentTime >= 0.0
-     * @post $none
      */
     double updateProcessing(double currentTime);
 
@@ -394,8 +386,6 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @param vm Vm being started
      * @return $true if the VM could be started in the host; $false otherwise
-     * @pre $none
-     * @post $none
      */
     boolean createVm(Vm vm);
 
@@ -403,8 +393,6 @@ public interface Host extends Machine, Comparable<Host> {
      * Destroys a VM running in the host and removes it from the {@link #getVmList()}.
      *
      * @param vm the VM
-     * @pre $none
-     * @post $none
      */
     void destroyVm(Vm vm);
 

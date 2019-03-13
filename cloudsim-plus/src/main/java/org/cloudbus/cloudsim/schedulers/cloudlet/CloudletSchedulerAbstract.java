@@ -310,8 +310,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @return the first executing cloudlet or {@link Cloudlet#NULL} if the
      * executing list is empty
-     * @pre $none
-     * @post $none
      */
     @Override
     public Cloudlet getCloudletToMigrate() {

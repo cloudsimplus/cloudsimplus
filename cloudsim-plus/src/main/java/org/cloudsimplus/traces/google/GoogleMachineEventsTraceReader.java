@@ -435,7 +435,6 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * Sets the maximum RAM capacity (in MB) for created Hosts.
      *
      * @param maxRamCapacity the maximum RAM capacity (in MB) to set
-     * @return
      */
     public void setMaxRamCapacity(final long maxRamCapacity) {
         if (maxRamCapacity <= 0) {
@@ -457,7 +456,6 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * Sets the maximum number of {@link Pe}s (CPU cores) for created Hosts.
      *
      * @param maxCpuCores the maximum number of {@link Pe}s (CPU cores) to set
-     * @return
      */
     public void setMaxCpuCores(final int maxCpuCores) {
         if (maxCpuCores <= 0) {

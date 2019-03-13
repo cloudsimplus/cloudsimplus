@@ -30,6 +30,7 @@ import java.util.List;
  * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
  * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
+ * </li>
  * </ul>
  * </p>
  *

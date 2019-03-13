@@ -358,7 +358,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      *
      * @param bwCapacity new BW capacity (in Megabits/s)
      * @return
-     * @pre bwCapacity > 0
      */
     Vm setBw(long bwCapacity);
 
@@ -374,7 +373,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      *
      * @param ramCapacity new RAM capacity
      * @return
-     * @pre ramCapacity > 0
      */
     Vm setRam(long ramCapacity);
 
@@ -383,7 +381,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      *
      * @param size new storage size
      * @return
-     * @pre size > 0
      */
     Vm setSize(long size);
 
@@ -396,7 +393,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      * @return the predicted completion time of the earliest finishing cloudlet
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
-     * @pre currentTime >= 0
      */
     double updateProcessing(double currentTime, List<Double> mipsShare);
 
@@ -538,9 +534,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
    /**
      * Gets the {@link DatacenterBroker} that represents the owner of this Vm.
      *
-     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
-     * @pre $none
-     * @post $none
+     * @return the broker or <b>{@link DatacenterBroker#NULL}</b> if a broker has not been set yet
      */
     @Override
     DatacenterBroker getBroker();
@@ -549,7 +543,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      * Sets a {@link DatacenterBroker} that represents the owner of this Vm.
      *
      * @param broker the {@link DatacenterBroker} to set
-     * @return
      */
     @Override
     void setBroker(DatacenterBroker broker);

@@ -170,7 +170,6 @@ public interface Datacenter extends SimEntity, PowerAware {
      * Sets the storage of the Datacenter.
      *
      * @param datacenterStorage the new storage
-     * @return
      */
     void setDatacenterStorage(DatacenterStorage datacenterStorage);
 

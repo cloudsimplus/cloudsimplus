@@ -66,9 +66,6 @@ public interface VmScheduler {
      *
      * @param vm the vm to allocate PEs to
      * @return true if the PEs were allocated to the VM, false otherwise
-     *
-     * @pre $none
-     * @post $none
      */
     boolean allocatePesForVm(Vm vm);
 
@@ -76,9 +73,6 @@ public interface VmScheduler {
      * Releases PEs allocated to all the VMs of the host the VmScheduler
      * is associated to. After that, all PEs will be available to be used on
      * demand for requesting VMs.
-     *
-     * @pre $none
-     * @post $none
      */
     void deallocatePesForAllVms();
 
@@ -87,8 +81,6 @@ public interface VmScheduler {
      * by other VMs.
      *
      * @param vm the vm to deallocate PEs from
-     * @pre $none
-     * @post $none
      */
     void deallocatePesFromVm(Vm vm);
 
@@ -98,8 +90,6 @@ public interface VmScheduler {
      *
      * @param vm the vm to deallocate PEs from
      * @param pesToRemove number of PEs to deallocate
-     * @pre $none
-     * @post $none
      */
     void deallocatePesFromVm(Vm vm, int pesToRemove);
 
@@ -108,8 +98,6 @@ public interface VmScheduler {
      *
      * @param vm the vm to get the MIPS share
      * @return
-     * @pre $none
-     * @post $none
      */
     List<Double> getAllocatedMips(Vm vm);
 

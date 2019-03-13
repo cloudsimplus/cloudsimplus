@@ -241,7 +241,7 @@ public class CloudletExecution {
     }
 
     /**
-     * Finalizes all relevant information before <tt>exiting</tt> the Datacenter
+     * Finalizes all relevant information before <b>exiting</b> the Datacenter
      * entity. This method sets the final data of:
      * <ul>
      * <li>wall clock time, i.e. the time of this Cloudlet resides in a
@@ -297,10 +297,8 @@ public class CloudletExecution {
      * If the cloudlet wasn't finished completely yet,
      * the value is equals to {@link Cloudlet#NOT_ASSIGNED}.
      *
-     * @return finish time of a cloudlet or <tt>-1.0</tt> if it cannot finish in
+     * @return finish time of a cloudlet or <b>-1.0</b> if it cannot finish in
      * this hourly slot
-     * @pre $none
-     * @post $result >= -1.0
      */
     public double getFinishTime() {
         return finishedTime;
@@ -310,8 +308,6 @@ public class CloudletExecution {
      * Sets the finish time for this Cloudlet. If time is negative, then it will be ignored.
      *
      * @param time finish time
-     * @pre time >= 0.0
-     * @post $none
      */
     public void setFinishTime(final double time) {
         if (time < 0) {
@@ -325,8 +321,6 @@ public class CloudletExecution {
      * Gets the Cloudlet for which the execution information is related to.
      *
      * @return cloudlet for this execution information object
-     * @pre $none
-     * @post $result != null
      */
     public Cloudlet getCloudlet() {
         return cloudlet;
@@ -400,7 +394,6 @@ public class CloudletExecution {
      *
      * @param timeToAdd time to add to the virtual runtime  (in seconds)
      * @return the new virtual runtime  (in seconds)
-     * @pre timeToAdd >= 0
      */
     public double addVirtualRuntime(final double timeToAdd) {
         if(timeToAdd >= 0) {

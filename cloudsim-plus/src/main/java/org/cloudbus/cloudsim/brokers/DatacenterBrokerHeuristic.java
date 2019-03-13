@@ -29,7 +29,6 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
      * Creates a new DatacenterBroker object.
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @post $none
      * @see #setHeuristic(CloudletToVmMappingHeuristic)
      */
     public DatacenterBrokerHeuristic(final CloudSim simulation) {

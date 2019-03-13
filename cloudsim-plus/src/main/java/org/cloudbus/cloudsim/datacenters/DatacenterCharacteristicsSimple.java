@@ -72,9 +72,6 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
      * for {@link #getArchitecture() architecture}, {@link #getOs() OS}, {@link #getTimeZone() Time Zone} and
      * {@link #getVmm() VMM}. The costs for {@link #getCostPerBw() BW}, {@link #getCostPerMem()} () RAM}
      * and {@link #getCostPerStorage()} () Storage} are set to zero.
-     *
-     * @pre machineList != null
-     * @post $none
      */
     public DatacenterCharacteristicsSimple(final Datacenter datacenter){
         setArchitecture(DEFAULT_ARCH);

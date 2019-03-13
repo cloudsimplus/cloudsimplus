@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toList;
  * VMs to the waiting list in order to make room for other already waiting
  * VMs to run. It just imposes there is not waiting VMs,
  * <b>oversimplifying</b> the scheduling, considering that for a given simulation
- * second <tt>t</tt>, the total processing capacity of the processor cores (in
+ * second <i>t</i>, the total processing capacity of the processor cores (in
  * MIPS) is equally divided by the VMs that are using them.
  * </p>
  *

@@ -7,12 +7,12 @@
  */
 package org.cloudbus.cloudsim.cloudlets.network;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.network.VmPacket;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.network.VmPacket;
 
 /**
  * Represents a task executed by a {@link NetworkCloudlet} that sends data to a
@@ -28,6 +28,7 @@ import org.cloudbus.cloudsim.network.VmPacket;
  * International Conference on Utility and Cloud Computing (UCC 2011, IEEE CS
  * Press, USA), Melbourne, Australia, December 5-7, 2011.
  * </a>
+ * </li>
  * </ul>
  * </p>
  *

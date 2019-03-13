@@ -133,7 +133,7 @@ public interface DatacenterCharacteristics extends Identifiable {
     long getNumberOfFailedHosts();
 
     /**
-     * Gets the total number of <tt>FREE</tt> or non-busy PEs for all PMs.
+     * Gets the total number of <b>FREE</b> or non-busy PEs for all PMs.
      *
      * @return number of PEs
      */

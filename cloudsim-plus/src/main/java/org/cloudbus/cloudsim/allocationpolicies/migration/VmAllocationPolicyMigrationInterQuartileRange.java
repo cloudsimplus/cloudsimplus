@@ -17,16 +17,15 @@ import org.cloudbus.cloudsim.util.MathUtil;
  * a dynamic threshold in order to detect host over utilization.
  * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
  *
- * <p>
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
- * the following paper:</p>
- * <p>
+ * the following paper:
  * <ul>
  * <li><a href="https://doi.org/10.1002/cpe.1867">Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive
  * Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in
  * Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24,
- * Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012</a>
+ * Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012</a></li>
  * </ul>
+ * </p>
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0

@@ -57,6 +57,7 @@ import static java.util.stream.Collectors.toMap;
  * to make it easier to define a function to be used
  * to clone failed VMs.
  *
+ * <p>
  * The events happens in the following order:
  * <ol>
  *  <li>a time to inject a Host failure is generated using a given Random Number Generator;</li>
@@ -66,6 +67,7 @@ import static java.util.stream.Collectors.toMap;
  *  <li>another failure is scheduled for a future time using the given generator;</li>
  *  <li>the process repeats until the end of the simulation.</li>
  * </ol>
+ * </p>
  *
  * <p>
  * When Host's PEs fail, if there are more available PEs

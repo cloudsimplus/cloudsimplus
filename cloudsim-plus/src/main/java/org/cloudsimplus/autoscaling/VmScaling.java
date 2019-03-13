@@ -52,7 +52,7 @@ public interface VmScaling {
      * Sets a {@link Vm} to this Load Balancer. The broker will call this Load Balancer
      * in order to balance load when its Vm is over utilized.
      *
-     * <p>When the VmScaling is assigned to a Vm, the Vm sets itself to the VmScaling object,
+     * <p><b>When the VmScaling is assigned to a Vm, the Vm sets itself to the VmScaling object,
      * creating an association between the two objects.</b></p>
      * @param vm the Vm to set
      * @return

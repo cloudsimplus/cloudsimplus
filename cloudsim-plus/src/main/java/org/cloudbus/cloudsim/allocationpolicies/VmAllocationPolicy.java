@@ -7,15 +7,15 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
-
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiFunction;
 
 /**
  * An interface to be implemented by each class that represents a policy used by
@@ -56,8 +56,6 @@ public interface VmAllocationPolicy {
      *
      * @param vm the VM to allocate a host to
      * @return $true if the host could be allocated; $false otherwise
-     * @pre $none
-     * @post $none
      */
     boolean allocateHostForVm(Vm vm);
 
@@ -67,8 +65,6 @@ public interface VmAllocationPolicy {
      * @param vm the VM to allocate a host to
      * @param host the host to allocate to the given VM
      * @return $true if the host could be allocated; $false otherwise
-     * @pre $none
-     * @post $none
      */
     boolean allocateHostForVm(Vm vm, Host host);
 
@@ -91,8 +87,6 @@ public interface VmAllocationPolicy {
      * Releases the host used by a VM.
      *
      * @param vm the vm to get its host released
-     * @pre $none
-     * @post $none
      */
     void deallocateHostForVm(Vm vm);
 
@@ -132,7 +126,7 @@ public interface VmAllocationPolicy {
      * Sets a {@link BiFunction} that selects a Host for a given Vm.
      * This Function receives the current VmAllocationPolicy and the
      * {@link Vm} requesting to be place.
-     * It then returns an {@link Optional<Host>}
+     * It then returns an {@code Optional<Host>}
      * that may contain a suitable Host for that Vm or not.
      *
      * <p>If not Function is set, the default VM selection method provided by implementing classes

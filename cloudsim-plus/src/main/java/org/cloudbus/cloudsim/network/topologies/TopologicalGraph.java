@@ -15,11 +15,11 @@ import java.util.List;
 /**
  * This class represents a graph containing vertices (nodes) and edges (links),
  * used for input with a network-layer.
- * <p>
+ *
  * <p>Graphical-Output Restricions:
  * <ul>
- * <li>EdgeColors: GraphicalProperties.getColorEdge
- * <li>NodeColors: GraphicalProperties.getColorNode
+ * <li>EdgeColors: GraphicalProperties.getColorEdge</li>
+ * <li>NodeColors: GraphicalProperties.getColorNode</li>
  * </ul>
  * </p>
  *

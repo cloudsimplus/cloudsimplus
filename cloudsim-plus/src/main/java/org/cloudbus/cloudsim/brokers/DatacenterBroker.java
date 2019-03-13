@@ -62,9 +62,6 @@ public interface DatacenterBroker extends SimEntity {
      * @param vm       the vm to bind the Cloudlet to
      * @return true if the Cloudlet was found in the waiting list and was bind to the given Vm, false it the
      * Cloudlet was not found in such a list (that may mean it wasn't submitted yet or was already created)
-     * @pre cloudletId > 0
-     * @pre id > 0
-     * @post $none
      */
     boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm);
 
@@ -140,8 +137,6 @@ public interface DatacenterBroker extends SimEntity {
      * All cloudlets will be added to the {@link #getCloudletWaitingList()}.
      *
      * @param list the list of Cloudlets to request the creation
-     * @pre list !=null
-     * @post $none
      * @see #submitCloudletList(java.util.List, double)
      */
     void submitCloudletList(List<? extends Cloudlet> list);
@@ -155,8 +150,6 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param list            the list of Cloudlets to request the creation
      * @param submissionDelay the delay the broker has to include when requesting the creation of Cloudlets
-     * @pre list !=null
-     * @post $none
      * @see #submitCloudletList(java.util.List)
      * @see Cloudlet#getSubmissionDelay()
      */
@@ -170,8 +163,6 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param list the list of Cloudlets to request the creation
      * @param vm the VM to which all Cloudlets will be bound to
-     * @pre list !=null
-     * @post $none
      * @see #submitCloudletList(java.util.List, double)
      */
     void submitCloudletList(List<? extends Cloudlet> list, Vm vm);
@@ -186,8 +177,6 @@ public interface DatacenterBroker extends SimEntity {
      * @param list the list of Cloudlets to request the creation
      * @param vm the VM to which all Cloudlets will be bound to
      * @param submissionDelay the delay the broker has to include when requesting the creation of Cloudlets
-     * @pre list !=null
-     * @post $none
      * @see #submitCloudletList(java.util.List)
      * @see Cloudlet#getSubmissionDelay()
      */
@@ -199,8 +188,6 @@ public interface DatacenterBroker extends SimEntity {
      * determined by the {@link #setDatacenterSupplier(Supplier)}.
      *
      * @param list the list of VMs to request the creation
-     * @pre list !=null
-     * @post $none
      */
     void submitVmList(List<? extends Vm> list);
 
@@ -212,8 +199,6 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param list            the list of VMs to request the creation
      * @param submissionDelay the delay the broker has to include when requesting the creation of VMs
-     * @pre list !=null
-     * @post $none
      * @see #submitVmList(java.util.List)
      * @see Vm#getSubmissionDelay()
      */
@@ -230,7 +215,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Sets the {@link Supplier} that selects and returns a Datacenter
      * to place submitted VMs.
-     * <p>
+     *
      * <p>The supplier defines the policy to select a Datacenter to host a VM
      * that is waiting to be created.</p>
      *
@@ -243,7 +228,7 @@ public interface DatacenterBroker extends SimEntity {
      * to place submitted VMs when the Datacenter selected
      * by the {@link #setDatacenterSupplier(java.util.function.Supplier) Datacenter Supplier}
      * failed to create all requested VMs.
-     * <p>
+     *
      * <p>The supplier defines the policy to select a Datacenter to host a VM when
      * all VM creation requests were received but not all VMs could be created.
      * In this case, a different Datacenter has to be selected to request
@@ -258,6 +243,7 @@ public interface DatacenterBroker extends SimEntity {
      * of submitted VMs before requesting the creation of such VMs in
      * some Datacenter. After sorting, the VM creation requests will be sent
      * in the order of the sorted VM list.
+     *
      * @param comparator the VM Comparator to set
      */
     void setVmComparator(Comparator<Vm> comparator);

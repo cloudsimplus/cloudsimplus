@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 
 /**
- * <a href="https://en.wikipedia.org/wiki/Floyd–Warshall_algorithm">Floyd-Warshall algorithm</a> to calculate the predecessor matrix and the delay
+ * <a href="https://en.wikipedia.org/wiki/Floyd-Warshall_algorithm">Floyd-Warshall algorithm</a> to calculate the predecessor matrix and the delay
  * between all pairs of nodes. The delay represents the distance between the two vertices and it works as the weight for the Floyd-Warshall algorithm.
  *
  * @author Rahul Simha

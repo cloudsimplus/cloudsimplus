@@ -429,7 +429,7 @@ public abstract class CloudSimEntity implements SimEntity {
     // --------------- EVENT / MESSAGE SEND WITH NETWORK DELAY METHODS ------------------
 
     /**
-     * Sends an event/message to another entity by <tt>delaying</tt> the
+     * Sends an event/message to another entity by <b>delaying</b> the
      * simulation time from the current time, with a tag representing the event
      * type.
      *
@@ -464,7 +464,7 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
-     * Sends an event/message to another entity by <tt>delaying</tt> the
+     * Sends an event/message to another entity by <b>delaying</b> the
      * simulation time from the current time, with a tag representing the event
      * type.
      *

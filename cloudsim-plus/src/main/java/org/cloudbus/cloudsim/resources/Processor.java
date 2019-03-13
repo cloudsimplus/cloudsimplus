@@ -75,9 +75,8 @@ public final class Processor extends ResourceManageableAbstract {
     /**
      * Sets the individual MIPS of each {@link Pe}.
      * @param newMips the new MIPS of each PE
-     * @pre newMips >= 0
      */
-    public void setMips(double newMips) {
+    public void setMips(final double newMips) {
         if(newMips < 0) {
             throw new IllegalArgumentException("MIPS cannot be negative");
         }

@@ -61,7 +61,7 @@ public interface Pe extends ChangeableId, ResourceManageable {
      * Sets the capacity of this Pe in MIPS (Million Instructions Per Second).
      *
      * @param mipsCapacity the MIPS capacity to set
-     * @return true if mipsCapacity > 0, false otherwise
+     * @return true if mipsCapacity is greater than 0, false otherwise
      */
     @Override
     boolean setCapacity(long mipsCapacity);
@@ -74,7 +74,7 @@ public interface Pe extends ChangeableId, ResourceManageable {
      * capacity using a double value that usually is generated from some computations.</p>
      *
      * @param mipsCapacity the MIPS capacity to set
-     * @return true if mipsCapacity > 0, false otherwise
+     * @return true if mipsCapacity is greater than 0, false otherwise
      */
     boolean setCapacity(double mipsCapacity);
 

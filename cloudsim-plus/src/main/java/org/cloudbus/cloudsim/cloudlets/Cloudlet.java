@@ -85,12 +85,12 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
 
         /**
          * The Cloudlet has been paused. It can be resumed by changing the status
-         * into <tt>RESUMED</tt>.
+         * into <b>RESUMED</b>.
          */
         PAUSED,
 
         /**
-         * The Cloudlet has been resumed from <tt>PAUSED</tt> state.
+         * The Cloudlet has been resumed from <b>PAUSED</b> state.
          */
         RESUMED,
 
@@ -213,7 +213,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * executed. From the second time this method is called, every call makes the
      * cloudlet to be migrated to the indicated Datacenter.
      *
-     * <p><b>NOTE</b>: This method <tt>should</tt> be called only by a {@link Datacenter} entity.</p>
+     * <p><b>NOTE</b>: This method <b>should</b> be called only by a {@link Datacenter} entity.</p>
      *
      * @param datacenter the Datacenter where the cloudlet will be executed
      */
@@ -248,7 +248,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * <p>Realize costs must be defined for Datacenters by accessing the {@link DatacenterCharacteristics}
      * object from each {@link Datacenter} instance and setting the CPU cost.</p>
      *
-     * @return the cost associated with running this Cloudlet or <tt>0.0</tt> if
+     * @return the cost associated with running this Cloudlet or <b>0.0</b> if
      * was not assigned to any Datacenter yet
      * @see DatacenterCharacteristics#setCostPerSecond(double)
      */
@@ -270,8 +270,10 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
 
     /**
      * Gets the total cost of executing this Cloudlet.
-     * <tt>Total Cost = input data transfer + processing cost + output transfer cost</tt> .
-     * <p>Realize costs must be defined for Datacenters by accessing the {@link DatacenterCharacteristics}
+     * <p>{@code Total Cost = input data transfer + processing cost + output transfer cost}.</p>
+     *
+     * <p>
+     * Realize costs must be defined for Datacenters by accessing the {@link DatacenterCharacteristics}
      * object from each {@link Datacenter} instance and setting costs for each resource.</p>
      *
      * @return the total cost of executing the Cloudlet
@@ -384,7 +386,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Gets the latest {@link Datacenter} where the Cloudlet was processed.
      *
-     * @return the Datacenter or <tt>{@link Datacenter#NULL}</tt> if the Cloudlet
+     * @return the Datacenter or <b>{@link Datacenter#NULL}</b> if the Cloudlet
      * has not being processed yet.
      */
     Datacenter getLastDatacenter();
@@ -599,7 +601,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @param numberOfPes number of PEs
      * @return
-     * @throw IllegalArgumentException when the number of PEs is lower or equal to zero
+     * @throws IllegalArgumentException when the number of PEs is lower or equal to zero
      */
     Cloudlet setNumberOfPes(long numberOfPes);
 
@@ -836,7 +838,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Gets the {@link DatacenterBroker} that represents the owner of this Cloudlet.
      *
-     * @return the broker or <tt>{@link DatacenterBroker#NULL}</tt> if a broker has not been set yet
+     * @return the broker or <b>{@link DatacenterBroker#NULL}</b> if a broker has not been set yet
      */
     @Override
     DatacenterBroker getBroker();

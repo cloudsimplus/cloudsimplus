@@ -12,9 +12,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract class providing features for subclasses implementing trace file readers for specific file formats.
- *
- *
- * <h4>NOTES:</h4>
+ * <p>
+ * <b>NOTES:</b>
  * <ul>
  *   <li>This class can only read trace files in the following format:
  *       <b>ASCII text, zip, gz.</b>
@@ -26,6 +25,7 @@ import static java.util.Objects.requireNonNull;
  *       to define the JVM heap size will be 200MB.
  *   </li>
  * </ul>
+ * </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
@@ -51,7 +51,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * Create a new SwfWorkloadFileReader object.
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
+     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
      * @throws FileNotFoundException    when the trace file is not found
      * @throws IllegalArgumentException when the workload trace file name is null or empty
      */
@@ -64,7 +64,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
      *
      * @param filePath the workload trace file path in one of the following formats: <i>ASCII text, zip, gz.</i>
      * @param inputStream   a {@link InputStreamReader} object to read the file
-     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips <= 0
+     * @throws IllegalArgumentException when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
      */
     protected TraceReaderAbstract(final String filePath, final InputStream inputStream) {
         if (filePath == null || filePath.isEmpty()) {
@@ -147,7 +147,6 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @param inputStream a {@link InputStream} to read the file
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
-     * @return <code>true</code> if successful, <code>false</code> otherwise.
      * @throws IOException if the there was any error reading the file
      */
     protected void readTextFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
@@ -160,7 +159,6 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @param inputStream a {@link InputStream} to read the file
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
-     * @return <code>true</code> if successful; <code>false</code> otherwise.
      * @throws IOException if the there was any error reading the file
      */
     protected void readGZIPFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {
@@ -192,7 +190,6 @@ public abstract class TraceReaderAbstract implements TraceReader {
      *
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
-     * @return <code>true</code> if successful, <code>false</code> otherwise.
      * @throws UncheckedIOException if the there was any error reading the file
      */
     protected void readFile(final Function<String[], Boolean> processParsedLineFunction) {
@@ -218,7 +215,6 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @param inputStream a {@link InputStream} to read the file
      * @param processParsedLineFunction a {@link Function} that receives each parsed line as an array
      *                          and performs an operation over it, returning true if the operation was executed
-     * @return <code>true</code> if successful, <code>false</code> otherwise.
      * @throws IOException if the there was any error reading the file
      */
     private void readFile(final InputStream inputStream, final Function<String[], Boolean> processParsedLineFunction) throws IOException {

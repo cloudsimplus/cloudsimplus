@@ -43,6 +43,7 @@ import static java.util.stream.Collectors.toSet;
  * Virtual Machines in Cloud Data Centers", Concurrency and Computation:
  * Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John
  * Wiley and Sons, Ltd, New York, USA, 2012</a>
+ * </li>
  * </ul>
  * </p>
  *
@@ -680,11 +681,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     /**
      * Gets the max power consumption of a host after placement of a candidate
      * VM. The VM is not in fact placed at the host. We assume that load is
-     * balanced between PEs. The only restriction is: VM's max MIPS < PE's MIPS
+     * balanced between PEs. The only restriction is: VM's max MIPS less than PE's MIPS
      *
      * @param host the host
      * @param vm the vm
-     *
      * @return the power after allocation
      */
     protected double getMaxUtilizationAfterAllocation(final Host host, final Vm vm) {
