@@ -542,10 +542,22 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
+        final long prevLength = cloudlet.getLength();
         cloudlet.setLength(cloudlet.getFinishedLengthSoFar());
+
         /* After defining the Cloudlet length, updates the Cloudlet processing again so that the Cloudlet status
          * is updated at this clock tick instead of the next one.*/
         updateHostProcessing(cloudlet);
+
+        /* If the Cloudlet length was negative,
+         * after finishing it a VM update event is sent to ensure the broker is notified
+         * the Cloudlet has finished.
+         * A negative length makes the Cloudlet to keep running until a finish message is
+         * sent to the broker. */
+        if(prevLength < 0){
+            final double delay = cloudlet.getSimulation().getMinTimeBetweenEvents();
+            cloudlet.getLastDatacenter().schedule(delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING, null);
+        }
     }
 
     /**

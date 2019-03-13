@@ -85,6 +85,8 @@ public class CloudSim implements Simulation {
      */
     private double terminationTime = -1;
 
+    private double newTerminationTime = -1;
+
     /**
      * @see #getMinTimeBetweenEvents()
      */
@@ -253,9 +255,18 @@ public class CloudSim implements Simulation {
                 return false;
             }
 
+            /* If it is time to terminate the simulation, sets a new termination time
+             * so that events to finish Cloudlets with a negative length are received.
+             * Cloudlets with a negative length must keep running
+             * until a CLOUDLET_FINISH event is sent to the broker or the termination time is reached*/
             if (isTimeToTerminateSimulationUnderRequest()) {
-                setClock(terminationTime);
-                return true;
+                if(newTerminationTime != -1 && clock >= newTerminationTime){
+                    return true;
+                }
+
+                if(newTerminationTime == -1) {
+                    newTerminationTime = Math.max(terminationTime, clock) + (minTimeBetweenEvents*2);
+                }
             }
 
             checkIfSimulationPauseRequested();
@@ -423,6 +434,10 @@ public class CloudSim implements Simulation {
                 ? "using getMinTimeBetweenEvents() since a Datacenter schedulingInterval was not set"
                 : "Datacenter.getSchedulingInterval()";
 
+            /*If a termination time is set, even if there is no events to process,
+            * the simulation must keep running waiting for dynamic events
+            * (such as the dynamic arrival of VMs or Cloudlets).
+            * Without increasing the time, the simulation stops due to lack of new events.*/
             LOGGER.info(
                 "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set).{}Checking new events in {} seconds ({})",
                 clock, terminationTime, System.lineSeparator(),
@@ -430,6 +445,7 @@ public class CloudSim implements Simulation {
             setClock(clock + increment);
             return true;
         }
+
         return false;
     }
 

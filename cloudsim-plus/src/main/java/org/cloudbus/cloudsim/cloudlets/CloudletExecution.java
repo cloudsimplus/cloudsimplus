@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
@@ -271,7 +272,8 @@ public class CloudletExecution {
      * added to the {@link #instructionsFinishedSoFar}, in <b>Number of Instructions (instead of Million Instructions)</b>
      */
     public void updateProcessing(final long partialFinishedInstructions) {
-        setLastProcessingTime(cloudlet.getSimulation().clock());
+        final Simulation simulation = cloudlet.getSimulation();
+        setLastProcessingTime(simulation.clock());
 
         if(partialFinishedInstructions <= 0){
             return;
@@ -280,6 +282,13 @@ public class CloudletExecution {
         this.instructionsFinishedSoFar += partialFinishedInstructions;
         final double partialFinishedMI = partialFinishedInstructions / Conversion.MILLION;
         cloudlet.addFinishedLengthSoFar((long)partialFinishedMI);
+
+        /* If a simulation termination time was defined and the length of the Cloudlet is negative
+         * (to indicate that they must not finish before the termination time),
+         * then sends a request to finish the Cloudlet. */
+        if(cloudlet.getLength() < 0 && simulation.isTimeToTerminateSimulationUnderRequest()){
+            cloudlet.getBroker().schedule(CloudSimTags.CLOUDLET_FINISH, cloudlet);
+        }
     }
 
     /**
