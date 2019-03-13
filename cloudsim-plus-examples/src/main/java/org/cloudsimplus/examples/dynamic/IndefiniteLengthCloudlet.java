@@ -45,8 +45,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.listeners.EventInfo;
-import org.cloudsimplus.listeners.EventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,15 +54,15 @@ import java.util.List;
  * so that each Cloudlet stops running only if:
  * <ul>
  *  <li>(i) it reaches {@link Long#MAX_VALUE} MI executed or</li>
- *  <li>(ii) {@link CloudSimTags#CLOUDLET_FINISH} message is sent to the {@link DatacenterBroker}.</li>
+ *  <li>(ii) a positive length is dynamically defined (the time or event when the length of such Cloudlets are set
+ *  can be defined in uncountable ways, according to developer needs)</li>
+ *  <li>(iii) {@link CloudSimTags#CLOUDLET_FINISH} message is sent to the {@link DatacenterBroker}.</li>
+ *  <li>(iv) the simulation is terminated by defining a termination time.</li>
  * </ul>
  *
- * In this example, the Cloudlets that initially with an indefinite length
- * will have a length set when the first created Cloudlet (one with a predefined
- * length) finishes. In such a moment, the length of the other Cloudlets is set.
- *
- * <p>The time or event when the length of such Cloudlets are set
- * can be defined in uncountable ways, according to developer needs.</p>
+ * In this example it is called the {@link CloudSim#terminateAt(double)}
+ * method to define when the simulation must finish.
+ * At that moment, the length of the Cloudlets is set so that they can finish executing.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
@@ -96,6 +94,8 @@ public class IndefiniteLengthCloudlet {
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSim();
+        //Keeps the simulation running for 1 hour
+        simulation.terminateAt(60*60);
         datacenter0 = createDatacenter();
 
         //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
@@ -107,26 +107,11 @@ public class IndefiniteLengthCloudlet {
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
-        simulation.addOnSimulationStartListener(this::sendCloudletFinishMsg);
         simulation.start();
 
+        //final List<Cloudlet> finishedCloudlets = broker0.getCloudletSubmittedList();
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
-    }
-
-    /**
-     * After the simulation starts, send a {@link CloudSimTags#CLOUDLET_FINISH} message
-     * with a specific delay defining the time when the Cloudlets with an indefinite length
-     * will finish.
-     *
-     * <p>This method is an {@link org.cloudsimplus.listeners.EventListener} that will be
-     * called after the simulation starts.</p>
-     * @param info the simulation start event information
-     * @see CloudSim#addOnSimulationStartListener(EventListener)
-     */
-    private void sendCloudletFinishMsg(final EventInfo info) {
-        System.out.println("Sending cloudlets finish message");
-        cloudletList.forEach(cloudlet -> broker0.schedule(400, CloudSimTags.CLOUDLET_FINISH, cloudlet));
     }
 
     /**
@@ -179,9 +164,8 @@ public class IndefiniteLengthCloudlet {
 
     /**
      * Creates Cloudlets with indefinite length by setting a negative value.
-     * This way, the Cloudlets keep running until a {@link CloudSimTags#CLOUDLET_FINISH}
-     * event is sent to the {@link DatacenterBroker}.
-     * @see #sendCloudletFinishMsg(EventInfo)
+     * This way, the Cloudlets keep running until until one of the conditions explained
+     * in the documentation of this class happens.
      */
     private List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
