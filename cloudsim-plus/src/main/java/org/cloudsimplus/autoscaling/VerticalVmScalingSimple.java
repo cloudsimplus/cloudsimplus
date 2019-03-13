@@ -226,7 +226,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
     @Override
     protected boolean requestUpScaling(final double time) {
         final DatacenterBroker broker = this.getVm().getBroker();
-        //@todo Previously, the src was the VM and the dest the broker. However, the VM isn't a SimEntity. See if this change brakes anything
+        //@TODO Previously, the src was the VM and the dest the broker. However, the VM isn't a SimEntity. See if this change brakes anything
         broker.getSimulation().sendNow(broker, broker, CloudSimTags.VM_VERTICAL_SCALING, this);
         return true;
     }

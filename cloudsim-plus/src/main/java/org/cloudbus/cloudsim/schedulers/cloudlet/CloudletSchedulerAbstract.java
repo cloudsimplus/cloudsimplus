@@ -166,10 +166,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the amount of available MIPS for each Processor PE.
      *
      * @TODO Splitting the capacity of a CPU core among different applications
-     * is not in fact possible. This was just an oversimplification
-     * performed by the CloudletSchedulerTimeShared that may affect
-     * other schedulers such as the CloudletSchedulerCompletelyFair,
-     * which in fact performs task preemption.
+     *       is not in fact possible. This was just an oversimplification
+     *       performed by the CloudletSchedulerTimeShared that may affect
+     *       other schedulers such as the CloudletSchedulerCompletelyFair,
+     *       which in fact performs task preemption.
      */
     public double getAvailableMipsByPe(){
         final long totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
@@ -481,9 +481,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param cle      Cloudlet to set its status
      * @param currentStatus the current cloudlet status
      * @param newStatus     the new status to set
-     * @todo @author manoelcampos The parameter currentStatus only exists
-     * because apparently, the cloudlet status is not being accordingly changed
-     * along the simulation run.
+     * @TODO The parameter currentStatus only exists
+     *       because apparently, the cloudlet status is not being accordingly changed
+     *       along the simulation run.
      */
     private void changeStatusOfCloudlet(final CloudletExecution cle, final Status currentStatus, final Status newStatus) {
         if ((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cle.getCloudlet().isFinished()) {
@@ -660,12 +660,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param cle the Cloudlet to compute the executed length
      * @param currentTime current simulation time
      * @return the executed length, in Number of Instructions (I), since the last time cloudlet was processed.
-     * @TODO @author manoelcampos This method is being called 2 times more than required.
-     * Despite it is not causing any apparent issue, it has to be
-     * investigated. For instance, for simulation time 2, with 2 cloudlets, the
-     * method is being called 4 times instead of just 2 (1 for each cloudlet for
-     * that time).
      * @see #updateCloudletsProcessing(double)
+     *
+     * @TODO This method is being called 2 times more than required.
+     *       Despite it is not causing any apparent issue, it has to be
+     *       investigated. For instance, for simulation time 2, with 2 cloudlets, the
+     *       method is being called 4 times instead of just 2 (1 for each cloudlet for
+     *       that time).
      */
     private long cloudletExecutedInstructionsForTimeSpan(final CloudletExecution cle, final double currentTime) {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was

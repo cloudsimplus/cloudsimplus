@@ -251,21 +251,22 @@ public interface CloudletScheduler extends Serializable {
      * How the migrating cloudlet is select is defined by each
      * class implementing this interface.
      *
-     * @return one running cloudlet
-     * @todo @author manoelcampos Despite there is this method, it is not being
-     * used anywhere and Cloudlet migration is not in fact supported.
-     * Actually, in a real scenario, application migration is a tough
-     * issue, once it has to deal with configuration and data migration,
-     * dependencies, etc. Further, I don't think it is a reasonable approach
-     * to follow. Vm migration makes more sense because you deal it as a
-     * black box, not having to be concerned with any internal data or
-     * configurations. You just move the entire VM to another host.
-     * There was a CloudSimTags.CLOUDLET_MOVE that was used in the
-     * {@link DatacenterSimple} class, but the event
-     * is not being sent anywhere. The CloudSim forum has 3 questions about
-     * Cloudlet migration only. It shows that this features is not
-     * highly required and in fact. Even for migration of parallel workloads
-     * such as Map-Reduce, data has to be migrated with the application.
+     * @return one running cloudlet.
+     *
+     * @TODO Despite there is this method, it is not being
+     *       used anywhere and Cloudlet migration is not in fact supported.
+     *       Actually, in a real scenario, application migration is a tough
+     *       issue, once it has to deal with configuration and data migration,
+     *       dependencies, etc. Further, I don't think it is a reasonable approach
+     *       to follow. Vm migration makes more sense because you deal it as a
+     *       black box, not having to be concerned with any internal data or
+     *       configurations. You just move the entire VM to another host.
+     *       There was a CloudSimTags.CLOUDLET_MOVE that was used in the
+     *       {@link DatacenterSimple} class, but the event
+     *       is not being sent anywhere. The CloudSim forum has 3 questions about
+     *       Cloudlet migration only. It shows that this features is not
+     *       highly required and in fact. Even for migration of parallel workloads
+     *       such as Map-Reduce, data has to be migrated with the application.
      */
     Cloudlet getCloudletToMigrate();
 

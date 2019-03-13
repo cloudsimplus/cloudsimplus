@@ -439,11 +439,11 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
 
     protected TaskEvent createTaskEventFromTraceLine() {
         final TaskEvent event = new TaskEvent();
-        /*@todo The tasks with the same username must run inside the same user's VM,
-        * unless the machineID is different.
-        * The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
-        * The challenge here is because the task requirements are usually not known,
-        * for instance when the task is submitted. It's just know when it starts to execute.
+        /*@TODO The tasks with the same username must run inside the same user's VM,
+        *       unless the machineID is different.
+        *       The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
+        *       The challenge here is because the task requirements are usually not known,
+        *       for instance when the task is submitted. It's just know when it starts to execute.
         */
         event
             .setTimestamp(FieldIndex.TIMESTAMP.getValue(this))
@@ -491,7 +491,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      * @param taskEvent the task event read from the trace file, containing
      *                  the status and the attributes to change in the Cloudlet
      * @return
-     * @todo This method is too large and confusing, thus it needs to be refactored
+     * @TODO This method is too large and confusing, thus it needs to be refactored
      */
     private Cloudlet addCloudletStatusChangeEvents(final CloudSimEvent statusChangeSimEvt, final TaskEvent taskEvent){
         //Sends the event to change the Cloudlet status.

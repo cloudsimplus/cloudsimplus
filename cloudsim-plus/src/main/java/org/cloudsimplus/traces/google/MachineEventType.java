@@ -74,7 +74,8 @@ public enum MachineEventType {
          *
          * @param reader the trace file reader
          * @return always false to indicate the method is not implemented yet
-         * @todo Update events aren't being processed yet.
+         *
+         * @TODO Update events are NOT being processed yet.
          */
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {

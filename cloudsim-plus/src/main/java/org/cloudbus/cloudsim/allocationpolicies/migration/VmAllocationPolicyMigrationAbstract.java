@@ -70,7 +70,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * A map of CPU utilization history (in percentage) for each host, where
      * each key is a hos and each value is the CPU utilization percentage history.
      *
-     * @todo there is inconsistency between these data.
+     * @TODO there is inconsistency between these data.
      * Into the Host, it is stored the actual utilization for the given time.
      * Here it is stored the utilization as it was computed
      * by the VmAllocationPolicy implementation.
@@ -123,7 +123,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     @Override
     public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
-        //@todo See https://github.com/manoelcampos/cloudsim-plus/issues/94
+        //@TODO See https://github.com/manoelcampos/cloudsim-plus/issues/94
         final Set<Host> overloadedHosts = getOverloadedHosts();
         printOverUtilizedHosts(overloadedHosts);
         saveAllocation();

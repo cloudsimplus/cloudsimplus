@@ -36,7 +36,7 @@ import java.util.Optional;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  *
- * @TODO @author manoelcampos Check how to implement the NULL pattern for this class.
+ * @TODO Check how to implement the NULL pattern for this class.
  */
 public class NetworkCloudlet extends CloudletSimple {
 
@@ -89,7 +89,7 @@ public class NetworkCloudlet extends CloudletSimple {
     /**
      * Sets the Cloudlet's RAM memory.
      * @param memory amount of RAM to set
-     * @todo Cloudlet has the {@link #getUtilizationModelRam()} that defines
+     * @TODO Cloudlet has the {@link #getUtilizationModelRam()} that defines
      *       how RAM is used. This way, this attribute doesn't make sense
      *       since usage of RAM is dynamic.
      *       The attribute would be used to know what is the maximum

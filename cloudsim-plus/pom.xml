@@ -91,6 +91,14 @@
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <configuration>
                             <additionalOptions>-Xdoclint:none</additionalOptions>
+                            <tags>
+                                <tag>
+                                    <name>TODO</name>
+                                    <!-- TODO tag for all places -->
+                                    <placement>a</placement>
+                                    <head>To do something:</head>
+                                </tag>
+                            </tags>
                         </configuration>
                     </plugin>
                 </plugins>

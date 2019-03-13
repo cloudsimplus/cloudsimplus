@@ -46,20 +46,17 @@ public interface VmScheduler {
      * @param requestedMips the list of MIPS share to be allocated to a VM
      * @return true if the PEs were allocated to the VM, false otherwise
      *
-     * @pre $none
-     * @post $none
-     *
-     * @todo @author manoelcampos All implementing classes don't consider the
-     * situation when a Vm already has allocated MIPS and the method is
-     * called again. In this case, what is supposed to do? Increase the current
-     * allocation or change it? I think that the obvious action is to change the
-     * allocation, however, the implementations aren't working to deal this
-     * situation. For that, they have to use some method such as
-     * {@link Resource#isAmountAvailable(long)}
-     * to first check if the difference from the current allocated mips and the
-     * requested one is available. Currently the implementations wrongly check
-     * if the total requested mips is available, while only the difference has
-     * to be checked. It has to be added some tests to check this issue.
+     * @TODO All implementing classes don't consider the
+     *       situation when a Vm already has allocated MIPS and the method is
+     *       called again. In this case, what is supposed to do? Increase the current
+     *       allocation or change it? I think that the obvious action is to change the
+     *       allocation, however, the implementations aren't working to deal this
+     *       situation. For that, they have to use some method such as
+     *       {@link Resource#isAmountAvailable(long)}
+     *       to first check if the difference from the current allocated mips and the
+     *       requested one is available. Currently the implementations wrongly check
+     *       if the total requested mips is available, while only the difference has
+     *       to be checked. It has to be added some tests to check this issue.
      */
     boolean allocatePesForVm(Vm vm, List<Double> requestedMips);
 
@@ -205,9 +202,10 @@ public interface VmScheduler {
      * Gets PE capacity in MIPS.
      *
      * @return
-     * @todo It considers that all PEs have the same capacity, what has been
-     * shown doesn't be assured. The peList received by the VmScheduler can be
-     * heterogeneous PEs.
+     *
+     * @TODO It considers that all PEs have the same capacity, what has been
+     *       shown doesn't be assured. The peList received by the VmScheduler can be
+     *       heterogeneous PEs.
      */
     long getPeCapacity();
 

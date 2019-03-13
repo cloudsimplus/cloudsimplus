@@ -76,8 +76,8 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         }
 
         /*
-         * @todo @author manoelcampos It should be used polymorphism to avoid
-         * including these if's for each type of task.
+         * @TODO autor: manoelcampos It should be used polymorphism to avoid
+         *       including these if's for each type of task.
          */
         if (isTimeToUpdateCloudletProcessing(netcl))
             updateExecutionTask(netcl, partialFinishedMI);
@@ -86,9 +86,9 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
 
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
         /*
-         * @todo @author manoelcampos It has to be checked if the task execution
-         * is considering only one cloudlet PE or all PEs.
-         * Each execution task is supposed to use just one PE.
+         * @TODO autor: manoelcampos It has to be checked if the task execution
+         *       is considering only one cloudlet PE or all PEs.
+         *       Each execution task is supposed to use just one PE.
          */
         final Optional<CloudletExecutionTask> optional = getCloudletCurrentTask(cloudlet);
         optional.ifPresent(task -> {
@@ -175,9 +175,9 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             getListOfPacketsSentFromVm(task.getSourceVm()).removeAll(receivedPkts);
 
             /*
-             * @todo @author manoelcampos The task has to wait the reception
-             * of the expected packets up to a given timeout.
-             * After that, the task has to stop waiting and fail.
+             * @TODO autor: manoelcampos The task has to wait the reception
+             *       of the expected packets up to a given timeout.
+             *       After that, the task has to stop waiting and fail.
              */
             scheduleNextTaskIfCurrentIsFinished(candidateDestinationCloudlet);
         });

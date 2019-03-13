@@ -146,9 +146,9 @@ public class NetworkVmsExample1 {
             final int switchNum = getSwitchIndex(host, edgeSwitches[0].getPorts());
             /*
             @TODO these two calls below are redundant.
-            When connecting a host to a switch, the
-            switch should be automatically linked to the Host
-            to create the bi-directional association.
+                  When connecting a host to a switch, the
+                  switch should be automatically linked to the Host
+                  to create the bi-directional association.
             */
             edgeSwitches[switchNum].connectHost(host);
             host.setEdgeSwitch(edgeSwitches[switchNum]);

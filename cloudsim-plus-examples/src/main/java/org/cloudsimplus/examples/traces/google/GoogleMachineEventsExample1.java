@@ -73,7 +73,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  *
- * @todo {@link MachineEventType#UPDATE} events are not being processed yet.
+ * @TODO {@link MachineEventType#UPDATE} events are not being processed yet.
  */
 public class GoogleMachineEventsExample1 {
     private static final String TRACE_FILENAME = "workload/google-traces/machine-events-sample-1.csv";

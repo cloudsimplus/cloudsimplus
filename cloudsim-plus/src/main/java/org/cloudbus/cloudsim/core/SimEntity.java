@@ -143,7 +143,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      *
      * @param newName the new name
      * @return
-     * @throws IllegalArgumentException when the entity name is <tt>null</tt> or empty
+     * @throws IllegalArgumentException when the entity name is null or empty
      */
     SimEntity setName(String newName) throws IllegalArgumentException;
 }

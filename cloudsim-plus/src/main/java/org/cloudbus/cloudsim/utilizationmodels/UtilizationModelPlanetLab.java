@@ -249,7 +249,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @return the number of samples inside such indexes interval
      */
     protected final int getIntervalSize(final int startIndex, final int endIndex) {
-        /*@todo The interval size should add 1, but this is the original formula. It needs to be checked the impact in tests.*/
+        /*@TODO The interval size should add 1, but this is the original formula.
+                It needs to be checked the impact in tests.*/
         final int index = endIndex - startIndex;
 
         return index >= 0 ? index : (utilization.length - startIndex) + endIndex;

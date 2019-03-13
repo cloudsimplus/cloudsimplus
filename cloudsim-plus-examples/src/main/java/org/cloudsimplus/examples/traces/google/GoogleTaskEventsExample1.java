@@ -79,11 +79,11 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  *
- * @todo A joint example that creates Hosts and Cloudlets from trace files will be useful.
+ * @TODO A joint example that creates Hosts and Cloudlets from trace files will be useful.
  *
- * @todo See https://github.com/manoelcampos/cloudsim-plus/issues/151
- * @todo {@link CloudSimTags#CLOUDLET_FAIL} events aren't been processed.
- * @todo It has to be checked how to make the Cloudlet to be executed in the Host specified in the trace file.
+ * @TODO See https://github.com/manoelcampos/cloudsim-plus/issues/151
+ * @TODO {@link CloudSimTags#CLOUDLET_FAIL} events aren't been processed.
+ * @TODO It has to be checked how to make the Cloudlet to be executed in the Host specified in the trace file.
  */
 public class GoogleTaskEventsExample1 {
     private static final String TRACE_FILENAME = "workload/google-traces/task-events-sample-1.csv";

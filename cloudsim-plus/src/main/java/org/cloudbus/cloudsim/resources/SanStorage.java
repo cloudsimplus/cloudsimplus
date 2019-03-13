@@ -14,7 +14,7 @@ package org.cloudbus.cloudsim.resources;
  * Capacity of individual disks are abstracted, thus only the overall capacity of the SAN is
  * considered.
  *
- * <p><tt>WARNING</tt>: This class is not yet fully functional. Effects of network contention are
+ * <p><b>WARNING</b>: This class is not yet fully functional. Effects of network contention are
  * not considered in the simulation. So, time for file transfer is underestimated in the presence of
  * high network load.</p>
  *

@@ -98,7 +98,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
     @Override
     public double getOverUtilizationThreshold(final Host host) {
         try {
-            //@todo uncheck typecast
+            //@TODO uncheck typecast
             final double predictedUtilization = computeHostUtilizationMeasure(host);
             return predictedUtilization * getSafetyParameter();
         } catch (IllegalArgumentException | ClassCastException e) {
@@ -153,7 +153,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
      * @return the maximum vm migration time
      */
     protected double getMaximumVmMigrationTime(final Host host) {
-        //@todo It must compute the migration time based on the current RAM usage, not the capacity.
+        //@TODO It must compute the migration time based on the current RAM usage, not the capacity.
         final double maxRam = host.getVmList().stream()
             .map(Vm::getRam)
             .mapToDouble(Resource::getCapacity).max().orElse(0);

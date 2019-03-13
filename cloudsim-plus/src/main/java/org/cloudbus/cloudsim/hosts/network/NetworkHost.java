@@ -75,7 +75,7 @@ public class NetworkHost extends HostSimple {
 
     /**
      * @TODO What exactly is this bandwidth? Because it is redundant with the bw
-     * capacity defined in {@link Host#getBwProvisioner()}
+     *       capacity defined in {@link Host#getBwProvisioner()}
      *
      * @see #getBandwidth()
      */

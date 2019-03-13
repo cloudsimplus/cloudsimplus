@@ -137,8 +137,9 @@ public interface Heuristic<S extends HeuristicSolution<?>> {
 	 *
 	 * @return the final solution
 	 * @see #getBestSolutionSoFar()
-	 * @TODO @author manoelcampos Try to parallelize the solution finding in order
-	 * to reduce search time using Parallel Streams.
+     *
+	 * @TODO Try to parallelize the solution finding in order
+     *       to reduce search time using Parallel Streams.
 	 */
 	S solve();
 

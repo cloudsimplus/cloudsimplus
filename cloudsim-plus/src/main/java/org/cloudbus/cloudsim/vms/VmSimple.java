@@ -537,10 +537,10 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public List<VmStateHistoryEntry> getStateHistory() {
         /*
-         * @todo Instead of using a list, this attribute would be a map, where the
-         * key can be the history time and the value the history itself. This
-         * way, if one wants to get the history for a given time, he/she doesn't
-         * have to iterate over the entire list to find the desired entry.
+         * @TODO Instead of using a list, this attribute would be a map, where the
+         *       key can be the history time and the value the history itself. This
+         *       way, if one wants to get the history for a given time, he/she doesn't
+         *       have to iterate over the entire list to find the desired entry.
          */
         return Collections.unmodifiableList(stateHistory);
     }

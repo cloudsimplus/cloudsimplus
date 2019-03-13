@@ -23,7 +23,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
- * @todo There is a lot of confusion between Resource Allocation and Resource Provisioning.
+ * @TODO There is a lot of confusion between Resource Allocation and Resource Provisioning.
  *       This article makes it clear: https://www.researchgate.net/post/what_is_the_difference_between_resource_allocation_and_resource_provisioning.
  *       Allocation is reservation, while Provisioning is actual usage of some part of the allocated resource.
  *       When a VM is created, the Host allocates resources, but the Host.allocateResourcesForVm

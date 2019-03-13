@@ -421,9 +421,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @param vm Vm being started
      * @return $true if the VM could be started in the host; $false otherwise
-     * @pre $none
-     * @post $none
-     * @todo https://github.com/manoelcampos/cloudsim-plus/issues/94
+     * @TODO https://github.com/manoelcampos/cloudsim-plus/issues/94
      */
     boolean createTemporaryVm(Vm vm);
 
@@ -431,18 +429,13 @@ public interface Host extends Machine, Comparable<Host> {
      * Destroys a temporary VM created into the Host to book resources.
      *
      * @param vm the VM
-     * @pre $none
-     * @post $none
      * @see #createTemporaryVm(Vm)
-     * @todo https://github.com/manoelcampos/cloudsim-plus/issues/94
+     * @TODO https://github.com/manoelcampos/cloudsim-plus/issues/94
      */
     void destroyTemporaryVm(Vm vm);
 
     /**
      * Destroys all VMs running in the host and remove them from the {@link #getVmList()}.
-     *
-     * @pre $none
-     * @post $none
      */
     void destroyAllVms();
 

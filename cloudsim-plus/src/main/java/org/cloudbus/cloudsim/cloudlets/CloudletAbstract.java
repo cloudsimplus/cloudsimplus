@@ -38,8 +38,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * In case it starts and finishes executing in a single Datacenter, without
      * being migrated, this list will have only one item.
      *
-     * @todo There isn't Cloudlet migration, so this attribute doesn't make sense.
-     * But since a lot of methods uses it, it's removal has to be carefully assessed.
+     * @TODO There isn't Cloudlet migration, so this attribute doesn't make sense.
+     *       But since a lot of methods uses it, it's removal has to be carefully assessed.
      */
     private final List<CloudletDatacenterExecution> datacenterExecutionList;
     /**

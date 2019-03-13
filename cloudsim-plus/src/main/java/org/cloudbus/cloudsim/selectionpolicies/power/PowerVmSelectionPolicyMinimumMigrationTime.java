@@ -43,7 +43,7 @@ public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelection
 			if (vm.isInMigration()) {
 				continue;
 			}
-            //@todo It must compute the migration time based on the current RAM usage, not the capacity.
+            //@TODO It must compute the migration time based on the current RAM usage, not the capacity.
 			final double metric = vm.getRam().getCapacity();
 			if (metric < minMetric) {
 				minMetric = metric;

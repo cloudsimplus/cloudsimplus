@@ -52,7 +52,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * @see #getHostFreePesMap()
-     * @todo The number of free PEs in each Host could be determined dynamically, instead of storing
+     * @TODO The number of free PEs in each Host could be determined dynamically, instead of storing
      *       such information in a HashMap.
      *       The information in the map can become out-of-date and cause issues.
      *       There is just a concern about performance if this information
@@ -182,7 +182,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public boolean scaleVmVertically(final VerticalVmScaling scaling) {
         /* @TODO VM PEs scaling is not being implemented in a polymorphic way.
-        *  More details in https://github.com/manoelcampos/cloudsim-plus/issues/75
+        *        More details in https://github.com/manoelcampos/cloudsim-plus/issues/75
         */
 
         if(scaling.isVmUnderloaded()){

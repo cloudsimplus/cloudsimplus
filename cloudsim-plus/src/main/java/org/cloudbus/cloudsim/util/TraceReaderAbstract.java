@@ -196,8 +196,8 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @throws UncheckedIOException if the there was any error reading the file
      */
     protected void readFile(final Function<String[], Boolean> processParsedLineFunction) {
-        /*@todo It would be implemented using specific classes to avoid this "if" chain.
-        If a new format is included, the code has to be changed to include another if*/
+        /*@TODO It would be implemented using specific classes to avoid this "if" chain.
+                If a new format is included, the code has to be changed to include another if*/
         try {
             if (getFilePath().endsWith(".gz")) {
                 readGZIPFile(getInputStream(), processParsedLineFunction);

@@ -29,7 +29,7 @@ package org.cloudbus.cloudsim.cloudlets.network;
  *
  * @since CloudSim Toolkit 1.0
  *
- * @TODO @author manoelcampos Each execution task must use just a single core.
+ * @TODO Each execution task must use just a single core.
  * It may represent a thread (so the name of the class would be changed).
  * By this way, a execution task should use only one core.
  * However, tasks may be executed in parallel (considering there are multiple cores)

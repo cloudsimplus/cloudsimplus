@@ -65,7 +65,7 @@ public class File {
      * @param fileSize file size in MBytes
      * @throws IllegalArgumentException when one of the following scenarios occur:
      *                                  <ul>
-     *                                  <li>the file name is empty or <tt>null</tt>
+     *                                  <li>the file name is empty or null
      *                                  <li>the file size is zero or negative numbers
      *                                  </ul>
      */
@@ -84,7 +84,7 @@ public class File {
      * as a <b>replica</b>.
      *
      * @param file the source file to create a copy and that will be set as a replica
-     * @throws IllegalArgumentException when the source file is <tt>null</tt>
+     * @throws IllegalArgumentException when the source file is null
      */
     public File(final File file) throws IllegalArgumentException {
         this(requireNonNull(file), false);
@@ -135,7 +135,7 @@ public class File {
     /**
      * Clone the current file and set the cloned one as a <b>replica</b>.
      *
-     * @return a clone of the current file (as a replica) or <tt>null</tt> if an error occurs
+     * @return a clone of the current file (as a replica) or null if an error occurs
      */
     public File makeReplica() {
         return makeCopy();
@@ -144,7 +144,7 @@ public class File {
     /**
      * Clone the current file and make the new file as a <b>master</b> copy as well.
      *
-     * @return a clone of the current file (as a master copy) or <tt>null</tt> if an error occurs
+     * @return a clone of the current file (as a master copy) or null if an error occurs
      */
     public File makeMasterCopy() {
         final File file = makeCopy();
@@ -158,7 +158,7 @@ public class File {
     /**
      * Makes a copy of this file.
      *
-     * @return a clone of the current file (as a replica) or <tt>null</tt> if an error occurs
+     * @return a clone of the current file (as a replica) or null if an error occurs
      */
     private File makeCopy() {
         final File file = new File(name, attribute.getFileSize());
@@ -231,7 +231,7 @@ public class File {
     /**
      * Gets the owner name of this file.
      *
-     * @return the owner name or <tt>null</tt> if empty
+     * @return the owner name or null if empty
      */
     public String getOwnerName() {
         return attribute.getOwnerName();

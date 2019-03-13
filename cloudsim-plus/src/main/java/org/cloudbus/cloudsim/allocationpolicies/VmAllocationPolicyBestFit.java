@@ -66,7 +66,7 @@ public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
      * Gets the first suitable host from the {@link #getHostList()} that has the most number of used PEs (i.e, lower free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      *
-     * @todo See TODOs inside the VmAllocationPolicySimple
+     * @TODO See TODOs inside the VmAllocationPolicySimple
      */
     @Override
     public Optional<Host> findHostForVm(final Vm vm) {

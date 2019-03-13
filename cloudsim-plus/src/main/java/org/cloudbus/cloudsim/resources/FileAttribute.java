@@ -166,7 +166,7 @@ public class FileAttribute {
     /**
      * Gets the owner name of the file.
      *
-     * @return the owner name or <tt>null</tt> if empty
+     * @return the owner name or null if empty
      */
     public String getOwnerName() {
         return ownerName;

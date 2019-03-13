@@ -133,9 +133,9 @@ import static java.util.stream.Collectors.toMap;
  * @since CloudSim Plus 1.2.0
  * @see <a href="https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/">SAP Blog: Availability vs Reliability</a>
  *
- * @todo The class has multiple responsibilities.
- * The fault injection mechanism must be separated from
- * the fault recovery. The cloner methods are fault recovery.
+ * @TODO The class has multiple responsibilities.
+ *       The fault injection mechanism must be separated from
+ *       the fault recovery. The cloner methods are fault recovery.
  */
 public class HostFaultInjection extends CloudSimEntity {
     /**
@@ -704,7 +704,7 @@ public class HostFaultInjection extends CloudSimEntity {
                                         .map(secs -> secs >= 0 ? secs : getSimulation().clock() - Math.abs(secs))
                                         .reduce(0.0, Double::sum);
 
-        //@todo why is it converted to long if the method return is double?
+        //@TODO why is it converted to long if the method return is double?
         return (long)(recoverySeconds/60.0);
     }
 

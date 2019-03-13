@@ -881,9 +881,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #submitCloudletList(java.util.List)
      */
     protected void requestDatacentersToCreateWaitingCloudlets() {
-        /* @todo @author manoelcampos Where is checked if the Vm where
-         * a cloudlet was submitted to has the required resources?
-         * See https://github.com/manoelcampos/cloudsim-plus/issues/126
+        /* @TODO autor: manoelcampos Where is checked if the Vm where
+         *       a cloudlet was submitted to has the required resources?
+         *       See https://github.com/manoelcampos/cloudsim-plus/issues/126
          */
 
         final List<Cloudlet> successfullySubmitted = new ArrayList<>();

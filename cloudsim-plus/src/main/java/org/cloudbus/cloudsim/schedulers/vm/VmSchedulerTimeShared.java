@@ -246,16 +246,16 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @return true if all requested MIPS of the vPE is available at the physical PE
      * and was allocated, false otherwise
      *
-     * @todo If the selected Host PE has enough available MIPS that is requested by the
-     * current VM PE (Virtual PE, vPE or vCore), allocate that MIPS from that Host PE for that vPE.
-     * For each next vPE, in case the same previous selected Host PE yet
-     * has available MIPS to allocate to it, that Host PE will be allocated
-     * to that next vPE. However, for the best of my knowledge,
-     * in real scheduling, it is not possible to allocate
-     * more than one VM to the same CPU core,
-     * even in CPUs with Hyper-Threading technology.
-     * The last picture in the following article makes it clear:
-     * https://support.rackspace.com/how-to/numa-vnuma-and-cpu-scheduling/
+     * @TODO If the selected Host PE has enough available MIPS that is requested by the
+     *       current VM PE (Virtual PE, vPE or vCore), allocate that MIPS from that Host PE for that vPE.
+     *       For each next vPE, in case the same previous selected Host PE yet
+     *       has available MIPS to allocate to it, that Host PE will be allocated
+     *       to that next vPE. However, for the best of my knowledge,
+     *       in real scheduling, it is not possible to allocate
+     *       more than one VM to the same CPU core,
+     *       even in CPUs with Hyper-Threading technology.
+     *       The last picture in the following article makes it clear:
+     *       https://support.rackspace.com/how-to/numa-vnuma-and-cpu-scheduling/
      */
     private boolean allocateAllVmPeRequestedMipsFromHostPe(final Vm vm, final Pe hostPe, final double requestedMipsForVmPe) {
         if (getAvailableMipsFromHostPe(hostPe) >= requestedMipsForVmPe) {

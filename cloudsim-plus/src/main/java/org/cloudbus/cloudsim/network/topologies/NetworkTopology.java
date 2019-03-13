@@ -36,7 +36,7 @@ public interface NetworkTopology {
      * destination node
      * @param bw Link's bandwidth
      * @param lat link's latency
-     * @todo It should receive entities instead of IDs
+     * @TODO It should receive entities instead of IDs
      */
     void addLink(long srcId, long destId, double bw, double lat);
 
@@ -44,7 +44,7 @@ public interface NetworkTopology {
      * Maps a CloudSim entity to a BRITE node in the network topology.
      * @param cloudSimEntityID ID of the entity being mapped
      * @param briteID ID of the BRITE node that corresponds to the CloudSim
-     * @todo It should receive an CloudSim entity instead of an ID
+     * @TODO It should receive an CloudSim entity instead of an ID
      */
     void mapNode(long cloudSimEntityID, int briteID);
 
@@ -53,7 +53,7 @@ public interface NetworkTopology {
      * topology.
      *
      * @param cloudSimEntityID ID of the entity being unmapped
-     * @todo It should receive an CloudSim entity instead of an ID
+     * @TODO It should receive an CloudSim entity instead of an ID
      */
     void unmapNode(long cloudSimEntityID);
 
@@ -65,7 +65,7 @@ public interface NetworkTopology {
      * @param destID ID of the CloudSim entity that represents the link's
      * destination node
      * @return communication delay between the two nodes
-     * @todo It should receive entities instead of IDs
+     * @TODO It should receive entities instead of IDs
      */
     double getDelay(long srcID, long destID);
 

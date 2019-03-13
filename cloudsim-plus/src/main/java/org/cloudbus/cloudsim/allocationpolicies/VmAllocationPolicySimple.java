@@ -51,12 +51,12 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      * Gets the first suitable host from the {@link #getHostList()} that has the fewest number of used PEs (i.e, higher free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      *
-     * @todo The number of free PEs may be taken directly from each Host in a List,
-     * avoiding the use of Maps that doesn't ensure order.
-     * The entries are being sorted just to ensure that
-     * the results are always the same for a specific static simulation.
-     * Without the sort, usually the allocation of Hosts to VMs
-     * is different during debug, because of the unsorted nature of the Map.
+     * @TODO The number of free PEs may be taken directly from each Host in a List,
+     *       avoiding the use of Maps that doesn't ensure order.
+     *       The entries are being sorted just to ensure that
+     *       the results are always the same for a specific static simulation.
+     *       Without the sort, usually the allocation of Hosts to VMs
+     *       is different during debug, because of the unsorted nature of the Map.
      */
     @Override
     public Optional<Host> findHostForVm(final Vm vm) {
