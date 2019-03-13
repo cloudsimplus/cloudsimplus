@@ -42,11 +42,12 @@ import java.util.function.Predicate;
  * </ul>
  * </p>
  *
+ * @see #getInstance(String, int)
+ * @see #generateWorkload()
+ *
  * @author Anthony Sulistio
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
- * @see #getInstance(String, int)
- * @see #generateWorkload()
  */
 public final class SwfWorkloadFileReader extends TraceReaderAbstract {
 
@@ -69,7 +70,8 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
 
     /**
      * Field index of number of processors needed for a job.
-     * In most cases this is also the number of processors the job uses; if the job does not use all of them, we typically don't know about it.
+     * In most cases this is also the number of processors the job uses;
+     * if the job does not use all of them, we typically don't know about it.
      */
     private static final int NUM_PROC_INDEX = 4;
 

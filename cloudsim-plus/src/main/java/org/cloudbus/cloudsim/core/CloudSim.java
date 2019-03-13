@@ -239,15 +239,14 @@ public class CloudSim implements Simulation {
     }
 
     /**
-     * Keeps looking for new events to process, until the simulation naturally finishes,
+     * Keeps waiting for new events to process, until the simulation naturally finishes,
      * is requested to finish at a given time or is aborted.
      *
-     * @return true if the simulation was finished due to its natural end or
-     *         under request to finish at a specific time;
+     * @return true if the simulation was finished due to its natural end or under request;
      *         false if it was aborted.
      */
     private boolean eventLoop() {
-        while (runClockTickAndProcessFutureEvents() || waitSimulationClockToReachTerminationTime()) {
+        while (runClockTickAndProcessFutureEvents() || isToWaitClockToReachTerminationTime()) {
             notifyOnSimulationStartListeners(); //it's ensured to run just once.
             if(abortRequested){
                 LOGGER.info("{}================== Simulation aborted under request at time {} ==================", System.lineSeparator(), clock);
@@ -316,6 +315,15 @@ public class CloudSim implements Simulation {
 
         terminationTime = time;
         return true;
+    }
+
+    /**
+     * Gets the time defined to terminate the simulation
+     * or -1 if it was not set.
+     * @return
+     */
+    public double getTerminationTime(){
+        return terminationTime;
     }
 
     @Override
@@ -408,7 +416,7 @@ public class CloudSim implements Simulation {
         return false;
     }
 
-    private boolean waitSimulationClockToReachTerminationTime() {
+    private boolean isToWaitClockToReachTerminationTime() {
         if(isTerminationTimeSet()){
             final double increment = minDatacentersSchedulingInterval();
             final String info = increment == minTimeBetweenEvents

@@ -356,9 +356,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         }
 
         /**
-         * If the length is negative, it means the Cloudlet doesn't have a defined length.
+         * If the length is negative, it means the Cloudlet doesn't have a fixed length.
          * This way, it keeps running and increasing the executed length
-         * until a {@link CloudSimTags#CLOUDLET_FINISH} message is sent to the broker. */
+         * until a {@link CloudSimTags#CLOUDLET_FINISH} message is sent to the broker
+         * or the simulation is terminated under request (by setting a termination time).*/
         return getLastExecutionInDatacenterInfo().getFinishedSoFar();
     }
 

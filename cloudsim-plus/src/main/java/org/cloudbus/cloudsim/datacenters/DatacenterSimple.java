@@ -428,7 +428,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     protected void processCloudletSubmit(final SimEvent evt, final boolean ack) {
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
         if (cloudlet.isFinished()) {
-            notifyBrokerAboutFinishedCloudlet(cloudlet, ack);
+            notifyBrokerAboutAlreadyFinishedCloudlet(cloudlet, ack);
             return;
         }
 
@@ -658,7 +658,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param ack indicates if the Broker is waiting for an ACK after the Datacenter
      * receives the cloudlet submission
      */
-    private void notifyBrokerAboutFinishedCloudlet(final Cloudlet cloudlet, final boolean ack) {
+    private void notifyBrokerAboutAlreadyFinishedCloudlet(final Cloudlet cloudlet, final boolean ack) {
         LOGGER.warn(
             "{}: {} owned by {} is already completed/finished. It won't be executed again.",
             getName(), cloudlet, cloudlet.getBroker());
@@ -674,6 +674,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_RETURN, cloudlet);
     }
+
+    /**
+     * Notifies the broker about the end of execution of a given Cloudlet,
+     * by returning the Cloudlet to it.
+     *
+     * @param cloudlet the Cloudlet to return to broker in order to notify it about the Cloudlet execution end
+     */
+    private void returnFinishedCloudletToBroker(final Cloudlet cloudlet) {
+        sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_RETURN, cloudlet);
+        cloudlet.getVm().getCloudletScheduler().addCloudletToReturnedList(cloudlet);
+    }
+
 
     /**
      * Sends an ACK to the DatacenterBroker that submitted the Cloudlet for execution
@@ -869,17 +881,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 .collect(toList());
 
         nonReturnedCloudlets.forEach(this::returnFinishedCloudletToBroker);
-    }
-
-    /**
-     * Notifies the broker about the end of execution of a given Cloudlet,
-     * by returning the Cloudlet to it.
-     *
-     * @param cloudlet the Cloudlet to return to broker in order to notify it about the Cloudlet execution end
-     */
-    private void returnFinishedCloudletToBroker(final Cloudlet cloudlet) {
-        sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_RETURN, cloudlet);
-        cloudlet.getVm().getCloudletScheduler().addCloudletToReturnedList(cloudlet);
     }
 
     @Override

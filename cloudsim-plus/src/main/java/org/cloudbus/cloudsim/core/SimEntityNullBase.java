@@ -23,6 +23,7 @@ public interface SimEntityNullBase extends SimEntity {
     @Override default boolean schedule(SimEntity dest, double delay, int tag, Object data) { return false; }
     @Override default boolean schedule(double delay, int tag, Object data) { return false; }
     @Override default boolean schedule(SimEntity dest, double delay, int tag) { return false; }
+    @Override default boolean schedule(int tag, Object data) { return false; }
     @Override default void run() {/**/}
     @Override default void start() {/**/}
     @Override default void shutdownEntity() {/**/}

@@ -27,7 +27,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * An attribute that implements the Null Object Design Pattern for {@link SimEntity}
      * objects.
      */
-    SimEntity NULL = (SimEntityNullBase) o -> 0;
+    SimEntity NULL = (SimEntityNullBase) (comparable) -> 0;
 
     /**
      * Gets the entity state.
@@ -112,6 +112,14 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * @return true if the event was sent, false if the simulation was not started yet
      */
     boolean schedule(SimEntity dest, double delay, int tag);
+
+    /**
+     * Sends an event from the entity to itself with <b>no</b> delay.
+     * @param tag   An user-defined number representing the type of event.
+     * @param data  The data to be sent with the event.
+     * @return true if the event was sent, false if the simulation was not started yet
+     */
+    boolean schedule(int tag, Object data);
 
     /**
      * The run loop to process events fired during the simulation. The events

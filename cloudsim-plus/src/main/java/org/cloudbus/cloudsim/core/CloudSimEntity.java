@@ -126,6 +126,11 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     @Override
+    public boolean schedule(final int tag, final Object data) {
+        return schedule(this, 0, tag, data);
+    }
+
+    @Override
     public boolean schedule(final SimEvent evt) {
         if (!canSendEvent(evt)) {
             return false;

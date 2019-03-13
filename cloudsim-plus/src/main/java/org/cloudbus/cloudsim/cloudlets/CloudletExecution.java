@@ -265,7 +265,7 @@ public class CloudletExecution {
     }
 
     /**
-     * Updates the length of cloudlet that has already been completed.
+     * Updates the length of cloudlet that has executed so far.
      *
      * @param partialFinishedInstructions the partial amount of instructions just executed, to be
      * added to the {@link #instructionsFinishedSoFar}, in <b>Number of Instructions (instead of Million Instructions)</b>
