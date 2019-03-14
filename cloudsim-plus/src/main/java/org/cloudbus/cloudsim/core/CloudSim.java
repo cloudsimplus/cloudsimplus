@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
@@ -85,6 +86,17 @@ public class CloudSim implements Simulation {
      */
     private double terminationTime = -1;
 
+    /**
+     * The time the simulation is really expected to finish.
+     * This value is just used when the {@link #terminationTime} is set.
+     * In such a case, the researcher has defined the time he/she wants
+     * the simulation to finish. However, the simulation may keep
+     * running for a short period after this time to ensure crucial
+     * events are processed (such as the finalization of Cloudlets).
+     * For instance, when {@link Cloudlet#getLength()} is negative
+     * they keep running until certain events happens
+     * (check the mentioned method documentation for details).
+     */
     private double newTerminationTime = -1;
 
     /**

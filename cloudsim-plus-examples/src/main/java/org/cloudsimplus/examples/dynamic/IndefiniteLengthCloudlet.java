@@ -75,7 +75,7 @@ public class IndefiniteLengthCloudlet {
     private static final int VM_PES = 4;
     private static final int VM_MIPS = 1000;
 
-    private static final int CLOUDLETS = 1;
+    private static final int CLOUDLETS = 2;
     private static final int CLOUDLET_PES = 2;
 
     private final CloudSim simulation;

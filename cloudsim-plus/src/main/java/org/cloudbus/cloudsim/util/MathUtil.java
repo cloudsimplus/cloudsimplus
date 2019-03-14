@@ -119,7 +119,7 @@ public final class MathUtil {
     }
 
     /**
-     * Gets the standard deviation from a list of numbers.
+     * Gets the Standard Deviation from a list of numbers.
      *
      * @param list the list of numbers
      * @return the standard deviation
@@ -129,7 +129,7 @@ public final class MathUtil {
     }
 
     /**
-     * Gets the Median Absolute Deviation (MAD) from a array of numbers.
+     * Gets the <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median Absolute Deviation (MAD)</a> from a array of numbers.
      *
      * @param data the array of numbers
      * @return the mad

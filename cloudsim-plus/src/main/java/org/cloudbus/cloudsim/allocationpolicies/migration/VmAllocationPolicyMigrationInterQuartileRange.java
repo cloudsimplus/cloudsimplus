@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
- * A VM allocation policy that uses Inter Quartile Range (IQR) to compute
+ * A VM allocation policy that uses <a href="https://en.wikipedia.org/wiki/Interquartile_range">Inter Quartile Range (IQR)</a> to compute
  * a dynamic threshold in order to detect host over utilization.
  * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
  *
