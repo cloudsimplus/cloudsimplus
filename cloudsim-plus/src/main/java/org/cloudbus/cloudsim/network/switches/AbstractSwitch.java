@@ -190,7 +190,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         final double bandwidth, final int cloudSimTag)
     {
         for (final HostPacket pkt : packetList) {
-            final double delay = packetTransmissionDelay(pkt, bandwidth, packetList);
+            final double delay = packetTransmissionDelay(pkt, bandwidth, packetList.size());
             send(destinationSwitch, delay, cloudSimTag, pkt);
         }
 
@@ -224,28 +224,29 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         }
     }
 
+    @Override
+    public double downlinkTransmissionDelay(final HostPacket packet, final int simultaneousPackets) {
+        return packetTransmissionDelay(packet, downlinkBandwidth, simultaneousPackets);
+    }
+
+    @Override
+    public double uplinkTransmissionDelay(final HostPacket packet, final int simultaneousPackets) {
+        return packetTransmissionDelay(packet, uplinkBandwidth, simultaneousPackets);
+    }
+
     /**
-     * Computes the network delay to send a packet through the network.
+     * Computes the network delay to send a packet through the network,
+     * considering that a list of packets will be sent simultaneously.
      *
      * @param netPkt     the packet to be sent
      * @param bwCapacity the total bandwidth capacity (in Megabits/s)
-     * @param netPktList the list of packets waiting to be sent
+     * @param simultaneousPackets number of packets to be simultaneously sent
      * @return the expected time to transfer the packet through the network (in seconds)
      */
     protected double packetTransmissionDelay(
-        final HostPacket netPkt, final double bwCapacity, final List<HostPacket> netPktList)
+        final HostPacket netPkt, final double bwCapacity, final int simultaneousPackets)
     {
-        return Conversion.bytesToMegaBits(netPkt.getVmPacket().getSize()) / bandwidthByPacket(bwCapacity, netPktList);
-    }
-
-    @Override
-    public double downlinkBandwidthByPacket(final List<HostPacket> packetList) {
-        return bandwidthByPacket(downlinkBandwidth, packetList);
-    }
-
-    @Override
-    public double uplinkBandwidthByPacket(final List<HostPacket> packetList) {
-        return bandwidthByPacket(uplinkBandwidth, packetList);
+        return Conversion.bytesToMegaBits(netPkt.getSize()) / bandwidthByPacket(bwCapacity, simultaneousPackets);
     }
 
     /**
@@ -256,12 +257,12 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      *
      * @param bwCapacity the total bandwidth capacity to share among
      *                   the packets to be sent (in Megabits/s)
-     * @param packetList list of packets to be sent
+     * @param simultaneousPackets number of packets to be simultaneously sent
      * @return the available bandwidth for each packet in the list of packets to send (in Megabits/s)
      *         or the total bandwidth capacity if the packet list has 0 or 1 element
      */
-    protected double bandwidthByPacket(final double bwCapacity, final List<HostPacket> packetList) {
-        return packetList.isEmpty() ? bwCapacity : bwCapacity / packetList.size();
+    protected double bandwidthByPacket(final double bwCapacity, final int simultaneousPackets) {
+        return simultaneousPackets == 0 ? bwCapacity : bwCapacity / (double)simultaneousPackets;
     }
 
     @Override

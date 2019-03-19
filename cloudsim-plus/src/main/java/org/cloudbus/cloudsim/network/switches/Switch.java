@@ -22,6 +22,26 @@ public interface Switch extends SimEntity {
     Switch NULL = new SwitchNull();
 
     /**
+     * Considering a list of packets to be sent simultaneously,
+     * computes the expected time to transfer each packet through the downlink,
+     * assuming that the bandwidth is shared equally between all packets.
+     *
+     * @param simultaneousPackets number of packets to be simultaneously sent
+     * @return the expected transmission time in seconds
+     */
+    double downlinkTransmissionDelay(HostPacket packet, int simultaneousPackets);
+
+    /**
+     * Considering a list of packets to be sent simultaneously,
+     * computes the expected time to transfer each packet through the uplink,
+     * assuming that the bandwidth is shared equally between all packets.
+     *
+     * @param simultaneousPackets number of packets to be simultaneously sent
+     * @return the expected transmission time in seconds
+     */
+    double uplinkTransmissionDelay(HostPacket packet, int simultaneousPackets);
+
+    /**
      * Gets the bandwidth this Switch has to communicate with Switches in the upper layer.
      * @return Bandwidth of uplink (in Megabits/s).
      * @see #getUplinkSwitches()
@@ -95,30 +115,6 @@ public interface Switch extends SimEntity {
      * @return
      */
     List<Switch> getDownlinkSwitches();
-
-    /**
-     * Considering a list of packets to be sent,
-     * gets the amount of available downlink bandwidth for each packet,
-     * assuming that such bandwidth is shared equally among
-     * all packets, disregarding the packet size.
-     *
-     * @param packetList list of packets to be sent
-     * @return the available downlink bandwidth for each packet in the list of packets to send (in Megabits/s)
-     *         or the total downlink bandwidth capacity if the packet list has 0 or 1 element
-     */
-    double downlinkBandwidthByPacket(final List<HostPacket> packetList);
-
-    /**
-     * Considering a list of packets to be sent,
-     * gets the amount of available uplink bandwidth for each packet,
-     * assuming that such bandwidth is shared equally among
-     * all packets, disregarding the packet size.
-     *
-     * @param packetList list of packets to be sent
-     * @return the available uplink bandwidth for each packet in the list of packets to send (in Megabits/s)
-     *         or the total uplink bandwidth capacity if the packet list has 0 or 1 element
-     */
-    double uplinkBandwidthByPacket(final List<HostPacket> packetList);
 
     /**
      * Gets the list of packets to be sent to a downlink switch.

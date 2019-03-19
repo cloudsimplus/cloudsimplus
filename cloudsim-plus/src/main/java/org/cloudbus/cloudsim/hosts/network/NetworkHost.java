@@ -189,14 +189,13 @@ public class NetworkHost extends HostSimple {
      * Sends packets from the local packets buffer to VMs outside this host.
      */
     private void sendPacketsToExternalVms() {
-        final double availableBwByPacket = edgeSwitch.downlinkBandwidthByPacket(pktsToSendForExternalVms);
-        for (final HostPacket hostPkt : pktsToSendForExternalVms) {
-            final double delay = Conversion.bytesToMegaBits(hostPkt.getVmPacket().getSize()) / availableBwByPacket;
-            totalDataTransferBytes += hostPkt.getVmPacket().getSize();
+        for (final HostPacket pkt : pktsToSendForExternalVms) {
+            final double delay = edgeSwitch.downlinkTransmissionDelay(pkt, pktsToSendForExternalVms.size());
+            totalDataTransferBytes += pkt.getSize();
 
             getSimulation().send(
                     getDatacenter(), getEdgeSwitch(),
-                    delay, CloudSimTags.NETWORK_EVENT_UP, hostPkt);
+                    delay, CloudSimTags.NETWORK_EVENT_UP, pkt);
         }
 
         pktsToSendForExternalVms.clear();
