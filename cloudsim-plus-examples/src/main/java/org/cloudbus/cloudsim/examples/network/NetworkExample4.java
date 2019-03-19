@@ -24,7 +24,6 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -41,6 +40,10 @@ import java.util.List;
  * describing the links, they are just inserted in the code.
  */
 public class NetworkExample4 {
+    private static final int VM_PES = 1;
+    private final DatacenterBroker broker;
+    private final Datacenter datacenter0;
+
     private List<Cloudlet> cloudletList;
     private List<Vm> vmlist;
     private CloudSim simulation;
@@ -61,74 +64,58 @@ public class NetworkExample4 {
 
         System.out.println("Starting " + getClass().getSimpleName());
 
-        // First step: Initialize the CloudSim package.
-        simulation = new CloudSim();
-
-        // Second step: Create Datacenters
-        //Datacenters are the resource providers in CloudSim. We need at list one of them to run a CloudSim simulation
-        Datacenter datacenter0 = createDatacenter();
-
-        //Third step: Create Broker
-        DatacenterBroker broker = createBroker();
-
-        //Fourth step: Create one virtual machine
         vmlist = new ArrayList<>();
-
-        //VM description
-        int vmid = 0;
-        int mips = 250;
-        long size = 10000; //image size (Megabyte)
-        int ram = 512; //vm memory (Megabyte)
-        long bw = 1000;
-        int pesNumber = 1; //number of cpus
-
-        //create VM
-        Vm vm1 = new VmSimple(vmid, mips, pesNumber)
-            .setRam(ram).setBw(bw).setSize(size)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared());
-
-        //add the VM to the vmList
-        vmlist.add(vm1);
-
-        //submit vm list to the broker
-        broker.submitVmList(vmlist);
-
-        //Fifth step: Create one Cloudlet
         cloudletList = new ArrayList<>();
 
-        //Cloudlet properties
-        int id = 0;
-        long length = 40000;
-        long fileSize = 300;
-        long outputSize = 300;
-        UtilizationModel utilizationModel = new UtilizationModelFull();
+        simulation = new CloudSim();
+        datacenter0 = createDatacenter();
+        broker = createBroker();
+        configureNetwork();
+
+        createAndSubmitVms();
+        createAndSubmitCloudlets();
+
+        simulation.start();
+
+        new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
+        System.out.println(getClass().getSimpleName() + " finished!");
+    }
+
+    private void configureNetwork() {
+        //Configure network by mapping CloudSim entities to BRITE entities
+        NetworkTopology networkTopology = new BriteNetworkTopology();
+        simulation.setNetworkTopology(networkTopology);
+        networkTopology.addLink(datacenter0.getId(), broker.getId(), 10.0, 10);
+    }
+
+    private void createAndSubmitCloudlets() {
+        final long length = 40000;
+        final long fileSize = 300;
+        final long outputSize = 300;
+        final UtilizationModel utilizationModel = new UtilizationModelFull();
 
         Cloudlet cloudlet1 =
-            new CloudletSimple(id, length, pesNumber)
+            new CloudletSimple(length, VM_PES)
                 .setFileSize(fileSize)
                 .setOutputSize(outputSize)
                 .setUtilizationModel(utilizationModel);
 
-        //add the cloudlet to the list
         cloudletList.add(cloudlet1);
 
-        //submit cloudlet list to the broker
         broker.submitCloudletList(cloudletList);
+    }
 
-        //Sixth step: configure network
-        //maps CloudSim entities to BRITE entities
-        NetworkTopology networkTopology = new BriteNetworkTopology();
-        simulation.setNetworkTopology(networkTopology);
-        networkTopology.addLink(datacenter0.getId(), broker.getId(), 10.0, 10);
+    private void createAndSubmitVms() {
+        final int mips = 250;
+        final long size = 10000; //image size (Megabyte)
+        final int ram = 512; //vm memory (Megabyte)
+        final long bw = 1000;
 
-        // Seventh step: Starts the simulation
-        simulation.start();
+        Vm vm1 = new VmSimple(mips, VM_PES)
+            .setRam(ram).setBw(bw).setSize(size);
 
-        // Final step: Print results when simulation is over
-        List<Cloudlet> newList = broker.getCloudletFinishedList();
-
-        new CloudletsTableBuilder(newList).build();
-        System.out.println(getClass().getSimpleName() + " finished!");
+        vmlist.add(vm1);
+        broker.submitVmList(vmlist);
     }
 
     private Datacenter createDatacenter() {
