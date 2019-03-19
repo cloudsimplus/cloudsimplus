@@ -84,27 +84,6 @@ public interface Switch extends SimEntity {
     List<Switch> getUplinkSwitches();
 
     /**
-     * Gets a <b>read-only</b> list of Hosts connected to the switch.
-     * @return
-     */
-    List<NetworkHost> getHostList();
-
-    /**
-     * Connects a {@link NetworkHost} to the switch, by adding it to the
-     * {@link #getHostList()}.
-     * @param host the host to be connected to the switch
-     */
-    void connectHost(NetworkHost host);
-
-    /**
-     * Disconnects a {@link NetworkHost} from the switch, by removing it from the
-     * {@link #getHostList()}.
-     * @param host the host to be disconnected from the switch
-     * @return true if the Host was connected to the switch, false otherwise
-     */
-    boolean disconnectHost(NetworkHost host);
-
-    /**
      *
      * @return a <b>read-only</b> map of hosts and the list of packets
      * to be sent to each one.

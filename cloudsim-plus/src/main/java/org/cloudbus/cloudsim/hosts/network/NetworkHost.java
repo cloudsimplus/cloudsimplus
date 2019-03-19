@@ -275,10 +275,20 @@ public class NetworkHost extends HostSimple {
         hostPktsReceived.add(hostPacket);
     }
 
+    /**
+     * Gets the Switch the Host is directly connected to.
+     * @return
+     */
     public EdgeSwitch getEdgeSwitch() {
         return edgeSwitch;
     }
 
+    /**
+     * Sets the Switch the Host is directly connected to.
+     * This method is to be called only by the {@link EdgeSwitch#connectHost(NetworkHost)} method.
+     * @param edgeSwitch the Switch to set
+     * @return
+     */
     public void setEdgeSwitch(final EdgeSwitch edgeSwitch) {
         this.edgeSwitch = edgeSwitch;
     }

@@ -14,7 +14,7 @@ import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.util.Conversion;
 
 /**
- * This class represents an Aggregate AbstractSwitch in a Datacenter network. It
+ * This class represents an Aggregate Switch in a Datacenter network. It
  * interacts with other Datacenter in order to exchange packets.
  *
  * <p>Please refer to following publication for more details:
@@ -71,7 +71,6 @@ public class AggregateSwitch extends AbstractSwitch {
         setDownlinkBandwidth(DOWNLINK_BW);
         setSwitchingDelay(SWITCHING_DELAY);
         setPorts(PORTS);
-
     }
 
     @Override
@@ -114,5 +113,4 @@ public class AggregateSwitch extends AbstractSwitch {
     public int getLevel() {
         return LEVEL;
     }
-
 }

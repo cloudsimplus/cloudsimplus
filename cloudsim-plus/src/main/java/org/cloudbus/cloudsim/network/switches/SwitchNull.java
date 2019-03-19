@@ -41,13 +41,6 @@ final class SwitchNull implements Switch, SimEntityNullBase {
     @Override public List<Switch> getUplinkSwitches() {
         return Collections.emptyList();
     }
-    @Override public List<NetworkHost> getHostList() {
-        return Collections.emptyList();
-    }
-    @Override public void connectHost(NetworkHost host) {/**/}
-    @Override public boolean disconnectHost(NetworkHost host) {
-        return false;
-    }
     @Override public Map<NetworkHost, List<HostPacket>> getPacketToHostMap() {
         return Collections.emptyMap();
     }

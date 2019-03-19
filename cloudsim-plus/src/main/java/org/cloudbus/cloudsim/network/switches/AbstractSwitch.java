@@ -50,11 +50,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     private final Map<NetworkHost, List<HostPacket>> packetToHostMap;
 
     /**
-     * List of hosts connected to the switch.
-     */
-    private final List<NetworkHost> hostList;
-
-    /**
      * List of uplink Datacenter.
      */
     private final List<Switch> uplinkSwitches;
@@ -91,7 +86,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     public AbstractSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
         super(simulation);
-        this.hostList = new ArrayList<>();
         this.packetToHostMap = new HashMap<>();
         this.uplinkSwitchPacketMap = new HashMap<>();
         this.downlinkSwitchPacketMap = new HashMap<>();
@@ -122,9 +116,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
             break;
             case CloudSimTags.NETWORK_EVENT_HOST:
                 processHostPacket(evt);
-            break;
-            case CloudSimTags.NETWORK_HOST_REGISTER:
-                registerHost(evt);
             break;
         }
     }
@@ -169,16 +160,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         // Packet coming from down level router has to be sent up.
         getSimulation().cancelAll(this, new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
         schedule(this, switchingDelay, CloudSimTags.NETWORK_EVENT_SEND);
-    }
-
-    /**
-     * Register a host that is connected to the switch.
-     *
-     * @param evt the event containing the host to be registered
-     */
-    private void registerHost(final SimEvent evt) {
-        final NetworkHost host = (NetworkHost) evt.getData();
-        hostList.add(host);
     }
 
     /**
@@ -271,7 +252,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * Considering a list of packets to be sent,
      * gets the amount of available bandwidth for each packet,
      * assuming that the bandwidth is shared equally among
-     * all packets, disregarding the packet size.
+     * all packets.
      *
      * @param bwCapacity the total bandwidth capacity to share among
      *                   the packets to be sent (in Megabits/s)
@@ -332,21 +313,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     @Override
     public List<Switch> getUplinkSwitches() {
         return uplinkSwitches;
-    }
-
-    @Override
-    public List<NetworkHost> getHostList() {
-        return Collections.unmodifiableList(hostList);
-    }
-
-    @Override
-    public void connectHost(final NetworkHost host) {
-        hostList.add(host);
-    }
-
-    @Override
-    public boolean disconnectHost(final NetworkHost host) {
-        return hostList.remove(host);
     }
 
     @Override
@@ -421,4 +387,5 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         final Switch uplinkSw = getUplinkSwitches().get(0);
         addPacketToSendToUplinkSwitch(uplinkSw, netPkt);
     }
+
 }

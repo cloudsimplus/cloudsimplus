@@ -219,7 +219,6 @@ abstract class NetworkVmExampleAbstract {
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
             final int switchNum = getSwitchIndex(host, edgeSwitches[0].getPorts());
             edgeSwitches[switchNum].connectHost(host);
-            host.setEdgeSwitch(edgeSwitches[switchNum]);
         }
     }
 

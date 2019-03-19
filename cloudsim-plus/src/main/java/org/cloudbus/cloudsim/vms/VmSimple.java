@@ -112,6 +112,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
      * a {@link DatacenterBroker}.</p>
      *
+     * <p><b>NOTE:</b> The Vm will use a {@link CloudletSchedulerTimeShared} by default. If you need to change that,
+     * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
+     *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
      * @see #setDefaultRamCapacity(long)
@@ -131,6 +134,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * <p>It receives the amount of MIPS as a double value but converts it internally
      * to a long. The method is just provided as a handy-way to create a Vm
      * using a double value for MIPS that usually is generated from some computations.</p>
+     *
+     * <p><b>NOTE:</b> The Vm will use a {@link CloudletSchedulerTimeShared} by default. If you need to change that,
+     * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
      *
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}

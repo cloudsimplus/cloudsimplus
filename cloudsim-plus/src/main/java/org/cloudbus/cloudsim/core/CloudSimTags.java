@@ -292,8 +292,6 @@ public final class CloudSimTags {
 
     public static final int NETWORK_EVENT_SEND = BASE + 44;
 
-    public static final int NETWORK_HOST_REGISTER = BASE + 45;
-
     /**
      * Denotes the transmission of packets down through the network topology.
      */

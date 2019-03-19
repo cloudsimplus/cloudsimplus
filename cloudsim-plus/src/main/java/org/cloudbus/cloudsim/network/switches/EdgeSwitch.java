@@ -15,9 +15,14 @@ import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 /**
- * This class represents an Edge AbstractSwitch in a Datacenter network. It interacts
- * with other Datacenter in order to exchange packets.
+ * Represents an Edge Switch in a Datacenter network, which can be connected to {@link NetworkHost}s.
+ * It interacts with other Datacenter in order to exchange packets.
  *
  * <br>Please refer to following publication for more details:<br>
  * <ul>
@@ -34,19 +39,24 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  *
  * @since CloudSim Toolkit 3.0
- *
  */
 public class EdgeSwitch extends AbstractSwitch {
+    /**
+     * Default downlink bandwidth of EdgeSwitch in Megabits/s.
+     * It also represents the uplink bandwidth of connected hosts.
+     */
+    private static final long DEF_DOWNLINK_BW = 100 * 8;
+
+    /**
+     * Default switching delay in milliseconds.
+     */
+    private static final double DEF_SWITCHING_DELAY = 0.00157;
+
     /**
      * The level (layer) of the switch in the network topology.
      */
     public static final int LEVEL = 2;
 
-    /**
-     * Default downlink bandwidth of EdgeSwitch in Megabits/s.
-     * It also represents the uplink bandwidth of connected hosts.
-     */
-    public static final long DOWNLINK_BW = 100 * 8;
 
     /**
      * Default number of ports that defines the number of
@@ -54,10 +64,11 @@ public class EdgeSwitch extends AbstractSwitch {
      */
     public static final int PORTS = 4;
 
+
     /**
-     * Default switching delay in milliseconds.
+     * List of hosts connected to the switch.
      */
-    public static final double SWITCHING_DELAY = 0.00157;
+    private final List<NetworkHost> hostList;
 
     /**
      * Instantiates a EdgeSwitch specifying Datacenter that are connected to its
@@ -70,9 +81,10 @@ public class EdgeSwitch extends AbstractSwitch {
     public EdgeSwitch(CloudSim simulation, NetworkDatacenter dc) {
         super(simulation, dc);
 
+        this.hostList = new ArrayList<>();
         setUplinkBandwidth(AggregateSwitch.DOWNLINK_BW);
-        setDownlinkBandwidth(DOWNLINK_BW);
-        setSwitchingDelay(SWITCHING_DELAY);
+        setDownlinkBandwidth(DEF_DOWNLINK_BW);
+        setSwitchingDelay(DEF_SWITCHING_DELAY);
         setPorts(PORTS);
     }
 
@@ -120,4 +132,36 @@ public class EdgeSwitch extends AbstractSwitch {
         return LEVEL;
     }
 
+    /**
+     * Gets a <b>read-only</b> list of Hosts connected to the switch.
+     * @return
+     */
+    public List<NetworkHost> getHostList() {
+        return Collections.unmodifiableList(hostList);
+    }
+
+    /**
+     * Connects a {@link NetworkHost} to the switch, by adding it to the
+     * {@link #getHostList()}.
+     * @param host the host to be connected to the switch
+     */
+    public void connectHost(final NetworkHost host) {
+        hostList.add(Objects.requireNonNull(host));
+        host.setEdgeSwitch(this);
+    }
+
+    /**
+     * Disconnects a {@link NetworkHost} from the switch, by removing it from the
+     * {@link #getHostList()}.
+     * @param host the host to be disconnected from the switch
+     * @return true if the Host was connected to the switch, false otherwise
+     */
+    public boolean disconnectHost(final NetworkHost host) {
+        if(hostList.remove(host)){
+            host.setEdgeSwitch(null);
+            return true;
+        }
+
+        return false;
+    }
 }
