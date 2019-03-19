@@ -75,14 +75,6 @@ public class NetworkHost extends HostSimple {
     private EdgeSwitch edgeSwitch;
 
     /**
-     * @TODO What exactly is this bandwidth? Because it is redundant with the bw
-     *       capacity defined in {@link Host#getBwProvisioner()}
-     *
-     * @see #getBandwidth()
-     */
-    private double bandwidth;
-
-    /**
      * Creates a NetworkHost using a {@link VmSchedulerSpaceShared}.
      *
      * @param ram the RAM capacity in Megabytes
@@ -199,7 +191,7 @@ public class NetworkHost extends HostSimple {
      * Sends packets from the local packets buffer to VMs outside this host.
      */
     private void sendPacketsToExternalVms() {
-        final double availableBwByPacket = getBandwidthByPacket(pktsToSendForExternalVms.size());
+        final double availableBwByPacket = edgeSwitch.downlinkBandwidthByPacket(pktsToSendForExternalVms);
         for (final HostPacket hostPkt : pktsToSendForExternalVms) {
             final double delay = Conversion.bytesToMegaBits(hostPkt.getVmPacket().getSize()) / availableBwByPacket;
             totalDataTransferBytes += hostPkt.getVmPacket().getSize();
@@ -210,18 +202,6 @@ public class NetworkHost extends HostSimple {
         }
 
         pktsToSendForExternalVms.clear();
-    }
-
-    /**
-     * Gets the bandwidth (in  Megabits/s) that will be available for each packet,
-     * considering a given number of packets that are expected to be sent.
-     *
-     * @param packetsNumber the expected number of packets to sent
-     * @return the available bandwidth (in  Megabits/s) for each packet
-     *         or the total bandwidth if the number of packets is 0 or 1
-     */
-    private double getBandwidthByPacket(final double packetsNumber) {
-        return packetsNumber == 0 ? bandwidth : bandwidth / packetsNumber;
     }
 
     private CloudletTaskScheduler getVmPacketScheduler(Vm vm) {
@@ -301,22 +281,6 @@ public class NetworkHost extends HostSimple {
 
     public void setEdgeSwitch(final EdgeSwitch edgeSwitch) {
         this.edgeSwitch = edgeSwitch;
-        this.bandwidth = edgeSwitch.getDownlinkBandwidth();
     }
 
-    /**
-     * Gets the Host bandwidth capacity in  Megabits/s.
-     * @return
-     */
-    public double getBandwidth() {
-        return bandwidth;
-    }
-
-    /**
-     * Sets the Host bandwidth capacity in  Megabits/s.
-     * @param bandwidth the bandwidth to set
-     */
-    public void setBandwidth(final double bandwidth) {
-        this.bandwidth = bandwidth;
-    }
 }

@@ -209,7 +209,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         final double bandwidth, final int cloudSimTag)
     {
         for (final HostPacket pkt : packetList) {
-            final double delay = networkDelayForPacketTransmission(pkt, bandwidth, packetList);
+            final double delay = packetTransmissionDelay(pkt, bandwidth, packetList);
             send(destinationSwitch, delay, cloudSimTag, pkt);
         }
 
@@ -251,10 +251,20 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @param netPktList the list of packets waiting to be sent
      * @return the expected time to transfer the packet through the network (in seconds)
      */
-    protected double networkDelayForPacketTransmission(
+    protected double packetTransmissionDelay(
         final HostPacket netPkt, final double bwCapacity, final List<HostPacket> netPktList)
     {
-        return Conversion.bytesToMegaBits(netPkt.getVmPacket().getSize()) / getAvailableBwForEachPacket(bwCapacity, netPktList);
+        return Conversion.bytesToMegaBits(netPkt.getVmPacket().getSize()) / bandwidthByPacket(bwCapacity, netPktList);
+    }
+
+    @Override
+    public double downlinkBandwidthByPacket(final List<HostPacket> packetList) {
+        return bandwidthByPacket(downlinkBandwidth, packetList);
+    }
+
+    @Override
+    public double uplinkBandwidthByPacket(final List<HostPacket> packetList) {
+        return bandwidthByPacket(uplinkBandwidth, packetList);
     }
 
     /**
@@ -263,14 +273,14 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * assuming that the bandwidth is shared equally among
      * all packets, disregarding the packet size.
      *
-     * @param bwCapacity the total bandwidth capacity to be shared among
+     * @param bwCapacity the total bandwidth capacity to share among
      *                   the packets to be sent (in Megabits/s)
-     * @param netPktList list of packets to be sent
+     * @param packetList list of packets to be sent
      * @return the available bandwidth for each packet in the list of packets to send (in Megabits/s)
      *         or the total bandwidth capacity if the packet list has 0 or 1 element
      */
-    private double getAvailableBwForEachPacket(final double bwCapacity, final List<HostPacket> netPktList) {
-        return netPktList.isEmpty() ? bwCapacity : bwCapacity / netPktList.size();
+    protected double bandwidthByPacket(final double bwCapacity, final List<HostPacket> packetList) {
+        return packetList.isEmpty() ? bwCapacity : bwCapacity / packetList.size();
     }
 
     @Override

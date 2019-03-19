@@ -22,19 +22,31 @@ public interface Switch extends SimEntity {
     Switch NULL = new SwitchNull();
 
     /**
-     *
+     * Gets the bandwidth this Switch has to communicate with Switches in the upper layer.
      * @return Bandwidth of uplink (in Megabits/s).
+     * @see #getUplinkSwitches()
      */
     double getUplinkBandwidth();
 
+    /**
+     * Sets the bandwidth this Switch has to communicate with Switches in the upper layer.
+     * @param uplinkBandwidth uplink bandwidth to set (in Megabits/s).
+     * @see #getUplinkSwitches()
+     */
     void setUplinkBandwidth(double uplinkBandwidth);
 
     /**
-     *
+     * Gets the bandwidth this Switch has to communicate with Switches in the lower layer.
      * @return Bandwidth of downlink (in Megabits/s).
+     * @see #getDownlinkSwitches()
      */
     double getDownlinkBandwidth();
 
+    /**
+     * Sets the bandwidth this Switch has to communicate with Switches in the lower layer.
+     * @param downlinkBandwidth downlink bandwidth to set (in Megabits/s).
+     * @see #getDownlinkSwitches()
+     */
     void setDownlinkBandwidth(double downlinkBandwidth);
 
     /**
@@ -43,18 +55,32 @@ public interface Switch extends SimEntity {
      */
     int getPorts();
 
+    /**
+     * Sets the number of ports the switch has.
+     * @param ports the number of ports to set
+     */
     void setPorts(int ports);
 
     /**
-     *
-     * @return the latency time the switch spends to process a received packet. This time is
+     * Gets the latency time the switch spends to process a received packet. This time is
      * considered constant no matter how many packets the switch have to
      * process (in seconds).
+     * @return the switching delay
      */
     double getSwitchingDelay();
 
+    /**
+     * Sets the latency time the switch spends to process a received packet. This time is
+     * considered constant no matter how many packets the switch have to
+     * process (in seconds).
+     * @param switchingDelay the switching delay to set
+     */
     void setSwitchingDelay(double switchingDelay);
 
+    /**
+     * Gets the list of Switches in the upper layer that this Switch is connected to.
+     * @return
+     */
     List<Switch> getUplinkSwitches();
 
     /**
@@ -85,7 +111,35 @@ public interface Switch extends SimEntity {
      */
     Map<NetworkHost, List<HostPacket>> getPacketToHostMap();
 
+    /**
+     * Gets the list of Switches in the lower layer that this Switch is connected to.
+     * @return
+     */
     List<Switch> getDownlinkSwitches();
+
+    /**
+     * Considering a list of packets to be sent,
+     * gets the amount of available downlink bandwidth for each packet,
+     * assuming that such bandwidth is shared equally among
+     * all packets, disregarding the packet size.
+     *
+     * @param packetList list of packets to be sent
+     * @return the available downlink bandwidth for each packet in the list of packets to send (in Megabits/s)
+     *         or the total downlink bandwidth capacity if the packet list has 0 or 1 element
+     */
+    double downlinkBandwidthByPacket(final List<HostPacket> packetList);
+
+    /**
+     * Considering a list of packets to be sent,
+     * gets the amount of available uplink bandwidth for each packet,
+     * assuming that such bandwidth is shared equally among
+     * all packets, disregarding the packet size.
+     *
+     * @param packetList list of packets to be sent
+     * @return the available uplink bandwidth for each packet in the list of packets to send (in Megabits/s)
+     *         or the total uplink bandwidth capacity if the packet list has 0 or 1 element
+     */
+    double uplinkBandwidthByPacket(final List<HostPacket> packetList);
 
     /**
      * Gets the list of packets to be sent to a downlink switch.
