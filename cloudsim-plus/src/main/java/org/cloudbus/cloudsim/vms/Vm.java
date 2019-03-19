@@ -397,6 +397,17 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     double updateProcessing(double currentTime, List<Double> mipsShare);
 
     /**
+     * Updates the processing of cloudlets running on this VM at the current simulation time.
+     *
+     * @param mipsShare list with MIPS share of each Pe available to the
+     * scheduler
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (which is a relative delay from the current simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
+     */
+    double updateProcessing(List<Double> mipsShare);
+
+    /**
      * Sets the Cloudlet scheduler the Vm uses to schedule cloudlets execution.
      * It also sets the Vm itself to the given scheduler.
      *

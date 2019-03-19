@@ -178,8 +178,7 @@ public class NetworkHost extends HostSimple {
 
         if (!pktsToSendForLocalVms.isEmpty()) {
             for (final Vm vm : getVmList()) {
-                vm.updateProcessing(
-                    getSimulation().clock(), getVmScheduler().getAllocatedMips(vm));
+                vm.updateProcessing(getVmScheduler().getAllocatedMips(vm));
             }
         }
 

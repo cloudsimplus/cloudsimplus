@@ -147,9 +147,8 @@ final class VmNull implements Vm {
     @Override public Vm setSize(long size) {
         return this;
     }
-    @Override public double updateProcessing(double currentTime, List<Double> mipsShare) {
-        return 0.0;
-    }
+    @Override public double updateProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
+    @Override public double updateProcessing(List<Double> mipsShare) { return 0; }
     @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         return this;
     }

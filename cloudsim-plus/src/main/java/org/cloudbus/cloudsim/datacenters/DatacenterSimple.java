@@ -563,7 +563,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             }
 
             final List<Double> mipsList = vm.getHost().getVmScheduler().getAllocatedMips(vm);
-            vm.updateProcessing(getSimulation().clock(), mipsList);
+            vm.updateProcessing(mipsList);
         }
 
         return hostAllocatedForVm;

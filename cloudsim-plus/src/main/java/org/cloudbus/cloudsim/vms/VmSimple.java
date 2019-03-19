@@ -212,6 +212,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
+    public double updateProcessing(List<Double> mipsShare) {
+        return updateProcessing(getSimulation().clock(), mipsShare);
+    }
+
+    @Override
     public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
         requireNonNull(mipsShare);
 
