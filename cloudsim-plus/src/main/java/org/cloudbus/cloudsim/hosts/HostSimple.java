@@ -136,12 +136,13 @@ public class HostSimple implements Host {
      * @param peList the host's {@link Pe} list
      *
      * @see ChangeableId#setId(long)
+     * @see #setRamProvisioner(ResourceProvisioner)
+     * @see #setBwProvisioner(ResourceProvisioner)
+     * @see #setStorage(long)
+     * @see #setVmScheduler(VmScheduler)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
-     * @see #setRamProvisioner(ResourceProvisioner)
-     * @see #setBwProvisioner(ResourceProvisioner)
-     * @see #setVmScheduler(VmScheduler)
      */
     public HostSimple(final List<Pe> peList) {
         this(defaultRamCapacity, defaultBwCapacity, defaultStorageCapacity, peList);

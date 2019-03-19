@@ -19,8 +19,6 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
-    private int currentNetworkCloudletId = -1;
-
     /**
      * Starts the execution of the example.
      *
@@ -73,7 +71,7 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
      */
     private NetworkCloudlet createNetworkCloudlet(NetworkVm vm, DatacenterBroker broker) {
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        NetworkCloudlet cloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 1, NETCLOUDLET_PES_NUMBER);
+        NetworkCloudlet cloudlet = new NetworkCloudlet(1, NETCLOUDLET_PES_NUMBER);
         cloudlet
                 .setMemory(NETCLOUDLET_RAM)
                 .setFileSize(NETCLOUDLET_FILE_SIZE)

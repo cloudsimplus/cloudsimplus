@@ -54,8 +54,6 @@ public class NetworkVmsExampleSimpleApp {
     private NetworkDatacenter datacenter;
     private DatacenterBroker broker;
 
-    private int currentNetworkCloudletId = -1;
-
     /**
      * Starts the execution of the example.
      *
@@ -209,7 +207,7 @@ public class NetworkVmsExampleSimpleApp {
      * @return
      */
     private NetworkCloudlet createNetworkCloudlet(NetworkVm vm) {
-        NetworkCloudlet netCloudlet = new NetworkCloudlet(++currentNetworkCloudletId, 4000, HOST_PES);
+        NetworkCloudlet netCloudlet = new NetworkCloudlet(4000, HOST_PES);
         netCloudlet
                 .setMemory(TASK_RAM)
                 .setFileSize(CLOUDLET_FILE_SIZE)

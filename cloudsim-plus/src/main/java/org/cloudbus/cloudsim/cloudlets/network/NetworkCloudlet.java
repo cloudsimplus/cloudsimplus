@@ -55,6 +55,16 @@ public class NetworkCloudlet extends CloudletSimple {
     /**
      * Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
      *
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param pesNumber the pes number
+     */
+    public NetworkCloudlet(final long length, final int pesNumber) {
+        this(-1, length, pesNumber);
+    }
+
+    /**
+     * Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
+     *
      * @param id the unique ID of this cloudlet
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
      * @param pesNumber the pes number

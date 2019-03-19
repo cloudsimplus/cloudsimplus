@@ -117,6 +117,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @see #setRam(long)
+     * @see #setBw(long)
+     * @see #setStorage(Storage)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
@@ -141,6 +144,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @see #setRam(long)
+     * @see #setBw(long)
+     * @see #setStorage(Storage)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
@@ -161,6 +167,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param id unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
      * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @see #setRam(long)
+     * @see #setBw(long)
+     * @see #setStorage(Storage)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
