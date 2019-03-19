@@ -79,9 +79,11 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
          * @TODO autor: manoelcampos It should be used polymorphism to avoid
          *       including these if's for each type of task.
          */
-        if (isTimeToUpdateCloudletProcessing(netcl))
+        if (isTimeToUpdateCloudletProcessing(netcl)) {
             updateExecutionTask(netcl, partialFinishedMI);
-        else updateNetworkTasks(netcl);
+        } else {
+            updateNetworkTasks(netcl);
+        }
     }
 
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
@@ -162,11 +164,8 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
                 LOGGER.trace(
                     "{}: {}: {} in {} received pkt with {} bytes from {} in {}",
                     candidateDestinationCloudlet.getSimulation().clock(), getClass().getSimpleName(),
-                    pkt.getReceiverCloudlet(),
-                    pkt.getDestination(),
-                    pkt.getSize(),
-                    pkt.getSenderCloudlet(),
-                    pkt.getSource())
+                    pkt.getReceiverCloudlet(), pkt.getDestination(),
+                    pkt.getSize(), pkt.getSenderCloudlet(), pkt.getSource())
             );
 
             /*Removes the received packets from the list of sent packets of the VM,

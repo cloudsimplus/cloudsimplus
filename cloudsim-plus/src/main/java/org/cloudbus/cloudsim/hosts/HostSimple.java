@@ -108,19 +108,14 @@ public class HostSimple implements Host {
     /** @see #getSimulation() */
     private Simulation simulation;
 
-    /**
-     * A list of resources the VM has, that represent virtual resources corresponding to physical resources
-     * from the Host where the VM is placed.
-     *
-     * @see #getResource(Class)
-     */
+    /** @see #getResources() */
     private List<ResourceManageable> resources;
     
     private List<ResourceProvisioner> provisioners;
     private final List<Vm> vmCreatedList;
 
     /**
-     * The previous utilization mips.
+     * The previous amount of MIPS used.
      */
     private double previousUtilizationMips;
 
@@ -176,8 +171,8 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Creates a Host without a pre-defined ID and a {@link ResourceProvisionerSimple}
-     * for RAM and Bandwidth. It also sets a {@link VmSchedulerSpaceShared} as default.
+     * Creates a Host without a pre-defined ID. It uses a {@link ResourceProvisionerSimple}
+     * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
      * The ID is automatically set when a List of Hosts is attached
      * to a {@link Datacenter}.
      *

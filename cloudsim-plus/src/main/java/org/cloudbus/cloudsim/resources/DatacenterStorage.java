@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Implements the storage logic for a Datacenter. It keeps a list of
- * storage devices <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>,
+ * storage devices (<a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>),
  * as well as all basic storage related operations.
  * This disk array can be, for instance, a list of {@link HarddriveStorage}
  * or {@link SanStorage}.

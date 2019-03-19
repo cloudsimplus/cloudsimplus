@@ -374,13 +374,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private void setSimulationForCloudletUtilizationModels(final List<? extends Cloudlet> cloudlets) {
         for (final Cloudlet cloudlet : cloudlets) {
-            setSimulationForUtilizationModelIfNotSet(cloudlet.getUtilizationModelCpu());
-            setSimulationForUtilizationModelIfNotSet(cloudlet.getUtilizationModelBw());
-            setSimulationForUtilizationModelIfNotSet(cloudlet.getUtilizationModelRam());
+            setSimulationForUtilizationModel(cloudlet.getUtilizationModelCpu());
+            setSimulationForUtilizationModel(cloudlet.getUtilizationModelBw());
+            setSimulationForUtilizationModel(cloudlet.getUtilizationModelRam());
         }
     }
 
-    private void setSimulationForUtilizationModelIfNotSet(final UtilizationModel cloudletUtilizationModel) {
+    private void setSimulationForUtilizationModel(final UtilizationModel cloudletUtilizationModel) {
         if (cloudletUtilizationModel.getSimulation() == null || cloudletUtilizationModel.getSimulation() == Simulation.NULL) {
             cloudletUtilizationModel.setSimulation(getSimulation());
         }

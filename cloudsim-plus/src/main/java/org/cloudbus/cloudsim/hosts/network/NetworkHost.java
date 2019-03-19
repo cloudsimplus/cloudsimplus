@@ -18,6 +18,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
@@ -83,13 +84,12 @@ public class NetworkHost extends HostSimple {
     private double bandwidth;
 
     /**
-     * Creates a NetworkHost.
+     * Creates a NetworkHost using a {@link VmSchedulerSpaceShared}.
      *
      * @param ram the RAM capacity in Megabytes
      * @param bw the Bandwidth (BW) capacity in Megabits/s
      * @param storage the storage capacity in Megabytes
      * @param peList the host's {@link Pe} list
-     *
      */
     public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList) {
         super(ram, bw, storage, peList);
@@ -99,14 +99,13 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Creates a NetworkHost.
+     * Creates a NetworkHost with a specific {@link VmScheduler}.
      *
      * @param ram the RAM capacity in Megabytes
      * @param bw the Bandwidth (BW) capacity in Megabits/s
      * @param storage the storage capacity in Megabytes
      * @param peList the host's {@link Pe} list
      * @param vmScheduler the VM scheduler
-     *
      */
     public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList, final VmScheduler vmScheduler)
     {
@@ -220,11 +219,11 @@ public class NetworkHost extends HostSimple {
      * Gets the bandwidth (in  Megabits/s) that will be available for each packet considering a given number of packets
      * that are expected to be sent.
      *
-     * @param numberOfPackets the expected number of packets to sent
+     * @param packetsNumber the expected number of packets to sent
      * @return the available bandwidth (in  Megabits/s) for each packet or the total bandwidth if the number of packets is 0 or 1
      */
-    private double getBandwidthByPacket(final double numberOfPackets) {
-        return numberOfPackets == 0 ? bandwidth : bandwidth / numberOfPackets;
+    private double getBandwidthByPacket(final double packetsNumber) {
+        return packetsNumber == 0 ? bandwidth : bandwidth / packetsNumber;
     }
 
     private CloudletTaskScheduler getVmPacketScheduler(Vm vm) {
@@ -278,21 +277,10 @@ public class NetworkHost extends HostSimple {
     private void collectPacketToSendFromVm(final VmPacket vmPkt) {
         final HostPacket hostPkt = new HostPacket(this, vmPkt);
         final Vm receiverVm = vmPkt.getDestination();
-        //Checks if the VM is inside this Host
-        if (getVmList().contains(receiverVm)) {
-            pktsToSendForLocalVms.add(hostPkt);
-        } else {
-            pktsToSendForExternalVms.add(hostPkt);
-        }
-    }
 
-    public EdgeSwitch getEdgeSwitch() {
-        return edgeSwitch;
-    }
-
-    public void setEdgeSwitch(final EdgeSwitch edgeSwitch) {
-        this.edgeSwitch = edgeSwitch;
-        this.bandwidth = edgeSwitch.getDownlinkBandwidth();
+        //If the VM is inside this Host, the packet doesn't travel through the network
+        final List<HostPacket> pktsToSend = getVmList().contains(receiverVm) ? pktsToSendForLocalVms : pktsToSendForExternalVms;
+        pktsToSend.add(hostPkt);
     }
 
     public int getTotalDataTransferBytes() {
@@ -307,6 +295,15 @@ public class NetworkHost extends HostSimple {
      */
     public void addReceivedNetworkPacket(final HostPacket hostPacket){
         hostPktsReceived.add(hostPacket);
+    }
+
+    public EdgeSwitch getEdgeSwitch() {
+        return edgeSwitch;
+    }
+
+    public void setEdgeSwitch(final EdgeSwitch edgeSwitch) {
+        this.edgeSwitch = edgeSwitch;
+        this.bandwidth = edgeSwitch.getDownlinkBandwidth();
     }
 
     /**

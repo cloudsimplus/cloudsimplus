@@ -58,57 +58,36 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private HorizontalVmScaling horizontalScaling;
     private boolean failed;
 
+    /** @see #getProcessor() */
     private final Processor processor;
 
-    /**
-     * @see #getVmm()
-     */
+    /** @see #getVmm() */
     private String vmm;
 
-    /**
-     * @see #getCloudletScheduler()
-     */
+    /** @see #getCloudletScheduler() */
     private CloudletScheduler cloudletScheduler;
 
-    /**
-     * @see #getHost()
-     */
+    /** @see #getHost() */
     private Host host;
 
-    /**
-     * @see #isInMigration()
-     */
+    /** @see #isInMigration() */
     private boolean inMigration;
 
-    /**
-     * @see #isCreated()
-     */
+    /** @see #isCreated() */
     private boolean created;
 
     private List<ResourceManageable> resources;
 
-
-    /**
-     * The VM's storage resource that represents the Vm size in disk.
-     * This object contains information about capacity and allocation.
-     */
+    /** @see #getStorage() */
     private Storage storage;
 
-    /**
-     * The VM's RAM resource, containing information about capacity and
-     * allocation.
-     */
+    /** @see #getRam() */
     private Ram ram;
 
-    /**
-     * The VM's Bandwidth (BW) resource, containing information about capacity
-     * and allocation (in Megabits/s).
-     */
+    /** @see #getBw() */
     private Bandwidth bw;
 
-    /**
-     * @see #getSubmissionDelay()
-     */
+    /** @see #getSubmissionDelay() */
     private double submissionDelay;
 
     private final Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
