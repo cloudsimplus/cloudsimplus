@@ -44,6 +44,12 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     private final Map<Switch, List<HostPacket>> downlinkSwitchPacketMap;
 
     /**
+     * Map of packets sent to hosts connected in the switch, where each key is a
+     * host and the corresponding value is the list of packets to sent to that host.
+     */
+    private final Map<NetworkHost, List<HostPacket>> packetToHostMap;
+
+    /**
      * List of hosts connected to the switch.
      */
     private final List<NetworkHost> hostList;
@@ -57,12 +63,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * List of downlink Datacenter.
      */
     private final List<Switch> downlinkSwitches;
-
-    /**
-     * Map of packets sent to hosts connected in the switch, where each key is a
-     * host and the corresponding value is the list of packets to sent to that host.
-     */
-    private final Map<NetworkHost, List<HostPacket>> packetToHostMap;
 
     /**
      * @see #getUplinkBandwidth()
@@ -84,8 +84,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      */
     private NetworkDatacenter datacenter;
 
-    private final List<HostPacket> packetList;
-
     /**
      * @see #getSwitchingDelay()
      */
@@ -93,7 +91,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     public AbstractSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
         super(simulation);
-        this.packetList = new ArrayList<>();
         this.hostList = new ArrayList<>();
         this.packetToHostMap = new HashMap<>();
         this.uplinkSwitchPacketMap = new HashMap<>();
@@ -403,11 +400,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     @Override
     public void setDatacenter(final NetworkDatacenter datacenter) {
         this.datacenter = datacenter;
-    }
-
-    @Override
-    public List<HostPacket> getPacketList() {
-        return packetList;
     }
 
     /**

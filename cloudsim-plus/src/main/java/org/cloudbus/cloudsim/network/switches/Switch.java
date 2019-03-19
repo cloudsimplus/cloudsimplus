@@ -148,8 +148,6 @@ public interface Switch extends SimEntity {
      */
     void setDatacenter(NetworkDatacenter datacenter);
 
-    List<HostPacket> getPacketList();
-
     /**
      * Gets the level (layer) of the Switch in the network topology,
      * depending if it is a root switch (layer 0), aggregate switch (layer 1)

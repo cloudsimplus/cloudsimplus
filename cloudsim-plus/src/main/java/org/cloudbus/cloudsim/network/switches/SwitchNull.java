@@ -71,9 +71,6 @@ final class SwitchNull implements Switch, SimEntityNullBase {
         return DATACENTER;
     }
     @Override public void setDatacenter(NetworkDatacenter datacenter) {/**/}
-    @Override public List<HostPacket> getPacketList() {
-        return Collections.emptyList();
-    }
     @Override public int getLevel() {
         return 0;
     }
