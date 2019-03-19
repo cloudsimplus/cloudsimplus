@@ -215,8 +215,8 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Gets the bandwidth (in  Megabits/s) that will be available for each packet considering a given number of packets
-     * that are expected to be sent.
+     * Gets the bandwidth (in  Megabits/s) that will be available for each packet,
+     * considering a given number of packets that are expected to be sent.
      *
      * @param packetsNumber the expected number of packets to sent
      * @return the available bandwidth (in  Megabits/s) for each packet

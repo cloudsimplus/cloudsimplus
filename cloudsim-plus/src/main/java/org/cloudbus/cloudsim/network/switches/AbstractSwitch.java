@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /**
- * An base class for implementing Network Switch.
+ * A base class for implementing Network Switch.
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
@@ -146,12 +146,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @param evt Event/packet to process
      */
     protected void processPacketDown(final SimEvent evt) {
-        // packet coming from up level router
-        // has to send downward.
-        // check which switch to forward to
-        // add packet in the switch list
-        // add packet in the host list
-        // int src=ev.getSource();
+        // Packet coming from up level router has to send downward.
         getSimulation().cancelAll(this, new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
         schedule(this, getSwitchingDelay(), CloudSimTags.NETWORK_EVENT_SEND);
     }
@@ -171,8 +166,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @param evt Event/packet to process
      */
     protected void processPacketUp(final SimEvent evt) {
-        // packet coming from down level router has to be sent up.
-        // check which switch to forward to and add packet in the switch list
+        // Packet coming from down level router has to be sent up.
         getSimulation().cancelAll(this, new PredicateType(CloudSimTags.NETWORK_EVENT_SEND));
         schedule(this, switchingDelay, CloudSimTags.NETWORK_EVENT_SEND);
     }
@@ -188,8 +182,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Sends a packet to hosts connected to the switch
-     *
+     * Sends a packet to hosts connected to the switch.
      */
     private void processPacketForward() {
         forwardPacketsToDownlinkSwitches();
@@ -198,7 +191,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Gets the list of packets to be sent to each Downlink AbstractSwitch
+     * Gets the list of packets to be sent to each Downlink Switch
      * and forward them.
      *
      * @see #downlinkSwitchPacketMap
@@ -258,7 +251,9 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @param netPktList the list of packets waiting to be sent
      * @return the expected time to transfer the packet through the network (in seconds)
      */
-    protected double networkDelayForPacketTransmission(final HostPacket netPkt, final double bwCapacity, final List<HostPacket> netPktList) {
+    protected double networkDelayForPacketTransmission(
+        final HostPacket netPkt, final double bwCapacity, final List<HostPacket> netPktList)
+    {
         return Conversion.bytesToMegaBits(netPkt.getVmPacket().getSize()) / getAvailableBwForEachPacket(bwCapacity, netPktList);
     }
 
@@ -272,7 +267,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      *                   the packets to be sent (in Megabits/s)
      * @param netPktList list of packets to be sent
      * @return the available bandwidth for each packet in the list of packets to send (in Megabits/s)
-     * or the total bandwidth capacity if the packet list has 0 or 1 element
+     *         or the total bandwidth capacity if the packet list has 0 or 1 element
      */
     private double getAvailableBwForEachPacket(final double bwCapacity, final List<HostPacket> netPktList) {
         return netPktList.isEmpty() ? bwCapacity : bwCapacity / netPktList.size();
