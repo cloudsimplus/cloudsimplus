@@ -18,7 +18,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -133,7 +132,7 @@ public class NetworkHost extends HostSimple {
             LOGGER.trace(
                 "{}: {}: {} received pkt with {} bytes from {} in {} and forwarded it to {} in {}",
                 getSimulation().clock(), getClass().getSimpleName(),
-                this, hostPkt.getVmPacket().getSize(),
+                this, hostPkt.getSize(),
                 hostPkt.getVmPacket().getSenderCloudlet(),
                 hostPkt.getVmPacket().getSource(),
                 hostPkt.getVmPacket().getReceiverCloudlet(),
@@ -170,11 +169,11 @@ public class NetworkHost extends HostSimple {
      * to VMs inside this host.
      */
     private void sendPacketsToLocalVms() {
-        for (final HostPacket hostPkt : pktsToSendForLocalVms) {
-            hostPkt.setSendTime(hostPkt.getReceiveTime());
-            final Vm destinationVm = receiveVmPacket(hostPkt);
-            // insert the packet in receivedlist
-            getVmPacketScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
+        for (final HostPacket pkt : pktsToSendForLocalVms) {
+            pkt.setSendTime(pkt.getReceiveTime());
+            final Vm destinationVm = receiveVmPacket(pkt);
+            // insert the packet in received list
+            getVmPacketScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(pkt.getVmPacket());
         }
 
         if (!pktsToSendForLocalVms.isEmpty()) {

@@ -73,6 +73,11 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
         this.senderHost = senderHost;
     }
 
+    /**
+     * {@inheritDoc}
+     * It is the size of the enclosing {@link VmPacket}.
+     * @return {@inheritDoc}
+     */
     @Override
     public long getSize() {
         return vmPacket.getSize();
