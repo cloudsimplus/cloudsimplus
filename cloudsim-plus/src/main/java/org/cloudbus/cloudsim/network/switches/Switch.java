@@ -23,7 +23,7 @@ public interface Switch extends SimEntity {
 
     /**
      *
-     * @return Bandwitdh of uplink (in Megabits/s).
+     * @return Bandwidth of uplink (in Megabits/s).
      */
     double getUplinkBandwidth();
 
@@ -31,7 +31,7 @@ public interface Switch extends SimEntity {
 
     /**
      *
-     * @return Bandwitdh of downlink (in Megabits/s).
+     * @return Bandwidth of downlink (in Megabits/s).
      */
     double getDownlinkBandwidth();
 
@@ -80,7 +80,7 @@ public interface Switch extends SimEntity {
 
     /**
      *
-     * @return a read-only map of hosts and the list of packets
+     * @return a <b>read-only</b> map of hosts and the list of packets
      * to be sent to each one.
      */
     Map<NetworkHost, List<HostPacket>> getPacketToHostMap();
@@ -110,16 +110,31 @@ public interface Switch extends SimEntity {
 
     /**
      *
-     * @return a read-only map of the uplink Switches and list of packets
+     * @return a <b>read-only</b> map of the uplink Switches and list of packets
      * to be sent to each one.
      */
     Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap();
 
-    void addPacketToBeSentToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet);
+    /**
+     * Adds a packet that will be sent to a downlink {@link Switch}.
+     * @param downlinkSwitch the target switch
+     * @param packet the packet to be sent
+     */
+    void addPacketToSendToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet);
 
-    void addPacketToBeSentToUplinkSwitch(Switch uplinkSwitch, HostPacket packet);
+    /**
+     * Adds a packet that will be sent to a uplink {@link Switch}.
+     * @param uplinkSwitch the target switch
+     * @param packet the packet to be sent
+     */
+    void addPacketToSendToUplinkSwitch(Switch uplinkSwitch, HostPacket packet);
 
-    void addPacketToBeSentToHost(NetworkHost host, HostPacket packet);
+    /**
+     * Adds a packet that will be sent to a {@link NetworkHost}.
+     * @param host the target {@link NetworkHost}
+     * @param packet the packet to be sent
+     */
+    void addPacketToSendToHost(NetworkHost host, HostPacket packet);
 
     /**
      * Gets the Datacenter where the switch is connected to.
@@ -136,7 +151,7 @@ public interface Switch extends SimEntity {
     List<HostPacket> getPacketList();
 
     /**
-     * Gets the level (layer) of the AbstractSwitch in the network topology,
+     * Gets the level (layer) of the Switch in the network topology,
      * depending if it is a root switch (layer 0), aggregate switch (layer 1)
      * or edge switch (layer 2)
      *

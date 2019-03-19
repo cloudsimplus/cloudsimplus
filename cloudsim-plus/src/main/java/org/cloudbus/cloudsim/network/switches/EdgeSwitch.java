@@ -82,7 +82,7 @@ public class EdgeSwitch extends AbstractSwitch {
 
         // packet is to be received by host
         final HostPacket pkt = extractReceivedHostPacket(evt);
-        addPacketToBeSentToHost(pkt.getDestination(), pkt);
+        addPacketToSendToHost(pkt.getDestination(), pkt);
     }
 
     private HostPacket extractReceivedHostPacket(final SimEvent evt) {
@@ -103,7 +103,7 @@ public class EdgeSwitch extends AbstractSwitch {
 
         // packet needs to go to a host which is connected directly to switch
         if (pkt.getDestination() != null && pkt.getDestination() != Host.NULL) {
-            addPacketToBeSentToHost(pkt.getDestination(), pkt);
+            addPacketToSendToHost(pkt.getDestination(), pkt);
             return;
         }
 

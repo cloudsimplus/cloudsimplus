@@ -91,7 +91,7 @@ public class RootSwitch extends AbstractSwitch {
             return;
         }
 
-        addPacketToBeSentToDownlinkSwitch(aggSwitch, netPkt);
+        addPacketToSendToDownlinkSwitch(aggSwitch, netPkt);
     }
 
     /**

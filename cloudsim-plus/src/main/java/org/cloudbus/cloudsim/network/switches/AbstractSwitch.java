@@ -381,17 +381,17 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     @Override
-    public void addPacketToBeSentToDownlinkSwitch(final Switch downlinkSwitch, final HostPacket packet) {
+    public void addPacketToSendToDownlinkSwitch(final Switch downlinkSwitch, final HostPacket packet) {
         getDownlinkSwitchPacketList(downlinkSwitch).add(packet);
     }
 
     @Override
-    public void addPacketToBeSentToUplinkSwitch(final Switch uplinkSwitch, final HostPacket packet) {
+    public void addPacketToSendToUplinkSwitch(final Switch uplinkSwitch, final HostPacket packet) {
         getUplinkSwitchPacketList(uplinkSwitch).add(packet);
     }
 
     @Override
-    public void addPacketToBeSentToHost(final NetworkHost host, final HostPacket packet) {
+    public void addPacketToSendToHost(final NetworkHost host, final HostPacket packet) {
         getHostPacketList(host).add(packet);
     }
 
@@ -422,6 +422,6 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
 
     protected void addPacketToBeSentToFirstUplinkSwitch(HostPacket netPkt) {
         final Switch uplinkSw = getUplinkSwitches().get(0);
-        addPacketToBeSentToUplinkSwitch(uplinkSw, netPkt);
+        addPacketToSendToUplinkSwitch(uplinkSw, netPkt);
     }
 }

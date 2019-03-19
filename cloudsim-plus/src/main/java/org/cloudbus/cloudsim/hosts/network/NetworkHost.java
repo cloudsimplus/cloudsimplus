@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.hosts.network;
 
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.network.VmPacket;
@@ -220,7 +219,8 @@ public class NetworkHost extends HostSimple {
      * that are expected to be sent.
      *
      * @param packetsNumber the expected number of packets to sent
-     * @return the available bandwidth (in  Megabits/s) for each packet or the total bandwidth if the number of packets is 0 or 1
+     * @return the available bandwidth (in  Megabits/s) for each packet
+     *         or the total bandwidth if the number of packets is 0 or 1
      */
     private double getBandwidthByPacket(final double packetsNumber) {
         return packetsNumber == 0 ? bandwidth : bandwidth / packetsNumber;

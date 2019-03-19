@@ -81,7 +81,7 @@ public class AggregateSwitch extends AbstractSwitch {
         super.processPacketDown(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
         final Switch downlinkSw = getVmEdgeSwitch(netPkt);
-        addPacketToBeSentToDownlinkSwitch(downlinkSw, netPkt);
+        addPacketToSendToDownlinkSwitch(downlinkSw, netPkt);
     }
 
     @Override
@@ -94,7 +94,7 @@ public class AggregateSwitch extends AbstractSwitch {
         final Switch downlinkSw = getVmEdgeSwitch(netPkt);
 
         if (findConnectedEdgeSwitch(downlinkSw)) {
-            addPacketToBeSentToDownlinkSwitch(downlinkSw, netPkt);
+            addPacketToSendToDownlinkSwitch(downlinkSw, netPkt);
         } else { // send to up
             addPacketToBeSentToFirstUplinkSwitch(netPkt);
         }

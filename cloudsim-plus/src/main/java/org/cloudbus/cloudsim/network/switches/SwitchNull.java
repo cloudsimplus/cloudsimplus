@@ -64,9 +64,9 @@ final class SwitchNull implements Switch, SimEntityNullBase {
     @Override public Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap() {
         return Collections.emptyMap();
     }
-    @Override public void addPacketToBeSentToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet) {/**/}
-    @Override public void addPacketToBeSentToUplinkSwitch(Switch uplinkSwitch, HostPacket packet) {/**/}
-    @Override public void addPacketToBeSentToHost(NetworkHost host, HostPacket packet) {/**/}
+    @Override public void addPacketToSendToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet) {/**/}
+    @Override public void addPacketToSendToUplinkSwitch(Switch uplinkSwitch, HostPacket packet) {/**/}
+    @Override public void addPacketToSendToHost(NetworkHost host, HostPacket packet) {/**/}
     @Override public NetworkDatacenter getDatacenter() {
         return DATACENTER;
     }
