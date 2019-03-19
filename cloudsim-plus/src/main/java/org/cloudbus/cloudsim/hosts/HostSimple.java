@@ -550,14 +550,14 @@ public class HostSimple implements Host {
     @Override
     public final Host setRamProvisioner(final ResourceProvisioner ramProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
-        this.ramProvisioner = ramProvisioner;
+        this.ramProvisioner = requireNonNull(ramProvisioner);
         this.ramProvisioner.setResource(ram);
         return this;
     }
 
     private void checkSimulationIsRunningAndAttemptedToChangeHost(final String resourceName) {
         if(simulation.isRunning()){
-            throw new UnsupportedOperationException("It is not allowed to change a Host's "+resourceName+" after the simulation started.");
+            throw new IllegalStateException("It is not allowed to change a Host's "+resourceName+" after the simulation started.");
         }
     }
 
@@ -569,7 +569,7 @@ public class HostSimple implements Host {
     @Override
     public final Host setBwProvisioner(final ResourceProvisioner bwProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("BW");
-        this.bwProvisioner = bwProvisioner;
+        this.bwProvisioner = requireNonNull(bwProvisioner);
         this.bwProvisioner.setResource(bw);
         return this;
     }
@@ -824,6 +824,7 @@ public class HostSimple implements Host {
         if(simulation.isRunning() && resources.isEmpty()){
             resources = Arrays.asList(ramProvisioner.getResource(), bwProvisioner.getResource());
         }
+
         return Collections.unmodifiableList(resources);
     }
 

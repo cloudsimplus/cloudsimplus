@@ -165,11 +165,10 @@ public abstract class CloudletTask implements Identifiable {
      */
     protected void setFinished(final boolean finished){
         if(this.finished && !finished) {
-            throw new IllegalArgumentException("The task is already finished. You cannot set it as unfinished.");
+            throw new IllegalStateException("The task is already finished. You cannot set it as unfinished.");
         }
 
-        //If the task was not finished before and try to set it to finished,
-        //stores the finishTime
+        //If the task wasn't finished before and try to set it to finished, stores the finishTime
         if(!this.finished && finished) {
             finishTime = cloudlet.getSimulation().clock();
         }

@@ -278,7 +278,7 @@ public final class CloudSimTags {
     public static final int VM_UPDATE_CLOUDLET_PROCESSING = BASE + 41;
 
     /**
-     * Defines the tag to be used to request vertical scaling of VM resources
+     * Denotes a request vertical scaling of VM resources
      * such as Ram, Bandwidth or Pe.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link VerticalVmScaling} object.
@@ -286,8 +286,7 @@ public final class CloudSimTags {
     public static final int VM_VERTICAL_SCALING = BASE + 42;
 
     /**
-     * Defines the tag to be used to send packets
-     * up through the network topology.
+     * Denotes the transmission of packets up through the network topology.
      */
     public static final int NETWORK_EVENT_UP = BASE + 43;
 
@@ -296,26 +295,24 @@ public final class CloudSimTags {
     public static final int NETWORK_HOST_REGISTER = BASE + 45;
 
     /**
-     * Defines the tag to be used to send packets
-     * down through the network topology.
+     * Denotes the transmission of packets down through the network topology.
      */
     public static final int NETWORK_EVENT_DOWN = BASE + 46;
 
     public static final int NETWORK_EVENT_HOST = BASE + 47;
 
     /**
-     * Defines the base tag to be used for failure events such as
-     * failure of hosts or VMs.
+     * Denotes failure events such as hosts or VMs failures.
     */
     public static final int FAILURE = BASE + 48;
 
     /**
-     * Defines the tag that represents a request to generate a host failure.
+     * Denotes a request to generate a host failure.
      */
     public static final int HOST_FAILURE = FAILURE + 1;
 
     /**
-     * Defines the tag that represents a request to a Datacenter to add a Host or list of Hosts to a Datacenter.
+     * Denotes a request to a Datacenter to add a Host or list of Hosts to a Datacenter.
      * The {@link SimEvent#getData()} must be a Host to be added to
      * to the Datacenter where the message is being sent to.
      * The source of such events is the {@link CloudInformationService}.
@@ -323,7 +320,7 @@ public final class CloudSimTags {
     public static final int HOST_ADD = BASE + 60;
 
     /**
-     * Defines the tag that represents a request to a Datacenter to remove a Host or list of Hosts from a Datacenter.
+     * Denotes a request to a Datacenter to remove a Host or list of Hosts from a Datacenter.
      * The {@link SimEvent#getData()} must be the ID of the Host that will be removed
      * from the Datacenter they belong to.
      * For this event, it's used the ID instead of the Host itself because the Host instance
@@ -335,7 +332,7 @@ public final class CloudSimTags {
     public static final int HOST_REMOVE = BASE + 61;
 
     /**
-     * Private constructor to avoid instantiating such a class.
+     * Private constructor to avoid class instantiation.
      */
     private CloudSimTags() {
         throw new UnsupportedOperationException("CloudSimTags cannot be instantiated");

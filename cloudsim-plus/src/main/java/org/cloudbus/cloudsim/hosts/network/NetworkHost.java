@@ -196,8 +196,7 @@ public class NetworkHost extends HostSimple {
     }
 
     /**
-     * Gets the packets from the local packets buffer and sends them
-     * to VMs outside this host.
+     * Sends packets from the local packets buffer to VMs outside this host.
      */
     private void sendPacketsToExternalVms() {
         final double availableBwByPacket = getBandwidthByPacket(pktsToSendForExternalVms.size());
@@ -205,7 +204,6 @@ public class NetworkHost extends HostSimple {
             final double delay = Conversion.bytesToMegaBits(hostPkt.getVmPacket().getSize()) / availableBwByPacket;
             totalDataTransferBytes += hostPkt.getVmPacket().getSize();
 
-            // send to Datacenter with delay
             getSimulation().send(
                     getDatacenter(), getEdgeSwitch(),
                     delay, CloudSimTags.NETWORK_EVENT_UP, hostPkt);

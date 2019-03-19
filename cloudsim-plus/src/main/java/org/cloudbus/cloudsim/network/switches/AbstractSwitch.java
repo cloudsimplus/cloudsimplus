@@ -210,7 +210,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     {
         for (final HostPacket pkt : packetList) {
             final double delay = networkDelayForPacketTransmission(pkt, bandwidth, packetList);
-            this.send(destinationSwitch, delay, cloudSimTag, pkt);
+            send(destinationSwitch, delay, cloudSimTag, pkt);
         }
 
         packetList.clear();
