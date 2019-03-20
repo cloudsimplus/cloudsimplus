@@ -190,7 +190,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
         final double bandwidth, final int cloudSimTag)
     {
         for (final HostPacket pkt : packetList) {
-            final double delay = packetTransmissionDelay(pkt, bandwidth, packetList.size());
+            final double delay = packetTransferDelay(pkt, bandwidth, packetList.size());
             send(destinationSwitch, delay, cloudSimTag, pkt);
         }
 
@@ -225,13 +225,13 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     @Override
-    public double downlinkTransmissionDelay(final HostPacket packet, final int simultaneousPackets) {
-        return packetTransmissionDelay(packet, downlinkBandwidth, simultaneousPackets);
+    public double downlinkTransferDelay(final HostPacket packet, final int simultaneousPackets) {
+        return packetTransferDelay(packet, downlinkBandwidth, simultaneousPackets);
     }
 
     @Override
-    public double uplinkTransmissionDelay(final HostPacket packet, final int simultaneousPackets) {
-        return packetTransmissionDelay(packet, uplinkBandwidth, simultaneousPackets);
+    public double uplinkTransferDelay(final HostPacket packet, final int simultaneousPackets) {
+        return packetTransferDelay(packet, uplinkBandwidth, simultaneousPackets);
     }
 
     /**
@@ -243,7 +243,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      * @param simultaneousPackets number of packets to be simultaneously sent
      * @return the expected time to transfer the packet through the network (in seconds)
      */
-    protected double packetTransmissionDelay(
+    protected double packetTransferDelay(
         final HostPacket netPkt, final double bwCapacity, final int simultaneousPackets)
     {
         return Conversion.bytesToMegaBits(netPkt.getSize()) / bandwidthByPacket(bwCapacity, simultaneousPackets);

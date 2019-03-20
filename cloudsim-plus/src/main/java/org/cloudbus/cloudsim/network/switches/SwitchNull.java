@@ -22,8 +22,8 @@ import java.util.Map;
 final class SwitchNull implements Switch, SimEntityNullBase {
     private static final NetworkDatacenter DATACENTER = new NetworkDatacenter(Simulation.NULL, Collections.emptyList(), VmAllocationPolicy.NULL);
 
-    @Override public double downlinkTransmissionDelay(HostPacket packet, int simultaneousPackets) { return 0; }
-    @Override public double uplinkTransmissionDelay(HostPacket packet, int simultaneousPackets) { return 0; }
+    @Override public double downlinkTransferDelay(HostPacket packet, int simultaneousPackets) { return 0; }
+    @Override public double uplinkTransferDelay(HostPacket packet, int simultaneousPackets) { return 0; }
     @Override public double getUplinkBandwidth() {
         return 0;
     }

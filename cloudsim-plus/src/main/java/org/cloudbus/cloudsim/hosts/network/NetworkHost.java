@@ -190,7 +190,7 @@ public class NetworkHost extends HostSimple {
      */
     private void sendPacketsToExternalVms() {
         for (final HostPacket pkt : pktsToSendForExternalVms) {
-            final double delay = edgeSwitch.downlinkTransmissionDelay(pkt, pktsToSendForExternalVms.size());
+            final double delay = edgeSwitch.downlinkTransferDelay(pkt, pktsToSendForExternalVms.size());
             totalDataTransferBytes += pkt.getSize();
 
             getSimulation().send(

@@ -29,7 +29,7 @@ public interface Switch extends SimEntity {
      * @param simultaneousPackets number of packets to be simultaneously sent
      * @return the expected transmission time in seconds
      */
-    double downlinkTransmissionDelay(HostPacket packet, int simultaneousPackets);
+    double downlinkTransferDelay(HostPacket packet, int simultaneousPackets);
 
     /**
      * Considering a list of packets to be sent simultaneously,
@@ -39,7 +39,7 @@ public interface Switch extends SimEntity {
      * @param simultaneousPackets number of packets to be simultaneously sent
      * @return the expected transmission time in seconds
      */
-    double uplinkTransmissionDelay(HostPacket packet, int simultaneousPackets);
+    double uplinkTransferDelay(HostPacket packet, int simultaneousPackets);
 
     /**
      * Gets the bandwidth this Switch has to communicate with Switches in the upper layer.
