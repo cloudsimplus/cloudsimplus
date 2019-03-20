@@ -16,7 +16,6 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
@@ -74,7 +73,7 @@ public class NetworkHost extends HostSimple {
     private EdgeSwitch edgeSwitch;
 
     /**
-     * Creates a NetworkHost using a {@link VmSchedulerSpaceShared}.
+     * Creates a NetworkHost using a {@link VmSchedulerSpaceShared} as default.
      *
      * @param ram the RAM capacity in Megabytes
      * @param bw the Bandwidth (BW) capacity in Megabits/s
@@ -86,21 +85,6 @@ public class NetworkHost extends HostSimple {
         hostPktsReceived = new ArrayList<>();
         pktsToSendForExternalVms = new ArrayList<>();
         pktsToSendForLocalVms = new ArrayList<>();
-    }
-
-    /**
-     * Creates a NetworkHost with a specific {@link VmScheduler}.
-     *
-     * @param ram the RAM capacity in Megabytes
-     * @param bw the Bandwidth (BW) capacity in Megabits/s
-     * @param storage the storage capacity in Megabytes
-     * @param peList the host's {@link Pe} list
-     * @param vmScheduler the VM scheduler
-     */
-    public NetworkHost(final long ram, final long bw, final long storage, final List<Pe> peList, final VmScheduler vmScheduler)
-    {
-        this(ram, bw, storage, peList);
-        setVmScheduler(vmScheduler);
     }
 
     @Override
@@ -117,41 +101,39 @@ public class NetworkHost extends HostSimple {
      */
     private void receivePackets() {
         for (final HostPacket hostPkt : hostPktsReceived) {
-            final Vm destinationVm = receiveVmPacket(hostPkt);
-            //Checks if the destinationVm is inside this host
-            if(!getVmList().contains(destinationVm)){
-                LOGGER.error(
-                    "{}: {}: Destination {} was not found inside {}",
-                    getSimulation().clock(), getClass(),
-                    hostPkt.getVmPacket().getDestination(), this);
-                return;
-            }
-
-            final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(destinationVm);
-            taskScheduler.addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
-            LOGGER.trace(
-                "{}: {}: {} received pkt with {} bytes from {} in {} and forwarded it to {} in {}",
-                getSimulation().clock(), getClass().getSimpleName(),
-                this, hostPkt.getSize(),
-                hostPkt.getVmPacket().getSenderCloudlet(),
-                hostPkt.getVmPacket().getSource(),
-                hostPkt.getVmPacket().getReceiverCloudlet(),
-                hostPkt.getVmPacket().getDestination());
+            receivePacket(hostPkt.getVmPacket());
         }
 
         hostPktsReceived.clear();
     }
 
+    private void receivePacket(final VmPacket vmPacket) {
+        final Vm destinationVm = receiveVmPacket(vmPacket);
+        //Checks if the destinationVm is inside this host
+        if(getVmList().contains(destinationVm)){
+            final CloudletTaskScheduler taskScheduler = getVmPacketScheduler(destinationVm);
+            taskScheduler.addPacketToListOfPacketsSentFromVm(vmPacket);
+            LOGGER.trace(
+                "{}: {}: {} received pkt with {} bytes from {} in {} and forwarded it to {} in {}",
+                getSimulation().clock(), getClass().getSimpleName(), this,
+                vmPacket.getSize(), vmPacket.getSenderCloudlet(), vmPacket.getSource(),
+                vmPacket.getReceiverCloudlet(), vmPacket.getDestination());
+        }
+        else LOGGER.warn(
+                "{}: {}: Destination {} was not found inside {}",
+                getSimulation().clock(), getClass(), vmPacket.getDestination(), this);
+    }
+
     /**
-     * Receives a packet from a Host that is targeting some VM
+     * Receives a packet that is targeting some VM
      * and sets the packet receive time.
      *
-     * @param hostPkt the {@link HostPacket} to receive
+     * @param vmPacket the {@link VmPacket} to receive
      * @return the targeting VM
      */
-    private Vm receiveVmPacket(final HostPacket hostPkt) {
-        hostPkt.getVmPacket().setReceiveTime(getSimulation().clock());
-        return hostPkt.getVmPacket().getDestination();
+    private Vm receiveVmPacket(final VmPacket vmPacket) {
+        vmPacket.setReceiveTime(getSimulation().clock());
+        return vmPacket.getDestination();
     }
 
     /**
@@ -169,11 +151,11 @@ public class NetworkHost extends HostSimple {
      * to VMs inside this host.
      */
     private void sendPacketsToLocalVms() {
-        for (final HostPacket pkt : pktsToSendForLocalVms) {
-            pkt.setSendTime(pkt.getReceiveTime());
-            final Vm destinationVm = receiveVmPacket(pkt);
+        for (final HostPacket hostPkt : pktsToSendForLocalVms) {
+            hostPkt.setSendTime(hostPkt.getReceiveTime());
+            final Vm destinationVm = receiveVmPacket(hostPkt.getVmPacket());
             // insert the packet in received list
-            getVmPacketScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(pkt.getVmPacket());
+            getVmPacketScheduler(destinationVm).addPacketToListOfPacketsSentFromVm(hostPkt.getVmPacket());
         }
 
         if (!pktsToSendForLocalVms.isEmpty()) {
@@ -201,7 +183,7 @@ public class NetworkHost extends HostSimple {
         pktsToSendForExternalVms.clear();
     }
 
-    private CloudletTaskScheduler getVmPacketScheduler(Vm vm) {
+    private CloudletTaskScheduler getVmPacketScheduler(final Vm vm) {
         return vm.getCloudletScheduler().getTaskScheduler();
     }
 

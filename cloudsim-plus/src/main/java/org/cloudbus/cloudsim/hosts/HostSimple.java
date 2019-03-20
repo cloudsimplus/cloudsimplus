@@ -149,26 +149,25 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Creates a Host with the given parameters.
+     * Creates a Host with the given parameters and a {@link VmSchedulerSpaceShared} as default.
      *
      * @param ramProvisioner the ram provisioner with capacity in Megabytes
      * @param bwProvisioner the bw provisioner with capacity in Megabits/s
      * @param storage the storage capacity in Megabytes
      * @param peList the host's PEs list
-     * @param vmScheduler the vm scheduler
+     *
+     * @see #setVmScheduler(VmScheduler)
      */
     public HostSimple(
         final ResourceProvisioner ramProvisioner,
         final ResourceProvisioner bwProvisioner,
         final long storage,
-        final List<Pe> peList,
-        final VmScheduler vmScheduler)
+        final List<Pe> peList)
     {
         this(ramProvisioner.getCapacity(), bwProvisioner.getCapacity(), storage, peList);
         setRamProvisioner(ramProvisioner);
         setBwProvisioner(bwProvisioner);
         setPeList(peList);
-        setVmScheduler(vmScheduler);
     }
 
     /**
