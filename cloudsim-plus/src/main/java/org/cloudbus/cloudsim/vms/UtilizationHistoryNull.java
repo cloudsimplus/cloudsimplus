@@ -17,6 +17,8 @@ final class UtilizationHistoryNull implements UtilizationHistory {
     @Override public double getUtilizationVariance() { return 0; }
     @Override public void addUtilizationHistory(double time) {/**/}
     @Override public SortedMap<Double, Double> getHistory() { return Collections.emptySortedMap(); }
+    @Override public double cpuUsageFromHostCapacity(double time) { return 0; }
+    @Override public double powerConsumption(double time) { return 0; }
     @Override public boolean isEnabled() { return false; }
     @Override public void enable() {/**/}
     @Override public void disable() {/**/}

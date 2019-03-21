@@ -48,6 +48,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
@@ -164,13 +165,68 @@ public class PowerExample {
 
         new CloudletsTableBuilder(finishedCloudlets).build();
         printHostsCpuUtilizationAndPowerConsumption();
+
+        printVmsCpuUtilizationAndPowerConsumption();
     }
 
     /**
-     * <p>The Host CPU Utilization History is only computed
+     * Prints the following information from VM's history:
+     * <ul>
+     *   <li>VM's CPU utilization relative to the total Host's CPU utilization.
+     *       For instance, if there are 2 equal VMs using 100% of their CPU, the utilization
+     *       of each one corresponds to 50% of the Host's CPU utilization.</li>
+     *   <li>VM's power consumption relative to the total Host's power consumption.</li>
+     * </ul>
+     *
+     * If we just get the percentage of CPU the VM is using from the Host
+     * (as demonstrated above) and compute the VM power consumption we'll get an wrong value.
+     *
+     * <p>A Host, even if idle, may consume a static amount of power.
+     * Lets say it consumes 20 watt-sec in idle state and that for each 1% of CPU use it consumes 1 watt-sec more.
+     * For the 2 VMs of the example above, each one using 50% of CPU will consume 50 watt-sec.
+     * That is 100 watt-sec for the 2 VMs, plus the 20 watt-sec that is static.
+     * Therefore we have a total Host power consumption of 120 watt-sec.
+     * </p>
+     *
+     * <p>
+     * If we computer the power consumption for a single VM by
+     * calling {@code vm.getHost().getPowerModel().getPower(hostCpuUsage)},
+     * we get the 50 watt-sec consumed by the VM, plus the 20 watt-sec of static power.
+     * This adds up to 70 watt-sec. If the two VMs are equal and using the same amount of CPU,
+     * their power consumption would be the half of the total Host's power consumption.
+     * This would be 60 watt-sec, not 70.
+     *
+     * This way, we have to compute VM power consumption by sharing a supposed Host static power
+     * consumption with each VM, as it's being shown here.
+     * Not all {@link PowerModel} have this static power consumption.
+     * However, the way the VM power consumption
+     * is computed here, that detail is abstracted.
+     * </p>
+     */
+    private void printVmsCpuUtilizationAndPowerConsumption() {
+        for (Vm vm : vmList) {
+            System.out.println("Vm " + vm.getId() + " at Host " + vm.getHost().getId() + " CPU Usage and Power Consumption");
+            System.out.println("----------------------------------------------------------------------------------------------------------------------");
+            double vmPower; //watt-sec
+            double utilizationHistoryTimeInterval, prevTime = 0;
+            final UtilizationHistory history = vm.getUtilizationHistory();
+            for (final double time : history.getHistory().keySet()) {
+                utilizationHistoryTimeInterval = time - prevTime;
+                vmPower = history.powerConsumption(time);
+                final double wattsPerInterval = vmPower*utilizationHistoryTimeInterval;
+                System.out.printf(
+                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watt-Sec * %6.0f Secs = %10.2f Watt-Sec\n",
+                    time, history.cpuUsageFromHostCapacity(time) *100, vmPower, utilizationHistoryTimeInterval, wattsPerInterval);
+                prevTime = time;
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * The Host CPU Utilization History is only computed
      * if VMs utilization history is enabled by calling
-     * {@code vm.getUtilizationHistory().enable()}
-     * </p>*
+     * {@code vm.getUtilizationHistory().enable()}.
      */
     private void printHostsCpuUtilizationAndPowerConsumption() {
         System.out.println();
@@ -181,7 +237,7 @@ public class PowerExample {
 
     private void printHostCpuUtilizationAndPowerConsumption(final Host host) {
         System.out.printf("Host %d CPU utilization and power consumption\n", host.getId());
-        System.out.println("-------------------------------------------------------------------------------------------------------------");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------");
         final Map<Double, DoubleSummaryStatistics> utilizationPercentHistory = host.getUtilizationHistory();
         double totalPowerWattsSec = 0;
         double prevUtilizationPercent = -1, prevWattsPerInterval = -1;
@@ -197,7 +253,7 @@ public class PowerExample {
             totalPowerWattsSec += wattsPerInterval;
             //only prints when the next utilization is different from the previous one, or it's the first one
             if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsPerInterval != wattsPerInterval) {
-                System.out.printf("\tTime %8.2f | CPU Utilization %6.2f%% | Power Consumption: %8.0f Watt-Sec * %.0f Secs = %.0f Watt-Sec\n",
+                System.out.printf("\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watt-Sec * %6.0f Secs = %10.2f Watt-Sec\n",
                     entry.getKey(), utilizationPercent * 100, wattsSec, utilizationHistoryTimeInterval, wattsPerInterval);
             }
             prevUtilizationPercent = utilizationPercent;
@@ -212,7 +268,7 @@ public class PowerExample {
         System.out.printf(
             "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)\n",
             powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
-        System.out.println("-------------------------------------------------------------------------------------------------------------\n");
+        System.out.println("----------------------------------------------------------------------------------------------------------------------\n");
     }
 
     /**

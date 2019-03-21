@@ -963,7 +963,8 @@ public class HostSimple implements Host {
      * @return
      */
     private Function<Entry<Double, Double>, Double> vmUtilizationMapper(final UtilizationHistory utilizationHistory) {
-        return entry -> entry.getValue() * utilizationHistory.getVm().getTotalMipsCapacity() / getTotalMipsCapacity();
+        //The entry key is the time and the value is the percentage of the VM CPU that is being used
+        return entry -> entry.getValue() * utilizationHistory.getVm().getRelativeMipsCapacityPercent();
     }
 
     @Override

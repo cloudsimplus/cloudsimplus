@@ -99,6 +99,12 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     List<Double> getCurrentRequestedMips();
 
     /**
+     * Gets the percentage of the MIPS capacity this VM represents from the total {@link Host} MIPS capacity.
+     * @return the VM relative MIPS capacity percentage
+     */
+    double getRelativeMipsCapacityPercent();
+
+    /**
      * Gets the current requested ram.
      *
      * @return the current requested ram

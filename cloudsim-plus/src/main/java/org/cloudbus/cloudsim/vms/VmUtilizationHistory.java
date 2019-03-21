@@ -171,6 +171,29 @@ public class VmUtilizationHistory implements UtilizationHistory {
     }
 
     @Override
+    public double powerConsumption(final double time){
+        //The % of CPU that is being used from the Host (considering all running VMs)
+        final double hostTotalCpuUsage = vm.getHost().getUtilizationHistory().get(time).getSum();
+
+        /* Computes the % of the CPU the VM is using, relative to the Host's USED MIPS.
+         * If the Host's USED MIPS is 500 and a VM is using 250 MIPS, this value represents
+         * 50% of the Host's USED MIPS.*/
+        final double vmCpuUsageFromHostUsage = hostTotalCpuUsage == 0 ? 0 : cpuUsageFromHostCapacity(time) / hostTotalCpuUsage;
+
+        //The total power the Host is consuming (considering all running VMs)
+        final double hostTotalPower = vm.getHost().getPowerModel().getPower(hostTotalCpuUsage);
+
+        return  vmCpuUsageFromHostUsage*hostTotalPower;
+    }
+
+    @Override
+    public double cpuUsageFromHostCapacity(final double time){
+        //VM CPU usage relative to the VM capacity.
+        final double vmUsagePercent = history.get(time);
+        return vmUsagePercent * vm.getRelativeMipsCapacityPercent();
+    }
+
+    @Override
     public boolean isEnabled() {
         return enabled;
     }

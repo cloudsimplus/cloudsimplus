@@ -300,6 +300,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
+    public double getRelativeMipsCapacityPercent() {
+        return getTotalMipsCapacity() / host.getTotalMipsCapacity();
+    }
+
+    @Override
     public long getCurrentRequestedRam() {
         if (!isCreated()) {
             return ram.getCapacity();

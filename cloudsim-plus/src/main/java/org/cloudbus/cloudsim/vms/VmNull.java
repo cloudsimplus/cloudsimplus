@@ -39,7 +39,6 @@ final class VmNull implements Vm {
         return Resource.NULL;
     }
     @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }
-
     @Override public long getCurrentRequestedBw() {
         return 0;
     }
@@ -49,6 +48,7 @@ final class VmNull implements Vm {
     @Override public List<Double> getCurrentRequestedMips() {
         return Collections.emptyList();
     }
+    @Override public double getRelativeMipsCapacityPercent() { return 0; }
     @Override public long getCurrentRequestedRam() {
         return 0;
     }

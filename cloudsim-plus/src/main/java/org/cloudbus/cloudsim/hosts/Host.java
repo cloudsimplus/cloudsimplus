@@ -498,7 +498,7 @@ public interface Host extends Machine, Comparable<Host> {
      * Each key is a time when the data collection was performed
      * and each value is a {@link DoubleSummaryStatistics}
      * from where some operations over the CPU utilization entries for every VM inside the Host
-     * can be performed, such as counting, summing, averaging, etc.
+     * can be performed. Such operations include counting, summing, averaging, etc.
      * For instance, if you call the {@link DoubleSummaryStatistics#getSum()},
      * you'll get the total Host's CPU utilization for the time specified
      * by the map key.
