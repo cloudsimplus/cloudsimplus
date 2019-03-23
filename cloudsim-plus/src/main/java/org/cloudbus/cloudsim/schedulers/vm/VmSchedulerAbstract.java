@@ -171,7 +171,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         //Gets the total virtual PEs of currently created VMs
         final long totalVirtualPesNumber = getAllocatedMipsMap().values().stream().mapToLong(Collection::size).sum();
         final List<Pe> peList = getHost().getBuzyPeList();
-        final long vPesNumber = Math.min(peList.size() - totalVirtualPesNumber, 0);
+        final long vPesNumber = Math.max(peList.size() - totalVirtualPesNumber, 0);
         setHostPesStatusForVmUsedPes(peList, Pe.Status.FREE, vPesNumber);
     }
 
