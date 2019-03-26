@@ -29,7 +29,7 @@ import java.util.List;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelectionPolicy {
+public class PowerVmSelectionPolicyMinimumMigrationTime implements PowerVmSelectionPolicy {
 	@Override
 	public Vm getVmToMigrate(final Host host) {
 		final List<Vm> migratableVms = host.getMigratableVms();
@@ -43,7 +43,9 @@ public class PowerVmSelectionPolicyMinimumMigrationTime extends PowerVmSelection
 			if (vm.isInMigration()) {
 				continue;
 			}
-            //@TODO It must compute the migration time based on the current RAM usage, not the capacity.
+
+            /*@TODO It must compute the migration time based on the current RAM usage, not the capacity.
+            * It should also consider the VM size.*/
 			final double metric = vm.getRam().getCapacity();
 			if (metric < minMetric) {
 				minMetric = metric;

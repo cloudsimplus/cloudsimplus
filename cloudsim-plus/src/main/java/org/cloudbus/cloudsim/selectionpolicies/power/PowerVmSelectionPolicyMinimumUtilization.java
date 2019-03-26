@@ -33,9 +33,9 @@ import java.util.function.Predicate;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmSelectionPolicyMinimumUtilization extends PowerVmSelectionPolicy {
+public class PowerVmSelectionPolicyMinimumUtilization implements PowerVmSelectionPolicy {
     @Override
-    public Vm getVmToMigrate(Host host) {
+    public Vm getVmToMigrate(final Host host) {
         final List<? extends Vm> migratableVms = host.getMigratableVms();
         if (migratableVms.isEmpty()) {
             return Vm.NULL;

@@ -10,9 +10,11 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 import org.cloudbus.cloudsim.hosts.Host;
 
 /**
- * An interface to be implemented by VM allocation policies that use
+ * An interface to be implemented by VM allocation policies that define
  * a dynamic over utilization threshold computed using some statistical method such as
- * Median absolute deviation (MAD), InterQuartileRange (IRQ), Local Regression, etc,
+ * <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median Absolute Deviation (MAD)</a>,
+ * <a href="https://en.wikipedia.org/wiki/Interquartile_range">Interquartile Range (IQR)</a>,
+ * <a href="https://en.wikipedia.org/wiki/Local_regression">Local Regression (LR)</a>   , etc,
  * depending on the implementing class.
  *
  * @author Anton Beloglazov
@@ -86,8 +88,8 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
      * @param host the host to get the current utilization
      * @return
      * @throws IllegalArgumentException when the measure could not be computed
-     * (for instance, because the Host doesn't have enought history to use)
+     * (for instance, because the Host doesn't have enough history to use)
      * @see #getOverUtilizationThreshold(Host)
      */
-    double computeHostUtilizationMeasure(Host host) throws IllegalArgumentException;
+    double computeHostUtilizationMeasure(Host host) throws IllegalStateException;
 }

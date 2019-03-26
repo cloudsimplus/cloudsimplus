@@ -8,14 +8,12 @@
 
 package org.cloudbus.cloudsim.util;
 
+import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.regression.OLSMultipleLinearRegression;
 import org.apache.commons.math3.stat.regression.SimpleRegression;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * A class containing multiple convenient math functions.
@@ -390,4 +388,32 @@ public final class MathUtil {
         return Math.abs(first-second) <= precisionError;
     }
 
+    /**
+     * Computes correlation coefficients for a set of data.
+     *
+     * @param data the data to compute the correlation coefficients
+     * @return the correlation coefficients
+     */
+    public static List<Double> correlationCoefficients(final double[][] data) {
+        final int rows = data.length;
+        final int cols = data[0].length;
+        final List<Double> correlationCoefficients = new LinkedList<>();
+        for (int i = 0; i < rows; i++) {
+            final double[][] x = new double[rows - 1][cols];
+            int k = 0;
+            for (int j = 0; j < rows; j++) {
+                if (j != i) {
+                    x[k++] = data[j];
+                }
+            }
+
+            // Transpose the matrix so that it fits the linear model
+            final double[][] xT = new Array2DRowRealMatrix(x).transpose().getData();
+
+            // RSquare is the "coefficient of determination"
+            correlationCoefficients.add(createLinearRegression(xT, data[i]).calculateRSquared());
+        }
+
+        return correlationCoefficients;
+    }
 }

@@ -32,6 +32,19 @@ import java.util.stream.Stream;
  */
 public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocationPolicyMigrationStaticThreshold {
 
+    /**
+     * Creates a VmAllocationPolicyMigrationBestFitStaticThreshold.
+     * It uses a {@link #DEF_OVER_UTILIZATION_THRESHOLD default over utilization threshold}
+     * and a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
+     *
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @see #setUnderUtilizationThreshold(double)
+     * @see #setOverUtilizationThreshold(double)
+     */
+    public VmAllocationPolicyMigrationBestFitStaticThreshold(final PowerVmSelectionPolicy vmSelectionPolicy) {
+        this(vmSelectionPolicy, DEF_OVER_UTILIZATION_THRESHOLD);
+    }
+
     public VmAllocationPolicyMigrationBestFitStaticThreshold(
         final PowerVmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold)

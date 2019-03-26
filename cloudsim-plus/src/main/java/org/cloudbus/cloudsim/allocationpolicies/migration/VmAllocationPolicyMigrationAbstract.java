@@ -52,6 +52,7 @@ import static java.util.stream.Collectors.toSet;
  */
 public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
     private static final Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicyMigrationAbstract.class.getSimpleName());
+    public static final double DEF_UNDER_UTILIZATION_THRESHOLD = 0.35;
 
     /**@see #getUnderUtilizationThreshold() */
     private double underUtilizationThreshold;
@@ -67,7 +68,8 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private final Map<Vm, Host> savedAllocation;
 
     /**
-     * Creates a VmAllocationPolicyMigrationAbstract.
+     * Creates a VmAllocationPolicy.
+     * It uses a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
@@ -77,17 +79,20 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
+     * It uses a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
+     *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
      *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
      * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
+     * @see #setUnderUtilizationThreshold(double)
      */
     public VmAllocationPolicyMigrationAbstract(
         final PowerVmSelectionPolicy vmSelectionPolicy,
         final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {
         super(findHostForVmFunction);
-        this.underUtilizationThreshold = 0.35;
+        this.underUtilizationThreshold = DEF_UNDER_UTILIZATION_THRESHOLD;
         this.savedAllocation = new HashMap<>();
         setVmSelectionPolicy(vmSelectionPolicy);
     }
@@ -208,7 +213,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return the host power consumption different after the supposed VM placement or 0 if the power
      * consumption could not be determined
      */
-    protected double getPowerAfterAllocationDifference(final Host host, final Vm vm){
+    protected double getPowerDifferenceAfterAllocation(final Host host, final Vm vm){
         final double powerAfterAllocation = getPowerAfterAllocation(host, vm);
         if (powerAfterAllocation > 0) {
             return powerAfterAllocation - host.getPowerModel().getPower();
@@ -245,7 +250,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     @Override
     public boolean isHostOverloaded(final Host host) {
-        final double upperThreshold = getOverUtilizationThreshold(host);
         return isHostOverloaded(host, host.getUtilizationOfCpu());
     }
 
@@ -265,8 +269,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return true if the Host is overloaded, false otherwise
      */
     private boolean isHostOverloaded(final Host host, final double cpuUsagePercent){
-        final double upperThreshold = getOverUtilizationThreshold(host);
-        return cpuUsagePercent > upperThreshold;
+        return cpuUsagePercent > getOverUtilizationThreshold(host);
     }
 
     /**
@@ -301,7 +304,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @see #findHostForVmInternal(Vm, Stream)
      */
     public Optional<Host> findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts) {
-        /*The predicate always returns true to indicate that in fact it is not
+        /*The predicate always returns true to indicate that, in fact, it is not
         applying any additional filter.*/
         return findHostForVm(vm, excludedHosts, host -> true);
     }
@@ -345,7 +348,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream){
         final Comparator<Host> hostPowerConsumptionComparator =
-            comparingDouble(host -> getPowerAfterAllocationDifference(host, vm));
+            comparingDouble(host -> getPowerDifferenceAfterAllocation(host, vm));
 
         return additionalHostFilters(vm, hostStream).min(hostPowerConsumptionComparator);
     }
@@ -517,8 +520,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     protected List<Host> getSwitchedOffHosts() {
         return this.getHostList().stream()
-            .filter(host -> !host.isActive() || host.isFailed())
+            .filter(this::isShutdownOrFailed)
             .collect(toList());
+    }
+
+    private boolean isShutdownOrFailed(final Host host) {
+        return !host.isActive() || host.isFailed();
     }
 
     /**
@@ -705,6 +712,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     @Override
     public void setUnderUtilizationThreshold(final double underUtilizationThreshold) {
+        if(underUtilizationThreshold <= 0 || underUtilizationThreshold >= 1){
+            throw new IllegalArgumentException("Under utilization threshold must be greater than 0 and lower than 1.");
+        }
+
         this.underUtilizationThreshold = underUtilizationThreshold;
     }
 

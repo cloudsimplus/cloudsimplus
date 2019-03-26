@@ -14,9 +14,11 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A VM selection policy that randomly select VMs to migrate from a host.
+ * It uses a uniform Pseudo Random Number Generator (PRNG) as default to select VMs.
  *
  * <br>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br>
@@ -31,16 +33,30 @@ import java.util.List;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmSelectionPolicyRandomSelection extends PowerVmSelectionPolicy {
+public class PowerVmSelectionPolicyRandomSelection implements PowerVmSelectionPolicy {
     private final ContinuousDistribution rand;
 
+    /**
+     * Creates a PowerVmSelectionPolicyRandomSelection using
+     * a uniform Pseudo Random Number Generator (PRNG) as default to select VMs to migrate.
+     */
     public PowerVmSelectionPolicyRandomSelection(){
+        this(new UniformDistr());
+    }
+
+    /**
+     * Creates a PowerVmSelectionPolicyRandomSelection using a given
+     * Pseudo Random Number Generator (PRNG) to select VMs to migrate.
+     *
+     * @param rand a Pseudo Random Number Generator (PRNG) to randomly select VMs to migrate.
+     */
+    public PowerVmSelectionPolicyRandomSelection(final ContinuousDistribution rand){
         super();
-        rand = new UniformDistr();
+        this.rand = Objects.requireNonNull(rand);
     }
 
 	@Override
-	public Vm getVmToMigrate(Host host) {
+	public Vm getVmToMigrate(final Host host) {
 		final List<Vm> migratableVms = host.getMigratableVms();
 		if (migratableVms.isEmpty()) {
 			return Vm.NULL;
@@ -49,5 +65,4 @@ public class PowerVmSelectionPolicyRandomSelection extends PowerVmSelectionPolic
 		final int index = (int)rand.sample()*migratableVms.size();
 		return migratableVms.get(index);
 	}
-
 }

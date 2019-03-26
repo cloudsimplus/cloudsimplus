@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * An abstract VM selection policy used to select VMs from a list of migratable VMs.
+ * An interface to be used to implement VM selection policies for a list of migratable VMs.
  * The selection is defined by sub classes.
  *
  * <br>If you are using any algorithms, policies or workload included in the power package please cite
@@ -28,13 +28,13 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public abstract class PowerVmSelectionPolicy {
+public interface PowerVmSelectionPolicy {
 
-	/**
-	 * Gets a VM to migrate from a given host.
-	 *
-	 * @param host the host to get a Vm to migrate from
-	 * @return the vm to migrate or {@link Vm#NULL} if there is not Vm to migrate
-	 */
-	public abstract Vm getVmToMigrate(Host host);
+    /**
+     * Gets a VM to migrate from a given host.
+     *
+     * @param host the host to get a Vm to migrate from
+     * @return the vm to migrate or {@link Vm#NULL} if there is not Vm to migrate
+     */
+    Vm getVmToMigrate(Host host);
 }

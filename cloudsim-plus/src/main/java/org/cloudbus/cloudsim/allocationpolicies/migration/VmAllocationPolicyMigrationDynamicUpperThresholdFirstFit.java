@@ -72,21 +72,20 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
         return super.isHostOverloaded(host);
     }
 
-
     /**
      * Gets a dynamically computed Host over utilization threshold based on the
      * Host CPU utilization history.
      *
      * @param host {@inheritDoc}
      * @return {@inheritDoc} or {@link Double#MAX_VALUE} if the threshold could not be computed
-     * (for instance, because the Host doesn't have enought history to use)
+     * (for instance, because the Host doesn't have enough history to use)
      * @see VmAllocationPolicyMigrationDynamicUpperThreshold#computeHostUtilizationMeasure(Host)
      */
     @Override
     public double getOverUtilizationThreshold(final Host host) {
         try {
             return 1 - getSafetyParameter() * computeHostUtilizationMeasure(host);
-        } catch (IllegalArgumentException | ClassCastException e) {
+        } catch (IllegalStateException e) {
             return Double.MAX_VALUE;
         }
     }

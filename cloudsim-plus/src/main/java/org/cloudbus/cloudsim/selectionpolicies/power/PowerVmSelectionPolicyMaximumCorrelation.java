@@ -8,15 +8,15 @@
 
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
-import org.apache.commons.math3.linear.Array2DRowRealMatrix;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+
+import static org.cloudbus.cloudsim.util.MathUtil.correlationCoefficients;
 
 /**
  * A VM selection policy that selects for migration the VM with the Maximum Correlation Coefficient (MCC) among
@@ -35,12 +35,9 @@ import java.util.Map;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPolicy {
+public class PowerVmSelectionPolicyMaximumCorrelation implements PowerVmSelectionPolicy {
 
-    /**
-     * The fallback VM selection policy to be used when
-     * the  Maximum Correlation policy doesn't have data to be computed.
-     */
+    /** @see #getFallbackPolicy() */
     private PowerVmSelectionPolicy fallbackPolicy;
 
     /**
@@ -61,7 +58,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
         }
 
         try {
-            final List<Double> metrics = getCorrelationCoefficients(getUtilizationMatrix(migratableVms));
+            final List<Double> metrics = correlationCoefficients(getUtilizationMatrix(migratableVms));
             double maxMetric = Double.MIN_VALUE;
             int maxIndex = 0;
             for (int i = 0; i < metrics.size(); i++) {
@@ -85,7 +82,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
      * @return the CPU utilization percentage matrix, where each line i
      * is a VM and each column j is a CPU utilization percentage history for that VM.
      */
-    protected double[][] getUtilizationMatrix(final List<Vm> vmList) {
+    private double[][] getUtilizationMatrix(final List<Vm> vmList) {
         final int numberVms = vmList.size();
         final int minHistorySize = getMinUtilizationHistorySize(vmList);
         final double[][] utilization = new double[numberVms][minHistorySize];
@@ -105,7 +102,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
      * @param vmList the VM list
      * @return the min CPU utilization percentage history size of the VM list
      */
-    protected int getMinUtilizationHistorySize(final List<Vm> vmList) {
+    private int getMinUtilizationHistorySize(final List<Vm> vmList) {
         return vmList.stream()
             .map(Vm::getUtilizationHistory)
             .map(UtilizationHistory::getHistory)
@@ -114,36 +111,8 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
     }
 
     /**
-     * Gets the correlation coefficients.
-     *
-     * @param data the data
-     * @return the correlation coefficients
-     */
-    protected List<Double> getCorrelationCoefficients(final double[][] data) {
-        final int rows = data.length;
-        final int cols = data[0].length;
-        final List<Double> correlationCoefficients = new LinkedList<>();
-        for (int i = 0; i < rows; i++) {
-            final double[][] x = new double[rows - 1][cols];
-            int k = 0;
-            for (int j = 0; j < rows; j++) {
-                if (j != i) {
-                    x[k++] = data[j];
-                }
-            }
-
-            // Transpose the matrix so that it fits the linear model
-            final double[][] xT = new Array2DRowRealMatrix(x).transpose().getData();
-
-            // RSquare is the "coefficient of determination"
-            correlationCoefficients.add(
-                MathUtil.createLinearRegression(xT, data[i]).calculateRSquared());
-        }
-        return correlationCoefficients;
-    }
-
-    /**
-     * Gets the fallback policy.
+     * Gets the fallback VM selection policy to be used when
+     * the Maximum Correlation policy doesn't have data to be computed.
      *
      * @return the fallback policy
      */
@@ -152,12 +121,13 @@ public class PowerVmSelectionPolicyMaximumCorrelation extends PowerVmSelectionPo
     }
 
     /**
-     * Sets the fallback policy.
+     * Sets the fallback VM selection policy to be used when
+     * the Maximum Correlation policy doesn't have data to be computed.
      *
      * @param fallbackPolicy the new fallback policy
      */
     public final void setFallbackPolicy(final PowerVmSelectionPolicy fallbackPolicy) {
-        this.fallbackPolicy = fallbackPolicy;
+        this.fallbackPolicy = Objects.requireNonNull(fallbackPolicy);
     }
 
 }

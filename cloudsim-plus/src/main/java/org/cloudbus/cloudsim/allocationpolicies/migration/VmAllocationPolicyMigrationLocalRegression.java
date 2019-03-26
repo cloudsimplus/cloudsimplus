@@ -19,7 +19,7 @@ import java.util.DoubleSummaryStatistics;
 import java.util.Map;
 
 /**
- * A VM allocation policy that uses Local Regression (LR) to predict host utilization (load)
+ * A VM allocation policy that uses <a href="https://en.wikipedia.org/wiki/Local_regression">Local Regression (LR)</a> to predict host utilization (load)
  * and define if a host is overloaded or not.
  * <b>It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.</b>
  * Such a behaviour can be overridden by sub-classes.
@@ -101,7 +101,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
             //@TODO uncheck typecast
             final double predictedUtilization = computeHostUtilizationMeasure(host);
             return predictedUtilization * getSafetyParameter();
-        } catch (IllegalArgumentException | ClassCastException e) {
+        } catch (IllegalStateException e) {
             return Double.MAX_VALUE;
         }
     }
@@ -115,7 +115,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
      * @throws {@inheritDoc}
      */
     @Override
-    public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException{
+    public double computeHostUtilizationMeasure(final Host host) throws IllegalStateException {
         final int length = 10; // we use 10 to make the regression responsive enough to latest values
 
         final Comparator<Map.Entry<Double, DoubleSummaryStatistics>> keyComparator = Comparator.comparingDouble(Map.Entry::getKey);
@@ -128,7 +128,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
             .toArray();
 
         if (utilizationHistoryReversed.length < length) {
-            throw new IllegalArgumentException("There is not enough Host history to estimate its utilization using Local Regression");
+            throw new IllegalStateException("There is not enough Host history to estimate its utilization using Local Regression");
         }
 
         final double[] estimates = getParameterEstimates(utilizationHistoryReversed);

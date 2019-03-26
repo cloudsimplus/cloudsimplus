@@ -19,7 +19,7 @@ import java.util.function.Function;
 /**
  * A VM allocation policy that uses a static CPU utilization threshold to detect
  * host over utilization.
- * <b>It's a First Fit policy which selects the first found Host with most efficient power usage to place a given VM.</b>
+ * <b>It's a First Fit policy which selects the first Host found with most efficient power usage to place a given VM.</b>
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:
@@ -35,11 +35,26 @@ import java.util.function.Function;
  * @since CloudSim Toolkit 3.0
  */
 public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPolicyMigrationAbstract {
+    public static final double DEF_OVER_UTILIZATION_THRESHOLD = 0.9;
 
     /**
      * @see #getOverUtilizationThreshold(Host)
      */
-    private double overUtilizationThreshold = 0.9;
+    private double overUtilizationThreshold;
+
+    /**
+     * Creates a VmAllocationPolicyMigrationStaticThreshold.
+     * It uses a {@link #DEF_OVER_UTILIZATION_THRESHOLD default over utilization threshold}
+     * and a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
+     *
+     * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
+     * @see #setUnderUtilizationThreshold(double)
+     * @see #setOverUtilizationThreshold(double)
+     */
+    public VmAllocationPolicyMigrationStaticThreshold(final PowerVmSelectionPolicy vmSelectionPolicy)
+    {
+        this(vmSelectionPolicy, DEF_OVER_UTILIZATION_THRESHOLD, null);
+    }
 
     /**
      * Creates a VmAllocationPolicyMigrationStaticThreshold.
@@ -55,7 +70,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
     }
 
     /**
-     * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
+     * Creates a VmAllocationPolicyMigrationStaticThreshold, changing the {@link Function} to select a Host for a Vm.
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      * @param overUtilizationThreshold the over utilization threshold
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
@@ -78,6 +93,10 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
      * @param overUtilizationThreshold the overUtilizationThreshold to set
      */
     public final void setOverUtilizationThreshold(final double overUtilizationThreshold) {
+        if(overUtilizationThreshold <= 0 || overUtilizationThreshold >= 1){
+            throw new IllegalArgumentException("Over utilization threshold must be greater than 0 and lower than 1.");
+        }
+
         this.overUtilizationThreshold = overUtilizationThreshold;
     }
 
@@ -94,7 +113,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
      * @return {@inheritDoc} (that is the same for any given host)
      */
     @Override
-    public double getOverUtilizationThreshold(Host host) {
+    public double getOverUtilizationThreshold(final Host host) {
         return overUtilizationThreshold;
     }
 

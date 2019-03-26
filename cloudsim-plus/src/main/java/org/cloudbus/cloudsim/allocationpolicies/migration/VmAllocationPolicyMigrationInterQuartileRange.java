@@ -70,15 +70,16 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
      *
      * @param host the host
      * @return the host CPU utilization percentage IQR
+     * @throws {@inheritDoc}
      */
     @Override
-    public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
+    public double computeHostUtilizationMeasure(final Host host) throws IllegalStateException {
         final double[] cpuUsageArray = getHostCpuUsageArray(host);
         if (MathUtil.countNonZeroBeginning(cpuUsageArray) >= MIN_HISTORY_ENTRIES_FOR_IRQ) {
             return MathUtil.iqr(cpuUsageArray);
         }
 
-        throw new IllegalArgumentException("There is not enough Host history to compute Host utilization IRQ");
+        throw new IllegalStateException("There is not enough Host history to compute Host utilization IRQ");
     }
 
 }

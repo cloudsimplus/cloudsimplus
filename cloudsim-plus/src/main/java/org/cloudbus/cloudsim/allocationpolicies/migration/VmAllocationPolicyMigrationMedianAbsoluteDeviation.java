@@ -13,8 +13,8 @@ import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
- * A VM allocation policy that uses <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median Absolute Deviation (MAD)</a> to compute
- * a dynamic threshold in order to detect host over utilization.
+ * A VM allocation policy that uses <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median Absolute Deviation (MAD)</a>
+ * to compute a dynamic threshold in order to detect host over utilization.
  * It's a <b>Best Fit policy</b> which selects the Host with most efficient power usage to place a given VM.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
@@ -73,13 +73,13 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
      * @throws {@inheritDoc}
      */
     @Override
-    public double computeHostUtilizationMeasure(final Host host) throws IllegalArgumentException {
+    public double computeHostUtilizationMeasure(final Host host) throws IllegalStateException {
         final double[] cpuUsageArray = getHostCpuUsageArray(host);
         if (MathUtil.countNonZeroBeginning(cpuUsageArray) >= MIN_HISTORY_ENTRIES_FOR_MAD) {
             return MathUtil.mad(cpuUsageArray);
         }
 
-        throw new IllegalArgumentException("There is not enough Host history to compute Host utilization MAD");
+        throw new IllegalStateException("There is not enough Host history to compute Host utilization MAD");
     }
 
 }

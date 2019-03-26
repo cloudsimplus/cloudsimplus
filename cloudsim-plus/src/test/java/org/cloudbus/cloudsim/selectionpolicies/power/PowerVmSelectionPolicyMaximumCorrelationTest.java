@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.selectionpolicies.power;
 
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +27,7 @@ public class PowerVmSelectionPolicyMaximumCorrelationTest {
 
     @Test
     public void testGetPowerModel() {
-        final List<Double> result = vmSelectionPolicyMaximumCorrelation.getCorrelationCoefficients(DATA);
+        final List<Double> result = MathUtil.correlationCoefficients(DATA);
         for (int i = 0; i < result.size(); i++) {
             assertEquals(CORRELATION[i], result.get(i), 0.00001);
         }

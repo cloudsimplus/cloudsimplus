@@ -36,9 +36,9 @@ import java.util.Objects;
  * @since CloudSim Toolkit 1.0
  */
 public class HarddriveStorage implements FileStorage {
-    public static final double DEF_LATENCY_SECS = 0.00417;
-    public static final double DEF_SEEK_TIME_SECS = 0.009;
-    private static final int   DEF_MAX_TRANSFER_RATE_MBPS = 133*8;
+    private static final double DEF_LATENCY_SECS = 0.00417;
+    private static final double DEF_SEEK_TIME_SECS = 0.009;
+    private static final int    DEF_MAX_TRANSFER_RATE_MBITS_SEC = 133*8;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HarddriveStorage.class.getSimpleName());
 
@@ -125,7 +125,7 @@ public class HarddriveStorage implements FileStorage {
     private void init() {
         setLatency(DEF_LATENCY_SECS);
         setAvgSeekTime(DEF_SEEK_TIME_SECS);
-        setMaxTransferRate(DEF_MAX_TRANSFER_RATE_MBPS);
+        setMaxTransferRate(DEF_MAX_TRANSFER_RATE_MBITS_SEC);
     }
 
     @Override
