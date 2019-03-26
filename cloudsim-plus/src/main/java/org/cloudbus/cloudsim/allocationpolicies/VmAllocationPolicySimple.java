@@ -59,7 +59,7 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      *       is different during debug, because of the unsorted nature of the Map.
      */
     @Override
-    public Optional<Host> findHostForVm(final Vm vm) {
+    protected Optional<Host> defaultFindHostForVm(final Vm vm) {
         final Map<Host, Long> map = getHostFreePesMap();
         return map.entrySet()
             .stream()

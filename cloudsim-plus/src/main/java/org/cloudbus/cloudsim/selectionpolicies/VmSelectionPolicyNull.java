@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @author Manoel Campos da Silva Filho
  * @see VmSelectionPolicy#NULL
+ * @since CloudSim Plus 4.1.2
  */
 final class VmSelectionPolicyNull implements VmSelectionPolicy {
     @Override public Vm getVmToMigrate(Host host) { return Vm.NULL; }

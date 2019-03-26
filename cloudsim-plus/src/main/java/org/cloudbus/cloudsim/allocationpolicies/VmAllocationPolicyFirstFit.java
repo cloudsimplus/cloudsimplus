@@ -36,7 +36,7 @@ import java.util.Optional;
  */
 public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
-    public Optional<Host> findHostForVm(final Vm vm) {
+    protected Optional<Host> defaultFindHostForVm(final Vm vm) {
         return this.getHostList()
                 .stream()
                 .filter(host -> host.isSuitableForVm(vm))

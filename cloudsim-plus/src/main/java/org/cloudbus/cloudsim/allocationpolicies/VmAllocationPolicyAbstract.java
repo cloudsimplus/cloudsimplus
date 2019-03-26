@@ -51,12 +51,12 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     private Datacenter datacenter;
 
     /**
-     * @see #getHostFreePesMap()
      * @TODO The number of free PEs in each Host could be determined dynamically, instead of storing
-     *       such information in a HashMap.
-     *       The information in the map can become out-of-date and cause issues.
-     *       There is just a concern about performance if this information
-     *       is computed every time when needed.
+     * such information in a HashMap.
+     * The information in the map can become out-of-date and cause issues.
+     * There is just a concern about performance if this information
+     * is computed every time when needed.
+     * @see #getHostFreePesMap()
      */
     private Map<Host, Long> hostFreePesMap;
 
@@ -75,6 +75,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Creates a VmAllocationPolicy, changing the {@link BiFunction} to select a Host for a Vm.
+     *
      * @param findHostForVmFunction a {@link BiFunction} to select a Host for a given Vm.
      * @see VmAllocationPolicy#setFindHostForVmFunction(BiFunction)
      */
@@ -95,10 +96,11 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Sets the Datacenter associated to the Allocation Policy
+     *
      * @param datacenter the Datacenter to set
      */
     @Override
-    public final void setDatacenter(final Datacenter datacenter){
+    public final void setDatacenter(final Datacenter datacenter) {
         addPesFromHostsToFreePesList(requireNonNull(datacenter));
         this.datacenter = datacenter;
     }
@@ -113,7 +115,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private void addPesFromHostsToFreePesList(final Datacenter datacenter) {
         requireNonNull(datacenter);
-        if(datacenter == Datacenter.NULL || datacenter != this.datacenter) {
+        if (datacenter == Datacenter.NULL || datacenter != this.datacenter) {
             setHostFreePesMap(new HashMap<>(datacenter.getHostList().size()));
             setUsedPes(new HashMap<>());
         }
@@ -126,6 +128,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * and adds this number to the {@link #getHostFreePesMap() list of free PEs}.
      * Before the Host starts being used, the number of free PEs is
      * the same as the number of working PEs.
+     *
      * @param host the Host to add PEs from
      */
     public void addPesFromHost(final Host host) {
@@ -155,6 +158,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Adds number used PEs for a Vm to the map between each VM and the number of PEs used.
+     *
      * @param vm the VM to add the number of used PEs to the map
      */
     protected void addUsedPes(final Vm vm) {
@@ -163,6 +167,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     /**
      * Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
+     *
      * @param vm the VM to remove used PEs from
      * @return the number of used PEs removed
      */
@@ -183,14 +188,14 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public boolean scaleVmVertically(final VerticalVmScaling scaling) {
         /* @TODO VM PEs scaling is not being implemented in a polymorphic way.
-        *        More details in https://github.com/manoelcampos/cloudsim-plus/issues/75
-        */
+         *        More details in https://github.com/manoelcampos/cloudsim-plus/issues/75
+         */
 
-        if(scaling.isVmUnderloaded()){
+        if (scaling.isVmUnderloaded()) {
             return downScaleVmVertically(scaling);
         }
 
-        if(scaling.isVmOverloaded()){
+        if (scaling.isVmOverloaded()) {
             return upScaleVmVertically(scaling);
         }
 
@@ -227,7 +232,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private boolean scaleVmPesUpOrDown(final VerticalVmScaling scaling) {
         final double numberOfPesForScaling = scaling.getResourceAmountToScale();
-        if(numberOfPesForScaling == 0){
+        if (numberOfPesForScaling == 0) {
             return false;
         }
 
@@ -240,7 +245,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         vm.getHost().getVmScheduler().deallocatePesFromVm(vm);
         final int signal = scaling.isVmUnderloaded() ? -1 : 1;
         //Removes or adds some capacity from/to the resource, respectively if the VM is under or overloaded
-        vm.getProcessor().sumCapacity((long)numberOfPesForScaling * signal);
+        vm.getProcessor().sumCapacity((long) numberOfPesForScaling * signal);
 
         vm.getHost().getVmScheduler().allocatePesForVm(vm);
         return true;
@@ -250,7 +255,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final Vm vm = scaling.getVm();
         final double numberOfPesForScaling = scaling.getResourceAmountToScale();
         final List<Double> additionalVmMips =
-            LongStream.range(0, (long)numberOfPesForScaling).mapToObj(i -> vm.getMips()).collect(toList());
+            LongStream.range(0, (long) numberOfPesForScaling).mapToObj(i -> vm.getMips()).collect(toList());
 
         return !vm.getHost().getVmScheduler().isSuitableForVm(vm, additionalVmMips);
     }
@@ -278,14 +283,14 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClass();
         final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
         final double extraAmountToAllocate = scaling.getResourceAmountToScale();
-        if(!hostResource.isAmountAvailable(extraAmountToAllocate)) {
+        if (!hostResource.isAmountAvailable(extraAmountToAllocate)) {
             return false;
         }
 
         final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
         final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
         final double newTotalVmResource = (double) vmResource.getCapacity() + extraAmountToAllocate;
-        if(!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)){
+        if (!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
             showResourceIsUnavailable(scaling);
             return false;
         }
@@ -294,9 +299,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             "{}: {}: {} more {} allocated to {}: new capacity is {}. Current resource usage is {}%",
             scaling.getVm().getSimulation().clock(),
             scaling.getClass().getSimpleName(),
-            (long)extraAmountToAllocate, resourceClass.getSimpleName(),
+            (long) extraAmountToAllocate, resourceClass.getSimpleName(),
             scaling.getVm(), vmResource.getCapacity(),
-            vmResource.getPercentUtilization()*100);
+            vmResource.getPercentUtilization() * 100);
         return true;
     }
 
@@ -308,7 +313,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             "{}: {}: {} requested more {} of {} capacity but the {} has just {} of available {}",
             scaling.getVm().getSimulation().clock(),
             scaling.getClass().getSimpleName(),
-            scaling.getVm(), (long)extraAmountToAllocate,
+            scaling.getVm(), (long) extraAmountToAllocate,
             resourceClass.getSimpleName(), scaling.getVm().getHost(),
             hostResource.getAvailableResource(), resourceClass.getSimpleName());
     }
@@ -326,13 +331,13 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         final double amountToDeallocate = scaling.getResourceAmountToScale();
         final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
         final double newTotalVmResource = vmResource.getCapacity() - amountToDeallocate;
-        if(!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)){
+        if (!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
             LOGGER.error(
                 "{}: {}: {} requested to reduce {} capacity by {} but an unexpected error occurred and the resource was not resized",
                 scaling.getVm().getSimulation().clock(),
                 scaling.getClass().getSimpleName(),
                 scaling.getVm(),
-                resourceClass.getSimpleName(), (long)amountToDeallocate);
+                resourceClass.getSimpleName(), (long) amountToDeallocate);
             return false;
         }
 
@@ -340,9 +345,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             "{}: {}: {} {} deallocated from {}: new capacity is {}. Current resource usage is {}%",
             scaling.getVm().getSimulation().clock(),
             scaling.getClass().getSimpleName(),
-            (long)amountToDeallocate, resourceClass.getSimpleName(),
+            (long) amountToDeallocate, resourceClass.getSimpleName(),
             scaling.getVm(), vmResource.getCapacity(),
-            vmResource.getPercentUtilization()*100);
+            vmResource.getPercentUtilization() * 100);
         return true;
     }
 
@@ -354,7 +359,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     @Override
     public boolean allocateHostForVm(final Vm vm) {
-        if(getHostList().isEmpty()){
+        if (getHostList().isEmpty()) {
             LOGGER.warn(
                 "{}: {}: {} could not be allocated because there isn't any Host for Datacenter {}",
                 vm.getSimulation().clock(), vm, getDatacenter().getId());
@@ -365,14 +370,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return false;
         }
 
-        /** Calls the Function that finds a Host for a VM.
-         *  It doesn't call the {@link #findHostForVm(Vm)} directly
-         *  because that method is the default implementation.
-         *  However, such an implementation may have been changed by
-         *  calling {@link VmAllocationPolicy#setFindHostForVmFunction(BiFunction)}.
-         */
-        final Optional<Host> optional = findHostForVmFunction.apply(this, vm);
-        if(optional.isPresent()){
+        final Optional<Host> optional = findHostForVm(vm);
+        if (optional.isPresent()) {
             return allocateHostForVm(vm, optional.get());
         }
 
@@ -412,6 +411,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * {@inheritDoc}
      * The default implementation of such a Function is provided by the method {@link #findHostForVm(Vm)}.
+     *
      * @param findHostForVmFunction {@inheritDoc}.
      *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
      */
@@ -419,6 +419,19 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     public final void setFindHostForVmFunction(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         this.findHostForVmFunction = findHostForVmFunction == null ? VmAllocationPolicy::findHostForVm : findHostForVmFunction;
     }
+
+    @Override
+    public final Optional<Host> findHostForVm(final Vm vm) {
+        return findHostForVmFunction == null ? defaultFindHostForVm(vm) : findHostForVmFunction.apply(this, vm);
+    }
+
+    /**
+     * Provides the default implementation of the {@link VmAllocationPolicy}
+     * to find a suitable Host for a given VM.
+     * @param vm the VM to find a suitable Host to
+     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
+     */
+    protected abstract Optional<Host> defaultFindHostForVm(final Vm vm);
 
     /**
      * {@inheritDoc}

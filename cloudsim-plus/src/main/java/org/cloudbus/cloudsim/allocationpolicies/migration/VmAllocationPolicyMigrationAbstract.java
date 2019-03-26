@@ -282,7 +282,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     @Override
-    public Optional<Host> findHostForVm(final Vm vm) {
+    protected Optional<Host> defaultFindHostForVm(final Vm vm) {
         final Set<Host> excludedHosts = new HashSet<>();
         excludedHosts.add(vm.getHost());
         return findHostForVm(vm, excludedHosts);
@@ -301,7 +301,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      * @see #findHostForVmInternal(Vm, Stream)
      */
-    public Optional<Host> findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts) {
+    private Optional<Host> findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts) {
         /*The predicate always returns true to indicate that, in fact, it is not
         applying any additional filter.*/
         return findHostForVm(vm, excludedHosts, host -> true);
@@ -322,7 +322,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      * @see #findHostForVmInternal(Vm, Stream)
      */
-    public Optional<Host> findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts, final Predicate<Host> predicate) {
+    private Optional<Host> findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts, final Predicate<Host> predicate) {
         final Stream<Host> stream = this.getHostList().stream()
             .filter(host -> !excludedHosts.contains(host))
             .filter(host -> host.isSuitableForVm(vm))

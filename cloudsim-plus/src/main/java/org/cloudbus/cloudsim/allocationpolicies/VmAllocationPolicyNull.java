@@ -33,10 +33,8 @@ final class VmAllocationPolicyNull implements VmAllocationPolicy {
         return false;
     }
     @Override public void deallocateHostForVm(Vm vm) {/**/}
-    @Override public Optional<Host> findHostForVm(Vm vm) { return Optional.empty(); }
-    @Override public List<Host> getHostList() {
-        return Collections.emptyList();
-    }
+    @Override public List<Host> getHostList() { return Collections.emptyList(); }
     @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) { return Collections.emptyMap(); }
+    @Override public Optional<Host> findHostForVm(Vm vm) { return Optional.empty(); }
     @Override public void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {/**/}
 }

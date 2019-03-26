@@ -91,15 +91,18 @@ public interface VmAllocationPolicy {
     void deallocateHostForVm(Vm vm);
 
     /**
-     * Finds a host that has enough resources to place a given VM.
-     * <b>Classes must implement this method to define how to select a Host for a given VM.</b>
-     * They just have to provide a default implementation. However, this implementation can be dynamically
-     * changed by calling {@link #setFindHostForVmFunction(BiFunction)}.
+     * Sets a {@link BiFunction} that selects a Host for a given Vm.
+     * This Function receives the current VmAllocationPolicy and the
+     * {@link Vm} requesting to be place.
+     * It then returns an {@code Optional<Host>}
+     * that may contain a suitable Host for that Vm or not.
      *
-     * @param vm the vm to find a host for it
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
+     * <p>If not Function is set, the default VM selection method provided by implementing classes
+     * will be used.</p>
+     *
+     * @param findHostForVmFunction the {@link BiFunction} to set
      */
-    Optional<Host> findHostForVm(Vm vm);
+    void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction);
 
     /**
      * Gets the list of Hosts available in a {@link Datacenter}, that will be
@@ -123,16 +126,12 @@ public interface VmAllocationPolicy {
     Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList);
 
     /**
-     * Sets a {@link BiFunction} that selects a Host for a given Vm.
-     * This Function receives the current VmAllocationPolicy and the
-     * {@link Vm} requesting to be place.
-     * It then returns an {@code Optional<Host>}
-     * that may contain a suitable Host for that Vm or not.
+     * Finds a suitable host that has enough resources to place a given VM.
+     * Internally it may use a default implementation or one set in runtime
+     * by calling {@link #setFindHostForVmFunction(BiFunction)}.
      *
-     * <p>If not Function is set, the default VM selection method provided by implementing classes
-     * will be used.</p>
-     *
-     * @param findHostForVmFunction the {@link BiFunction} to set
+     * @param vm the vm to find a host for it
+     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
      */
-    void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction);
+    Optional<Host> findHostForVm(Vm vm);
 }
