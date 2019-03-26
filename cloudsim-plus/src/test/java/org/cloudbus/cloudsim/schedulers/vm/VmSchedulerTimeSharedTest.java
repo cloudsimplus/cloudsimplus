@@ -20,8 +20,10 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -142,5 +144,66 @@ public class VmSchedulerTimeSharedTest {
 
         vmScheduler.allocatePesForVm(vm0, mipsShare);
         assertTrue(vmScheduler.getHost().getVmsMigratingOut().isEmpty());
+    }
+
+    @Test
+    public void testDeallocatePartialPesFromVm() {
+        final int HOST_PES = 8;
+        final int VM_PES = 4;
+        vmScheduler = createVmScheduler(MIPS, HOST_PES);
+        final Vm vm = VmTestUtil.createVm(0, MIPS, VM_PES);
+
+        final List<Double> mipsShare = IntStream.range(0, VM_PES).mapToObj(i -> MIPS).collect(toList());
+
+        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        vmScheduler.deallocatePesFromVm(vm, 2);
+        final int expectedBusyPes = 2;
+        assertEquals(expectedBusyPes, vmScheduler.getHost().getBuzyPeList().size());
+    }
+
+    @Test
+    public void testDeallocateAllPesFromVmOneArgMethod() {
+        final int HOST_PES = 8;
+        final int VM_PES = 4;
+        vmScheduler = createVmScheduler(MIPS, HOST_PES);
+        vm0 = VmTestUtil.createVm(0, MIPS, VM_PES);
+
+        final List<Double> mipsShare = IntStream.range(0, VM_PES).mapToObj(i -> MIPS).collect(toList());
+
+        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        vmScheduler.deallocatePesFromVm(vm0);
+        final int expectedBusyPes = 0;
+        assertEquals(expectedBusyPes, vmScheduler.getHost().getBuzyPeList().size());
+    }
+
+    @Test
+    public void testDeallocateAllPesFromVmTwoArgsMethod() {
+        final int HOST_PES = 8;
+        final int VM_PES = 4;
+        vmScheduler = createVmScheduler(MIPS, HOST_PES);
+        vm0 = VmTestUtil.createVm(0, MIPS, VM_PES);
+
+        final List<Double> mipsShare = IntStream.range(0, VM_PES).mapToObj(i -> MIPS).collect(toList());
+
+        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        vmScheduler.deallocatePesFromVm(vm0, VM_PES);
+        final int expectedBusyPes = 0;
+        assertEquals(expectedBusyPes, vmScheduler.getHost().getBuzyPeList().size());
+    }
+
+    @Test
+    public void testTryDeallocateMorePesThanAllocated() {
+        final int HOST_PES = 8;
+        vmScheduler = createVmScheduler(MIPS, HOST_PES);
+
+        final List<Double> mipsShare = LongStream.range(0, vm0.getNumberOfPes()).mapToObj(i -> MIPS).collect(toList());
+
+        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        vmScheduler.allocatePesForVm(vm1, mipsShare);
+        //Try to remove more PEs than it's allocated (only the allocated PEs have to be deallocated)
+        vmScheduler.deallocatePesFromVm(vm0, HOST_PES);
+        //Since only the PEs for vm0 were deallocated, the PEs from vm1 have to be busy yet
+        final long expectedBusyPes = vm1.getNumberOfPes();
+        assertEquals(expectedBusyPes, vmScheduler.getHost().getBuzyPeList().size());
     }
 }
