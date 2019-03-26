@@ -110,7 +110,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
         requestedMipsMap.put(vm, requestedMips);
         if(allocatePesForVmInternal(vm, requestedMips)) {
-            setHostPesStatusForVmUsedPes(vm, getHost().getFreePeList(), Pe.Status.BUSY);
+            updateStatusOfHostPesUsedByVm(vm, getHost().getFreePeList(), Pe.Status.BUSY);
             return true;
         }
 
@@ -118,32 +118,33 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     /**
-     * Gets the number of PEs required by a given VM and sets the status of the same
+     * Based on the number of PEs required by a given VM, sets the status of the same
      * number of physical PEs in its Host to a given status.
      *
      * @param vm the VM to set its the status of its used physical PEs
      * @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
-     * @param status the status to set
+     * @param newStatus the status to set
      */
-    private void setHostPesStatusForVmUsedPes(final Vm vm, final List<Pe> peList, final Pe.Status status) {
-        setHostPesStatusForVmUsedPes(peList, status, vm.getNumberOfPes());
+    private void updateStatusOfHostPesUsedByVm(final Vm vm, final List<Pe> peList, final Pe.Status newStatus) {
+        updateStatusOfHostPesUsedByVm(peList, newStatus, vm.getNumberOfPes());
     }
 
     /**
-     * Gets a specific number of virtual PEs and sets the status of the same
+     * Based on a specific number of virtual PEs, sets the status of the same
      * number of physical PEs in its Host to a given status.
+     *
      * @param peList the list of physical PEs from which the corresponding virtual PEs will have the status changed
-     * @param status the status to set
+     * @param newStatus the status to set
      * @param vPesNumber the number of Virtual PEs that correspond to the number of physical PEs to have their status changed
      */
-    private void setHostPesStatusForVmUsedPes(final List<Pe> peList, final Pe.Status status, final long vPesNumber) {
+    private void updateStatusOfHostPesUsedByVm(final List<Pe> peList, final Pe.Status newStatus, final long vPesNumber) {
         if(vPesNumber <= 0) {
             return;
         }
 
         peList.stream()
               .limit(vPesNumber)
-              .forEach(pe -> pe.setStatus(status));
+              .forEach(pe -> pe.setStatus(newStatus));
     }
 
     protected abstract boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested);
@@ -160,19 +161,19 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         }
 
         deallocatePesFromVmInternal(vm, pesToRemove);
-        freeUsedPes();
+        updateHostUsedPesToFree();
     }
 
     /**
      * Sets the status of physical PEs used by a destroyed VM to FREE.
      * That works for any kind of scheduler, such as time- and space-shared.
      */
-    private void freeUsedPes() {
+    private void updateHostUsedPesToFree() {
         //Gets the total virtual PEs of currently created VMs
-        final long totalVirtualPesNumber = getAllocatedMipsMap().values().stream().mapToLong(Collection::size).sum();
-        final List<Pe> peList = getHost().getBuzyPeList();
-        final long vPesNumber = Math.max(peList.size() - totalVirtualPesNumber, 0);
-        setHostPesStatusForVmUsedPes(peList, Pe.Status.FREE, vPesNumber);
+        final long totalVirtualPes = getAllocatedMipsMap().values().stream().mapToLong(Collection::size).sum();
+        final List<Pe> busyPeList = host.getBusyPeList();
+        final long virtualPesToFree = Math.max(busyPeList.size() - totalVirtualPes, 0);
+        updateStatusOfHostPesUsedByVm(busyPeList, Pe.Status.FREE, virtualPesToFree);
     }
 
     /**

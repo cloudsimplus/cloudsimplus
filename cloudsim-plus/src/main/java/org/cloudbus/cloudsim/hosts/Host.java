@@ -205,7 +205,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return the list working (non-failed) Host PEs
      */
-    List<Pe> getBuzyPeList();
+    List<Pe> getBusyPeList();
 
     /**
      * Gets the list of Free Processing Elements (PEs) of the host,

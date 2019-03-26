@@ -152,7 +152,7 @@ final class HostNull implements Host {
     @Override public double getTotalMipsCapacity() { return 0.0; }
     @Override public long getNumberOfFailedPes() { return 0; }
     @Override public List<Pe> getWorkingPeList() { return Collections.emptyList(); }
-    @Override public List<Pe> getBuzyPeList() { return Collections.emptyList(); }
+    @Override public List<Pe> getBusyPeList() { return Collections.emptyList(); }
     @Override public List<Pe> getFreePeList() { return Collections.emptyList(); }
     @Override public double getUtilizationOfCpu() { return 0.0; }
     @Override public double getUtilizationOfCpuMips() { return 0.0; }
