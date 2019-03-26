@@ -685,12 +685,8 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         return hostUtilizationMips;
     }
 
-    /**
-     * Sets the vm selection policy.
-     *
-     * @param vmSelectionPolicy the new vm selection policy
-     */
-    protected final void setVmSelectionPolicy(final VmSelectionPolicy vmSelectionPolicy) {
+    @Override
+    public final void setVmSelectionPolicy(final VmSelectionPolicy vmSelectionPolicy) {
         this.vmSelectionPolicy = Objects.requireNonNull(vmSelectionPolicy);
     }
 
