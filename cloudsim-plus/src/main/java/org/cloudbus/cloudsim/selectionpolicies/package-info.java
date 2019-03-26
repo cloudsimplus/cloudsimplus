@@ -1,5 +1,5 @@
 /**
- * Provides {@link org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy}
+ * Provides {@link org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy}
  * implementations that define policies to be used by a {@link org.cloudbus.cloudsim.hosts.Host}
  * to select a {@link org.cloudbus.cloudsim.vms.Vm} to migrate from a list of VMs.
  *
@@ -11,4 +11,4 @@
  *
  * @author Manoel Campos da Silva Filho
  */
-package org.cloudbus.cloudsim.selectionpolicies.power;
+package org.cloudbus.cloudsim.selectionpolicies;

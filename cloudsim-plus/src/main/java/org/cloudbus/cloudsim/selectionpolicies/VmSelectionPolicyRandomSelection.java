@@ -6,7 +6,7 @@
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
-package org.cloudbus.cloudsim.selectionpolicies.power;
+package org.cloudbus.cloudsim.selectionpolicies;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -33,14 +33,14 @@ import java.util.Objects;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmSelectionPolicyRandomSelection implements PowerVmSelectionPolicy {
+public class VmSelectionPolicyRandomSelection implements VmSelectionPolicy {
     private final ContinuousDistribution rand;
 
     /**
      * Creates a PowerVmSelectionPolicyRandomSelection using
      * a uniform Pseudo Random Number Generator (PRNG) as default to select VMs to migrate.
      */
-    public PowerVmSelectionPolicyRandomSelection(){
+    public VmSelectionPolicyRandomSelection(){
         this(new UniformDistr());
     }
 
@@ -50,7 +50,7 @@ public class PowerVmSelectionPolicyRandomSelection implements PowerVmSelectionPo
      *
      * @param rand a Pseudo Random Number Generator (PRNG) to randomly select VMs to migrate.
      */
-    public PowerVmSelectionPolicyRandomSelection(final ContinuousDistribution rand){
+    public VmSelectionPolicyRandomSelection(final ContinuousDistribution rand){
         super();
         this.rand = Objects.requireNonNull(rand);
     }

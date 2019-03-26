@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Resource;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -52,7 +52,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public VmAllocationPolicyMigrationLocalRegression(final PowerVmSelectionPolicy vmSelectionPolicy) {
+    public VmAllocationPolicyMigrationLocalRegression(final VmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
     }
 
@@ -65,7 +65,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
      * the over utilization host detection doesn't have data to be computed
      */
     public VmAllocationPolicyMigrationLocalRegression(
-        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final VmSelectionPolicy vmSelectionPolicy,
         final double safetyParameter,
         final VmAllocationPolicyMigration fallbackVmAllocationPolicy)
     {

@@ -9,7 +9,7 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Optional;
@@ -51,7 +51,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
      * @see #setUnderUtilizationThreshold(double)
      * @see #setOverUtilizationThreshold(double)
      */
-    public VmAllocationPolicyMigrationStaticThreshold(final PowerVmSelectionPolicy vmSelectionPolicy)
+    public VmAllocationPolicyMigrationStaticThreshold(final VmSelectionPolicy vmSelectionPolicy)
     {
         this(vmSelectionPolicy, DEF_OVER_UTILIZATION_THRESHOLD, null);
     }
@@ -63,7 +63,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
      * @param overUtilizationThreshold the over utilization threshold
      */
     public VmAllocationPolicyMigrationStaticThreshold(
-        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold)
     {
         this(vmSelectionPolicy, overUtilizationThreshold, null);
@@ -78,7 +78,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
      * @see VmAllocationPolicy#setFindHostForVmFunction(java.util.function.BiFunction)
      */
     public VmAllocationPolicyMigrationStaticThreshold(
-        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold,
         final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {

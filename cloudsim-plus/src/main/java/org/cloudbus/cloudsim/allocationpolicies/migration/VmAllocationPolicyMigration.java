@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 
 /**
  * An interface to be implemented by a VM allocation policy
@@ -52,6 +53,13 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
      * @return the over utilization threshold
      */
     double getOverUtilizationThreshold(Host host);
+
+    /**
+     * Gets the the policy that defines how VMs are selected for migration.
+     *
+     * @return the {@link VmSelectionPolicy}.
+     */
+    VmSelectionPolicy getVmSelectionPolicy();
 
     /**
      * Gets the percentage of total CPU utilization

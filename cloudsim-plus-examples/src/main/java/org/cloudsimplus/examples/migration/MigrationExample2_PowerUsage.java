@@ -65,7 +65,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -408,7 +408,7 @@ public final class MigrationExample2_PowerUsage {
         * of Hosts to migrate VMs. */
         final VmAllocationPolicyMigrationStaticThreshold fallback =
             new VmAllocationPolicyMigrationStaticThreshold(
-                new PowerVmSelectionPolicyMinimumUtilization(), HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
+                new VmSelectionPolicyMinimumUtilization(), HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
         /**
          * Sets an upper utilization threshold higher than the
@@ -422,7 +422,7 @@ public final class MigrationExample2_PowerUsage {
          */
         this.allocationPolicy =
             new VmAllocationPolicyMigrationMedianAbsoluteDeviation(
-                new PowerVmSelectionPolicyMinimumUtilization(),
+                new VmSelectionPolicyMinimumUtilization(),
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2, fallback);
 
         Datacenter dc = new DatacenterSimple(simulation, hostList, allocationPolicy);

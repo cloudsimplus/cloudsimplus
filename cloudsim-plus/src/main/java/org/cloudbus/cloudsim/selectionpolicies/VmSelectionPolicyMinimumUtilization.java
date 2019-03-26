@@ -6,7 +6,7 @@
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
-package org.cloudbus.cloudsim.selectionpolicies.power;
+package org.cloudbus.cloudsim.selectionpolicies;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -33,7 +33,7 @@ import java.util.function.Predicate;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmSelectionPolicyMinimumUtilization implements PowerVmSelectionPolicy {
+public class VmSelectionPolicyMinimumUtilization implements VmSelectionPolicy {
     @Override
     public Vm getVmToMigrate(final Host host) {
         final List<? extends Vm> migratableVms = host.getMigratableVms();

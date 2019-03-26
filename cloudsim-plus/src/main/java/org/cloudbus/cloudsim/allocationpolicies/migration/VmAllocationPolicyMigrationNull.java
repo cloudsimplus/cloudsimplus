@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
@@ -41,6 +42,12 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
     @Override public boolean isHostOverloaded(Host host) { return false; }
     @Override public boolean isHostUnderloaded(Host host) { return false; }
     @Override public double getOverUtilizationThreshold(Host host) { return 0; }
+
+    @Override
+    public VmSelectionPolicy getVmSelectionPolicy() {
+        return VmSelectionPolicy.NULL;
+    }
+
     @Override public double getUnderUtilizationThreshold() {
         return 0;
     }

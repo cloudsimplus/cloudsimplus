@@ -9,7 +9,7 @@
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
@@ -45,7 +45,7 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public VmAllocationPolicyMigrationMedianAbsoluteDeviation(final PowerVmSelectionPolicy vmSelectionPolicy) {
+    public VmAllocationPolicyMigrationMedianAbsoluteDeviation(final VmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
     }
 
@@ -58,7 +58,7 @@ public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAlloca
      * the over utilization host detection doesn't have data to be computed
      */
     public VmAllocationPolicyMigrationMedianAbsoluteDeviation(
-        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final VmSelectionPolicy vmSelectionPolicy,
         final double safetyParameter,
         final VmAllocationPolicyMigration fallbackPolicy)
     {

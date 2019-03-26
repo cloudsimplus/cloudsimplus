@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,16 +51,14 @@ import static java.util.stream.Collectors.toSet;
  * @since CloudSim Toolkit 3.0
  */
 public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicyMigrationAbstract.class.getSimpleName());
     public static final double DEF_UNDER_UTILIZATION_THRESHOLD = 0.35;
+    private static final Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicyMigrationAbstract.class.getSimpleName());
 
-    /**@see #getUnderUtilizationThreshold() */
+    /** @see #getUnderUtilizationThreshold() */
     private double underUtilizationThreshold;
 
-    /**
-     * The vm selection policy.
-     */
-    private PowerVmSelectionPolicy vmSelectionPolicy;
+    /** @see {@link #getVmSelectionPolicy()} */
+    private VmSelectionPolicy vmSelectionPolicy;
 
     /**
      * A map between a VM and the host where it is placed.
@@ -73,7 +71,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public VmAllocationPolicyMigrationAbstract(final PowerVmSelectionPolicy vmSelectionPolicy) {
+    public VmAllocationPolicyMigrationAbstract(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, null);
     }
 
@@ -88,7 +86,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @see #setUnderUtilizationThreshold(double)
      */
     public VmAllocationPolicyMigrationAbstract(
-        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final VmSelectionPolicy vmSelectionPolicy,
         final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {
         super(findHostForVmFunction);
@@ -692,16 +690,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *
      * @param vmSelectionPolicy the new vm selection policy
      */
-    protected final void setVmSelectionPolicy(final PowerVmSelectionPolicy vmSelectionPolicy) {
+    protected final void setVmSelectionPolicy(final VmSelectionPolicy vmSelectionPolicy) {
         this.vmSelectionPolicy = Objects.requireNonNull(vmSelectionPolicy);
     }
 
-    /**
-     * Gets the vm selection policy.
-     *
-     * @return the vm selection policy
-     */
-    protected PowerVmSelectionPolicy getVmSelectionPolicy() {
+    @Override
+    public VmSelectionPolicy getVmSelectionPolicy() {
         return vmSelectionPolicy;
     }
 

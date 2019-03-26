@@ -1,7 +1,7 @@
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 
 import java.util.Objects;
 
@@ -34,7 +34,7 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(final PowerVmSelectionPolicy vmSelectionPolicy) {
+    public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, 0, VmAllocationPolicyMigration.NULL);
     }
 
@@ -47,7 +47,7 @@ public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit e
      * the over utilization host detection doesn't have data to be computed
      */
     public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(
-        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final VmSelectionPolicy vmSelectionPolicy,
         final double safetyParameter,
         final VmAllocationPolicyMigration fallbackVmAllocationPolicy)
     {

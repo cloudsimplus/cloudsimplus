@@ -6,7 +6,7 @@
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
-package org.cloudbus.cloudsim.selectionpolicies.power;
+package org.cloudbus.cloudsim.selectionpolicies;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.UtilizationHistory;
@@ -35,17 +35,17 @@ import static org.cloudbus.cloudsim.util.MathUtil.correlationCoefficients;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public class PowerVmSelectionPolicyMaximumCorrelation implements PowerVmSelectionPolicy {
+public class VmSelectionPolicyMaximumCorrelation implements VmSelectionPolicy {
 
     /** @see #getFallbackPolicy() */
-    private PowerVmSelectionPolicy fallbackPolicy;
+    private VmSelectionPolicy fallbackPolicy;
 
     /**
      * Instantiates a new PowerVmSelectionPolicyMaximumCorrelation.
      *
      * @param fallbackPolicy the fallback policy
      */
-    public PowerVmSelectionPolicyMaximumCorrelation(final PowerVmSelectionPolicy fallbackPolicy) {
+    public VmSelectionPolicyMaximumCorrelation(final VmSelectionPolicy fallbackPolicy) {
         super();
         setFallbackPolicy(fallbackPolicy);
     }
@@ -116,7 +116,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation implements PowerVmSelectio
      *
      * @return the fallback policy
      */
-    public PowerVmSelectionPolicy getFallbackPolicy() {
+    public VmSelectionPolicy getFallbackPolicy() {
         return fallbackPolicy;
     }
 
@@ -126,7 +126,7 @@ public class PowerVmSelectionPolicyMaximumCorrelation implements PowerVmSelectio
      *
      * @param fallbackPolicy the new fallback policy
      */
-    public final void setFallbackPolicy(final PowerVmSelectionPolicy fallbackPolicy) {
+    public final void setFallbackPolicy(final VmSelectionPolicy fallbackPolicy) {
         this.fallbackPolicy = Objects.requireNonNull(fallbackPolicy);
     }
 

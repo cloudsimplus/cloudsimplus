@@ -9,7 +9,7 @@
 package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.util.MathUtil;
 
 /**
@@ -45,7 +45,7 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
-    public VmAllocationPolicyMigrationInterQuartileRange(final PowerVmSelectionPolicy vmSelectionPolicy) {
+    public VmAllocationPolicyMigrationInterQuartileRange(final VmSelectionPolicy vmSelectionPolicy) {
         super(vmSelectionPolicy);
     }
 
@@ -58,7 +58,7 @@ public class VmAllocationPolicyMigrationInterQuartileRange extends VmAllocationP
      * the over utilization host detection doesn't have data to be computed
      */
     public VmAllocationPolicyMigrationInterQuartileRange(
-        final PowerVmSelectionPolicy vmSelectionPolicy,
+        final VmSelectionPolicy vmSelectionPolicy,
         final double safetyParameter, final
         VmAllocationPolicyMigration fallbackPolicy)
     {

@@ -40,7 +40,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicyMinimumUtilization;
+import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicyMinimumUtilization;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -368,7 +368,7 @@ public final class MigrationExample1 {
          */
         this.allocationPolicy =
             new VmAllocationPolicyMigrationBestFitStaticThreshold(
-                new PowerVmSelectionPolicyMinimumUtilization(),
+                new VmSelectionPolicyMinimumUtilization(),
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2);
 
         DatacenterSimple dc = new DatacenterSimple(simulation, hostList, allocationPolicy);

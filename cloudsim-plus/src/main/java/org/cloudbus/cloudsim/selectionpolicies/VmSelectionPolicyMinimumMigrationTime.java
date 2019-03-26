@@ -6,14 +6,15 @@
  * Copyright (c) 2009-2012, The University of Melbourne, Australia
  */
 
-package org.cloudbus.cloudsim.selectionpolicies.power;
+package org.cloudbus.cloudsim.selectionpolicies;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.List;
+
 /**
- * An interface to be used to implement VM selection policies for a list of migratable VMs.
- * The selection is defined by sub classes.
+ * A VM selection policy that selects for migration the VM with Minimum Migration Time (MMT).
  *
  * <br>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:<br>
@@ -28,13 +29,31 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
  */
-public interface PowerVmSelectionPolicy {
+public class VmSelectionPolicyMinimumMigrationTime implements VmSelectionPolicy {
+	@Override
+	public Vm getVmToMigrate(final Host host) {
+		final List<Vm> migratableVms = host.getMigratableVms();
+		if (migratableVms.isEmpty()) {
+			return Vm.NULL;
+		}
 
-    /**
-     * Gets a VM to migrate from a given host.
-     *
-     * @param host the host to get a Vm to migrate from
-     * @return the vm to migrate or {@link Vm#NULL} if there is not Vm to migrate
-     */
-    Vm getVmToMigrate(Host host);
+		Vm vmToMigrate = Vm.NULL;
+		double minMetric = Double.MAX_VALUE;
+		for (final Vm vm : migratableVms) {
+			if (vm.isInMigration()) {
+				continue;
+			}
+
+            /*@TODO It must compute the migration time based on the current RAM usage, not the capacity.
+            * It should also consider the VM size.*/
+			final double metric = vm.getRam().getCapacity();
+			if (metric < minMetric) {
+				minMetric = metric;
+				vmToMigrate = vm;
+			}
+		}
+
+		return vmToMigrate;
+	}
+
 }
