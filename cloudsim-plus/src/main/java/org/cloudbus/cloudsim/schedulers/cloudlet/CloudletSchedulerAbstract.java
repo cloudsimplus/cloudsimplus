@@ -299,42 +299,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return !cloudletFinishedList.isEmpty();
     }
 
-    @Override
-    public int runningCloudletsNumber() {
-        return cloudletExecList.size();
-    }
-
-    /**
-     * Returns the first cloudlet in the execution list to migrate to another
-     * VM, removing it from the list.
-     *
-     * @return the first executing cloudlet or {@link Cloudlet#NULL} if the
-     * executing list is empty
-     */
-    @Override
-    public Cloudlet getCloudletToMigrate() {
-        return cloudletExecList.stream()
-            .findFirst()
-            .map(this::finishCloudletMigration)
-            .orElse(Cloudlet.NULL);
-    }
-
-    private Cloudlet finishCloudletMigration(final CloudletExecution cle) {
-        addCloudletToFinishedList(cle);
-        cle.finalizeCloudlet();
-        return cle.getCloudlet();
-    }
-
-    @Override
-    public int getCloudletStatus(final int cloudletId) {
-        final Optional<CloudletExecution> optional = findCloudletInAllLists(cloudletId);
-        return optional
-            .map(CloudletExecution::getCloudlet)
-            .map(Cloudlet::getStatus)
-            .map(Status::ordinal)
-            .orElse(-1);
-    }
-
     /**
      * Search for a Cloudlet into all Cloudlet lists.
      *
@@ -370,8 +334,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             .findFirst();
     }
 
-    @Override
-    public void cloudletFinish(final CloudletExecution cle) {
+    /**
+     * Processes a finished cloudlet.
+     *
+     * @param cle finished cloudlet
+     */
+    protected void cloudletFinish(final CloudletExecution cle) {
         cle.setStatus(Status.SUCCESS);
         cle.finalizeCloudlet();
         cloudletFinishedList.add(cle);
@@ -955,8 +923,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return cloudletCpuUsageForOnePe * cloudlet.getNumberOfPes();
     }
 
-    @Override
-    public double getRequestedMipsForCloudlet(final CloudletExecution cle, final double time) {
+    /**
+     * Gets the current requested MIPS for a given cloudlet.
+     *
+     * @param cle the ce
+     * @param time the time
+     * @return the current requested mips for the given cloudlet
+     */
+    protected double getRequestedMipsForCloudlet(final CloudletExecution cle, final double time) {
         return getAbsoluteCloudletResourceUtilization(cle.getCloudlet().getUtilizationModelCpu(), time, vm.getMips());
     }
 
@@ -1024,8 +998,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return model.getUtilization() * maxResourceAllowedToUse;
     }
 
-    @Override
-    public Set<Cloudlet> getCloudletReturnedList() {
+    /**
+     * Gets a <b>read-only</b> list of Cloudlets that finished executing and were returned the their broker.
+     * A Cloudlet is returned to to notify the broker about the end of its execution.
+     * @return
+     */
+    protected Set<Cloudlet> getCloudletReturnedList() {
         return Collections.unmodifiableSet(cloudletReturnedList);
     }
 

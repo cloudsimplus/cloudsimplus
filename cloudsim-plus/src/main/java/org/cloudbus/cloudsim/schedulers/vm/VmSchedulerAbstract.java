@@ -75,12 +75,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean isSuitableForVm(final Vm vm, final boolean showLog) {
-        return isSuitableForVm(vm, vm.getCurrentRequestedMips(), showLog);
+    public final boolean isSuitableForVm(final Vm vm) {
+        return isSuitableForVm(vm, vm.getCurrentRequestedMips());
     }
 
     @Override
-    public boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips, final boolean showLog) {
+    public boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips) {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
@@ -88,10 +88,10 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
             return false;
         }
 
-        return isSuitableForVmInternal(vm, requestedMips, showLog);
+        return isSuitableForVmInternal(vm, requestedMips);
     }
 
-    protected abstract boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog);
+    protected abstract boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips);
 
     @Override
     public final boolean allocatePesForVm(final Vm vm) {
@@ -239,8 +239,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     protected List<Double> getMipsShareRequestedReduced(final Vm vm, final List<Double> mipsShareRequested){
         final double peMips = getPeCapacity();
         return mipsShareRequested.stream()
-            .map(mips -> Math.min(mips, peMips)*percentOfMipsToRequest(vm))
-            .collect(toList());
+                .map(mips -> Math.min(mips, peMips)*percentOfMipsToRequest(vm))
+                .collect(toList());
     }
 
     @Override
@@ -256,12 +256,25 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
                 .max().orElse(0.0);
     }
 
-    @Override
+    /**
+     * Gets PE capacity in MIPS.
+     *
+     * @return
+     *
+     * @TODO It considers that all PEs have the same capacity, what has been
+     *       shown doesn't be assured. The peList received by the VmScheduler can be
+     *       heterogeneous PEs.
+     */
     public long getPeCapacity() {
         return getWorkingPeList().stream().map(Pe::getCapacity).findFirst().orElse(0L);
     }
 
-    @Override
+    /**
+     * Gets the list of working PEs from the Host, <b>which excludes failed PEs</b>.
+     *
+     * @return
+     *
+     */
     public final List<Pe> getWorkingPeList() {
         return host.getWorkingPeList();
     }

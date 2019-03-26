@@ -44,7 +44,6 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
         return Collections.emptyList();
     }
     @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
-    @Override public boolean isThereWaitingCloudlets() { return false; }
     @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {/**/}
     @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {/**/}
     @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {/**/}
@@ -53,10 +52,10 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public DatacenterBroker removeOnVmsCreatedListener(EventListener<? extends EventInfo> listener) { return this; }
     @Override public Function<Vm, Double> getVmDestructionDelayFunction() { return vm -> 0.0; }
     @Override public DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function) { return this; }
-    @Override public Vm defaultVmMapper(Cloudlet cloudlet) { return Vm.NULL; }
     @Override public List<Cloudlet> getCloudletSubmittedList() { return Collections.emptyList(); }
     @Override public void setVmComparator(Comparator<Vm> comparator) {/**/}
     @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
+    @Override public Function<Cloudlet, Vm> getVmMapper() { return c -> Vm.NULL; }
     @Override public void submitCloudlet(Cloudlet cloudlet) {/**/}
     @Override public void submitCloudletList(List<? extends Cloudlet> list) {/**/}
     @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {/**/}

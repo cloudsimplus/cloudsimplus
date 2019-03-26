@@ -97,7 +97,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     @Override
     public int getNumberOfFreePes() {
-        return datacenter.getHostList().stream().mapToInt(Host::getNumberOfFreePes).sum();
+        return datacenter.getHostList().stream().mapToInt(Host::getFreePesNumber).sum();
     }
 
     @Override

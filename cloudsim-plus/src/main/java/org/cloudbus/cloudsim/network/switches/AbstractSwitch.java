@@ -20,7 +20,10 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A base class for implementing Network Switch.
@@ -317,50 +320,64 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     @Override
-    public Map<NetworkHost, List<HostPacket>> getPacketToHostMap() {
-        return Collections.unmodifiableMap(packetToHostMap);
-    }
-
-    @Override
     public List<Switch> getDownlinkSwitches() {
         return downlinkSwitches;
     }
 
-    @Override
-    public List<HostPacket> getDownlinkSwitchPacketList(final Switch downlinkSwitch) {
+    /**
+     * Gets the list of packets to be sent to a downlink switch.
+     * @param downlinkSwitch the id of the switch to get the list of packets to send
+     * @return the list of packets to be sent to the given switch.
+     */
+    protected List<HostPacket> getDownlinkSwitchPacketList(final Switch downlinkSwitch) {
         downlinkSwitchPacketMap.putIfAbsent(downlinkSwitch, new ArrayList<>());
         return downlinkSwitchPacketMap.get(downlinkSwitch);
     }
 
-    @Override
-    public List<HostPacket> getUplinkSwitchPacketList(final Switch uplinkSwitch) {
+    /**
+     * Gets the list of packets to be sent to an uplink switch.
+     * @param uplinkSwitch the switch to get the list of packets to send
+     * @return the list of packets to be sent to the given switch.
+     */
+    protected List<HostPacket> getUplinkSwitchPacketList(final Switch uplinkSwitch) {
         uplinkSwitchPacketMap.putIfAbsent(uplinkSwitch, new ArrayList<>());
         return uplinkSwitchPacketMap.get(uplinkSwitch);
     }
 
-    @Override
-    public List<HostPacket> getHostPacketList(final NetworkHost host) {
+    /**
+     * Gets the list of packets to be sent to a host.
+     * @param host the host to get the list of packets to send
+     * @return the list of packets to be sent to the given host.
+     */
+    protected List<HostPacket> getHostPacketList(final NetworkHost host) {
         packetToHostMap.putIfAbsent(host, new ArrayList<>());
         return packetToHostMap.get(host);
     }
 
-    @Override
-    public Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap() {
-        return Collections.unmodifiableMap(uplinkSwitchPacketMap);
-    }
-
-    @Override
-    public void addPacketToSendToDownlinkSwitch(final Switch downlinkSwitch, final HostPacket packet) {
+    /**
+     * Adds a packet that will be sent to a downlink {@link Switch}.
+     * @param downlinkSwitch the target switch
+     * @param packet the packet to be sent
+     */
+    protected void addPacketToSendToDownlinkSwitch(final Switch downlinkSwitch, final HostPacket packet) {
         getDownlinkSwitchPacketList(downlinkSwitch).add(packet);
     }
 
-    @Override
-    public void addPacketToSendToUplinkSwitch(final Switch uplinkSwitch, final HostPacket packet) {
+    /**
+     * Adds a packet that will be sent to a uplink {@link Switch}.
+     * @param uplinkSwitch the target switch
+     * @param packet the packet to be sent
+     */
+    protected void addPacketToSendToUplinkSwitch(final Switch uplinkSwitch, final HostPacket packet) {
         getUplinkSwitchPacketList(uplinkSwitch).add(packet);
     }
 
-    @Override
-    public void addPacketToSendToHost(final NetworkHost host, final HostPacket packet) {
+    /**
+     * Adds a packet that will be sent to a {@link NetworkHost}.
+     * @param host the target {@link NetworkHost}
+     * @param packet the packet to be sent
+     */
+    protected void addPacketToSendToHost(final NetworkHost host, final HostPacket packet) {
         getHostPacketList(host).add(packet);
     }
 

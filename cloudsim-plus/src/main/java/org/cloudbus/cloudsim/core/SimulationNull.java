@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -9,7 +8,6 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -39,9 +37,6 @@ final class SimulationNull implements Simulation {
     @Override public CloudInformationService getCloudInfoService() {
         return null;
     }
-    @Override public Set<Datacenter> getDatacenterList() {
-        return Collections.emptySet();
-    }
     @Override public List<SimEntity> getEntityList() { return Collections.emptyList(); }
     @Override public double getMinTimeBetweenEvents() {
         return 0;
@@ -59,7 +54,6 @@ final class SimulationNull implements Simulation {
     @Override public boolean removeOnSimulationPauseListener(EventListener<EventInfo> listener) {
         return false;
     }
-    @Override public void holdEntity(SimEntity src, long delay) {/**/}
     @Override public boolean isPaused() {
         return false;
     }

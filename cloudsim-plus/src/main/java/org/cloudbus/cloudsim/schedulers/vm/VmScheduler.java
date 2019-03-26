@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -50,7 +49,7 @@ public interface VmScheduler {
      *       situation when a Vm already has allocated MIPS and the method is
      *       called again. In this case, what is supposed to do? Increase the current
      *       allocation or change it? I think that the obvious action is to change the
-     *       allocation, however, the implementations aren't working to deal this
+     *       allocation, however, the implementations aren't working to deal with this
      *       situation. For that, they have to use some method such as
      *       {@link Resource#isAmountAvailable(long)}
      *       to first check if the difference from the current allocated mips and the
@@ -125,23 +124,10 @@ public interface VmScheduler {
      * to host a given VM.
      *
      * @param vm the vm to check if there is enough available resource on the PM to host it
-     *
-     * @return true, if it is possible to allocate the the VM into the host; false otherwise
-     */
-    default boolean isSuitableForVm(final Vm vm) {
-        return isSuitableForVm(vm, false);
-    }
-
-    /**
-     * Checks if the PM using this scheduler has enough MIPS capacity
-     * to host a given VM.
-     *
-     * @param vm the vm to check if there is enough available resource on the PM to host it
-     * @param showLog if a log message should be printed when the Host isn't suitable for the given VM
      * @return true, if it is possible to allocate the the VM into the host; false otherwise
      * @see #isSuitableForVm(Vm)
      */
-    boolean isSuitableForVm(Vm vm, boolean showLog);
+    boolean isSuitableForVm(Vm vm);
 
     /**
      * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
@@ -163,21 +149,7 @@ public interface VmScheduler {
      * @param requestedMips a list of MIPS requested by a VM
      * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
      */
-    default boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips) {
-        return isSuitableForVm(vm, requestedMips, false);
-    }
-
-    /**
-     * Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
-     *
-     * @param vm the {@link Vm} to check if there are enough MIPS to allocate to
-     * @param requestedMips a list of MIPS requested by a VM
-     * @param showLog if a log message should be printed when the Host isn't suitable for the given VM
-     * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
-     *
-     * @see #isSuitableForVm(Vm, List)
-     */
-    boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog);
+    boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips);
 
     /**
      * Gets the maximum available MIPS among all the host's PEs.
@@ -185,26 +157,6 @@ public interface VmScheduler {
      * @return
      */
     double getMaxAvailableMips();
-
-    /**
-     * Gets PE capacity in MIPS.
-     *
-     * @return
-     *
-     * @TODO It considers that all PEs have the same capacity, what has been
-     *       shown doesn't be assured. The peList received by the VmScheduler can be
-     *       heterogeneous PEs.
-     */
-    long getPeCapacity();
-
-    /**
-     * Gets the list of working PEs from the Host, <b>which excludes failed PEs</b>.
-     *
-     * @param <T> the generic type
-     * @return
-     *
-     */
-    <T extends Pe> List<T> getWorkingPeList();
 
     /**
      * Gets the actual total allocated MIPS for a VM along all its allocated PEs.

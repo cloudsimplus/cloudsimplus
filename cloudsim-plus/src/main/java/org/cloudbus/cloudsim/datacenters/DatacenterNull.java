@@ -5,7 +5,6 @@ import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEntityNullBase;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 
@@ -28,9 +27,6 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     }
     @Override public VmAllocationPolicy getVmAllocationPolicy() {
         return VmAllocationPolicy.NULL;
-    }
-    @Override public List<Vm> getVmList() {
-        return Collections.emptyList();
     }
     @Override public Host getHost(final int index) {
         return Host.NULL;

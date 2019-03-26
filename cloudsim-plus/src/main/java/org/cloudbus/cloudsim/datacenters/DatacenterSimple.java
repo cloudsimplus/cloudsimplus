@@ -954,8 +954,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         this.datacenterStorage = datacenterStorage;
     }
 
-    @Override
-    public <T extends Vm> List<T> getVmList() {
+    /**
+     * Gets a <b>read-only</b> list all VMs from all Hosts of this Datacenter.
+     *
+     * @param <T> the class of VMs inside the list
+     * @return the list all VMs from all Hosts
+     */
+    private <T extends Vm> List<T> getVmList() {
         return (List<T>) Collections.unmodifiableList(
                 getHostList().stream()
                     .flatMap(h -> h.getVmList().stream())

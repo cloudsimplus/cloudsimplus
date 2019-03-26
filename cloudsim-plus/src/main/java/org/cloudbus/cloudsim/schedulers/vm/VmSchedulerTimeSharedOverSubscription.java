@@ -68,25 +68,22 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      *
      * @param vm {@inheritDoc}
      * @param requestedMips {@inheritDoc}
-     * @param showLog
      * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
      * @see #allocateMipsShareForVm(Vm, List)
      */
     @Override
-    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips, final boolean showLog){
+    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips){
         final int workingPes = getWorkingPeList().size();
         if(workingPes >= requestedMips.size()){
             return true;
         }
 
-        if(showLog) {
-            LOGGER.error(
-                "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
-                    "\t\tHowever, there are just {} available PEs.",
-                getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
-                requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
-                workingPes);
-        }
+        LOGGER.error(
+            "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
+                "\t\tHowever, there are just {} available PEs.",
+            getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
+            requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
+            workingPes);
         return false;
     }
 

@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
-import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.selectionpolicies.power.PowerVmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -68,32 +67,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private final Map<Vm, Host> savedAllocation;
 
     /**
-     * A map of CPU utilization history (in percentage) for each host, where
-     * each key is a hos and each value is the CPU utilization percentage history.
-     *
-     * @TODO there is inconsistency between these data.
-     * Into the Host, it is stored the actual utilization for the given time.
-     * Here it is stored the utilization as it was computed
-     * by the VmAllocationPolicy implementation.
-     * For instance, the {@link VmAllocationPolicyMigrationLocalRegression}
-     * used Local Regression to predict Host utilization
-     * and such value will be stored in this map.
-     * However, these duplicate and inconsistent data
-     * are confusing and error prone.
-     */
-    private final Map<Host, List<Double>> utilizationHistory;
-
-    /**
-     * @see #getMetricHistory()
-     */
-    private final Map<Host, List<Double>> metricHistory;
-
-    /**
-     * @see #getTimeHistory()
-     */
-    private final Map<Host, List<Double>> timeHistory;
-
-    /**
      * Creates a VmAllocationPolicyMigrationAbstract.
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
@@ -116,9 +89,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         super(findHostForVmFunction);
         this.underUtilizationThreshold = 0.35;
         this.savedAllocation = new HashMap<>();
-        this.utilizationHistory = new HashMap<>();
-        this.metricHistory = new HashMap<>();
-        this.timeHistory = new HashMap<>();
         setVmSelectionPolicy(vmSelectionPolicy);
     }
 
@@ -276,8 +246,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     @Override
     public boolean isHostOverloaded(final Host host) {
         final double upperThreshold = getOverUtilizationThreshold(host);
-        addHistoryEntryIfAbsent(host, upperThreshold);
-
         return isHostOverloaded(host, host.getUtilizationOfCpu());
     }
 
@@ -298,8 +266,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     private boolean isHostOverloaded(final Host host, final double cpuUsagePercent){
         final double upperThreshold = getOverUtilizationThreshold(host);
-        addHistoryEntryIfAbsent(host, upperThreshold);
-
         return cpuUsagePercent > upperThreshold;
     }
 
@@ -715,26 +681,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Adds an entry for each history map of a host if it doesn't contain
-     * an entry for the current simulation time.
-     *
-     * @param host the host to add metric history entries
-     * @param metric the metric to be added to the metric history map
-     */
-    protected void addHistoryEntryIfAbsent(final Host host, final double metric) {
-        timeHistory.putIfAbsent(host, new LinkedList<>());
-        utilizationHistory.putIfAbsent(host, new LinkedList<>());
-        metricHistory.putIfAbsent(host, new LinkedList<>());
-
-        final Simulation simulation = host.getSimulation();
-        if (!timeHistory.get(host).contains(simulation.clock())) {
-            timeHistory.get(host).add(simulation.clock());
-            utilizationHistory.get(host).add(host.getUtilizationOfCpu());
-            metricHistory.get(host).add(metric);
-        }
-    }
-
-    /**
      * Sets the vm selection policy.
      *
      * @param vmSelectionPolicy the new vm selection policy
@@ -750,21 +696,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     protected PowerVmSelectionPolicy getVmSelectionPolicy() {
         return vmSelectionPolicy;
-    }
-
-    @Override
-    public Map<Host, List<Double>> getUtilizationHistory() {
-        return Collections.unmodifiableMap(utilizationHistory);
-    }
-
-    @Override
-    public Map<Host, List<Double>> getMetricHistory() {
-        return Collections.unmodifiableMap(metricHistory);
-    }
-
-    @Override
-    public Map<Host, List<Double>> getTimeHistory() {
-        return Collections.unmodifiableMap(timeHistory);
     }
 
     @Override

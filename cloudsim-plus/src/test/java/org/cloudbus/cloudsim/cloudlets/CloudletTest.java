@@ -66,11 +66,8 @@ public class CloudletTest {
         assertEquals(Cloudlet.Status.FAILED, Cloudlet.NULL.getStatus());
         assertTrue(Cloudlet.NULL.getRequiredFiles().isEmpty());
         assertEquals(0, Cloudlet.NULL.getFinishedLengthSoFar());
-        assertEquals(Datacenter.NULL, Cloudlet.NULL.getLastDatacenter());
         assertEquals(0, Cloudlet.NULL.getLastDatacenterArrivalTime());
         assertFalse(Cloudlet.NULL.isFinished());
-        Cloudlet.NULL.assignToDatacenter(Datacenter.NULL);
-        assertEquals(Datacenter.NULL, Cloudlet.NULL.getLastDatacenter());
 
     }
 
@@ -78,12 +75,9 @@ public class CloudletTest {
     public void testNullObjectTimes(){
         assertAll(
             () -> assertEquals(0, Cloudlet.NULL.getArrivalTime(Datacenter.NULL)),
-            () -> assertEquals(0, Cloudlet.NULL.getActualCpuTime(Datacenter.NULL)),
             () -> assertEquals(0, Cloudlet.NULL.getActualCpuTime()),
             () -> assertEquals(0, Cloudlet.NULL.getExecStartTime()),
             () -> assertEquals(0, Cloudlet.NULL.getWaitingTime()),
-            () -> assertEquals(0, Cloudlet.NULL.getWallClockTimeInLastExecutedDatacenter()),
-            () -> assertEquals(0, Cloudlet.NULL.getWallClockTime(Datacenter.NULL)),
             () -> Cloudlet.NULL.setSubmissionDelay(10),
             () -> assertEquals(0, Cloudlet.NULL.getSubmissionDelay())
         );

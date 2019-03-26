@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
@@ -18,7 +17,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 /**
  * An interface to be implemented by each class that provides a policy
@@ -54,17 +52,10 @@ public interface CloudletScheduler extends Serializable {
     /**
      * Cancels execution of a cloudlet.
      *
-     * @param cloudlet ID of the cloudlet being canceled
+     * @param cloudlet the cloudlet being canceled
      * @return the canceled cloudlet or {@link Cloudlet#NULL} if not found
      */
     Cloudlet cloudletCancel(Cloudlet cloudlet);
-
-    /**
-     * Processes a finished cloudlet.
-     *
-     * @param cle finished cloudlet
-     */
-    void cloudletFinish(CloudletExecution cle);
 
     /**
      * Sets the status of a Cloudlet to {@link Cloudlet.Status#READY}
@@ -133,13 +124,6 @@ public interface CloudletScheduler extends Serializable {
     List<Cloudlet> getCloudletList();
 
     /**
-     * Gets a <b>read-only</b> list of Cloudlets that finished executing and were returned the their broker.
-     * A Cloudlet is returned to to notify the broker about the end of its execution.
-     * @return
-     */
-    Set<Cloudlet> getCloudletReturnedList();
-
-    /**
      * Gets a list of finished cloudlets.
      *
      * @return the cloudlet finished list
@@ -152,14 +136,6 @@ public interface CloudletScheduler extends Serializable {
      * @return true if there aren't <b>waiting</b> or <b>executing</b> Cloudlets, false otherwise.
      */
     boolean isEmpty();
-
-    /**
-     * Gets the status of a cloudlet with a given id.
-     *
-     * @param cloudletId ID of the cloudlet to get the status
-     * @return status of the cloudlet if it was found, otherwise, returns -1
-     */
-    int getCloudletStatus(int cloudletId);
 
     /**
      * Releases a given number of PEs from a VM.
@@ -190,15 +166,6 @@ public interface CloudletScheduler extends Serializable {
      * @return the previous time
      */
     double getPreviousTime();
-
-    /**
-     * Gets the current requested MIPS for a given cloudlet.
-     *
-     * @param cle the ce
-     * @param time the time
-     * @return the current requested mips for the given cloudlet
-     */
-    double getRequestedMipsForCloudlet(CloudletExecution cle, double time);
 
     /**
      * Gets total CPU utilization percentage of all cloudlets,
@@ -245,37 +212,6 @@ public interface CloudletScheduler extends Serializable {
      * @return
      */
     boolean isThereTaskScheduler();
-
-    /**
-     * Returns one cloudlet to migrate to another Vm.
-     * How the migrating cloudlet is select is defined by each
-     * class implementing this interface.
-     *
-     * @return one running cloudlet.
-     *
-     * @TODO Despite there is this method, it is not being
-     *       used anywhere and Cloudlet migration is not in fact supported.
-     *       Actually, in a real scenario, application migration is a tough
-     *       issue, once it has to deal with configuration and data migration,
-     *       dependencies, etc. Further, I don't think it is a reasonable approach
-     *       to follow. Vm migration makes more sense because you deal it as a
-     *       black box, not having to be concerned with any internal data or
-     *       configurations. You just move the entire VM to another host.
-     *       There was a CloudSimTags.CLOUDLET_MOVE that was used in the
-     *       {@link DatacenterSimple} class, but the event
-     *       is not being sent anywhere. The CloudSim forum has 3 questions about
-     *       Cloudlet migration only. It shows that this features is not
-     *       highly required and in fact. Even for migration of parallel workloads
-     *       such as Map-Reduce, data has to be migrated with the application.
-     */
-    Cloudlet getCloudletToMigrate();
-
-    /**
-     * Returns the number of cloudlets running in the virtual machine.
-     *
-     * @return number of cloudlets running
-     */
-    int runningCloudletsNumber();
 
     /**
      * Updates the processing of cloudlets inside the Vm running under management of this scheduler.

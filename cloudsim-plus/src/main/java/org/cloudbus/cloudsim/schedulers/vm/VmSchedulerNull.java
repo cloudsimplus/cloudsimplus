@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Collections;
@@ -26,15 +25,7 @@ final class VmSchedulerNull implements VmScheduler {
         return 0.0;
     }
     @Override public List<Double> getRequestedMips(Vm vm) { return Collections.EMPTY_LIST; }
-    @Override public double getMaxAvailableMips() {
-        return 0.0;
-    }
-    @Override public long getPeCapacity() {
-        return 0;
-    }
-    @Override public <T extends Pe> List<T> getWorkingPeList() {
-        return Collections.emptyList();
-    }
+    @Override public double getMaxAvailableMips() { return 0.0; }
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }
@@ -42,12 +33,8 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
-    @Override public boolean isSuitableForVm(Vm vm, boolean showLog) { return false; }
     @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips) { return false; }
-    @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog) { return false; }
-    @Override public double getVmMigrationCpuOverhead() {
-        return 0.0;
-    }
+    @Override public double getVmMigrationCpuOverhead() { return 0.0; }
     @Override public Host getHost() {
         return Host.NULL;
     }

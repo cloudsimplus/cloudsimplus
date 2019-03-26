@@ -468,7 +468,7 @@ public class HostSimpleTest {
     public void testGetNumberOfFreePes() {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
-        assertEquals(numberOfPes, host.getNumberOfFreePes());
+        assertEquals(numberOfPes, host.getFreePesNumber());
     }
 
     @Test
@@ -476,7 +476,7 @@ public class HostSimpleTest {
         final int numberOfPes = 2;
         final Host host = createHostSimple(0, numberOfPes);
         host.getPeList().get(0).setStatus(Pe.Status.BUSY);
-        assertEquals(numberOfPes-1, host.getNumberOfFreePes());
+        assertEquals(numberOfPes-1, host.getFreePesNumber());
     }
 
     @Test
@@ -485,7 +485,7 @@ public class HostSimpleTest {
         final Host host = createHostSimple(0, numberOfPes);
 
         host.getPeList().forEach(pe -> pe.setStatus(Pe.Status.BUSY));
-        assertEquals(0, host.getNumberOfFreePes());
+        assertEquals(0, host.getFreePesNumber());
     }
 
     @Test
@@ -518,11 +518,9 @@ public class HostSimpleTest {
         vm.setBroker(broker);
 
         assertTrue(host.createVm(vm));
-        assertSame(vm, host.getVm(0, 0));
         assertEquals(HOST_MIPS, host.getVmScheduler().getAvailableMips());
 
         host.destroyVm(vm);
-        assertSame(Vm.NULL, host.getVm(0, 0));
         assertEquals(0, host.getVmList().size());
         assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips());
     }
@@ -541,16 +539,12 @@ public class HostSimpleTest {
         vm1.setBroker(broker);
 
         assertTrue(host.createVm(vm0));
-        assertSame(vm0, host.getVm(0, 0));
         assertEquals(HOST_MIPS, host.getVmScheduler().getAvailableMips());
 
         assertTrue(host.createVm(vm1));
-        assertSame(vm1, host.getVm(1, 0));
         assertEquals(0, host.getVmScheduler().getAvailableMips());
 
         host.destroyAllVms();
-        assertSame(Vm.NULL, host.getVm(0, 0));
-        assertSame(Vm.NULL, host.getVm(1, 0));
         assertEquals(0, host.getVmList().size());
         assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips());
     }

@@ -42,6 +42,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      *       But since a lot of methods uses it, it's removal has to be carefully assessed.
      */
     private final List<CloudletDatacenterExecution> datacenterExecutionList;
+
     /**
      * @see #getLength()
      */
@@ -409,11 +410,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         }
     }
 
-    @Override
-    public Datacenter getLastDatacenter() {
-        return getLastExecutionInDatacenterInfo().getDatacenter();
-    }
-
     private CloudletDatacenterExecution getLastExecutionInDatacenterInfo() {
         if (datacenterExecutionList.isEmpty()) {
             return CloudletDatacenterExecution.NULL;
@@ -505,13 +501,15 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         return getDatacenterInfo(datacenter).getCostPerSec();
     }
 
-    @Override
-    public double getWallClockTimeInLastExecutedDatacenter() {
-        return getLastExecutionInDatacenterInfo().getWallClockTime();
-    }
-
-    @Override
-    public double getActualCpuTime(final Datacenter datacenter) {
+    /**
+     * Gets the total execution time of this Cloudlet in a given Datacenter
+     * ID.
+     *
+     * @param datacenter the Datacenter entity
+     * @return the total execution time of this Cloudlet in the given Datacenter
+     * or 0 if the Cloudlet was not executed there
+     */
+    protected double getActualCpuTime(final Datacenter datacenter) {
         return getDatacenterInfo(datacenter).getActualCpuTime();
     }
 
@@ -529,8 +527,15 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         return getDatacenterInfo(datacenter).getArrivalTime();
     }
 
-    @Override
-    public double getWallClockTime(final Datacenter datacenter) {
+    /**
+     * Gets the time of this Cloudlet resides in a given Datacenter (from
+     * arrival time until departure time).
+     *
+     * @param datacenter a Datacenter entity
+     * @return the wall-clock time or 0 if the Cloudlet has never been executed there
+     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
+     */
+    protected double getWallClockTime(final Datacenter datacenter) {
         return getDatacenterInfo(datacenter).getWallClockTime();
     }
 
@@ -838,8 +843,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         return dcInfo.getArrivalTime();
     }
 
-    @Override
-    public boolean isAssignedToDatacenter() {
+    /**
+     * @return true if the cloudlet has even been assigned to a Datacenter
+     * in order to run, false otherwise.
+     */
+    private boolean isAssignedToDatacenter() {
         return !datacenterExecutionList.isEmpty();
     }
 

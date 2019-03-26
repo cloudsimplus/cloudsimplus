@@ -365,11 +365,6 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public Set<Datacenter> getDatacenterList() {
-        return cis.getDatacenterList();
-    }
-
-    @Override
     public double clock() {
         return clock;
     }
@@ -772,8 +767,12 @@ public class CloudSim implements Simulation {
         src.setState(SimEntity.State.HOLDING);
     }
 
-    @Override
-    public void holdEntity(final SimEntity src, final long delay) {
+    /**
+     * Holds an entity for some time.
+     * @param src   id of entity to be held
+     * @param delay How many seconds after the current time the entity has to be held
+     */
+    protected void holdEntity(final SimEntity src, final long delay) {
         final SimEvent evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
         addHoldingFutureEvent(src, evt);
     }

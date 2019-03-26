@@ -14,7 +14,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.models.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 
@@ -116,14 +115,6 @@ public interface Datacenter extends SimEntity, PowerAware {
      * @see VmAllocationPolicy
      */
     VmAllocationPolicy getVmAllocationPolicy();
-
-    /**
-     * Gets a <b>read-only</b> list all VMs from all Hosts of this Datacenter.
-     *
-     * @param <T> the class of VMs inside the list
-     * @return the list all VMs from all Hosts
-     */
-    <T extends Vm> List<T> getVmList();
 
     /**
      * Gets the scheduling interval to process each event received by the

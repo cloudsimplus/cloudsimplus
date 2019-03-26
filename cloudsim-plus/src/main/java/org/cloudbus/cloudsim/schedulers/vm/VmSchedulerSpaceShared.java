@@ -51,20 +51,18 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips, final boolean showLog) {
+    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips) {
         final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
         if(selectedPes.size() >= requestedMips.size()){
             return true;
         }
 
-        if(showLog) {
-            LOGGER.error(
-                "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
-                    "\t\tHowever, there are just {} available PEs with the required MIPS.",
-                getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
-                requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
-                selectedPes.size());
-        }
+        LOGGER.error(
+            "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
+                "\t\tHowever, there are just {} available PEs with the required MIPS.",
+            getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
+            requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
+            selectedPes.size());
         return false;
     }
 

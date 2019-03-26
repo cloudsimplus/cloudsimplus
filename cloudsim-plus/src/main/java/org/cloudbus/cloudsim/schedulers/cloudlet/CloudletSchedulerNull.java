@@ -7,7 +7,6 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link CloudletScheduler}
@@ -21,7 +20,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public Cloudlet cloudletCancel(Cloudlet cloudlet) {
         return Cloudlet.NULL;
     }
-    @Override public void cloudletFinish(CloudletExecution cle) {/**/}
     @Override public boolean cloudletReady(Cloudlet cloudlet) { return false; }
     @Override public boolean cloudletPause(Cloudlet cloudlet) {
         return false;
@@ -38,17 +36,11 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public List<CloudletExecution> getCloudletExecList() {
         return Collections.emptyList();
     }
-    @Override public int getCloudletStatus(int cloudletId) {
-        return 0;
-    }
-    @Override public double getCurrentRequestedBwPercentUtilization() {
-        return 0.0;
-    }
+    @Override public double getCurrentRequestedBwPercentUtilization() { return 0.0; }
     @Override public double getCurrentRequestedRamPercentUtilization() { return 0.0; }
     @Override public double getPreviousTime() {
         return 0.0;
     }
-    @Override public double getRequestedMipsForCloudlet(CloudletExecution cle, double time) { return 0.0; }
     @Override public double getRequestedCpuPercentUtilization(double time) { return 0.0; }
     @Override public boolean hasFinishedCloudlets() {
         return false;
@@ -60,24 +52,15 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public boolean isThereTaskScheduler() {
         return false;
     }
-    @Override public Cloudlet getCloudletToMigrate() {
-        return Cloudlet.NULL;
-    }
-    @Override public int runningCloudletsNumber() {
-        return 0;
-    }
     @Override public double updateProcessing(double currentTime, List<Double> mipsShare) {
         return 0.0;
     }
-    @Override public Vm getVm() {
-        return Vm.NULL;
-    }
+    @Override public Vm getVm() { return Vm.NULL; }
     @Override public void setVm(Vm vm) {/**/}
     @Override public long getUsedPes() {
         return 0;
     }
     @Override public long getFreePes() { return 0; }
-    @Override public Set<Cloudlet> getCloudletReturnedList() { return Collections.emptySet(); }
     @Override public boolean isCloudletReturned(Cloudlet cloudlet) { return false; }
     @Override public void addCloudletToReturnedList(Cloudlet cloudlet) {/**/}
     @Override public List<CloudletExecution> getCloudletFinishedList() { return Collections.emptyList(); }

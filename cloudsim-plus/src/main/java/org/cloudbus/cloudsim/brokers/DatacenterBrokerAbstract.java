@@ -556,7 +556,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
          * sent to the broker. */
         if(prevLength < 0){
             final double delay = cloudlet.getSimulation().getMinTimeBetweenEvents();
-            cloudlet.getLastDatacenter().schedule(delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING, null);
+            final Datacenter dc = cloudlet.getVm().getHost().getDatacenter();
+            dc.schedule(delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING, null);
         }
     }
 
@@ -1087,6 +1088,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
+    public Function<Cloudlet, Vm> getVmMapper() {
+        return vmMapper;
+    }
+
+    @Override
     public final void setVmMapper(final Function<Cloudlet, Vm> vmMapper) {
         this.vmMapper = requireNonNull(vmMapper);
     }
@@ -1129,8 +1135,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return this;
     }
 
-    @Override
-    public boolean isThereWaitingCloudlets() {
+    /**
+     * Indicates if there are more cloudlets waiting to
+     * be executed yet.
+     *
+     * @return true if there are waiting cloudlets, false otherwise
+     */
+    protected boolean isThereWaitingCloudlets() {
         return !cloudletWaitingList.isEmpty();
     }
 
@@ -1138,4 +1149,17 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public List<Cloudlet> getCloudletSubmittedList() {
         return cloudletSubmittedList;
     }
+
+    /**
+     * Defines the default policy used to select a Vm to host a Cloudlet
+     * that is waiting to be created.
+     * <br>It applies a Round-Robin policy to cyclically select
+     * the next Vm from the list of waiting VMs.
+     *
+     * @param cloudlet the cloudlet that needs a VM to be placed into
+     * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
+     * no suitable VM was found
+     */
+    protected abstract Vm defaultVmMapper(Cloudlet cloudlet);
+
 }

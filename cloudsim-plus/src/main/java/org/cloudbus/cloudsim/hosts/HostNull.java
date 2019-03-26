@@ -29,7 +29,6 @@ final class HostNull implements Host {
     @Override public boolean addMigratingInVm(Vm vm) {
         return false;
     }
-    @Override public boolean removeVmMigratingIn(Vm vm) { return false; }
     @Override public Set<Vm> getVmsMigratingOut() {
         return Collections.emptySet();
     }
@@ -38,10 +37,6 @@ final class HostNull implements Host {
     }
     @Override public boolean removeVmMigratingOut(Vm vm) {
         return false;
-    }
-    @Override public void deallocatePesForVm(Vm vm) {/**/}
-    @Override public List<Double> getAllocatedMipsForVm(Vm vm) {
-        return Collections.emptyList();
     }
     @Override public double getAvailableMips() {
         return 0;
@@ -61,10 +56,7 @@ final class HostNull implements Host {
     @Override public long getId() {
         return -1;
     }
-    @Override public double getMaxAvailableMips() {
-        return 0.0;
-    }
-    @Override public int getNumberOfFreePes() {
+    @Override public int getFreePesNumber() {
         return 0;
     }
     @Override public long getNumberOfPes() {
@@ -77,9 +69,7 @@ final class HostNull implements Host {
     @Override public Resource getRam() {
         return Resource.NULL;
     }
-    @Override public ResourceProvisioner getRamProvisioner() {
-        return ResourceProvisioner.NULL;
-    }
+    @Override public ResourceProvisioner getRamProvisioner() { return ResourceProvisioner.NULL; }
     @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
         return Host.NULL;
     }
@@ -88,9 +78,6 @@ final class HostNull implements Host {
     }
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
-    }
-    @Override public Vm getVm(int vmId, int brokerId) {
-        return Vm.NULL;
     }
     @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
     @Override public List<Vm> getVmList() { return Collections.emptyList(); }
@@ -142,7 +129,7 @@ final class HostNull implements Host {
         return this;
     }
     @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
-    @Override public long getNumberOfWorkingPes() {
+    @Override public long getWorkingPesNumber() {
         return 0;
     }
     @Override public String toString() {
@@ -150,7 +137,7 @@ final class HostNull implements Host {
     }
     @Override public void setId(long id) {/**/}
     @Override public double getTotalMipsCapacity() { return 0.0; }
-    @Override public long getNumberOfFailedPes() { return 0; }
+    @Override public long getFailedPesNumber() { return 0; }
     @Override public List<Pe> getWorkingPeList() { return Collections.emptyList(); }
     @Override public List<Pe> getBusyPeList() { return Collections.emptyList(); }
     @Override public List<Pe> getFreePeList() { return Collections.emptyList(); }

@@ -38,7 +38,15 @@ final class CloudletNull implements Cloudlet {
     @Override public double getAccumulatedBwCost() {
         return 0.0;
     }
-    @Override public double getActualCpuTime(Datacenter datacenter) {
+    /**
+         * Gets the total execution time of this Cloudlet in a given Datacenter
+         * ID.
+         *
+         * @param datacenter the Datacenter entity
+         * @return the total execution time of this Cloudlet in the given Datacenter
+         * or 0 if the Cloudlet was not executed there
+         */
+    public double getActualCpuTime(Datacenter datacenter) {
         return 0.0;
     }
     @Override public double getActualCpuTime() {
@@ -92,9 +100,6 @@ final class CloudletNull implements Cloudlet {
     @Override public List<String> getRequiredFiles() {
         return Collections.emptyList();
     }
-    @Override public Datacenter getLastDatacenter() {
-        return Datacenter.NULL;
-    }
     @Override public Status getStatus() {
         return Status.FAILED;
     }
@@ -137,12 +142,6 @@ final class CloudletNull implements Cloudlet {
         return Vm.NULL;
     }
     @Override public double getWaitingTime() {
-        return 0.0;
-    }
-    @Override public double getWallClockTimeInLastExecutedDatacenter() {
-        return 0.0;
-    }
-    @Override public double getWallClockTime(Datacenter datacenter) {
         return 0.0;
     }
     @Override public boolean isFinished() {
@@ -209,7 +208,11 @@ final class CloudletNull implements Cloudlet {
     @Override public int compareTo(Cloudlet cloudlet) {
         return 0;
     }
-    @Override public boolean isAssignedToDatacenter() { return false; }
+    /**
+         * @return true if the cloudlet has even been assigned to a Datacenter
+         * in order to run, false otherwise.
+         */
+    public boolean isAssignedToDatacenter() { return false; }
     @Override public String toString() {
         return "Cloudlet.NULL";
     }

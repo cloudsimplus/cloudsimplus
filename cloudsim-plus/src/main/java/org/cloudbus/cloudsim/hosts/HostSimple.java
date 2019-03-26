@@ -295,11 +295,6 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean removeVmMigratingIn(final Vm vm){
-        return vmsMigratingIn.remove(vm);
-    }
-
-    @Override
     public boolean createVm(final Vm vm) {
         final boolean result = createVmInternal(vm);
         if(result) {
@@ -351,7 +346,7 @@ public class HostSimple implements Host {
             return false;
         }
 
-        if (!vmScheduler.isSuitableForVm(vm, true)) {
+        if (!vmScheduler.isSuitableForVm(vm)) {
             return false;
         }
 
@@ -463,19 +458,12 @@ public class HostSimple implements Host {
         vmScheduler.deallocatePesForAllVms();
     }
 
-    @Override
-    public Vm getVm(final int vmId, final int brokerId) {
-        return vmList.stream()
-            .filter(vm -> vm.getId() == vmId && vm.getBroker().getId() == brokerId)
-            .findFirst().orElse(Vm.NULL);
-    }
-
     /**
      * {@inheritDoc}
      * @return {@inheritDoc}
-     * @see #getNumberOfWorkingPes()
-     * @see #getNumberOfFreePes()
-     * @see #getNumberOfFailedPes()
+     * @see #getWorkingPesNumber()
+     * @see #getFreePesNumber()
+     * @see #getFailedPesNumber()
      */
     @Override
     public long getNumberOfPes() {
@@ -483,17 +471,17 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public int getNumberOfFreePes() {
+    public int getFreePesNumber() {
         return (int)peList.stream().filter(Pe::isFree).count();
     }
 
-    @Override
-    public void deallocatePesForVm(final Vm vm) {
-        vmScheduler.deallocatePesFromVm(vm);
-    }
-
-    @Override
-    public List<Double> getAllocatedMipsForVm(final Vm vm) {
+    /**
+     * Gets the MIPS share of each Pe that is allocated to a given VM.
+     *
+     * @param vm the vm
+     * @return an array containing the amount of MIPS of each pe that is available to the VM
+     */
+    protected List<Double> getAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getAllocatedMips(vm);
     }
 
@@ -502,8 +490,12 @@ public class HostSimple implements Host {
         return vmScheduler.getTotalAllocatedMipsForVm(vm);
     }
 
-    @Override
-    public double getMaxAvailableMips() {
+    /**
+     * Returns the maximum available MIPS among all the PEs of the host.
+     *
+     * @return max mips
+     */
+    protected double getMaxAvailableMips() {
         return vmScheduler.getMaxAvailableMips();
     }
 
@@ -763,12 +755,12 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public long getNumberOfWorkingPes() {
-        return peList.size() - getNumberOfFailedPes();
+    public long getWorkingPesNumber() {
+        return peList.size() - getFailedPesNumber();
     }
 
     @Override
-    public long getNumberOfFailedPes() {
+    public long getFailedPesNumber() {
         return peList.stream()
                 .filter(Pe::isFailed)
                 .count();

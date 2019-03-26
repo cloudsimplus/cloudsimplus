@@ -166,16 +166,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     double getAccumulatedBwCost();
 
     /**
-     * Gets the total execution time of this Cloudlet in a given Datacenter
-     * ID.
-     *
-     * @param datacenter the Datacenter entity
-     * @return the total execution time of this Cloudlet in the given Datacenter
-     * or 0 if the Cloudlet was not executed there
-     */
-    double getActualCpuTime(Datacenter datacenter);
-
-    /**
      * Returns the total execution time of the Cloudlet in seconds.
      *
      * @return time in which the Cloudlet was running
@@ -228,12 +218,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     double registerArrivalInDatacenter();
 
     /**
-     * @return true if the cloudlet has even been assigned to a Datacenter
-     * in order to run, false otherwise.
-     */
-    boolean isAssignedToDatacenter();
-
-    /**
      * Gets the cost of each byte of bandwidth (bw) consumed.
      * <p>Realize costs must be defined for Datacenters by accessing the {@link DatacenterCharacteristics}
      * object from each {@link Datacenter} instance and setting the bandwidth cost.</p>
@@ -266,7 +250,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @see DatacenterCharacteristics#setCostPerSecond(double)
      */
     double getCostPerSec(Datacenter datacenter);
-
 
     /**
      * Gets the total cost of executing this Cloudlet.
@@ -384,14 +367,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     long getNumberOfPes();
 
     /**
-     * Gets the latest {@link Datacenter} where the Cloudlet was processed.
-     *
-     * @return the Datacenter or <b>{@link Datacenter#NULL}</b> if the Cloudlet
-     * has not being processed yet.
-     */
-    Datacenter getLastDatacenter();
-
-    /**
      * Gets the utilization model that defines how the cloudlet will use the VM's
      * bandwidth (bw).
      *
@@ -502,25 +477,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * or the cloudlet hasn't started to execute.
      */
     double getWaitingTime();
-
-    /**
-     * Gets the time of this Cloudlet resides in the latest Datacenter (from
-     * arrival time until departure time).
-     *
-     * @return the wall-clock time in the latest Datacenter or 0 if the Cloudlet has never been executed
-     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
-     */
-    double getWallClockTimeInLastExecutedDatacenter();
-
-    /**
-     * Gets the time of this Cloudlet resides in a given Datacenter (from
-     * arrival time until departure time).
-     *
-     * @param datacenter a Datacenter entity
-     * @return the wall-clock time or 0 if the Cloudlet has never been executed there
-     * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
-     */
-    double getWallClockTime(Datacenter datacenter);
 
     /**
      * Checks whether this Cloudlet has finished executing or not.
@@ -702,7 +658,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * {@link #getLength()} of the cloudlet will be executed in each Pe defined by
      * {@link #getNumberOfPes()}.
      *
-     * <p>For example, setting the cloudletLenght as 10000 MI and
+     * <p>For example, setting the cloudletLength as 10000 MI and
      * {@link #getNumberOfPes()} to 4, each Pe will execute 10000 MI.
      * Thus, the entire Cloudlet has a total length of 40000 MI.
      * </p>

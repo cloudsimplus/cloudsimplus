@@ -36,6 +36,11 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      */
     State getState();
 
+    /**
+     * Sets the entity state.
+     *
+     * @param state the state to set
+     */
     SimEntity setState(State state);
 
     /**

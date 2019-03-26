@@ -103,22 +103,6 @@ public class CloudletSimpleTest {
     }
 
     @Test
-    public void testAssignCloudletToDataCenterWhenRecordLogEnabledDatacenterNotAssigned() {
-        final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet(0);
-        cloudlet.assignToDatacenter(Datacenter.NULL);
-        assertEquals(Datacenter.NULL, cloudlet.getLastDatacenter());
-    }
-
-    @Test
-    public void testAssignCloudletToDataCenterWhenRecordLogEnabledDatacenterAlreadyAssigned() {
-        final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet(0);
-        cloudlet.assignToDatacenter(Datacenter.NULL);
-
-        cloudlet.assignToDatacenter(Datacenter.NULL);
-        assertEquals(Datacenter.NULL, cloudlet.getLastDatacenter());
-    }
-
-    @Test
     public void testGetExecStartTime() {
         final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
         assertEquals(0, cloudlet.getExecStartTime());
@@ -144,22 +128,6 @@ public class CloudletSimpleTest {
         cloudlet.assignToDatacenter(Datacenter.NULL);
         cloudlet.registerArrivalInDatacenter();
         assertEquals(submissionTime, cloudlet.getLastDatacenterArrivalTime());
-    }
-
-    @Test
-    public void testGetWallClockTime() {
-        final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet();
-        assertEquals(0, cloudlet.getWallClockTimeInLastExecutedDatacenter());
-
-        cloudlet.assignToDatacenter(Datacenter.NULL);
-        final double arrivalTime = 0.0, execStartTime = 10.0;
-        CloudSimMocker.createMock(mocker -> mocker.clock(arrivalTime));
-
-        cloudlet.registerArrivalInDatacenter();
-        cloudlet.setExecStartTime(execStartTime);
-        final double wallClockTime = execStartTime + 20.0;
-        cloudlet.setWallClockTime(wallClockTime, wallClockTime);
-        assertEquals(wallClockTime, cloudlet.getWallClockTimeInLastExecutedDatacenter());
     }
 
     @Test
@@ -251,15 +219,6 @@ public class CloudletSimpleTest {
         final long expected = cloudlet.getLength();
         cloudlet.addFinishedLengthSoFar(expected*2);
         assertEquals(expected, cloudlet.getLength());
-    }
-
-    @Test
-    public void testGetDatacenterId() {
-        final CloudletSimple cloudlet = CloudletTestUtil.createCloudlet(0);
-        assertEquals(Datacenter.NULL, cloudlet.getLastDatacenter());
-
-        cloudlet.assignToDatacenter(Datacenter.NULL);
-        assertEquals(Datacenter.NULL, cloudlet.getLastDatacenter());
     }
 
     @Test

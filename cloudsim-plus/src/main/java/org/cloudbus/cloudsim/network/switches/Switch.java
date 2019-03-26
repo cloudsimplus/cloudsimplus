@@ -2,11 +2,9 @@ package org.cloudbus.cloudsim.network.switches;
 
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
-import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Represents a Network Switch.
@@ -104,66 +102,10 @@ public interface Switch extends SimEntity {
     List<Switch> getUplinkSwitches();
 
     /**
-     *
-     * @return a <b>read-only</b> map of hosts and the list of packets
-     * to be sent to each one.
-     */
-    Map<NetworkHost, List<HostPacket>> getPacketToHostMap();
-
-    /**
      * Gets the list of Switches in the lower layer that this Switch is connected to.
      * @return
      */
     List<Switch> getDownlinkSwitches();
-
-    /**
-     * Gets the list of packets to be sent to a downlink switch.
-     * @param downlinkSwitch the id of the switch to get the list of packets to send
-     * @return the list of packets to be sent to the given switch.
-     */
-    List<HostPacket> getDownlinkSwitchPacketList(Switch downlinkSwitch);
-
-    /**
-     * Gets the list of packets to be sent to an uplink switch.
-     * @param uplinkSwitch the switch to get the list of packets to send
-     * @return the list of packets to be sent to the given switch.
-     */
-    List<HostPacket> getUplinkSwitchPacketList(Switch uplinkSwitch);
-
-    /**
-     * Gets the list of packets to be sent to a host.
-     * @param host the host to get the list of packets to send
-     * @return the list of packets to be sent to the given host.
-     */
-    List<HostPacket> getHostPacketList(NetworkHost host);
-
-    /**
-     *
-     * @return a <b>read-only</b> map of the uplink Switches and list of packets
-     * to be sent to each one.
-     */
-    Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap();
-
-    /**
-     * Adds a packet that will be sent to a downlink {@link Switch}.
-     * @param downlinkSwitch the target switch
-     * @param packet the packet to be sent
-     */
-    void addPacketToSendToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet);
-
-    /**
-     * Adds a packet that will be sent to a uplink {@link Switch}.
-     * @param uplinkSwitch the target switch
-     * @param packet the packet to be sent
-     */
-    void addPacketToSendToUplinkSwitch(Switch uplinkSwitch, HostPacket packet);
-
-    /**
-     * Adds a packet that will be sent to a {@link NetworkHost}.
-     * @param host the target {@link NetworkHost}
-     * @param packet the packet to be sent
-     */
-    void addPacketToSendToHost(NetworkHost host, HostPacket packet);
 
     /**
      * Gets the Datacenter where the switch is connected to.

@@ -38,9 +38,6 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
     }
     @Override public Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList) { return Collections.emptyMap(); }
     @Override public void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {/**/}
-    @Override public Map<Host, List<Double>> getUtilizationHistory() { return Collections.EMPTY_MAP; }
-    @Override public Map<Host, List<Double>> getMetricHistory() { return Collections.EMPTY_MAP; }
-    @Override public Map<Host, List<Double>> getTimeHistory() { return Collections.EMPTY_MAP; }
     @Override public boolean isHostOverloaded(Host host) { return false; }
     @Override public boolean isHostUnderloaded(Host host) { return false; }
     @Override public double getOverUtilizationThreshold(Host host) { return 0; }

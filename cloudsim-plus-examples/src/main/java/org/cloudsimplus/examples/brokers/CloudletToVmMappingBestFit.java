@@ -134,7 +134,7 @@ public class CloudletToVmMappingBestFit {
                 .stream()
                 .filter(vm -> vm.getNumberOfPes() >= cloudlet.getNumberOfPes())
                 .min(Comparator.comparingLong(Vm::getNumberOfPes))
-                .orElse(broker0.defaultVmMapper(cloudlet));
+                .orElse(broker0.getVmMapper().apply(cloudlet));
     }
 
     /**

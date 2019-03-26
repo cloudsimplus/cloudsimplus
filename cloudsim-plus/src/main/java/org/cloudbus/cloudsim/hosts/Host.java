@@ -126,13 +126,6 @@ public interface Host extends Machine, Comparable<Host> {
     boolean addVmMigratingOut(Vm vm);
 
     /**
-     * Adds a {@link Vm} to the list of VMs migrating into the Host.
-     * @param vm the vm to be added
-     * @return
-     */
-    boolean removeVmMigratingIn(Vm vm);
-
-    /**
      * Adds a {@link Vm} to the list of VMs migrating out from the Host.
      * @param vm the vm to be added
      * @return
@@ -158,21 +151,6 @@ public interface Host extends Machine, Comparable<Host> {
      * @param vm the vm
      */
     void removeMigratingInVm(Vm vm);
-
-    /**
-     * Releases PEs allocated to a VM.
-     *
-     * @param vm the vm
-     */
-    void deallocatePesForVm(Vm vm);
-
-    /**
-     * Gets the MIPS share of each Pe that is allocated to a given VM.
-     *
-     * @param vm the vm
-     * @return an array containing the amount of MIPS of each pe that is available to the VM
-     */
-    List<Double> getAllocatedMipsForVm(Vm vm);
 
     /**
      * Gets the total allocated MIPS for a VM along all its PEs.
@@ -220,7 +198,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return the free pes number
      */
-    int getNumberOfFreePes();
+    int getFreePesNumber();
 
     /**
      * Gets the number of PEs that are working.
@@ -228,28 +206,21 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return the number of working pes
      */
-    long getNumberOfWorkingPes();
+    long getWorkingPesNumber();
 
     /**
      * Gets the number of PEs that have failed.
      *
      * @return the number of failed pes
      */
-    long getNumberOfFailedPes();
+    long getFailedPesNumber();
 
     /**
-     * Gets the current amount of available MIPS at the host.
+     * Gets the current total amount of available MIPS at the host.
      *
-     * @return the available amount of MIPS
+     * @return the total available amount of MIPS
      */
     double getAvailableMips();
-
-    /**
-     * Returns the maximum available MIPS among all the PEs of the host.
-     *
-     * @return max mips
-     */
-    double getMaxAvailableMips();
 
     /**
      * Gets the total free storage available at the host in Megabytes.
@@ -287,19 +258,10 @@ public interface Host extends Machine, Comparable<Host> {
     Host setRamProvisioner(ResourceProvisioner ramProvisioner);
 
     /**
-     * Gets a VM by its id and user.
-     *
-     * @param vmId the vm id
-     * @param brokerId ID of VM's owner
-     * @return the virtual machine object, $null if not found
-     */
-    Vm getVm(int vmId, int brokerId);
-
-    /**
      * Gets a <b>read-only</b> list of VMs currently assigned to the host.
      *
      * @param <T> The generic type
-     * @return the read-only vm list
+     * @return the read-only current vm list
      */
     <T extends Vm> List<T> getVmList();
 
@@ -310,7 +272,7 @@ public interface Host extends Machine, Comparable<Host> {
      * including those ones already destroyed.
      *
      * @param <T> The generic type
-     * @return the read-only vm created list
+     * @return the read-only vm created historic list
      */
     <T extends Vm> List<T> getVmCreatedList();
 

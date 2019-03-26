@@ -615,7 +615,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
 
     /**
      * Gets the last time the VM was running some Cloudlet.
-     * @return the last buzy time (in seconds)
+     * @return the last busy time (in seconds)
      */
     double getLastBusyTime();
 

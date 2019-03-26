@@ -86,7 +86,6 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
             return getFallbackVmAllocationPolicy().isHostOverloaded(host);
         }
 
-        addHistoryEntryIfAbsent(host, predictedUsageThreshold);
         return predictedUsageThreshold >= 1;
     }
 

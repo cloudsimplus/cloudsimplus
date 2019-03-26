@@ -10,9 +10,6 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.hosts.Host;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * An interface to be implemented by a VM allocation policy
  * that detects {@link Host} under and over CPU utilization.
@@ -27,32 +24,6 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
      * objects.
      */
     VmAllocationPolicyMigration NULL = new VmAllocationPolicyMigrationNull();
-
-    /**
-     * Gets a <b>read-only</b> map of the utilization history for each Host.
-     *
-     * @return the utilization history
-     */
-    Map<Host, List<Double>> getUtilizationHistory();
-
-    /**
-     * Gets a <b>read-only</b> map of metric history.
-     *
-     * @TODO the map stores different data. Sometimes it stores the upper
-     * threshold, other times it stores utilization threshold or predicted
-     * utilization. That is very confusing.
-     *
-     * @return the metric history
-     */
-    Map<Host, List<Double>> getMetricHistory();
-
-    /**
-     * Gets a <b>read-only</b> map of times when entries in each history list was added for each Host.
-     * All history lists are updated at the same time.
-     *
-     * @return the time history
-     */
-    Map<Host, List<Double>> getTimeHistory();
 
     /**
      * Checks if host is currently under utilized, according the the

@@ -74,7 +74,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColumnDataFunction(getTable().addColumn("Status "), cloudlet -> cloudlet.getStatus().name());
         addColumnDataFunction(getTable().addColumn("DC", ID), cloudlet -> cloudlet.getVm().getHost().getDatacenter().getId());
         addColumnDataFunction(getTable().addColumn("Host", ID), cloudlet -> cloudlet.getVm().getHost().getId());
-        addColumnDataFunction(getTable().addColumn("Host PEs ", CPU_CORES), cloudlet -> cloudlet.getVm().getHost().getNumberOfWorkingPes());
+        addColumnDataFunction(getTable().addColumn("Host PEs ", CPU_CORES), cloudlet -> cloudlet.getVm().getHost().getWorkingPesNumber());
         addColumnDataFunction(getTable().addColumn("VM", ID), cloudlet -> cloudlet.getVm().getId());
         addColumnDataFunction(getTable().addColumn("VM PEs   ", CPU_CORES), cloudlet -> cloudlet.getVm().getNumberOfPes());
         addColumnDataFunction(getTable().addColumn("CloudletLen", "MI"), Cloudlet::getLength);

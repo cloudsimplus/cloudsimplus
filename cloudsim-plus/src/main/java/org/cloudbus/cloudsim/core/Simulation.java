@@ -17,7 +17,6 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -129,15 +128,7 @@ public interface Simulation {
     CloudInformationService getCloudInfoService();
 
     /**
-     * Sends a request to Cloud Information Service (CIS) entity to get the list
-     * of all Cloud Datacenter IDs.
-     *
-     * @return a List containing Datacenter IDs
-     */
-    Set<Datacenter> getDatacenterList();
-
-    /**
-     * Returns a read-only list of entities created for the simulation.
+     * Returns a <b>read-only</b> list of entities created for the simulation.
      *
      * @return
      */
@@ -226,13 +217,6 @@ public interface Simulation {
      * @param delay the time period for which the entity will be inactive
      */
     void pauseEntity(SimEntity src, double delay);
-
-    /**
-     * Holds an entity for some time.
-     * @param src   id of entity to be held
-     * @param delay How many seconds after the current time the entity has to be held
-     */
-    void holdEntity(SimEntity src, long delay);
 
     /**
      * Checks if the simulation is paused.

@@ -20,20 +20,17 @@ public class HostTest {
         final Vm vm = Vm.NULL;
 
         assertAll(
-            () -> assertTrue(instance.getAllocatedMipsForVm(vm).isEmpty()),
             () -> assertEquals(0, instance.getAvailableMips()),
             () -> assertEquals(0, instance.getAvailableStorage()),
             () -> assertEquals(0, instance.getBw().getCapacity()),
             () -> assertEquals(ResourceProvisioner.NULL, instance.getBwProvisioner()),
-            () -> assertEquals(0, instance.getMaxAvailableMips()),
-            () -> assertEquals(0, instance.getNumberOfFreePes()),
+            () -> assertEquals(0, instance.getFreePesNumber()),
             () -> assertEquals(0, instance.getNumberOfPes()),
             () -> assertEquals(0, instance.getRam().getCapacity()),
             () -> assertEquals(ResourceProvisioner.NULL, instance.getRamProvisioner()),
             () -> assertEquals(0, instance.getStorage().getCapacity()),
             () -> assertEquals(0, instance.getTotalAllocatedMipsForVm(vm)),
             () -> assertEquals(0, instance.getTotalMipsCapacity()),
-            () -> assertSame(Vm.NULL, instance.getVm(0,0)),
             () -> assertSame(VmScheduler.NULL, instance.getVmScheduler()),
             () -> assertFalse(instance.isFailed()),
             () -> assertFalse(instance.isSuitableForVm(vm)),

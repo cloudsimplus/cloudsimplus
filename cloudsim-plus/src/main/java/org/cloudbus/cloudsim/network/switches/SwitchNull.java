@@ -5,12 +5,10 @@ import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEntityNullBase;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
-import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link Switch}
@@ -43,25 +41,9 @@ final class SwitchNull implements Switch, SimEntityNullBase {
     @Override public List<Switch> getUplinkSwitches() {
         return Collections.emptyList();
     }
-    @Override public Map<NetworkHost, List<HostPacket>> getPacketToHostMap() {
-        return Collections.emptyMap();
-    }
     @Override public List<Switch> getDownlinkSwitches() {
         return Collections.emptyList();
     }
-    @Override public List<HostPacket> getDownlinkSwitchPacketList(Switch swt) { return Collections.emptyList(); }
-    @Override public List<HostPacket> getUplinkSwitchPacketList(Switch swt) {
-        return Collections.emptyList();
-    }
-    @Override public List<HostPacket> getHostPacketList(NetworkHost host) {
-        return Collections.emptyList();
-    }
-    @Override public Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap() {
-        return Collections.emptyMap();
-    }
-    @Override public void addPacketToSendToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet) {/**/}
-    @Override public void addPacketToSendToUplinkSwitch(Switch uplinkSwitch, HostPacket packet) {/**/}
-    @Override public void addPacketToSendToHost(NetworkHost host, HostPacket packet) {/**/}
     @Override public NetworkDatacenter getDatacenter() {
         return DATACENTER;
     }

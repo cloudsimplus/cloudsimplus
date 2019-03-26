@@ -19,8 +19,7 @@ public class DatacenterTest {
             () -> assertEquals(0, instance.getSchedulingInterval()),
             () -> assertTrue(instance.getHostList().isEmpty()),
             () -> assertEquals(Host.NULL, instance.getHost(0)),
-            () -> assertEquals(VmAllocationPolicy.NULL, instance.getVmAllocationPolicy()),
-            () -> assertTrue(instance.getVmList().isEmpty())
+            () -> assertEquals(VmAllocationPolicy.NULL, instance.getVmAllocationPolicy())
         );
     }
 }

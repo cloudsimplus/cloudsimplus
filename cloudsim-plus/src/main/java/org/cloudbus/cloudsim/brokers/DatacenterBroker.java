@@ -83,6 +83,11 @@ public interface DatacenterBroker extends SimEntity {
      */
     <T extends Cloudlet> List<T> getCloudletFinishedList();
 
+    /**
+     * Gets a VM from the waiting list.
+     * @param index the index of the VM to get
+     * @return the waiting VM
+     */
     Vm getWaitingVm(int index);
 
     /**
@@ -167,7 +172,7 @@ public interface DatacenterBroker extends SimEntity {
      */
     void submitCloudletList(List<? extends Cloudlet> list, Vm vm);
 
- /**
+    /**
      * Sends a list of cloudlets to the broker so that it requests their creation
      * inside a specific VM just after a given delay.
      * Just the Cloudlets that don't have a delay already assigned will have its submission delay changed.
@@ -203,14 +208,6 @@ public interface DatacenterBroker extends SimEntity {
      * @see Vm#getSubmissionDelay()
      */
     void submitVmList(List<? extends Vm> list, double submissionDelay);
-
-    /**
-     * Indicates if there are more cloudlets waiting to
-     * be executed yet.
-     *
-     * @return true if there are waiting cloudlets, false otherwise
-     */
-    boolean isThereWaitingCloudlets();
 
     /**
      * Sets the {@link Supplier} that selects and returns a Datacenter
@@ -256,6 +253,15 @@ public interface DatacenterBroker extends SimEntity {
      * @param comparator the Cloudlet Comparator to set
      */
     void setCloudletComparator(Comparator<Cloudlet> comparator);
+
+    /**
+     * Gets a {@link Function} that maps a given Cloudlet to a Vm.
+     * It defines the policy used to select a Vm to host a Cloudlet
+     * that is waiting to be created.
+     *
+     * @return the Vm mapper Function
+     */
+    Function<Cloudlet, Vm> getVmMapper();
 
     /**
      * Sets a {@link Function} that maps a given Cloudlet to a Vm.
@@ -332,18 +338,6 @@ public interface DatacenterBroker extends SimEntity {
      * @see Vm#getIdleInterval()
      */
     DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function);
-
-    /**
-     * Defines the default policy used to select a Vm to host a Cloudlet
-     * that is waiting to be created.
-     * <br>It applies a Round-Robin policy to cyclically select
-     * the next Vm from the list of waiting VMs.
-     *
-     * @param cloudlet the cloudlet that needs a VM to be placed into
-     * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
-     * no suitable VM was found
-     */
-    Vm defaultVmMapper(Cloudlet cloudlet);
 
     List<Cloudlet> getCloudletSubmittedList();
 }

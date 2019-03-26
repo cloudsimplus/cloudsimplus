@@ -186,7 +186,7 @@ public final class DynamicVmAllocationPolicyBestFitExample {
             .getHostList()
             .stream()
             .filter(host -> host.isSuitableForVm(vm))
-            .min(Comparator.comparingInt(Host::getNumberOfFreePes));
+            .min(Comparator.comparingInt(Host::getFreePesNumber));
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {

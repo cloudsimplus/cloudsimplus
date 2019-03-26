@@ -244,60 +244,6 @@ public class CloudletSchedulerSpaceSharedTest {
     }
 
     @Test
-    public void testGetCloudletToMigrateWhenEmptyExecList() {
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
-        final Cloudlet expResult = Cloudlet.NULL;
-        final Cloudlet result = instance.getCloudletToMigrate();
-        assertEquals(expResult, result);
-    }
-
-    @Test
-    public void testGetCloudletToMigrateWhenThereAreExecCloudlet() {
-        final int schedulerPes = 2;
-        final int cloudletPes = 1;
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler(schedulerPes);
-
-        final Cloudlet expResult = CloudletTestUtil.createCloudlet(0, cloudletPes);
-        instance.cloudletSubmit(expResult);
-
-        final Cloudlet result = instance.getCloudletToMigrate();
-        assertSame(expResult, result);
-    }
-
-    @Test
-    public void testGetCloudletToMigrateCheckExecListBecameEmpty() {
-        final int schedulerPes = 2;
-        final int cloudletPes = 1;
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler(schedulerPes);
-
-        final Cloudlet expResult = CloudletTestUtil.createCloudlet(0, cloudletPes);
-        instance.cloudletSubmit(expResult);
-
-        instance.getCloudletToMigrate();
-        assertTrue(instance.getCloudletExecList().isEmpty());
-    }
-
-    @Test
-    public void testGetCloudletToMigrateWhenTwoCloudletsAreRunning() {
-        final int schedulerPes = 2;
-        final int cloudletPes = 1;
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler(schedulerPes);
-
-        assertEquals(0, instance.getUsedPes());
-        final Cloudlet cloudlet0 = CloudletTestUtil.createCloudlet(0, cloudletPes);
-        instance.cloudletSubmit(cloudlet0);
-        assertEquals(1, instance.getUsedPes());
-
-        final Cloudlet cloudlet1 = CloudletTestUtil.createCloudlet(1, cloudletPes);
-        instance.cloudletSubmit(cloudlet1);
-        assertEquals(2, instance.getUsedPes());
-
-        final int expResult = 1;
-        instance.getCloudletToMigrate();
-        assertEquals(expResult, instance.getUsedPes());
-    }
-
-    @Test
     public void testGetCloudletExecListReturnEmptyList() {
         final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
         assertTrue(instance.getCloudletExecList().isEmpty());

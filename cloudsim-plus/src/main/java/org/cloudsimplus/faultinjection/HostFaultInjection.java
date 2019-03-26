@@ -303,7 +303,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param host the Host to generate the fault to.
      */
     public void generateHostFault(final Host host){
-        generateHostFault(host, host.getNumberOfWorkingPes());
+        generateHostFault(host, host.getWorkingPesNumber());
     }
 
     /**
@@ -321,9 +321,9 @@ public class HostFaultInjection extends CloudSimEntity {
         numberOfHostFaults++;
         registerHostFaultTime();
 
-        final long previousNumOfWorkingPes = lastFailedHost.getNumberOfWorkingPes();
+        final long previousNumOfWorkingPes = lastFailedHost.getWorkingPesNumber();
         this.lastNumberOfFailedPes = generateHostPesFaults(numberOfPesToFail);
-        final long hostWorkingPes = lastFailedHost.getNumberOfWorkingPes();
+        final long hostWorkingPes = lastFailedHost.getWorkingPesNumber();
         final long vmsRequiredPes = getPesSumOfWorkingVms();
 
         final String msg = lastFailedHost.getVmList().isEmpty() ? "" : " | VMs required PEs: " + vmsRequiredPes;
@@ -409,8 +409,8 @@ public class HostFaultInjection extends CloudSimEntity {
                 "\tNumber of failed PEs is less than PEs required by all its {} VMs, thus it doesn't affect any VM.{}" +
                 "Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.\n",
                 lastFailedHost.getVmList().size(), System.lineSeparator(),
-                lastFailedHost.getNumberOfPes(), lastFailedHost.getNumberOfFailedPes(),
-                lastFailedHost.getNumberOfWorkingPes(), vmsRequiredPes);
+                lastFailedHost.getNumberOfPes(), lastFailedHost.getFailedPesNumber(),
+                lastFailedHost.getWorkingPesNumber(), vmsRequiredPes);
     }
 
     /**
@@ -420,7 +420,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private void deallocateFailedHostPesFromVms() {
         LOGGER.error("\t{} PEs just failed. There is a total of {} working PEs.",
                 lastNumberOfFailedPes,
-                lastFailedHost.getNumberOfWorkingPes());
+                lastFailedHost.getWorkingPesNumber());
         cyclicallyRemoveFailedHostPesFromVms();
 
         final List<Vm> vmsWithoutPes =
@@ -465,7 +465,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     private int numberOfFailedPesToRemoveFromVms() {
-        final int hostWorkingPes = (int)lastFailedHost.getNumberOfWorkingPes();
+        final int hostWorkingPes = (int)lastFailedHost.getWorkingPesNumber();
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
         return vmsRequiredPes - hostWorkingPes;
     }
@@ -853,7 +853,7 @@ public class HostFaultInjection extends CloudSimEntity {
         /*the random generator return values from [0 to 1]
          and multiplying by the number of PEs we get a number between
          0 and number of PEs*/
-        return (int) (random.sample() * host.getNumberOfWorkingPes()) + 1;
+        return (int) (random.sample() * host.getWorkingPesNumber()) + 1;
     }
 
     /**

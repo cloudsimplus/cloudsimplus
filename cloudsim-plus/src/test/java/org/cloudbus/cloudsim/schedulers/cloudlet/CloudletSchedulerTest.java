@@ -20,16 +20,12 @@ public class CloudletSchedulerTest {
             () -> assertEquals(0, instance.cloudletSubmit(null, 0)),
             () -> assertEquals(0, instance.cloudletSubmit(null)),
             () -> assertFalse(instance.cloudletPause(null)),
-            () -> assertEquals(0, instance.getCloudletStatus(0)),
             () -> assertTrue(instance.getCloudletFinishedList().isEmpty()),
             () -> assertEquals(0, instance.getCurrentRequestedBwPercentUtilization()),
             () -> assertEquals(0, instance.getCurrentRequestedRamPercentUtilization()),
             () -> assertEquals(0, instance.getPreviousTime()),
-            () -> assertEquals(0, instance.getRequestedMipsForCloudlet(null, 0)),
             () -> assertEquals(0, instance.getRequestedCpuPercentUtilization(0)),
             () -> assertFalse(instance.hasFinishedCloudlets()),
-            () -> assertEquals(Cloudlet.NULL, instance.getCloudletToMigrate()),
-            () -> assertEquals(0, instance.runningCloudletsNumber()),
             () -> assertEquals(0, instance.updateProcessing(0, null))
         );
     }

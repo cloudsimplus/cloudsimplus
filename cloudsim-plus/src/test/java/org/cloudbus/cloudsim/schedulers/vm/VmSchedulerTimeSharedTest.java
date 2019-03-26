@@ -60,7 +60,6 @@ public class VmSchedulerTimeSharedTest {
     public void testInit() {
         final List<Pe> peList = vmScheduler.getHost().getWorkingPeList();
         assertAll(
-            () -> assertEquals(peList, vmScheduler.getWorkingPeList()),
             () -> assertEquals(2000, vmScheduler.getAvailableMips()),
             () -> assertEquals(1000, vmScheduler.getMaxAvailableMips()),
             () -> assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm0))

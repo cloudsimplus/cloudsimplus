@@ -129,7 +129,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @param host the Host to add PEs from
      */
     public void addPesFromHost(final Host host) {
-        final long workingPes = host.getNumberOfWorkingPes();
+        final long workingPes = host.getWorkingPesNumber();
         hostFreePesMap.compute(host, (mapHost, freePes) -> freePes == null ? workingPes : Math.min(freePes, workingPes));
     }
 
