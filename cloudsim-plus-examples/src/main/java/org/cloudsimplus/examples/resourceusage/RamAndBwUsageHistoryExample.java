@@ -32,7 +32,6 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
-import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -40,16 +39,18 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 /**
@@ -92,13 +93,18 @@ public class RamAndBwUsageHistoryExample {
     private final Datacenter datacenter0;
 
     /**
-     * A map where each key is a VM and each value is another map.
-     * Such an internal map stores RAM an BW utilization for a VM.
+     * A map to store RAM utilization history for every VM.
+     * Each key is a VM and each value is another map.
+     * This entire data structure is usually called a multi-map.
+     *
+     * Such an internal map stores RAM utilization for a VM.
      * The keys of this internal map are the time the utilization was collected (in seconds)
      * and the value the utilization percentage (from 0 to 1).
      */
-    private final Map<Vm, Map<Double, Double>> ramUtilizationHistory;
-    private final Map<Vm, Map<Double, Double>> bwUtilizationHistory;
+    private final Map<Vm, Map<Double, Double>> allVmsRamUtilizationHistory;
+
+    /** @see #allVmsRamUtilizationHistory */
+    private final Map<Vm, Map<Double, Double>> allVmsBwUtilizationHistory;
 
     public static void main(String[] args) {
         new RamAndBwUsageHistoryExample();
@@ -119,8 +125,8 @@ public class RamAndBwUsageHistoryExample {
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
-        ramUtilizationHistory = initializeUtilizationHistory();
-        bwUtilizationHistory = initializeUtilizationHistory();
+        allVmsRamUtilizationHistory = initializeUtilizationHistory();
+        allVmsBwUtilizationHistory = initializeUtilizationHistory();
         simulation.addOnClockTickListener(this::onClockTickListener);
 
         simulation.start();
@@ -128,28 +134,46 @@ public class RamAndBwUsageHistoryExample {
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets).build();
 
-        System.out.println();
-        printVmResourceUtilizationHistory(ramUtilizationHistory, Ram.class);
-        printVmResourceUtilizationHistory(bwUtilizationHistory, Bandwidth.class);
+        printVmListResourceUtilizationHistory();
     }
 
-    private void printVmResourceUtilizationHistory(Map<Vm, Map<Double, Double>> utilizationHistory, Class<? extends ResourceManageable> resourceClass) {
-        //A Comparator that enables sorting the internal map by its key (the time the resource usage was collected).
-        Comparator<Map.Entry<Double, Double>> timeComparator = Comparator.comparingDouble(Map.Entry::getKey);
-        System.out.println("------------------------------------------------------------------------------------");
+    /**
+     * Prints the RAM and BW utilization history of every Vm.
+     */
+    private void printVmListResourceUtilizationHistory() {
+        System.out.println();
         for (Vm vm : vmList) {
-            System.out.println(vm + " " + resourceClass.getSimpleName() + " utilization history");
-            System.out.println("------------------------------------------");
-
-            final Stream<Map.Entry<Double, Double>> utilizationStream = utilizationHistory.get(vm).entrySet().stream().sorted(timeComparator);
-            utilizationStream.forEach(entry -> System.out.printf("Time: %10.1f secs | Usage: %10.2f%%\n", entry.getKey(), entry.getValue()*100));
-            System.out.println("------------------------------------------\n");
+            printVmUtilizationHistory(vm);
         }
     }
 
     /**
+     * Prints the RAM and BW utilization history of a given Vm.
+     */
+    private void printVmUtilizationHistory(Vm vm) {
+        System.out.println(vm + " RAM and BW utilization history");
+        System.out.println("----------------------------------------------------------------------------------");
+
+        //A stream containing all resource utilization collection times
+        final Stream<Double> timeStream = allVmsRamUtilizationHistory.get(vm).keySet().stream().sorted();
+
+        final Map<Double, Double> vmRamUtilization = allVmsRamUtilizationHistory.get(vm);
+        final Map<Double, Double> vmBwUtilization = allVmsBwUtilizationHistory.get(vm);
+
+        timeStream.forEach(time -> {
+            System.out.printf(
+                "Time: %10.1f secs | RAM Utilization: %10.2f%% | BW Utilization: %10.2f%%\n",
+                time, vmRamUtilization.get(time)*100,
+                vmBwUtilization.get(time)*100);
+        });
+
+        System.out.println("----------------------------------------------------------------------------------\n");
+    }
+
+
+    /**
      * Initializes a map that will store utilization history for
-     * some VM resource (such as RAM or BW) of VMs.
+     * some resource (such as RAM or BW) of every VM.
      * It also creates an empty internal map to store
      * the resource utilization for every VM along the simulation execution.
      * The internal map for every VM will be empty.
@@ -175,26 +199,25 @@ public class RamAndBwUsageHistoryExample {
      * @see #SCHEDULING_INTERVAL
      */
     private void onClockTickListener(final EventInfo evt) {
-        collectVmResourceUtilization(this.ramUtilizationHistory, Ram.class);
-        collectVmResourceUtilization(this.bwUtilizationHistory, Bandwidth.class);
+        collectVmResourceUtilization(this.allVmsRamUtilizationHistory, Ram.class);
+        collectVmResourceUtilization(this.allVmsBwUtilizationHistory, Bandwidth.class);
     }
 
     /**
-     * Collects the utilization percentage of a given VM resource.
+     * Collects the utilization percentage of a given VM resource for every VM.
      * CloudSim Plus already has built-in features to obtain VM's CPU utilization.
      * Check {@link org.cloudsimplus.examples.power.PowerExample}.
      *
-     * @param utilizationHistory the map where the collected utilization will be stored
+     * @param allVmsUtilizationHistory the map where the collected utilization for every VM will be stored
      * @param resourceClass the kind of resource to collect its utilization (usually {@link Ram} or {@link Bandwidth}).
      */
-    private void collectVmResourceUtilization(final Map<Vm, Map<Double, Double>> utilizationHistory, Class<? extends ResourceManageable> resourceClass) {
+    private void collectVmResourceUtilization(final Map<Vm, Map<Double, Double>> allVmsUtilizationHistory, Class<? extends ResourceManageable> resourceClass) {
         for (Vm vm : vmList) {
-            vm.getResource(resourceClass);
             /*Gets the internal resource utilization map for the current VM.
             * The key of this map is the time the usage was collected (in seconds)
             * and the value the percentage of utilization (from 0 to 1). */
-            final Map<Double, Double> internalUtilizationMap = utilizationHistory.get(vm);
-            internalUtilizationMap.put(simulation.clock(), vm.getResource(resourceClass).getPercentUtilization());
+            final Map<Double, Double> vmUtilizationHistory = allVmsUtilizationHistory.get(vm);
+            vmUtilizationHistory.put(simulation.clock(), vm.getResource(resourceClass).getPercentUtilization());
         }
     }
 
@@ -261,14 +284,13 @@ public class RamAndBwUsageHistoryExample {
     }
 
     /**
-     * Creates a Cloudlet that uses a random amount fo RAM and BW,
-     * where the maximum usage will be 40% of VM's capacity.
-     * It uses the full capacity of VM's CPU.
+     * Creates a Cloudlet that will start using a specific amount of RAM and BW
+     * and increases such an utilization 1% every second.
      * @return
      */
     private Cloudlet createCloudlet() {
-        UniformDistr rand = new UniformDistr(0, 0.4);
-        UtilizationModel um = new UtilizationModelStochastic(rand);
+        UtilizationModelDynamic um = new UtilizationModelDynamic(0.2);
+        um.setUtilizationUpdateFunction(instance -> instance.getUtilization() + instance.getTimeSpan()*0.01);
         return new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES)
             .setFileSize(1024)
             .setOutputSize(1024)
