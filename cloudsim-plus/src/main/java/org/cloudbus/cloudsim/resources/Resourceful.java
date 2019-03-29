@@ -49,7 +49,7 @@ public interface Resourceful {
     default ResourceManageable getResource(final Class<? extends ResourceManageable> resourceClass){
         return getResources()
                 .stream()
-                .filter(resource -> resource.isObjectSubClassOf(resourceClass))
+                .filter(resource -> resource.isSubClassOf(resourceClass))
                 .findFirst()
                 .orElse(ResourceManageable.NULL);
     }

@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.cloudlets;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
@@ -36,17 +37,6 @@ final class CloudletNull implements Cloudlet {
         return false;
     }
     @Override public double getAccumulatedBwCost() {
-        return 0.0;
-    }
-    /**
-         * Gets the total execution time of this Cloudlet in a given Datacenter
-         * ID.
-         *
-         * @param datacenter the Datacenter entity
-         * @return the total execution time of this Cloudlet in the given Datacenter
-         * or 0 if the Cloudlet was not executed there
-         */
-    public double getActualCpuTime(Datacenter datacenter) {
         return 0.0;
     }
     @Override public double getActualCpuTime() {
@@ -120,6 +110,7 @@ final class CloudletNull implements Cloudlet {
     @Override public UtilizationModel getUtilizationModelRam() {
         return UtilizationModel.NULL;
     }
+    @Override public UtilizationModel getUtilizationModel(Class<? extends ResourceManageable> resourceClass) { return UtilizationModel.NULL; }
     @Override public double getUtilizationOfBw() {
         return 0;
     }
@@ -208,11 +199,6 @@ final class CloudletNull implements Cloudlet {
     @Override public int compareTo(Cloudlet cloudlet) {
         return 0;
     }
-    /**
-         * @return true if the cloudlet has even been assigned to a Datacenter
-         * in order to run, false otherwise.
-         */
-    public boolean isAssignedToDatacenter() { return false; }
     @Override public String toString() {
         return "Cloudlet.NULL";
     }

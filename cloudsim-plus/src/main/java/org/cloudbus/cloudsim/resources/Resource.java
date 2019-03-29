@@ -28,22 +28,12 @@ public interface Resource extends ResourceCapacity {
     Resource NULL = new ResourceNull();
 
     /**
-     * Checks if a given object is instance of a given class.
-     * @param object the object to check
-     * @param classWanted the class to verify if the object is instance of
-     * @return true if the object is instance of the given class, false otherwise
-     */
-    static boolean isObjectSubClassOf(final Object object, final Class classWanted) {
-        return classWanted.isAssignableFrom(object.getClass());
-    }
-
-    /**
      * Checks if this object is instance of a given class.
      * @param classWanted the class to verify if the object is instance of
      * @return true if the object is instance of the given class, false otherwise
      */
-    default boolean isObjectSubClassOf(final Class classWanted) {
-        return isObjectSubClassOf(this, classWanted);
+    default boolean isSubClassOf(final Class classWanted) {
+        return classWanted.isAssignableFrom(this.getClass());
     }
 
     /**

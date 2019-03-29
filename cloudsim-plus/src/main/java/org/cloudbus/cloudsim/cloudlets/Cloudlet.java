@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -387,6 +388,14 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * @return the utilization model of ram
      */
     UtilizationModel getUtilizationModelRam();
+
+    /**
+     * Gets the utilization model for a given resource
+     *
+     * @param resourceClass the kind of resource to get its {@link UtilizationModel}
+     * @return the utilization model
+     */
+    UtilizationModel getUtilizationModel(Class<? extends ResourceManageable> resourceClass);
 
     /**
      * Gets the utilization of CPU at the current simulation time, that is defined in

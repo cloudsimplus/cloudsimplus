@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -711,6 +712,23 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     public final Cloudlet setUtilizationModelBw(final UtilizationModel utilizationModelBw) {
         this.utilizationModelBw = requireNonNull(utilizationModelBw);
         return this;
+    }
+
+    @Override
+    public UtilizationModel getUtilizationModel(final Class<? extends ResourceManageable> resourceClass) {
+        if(resourceClass.isAssignableFrom(Ram.class)){
+            return utilizationModelRam;
+        }
+
+        if(resourceClass.isAssignableFrom(Bandwidth.class)){
+            return utilizationModelBw;
+        }
+
+        if(resourceClass.isAssignableFrom(Processor.class) || resourceClass.isAssignableFrom(Pe.class)){
+            return utilizationModelCpu;
+        }
+
+        throw new UnsupportedOperationException("This method doesn't support " + resourceClass.getSimpleName() + " resources");
     }
 
     @Override

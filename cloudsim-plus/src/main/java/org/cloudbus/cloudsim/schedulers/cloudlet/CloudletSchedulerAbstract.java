@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
@@ -504,7 +505,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         updateCloudletsProcessing(currentTime);
-        updateVmRamAbsoluteUtilization();
+        updateVmResourceAbsoluteUtilization(Ram.class);
+        updateVmResourceAbsoluteUtilization(Bandwidth.class);
         addCloudletsToFinishedList();
         moveNextCloudletsFromWaitingToExecList();
 
@@ -563,46 +565,49 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Updates the VM usage of RAM, based on the current utilization of all
-     * its running Cloudlets, that depends on the {@link Cloudlet#getUtilizationModelRam()}.
+     * Updates the VM utilization of given resource, based on the current utilization of all
+     * its running Cloudlets, that depends on the Cloudlet's {@link UtilizationModel} for that resource.
      *
      * <p>It deallocates all resources so that the VM's amount of allocated resource will be update
      * for each running Cloudlet. This way, each Cloudlet requests an amount that is allocated.
      * The request for the next Cloudlet may not be fulfilled due to lack of resources.
      * If a Cloudlet requests more resources than is available, just the available
      * amount is allocated to it.</p>
+     *
+     * @param resourceClass the kind of resource to updates its utilization (usually {@link Ram} or {@link Bandwidth}).
      */
-    private void updateVmRamAbsoluteUtilization() {
-        final ResourceManageable ram = vm.getResource(Ram.class);
-        ram.deallocateAllResources();
+    private void updateVmResourceAbsoluteUtilization(final Class<? extends ResourceManageable> resourceClass) {
+        final ResourceManageable resource = vm.getResource(resourceClass);
+        resource.deallocateAllResources();
         for (final CloudletExecution cle : cloudletExecList) {
             final Cloudlet cloudlet = cle.getCloudlet();
-            final long requested = (long)getCloudletRamAbsoluteUtilization(cloudlet);
-            if(requested > ram.getAvailableResource()){
+            final long requested = (long) getCloudletResourceAbsoluteUtilization(cloudlet, resourceClass);
+            if(requested > resource.getAvailableResource()){
                 final String msg =
-                        ram.getAvailableResource() > 0 ?
-                        String.format("just %d was available and allocated to it.", ram.getAvailableResource()):
+                        resource.getAvailableResource() > 0 ?
+                        String.format("just %d was available and allocated to it.", resource.getAvailableResource()):
                         "no amount is available.";
                 LOGGER.warn(
-                    "{}: {}: {} requested {} MB of RAM but {}",
-                    vm.getSimulation().clock(), getClass().getSimpleName(), cloudlet, requested, msg);
+                    "{}: {}: {} requested {} MB of {} but {}",
+                    vm.getSimulation().clock(), getClass().getSimpleName(), cloudlet, requested, resource.getClass().getSimpleName(), msg);
             }
-            ram.allocateResource(Math.min(requested, ram.getAvailableResource()));
+            resource.allocateResource(Math.min(requested, resource.getAvailableResource()));
         }
     }
 
     /**
-     * Gets the absolute value of RAM utilization for a given Cloudlet
+     * Gets the absolute utilization of a given Cloudlet's resource
      *
      * @param cloudlet the Cloudlet to get the absolute value of RAM utilization
-     * @return the Cloudlet RAM utilization in absolute value
+     * @param resourceClass the kind of resource to get its utilization (usually {@link Ram} or {@link Bandwidth}).
+     * @return the current utilization of the requested Cloudlet's resource in absolute value
      */
-    private double getCloudletRamAbsoluteUtilization(final Cloudlet cloudlet) {
-        final ResourceManageable ram = vm.getResource(Ram.class);
-        final UtilizationModel um = cloudlet.getUtilizationModelRam();
+    private double getCloudletResourceAbsoluteUtilization(final Cloudlet cloudlet, Class<? extends ResourceManageable> resourceClass) {
+        final ResourceManageable vmResource = vm.getResource(resourceClass);
+        final UtilizationModel um = cloudlet.getUtilizationModel(resourceClass);
         return um.getUnit() == Unit.ABSOLUTE ?
-                Math.min(um.getUtilization(), vm.getRam().getCapacity()) :
-                um.getUtilization() * ram.getCapacity();
+                Math.min(um.getUtilization(), vmResource.getCapacity()) :
+                um.getUtilization() * vmResource.getCapacity();
     }
 
     /**

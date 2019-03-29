@@ -70,7 +70,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         This way, if the resource is not found inside the VM
         and it is a Pe, it's OK (as it is expected)
         */
-        if(!getResource().isObjectSubClassOf(Pe.class) && !vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
+        if(!getResource().isSubClassOf(Pe.class) && !vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
             return false;
         }
 

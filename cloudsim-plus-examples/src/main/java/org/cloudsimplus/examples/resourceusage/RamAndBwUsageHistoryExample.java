@@ -283,19 +283,27 @@ public class RamAndBwUsageHistoryExample {
         return list;
     }
 
-    /**
-     * Creates a Cloudlet that will start using a specific amount of RAM and BW
-     * and increases such an utilization 1% every second.
-     * @return
-     */
     private Cloudlet createCloudlet() {
-        UtilizationModelDynamic um = new UtilizationModelDynamic(0.2);
-        um.setUtilizationUpdateFunction(instance -> instance.getUtilization() + instance.getTimeSpan()*0.01);
+        UtilizationModelDynamic ramUtilizationModel = new UtilizationModelDynamic(0.2);
+        UtilizationModelDynamic bwUtilizationModel = new UtilizationModelDynamic(0.1);
+
+        ramUtilizationModel.setUtilizationUpdateFunction(this::utilizationUpdate);
+        bwUtilizationModel.setUtilizationUpdateFunction(this::utilizationUpdate);
+
         return new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES)
             .setFileSize(1024)
             .setOutputSize(1024)
             .setUtilizationModelCpu(new UtilizationModelFull())
-            .setUtilizationModelRam(um)
-            .setUtilizationModelBw(um);
+            .setUtilizationModelRam(ramUtilizationModel)
+            .setUtilizationModelBw(bwUtilizationModel);
+    }
+
+    /**
+     * Defines how the Cloudlet's utilization of RAM and BW will increase along the simulation time.
+     * @return the updated utilization for RAM or BW
+     * @see #createCloudlet()
+     */
+    private double utilizationUpdate(UtilizationModelDynamic utilizationModel) {
+        return utilizationModel.getUtilization() + utilizationModel.getTimeSpan() * 0.01;
     }
 }
