@@ -18,8 +18,6 @@
 
 .. java:import:: java.util Objects
 
-.. java:import:: java.util Set
-
 .. java:import:: java.util.function Predicate
 
 Simulation
@@ -105,7 +103,7 @@ addOnSimulationPauseListener
 
    Adds an \ :java:ref:`EventListener`\  object that will be notified when the simulation is paused. When this Listener is notified, it will receive an \ :java:ref:`EventInfo`\  informing the time the pause occurred.
 
-   This object is just information about the event that happened. In fact, it isn't generated an actual {@limk SimEvent} for a pause event because there is not need for that.
+   This object is just information about the event that happened. In fact, it isn't generated an actual \ :java:ref:`SimEvent`\  for a pause event because there is not need for that.
 
    :param listener: the event listener to add
 
@@ -201,23 +199,13 @@ getCloudInfoService
 
    :return: the Entity
 
-getDatacenterList
-^^^^^^^^^^^^^^^^^
-
-.. java:method::  Set<Datacenter> getDatacenterList()
-   :outertype: Simulation
-
-   Sends a request to Cloud Information Service (CIS) entity to get the list of all Cloud Datacenter IDs.
-
-   :return: a List containing Datacenter IDs
-
 getEntityList
 ^^^^^^^^^^^^^
 
 .. java:method::  List<SimEntity> getEntityList()
    :outertype: Simulation
 
-   Returns a read-only list of entities created for the simulation.
+   Returns a \ **read-only**\  list of entities created for the simulation.
 
 getMinTimeBetweenEvents
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -257,17 +245,6 @@ getNumberOfFutureEvents
 
    :param predicate: the predicate to filter the list of future events.
    :return: the number of future events which match the predicate
-
-holdEntity
-^^^^^^^^^^
-
-.. java:method::  void holdEntity(SimEntity src, long delay)
-   :outertype: Simulation
-
-   Holds an entity for some time.
-
-   :param src: id of entity to be held
-   :param delay: How many seconds after the current time the entity has to be held
 
 isPaused
 ^^^^^^^^

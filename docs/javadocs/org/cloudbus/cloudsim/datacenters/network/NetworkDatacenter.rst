@@ -49,7 +49,7 @@ NetworkDatacenter
    :param simulation: The CloudSim instance that represents the simulation the Entity is related to
    :param hostList: list of \ :java:ref:`Host`\ s that will compound the Datacenter
    :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
-   :throws IllegalArgumentException: when this entity has \ ``zero``\  number of PEs (Processing Elements).  No PEs mean the Cloudlets can't be processed. A CloudResource must contain one or more Machines. A Machine must contain one or more PEs.
+   :throws IllegalArgumentException: when this entity has zero number of PEs (Processing Elements).  No PEs mean the Cloudlets can't be processed. A CloudResource must contain one or more Machines. A Machine must contain one or more PEs.
 
 Methods
 -------

@@ -1,11 +1,3 @@
-.. java:import:: java.util List
-
-.. java:import:: java.util Map
-
-.. java:import:: java.util Optional
-
-.. java:import:: java.util.function BiFunction
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
@@ -13,6 +5,14 @@
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Map
+
+.. java:import:: java.util Optional
+
+.. java:import:: java.util.function BiFunction
 
 VmAllocationPolicy
 ==================
@@ -81,7 +81,7 @@ findHostForVm
 .. java:method::  Optional<Host> findHostForVm(Vm vm)
    :outertype: VmAllocationPolicy
 
-   Finds a host that has enough resources to place a given VM. \ **Classes must implement this method to define how to select a Host for a given VM.**\  They just have to provide a default implementation. However, this implementation can be dynamically changed by calling \ :java:ref:`setFindHostForVmFunction(BiFunction)`\ .
+   Finds a suitable host that has enough resources to place a given VM. Internally it may use a default implementation or one set in runtime by calling \ :java:ref:`setFindHostForVmFunction(BiFunction)`\ .
 
    :param vm: the vm to find a host for it
    :return: an \ :java:ref:`Optional`\  containing a suitable Host to place the VM or an empty \ :java:ref:`Optional`\  if no suitable Host was found
@@ -150,7 +150,7 @@ setFindHostForVmFunction
 .. java:method::  void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
    :outertype: VmAllocationPolicy
 
-   Sets a \ :java:ref:`BiFunction`\  that selects a Host for a given Vm. This Function receives the current VmAllocationPolicy and the \ :java:ref:`Vm`\  requesting to be place. It then returns an \ :java:ref:`Optional`\  that may contain a suitable Host for that Vm or not.
+   Sets a \ :java:ref:`BiFunction`\  that selects a Host for a given Vm. This Function receives the current VmAllocationPolicy and the \ :java:ref:`Vm`\  requesting to be place. It then returns an \ ``Optional<Host>``\  that may contain a suitable Host for that Vm or not.
 
    If not Function is set, the default VM selection method provided by implementing classes will be used.
 

@@ -20,15 +20,15 @@ VmAllocationPolicyFirstFit
 
    ..
 
-   * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012 <https://doi.org/10.1002/cpe.1867>`_\
+   * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012 <https://doi.org/10.1002/cpe.1867>`_\
 
    :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
 Methods
 -------
-findHostForVm
-^^^^^^^^^^^^^
+defaultFindHostForVm
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Optional<Host> findHostForVm(Vm vm)
+.. java:method:: @Override protected Optional<Host> defaultFindHostForVm(Vm vm)
    :outertype: VmAllocationPolicyFirstFit
 

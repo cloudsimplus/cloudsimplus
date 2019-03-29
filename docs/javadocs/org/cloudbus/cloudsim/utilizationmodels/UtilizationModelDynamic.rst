@@ -26,9 +26,9 @@ UtilizationModelDynamic
 .. java:constructor:: public UtilizationModelDynamic()
    :outertype: UtilizationModelDynamic
 
-   Creates a UtilizationModelDynamic with no initial utilization and resource utilization unit defined in \ :java:ref:`Unit.PERCENTAGE`\ .
+   Creates a UtilizationModelDynamic with no initial utilization. The resource utilization unit is defined in \ :java:ref:`Unit.PERCENTAGE`\ .
 
-   The utilization will not be dynamically incremented
+   The utilization won't be dynamically incremented
    until an increment function is defined by the .
 
    **See also:** :java:ref:`.setUtilizationUpdateFunction(Function)`
@@ -39,9 +39,9 @@ UtilizationModelDynamic
 .. java:constructor:: public UtilizationModelDynamic(Unit unit)
    :outertype: UtilizationModelDynamic
 
-   Creates a UtilizationModelDynamic with no initial utilization and resource utilization \ :java:ref:`Unit`\  be defined according to the given parameter.
+   Creates a UtilizationModelDynamic with no initial utilization. The resource utilization \ :java:ref:`Unit`\  is defined according to the given parameter.
 
-   The utilization will not be dynamically incremented
+   The utilization won't be dynamically incremented
    until that an increment function is defined by the .
 
    :param unit: the \ :java:ref:`Unit`\  that determines how the resource is used (for instance, if resource usage is defined in percentage of the Vm resource or in absolute values)

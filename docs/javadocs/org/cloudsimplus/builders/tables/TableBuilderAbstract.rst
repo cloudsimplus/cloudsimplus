@@ -4,6 +4,10 @@
 
 .. java:import:: java.util Map
 
+.. java:import:: java.util Objects
+
+.. java:import:: java.util.function Consumer
+
 .. java:import:: java.util.function Function
 
 TableBuilderAbstract
@@ -91,6 +95,18 @@ build
 
    Builds the table with the data from the list of objects and shows the results.
 
+column
+^^^^^^
+
+.. java:method:: public final TableBuilderAbstract<T> column(int index, Consumer<TableColumn> consumer)
+   :outertype: TableBuilderAbstract
+
+   Access a column at a given position in order to perform some configuration on it.
+
+   :param index: index of the column to access
+   :param consumer: a \ :java:ref:`Consumer`\  that will be called to use the column accessed at the requested position. The consumer should provide the code you want to be performed over that column.
+   :return: this TableBuilder object
+
 createTableColumns
 ^^^^^^^^^^^^^^^^^^
 
@@ -104,6 +120,30 @@ getTable
 
 .. java:method:: protected Table getTable()
    :outertype: TableBuilderAbstract
+
+removeColumn
+^^^^^^^^^^^^
+
+.. java:method:: public final TableBuilderAbstract<T> removeColumn(int... indexes)
+   :outertype: TableBuilderAbstract
+
+   Removes columns from given positions.
+
+   :param indexes: the indexes of the columns to remove
+
+   **See also:** :java:ref:`.removeColumn(int)`
+
+removeColumn
+^^^^^^^^^^^^
+
+.. java:method:: public final TableBuilderAbstract<T> removeColumn(int index)
+   :outertype: TableBuilderAbstract
+
+   Removes a column from a given position.
+
+   :param index: the index of the column to remove
+
+   **See also:** :java:ref:`.removeColumn(int...)`
 
 setObjectList
 ^^^^^^^^^^^^^

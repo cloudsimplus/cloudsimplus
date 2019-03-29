@@ -12,6 +12,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.util ResourceLoader
 
+.. java:import:: org.cloudbus.cloudsim.util TraceReaderAbstract
+
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModelDynamic

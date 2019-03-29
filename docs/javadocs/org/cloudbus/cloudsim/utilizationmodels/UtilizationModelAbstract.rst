@@ -22,7 +22,7 @@ ALMOST_ZERO
 .. java:field:: public static final double ALMOST_ZERO
    :outertype: UtilizationModelAbstract
 
-   A constant which indicates that values lower or equal to this value will be considered as zero.
+   A constant indicating that values lower or equal to this value will be considered as zero.
 
 Constructors
 ------------

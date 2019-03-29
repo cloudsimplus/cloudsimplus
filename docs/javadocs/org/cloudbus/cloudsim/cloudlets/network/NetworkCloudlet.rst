@@ -31,6 +31,17 @@ Constructors
 NetworkCloudlet
 ^^^^^^^^^^^^^^^
 
+.. java:constructor:: public NetworkCloudlet(long length, int pesNumber)
+   :outertype: NetworkCloudlet
+
+   Creates a NetworkCloudlet with no priority and file size and output size equal to 1.
+
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
+   :param pesNumber: the pes number
+
+NetworkCloudlet
+^^^^^^^^^^^^^^^
+
 .. java:constructor:: public NetworkCloudlet(int id, long length, int pesNumber)
    :outertype: NetworkCloudlet
 

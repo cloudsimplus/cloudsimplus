@@ -36,6 +36,14 @@ getFilePath
 
    Gets the path of the trace file.
 
+getLastLineNumber
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  int getLastLineNumber()
+   :outertype: TraceReader
+
+   Gets the number of the last line read from the trace file (starting from 0).
+
 getMaxLinesToRead
 ^^^^^^^^^^^^^^^^^
 

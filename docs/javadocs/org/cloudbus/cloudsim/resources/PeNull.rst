@@ -180,3 +180,9 @@ setStatus
 .. java:method:: @Override public boolean setStatus(Status status)
    :outertype: PeNull
 
+sumCapacity
+^^^^^^^^^^^
+
+.. java:method:: @Override public boolean sumCapacity(long amountToSum)
+   :outertype: PeNull
+

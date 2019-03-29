@@ -43,6 +43,18 @@ CloudSimEvent
 CloudSimEvent
 ^^^^^^^^^^^^^
 
+.. java:constructor:: public CloudSimEvent(double delay, SimEntity dest, int tag)
+   :outertype: CloudSimEvent
+
+   Creates a \ :java:ref:`Type.SEND`\  CloudSimEvent where the sender and destination are the same entity.
+
+   :param delay: how many seconds after the current simulation time the event should be scheduled
+   :param dest: the source entity which has to receive the message
+   :param tag: the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
+
+CloudSimEvent
+^^^^^^^^^^^^^
+
 .. java:constructor:: public CloudSimEvent(double delay, SimEntity dest, int tag, Object data)
    :outertype: CloudSimEvent
 
@@ -176,7 +188,7 @@ scheduledBy
 setDestination
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final SimEvent setDestination(SimEntity destination)
+.. java:method:: @Override public SimEvent setDestination(SimEntity destination)
    :outertype: CloudSimEvent
 
 setSerial
@@ -188,13 +200,13 @@ setSerial
 setSimulation
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public final SimEvent setSimulation(Simulation simulation)
+.. java:method:: @Override public SimEvent setSimulation(Simulation simulation)
    :outertype: CloudSimEvent
 
 setSource
 ^^^^^^^^^
 
-.. java:method:: @Override public final SimEvent setSource(SimEntity source)
+.. java:method:: @Override public SimEvent setSource(SimEntity source)
    :outertype: CloudSimEvent
 
 toString

@@ -37,16 +37,6 @@ UniformDistr
 UniformDistr
 ^^^^^^^^^^^^
 
-.. java:constructor:: public UniformDistr(double max)
-   :outertype: UniformDistr
-
-   Creates new uniform pseudo random number generator that produces values between a 0 (inclusive) and max (exclusive).
-
-   :param max: maximum value (exclusive)
-
-UniformDistr
-^^^^^^^^^^^^
-
 .. java:constructor:: public UniformDistr(double min, double max)
    :outertype: UniformDistr
 

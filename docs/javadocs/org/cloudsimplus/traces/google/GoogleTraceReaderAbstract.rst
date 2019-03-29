@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.util TraceReaderAbstract
+
 .. java:import:: org.cloudsimplus.traces TraceReaderBase
 
 .. java:import:: java.io InputStream
@@ -17,6 +19,8 @@ GoogleTraceReaderAbstract
 .. java:type:: abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase
 
    An abstract class for creating \ `Google Cluster Trace <https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md>`_\  readers.
+
+   Check important details at \ :java:ref:`TraceReaderAbstract`\ .
 
    :author: Manoel Campos da Silva Filho
    :param <T>: the type of objects that will be created for each line read from the trace file

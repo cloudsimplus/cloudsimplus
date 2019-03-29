@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 
+.. java:import:: org.cloudbus.cloudsim.provisioners PeProvisionerSimple
+
 .. java:import:: java.util Objects
 
 PeSimple
@@ -21,6 +23,18 @@ Constructors
 PeSimple
 ^^^^^^^^
 
+.. java:constructor:: public PeSimple(double mipsCapacity)
+   :outertype: PeSimple
+
+   Instantiates a new PE object using a \ :java:ref:`PeProvisionerSimple`\ . The id of the PE is just set when a List of PEs is assigned to a Host.
+
+   :param mipsCapacity: the capacity of the PE in MIPS (Million Instructions per Second)
+
+   **See also:** :java:ref:`.PeSimple(double,PeProvisioner)`
+
+PeSimple
+^^^^^^^^
+
 .. java:constructor:: public PeSimple(double mipsCapacity, PeProvisioner peProvisioner)
    :outertype: PeSimple
 
@@ -28,6 +42,8 @@ PeSimple
 
    :param mipsCapacity: the capacity of the PE in MIPS (Million Instructions per Second)
    :param peProvisioner: the provisioner that will manage the allocation of this physical Pe for VMs
+
+   **See also:** :java:ref:`.PeSimple(double)`
 
 PeSimple
 ^^^^^^^^

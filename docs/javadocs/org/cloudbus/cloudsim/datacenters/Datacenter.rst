@@ -12,8 +12,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.resources DatacenterStorage
 
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
 .. java:import:: org.cloudsimplus.listeners EventListener
 
 .. java:import:: org.cloudsimplus.listeners HostEventInfo
@@ -191,17 +189,6 @@ getVmAllocationPolicy
    :return: the VM allocation policy
 
    **See also:** :java:ref:`VmAllocationPolicy`
-
-getVmList
-^^^^^^^^^
-
-.. java:method::  <T extends Vm> List<T> getVmList()
-   :outertype: Datacenter
-
-   Gets a \ **read-only**\  list all VMs from all Hosts of this Datacenter.
-
-   :param <T>: the class of VMs inside the list
-   :return: the list all VMs from all Hosts
 
 removeHost
 ^^^^^^^^^^

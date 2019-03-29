@@ -12,6 +12,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.util ResourceLoader
 
+.. java:import:: org.cloudbus.cloudsim.util TraceReaderAbstract
+
 .. java:import:: java.io FileNotFoundException
 
 .. java:import:: java.io IOException
@@ -47,6 +49,8 @@ GoogleMachineEventsTraceReader
    Such trace files are the ones inside the machine_events sub-directory of downloaded Google traces. The instructions to download the traces are provided in the link above. A spreadsheet that makes it easier to understand the structure of trace files is provided in docs/google-cluster-data-samples.xlsx
 
    The documentation for fields and values were obtained from the Google Cluster trace documentation in the link above. It's strongly recommended to read such a documentation before trying to use this class.
+
+   Check important details at \ :java:ref:`TraceReaderAbstract`\ .
 
    :author: Manoel Campos da Silva Filho
 

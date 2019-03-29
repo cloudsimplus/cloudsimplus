@@ -14,6 +14,8 @@
 
 .. java:import:: org.cloudsimplus.listeners DatacenterBrokerEventInfo
 
+.. java:import:: org.cloudsimplus.listeners EventInfo
+
 .. java:import:: org.cloudsimplus.listeners EventListener
 
 .. java:import:: org.cloudsimplus.traces.google GoogleTaskEventsTraceReader
@@ -65,23 +67,22 @@ addOnVmsCreatedListener
 .. java:method:: @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener)
    :outertype: DatacenterBrokerAbstract
 
-addOneTimeOnCreationOfWaitingVmsFinishListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public DatacenterBroker addOneTimeOnCreationOfWaitingVmsFinishListener(EventListener<DatacenterBrokerEventInfo> listener, Boolean oneTimeListener)
-   :outertype: DatacenterBrokerAbstract
-
-addOneTimeOnVmsCreatedListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener)
-   :outertype: DatacenterBrokerAbstract
-
 bindCloudletToVm
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm)
    :outertype: DatacenterBrokerAbstract
+
+defaultVmMapper
+^^^^^^^^^^^^^^^
+
+.. java:method:: protected abstract Vm defaultVmMapper(Cloudlet cloudlet)
+   :outertype: DatacenterBrokerAbstract
+
+   Defines the default policy used to select a Vm to host a Cloudlet that is waiting to be created. It applies a Round-Robin policy to cyclically select the next Vm from the list of waiting VMs.
+
+   :param cloudlet: the cloudlet that needs a VM to be placed into
+   :return: the selected Vm for the cloudlet or \ :java:ref:`Vm.NULL`\  if no suitable VM was found
 
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -192,6 +193,12 @@ getVmFromCreatedList
    :param vmIndex: the index where a VM has to be got from the created VM list
    :return: the VM at the given index or \ :java:ref:`Vm.NULL`\  if the index is invalid
 
+getVmMapper
+^^^^^^^^^^^
+
+.. java:method:: @Override public Function<Cloudlet, Vm> getVmMapper()
+   :outertype: DatacenterBrokerAbstract
+
 getVmWaitingList
 ^^^^^^^^^^^^^^^^
 
@@ -207,13 +214,23 @@ getWaitingVm
 isThereWaitingCloudlets
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isThereWaitingCloudlets()
+.. java:method:: protected boolean isThereWaitingCloudlets()
    :outertype: DatacenterBrokerAbstract
+
+   Indicates if there are more cloudlets waiting to be executed yet.
+
+   :return: true if there are waiting cloudlets, false otherwise
 
 processEvent
 ^^^^^^^^^^^^
 
 .. java:method:: @Override public void processEvent(SimEvent evt)
+   :outertype: DatacenterBrokerAbstract
+
+removeOnVmsCreatedListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterBroker removeOnVmsCreatedListener(EventListener<? extends EventInfo> listener)
    :outertype: DatacenterBrokerAbstract
 
 requestDatacenterToCreateWaitingVms

@@ -99,7 +99,7 @@ isFull
 
    Checks if the resource is full or not.
 
-   :return: \ ``true``\  if the storage is full, \ ``false``\  otherwise
+   :return: true if the storage is full, false otherwise
 
 isObjectSubClassOf
 ^^^^^^^^^^^^^^^^^^

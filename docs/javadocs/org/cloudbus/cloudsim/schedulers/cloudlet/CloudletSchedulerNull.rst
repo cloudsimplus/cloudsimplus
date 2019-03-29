@@ -10,8 +10,6 @@
 
 .. java:import:: java.util List
 
-.. java:import:: java.util Set
-
 CloudletSchedulerNull
 =====================
 
@@ -44,12 +42,6 @@ cloudletFail
 ^^^^^^^^^^^^
 
 .. java:method:: @Override public Cloudlet cloudletFail(Cloudlet cloudlet)
-   :outertype: CloudletSchedulerNull
-
-cloudletFinish
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void cloudletFinish(CloudletExecution cle)
    :outertype: CloudletSchedulerNull
 
 cloudletPause
@@ -106,24 +98,6 @@ getCloudletList
 .. java:method:: @Override public List<Cloudlet> getCloudletList()
    :outertype: CloudletSchedulerNull
 
-getCloudletReturnedList
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Set<Cloudlet> getCloudletReturnedList()
-   :outertype: CloudletSchedulerNull
-
-getCloudletStatus
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public int getCloudletStatus(int cloudletId)
-   :outertype: CloudletSchedulerNull
-
-getCloudletToMigrate
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Cloudlet getCloudletToMigrate()
-   :outertype: CloudletSchedulerNull
-
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -158,12 +132,6 @@ getRequestedCpuPercentUtilization
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getRequestedCpuPercentUtilization(double time)
-   :outertype: CloudletSchedulerNull
-
-getRequestedMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution cle, double time)
    :outertype: CloudletSchedulerNull
 
 getTaskScheduler
@@ -206,12 +174,6 @@ isThereTaskScheduler
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean isThereTaskScheduler()
-   :outertype: CloudletSchedulerNull
-
-runningCloudletsNumber
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public int runningCloudletsNumber()
    :outertype: CloudletSchedulerNull
 
 setTaskScheduler

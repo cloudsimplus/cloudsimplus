@@ -1,6 +1,6 @@
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
+.. java:import:: org.cloudbus.cloudsim.selectionpolicies VmSelectionPolicy
 
 .. java:import:: org.cloudbus.cloudsim.util MathUtil
 
@@ -12,13 +12,13 @@ VmAllocationPolicyMigrationMedianAbsoluteDeviation
 
 .. java:type:: public class VmAllocationPolicyMigrationMedianAbsoluteDeviation extends VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit
 
-   A VM allocation policy that uses Median Absolute Deviation (MAD) to compute a dynamic threshold in order to detect host over utilization. \ **It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.**\
+   A VM allocation policy that uses \ `Median Absolute Deviation (MAD) <https://en.wikipedia.org/wiki/Median_absolute_deviation>`_\  to compute a dynamic threshold in order to detect host over utilization. It's a \ **Best Fit policy**\  which selects the Host with most efficient power usage to place a given VM.
 
    If you are using any algorithms, policies or workload included in the power package please cite the following paper:
 
    ..
 
-   * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012 <https://doi.org/10.1002/cpe.1867>`_\
+   * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012 <https://doi.org/10.1002/cpe.1867>`_\
 
    :author: Anton Beloglazov
 
@@ -27,7 +27,7 @@ Constructors
 VmAllocationPolicyMigrationMedianAbsoluteDeviation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationMedianAbsoluteDeviation(PowerVmSelectionPolicy vmSelectionPolicy)
+.. java:constructor:: public VmAllocationPolicyMigrationMedianAbsoluteDeviation(VmSelectionPolicy vmSelectionPolicy)
    :outertype: VmAllocationPolicyMigrationMedianAbsoluteDeviation
 
    Creates a VmAllocationPolicyMigrationMedianAbsoluteDeviation with a \ :java:ref:`safety parameter <getSafetyParameter()>`\  equals to 0 and no \ :java:ref:`fallback policy <getFallbackVmAllocationPolicy()>`\ .
@@ -37,7 +37,7 @@ VmAllocationPolicyMigrationMedianAbsoluteDeviation
 VmAllocationPolicyMigrationMedianAbsoluteDeviation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationMedianAbsoluteDeviation(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, VmAllocationPolicyMigration fallbackPolicy)
+.. java:constructor:: public VmAllocationPolicyMigrationMedianAbsoluteDeviation(VmSelectionPolicy vmSelectionPolicy, double safetyParameter, VmAllocationPolicyMigration fallbackPolicy)
    :outertype: VmAllocationPolicyMigrationMedianAbsoluteDeviation
 
    Creates a VmAllocationPolicyMigrationMedianAbsoluteDeviation.
@@ -51,7 +51,7 @@ Methods
 computeHostUtilizationMeasure
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double computeHostUtilizationMeasure(Host host) throws IllegalArgumentException
+.. java:method:: @Override public double computeHostUtilizationMeasure(Host host) throws IllegalStateException
    :outertype: VmAllocationPolicyMigrationMedianAbsoluteDeviation
 
    Computes the host utilization MAD used for generating the host over utilization threshold.

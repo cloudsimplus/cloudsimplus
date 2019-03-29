@@ -4,8 +4,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.core CustomerEntity
 
-.. java:import:: org.cloudbus.cloudsim.core Simulation
-
 .. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -93,7 +91,7 @@ PAUSED
 .. java:field:: public static final Cloudlet.Status PAUSED
    :outertype: Cloudlet.Status
 
-   The Cloudlet has been paused. It can be resumed by changing the status into \ ``RESUMED``\ .
+   The Cloudlet has been paused. It can be resumed by changing the status into \ **RESUMED**\ .
 
 QUEUED
 ^^^^^^
@@ -117,7 +115,7 @@ RESUMED
 .. java:field:: public static final Cloudlet.Status RESUMED
    :outertype: Cloudlet.Status
 
-   The Cloudlet has been resumed from \ ``PAUSED``\  state.
+   The Cloudlet has been resumed from \ **PAUSED**\  state.
 
 SUCCESS
 ^^^^^^^

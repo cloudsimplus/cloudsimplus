@@ -12,6 +12,14 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: java.util ArrayList
+
+.. java:import:: java.util Collections
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Objects
+
 EdgeSwitch
 ==========
 
@@ -20,7 +28,7 @@ EdgeSwitch
 
 .. java:type:: public class EdgeSwitch extends AbstractSwitch
 
-   This class represents an Edge AbstractSwitch in a Datacenter network. It interacts with other Datacenter in order to exchange packets. Please refer to following publication for more details:
+   Represents an Edge Switch in a Datacenter network, which can be connected to \ :java:ref:`NetworkHost`\ s. It interacts with other Datacenter in order to exchange packets. Please refer to following publication for more details:
 
    ..
 
@@ -30,14 +38,6 @@ EdgeSwitch
 
 Fields
 ------
-DOWNLINK_BW
-^^^^^^^^^^^
-
-.. java:field:: public static final long DOWNLINK_BW
-   :outertype: EdgeSwitch
-
-   Default downlink bandwidth of EdgeSwitch in Megabits/s. It also represents the uplink bandwidth of connected hosts.
-
 LEVEL
 ^^^^^
 
@@ -54,14 +54,6 @@ PORTS
 
    Default number of ports that defines the number of \ :java:ref:`Host`\  that can be connected to the switch.
 
-SWITCHING_DELAY
-^^^^^^^^^^^^^^^
-
-.. java:field:: public static final double SWITCHING_DELAY
-   :outertype: EdgeSwitch
-
-   Default switching delay in milliseconds.
-
 Constructors
 ------------
 EdgeSwitch
@@ -77,6 +69,35 @@ EdgeSwitch
 
 Methods
 -------
+connectHost
+^^^^^^^^^^^
+
+.. java:method:: public void connectHost(NetworkHost host)
+   :outertype: EdgeSwitch
+
+   Connects a \ :java:ref:`NetworkHost`\  to the switch, by adding it to the \ :java:ref:`getHostList()`\ .
+
+   :param host: the host to be connected to the switch
+
+disconnectHost
+^^^^^^^^^^^^^^
+
+.. java:method:: public boolean disconnectHost(NetworkHost host)
+   :outertype: EdgeSwitch
+
+   Disconnects a \ :java:ref:`NetworkHost`\  from the switch, by removing it from the \ :java:ref:`getHostList()`\ .
+
+   :param host: the host to be disconnected from the switch
+   :return: true if the Host was connected to the switch, false otherwise
+
+getHostList
+^^^^^^^^^^^
+
+.. java:method:: public List<NetworkHost> getHostList()
+   :outertype: EdgeSwitch
+
+   Gets a \ **read-only**\  list of Hosts connected to the switch.
+
 getLevel
 ^^^^^^^^
 

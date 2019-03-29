@@ -38,7 +38,7 @@ SlaContract
 .. java:constructor:: public SlaContract()
    :outertype: SlaContract
 
-   Default constructor used to create a \ :java:ref:`SlaContract`\  instance. If you want to get a contract from a JSON file, you shouldn't call the constructor directly. Instead, use some methods of the class methods.
+   Creates a \ :java:ref:`SlaContract`\ . If you want to get a contract from a JSON file, you shouldn't call the constructor directly. Instead, use some methods of the class methods.
 
    This constructor is just provided to enable the \ :java:ref:`Gson`\  object to use reflection to instantiate a SlaContract.
 

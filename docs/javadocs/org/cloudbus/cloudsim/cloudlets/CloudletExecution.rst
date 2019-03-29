@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
+.. java:import:: org.cloudbus.cloudsim.core Simulation
+
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
@@ -73,7 +75,7 @@ finalizeCloudlet
 .. java:method:: public void finalizeCloudlet()
    :outertype: CloudletExecution
 
-   Finalizes all relevant information before \ ``exiting``\  the Datacenter entity. This method sets the final data of:
+   Finalizes all relevant information before \ **exiting**\  the Datacenter entity. This method sets the final data of:
 
    ..
 
@@ -135,7 +137,7 @@ getFinishTime
 
    Gets the time when the Cloudlet has finished completely (not just in a given Datacenter, but finished at all). If the cloudlet wasn't finished completely yet, the value is equals to \ :java:ref:`Cloudlet.NOT_ASSIGNED`\ .
 
-   :return: finish time of a cloudlet or \ ``-1.0``\  if it cannot finish in this hourly slot
+   :return: finish time of a cloudlet or \ **-1.0**\  if it cannot finish in this hourly slot
 
 getLastProcessingTime
 ^^^^^^^^^^^^^^^^^^^^^
@@ -226,7 +228,7 @@ setStatus
    Sets the Cloudlet status.
 
    :param newStatus: the Cloudlet status
-   :return: \ ``true``\  if the new status has been set, \ ``false``\  otherwise
+   :return: true if the new status has been set, false otherwise
 
 setTimeSlice
 ^^^^^^^^^^^^
@@ -262,7 +264,7 @@ updateProcessing
 .. java:method:: public void updateProcessing(long partialFinishedInstructions)
    :outertype: CloudletExecution
 
-   Updates the length of cloudlet that has already been completed.
+   Updates the length of cloudlet that has executed so far.
 
    :param partialFinishedInstructions: the partial amount of instructions just executed, to be added to the \ :java:ref:`instructionsFinishedSoFar`\ , in \ **Number of Instructions (instead of Million Instructions)**\
 

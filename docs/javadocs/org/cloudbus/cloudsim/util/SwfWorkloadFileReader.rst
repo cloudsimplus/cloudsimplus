@@ -24,17 +24,14 @@ SwfWorkloadFileReader
 
 .. java:type:: public final class SwfWorkloadFileReader extends TraceReaderAbstract
 
-   Reads resource traces and creates a list of (\ :java:ref:`Cloudlets <Cloudlet>`\ ) (jobs). It follows the \ `Standard Workload Format (*.swf files) <http://www.cs.huji.ac.il/labs/parallel/workload/>`_\  from \ `The Hebrew University of Jerusalem <new.huji.ac.il/en>`_\ .
+   Reads resource traces and creates a list of (\ :java:ref:`Cloudlets <Cloudlet>`\ ) (jobs). It follows the \ `Standard Workload Format (*.swf files) <http://www.cs.huji.ac.il/labs/parallel/workload/>`_\  from \ `The Hebrew University of Jerusalem <new.huji.ac.il/en>`_\ . Check important details at \ :java:ref:`TraceReaderAbstract`\ .
 
    \ **NOTES:**\
 
    ..
 
-   * This class can only read trace files in the following format: \ **ASCII text, zip, gz.**\
-   * If you need to load multiple trace files, then you need to create multiple instances of this class \ ``each with a unique entity name``\ .
-   * If size of the trace reader is huge or contains lots of traces, please increase the JVM heap size accordingly by using \ ``java -Xmx``\  option when running the simulation.
    * The default Cloudlet reader size for sending to and receiving from a Datacenter is \ :java:ref:`DataCloudTags.DEFAULT_MTU`\ . However, you can specify the reader size by using \ :java:ref:`Cloudlet.setFileSize(long)`\ .
-   * A job run time considers the time spent for a single PE (since all PEs will be used for the same amount of time)\ ``not``\  not the total execution time across all PEs. For example, job #1 in the trace has a run time of 100 seconds for 2 processors. This means each processor runs job #1 for 100 seconds, if the processors have the same specification.
+   * A job run time considers the time spent for a single PE (since all PEs will be used for the same amount of time)\ **not**\  not the total execution time across all PEs. For example, job #1 in the trace has a run time of 100 seconds for 2 processors. This means each processor runs job #1 for 100 seconds, if the processors have the same specification.
 
    :author: Anthony Sulistio, Marcos Dias de Assuncao, Manoel Campos da Silva Filho
 
@@ -52,7 +49,7 @@ SwfWorkloadFileReader
 
    :param filePath: the workload trace file path in one of the following formats: \ *ASCII text, zip, gz.*\
    :param mips: the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run. Considering the workload reader provides the run time for each application registered inside the reader, the MIPS value will be used to compute the \ :java:ref:`length of the Cloudlet (in MI) <Cloudlet.getLength()>`\  so that it's expected to execute, inside the VM with the given MIPS capacity, for the same time as specified into the workload reader.
-   :throws IllegalArgumentException: when the workload trace file name is null or empty; or the resource PE mips <= 0
+   :throws IllegalArgumentException: when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
    :throws FileNotFoundException: when the file is not found
 
    **See also:** :java:ref:`.getInstance(String,int)`
@@ -79,7 +76,7 @@ getInstance
 
    :param fileName: the workload trace \ **relative file name**\  in one of the following formats: \ *ASCII text, zip, gz.*\
    :param mips: the MIPS capacity of the PEs from the VM where each created Cloudlet is supposed to run. Considering the workload reader provides the run time for each application registered inside the reader, the MIPS value will be used to compute the \ :java:ref:`length of the Cloudlet (in MI) <Cloudlet.getLength()>`\  so that it's expected to execute, inside the VM with the given MIPS capacity, for the same time as specified into the workload reader.
-   :throws IllegalArgumentException: when the workload trace file name is null or empty; or the resource PE mips <= 0
+   :throws IllegalArgumentException: when the workload trace file name is null or empty; or the resource PE mips is less or equal to 0
    :throws UncheckedIOException: when the file cannot be accessed (such as when it doesn't exist)
 
 getMips

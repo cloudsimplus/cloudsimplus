@@ -232,6 +232,12 @@ getRamVerticalScaling
 .. java:method:: @Override public VerticalVmScaling getRamVerticalScaling()
    :outertype: VmNull
 
+getRelativeMipsCapacityPercent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getRelativeMipsCapacityPercent()
+   :outertype: VmNull
+
 getResources
 ^^^^^^^^^^^^
 
@@ -403,7 +409,7 @@ removeOnUpdateProcessingListener
 setBroker
 ^^^^^^^^^
 
-.. java:method:: @Override public Vm setBroker(DatacenterBroker broker)
+.. java:method:: @Override public void setBroker(DatacenterBroker broker)
    :outertype: VmNull
 
 setBw
@@ -518,5 +524,11 @@ updateProcessing
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double updateProcessing(double currentTime, List<Double> mipsShare)
+   :outertype: VmNull
+
+updateProcessing
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double updateProcessing(List<Double> mipsShare)
    :outertype: VmNull
 

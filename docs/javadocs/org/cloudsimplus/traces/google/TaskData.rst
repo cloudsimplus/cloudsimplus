@@ -10,22 +10,12 @@ TaskData
 
    :author: Manoel Campos da Silva Filho
 
-Constructors
-------------
-TaskData
-^^^^^^^^
-
-.. java:constructor::  TaskData()
-   :outertype: TaskData
-
-   A protected constructor to avoid class instantiation, since only subclasses of this class must be used.
-
 Methods
 -------
 getJobId
 ^^^^^^^^
 
-.. java:method::  long getJobId()
+.. java:method:: public long getJobId()
    :outertype: TaskData
 
    Gets the id of the job this task belongs to.
@@ -33,7 +23,7 @@ getJobId
 getTaskIndex
 ^^^^^^^^^^^^
 
-.. java:method::  long getTaskIndex()
+.. java:method:: public long getTaskIndex()
    :outertype: TaskData
 
    Gets the task index within the job.
@@ -41,10 +31,10 @@ getTaskIndex
 getUniqueTaskId
 ^^^^^^^^^^^^^^^
 
-.. java:method::  long getUniqueTaskId()
+.. java:method:: public long getUniqueTaskId()
    :outertype: TaskData
 
-   An unique ID to be used to identify Cloudlets. The ID is composed of the \ :java:ref:`Job ID <getJobId()>`\  plus the \ :java:ref:`Task Index <getTaskIndex()>`\ .
+   An unique ID to be used to identify Cloudlets. The ID is composed of the \ :java:ref:`Job ID <getJobId()>`\ , concatenated with the \ :java:ref:`Task Index <getTaskIndex()>`\ .
 
 setJobId
 ^^^^^^^^

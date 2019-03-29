@@ -61,6 +61,6 @@ deallocatePesFromVmInternal
 isSuitableForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
+.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerSpaceShared
 

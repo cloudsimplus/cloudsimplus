@@ -28,7 +28,7 @@ PoissonDistr
 .. java:constructor:: public PoissonDistr(double lambda, long seed)
    :outertype: PoissonDistr
 
-   Creates a new Poisson random number generator to check the probability of 1 event (\ :java:ref:`k <getK()>`\ ) to happen at each time interval.
+   Creates a new Poisson random number generator to check the probability of 1 event (\ :java:ref:`k = 1 <getK()>`\ ) to happen at each time interval.
 
    :param lambda: the average number of events that happen at each 1 time unit. If one considers the unit as minute, this value means the average number of arrivals at each minute.
    :param seed: the seed to initialize the uniform random number generator
@@ -55,7 +55,7 @@ eventsArrivalProbability
 .. java:method:: public double eventsArrivalProbability()
    :outertype: PoissonDistr
 
-   Gets the probability to arrive \ :java:ref:`K <getK()>`\  events in the current time, considering the expected average arrival time \ :java:ref:`lambda <getLambda()>`\ . It computes the Probability Mass Function (PMF) of the Poisson distribution.
+   Gets the probability to arrive \ :java:ref:`K <getK()>`\  events in the current time, considering the mean arrival time \ :java:ref:`lambda <getLambda()>`\ . It computes the Probability Mass Function (PMF) of the Poisson distribution.
 
    **See also:** \ `Poisson distribution <https://en.wikipedia.org/wiki/Poisson_distribution>`_\
 

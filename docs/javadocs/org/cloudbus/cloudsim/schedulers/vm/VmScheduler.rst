@@ -1,7 +1,5 @@
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.resources Pe
-
 .. java:import:: org.cloudbus.cloudsim.resources Resource
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -130,14 +128,6 @@ getMaxCpuUsagePercentDuringOutMigration
 
    :return: the max percentage of CPU usage during migration (in scale from [0 to 1], where 1 is 100%)
 
-getPeCapacity
-^^^^^^^^^^^^^
-
-.. java:method::  long getPeCapacity()
-   :outertype: VmScheduler
-
-   Gets PE capacity in MIPS.
-
 getRequestedMips
 ^^^^^^^^^^^^^^^^
 
@@ -172,16 +162,6 @@ getVmMigrationCpuOverhead
 
    :return: the Host's CPU migration overhead percentage.
 
-getWorkingPeList
-^^^^^^^^^^^^^^^^
-
-.. java:method::  <T extends Pe> List<T> getWorkingPeList()
-   :outertype: VmScheduler
-
-   Gets the list of working PEs from the Host, \ **which excludes failed PEs**\ .
-
-   :param <T>: the generic type
-
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
@@ -191,18 +171,6 @@ isSuitableForVm
    Checks if the PM using this scheduler has enough MIPS capacity to host a given VM.
 
    :param vm: the vm to check if there is enough available resource on the PM to host it
-   :return: true, if it is possible to allocate the the VM into the host; false otherwise
-
-isSuitableForVm
-^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isSuitableForVm(Vm vm, boolean showLog)
-   :outertype: VmScheduler
-
-   Checks if the PM using this scheduler has enough MIPS capacity to host a given VM.
-
-   :param vm: the vm to check if there is enough available resource on the PM to host it
-   :param showLog: if a log message should be printed when the Host isn't suitable for the given VM
    :return: true, if it is possible to allocate the the VM into the host; false otherwise
 
    **See also:** :java:ref:`.isSuitableForVm(Vm)`
@@ -223,21 +191,6 @@ isSuitableForVm
    :param vm: the \ :java:ref:`Vm`\  to check if there are enough MIPS to allocate to
    :param requestedMips: a list of MIPS requested by a VM
    :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
-
-isSuitableForVm
-^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog)
-   :outertype: VmScheduler
-
-   Checks if a list of MIPS requested by a VM is allowed to be allocated or not.
-
-   :param vm: the \ :java:ref:`Vm`\  to check if there are enough MIPS to allocate to
-   :param requestedMips: a list of MIPS requested by a VM
-   :param showLog: if a log message should be printed when the Host isn't suitable for the given VM
-   :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
-
-   **See also:** :java:ref:`.isSuitableForVm(Vm,List)`
 
 setHost
 ^^^^^^^

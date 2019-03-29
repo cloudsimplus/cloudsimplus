@@ -20,13 +20,15 @@
 
 .. java:import:: java.util Objects
 
+.. java:import:: java.util.function BiFunction
+
 CloudletBuilder
 ===============
 
 .. java:package:: org.cloudsimplus.builders
    :noindex:
 
-.. java:type:: public class CloudletBuilder extends Builder
+.. java:type:: public class CloudletBuilder implements Builder
 
    A Builder class to create \ :java:ref:`Cloudlet`\  objects.
 
@@ -42,28 +44,28 @@ CloudletBuilder
 
 Methods
 -------
-createAndSubmitCloudlets
-^^^^^^^^^^^^^^^^^^^^^^^^
+create
+^^^^^^
 
-.. java:method:: public CloudletBuilder createAndSubmitCloudlets(int amount)
+.. java:method:: public CloudletBuilder create(int amount, int initialId)
    :outertype: CloudletBuilder
 
-createAndSubmitCloudlets
-^^^^^^^^^^^^^^^^^^^^^^^^
+create
+^^^^^^
 
-.. java:method:: public CloudletBuilder createAndSubmitCloudlets(int amount, int initialId)
+.. java:method:: public CloudletBuilder create(int amount)
    :outertype: CloudletBuilder
 
-createCloudlets
+createAndSubmit
 ^^^^^^^^^^^^^^^
 
-.. java:method:: public CloudletBuilder createCloudlets(int amount, int initialId)
+.. java:method:: public CloudletBuilder createAndSubmit(int amount)
    :outertype: CloudletBuilder
 
-createCloudlets
+createAndSubmit
 ^^^^^^^^^^^^^^^
 
-.. java:method:: public CloudletBuilder createCloudlets(int amount)
+.. java:method:: public CloudletBuilder createAndSubmit(int amount, int initialId)
    :outertype: CloudletBuilder
 
 getBrokerBuilder
@@ -101,6 +103,16 @@ getPes
 
 .. java:method:: public int getPes()
    :outertype: CloudletBuilder
+
+setCloudletCreationFunction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void setCloudletCreationFunction(BiFunction<Long, Integer, Cloudlet> cloudletCreationFunction)
+   :outertype: CloudletBuilder
+
+   Sets a \ :java:ref:`BiFunction`\  used to create Cloudlets. It must length of the Cloudlet (in MI) and the number of PEs it will require.
+
+   :param cloudletCreationFunction:
 
 setFileSize
 ^^^^^^^^^^^

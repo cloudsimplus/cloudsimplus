@@ -44,7 +44,9 @@ HostFaultInjection
 
 .. java:type:: public class HostFaultInjection extends CloudSimEntity
 
-   Generates random failures for the \ :java:ref:`Pe`\ 's of \ :java:ref:`Host`\ s inside a given \ :java:ref:`Datacenter`\ . A Fault Injection object usually has to be created after the VMs are created, to make it easier to define a function to be used to clone failed VMs. The events happens in the following order:
+   Generates random failures for the \ :java:ref:`Pe`\ 's of \ :java:ref:`Host`\ s inside a given \ :java:ref:`Datacenter`\ . A Fault Injection object usually has to be created after the VMs are created, to make it easier to define a function to be used to clone failed VMs.
+
+   The events happens in the following order:
 
    ..
 

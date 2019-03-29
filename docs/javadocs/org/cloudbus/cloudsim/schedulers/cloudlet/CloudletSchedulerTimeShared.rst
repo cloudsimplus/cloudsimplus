@@ -18,7 +18,7 @@ CloudletSchedulerTimeShared
    to define execution order. If actual priorities are defined for Cloudlets,
    they are just ignored by the scheduler.
 
-   It also does not perform a preemption process in order to move running Cloudlets to the waiting list in order to make room for other already waiting Cloudlets to run. It just imposes there is not waiting Cloudlet, \ **oversimplifying**\  the problem considering that for a given simulation second \ ``t``\ , the total processing capacity of the processor cores (in MIPS) is equally divided by the applications that are using them.
+   It also does not perform a preemption process in order to move running Cloudlets to the waiting list in order to make room for other already waiting Cloudlets to run. It just imposes there is not waiting Cloudlet, \ **oversimplifying**\  the problem considering that for a given simulation second \ *t*\ , the total processing capacity of the processor cores (in MIPS) is equally divided by the applications that are using them.
 
    In processors enabled with \ `Hyper-threading technology (HT) <https://en.wikipedia.org/wiki/Hyper-threading>`_\ , it is possible to run up to 2 processes at the same physical CPU core. However, usually just the Host operating system scheduler (a \ :java:ref:`VmScheduler`\  assigned to a Host) has direct knowledge of HT to accordingly schedule up to 2 processes to the same physical CPU core. Further, this scheduler implementation oversimplifies a possible HT for the virtual PEs, allowing that more than 2 processes to run at the same core.
 

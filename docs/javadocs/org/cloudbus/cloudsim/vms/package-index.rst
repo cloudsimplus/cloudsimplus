@@ -19,6 +19,7 @@ Specific Vm implementations can be power- or network-aware, enabling the simulat
    UtilizationHistory
    UtilizationHistoryNull
    Vm
+   VmCost
    VmNull
    VmSimple
    VmStateHistoryEntry

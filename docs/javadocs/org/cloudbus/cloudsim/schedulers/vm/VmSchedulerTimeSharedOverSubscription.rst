@@ -57,7 +57,7 @@ allocateMipsShareForVm
 isSuitableForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
+.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerTimeSharedOverSubscription
 
    Checks if a list of MIPS requested by a VM is allowed to be allocated or not. When there isn't the amount of requested MIPS available, this \ ``VmScheduler``\  allows to allocate what is available for the requesting VM, allocating less that is requested.
@@ -66,7 +66,6 @@ isSuitableForVmInternal
 
    :param vm: {@inheritDoc}
    :param requestedMips: {@inheritDoc}
-   :param showLog:
    :return: true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
 
    **See also:** :java:ref:`.allocateMipsShareForVm(Vm,List)`

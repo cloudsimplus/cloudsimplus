@@ -8,7 +8,7 @@ VmAllocationPolicyMigrationDynamicUpperThreshold
 
 .. java:type:: public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllocationPolicyMigration
 
-   An interface to be implemented by VM allocation policies that use a dynamic over utilization threshold computed using some statistical method such as Median absolute deviation (MAD), InterQuartileRange (IRQ), Local Regression, etc, depending on the implementing class.
+   An interface to be implemented by VM allocation policies that define a dynamic over utilization threshold computed using some statistical method such as \ `Median Absolute Deviation (MAD) <https://en.wikipedia.org/wiki/Median_absolute_deviation>`_\ , \ `Interquartile Range (IQR) <https://en.wikipedia.org/wiki/Interquartile_range>`_\ , \ `Local Regression (LR) <https://en.wikipedia.org/wiki/Local_regression>`_\  , etc, depending on the implementing class.
 
    :author: Anton Beloglazov, Manoel Campos da Silva Filho
 
@@ -17,13 +17,13 @@ Methods
 computeHostUtilizationMeasure
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double computeHostUtilizationMeasure(Host host) throws IllegalArgumentException
+.. java:method::  double computeHostUtilizationMeasure(Host host) throws IllegalStateException
    :outertype: VmAllocationPolicyMigrationDynamicUpperThreshold
 
    Computes the measure used to generate the dynamic host over utilization threshold using some statistical method (such as the Median absolute deviation - MAD, InterQuartileRange - IRQ, Local Regression, etc), depending on the implementing class. The method uses Host utilization history to compute such a metric.
 
    :param host: the host to get the current utilization
-   :throws IllegalArgumentException: when the measure could not be computed (for instance, because the Host doesn't have enought history to use)
+   :throws IllegalArgumentException: when the measure could not be computed (for instance, because the Host doesn't have enough history to use)
 
    **See also:** :java:ref:`.getOverUtilizationThreshold(Host)`
 

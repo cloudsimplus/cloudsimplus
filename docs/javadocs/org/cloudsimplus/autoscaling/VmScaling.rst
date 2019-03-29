@@ -59,7 +59,8 @@ setVm
 
    Sets a \ :java:ref:`Vm`\  to this Load Balancer. The broker will call this Load Balancer in order to balance load when its Vm is over utilized.
 
-   When the VmScaling is assigned to a Vm, the Vm sets itself to the VmScaling object, creating an association between the two objects.
+   When the VmScaling is assigned to a Vm, the Vm sets itself to the VmScaling object,
+   creating an association between the two objects.
 
    :param vm: the Vm to set
 

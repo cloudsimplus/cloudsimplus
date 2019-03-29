@@ -1,7 +1,5 @@
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
 .. java:import:: org.cloudbus.cloudsim.hosts HostSimple
 
 .. java:import:: org.cloudbus.cloudsim.network HostPacket
@@ -18,9 +16,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet.network CloudletTaskSchedulerSimple
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
-
-.. java:import:: org.cloudbus.cloudsim.util Conversion
+.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerSpaceShared
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -58,26 +54,12 @@ NetworkHost
 .. java:constructor:: public NetworkHost(long ram, long bw, long storage, List<Pe> peList)
    :outertype: NetworkHost
 
-   Creates a NetworkHost.
+   Creates a NetworkHost using a \ :java:ref:`VmSchedulerSpaceShared`\  as default.
 
    :param ram: the RAM capacity in Megabytes
    :param bw: the Bandwidth (BW) capacity in Megabits/s
    :param storage: the storage capacity in Megabytes
    :param peList: the host's \ :java:ref:`Pe`\  list
-
-NetworkHost
-^^^^^^^^^^^
-
-.. java:constructor:: public NetworkHost(long ram, long bw, long storage, List<Pe> peList, VmScheduler vmScheduler)
-   :outertype: NetworkHost
-
-   Creates a NetworkHost.
-
-   :param ram: the RAM capacity in Megabytes
-   :param bw: the Bandwidth (BW) capacity in Megabits/s
-   :param storage: the storage capacity in Megabytes
-   :param peList: the host's \ :java:ref:`Pe`\  list
-   :param vmScheduler: the VM scheduler
 
 Methods
 -------
@@ -105,19 +87,13 @@ createVm
    :param vm: {@inheritDoc}
    :return: {@inheritDoc}
 
-getBandwidth
-^^^^^^^^^^^^
-
-.. java:method:: public double getBandwidth()
-   :outertype: NetworkHost
-
-   Gets the Host bandwidth capacity in Megabits/s.
-
 getEdgeSwitch
 ^^^^^^^^^^^^^
 
 .. java:method:: public EdgeSwitch getEdgeSwitch()
    :outertype: NetworkHost
+
+   Gets the Switch the Host is directly connected to.
 
 getTotalDataTransferBytes
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -125,21 +101,15 @@ getTotalDataTransferBytes
 .. java:method:: public int getTotalDataTransferBytes()
    :outertype: NetworkHost
 
-setBandwidth
-^^^^^^^^^^^^
-
-.. java:method:: public void setBandwidth(double bandwidth)
-   :outertype: NetworkHost
-
-   Sets the Host bandwidth capacity in Megabits/s.
-
-   :param bandwidth: the bandwidth to set
-
 setEdgeSwitch
 ^^^^^^^^^^^^^
 
 .. java:method:: public void setEdgeSwitch(EdgeSwitch edgeSwitch)
    :outertype: NetworkHost
+
+   Sets the Switch the Host is directly connected to. This method is to be called only by the \ :java:ref:`EdgeSwitch.connectHost(NetworkHost)`\  method.
+
+   :param edgeSwitch: the Switch to set
 
 updateProcessing
 ^^^^^^^^^^^^^^^^

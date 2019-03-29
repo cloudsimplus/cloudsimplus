@@ -2,9 +2,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: java.util List
-
-.. java:import:: java.util Map
+.. java:import:: org.cloudbus.cloudsim.selectionpolicies VmSelectionPolicy
 
 VmAllocationPolicyMigration
 ===========================
@@ -30,16 +28,6 @@ NULL
 
 Methods
 -------
-getMetricHistory
-^^^^^^^^^^^^^^^^
-
-.. java:method::  Map<Host, List<Double>> getMetricHistory()
-   :outertype: VmAllocationPolicyMigration
-
-   Gets a \ **read-only**\  map of metric history.
-
-   :return: the metric history
-
 getOverUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -51,16 +39,6 @@ getOverUtilizationThreshold
    :param host: the host to get the over utilization threshold
    :return: the over utilization threshold
 
-getTimeHistory
-^^^^^^^^^^^^^^
-
-.. java:method::  Map<Host, List<Double>> getTimeHistory()
-   :outertype: VmAllocationPolicyMigration
-
-   Gets a \ **read-only**\  map of times when entries in each history list was added for each Host. All history lists are updated at the same time.
-
-   :return: the time history
-
 getUnderUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -71,15 +49,15 @@ getUnderUtilizationThreshold
 
    :return: the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
 
-getUtilizationHistory
-^^^^^^^^^^^^^^^^^^^^^
+getVmSelectionPolicy
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  Map<Host, List<Double>> getUtilizationHistory()
+.. java:method::  VmSelectionPolicy getVmSelectionPolicy()
    :outertype: VmAllocationPolicyMigration
 
-   Gets a \ **read-only**\  map of the utilization history for each Host.
+   Gets the the policy that defines how VMs are selected for migration.
 
-   :return: the utilization history
+   :return: the \ :java:ref:`VmSelectionPolicy`\ .
 
 isHostOverloaded
 ^^^^^^^^^^^^^^^^
@@ -112,4 +90,14 @@ setUnderUtilizationThreshold
    Sets the percentage of total CPU utilization to indicate that a host is under used and its VMs have to be migrated.
 
    :param underUtilizationThreshold: the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
+
+setVmSelectionPolicy
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy)
+   :outertype: VmAllocationPolicyMigration
+
+   Sets the the policy that defines how VMs are selected for migration.
+
+   :param vmSelectionPolicy: the new vm selection policy
 

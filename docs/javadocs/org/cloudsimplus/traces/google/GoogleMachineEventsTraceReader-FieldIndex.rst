@@ -12,6 +12,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.util ResourceLoader
 
+.. java:import:: org.cloudbus.cloudsim.util TraceReaderAbstract
+
 .. java:import:: java.io FileNotFoundException
 
 .. java:import:: java.io IOException

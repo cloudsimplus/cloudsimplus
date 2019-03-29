@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
+.. java:import:: java.util Objects
+
 PeProvisionerSimple
 ===================
 
@@ -29,7 +31,7 @@ PeProvisionerSimple
 .. java:constructor:: public PeProvisionerSimple()
    :outertype: PeProvisionerSimple
 
-   Instantiates a new PeProvisionerSimple that the \ :java:ref:`Pe`\  it will manage will be set just at Pe instantiation.
+   Instantiates a new PeProvisionerSimple. The \ :java:ref:`Pe`\  it will manage will be set just at Pe instantiation.
 
 PeProvisionerSimple
 ^^^^^^^^^^^^^^^^^^^

@@ -14,6 +14,8 @@ TraceReaderBase
 
    An abstract class providing additional features for subclasses implementing trace file readers for specific file formats.
 
+   Check important details at \ :java:ref:`TraceReaderAbstract`\ .
+
    :author: Manoel Campos da Silva Filho
 
 Constructors

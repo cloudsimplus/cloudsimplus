@@ -2,13 +2,9 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters.network NetworkDatacenter
 
-.. java:import:: org.cloudbus.cloudsim.hosts.network NetworkHost
-
 .. java:import:: org.cloudbus.cloudsim.network HostPacket
 
 .. java:import:: java.util List
-
-.. java:import:: java.util Map
 
 Switch
 ======
@@ -34,44 +30,16 @@ NULL
 
 Methods
 -------
-addPacketToBeSentToDownlinkSwitch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+downlinkTransferDelay
+^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  void addPacketToBeSentToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet)
+.. java:method::  double downlinkTransferDelay(HostPacket packet, int simultaneousPackets)
    :outertype: Switch
 
-addPacketToBeSentToHost
-^^^^^^^^^^^^^^^^^^^^^^^
+   Considering a list of packets to be sent simultaneously, computes the expected time to transfer each packet through the downlink, assuming that the bandwidth is shared equally between all packets.
 
-.. java:method::  void addPacketToBeSentToHost(NetworkHost host, HostPacket packet)
-   :outertype: Switch
-
-addPacketToBeSentToUplinkSwitch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  void addPacketToBeSentToUplinkSwitch(Switch uplinkSwitch, HostPacket packet)
-   :outertype: Switch
-
-connectHost
-^^^^^^^^^^^
-
-.. java:method::  void connectHost(NetworkHost host)
-   :outertype: Switch
-
-   Connects a \ :java:ref:`NetworkHost`\  to the switch, by adding it to the \ :java:ref:`getHostList()`\ .
-
-   :param host: the host to be connected to the switch
-
-disconnectHost
-^^^^^^^^^^^^^^
-
-.. java:method::  boolean disconnectHost(NetworkHost host)
-   :outertype: Switch
-
-   Disconnects a \ :java:ref:`NetworkHost`\  from the switch, by removing it from the \ :java:ref:`getHostList()`\ .
-
-   :param host: the host to be disconnected from the switch
-   :return: true if the Host was connected to the switch, false otherwise
+   :param simultaneousPackets: number of packets to be simultaneously sent
+   :return: the expected transmission time in seconds
 
 getDatacenter
 ^^^^^^^^^^^^^
@@ -87,18 +55,11 @@ getDownlinkBandwidth
 .. java:method::  double getDownlinkBandwidth()
    :outertype: Switch
 
-   :return: Bandwitdh of downlink (in Megabits/s).
+   Gets the bandwidth this Switch has to communicate with Switches in the lower layer.
 
-getDownlinkSwitchPacketList
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   :return: Bandwidth of downlink (in Megabits/s).
 
-.. java:method::  List<HostPacket> getDownlinkSwitchPacketList(Switch downlinkSwitch)
-   :outertype: Switch
-
-   Gets the list of packets to be sent to a downlink switch.
-
-   :param downlinkSwitch: the id of the switch to get the list of packets to send
-   :return: the list of packets to be sent to the given switch.
+   **See also:** :java:ref:`.getDownlinkSwitches()`
 
 getDownlinkSwitches
 ^^^^^^^^^^^^^^^^^^^
@@ -106,24 +67,7 @@ getDownlinkSwitches
 .. java:method::  List<Switch> getDownlinkSwitches()
    :outertype: Switch
 
-getHostList
-^^^^^^^^^^^
-
-.. java:method::  List<NetworkHost> getHostList()
-   :outertype: Switch
-
-   Gets a \ **read-only**\  list of Hosts connected to the switch.
-
-getHostPacketList
-^^^^^^^^^^^^^^^^^
-
-.. java:method::  List<HostPacket> getHostPacketList(NetworkHost host)
-   :outertype: Switch
-
-   Gets the list of packets to be sent to a host.
-
-   :param host: the host to get the list of packets to send
-   :return: the list of packets to be sent to the given host.
+   Gets the list of Switches in the lower layer that this Switch is connected to.
 
 getLevel
 ^^^^^^^^
@@ -131,23 +75,9 @@ getLevel
 .. java:method::  int getLevel()
    :outertype: Switch
 
-   Gets the level (layer) of the AbstractSwitch in the network topology, depending if it is a root switch (layer 0), aggregate switch (layer 1) or edge switch (layer 2)
+   Gets the level (layer) of the Switch in the network topology, depending if it is a root switch (layer 0), aggregate switch (layer 1) or edge switch (layer 2)
 
    :return: the switch network level
-
-getPacketList
-^^^^^^^^^^^^^
-
-.. java:method::  List<HostPacket> getPacketList()
-   :outertype: Switch
-
-getPacketToHostMap
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  Map<NetworkHost, List<HostPacket>> getPacketToHostMap()
-   :outertype: Switch
-
-   :return: a read-only map of hosts and the list of packets to be sent to each one.
 
 getPorts
 ^^^^^^^^
@@ -163,7 +93,9 @@ getSwitchingDelay
 .. java:method::  double getSwitchingDelay()
    :outertype: Switch
 
-   :return: the latency time the switch spends to process a received packet. This time is considered constant no matter how many packets the switch have to process (in seconds).
+   Gets the latency time the switch spends to process a received packet. This time is considered constant no matter how many packets the switch have to process (in seconds).
+
+   :return: the switching delay
 
 getUplinkBandwidth
 ^^^^^^^^^^^^^^^^^^
@@ -171,32 +103,19 @@ getUplinkBandwidth
 .. java:method::  double getUplinkBandwidth()
    :outertype: Switch
 
-   :return: Bandwitdh of uplink (in Megabits/s).
+   Gets the bandwidth this Switch has to communicate with Switches in the upper layer.
 
-getUplinkSwitchPacketList
-^^^^^^^^^^^^^^^^^^^^^^^^^
+   :return: Bandwidth of uplink (in Megabits/s).
 
-.. java:method::  List<HostPacket> getUplinkSwitchPacketList(Switch uplinkSwitch)
-   :outertype: Switch
-
-   Gets the list of packets to be sent to an uplink switch.
-
-   :param uplinkSwitch: the switch to get the list of packets to send
-   :return: the list of packets to be sent to the given switch.
-
-getUplinkSwitchPacketMap
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap()
-   :outertype: Switch
-
-   :return: a read-only map of the uplink Switches and list of packets to be sent to each one.
+   **See also:** :java:ref:`.getUplinkSwitches()`
 
 getUplinkSwitches
 ^^^^^^^^^^^^^^^^^
 
 .. java:method::  List<Switch> getUplinkSwitches()
    :outertype: Switch
+
+   Gets the list of Switches in the upper layer that this Switch is connected to.
 
 setDatacenter
 ^^^^^^^^^^^^^
@@ -214,11 +133,21 @@ setDownlinkBandwidth
 .. java:method::  void setDownlinkBandwidth(double downlinkBandwidth)
    :outertype: Switch
 
+   Sets the bandwidth this Switch has to communicate with Switches in the lower layer.
+
+   :param downlinkBandwidth: downlink bandwidth to set (in Megabits/s).
+
+   **See also:** :java:ref:`.getDownlinkSwitches()`
+
 setPorts
 ^^^^^^^^
 
 .. java:method::  void setPorts(int ports)
    :outertype: Switch
+
+   Sets the number of ports the switch has.
+
+   :param ports: the number of ports to set
 
 setSwitchingDelay
 ^^^^^^^^^^^^^^^^^
@@ -226,9 +155,30 @@ setSwitchingDelay
 .. java:method::  void setSwitchingDelay(double switchingDelay)
    :outertype: Switch
 
+   Sets the latency time the switch spends to process a received packet. This time is considered constant no matter how many packets the switch have to process (in seconds).
+
+   :param switchingDelay: the switching delay to set
+
 setUplinkBandwidth
 ^^^^^^^^^^^^^^^^^^
 
 .. java:method::  void setUplinkBandwidth(double uplinkBandwidth)
    :outertype: Switch
+
+   Sets the bandwidth this Switch has to communicate with Switches in the upper layer.
+
+   :param uplinkBandwidth: uplink bandwidth to set (in Megabits/s).
+
+   **See also:** :java:ref:`.getUplinkSwitches()`
+
+uplinkTransferDelay
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double uplinkTransferDelay(HostPacket packet, int simultaneousPackets)
+   :outertype: Switch
+
+   Considering a list of packets to be sent simultaneously, computes the expected time to transfer each packet through the uplink, assuming that the bandwidth is shared equally between all packets.
+
+   :param simultaneousPackets: number of packets to be simultaneously sent
+   :return: the expected transmission time in seconds
 

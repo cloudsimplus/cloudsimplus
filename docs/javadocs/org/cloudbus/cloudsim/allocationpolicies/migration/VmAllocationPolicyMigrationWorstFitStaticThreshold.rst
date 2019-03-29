@@ -1,3 +1,11 @@
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
+
+.. java:import:: org.cloudbus.cloudsim.hosts Host
+
+.. java:import:: org.cloudbus.cloudsim.selectionpolicies VmSelectionPolicy
+
+.. java:import:: org.cloudbus.cloudsim.vms Vm
+
 .. java:import:: java.util Comparator
 
 .. java:import:: java.util Optional
@@ -7,14 +15,6 @@
 .. java:import:: java.util.function Function
 
 .. java:import:: java.util.stream Stream
-
-.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
-
-.. java:import:: org.cloudbus.cloudsim.hosts Host
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
-.. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
 
 VmAllocationPolicyMigrationWorstFitStaticThreshold
 ==================================================
@@ -35,13 +35,13 @@ Constructors
 VmAllocationPolicyMigrationWorstFitStaticThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationWorstFitStaticThreshold(PowerVmSelectionPolicy vmSelectionPolicy, double overUtilizationThreshold)
+.. java:constructor:: public VmAllocationPolicyMigrationWorstFitStaticThreshold(VmSelectionPolicy vmSelectionPolicy, double overUtilizationThreshold)
    :outertype: VmAllocationPolicyMigrationWorstFitStaticThreshold
 
 VmAllocationPolicyMigrationWorstFitStaticThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationWorstFitStaticThreshold(PowerVmSelectionPolicy vmSelectionPolicy, double overUtilizationThreshold, BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+.. java:constructor:: public VmAllocationPolicyMigrationWorstFitStaticThreshold(VmSelectionPolicy vmSelectionPolicy, double overUtilizationThreshold, BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
    :outertype: VmAllocationPolicyMigrationWorstFitStaticThreshold
 
    Creates a new VmAllocationPolicy, changing the \ :java:ref:`Function`\  to select a Host for a Vm.

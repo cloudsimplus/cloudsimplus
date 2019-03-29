@@ -43,6 +43,12 @@ import static java.util.stream.Collectors.toList;
 public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     private static final Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicyAbstract.class.getSimpleName());
 
+    /**
+     * WARNING: the function should not be called directly because it may be null.
+     * Use the {@link #findHostForVm(Vm)} instead.
+     *
+     * @see #setFindHostForVmFunction(BiFunction)
+     */
     private BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
 
     /**
@@ -187,10 +193,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public boolean scaleVmVertically(final VerticalVmScaling scaling) {
-        /* @TODO VM PEs scaling is not being implemented in a polymorphic way.
-         *        More details in https://github.com/manoelcampos/cloudsim-plus/issues/75
-         */
-
         if (scaling.isVmUnderloaded()) {
             return downScaleVmVertically(scaling);
         }
@@ -413,11 +415,11 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * The default implementation of such a Function is provided by the method {@link #findHostForVm(Vm)}.
      *
      * @param findHostForVmFunction {@inheritDoc}.
-     *                              Passing null makes the Function to be set as the default {@link #findHostForVm(Vm)}.
+     *                              Passing null makes the default method to find a Host for a VM to be used.
      */
     @Override
     public final void setFindHostForVmFunction(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
-        this.findHostForVmFunction = findHostForVmFunction == null ? VmAllocationPolicy::findHostForVm : findHostForVmFunction;
+        this.findHostForVmFunction = findHostForVmFunction;
     }
 
     @Override
@@ -428,8 +430,10 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
      * Provides the default implementation of the {@link VmAllocationPolicy}
      * to find a suitable Host for a given VM.
+     *
      * @param vm the VM to find a suitable Host to
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
+     * @see #setFindHostForVmFunction(BiFunction)
      */
     protected abstract Optional<Host> defaultFindHostForVm(final Vm vm);
 

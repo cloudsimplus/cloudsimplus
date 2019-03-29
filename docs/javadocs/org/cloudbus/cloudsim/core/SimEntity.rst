@@ -139,6 +139,18 @@ schedule
    :param tag: An user-defined number representing the type of event.
    :return: true if the event was sent, false if the simulation was not started yet
 
+schedule
+^^^^^^^^
+
+.. java:method::  boolean schedule(int tag, Object data)
+   :outertype: SimEntity
+
+   Sends an event from the entity to itself with \ **no**\  delay.
+
+   :param tag: An user-defined number representing the type of event.
+   :param data: The data to be sent with the event.
+   :return: true if the event was sent, false if the simulation was not started yet
+
 setName
 ^^^^^^^
 
@@ -148,7 +160,7 @@ setName
    Sets the Entity name.
 
    :param newName: the new name
-   :throws IllegalArgumentException: when the entity name is \ ``null``\  or empty
+   :throws IllegalArgumentException: when the entity name is null or empty
 
 setSimulation
 ^^^^^^^^^^^^^
@@ -165,6 +177,10 @@ setState
 
 .. java:method::  SimEntity setState(State state)
    :outertype: SimEntity
+
+   Sets the entity state.
+
+   :param state: the state to set
 
 shutdownEntity
 ^^^^^^^^^^^^^^

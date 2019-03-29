@@ -18,7 +18,7 @@ DatacenterStorage
 
 .. java:type:: public class DatacenterStorage
 
-   Implements the storage logic for a Datacenter. It keeps a list of storage devices \ `Disk Array <https://en.wikipedia.org/wiki/Disk_array>`_\ , as well as all basic storage related operations. This disk array can be, for instance, a list of \ :java:ref:`HarddriveStorage`\  or \ :java:ref:`SanStorage`\ .
+   Implements the storage logic for a Datacenter. It keeps a list of storage devices (\ `Disk Array <https://en.wikipedia.org/wiki/Disk_array>`_\ ), as well as all basic storage related operations. This disk array can be, for instance, a list of \ :java:ref:`HarddriveStorage`\  or \ :java:ref:`SanStorage`\ .
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov, Abderrahman Lahiaouni
 
@@ -64,7 +64,7 @@ contains
    Checks whether the storageList has the given file.
 
    :param file: a file to be searched
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 contains
 ^^^^^^^^
@@ -75,7 +75,7 @@ contains
    Checks whether the storageList has the given file.
 
    :param fileName: a file name to be searched
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 getDatacenter
 ^^^^^^^^^^^^^

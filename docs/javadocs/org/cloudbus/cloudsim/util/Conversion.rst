@@ -6,7 +6,7 @@ Conversion
 
 .. java:type:: public final class Conversion
 
-   Provides a set of methods for unit conversion.
+   An utility class that provides a set of methods for unit conversion.
 
    :author: Manoel Campos da Silva Filho
 
@@ -186,12 +186,25 @@ microToSeconds
 .. java:method:: public static double microToSeconds(double micro)
    :outertype: Conversion
 
-   Converts any value in microseconds (μ) to seconds.
+   Converts a value in microseconds (μ) to seconds.
 
    The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
 
    :param micro: the value in microseconds (μ)
    :return: the value in seconds
+
+millisecsToMinutes
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static double millisecsToMinutes(long milli)
+   :outertype: Conversion
+
+   Converts a value in milliseconds to minutes.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
+   :param milli: the value in milliseconds
+   :return: the value in minutes
 
 teraToGiga
 ^^^^^^^^^^

@@ -34,20 +34,6 @@ HarddriveStorage
 
    :author: Uros Cibej, Anthony Sulistio, Manoel Campos da Silva Filho
 
-Fields
-------
-DEF_LATENCY_SECS
-^^^^^^^^^^^^^^^^
-
-.. java:field:: public static final double DEF_LATENCY_SECS
-   :outertype: HarddriveStorage
-
-DEF_SEEK_TIME_SECS
-^^^^^^^^^^^^^^^^^^
-
-.. java:field:: public static final double DEF_SEEK_TIME_SECS
-   :outertype: HarddriveStorage
-
 Constructors
 ------------
 HarddriveStorage
@@ -275,7 +261,7 @@ setAvgSeekTime
    Sets the average seek time of the storage in seconds.
 
    :param seekTime: the average seek time in seconds
-   :return: \ ``true``\  if the values is greater than zero and was set successfully, \ ``false``\  otherwise
+   :return: true if the values is greater than zero and was set successfully, false otherwise
 
 setAvgSeekTime
 ^^^^^^^^^^^^^^
@@ -287,7 +273,7 @@ setAvgSeekTime
 
    :param seekTime: the average seek time in seconds
    :param gen: the ContinuousGenerator which generates seek times
-   :return: \ ``true``\  if the values is greater than zero and was set successfully, \ ``false``\  otherwise
+   :return: true if the values is greater than zero and was set successfully, false otherwise
 
 setLatency
 ^^^^^^^^^^

@@ -14,13 +14,15 @@
 
 .. java:import:: java.util Objects
 
+.. java:import:: java.util.function Function
+
 DatacenterBuilder
 =================
 
 .. java:package:: org.cloudsimplus.builders
    :noindex:
 
-.. java:type:: public class DatacenterBuilder extends Builder
+.. java:type:: public class DatacenterBuilder implements Builder
 
    A Builder class to createDatacenter \ :java:ref:`DatacenterSimple`\  objects.
 
@@ -42,10 +44,10 @@ addStorageToList
 .. java:method:: public DatacenterBuilder addStorageToList(FileStorage storage)
    :outertype: DatacenterBuilder
 
-createDatacenter
-^^^^^^^^^^^^^^^^
+create
+^^^^^^
 
-.. java:method:: public DatacenterBuilder createDatacenter(List<Host> hosts)
+.. java:method:: public DatacenterBuilder create(List<Host> hosts)
    :outertype: DatacenterBuilder
 
 get
@@ -131,6 +133,16 @@ setCostPerStorage
 
 .. java:method:: public DatacenterBuilder setCostPerStorage(double defaultCostPerStorage)
    :outertype: DatacenterBuilder
+
+setDatacenterCreationFunction
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void setDatacenterCreationFunction(Function<List<Host>, Datacenter> datacenterCreationFunction)
+   :outertype: DatacenterBuilder
+
+   Sets a \ :java:ref:`Function`\  used to create Datacenters. It must receive a list of \ :java:ref:`Host`\  for the Datacenter it will create.
+
+   :param datacenterCreationFunction:
 
 setSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^

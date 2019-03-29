@@ -14,7 +14,7 @@ BrokerBuilder
 .. java:package:: org.cloudsimplus.builders
    :noindex:
 
-.. java:type:: public class BrokerBuilder extends Builder implements BrokerBuilderInterface
+.. java:type:: public class BrokerBuilder implements BrokerBuilderInterface
 
    A Builder class to createBroker \ :java:ref:`DatacenterBrokerSimple`\  objects.
 
@@ -30,10 +30,10 @@ BrokerBuilder
 
 Methods
 -------
-createBroker
-^^^^^^^^^^^^
+create
+^^^^^^
 
-.. java:method:: @Override public BrokerBuilderDecorator createBroker()
+.. java:method:: @Override public BrokerBuilderDecorator create()
    :outertype: BrokerBuilder
 
 findBroker

@@ -1,8 +1,8 @@
 .. java:import:: org.cloudbus.cloudsim.network.topologies TopologicalGraph
 
-.. java:import:: java.io IOException
-
 .. java:import:: java.io InputStreamReader
+
+.. java:import:: java.io UncheckedIOException
 
 TopologyReader
 ==============
@@ -27,7 +27,7 @@ readGraphFile
    Reads a file and creates an \ :java:ref:`TopologicalGraph`\  object.
 
    :param filename: Name of the file to read
-   :throws IOException: when the file cannot be accessed
+   :throws UncheckedIOException: when the file cannot be accessed
    :return: The created TopologicalGraph
 
 readGraphFile
@@ -39,6 +39,6 @@ readGraphFile
    Reads a file and creates an \ :java:ref:`TopologicalGraph`\  object.
 
    :param streamReader: the \ :java:ref:`InputStreamReader`\  to read the file
-   :throws IOException: when the file cannot be accessed
+   :throws UncheckedIOException: when the file cannot be accessed
    :return: The created TopologicalGraph
 

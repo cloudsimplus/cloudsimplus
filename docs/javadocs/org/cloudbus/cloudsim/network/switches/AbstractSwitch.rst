@@ -22,6 +22,14 @@
 
 .. java:import:: org.slf4j LoggerFactory
 
+.. java:import:: java.util ArrayList
+
+.. java:import:: java.util HashMap
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Map
+
 AbstractSwitch
 ==============
 
@@ -30,7 +38,7 @@ AbstractSwitch
 
 .. java:type:: public abstract class AbstractSwitch extends CloudSimEntity implements Switch
 
-   An base class for implementing Network Switch.
+   A base class for implementing Network Switch.
 
    :author: Saurabh Kumar Garg, Manoel Campos da Silva Filho
 
@@ -44,34 +52,61 @@ AbstractSwitch
 
 Methods
 -------
-addPacketToBeSentToDownlinkSwitch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+addPacketToBeSentToFirstUplinkSwitch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void addPacketToBeSentToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet)
+.. java:method:: protected void addPacketToBeSentToFirstUplinkSwitch(HostPacket netPkt)
    :outertype: AbstractSwitch
 
-addPacketToBeSentToHost
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void addPacketToBeSentToHost(NetworkHost host, HostPacket packet)
-   :outertype: AbstractSwitch
-
-addPacketToBeSentToUplinkSwitch
+addPacketToSendToDownlinkSwitch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void addPacketToBeSentToUplinkSwitch(Switch uplinkSwitch, HostPacket packet)
+.. java:method:: protected void addPacketToSendToDownlinkSwitch(Switch downlinkSwitch, HostPacket packet)
    :outertype: AbstractSwitch
 
-connectHost
-^^^^^^^^^^^
+   Adds a packet that will be sent to a downlink \ :java:ref:`Switch`\ .
 
-.. java:method:: @Override public void connectHost(NetworkHost host)
+   :param downlinkSwitch: the target switch
+   :param packet: the packet to be sent
+
+addPacketToSendToHost
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected void addPacketToSendToHost(NetworkHost host, HostPacket packet)
    :outertype: AbstractSwitch
 
-disconnectHost
-^^^^^^^^^^^^^^
+   Adds a packet that will be sent to a \ :java:ref:`NetworkHost`\ .
 
-.. java:method:: @Override public boolean disconnectHost(NetworkHost host)
+   :param host: the target \ :java:ref:`NetworkHost`\
+   :param packet: the packet to be sent
+
+addPacketToSendToUplinkSwitch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected void addPacketToSendToUplinkSwitch(Switch uplinkSwitch, HostPacket packet)
+   :outertype: AbstractSwitch
+
+   Adds a packet that will be sent to a uplink \ :java:ref:`Switch`\ .
+
+   :param uplinkSwitch: the target switch
+   :param packet: the packet to be sent
+
+bandwidthByPacket
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected double bandwidthByPacket(double bwCapacity, int simultaneousPackets)
+   :outertype: AbstractSwitch
+
+   Considering a list of packets to be sent, gets the amount of available bandwidth for each packet, assuming that the bandwidth is shared equally among all packets.
+
+   :param bwCapacity: the total bandwidth capacity to share among the packets to be sent (in Megabits/s)
+   :param simultaneousPackets: number of packets to be simultaneously sent
+   :return: the available bandwidth for each packet in the list of packets to send (in Megabits/s) or the total bandwidth capacity if the packet list has 0 or 1 element
+
+downlinkTransferDelay
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double downlinkTransferDelay(HostPacket packet, int simultaneousPackets)
    :outertype: AbstractSwitch
 
 getDatacenter
@@ -89,8 +124,13 @@ getDownlinkBandwidth
 getDownlinkSwitchPacketList
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<HostPacket> getDownlinkSwitchPacketList(Switch downlinkSwitch)
+.. java:method:: protected List<HostPacket> getDownlinkSwitchPacketList(Switch downlinkSwitch)
    :outertype: AbstractSwitch
+
+   Gets the list of packets to be sent to a downlink switch.
+
+   :param downlinkSwitch: the id of the switch to get the list of packets to send
+   :return: the list of packets to be sent to the given switch.
 
 getDownlinkSwitches
 ^^^^^^^^^^^^^^^^^^^
@@ -98,29 +138,16 @@ getDownlinkSwitches
 .. java:method:: @Override public List<Switch> getDownlinkSwitches()
    :outertype: AbstractSwitch
 
-getHostList
-^^^^^^^^^^^
-
-.. java:method:: @Override public List<NetworkHost> getHostList()
-   :outertype: AbstractSwitch
-
 getHostPacketList
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<HostPacket> getHostPacketList(NetworkHost host)
+.. java:method:: protected List<HostPacket> getHostPacketList(NetworkHost host)
    :outertype: AbstractSwitch
 
-getPacketList
-^^^^^^^^^^^^^
+   Gets the list of packets to be sent to a host.
 
-.. java:method:: @Override public List<HostPacket> getPacketList()
-   :outertype: AbstractSwitch
-
-getPacketToHostMap
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<NetworkHost, List<HostPacket>> getPacketToHostMap()
-   :outertype: AbstractSwitch
+   :param host: the host to get the list of packets to send
+   :return: the list of packets to be sent to the given host.
 
 getPorts
 ^^^^^^^^
@@ -143,14 +170,13 @@ getUplinkBandwidth
 getUplinkSwitchPacketList
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<HostPacket> getUplinkSwitchPacketList(Switch uplinkSwitch)
+.. java:method:: protected List<HostPacket> getUplinkSwitchPacketList(Switch uplinkSwitch)
    :outertype: AbstractSwitch
 
-getUplinkSwitchPacketMap
-^^^^^^^^^^^^^^^^^^^^^^^^
+   Gets the list of packets to be sent to an uplink switch.
 
-.. java:method:: @Override public Map<Switch, List<HostPacket>> getUplinkSwitchPacketMap()
-   :outertype: AbstractSwitch
+   :param uplinkSwitch: the switch to get the list of packets to send
+   :return: the list of packets to be sent to the given switch.
 
 getUplinkSwitches
 ^^^^^^^^^^^^^^^^^
@@ -161,13 +187,13 @@ getUplinkSwitches
 getVmEdgeSwitch
 ^^^^^^^^^^^^^^^
 
-.. java:method:: protected EdgeSwitch getVmEdgeSwitch(Vm vm)
+.. java:method:: protected EdgeSwitch getVmEdgeSwitch(HostPacket pkt)
    :outertype: AbstractSwitch
 
-   Gets the \ :java:ref:`EdgeSwitch`\  that the Host where the VM is placed is connected to.
+   Gets the \ :java:ref:`EdgeSwitch`\  that the Host where the VM receiving a packet is connected to.
 
-   :param vm: the VM to get the Edge Switch
-   :return: the connected Edge Switch
+   :param pkt: the packet targeting some VM
+   :return: the Edge Switch connected to the Host where the targeting VM is placed
 
 getVmHost
 ^^^^^^^^^
@@ -180,17 +206,17 @@ getVmHost
    :param vm: the VM to get its Host
    :return: the Host where the VM is placed
 
-networkDelayForPacketTransmission
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+packetTransferDelay
+^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double networkDelayForPacketTransmission(HostPacket netPkt, double bwCapacity, List<HostPacket> netPktList)
+.. java:method:: protected double packetTransferDelay(HostPacket netPkt, double bwCapacity, int simultaneousPackets)
    :outertype: AbstractSwitch
 
-   Computes the network delay to send a packet through the network.
+   Computes the network delay to send a packet through the network, considering that a list of packets will be sent simultaneously.
 
    :param netPkt: the packet to be sent
    :param bwCapacity: the total bandwidth capacity (in Megabits/s)
-   :param netPktList: the list of packets waiting to be sent
+   :param simultaneousPackets: number of packets to be simultaneously sent
    :return: the expected time to transfer the packet through the network (in seconds)
 
 processEvent
@@ -269,5 +295,11 @@ startEntity
 ^^^^^^^^^^^
 
 .. java:method:: @Override protected void startEntity()
+   :outertype: AbstractSwitch
+
+uplinkTransferDelay
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double uplinkTransferDelay(HostPacket packet, int simultaneousPackets)
    :outertype: AbstractSwitch
 

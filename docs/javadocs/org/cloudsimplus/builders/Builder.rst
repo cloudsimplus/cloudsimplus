@@ -14,9 +14,9 @@ Builder
 .. java:package:: org.cloudsimplus.builders
    :noindex:
 
-.. java:type:: public abstract class Builder
+.. java:type:: public interface Builder
 
-   An abstract Builder for creation of CloudSim objects, such as \ :java:ref:`Datacenter`\ , \ :java:ref:`Host`\ , \ :java:ref:`Vm`\  \ :java:ref:`DatacenterBroker`\  and \ :java:ref:`Cloudlet`\ . The builders helps in the creation of such objects, by allowing to set standard attribute's values in order to create several objects with the same characteristics.
+   A Builder interface for creation of simulation objects, such as \ :java:ref:`Datacenter`\ , \ :java:ref:`Host`\ , \ :java:ref:`Vm`\  \ :java:ref:`DatacenterBroker`\  and \ :java:ref:`Cloudlet`\ . The builders helps in the creation of such objects, by allowing to set standard attribute's values in order to create several objects with the same characteristics.
 
    :author: Manoel Campos da Silva Filho
 
@@ -25,6 +25,6 @@ Methods
 validateAmount
 ^^^^^^^^^^^^^^
 
-.. java:method:: public void validateAmount(double amount)
+.. java:method::  void validateAmount(double amount)
    :outertype: Builder
 

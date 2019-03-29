@@ -50,10 +50,10 @@ VmAllocationPolicyBestFit
 
 Methods
 -------
-findHostForVm
-^^^^^^^^^^^^^
+defaultFindHostForVm
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Optional<Host> findHostForVm(Vm vm)
+.. java:method:: @Override protected Optional<Host> defaultFindHostForVm(Vm vm)
    :outertype: VmAllocationPolicyBestFit
 
    Gets the first suitable host from the \ :java:ref:`getHostList()`\  that has the most number of used PEs (i.e, lower free PEs).

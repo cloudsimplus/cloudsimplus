@@ -43,7 +43,7 @@ ResourceProvisionerSimple
 .. java:constructor:: protected ResourceProvisionerSimple(ResourceManageable resource)
    :outertype: ResourceProvisionerSimple
 
-   Creates a new ResourceProvisionerSimple.
+   Creates a ResourceProvisionerSimple for a given \ :java:ref:`ResourceManageable`\ .
 
    :param resource: the resource to be managed by the provisioner
 

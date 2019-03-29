@@ -2,13 +2,13 @@
 
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
-.. java:import:: org.cloudbus.cloudsim.core Simulation
-
-.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
+.. java:import:: org.cloudbus.cloudsim.core CustomerEntityAbstract
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
+
+.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModelFull
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -22,7 +22,7 @@ CloudletAbstract
 .. java:package:: org.cloudbus.cloudsim.cloudlets
    :noindex:
 
-.. java:type:: public abstract class CloudletAbstract implements Cloudlet
+.. java:type:: public abstract class CloudletAbstract extends CustomerEntityAbstract implements Cloudlet
 
    A base class for \ :java:ref:`Cloudlet`\  implementations.
 
@@ -33,14 +33,16 @@ Constructors
 CloudletAbstract
 ^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public CloudletAbstract(long id, long length, long pesNumber)
+.. java:constructor:: public CloudletAbstract(long length, int pesNumber, UtilizationModel utilizationModel)
    :outertype: CloudletAbstract
 
-   Creates a Cloudlet with no priority and file size and output size equal to 1.
+   Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
 
-   :param id: id of the Cloudlet
    :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
+   :param utilizationModel: a \ :java:ref:`UtilizationModel`\  to define how the Cloudlet uses CPU, RAM and BW. To define an independent utilization model for each resource, call the respective setters.
+
+   **See also:** :java:ref:`.setUtilizationModelCpu(UtilizationModel)`, :java:ref:`.setUtilizationModelRam(UtilizationModel)`, :java:ref:`.setUtilizationModelBw(UtilizationModel)`
 
 CloudletAbstract
 ^^^^^^^^^^^^^^^^
@@ -49,6 +51,8 @@ CloudletAbstract
    :outertype: CloudletAbstract
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
+
+   \ **NOTE:**\  By default, the Cloudlet will use a \ :java:ref:`UtilizationModelFull`\  to define CPU utilization and a \ :java:ref:`UtilizationModel.NULL`\  for RAM and BW. To change the default values, use the respective setters.
 
    :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
@@ -61,6 +65,22 @@ CloudletAbstract
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
 
+   \ **NOTE:**\  By default, the Cloudlet will use a \ :java:ref:`UtilizationModelFull`\  to define CPU utilization and a \ :java:ref:`UtilizationModel.NULL`\  for RAM and BW. To change the default values, use the respective setters.
+
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
+   :param pesNumber: number of PEs that Cloudlet will require
+
+CloudletAbstract
+^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public CloudletAbstract(long id, long length, long pesNumber)
+   :outertype: CloudletAbstract
+
+   Creates a Cloudlet with no priority, file size and output size equal to 1.
+
+   \ **NOTE:**\  By default, the Cloudlet will use a \ :java:ref:`UtilizationModelFull`\  to define CPU utilization and a \ :java:ref:`UtilizationModel.NULL`\  for RAM and BW. To change the default values, use the respective setters.
+
+   :param id: id of the Cloudlet
    :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
 
@@ -84,6 +104,12 @@ addOnFinishListener
 ^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener)
+   :outertype: CloudletAbstract
+
+addOnStartListener
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: CloudletAbstract
 
 addOnUpdateProcessingListener
@@ -119,7 +145,7 @@ deleteRequiredFile
 equals
 ^^^^^^
 
-.. java:method:: @Override public boolean equals(Object o)
+.. java:method:: @Override public boolean equals(Object other)
    :outertype: CloudletAbstract
 
 getAccumulatedBwCost
@@ -131,8 +157,13 @@ getAccumulatedBwCost
 getActualCpuTime
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getActualCpuTime(Datacenter datacenter)
+.. java:method:: protected double getActualCpuTime(Datacenter datacenter)
    :outertype: CloudletAbstract
+
+   Gets the total execution time of this Cloudlet in a given Datacenter ID.
+
+   :param datacenter: the Datacenter entity
+   :return: the total execution time of this Cloudlet in the given Datacenter or 0 if the Cloudlet was not executed there
 
 getActualCpuTime
 ^^^^^^^^^^^^^^^^
@@ -144,12 +175,6 @@ getArrivalTime
 ^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getArrivalTime(Datacenter datacenter)
-   :outertype: CloudletAbstract
-
-getBroker
-^^^^^^^^^
-
-.. java:method:: @Override public DatacenterBroker getBroker()
    :outertype: CloudletAbstract
 
 getCostPerBw
@@ -200,22 +225,10 @@ getFinishedLengthSoFar
 .. java:method:: @Override public long getFinishedLengthSoFar()
    :outertype: CloudletAbstract
 
-getId
-^^^^^
-
-.. java:method:: @Override public long getId()
-   :outertype: CloudletAbstract
-
 getJobId
 ^^^^^^^^
 
 .. java:method:: @Override public long getJobId()
-   :outertype: CloudletAbstract
-
-getLastDatacenter
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Datacenter getLastDatacenter()
    :outertype: CloudletAbstract
 
 getLastDatacenterArrivalTime
@@ -266,12 +279,6 @@ getRequiredFiles
 .. java:method:: @Override public List<String> getRequiredFiles()
    :outertype: CloudletAbstract
 
-getSimulation
-^^^^^^^^^^^^^
-
-.. java:method:: @Override public Simulation getSimulation()
-   :outertype: CloudletAbstract
-
 getStatus
 ^^^^^^^^^
 
@@ -294,12 +301,6 @@ getTotalLength
 ^^^^^^^^^^^^^^
 
 .. java:method:: @Override public long getTotalLength()
-   :outertype: CloudletAbstract
-
-getUid
-^^^^^^
-
-.. java:method:: @Override public String getUid()
    :outertype: CloudletAbstract
 
 getUtilizationModelBw
@@ -371,26 +372,15 @@ getWaitingTime
 getWallClockTime
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getWallClockTime(Datacenter datacenter)
+.. java:method:: protected double getWallClockTime(Datacenter datacenter)
    :outertype: CloudletAbstract
 
-getWallClockTimeInLastExecutedDatacenter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   Gets the time of this Cloudlet resides in a given Datacenter (from arrival time until departure time).
 
-.. java:method:: @Override public double getWallClockTimeInLastExecutedDatacenter()
-   :outertype: CloudletAbstract
+   :param datacenter: a Datacenter entity
+   :return: the wall-clock time or 0 if the Cloudlet has never been executed there
 
-hashCode
-^^^^^^^^
-
-.. java:method:: @Override public int hashCode()
-   :outertype: CloudletAbstract
-
-isAssignedToDatacenter
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isAssignedToDatacenter()
-   :outertype: CloudletAbstract
+   **See also:** \ `Elapsed real time (wall-clock time) <https://en.wikipedia.org/wiki/Elapsed_real_time>`_\
 
 isBindToVm
 ^^^^^^^^^^
@@ -422,6 +412,12 @@ removeOnFinishListener
 .. java:method:: @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: CloudletAbstract
 
+removeOnStartListener
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener)
+   :outertype: CloudletAbstract
+
 removeOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -443,12 +439,6 @@ setAccumulatedBwCost
    Sets the \ :java:ref:`accumulated bw cost <getAccumulatedBwCost()>`\ .
 
    :param accumulatedBwCost: the accumulated bw cost to set
-
-setBroker
-^^^^^^^^^
-
-.. java:method:: @Override public final Cloudlet setBroker(DatacenterBroker broker)
-   :outertype: CloudletAbstract
 
 setCostPerBw
 ^^^^^^^^^^^^
@@ -481,12 +471,6 @@ setFinishTime
    Sets the \ :java:ref:`finish time <getFinishTime()>`\  of this cloudlet in the latest Datacenter.
 
    :param finishTime: the finish time
-
-setId
-^^^^^
-
-.. java:method:: @Override public final void setId(long id)
-   :outertype: CloudletAbstract
 
 setJobId
 ^^^^^^^^
@@ -539,6 +523,12 @@ setRequiredFiles
    Sets the list of \ :java:ref:`required files <getRequiredFiles()>`\ .
 
    :param requiredFiles: the new list of required files
+
+setSizes
+^^^^^^^^
+
+.. java:method:: @Override public Cloudlet setSizes(long size)
+   :outertype: CloudletAbstract
 
 setStatus
 ^^^^^^^^^

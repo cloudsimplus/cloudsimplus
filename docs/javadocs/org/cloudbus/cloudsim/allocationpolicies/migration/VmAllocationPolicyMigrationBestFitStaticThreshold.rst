@@ -2,7 +2,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
+.. java:import:: org.cloudbus.cloudsim.selectionpolicies VmSelectionPolicy
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -35,13 +35,25 @@ Constructors
 VmAllocationPolicyMigrationBestFitStaticThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationBestFitStaticThreshold(PowerVmSelectionPolicy vmSelectionPolicy, double overUtilizationThreshold)
+.. java:constructor:: public VmAllocationPolicyMigrationBestFitStaticThreshold(VmSelectionPolicy vmSelectionPolicy)
+   :outertype: VmAllocationPolicyMigrationBestFitStaticThreshold
+
+   Creates a VmAllocationPolicyMigrationBestFitStaticThreshold. It uses a \ :java:ref:`default over utilization threshold <DEF_OVER_UTILIZATION_THRESHOLD>`\  and a \ :java:ref:`default under utilization threshold <DEF_UNDER_UTILIZATION_THRESHOLD>`\ .
+
+   :param vmSelectionPolicy: the policy that defines how VMs are selected for migration
+
+   **See also:** :java:ref:`.setUnderUtilizationThreshold(double)`, :java:ref:`.setOverUtilizationThreshold(double)`
+
+VmAllocationPolicyMigrationBestFitStaticThreshold
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public VmAllocationPolicyMigrationBestFitStaticThreshold(VmSelectionPolicy vmSelectionPolicy, double overUtilizationThreshold)
    :outertype: VmAllocationPolicyMigrationBestFitStaticThreshold
 
 VmAllocationPolicyMigrationBestFitStaticThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationBestFitStaticThreshold(PowerVmSelectionPolicy vmSelectionPolicy, double overUtilizationThreshold, BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+.. java:constructor:: public VmAllocationPolicyMigrationBestFitStaticThreshold(VmSelectionPolicy vmSelectionPolicy, double overUtilizationThreshold, BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
    :outertype: VmAllocationPolicyMigrationBestFitStaticThreshold
 
    Creates a new VmAllocationPolicy, changing the \ :java:ref:`Function`\  to select a Host for a Vm.

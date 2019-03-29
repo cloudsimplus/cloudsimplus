@@ -8,7 +8,7 @@ SanStorage
 
    SanStorage represents a Storage Area Network (SAN) composed of a set of hard disks connected in a LAN. Capacity of individual disks are abstracted, thus only the overall capacity of the SAN is considered.
 
-   \ ``WARNING``\ : This class is not yet fully functional. Effects of network contention are not considered in the simulation. So, time for file transfer is underestimated in the presence of high network load.
+   \ **WARNING**\ : This class is not yet fully functional. Effects of network contention are not considered in the simulation. So, time for file transfer is underestimated in the presence of high network load.
 
    :author: Rodrigo N. Calheiros, Manoel Campos da Silva Filho
 

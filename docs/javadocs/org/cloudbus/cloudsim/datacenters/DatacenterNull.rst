@@ -2,15 +2,11 @@
 
 .. java:import:: org.cloudbus.cloudsim.core SimEntity
 
-.. java:import:: org.cloudbus.cloudsim.core Simulation
-
-.. java:import:: org.cloudbus.cloudsim.core.events SimEvent
+.. java:import:: org.cloudbus.cloudsim.core SimEntityNullBase
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.resources DatacenterStorage
-
-.. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.listeners EventListener
 
@@ -26,7 +22,7 @@ DatacenterNull
 .. java:package:: org.cloudbus.cloudsim.datacenters
    :noindex:
 
-.. java:type:: final class DatacenterNull implements Datacenter
+.. java:type:: final class DatacenterNull implements Datacenter, SimEntityNullBase
 
    A class that implements the Null Object Design Pattern for \ :java:ref:`Datacenter`\  class.
 
@@ -96,18 +92,6 @@ getHostList
 .. java:method:: @Override public List<Host> getHostList()
    :outertype: DatacenterNull
 
-getId
-^^^^^
-
-.. java:method:: @Override public long getId()
-   :outertype: DatacenterNull
-
-getName
-^^^^^^^
-
-.. java:method:: @Override public String getName()
-   :outertype: DatacenterNull
-
 getPower
 ^^^^^^^^
 
@@ -126,88 +110,16 @@ getSchedulingInterval
 .. java:method:: @Override public double getSchedulingInterval()
    :outertype: DatacenterNull
 
-getSimulation
-^^^^^^^^^^^^^
-
-.. java:method:: @Override public Simulation getSimulation()
-   :outertype: DatacenterNull
-
-getState
-^^^^^^^^
-
-.. java:method:: @Override public State getState()
-   :outertype: DatacenterNull
-
 getVmAllocationPolicy
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public VmAllocationPolicy getVmAllocationPolicy()
    :outertype: DatacenterNull
 
-getVmList
-^^^^^^^^^
-
-.. java:method:: @Override public List<Vm> getVmList()
-   :outertype: DatacenterNull
-
-isAlive
-^^^^^^^
-
-.. java:method:: @Override public boolean isAlive()
-   :outertype: DatacenterNull
-
-isFinished
-^^^^^^^^^^
-
-.. java:method:: @Override public boolean isFinished()
-   :outertype: DatacenterNull
-
-isStarted
-^^^^^^^^^
-
-.. java:method:: @Override public boolean isStarted()
-   :outertype: DatacenterNull
-
-processEvent
-^^^^^^^^^^^^
-
-.. java:method:: @Override public void processEvent(SimEvent evt)
-   :outertype: DatacenterNull
-
 removeHost
 ^^^^^^^^^^
 
 .. java:method:: @Override public <T extends Host> Datacenter removeHost(T host)
-   :outertype: DatacenterNull
-
-run
-^^^
-
-.. java:method:: @Override public void run()
-   :outertype: DatacenterNull
-
-schedule
-^^^^^^^^
-
-.. java:method:: @Override public boolean schedule(SimEvent evt)
-   :outertype: DatacenterNull
-
-schedule
-^^^^^^^^
-
-.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag, Object data)
-   :outertype: DatacenterNull
-
-schedule
-^^^^^^^^
-
-.. java:method:: @Override public boolean schedule(double delay, int tag, Object data)
-   :outertype: DatacenterNull
-
-schedule
-^^^^^^^^
-
-.. java:method:: @Override public boolean schedule(SimEntity dest, double delay, int tag)
    :outertype: DatacenterNull
 
 setBandwidthPercentForMigration
@@ -222,40 +134,10 @@ setDatacenterStorage
 .. java:method:: @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage)
    :outertype: DatacenterNull
 
-setName
-^^^^^^^
-
-.. java:method:: @Override public SimEntity setName(String newName) throws IllegalArgumentException
-   :outertype: DatacenterNull
-
 setSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public Datacenter setSchedulingInterval(double schedulingInterval)
-   :outertype: DatacenterNull
-
-setSimulation
-^^^^^^^^^^^^^
-
-.. java:method:: @Override public SimEntity setSimulation(Simulation simulation)
-   :outertype: DatacenterNull
-
-setState
-^^^^^^^^
-
-.. java:method:: @Override public SimEntity setState(State state)
-   :outertype: DatacenterNull
-
-shutdownEntity
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void shutdownEntity()
-   :outertype: DatacenterNull
-
-start
-^^^^^
-
-.. java:method:: @Override public void start()
    :outertype: DatacenterNull
 
 toString

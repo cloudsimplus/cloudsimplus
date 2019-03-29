@@ -24,6 +24,12 @@ addUtilizationHistory
 .. java:method:: @Override public void addUtilizationHistory(double time)
    :outertype: UtilizationHistoryNull
 
+cpuUsageFromHostCapacity
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double cpuUsageFromHostCapacity(double time)
+   :outertype: UtilizationHistoryNull
+
 disable
 ^^^^^^^
 
@@ -76,6 +82,12 @@ isEnabled
 ^^^^^^^^^
 
 .. java:method:: @Override public boolean isEnabled()
+   :outertype: UtilizationHistoryNull
+
+powerConsumption
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double powerConsumption(double time)
    :outertype: UtilizationHistoryNull
 
 setMaxHistoryEntries

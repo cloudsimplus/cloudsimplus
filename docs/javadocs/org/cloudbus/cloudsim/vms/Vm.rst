@@ -289,7 +289,7 @@ getLastBusyTime
 
    Gets the last time the VM was running some Cloudlet.
 
-   :return: the last buzy time (in seconds)
+   :return: the last busy time (in seconds)
 
 getPeVerticalScaling
 ^^^^^^^^^^^^^^^^^^^^
@@ -324,6 +324,16 @@ getRamVerticalScaling
    :outertype: Vm
 
    Gets a \ :java:ref:`VerticalVmScaling`\  that will check if the Vm's RAM is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the VerticalVmScaling, and then request the RAM up scaling.
+
+getRelativeMipsCapacityPercent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getRelativeMipsCapacityPercent()
+   :outertype: Vm
+
+   Gets the percentage of the MIPS capacity this VM represents from the total \ :java:ref:`Host`\  MIPS capacity.
+
+   :return: the VM relative MIPS capacity percentage
 
 getResources
 ^^^^^^^^^^^^
@@ -583,7 +593,7 @@ removeOnUpdateProcessingListener
 setBroker
 ^^^^^^^^^
 
-.. java:method:: @Override  Vm setBroker(DatacenterBroker broker)
+.. java:method:: @Override  void setBroker(DatacenterBroker broker)
    :outertype: Vm
 
    Sets a \ :java:ref:`DatacenterBroker`\  that represents the owner of this Vm.
@@ -759,6 +769,17 @@ updateProcessing
    Updates the processing of cloudlets running on this VM.
 
    :param currentTime: current simulation time
+   :param mipsShare: list with MIPS share of each Pe available to the scheduler
+   :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
+
+updateProcessing
+^^^^^^^^^^^^^^^^
+
+.. java:method::  double updateProcessing(List<Double> mipsShare)
+   :outertype: Vm
+
+   Updates the processing of cloudlets running on this VM at the current simulation time.
+
    :param mipsShare: list with MIPS share of each Pe available to the scheduler
    :return: the predicted completion time of the earliest finishing cloudlet (which is a relative delay from the current simulation time), or \ :java:ref:`Double.MAX_VALUE`\  if there is no next Cloudlet to execute
 

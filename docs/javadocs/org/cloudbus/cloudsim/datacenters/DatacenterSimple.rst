@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicyAbstract
 
+.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicySimple
+
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
@@ -61,15 +63,17 @@ Constructors
 DatacenterSimple
 ^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public DatacenterSimple(Simulation simulation, VmAllocationPolicy vmAllocationPolicy)
+.. java:constructor:: public DatacenterSimple(Simulation simulation, List<? extends Host> hostList)
    :outertype: DatacenterSimple
 
-   Creates a Datacenter with an empty \ :java:ref:`storage <getDatacenterStorage()>`\  and no Hosts.
+   Creates a Datacenter with an empty \ :java:ref:`storage <getDatacenterStorage()>`\  and a \ :java:ref:`VmAllocationPolicySimple`\  by default.
+
+   \ **NOTE:**\  To change such attributes, just call the respective setters.
 
    :param simulation: The CloudSim instance that represents the simulation the Entity is related to
-   :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
+   :param hostList: list of \ :java:ref:`Host`\ s that will compound the Datacenter
 
-   **See also:** :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy)`, :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy,DatacenterStorage)`, :java:ref:`.addHostList(List)`
+   **See also:** :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy,DatacenterStorage)`
 
 DatacenterSimple
 ^^^^^^^^^^^^^^^^
@@ -84,6 +88,19 @@ DatacenterSimple
    :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
 
    **See also:** :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy,DatacenterStorage)`
+
+DatacenterSimple
+^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public DatacenterSimple(Simulation simulation, VmAllocationPolicy vmAllocationPolicy)
+   :outertype: DatacenterSimple
+
+   Creates a Datacenter with an empty \ :java:ref:`storage <getDatacenterStorage()>`\  and no Hosts.
+
+   :param simulation: The CloudSim instance that represents the simulation the Entity is related to
+   :param vmAllocationPolicy: the policy to be used to allocate VMs into hosts
+
+   **See also:** :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy)`, :java:ref:`.DatacenterSimple(Simulation,List,VmAllocationPolicy,DatacenterStorage)`, :java:ref:`.addHostList(List)`
 
 DatacenterSimple
 ^^^^^^^^^^^^^^^^
@@ -249,12 +266,6 @@ getVmAllocationPolicy
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public VmAllocationPolicy getVmAllocationPolicy()
-   :outertype: DatacenterSimple
-
-getVmList
-^^^^^^^^^
-
-.. java:method:: @Override public <T extends Vm> List<T> getVmList()
    :outertype: DatacenterSimple
 
 hashCode

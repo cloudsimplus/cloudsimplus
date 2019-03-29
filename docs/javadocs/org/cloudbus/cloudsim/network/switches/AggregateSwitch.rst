@@ -8,8 +8,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion
 
-.. java:import:: org.cloudbus.cloudsim.vms Vm
-
 AggregateSwitch
 ===============
 
@@ -18,7 +16,7 @@ AggregateSwitch
 
 .. java:type:: public class AggregateSwitch extends AbstractSwitch
 
-   This class represents an Aggregate AbstractSwitch in a Datacenter network. It interacts with other Datacenter in order to exchange packets.
+   This class represents an Aggregate Switch in a Datacenter network. It interacts with other Datacenter in order to exchange packets.
 
    Please refer to following publication for more details:
 

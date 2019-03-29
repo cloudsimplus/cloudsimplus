@@ -116,8 +116,12 @@ cloudletFail
 cloudletFinish
 ^^^^^^^^^^^^^^
 
-.. java:method:: @Override public void cloudletFinish(CloudletExecution cle)
+.. java:method:: protected void cloudletFinish(CloudletExecution cle)
    :outertype: CloudletSchedulerAbstract
+
+   Processes a finished cloudlet.
+
+   :param cle: finished cloudlet
 
 cloudletPause
 ^^^^^^^^^^^^^
@@ -261,24 +265,10 @@ getCloudletPausedList
 getCloudletReturnedList
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Set<Cloudlet> getCloudletReturnedList()
+.. java:method:: protected Set<Cloudlet> getCloudletReturnedList()
    :outertype: CloudletSchedulerAbstract
 
-getCloudletStatus
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public int getCloudletStatus(int cloudletId)
-   :outertype: CloudletSchedulerAbstract
-
-getCloudletToMigrate
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Cloudlet getCloudletToMigrate()
-   :outertype: CloudletSchedulerAbstract
-
-   Returns the first cloudlet in the execution list to migrate to another VM, removing it from the list.
-
-   :return: the first executing cloudlet or \ :java:ref:`Cloudlet.NULL`\  if the executing list is empty
+   Gets a \ **read-only**\  list of Cloudlets that finished executing and were returned the their broker. A Cloudlet is returned to to notify the broker about the end of its execution.
 
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -354,8 +344,14 @@ getRequestedCpuPercentUtilization
 getRequestedMipsForCloudlet
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getRequestedMipsForCloudlet(CloudletExecution cle, double time)
+.. java:method:: protected double getRequestedMipsForCloudlet(CloudletExecution cle, double time)
    :outertype: CloudletSchedulerAbstract
+
+   Gets the current requested MIPS for a given cloudlet.
+
+   :param cle: the ce
+   :param time: the time
+   :return: the current requested mips for the given cloudlet
 
 getTaskScheduler
 ^^^^^^^^^^^^^^^^
@@ -432,12 +428,6 @@ removeCloudletFromExecList
 
    :param cle: the Cloudlet to be removed
    :return: the removed Cloudlet or \ :java:ref:`CloudletExecution.NULL`\  if not found
-
-runningCloudletsNumber
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public int runningCloudletsNumber()
-   :outertype: CloudletSchedulerAbstract
 
 setCurrentMipsShare
 ^^^^^^^^^^^^^^^^^^^

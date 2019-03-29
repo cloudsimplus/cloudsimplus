@@ -125,7 +125,7 @@ getOwnerName
 
    Gets the owner name of the file.
 
-   :return: the owner name or \ ``null``\  if empty
+   :return: the owner name or null if empty
 
 getRegistrationID
 ^^^^^^^^^^^^^^^^^
@@ -155,7 +155,7 @@ isMasterCopy
 
    Checks whether the file is a master copy or replica.
 
-   :return: \ ``true``\  if it is a master copy or \ ``false``\  if it is a replica
+   :return: true if it is a master copy or false if it is a replica
 
 isRegistered
 ^^^^^^^^^^^^
@@ -165,7 +165,7 @@ isRegistered
 
    Checks if the file is already registered to a Replica Catalogue.
 
-   :return: \ ``true``\  if it is registered, \ ``false``\  otherwise
+   :return: true if it is registered, false otherwise
 
 isValid
 ^^^^^^^
@@ -176,7 +176,7 @@ isValid
    Check if the name of a file is valid or not.
 
    :param fileName: the file name to be checked for validity
-   :return: \ ``true``\  if the file name is valid, \ ``false``\  otherwise
+   :return: true if the file name is valid, false otherwise
 
 setChecksum
 ^^^^^^^^^^^
@@ -187,7 +187,7 @@ setChecksum
    Sets the checksum of the file.
 
    :param checksum: the checksum of this file
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 setCost
 ^^^^^^^
@@ -198,7 +198,7 @@ setCost
    Sets the cost associated with the file.
 
    :param cost: cost of this file
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 setCreationTime
 ^^^^^^^^^^^^^^^
@@ -209,7 +209,7 @@ setCreationTime
    Sets the file creation time (in millisecond).
 
    :param creationTime: the file creation time (in millisecond)
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 setFileSize
 ^^^^^^^^^^^
@@ -220,7 +220,7 @@ setFileSize
    Sets the file size (in MBytes).
 
    :param fileSize: the file size (in MBytes)
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 setMasterCopy
 ^^^^^^^^^^^^^
@@ -230,7 +230,7 @@ setMasterCopy
 
    Marks the file as a master copy or replica.
 
-   :param masterCopy: a flag denotes \ ``true``\  for master copy or \ ``false``\  for a replica
+   :param masterCopy: a flag denotes true for master copy or false for a replica
 
 setOwnerName
 ^^^^^^^^^^^^
@@ -241,7 +241,7 @@ setOwnerName
    Sets the owner name of the file.
 
    :param name: the owner name
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 setRegistrationId
 ^^^^^^^^^^^^^^^^^
@@ -252,7 +252,7 @@ setRegistrationId
    Sets the file registration ID (published by a Replica Catalogue entity).
 
    :param id: registration ID
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 setType
 ^^^^^^^
@@ -263,7 +263,7 @@ setType
    Sets the file type (for instance raw, tag, etc).
 
    :param type: a file type
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 
 setUpdateTime
 ^^^^^^^^^^^^^
@@ -274,5 +274,5 @@ setUpdateTime
    Sets the last update time of the file (in seconds).  NOTE: This time is relative to the start time. Preferably use \ :java:ref:`org.cloudbus.cloudsim.core.CloudSim.clock()`\  method.
 
    :param time: the last update time (in seconds)
-   :return: \ ``true``\  if successful, \ ``false``\  otherwise
+   :return: true if successful, false otherwise
 

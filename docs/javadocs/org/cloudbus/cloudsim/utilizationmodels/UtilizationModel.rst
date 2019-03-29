@@ -24,7 +24,7 @@ NULL
 .. java:field::  UtilizationModel NULL
    :outertype: UtilizationModel
 
-   An attribute that implements the Null Object Design Pattern for \ :java:ref:`UtilizationModel`\  objects using a Lambda Expression.
+   An attribute that implements the Null Object Design Pattern for \ :java:ref:`UtilizationModel`\  objects using a Lambda Expression. A \ :java:ref:`Cloudlet`\  using such a utilization model for one of its resources will not consume any amount of that resource ever.
 
 Methods
 -------

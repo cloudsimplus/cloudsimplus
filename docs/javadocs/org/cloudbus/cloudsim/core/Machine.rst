@@ -100,3 +100,13 @@ getTotalMipsCapacity
 
    :return: the total MIPS of all PEs
 
+validateCapacity
+^^^^^^^^^^^^^^^^
+
+.. java:method:: static void validateCapacity(double capacity)
+   :outertype: Machine
+
+   Validates a capacity for a machine resource.
+
+   :param capacity: the capacity to check
+

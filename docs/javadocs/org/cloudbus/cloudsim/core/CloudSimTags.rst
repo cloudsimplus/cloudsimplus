@@ -176,7 +176,7 @@ FAILURE
 .. java:field:: public static final int FAILURE
    :outertype: CloudSimTags
 
-   Defines the base tag to be used for failure events such as failure of hosts or VMs.
+   Denotes failure events such as hosts or VMs failures.
 
 HOST_ADD
 ^^^^^^^^
@@ -184,7 +184,7 @@ HOST_ADD
 .. java:field:: public static final int HOST_ADD
    :outertype: CloudSimTags
 
-   Defines the tag that represents a request to a Datacenter to add a Host or list of Hosts to a Datacenter. The \ :java:ref:`SimEvent.getData()`\  must be a Host to be added to to the Datacenter where the message is being sent to. The source of such events is the \ :java:ref:`CloudInformationService`\ .
+   Denotes a request to a Datacenter to add a Host or list of Hosts to a Datacenter. The \ :java:ref:`SimEvent.getData()`\  must be a Host to be added to to the Datacenter where the message is being sent to. The source of such events is the \ :java:ref:`CloudInformationService`\ .
 
 HOST_FAILURE
 ^^^^^^^^^^^^
@@ -192,7 +192,7 @@ HOST_FAILURE
 .. java:field:: public static final int HOST_FAILURE
    :outertype: CloudSimTags
 
-   Defines the tag that represents a request to generate a host failure.
+   Denotes a request to generate a host failure.
 
 HOST_REMOVE
 ^^^^^^^^^^^
@@ -200,7 +200,7 @@ HOST_REMOVE
 .. java:field:: public static final int HOST_REMOVE
    :outertype: CloudSimTags
 
-   Defines the tag that represents a request to a Datacenter to remove a Host or list of Hosts from a Datacenter. The \ :java:ref:`SimEvent.getData()`\  must be the ID of the Host that will be removed from the Datacenter they belong to. For this event, it's used the ID instead of the Host itself because the Host instance with the specified ID should be looked into the Datacenter Host list in order to remove it. A Host should be removed in case of maintenance or failure but there isn't such a distinction yet, so a failure is simulated to remove the Host. The source of such events is the \ :java:ref:`CloudInformationService`\ .
+   Denotes a request to a Datacenter to remove a Host or list of Hosts from a Datacenter. The \ :java:ref:`SimEvent.getData()`\  must be the ID of the Host that will be removed from the Datacenter they belong to. For this event, it's used the ID instead of the Host itself because the Host instance with the specified ID should be looked into the Datacenter Host list in order to remove it. A Host should be removed in case of maintenance or failure but there isn't such a distinction yet, so a failure is simulated to remove the Host. The source of such events is the \ :java:ref:`CloudInformationService`\ .
 
 ICMP_PKT_RETURN
 ^^^^^^^^^^^^^^^
@@ -224,6 +224,8 @@ NETWORK_EVENT_DOWN
 .. java:field:: public static final int NETWORK_EVENT_DOWN
    :outertype: CloudSimTags
 
+   Denotes the transmission of packets down through the network topology.
+
 NETWORK_EVENT_HOST
 ^^^^^^^^^^^^^^^^^^
 
@@ -242,11 +244,7 @@ NETWORK_EVENT_UP
 .. java:field:: public static final int NETWORK_EVENT_UP
    :outertype: CloudSimTags
 
-NETWORK_HOST_REGISTER
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:field:: public static final int NETWORK_HOST_REGISTER
-   :outertype: CloudSimTags
+   Denotes the transmission of packets up through the network topology.
 
 REGISTER_REGIONAL_CIS
 ^^^^^^^^^^^^^^^^^^^^^
@@ -326,5 +324,5 @@ VM_VERTICAL_SCALING
 .. java:field:: public static final int VM_VERTICAL_SCALING
    :outertype: CloudSimTags
 
-   Defines the tag to be used to request vertical scaling of VM resources such as Ram, Bandwidth or Pe. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`VerticalVmScaling`\  object.
+   Denotes a request vertical scaling of VM resources such as Ram, Bandwidth or Pe. When an event of this type is sent, the \ :java:ref:`SimEvent.getData()`\  must be a \ :java:ref:`VerticalVmScaling`\  object.
 

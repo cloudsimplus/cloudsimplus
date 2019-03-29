@@ -25,7 +25,7 @@ VmSchedulerTimeShared
 
    Each host has to use is own instance of a VmScheduler that will so schedule the allocation of host's PEs for VMs running on it.
 
-   It does not perform a preemption process in order to move running VMs to the waiting list in order to make room for other already waiting VMs to run. It just imposes there is not waiting VMs, \ **oversimplifying**\  the scheduling, considering that for a given simulation second \ ``t``\ , the total processing capacity of the processor cores (in MIPS) is equally divided by the VMs that are using them.
+   It does not perform a preemption process in order to move running VMs to the waiting list in order to make room for other already waiting VMs to run. It just imposes there is not waiting VMs, \ **oversimplifying**\  the scheduling, considering that for a given simulation second \ *t*\ , the total processing capacity of the processor cores (in MIPS) is equally divided by the VMs that are using them.
 
    In processors enabled with \ `Hyper-threading technology (HT) <https://en.wikipedia.org/wiki/Hyper-threading>`_\ , it is possible to run up to 2 processes at the same physical CPU core. However, this scheduler implementation oversimplifies a possible HT feature by allowing several VMs to use a fraction of the MIPS capacity from physical PEs, until that the total capacity of the virtual PE is allocated. Consider that a virtual PE is requiring 1000 MIPS but there is no physical PE with such a capacity. The scheduler will allocate these 1000 MIPS across several physical PEs, for instance, by allocating 500 MIPS from PE 0, 300 from PE 1 and 200 from PE 2, totaling the 1000 MIPS required by the virtual PE.
 
@@ -115,6 +115,6 @@ getMipsShareToAllocate
 isSuitableForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
+.. java:method:: @Override protected boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerTimeShared
 

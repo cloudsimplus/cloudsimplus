@@ -1,5 +1,9 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
+.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
+
+.. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModelFull
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 CloudletSimple
@@ -21,10 +25,26 @@ Constructors
 CloudletSimple
 ^^^^^^^^^^^^^^
 
+.. java:constructor:: public CloudletSimple(long length, int pesNumber, UtilizationModel utilizationModel)
+   :outertype: CloudletSimple
+
+   Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
+
+   :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
+   :param pesNumber: number of PEs that Cloudlet will require
+   :param utilizationModel: a \ :java:ref:`UtilizationModel`\  to define how the Cloudlet uses CPU, RAM and BW. To define an independent utilization model for each resource, call the respective setters.
+
+   **See also:** :java:ref:`.setUtilizationModelCpu(UtilizationModel)`, :java:ref:`.setUtilizationModelRam(UtilizationModel)`, :java:ref:`.setUtilizationModelBw(UtilizationModel)`
+
+CloudletSimple
+^^^^^^^^^^^^^^
+
 .. java:constructor:: public CloudletSimple(long length, int pesNumber)
    :outertype: CloudletSimple
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
+
+   \ **NOTE:**\  By default, the Cloudlet will use a \ :java:ref:`UtilizationModelFull`\  to define CPU utilization and a \ :java:ref:`UtilizationModel.NULL`\  for RAM and BW. To change the default values, use the respective setters.
 
    :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
@@ -37,6 +57,8 @@ CloudletSimple
 
    Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to a \ :java:ref:`DatacenterBroker`\ . The file size and output size is defined as 1.
 
+   \ **NOTE:**\  By default, the Cloudlet will use a \ :java:ref:`UtilizationModelFull`\  to define CPU utilization and a \ :java:ref:`UtilizationModel.NULL`\  for RAM and BW. To change the default values, use the respective setters.
+
    :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )
    :param pesNumber: number of PEs that Cloudlet will require
 
@@ -46,7 +68,9 @@ CloudletSimple
 .. java:constructor:: public CloudletSimple(long id, long length, long pesNumber)
    :outertype: CloudletSimple
 
-   Creates a Cloudlet with no priority and file size and output size equal to 1. To change these values, use the respective setters.
+   Creates a Cloudlet with no priority, file size and output size equal to 1.
+
+   \ **NOTE:**\  By default, the Cloudlet will use a \ :java:ref:`UtilizationModelFull`\  to define CPU utilization and a \ :java:ref:`UtilizationModel.NULL`\  for RAM and BW. To change the default values, use the respective setters.
 
    :param id: the unique ID of this cloudlet
    :param length: the length or size (in MI) of this cloudlet to be executed in a VM (check out \ :java:ref:`setLength(long)`\ )

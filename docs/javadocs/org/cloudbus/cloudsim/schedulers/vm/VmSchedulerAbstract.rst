@@ -153,8 +153,10 @@ getMipsShareRequestedReduced
 getPeCapacity
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getPeCapacity()
+.. java:method:: public long getPeCapacity()
    :outertype: VmSchedulerAbstract
+
+   Gets PE capacity in MIPS.
 
 getRequestedMips
 ^^^^^^^^^^^^^^^^
@@ -187,25 +189,27 @@ getVmMigrationCpuOverhead
 getWorkingPeList
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final List<Pe> getWorkingPeList()
+.. java:method:: public final List<Pe> getWorkingPeList()
+   :outertype: VmSchedulerAbstract
+
+   Gets the list of working PEs from the Host, \ **which excludes failed PEs**\ .
+
+isSuitableForVm
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public final boolean isSuitableForVm(Vm vm)
    :outertype: VmSchedulerAbstract
 
 isSuitableForVm
 ^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public final boolean isSuitableForVm(Vm vm, boolean showLog)
-   :outertype: VmSchedulerAbstract
-
-isSuitableForVm
-^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips, boolean showLog)
+.. java:method:: @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerAbstract
 
 isSuitableForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected abstract boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips, boolean showLog)
+.. java:method:: protected abstract boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips)
    :outertype: VmSchedulerAbstract
 
 percentOfMipsToRequest

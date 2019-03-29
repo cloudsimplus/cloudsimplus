@@ -16,11 +16,11 @@ BrokerBuilderDecorator
 
    A class that implements the Decorator Design Pattern in order to include features in a existing class. It is used to ensure that specific methods are called only after a given method is called.
 
-   For instance, the methods \ :java:ref:`getVmBuilder()`\  and \ :java:ref:`getCloudletBuilder()`\  can only be called after some \ :java:ref:`DatacenterBrokerSimple`\  was created by calling the method \ :java:ref:`createBroker()`\ . By this way, after the method is called, it returns an instance of this decorator that allow chained call to the specific decorator methods as the following example:
+   For instance, the methods \ :java:ref:`getVmBuilder()`\  and \ :java:ref:`getCloudletBuilder()`\  can only be called after some \ :java:ref:`DatacenterBrokerSimple`\  was created by calling the method \ :java:ref:`create()`\ . By this way, after the method is called, it returns an instance of this decorator that allow chained call to the specific decorator methods as the following example:
 
    ..
 
-   * \ :java:ref:`createBroker() <createBroker()>`\ .\ :java:ref:`getVmBuilder() <getVmBuilder()>`\
+   * \ :java:ref:`createBroker() <create()>`\ .\ :java:ref:`getVmBuilder() <getVmBuilder()>`\
 
    :author: Manoel Campos da Silva Filho
 
@@ -34,10 +34,10 @@ BrokerBuilderDecorator
 
 Methods
 -------
-createBroker
-^^^^^^^^^^^^
+create
+^^^^^^
 
-.. java:method:: @Override public BrokerBuilderDecorator createBroker()
+.. java:method:: @Override public BrokerBuilderDecorator create()
    :outertype: BrokerBuilderDecorator
 
 findBroker

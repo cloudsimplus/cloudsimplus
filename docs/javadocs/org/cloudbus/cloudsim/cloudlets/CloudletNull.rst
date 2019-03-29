@@ -44,6 +44,12 @@ addOnFinishListener
 .. java:method:: @Override public Cloudlet addOnFinishListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: CloudletNull
 
+addOnStartListener
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener)
+   :outertype: CloudletNull
+
 addOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -89,8 +95,13 @@ getAccumulatedBwCost
 getActualCpuTime
 ^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getActualCpuTime(Datacenter datacenter)
+.. java:method:: public double getActualCpuTime(Datacenter datacenter)
    :outertype: CloudletNull
+
+   Gets the total execution time of this Cloudlet in a given Datacenter ID.
+
+   :param datacenter: the Datacenter entity
+   :return: the total execution time of this Cloudlet in the given Datacenter or 0 if the Cloudlet was not executed there
 
 getActualCpuTime
 ^^^^^^^^^^^^^^^^
@@ -168,12 +179,6 @@ getJobId
 ^^^^^^^^
 
 .. java:method:: @Override public long getJobId()
-   :outertype: CloudletNull
-
-getLastDatacenter
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Datacenter getLastDatacenter()
    :outertype: CloudletNull
 
 getLastDatacenterArrivalTime
@@ -320,23 +325,13 @@ getWaitingTime
 .. java:method:: @Override public double getWaitingTime()
    :outertype: CloudletNull
 
-getWallClockTime
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getWallClockTime(Datacenter datacenter)
-   :outertype: CloudletNull
-
-getWallClockTimeInLastExecutedDatacenter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getWallClockTimeInLastExecutedDatacenter()
-   :outertype: CloudletNull
-
 isAssignedToDatacenter
 ^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isAssignedToDatacenter()
+.. java:method:: public boolean isAssignedToDatacenter()
    :outertype: CloudletNull
+
+   :return: true if the cloudlet has even been assigned to a Datacenter in order to run, false otherwise.
 
 isBindToVm
 ^^^^^^^^^^
@@ -368,6 +363,12 @@ removeOnFinishListener
 .. java:method:: @Override public boolean removeOnFinishListener(EventListener<CloudletVmEventInfo> listener)
    :outertype: CloudletNull
 
+removeOnStartListener
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener)
+   :outertype: CloudletNull
+
 removeOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -383,7 +384,7 @@ requiresFiles
 setBroker
 ^^^^^^^^^
 
-.. java:method:: @Override public Cloudlet setBroker(DatacenterBroker broker)
+.. java:method:: @Override public void setBroker(DatacenterBroker broker)
    :outertype: CloudletNull
 
 setExecStartTime
@@ -438,6 +439,12 @@ setPriority
 ^^^^^^^^^^^
 
 .. java:method:: @Override public void setPriority(int priority)
+   :outertype: CloudletNull
+
+setSizes
+^^^^^^^^
+
+.. java:method:: @Override public Cloudlet setSizes(long size)
    :outertype: CloudletNull
 
 setStatus

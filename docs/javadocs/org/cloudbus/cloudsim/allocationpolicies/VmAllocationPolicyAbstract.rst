@@ -70,6 +70,8 @@ addPesFromHost
 
    Gets the number of working PEs from a given Host and adds this number to the \ :java:ref:`list of free PEs <getHostFreePesMap()>`\ . Before the Host starts being used, the number of free PEs is the same as the number of working PEs.
 
+   :param host: the Host to add PEs from
+
 addUsedPes
 ^^^^^^^^^^
 
@@ -101,6 +103,25 @@ deallocateHostForVm
 ^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void deallocateHostForVm(Vm vm)
+   :outertype: VmAllocationPolicyAbstract
+
+defaultFindHostForVm
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected abstract Optional<Host> defaultFindHostForVm(Vm vm)
+   :outertype: VmAllocationPolicyAbstract
+
+   Provides the default implementation of the \ :java:ref:`VmAllocationPolicy`\  to find a suitable Host for a given VM.
+
+   :param vm: the VM to find a suitable Host to
+   :return: an \ :java:ref:`Optional`\  containing a suitable Host to place the VM or an empty \ :java:ref:`Optional`\  if no suitable Host was found
+
+   **See also:** :java:ref:`.setFindHostForVmFunction(BiFunction)`
+
+findHostForVm
+^^^^^^^^^^^^^
+
+.. java:method:: @Override public final Optional<Host> findHostForVm(Vm vm)
    :outertype: VmAllocationPolicyAbstract
 
 getDatacenter
@@ -150,8 +171,8 @@ removeUsedPes
 
    Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
 
-   :param vm:
-   :return: the used PEs number
+   :param vm: the VM to remove used PEs from
+   :return: the number of used PEs removed
 
 scaleVmVertically
 ^^^^^^^^^^^^^^^^^
@@ -177,7 +198,7 @@ setFindHostForVmFunction
 
    {@inheritDoc} The default implementation of such a Function is provided by the method \ :java:ref:`findHostForVm(Vm)`\ .
 
-   :param findHostForVmFunction: {@inheritDoc}. Passing null makes the Function to be set as the default \ :java:ref:`findHostForVm(Vm)`\ .
+   :param findHostForVmFunction: {@inheritDoc}. Passing null makes the default method to find a Host for a VM to be used.
 
 setHostFreePesMap
 ^^^^^^^^^^^^^^^^^

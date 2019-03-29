@@ -6,15 +6,11 @@
 
 .. java:import:: java.nio.file FileSystem
 
-.. java:import:: java.util ArrayList
-
 .. java:import:: java.util Collections
-
-.. java:import:: java.util Iterator
 
 .. java:import:: java.util List
 
-.. java:import:: java.util.stream Stream
+.. java:import:: java.util.stream Collectors
 
 ResourceLoader
 ==============
@@ -24,7 +20,7 @@ ResourceLoader
 
 .. java:type:: public final class ResourceLoader
 
-   Loads a resource file/directory that is contained inside the directory of a given class.
+   An utility class that loads a resource file/directory that is contained inside the directory of a given class.
 
    :author: Manoel Campos da Silva Filho
 
@@ -57,13 +53,13 @@ getFileReader
 getInputStream
 ^^^^^^^^^^^^^^
 
-.. java:method:: public static InputStream getInputStream(Class klass, String resourceName)
+.. java:method:: public static InputStream getInputStream(String resourceName, Class klass)
    :outertype: ResourceLoader
 
    Try to load the resource from a jar file, in case the user is running simulations from a jar instead of directly from the IDE. If the input is null, the simulation is not being executed from a jar file, so try to load the resource from a directory in the filesystem.
 
-   :param klass: a class from the project that will be used just to assist in getting the path of the given resource
    :param resourceName: the name of the resource to get a \ :java:ref:`BufferedReader`\  for it
+   :param klass: a class from the project that will be used just to assist in getting the path of the given resource
    :throws UncheckedIOException: when the file cannot be accessed (such as when it doesn't exist)
    :return: a \ :java:ref:`InputStream`\  to read the resource
 

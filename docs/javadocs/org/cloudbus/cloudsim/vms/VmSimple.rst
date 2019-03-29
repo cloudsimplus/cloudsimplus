@@ -4,15 +4,17 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
-.. java:import:: org.cloudbus.cloudsim.core Simulation
+.. java:import:: org.cloudbus.cloudsim.core CustomerEntityAbstract
 
-.. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
+.. java:import:: org.cloudbus.cloudsim.core Machine
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
+
+.. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletSchedulerTimeShared
 
 .. java:import:: org.cloudsimplus.autoscaling HorizontalVmScaling
 
@@ -26,6 +28,8 @@
 
 .. java:import:: org.cloudsimplus.listeners VmHostEventInfo
 
+.. java:import:: java.util.stream DoubleStream
+
 .. java:import:: java.util.stream LongStream
 
 VmSimple
@@ -34,7 +38,7 @@ VmSimple
 .. java:package:: org.cloudbus.cloudsim.vms
    :noindex:
 
-.. java:type:: public class VmSimple implements Vm
+.. java:type:: public class VmSimple extends CustomerEntityAbstract implements Vm
 
    Implements the basic features of a Virtual Machine (VM) that runs inside a \ :java:ref:`Host`\  that may be shared among other VMs. It processes \ :java:ref:`cloudlets <Cloudlet>`\ . This processing happens according to a policy, defined by the \ :java:ref:`CloudletScheduler`\ . Each VM has a owner (user), which can submit cloudlets to the VM to execute them.
 
@@ -45,41 +49,53 @@ Constructors
 VmSimple
 ^^^^^^^^
 
-.. java:constructor:: public VmSimple(int id, long mipsCapacity, long numberOfPes)
+.. java:constructor:: public VmSimple(double mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
-   Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
-
-   :param id: unique ID of the VM
-   :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
-   :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
-
-VmSimple
-^^^^^^^^
-
-.. java:constructor:: public VmSimple(long mipsCapacity, long numberOfPes)
-   :outertype: VmSimple
-
-   Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+   Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
 
    It is not defined an id for the Vm. The id is defined when the Vm is submitted to a \ :java:ref:`DatacenterBroker`\ .
 
+   \ **NOTE:**\  The Vm will use a \ :java:ref:`CloudletSchedulerTimeShared`\  by default. If you need to change that, just call \ :java:ref:`setCloudletScheduler(CloudletScheduler)`\ .
+
    :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
    :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
+
+   **See also:** :java:ref:`.setRam(long)`, :java:ref:`.setBw(long)`, :java:ref:`.setStorage(Storage)`, :java:ref:`.setDefaultRamCapacity(long)`, :java:ref:`.setDefaultBwCapacity(long)`, :java:ref:`.setDefaultStorageCapacity(long)`
 
 VmSimple
 ^^^^^^^^
 
-.. java:constructor:: public VmSimple(int id, double mipsCapacity, long numberOfPes)
+.. java:constructor:: public VmSimple(long id, double mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
-   Creates a Vm with 1024 MEGA of RAM, 1000 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+   Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
 
    It receives the amount of MIPS as a double value but converts it internally to a long. The method is just provided as a handy-way to create a Vm using a double value for MIPS that usually is generated from some computations.
+
+   \ **NOTE:**\  The Vm will use a \ :java:ref:`CloudletSchedulerTimeShared`\  by default. If you need to change that, just call \ :java:ref:`setCloudletScheduler(CloudletScheduler)`\ .
 
    :param id: unique ID of the VM
    :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
    :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
+
+   **See also:** :java:ref:`.setRam(long)`, :java:ref:`.setBw(long)`, :java:ref:`.setStorage(Storage)`, :java:ref:`.setDefaultRamCapacity(long)`, :java:ref:`.setDefaultBwCapacity(long)`, :java:ref:`.setDefaultStorageCapacity(long)`
+
+VmSimple
+^^^^^^^^
+
+.. java:constructor:: public VmSimple(long id, long mipsCapacity, long numberOfPes)
+   :outertype: VmSimple
+
+   Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+
+   \ **NOTE:**\  The Vm will use a \ :java:ref:`CloudletSchedulerTimeShared`\  by default. If you need to change that, just call \ :java:ref:`setCloudletScheduler(CloudletScheduler)`\ .
+
+   :param id: unique ID of the VM
+   :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
+   :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
+
+   **See also:** :java:ref:`.setRam(long)`, :java:ref:`.setBw(long)`, :java:ref:`.setStorage(Storage)`, :java:ref:`.setDefaultRamCapacity(long)`, :java:ref:`.setDefaultBwCapacity(long)`, :java:ref:`.setDefaultStorageCapacity(long)`
 
 Methods
 -------
@@ -142,12 +158,6 @@ equals
 .. java:method:: @Override public boolean equals(Object o)
    :outertype: VmSimple
 
-getBroker
-^^^^^^^^^
-
-.. java:method:: @Override public DatacenterBroker getBroker()
-   :outertype: VmSimple
-
 getBw
 ^^^^^
 
@@ -208,6 +218,30 @@ getCurrentRequestedTotalMips
 .. java:method:: @Override public double getCurrentRequestedTotalMips()
    :outertype: VmSimple
 
+getDefaultBwCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static long getDefaultBwCapacity()
+   :outertype: VmSimple
+
+   Gets the Default Bandwidth capacity (in Mbps) for creating VMs. This value is used when the BW capacity is not given in a VM constructor.
+
+getDefaultRamCapacity
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static long getDefaultRamCapacity()
+   :outertype: VmSimple
+
+   Gets the Default RAM capacity (in MB) for creating VMs. This value is used when the RAM capacity is not given in a VM constructor.
+
+getDefaultStorageCapacity
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static long getDefaultStorageCapacity()
+   :outertype: VmSimple
+
+   Gets the Default Storage capacity (in MB) for creating VMs. This value is used when the Storage capacity is not given in a VM constructor.
+
 getDescription
 ^^^^^^^^^^^^^^
 
@@ -224,12 +258,6 @@ getHost
 ^^^^^^^
 
 .. java:method:: @Override public Host getHost()
-   :outertype: VmSimple
-
-getId
-^^^^^
-
-.. java:method:: @Override public long getId()
    :outertype: VmSimple
 
 getIdleInterval
@@ -280,16 +308,16 @@ getRamVerticalScaling
 .. java:method:: @Override public VerticalVmScaling getRamVerticalScaling()
    :outertype: VmSimple
 
+getRelativeMipsCapacityPercent
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getRelativeMipsCapacityPercent()
+   :outertype: VmSimple
+
 getResources
 ^^^^^^^^^^^^
 
 .. java:method:: @Override public List<ResourceManageable> getResources()
-   :outertype: VmSimple
-
-getSimulation
-^^^^^^^^^^^^^
-
-.. java:method:: @Override public Simulation getSimulation()
    :outertype: VmSimple
 
 getStartTime
@@ -346,12 +374,6 @@ getTotalMipsCapacity
 .. java:method:: @Override public double getTotalMipsCapacity()
    :outertype: VmSimple
 
-getUid
-^^^^^^
-
-.. java:method:: @Override public String getUid()
-   :outertype: VmSimple
-
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -362,12 +384,6 @@ getVmm
 ^^^^^^
 
 .. java:method:: @Override public String getVmm()
-   :outertype: VmSimple
-
-hashCode
-^^^^^^^^
-
-.. java:method:: @Override public int hashCode()
    :outertype: VmSimple
 
 isCreated
@@ -462,12 +478,6 @@ removeOnUpdateProcessingListener
 .. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener)
    :outertype: VmSimple
 
-setBroker
-^^^^^^^^^
-
-.. java:method:: @Override public final Vm setBroker(DatacenterBroker broker)
-   :outertype: VmSimple
-
 setBw
 ^^^^^
 
@@ -492,6 +502,30 @@ setCreated
 .. java:method:: @Override public final void setCreated(boolean created)
    :outertype: VmSimple
 
+setDefaultBwCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void setDefaultBwCapacity(long defaultCapacity)
+   :outertype: VmSimple
+
+   Sets the Default Bandwidth capacity (in Mbps) for creating VMs. This value is used when the BW capacity is not given in a VM constructor.
+
+setDefaultRamCapacity
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void setDefaultRamCapacity(long defaultCapacity)
+   :outertype: VmSimple
+
+   Sets the Default RAM capacity (in MB) for creating VMs. This value is used when the RAM capacity is not given in a VM constructor.
+
+setDefaultStorageCapacity
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void setDefaultStorageCapacity(long defaultCapacity)
+   :outertype: VmSimple
+
+   Sets the Default Storage capacity (in MB) for creating VMs. This value is used when the Storage capacity is not given in a VM constructor.
+
 setDescription
 ^^^^^^^^^^^^^^
 
@@ -515,16 +549,6 @@ setHost
 
 .. java:method:: @Override public final void setHost(Host host)
    :outertype: VmSimple
-
-setId
-^^^^^
-
-.. java:method:: @Override public final void setId(long id)
-   :outertype: VmSimple
-
-   Sets the VM id.
-
-   :param id: the new VM id, that has to be unique for the current \ :java:ref:`broker <getBroker()>`\
 
 setInMigration
 ^^^^^^^^^^^^^^
@@ -598,6 +622,12 @@ toString
 ^^^^^^^^
 
 .. java:method:: @Override public String toString()
+   :outertype: VmSimple
+
+updateProcessing
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double updateProcessing(List<Double> mipsShare)
    :outertype: VmSimple
 
 updateProcessing

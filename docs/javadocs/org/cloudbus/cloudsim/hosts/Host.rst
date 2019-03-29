@@ -116,16 +116,6 @@ createVm
    :param vm: Vm being started
    :return: $true if the VM could be started in the host; $false otherwise
 
-deallocatePesForVm
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  void deallocatePesForVm(Vm vm)
-   :outertype: Host
-
-   Releases PEs allocated to a VM.
-
-   :param vm: the vm
-
 destroyAllVms
 ^^^^^^^^^^^^^
 
@@ -176,26 +166,15 @@ enableStateHistory
 
    **See also:** :java:ref:`.getStateHistory()`
 
-getAllocatedMipsForVm
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  List<Double> getAllocatedMipsForVm(Vm vm)
-   :outertype: Host
-
-   Gets the MIPS share of each Pe that is allocated to a given VM.
-
-   :param vm: the vm
-   :return: an array containing the amount of MIPS of each pe that is available to the VM
-
 getAvailableMips
 ^^^^^^^^^^^^^^^^
 
 .. java:method::  double getAvailableMips()
    :outertype: Host
 
-   Gets the current amount of available MIPS at the host.
+   Gets the current total amount of available MIPS at the host.
 
-   :return: the available amount of MIPS
+   :return: the total available amount of MIPS
 
 getAvailableStorage
 ^^^^^^^^^^^^^^^^^^^
@@ -207,10 +186,10 @@ getAvailableStorage
 
    :return: the free storage
 
-getBuzyPeList
+getBusyPeList
 ^^^^^^^^^^^^^
 
-.. java:method::  List<Pe> getBuzyPeList()
+.. java:method::  List<Pe> getBusyPeList()
    :outertype: Host
 
    Gets the list of working Processing Elements (PEs) of the host, \ **which excludes failed PEs**\ .
@@ -237,6 +216,16 @@ getDatacenter
 
    :return: the data center of the host
 
+getFailedPesNumber
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getFailedPesNumber()
+   :outertype: Host
+
+   Gets the number of PEs that have failed.
+
+   :return: the number of failed pes
+
 getFinishedVms
 ^^^^^^^^^^^^^^
 
@@ -255,45 +244,25 @@ getFreePeList
 
    :return: the list free (non-failed) Host PEs
 
-getMaxAvailableMips
-^^^^^^^^^^^^^^^^^^^
+getFreePesNumber
+^^^^^^^^^^^^^^^^
 
-.. java:method::  double getMaxAvailableMips()
-   :outertype: Host
-
-   Returns the maximum available MIPS among all the PEs of the host.
-
-   :return: max mips
-
-getNumberOfFailedPes
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  long getNumberOfFailedPes()
-   :outertype: Host
-
-   Gets the number of PEs that have failed.
-
-   :return: the number of failed pes
-
-getNumberOfFreePes
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  int getNumberOfFreePes()
+.. java:method::  int getFreePesNumber()
    :outertype: Host
 
    Gets the free pes number.
 
    :return: the free pes number
 
-getNumberOfWorkingPes
-^^^^^^^^^^^^^^^^^^^^^
+getMigratableVms
+^^^^^^^^^^^^^^^^
 
-.. java:method::  long getNumberOfWorkingPes()
+.. java:method::  List<Vm> getMigratableVms()
    :outertype: Host
 
-   Gets the number of PEs that are working. That is, the number of PEs that aren't FAIL.
+   Gets the list of migratable VMs from a given host.
 
-   :return: the number of working pes
+   :return: the list of migratable VMs
 
 getPeList
 ^^^^^^^^^
@@ -399,7 +368,7 @@ getUtilizationHistory
 .. java:method::  SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory()
    :outertype: Host
 
-   Gets a map containing the host CPU utilization percentage history (between [0 and 1]), based on its VM utilization history. Each key is a time when the data collection was performed and each value is a \ :java:ref:`DoubleSummaryStatistics`\  from where some operations over the CPU utilization entries for every VM inside the Host can be performed, such as counting, summing, averaging, etc. For instance, if you call the \ :java:ref:`DoubleSummaryStatistics.getSum()`\ , you'll get the total Host's CPU utilization for the time specified by the map key.
+   Gets a map containing the host CPU utilization percentage history (between [0 and 1]), based on its VM utilization history. Each key is a time when the data collection was performed and each value is a \ :java:ref:`DoubleSummaryStatistics`\  from where some operations over the CPU utilization entries for every VM inside the Host can be performed. Such operations include counting, summing, averaging, etc. For instance, if you call the \ :java:ref:`DoubleSummaryStatistics.getSum()`\ , you'll get the total Host's CPU utilization for the time specified by the map key.
 
    There is an entry for each time multiple of the \ :java:ref:`Datacenter.getSchedulingInterval()`\ . \ **This way, it's required to set a Datacenter scheduling interval with the desired value.**\
 
@@ -463,18 +432,6 @@ getUtilizationOfRam
 
    Gets the current utilization of memory (in absolute values).
 
-getVm
-^^^^^
-
-.. java:method::  Vm getVm(int vmId, int brokerId)
-   :outertype: Host
-
-   Gets a VM by its id and user.
-
-   :param vmId: the vm id
-   :param brokerId: ID of VM's owner
-   :return: the virtual machine object, $null if not found
-
 getVmCreatedList
 ^^^^^^^^^^^^^^^^
 
@@ -484,7 +441,7 @@ getVmCreatedList
    Gets a \ **read-only**\  list of all VMs which have been created into the host during the entire simulation. This way, this method returns a historic list of created VMs, including those ones already destroyed.
 
    :param <T>: The generic type
-   :return: the read-only vm created list
+   :return: the read-only vm created historic list
 
 getVmList
 ^^^^^^^^^
@@ -495,7 +452,7 @@ getVmList
    Gets a \ **read-only**\  list of VMs currently assigned to the host.
 
    :param <T>: The generic type
-   :return: the read-only vm list
+   :return: the read-only current vm list
 
 getVmScheduler
 ^^^^^^^^^^^^^^
@@ -535,6 +492,16 @@ getWorkingPeList
    Gets the list of working Processing Elements (PEs) of the host. It's the list of all PEs which are not \ **FAILEd**\ .
 
    :return: the list working (non-failed) Host PEs
+
+getWorkingPesNumber
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getWorkingPesNumber()
+   :outertype: Host
+
+   Gets the number of PEs that are working. That is, the number of PEs that aren't FAIL.
+
+   :return: the number of working pes
 
 isActive
 ^^^^^^^^
@@ -605,16 +572,6 @@ removeOnUpdateProcessingListener
    :return: true if the listener was found and removed, false otherwise
 
    **See also:** :java:ref:`.updateProcessing(double)`
-
-removeVmMigratingIn
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean removeVmMigratingIn(Vm vm)
-   :outertype: Host
-
-   Adds a \ :java:ref:`Vm`\  to the list of VMs migrating into the Host.
-
-   :param vm: the vm to be added
 
 removeVmMigratingOut
 ^^^^^^^^^^^^^^^^^^^^

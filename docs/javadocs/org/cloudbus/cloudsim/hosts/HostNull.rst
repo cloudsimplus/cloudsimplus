@@ -72,12 +72,6 @@ createVm
 .. java:method:: @Override public boolean createVm(Vm vm)
    :outertype: HostNull
 
-deallocatePesForVm
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void deallocatePesForVm(Vm vm)
-   :outertype: HostNull
-
 destroyAllVms
 ^^^^^^^^^^^^^
 
@@ -108,12 +102,6 @@ enableStateHistory
 .. java:method:: @Override public void enableStateHistory()
    :outertype: HostNull
 
-getAllocatedMipsForVm
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public List<Double> getAllocatedMipsForVm(Vm vm)
-   :outertype: HostNull
-
 getAvailableMips
 ^^^^^^^^^^^^^^^^
 
@@ -126,10 +114,10 @@ getAvailableStorage
 .. java:method:: @Override public long getAvailableStorage()
    :outertype: HostNull
 
-getBuzyPeList
+getBusyPeList
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Pe> getBuzyPeList()
+.. java:method:: @Override public List<Pe> getBusyPeList()
    :outertype: HostNull
 
 getBw
@@ -150,6 +138,12 @@ getDatacenter
 .. java:method:: @Override public Datacenter getDatacenter()
    :outertype: HostNull
 
+getFailedPesNumber
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getFailedPesNumber()
+   :outertype: HostNull
+
 getFinishedVms
 ^^^^^^^^^^^^^^
 
@@ -162,16 +156,22 @@ getFreePeList
 .. java:method:: @Override public List<Pe> getFreePeList()
    :outertype: HostNull
 
+getFreePesNumber
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public int getFreePesNumber()
+   :outertype: HostNull
+
 getId
 ^^^^^
 
 .. java:method:: @Override public long getId()
    :outertype: HostNull
 
-getMaxAvailableMips
-^^^^^^^^^^^^^^^^^^^
+getMigratableVms
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getMaxAvailableMips()
+.. java:method:: @Override public List<Vm> getMigratableVms()
    :outertype: HostNull
 
 getMips
@@ -180,28 +180,10 @@ getMips
 .. java:method:: @Override public double getMips()
    :outertype: HostNull
 
-getNumberOfFailedPes
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getNumberOfFailedPes()
-   :outertype: HostNull
-
-getNumberOfFreePes
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public int getNumberOfFreePes()
-   :outertype: HostNull
-
 getNumberOfPes
 ^^^^^^^^^^^^^^
 
 .. java:method:: @Override public long getNumberOfPes()
-   :outertype: HostNull
-
-getNumberOfWorkingPes
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getNumberOfWorkingPes()
    :outertype: HostNull
 
 getPeList
@@ -324,12 +306,6 @@ getUtilizationOfRam
 .. java:method:: @Override public long getUtilizationOfRam()
    :outertype: HostNull
 
-getVm
-^^^^^
-
-.. java:method:: @Override public Vm getVm(int vmId, int brokerId)
-   :outertype: HostNull
-
 getVmCreatedList
 ^^^^^^^^^^^^^^^^
 
@@ -364,6 +340,12 @@ getWorkingPeList
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<Pe> getWorkingPeList()
+   :outertype: HostNull
+
+getWorkingPesNumber
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getWorkingPesNumber()
    :outertype: HostNull
 
 isActive
@@ -406,12 +388,6 @@ removeOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener)
-   :outertype: HostNull
-
-removeVmMigratingIn
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean removeVmMigratingIn(Vm vm)
    :outertype: HostNull
 
 removeVmMigratingOut

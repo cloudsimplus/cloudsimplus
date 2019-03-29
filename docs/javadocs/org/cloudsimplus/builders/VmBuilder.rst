@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
 
+.. java:import:: org.cloudbus.cloudsim.resources Pe
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -18,6 +20,8 @@
 
 .. java:import:: java.util Objects
 
+.. java:import:: java.util.function BiFunction
+
 .. java:import:: java.util.function Supplier
 
 VmBuilder
@@ -26,11 +30,13 @@ VmBuilder
 .. java:package:: org.cloudsimplus.builders
    :noindex:
 
-.. java:type:: public class VmBuilder
+.. java:type:: public class VmBuilder implements Builder
 
-   A Builder class to create \ :java:ref:`Vm`\  objects.
+   A Builder class to create \ :java:ref:`Vm`\  objects using the default values defined in \ :java:ref:`Vm`\  class.
 
    :author: Manoel Campos da Silva Filho
+
+   **See also:** :java:ref:`VmSimple.setDefaultRamCapacity(long)`, :java:ref:`VmSimple.setDefaultBwCapacity(long)`, :java:ref:`VmSimple.setDefaultStorageCapacity(long)`
 
 Constructors
 ------------
@@ -42,23 +48,21 @@ VmBuilder
 
 Methods
 -------
-createAndSubmitOneVm
-^^^^^^^^^^^^^^^^^^^^
+createAndSubmit
+^^^^^^^^^^^^^^^
 
-.. java:method:: public VmBuilder createAndSubmitOneVm()
+.. java:method:: public VmBuilder createAndSubmit()
    :outertype: VmBuilder
 
-createAndSubmitVms
-^^^^^^^^^^^^^^^^^^
+   Creates and submits one VM to its broker.
 
-.. java:method:: public VmBuilder createAndSubmitVms(int amount)
+createAndSubmit
+^^^^^^^^^^^^^^^
+
+.. java:method:: public VmBuilder createAndSubmit(int amount)
    :outertype: VmBuilder
 
-getBandwidth
-^^^^^^^^^^^^
-
-.. java:method:: public long getBandwidth()
-   :outertype: VmBuilder
+   Creates and submits a list of VM to its broker.
 
 getMips
 ^^^^^^^
@@ -66,28 +70,10 @@ getMips
 .. java:method:: public double getMips()
    :outertype: VmBuilder
 
-getOnUpdateVmProcessingListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public EventListener<VmHostEventInfo> getOnUpdateVmProcessingListener()
-   :outertype: VmBuilder
-
 getPes
 ^^^^^^
 
-.. java:method:: public int getPes()
-   :outertype: VmBuilder
-
-getRam
-^^^^^^
-
-.. java:method:: public long getRam()
-   :outertype: VmBuilder
-
-getSize
-^^^^^^^
-
-.. java:method:: public long getSize()
+.. java:method:: public long getPes()
    :outertype: VmBuilder
 
 getVmById
@@ -102,21 +88,11 @@ getVms
 .. java:method:: public List<Vm> getVms()
    :outertype: VmBuilder
 
-setBandwidth
-^^^^^^^^^^^^
-
-.. java:method:: public VmBuilder setBandwidth(long defaultBW)
-   :outertype: VmBuilder
-
 setCloudletSchedulerSupplier
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: public VmBuilder setCloudletSchedulerSupplier(Supplier<CloudletScheduler> cloudletSchedulerSupplier)
    :outertype: VmBuilder
-
-   Sets a \ :java:ref:`Supplier`\  that is accountable to create CloudletScheduler for requested VMs.
-
-   :param cloudletSchedulerSupplier: the CloudletScheduler Supplier to set
 
 setMips
 ^^^^^^^
@@ -127,42 +103,40 @@ setMips
 setOnHostAllocationListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public VmBuilder setOnHostAllocationListener(EventListener<VmHostEventInfo> onHostAllocationListener)
+.. java:method:: public VmBuilder setOnHostAllocationListener(EventListener<VmHostEventInfo> listener)
    :outertype: VmBuilder
 
 setOnHostDeallocationListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public VmBuilder setOnHostDeallocationListener(EventListener<VmHostEventInfo> onHostDeallocationListener)
+.. java:method:: public VmBuilder setOnHostDeallocationListener(EventListener<VmHostEventInfo> listener)
    :outertype: VmBuilder
 
 setOnUpdateVmProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public VmBuilder setOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> onUpdateVmProcessing)
+.. java:method:: public VmBuilder setOnUpdateVmProcessingListener(EventListener<VmHostEventInfo> listener)
    :outertype: VmBuilder
 
-setOnVmCreationFilatureListenerForAllVms
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+setOnVmCreationFailureListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public VmBuilder setOnVmCreationFilatureListenerForAllVms(EventListener<VmDatacenterEventInfo> onVmCreationFailureListener)
+.. java:method:: public VmBuilder setOnVmCreationFailureListener(EventListener<VmDatacenterEventInfo> listener)
    :outertype: VmBuilder
 
 setPes
 ^^^^^^
 
-.. java:method:: public VmBuilder setPes(int defaultPEs)
+.. java:method:: public VmBuilder setPes(long defaultPEs)
    :outertype: VmBuilder
 
-setRam
-^^^^^^
+setVmCreationFunction
+^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public VmBuilder setRam(int defaultRAM)
+.. java:method:: public VmBuilder setVmCreationFunction(BiFunction<Double, Long, Vm> vmCreationFunction)
    :outertype: VmBuilder
 
-setSize
-^^^^^^^
+   Sets a \ :java:ref:`BiFunction`\  used to create VMs. It must receive the MIPS capacity of each \ :java:ref:`Pe`\  and the number of PEs for the VM it will create.
 
-.. java:method:: public VmBuilder setSize(long defaultSize)
-   :outertype: VmBuilder
+   :param vmCreationFunction:
 

@@ -152,7 +152,7 @@ getNumberOfFreePes
 .. java:method::  int getNumberOfFreePes()
    :outertype: DatacenterCharacteristics
 
-   Gets the total number of \ ``FREE``\  or non-busy PEs for all PMs.
+   Gets the total number of \ **FREE**\  or non-busy PEs for all PMs.
 
    :return: number of PEs
 

@@ -20,7 +20,7 @@ VmAllocationPolicySimple
 
 .. java:type:: public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract
 
-   A VmAllocationPolicy implementation that chooses, as the host for a VM, that one with fewer PEs in use. \ **It is therefore a Worst Fit policy**\ , allocating each VM into the host with most available PEs.
+   A VmAllocationPolicy implementation that chooses, as the host for a VM, that one with the fewest PEs in use. \ **It is therefore a Worst Fit policy**\ , allocating each VM into the host with most available PEs.
 
    \ **NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.**\
 
@@ -50,10 +50,10 @@ VmAllocationPolicySimple
 
 Methods
 -------
-findHostForVm
-^^^^^^^^^^^^^
+defaultFindHostForVm
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Optional<Host> findHostForVm(Vm vm)
+.. java:method:: @Override protected Optional<Host> defaultFindHostForVm(Vm vm)
    :outertype: VmAllocationPolicySimple
 
    Gets the first suitable host from the \ :java:ref:`getHostList()`\  that has the fewest number of used PEs (i.e, higher free PEs).

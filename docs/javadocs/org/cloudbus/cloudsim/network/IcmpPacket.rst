@@ -205,9 +205,7 @@ getTotalResponseTime
 .. java:method:: public double getTotalResponseTime()
    :outertype: IcmpPacket
 
-   Gets the total time that the packet has spent in the network. This is basically the Round-Trip Time (RTT). Dividing this by half should be the approximate latency.
-
-   RTT is taken as the "final entry time" - "first exit time".
+   Gets the total time that the packet has spent in the network. This is basically the Round-Trip Time (RTT). Dividing this by half should be the approximate latency. RTT is taken as the "final entry time" - "first exit time".
 
    :return: total round-trip time
 
@@ -260,7 +258,7 @@ setSize
    Sets the size of the packet.
 
    :param size: the size to set
-   :return: \ ``true``\  if a positive value was given, \ ``false``\  otherwise
+   :return: true if a positive value was given, false otherwise
 
 setSource
 ^^^^^^^^^

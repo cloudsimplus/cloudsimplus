@@ -6,6 +6,8 @@
 
 .. java:import:: java.util TreeMap
 
+.. java:import:: java.util.stream Stream
+
 VmUtilizationHistory
 ====================
 
@@ -43,6 +45,12 @@ addUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void addUtilizationHistory(double time)
+   :outertype: VmUtilizationHistory
+
+cpuUsageFromHostCapacity
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double cpuUsageFromHostCapacity(double time)
    :outertype: VmUtilizationHistory
 
 disable
@@ -97,6 +105,12 @@ isEnabled
 ^^^^^^^^^
 
 .. java:method:: @Override public boolean isEnabled()
+   :outertype: VmUtilizationHistory
+
+powerConsumption
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double powerConsumption(double time)
    :outertype: VmUtilizationHistory
 
 setMaxHistoryEntries

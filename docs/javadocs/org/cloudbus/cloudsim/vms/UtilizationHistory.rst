@@ -38,6 +38,17 @@ addUtilizationHistory
 
    :param time: the current simulation time
 
+cpuUsageFromHostCapacity
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double cpuUsageFromHostCapacity(double time)
+   :outertype: UtilizationHistory
+
+   Computes the percentage of the CPU the VM is using, relative the Host's total MIPS CAPACITY. If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25% of the Host's capacity
+
+   :param time: the time to get the VM CPU utilization
+   :return: the relative VM CPU usage percent (from 0 to 1)
+
 disable
 ^^^^^^^
 
@@ -109,6 +120,17 @@ isEnabled
    :outertype: UtilizationHistory
 
    Checks if the object is enabled to add data to the history.
+
+powerConsumption
+^^^^^^^^^^^^^^^^
+
+.. java:method::  double powerConsumption(double time)
+   :outertype: UtilizationHistory
+
+   Computes the amount of power the VM is using, relative to the total Host's power consumption (in watt-sec).
+
+   :param time: the time to get the VM power consumption
+   :return: the relative VM power consumption in watt-sec
 
 setMaxHistoryEntries
 ^^^^^^^^^^^^^^^^^^^^

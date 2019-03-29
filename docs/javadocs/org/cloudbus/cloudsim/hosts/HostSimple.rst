@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.core ChangeableId
 
+.. java:import:: org.cloudbus.cloudsim.core Machine
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -13,6 +15,8 @@
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerSpaceShared
+
+.. java:import:: org.cloudbus.cloudsim.util Conversion
 
 .. java:import:: org.cloudbus.cloudsim.vms UtilizationHistory
 
@@ -57,10 +61,37 @@ Constructors
 HostSimple
 ^^^^^^^^^^
 
+.. java:constructor:: public HostSimple(List<Pe> peList)
+   :outertype: HostSimple
+
+   Creates a Host without a pre-defined ID, 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage. It creates a \ :java:ref:`ResourceProvisionerSimple`\  for RAM and Bandwidth. Finally, it sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
+
+   :param peList: the host's \ :java:ref:`Pe`\  list
+
+   **See also:** :java:ref:`ChangeableId.setId(long)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setStorage(long)`, :java:ref:`.setVmScheduler(VmScheduler)`, :java:ref:`.setDefaultRamCapacity(long)`, :java:ref:`.setDefaultBwCapacity(long)`, :java:ref:`.setDefaultStorageCapacity(long)`
+
+HostSimple
+^^^^^^^^^^
+
+.. java:constructor:: public HostSimple(ResourceProvisioner ramProvisioner, ResourceProvisioner bwProvisioner, long storage, List<Pe> peList)
+   :outertype: HostSimple
+
+   Creates a Host with the given parameters and a \ :java:ref:`VmSchedulerSpaceShared`\  as default.
+
+   :param ramProvisioner: the ram provisioner with capacity in Megabytes
+   :param bwProvisioner: the bw provisioner with capacity in Megabits/s
+   :param storage: the storage capacity in Megabytes
+   :param peList: the host's PEs list
+
+   **See also:** :java:ref:`.setVmScheduler(VmScheduler)`
+
+HostSimple
+^^^^^^^^^^
+
 .. java:constructor:: public HostSimple(long ram, long bw, long storage, List<Pe> peList)
    :outertype: HostSimple
 
-   Creates a Host without a pre-defined ID and using a \ :java:ref:`ResourceProvisionerSimple`\  RAM and Bandwidth. It also sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
+   Creates a Host without a pre-defined ID. It uses a \ :java:ref:`ResourceProvisionerSimple`\  for RAM and Bandwidth and also sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
 
    :param ram: the RAM capacity in Megabytes
    :param bw: the Bandwidth (BW) capacity in Megabits/s
@@ -68,20 +99,6 @@ HostSimple
    :param peList: the host's \ :java:ref:`Pe`\  list
 
    **See also:** :java:ref:`ChangeableId.setId(long)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setVmScheduler(VmScheduler)`
-
-HostSimple
-^^^^^^^^^^
-
-.. java:constructor:: public HostSimple(ResourceProvisioner ramProvisioner, ResourceProvisioner bwProvisioner, long storage, List<Pe> peList, VmScheduler vmScheduler)
-   :outertype: HostSimple
-
-   Creates a Host with the given parameters.
-
-   :param ramProvisioner: the ram provisioner with capacity in Megabytes
-   :param bwProvisioner: the bw provisioner with capacity in Megabits/s
-   :param storage: the storage capacity in Megabytes
-   :param peList: the host's PEs list
-   :param vmScheduler: the vm scheduler
 
 Methods
 -------
@@ -136,12 +153,6 @@ createVm
 ^^^^^^^^
 
 .. java:method:: @Override public boolean createVm(Vm vm)
-   :outertype: HostSimple
-
-deallocatePesForVm
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public void deallocatePesForVm(Vm vm)
    :outertype: HostSimple
 
 deallocateResourcesOfAllVms
@@ -201,8 +212,13 @@ equals
 getAllocatedMipsForVm
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Double> getAllocatedMipsForVm(Vm vm)
+.. java:method:: protected List<Double> getAllocatedMipsForVm(Vm vm)
    :outertype: HostSimple
+
+   Gets the MIPS share of each Pe that is allocated to a given VM.
+
+   :param vm: the vm
+   :return: an array containing the amount of MIPS of each pe that is available to the VM
 
 getAvailableMips
 ^^^^^^^^^^^^^^^^
@@ -216,10 +232,10 @@ getAvailableStorage
 .. java:method:: @Override public long getAvailableStorage()
    :outertype: HostSimple
 
-getBuzyPeList
+getBusyPeList
 ^^^^^^^^^^^^^
 
-.. java:method:: @Override public List<Pe> getBuzyPeList()
+.. java:method:: @Override public List<Pe> getBusyPeList()
    :outertype: HostSimple
 
 getBw
@@ -240,6 +256,36 @@ getDatacenter
 .. java:method:: @Override public Datacenter getDatacenter()
    :outertype: HostSimple
 
+getDefaultBwCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static long getDefaultBwCapacity()
+   :outertype: HostSimple
+
+   Gets the Default Bandwidth capacity (in Mbps) for creating Hosts. This value is used when the BW capacity is not given in a Host constructor.
+
+getDefaultRamCapacity
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static long getDefaultRamCapacity()
+   :outertype: HostSimple
+
+   Gets the Default RAM capacity (in MB) for creating Hosts. This value is used when the RAM capacity is not given in a Host constructor.
+
+getDefaultStorageCapacity
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static long getDefaultStorageCapacity()
+   :outertype: HostSimple
+
+   Gets the Default Storage capacity (in MB) for creating Hosts. This value is used when the Storage capacity is not given in a Host constructor.
+
+getFailedPesNumber
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getFailedPesNumber()
+   :outertype: HostSimple
+
 getFinishedVms
 ^^^^^^^^^^^^^^
 
@@ -252,6 +298,12 @@ getFreePeList
 .. java:method:: @Override public List<Pe> getFreePeList()
    :outertype: HostSimple
 
+getFreePesNumber
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public int getFreePesNumber()
+   :outertype: HostSimple
+
 getId
 ^^^^^
 
@@ -261,25 +313,23 @@ getId
 getMaxAvailableMips
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getMaxAvailableMips()
+.. java:method:: protected double getMaxAvailableMips()
+   :outertype: HostSimple
+
+   Returns the maximum available MIPS among all the PEs of the host.
+
+   :return: max mips
+
+getMigratableVms
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public List<Vm> getMigratableVms()
    :outertype: HostSimple
 
 getMips
 ^^^^^^^
 
 .. java:method:: @Override public double getMips()
-   :outertype: HostSimple
-
-getNumberOfFailedPes
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getNumberOfFailedPes()
-   :outertype: HostSimple
-
-getNumberOfFreePes
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public int getNumberOfFreePes()
    :outertype: HostSimple
 
 getNumberOfPes
@@ -292,13 +342,7 @@ getNumberOfPes
 
    :return: {@inheritDoc}
 
-   **See also:** :java:ref:`.getNumberOfWorkingPes()`, :java:ref:`.getNumberOfFreePes()`, :java:ref:`.getNumberOfFailedPes()`
-
-getNumberOfWorkingPes
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getNumberOfWorkingPes()
-   :outertype: HostSimple
+   **See also:** :java:ref:`.getWorkingPesNumber()`, :java:ref:`.getFreePesNumber()`, :java:ref:`.getFailedPesNumber()`
 
 getPeList
 ^^^^^^^^^
@@ -420,12 +464,6 @@ getUtilizationOfRam
 .. java:method:: @Override public long getUtilizationOfRam()
    :outertype: HostSimple
 
-getVm
-^^^^^
-
-.. java:method:: @Override public Vm getVm(int vmId, int brokerId)
-   :outertype: HostSimple
-
 getVmCreatedList
 ^^^^^^^^^^^^^^^^
 
@@ -460,6 +498,12 @@ getWorkingPeList
 ^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public List<Pe> getWorkingPeList()
+   :outertype: HostSimple
+
+getWorkingPesNumber
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getWorkingPesNumber()
    :outertype: HostSimple
 
 hashCode
@@ -510,12 +554,6 @@ removeOnUpdateProcessingListener
 .. java:method:: @Override public boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener)
    :outertype: HostSimple
 
-removeVmMigratingIn
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean removeVmMigratingIn(Vm vm)
-   :outertype: HostSimple
-
 removeVmMigratingOut
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -539,6 +577,30 @@ setDatacenter
 
 .. java:method:: @Override public final void setDatacenter(Datacenter datacenter)
    :outertype: HostSimple
+
+setDefaultBwCapacity
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void setDefaultBwCapacity(long defaultCapacity)
+   :outertype: HostSimple
+
+   Sets the Default Bandwidth capacity (in Mbps) for creating Hosts. This value is used when the BW capacity is not given in a Host constructor.
+
+setDefaultRamCapacity
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void setDefaultRamCapacity(long defaultCapacity)
+   :outertype: HostSimple
+
+   Sets the Default RAM capacity (in MB) for creating Hosts. This value is used when the RAM capacity is not given in a Host constructor.
+
+setDefaultStorageCapacity
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static void setDefaultStorageCapacity(long defaultCapacity)
+   :outertype: HostSimple
+
+   Sets the Default Storage capacity (in MB) for creating Hosts. This value is used when the Storage capacity is not given in a Host constructor.
 
 setFailed
 ^^^^^^^^^

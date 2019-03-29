@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
+
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies NetworkTopology
@@ -101,13 +103,13 @@ addOnSimulationStartListener
 cancel
 ^^^^^^
 
-.. java:method:: @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent cancel(SimEntity src, Predicate<SimEvent> predicate)
    :outertype: CloudSim
 
 cancelAll
 ^^^^^^^^^
 
-.. java:method:: @Override public boolean cancelAll(SimEntity src, Predicate<SimEvent> p)
+.. java:method:: @Override public boolean cancelAll(SimEntity src, Predicate<SimEvent> predicate)
    :outertype: CloudSim
 
 clock
@@ -131,7 +133,7 @@ clockInMinutes
 findFirstDeferred
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> predicate)
    :outertype: CloudSim
 
 getCalendar
@@ -144,12 +146,6 @@ getCloudInfoService
 ^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public CloudInformationService getCloudInfoService()
-   :outertype: CloudSim
-
-getDatacenterList
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Set<Datacenter> getDatacenterList()
    :outertype: CloudSim
 
 getEntityList
@@ -182,11 +178,24 @@ getNumberOfFutureEvents
 .. java:method:: @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate)
    :outertype: CloudSim
 
+getTerminationTime
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public double getTerminationTime()
+   :outertype: CloudSim
+
+   Gets the time defined to terminate the simulation or -1 if it was not set.
+
 holdEntity
 ^^^^^^^^^^
 
-.. java:method:: @Override public void holdEntity(SimEntity src, long delay)
+.. java:method:: protected void holdEntity(SimEntity src, long delay)
    :outertype: CloudSim
+
+   Holds an entity for some time.
+
+   :param src: id of entity to be held
+   :param delay: How many seconds after the current time the entity has to be held
 
 isPaused
 ^^^^^^^^
@@ -257,7 +266,7 @@ resume
 select
 ^^^^^^
 
-.. java:method:: @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> p)
+.. java:method:: @Override public SimEvent select(SimEntity dest, Predicate<SimEvent> predicate)
    :outertype: CloudSim
 
 send
@@ -317,12 +326,12 @@ terminateAt
 wait
 ^^^^
 
-.. java:method:: @Override public void wait(CloudSimEntity src, Predicate<SimEvent> p)
+.. java:method:: @Override public void wait(CloudSimEntity src, Predicate<SimEvent> predicate)
    :outertype: CloudSim
 
 waiting
 ^^^^^^^
 
-.. java:method:: @Override public long waiting(SimEntity dest, Predicate<SimEvent> p)
+.. java:method:: @Override public long waiting(SimEntity dest, Predicate<SimEvent> predicate)
    :outertype: CloudSim
 

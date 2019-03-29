@@ -27,7 +27,7 @@ JavaDocs
    org/cloudbus/cloudsim/schedulers/cloudlet/package-index
    org/cloudbus/cloudsim/schedulers/cloudlet/network/package-index
    org/cloudbus/cloudsim/schedulers/vm/package-index
-   org/cloudbus/cloudsim/selectionpolicies/power/package-index
+   org/cloudbus/cloudsim/selectionpolicies/package-index
    org/cloudbus/cloudsim/util/package-index
    org/cloudbus/cloudsim/utilizationmodels/package-index
    org/cloudbus/cloudsim/vms/package-index

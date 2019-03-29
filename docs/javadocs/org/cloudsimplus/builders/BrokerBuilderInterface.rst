@@ -1,8 +1,8 @@
-.. java:import:: java.util List
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerSimple
+
+.. java:import:: java.util List
 
 BrokerBuilderInterface
 ======================
@@ -10,7 +10,7 @@ BrokerBuilderInterface
 .. java:package:: org.cloudsimplus.builders
    :noindex:
 
-.. java:type:: public interface BrokerBuilderInterface
+.. java:type:: public interface BrokerBuilderInterface extends Builder
 
    An interface to classes that build \ :java:ref:`DatacenterBrokerSimple`\  objects.
 
@@ -18,10 +18,10 @@ BrokerBuilderInterface
 
 Methods
 -------
-createBroker
-^^^^^^^^^^^^
+create
+^^^^^^
 
-.. java:method::  BrokerBuilderDecorator createBroker()
+.. java:method::  BrokerBuilderDecorator create()
    :outertype: BrokerBuilderInterface
 
 findBroker

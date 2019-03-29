@@ -110,3 +110,9 @@ setCapacity
 .. java:method:: @Override public boolean setCapacity(long newCapacity)
    :outertype: ResourceManageableNull
 
+sumCapacity
+^^^^^^^^^^^
+
+.. java:method:: @Override public boolean sumCapacity(long amountToSum)
+   :outertype: ResourceManageableNull
+

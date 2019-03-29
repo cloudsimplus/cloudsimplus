@@ -8,6 +8,8 @@
 
 .. java:import:: org.cloudsimplus.listeners DatacenterBrokerEventInfo
 
+.. java:import:: org.cloudsimplus.listeners EventInfo
+
 .. java:import:: org.cloudsimplus.listeners EventListener
 
 .. java:import:: org.slf4j Logger
@@ -38,13 +40,13 @@ DatacenterBroker
 
 Fields
 ------
-DEFAULT_VM_DESTRUCTION_DELAY
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+DEF_VM_DESTRUCTION_DELAY
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:field::  double DEFAULT_VM_DESTRUCTION_DELAY
+.. java:field::  double DEF_VM_DESTRUCTION_DELAY
    :outertype: DatacenterBroker
 
-   A default delay value to indicate that \ **no**\  VM should be immediately destroyed after it becoming idle.
+   A default delay value to indicate that \ **NO**\  VM should be immediately destroyed after becoming idle.
 
    This is used as the default value returned by the \ :java:ref:`getVmDestructionDelayFunction()`\  if a \ :java:ref:`Function`\  is not set.
 
@@ -84,23 +86,7 @@ addOnVmsCreatedListener
 
    :param listener: the Listener that will be notified
 
-   **See also:** :java:ref:`.getVmWaitingList()`, :java:ref:`.addOneTimeOnVmsCreatedListener(EventListener)`
-
-addOneTimeOnVmsCreatedListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  DatacenterBroker addOneTimeOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener)
-   :outertype: DatacenterBroker
-
-   Adds an \ :java:ref:`EventListener`\  that will be notified \ **just once**\  when VMs in the waiting list are all created. After the first notification, the Listener is removed from the registered Listeners and no further notifications will be sent to that specific Listener.
-
-   Even if VMs were submitted at different simulation times and all of them are created successfully (which means notifications are expected at different times), this Listener will be notified just when the first list of VMs is created and no subsequent notifications will be sent when other List of VMs is created.
-
-   For instance, consider new VMs are submitted during simulation execution at times 10 and 20. If for every submission time, all VMs could be created, then this specific Listener is expected to be notified 2 times (one for VMs submitted at time 10 and other for those at time 20). However, after VMs submitted at time 10 are all created, the Listener is notified and unregistered, so that it will get no next notifications.
-
-   :param listener: the Listener that will be notified
-
-   **See also:** :java:ref:`.getVmWaitingList()`, :java:ref:`.addOnVmsCreatedListener(EventListener)`
+   **See also:** :java:ref:`.getVmWaitingList()`
 
 bindCloudletToVm
 ^^^^^^^^^^^^^^^^
@@ -113,17 +99,6 @@ bindCloudletToVm
    :param cloudlet: the cloudlet to be bind to a given Vm
    :param vm: the vm to bind the Cloudlet to
    :return: true if the Cloudlet was found in the waiting list and was bind to the given Vm, false it the Cloudlet was not found in such a list (that may mean it wasn't submitted yet or was already created)
-
-defaultVmMapper
-^^^^^^^^^^^^^^^
-
-.. java:method::  Vm defaultVmMapper(Cloudlet cloudlet)
-   :outertype: DatacenterBroker
-
-   Defines the default policy used to select a Vm to host a Cloudlet that is waiting to be created. It applies a Round-Robin policy to cyclically select the next Vm from the list of waiting VMs.
-
-   :param cloudlet: the cloudlet that needs a VM to be placed into
-   :return: the selected Vm for the cloudlet or \ :java:ref:`Vm.NULL`\  if no suitable VM was found
 
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -184,7 +159,7 @@ getVmDestructionDelayFunction
 
    Gets a \ :java:ref:`Function`\  which defines when an idle VM should be destroyed. The Function receives a \ :java:ref:`Vm`\  and returns the delay to wait (in seconds), after the VM becomes idle, to destroy it.
 
-   **See also:** :java:ref:`.DEFAULT_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`
+   **See also:** :java:ref:`.DEF_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`
 
 getVmExecList
 ^^^^^^^^^^^^^
@@ -198,6 +173,16 @@ getVmExecList
    :return: the list of running VMs
 
    **See also:** :java:ref:`.getVmCreatedList()`
+
+getVmMapper
+^^^^^^^^^^^
+
+.. java:method::  Function<Cloudlet, Vm> getVmMapper()
+   :outertype: DatacenterBroker
+
+   Gets a \ :java:ref:`Function`\  that maps a given Cloudlet to a Vm. It defines the policy used to select a Vm to host a Cloudlet that is waiting to be created.
+
+   :return: the Vm mapper Function
 
 getVmWaitingList
 ^^^^^^^^^^^^^^^^
@@ -216,15 +201,22 @@ getWaitingVm
 .. java:method::  Vm getWaitingVm(int index)
    :outertype: DatacenterBroker
 
-isThereWaitingCloudlets
-^^^^^^^^^^^^^^^^^^^^^^^
+   Gets a VM from the waiting list.
 
-.. java:method::  boolean isThereWaitingCloudlets()
+   :param index: the index of the VM to get
+   :return: the waiting VM
+
+removeOnVmsCreatedListener
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  DatacenterBroker removeOnVmsCreatedListener(EventListener<? extends EventInfo> listener)
    :outertype: DatacenterBroker
 
-   Indicates if there are more cloudlets waiting to be executed yet.
+   Removes an \ :java:ref:`EventListener`\  to stop it to be notified when VMs in the waiting list are all created.
 
-   :return: true if there are waiting cloudlets, false otherwise
+   :param listener: the Listener that will be removed
+
+   **See also:** :java:ref:`.addOnVmsCreatedListener(EventListener)`
 
 setCloudletComparator
 ^^^^^^^^^^^^^^^^^^^^^
@@ -280,7 +272,7 @@ setVmDestructionDelayFunction
 
    :param function: the \ :java:ref:`Function`\  to set (if null is given, it sets the default Function)
 
-   **See also:** :java:ref:`.DEFAULT_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`
+   **See also:** :java:ref:`.DEF_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`
 
 setVmMapper
 ^^^^^^^^^^^

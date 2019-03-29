@@ -6,6 +6,8 @@
 
 .. java:import:: java.util Map
 
+.. java:import:: java.util Objects
+
 UtilizationModelStochastic
 ==========================
 
@@ -55,9 +57,19 @@ UtilizationModelStochastic
 .. java:constructor:: public UtilizationModelStochastic(long seed)
    :outertype: UtilizationModelStochastic
 
-   Instantiates a new utilization model stochastic.
+   Instantiates a new utilization model stochastic with a specific seed.
 
    :param seed: the seed to generate the pseudo random utilization values
+
+UtilizationModelStochastic
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public UtilizationModelStochastic(ContinuousDistribution prng)
+   :outertype: UtilizationModelStochastic
+
+   Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG).
+
+   :param prng: the Pseudo Random Number Generator (PRNG) to generate utilization values
 
 Methods
 -------
@@ -96,7 +108,7 @@ loadHistory
    Load an utilization history from a file.
 
    :param filename: the filename
-   :throws IOException: when the file cannot be accessed
+   :throws UncheckedIOException: when the file cannot be accessed
 
 saveHistory
 ^^^^^^^^^^^
@@ -107,7 +119,7 @@ saveHistory
    Save the utilization history to a file.
 
    :param filename: the filename
-   :throws IOException: when the file cannot be accessed
+   :throws UncheckedIOException: when the file cannot be accessed
 
 setHistory
 ^^^^^^^^^^

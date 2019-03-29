@@ -4,8 +4,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.core CustomerEntity
 
-.. java:import:: org.cloudbus.cloudsim.core Simulation
-
 .. java:import:: org.cloudbus.cloudsim.core UniquelyIdentifiable
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -81,6 +79,16 @@ addOnFinishListener
 
    :param listener: the listener to add
 
+addOnStartListener
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Cloudlet addOnStartListener(EventListener<CloudletVmEventInfo> listener)
+   :outertype: Cloudlet
+
+   Adds a Listener object that will be notified when the Cloudlet starts executing in some \ :java:ref:`Vm`\ .
+
+   :param listener: the listener to add
+
 addOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -102,7 +110,7 @@ addRequiredFile
    Adds a file to the list or required files.
 
    :param fileName: the name of the required file
-   :return: \ ``true``\  if the file was added (it didn't exist in the list of required files), \ ``false``\  otherwise (it did already exist)
+   :return: true if the file was added (it didn't exist in the list of required files), false otherwise (it did already exist)
 
 addRequiredFiles
 ^^^^^^^^^^^^^^^^
@@ -113,7 +121,7 @@ addRequiredFiles
    Adds a list of files to the required files list. Just the files that don't exist yet in the current required list will be added.
 
    :param fileNames: the list of files to be added
-   :return: \ ``true``\  if at leat one file was added, false if no file was added (in the case that all given files already exist in the current required list)
+   :return: true if at least one file was added, false if no file was added (in the case that all given files already exist in the current required list)
 
 assignToDatacenter
 ^^^^^^^^^^^^^^^^^^
@@ -123,7 +131,7 @@ assignToDatacenter
 
    Sets the parameters of the Datacenter where the Cloudlet is going to be executed. From the second time this method is called, every call makes the cloudlet to be migrated to the indicated Datacenter.
 
-   \ **NOTE**\ : This method \ ``should``\  be called only by a \ :java:ref:`Datacenter`\  entity.
+   \ **NOTE**\ : This method \ **should**\  be called only by a \ :java:ref:`Datacenter`\  entity.
 
    :param datacenter: the Datacenter where the cloudlet will be executed
 
@@ -136,7 +144,7 @@ deleteRequiredFile
    Deletes the given filename from the list.
 
    :param filename: the given filename to be deleted
-   :return: \ ``true``\  if the file was found and removed, \ ``false``\  if not found
+   :return: true if the file was found and removed, false if not found
 
 getAccumulatedBwCost
 ^^^^^^^^^^^^^^^^^^^^
@@ -147,17 +155,6 @@ getAccumulatedBwCost
    The total bandwidth (bw) cost for transferring the cloudlet by the network, according to the \ :java:ref:`getFileSize()`\ .
 
    :return: the accumulated bw cost
-
-getActualCpuTime
-^^^^^^^^^^^^^^^^
-
-.. java:method::  double getActualCpuTime(Datacenter datacenter)
-   :outertype: Cloudlet
-
-   Gets the total execution time of this Cloudlet in a given Datacenter ID.
-
-   :param datacenter: the Datacenter entity
-   :return: the total execution time of this Cloudlet in the given Datacenter or 0 if the Cloudlet was not executed there
 
 getActualCpuTime
 ^^^^^^^^^^^^^^^^
@@ -214,7 +211,7 @@ getCostPerSec
 
    Realize costs must be defined for Datacenters by accessing the \ :java:ref:`DatacenterCharacteristics`\  object from each \ :java:ref:`Datacenter`\  instance and setting the CPU cost.
 
-   :return: the cost associated with running this Cloudlet or \ ``0.0``\  if was not assigned to any Datacenter yet
+   :return: the cost associated with running this Cloudlet or \ **0.0**\  if was not assigned to any Datacenter yet
 
    **See also:** :java:ref:`DatacenterCharacteristics.setCostPerSecond(double)`
 
@@ -294,16 +291,6 @@ getJobId
 
    :return: the job id or \ :java:ref:`NOT_ASSIGNED`\  if the Cloudlet doesn't belong to a job
 
-getLastDatacenter
-^^^^^^^^^^^^^^^^^
-
-.. java:method::  Datacenter getLastDatacenter()
-   :outertype: Cloudlet
-
-   Gets the latest \ :java:ref:`Datacenter`\  where the Cloudlet was processed.
-
-   :return: the Datacenter or  if the Cloudlet has not being processed yet.
-
 getLastDatacenterArrivalTime
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -382,14 +369,6 @@ getRequiredFiles
 
    :return: the required files
 
-getSimulation
-^^^^^^^^^^^^^
-
-.. java:method::  Simulation getSimulation()
-   :outertype: Cloudlet
-
-   Gets the CloudSim instance that represents the simulation the Entity is related to.
-
 getStatus
 ^^^^^^^^^
 
@@ -406,7 +385,9 @@ getTotalCost
 .. java:method::  double getTotalCost()
    :outertype: Cloudlet
 
-   Gets the total cost of executing this Cloudlet. \ ``Total Cost = input data transfer + processing cost + output transfer cost``\  .
+   Gets the total cost of executing this Cloudlet.
+
+   \ ``Total Cost = input data transfer + processing cost + output transfer cost``\ .
 
    Realize costs must be defined for Datacenters by accessing the \ :java:ref:`DatacenterCharacteristics`\  object from each \ :java:ref:`Datacenter`\  instance and setting costs for each resource.
 
@@ -422,7 +403,7 @@ getTotalLength
 
    Gets the total length (across all PEs) of this Cloudlet (in MI). It considers the \ :java:ref:`getLength()`\  of the cloudlet will be executed in each Pe defined by \ :java:ref:`getNumberOfPes()`\ .
 
-   For example, setting the cloudletLenght as 10000 MI and \ :java:ref:`getNumberOfPes()`\  to 4, each Pe will execute 10000 MI. Thus, the entire Cloudlet has a total length of 40000 MI.
+   For example, setting the cloudletLength as 10000 MI and \ :java:ref:`getNumberOfPes()`\  to 4, each Pe will execute 10000 MI. Thus, the entire Cloudlet has a total length of 40000 MI.
 
    :return: the total length of this Cloudlet (in MI)
 
@@ -553,39 +534,6 @@ getWaitingTime
 
    :return: the waiting time when the cloudlet waited to execute; or 0 if there wasn't any waiting time or the cloudlet hasn't started to execute.
 
-getWallClockTime
-^^^^^^^^^^^^^^^^
-
-.. java:method::  double getWallClockTime(Datacenter datacenter)
-   :outertype: Cloudlet
-
-   Gets the time of this Cloudlet resides in a given Datacenter (from arrival time until departure time).
-
-   :param datacenter: a Datacenter entity
-   :return: the wall-clock time or 0 if the Cloudlet has never been executed there
-
-   **See also:** \ `Elapsed real time (wall-clock time) <https://en.wikipedia.org/wiki/Elapsed_real_time>`_\
-
-getWallClockTimeInLastExecutedDatacenter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getWallClockTimeInLastExecutedDatacenter()
-   :outertype: Cloudlet
-
-   Gets the time of this Cloudlet resides in the latest Datacenter (from arrival time until departure time).
-
-   :return: the wall-clock time in the latest Datacenter or 0 if the Cloudlet has never been executed
-
-   **See also:** \ `Elapsed real time (wall-clock time) <https://en.wikipedia.org/wiki/Elapsed_real_time>`_\
-
-isAssignedToDatacenter
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isAssignedToDatacenter()
-   :outertype: Cloudlet
-
-   :return: true if the cloudlet has even been assigned to a Datacenter in order to run, false otherwise.
-
 isBindToVm
 ^^^^^^^^^^
 
@@ -604,7 +552,7 @@ isFinished
 
    Checks whether this Cloudlet has finished executing or not.
 
-   :return: \ ``true``\  if this Cloudlet has finished execution, \ ``false``\  otherwise
+   :return: true if this Cloudlet has finished execution, false otherwise
 
 notifyOnUpdateProcessingListeners
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -641,6 +589,17 @@ removeOnFinishListener
 
    **See also:** :java:ref:`.addOnFinishListener(EventListener)`
 
+removeOnStartListener
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean removeOnStartListener(EventListener<CloudletVmEventInfo> listener)
+   :outertype: Cloudlet
+
+   Removes a listener from the onStartListener List.
+
+   :param listener: the listener to remove
+   :return: true if the listener was found and removed, false otherwise
+
 removeOnUpdateProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -660,12 +619,12 @@ requiresFiles
 
    Checks whether this cloudlet requires any files or not.
 
-   :return: \ ``true``\  if required, \ ``false``\  otherwise
+   :return: true if required, false otherwise
 
 setBroker
 ^^^^^^^^^
 
-.. java:method:: @Override  Cloudlet setBroker(DatacenterBroker broker)
+.. java:method:: @Override  void setBroker(DatacenterBroker broker)
    :outertype: Cloudlet
 
    Sets a \ :java:ref:`DatacenterBroker`\  that represents the owner of this Cloudlet.
@@ -678,7 +637,7 @@ setExecStartTime
 .. java:method::  void setExecStartTime(double clockTime)
    :outertype: Cloudlet
 
-   Sets the \ :java:ref:`latest execution start time <getExecStartTime()>`\  of this Cloudlet.  \ **NOTE:**\  With new functionalities, such as being able to cancel / to pause / to resume this Cloudlet, the execution start time only holds the latest one. Meaning, all previous execution start time are ignored.
+   Sets the \ :java:ref:`latest execution start time <getExecStartTime()>`\  of this Cloudlet.  \ **NOTE:**\  With new functionalities, such as being able to cancel, pause or resume this Cloudlet, the execution start time only holds the latest one. Meaning all previous execution start times are ignored.
 
    :param clockTime: the latest execution start time
 
@@ -692,6 +651,8 @@ setFileSize
 
    :param fileSize: the size to set (in bytes)
    :throws IllegalArgumentException: when the given size is lower or equal to zero
+
+   **See also:** :java:ref:`.setSizes(long)`
 
 setJobId
 ^^^^^^^^
@@ -740,6 +701,7 @@ setNumberOfPes
    Sets the number of PEs required to run this Cloudlet.  NOTE: The Cloudlet length is computed only for 1 PE for simplicity.  For example, consider a Cloudlet that has a length of 500 MI and requires 2 PEs. This means each PE will execute 500 MI of this Cloudlet.
 
    :param numberOfPes: number of PEs
+   :throws IllegalArgumentException: when the number of PEs is lower or equal to zero
 
 setOutputSize
 ^^^^^^^^^^^^^
@@ -752,6 +714,8 @@ setOutputSize
    :param outputSize: the output size to set (in bytes)
    :throws IllegalArgumentException: when the given size is lower or equal to zero
 
+   **See also:** :java:ref:`.setSizes(long)`
+
 setPriority
 ^^^^^^^^^^^
 
@@ -761,6 +725,19 @@ setPriority
    Sets the \ :java:ref:`priority <getPriority()>`\  of this Cloudlet for scheduling inside a Vm. Each \ :java:ref:`CloudletScheduler`\  implementation can define if it will use this attribute to impose execution priorities or not. How the priority is interpreted and what is the range of values it accepts depends on the \ :java:ref:`CloudletScheduler`\  that is being used by the Vm running the Cloudlet.
 
    :param priority: priority of this Cloudlet
+
+setSizes
+^^^^^^^^
+
+.. java:method::  Cloudlet setSizes(long size)
+   :outertype: Cloudlet
+
+   Sets the input and output file sizes of this Cloudlet to \ **the same value (in bytes)**\ .
+
+   :param size: the value to set (in bytes) for input and output size
+   :throws IllegalArgumentException: when the given size is lower or equal to zero
+
+   **See also:** :java:ref:`.setFileSize(long)`, :java:ref:`.setOutputSize(long)`
 
 setStatus
 ^^^^^^^^^

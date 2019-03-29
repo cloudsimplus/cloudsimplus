@@ -1,7 +1,5 @@
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
-.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
-
 .. java:import:: org.cloudbus.cloudsim.network.topologies NetworkTopology
 
 .. java:import:: org.cloudsimplus.listeners EventInfo
@@ -13,8 +11,6 @@
 .. java:import:: java.util Collections
 
 .. java:import:: java.util List
-
-.. java:import:: java.util Set
 
 .. java:import:: java.util.function Predicate
 
@@ -118,12 +114,6 @@ getCloudInfoService
 .. java:method:: @Override public CloudInformationService getCloudInfoService()
    :outertype: SimulationNull
 
-getDatacenterList
-^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Set<Datacenter> getDatacenterList()
-   :outertype: SimulationNull
-
 getEntityList
 ^^^^^^^^^^^^^
 
@@ -152,12 +142,6 @@ getNumberOfFutureEvents
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate)
-   :outertype: SimulationNull
-
-holdEntity
-^^^^^^^^^^
-
-.. java:method:: @Override public void holdEntity(SimEntity src, long delay)
    :outertype: SimulationNull
 
 isPaused

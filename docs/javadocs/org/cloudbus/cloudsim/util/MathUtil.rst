@@ -1,16 +1,10 @@
+.. java:import:: org.apache.commons.math3.linear Array2DRowRealMatrix
+
 .. java:import:: org.apache.commons.math3.stat.descriptive DescriptiveStatistics
 
 .. java:import:: org.apache.commons.math3.stat.regression OLSMultipleLinearRegression
 
 .. java:import:: org.apache.commons.math3.stat.regression SimpleRegression
-
-.. java:import:: java.util Arrays
-
-.. java:import:: java.util Collection
-
-.. java:import:: java.util Comparator
-
-.. java:import:: java.util List
 
 MathUtil
 ========
@@ -47,6 +41,17 @@ abs
    :param data: the array of values
    :return: a new array with the absolute value of each element in the given array.
 
+correlationCoefficients
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public static List<Double> correlationCoefficients(double[][] data)
+   :outertype: MathUtil
+
+   Computes correlation coefficients for a set of data.
+
+   :param data: the data to compute the correlation coefficients
+   :return: the correlation coefficients
+
 countNonZeroBeginning
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -64,11 +69,21 @@ createLinearRegression
 .. java:method:: public static SimpleRegression createLinearRegression(double[] x, double[] y)
    :outertype: MathUtil
 
+   Creates a a simple linear regression.
+
+   :param x: the independent variable
+   :param y: the dependent variable
+
 createLinearRegression
 ^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: public static OLSMultipleLinearRegression createLinearRegression(double[][] x, double[] y)
    :outertype: MathUtil
+
+   Creates a a multiple linear regression.
+
+   :param x: the independent variable
+   :param y: the dependent variable
 
 doubleToInt
 ^^^^^^^^^^^
@@ -93,7 +108,7 @@ getLoessParameterEstimates
 
    Gets the Local Regression (Loess) parameter estimates.
 
-   :param y: the y array
+   :param y: the dependent variable
    :return: the Loess parameter estimates
 
 getRobustLoessParameterEstimates
@@ -104,7 +119,7 @@ getRobustLoessParameterEstimates
 
    Gets the robust loess parameter estimates.
 
-   :param y: the y array
+   :param y: the dependent variable
    :return: the robust loess parameter estimates
 
 getStatistics
@@ -168,7 +183,7 @@ mad
 .. java:method:: public static double mad(double... data)
    :outertype: MathUtil
 
-   Gets the Median Absolute Deviation (MAD) from a array of numbers.
+   Gets the \ `Median Absolute Deviation (MAD) <https://en.wikipedia.org/wiki/Median_absolute_deviation>`_\  from a array of numbers.
 
    :param data: the array of numbers
    :return: the mad
@@ -237,7 +252,7 @@ stDev
 .. java:method:: public static double stDev(List<Double> list)
    :outertype: MathUtil
 
-   Gets the standard deviation from a list of numbers.
+   Gets the Standard Deviation from a list of numbers.
 
    :param list: the list of numbers
    :return: the standard deviation

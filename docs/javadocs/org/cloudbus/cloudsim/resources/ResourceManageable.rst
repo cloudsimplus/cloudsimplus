@@ -31,7 +31,8 @@ addCapacity
    Try to add a given amount to the \ :java:ref:`resource capacity <getCapacity()>`\ .
 
    :param capacityToAdd: the amount to add
-   :return: true if capacityToAdd > 0, false otherwise
+   :throws IllegalArgumentException: when the capacity to add is negative
+   :return: true if capacityToAdd is greater than 0, false otherwise
 
    **See also:** :java:ref:`.getAllocatedResource()`
 
@@ -44,7 +45,7 @@ allocateResource
    Try to allocate a given amount of the resource, reducing that amount from the total available resource.
 
    :param amountToAllocate: the amount of resource to be allocated
-   :return: true if amountToAllocate > 0 and there is enough resource to allocate, false otherwise
+   :return: true if amountToAllocate is greater than 0 and there is enough resource to allocate, false otherwise
 
 allocateResource
 ^^^^^^^^^^^^^^^^
@@ -55,7 +56,7 @@ allocateResource
    Try to allocate in this resource, the amount of resource specified by the capacity of the given resource. This method is commonly used to allocate a specific amount from a physical resource (this Resource instance) to a virtualized resource (the given Resource).
 
    :param resource: the resource to try to allocate its capacity from the current resource
-   :return: true if required capacity from the given resource > 0 and there is enough resource to allocate, false otherwise
+   :return: true if required capacity from the given resource is greater than 0 and there is enough resource to allocate, false otherwise
 
    **See also:** :java:ref:`.allocateResource(long)`
 
@@ -78,7 +79,7 @@ deallocateAndRemoveResource
    Try to deallocate a given amount of the resource and then remove such amount from the total capacity. If the given amount is greater than the total allocated resource, all the resource will be deallocated and that amount will be removed from the total capacity.
 
    :param amountToDeallocate: the amount of resource to be deallocated and then removed from the total capacity
-   :return: true if amountToDeallocate > 0 and there is enough resource to deallocate, false otherwise
+   :return: true if amountToDeallocate is greater than 0 and there is enough resource to deallocate, false otherwise
 
 deallocateResource
 ^^^^^^^^^^^^^^^^^^
@@ -89,7 +90,7 @@ deallocateResource
    Try to deallocate all the capacity of the given resource from this resource. This method is commonly used to deallocate a specific amount of a physical resource (this Resource instance) that was being used by a virtualized resource (the given Resource).
 
    :param resource: the resource that its capacity will be deallocated
-   :return: true if capacity of the given resource > 0 and there is enough resource to deallocate, false otherwise
+   :return: true if capacity of the given resource is greater than 0 and there is enough resource to deallocate, false otherwise
 
    **See also:** :java:ref:`.deallocateResource(long)`
 
@@ -102,7 +103,7 @@ deallocateResource
    Try to deallocate a given amount of the resource.
 
    :param amountToDeallocate: the amount of resource to be deallocated
-   :return: true if amountToDeallocate > 0 and there is enough resource to deallocate, false otherwise
+   :return: true if amountToDeallocate is greater than 0 and there is enough resource to deallocate, false otherwise
 
 isResourceAmountBeingUsed
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -135,7 +136,9 @@ removeCapacity
    Try to remove a given amount to the \ :java:ref:`resource capacity <getCapacity()>`\ .
 
    :param capacityToRemove: the amount to remove
-   :return: true if capacityToRemove > 0, the current allocated resource is less or equal to the expected new capacity and the capacity to remove is not higher than the current capacity; false otherwise
+   :throws IllegalArgumentException: when the capacity to remove is negative
+   :throws IllegalStateException: when the capacity to remove is higher than the current total capacity
+   :return: true if capacityToRemove is greater than 0, the current allocated resource is less or equal to the expected new capacity and the capacity to remove is not higher than the current capacity; false otherwise
 
    **See also:** :java:ref:`.getAllocatedResource()`
 
@@ -172,7 +175,18 @@ setCapacity
    Try to set the \ :java:ref:`resource capacity <getCapacity()>`\ .
 
    :param newCapacity: the new resource capacity
-   :return: true if capacity >= 0 and capacity >= current allocated resource, false otherwise
+   :return: true if capacity is greater or equal to 0 and capacity greater or equal to current allocated resource, false otherwise
 
    **See also:** :java:ref:`.getAllocatedResource()`
+
+sumCapacity
+^^^^^^^^^^^
+
+.. java:method::  boolean sumCapacity(long amountToSum)
+   :outertype: ResourceManageable
+
+   Sum a given amount (negative or positive) of capacity to the total resource capacity.
+
+   :param amountToSum: the amount to sum in the current total capacity. If given a positive number, increases the total capacity; otherwise, decreases it.
+   :return: true if the total capacity was changed; false otherwise
 

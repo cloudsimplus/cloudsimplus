@@ -98,6 +98,12 @@ sumAvailableResource
    :param amountToSum: the amount to sum in the current total available resource. If given a positive number, increases the total available resource; otherwise, decreases the total available resource.
    :return: true if the total available resource was changed; false otherwise
 
+sumCapacity
+^^^^^^^^^^^
+
+.. java:method:: @Override public boolean sumCapacity(long amountToSum)
+   :outertype: ResourceManageableAbstract
+
 toString
 ^^^^^^^^
 

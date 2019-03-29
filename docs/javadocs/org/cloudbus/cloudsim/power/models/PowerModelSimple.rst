@@ -21,14 +21,14 @@ Constructors
 PowerModelSimple
 ^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public PowerModelSimple(double maxPower, double staticPowerPercent, UnaryOperator<Double> powerIncrementFunction)
+.. java:constructor:: public PowerModelSimple(double maxPower, double staticPowerPercent, UnaryOperator<Double> powerFunction)
    :outertype: PowerModelSimple
 
    Instantiates a PowerModelSimple.
 
    :param maxPower: the max power that can be consumed in Watt-Second (Ws).
-   :param staticPowerPercent: the static power usage percentage between 0 and 1.
-   :param powerIncrementFunction: a function that defines how the power consumption increases along the time. This function receives the utilization percentage in scale from 0 to 100 and returns a factor representing how the power consumption will increase for the given utilization percentage. The function return is again a percentage value between [0 and 1].
+   :param staticPowerPercent: the static power usage percentage between [0 and 1].
+   :param powerFunction: A function defining how the power consumption is computed based on the CPU utilization. When called, this function receives the utilization percentage in scale from [0 to 100] and must return the base power consumption for that CPU utilization. The function is only accountable to compute the base energy consumption because the total energy consumption depends on other factors such as the \ :java:ref:`static power <getStaticPower()>`\  consumed by the Host, independent of its CPU usage.
 
 Methods
 -------

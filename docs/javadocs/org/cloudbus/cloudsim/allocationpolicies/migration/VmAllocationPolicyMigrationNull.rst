@@ -4,6 +4,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
+.. java:import:: org.cloudbus.cloudsim.selectionpolicies VmSelectionPolicy
+
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
@@ -70,12 +72,6 @@ getHostList
 .. java:method:: @Override public <T extends Host> List<T> getHostList()
    :outertype: VmAllocationPolicyMigrationNull
 
-getMetricHistory
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<Host, List<Double>> getMetricHistory()
-   :outertype: VmAllocationPolicyMigrationNull
-
 getOptimizedAllocationMap
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -88,22 +84,16 @@ getOverUtilizationThreshold
 .. java:method:: @Override public double getOverUtilizationThreshold(Host host)
    :outertype: VmAllocationPolicyMigrationNull
 
-getTimeHistory
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<Host, List<Double>> getTimeHistory()
-   :outertype: VmAllocationPolicyMigrationNull
-
 getUnderUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getUnderUtilizationThreshold()
    :outertype: VmAllocationPolicyMigrationNull
 
-getUtilizationHistory
-^^^^^^^^^^^^^^^^^^^^^
+getVmSelectionPolicy
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public Map<Host, List<Double>> getUtilizationHistory()
+.. java:method:: @Override public VmSelectionPolicy getVmSelectionPolicy()
    :outertype: VmAllocationPolicyMigrationNull
 
 isHostOverloaded
@@ -140,5 +130,11 @@ setUnderUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setUnderUtilizationThreshold(double underUtilizationThreshold)
+   :outertype: VmAllocationPolicyMigrationNull
+
+setVmSelectionPolicy
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy)
    :outertype: VmAllocationPolicyMigrationNull
 

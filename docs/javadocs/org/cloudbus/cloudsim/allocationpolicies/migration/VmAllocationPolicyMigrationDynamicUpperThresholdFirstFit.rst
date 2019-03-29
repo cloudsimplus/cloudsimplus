@@ -1,6 +1,6 @@
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
+.. java:import:: org.cloudbus.cloudsim.selectionpolicies VmSelectionPolicy
 
 .. java:import:: java.util Objects
 
@@ -12,7 +12,7 @@ VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit
 
 .. java:type:: public abstract class VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit extends VmAllocationPolicyMigrationAbstract implements VmAllocationPolicyMigrationDynamicUpperThreshold
 
-   An abstract class that is the base for implementation of VM allocation policies which use a dynamic over utilization threshold. \ **It's a Best Fit policy which selects the Host with most efficient power usage to place a given VM.**\  Such a behaviour can be overridden by sub-classes.
+   An abstract class that is the base for implementation of VM allocation policies which use a dynamic over utilization threshold. It's a \ **Best Fit**\  policy which selects the Host with most efficient power usage to place a given VM. Such a behaviour can be overridden by sub-classes.
 
    :author: Manoel Campos da Silva Filho
 
@@ -21,7 +21,7 @@ Constructors
 VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(PowerVmSelectionPolicy vmSelectionPolicy)
+.. java:constructor:: public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(VmSelectionPolicy vmSelectionPolicy)
    :outertype: VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit
 
    Creates a VmAllocationPolicyMigrationDynamicUpperThreshold with a \ :java:ref:`safety parameter <getSafetyParameter()>`\  equals to 0 and no \ :java:ref:`fallback policy <getFallbackVmAllocationPolicy()>`\ .
@@ -31,7 +31,7 @@ VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit
 VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(PowerVmSelectionPolicy vmSelectionPolicy, double safetyParameter, VmAllocationPolicyMigration fallbackVmAllocationPolicy)
+.. java:constructor:: public VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit(VmSelectionPolicy vmSelectionPolicy, double safetyParameter, VmAllocationPolicyMigration fallbackVmAllocationPolicy)
    :outertype: VmAllocationPolicyMigrationDynamicUpperThresholdFirstFit
 
    Creates a VmAllocationPolicyMigrationDynamicUpperThreshold.
@@ -57,7 +57,7 @@ getOverUtilizationThreshold
    Gets a dynamically computed Host over utilization threshold based on the Host CPU utilization history.
 
    :param host: {@inheritDoc}
-   :return: {@inheritDoc} or \ :java:ref:`Double.MAX_VALUE`\  if the threshold could not be computed (for instance, because the Host doesn't have enought history to use)
+   :return: {@inheritDoc} or \ :java:ref:`Double.MAX_VALUE`\  if the threshold could not be computed (for instance, because the Host doesn't have enough history to use)
 
    **See also:** :java:ref:`VmAllocationPolicyMigrationDynamicUpperThreshold.computeHostUtilizationMeasure(Host)`
 

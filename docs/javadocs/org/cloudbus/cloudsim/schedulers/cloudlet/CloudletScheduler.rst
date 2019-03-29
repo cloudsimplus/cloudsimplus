@@ -4,8 +4,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
-.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterSimple
-
 .. java:import:: org.cloudbus.cloudsim.network VmPacket
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
@@ -17,8 +15,6 @@
 .. java:import:: java.io Serializable
 
 .. java:import:: java.util List
-
-.. java:import:: java.util Set
 
 CloudletScheduler
 =================
@@ -64,7 +60,7 @@ cloudletCancel
 
    Cancels execution of a cloudlet.
 
-   :param cloudlet: ID of the cloudlet being canceled
+   :param cloudlet: the cloudlet being canceled
    :return: the canceled cloudlet or \ :java:ref:`Cloudlet.NULL`\  if not found
 
 cloudletFail
@@ -77,16 +73,6 @@ cloudletFail
 
    :param cloudlet: ID of the cloudlet to set as failed
    :return: the failed cloudlet or \ :java:ref:`Cloudlet.NULL`\  if not found
-
-cloudletFinish
-^^^^^^^^^^^^^^
-
-.. java:method::  void cloudletFinish(CloudletExecution cle)
-   :outertype: CloudletScheduler
-
-   Processes a finished cloudlet.
-
-   :param cle: finished cloudlet
 
 cloudletPause
 ^^^^^^^^^^^^^
@@ -184,35 +170,6 @@ getCloudletList
 
    :return: the list of waiting and executing cloudlets
 
-getCloudletReturnedList
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  Set<Cloudlet> getCloudletReturnedList()
-   :outertype: CloudletScheduler
-
-   Gets a \ **read-only**\  list of Cloudlets that finished executing and were returned the their broker. A Cloudlet is returned to to notify the broker about the end of its execution.
-
-getCloudletStatus
-^^^^^^^^^^^^^^^^^
-
-.. java:method::  int getCloudletStatus(int cloudletId)
-   :outertype: CloudletScheduler
-
-   Gets the status of a cloudlet with a given id.
-
-   :param cloudletId: ID of the cloudlet to get the status
-   :return: status of the cloudlet if it was found, otherwise, returns -1
-
-getCloudletToMigrate
-^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  Cloudlet getCloudletToMigrate()
-   :outertype: CloudletScheduler
-
-   Returns one cloudlet to migrate to another Vm. How the migrating cloudlet is select is defined by each class implementing this interface.
-
-   :return: one running cloudlet
-
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -271,18 +228,6 @@ getRequestedCpuPercentUtilization
 
    :param time: the time to get the current CPU utilization
    :return: the total CPU utilization percentage
-
-getRequestedMipsForCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getRequestedMipsForCloudlet(CloudletExecution cle, double time)
-   :outertype: CloudletScheduler
-
-   Gets the current requested MIPS for a given cloudlet.
-
-   :param cle: the ce
-   :param time: the time
-   :return: the current requested mips for the given cloudlet
 
 getTaskScheduler
 ^^^^^^^^^^^^^^^^
@@ -348,16 +293,6 @@ isThereTaskScheduler
    :outertype: CloudletScheduler
 
    Checks if there is a \ :java:ref:`CloudletTaskScheduler`\  assigned to this CloudletScheduler in order to enable tasks execution and dispatching packets from and to the Vm of this CloudletScheduler.
-
-runningCloudletsNumber
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  int runningCloudletsNumber()
-   :outertype: CloudletScheduler
-
-   Returns the number of cloudlets running in the virtual machine.
-
-   :return: number of cloudlets running
 
 setTaskScheduler
 ^^^^^^^^^^^^^^^^

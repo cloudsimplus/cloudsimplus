@@ -1,12 +1,12 @@
+.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
+
+.. java:import:: org.cloudbus.cloudsim.network VmPacket
+
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util Collections
 
 .. java:import:: java.util List
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
-
-.. java:import:: org.cloudbus.cloudsim.network VmPacket
 
 CloudletSendTask
 ================
@@ -43,13 +43,13 @@ Methods
 addPacket
 ^^^^^^^^^
 
-.. java:method:: public VmPacket addPacket(Cloudlet destinationCloudlet, long dataLength)
+.. java:method:: public VmPacket addPacket(Cloudlet destinationCloudlet, long bytes)
    :outertype: CloudletSendTask
 
-   Creates and add a packet to the list of packets to be sent to a \ :java:ref:`Cloudlet`\  that is inside a specific VM.
+   Creates and adds a packet to the list of packets to be sent to a \ :java:ref:`Cloudlet`\  that is inside a specific VM.
 
    :param destinationCloudlet: destination cloudlet to send packets to
-   :param dataLength: the number of data bytes of the packet to create
+   :param bytes: the number of data bytes of the packet to create
    :throws IllegalArgumentException: when the source or destination Cloudlet doesn't have an assigned VM
    :throws RuntimeException: when a NetworkCloudlet was not assigned to the Task
    :return: the created packet
@@ -60,7 +60,7 @@ getPacketsToSend
 .. java:method:: public List<VmPacket> getPacketsToSend()
    :outertype: CloudletSendTask
 
-   :return: a read-only list of packets to send
+   :return: a \ **read-only**\  list of packets to send
 
 getPacketsToSend
 ^^^^^^^^^^^^^^^^

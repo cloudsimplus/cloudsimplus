@@ -102,7 +102,7 @@ getNextEvent
    Gets the first event matching a predicate from the deferred queue, or if none match, wait for a matching event to arrive.
 
    :param predicate: The predicate to match
-   :return: the simulation event
+   :return: the simulation event; or null if not found or the simulation is not running
 
 getNextEvent
 ^^^^^^^^^^^^
@@ -208,6 +208,12 @@ schedule
 schedule
 ^^^^^^^^
 
+.. java:method:: @Override public boolean schedule(int tag, Object data)
+   :outertype: CloudSimEntity
+
+schedule
+^^^^^^^^
+
 .. java:method:: @Override public boolean schedule(SimEvent evt)
    :outertype: CloudSimEntity
 
@@ -299,7 +305,7 @@ send
 .. java:method:: protected void send(SimEntity dest, double delay, int cloudSimTag, Object data)
    :outertype: CloudSimEntity
 
-   Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
+   Sends an event/message to another entity by \ **delaying**\  the simulation time from the current time, with a tag representing the event type.
 
    :param dest: the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0
@@ -312,7 +318,7 @@ send
 .. java:method:: protected void send(SimEntity dest, double delay, int cloudSimTag)
    :outertype: CloudSimEntity
 
-   Sends an event/message to another entity by \ ``delaying``\  the simulation time from the current time, with a tag representing the event type.
+   Sends an event/message to another entity by \ **delaying**\  the simulation time from the current time, with a tag representing the event type.
 
    :param dest: the destination entity
    :param delay: How many seconds after the current simulation time the event should be sent. If delay is a negative number, then it will be changed to 0

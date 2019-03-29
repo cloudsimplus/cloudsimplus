@@ -8,23 +8,19 @@
 
 .. java:import:: org.cloudbus.cloudsim.schedulers.vm VmScheduler
 
-.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerAbstract
-
-.. java:import:: org.cloudbus.cloudsim.schedulers.vm VmSchedulerTimeShared
-
-.. java:import:: org.cloudbus.cloudsim.util Conversion
-
 .. java:import:: org.cloudsimplus.listeners EventListener
 
 .. java:import:: org.cloudsimplus.listeners HostUpdatesVmsProcessingEventInfo
 
-.. java:import:: java.lang.reflect Constructor
-
-.. java:import:: java.lang.reflect InvocationTargetException
-
 .. java:import:: java.util ArrayList
 
 .. java:import:: java.util List
+
+.. java:import:: java.util Objects
+
+.. java:import:: java.util.function Function
+
+.. java:import:: java.util.function Supplier
 
 HostBuilder
 ===========
@@ -32,11 +28,13 @@ HostBuilder
 .. java:package:: org.cloudsimplus.builders
    :noindex:
 
-.. java:type:: public class HostBuilder extends Builder
+.. java:type:: public class HostBuilder implements Builder
 
-   A Builder class to create \ :java:ref:`Host`\  objects.
+   A Builder class to create \ :java:ref:`Host`\  objects using the default configurations defined in \ :java:ref:`Host`\  class.
 
    :author: Manoel Campos da Silva Filho
+
+   **See also:** :java:ref:`HostSimple.setDefaultRamCapacity(long)`, :java:ref:`HostSimple.setDefaultBwCapacity(long)`, :java:ref:`HostSimple.setDefaultStorageCapacity(long)`
 
 Constructors
 ------------
@@ -48,23 +46,25 @@ HostBuilder
 
 Methods
 -------
-createHosts
-^^^^^^^^^^^
+create
+^^^^^^
 
-.. java:method:: public HostBuilder createHosts(int amount)
+.. java:method:: public HostBuilder create()
    :outertype: HostBuilder
 
-createOneHost
-^^^^^^^^^^^^^
+   Creates a single Host and stores it internally.
 
-.. java:method:: public HostBuilder createOneHost()
+   **See also:** :java:ref:`.getHosts()`
+
+create
+^^^^^^
+
+.. java:method:: public HostBuilder create(int amount)
    :outertype: HostBuilder
 
-getBandwidth
-^^^^^^^^^^^^
+   Creates a list of Hosts and stores it internally.
 
-.. java:method:: public long getBandwidth()
-   :outertype: HostBuilder
+   **See also:** :java:ref:`.getHosts()`
 
 getHosts
 ^^^^^^^^
@@ -72,16 +72,14 @@ getHosts
 .. java:method:: public List<Host> getHosts()
    :outertype: HostBuilder
 
+   Gets the list of all created Hosts.
+
+   **See also:** :java:ref:`.create()`, :java:ref:`.create(int)`
+
 getMips
 ^^^^^^^
 
 .. java:method:: public double getMips()
-   :outertype: HostBuilder
-
-getOnUpdateVmsProcessingListener
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public EventListener<HostUpdatesVmsProcessingEventInfo> getOnUpdateVmsProcessingListener()
    :outertype: HostBuilder
 
 getPes
@@ -90,29 +88,15 @@ getPes
 .. java:method:: public int getPes()
    :outertype: HostBuilder
 
-getRam
-^^^^^^
+setHostCreationFunction
+^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public long getRam()
+.. java:method:: public void setHostCreationFunction(Function<List<Pe>, Host> hostCreationFunction)
    :outertype: HostBuilder
 
-getStorage
-^^^^^^^^^^
+   Sets a \ :java:ref:`Function`\  used to create Hosts. It must receive a list of \ :java:ref:`Pe`\  for the Host it will create.
 
-.. java:method:: public long getStorage()
-   :outertype: HostBuilder
-
-getVmSchedulerClass
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public Class<? extends VmSchedulerAbstract> getVmSchedulerClass()
-   :outertype: HostBuilder
-
-setBandwidth
-^^^^^^^^^^^^
-
-.. java:method:: public HostBuilder setBandwidth(long defaultBw)
-   :outertype: HostBuilder
+   :param hostCreationFunction:
 
 setMips
 ^^^^^^^
@@ -123,7 +107,7 @@ setMips
 setOnUpdateVmsProcessingListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public HostBuilder setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> onUpdateVmsProcessingListener)
+.. java:method:: public HostBuilder setOnUpdateVmsProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener)
    :outertype: HostBuilder
 
 setPes
@@ -132,21 +116,9 @@ setPes
 .. java:method:: public HostBuilder setPes(int defaultPEs)
    :outertype: HostBuilder
 
-setRam
-^^^^^^
+setVmSchedulerSupplier
+^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: public HostBuilder setRam(int defaultRam)
-   :outertype: HostBuilder
-
-setStorage
-^^^^^^^^^^
-
-.. java:method:: public HostBuilder setStorage(long defaultStorage)
-   :outertype: HostBuilder
-
-setVmSchedulerClass
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public HostBuilder setVmSchedulerClass(Class<? extends VmSchedulerAbstract> defaultVmSchedulerClass)
+.. java:method:: public HostBuilder setVmSchedulerSupplier(Supplier<VmScheduler> vmSchedulerSupplier)
    :outertype: HostBuilder
 

@@ -14,7 +14,7 @@ FloydWarshall
 
 .. java:type:: public class FloydWarshall
 
-   \ `Floyd-Warshall algorithm <https://en.wikipedia.org/wiki/Floyd–Warshall_algorithm>`_\  to calculate the predecessor matrix and the delay between all pairs of nodes. The delay represents the distance between the two vertices and it works as the weight for the Floyd-Warshall algorithm.
+   \ `Floyd-Warshall algorithm <https://en.wikipedia.org/wiki/Floyd-Warshall_algorithm>`_\  to calculate the predecessor matrix and the delay between all pairs of nodes. The delay represents the distance between the two vertices and it works as the weight for the Floyd-Warshall algorithm.
 
    :author: Rahul Simha, Weishuai Yang
 

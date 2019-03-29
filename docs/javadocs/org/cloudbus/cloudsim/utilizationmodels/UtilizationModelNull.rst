@@ -1,3 +1,5 @@
+.. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
+
 .. java:import:: org.cloudbus.cloudsim.core Simulation
 
 UtilizationModelNull
@@ -8,7 +10,7 @@ UtilizationModelNull
 
 .. java:type:: final class UtilizationModelNull implements UtilizationModel
 
-   A class that implements the Null Object Design Pattern for \ :java:ref:`UtilizationModel`\  class.
+   A class that implements the Null Object Design Pattern for \ :java:ref:`UtilizationModel`\  class. A \ :java:ref:`Cloudlet`\  using such a utilization model for one of its resources will not consume any amount of that resource ever.
 
    :author: Manoel Campos da Silva Filho
 

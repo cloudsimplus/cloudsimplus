@@ -17,7 +17,7 @@ Methods
 compareTo
 ^^^^^^^^^
 
-.. java:method:: @Override public int compareTo(Object o)
+.. java:method:: @Override public int compareTo(Object other)
    :outertype: HeuristicSolutionNull
 
 getCost

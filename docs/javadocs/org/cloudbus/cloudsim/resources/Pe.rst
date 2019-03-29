@@ -99,7 +99,7 @@ setCapacity
    Sets the capacity of this Pe in MIPS (Million Instructions Per Second).
 
    :param mipsCapacity: the MIPS capacity to set
-   :return: true if mipsCapacity > 0, false otherwise
+   :return: true if mipsCapacity is greater than 0, false otherwise
 
 setCapacity
 ^^^^^^^^^^^
@@ -112,7 +112,7 @@ setCapacity
    It receives the amount of MIPS as a double value but converts it internally to a long. The method is just provided as a handy-way to define the PE capacity using a double value that usually is generated from some computations.
 
    :param mipsCapacity: the MIPS capacity to set
-   :return: true if mipsCapacity > 0, false otherwise
+   :return: true if mipsCapacity is greater than 0, false otherwise
 
 setPeProvisioner
 ^^^^^^^^^^^^^^^^

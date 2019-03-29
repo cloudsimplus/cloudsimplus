@@ -70,7 +70,7 @@ contains
    Checks whether a file exists in the storage or not.
 
    :param fileName: the name of the file we are looking for
-   :return: \ ``true``\  if the file is in the storage, \ ``false``\  otherwise
+   :return: true if the file is in the storage, false otherwise
 
 contains
 ^^^^^^^^
@@ -81,7 +81,7 @@ contains
    Checks whether a file is stored in the storage or not.
 
    :param file: the file we are looking for
-   :return: \ ``true``\  if the file is in the storage, \ ``false``\  otherwise
+   :return: true if the file is in the storage, false otherwise
 
 deleteFile
 ^^^^^^^^^^
@@ -229,7 +229,7 @@ hasPotentialAvailableSpace
    Checks whether there is enough space on the storage for a certain file
 
    :param fileSize: size of the file intended to be stored on the device (in MByte)
-   :return: \ ``true``\  if enough space available, \ ``false``\  otherwise
+   :return: true if enough space available, false otherwise
 
 renameFile
 ^^^^^^^^^^
@@ -241,7 +241,7 @@ renameFile
 
    :param file: the file we would like to rename
    :param newName: the new name of the file
-   :return: \ ``true``\  if the renaming succeeded, \ ``false``\  otherwise
+   :return: true if the renaming succeeded, false otherwise
 
 reserveSpace
 ^^^^^^^^^^^^
@@ -252,7 +252,7 @@ reserveSpace
    Makes reservation of space on the storage to store a file.
 
    :param fileSize: the size to be reserved (in MByte)
-   :return: \ ``true``\  if reservation succeeded, \ ``false``\  otherwise
+   :return: true if reservation succeeded, false otherwise
 
 setLatency
 ^^^^^^^^^^

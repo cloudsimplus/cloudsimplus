@@ -2,11 +2,9 @@
 
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicyAbstract
 
-.. java:import:: org.cloudbus.cloudsim.core Simulation
-
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
-.. java:import:: org.cloudbus.cloudsim.selectionpolicies.power PowerVmSelectionPolicy
+.. java:import:: org.cloudbus.cloudsim.selectionpolicies VmSelectionPolicy
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
@@ -38,86 +36,50 @@ VmAllocationPolicyMigrationAbstract
 
    ..
 
-   * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley & Sons, Ltd, New York, USA, 2012 <https://doi.org/10.1002/cpe.1867>`_\
+   * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012 <https://doi.org/10.1002/cpe.1867>`_\
 
    :author: Anton Beloglazov, Manoel Campos da Silva Filho
+
+Fields
+------
+DEF_UNDER_UTILIZATION_THRESHOLD
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:field:: public static final double DEF_UNDER_UTILIZATION_THRESHOLD
+   :outertype: VmAllocationPolicyMigrationAbstract
 
 Constructors
 ------------
 VmAllocationPolicyMigrationAbstract
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationAbstract(PowerVmSelectionPolicy vmSelectionPolicy)
+.. java:constructor:: public VmAllocationPolicyMigrationAbstract(VmSelectionPolicy vmSelectionPolicy)
    :outertype: VmAllocationPolicyMigrationAbstract
 
-   Creates a VmAllocationPolicyMigrationAbstract.
+   Creates a VmAllocationPolicy. It uses a \ :java:ref:`default under utilization threshold <DEF_UNDER_UTILIZATION_THRESHOLD>`\ .
 
    :param vmSelectionPolicy: the policy that defines how VMs are selected for migration
 
 VmAllocationPolicyMigrationAbstract
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:constructor:: public VmAllocationPolicyMigrationAbstract(PowerVmSelectionPolicy vmSelectionPolicy, BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+.. java:constructor:: public VmAllocationPolicyMigrationAbstract(VmSelectionPolicy vmSelectionPolicy, BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
    :outertype: VmAllocationPolicyMigrationAbstract
 
-   Creates a new VmAllocationPolicy, changing the \ :java:ref:`Function`\  to select a Host for a Vm.
+   Creates a new VmAllocationPolicy, changing the \ :java:ref:`Function`\  to select a Host for a Vm. It uses a \ :java:ref:`default under utilization threshold <DEF_UNDER_UTILIZATION_THRESHOLD>`\ .
 
    :param vmSelectionPolicy: the policy that defines how VMs are selected for migration
    :param findHostForVmFunction: a \ :java:ref:`Function`\  to select a Host for a given Vm. Passing null makes the Function to be set as the default \ :java:ref:`findHostForVm(Vm)`\ .
 
-   **See also:** :java:ref:`VmAllocationPolicy.setFindHostForVmFunction(java.util.function.BiFunction)`
+   **See also:** :java:ref:`VmAllocationPolicy.setFindHostForVmFunction(java.util.function.BiFunction)`, :java:ref:`.setUnderUtilizationThreshold(double)`
 
 Methods
 -------
-addHistoryEntryIfAbsent
-^^^^^^^^^^^^^^^^^^^^^^^
+defaultFindHostForVm
+^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected void addHistoryEntryIfAbsent(Host host, double metric)
+.. java:method:: @Override protected Optional<Host> defaultFindHostForVm(Vm vm)
    :outertype: VmAllocationPolicyMigrationAbstract
-
-   Adds an entry for each history map of a host if it doesn't contain an entry for the current simulation time.
-
-   :param host: the host to add metric history entries
-   :param metric: the metric to be added to the metric history map
-
-findHostForVm
-^^^^^^^^^^^^^
-
-.. java:method:: @Override public Optional<Host> findHostForVm(Vm vm)
-   :outertype: VmAllocationPolicyMigrationAbstract
-
-findHostForVm
-^^^^^^^^^^^^^
-
-.. java:method:: public Optional<Host> findHostForVm(Vm vm, Set<? extends Host> excludedHosts)
-   :outertype: VmAllocationPolicyMigrationAbstract
-
-   Finds a Host that has enough resources to place a given VM and that will not be overloaded after the placement. The selected Host will be that one with most efficient power usage for the given VM.
-
-   This method performs the basic filtering and delegates additional ones and the final selection of the Host to other method.
-
-   :param vm: the VM
-   :param excludedHosts: the excluded hosts
-   :return: an \ :java:ref:`Optional`\  containing a suitable Host to place the VM or an empty \ :java:ref:`Optional`\  if not found
-
-   **See also:** :java:ref:`.findHostForVmInternal(Vm,Stream)`
-
-findHostForVm
-^^^^^^^^^^^^^
-
-.. java:method:: public Optional<Host> findHostForVm(Vm vm, Set<? extends Host> excludedHosts, Predicate<Host> predicate)
-   :outertype: VmAllocationPolicyMigrationAbstract
-
-   Finds a Host that has enough resources to place a given VM and that will not be overloaded after the placement. The selected Host will be that one with most efficient power usage for the given VM.
-
-   This method performs the basic filtering and delegates additional ones and the final selection of the Host to other method.
-
-   :param vm: the VM
-   :param excludedHosts: the excluded hosts
-   :param predicate: an additional \ :java:ref:`Predicate`\  to be used to filter the Host to place the VM
-   :return: an \ :java:ref:`Optional`\  containing a suitable Host to place the VM or an empty \ :java:ref:`Optional`\  if not found
-
-   **See also:** :java:ref:`.findHostForVmInternal(Vm,Stream)`
 
 findHostForVmInternal
 ^^^^^^^^^^^^^^^^^^^^^
@@ -135,23 +97,28 @@ findHostForVmInternal
 
    **See also:** :java:ref:`.findHostForVm(Vm,Set)`, :java:ref:`.additionalHostFilters(Vm,Stream)`
 
+getHostCpuUsageArray
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected double[] getHostCpuUsageArray(Host host)
+   :outertype: VmAllocationPolicyMigrationAbstract
+
+   Gets all CPU utilization values from the \ :java:ref:`Host.getUtilizationHistorySum()`\  as an array.
+
+   :param host: the Host to get the CPU utilization values
+   :return: the utilization values array
+
 getMaxUtilizationAfterAllocation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: protected double getMaxUtilizationAfterAllocation(Host host, Vm vm)
    :outertype: VmAllocationPolicyMigrationAbstract
 
-   Gets the max power consumption of a host after placement of a candidate VM. The VM is not in fact placed at the host. We assume that load is balanced between PEs. The only restriction is: VM's max MIPS < PE's MIPS
+   Gets the max power consumption of a host after placement of a candidate VM. The VM is not in fact placed at the host. We assume that load is balanced between PEs. The only restriction is: VM's max MIPS less than PE's MIPS
 
    :param host: the host
    :param vm: the vm
    :return: the power after allocation
-
-getMetricHistory
-^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<Host, List<Double>> getMetricHistory()
-   :outertype: VmAllocationPolicyMigrationAbstract
 
 getOptimizedAllocationMap
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -171,10 +138,10 @@ getPowerAfterAllocation
    :param vm: the candidate vm
    :return: the host power consumption after the supposed VM placement or 0 if the power consumption could not be determined
 
-getPowerAfterAllocationDifference
+getPowerDifferenceAfterAllocation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected double getPowerAfterAllocationDifference(Host host, Vm vm)
+.. java:method:: protected double getPowerDifferenceAfterAllocation(Host host, Vm vm)
    :outertype: VmAllocationPolicyMigrationAbstract
 
    Gets the power consumption different after the supposed placement of a VM into a given Host and the original Host power consumption.
@@ -193,22 +160,10 @@ getSwitchedOffHosts
 
    :return: the switched off hosts
 
-getTimeHistory
-^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<Host, List<Double>> getTimeHistory()
-   :outertype: VmAllocationPolicyMigrationAbstract
-
 getUnderUtilizationThreshold
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getUnderUtilizationThreshold()
-   :outertype: VmAllocationPolicyMigrationAbstract
-
-getUtilizationHistory
-^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public Map<Host, List<Double>> getUtilizationHistory()
    :outertype: VmAllocationPolicyMigrationAbstract
 
 getUtilizationOfCpuMips
@@ -225,12 +180,8 @@ getUtilizationOfCpuMips
 getVmSelectionPolicy
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected PowerVmSelectionPolicy getVmSelectionPolicy()
+.. java:method:: @Override public VmSelectionPolicy getVmSelectionPolicy()
    :outertype: VmAllocationPolicyMigrationAbstract
-
-   Gets the vm selection policy.
-
-   :return: the vm selection policy
 
 getVmsToMigrateFromUnderUtilizedHost
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -285,10 +236,6 @@ setUnderUtilizationThreshold
 setVmSelectionPolicy
 ^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected final void setVmSelectionPolicy(PowerVmSelectionPolicy vmSelectionPolicy)
+.. java:method:: @Override public final void setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy)
    :outertype: VmAllocationPolicyMigrationAbstract
-
-   Sets the vm selection policy.
-
-   :param vmSelectionPolicy: the new vm selection policy
 

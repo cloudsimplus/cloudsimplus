@@ -8,7 +8,7 @@ ResourceProvisionerNull
 .. java:package:: org.cloudbus.cloudsim.provisioners
    :noindex:
 
-.. java:type:: final class ResourceProvisionerNull implements ResourceProvisioner
+.. java:type::  class ResourceProvisionerNull implements ResourceProvisioner
 
    A class that implements the Null Object Design Pattern for \ :java:ref:`ResourceProvisioner`\  class.
 
