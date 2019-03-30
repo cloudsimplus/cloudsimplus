@@ -70,7 +70,7 @@ import java.util.*;
  * @see VmsCpuUsageExample
  * @see org.cloudsimplus.examples.power.PowerExample
  */
-public class RamAndBwUsageHistoryExample {
+public class VmsRamAndBwUsageExample {
     /**
      * @see Datacenter#getSchedulingInterval()
      */
@@ -107,10 +107,10 @@ public class RamAndBwUsageHistoryExample {
     private final Map<Vm, Map<Double, Double>> allVmsBwUtilizationHistory;
 
     public static void main(String[] args) {
-        new RamAndBwUsageHistoryExample();
+        new VmsRamAndBwUsageExample();
     }
 
-    private RamAndBwUsageHistoryExample() {
+    private VmsRamAndBwUsageExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

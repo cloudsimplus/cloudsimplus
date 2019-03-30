@@ -44,6 +44,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.examples.resourceusage.VmsRamAndBwUsageExample;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
@@ -62,6 +63,9 @@ import java.util.List;
  * @see EventListener
  *
  * @author Manoel Campos da Silva Filho
+ *
+ * @see org.cloudsimplus.examples.resourceusage.VmsCpuUsageExample
+ * @see VmsRamAndBwUsageExample
  */
 public class CloudletListenersExample2_ResourceUsageAlongTime {
     /**

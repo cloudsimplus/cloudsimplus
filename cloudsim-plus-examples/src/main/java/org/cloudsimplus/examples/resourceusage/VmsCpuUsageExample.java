@@ -64,7 +64,7 @@ import java.util.Map;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  *
- * @see RamAndBwUsageHistoryExample
+ * @see VmsRamAndBwUsageExample
  * @see org.cloudsimplus.examples.power.PowerExample
  */
 public class VmsCpuUsageExample {

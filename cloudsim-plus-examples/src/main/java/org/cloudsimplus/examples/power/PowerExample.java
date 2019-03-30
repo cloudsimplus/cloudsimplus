@@ -52,6 +52,7 @@ import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.examples.resourceusage.VmsRamAndBwUsageExample;
 import org.cloudsimplus.util.Log;
 
 import java.util.ArrayList;
@@ -97,7 +98,7 @@ import java.util.Map;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.4
  *
- * @see org.cloudsimplus.examples.resourceusage.RamAndBwUsageHistoryExample
+ * @see VmsRamAndBwUsageExample
  * @see org.cloudsimplus.examples.resourceusage.VmsCpuUsageExample
  */
 public class PowerExample {
