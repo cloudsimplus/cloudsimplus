@@ -728,7 +728,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
             return utilizationModelCpu;
         }
 
-        throw new UnsupportedOperationException("This method doesn't support " + resourceClass.getSimpleName() + " resources");
+        throw new UnsupportedOperationException("This class doesn't support " + resourceClass.getSimpleName() + " resources");
     }
 
     @Override

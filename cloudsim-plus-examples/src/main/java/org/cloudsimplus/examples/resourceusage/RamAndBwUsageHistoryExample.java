@@ -39,6 +39,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -47,11 +48,7 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
+import java.util.*;
 
 /**
  * Shows how to use the {@link Simulation#addOnClockTickListener(EventListener) onClockTick Listener}
@@ -69,6 +66,9 @@ import java.util.stream.Stream;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.1.2
+ *
+ * @see VmsCpuUsageExample
+ * @see org.cloudsimplus.examples.power.PowerExample
  */
 public class RamAndBwUsageHistoryExample {
     /**
@@ -154,18 +154,17 @@ public class RamAndBwUsageHistoryExample {
         System.out.println(vm + " RAM and BW utilization history");
         System.out.println("----------------------------------------------------------------------------------");
 
-        //A stream containing all resource utilization collection times
-        final Stream<Double> timeStream = allVmsRamUtilizationHistory.get(vm).keySet().stream().sorted();
+        //A set containing all resource utilization collected times
+        final Set<Double> timeSet = allVmsRamUtilizationHistory.get(vm).keySet();
 
         final Map<Double, Double> vmRamUtilization = allVmsRamUtilizationHistory.get(vm);
         final Map<Double, Double> vmBwUtilization = allVmsBwUtilizationHistory.get(vm);
 
-        timeStream.forEach(time -> {
+        for (final double time : timeSet) {
             System.out.printf(
                 "Time: %10.1f secs | RAM Utilization: %10.2f%% | BW Utilization: %10.2f%%\n",
-                time, vmRamUtilization.get(time)*100,
-                vmBwUtilization.get(time)*100);
-        });
+                time, vmRamUtilization.get(time) * 100, vmBwUtilization.get(time) * 100);
+        }
 
         System.out.println("----------------------------------------------------------------------------------\n");
     }
@@ -180,10 +179,11 @@ public class RamAndBwUsageHistoryExample {
      * They are filled inside the {@link #onClockTickListener(EventInfo)}.
      */
     private Map<Vm, Map<Double, Double>> initializeUtilizationHistory() {
+        //TreeMap sorts entries based on the key
         final Map<Vm, Map<Double, Double>> map = new HashMap<>(VMS);
 
         for (Vm vm : vmList) {
-            map.put(vm, new HashMap<>());
+            map.put(vm, new TreeMap<>());
         }
 
         return map;
@@ -283,6 +283,11 @@ public class RamAndBwUsageHistoryExample {
         return list;
     }
 
+    /**
+     * Creates a Cloudlet with specific {@link UtilizationModel} for RAM, BW and CPU.
+     * You can change the method to use any {@link UtilizationModel} you want.
+     * @return
+     */
     private Cloudlet createCloudlet() {
         UtilizationModelDynamic ramUtilizationModel = new UtilizationModelDynamic(0.2);
         UtilizationModelDynamic bwUtilizationModel = new UtilizationModelDynamic(0.1);
