@@ -211,4 +211,21 @@ public interface Datacenter extends SimEntity, PowerAware {
      * @return
      */
     Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener);
+
+    /**
+     * Sets a {@link DatacenterPowerSupply} to enable computing the Datacenter's power consumption,
+     * based on the consumption of its {@link Host}s.
+     * Since this computation is expensive for large amount of Hosts
+     * and the researcher may not be interested in power consumption,
+     * the attribute is initialized with {@link DatacenterPowerSupply#NULL}.
+     * That avoids computing power consumption by default for every simulation,
+     * This way, the computation of power consumption must be explicitly
+     * enabled by the researcher by providing an instance to this attribute
+     * before the simulation starts.
+     *
+     * @param powerSupply a {@link DatacenterPowerSupply} instance to enable
+     *                    the Datacenter to compute its power consumption
+     *                    (if null is given, it disables such a computation)
+     */
+    void setPowerSupply(DatacenterPowerSupply powerSupply);
 }

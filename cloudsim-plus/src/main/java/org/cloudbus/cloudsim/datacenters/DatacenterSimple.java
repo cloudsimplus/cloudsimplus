@@ -58,11 +58,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private boolean migrationsEnabled;
 
-    /**
-     * @see #getPower()
-     */
-    private double power;
-
     private List<? extends Host> hostList;
 
     /** @see #getCharacteristics() */
@@ -82,6 +77,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 	private DatacenterStorage datacenterStorage;
 
     private List<EventListener<HostEventInfo>> onHostAvailableListeners;
+
+    /** @see #setPowerSupply(DatacenterPowerSupply) */
+    private DatacenterPowerSupply powerSupply;
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
@@ -165,6 +163,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     {
         super(simulation);
         setHostList(hostList);
+        this.powerSupply = DatacenterPowerSupply.NULL;
 
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
@@ -730,34 +729,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return nextSimulationTime;
         }
 
-        power += getDatacenterPowerUsageForTimeSpan();
+        powerSupply.computePowerUtilizationForTimeSpan(lastProcessTime);
 
         return nextSimulationTime;
-    }
-
-    /**
-     * Gets an <b>estimation</b> of total power consumed (in Watts-sec) by all Hosts of the Datacenter
-     * since the last time the processing of Cloudlets in this Host was updated.
-     *
-     * @return the <b>estimated</b> total power consumed (in Watts-sec) by all Hosts in the elapsed time span
-     * @see #getPower()
-     * @see #getPowerInKWattsHour()
-     */
-    private double getDatacenterPowerUsageForTimeSpan() {
-        if (getSimulation().clock() - getLastProcessTime() == 0) { //time span
-            return 0;
-        }
-
-        double datacenterTimeSpanPowerUse = 0;
-        for (final Host host : this.getHostList()) {
-            final double prevCpuUsage = host.getPreviousUtilizationOfCpu();
-            final double cpuUsage = host.getUtilizationOfCpu();
-            final double timeFrameHostEnergy =
-                host.getPowerModel().getEnergyLinearInterpolation(prevCpuUsage, cpuUsage, getSimulation().clock() - getLastProcessTime());
-            datacenterTimeSpanPowerUse += timeFrameHostEnergy;
-        }
-
-        return datacenterTimeSpanPowerUse;
     }
 
     /**
@@ -1072,8 +1046,21 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         this.bandwidthPercentForMigration = bandwidthPercentForMigration;
     }
 
+    /**
+     * {@inheritDoc}
+     * @return {@inheritDoc}
+     * @throws UnsupportedOperationException if Datacenter's power consumption computation was not enabled before the simulation start
+     */
     @Override
-    public double getPower() {
+    public double getPower() throws UnsupportedOperationException{
+        final double power = powerSupply.getPower();
+        if(power < 0){
+            throw new UnsupportedOperationException(
+                "The power consumption for " + this +
+                " cannot be computed because a DatacenterPowerSupply object was not given." +
+                " Call the setPowerSupply() before the simulation start to provide one. This enables power consumption computation.");
+        }
+
         return power;
     }
 
@@ -1110,5 +1097,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     public final Datacenter disableMigrations() {
         this.migrationsEnabled = false;
         return this;
+    }
+
+    @Override
+    public void setPowerSupply(final DatacenterPowerSupply powerSupply) {
+        this.powerSupply = powerSupply == null ? DatacenterPowerSupply.NULL : powerSupply.setDatacenter(this);
     }
 }

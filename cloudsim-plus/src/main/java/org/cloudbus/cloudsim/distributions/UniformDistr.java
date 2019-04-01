@@ -91,9 +91,9 @@ public class UniformDistr extends ContinuousDistributionAbstract {
     }
 
     /**
-     * Indicates if the pseudo random number generator (PRNG) has to apply the
+     * Indicates if the pseudo random number generator (PRNG) applies the
      * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
-     * of experiments using this PRNG.
+     * of experiments using the generated numbers.
      *
      * This technique doesn't work for all the cases. However,
      * in the cases it can be applied, in order to it work, one have to
@@ -109,18 +109,19 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * half of experiments, returning random numbers as
      * 1 - U(0, 1)[seed_1], ..., 1 - U(0, 1)[seed_n].
      *
-     * @return true if the technique has to be applied, false otherwise
+     * @return true if the technique is applied, false otherwise
+     * @see #setApplyAntitheticVariates(boolean)
      */
     public boolean isApplyAntitheticVariates() {
         return applyAntitheticVariates;
     }
 
     /**
-     * Defines if the pseudo random number generator (PRNG) has to apply the
+     * Indicates if the pseudo random number generator (PRNG) applies the
      * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
-     * of experiments using this PRNG.
+     * of experiments using the generated numbers.
      *
-     * @param applyAntitheticVariates true if the technique has to be applied, false otherwise
+     * @param applyAntitheticVariates true if the technique is to be applied, false otherwise
      * @see #isApplyAntitheticVariates()
      */
     public UniformDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
