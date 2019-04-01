@@ -633,8 +633,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return vmCreated;
     }
 
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     private void notifyOnVmsCreatedListeners() {
-        onVmsCreatedListeners.forEach(listener -> listener.update(DatacenterBrokerEventInfo.of(listener, this)));
+        //Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onVmsCreatedListeners.size(); i++) {
+            EventListener<DatacenterBrokerEventInfo> listener = onVmsCreatedListeners.get(i);
+            listener.update(DatacenterBrokerEventInfo.of(listener, this));
+        }
     }
 
     /**
