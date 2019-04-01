@@ -15,13 +15,10 @@ import java.util.stream.Stream;
  * @since CloudSim Plus 1.4
  */
 public class VmUtilizationHistory implements UtilizationHistory {
-
     private boolean enabled;
     private int maxHistoryEntries;
 
-    /**
-     * @see #getHistory()
-     */
+    /** @see #getHistory() */
     private final SortedMap<Double, Double> history;
     private final Vm vm;
 
@@ -46,6 +43,11 @@ public class VmUtilizationHistory implements UtilizationHistory {
         this.setMaxHistoryEntries(Integer.MAX_VALUE);
     }
 
+    /**
+     * Instantiates the class to store resource utilization history for a specific {@link Vm}.
+     *
+     * @param vm the vm to instantiates the object to store utilization history
+     */
     public VmUtilizationHistory(final Vm vm) {
         this(vm, true);
     }

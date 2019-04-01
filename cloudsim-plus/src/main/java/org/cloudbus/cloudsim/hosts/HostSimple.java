@@ -276,7 +276,7 @@ public class HostSimple implements Host {
     public double updateProcessing(final double currentTime) {
         setPreviousUtilizationMips(getUtilizationOfCpuMips());
         double nextSimulationTime = Double.MAX_VALUE;
-        /* Uses a traditional for to avoid ConcurrentModificationException,
+        /* Uses an indexed for to avoid ConcurrentModificationException,
          * e.g., in cases when Vm is destroyed during simulation execution.*/
         for (int i = 0; i < vmList.size(); i++) {
             final Vm vm = vmList.get(i);
@@ -911,7 +911,9 @@ public class HostSimple implements Host {
 
     /**
      * Remaps the entire Vm's {@link UtilizationHistory} by updating the CPU utilization value in each entry
-     * to correspond to the percentage of the Host CPU capacity that Vm is using.
+     * to correspond to the relative percentage of the Host CPU capacity that Vm is using.
+     * This is required since the {@link UtilizationHistory} contains the VM's CPU utilization
+     * relative to the VM's capacity.
      *
      * @param utilizationHistory the VM {@link UtilizationHistory} with the history entries
      * @return
