@@ -504,13 +504,12 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return Double.MAX_VALUE;
         }
 
-        updateCloudletsProcessing(currentTime);
+        final double nextSimulationTime = updateCloudletsProcessing(currentTime);
         updateVmResourceAbsoluteUtilization(Ram.class);
         updateVmResourceAbsoluteUtilization(Bandwidth.class);
         addCloudletsToFinishedList();
         moveNextCloudletsFromWaitingToExecList();
 
-        final double nextSimulationTime = getEstimatedFinishTimeOfSoonerFinishingCloudlet(currentTime);
         setPreviousTime(currentTime);
 
         return nextSimulationTime;
@@ -521,15 +520,22 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * that are in the {@link #getCloudletExecList() cloudlet execution list}.
      *
      * @param currentTime current simulation time
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (which is a relative delay from the current simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
     @SuppressWarnings("ForLoopReplaceableByForEach")
-    private void updateCloudletsProcessing(final double currentTime) {
+    private double updateCloudletsProcessing(final double currentTime) {
+        double nextCloudletFinishTime = Double.MAX_VALUE;
         /* Uses an indexed for to avoid ConcurrentModificationException,
          * e.g., in cases when Cloudlet is cancelled during simulation execution. */
         for (int i = 0; i < cloudletExecList.size(); i++) {
             final CloudletExecution cle = cloudletExecList.get(i);
             updateCloudletProcessingAndPacketsDispatch(cle, currentTime);
+            nextCloudletFinishTime = Math.min(nextCloudletFinishTime, cloudletEstimatedFinishTime(cle, currentTime));
         }
+
+        return nextCloudletFinishTime;
     }
 
     /**
@@ -728,20 +734,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets the estimated time, considering the current time, that a next Cloudlet is expected to finish.
-     *
-     * @param currentTime current simulation time
-     * @return the estimated finish time of sooner finishing cloudlet
-     * (which is a relative delay from the current simulation time)
-     */
-    protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(final double currentTime) {
-        return cloudletExecList
-                .stream()
-                .mapToDouble(cle -> getEstimatedFinishTimeOfCloudlet(cle, currentTime))
-                .min().orElse(Double.MAX_VALUE);
-    }
-
-    /**
      * Gets the estimated time when a given cloudlet is supposed to finish
      * executing. It considers the amount of Vm PES and the sum of PEs required
      * by all VMs running inside the VM.
@@ -751,7 +743,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the estimated finish time of the given cloudlet
      * (which is a relative delay from the current simulation time)
      */
-    protected double getEstimatedFinishTimeOfCloudlet(final CloudletExecution cle, final double currentTime) {
+    protected double cloudletEstimatedFinishTime(final CloudletExecution cle, final double currentTime) {
         final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime);
         final double estimatedFinishTime = cle.getRemainingCloudletLength() / cloudletUsedMips;
 

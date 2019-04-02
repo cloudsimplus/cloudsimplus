@@ -97,7 +97,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     private double movePausedCloudletToExecListAndGetExpectedFinishTime(final CloudletExecution cloudlet) {
         getCloudletPausedList().remove(cloudlet);
         addCloudletToExecList(cloudlet);
-        return getEstimatedFinishTimeOfCloudlet(cloudlet, getVm().getSimulation().clock());
+        return cloudletEstimatedFinishTime(cloudlet, getVm().getSimulation().clock());
     }
 
     @Override
