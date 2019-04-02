@@ -48,13 +48,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * @see #getLength()
      */
     private long length;
-    /**
-     * @see #getNumberOfPes()
-     */
+
+    /** @see #getNumberOfPes() */
     private long numberOfPes;
-    /**
-     * @see #getStatus()
-     */
+
+    /** @see #getStatus() */
     private Status status;
 
     /** @see #isReturnedToBroker() */
@@ -62,21 +60,17 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     /** @see #getExecStartTime() */
     private double execStartTime;
-    /**
-     * @see #getPriority()
-     */
+
+    /** @see #getPriority() */
     private int priority;
-    /**
-     * @see #getNetServiceLevel()
-     */
+
+    /** @see #getNetServiceLevel() */
     private int netServiceLevel;
-    /**
-     * @see #getVm()
-     */
+
+    /** @see #getVm() */
     private Vm vm;
-    /**
-     * @see #getRequiredFiles()
-     */
+
+    /** @see #getRequiredFiles() */
     private List<String> requiredFiles;
 
     /**
@@ -86,46 +80,35 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      */
     private int lastExecutedDatacenterIdx;
 
-    /**
-     * @see #getFileSize()
-     */
+    /** @see #getFileSize() */
     private long fileSize;
-    /**
-     * @see #getOutputSize()
-     */
+
+    /** @see #getOutputSize() */
     private long outputSize;
-    /**
-     * @see #getFinishTime()
-     */
+
+    /** @see #getFinishTime() */
     private double finishTime;
-    /**
-     * @see #getCostPerBw()
-     */
+
+    /** @see #getCostPerBw() */
     private double costPerBw;
-    /**
-     * @see #getAccumulatedBwCost()
-     */
+
+    /** @see #getAccumulatedBwCost() */
     private double accumulatedBwCost;
-    /**
-     * @see #getUtilizationModelCpu()
-     */
+
+    /** @see #getUtilizationModelCpu() */
     private UtilizationModel utilizationModelCpu;
-    /**
-     * @see #getUtilizationModelRam()
-     */
+
+    /** @see #getUtilizationModelRam() */
     private UtilizationModel utilizationModelRam;
-    /**
-     * @see #getUtilizationModelBw()
-     */
+
+    /** @see #getUtilizationModelBw() */
     private UtilizationModel utilizationModelBw;
 
     private final Set<EventListener<CloudletVmEventInfo>> onStartListeners;
     private final Set<EventListener<CloudletVmEventInfo>> onFinishListeners;
     private final Set<EventListener<CloudletVmEventInfo>> onUpdateProcessingListeners;
 
-    /**
-     * @see #getSubmissionDelay()
-     */
+    /** @see #getSubmissionDelay() */
     private double submissionDelay;
 
     /**

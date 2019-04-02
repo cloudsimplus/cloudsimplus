@@ -141,8 +141,12 @@ public class KeepSimulationRunningExample {
 
         broker0 = new DatacenterBrokerSimple(simulation);
 
-        vmList = createVms();
-        cloudletList = createCloudlets();
+        vmList = new ArrayList<>(VMS);
+        cloudletList = new ArrayList<>();
+
+        createVms();
+        createCloudlets();
+
         broker0.setVmDestructionDelayFunction(vm -> 0.0);
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
@@ -191,12 +195,10 @@ public class KeepSimulationRunningExample {
     /**
      * Creates a list of VMs.
      */
-    private List<Vm> createVms() {
-        final List<Vm> list = new ArrayList<>(VMS);
+    private void createVms() {
         for (int i = 0; i < VMS; i++) {
-            list.add(createVm(VM_PES));
+            vmList.add(createVm(VM_PES));
         }
-        return list;
     }
 
     private Vm createVm(final int pes) {
@@ -208,13 +210,10 @@ public class KeepSimulationRunningExample {
     /**
      * Creates a list of Cloudlets.
      */
-    private List<Cloudlet> createCloudlets() {
-        final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
+    private void createCloudlets() {
         for (int i = 0; i < CLOUDLETS; i++) {
-            list.add(createCloudlet());
+            cloudletList.add(createCloudlet());
         }
-
-        return list;
     }
 
     private Cloudlet createCloudlet() {

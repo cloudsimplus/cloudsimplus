@@ -196,7 +196,7 @@ public interface Datacenter extends SimEntity, PowerAware {
      * based on the CPU utilization got form the StateHistory.</b>
      * </p>
      *
-     * @return th <b>estimated</b> power consumption in Watt-Second (Ws)
+     * @return the <b>estimated</b> power consumption in Watt-Second (Ws)
      */
     @Override
     double getPower();
