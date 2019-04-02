@@ -200,6 +200,13 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     Status getStatus();
 
     /**
+     * Checks if the Cloudlet has finished and returned to the broker,
+     * so that the broker is aware about the end of execution of the Cloudlet.
+     * @return
+     */
+    boolean isReturnedToBroker();
+
+    /**
      * Sets the parameters of the Datacenter where the Cloudlet is going to be
      * executed. From the second time this method is called, every call makes the
      * cloudlet to be migrated to the indicated Datacenter.

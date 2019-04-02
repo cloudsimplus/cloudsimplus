@@ -93,6 +93,7 @@ final class CloudletNull implements Cloudlet {
     @Override public Status getStatus() {
         return Status.FAILED;
     }
+    @Override public boolean isReturnedToBroker() { return false; }
     @Override public double getLastDatacenterArrivalTime() {
         return 0.0;
     }

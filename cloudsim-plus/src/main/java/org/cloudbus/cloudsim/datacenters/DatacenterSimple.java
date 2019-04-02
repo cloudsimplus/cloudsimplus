@@ -10,7 +10,6 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -306,7 +305,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 return true;
             case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING:
                 updateCloudletProcessing();
-                checkCloudletsCompletionForAllHosts();
                 return true;
         }
 
@@ -674,18 +672,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Notifies the broker about the end of execution of a given Cloudlet,
-     * by returning the Cloudlet to it.
-     *
-     * @param cloudlet the Cloudlet to return to broker in order to notify it about the Cloudlet execution end
-     */
-    private void returnFinishedCloudletToBroker(final Cloudlet cloudlet) {
-        sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_RETURN, cloudlet);
-        cloudlet.getVm().getCloudletScheduler().addCloudletToReturnedList(cloudlet);
-    }
-
-
-    /**
      * Sends an ACK to the DatacenterBroker that submitted the Cloudlet for execution
      * in order to respond the reception of the submission request,
      * informing if the cloudlet was created or not.
@@ -831,29 +817,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private double timeToMigrateVm(final Vm vm, final Host targetHost) {
         return vm.getRam().getCapacity() / Conversion.bitesToBytes(targetHost.getBw().getCapacity() * getBandwidthPercentForMigration());
-    }
-
-    /**
-     * Verifies if some cloudlet inside the hosts of this Datacenter have already finished.
-     * If yes, send them to the User/Broker
-     */
-    protected void checkCloudletsCompletionForAllHosts() {
-        final List<? extends Host> hosts = vmAllocationPolicy.getHostList();
-        hosts.forEach(this::checkCloudletsCompletionForGivenHost);
-    }
-
-    private void checkCloudletsCompletionForGivenHost(final Host host) {
-        host.getVmList().forEach(this::checkCloudletsCompletionForGivenVm);
-    }
-
-    private void checkCloudletsCompletionForGivenVm(final Vm vm) {
-        final List<Cloudlet> nonReturnedCloudlets =
-            vm.getCloudletScheduler().getCloudletFinishedList().stream()
-                .map(CloudletExecution::getCloudlet)
-                .filter(cloudlet -> !vm.getCloudletScheduler().isCloudletReturned(cloudlet))
-                .collect(toList());
-
-        nonReturnedCloudlets.forEach(this::returnFinishedCloudletToBroker);
     }
 
     @Override

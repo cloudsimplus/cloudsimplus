@@ -56,9 +56,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * @see #getStatus()
      */
     private Status status;
-    /**
-     * @see #getExecStartTime()
-     */
+
+    /** @see #isReturnedToBroker() */
+    private boolean returnedToBroker;
+
+    /** @see #getExecStartTime() */
     private double execStartTime;
     /**
      * @see #getPriority()
@@ -394,8 +396,21 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
                                     partialFinishedMI :
                                     Math.min(partialFinishedMI, absLength()-getFinishedLengthSoFar());
         getLastExecutionInDatacenterInfo().addFinishedSoFar(maxLengthToAdd);
+        returnToBrokerIfFinished();
         notifyListenersIfCloudletIsFinished();
         return true;
+    }
+
+    /**
+     * Notifies the broker about the end of execution of the Cloudlet,
+     * by returning the Cloudlet to it.
+     */
+    private void returnToBrokerIfFinished() {
+        if(isFinished() && !isReturnedToBroker()){
+            returnedToBroker = true;
+            getSimulation().sendNow(getSimulation().getCloudInfoService(), getBroker(), CloudSimTags.CLOUDLET_RETURN, this);
+            vm.getCloudletScheduler().addCloudletToReturnedList(this);
+        }
     }
 
     /**
@@ -581,6 +596,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     @Override
     public Status getStatus() {
         return status;
+    }
+
+    @Override
+    public boolean isReturnedToBroker() {
+        return returnedToBroker;
     }
 
     @Override
