@@ -58,10 +58,9 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
         }
 
         LOGGER.error(
-            "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
-                "\t\tHowever, there are just {} available PEs with the required MIPS.",
-            getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
-            requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
+            "{}: {}: Allocation of {} to {} failed due to lack of PEs. Required {} PEs of {} MIPS.However, there are just {} available PEs with the required MIPS.",
+            getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(),
+            requestedMips.size(), requestedMips.get(0),
             selectedPes.size());
         return false;
     }

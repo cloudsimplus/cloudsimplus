@@ -14,7 +14,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * a dynamic over utilization threshold computed using some statistical method such as
  * <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median Absolute Deviation (MAD)</a>,
  * <a href="https://en.wikipedia.org/wiki/Interquartile_range">Interquartile Range (IQR)</a>,
- * <a href="https://en.wikipedia.org/wiki/Local_regression">Local Regression (LR)</a>   , etc,
+ * <a href="https://en.wikipedia.org/wiki/Local_regression">Local Regression (LR)</a>, etc,
  * depending on the implementing class.
  *
  * @author Anton Beloglazov
