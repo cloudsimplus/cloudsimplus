@@ -42,6 +42,11 @@ import java.util.SortedMap;
  * @since CloudSim Plus 1.0
  */
 public interface Host extends Machine, Comparable<Host> {
+    /**
+     * The default value for the {@link #getIdleShutdownDeadline()}.
+     * This value indicates that the Host won't be shutdown when becoming idle.
+     */
+    double DEF_IDLE_SHUTDOWN_DEADLINE = -1;
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Host}
@@ -64,8 +69,9 @@ public interface Host extends Machine, Comparable<Host> {
     void setDatacenter(Datacenter datacenter);
 
     /**
-     * Checks if the host is active and is suitable for vm
-     * (if it has enough resources to attend the VM).
+     * Checks if the host is suitable for vm
+     * (if it has enough resources to attend the VM)
+     * and it's not failed.
      *
      * @param vm the vm to check
      * @return true if is suitable for vm, false otherwise
@@ -86,8 +92,9 @@ public interface Host extends Machine, Comparable<Host> {
      * it is simulated a scheduled shutdown, so that, all running
      * VMs will finish, but not more VMs will be submitted to this Host.</p>
      *
-     * @param active true to set the Host as powered on, false as powered off
+     * @param active define the Host activation status: true to power on, false to power off
      * @return
+     * @throws IllegalStateException when trying to activate a {@link #isFailed() failed} host.
      */
     Host setActive(boolean active);
 
@@ -316,6 +323,27 @@ public interface Host extends Machine, Comparable<Host> {
      * @param shutdownTime the time to set
      */
     void setShutdownTime(double shutdownTime);
+
+    /**
+     * Gets the deadline to shutdown the Host when it become idle.
+     * This is the time interval after the Host becoming idle that
+     * it will be shutdown.
+     * @see #DEF_IDLE_SHUTDOWN_DEADLINE
+     * @return the idle shutdown deadline (in seconds)
+     */
+    double getIdleShutdownDeadline();
+
+    /**
+     * Sets the deadline to shutdown the Host when it become idle.
+     * This is the time interval after the Host becoming idle that
+     * it will be shutdown.
+     *
+     * @param deadline the deadline to shutdown the Host after it becoming idle  (in seconds).
+     *                 A negative value disables idle host shutdown.
+     * @see #DEF_IDLE_SHUTDOWN_DEADLINE
+     * @see #getIdleShutdownDeadline()
+     */
+    void setIdleShutdownDeadline(double deadline);
 
     /**
      * Checks if the host is working properly or has failed.

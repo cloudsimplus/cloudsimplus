@@ -125,6 +125,8 @@ final class HostNull implements Host {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
+    @Override public double getLastBusyTime() { return 0; }
+    @Override public boolean isIdle() { return true; }
     @Override public Host setSimulation(Simulation simulation) {
         return this;
     }
@@ -157,4 +159,6 @@ final class HostNull implements Host {
     @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
     @Override public List<Vm> getMigratableVms() { return Collections.emptyList(); }
     @Override public void setShutdownTime(double shutdownTime) {/**/}
+    @Override public double getIdleShutdownDeadline() { return -1; }
+    @Override public void setIdleShutdownDeadline(double deadline) {/**/}
 }

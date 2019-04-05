@@ -70,9 +70,10 @@ public class HostSimple implements Host {
 
     private boolean active;
     private boolean stateHistoryEnabled;
+    private double lastBusyTime;
+    private double idleShutdownDeadline;
 
     private final Ram ram;
-
     private final Bandwidth bw;
 
     /** @see #getStorage() */
@@ -134,11 +135,35 @@ public class HostSimple implements Host {
      * to a {@link Datacenter}.
      *
      * @param peList the host's {@link Pe} list
+     * @param active define the Host activation status: true to power on, false to power off
      *
      * @see ChangeableId#setId(long)
      * @see #setRamProvisioner(ResourceProvisioner)
      * @see #setBwProvisioner(ResourceProvisioner)
-     * @see #setStorage(long)
+     * @see #setVmScheduler(VmScheduler)
+     * @see #setDefaultRamCapacity(long)
+     * @see #setDefaultBwCapacity(long)
+     * @see #setDefaultStorageCapacity(long)
+     */
+    public HostSimple(final List<Pe> peList, final boolean active) {
+        this(peList);
+        setActive(active);
+        this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
+    }
+
+    /**
+     * Creates a Host without a pre-defined ID,
+     * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage.
+     * It creates a {@link ResourceProvisionerSimple}
+     * for RAM and Bandwidth. Finally, it sets a {@link VmSchedulerSpaceShared} as default.
+     * The ID is automatically set when a List of Hosts is attached
+     * to a {@link Datacenter}.
+     *
+     * @param peList the host's {@link Pe} list
+     *
+     * @see ChangeableId#setId(long)
+     * @see #setRamProvisioner(ResourceProvisioner)
+     * @see #setBwProvisioner(ResourceProvisioner)
      * @see #setVmScheduler(VmScheduler)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
@@ -275,7 +300,14 @@ public class HostSimple implements Host {
     @Override
     public double updateProcessing(final double currentTime) {
         setPreviousUtilizationMips(getUtilizationOfCpuMips());
+        if (!vmList.isEmpty()) {
+            lastBusyTime = simulation.clock();
+        } else if(isIdleEnough(idleShutdownDeadline)){
+            setActive(false);
+        }
+
         double nextSimulationTime = Double.MAX_VALUE;
+
         /* Uses an indexed for to avoid ConcurrentModificationException,
          * e.g., in cases when Vm is destroyed during simulation execution.*/
         for (int i = 0; i < vmList.size(); i++) {
@@ -387,14 +419,14 @@ public class HostSimple implements Host {
 
     @Override
     public boolean isSuitableForVm(final Vm vm) {
-        return active && hasEnoughResources(vm);
+        return !isFailed() && hasEnoughResources(vm);
     }
 
     private boolean hasEnoughResources(final Vm vm) {
         return vmScheduler.isSuitableForVm(vm, vm.getCurrentRequestedMips()) &&
-            ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()) &&
-            bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()) &&
-            storage.isAmountAvailable(vm.getStorage());
+               ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()) &&
+               bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()) &&
+               storage.isAmountAvailable(vm.getStorage());
     }
 
     @Override
@@ -404,8 +436,34 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setActive(final boolean active) {
+        if(isFailed() && active){
+            throw new IllegalStateException("The Host is failed and cannot be activated.");
+        }
+
+        showActivationLogBeforeModification(active);
         this.active = active;
         return this;
+    }
+
+    /**
+     * Prints information about the (de)activation of the Host,
+     * before its status is changed
+     * @param active the activation value that is being requested to set
+     *               (and will be set after this method call)
+     * @see #setActive(boolean)
+     */
+    private void showActivationLogBeforeModification(final boolean active) {
+        if(simulation == null || !simulation.isRunning() ) {
+            return;
+        }
+
+        if(active && !this.active){
+            LOGGER.info("{}: {} is being powered on.", getSimulation().clock(), this);
+        }
+        else if(!active && this.active){
+            final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
+            LOGGER.info("{}: {} is being powered off{}.", getSimulation().clock(), this, reason);
+        }
     }
 
     @Override
@@ -605,6 +663,16 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public double getIdleShutdownDeadline() {
+        return idleShutdownDeadline;
+    }
+
+    @Override
+    public void setIdleShutdownDeadline(final double deadline) {
+        this.idleShutdownDeadline = deadline;
+    }
+
+    @Override
     public List<Pe> getPeList() {
         return peList;
     }
@@ -774,6 +842,11 @@ public class HostSimple implements Host {
     @Override
     public Simulation getSimulation() {
         return this.simulation;
+    }
+
+    @Override
+    public double getLastBusyTime() {
+        return lastBusyTime;
     }
 
     @Override

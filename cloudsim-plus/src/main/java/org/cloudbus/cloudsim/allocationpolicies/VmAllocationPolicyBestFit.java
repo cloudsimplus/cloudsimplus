@@ -34,7 +34,7 @@ import java.util.function.Function;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with the most PEs in use.
+ * the host for a VM, that one with the most number of PEs in use.
  * <b>It is therefore a Best Fit policy</b>, allocating each VM into the host with the least available PEs
  * that are enough for the VM.
  *
@@ -64,18 +64,23 @@ public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
 
     /**
      * Gets the first suitable host from the {@link #getHostList()}
-     * that has the most number of used PEs (i.e, lower free PEs).
+     * that has the most number of PEs in use (i.e. the least number of free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      *
-     * @TODO See TODOs inside the VmAllocationPolicySimple
+     * @TODO See TODOs inside the {@link VmAllocationPolicySimple}
      */
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
         final Map<Host, Long> map = getHostFreePesMap();
+        /* Since it's being used the min operation, the active comparator must be reversed so that
+         * we get active hosts with minimum number of free PEs. */
+        final Comparator<Map.Entry<Host, Long>> activeComparator = Comparator.comparing((Map.Entry<Host, Long> entry) -> entry.getKey().isActive()).reversed();
+        final Comparator<Map.Entry<Host, Long>> comparator = activeComparator.thenComparingLong(Map.Entry::getValue);
+
         return map.entrySet()
             .stream()
             .filter(entry -> entry.getKey().isSuitableForVm(vm))
-            .min(Comparator.comparingLong(Map.Entry::getValue))
+            .min(comparator)
             .map(Map.Entry::getKey);
     }
 

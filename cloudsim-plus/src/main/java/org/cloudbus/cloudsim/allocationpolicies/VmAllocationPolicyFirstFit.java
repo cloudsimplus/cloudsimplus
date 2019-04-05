@@ -16,8 +16,19 @@ import java.util.Optional;
 /**
  * An <b>First Fit VM allocation policy</b>
  * which finds the first Host having suitable resources to place a given VM.
+ * Find first operation has a low <a href="https://en.wikipedia.org/wiki/Time_complexity">time complexity</a> because it doesn't need to
+ * sort the Host list to find a suitable Host. The best-case complexity to find a first suitable host
+ * is O(1) and the worst-case complexity is O(N), where N is the number of Hosts.
  *
- * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
+ * <p>
+ *     <b>NOTES:</b>
+ *     <ul>
+ *         <li>This policy doesn't perform optimization of VM allocation by means of VM migration.</li>
+ *         <li>The find first operation has a small time complexity but it may return
+ *         and inactive Host that will be activated, while there may be active Hosts
+ *         suitable for the VM.</li>
+ *     </ul>
+ * </p>
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:

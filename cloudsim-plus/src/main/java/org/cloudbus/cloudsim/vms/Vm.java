@@ -616,33 +616,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     Vm setStopTime(double stopTime);
 
     /**
-     * Gets the last time the VM was running some Cloudlet.
-     * @return the last busy time (in seconds)
-     */
-    double getLastBusyTime();
-
-    /**
-     * Gets the last interval the VM was idle (without running any Cloudlet).
-     * @return the last idle time interval (in seconds)
-     */
-    double getIdleInterval();
-
-    /**
-     * Checks if the VM is currently idle.
-     * @return true if the VM currently idle, false otherwise
-     */
-    boolean isIdle();
-
-    /**
-     * Checks if the VM has been idle for a given amount of time (in seconds).
-     * @param time the time interval to check if the VM has been idle (in seconds).
-     *             If time is zero, it will be checked if the VM is currently idle.
-     * @return true if the VM has been idle as long as the given time,
-     *         false if it's active of isn't idle as long enough
-     */
-    boolean isIdleEnough(double time);
-
-    /**
      * Gets the object containing CPU utilization percentage history (between [0 and 1], where 1 is 100%).
      * The history can be obtained by calling {@link VmUtilizationHistory#getHistory()}.
      * Initially, the data collection is disabled.

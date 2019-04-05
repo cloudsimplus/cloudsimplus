@@ -64,10 +64,13 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
         final Map<Host, Long> map = getHostFreePesMap();
+        final Comparator<Map.Entry<Host, Long>> activeComparator = Comparator.comparing((Map.Entry<Host, Long> entry) -> entry.getKey().isActive());
+        final Comparator<Map.Entry<Host, Long>> comparator = activeComparator.thenComparingLong(Map.Entry::getValue);
+
         return map.entrySet()
             .stream()
             .filter(e -> e.getKey().isSuitableForVm(vm))
-            .max(Comparator.comparingLong(Map.Entry::getValue))
+            .max(comparator)
             .map(Map.Entry::getKey);
     }
 

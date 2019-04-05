@@ -33,6 +33,8 @@ final class MachineNull implements Machine {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
+    @Override public double getLastBusyTime() { return 0; }
+    @Override public boolean isIdle() { return true; }
     @Override public void setId(long id) {/**/}
     @Override public long getId() {
         return 0;
@@ -40,7 +42,5 @@ final class MachineNull implements Machine {
     @Override public List<ResourceManageable> getResources() {
         return Collections.emptyList();
     }
-
-    @Override
-    public double getTotalMipsCapacity() { return 0.0; }
+    @Override public double getTotalMipsCapacity() { return 0.0; }
 }

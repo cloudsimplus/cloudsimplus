@@ -71,7 +71,6 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private Map<Vm, Long> usedPes;
 
-
     /**
      * Creates a VmAllocationPolicy.
      */
@@ -424,7 +423,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public final Optional<Host> findHostForVm(final Vm vm) {
-        return findHostForVmFunction == null ? defaultFindHostForVm(vm) : findHostForVmFunction.apply(this, vm);
+        final Optional<Host> optional = findHostForVmFunction == null ? defaultFindHostForVm(vm) : findHostForVmFunction.apply(this, vm);
+        //If the selected Host is not active, activate it (if it's already active, this operation has no effect)
+        return optional.map(host -> host.setActive(true));
     }
 
     /**
@@ -435,7 +436,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
      * @see #setFindHostForVmFunction(BiFunction)
      */
-    protected abstract Optional<Host> defaultFindHostForVm(final Vm vm);
+    protected abstract Optional<Host> defaultFindHostForVm(Vm vm);
 
     /**
      * {@inheritDoc}

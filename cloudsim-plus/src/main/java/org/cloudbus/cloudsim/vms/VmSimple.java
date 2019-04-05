@@ -220,7 +220,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
         requireNonNull(mipsShare);
 
-        if(!cloudletScheduler.getCloudletExecList().isEmpty()){
+        if(!cloudletScheduler.isEmpty()){
             this.lastBusyTime = getSimulation().clock();
         }
         final double nextEventDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
@@ -338,29 +338,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public double getLastBusyTime() {
         return this.lastBusyTime;
-    }
-
-    @Override
-    public double getIdleInterval() {
-        return getSimulation().clock() - lastBusyTime;
-    }
-
-    @Override
-    public boolean isIdle() {
-        /*If the idle interval is not zero
-        * but the cloudletScheduler doesn't have any running or waiting Cloudlet,
-        * the VM has just become idle.
-        * That is way it's idle interval is zero. */
-        return getIdleInterval() > 0 || cloudletScheduler.isEmpty();
-    }
-
-    @Override
-    public boolean isIdleEnough(final double time) {
-        if(time <= 0 && !isIdle()) {
-            return false;
-        }
-
-        return getIdleInterval() >= time;
     }
 
     @Override
