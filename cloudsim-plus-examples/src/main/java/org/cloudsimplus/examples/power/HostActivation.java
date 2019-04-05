@@ -51,7 +51,7 @@ import java.util.function.Function;
 
 /**
  * An example showing how to create a Datacenter with all Hosts powered off
- * and let the {@link VmAllocationPolicy} to activate Hosts according to demand.
+ * and let the {@link VmAllocationPolicy} to power Hosts on and off according to demand.
  * For this simulation, the {@link VmAllocationPolicyBestFit} is used.</p>
  *
  * <p>The dynamic demand for Hosts is simulated
