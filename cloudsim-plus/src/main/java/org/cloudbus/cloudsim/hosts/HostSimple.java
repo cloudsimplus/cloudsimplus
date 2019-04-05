@@ -128,11 +128,13 @@ public class HostSimple implements Host {
 
     /**
      * Creates a Host without a pre-defined ID,
-     * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage.
-     * It creates a {@link ResourceProvisionerSimple}
+     * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage
+     * and enabling the host to be powered on or not.
+     *
+     * <p>It creates a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth. Finally, it sets a {@link VmSchedulerSpaceShared} as default.
      * The ID is automatically set when a List of Hosts is attached
-     * to a {@link Datacenter}.
+     * to a {@link Datacenter}.</p>
      *
      * @param peList the host's {@link Pe} list
      * @param active define the Host activation status: true to power on, false to power off
@@ -152,7 +154,7 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Creates a Host without a pre-defined ID,
+     * Creates and powers on a Host without a pre-defined ID,
      * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage.
      * It creates a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth. Finally, it sets a {@link VmSchedulerSpaceShared} as default.
@@ -174,7 +176,7 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Creates a Host with the given parameters and a {@link VmSchedulerSpaceShared} as default.
+     * Creates and powers on a Host with the given parameters and a {@link VmSchedulerSpaceShared} as default.
      *
      * @param ramProvisioner the ram provisioner with capacity in Megabytes
      * @param bwProvisioner the bw provisioner with capacity in Megabits/s
@@ -196,7 +198,7 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Creates a Host without a pre-defined ID. It uses a {@link ResourceProvisionerSimple}
+     * Creates and powers on a Host without a pre-defined ID. It uses a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
      * The ID is automatically set when a List of Hosts is attached
      * to a {@link Datacenter}.
@@ -668,8 +670,9 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void setIdleShutdownDeadline(final double deadline) {
+    public Host setIdleShutdownDeadline(final double deadline) {
         this.idleShutdownDeadline = deadline;
+        return this;
     }
 
     @Override

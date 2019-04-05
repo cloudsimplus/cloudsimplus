@@ -160,5 +160,5 @@ final class HostNull implements Host {
     @Override public List<Vm> getMigratableVms() { return Collections.emptyList(); }
     @Override public void setShutdownTime(double shutdownTime) {/**/}
     @Override public double getIdleShutdownDeadline() { return -1; }
-    @Override public void setIdleShutdownDeadline(double deadline) {/**/}
+    @Override public Host setIdleShutdownDeadline(double deadline) { return this; }
 }
