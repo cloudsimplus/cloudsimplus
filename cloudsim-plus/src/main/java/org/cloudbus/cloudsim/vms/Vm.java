@@ -269,8 +269,10 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
 
     /**
      * Gets a <b>read-only</b> list with the history of requests and allocation of MIPS for this VM.
+     * The VM state history is just collected and stored if the Host is storing such a data.
      *
      * @return the state history
+     * @see Host#enableStateHistory()
      */
     List<VmStateHistoryEntry> getStateHistory();
 

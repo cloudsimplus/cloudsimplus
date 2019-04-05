@@ -38,7 +38,6 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -60,7 +59,7 @@ import java.util.List;
  * if the Host doesn't have the MIPS capacity required by a VM, the VM is not allowed
  * to execute into this Host.</p>
  *
- * <p>This example has just 1 Host with 1 PE of 500 MIPS.
+ * <p>This example creates 2 Hosts with 1 PE of 500 MIPS.
  * However, there are 2 VMs with 1 PE of 1000 MIPS.
  * There are 2 Cloudlets, each one executed into one VM,
  * requiring 1 PE and having a length of 10000 MI.
@@ -74,8 +73,18 @@ import java.util.List;
  * as can be seen in the results.
  * </p>
  *
+ * <p>At the end, the Hosts' state history is shown.
+ * The state history stores data about CPU utilization
+ * and requested and allocated MIPS.
+ * If you just want CPU utilization.
+ * If you just need CPU utilization history, check the other
+ * examples mentioned below.</p>
+ *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
+ *
+ * @see org.cloudsimplus.examples.resourceusage.HostsCpuUsageExample
+ * @see org.cloudsimplus.examples.power.PowerExample
  */
 public class VmSchedulerTimeSharedOverSubscriptionExample1 {
     private static final int HOSTS     = 2;
@@ -131,14 +140,21 @@ public class VmSchedulerTimeSharedOverSubscriptionExample1 {
             .addColumn(10, new TextTableColumn("  VM MIPS", "allocated"), this::getVmAllocatedMips)
             .build();
 
-        System.out.println("\nHosts CPU usage History");
-        hostList.forEach(this::printHostHistory);
+        System.out.println("\n-------------------------------------- Hosts CPU usage History --------------------------------------");
+        hostList.forEach(this::printHostStateHistory);
     }
 
-    private void printHostHistory(Host h) {
-        System.out.printf("Host: %d\n", h.getId());
-        System.out.println("------------------------------------------------------------------------------------------");
-        h.getStateHistory().stream().forEach(System.out::print);
+    /**
+     * Prints the {@link Host#getStateHistory() state history} for a given Host.
+     * Realize that the state history is just collected if that is enabled before
+     * starting the simulation by calling {@link Host#enableStateHistory()}.
+     *
+     * @param host
+     */
+    private void printHostStateHistory(Host host) {
+        System.out.printf("Host: %d\n", host.getId());
+        System.out.println("-----------------------------------------------------------------------------------------------------");
+        host.getStateHistory().stream().forEach(System.out::print);
         System.out.println();
     }
 
@@ -188,6 +204,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample1 {
             .setRamProvisioner(ramProvisioner)
             .setBwProvisioner(bwProvisioner)
             .setVmScheduler(new VmSchedulerTimeSharedOverSubscription());
+        host.enableStateHistory();
         return host;
     }
 
@@ -198,8 +215,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample1 {
         for (int i = 0; i < VMS; i++) {
             Vm vm =
                 new VmSimple(VM_MIPS, VM_PES)
-                    .setRam(512).setBw(1000).setSize(10000)
-                    .setCloudletScheduler(new CloudletSchedulerTimeShared());
+                    .setRam(512).setBw(1000).setSize(10000);
             vmList.add(vm);
         }
     }

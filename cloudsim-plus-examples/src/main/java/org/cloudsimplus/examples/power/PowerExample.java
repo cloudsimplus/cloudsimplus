@@ -61,7 +61,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * An example to show power consumption of Hosts.
+ * An example to show power consumption of Hosts and VMs.
  * Realize that for this goal, you define a {@link PowerModel}
  * for each Host by calling {@code host.setPowerModel(powerModel)}.
  *
