@@ -27,6 +27,9 @@ import java.util.function.Function;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
+ *
+ * @see VmAllocationPolicyFirstFit
+ * @see VmAllocationPolicyBestFit
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
