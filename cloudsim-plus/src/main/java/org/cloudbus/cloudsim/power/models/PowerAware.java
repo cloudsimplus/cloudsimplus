@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.resources.Pe;
 
 /**
  * An interface for power-aware components such as {@link Datacenter}
@@ -12,27 +11,25 @@ import org.cloudbus.cloudsim.resources.Pe;
  */
 public interface PowerAware {
     /**
-     * Gets the current power consumption in Watt-Second (Ws).
-     * For this moment, it only computes the power consumed by {@link Pe}s.
+     * Gets the current power supply in Watts (w).
      *
-     * @return the power consumption in Watt-Second (Ws)
-     * @see #getPowerInKWattsHour()
+     * @return the power supply in Watts (w)
+     * @see #getPowerInKWatts()
      */
     double getPower();
 
     /**
-     * Gets the current power consumption in Kilowatt-hour (kWh).
-     * For this moment, it only computes the power consumed by {@link Pe}s.
+     * Gets the current power supply in Kilowatts (kW).
      *
-     * @return the power consumption Kilowatt-hour (kWh)
+     * @return the power supply Kilowatts (kW)
      * @see #getPower()
      */
-    default double getPowerInKWattsHour() {
-        return wattsSecToKWattsHour(getPower());
+    default double getPowerInKWatts() {
+        return getPower()/1000.0;
     }
 
     /**
-     * Converts from Watts-Second to Kilowatt-hour (kWh).
+     * Converts energy consumption from Watts-Second to Kilowatt-hour (kWh).
      * @param power the value in Watts-Second
      * @return the value converted to Kilowatt-hour (kWh)
      */

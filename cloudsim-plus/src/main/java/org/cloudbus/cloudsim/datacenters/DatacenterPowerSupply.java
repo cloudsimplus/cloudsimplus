@@ -16,6 +16,8 @@ public class DatacenterPowerSupply implements PowerAware {
     };
 
     private Datacenter datacenter;
+
+    /** @see #getPower() */
     private double power;
 
     public DatacenterPowerSupply(){}
@@ -30,8 +32,6 @@ public class DatacenterPowerSupply implements PowerAware {
      * It also updates the {@link #getPower() Datacenter's total consumed power up to now}.
      *
      * @return the <b>estimated</b> total power consumed (in Watts-sec) by all Hosts in the elapsed time span
-     * @see Datacenter#getPower()
-     * @see Datacenter#getPowerInKWattsHour()
      */
     protected double computePowerUtilizationForTimeSpan(final double lastDatacenterProcessTime) {
         final double clock = datacenter.getSimulation().clock();
@@ -56,7 +56,7 @@ public class DatacenterPowerSupply implements PowerAware {
      * Gets the total power consumed by the Datacenter up to now in Watt-Second (Ws).
      *
      * @return the total power consumption in Watt-Second (Ws)
-     * @see #getPowerInKWattsHour()
+     * @see #getPowerInKWatts()
      */
     @Override
     public double getPower() {

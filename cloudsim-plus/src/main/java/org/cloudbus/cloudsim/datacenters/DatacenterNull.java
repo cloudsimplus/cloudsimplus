@@ -51,7 +51,7 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public double getPower() { return 0; }
     @Override public Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener) { return this; }
     @Override public void setPowerSupply(DatacenterPowerSupply powerSupply) {}
-    @Override public double getPowerInKWattsHour() { return 0; }
+    @Override public double getPowerInKWatts() { return 0; }
     @Override public String toString() {
         return "Datacenter.NULL";
     }
