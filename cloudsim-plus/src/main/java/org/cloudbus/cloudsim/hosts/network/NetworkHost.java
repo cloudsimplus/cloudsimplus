@@ -73,7 +73,7 @@ public class NetworkHost extends HostSimple {
     private EdgeSwitch edgeSwitch;
 
     /**
-     * Creates a NetworkHost using a {@link VmSchedulerSpaceShared} as default.
+     * Creates and powers on a NetworkHost using a {@link VmSchedulerSpaceShared} as default.
      *
      * @param ram the RAM capacity in Megabytes
      * @param bw the Bandwidth (BW) capacity in Megabits/s

@@ -207,8 +207,14 @@ public class HostActivation {
             peList.add(new PeSimple(1000));
         }
 
-        final Host host = new HostSimple(peList, false);
-        host.setIdleShutdownDeadline(1);
+        //Indicates if the Host will be powered on or not after creation
+        final boolean activateHost = false;
+
+        //The deadline (in seconds) after the Host becoming idle that it will be shutdown
+        final int shutdownDeadlineSeconds = 1;
+
+        final Host host = new HostSimple(peList, activateHost);
+        host.setIdleShutdownDeadline(shutdownDeadlineSeconds);
         return host;
     }
 

@@ -342,8 +342,9 @@ public interface Host extends Machine, Comparable<Host> {
      *                 A negative value disables idle host shutdown.
      * @see #DEF_IDLE_SHUTDOWN_DEADLINE
      * @see #getIdleShutdownDeadline()
+     * @return
      */
-    void setIdleShutdownDeadline(double deadline);
+    Host setIdleShutdownDeadline(double deadline);
 
     /**
      * Checks if the host is working properly or has failed.

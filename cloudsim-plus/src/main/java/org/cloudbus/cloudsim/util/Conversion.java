@@ -208,4 +208,27 @@ public final class Conversion {
         return milli/(1000.0*60);
     }
 
+    /**
+     * Converts a value in seconds to minutes.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param seconds the value in seconds
+     * @return the value in minutes
+     */
+    public static double secondsToMinutes(final double seconds) {
+        return seconds/60.0;
+    }
+
+    /**
+     * Converts a value in seconds to hours.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param seconds the value in seconds
+     * @return the value in hours
+     */
+    public static double secondsToHours(final double seconds) {
+        return secondsToMinutes(seconds)/60.0;
+    }
 }
