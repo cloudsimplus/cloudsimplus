@@ -135,7 +135,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends AbstractC
 
     /** The method is not being used for this experiment because the Cloudlets are created by the workload reader. */
     @Override
-    protected Cloudlet createCloudlet(DatacenterBroker broker) { return null; }
+    protected Cloudlet createCloudlet(final DatacenterBroker broker) { return null; }
 
     /**
      * Selects a VM to run a Cloudlet that will minimize the Cloudlet response
@@ -186,14 +186,14 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends AbstractC
     }
 
     @Override
-    protected Vm createVm(final DatacenterBroker broker) {
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
         final int pesId = (int) (randVm.sample() * VM_PES.length);
         final int mipsId = (int) (randMip.sample() * VM_MIPS.length);
 
         final int pes = VM_PES[pesId];
         final int mips = VM_MIPS[mipsId];
 
-        final Vm vm = new VmSimple(mips, pes)
+        final Vm vm = new VmSimple(id, mips, pes)
                 .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;

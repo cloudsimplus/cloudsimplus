@@ -69,8 +69,6 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
 
     private final ContinuousDistribution randCloudlet, randVm, randCloudletPes, randMipsVm;
 
-    private int createdCloudlets;
-
     /**
      * The file containing the SLA Contract in JSON format.
      */
@@ -136,7 +134,7 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
     @Override
     protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final List<Cloudlet> cloudletList = new ArrayList<>(CLOUDLETS);
-        for (int i = 0; i < CLOUDLETS; i++) {
+        for (int id = getCloudletList().size(); id < getCloudletList().size() + CLOUDLETS; id++) {
             cloudletList.add(createCloudlet(broker));
         }
 
@@ -146,12 +144,11 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
     @Override
     protected Cloudlet createCloudlet(final DatacenterBroker broker) {
         final UtilizationModel model = new UtilizationModelDynamic(0.1);
-        final int id = createdCloudlets++;
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
         final int p = (int) (randCloudletPes.sample() * CLOUDLET_PES.length);
         final long length = CLOUDLET_LENGTHS[i];
         final long pes = CLOUDLET_PES[p];
-        return new CloudletSimple(id, length, pes)
+        return new CloudletSimple(nextCloudletId(), length, pes)
                 .setFileSize(1024)
                 .setOutputSize(1024)
                 .setUtilizationModelBw(model)
@@ -167,7 +164,7 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
     }
 
     @Override
-    protected Vm createVm(final DatacenterBroker broker) {
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
         final int pesId = (int) (randVm.sample() * VM_PES.length);
         final int mipdsId = (int) (randMipsVm.sample() * MIPS_VM.length);
 
@@ -175,7 +172,7 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
         final int mips = MIPS_VM[mipdsId];
 
 
-        final Vm vm = new VmSimple(mips, pes)
+        final Vm vm = new VmSimple(id, mips, pes)
                 .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
         return vm;

@@ -133,25 +133,13 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected List<Vm> createVms(final DatacenterBroker broker) {
-        final int vmsNumber = getVmsByBrokerFunction().apply(broker);
-        final List<Vm> list = new ArrayList<>(vmsNumber);
-
-        for (int i = 0; i < vmsNumber; i++) {
-            list.add(createVm(broker));
-        }
-
-        return list;
-    }
-
-    @Override
-    protected Vm createVm(final DatacenterBroker broker) {
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
         final int i = (int)(randomGen.sample()*vmPesArray.length);
         final long mips = 1000;
         final long storage = 10000; // vm image size (MB)
         final int ram = 512; // vm memory (MB)
         final long bw = 1000; // vm bandwidth (Mbps)
-        return new VmSimple(mips, vmPesArray[i])
+        return new VmSimple(id, mips, vmPesArray[i])
                 .setRam(ram).setBw(bw).setSize(storage)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
@@ -159,7 +147,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
     @Override
     protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final List<Cloudlet> list = new ArrayList<>(cloudletPesArray.length);
-        for (int i = 0; i < cloudletPesArray.length; i++) {
+        for (int id = getCloudletList().size(); id < getCloudletList().size() + cloudletPesArray.length; id++) {
             list.add(createCloudlet(broker));
         }
 
@@ -175,7 +163,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
 
         final UtilizationModel utilizationFull = new UtilizationModelFull();
         final UtilizationModel utilizationDynamic = new UtilizationModelDynamic(0.1);
-        return new CloudletSimple(length, cloudletPesArray[i])
+        return new CloudletSimple(nextCloudletId(), length, cloudletPesArray[i])
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModelRam(utilizationDynamic)
@@ -226,7 +214,7 @@ final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
      *
      * @param randomGen the PRNG to set
      */
-    public DatacenterBrokerHeuristicExperiment setRandomGen(ContinuousDistribution randomGen) {
+    public DatacenterBrokerHeuristicExperiment setRandomGen(final ContinuousDistribution randomGen) {
         this.randomGen = randomGen;
         return this;
     }

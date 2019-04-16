@@ -82,7 +82,7 @@ class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment extends Ab
 
     /** The method is not being used for this experiment because the Cloudlets are created by the workload reader. */
     @Override
-    protected Cloudlet createCloudlet(DatacenterBroker broker) { return null; }
+    protected Cloudlet createCloudlet(final DatacenterBroker broker) { return null; }
 
     @Override
     protected DatacenterSimple createDatacenter() {
@@ -92,11 +92,11 @@ class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment extends Ab
     }
 
     @Override
-    protected Vm createVm(final DatacenterBroker broker) {
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
         final int pesId = (int) (randVm.sample() * VM_PES.length);
         final int pes = VM_PES[pesId];
 
-        Vm vm = new VmSimple(1000, pes)
+        Vm vm = new VmSimple(id, 1000, pes)
             .setRam(512).setBw(1000).setSize(10000)
             .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
         return vm;

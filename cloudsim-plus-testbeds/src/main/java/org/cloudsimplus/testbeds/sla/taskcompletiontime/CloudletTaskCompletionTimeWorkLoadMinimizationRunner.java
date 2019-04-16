@@ -85,7 +85,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
     }
 
     @Override
-    protected CloudletTaskCompletionTimeWorkLoadMinimizationExperiment createExperiment(int i) {
+    protected CloudletTaskCompletionTimeWorkLoadMinimizationExperiment createExperiment(final int i) {
         final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment exp
                 = new CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(i, this);
         exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
@@ -102,7 +102,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
      *
      * @param experiment the finished experiment
      */
-    private void afterExperimentFinish(CloudletTaskCompletionTimeWorkLoadMinimizationExperiment experiment) {
+    private void afterExperimentFinish(final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment experiment) {
         cloudletsCompletionTime.add(experiment.getTaskCompletionTimeAverage());
         percentOfCloudletsMeetingCompletionTime.add(
                 experiment.getPercentageOfCloudletsMeetingCompletionTime());
@@ -132,7 +132,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
     }
 
     @Override
-    protected void printFinalResults(String metricName, SummaryStatistics stats) {
+    protected void printFinalResults(final String metricName, final SummaryStatistics stats) {
         System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
@@ -142,7 +142,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
         }
     }
 
-    private void showConfidenceInterval(SummaryStatistics stats) {
+    private void showConfidenceInterval(final SummaryStatistics stats) {
         // Calculate 95% confidence interval
         final double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
         final double lower = stats.getMean() - intervalSize;

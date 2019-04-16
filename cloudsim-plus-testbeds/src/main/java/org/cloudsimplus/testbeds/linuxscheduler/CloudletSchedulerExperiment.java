@@ -134,7 +134,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     @Override
     protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final List<Cloudlet> list = new ArrayList<>(numCloudletsToCreate);
-        for(int i = 0; i < numCloudletsToCreate; i++) {
+        for (int id = getCloudletList().size(); id < getCloudletList().size() + numCloudletsToCreate; id++) {
             list.add(createCloudlet(broker));
         }
 
@@ -150,7 +150,7 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
         final UtilizationModel utilization = new UtilizationModelFull();
-        return new CloudletSimple(CLOUDLET_LENGHT_MI, cloudletPes)
+        return new CloudletSimple(nextCloudletId(), CLOUDLET_LENGHT_MI, cloudletPes)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilization);
@@ -171,8 +171,8 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     }
 
     @Override
-    protected Vm createVm(final DatacenterBroker broker) {
-        return new VmSimple(VM_MIPS, VM_PES)
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
+        return new VmSimple(id, VM_MIPS, VM_PES)
                       .setRam(VM_RAM)
                       .setBw(VM_BW)
                       .setSize(VM_STORAGE);

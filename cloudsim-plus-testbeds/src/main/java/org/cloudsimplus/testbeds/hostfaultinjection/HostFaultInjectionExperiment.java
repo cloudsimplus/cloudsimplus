@@ -152,7 +152,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     private HostFaultInjectionExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
         setBrokersNumber(readContractList().size());
-        setAfterScenarioBuild(exp -> getDatacenterList().forEach(this::createFaultInjectionForHosts));
+        setAfterExperimentBuild(exp -> getDatacenterList().forEach(this::createFaultInjectionForHosts));
         setVmsByBrokerFunction(broker -> getContract(broker).getMinFaultToleranceLevel());
         setHostsNumber(HOSTS);
         this.randCloudlet = new UniformDistr(this.getSeed());
@@ -298,9 +298,9 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
         return instances;
     }
 
-    public Vm createVm(final DatacenterBroker broker) {
+    public Vm createVm(final DatacenterBroker broker, final int id) {
         final AwsEc2Template template = templatesMap.get(broker);
-        final Vm vm = new VmSimple(VM_MIPS, template.getCpus());
+        final Vm vm = new VmSimple(id, VM_MIPS, template.getCpus());
         vm
             .setRam(template.getMemoryInMB()).setBw(VM_BW).setSize(VM_SIZE)
             .setCloudletScheduler(new CloudletSchedulerTimeShared())
@@ -312,7 +312,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
     protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final int cloudlets = getVmsByBrokerFunction().apply(broker)*2;
         final List<Cloudlet> list = new ArrayList<>(cloudlets);
-        for (int i = 0; i < cloudlets; i++) {
+        for (int id = getCloudletList().size(); id < getCloudletList().size() + cloudlets; id++) {
             list.add(createCloudlet(broker));
         }
 
@@ -331,7 +331,7 @@ final class HostFaultInjectionExperiment extends SimulationExperiment {
         final UtilizationModel um = new UtilizationModelDynamic(UtilizationModel.Unit.ABSOLUTE, 50);
 
         final Cloudlet cloudlet
-            = new CloudletSimple(length, CLOUDLET_PES)
+            = new CloudletSimple(nextCloudletId(), length, CLOUDLET_PES)
             .setFileSize(CLOUDLET_FILESIZE)
             .setOutputSize(CLOUDLET_OUTPUTSIZE)
             .setUtilizationModelCpu(new UtilizationModelFull())

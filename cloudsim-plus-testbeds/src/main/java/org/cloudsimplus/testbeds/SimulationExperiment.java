@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.testbeds;
 
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -37,9 +38,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
- * A base class to implement simulation experiments.
+ * A base class to implement simulation experiments
+ * that can be executed in a repeatable way
+ * by a {@link ExperimentRunner}.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -59,12 +63,17 @@ public abstract class SimulationExperiment implements Runnable {
 
     private final int index;
     private boolean verbose;
+    private int lastVmId;
+    private int lastCloudletId;
 
     private Consumer<? extends SimulationExperiment> afterExperimentFinish;
-    private Consumer<? extends SimulationExperiment> afterScenarioBuild;
+    private Consumer<? extends SimulationExperiment> afterExperimentBuild;
 
     /**@see #setVmsByBrokerFunction(Function) */
     private Function<DatacenterBroker, Integer> vmsByBrokerFunction;
+
+    /**@see #setVmAllocationPolicySupplier(Supplier)  */
+    private Supplier<VmAllocationPolicy> vmAllocationPolicySupplier;
 
     /**
      * Creates a simulation experiment that is not linked to a runner,
@@ -95,9 +104,11 @@ public abstract class SimulationExperiment implements Runnable {
      *
      * @param index the index that identifies the current experiment run.
      * @param runner The {@link ExperimentRunner} to execute the experiment.
-     *               If omitted, it means the experiment is independent and may be run just once
+     *               If omitted, it means the experiment is independent and may be run just once.
+     *               If you don't provide a runner, you must provide a seed
      * @param seed the seed to be set. If a runner is given, this value is ignored
      *             and the seed is generated from the runner base seed.
+     *             If you don't provide a seed, you must provide a runner.
      * @see #setBrokersNumber(int)
      * @see #setDatacentersNumber(int)
      */
@@ -118,7 +129,7 @@ public abstract class SimulationExperiment implements Runnable {
 
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
         afterExperimentFinish = exp -> {};
-        afterScenarioBuild = exp -> {};
+        afterExperimentBuild = exp -> {};
 
         this.seed = validateSeed(seed);
     }
@@ -194,9 +205,9 @@ public abstract class SimulationExperiment implements Runnable {
             throw new NullPointerException("You need to set the function that indicates the number of VMs to create for each broker.");
         }
 
-        buildScenario();
+        build();
         simulation.start();
-        getAfterExperimentFinish().accept(this);
+        afterExperimentFinish(this);
         printResultsInternal();
     }
 
@@ -225,7 +236,7 @@ public abstract class SimulationExperiment implements Runnable {
     /**
      * Creates the simulation scenario to run the experiment.
      */
-    protected final void buildScenario() {
+    protected final void build() {
         createDatacenters();
         createBrokers();
 
@@ -234,7 +245,7 @@ public abstract class SimulationExperiment implements Runnable {
                 createAndSubmitCloudletsInternal(b);
         });
 
-        afterScenarioBuild(this);
+        afterExperimentBuild(this);
     }
 
     private void createDatacenters() {
@@ -247,9 +258,15 @@ public abstract class SimulationExperiment implements Runnable {
         }
     }
 
+    /**
+     * Creates a datacenter using a {@link VmAllocationPolicy}
+     * suplied by the {@link #vmAllocationPolicySupplier}.
+     * @return
+     * @see #setVmAllocationPolicySupplier(Supplier)
+     */
     protected DatacenterSimple createDatacenter() {
         final List<Host> hosts = createHosts();
-        return new DatacenterSimple(simulation, hosts, new VmAllocationPolicySimple());
+        return new DatacenterSimple(simulation, hosts, newVmAllocationPolicy());
     }
 
     /**
@@ -281,6 +298,8 @@ public abstract class SimulationExperiment implements Runnable {
      */
     protected abstract List<Cloudlet> createCloudlets(DatacenterBroker broker);
 
+    protected abstract Cloudlet createCloudlet(DatacenterBroker broker);
+
     /**
      * Creates the Vms to be used by the experiment.
      *
@@ -288,21 +307,25 @@ public abstract class SimulationExperiment implements Runnable {
      * @param broker
      */
     protected List<Vm> createVms(final DatacenterBroker broker) {
-        final int numVms = getVmsByBrokerFunction().apply(broker);
-        final List<Vm> list = new ArrayList<>(numVms);
-        final int id = vmList.size();
-        for (int i = 0; i < numVms; i++) {
-            Vm vm = createVm(broker);
-            list.add(vm);
+        final int numVms = vmsByBrokerFunction.apply(broker);
+        final List<Vm> newList = new ArrayList<>(numVms);
+        for (int id = vmList.size(); id < vmList.size() + numVms; id++) {
+            Vm vm = createVm(broker, nextVmId());
+            newList.add(vm);
         }
 
-        return list;
+        return newList;
     }
 
-    protected abstract Vm createVm(DatacenterBroker broker);
+    protected abstract Vm createVm(DatacenterBroker broker, int id);
 
-    protected abstract Cloudlet createCloudlet(DatacenterBroker broker);
+    protected final int nextVmId(){
+        return ++lastVmId;
+    }
 
+    protected final int nextCloudletId(){
+        return ++lastCloudletId;
+    }
     /**
      * Creates a DatacenterBroker and adds it to the
      * {@link #getBrokerList() DatacenterBroker list}.
@@ -374,6 +397,24 @@ public abstract class SimulationExperiment implements Runnable {
     }
 
     /**
+     * Sets a {@link Consumer} that will be called after the simulation scenario is built,
+     * which is before starting the simulation.
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     * @param <T> the class of the experiment
+     * @param afterExperimentBuild the afterExperimentBuild to set
+     * @return
+     */
+    public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentBuild(final Consumer<T> afterExperimentBuild) {
+        this.afterExperimentBuild = Objects.requireNonNull(afterExperimentBuild);
+        return this;
+    }
+
+    private <T extends SimulationExperiment> void afterExperimentBuild(final T experiment) {
+        ((Consumer<T>)this.afterExperimentBuild).accept(experiment);
+    }
+
+    /**
      * Sets a {@link Consumer} object that will receive the experiment instance
      * after the experiment finishes executing and performs some post-processing
      * tasks. These tasks are defined by the developer using the current class
@@ -390,26 +431,8 @@ public abstract class SimulationExperiment implements Runnable {
         return this;
     }
 
-    public <T extends SimulationExperiment> Consumer<T> getAfterExperimentFinish() {
-        return (Consumer<T>) this.afterExperimentFinish;
-    }
-
-    /**
-     * Sets a {@link Consumer} that will be called after the simulation scenario is built,
-     * which is before starting the simulation.
-     *
-     * <p>Setting a Consumer object is optional.</p>
-     * @param <T> the class of the experiment
-     * @param afterScenarioBuild the afterScenarioBuild to set
-     * @return
-     */
-    public <T extends SimulationExperiment> SimulationExperiment setAfterScenarioBuild(final Consumer<T> afterScenarioBuild) {
-        this.afterScenarioBuild = Objects.requireNonNull(afterScenarioBuild);
-        return this;
-    }
-
-    private <T extends SimulationExperiment> void afterScenarioBuild(final T scenario) {
-        ((Consumer<T>)this.afterScenarioBuild).accept(scenario);
+    private <T extends SimulationExperiment> void afterExperimentFinish(final T experiment) {
+        ((Consumer<T>) this.afterExperimentFinish).accept(experiment);
     }
 
     public final CloudSim getSimulation() {
@@ -483,5 +506,13 @@ public abstract class SimulationExperiment implements Runnable {
 
     public void setDatacentersNumber(int datacentersNumber) {
         this.datacentersNumber = datacentersNumber;
+    }
+
+    public void setVmAllocationPolicySupplier(final Supplier<VmAllocationPolicy> vmAllocationPolicySupplier) {
+        this.vmAllocationPolicySupplier = Objects.requireNonNull(vmAllocationPolicySupplier);
+    }
+
+    private VmAllocationPolicy newVmAllocationPolicy() {
+        return vmAllocationPolicySupplier == null ? new VmAllocationPolicySimple() : vmAllocationPolicySupplier.get();
     }
 }

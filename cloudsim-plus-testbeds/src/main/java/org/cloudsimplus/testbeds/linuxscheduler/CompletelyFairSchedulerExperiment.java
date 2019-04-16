@@ -58,8 +58,8 @@ final class CompletelyFairSchedulerExperiment extends CloudletSchedulerExperimen
     }
 
     @Override
-    protected Vm createVm(final DatacenterBroker broker) {
-        final Vm vm = super.createVm(broker);
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
+        final Vm vm = super.createVm(broker, id);
         return vm.setCloudletScheduler(new CloudletSchedulerCompletelyFair());
     }
 

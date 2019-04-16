@@ -53,8 +53,8 @@ final class CloudletSchedulerTimeSharedExperiment extends CloudletSchedulerExper
     }
 
     @Override
-    protected Vm createVm(final DatacenterBroker broker) {
-        final Vm vm = super.createVm(broker);
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
+        final Vm vm = super.createVm(broker, id);
         return vm.setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 }

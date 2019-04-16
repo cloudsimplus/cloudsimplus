@@ -97,11 +97,11 @@ class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends AbstractCl
     }
 
     @Override
-    protected Vm createVm(final DatacenterBroker broker) {
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
         final int pesId = (int) (randVm.sample() * VM_PES.length);
         final int pes = VM_PES[pesId];
 
-        Vm vm = new VmSimple(1000, pes)
+        final Vm vm = new VmSimple(id, 1000, pes)
             .setRam(512).setBw(1000).setSize(10000)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
         return vm;
@@ -110,7 +110,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends AbstractCl
     @Override
     protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final List<Cloudlet> cloudletList = new ArrayList<>(CLOUDLETS);
-        for (int i = 0; i < CLOUDLETS; i++) {
+        for (int id = cloudletList.size(); id < cloudletList.size() + CLOUDLETS; id++) {
             cloudletList.add(createCloudlet(broker));
         }
 
@@ -122,7 +122,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends AbstractCl
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
         final long length = CLOUDLET_LENGTHS[i];
 
-        return new CloudletSimple(length, 2)
+        return new CloudletSimple(nextCloudletId(), length, 2)
                 .setFileSize(1024)
                 .setOutputSize(1024)
                 .setUtilizationModel(new UtilizationModelFull());
