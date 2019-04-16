@@ -448,6 +448,11 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @see UniformDistr#isApplyAntitheticVariates()
      */
     protected ContinuousDistribution createRandomGen(final int experimentIndex, final double minValue, final double maxValue) {
+        if(seeds.isEmpty()){
+            throw new IllegalStateException(
+                "You have to create at least 1 SimulationExperiment before requesting a ExperimentRunner to create a pseudo random number generator (PRNG)!");
+        }
+
         if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
             final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
             return new UniformDistr(minValue, maxValue, seeds.get(expIndexFromFirstHalf)).setApplyAntitheticVariates(true);

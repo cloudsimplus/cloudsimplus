@@ -225,9 +225,9 @@ public final class CloudSimTags {
 
     /**
      * Denotes a request to create a new VM in a {@link Datacenter} with
-     * acknowledgement information sent by the Datacenter,
      * where the {@link SimEvent#getData()} of the reply event
      * is a {@link Vm} object.
+     * Using this tag, the Datacenter acknowledges the reception of the request.
      * To check if the VM was in fact created inside the requested Datacenter
      * one has only to call {@link Vm#isCreated()}.
      */

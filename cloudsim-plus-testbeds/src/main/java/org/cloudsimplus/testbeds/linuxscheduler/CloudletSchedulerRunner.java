@@ -24,8 +24,8 @@
 package org.cloudsimplus.testbeds.linuxscheduler;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -88,7 +88,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
     @Override
     protected void printSimulationParameters() {
         System.out.printf("\n----------------------------------%s----------------------------------\n", getClass().getSimpleName());
-        System.out.printf("Hosts:           %5d | PEs:               %2d | VMs: %d | PEs: %d\n", HOSTS_TO_CREATE, HOST_PES, VMS_TO_CREATE, VM_PES);
+        System.out.printf("Hosts:           %5d | PEs:               %2d | VMs: %d | PEs: %d\n", HOSTS, HOST_PES, VMS, VM_PES);
         System.out.printf("Experiment Runs: %5d | Max Cloudlets PES: %2d\n",
                 getSimulationRuns(), (MAX_CLOUDLET_PES - 1));
 

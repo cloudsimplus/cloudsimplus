@@ -36,28 +36,35 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * A base class to implement simulation experiments.
  *
  * @author Manoel Campos da Silva Filho
+ * @since CloudSim Plus 1.0
  */
 public abstract class SimulationExperiment implements Runnable {
     private final ExperimentRunner runner;
+    private CloudSim simulation;
+    private List<DatacenterSimple> datacenterList;
+    private List<DatacenterBroker> brokerList;
+    private List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
     private final long seed;
-    private List<Vm> vmList;
-    private List<Host> hostList;
-    private List<DatacenterBroker> brokerList;
-    private int numBrokersToCreate;
+
+    private int datacentersNumber;
+    protected int hostsNumber;
+    private int brokersNumber;
 
     private final int index;
     private boolean verbose;
 
-    private CloudSim cloudsim;
     private Consumer<? extends SimulationExperiment> afterExperimentFinish;
     private Consumer<? extends SimulationExperiment> afterScenarioBuild;
-    private DatacenterSimple datacenter0;
+
+    /**@see #setVmsByBrokerFunction(Function) */
+    private Function<DatacenterBroker, Integer> vmsByBrokerFunction;
 
     /**
      * Creates a simulation experiment that is not linked to a runner,
@@ -69,12 +76,13 @@ public abstract class SimulationExperiment implements Runnable {
     }
 
     /**
-     * Creates a simulation experiment.
+     * Instantiates a simulation experiment with 1 Datacenter by default.
      *
      * @param index the index that identifies the current experiment run.
      * @param runner The {@link ExperimentRunner} that is in charge of executing
      * this experiment a defined number of times and to collect data for
      * statistical analysis.
+     * @see #setDatacentersNumber(int)
      */
     public SimulationExperiment(final int index, final ExperimentRunner runner) {
         //the seed will be generate from the Runner base seed
@@ -82,26 +90,30 @@ public abstract class SimulationExperiment implements Runnable {
     }
 
     /**
-     * Creates a simulation experiment.
+     * Instantiates a simulation experiment
+     * that will create 1 broker and 1 Datacenter by default.
      *
      * @param index the index that identifies the current experiment run.
      * @param runner The {@link ExperimentRunner} to execute the experiment.
      *               If omitted, it means the experiment is independent and may be run just once
      * @param seed the seed to be set. If a runner is given, this value is ignored
      *             and the seed is generated from the runner base seed.
+     * @see #setBrokersNumber(int)
+     * @see #setDatacentersNumber(int)
      */
     protected SimulationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         if(seed == -1){
             Objects.requireNonNull(runner);
         }
-        this.numBrokersToCreate = 1;
+        this.brokersNumber = 1;
+        this.datacentersNumber = 1;
         this.verbose = false;
-        this.cloudsim = new CloudSim();
+        this.simulation = new CloudSim();
         this.vmList = new ArrayList<>();
         this.index = index;
-        this.cloudletList = new ArrayList<>();
+        this.datacenterList = new ArrayList<>();
         this.brokerList = new ArrayList<>();
-        this.hostList = new ArrayList<>();
+        this.cloudletList = new ArrayList<>();
         this.runner = runner;
 
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
@@ -138,7 +150,7 @@ public abstract class SimulationExperiment implements Runnable {
     /**
      * Defines if simulation results of the experiment have to be output or not.
      *
-     * @param verbose true if the results have to be output, falser otherwise
+     * @param verbose true if the results have to be output, false otherwise
      * @return
      */
     public SimulationExperiment setVerbose(final boolean verbose) {
@@ -178,8 +190,12 @@ public abstract class SimulationExperiment implements Runnable {
      */
     @Override
     public final void run() {
+        if(vmsByBrokerFunction == null){
+            throw new NullPointerException("You need to set the function that indicates the number of VMs to create for each broker.");
+        }
+
         buildScenario();
-        cloudsim.start();
+        simulation.start();
         getAfterExperimentFinish().accept(this);
         printResultsInternal();
     }
@@ -191,11 +207,9 @@ public abstract class SimulationExperiment implements Runnable {
      * @see #printResults()
      */
     private void printResultsInternal() {
-        if (isNotVerbose()) {
-            return;
+        if (isVerbose()) {
+            printResults();
         }
-
-        printResults();
     }
 
     /**
@@ -212,7 +226,7 @@ public abstract class SimulationExperiment implements Runnable {
      * Creates the simulation scenario to run the experiment.
      */
     protected final void buildScenario() {
-        datacenter0 = createDatacenter();
+        createDatacenters();
         createBrokers();
 
         brokerList.stream().sorted().forEach(b -> {
@@ -220,11 +234,34 @@ public abstract class SimulationExperiment implements Runnable {
                 createAndSubmitCloudletsInternal(b);
         });
 
-        getAfterScenarioBuild().accept(this);
+        afterScenarioBuild(this);
     }
 
+    private void createDatacenters() {
+        if(datacentersNumber <= 0){
+            throw new IllegalStateException("The number of Datacenters to create was not set");
+        }
+
+        for (int i = 0; i < datacentersNumber; i++) {
+            datacenterList.add(createDatacenter());
+        }
+    }
+
+    protected DatacenterSimple createDatacenter() {
+        final List<Host> hosts = createHosts();
+        return new DatacenterSimple(simulation, hosts, new VmAllocationPolicySimple());
+    }
+
+    /**
+     * Creates a list of brokers.
+     * This is the entry-point for broker creation.
+     */
     protected void createBrokers() {
-        for (int i = 0; i < numBrokersToCreate; i++) {
+        if(brokersNumber <= 0){
+            throw new IllegalStateException("The number of brokers to create was not set");
+        }
+
+        for (int i = 0; i < brokersNumber; i++) {
             createBrokerAndAddToList();
         }
     }
@@ -237,12 +274,12 @@ public abstract class SimulationExperiment implements Runnable {
     protected abstract DatacenterBroker createBroker();
 
     /**
-     * Creates a list of Cloudlets to be used by the experiment
-     * and adds them to the {@link #getCloudletList()}.
+     * Creates a list of Cloudlets to be used by the experiment.
      *
      * @return the list of created cloudlets
+     * @param broker the broker to create the Cloudlets to
      */
-    protected abstract List<Cloudlet> createCloudlets();
+    protected abstract List<Cloudlet> createCloudlets(DatacenterBroker broker);
 
     /**
      * Creates the Vms to be used by the experiment.
@@ -250,13 +287,28 @@ public abstract class SimulationExperiment implements Runnable {
      * @return the List of created VMs
      * @param broker
      */
-    protected abstract List<Vm> createVms(DatacenterBroker broker);
+    protected List<Vm> createVms(final DatacenterBroker broker) {
+        final int numVms = getVmsByBrokerFunction().apply(broker);
+        final List<Vm> list = new ArrayList<>(numVms);
+        final int id = vmList.size();
+        for (int i = 0; i < numVms; i++) {
+            Vm vm = createVm(broker);
+            list.add(vm);
+        }
+
+        return list;
+    }
+
+    protected abstract Vm createVm(DatacenterBroker broker);
+
+    protected abstract Cloudlet createCloudlet(DatacenterBroker broker);
 
     /**
      * Creates a DatacenterBroker and adds it to the
      * {@link #getBrokerList() DatacenterBroker list}.
      *
      * @return the created DatacenterBroker.
+     * @see #createBrokers()
      */
     private DatacenterBroker createBrokerAndAddToList() {
         DatacenterBroker broker = createBroker();
@@ -266,19 +318,19 @@ public abstract class SimulationExperiment implements Runnable {
 
     /**
      * Creates all the Cloudlets required by the experiment and submits them to
-     * a Broker.
+     * a Broker. This the entry-point for Cloudlets creation.
      *
      * @param broker broker to submit Cloudlets to
      */
-    protected void createAndSubmitCloudletsInternal(DatacenterBroker broker) {
-        final List<Cloudlet> list = createCloudlets();
+    protected void createAndSubmitCloudletsInternal(final DatacenterBroker broker) {
+        final List<Cloudlet> list = createCloudlets(broker);
         cloudletList.addAll(list);
         broker.submitCloudletList(list);
     }
 
     /**
      * Creates all the VMs required by the experiment and submits them to a
-     * Broker.
+     * Broker. This is the entry-point to start creating VMs.
      *
      * @param broker broker to submit VMs to
      */
@@ -288,13 +340,20 @@ public abstract class SimulationExperiment implements Runnable {
         broker.submitVmList(list);
     }
 
-    protected DatacenterSimple createDatacenter() {
-        final List<Host> hosts = createHosts();
-        hostList.addAll(hosts);
-        return new DatacenterSimple(cloudsim, hosts, new VmAllocationPolicySimple());
+    protected final List<Host> createHosts() {
+        if(hostsNumber <= 0){
+            throw new IllegalStateException("The number of hosts to create was not set");
+        }
+
+        final List<Host> list = new ArrayList<>(hostsNumber);
+        for (int i = 0; i < hostsNumber; i++) {
+            list.add(createHost(i));
+        }
+
+        return list;
     }
 
-    protected abstract List<Host> createHosts();
+    protected abstract Host createHost(int id);
 
     /**
      * Gets the object that is in charge to run the experiment.
@@ -349,40 +408,37 @@ public abstract class SimulationExperiment implements Runnable {
         return this;
     }
 
-    public <T extends SimulationExperiment> Consumer<T> getAfterScenarioBuild() {
-        return (Consumer<T>)this.afterScenarioBuild;
+    private <T extends SimulationExperiment> void afterScenarioBuild(final T scenario) {
+        ((Consumer<T>)this.afterScenarioBuild).accept(scenario);
     }
 
-    public final CloudSim getCloudSim() {
-        return cloudsim;
-    }
-
-    /**
-     * @return the hostList
-     */
-    public List<Host> getHostList() {
-        return Collections.unmodifiableList(hostList);
+    public final CloudSim getSimulation() {
+        return simulation;
     }
 
     /**
-     * @return the numBrokersToCreate
+     * Gets the number of brokers to create.
+     * @return
      */
-    public int getNumBrokersToCreate() {
-        return numBrokersToCreate;
+    public int getBrokersNumber() {
+        return brokersNumber;
     }
 
     /**
-     * @param numBrokersToCreate the numBrokersToCreate to set
+     * Sets the number of brokers to create.
+     * @param brokersNumber the value to set
      */
-    public void setNumBrokersToCreate(final int numBrokersToCreate) {
-        this.numBrokersToCreate = numBrokersToCreate;
+    public SimulationExperiment setBrokersNumber(final int brokersNumber) {
+        if(brokersNumber <= 0){
+            throw new IllegalArgumentException("The number of brokers must be greater than 0");
+        }
+
+        this.brokersNumber = brokersNumber;
+        return this;
     }
 
-    /**
-     * @return the datacenter0
-     */
-    public DatacenterSimple getDatacenter0() {
-        return datacenter0;
+    public List<DatacenterSimple> getDatacenterList() {
+        return datacenterList;
     }
 
     public long getSeed(){
@@ -392,5 +448,40 @@ public abstract class SimulationExperiment implements Runnable {
     @Override
     public String toString() {
         return String.format("Experiment %d", index);
+    }
+
+    /**
+     * Sets a {@link Function} that receives a {@link DatacenterBroker} and returns the
+     * number of Vms to create for that broker.
+     * If you want all brokers to have the same amount of VMs,
+     * you can give a lambda expression such as {@code broker -> NUMER_OF_VMS_TO_CREATE}.
+     * @param vmsByBrokerFunction the {@link Function} to set
+     */
+    public final void setVmsByBrokerFunction(final Function<DatacenterBroker, Integer> vmsByBrokerFunction) {
+        this.vmsByBrokerFunction = Objects.requireNonNull(vmsByBrokerFunction);
+    }
+
+    /**
+     * Gets a {@link Function} that receives a {@link DatacenterBroker} and returns the
+     * number of Vms to create for that broker.
+     */
+    protected Function<DatacenterBroker, Integer> getVmsByBrokerFunction() {
+        return vmsByBrokerFunction;
+    }
+
+    protected final void setHostsNumber(final int hostsNumber) {
+        if(hostsNumber <= 0){
+            throw new IllegalArgumentException("Number of hosts must be greater than zero.");
+        }
+
+        this.hostsNumber = hostsNumber;
+    }
+
+    public int getDatacentersNumber() {
+        return datacentersNumber;
+    }
+
+    public void setDatacentersNumber(int datacentersNumber) {
+        this.datacentersNumber = datacentersNumber;
     }
 }

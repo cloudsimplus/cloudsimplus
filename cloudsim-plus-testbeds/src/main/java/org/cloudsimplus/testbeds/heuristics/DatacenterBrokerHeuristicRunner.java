@@ -191,14 +191,13 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected DatacenterBrokerHeuristicExperiment createExperiment(int i) {
-        final ContinuousDistribution prng = createRandomGen(i, 0, 1);
         final DatacenterBrokerHeuristicExperiment exp
-                = new DatacenterBrokerHeuristicExperiment(i, this)
-                        .setRandomGen(prng)
-                        .setCloudletPesArray(cloudletPesArray)
-                        .setVmPesArray(vmPesArray);
+                = new DatacenterBrokerHeuristicExperiment(i, this, vmPesArray)
+                        .setCloudletPesArray(cloudletPesArray);
+        final ContinuousDistribution prng = createRandomGen(i, 0, 1);
 
-        exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
+        exp.setRandomGen(prng)
+           .setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 

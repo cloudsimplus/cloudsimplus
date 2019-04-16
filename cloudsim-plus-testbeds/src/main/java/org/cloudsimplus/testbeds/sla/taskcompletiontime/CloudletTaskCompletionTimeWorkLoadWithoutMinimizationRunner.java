@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment> {
+class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment> {
     private static final int CLOUDLETS = 100;
     static final int VMS = 30;
     static final int[] VM_PES = {2, 4};

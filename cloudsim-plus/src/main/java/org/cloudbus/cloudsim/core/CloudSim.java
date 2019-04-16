@@ -225,7 +225,7 @@ public class CloudSim implements Simulation {
                 "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
-        System.out.println("Starting CloudSim Plus " + VERSION);
+        LOGGER.info("{}================== Starting CloudSim Plus {} =================={}", System.lineSeparator(), VERSION,  System.lineSeparator());
         startEntitiesIfNotRunning();
         this.alreadyRunOnce = true;
 

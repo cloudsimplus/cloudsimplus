@@ -64,16 +64,12 @@ import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompl
  * @author raysaoliveira
  * @see #selectVmForCloudlet(Cloudlet)
  */
-public final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractCloudletTaskCompletionTimeExperiment {
+final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractCloudletTaskCompletionTimeExperiment {
     private static final int SCHEDULING_INTERVAL = 5;
-
-    private static final int HOSTS = 50;
-    private static final int HOST_PES = 32;
 
     private final ContinuousDistribution randCloudlet, randVm, randCloudletPes, randMipsVm;
 
     private int createdCloudlets;
-    private int createsVms;
 
     /**
      * The file containing the SLA Contract in JSON format.
@@ -103,8 +99,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Abst
 
     private CloudletTaskCompletionTimeMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
-        setHostsNumber(HOSTS);
-        setVmsNumber(VMS);
+        setVmsByBrokerFunction(broker -> VMS);
         this.randCloudlet = new UniformDistr(getSeed());
         this.randVm = new UniformDistr(getSeed()+2);
         this.randCloudletPes = new UniformDistr(getSeed()+3);
@@ -139,16 +134,17 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Abst
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets() {
+    protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final List<Cloudlet> cloudletList = new ArrayList<>(CLOUDLETS);
         for (int i = 0; i < CLOUDLETS; i++) {
-            cloudletList.add(createCloudlet());
+            cloudletList.add(createCloudlet(broker));
         }
 
         return cloudletList;
     }
 
-    private Cloudlet createCloudlet() {
+    @Override
+    protected Cloudlet createCloudlet(final DatacenterBroker broker) {
         final UtilizationModel model = new UtilizationModelDynamic(0.1);
         final int id = createdCloudlets++;
         final int i = (int) (randCloudlet.sample() * CLOUDLET_LENGTHS.length);
@@ -171,8 +167,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Abst
     }
 
     @Override
-    protected Vm createVm() {
-        final int id = createsVms++;
+    protected Vm createVm(final DatacenterBroker broker) {
         final int pesId = (int) (randVm.sample() * VM_PES.length);
         final int mipdsId = (int) (randMipsVm.sample() * MIPS_VM.length);
 
@@ -180,7 +175,7 @@ public final class CloudletTaskCompletionTimeMinimizationExperiment extends Abst
         final int mips = MIPS_VM[mipdsId];
 
 
-        final Vm vm = new VmSimple(id, mips, pes)
+        final Vm vm = new VmSimple(mips, pes)
                 .setRam(512).setBw(1000).setSize(10000)
                 .setCloudletScheduler(new CloudletSchedulerCompletelyFair());
         return vm;
