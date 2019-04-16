@@ -84,7 +84,7 @@ public interface Machine extends ChangeableId, Resourceful {
      *         false if it's active of isn't idle long enough
      */
     default boolean isIdleEnough(final double time) {
-        if(time < 0 && !isIdle()) {
+        if(time < 0) {
             return false;
         }
 

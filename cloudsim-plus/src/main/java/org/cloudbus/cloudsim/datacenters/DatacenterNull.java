@@ -31,6 +31,7 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public Host getHost(final int index) {
         return Host.NULL;
     }
+    @Override public long getActiveHostsNumber() { return 0; }
     @Override public Host getHostById(long id) { return Host.NULL; }
     @Override public <T extends Host> Datacenter addHostList(List<T> hostList) { return this; }
     @Override public <T extends Host> Datacenter removeHost(T host) { return this; }

@@ -233,7 +233,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
          * At time 50.0 the Cloudlet is still running, so there is some CPU utilization.
          * But since the next update will be only at time 50.1, the utilization
          * at time 50.0 won't be collected to enable knowing the exact time
-         * before the utilization dropped.
+         * before the utilization drop.
          */
         final double decimals = currentTime - (int) currentTime;
         utilizationHistory.addUtilizationHistory(currentTime);
