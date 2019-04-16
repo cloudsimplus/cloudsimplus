@@ -78,12 +78,6 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
             return true;
         }
 
-        LOGGER.error(
-            "{}: {}: Allocation of {} to {} failed due to lack of PEs. {}\t\tRequired {} PEs of {} MIPS.{}" +
-                "\t\tHowever, there are just {} available PEs.",
-            getHost().getSimulation().clock(), getClass().getSimpleName(), vm, getHost(), System.lineSeparator(),
-            requestedMips.size(), requestedMips.get(0), System.lineSeparator(),
-            workingPes);
         return false;
     }
 

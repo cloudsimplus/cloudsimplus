@@ -587,7 +587,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         final String warningMsg = generateNotFinishedCloudletsWarning(vm);
         final String msg = String.format(
-                "%.2f: %s: %s destroyed on %s. %s\n",
+                "%.2f: %s: %s destroyed on %s. %s",
                 getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
         if(warningMsg.isEmpty())
             LOGGER.info(msg);

@@ -266,7 +266,9 @@ public class CloudSim implements Simulation {
         while (runClockTickAndProcessFutureEvents() || isToWaitClockToReachTerminationTime()) {
             notifyOnSimulationStartListeners(); //it's ensured to run just once.
             if(abortRequested){
-                LOGGER.info("{}================== Simulation aborted under request at time {} ==================", System.lineSeparator(), clock);
+                LOGGER.info(
+                    "{}================================================== Simulation aborted under request at time {} ==================================================",
+                    System.lineSeparator(), clock);
                 return false;
             }
 
