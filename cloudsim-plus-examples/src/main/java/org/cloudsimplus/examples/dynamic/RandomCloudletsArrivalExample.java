@@ -87,6 +87,7 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.4
+ * @see KeepSimulationRunningExample
  */
 public class RandomCloudletsArrivalExample {
     /**

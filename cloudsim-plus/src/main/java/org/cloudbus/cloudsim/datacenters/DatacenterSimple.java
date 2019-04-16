@@ -550,16 +550,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm);
 
-        if (ackRequested) {
-            send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
-        }
-
         if (hostAllocatedForVm) {
             if (!vm.isCreated()) {
                 vm.setCreated(true);
             }
 
             vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
+        }
+
+        if (ackRequested) {
+            /* Acknowledges that the requested was received by the Datacenter
+             * (it's not saying the VM was created or not).
+             * To check that, use Vm.isCreated(). */
+            send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
         }
 
         return hostAllocatedForVm;

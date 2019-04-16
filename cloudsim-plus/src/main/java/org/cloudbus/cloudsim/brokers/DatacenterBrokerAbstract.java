@@ -134,7 +134,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private final Set<Datacenter> datacenterRequestedList;
 
-    private final Map<Vm, Datacenter> vmsToDatacentersMap;
     private Cloudlet lastSubmittedCloudlet;
     private Vm lastSubmittedVm;
 
@@ -185,8 +184,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         datacenterRequestedList = new TreeSet<>();
         vmCreationRequestsMap = new HashMap<>();
         cloudletCreationRequestsMap = new HashMap<>();
-        vmsToDatacentersMap = new HashMap<>();
-
         setDefaultPolicies();
 
         vmDestructionDelayFunction = DEF_VM_DESTRUCTION_DELAY_FUNCTION;
@@ -342,13 +339,20 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             "{}: {}: List of {} Cloudlets submitted to the broker during simulation execution.",
             getSimulation().clock(), getName(), list.size());
 
-        //If there aren't more VMs to be created, then request Cloudlets creation
-        if (vmWaitingList.isEmpty()) {
+        if (allNonDelayedVmsCreated()) {
             LOGGER.info("Cloudlets creation request sent to Datacenter.");
             requestDatacentersToCreateWaitingCloudlets();
             notifyOnVmsCreatedListeners();
         } else
             LOGGER.info("Waiting creation of {} VMs to send Cloudlets creation request to Datacenter.", vmWaitingList.size());
+    }
+
+    /**
+     * Checks if all VMs submitted with no delay were created.
+     * @return
+     */
+    private boolean allNonDelayedVmsCreated() {
+        return vmWaitingList.stream().noneMatch(vm -> vm.getSubmissionDelay() == 0);
     }
 
     /**
@@ -622,8 +626,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             processFailedVmCreationInDatacenter(vm, lastSelectedDc);
         }
 
-        // all the requested VMs have been created
-        if (vmWaitingList.isEmpty()) {
+        if (allNonDelayedVmsCreated()) {
             requestDatacentersToCreateWaitingCloudlets();
             notifyOnVmsCreatedListeners();
         } else if (getVmCreationRequests() == getVmCreationAcks()) {
@@ -709,7 +712,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *                   the Vm succeeded
      */
     private void processSuccessVmCreationInDatacenter(final Vm vm, final Datacenter datacenter) {
-        vmsToDatacentersMap.put(vm, datacenter);
         vmWaitingList.remove(vm);
         vmExecList.add(vm);
         vmCreatedList.add(vm);
@@ -784,7 +786,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         boolean vmAlive = vmExecList.contains(vm);
         if (vmAlive && ((delay > DEF_VM_DESTRUCTION_DELAY && vm.isIdleEnough(delay)) || isFinished())) {
-            LOGGER.info("{}: {}: Requesting {} destruction.", getSimulation().clock(), getName(), vm);
+            LOGGER.info("{}: {}: Requesting Vm {} destruction.", getSimulation().clock(), getName(), vm.getId());
             sendNow(getDatacenter(vm), CloudSimTags.VM_DESTROY, vm);
             vmExecList.remove(vm);
             vmAlive = false;
@@ -872,19 +874,29 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     protected void requestDatacenterToCreateWaitingVms(final Datacenter datacenter, final boolean isFallbackDatacenter) {
         int requestedVms = 0;
-        final String fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
         for (final Vm vm : vmWaitingList) {
-            if (!vmsToDatacentersMap.containsKey(vm) && !vmCreationRequestsMap.containsKey(vm)) {
-                LOGGER.info(
-                    "{}: {}: Trying to Create {} in {}{}",
-                    getSimulation().clock(), getName(), vm, datacenter.getName(), fallbackMsg);
-                sendNow(datacenter, CloudSimTags.VM_CREATE_ACK, vm);
+            if (!vmCreationRequestsMap.containsKey(vm)) {
+                logVmCreationRequest(datacenter, isFallbackDatacenter, vm);
+                send(datacenter, vm.getSubmissionDelay(), CloudSimTags.VM_CREATE_ACK, vm);
                 vmCreationRequestsMap.put(vm, datacenter);
                 requestedVms++;
             }
         }
         datacenterRequestedList.add(datacenter);
         this.vmCreationRequests += requestedVms;
+    }
+
+    private void logVmCreationRequest(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {
+        final String fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
+        if(vm.getSubmissionDelay() == 0)
+            LOGGER.info(
+                "{}: {}: Trying to create Vm {} in {}{}",
+                getSimulation().clock(), getName(), vm.getId(), datacenter.getName(), fallbackMsg);
+        else
+            LOGGER.info(
+                "{}: {}: Creation of Vm {} in {}{} will be requested in {} seconds",
+                getSimulation().clock(), getName(), vm.getId(), datacenter.getName(),
+                fallbackMsg, vm.getSubmissionDelay());
     }
 
     /**
@@ -913,21 +925,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             //selects a VM for the given Cloudlet
             lastSelectedVm = vmMapper.apply(cloudlet);
             if (lastSelectedVm == Vm.NULL) {
-                // vm was not created
-                LOGGER.warn(
-                    "{}: {}: Postponing execution of {}: bind VM not available.",
-                    getSimulation().clock(), getName(), cloudlet);
+                logPostponingCloudletExecution(cloudlet);
                 continue;
             }
 
-            final String delayStr =
-                cloudlet.getSubmissionDelay() > 0 ?
-                    String.format(" with a requested delay of %.0f seconds", cloudlet.getSubmissionDelay()) :
-                    "";
-            LOGGER.info(
-                "{}: {}: Sending {} to {} in {}{}.",
-                getSimulation().clock(), getName(), cloudlet,
-                lastSelectedVm, lastSelectedVm.getHost(), delayStr);
+            logCloudletCreationRequest(cloudlet);
             cloudlet.setVm(lastSelectedVm);
             send(getDatacenter(lastSelectedVm),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
@@ -938,6 +940,28 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         cloudletWaitingList.removeAll(successfullySubmitted);
         allWaitingCloudletsSubmittedToVm();
+    }
+
+    private void logPostponingCloudletExecution(final Cloudlet cloudlet) {
+        final String msg = String.format(
+            "%.2f: %s: Postponing execution of Cloudlet %d. Bind Vm %d {}.",
+            getSimulation().clock(), getName(), cloudlet.getId(), cloudlet.getVm().getId());
+
+        if(cloudlet.getVm().getSubmissionDelay() > 0)
+            LOGGER.info(msg, "was requested to be created with some delay");
+        else LOGGER.warn(msg, "is not available");
+    }
+
+    private void logCloudletCreationRequest(final Cloudlet cloudlet) {
+        final String delayMsg =
+            cloudlet.getSubmissionDelay() > 0 ?
+                String.format(" with a requested delay of %.0f seconds", cloudlet.getSubmissionDelay()) :
+                "";
+
+        LOGGER.info(
+            "{}: {}: Sending Cloudlet {} to Vm {} in {}{}.",
+            getSimulation().clock(), getName(), cloudlet.getId(),
+            lastSelectedVm.getId(), lastSelectedVm.getHost(), delayMsg);
     }
 
     private boolean allWaitingCloudletsSubmittedToVm() {
@@ -1063,7 +1087,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @return
      */
     protected Datacenter getDatacenter(final Vm vm) {
-        return vmsToDatacentersMap.get(vm);
+        return vm.getHost().getDatacenter();
     }
 
     /**

@@ -200,6 +200,17 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     Status getStatus();
 
     /**
+     * {@inheritDoc}
+     * <p>If the VM where the Cloudlet will run is submitted with some delay,
+     * the {@link DatacenterBroker} waits the VM creation.
+     * Only after the VM is created, the Cloudlet creation is requested
+     * with the delay specified here.</p>
+     * @return {@inheritDoc}
+     */
+    @Override
+    double getSubmissionDelay();
+
+    /**
      * Checks if the Cloudlet has finished and returned to the broker,
      * so that the broker is aware about the end of execution of the Cloudlet.
      * @return

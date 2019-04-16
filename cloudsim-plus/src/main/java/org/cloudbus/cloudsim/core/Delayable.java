@@ -16,18 +16,18 @@ import org.cloudbus.cloudsim.vms.Vm;
  */
 public interface Delayable {
     /**
-     * Gets the delay (in seconds) that a {@link DatacenterBroker} has to include
-     * when submitting the object, in order that it will be assigned
-     * to a VM only after this delay has expired.
+     * Gets the time (in seconds) that a {@link DatacenterBroker} will wait
+     * to request the creation of the object.
+     * This is a relative time from the current simulation time.
      *
-     * @return the submission delay
+     * @return the submission delay (in seconds)
      */
     double getSubmissionDelay();
 
     /**
-     * Sets the delay (in seconds) that a {@link DatacenterBroker} has to include
-     * when submitting the object, in order that it will be assigned
-     * to a VM only after this delay has expired. The delay should be greater or equal to zero.
+     * Sets the time (in seconds) that a {@link DatacenterBroker} will wait
+     * to request the creation of the object.
+     * This is a relative time from the current simulation time.
      *
      * @param submissionDelay the amount of seconds from the current simulation
      * time that the object will wait to be submitted
