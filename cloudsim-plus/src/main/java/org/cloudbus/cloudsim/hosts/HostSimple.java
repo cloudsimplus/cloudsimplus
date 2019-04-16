@@ -948,7 +948,7 @@ public class HostSimple implements Host {
 
     @Override
     public List<Pe> getBusyPeList() {
-        return getFilteredPeList(Pe::isBuzy);
+        return getFilteredPeList(Pe::isBusy);
     }
 
     @Override
