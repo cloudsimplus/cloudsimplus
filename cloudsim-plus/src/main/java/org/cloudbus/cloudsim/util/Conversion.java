@@ -197,6 +197,18 @@ public final class Conversion {
     }
 
     /**
+     * Converts a value in minutes to seconds.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param minutes the value in minutes
+     * @return the value in seconds
+     */
+    public static double minutesToSeconds(final double minutes) {
+        return minutes*60.0;
+    }
+
+    /**
      * Converts a value in milliseconds to minutes.
      * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
      * don't provide the double precision required here.</p>
@@ -230,5 +242,77 @@ public final class Conversion {
      */
     public static double secondsToHours(final double seconds) {
         return secondsToMinutes(seconds)/60.0;
+    }
+
+    /**
+     * Converts a value in seconds to days.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param seconds the value in seconds
+     * @return the value in days
+     */
+    public static double secondsToDays(final double seconds) {
+        return hoursToDays(secondsToHours(seconds));
+    }
+
+    /**
+     * Converts a value in hours to days.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param hours the value in hours
+     * @return the value in days
+     */
+    public static double hoursToDays(final double hours) {
+        return hours/24.0;
+    }
+
+    /**
+     * Converts a value in hours to seconds.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param hours the value in hours
+     * @return the value in seconds
+     */
+    public static double hoursToSeconds(final double hours) {
+        return minutesToSeconds(hours*60.0);
+    }
+
+    /**
+     * Converts a value in days to seconds.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param days the value in days
+     * @return the value in seconds
+     */
+    public static double daysToSeconds(final double days) {
+        return hoursToSeconds(days*24.0);
+    }
+
+    /**
+     * Converts a value in months to an <b>approximated</b> number of seconds,
+     * since it considers every month has 30 days.
+     *
+     * <p>The existing {@link java.util.concurrent.TimeUnit}, {@link java.time.Duration}
+     * and {@link java.time.Period} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param months the value in months
+     * @return the value in seconds
+     */
+    public static double monthsToSeconds(final double months) {
+        return daysToSeconds(months*30.0);
+    }
+
+    /**
+     * Converts a boolean value to int
+     * @param bool the boolean value to convert
+     * @return 1 if the boolean value is true, 0 otherwise.
+     */
+    public static int boolToInt(final boolean bool){
+        return bool ? 1 : 0;
     }
 }
