@@ -665,7 +665,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
          * and not all VMs could be created. */
         if (vmExecList.isEmpty()) {
             LOGGER.error(
-                "{}: {}: None of the requested {} VMs couldn't be created because suitable Hosts weren't found in any available Datacenter. Shutting broker down...",
+                "{}: {}: None of the requested {} VMs could be created because suitable Hosts weren't found in any available Datacenter. Shutting broker down...",
                 getSimulation().clock(), getName(), vmWaitingList.size());
             shutdownEntity();
             return;
@@ -1156,6 +1156,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public Function<Vm, Double> getVmDestructionDelayFunction() {
         return vmDestructionDelayFunction;
+    }
+
+    @Override
+    public DatacenterBroker setVmDestructionDelay(final double delay) {
+        setVmDestructionDelayFunction(vm -> delay);
+        return this;
     }
 
     @Override
