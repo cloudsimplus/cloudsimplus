@@ -24,9 +24,9 @@
 package org.cloudsimplus.testbeds.heuristics;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.NormalDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * Runs the {@link DatacenterBrokerHeuristicExperiment} the number of times
@@ -141,7 +140,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     private int[] createCloudletPesArray() {
         int[] pesArray = new int[CLOUDLETS_TO_CREATE];
         int totalNumberOfPes = 0;
-        final ContinuousDistribution random = new NormalDistr(getBaseSeed(), 2, 0.6);
+        final ContinuousDistribution random = new NormalDistr(2, 0.6, getBaseSeed());
         for (int i = 0; i < CLOUDLETS_TO_CREATE; i++) {
             pesArray[i] = (int) random.sample() + 1;
             totalNumberOfPes += pesArray[i];

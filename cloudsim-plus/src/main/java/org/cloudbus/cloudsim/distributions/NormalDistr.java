@@ -11,12 +11,11 @@ import org.apache.commons.math3.distribution.NormalDistribution;
 public class NormalDistr extends ContinuousDistributionAbstract {
 	/**
 	 * Creates a new normal (Gaussian) pseudo random number generator.
-	 *
-	 * @param seed the seed to be used.
 	 * @param mean the mean for the distribution.
 	 * @param standardDeviation the standard deviation for the distribution.
-	 */
-	public NormalDistr(final long seed, final double mean, final double standardDeviation) {
+     * @param seed the seed to be used.
+     */
+	public NormalDistr(final double mean, final double standardDeviation, final long seed) {
 		super(new NormalDistribution(mean, standardDeviation), seed);
 	}
 
@@ -26,8 +25,8 @@ public class NormalDistr extends ContinuousDistributionAbstract {
 	 * @param mean the mean for the distribution.
 	 * @param standardDeviation the standard deviation for the distribution.
 	 */
-	public NormalDistr(double mean, double standardDeviation) {
-		this(-1, mean, standardDeviation);
+	public NormalDistr(final double mean, final double standardDeviation) {
+		this(mean, standardDeviation, -1);
 	}
 
 }
