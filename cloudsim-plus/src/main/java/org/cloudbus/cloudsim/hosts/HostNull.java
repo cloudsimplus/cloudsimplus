@@ -97,6 +97,7 @@ final class HostNull implements Host {
         return false;
     }
     @Override public boolean isActive() { return false; }
+    @Override public boolean hasEverStarted() { return false; }
     @Override public Host setActive(boolean activate) { return this; }
     @Override public <T extends Vm> Set<T> getVmsMigratingIn() {
         return Collections.emptySet();

@@ -440,7 +440,7 @@ public class CloudSim implements Simulation {
     private boolean runClockTickAndProcessFutureEvents() {
         executeRunnableEntities();
         if (!future.isEmpty()) {
-            future.stream().findFirst().ifPresent(this::processFutureEventsHappeningAtSameTimeOfTheFirstOne);
+            processFutureEventsHappeningAtSameTimeOfTheFirstOne(future.first());
             return true;
         }
 
@@ -632,7 +632,9 @@ public class CloudSim implements Simulation {
         setClock(evt.getTime());
 
         processEventByType(evt);
-        onEventProcessingListeners.forEach(listener -> listener.update(evt));
+        for (final EventListener<SimEvent> listener : onEventProcessingListeners) {
+            listener.update(evt);
+        }
     }
 
     /**

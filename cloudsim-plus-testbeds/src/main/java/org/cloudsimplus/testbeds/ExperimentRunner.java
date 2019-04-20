@@ -489,7 +489,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * @param seed seed of the current experiment to add to the list
      */
-    void addSeed(long seed) {
+    void addSeed(final long seed) {
         if(!seeds.contains(seed)){
             seeds.add(seed);
         }

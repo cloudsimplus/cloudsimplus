@@ -85,6 +85,13 @@ public interface Host extends Machine, Comparable<Host> {
     boolean isActive();
 
     /**
+     * Checks if the Host has ever started sometime,
+     * i.e., if it was active sometime in the simulation execution.
+     * @return
+     */
+    boolean hasEverStarted();
+
+    /**
      * Sets the powered state of the Host, to indicate if it's powered on or off.
      * When a Host is powered off, no VMs will be submitted to it.
      *
@@ -302,7 +309,7 @@ public interface Host extends Machine, Comparable<Host> {
 
     /**
      * Gets the last time the Host was powered-on (in seconds).
-     * @return
+     * @return the last Host startup time or -1 if the Host has never been powered on
      * @see #setActive(boolean)
      */
     double getStartTime();

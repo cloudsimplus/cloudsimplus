@@ -72,7 +72,7 @@ public class HostSimple implements Host {
     private boolean stateHistoryEnabled;
 
     /** @see #getStartTime() */
-    private double startTime;
+    private double startTime = -1;
 
     /** @see #getShutdownTime() */
     private double shutdownTime;
@@ -222,7 +222,24 @@ public class HostSimple implements Host {
         this(ram, bw, storage, peList, true);
     }
 
-    private HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList, final boolean activate) {
+    /**
+     * Creates a Host without a pre-defined ID. It uses a {@link ResourceProvisionerSimple}
+     * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
+     * The ID is automatically set when a List of Hosts is attached
+     * to a {@link Datacenter}.
+     *
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
+     * @param activate define the Host activation status: true to power on, false to power off
+     *
+     * @see ChangeableId#setId(long)
+     * @see #setRamProvisioner(ResourceProvisioner)
+     * @see #setBwProvisioner(ResourceProvisioner)
+     * @see #setVmScheduler(VmScheduler)
+     */
+    public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList, final boolean activate) {
         this.setId(-1);
         this.setSimulation(Simulation.NULL);
         this.setActive(activate);
@@ -444,6 +461,11 @@ public class HostSimple implements Host {
     @Override
     public boolean isActive() {
         return this.active;
+    }
+
+    @Override
+    public boolean hasEverStarted() {
+        return this.startTime > -1;
     }
 
     @Override
