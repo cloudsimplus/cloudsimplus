@@ -828,13 +828,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return Math.min(Math.abs(delay), Math.abs(schedulingInterval));
     }
 
-    private boolean isBrokerIdle() {
-        return cloudletWaitingList.isEmpty() && vmWaitingList.isEmpty() && vmExecList.isEmpty();
-    }
-
     private boolean isTimeToShutdownBroker() {
         return isAlive() &&
             (!getSimulation().isTerminationTimeSet() || getSimulation().isTimeToTerminateSimulationUnderRequest());
+    }
+
+    private boolean isBrokerIdle() {
+        return cloudletWaitingList.isEmpty() &&
+               vmWaitingList.isEmpty() &&
+               vmExecList.isEmpty();
     }
 
     /**

@@ -445,6 +445,19 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      */
     boolean isWorking();
 
+    @Override
+    default boolean isIdleEnough(final double time) {
+        /*If the scheduling interval is too high, the VM processing may be updated only
+        * after a long time period, which may give the wrong idea that the VM is idle,
+        * even if there are running Cloudlets.
+        * If the broker checks whether the VM is idle, before its processing is updated,
+        * it may incorrectly destroy a with running Cloudlets.
+         * To avoid that, we check if the VM has running cloudlets.
+        * If the VM's lastBusyTime attribute was not set recently,
+        * it may be because we have a large Datacenter's scheduling interval.*/
+        return getCloudletScheduler().getCloudletExecList().isEmpty() && Machine.super.isIdleEnough(time);
+    }
+
     /**
      * {@inheritDoc}
      * Such resources represent virtual resources corresponding to physical resources

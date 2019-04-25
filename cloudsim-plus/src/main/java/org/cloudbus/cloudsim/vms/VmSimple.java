@@ -251,7 +251,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         requireNonNull(mipsShare);
 
         if (!cloudletScheduler.isEmpty()) {
-            this.lastBusyTime = getSimulation().clock();
+            setLastBusyTime();
         }
         final double nextEventDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
@@ -368,6 +368,10 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public double getLastBusyTime() {
         return this.lastBusyTime;
+    }
+
+    private void setLastBusyTime() {
+        this.lastBusyTime = getSimulation().clock();
     }
 
     @Override
