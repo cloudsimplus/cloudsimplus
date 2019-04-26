@@ -784,7 +784,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void requestIdleVmDestruction(final Vm vm) {
         final double delay = vmDestructionDelayFunction.apply(vm);
 
-        boolean vmAlive = vmExecList.contains(vm);
+        boolean vmAlive = vm.isCreated();
         if (vmAlive && ((delay > DEF_VM_DESTRUCTION_DELAY && vm.isIdleEnough(delay)) || isFinished())) {
             LOGGER.info("{}: {}: Requesting Vm {} destruction.", getSimulation().clock(), getName(), vm.getId());
             sendNow(getDatacenter(vm), CloudSimTags.VM_DESTROY, vm);
@@ -800,7 +800,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (vmAlive && delay > DEF_VM_DESTRUCTION_DELAY) {
             send(this, getDelayToCheckVmIdleness(vm), CloudSimTags.VM_DESTROY, vm);
         }
-
     }
 
     /**
