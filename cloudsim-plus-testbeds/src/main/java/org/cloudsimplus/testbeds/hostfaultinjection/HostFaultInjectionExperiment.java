@@ -53,8 +53,8 @@ import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.faultinjection.VmCloner;
 import org.cloudsimplus.faultinjection.VmClonerSimple;
 import org.cloudsimplus.slametrics.SlaContract;
+import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
-import org.cloudsimplus.testbeds.SimulationExperiment;
 import org.cloudsimplus.vmtemplates.AwsEc2Template;
 
 import java.io.BufferedReader;
@@ -79,7 +79,7 @@ import static org.cloudsimplus.testbeds.hostfaultinjection.HostFaultInjectionRun
  *
  * @author raysaoliveira
  */
-final class HostFaultInjectionExperiment extends SimulationExperiment {
+final class HostFaultInjectionExperiment extends Experiment {
     /**
      * The list of SLA Contracts in JSON format which are used to assess
      * if the metrics in those contracts are being met.

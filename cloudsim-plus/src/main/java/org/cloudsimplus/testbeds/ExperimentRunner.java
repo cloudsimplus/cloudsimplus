@@ -41,11 +41,11 @@ import java.util.stream.IntStream;
  * statistics about the execution. The runner represents a testbed compounded of
  * a set of experiments that it runs.
  *
- * @param <T> the type of {@link SimulationExperiment} the runner will execute
+ * @param <T> the type of {@link Experiment} the runner will execute
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
+public abstract class ExperimentRunner<T extends Experiment> implements Runnable {
     private boolean verbose;
 
     /**
@@ -665,7 +665,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Indicates if the runner will output execution logs or not. This doesn't
      * affect the verbosity of individual experiments executed. Each
-     * {@link SimulationExperiment} has its own verbose attribute.
+     * {@link Experiment} has its own verbose attribute.
      * @return
      */
     public boolean isVerbose() {
@@ -675,7 +675,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Defines if the runner will output execution logs or not. This doesn't
      * affect the verbosity of individual experiments executed. Each
-     * {@link SimulationExperiment} has its own verbose attribute.
+     * {@link Experiment} has its own verbose attribute.
      *
      * @param verbose true if results have to be output, false otherwise
      * @return

@@ -45,8 +45,8 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
+import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
-import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -76,7 +76,7 @@ import java.util.List;
  * @see CloudletSchedulerTimeSharedExperiment
  * @see CompletelyFairSchedulerExperiment
  */
-abstract class CloudletSchedulerExperiment extends SimulationExperiment {
+abstract class CloudletSchedulerExperiment extends Experiment {
     protected static final int HOST_PES = 32;
     protected static final int VM_PES = HOST_PES;
     protected static final long VM_MIPS = 1000;

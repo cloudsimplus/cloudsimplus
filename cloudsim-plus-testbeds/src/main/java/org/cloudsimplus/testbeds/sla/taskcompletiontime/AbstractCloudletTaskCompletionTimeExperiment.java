@@ -13,8 +13,8 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
-import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -23,7 +23,7 @@ import java.util.List;
 import static java.util.Comparator.comparingDouble;
 import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VMS;
 
-abstract class AbstractCloudletTaskCompletionTimeExperiment extends SimulationExperiment {
+abstract class AbstractCloudletTaskCompletionTimeExperiment extends Experiment {
     private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
 

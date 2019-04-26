@@ -45,7 +45,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
 import org.cloudsimplus.heuristics.HeuristicSolution;
-import org.cloudsimplus.testbeds.SimulationExperiment;
+import org.cloudsimplus.testbeds.Experiment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -73,7 +73,7 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  */
-final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
+final class DatacenterBrokerHeuristicExperiment extends Experiment {
     private static final int HOSTS = 100;
 
     /**

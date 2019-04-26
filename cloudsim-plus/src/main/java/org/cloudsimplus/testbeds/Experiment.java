@@ -48,7 +48,7 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class SimulationExperiment implements Runnable {
+public abstract class Experiment implements Runnable {
     private final ExperimentRunner runner;
     private CloudSim simulation;
     private List<DatacenterSimple> datacenterList;
@@ -66,8 +66,8 @@ public abstract class SimulationExperiment implements Runnable {
     private int lastVmId;
     private int lastCloudletId;
 
-    private Consumer<? extends SimulationExperiment> afterExperimentFinish;
-    private Consumer<? extends SimulationExperiment> afterExperimentBuild;
+    private Consumer<? extends Experiment> afterExperimentFinish;
+    private Consumer<? extends Experiment> afterExperimentBuild;
 
     /**@see #setVmsByBrokerFunction(Function) */
     private Function<DatacenterBroker, Integer> vmsByBrokerFunction;
@@ -80,7 +80,7 @@ public abstract class SimulationExperiment implements Runnable {
      * to enable it to execute just one run.
      *
      */
-    public SimulationExperiment(final long seed) {
+    public Experiment(final long seed) {
         this(0, null, seed);
     }
 
@@ -93,7 +93,7 @@ public abstract class SimulationExperiment implements Runnable {
      * statistical analysis.
      * @see #setDatacentersNumber(int)
      */
-    public SimulationExperiment(final int index, final ExperimentRunner runner) {
+    public Experiment(final int index, final ExperimentRunner runner) {
         //the seed will be generate from the Runner base seed
         this(index, runner, -1);
     }
@@ -112,7 +112,7 @@ public abstract class SimulationExperiment implements Runnable {
      * @see #setBrokersNumber(int)
      * @see #setDatacentersNumber(int)
      */
-    protected SimulationExperiment(final int index, final ExperimentRunner runner, final long seed) {
+    protected Experiment(final int index, final ExperimentRunner runner, final long seed) {
         if(seed == -1){
             Objects.requireNonNull(runner);
         }
@@ -164,7 +164,7 @@ public abstract class SimulationExperiment implements Runnable {
      * @param verbose true if the results have to be output, false otherwise
      * @return
      */
-    public SimulationExperiment setVerbose(final boolean verbose) {
+    public Experiment setVerbose(final boolean verbose) {
         this.verbose = verbose;
         return this;
     }
@@ -405,12 +405,12 @@ public abstract class SimulationExperiment implements Runnable {
      * @param afterExperimentBuild the afterExperimentBuild to set
      * @return
      */
-    public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentBuild(final Consumer<T> afterExperimentBuild) {
+    public <T extends Experiment> Experiment setAfterExperimentBuild(final Consumer<T> afterExperimentBuild) {
         this.afterExperimentBuild = Objects.requireNonNull(afterExperimentBuild);
         return this;
     }
 
-    private <T extends SimulationExperiment> void afterExperimentBuild(final T experiment) {
+    private <T extends Experiment> void afterExperimentBuild(final T experiment) {
         ((Consumer<T>)this.afterExperimentBuild).accept(experiment);
     }
 
@@ -426,12 +426,12 @@ public abstract class SimulationExperiment implements Runnable {
      * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
      * @return
      */
-    public <T extends SimulationExperiment> SimulationExperiment setAfterExperimentFinish(final Consumer<T> afterExperimentFinishConsumer) {
+    public <T extends Experiment> Experiment setAfterExperimentFinish(final Consumer<T> afterExperimentFinishConsumer) {
         this.afterExperimentFinish = Objects.requireNonNull(afterExperimentFinishConsumer);
         return this;
     }
 
-    private <T extends SimulationExperiment> void afterExperimentFinish(final T experiment) {
+    private <T extends Experiment> void afterExperimentFinish(final T experiment) {
         ((Consumer<T>) this.afterExperimentFinish).accept(experiment);
     }
 
@@ -451,7 +451,7 @@ public abstract class SimulationExperiment implements Runnable {
      * Sets the number of brokers to create.
      * @param brokersNumber the value to set
      */
-    public SimulationExperiment setBrokersNumber(final int brokersNumber) {
+    public Experiment setBrokersNumber(final int brokersNumber) {
         if(brokersNumber <= 0){
             throw new IllegalArgumentException("The number of brokers must be greater than 0");
         }

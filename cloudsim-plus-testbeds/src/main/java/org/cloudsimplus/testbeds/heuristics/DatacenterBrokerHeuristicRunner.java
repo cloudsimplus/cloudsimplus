@@ -31,8 +31,8 @@ import org.cloudbus.cloudsim.distributions.NormalDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.Heuristic;
+import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
-import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -301,7 +301,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      *
      * @param exp the experiment to get the list of Cloudlets and Vm's
      */
-    public void createRoundRobinSolutionIfNotCreatedYet(SimulationExperiment exp) {
+    public void createRoundRobinSolutionIfNotCreatedYet(Experiment exp) {
         if (roundRobinSolution != null) {
             return;
         }
