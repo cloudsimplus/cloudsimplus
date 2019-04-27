@@ -35,7 +35,7 @@ import java.util.List;
 
 /**
  * A simple example showing how to create 2 datacenters with 1 host each one.
- * It creates 2 VMs, each one belonging to a different customer.
+ * It creates 2 VMs, each one belonging to a different customer ({@link DatacenterBroker}).
  * Then it runs 1 cloudlet in each customer's VM.
  */
 public class CloudSimExample5 {
