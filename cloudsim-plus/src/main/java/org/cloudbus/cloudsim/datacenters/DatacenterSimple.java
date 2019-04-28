@@ -559,9 +559,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         if (ackRequested) {
-            /* Acknowledges that the requested was received by the Datacenter
-             * (it's not saying the VM was created or not).
-             * To check that, use Vm.isCreated(). */
+            // Acknowledges that the request was received by the Datacenter
             send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
         }
 
