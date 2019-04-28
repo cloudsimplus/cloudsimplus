@@ -11,7 +11,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -53,25 +52,16 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
      * Gets the first suitable host from the {@link #getHostList()} that has the fewest number of used PEs (i.e, higher free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
-     *
-     * @TODO The number of free PEs may be taken directly from each Host in a List,
-     *       avoiding the use of Maps that doesn't ensure order.
-     *       The entries are being sorted just to ensure that
-     *       the results are always the same for a specific static simulation.
-     *       Without the sort, usually the allocation of Hosts to VMs
-     *       is different during debug, because of the unsorted nature of the Map.
      */
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final Map<Host, Long> map = getHostFreePesMap();
-        final Comparator<Map.Entry<Host, Long>> activeComparator = Comparator.comparing((Map.Entry<Host, Long> entry) -> entry.getKey().isActive());
-        final Comparator<Map.Entry<Host, Long>> comparator = activeComparator.thenComparingLong(Map.Entry::getValue);
+        final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive);
+        final Comparator<Host> comparator = activeComparator.thenComparingLong(Host::getFreePesNumber);
 
-        return map.entrySet()
+        return getHostList()
             .stream()
-            .filter(e -> e.getKey().isSuitableForVm(vm))
-            .max(comparator)
-            .map(Map.Entry::getKey);
+            .filter(host -> host.isSuitableForVm(vm))
+            .max(comparator);
     }
 
 }

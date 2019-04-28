@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.faultinjection;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
@@ -825,8 +824,6 @@ public class HostFaultInjection extends CloudSimEntity {
                 .peek(pe -> pe.setStatus(Pe.Status.FAILED))
                 .count();
 
-        //Updates the list of working PEs inside the VmAllocationPolicy
-        ((VmAllocationPolicyAbstract)lastFailedHost.getDatacenter().getVmAllocationPolicy()).addPesFromHost(lastFailedHost);
         return pesFaults;
     }
 

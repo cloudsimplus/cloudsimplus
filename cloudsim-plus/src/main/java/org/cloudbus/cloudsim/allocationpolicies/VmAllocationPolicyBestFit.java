@@ -27,7 +27,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -66,22 +65,18 @@ public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
      * Gets the first suitable host from the {@link #getHostList()}
      * that has the most number of PEs in use (i.e. the least number of free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
-     *
-     * @TODO See TODOs inside the {@link VmAllocationPolicySimple}
      */
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final Map<Host, Long> map = getHostFreePesMap();
         /* Since it's being used the min operation, the active comparator must be reversed so that
          * we get active hosts with minimum number of free PEs. */
-        final Comparator<Map.Entry<Host, Long>> activeComparator = Comparator.comparing((Map.Entry<Host, Long> entry) -> entry.getKey().isActive()).reversed();
-        final Comparator<Map.Entry<Host, Long>> comparator = activeComparator.thenComparingLong(Map.Entry::getValue);
+        final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive).reversed();
+        final Comparator<Host> comparator = activeComparator.thenComparingLong(Host::getFreePesNumber);
 
-        return map.entrySet()
+        return getHostList()
             .stream()
-            .filter(entry -> entry.getKey().isSuitableForVm(vm))
-            .min(comparator)
-            .map(Map.Entry::getKey);
+            .filter(host -> host.isSuitableForVm(vm))
+            .min(comparator);
     }
 
 }

@@ -7,7 +7,6 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
@@ -970,7 +969,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public <T extends Host> Datacenter removeHost(final T host) {
         hostList.remove(host);
-        ((VmAllocationPolicyAbstract)vmAllocationPolicy).addPesFromHost(host);
         return this;
     }
 
