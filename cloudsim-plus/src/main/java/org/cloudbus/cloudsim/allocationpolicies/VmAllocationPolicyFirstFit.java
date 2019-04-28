@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  * An <b>First Fit VM allocation policy</b>
@@ -48,8 +49,8 @@ import java.util.Optional;
 public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        return this.getHostList()
-                .stream()
+        final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
+        return stream
                 .filter(host -> host.isSuitableForVm(vm))
                 .findFirst();
     }

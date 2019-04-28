@@ -34,6 +34,8 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
     }
     @Override public void deallocateHostForVm(Vm vm) {/**/}
     @Override public Optional<Host> findHostForVm(Vm vm) { return Optional.empty(); }
+    @Override public int getHostCountForParallelSearch() { return 0; }
+    @Override public void setHostCountForParallelSearch(int hostCountForParallelSearch) {/**/}
     @Override public <T extends Host> List<T> getHostList() {
         return Collections.emptyList();
     }

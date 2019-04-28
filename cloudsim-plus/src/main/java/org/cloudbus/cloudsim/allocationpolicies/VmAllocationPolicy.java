@@ -34,6 +34,12 @@ import java.util.function.BiFunction;
  */
 public interface VmAllocationPolicy {
     /**
+     * Default minimum number of Hosts to start using parallel search.
+     * @see #setHostCountForParallelSearch(int)
+     */
+    int DEF_HOST_COUNT_FOR_PARALLEL_SEARCH = 20_000;
+
+    /**
      * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}
      * objects.
      */
@@ -134,4 +140,26 @@ public interface VmAllocationPolicy {
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
      */
     Optional<Host> findHostForVm(Vm vm);
+
+    /**
+     * Checks if Host's parallel search is enabled or not.
+     * @return true if a Host for a VM is to find in parallel, false if it's to be find sequentially
+     * @see #setHostCountForParallelSearch(int)
+     */
+    default boolean isParallelHostSearchEnabled(){
+        return getHostList().size() >= getHostCountForParallelSearch();
+    }
+
+    /**
+     * Gets the minimum number of Hosts to start using parallel search.
+     * @return
+     */
+    int getHostCountForParallelSearch();
+
+    /**
+     * Sets the minimum number of Hosts to start using parallel search.
+     * @param hostCountForParallelSearch the value to set (use {@link Integer#MAX_VALUE} to disable parallel search)
+     */
+    void setHostCountForParallelSearch(int hostCountForParallelSearch);
+
 }

@@ -59,6 +59,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private Datacenter datacenter;
 
+    /**@see #getHostCountForParallelSearch() */
+    private int hostCountForParallelSearch;
+
     /**
      * Creates a VmAllocationPolicy.
      */
@@ -75,6 +78,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     public VmAllocationPolicyAbstract(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         setDatacenter(Datacenter.NULL);
         setFindHostForVmFunction(findHostForVmFunction);
+        this.hostCountForParallelSearch = DEF_HOST_COUNT_FOR_PARALLEL_SEARCH;
     }
 
     @Override
@@ -352,4 +356,15 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
         return Collections.emptyMap();
     }
+
+    @Override
+    public int getHostCountForParallelSearch() {
+        return hostCountForParallelSearch;
+    }
+
+    @Override
+    public void setHostCountForParallelSearch(final int hostCountForParallelSearch) {
+        this.hostCountForParallelSearch = hostCountForParallelSearch;
+    }
 }
+
