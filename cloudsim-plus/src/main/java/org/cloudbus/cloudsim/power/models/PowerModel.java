@@ -59,21 +59,20 @@ public interface PowerModel extends PowerAware {
     void setHost(Host host);
 
     /**
-     * Gets the max power that can be consumed by the host in Watt-Second (Ws).
+     * Gets the max power that can be supplied by the host in Watts (W).
      *
-     * @return the max consumption power in Watt-Second (Ws)
+     * @return the max power supply in Watts (W)
      */
     double getMaxPower();
 
     /**
-     * Gets power consumption in Watt-Second (Ws) of the Power Model, according to the utilization
-     * percentage of a critical resource, such as CPU.
-     *
-     * <p><b>The power consumption data is just available while the host is active.</b></p>
+     * Gets the power supply in Watts (W), according to the utilization
+     * percentage of a critical resource, such as CPU
+     * (which is currently the only resource considered).
      *
      * @param utilization the utilization percentage (between [0 and 1]) of a
-     * resource that is critical for power consumption.
-     * @return the power consumption in Watt-Second (Ws)
+     * resource that impacts power supply.
+     * @return the power supply in Watts (W)
      * @throws IllegalArgumentException when the utilization percentage is not
      * between [0 and 1]
      */
@@ -81,13 +80,13 @@ public interface PowerModel extends PowerAware {
 
     /**
      * Gets an <b>estimation</b> of energy consumption using linear interpolation of the utilization
-     * change.
+     * change for a given time interval.
      * <b>It's required to set a {@link PowerModel} in order to get power usage data.</b>
      *
      * @param fromUtilization the initial utilization percentage
      * @param toUtilization   the final utilization percentage
-     * @param time            the time span between the initial and final utilization to compute the energy consumption
-     * @return the <b>estimated</b> energy consumption
+     * @param time            the time span (in seconds) between the initial and final utilization to compute the energy consumption
+     * @return the <b>estimated</b> energy consumption in Watts-sec (Ws)
      */
     double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time);
 }

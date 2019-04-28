@@ -61,6 +61,13 @@ public interface Datacenter extends SimEntity, PowerAware {
     Host getHost(int index);
 
     /**
+     * Gets the current number of Hosts that are powered on inside the Datacenter.
+     * @return
+     * @see Host#isActive()
+     */
+    long getActiveHostsNumber();
+
+    /**
      * Gets a Host from its id.
      * @param id the ID of the Host to get from the List.
      * @return the Host if found or {@link Host#NULL} otherwise

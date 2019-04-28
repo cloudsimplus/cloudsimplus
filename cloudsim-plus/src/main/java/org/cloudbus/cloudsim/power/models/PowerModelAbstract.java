@@ -46,12 +46,12 @@ public abstract class PowerModelAbstract implements PowerModel {
 
     /**
      * An internal method to be implemented by sub classes
-     * to get the power consumption for the current CPU utilization.
+     * to get the power supply for the current CPU utilization.
      * <p>The basic parameter validation is performed by the {@link #getPower(double)} method.</p>
      *
      * @param utilization the utilization percentage (between [0 and 1]) of a
-     * resource that is critical for power consumption.
-     * @return the power consumption
+     * resource that is critical for power supply.
+     * @return the power supply for the given CPU utilization
      * @throws IllegalArgumentException when the utilization percentage is not
      * between [0 and 1]
      */

@@ -79,4 +79,5 @@ public interface EventInfo {
             @Override public EventListener<? extends EventInfo> getListener() { return listener; }
         };
     }
+
 }

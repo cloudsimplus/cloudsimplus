@@ -41,11 +41,11 @@ import java.util.stream.IntStream;
  * statistics about the execution. The runner represents a testbed compounded of
  * a set of experiments that it runs.
  *
- * @param <T> the class of experiment the runner will execute
+ * @param <T> the type of {@link Experiment} the runner will execute
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class ExperimentRunner<T extends SimulationExperiment> implements Runnable {
+public abstract class ExperimentRunner<T extends Experiment> implements Runnable {
     private boolean verbose;
 
     /**
@@ -435,29 +435,6 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
 
     /**
      * Creates a pseudo random number generator (PRNG) for a experiment run that
-     * generates uniform values between [min and max[. If it is to apply the
-     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
-     * to reduce results' variance, the second half of experiments will use the
-     * seeds from the first half.
-     *
-     * @param experimentIndex index of the experiment run to create a PRNG
-     * @param minValue the minimum value the generator will return (inclusive)
-     * @param maxValue the maximum value the generator will return (exclusive)
-     * @return the created PRNG
-     *
-     * @see UniformDistr#isApplyAntitheticVariates()
-     */
-    protected ContinuousDistribution createRandomGen(final int experimentIndex, final double minValue, final double maxValue) {
-        if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
-            final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
-            return new UniformDistr(minValue, maxValue, seeds.get(expIndexFromFirstHalf)).setApplyAntitheticVariates(true);
-        }
-
-        return new UniformDistr(minValue, maxValue, seeds.get(experimentIndex));
-    }
-
-    /**
-     * Creates a pseudo random number generator (PRNG) for a experiment run that
      * generates uniform values between [0 and 1[. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
      * to reduce results variance, the second half of experiments will used the
@@ -467,9 +444,39 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      * @return the created PRNG
      *
      * @see UniformDistr#isApplyAntitheticVariates()
+     * @see #createRandomGen(int, double, double)
      */
-    protected ContinuousDistribution createRandomGen(final int experimentIndex) {
+    public ContinuousDistribution createRandomGen(final int experimentIndex) {
         return createRandomGen(experimentIndex, 0, 1);
+    }
+
+    /**
+     * Creates a pseudo random number generator (PRNG) for a experiment run that
+     * generates uniform values between [min and max[. If it is to apply the
+     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+     * to reduce results' variance, the second half of experiments will use the
+     * seeds from the first half.
+     *
+     * @param experimentIndex index of the experiment run to create a PRNG
+     * @param minInclusive the minimum value the generator will return (inclusive)
+     * @param maxExclusive the maximum value the generator will return (exclusive)
+     * @return the created PRNG
+     *
+     * @see UniformDistr#isApplyAntitheticVariates()
+     * @see #createRandomGen(int)
+     */
+    public ContinuousDistribution createRandomGen(final int experimentIndex, final double minInclusive, final double maxExclusive) {
+        if(seeds.isEmpty()){
+            throw new IllegalStateException(
+                "You have to create at least 1 SimulationExperiment before requesting a ExperimentRunner to create a pseudo random number generator (PRNG)!");
+        }
+
+        if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
+            final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
+            return new UniformDistr(minInclusive, maxExclusive, seeds.get(expIndexFromFirstHalf)).setApplyAntitheticVariates(true);
+        }
+
+        return new UniformDistr(minInclusive, maxExclusive, seeds.get(experimentIndex));
     }
 
     public boolean isToReuseSeedFromFirstHalfOfExperiments(final int currentExperimentIndex) {
@@ -482,7 +489,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
      *
      * @param seed seed of the current experiment to add to the list
      */
-    void addSeed(long seed) {
+    void addSeed(final long seed) {
         if(!seeds.contains(seed)){
             seeds.add(seed);
         }
@@ -658,7 +665,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Indicates if the runner will output execution logs or not. This doesn't
      * affect the verbosity of individual experiments executed. Each
-     * {@link SimulationExperiment} has its own verbose attribute.
+     * {@link Experiment} has its own verbose attribute.
      * @return
      */
     public boolean isVerbose() {
@@ -668,7 +675,7 @@ public abstract class ExperimentRunner<T extends SimulationExperiment> implement
     /**
      * Defines if the runner will output execution logs or not. This doesn't
      * affect the verbosity of individual experiments executed. Each
-     * {@link SimulationExperiment} has its own verbose attribute.
+     * {@link Experiment} has its own verbose attribute.
      *
      * @param verbose true if results have to be output, false otherwise
      * @return

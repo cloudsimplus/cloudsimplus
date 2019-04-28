@@ -31,6 +31,7 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public Host getHost(final int index) {
         return Host.NULL;
     }
+    @Override public long getActiveHostsNumber() { return 0; }
     @Override public Host getHostById(long id) { return Host.NULL; }
     @Override public <T extends Host> Datacenter addHostList(List<T> hostList) { return this; }
     @Override public <T extends Host> Datacenter removeHost(T host) { return this; }
@@ -51,7 +52,7 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public double getPower() { return 0; }
     @Override public Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener) { return this; }
     @Override public void setPowerSupply(DatacenterPowerSupply powerSupply) {}
-    @Override public double getPowerInKWattsHour() { return 0; }
+    @Override public double getPowerInKWatts() { return 0; }
     @Override public String toString() {
         return "Datacenter.NULL";
     }

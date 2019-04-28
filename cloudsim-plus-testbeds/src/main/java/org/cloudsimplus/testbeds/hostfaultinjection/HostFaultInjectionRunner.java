@@ -25,12 +25,15 @@
  */
 package org.cloudsimplus.testbeds.hostfaultinjection;
 
-import java.util.*;
-
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.testbeds.ExperimentRunner;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
 
@@ -43,7 +46,7 @@ import static java.util.stream.Collectors.toMap;
  *
  * @author raysaoliveira
  */
-public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment> {
+final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment> {
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */

@@ -37,20 +37,14 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import java.util.List;
 
-import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VMS;
 import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VM_PES;
 
 /**
  * @author raysaoliveira
  */
-public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment extends AbstractCloudletTaskCompletionTimeExperiment {
+class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment extends AbstractCloudletTaskCompletionTimeExperiment {
 
     private static final int SCHEDULING_INTERVAL = 5;
-
-    private static final int HOSTS = 50;
-    private static final int HOST_PES = 12;
-
-    private int createsVms;
 
     /**
      * The file containing the SLA Contract in JSON format.
@@ -72,8 +66,6 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment ext
         super(index, runner, seed);
         this.randVm = new UniformDistr(1475098589732L + 1);
         this.contract = SlaContract.getInstance(METRICS_FILE);
-        setHostsNumber(HOSTS);
-        setVmsNumber(VMS);
     }
 
     @Override
@@ -82,11 +74,15 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment ext
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets() {
+    protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance("METACENTRUM-2009-2.swf", 1);
         reader.setMaxLinesToRead(70);
         return reader.generateWorkload();
     }
+
+    /** The method is not being used for this experiment because the Cloudlets are created by the workload reader. */
+    @Override
+    protected Cloudlet createCloudlet(final DatacenterBroker broker) { return null; }
 
     @Override
     protected DatacenterSimple createDatacenter() {
@@ -95,10 +91,8 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment ext
         return dc;
     }
 
-
     @Override
-    protected Vm createVm() {
-        final int id = createsVms++;
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
         final int pesId = (int) (randVm.sample() * VM_PES.length);
         final int pes = VM_PES[pesId];
 

@@ -2,8 +2,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.cloudsimplus</groupId>
-    <artifactId>cloudsim-plus-package</artifactId>
-    <version>4.3.0</version>
+    <artifactId>cloudsim-plus-modules</artifactId>
+    <version>4.3.2</version>
     <packaging>pom</packaging>
 
     <name>CloudSim Plus Modules (All)</name>

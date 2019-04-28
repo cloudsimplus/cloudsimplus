@@ -100,4 +100,5 @@ final class SimulationNull implements Simulation {
     @Override public NetworkTopology getNetworkTopology() { return NetworkTopology.NULL; }
     @Override public void setNetworkTopology(NetworkTopology networkTopology) {/**/}
     @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate) { return 0; }
+    @Override public double getLastCloudletProcessingUpdate() { return 0; }
 }

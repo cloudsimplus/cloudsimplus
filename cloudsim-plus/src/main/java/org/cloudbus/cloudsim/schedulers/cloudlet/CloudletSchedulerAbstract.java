@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -511,6 +512,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         moveNextCloudletsFromWaitingToExecList();
 
         setPreviousTime(currentTime);
+        ((CloudSim)vm.getSimulation()).setLastCloudletProcessingUpdate(currentTime);
 
         return nextSimulationTime;
     }

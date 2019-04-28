@@ -64,8 +64,8 @@ import java.util.function.Function;
  *
  * <p>It creates one Cloudlet for each VM and the Cloudlets are created with different lengths.
  * This enables VMs to become idle in different times.
- * To ensure that idle VMs are destroyed as soon as they become idle
- * and we can quickly check that the number of VMs into a Host has reduced,
+ * To ensure idle VMs are destroyed as soon as they become idle
+ * (so that we can quickly check that the number of VMs into a Host has reduced),
  * a {@link DatacenterBroker#setVmDestructionDelayFunction(Function)} is
  * set. Check the {@link #createBroker()} method for details.
  *
@@ -110,8 +110,7 @@ public class HostActivation {
 
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
-
-        createBroker();
+        broker0 = createBroker();
 
         vmList = new ArrayList<>(MAX_VMS);
         cloudletList = new ArrayList<>(MAX_VMS);
@@ -123,14 +122,23 @@ public class HostActivation {
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         finishedCloudlets.sort(Comparator.comparingLong(Cloudlet::getLength).reversed());
         new CloudletsTableBuilder(finishedCloudlets).build();
+        printHostsUpTime();
     }
 
-    private void createBroker() {
-        broker0 = new DatacenterBrokerSimple(simulation);
+    private void printHostsUpTime() {
+        System.out.println("\nHosts' up time");
+        for (Host host : datacenter0.getHostList()) {
+            System.out.printf("\tHost %4d Total up time: %15.0f seconds\n", host.getId(), host.getTotalUpTime());
+        }
+    }
+
+    private DatacenterBroker createBroker() {
+        final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(simulation);
 
         /*Indicates that idle VMs must be destroyed right away (0 delay).
         * This forces the Host to become idle*/
-        broker0.setVmDestructionDelayFunction(vm -> 0.0);
+        broker.setVmDestructionDelay(0.0);
+        return broker;
     }
 
     /**

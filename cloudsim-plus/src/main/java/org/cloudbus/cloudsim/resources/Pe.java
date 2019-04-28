@@ -13,12 +13,9 @@ import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 /**
  * A interface to be implemented by each class that provides
  * the basic features of a virtual or physical Processing Element (PE)
- * of a PM or VM. Each Pe represents a  virtual or physical processor core.
- *
- * <p>It also implements the Null Object
- * Design Pattern in order to start avoiding {@link NullPointerException} when
- * using the {@link Pe#NULL} object instead of attributing {@code null} to
- * {@link Pe} variables.</p>
+ * of a PM or VM. Each Pe represents a  virtual or physical processor core
+ * and its {@link #getCapacity() capacity} is defined in
+ * <a href="https://en.wikipedia.org/wiki/Instructions_per_second">MIPS (Million Instructions Per Second)</a>.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
@@ -50,7 +47,7 @@ public interface Pe extends ChangeableId, ResourceManageable {
     Pe NULL = new PeNull();
 
     /**
-     * Gets the capacity of this Pe in MIPS (Million Instructions Per Second).
+     * Gets the capacity of this Pe in <a href="https://en.wikipedia.org/wiki/Instructions_per_second">MIPS (Million Instructions Per Second)</a>.
      *
      * @return the MIPS capacity
      */
@@ -58,7 +55,8 @@ public interface Pe extends ChangeableId, ResourceManageable {
     long getCapacity();
 
     /**
-     * Sets the capacity of this Pe in MIPS (Million Instructions Per Second).
+     * Sets the capacity of this Pe in <a href="https://en.wikipedia.org/wiki/Instructions_per_second">MIPS (Million Instructions Per Second)</a>.
+     * If you want to have an idea of the MIPS capacity for different processors, check the link above.
      *
      * @param mipsCapacity the MIPS capacity to set
      * @return true if mipsCapacity is greater than 0, false otherwise
@@ -67,11 +65,13 @@ public interface Pe extends ChangeableId, ResourceManageable {
     boolean setCapacity(long mipsCapacity);
 
     /**
-     * Sets the capacity of this Pe in MIPS (Million Instructions Per Second).
+     * Sets the capacity of this Pe in <a href="https://en.wikipedia.org/wiki/Instructions_per_second">MIPS (Million Instructions Per Second)</a>.
      *
      * <p>It receives the amount of MIPS as a double value but converts it internally
      * to a long. The method is just provided as a handy-way to define the PE
      * capacity using a double value that usually is generated from some computations.</p>
+     *
+     * If you want to have an idea of the MIPS capacity for different processors, check the link above.
      *
      * @param mipsCapacity the MIPS capacity to set
      * @return true if mipsCapacity is greater than 0, false otherwise
@@ -132,8 +132,8 @@ public interface Pe extends ChangeableId, ResourceManageable {
     boolean isFree();
 
     /**
-     * Checks if the PE is buzy to be used (it's being used).
+     * Checks if the PE is busy to be used (it's being used).
      * @return
      */
-    boolean isBuzy();
+    boolean isBusy();
 }

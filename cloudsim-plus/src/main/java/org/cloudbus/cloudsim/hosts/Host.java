@@ -85,6 +85,13 @@ public interface Host extends Machine, Comparable<Host> {
     boolean isActive();
 
     /**
+     * Checks if the Host has ever started sometime,
+     * i.e., if it was active sometime in the simulation execution.
+     * @return
+     */
+    boolean hasEverStarted();
+
+    /**
      * Sets the powered state of the Host, to indicate if it's powered on or off.
      * When a Host is powered off, no VMs will be submitted to it.
      *
@@ -92,11 +99,11 @@ public interface Host extends Machine, Comparable<Host> {
      * it is simulated a scheduled shutdown, so that, all running
      * VMs will finish, but not more VMs will be submitted to this Host.</p>
      *
-     * @param active define the Host activation status: true to power on, false to power off
+     * @param activate define the Host activation status: true to power on, false to power off
      * @return
      * @throws IllegalStateException when trying to activate a {@link #isFailed() failed} host.
      */
-    Host setActive(boolean active);
+    Host setActive(boolean activate);
 
     /**
      * Gets the list of VMs migrating into this host.
@@ -301,28 +308,51 @@ public interface Host extends Machine, Comparable<Host> {
     Host setVmScheduler(VmScheduler vmScheduler);
 
     /**
-     * Gets the time the Host was powered-on (in seconds).
-     * @return
+     * Gets the last time the Host was powered-on (in seconds).
+     * @return the last Host startup time or -1 if the Host has never been powered on
+     * @see #setActive(boolean)
      */
     double getStartTime();
 
     /**
-     * Sets the time the Host was powered-on.
+     * Sets the Host start up time (the time it's being powered on).
      * @param startTime the time to set (in seconds)
+     * @see #getStartTime()
      */
     void setStartTime(double startTime);
 
     /**
-     * Gets the time the Host shut down.
-     * @return
+     * Gets the last time the Host was shut down (in seconds).
+     * @return the last shut downtime or -1 if the Host is active
      */
     double getShutdownTime();
 
     /**
-     * Sets the time the Host shut down.
-     * @param shutdownTime the time to set
+     * Sets the the Host shut down time.
+     * @param shutdownTime the time to set (in seconds)
+     * @see #getShutdownTime()
      */
     void setShutdownTime(double shutdownTime);
+
+    /**
+     * Gets the elapsed time since the last time the Host was powered on
+     * @return the elapsed time (in seconds)
+     * @see #getTotalUpTime()
+     */
+    double getUpTime();
+
+    /**
+     * Gets the total time the Host stayed active (powered on).
+     * Since the Host can be powered on and off according to demand,
+     * this method returns the sum of all interval that the Host
+     * was active (in seconds).
+     *
+     * @return the total up time (in seconds)
+     * @see #setActive(boolean)
+     * @see #setIdleShutdownDeadline(double)
+     * @see #getUpTime()
+     */
+    double getTotalUpTime();
 
     /**
      * Gets the deadline to shutdown the Host when it become idle.

@@ -42,52 +42,82 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSimple extends CustomerEntityAbstract implements Vm {
-    /** @see #setDefaultRamCapacity(long) */
+    /**
+     * @see #setDefaultRamCapacity(long)
+     */
     private static long defaultRamCapacity = 1024;
-    /** @see #setDefaultBwCapacity(long) */
+    /**
+     * @see #setDefaultBwCapacity(long)
+     */
     private static long defaultBwCapacity = 100;
-    /** @see #setDefaultStorageCapacity(long) */
+    /**
+     * @see #setDefaultStorageCapacity(long)
+     */
     private static long defaultStorageCapacity = 1024;
 
-    /** @see #getUtilizationHistory() */
+    /**
+     * @see #getUtilizationHistory()
+     */
     private final UtilizationHistory utilizationHistory;
 
-    /** @see #getStateHistory() */
+    /**
+     * @see #getStateHistory()
+     */
     private final List<VmStateHistoryEntry> stateHistory;
 
     private HorizontalVmScaling horizontalScaling;
     private boolean failed;
 
-    /** @see #getProcessor() */
+    /**
+     * @see #getProcessor()
+     */
     private final Processor processor;
 
-    /** @see #getVmm() */
+    /**
+     * @see #getVmm()
+     */
     private String vmm;
 
-    /** @see #getCloudletScheduler() */
+    /**
+     * @see #getCloudletScheduler()
+     */
     private CloudletScheduler cloudletScheduler;
 
-    /** @see #getHost() */
+    /**
+     * @see #getHost()
+     */
     private Host host;
 
-    /** @see #isInMigration() */
+    /**
+     * @see #isInMigration()
+     */
     private boolean inMigration;
 
-    /** @see #isCreated() */
+    /**
+     * @see #isCreated()
+     */
     private boolean created;
 
     private List<ResourceManageable> resources;
 
-    /** @see #getStorage() */
+    /**
+     * @see #getStorage()
+     */
     private Storage storage;
 
-    /** @see #getRam() */
+    /**
+     * @see #getRam()
+     */
     private Ram ram;
 
-    /** @see #getBw() */
+    /**
+     * @see #getBw()
+     */
     private Bandwidth bw;
 
-    /** @see #getSubmissionDelay() */
+    /**
+     * @see #getSubmissionDelay()
+     */
     private double submissionDelay;
 
     private final Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
@@ -116,7 +146,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
      *
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @param numberOfPes  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
      * @see #setStorage(Storage)
@@ -130,7 +160,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     /**
      * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
-     *
+     * <p>
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
      *
@@ -141,9 +171,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * <p><b>NOTE:</b> The Vm will use a {@link CloudletSchedulerTimeShared} by default. If you need to change that,
      * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
      *
-     * @param id unique ID of the VM
+     * @param id           unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @param numberOfPes  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
      * @see #setStorage(Storage)
@@ -152,21 +182,21 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @see #setDefaultStorageCapacity(long)
      */
     public VmSimple(final long id, final double mipsCapacity, final long numberOfPes) {
-        this(id, (long)mipsCapacity, numberOfPes);
+        this(id, (long) mipsCapacity, numberOfPes);
     }
 
     /**
      * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
-     *
+     * <p>
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
      *
      * <p><b>NOTE:</b> The Vm will use a {@link CloudletSchedulerTimeShared} by default. If you need to change that,
      * just call {@link #setCloudletScheduler(CloudletScheduler)}.</p>
      *
-     * @param id unique ID of the VM
+     * @param id           unique ID of the VM
      * @param mipsCapacity the mips capacity of each Vm {@link Pe}
-     * @param numberOfPes amount of {@link Pe} (CPU cores)
+     * @param numberOfPes  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
      * @see #setStorage(Storage)
@@ -220,8 +250,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
         requireNonNull(mipsShare);
 
-        if(!cloudletScheduler.isEmpty()){
-            this.lastBusyTime = getSimulation().clock();
+        if (!cloudletScheduler.isEmpty()) {
+            setLastBusyTime();
         }
         final double nextEventDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
@@ -233,7 +263,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
          * At time 50.0 the Cloudlet is still running, so there is some CPU utilization.
          * But since the next update will be only at time 50.1, the utilization
          * at time 50.0 won't be collected to enable knowing the exact time
-         * before the utilization dropped.
+         * before the utilization drop.
          */
         final double decimals = currentTime - (int) currentTime;
         utilizationHistory.addUtilizationHistory(currentTime);
@@ -281,8 +311,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         }
 
         return LongStream.range(0, getNumberOfPes())
-                .mapToObj(i -> getMips())
-                .collect(toList());
+            .mapToObj(i -> getMips())
+            .collect(toList());
     }
 
     @Override
@@ -296,7 +326,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public double getTotalMipsCapacity() {
-        return getMips()*getNumberOfPes();
+        return getMips() * getNumberOfPes();
     }
 
     @Override
@@ -340,9 +370,13 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         return this.lastBusyTime;
     }
 
+    private void setLastBusyTime() {
+        this.lastBusyTime = getSimulation().clock();
+    }
+
     @Override
     public double getTotalExecutionTime() {
-        if(startTime < 0) {
+        if (startTime < 0) {
             return 0;
         }
 
@@ -385,6 +419,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     /**
      * Sets a new {@link Ram} resource for the Vm.
+     *
      * @param ram the Ram resource to set
      */
     private void setRam(final Ram ram) {
@@ -393,7 +428,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public final Vm setRam(final long ramCapacity) {
-        if(this.isCreated()){
+        if (this.isCreated()) {
             throw new UnsupportedOperationException("RAM capacity can just be changed when the Vm was not created inside a Host yet.");
         }
 
@@ -408,15 +443,16 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     /**
      * Sets a new {@link Bandwidth} resource for the Vm.
+     *
      * @param bw the Bandwidth resource to set
      */
-    private void setBw(final Bandwidth bw){
+    private void setBw(final Bandwidth bw) {
         this.bw = requireNonNull(bw);
     }
 
     @Override
     public final Vm setBw(final long bwCapacity) {
-        if(this.isCreated()){
+        if (this.isCreated()) {
             throw new UnsupportedOperationException("Bandwidth capacity can just be changed when the Vm was not created inside a Host yet.");
         }
         setBw(new Bandwidth(bwCapacity));
@@ -430,15 +466,16 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     /**
      * Sets a new {@link Storage} resource for the Vm.
+     *
      * @param storage the RawStorage resource to set
      */
-    private void setStorage(final Storage storage){
+    private void setStorage(final Storage storage) {
         this.storage = requireNonNull(storage);
     }
 
     @Override
     public final Vm setSize(final long size) {
-        if(this.isCreated()){
+        if (this.isCreated()) {
             throw new UnsupportedOperationException("Storage size can just be changed when the Vm was not created inside a Host yet.");
         }
         setStorage(new Storage(size));
@@ -461,7 +498,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public final void setHost(final Host host) {
-        if(host == Host.NULL){
+        if (host == Host.NULL) {
             setCreated(false);
         }
         this.host = host;
@@ -480,7 +517,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public final Vm setCloudletScheduler(final CloudletScheduler cloudletScheduler) {
         requireNonNull(cloudletScheduler);
-        if(isCreated()){
+        if (isCreated()) {
             throw new UnsupportedOperationException("CloudletScheduler can just be changed when the Vm was not created inside a Host yet.");
         }
 
@@ -507,7 +544,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public boolean isSuitableForCloudlet(final Cloudlet cloudlet) {
         return getNumberOfPes() >= cloudlet.getNumberOfPes() &&
-               storage.getAvailableResource() >= cloudlet.getFileSize();
+            storage.getAvailableResource() >= cloudlet.getFileSize();
     }
 
     @Override
@@ -550,7 +587,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public List<ResourceManageable> getResources() {
-        if(getSimulation().isRunning() && resources.isEmpty()){
+        if (getSimulation().isRunning() && resources.isEmpty()) {
             resources = Arrays.asList(ram, bw, storage, processor);
         }
 
@@ -565,7 +602,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public Vm addOnHostDeallocationListener(final EventListener<VmHostEventInfo> listener) {
-        if(listener.equals(EventListener.NULL)){
+        if (listener.equals(EventListener.NULL)) {
             return this;
         }
 
@@ -575,7 +612,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public Vm addOnCreationFailureListener(final EventListener<VmDatacenterEventInfo> listener) {
-        if(listener.equals(EventListener.NULL)){
+        if (listener.equals(EventListener.NULL)) {
             return this;
         }
 
@@ -585,7 +622,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public Vm addOnUpdateProcessingListener(final EventListener<VmHostEventInfo> listener) {
-        if(listener.equals(EventListener.NULL)){
+        if (listener.equals(EventListener.NULL)) {
             return this;
         }
 
@@ -664,7 +701,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public final void setSubmissionDelay(final double submissionDelay) {
-        if(submissionDelay < 0) {
+        if (submissionDelay < 0) {
             return;
         }
         this.submissionDelay = submissionDelay;
@@ -678,22 +715,21 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public void notifyOnHostDeallocationListeners(final Host deallocatedHost) {
         requireNonNull(deallocatedHost);
-        onHostDeallocationListeners.forEach(l -> l.update(VmHostEventInfo.of(l,this, deallocatedHost)));
+        onHostDeallocationListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this, deallocatedHost)));
     }
 
     /**
-         * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
-         */
+     * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
+     */
     public void notifyOnUpdateProcessingListeners() {
-        onUpdateProcessingListeners.forEach(l -> l.update(VmHostEventInfo.of(l,this)));
+        onUpdateProcessingListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this)));
     }
 
     @Override
     public void notifyOnCreationFailureListeners(final Datacenter failedDatacenter) {
         requireNonNull(failedDatacenter);
-        onCreationFailureListeners.forEach(l -> l.update(VmDatacenterEventInfo.of(l,this, failedDatacenter)));
+        onCreationFailureListeners.forEach(l -> l.update(VmDatacenterEventInfo.of(l, this, failedDatacenter)));
     }
-
 
     @Override
     public HorizontalVmScaling getHorizontalScaling() {
@@ -741,12 +777,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     private <T extends VmScaling> T validateAndConfigureVmScaling(final T vmScaling) {
         requireNonNull(vmScaling);
-        if(vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this){
+        if (vmScaling.getVm() != null && vmScaling.getVm() != Vm.NULL && vmScaling.getVm() != this) {
             final String name = vmScaling.getClass().getSimpleName();
             throw new IllegalArgumentException(
-                "The "+name+" given is already linked to a Vm. " +
-                "Each Vm must have its own "+name+" object or none at all. " +
-                "Another "+name+" has to be provided for this Vm.");
+                "The " + name + " given is already linked to a Vm. " +
+                    "Each Vm must have its own " + name + " object or none at all. " +
+                    "Another " + name + " has to be provided for this Vm.");
         }
 
         vmScaling.setVm(this);

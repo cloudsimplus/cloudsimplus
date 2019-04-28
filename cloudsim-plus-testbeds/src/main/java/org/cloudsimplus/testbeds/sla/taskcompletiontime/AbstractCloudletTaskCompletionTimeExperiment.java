@@ -12,24 +12,25 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
-import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 import static java.util.Comparator.comparingDouble;
+import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner.VMS;
 
-public abstract class AbstractCloudletTaskCompletionTimeExperiment extends SimulationExperiment {
+abstract class AbstractCloudletTaskCompletionTimeExperiment extends Experiment {
+    private static final int HOSTS = 50;
     private static final int HOST_PES = 32;
-    private int hostsNumber;
-    private int vmsNumber;
 
     protected AbstractCloudletTaskCompletionTimeExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
+        setVmsByBrokerFunction(broker -> VMS);
+        setHostsNumber(HOSTS);
     }
 
     protected DatacenterBroker getFirstBroker() {
@@ -90,51 +91,24 @@ public abstract class AbstractCloudletTaskCompletionTimeExperiment extends Simul
         return cloudletTaskCompletionTime.getMean();
     }
 
-
-    @Override
-    protected final List<Vm> createVms(final DatacenterBroker broker) {
-        List<Vm> vmList = new ArrayList<>(vmsNumber);
-        for (int i = 0; i < vmsNumber; i++) {
-            Vm vm = createVm();
-            vmList.add(vm);
-        }
-        return vmList;
-    }
-
-    @Override
-    protected final List<Host> createHosts() {
-        final List<Host> hostList = new ArrayList<>(hostsNumber);
-        for (int i = 0; i < hostsNumber; i++) {
-            hostList.add(createHost());
-        }
-        return hostList;
-    }
-
-    @Override
-    protected final DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(getCloudSim());
-    }
-
-    protected final Host createHost() {
+    protected final Host createHost(final int id) {
         final List<Pe> pesList = new ArrayList<>(HOST_PES);
+
         for (int i = 0; i < HOST_PES; i++) {
             pesList.add(new PeSimple(100000, new PeProvisionerSimple()));
         }
 
-        final Host h = new HostSimple(40960, 10000000, 10000000, pesList)
-                .setRamProvisioner(new ResourceProvisionerSimple())
-                .setBwProvisioner(new ResourceProvisionerSimple())
-                .setVmScheduler(new VmSchedulerTimeShared());
-        return h;
+        final Host host = new HostSimple(40960, 10000000, 10000000, pesList)
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared());
+        host.setId(id);
+        return host;
     }
 
-    protected abstract Vm createVm();
-
-    protected final void setHostsNumber(final int hostsNumber) {
-        this.hostsNumber = hostsNumber;
+    @Override
+    protected final DatacenterBroker createBroker() {
+        return new DatacenterBrokerSimple(getSimulation());
     }
 
-    protected final void setVmsNumber(final int vmsNumber) {
-        this.vmsNumber = vmsNumber;
-    }
 }

@@ -63,7 +63,7 @@ import java.util.function.Function;
  * to get the time delay a VM will be destroyed after becoming idle.
  * Setting a delay before destroying an idle VM
  * gives dynamically arrived Cloudltes the opportunity to possibly
- * run inside such a VM. In this case, the VM stay idle for a
+ * run inside such a VM. In this case, the VM stays idle for a
  * period of time to balance the load of arrived Cloudlets
  * or even to enable fault tolerance.</p>
  *
@@ -121,25 +121,10 @@ public class MultipleBrokers1 {
 
     /**
      * Creates VMs and Cloudlets for each DatacenterBroker.
-     * It enables you to define when a broker should destroy
-     * an idle VM, according to a given
-     * {@link DatacenterBroker#setVmDestructionDelayFunction(Function) VM Destruction Delay Function}.
-     *
-     * <p>See <a href="https://github.com/manoelcampos/cloudsim-plus/issues/99">Issue #99</a> for more details.</p>
-     *
-     * @see DatacenterBroker#setVmDestructionDelayFunction(Function)
      */
     private void createVmsAndCloudlets() {
         int i = 0;
         for (DatacenterBroker broker : brokers) {
-            /*
-             * You can use one of these two instructions below
-             * to set a specific delay or
-             * none of them at all to accept the default behavior.
-             */
-            //broker.setVmDestructionDelayFunction(vm -> 0.0);
-            broker.setVmDestructionDelayFunction(vm -> 2.0);
-
             vmList.addAll(createAndSubmitVms(broker));
             cloudletList.addAll(createAndSubmitCloudlets(broker, CLOUDLET_LENGTH*CLOUDLETS*i++));
         }
@@ -161,10 +146,29 @@ public class MultipleBrokers1 {
         System.out.println();
     }
 
+    /**
+     * Creates the list of {@link DatacenterBroker}s.
+     * It enables you to define when a broker should destroy
+     * an idle VM, according to a given
+     * {@link DatacenterBroker#setVmDestructionDelayFunction(Function) VM Destruction Delay Function}.
+     *
+     * <p>See <a href="https://github.com/manoelcampos/cloudsim-plus/issues/99">Issue #99</a> for more details.</p>
+     *
+     * @see DatacenterBroker#setVmDestructionDelayFunction(Function)
+     * @return the List of created brokers
+     */
     private List<DatacenterBroker> createBrokers() {
         final List<DatacenterBroker> list = new ArrayList<>(BROKERS);
         for(int i = 0; i < BROKERS; i++) {
-            list.add(new DatacenterBrokerSimple(simulation));
+            final DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
+            /*
+             * You can use one of these two instructions below
+             * to set a specific delay or
+             * none of them at all to accept the default behavior.
+             */
+            //broker.setVmDestructionDelayFunction(vm -> 0.0);
+            broker.setVmDestructionDelayFunction(vm -> 4.0);
+            list.add(broker);
         }
 
         return list;

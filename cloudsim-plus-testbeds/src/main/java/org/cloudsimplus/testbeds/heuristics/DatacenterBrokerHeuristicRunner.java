@@ -24,21 +24,20 @@
 package org.cloudsimplus.testbeds.heuristics;
 
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
-
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.NormalDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.Heuristic;
+import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
-import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
  * Runs the {@link DatacenterBrokerHeuristicExperiment} the number of times
@@ -141,7 +140,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     private int[] createCloudletPesArray() {
         int[] pesArray = new int[CLOUDLETS_TO_CREATE];
         int totalNumberOfPes = 0;
-        final ContinuousDistribution random = new NormalDistr(getBaseSeed(), 2, 0.6);
+        final ContinuousDistribution random = new NormalDistr(2, 0.6, getBaseSeed());
         for (int i = 0; i < CLOUDLETS_TO_CREATE; i++) {
             pesArray[i] = (int) random.sample() + 1;
             totalNumberOfPes += pesArray[i];
@@ -192,14 +191,13 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected DatacenterBrokerHeuristicExperiment createExperiment(int i) {
-        final ContinuousDistribution prng = createRandomGen(i, 0, 1);
         final DatacenterBrokerHeuristicExperiment exp
-                = new DatacenterBrokerHeuristicExperiment(i, this)
-                        .setRandomGen(prng)
-                        .setCloudletPesArray(cloudletPesArray)
-                        .setVmPesArray(vmPesArray);
+                = new DatacenterBrokerHeuristicExperiment(i, this, vmPesArray)
+                        .setCloudletPesArray(cloudletPesArray);
+        final ContinuousDistribution prng = createRandomGen(i, 0, 1);
 
-        exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
+        exp.setRandomGen(prng)
+           .setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 
@@ -303,7 +301,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      *
      * @param exp the experiment to get the list of Cloudlets and Vm's
      */
-    public void createRoundRobinSolutionIfNotCreatedYet(SimulationExperiment exp) {
+    public void createRoundRobinSolutionIfNotCreatedYet(Experiment exp) {
         if (roundRobinSolution != null) {
             return;
         }

@@ -142,7 +142,7 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     }
 
     @Override
-    public boolean isBuzy() {
+    public boolean isBusy() {
         return Status.BUSY.equals(status);
     }
 }

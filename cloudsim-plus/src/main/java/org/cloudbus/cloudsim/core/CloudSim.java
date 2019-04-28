@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.slf4j.Logger;
@@ -36,7 +37,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "4.3.0";
+    public static final String VERSION = "4.3.2";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
@@ -85,6 +86,8 @@ public class CloudSim implements Simulation {
      * The time the simulation should be terminated (in seconds).
      */
     private double terminationTime = -1;
+
+    private double lastCloudletProcessingUpdate;
 
     /**
      * The time the simulation is really expected to finish.
@@ -222,7 +225,7 @@ public class CloudSim implements Simulation {
                 "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
-        System.out.println("Starting CloudSim Plus " + VERSION);
+        LOGGER.info("{}================== Starting CloudSim Plus {} =================={}", System.lineSeparator(), VERSION,  System.lineSeparator());
         startEntitiesIfNotRunning();
         this.alreadyRunOnce = true;
 
@@ -263,7 +266,9 @@ public class CloudSim implements Simulation {
         while (runClockTickAndProcessFutureEvents() || isToWaitClockToReachTerminationTime()) {
             notifyOnSimulationStartListeners(); //it's ensured to run just once.
             if(abortRequested){
-                LOGGER.info("{}================== Simulation aborted under request at time {} ==================", System.lineSeparator(), clock);
+                LOGGER.info(
+                    "{}================================================== Simulation aborted under request at time {} ==================================================",
+                    System.lineSeparator(), clock);
                 return false;
             }
 
@@ -312,7 +317,15 @@ public class CloudSim implements Simulation {
                                 ? extra + " in reason of an explicit request to terminate() or terminateAt()"
                                 : "";
 
-        System.out.printf("%s================== %s%s ==================%s", System.lineSeparator(), msg1, msg2, System.lineSeparator());
+        if(terminationTime > 0 && clock > lastCloudletProcessingUpdate + Conversion.minutesToSeconds(60)){
+            LOGGER.warn(
+                "Your simulation termination time was set to {} but the last time a Cloudlet has processed was {}. "+
+                "If you think your simulation is taking to long to finish, " +
+                "maybe it's because you set a too long termination time and new events aren't arriving so far.",
+                terminationTime, lastCloudletProcessingUpdate);
+        }
+        LOGGER.info("{}================== {}{} =================={}", System.lineSeparator(), msg1, msg2, System.lineSeparator());
+
     }
 
     @Override
@@ -427,7 +440,7 @@ public class CloudSim implements Simulation {
     private boolean runClockTickAndProcessFutureEvents() {
         executeRunnableEntities();
         if (!future.isEmpty()) {
-            future.stream().findFirst().ifPresent(this::processFutureEventsHappeningAtSameTimeOfTheFirstOne);
+            processFutureEventsHappeningAtSameTimeOfTheFirstOne(future.first());
             return true;
         }
 
@@ -619,7 +632,9 @@ public class CloudSim implements Simulation {
         setClock(evt.getTime());
 
         processEventByType(evt);
-        onEventProcessingListeners.forEach(listener -> listener.update(evt));
+        for (final EventListener<SimEvent> listener : onEventProcessingListeners) {
+            listener.update(evt);
+        }
     }
 
     /**
@@ -910,5 +925,18 @@ public class CloudSim implements Simulation {
     @Override
     public void setNetworkTopology(final NetworkTopology networkTopology) {
         this.networkTopology = networkTopology;
+    }
+
+    @Override
+    public double getLastCloudletProcessingUpdate() {
+        return lastCloudletProcessingUpdate;
+    }
+
+    /**
+     * Sets the last time (in seconds) some Cloudlet was processed in the simulation.
+     * @param lastCloudletProcessingUpdate the time to set (in seconds)
+     */
+    public void setLastCloudletProcessingUpdate(final double lastCloudletProcessingUpdate) {
+        this.lastCloudletProcessingUpdate = lastCloudletProcessingUpdate;
     }
 }

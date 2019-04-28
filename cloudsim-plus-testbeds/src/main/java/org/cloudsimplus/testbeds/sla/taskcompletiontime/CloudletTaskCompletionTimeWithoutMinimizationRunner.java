@@ -37,7 +37,7 @@ import java.util.Map;
  *
  * @author raysaoliveira
  */
-public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWithoutMinimizationExperiment> {
+class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWithoutMinimizationExperiment> {
 
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.

@@ -38,13 +38,14 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
 import org.cloudsimplus.heuristics.HeuristicSolution;
-import org.cloudsimplus.testbeds.SimulationExperiment;
+import org.cloudsimplus.testbeds.Experiment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -72,8 +73,8 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  */
-public final class DatacenterBrokerHeuristicExperiment extends SimulationExperiment {
-    private static final int HOSTS_TO_CREATE = 100;
+final class DatacenterBrokerHeuristicExperiment extends Experiment {
+    private static final int HOSTS = 100;
 
     /**
      * Simulated Annealing (SA) parameters.
@@ -84,7 +85,8 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
     public static final int SA_NEIGHBORHOOD_SEARCHES = 50;
 
     /**
-     * @see #setVmPesArray(int[])
+     * The array with Number of PEs for each VM to create.
+     * The length of the array defines the number of VMs to create.
      */
     private int vmPesArray[];
 
@@ -107,8 +109,13 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
      * @param runner the runner that will be in charge to setup and run the
      * experiment
      */
-    DatacenterBrokerHeuristicExperiment(int index, DatacenterBrokerHeuristicRunner runner) {
+    DatacenterBrokerHeuristicExperiment(final int index, final DatacenterBrokerHeuristicRunner runner, final int []vmPesArray) {
         super(index, runner);
+        this.vmPesArray = vmPesArray;
+        /*The number of VMs to create is equal to the size of the pes array,
+        creating one VM with each number of PEs defined in the array*/
+        setVmsByBrokerFunction(broker -> vmPesArray.length);
+        setHostsNumber(HOSTS);
         this.randomGen = new UniformDistr(0, 1);
         createSimulatedAnnealingHeuristic();
     }
@@ -122,81 +129,66 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
 
     @Override
     protected DatacenterBrokerHeuristic createBroker() {
-        return new DatacenterBrokerHeuristic(getCloudSim()).setHeuristic(heuristic);
+        return new DatacenterBrokerHeuristic(getSimulation()).setHeuristic(heuristic);
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets() {
-        final List<Cloudlet> list = new ArrayList<>(cloudletPesArray.length);
-        for (final int pes : cloudletPesArray) {
-            list.add(createCloudlet(pes));
-        }
-
-        return list;
-    }
-
-    /**
-     * Creates a Cloudlet with the given parameters.
-     *
-     * @param cloudletPes number of PEs for the Cloudlet to be created by the
-     * Supplier function
-     * @return the created Cloudlet
-     */
-    private Cloudlet createCloudlet(int cloudletPes) {
-        final long length = 400000; //in Million Instructions (MI)
-        final long fileSize = 300; //Size (in bytes) before execution
-        final long outputSize = 300; //Size (in bytes) after execution
-        //Defines how CPU, RAM and Bandwidth resources are used
-        //Sets the same utilization model for all these resources.
-        final UtilizationModel utilization = new UtilizationModelFull();
-        return new CloudletSimple(length, cloudletPes)
-                .setFileSize(fileSize)
-                .setOutputSize(outputSize)
-                .setUtilizationModel(utilization);
-    }
-
-    @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
-        final List<Vm> list = new ArrayList<>(vmPesArray.length);
-        for (final int pes : vmPesArray) {
-            list.add(createVm(pes));
-        }
-        return list;
-    }
-
-    private Vm createVm(int vmPes) {
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
+        final int i = (int)(randomGen.sample()*vmPesArray.length);
         final long mips = 1000;
-        final long storage = 10000; // vm image size (MEGA)
-        final int ram = 512; // vm memory (MEGA)
-        final long bw = 1000; // vm bandwidth
-        return new VmSimple(mips, vmPes)
+        final long storage = 10000; // vm image size (MB)
+        final int ram = 512; // vm memory (MB)
+        final long bw = 1000; // vm bandwidth (Mbps)
+        return new VmSimple(id, mips, vmPesArray[i])
                 .setRam(ram).setBw(bw).setSize(storage)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
 
     @Override
-    protected List<Host> createHosts() {
-        final List<Host> list = new ArrayList<>(HOSTS_TO_CREATE);
-        for (int i = 0; i < HOSTS_TO_CREATE; i++) {
-            list.add(createHost(getHostList().size()+i));
+    protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
+        final List<Cloudlet> list = new ArrayList<>(cloudletPesArray.length);
+        for (int id = getCloudletList().size(); id < getCloudletList().size() + cloudletPesArray.length; id++) {
+            list.add(createCloudlet(broker));
         }
+
         return list;
     }
 
-    private Host createHost(int id) {
+    @Override
+    protected Cloudlet createCloudlet(final DatacenterBroker broker) {
+        final int i = (int)(randomGen.sample()*cloudletPesArray.length);
+        final long length = 400000; //in Million Instructions (MI)
+        final long fileSize = 300; //Size (in bytes) before execution
+        final long outputSize = 300; //Size (in bytes) after execution
+
+        final UtilizationModel utilizationFull = new UtilizationModelFull();
+        final UtilizationModel utilizationDynamic = new UtilizationModelDynamic(0.1);
+        return new CloudletSimple(nextCloudletId(), length, cloudletPesArray[i])
+            .setFileSize(fileSize)
+            .setOutputSize(outputSize)
+            .setUtilizationModelRam(utilizationDynamic)
+            .setUtilizationModelBw(utilizationDynamic)
+            .setUtilizationModelCpu(utilizationFull);
+    }
+
+    @Override
+    protected Host createHost(final int id) {
         final long mips = 1000;
         final long ram = 2048; // MEGA
         final long storage = 1000000;
         final long bw = 10000;
         final List<Pe> peList = new ArrayList<>();
+
         for (int i = 0; i < 8; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(ram, bw, storage, peList)
+        final Host host = new HostSimple(ram, bw, storage, peList)
                 .setRamProvisioner(new ResourceProvisionerSimple())
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
+        host.setId(id);
+        return host;
     }
 
     @Override
@@ -222,20 +214,8 @@ public final class DatacenterBrokerHeuristicExperiment extends SimulationExperim
      *
      * @param randomGen the PRNG to set
      */
-    public DatacenterBrokerHeuristicExperiment setRandomGen(ContinuousDistribution randomGen) {
+    public DatacenterBrokerHeuristicExperiment setRandomGen(final ContinuousDistribution randomGen) {
         this.randomGen = randomGen;
-        return this;
-    }
-
-    /**
-     * Sets the array with Number of PEs for each VM to create. The length of
-     * the array defines the number of VMs to create.
-     *
-     * @param vmPes VMs PEs array to set
-     * @return
-     */
-    public DatacenterBrokerHeuristicExperiment setVmPesArray(int... vmPes) {
-        this.vmPesArray = vmPes;
         return this;
     }
 

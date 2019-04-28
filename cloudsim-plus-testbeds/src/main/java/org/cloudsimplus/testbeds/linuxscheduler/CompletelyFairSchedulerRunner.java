@@ -37,7 +37,7 @@ import static org.cloudsimplus.testbeds.linuxscheduler.CloudletSchedulerExperime
 class CompletelyFairSchedulerRunner extends CloudletSchedulerRunner<CompletelyFairSchedulerExperiment> {
     /**
      * Starts the execution of the experiments
-     * the number of times defines in {@link #numberOfSimulationRuns}.
+     * the number of times defines in {@link #getSimulationRuns()}.
      * @param args command line arguments
      */
     public static void main(String[] args) {

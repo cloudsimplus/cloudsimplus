@@ -315,7 +315,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         final CloudInformationService cis = datacenterForLaterHosts.getSimulation().getCloudInfoService();
         laterAvailableHosts.forEach(host -> cis.schedule(datacenterForLaterHosts, host.getStartTime(), CloudSimTags.HOST_ADD, host));
 
-        //Sends a request to every Datacenter to try remove the Hosts (since we don't have how to know where each Host is)
+        //Sends a request to every Datacenter to try remove the Hosts (since we don't have how to know which Datacenter each Host is)
         cis.getDatacenterList().forEach(this::sendHostsRemovalRequests);
     }
 

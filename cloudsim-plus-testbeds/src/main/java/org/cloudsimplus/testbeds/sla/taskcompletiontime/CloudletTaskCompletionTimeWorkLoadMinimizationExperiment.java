@@ -56,10 +56,7 @@ import static org.cloudsimplus.testbeds.sla.taskcompletiontime.CloudletTaskCompl
  *
  * @author raysaoliveira
  */
-public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends AbstractCloudletTaskCompletionTimeExperiment {
-    private static final int HOSTS = 50;
-
-    private int createsVms;
+class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends AbstractCloudletTaskCompletionTimeExperiment {
 
     /**
      * The file containing the SLA Contract in JSON format.
@@ -87,8 +84,6 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Ab
 
     private CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(final int index, final ExperimentRunner runner, final long seed) {
         super(index, runner, seed);
-        setHostsNumber(HOSTS);
-        setVmsNumber(VMS);
         randVm = new UniformDistr(getSeed()+1);
         randMip = new UniformDistr(getSeed()+2);
         contractsMap = new HashMap<>();
@@ -129,7 +124,7 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Ab
     }
 
     @Override
-    protected List<Cloudlet> createCloudlets() {
+    protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance("METACENTRUM-2009-2.swf", 1);
         reader.setPredicate(cloudlet -> cloudlet.getLength() > 1000);
         reader.setMaxLinesToRead(CLOUDLETS);
@@ -138,6 +133,10 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Ab
         return list;
     }
 
+    /** The method is not being used for this experiment because the Cloudlets are created by the workload reader. */
+    @Override
+    protected Cloudlet createCloudlet(final DatacenterBroker broker) { return null; }
+
     /**
      * Selects a VM to run a Cloudlet that will minimize the Cloudlet response
      * time.
@@ -145,7 +144,7 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Ab
      * @param cl the Cloudlet to select a VM to
      * @return the selected Vm
      */
-    private Vm selectVmForCloudlet(Cloudlet cl) {
+    private Vm selectVmForCloudlet(final Cloudlet cl) {
         final List<Vm> execVms = cl.getBroker().getVmExecList();
 
         final Comparator<Vm> sortByFreePesNumber = comparingLong(this::getExpectedNumberOfFreeVmPes);
@@ -164,7 +163,7 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Ab
             .orElse(mostFreePesVm);
     }
 
-    private double getExpectedCloudletCompletionTime(Cloudlet cloudlet, Vm vm) {
+    private double getExpectedCloudletCompletionTime(final Cloudlet cloudlet, final Vm vm) {
         return cloudlet.getLength() / vm.getMips();
     }
 
@@ -187,8 +186,7 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends Ab
     }
 
     @Override
-    protected Vm createVm() {
-        final int id = createsVms++;
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
         final int pesId = (int) (randVm.sample() * VM_PES.length);
         final int mipsId = (int) (randMip.sample() * VM_MIPS.length);
 

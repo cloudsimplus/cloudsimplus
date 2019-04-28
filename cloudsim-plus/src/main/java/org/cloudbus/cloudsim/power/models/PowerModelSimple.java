@@ -23,12 +23,12 @@ public class PowerModelSimple extends PowerModelAbstract {
     private static final double ONE_HUNDRED = 100.0;
 
     /**
-     * A function defining how the power consumption is computed based on the CPU utilization.
-     * When called, this function receives the utilization percentage in scale from [0 to 100]
-     * and must return the base power consumption for that CPU utilization.
-     * The function is only accountable to compute the base energy consumption
-     * because the total energy consumption depends on other factors such as
-     * the {@link #getStaticPower() static power} consumed by the Host,
+     * A function defining how the power supply is computed based on the CPU utilization.
+     * When called, this function receives the CPU utilization percentage in scale from [0 to 100]
+     * and must return the base power supply for that CPU utilization.
+     * The function is only accountable to compute the base power supply
+     * because the total power depends on other factors such as
+     * the {@link #getStaticPower() static power} supplied by the Host,
      * independent of its CPU usage.
      */
     private final UnaryOperator<Double> powerFunction;
@@ -46,21 +46,20 @@ public class PowerModelSimple extends PowerModelAbstract {
     /**
      * Instantiates a PowerModelSimple.
      *
-     * @param maxPower           the max power that can be consumed in Watt-Second (Ws).
-     * @param staticPowerPercent the static power usage percentage between [0 and 1].
-     * @param powerFunction      A function defining how the power consumption is computed based on the CPU utilization.
-     *                           When called, this function receives the utilization percentage in scale from [0 to 100]
-     *                           and must return the base power consumption for that CPU utilization.
-     *                           The function is only accountable to compute the base energy consumption
-     *                           because the total energy consumption depends on other factors such as
-     *                           the {@link #getStaticPower() static power} consumed by the Host,
+     * @param maxPower           the max power that can be supplied in Watts (W).
+     * @param staticPowerPercent the static power supply percentage between [0 and 1].
+     * @param powerFunction      A function defining how the power supply is computed based on the CPU utilization.
+     *                           When called, this function receives the CPU utilization percentage in scale from [0 to 100]
+     *                           and must return the base power supply for that CPU utilization.
+     *                           The function is only accountable to compute the base power supply
+     *                           because the total power depends on other factors such as
+     *                           the {@link #getStaticPower() static power} supplied by the Host,
      *                           independent of its CPU usage.
      */
     public PowerModelSimple(
         final double maxPower,
         final double staticPowerPercent,
-        final UnaryOperator<Double> powerFunction)
-    {
+        final UnaryOperator<Double> powerFunction) {
         super();
         this.powerFunction = Objects.requireNonNull(powerFunction);
         setMaxPower(maxPower);
@@ -73,12 +72,12 @@ public class PowerModelSimple extends PowerModelAbstract {
     }
 
     /**
-     * Sets the max power that can be consumed in Watt-Second (Ws).
+     * Sets the max power that can be supplied in Watts (w).
      *
-     * @param maxPower the new max power in Watt-Second (Ws)
+     * @param maxPower the new max power in Watts (w)
      */
     private void setMaxPower(final double maxPower) {
-        if(maxPower < 0){
+        if (maxPower < 0) {
             throw new IllegalArgumentException("Maximum power consumption cannot be negative.");
         }
 
@@ -86,43 +85,44 @@ public class PowerModelSimple extends PowerModelAbstract {
     }
 
     /**
-     * Gets the static power consumption percentage (between 0 and 1) that is not dependent of resource usage.
-     * It is the amount of energy consumed even when the host is idle.
-     * @return the static power consumption percentage (between 0 and 1)
+     * Gets the static power supply percentage (between 0 and 1) that is not dependent of resource usage.
+     * It is the percentage of power supplied even when the host is idle.
+     *
+     * @return the static power supply percentage (between 0 and 1)
      */
     public double getStaticPowerPercent() {
         return staticPowerPercent;
     }
 
     /**
-     * Sets the static power consumption percentage (between 0 and 1) that is not dependent of resource usage.
-     * It is the amount of energy consumed even when the host is idle.
+     * Sets the static power supply percentage (between 0 and 1) that is not dependent of resource usage.
+     * It is the percentage of power supplied even when the host is idle.
      *
-     * @param staticPowerPercent the value to set (between 0 and 1)
+     * @param staticPowerPercent the static power supply percentage (between 0 and 1)
      */
     private void setStaticPowerPercent(final double staticPowerPercent) {
-        if(staticPowerPercent < 0 || staticPowerPercent > 1){
+        if (staticPowerPercent < 0 || staticPowerPercent > 1) {
             throw new IllegalArgumentException("Static power percentage must be between 0 and 1.");
         }
         this.staticPowerPercent = staticPowerPercent;
     }
 
     /**
-     * Gets the static power consumption in Watt-Second (Ws) that is not dependent of resource usage,
+     * Gets the static power supply in Watts that is not dependent of resource usage,
      * according to the {@link #getStaticPowerPercent()}.
-     * It is the amount of energy consumed even when the host is idle.
+     * It is the amount of power supplied even when the host is idle.
      *
-     * @return the static power usage in Watt-Second (Ws)
+     * @return the static power supply in Watts (W)
      */
     public final double getStaticPower() {
         return staticPowerPercent * maxPower;
     }
 
     /**
-     * Gets the constant which represents the power consumption
-     * for each fraction of resource used in Watt-Second (Ws).
+     * Gets the constant which represents the power supply
+     * for each fraction of resource used in Watts (W).
      *
-     * @return the power consumption constant in Watt-Second (Ws)
+     * @return the power supply constant in Watts (W)
      */
     protected double getConstant() {
         return (maxPower - getStaticPower()) / powerFunction.apply(ONE_HUNDRED);
@@ -130,6 +130,6 @@ public class PowerModelSimple extends PowerModelAbstract {
 
     @Override
     protected double getPowerInternal(final double utilization) throws IllegalArgumentException {
-        return getStaticPower() + getConstant() * powerFunction.apply(utilization*ONE_HUNDRED);
+        return getStaticPower() + getConstant() * powerFunction.apply(utilization * ONE_HUNDRED);
     }
 }

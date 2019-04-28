@@ -550,16 +550,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm);
 
-        if (ackRequested) {
-            send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
-        }
-
         if (hostAllocatedForVm) {
             if (!vm.isCreated()) {
                 vm.setCreated(true);
             }
 
             vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
+        }
+
+        if (ackRequested) {
+            /* Acknowledges that the requested was received by the Datacenter
+             * (it's not saying the VM was created or not).
+             * To check that, use Vm.isCreated(). */
+            send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
         }
 
         return hostAllocatedForVm;
@@ -584,7 +587,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         final String warningMsg = generateNotFinishedCloudletsWarning(vm);
         final String msg = String.format(
-                "%.2f: %s: %s destroyed on %s. %s\n",
+                "%.2f: %s: %s destroyed on %s. %s",
                 getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
         if(warningMsg.isEmpty())
             LOGGER.info(msg);
@@ -599,7 +602,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         return String.format(
                 "It had a total of %d cloudlets (running + waiting). %s", cloudletsNoFinished,
-                "Some events may have been missed. Try decreasing CloudSim's minTimeBetweenEvents attribute.");
+                "Some events may have been missed. You can try: " +
+                "(a) decreasing CloudSim's minTimeBetweenEvents and/or Datacenter's schedulingInterval attribute; " +
+                "(b) increasing broker's Vm destruction delay for idle VMs if you set it to zero; " +
+                "(c) defining Cloudlets with smaller length (your Datacenter's scheduling interval may be smaller than the time to finish some Cloudlets).");
     }
 
     /**
@@ -925,6 +931,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
+    public long getActiveHostsNumber(){
+        return hostList.stream().filter(Host::isActive).count();
+    }
+
+    @Override
     public Host getHostById(final long id) {
         return hostList.stream().filter(host -> host.getId()==id).findFirst().map(host -> (Host)host).orElse(Host.NULL);
     }
@@ -947,9 +958,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         host.setDatacenter(this);
-        if(host.getStartTime() <= 0) {
-            host.setStartTime((int) getSimulation().clock());
-        }
         ((List<T>)hostList).add(host);
 
         //Sets the Datacenter again so that the new Host is registered internally on the VmAllocationPolicy

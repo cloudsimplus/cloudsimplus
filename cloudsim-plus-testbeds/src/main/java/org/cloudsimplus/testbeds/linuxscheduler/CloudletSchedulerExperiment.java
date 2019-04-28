@@ -42,14 +42,14 @@ import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
+import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
-import org.cloudsimplus.testbeds.SimulationExperiment;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 
 /**
@@ -59,7 +59,7 @@ import java.util.function.Supplier;
  *
  * <p>All the extending experiment classes will create the exact same simulation scenario
  * once all seeds and configurations are shared among them. Such experiments will create
- * the number of Hosts and Vms defined by {@link #HOSTS_TO_CREATE} and {@link #VMS_TO_CREATE}.
+ * the number of Hosts and Vms defined by {@link #HOSTS} and {@link #VMS}.
  * The number of Cloudlets is defined randomly for each experiment. The {@link CloudletSchedulerRunner} is in charge
  * to instantiate the experiments and set the general parameters (such as the number of Cloudlets).
  * All Cloudlets will have the same length defined by {@link #CLOUDLET_LENGHT_MI}, but the number
@@ -76,7 +76,7 @@ import java.util.function.Supplier;
  * @see CloudletSchedulerTimeSharedExperiment
  * @see CompletelyFairSchedulerExperiment
  */
-abstract class CloudletSchedulerExperiment extends SimulationExperiment {
+abstract class CloudletSchedulerExperiment extends Experiment {
     protected static final int HOST_PES = 32;
     protected static final int VM_PES = HOST_PES;
     protected static final long VM_MIPS = 1000;
@@ -84,16 +84,18 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
     protected static final long VM_RAM = 512; // vm memory (MEGA)
     protected static final long VM_BW = 1000; // vm bandwidth
     protected static final int MAX_CLOUDLET_PES = VM_PES/8 + 1;
-    protected static final int HOSTS_TO_CREATE = 1;
-    protected static final int VMS_TO_CREATE = 1;
+    protected static final int HOSTS = 1;
+    protected static final int VMS = 1;
     protected static final long CLOUDLET_LENGHT_MI = 10000; //in Million Instructions (MI)
 
     private ContinuousDistribution cloudletPesPrng;
     private int numCloudletsToCreate;
 
-    CloudletSchedulerExperiment(int index, ExperimentRunner runner) {
+    CloudletSchedulerExperiment(final int index, final ExperimentRunner runner) {
         super(index, runner);
         this.cloudletPesPrng = new UniformDistr(0, 1);
+        setVmsByBrokerFunction(broker -> VMS);
+        setHostsNumber(HOSTS);
     }
 
     @Override
@@ -107,19 +109,11 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
 
     @Override
     protected DatacenterBroker createBroker() {
-        return new DatacenterBrokerSimple(getCloudSim());
+        return new DatacenterBrokerSimple(getSimulation());
     }
 
     @Override
-    protected List<Host> createHosts()  {
-        final List<Host> list = new ArrayList<>(HOSTS_TO_CREATE);
-        for (int i = 0; i < HOSTS_TO_CREATE; i++) {
-            list.add(createHost(getHostList().size()+i));
-        }
-        return list;
-    }
-
-    private Host createHost(int id) {
+    protected Host createHost(final int id) {
         final long mips = 1000; // capacity of each CPU core (in Million Instructions per Second)
         final long ram = 2048; // host memory (MEGA)
         final long storage = 1000000; // host storage (MEGA)
@@ -129,52 +123,34 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
         }
 
-        return new HostSimple(ram, bw, storage, peList)
+        final Host host = new HostSimple(ram, bw, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
+        host.setId(id);
+        return host;
     }
 
     @Override
-    protected List<Vm> createVms(DatacenterBroker broker) {
-        final List<Vm> list = new ArrayList<>(VMS_TO_CREATE);
-        for(int i = 0; i < VMS_TO_CREATE; i++) {
-            list.add(createVm(broker));
-        }
-        return list;
-    }
-
-    /**
-     * Gets a {@link Supplier} function that is able to create a new Vm.
-     *
-     * @return the Supplier function that can create a Vm when requested
-     * @param broker
-     */
-    protected abstract Vm createVm(DatacenterBroker broker);
-
-    @Override
-    protected List<Cloudlet> createCloudlets() {
+    protected List<Cloudlet> createCloudlets(final DatacenterBroker broker) {
         final List<Cloudlet> list = new ArrayList<>(numCloudletsToCreate);
-        for(int i = 0; i < numCloudletsToCreate; i++) {
-            list.add(createCloudlet());
+        for (int id = getCloudletList().size(); id < getCloudletList().size() + numCloudletsToCreate; id++) {
+            list.add(createCloudlet(broker));
         }
 
         return list;
     }
 
-    /**
-     * Creates a Cloudlet with the given parameters.
-     *
-     * @return the created Cloudlet
-     */
-    private Cloudlet createCloudlet() {
+    @Override
+    protected Cloudlet createCloudlet(final DatacenterBroker broker) {
         final long fileSize = 300; //Size (in bytes) before execution
         final long outputSize = 300; //Size (in bytes) after execution
         final int cloudletPes = (int)cloudletPesPrng.sample();
+
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
         final UtilizationModel utilization = new UtilizationModelFull();
-        return new CloudletSimple(CLOUDLET_LENGHT_MI, cloudletPes)
+        return new CloudletSimple(nextCloudletId(), CLOUDLET_LENGHT_MI, cloudletPes)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModel(utilization);
@@ -184,14 +160,22 @@ abstract class CloudletSchedulerExperiment extends SimulationExperiment {
         return cloudletPesPrng;
     }
 
-    public CloudletSchedulerExperiment setCloudletPesPrng(ContinuousDistribution cloudletPesPrng) {
+    public CloudletSchedulerExperiment setCloudletPesPrng(final ContinuousDistribution cloudletPesPrng) {
         this.cloudletPesPrng = cloudletPesPrng;
         return this;
     }
 
-    public CloudletSchedulerExperiment setNumCloudletsToCreate(int numCloudletsToCreate) {
+    public CloudletSchedulerExperiment setNumCloudletsToCreate(final int numCloudletsToCreate) {
         this.numCloudletsToCreate = numCloudletsToCreate;
         return this;
+    }
+
+    @Override
+    protected Vm createVm(final DatacenterBroker broker, final int id) {
+        return new VmSimple(id, VM_MIPS, VM_PES)
+                      .setRam(VM_RAM)
+                      .setBw(VM_BW)
+                      .setSize(VM_STORAGE);
     }
 
     public int getNumCloudletsToCreate() {

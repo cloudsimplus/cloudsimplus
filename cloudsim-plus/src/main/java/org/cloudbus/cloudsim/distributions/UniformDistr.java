@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.distributions;
 
+import org.apache.commons.lang3.Range;
 import org.apache.commons.math3.distribution.UniformRealDistribution;
 
 import java.util.Random;
@@ -43,6 +44,27 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      */
     public UniformDistr(final long seed) {
         this(0, 1, seed);
+    }
+
+    /**
+     * Creates new uniform pseudo random number generator
+     * that produces values between a given {@link Range}.
+     *
+     * @param range the {@link Range} to generate random values in between
+     */
+    public UniformDistr(final Range<Double> range) {
+        this(range, -1);
+    }
+
+    /**
+     * Creates new uniform pseudo random number generator
+     * that produces values between a given {@link Range}.
+     *
+     * @param range the {@link Range} to generate random values in between
+     * @param seed simulation seed to be used
+     */
+    public UniformDistr(final Range<Double> range, final long seed) {
+        this(range.getMinimum(), range.getMaximum()+1, seed);
     }
 
     /**

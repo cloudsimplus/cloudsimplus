@@ -443,4 +443,9 @@ public interface Simulation {
      * @return the number of future events which match the predicate
      */
     long getNumberOfFutureEvents(Predicate<SimEvent> predicate);
+
+    /**
+     * Gets the last time (in seconds) some Cloudlet was processed in the simulation.
+     */
+    double getLastCloudletProcessingUpdate();
 }

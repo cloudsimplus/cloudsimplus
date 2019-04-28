@@ -70,7 +70,20 @@ public class HostSimple implements Host {
 
     private boolean active;
     private boolean stateHistoryEnabled;
+
+    /** @see #getStartTime() */
+    private double startTime = -1;
+
+    /** @see #getShutdownTime() */
+    private double shutdownTime;
+
+    /** @see #getTotalUpTime() */
+    private double totalUpTime;
+
+    /** @see #getLastBusyTime() */
     private double lastBusyTime;
+
+    /** @see #getIdleShutdownDeadline() */
     private double idleShutdownDeadline;
 
     private final Ram ram;
@@ -120,39 +133,6 @@ public class HostSimple implements Host {
      */
     private double previousUtilizationMips;
 
-    /** @see #getStartTime() */
-    private double startTime;
-
-    /** @see #getShutdownTime() */
-    private double shutdownTime;
-
-    /**
-     * Creates a Host without a pre-defined ID,
-     * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage
-     * and enabling the host to be powered on or not.
-     *
-     * <p>It creates a {@link ResourceProvisionerSimple}
-     * for RAM and Bandwidth. Finally, it sets a {@link VmSchedulerSpaceShared} as default.
-     * The ID is automatically set when a List of Hosts is attached
-     * to a {@link Datacenter}.</p>
-     *
-     * @param peList the host's {@link Pe} list
-     * @param active define the Host activation status: true to power on, false to power off
-     *
-     * @see ChangeableId#setId(long)
-     * @see #setRamProvisioner(ResourceProvisioner)
-     * @see #setBwProvisioner(ResourceProvisioner)
-     * @see #setVmScheduler(VmScheduler)
-     * @see #setDefaultRamCapacity(long)
-     * @see #setDefaultBwCapacity(long)
-     * @see #setDefaultStorageCapacity(long)
-     */
-    public HostSimple(final List<Pe> peList, final boolean active) {
-        this(peList);
-        setActive(active);
-        this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
-    }
-
     /**
      * Creates and powers on a Host without a pre-defined ID,
      * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage.
@@ -172,7 +152,32 @@ public class HostSimple implements Host {
      * @see #setDefaultStorageCapacity(long)
      */
     public HostSimple(final List<Pe> peList) {
-        this(defaultRamCapacity, defaultBwCapacity, defaultStorageCapacity, peList);
+        this(peList, true);
+    }
+
+    /**
+     * Creates a Host without a pre-defined ID,
+     * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage
+     * and enabling the host to be powered on or not.
+     *
+     * <p>It creates a {@link ResourceProvisionerSimple}
+     * for RAM and Bandwidth. Finally, it sets a {@link VmSchedulerSpaceShared} as default.
+     * The ID is automatically set when a List of Hosts is attached
+     * to a {@link Datacenter}.</p>
+     *
+     * @param peList the host's {@link Pe} list
+     * @param activate define the Host activation status: true to power on, false to power off
+     *
+     * @see ChangeableId#setId(long)
+     * @see #setRamProvisioner(ResourceProvisioner)
+     * @see #setBwProvisioner(ResourceProvisioner)
+     * @see #setVmScheduler(VmScheduler)
+     * @see #setDefaultRamCapacity(long)
+     * @see #setDefaultBwCapacity(long)
+     * @see #setDefaultStorageCapacity(long)
+     */
+    public HostSimple(final List<Pe> peList, final boolean activate) {
+        this(defaultRamCapacity, defaultBwCapacity, defaultStorageCapacity, peList, activate);
     }
 
     /**
@@ -214,9 +219,31 @@ public class HostSimple implements Host {
      * @see #setVmScheduler(VmScheduler)
      */
     public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList) {
+        this(ram, bw, storage, peList, true);
+    }
+
+    /**
+     * Creates a Host without a pre-defined ID. It uses a {@link ResourceProvisionerSimple}
+     * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
+     * The ID is automatically set when a List of Hosts is attached
+     * to a {@link Datacenter}.
+     *
+     * @param ram the RAM capacity in Megabytes
+     * @param bw the Bandwidth (BW) capacity in Megabits/s
+     * @param storage the storage capacity in Megabytes
+     * @param peList the host's {@link Pe} list
+     * @param activate define the Host activation status: true to power on, false to power off
+     *
+     * @see ChangeableId#setId(long)
+     * @see #setRamProvisioner(ResourceProvisioner)
+     * @see #setBwProvisioner(ResourceProvisioner)
+     * @see #setVmScheduler(VmScheduler)
+     */
+    public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList, final boolean activate) {
         this.setId(-1);
-        this.setActive(true);
         this.setSimulation(Simulation.NULL);
+        this.setActive(activate);
+        this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
 
         this.ram = new Ram(ram);
         this.bw = new Bandwidth(bw);
@@ -437,32 +464,44 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public final Host setActive(final boolean active) {
-        if(isFailed() && active){
+    public boolean hasEverStarted() {
+        return this.startTime > -1;
+    }
+
+    @Override
+    public final Host setActive(final boolean activate) {
+        if(isFailed() && activate){
             throw new IllegalStateException("The Host is failed and cannot be activated.");
         }
 
-        showActivationLogBeforeModification(active);
-        this.active = active;
+        showActivationLogBeforeModification(activate);
+
+        if(activate && !this.active) {
+            setStartTime(getSimulation().clock());
+        } else if(!activate && this.active){
+            setShutdownTime(getSimulation().clock());
+        }
+
+        this.active = activate;
         return this;
     }
 
     /**
      * Prints information about the (de)activation of the Host,
      * before its status is changed
-     * @param active the activation value that is being requested to set
-     *               (and will be set after this method call)
+     * @param activate the activation value that is being requested to set
+     *                 (and will be set after this method call)
      * @see #setActive(boolean)
      */
-    private void showActivationLogBeforeModification(final boolean active) {
+    private void showActivationLogBeforeModification(final boolean activate) {
         if(simulation == null || !simulation.isRunning() ) {
             return;
         }
 
-        if(active && !this.active){
+        if(activate && !this.active){
             LOGGER.info("{}: {} is being powered on.", getSimulation().clock(), this);
         }
-        else if(!active && this.active){
+        else if(!activate && this.active){
             final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
             LOGGER.info("{}: {} is being powered off{}.", getSimulation().clock(), this, reason);
         }
@@ -648,7 +687,10 @@ public class HostSimple implements Host {
         if(startTime < 0){
             throw new IllegalArgumentException("Host start time cannot be negative");
         }
-        this.startTime = startTime;
+
+        this.startTime = Math.floor(startTime);
+        //If the Host is being activated or re-activated, the shutdown time is reset
+        this.shutdownTime = -1;
     }
 
     @Override
@@ -661,7 +703,19 @@ public class HostSimple implements Host {
         if(shutdownTime < 0){
             throw new IllegalArgumentException("Host shutdown time cannot be negative");
         }
-        this.shutdownTime = shutdownTime;
+
+        this.shutdownTime = Math.floor(shutdownTime);
+        this.totalUpTime += getUpTime();
+    }
+
+    @Override
+    public double getUpTime() {
+        return active ? simulation.clock() - startTime : shutdownTime - startTime;
+    }
+
+    @Override
+    public double getTotalUpTime() {
+        return totalUpTime + (active ? getUpTime() : 0);
     }
 
     @Override
@@ -916,7 +970,7 @@ public class HostSimple implements Host {
 
     @Override
     public List<Pe> getBusyPeList() {
-        return getFilteredPeList(Pe::isBuzy);
+        return getFilteredPeList(Pe::isBusy);
     }
 
     @Override

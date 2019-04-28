@@ -69,7 +69,8 @@ import java.util.List;
  * only after the time defined in {@link #TIME_TO_TERMINATE_SIMULATION}.
  *
  * This way, the simulation keeps waiting for dynamically
- * arrived events (such as runtime creation of VMs and Cloudlets).
+ * arrived events. Then, at a {@link #TIME_TO_CREATE_NEW_CLOUDLET defined time},
+ * new Cloudlets are created.
  * </p>
  *
  * <p>The example uses the CloudSim Plus {@link EventListener} feature
@@ -93,6 +94,7 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 2.3.0
+ * @see RandomCloudletsArrivalExample
  */
 public class KeepSimulationRunningExample {
     /**

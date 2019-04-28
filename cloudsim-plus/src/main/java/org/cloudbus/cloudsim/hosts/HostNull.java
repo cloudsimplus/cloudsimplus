@@ -97,7 +97,8 @@ final class HostNull implements Host {
         return false;
     }
     @Override public boolean isActive() { return false; }
-    @Override public Host setActive(boolean active) { return this; }
+    @Override public boolean hasEverStarted() { return false; }
+    @Override public Host setActive(boolean activate) { return this; }
     @Override public <T extends Vm> Set<T> getVmsMigratingIn() {
         return Collections.emptySet();
     }
@@ -158,7 +159,9 @@ final class HostNull implements Host {
     @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
     @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
     @Override public List<Vm> getMigratableVms() { return Collections.emptyList(); }
+    @Override public double getTotalUpTime() { return 0; }
     @Override public void setShutdownTime(double shutdownTime) {/**/}
+    @Override public double getUpTime() { return 0; }
     @Override public double getIdleShutdownDeadline() { return -1; }
     @Override public Host setIdleShutdownDeadline(double deadline) { return this; }
 }
