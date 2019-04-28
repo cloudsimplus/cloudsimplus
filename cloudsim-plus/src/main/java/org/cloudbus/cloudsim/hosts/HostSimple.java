@@ -442,6 +442,7 @@ public class HostSimple implements Host {
             if (!vmList.contains(vm)) {
                 vmList.add(vm);
             }
+
             allocateResourcesForVm(vm);
         }
     }
