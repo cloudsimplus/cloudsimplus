@@ -371,16 +371,6 @@ public interface Simulation {
     void wait(CloudSimEntity src, Predicate<SimEvent> p);
 
     /**
-     * Gets the number of events in the deferred event queue that are targeted to a given entity and
-     * match a given predicate.
-     *
-     * @param dest Id of entity that the event has to be sent to
-     * @param p    the event selection predicate
-     * @return
-     */
-    long waiting(SimEntity dest, Predicate<SimEvent> p);
-
-    /**
      * Gets the network topology used for Network simulations.
      *
      * @return

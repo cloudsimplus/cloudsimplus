@@ -52,6 +52,6 @@ public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract imple
         final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
         return stream
                 .filter(host -> host.isSuitableForVm(vm))
-                .findFirst();
+                .findAny();
     }
 }

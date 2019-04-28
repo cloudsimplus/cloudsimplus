@@ -239,35 +239,15 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     /**
-     * Counts how many events matching a predicate are waiting in the entity's
-     * deferred queue.
-     *
-     * @param predicate The event selection predicate
-     * @return The count of matching events
-     */
-    public long numEventsWaiting(final Predicate<SimEvent> predicate) {
-        return simulation.waiting(this, predicate);
-    }
-
-    /**
-     * Counts how many events are waiting in the entity's deferred queue.
-     *
-     * @return The count of events
-     */
-    public long numEventsWaiting() {
-        return simulation.waiting(this, Simulation.ANY_EVT);
-    }
-
-    /**
      * Extracts the first event matching a predicate waiting in the entity's
      * deferred queue.
      *
      * @param predicate The event selection predicate
-     * @return the simulation event
+     * @return the simulation event; or {@link SimEvent#NULL} if not found or the simulation is not running
      */
     public SimEvent selectEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
-            return null;
+            return SimEvent.NULL;
         }
 
         return simulation.select(this, predicate);
@@ -289,25 +269,21 @@ public abstract class CloudSimEntity implements SimEntity {
      * none match, wait for a matching event to arrive.
      *
      * @param predicate The predicate to match
-     * @return the simulation event; or null if not found or the simulation is not running
+     * @return the simulation event; or {@link SimEvent#NULL} if not found or the simulation is not running
      */
     public SimEvent getNextEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
-            return null;
+            return SimEvent.NULL;
         }
 
-        if (numEventsWaiting(predicate) > 0) {
-            return selectEvent(predicate);
-        }
-
-        return null;
+        return selectEvent(predicate);
     }
 
     /**
      * Gets the first event waiting in the entity's deferred queue, or if there
      * are none, wait for an event to arrive.
      *
-     * @return the simulation event
+     * @return the simulation event; or {@link SimEvent#NULL} if not found or the simulation is not running
      */
     public SimEvent getNextEvent() {
         return getNextEvent(Simulation.ANY_EVT);
@@ -332,7 +308,7 @@ public abstract class CloudSimEntity implements SimEntity {
     public void run() {
         SimEvent evt = buffer == null ? getNextEvent() : buffer;
 
-        while (evt != null) {
+        while (evt != SimEvent.NULL) {
             processEvent(evt);
             if (state != State.RUNNABLE) {
                 break;
