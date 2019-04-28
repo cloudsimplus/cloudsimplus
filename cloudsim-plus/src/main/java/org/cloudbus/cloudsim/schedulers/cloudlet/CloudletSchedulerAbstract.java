@@ -1007,11 +1007,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public boolean isCloudletReturned(final Cloudlet cloudlet) {
-        return cloudletReturnedList.contains(cloudlet);
-    }
-
-    @Override
     public void addCloudletToReturnedList(final Cloudlet cloudlet) {
         this.cloudletReturnedList.add(cloudlet);
     }
