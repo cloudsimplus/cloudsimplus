@@ -62,10 +62,10 @@ public final class BriteNetworkTopology implements NetworkTopology {
     private TopologicalGraph graph;
 
     /**
-     * The map between CloudSim entities and BRITE entities.
+     * The entitiesMap between CloudSim entities and BRITE entities.
      * Each key is a CloudSim entity ID and each value the corresponding BRITE entity ID.
      */
-    private Map<Long, Integer> map;
+    private Map<Long, Integer> entitiesMap;
 
     /**
      * Instantiates a Network Topology from a file inside the <b>application's resource directory</b>.
@@ -84,7 +84,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * @see #getInstance(String)
      */
     public BriteNetworkTopology() {
-        map = new HashMap<>();
+        entitiesMap = new HashMap<>();
         bwMatrix = new double[0][0];
         graph = new TopologicalGraph();
         delayMatrix = new DelayMatrix();
@@ -173,8 +173,8 @@ public final class BriteNetworkTopology implements NetworkTopology {
             graph = new TopologicalGraph();
         }
 
-        if (map == null) {
-            map = new HashMap<>();
+        if (entitiesMap == null) {
+            entitiesMap = new HashMap<>();
         }
 
         // maybe add the nodes
@@ -182,15 +182,14 @@ public final class BriteNetworkTopology implements NetworkTopology {
         addNodeMapping(destId);
 
         // generate a new link
-        getTopologycalGraph().addLink(new TopologicalLink(map.get(srcId), map.get(destId), (float) latency, (float) bandwidth));
+        getTopologycalGraph().addLink(new TopologicalLink(entitiesMap.get(srcId), entitiesMap.get(destId), (float) latency, (float) bandwidth));
 
         generateMatrices();
     }
 
     private void addNodeMapping(final long cloudSimEntityId) {
-        if (!map.containsKey(cloudSimEntityId)) {
+        if (entitiesMap.putIfAbsent(cloudSimEntityId, nextIdx) == null) {
             getTopologycalGraph().addNode(new TopologicalNode(nextIdx));
-            map.put(cloudSimEntityId, nextIdx);
             nextIdx++;
         }
     }
@@ -201,17 +200,17 @@ public final class BriteNetworkTopology implements NetworkTopology {
             return;
         }
 
-        if (map.containsKey(cloudSimEntityID)) {
+        if (entitiesMap.containsKey(cloudSimEntityID)) {
             LOGGER.warn("Network mapping: CloudSim entity {} already mapped.", cloudSimEntityID);
             return;
         }
 
-        if (map.containsValue(briteID)) {
+        if (entitiesMap.containsValue(briteID)) {
             LOGGER.warn("BRITE node {} already in use.", briteID);
             return;
         }
 
-        map.put(cloudSimEntityID, briteID);
+        entitiesMap.put(cloudSimEntityID, briteID);
     }
 
     @Override
@@ -220,7 +219,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
             return;
         }
 
-        map.remove(cloudSimEntityID);
+        entitiesMap.remove(cloudSimEntityID);
     }
 
     @Override
@@ -230,7 +229,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
 
         try {
-            return delayMatrix.getDelay(map.getOrDefault(srcID, -1), map.getOrDefault(destID, -1));
+            return delayMatrix.getDelay(entitiesMap.getOrDefault(srcID, -1), entitiesMap.getOrDefault(destID, -1));
         } catch (ArrayIndexOutOfBoundsException e) {
             return 0.0;
         }
