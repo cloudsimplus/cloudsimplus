@@ -93,11 +93,12 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
     @Override
     public double getUtilization(final double time) {
-        if (getHistory().containsKey(time)) {
-            return getHistory().get(time);
+        Double utilization = getHistory().get(time);
+        if (utilization != null) {
+            return utilization;
         }
 
-        final double utilization = Math.abs(randomGenerator.sample());
+        utilization = Math.abs(randomGenerator.sample());
         getHistory().put(time, utilization);
         return utilization;
     }
