@@ -504,7 +504,7 @@ public abstract class Experiment implements Runnable {
         return datacentersNumber;
     }
 
-    public void setDatacentersNumber(int datacentersNumber) {
+    public void setDatacentersNumber(final int datacentersNumber) {
         this.datacentersNumber = datacentersNumber;
     }
 
