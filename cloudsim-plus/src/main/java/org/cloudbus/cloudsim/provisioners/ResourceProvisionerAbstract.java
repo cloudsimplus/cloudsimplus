@@ -59,7 +59,7 @@ public abstract class ResourceProvisionerAbstract implements ResourceProvisioner
     }
 
     @Override
-    public long getAllocatedResourceForVm(Vm vm) {
+    public long getAllocatedResourceForVm(final Vm vm) {
         return resourceAllocationMap.getOrDefault(vm, 0L);
     }
 

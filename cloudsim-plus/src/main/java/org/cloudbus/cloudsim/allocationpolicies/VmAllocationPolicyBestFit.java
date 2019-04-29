@@ -30,6 +30,7 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
@@ -37,10 +38,16 @@ import java.util.function.Function;
  * <b>It is therefore a Best Fit policy</b>, allocating each VM into the host with the least available PEs
  * that are enough for the VM.
  *
+ * <p>This is a really computationally complex policy since the worst-case complexity
+ * to allocate a Host for a VM is O(N), where N is the number of Hosts.
+ * Such an implementation is not appropriate for large scale scenarios.</p>
+ *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 3.0.1
+ *
+ * @see VmAllocationPolicyFirstFit
  */
 public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
     /**
@@ -73,10 +80,10 @@ public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
         final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive).reversed();
         final Comparator<Host> comparator = activeComparator.thenComparingLong(Host::getFreePesNumber);
 
-        return getHostList()
-            .stream()
-            .filter(host -> host.isSuitableForVm(vm))
-            .min(comparator);
+        final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
+        return stream
+                .filter(host -> host.isSuitableForVm(vm))
+                .min(comparator);
     }
 
 }

@@ -21,6 +21,10 @@ import java.util.stream.Stream;
  * the host for a VM, that one with the fewest PEs in use.
  * <b>It is therefore a Worst Fit policy</b>, allocating each VM into the host with most available PEs.
  *
+ * <p>This is a really computationally complex policy since the worst-case complexity
+ * to allocate a Host for a VM is O(N), where N is the number of Hosts.
+ * Such an implementation is not appropriate for large scale scenarios.</p>
+ *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
  *
  * @author Rodrigo N. Calheiros
@@ -29,7 +33,6 @@ import java.util.stream.Stream;
  * @since CloudSim Toolkit 1.0
  *
  * @see VmAllocationPolicyFirstFit
- * @see VmAllocationPolicyBestFit
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**
@@ -56,13 +59,13 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      */
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive);
-        final Comparator<Host> comparator = activeComparator.thenComparingLong(Host::getFreePesNumber);
+        final Comparator<Host> comparator = Comparator.comparing(Host::isActive)
+                                                      .thenComparingLong(Host::getFreePesNumber);
 
         final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
         return stream
-            .filter(host -> host.isSuitableForVm(vm))
-            .max(comparator);
+                .filter(host -> host.isSuitableForVm(vm))
+                .max(comparator);
     }
 
 }

@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -142,9 +143,8 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
             return;
         }
 
-        peList.stream()
-              .limit(vPesNumber)
-              .forEach(pe -> pe.setStatus(newStatus));
+        final List<Pe> selectedPes = peList.stream().limit(vPesNumber).collect(toList());
+        ((HostSimple)host).setPeStatus(selectedPes, newStatus);
     }
 
     protected abstract boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested);
