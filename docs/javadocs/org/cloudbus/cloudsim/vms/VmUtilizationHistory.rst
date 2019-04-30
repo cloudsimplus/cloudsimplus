@@ -39,6 +39,10 @@ VmUtilizationHistory
 .. java:constructor:: public VmUtilizationHistory(Vm vm)
    :outertype: VmUtilizationHistory
 
+   Instantiates the class to store resource utilization history for a specific \ :java:ref:`Vm`\ .
+
+   :param vm: the vm to instantiates the object to store utilization history
+
 Methods
 -------
 addUtilizationHistory

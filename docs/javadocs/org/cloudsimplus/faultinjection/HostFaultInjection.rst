@@ -1,5 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicyAbstract
-
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
@@ -21,6 +19,8 @@
 .. java:import:: org.cloudbus.cloudsim.distributions UniformDistr
 
 .. java:import:: org.cloudbus.cloudsim.hosts Host
+
+.. java:import:: org.cloudbus.cloudsim.hosts HostSimple
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
@@ -149,7 +149,7 @@ generateHostFault
 generateHostFault
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: public void generateHostFault(Host host, long numberOfPesToFail)
+.. java:method:: public void generateHostFault(Host host, int numberOfPesToFail)
    :outertype: HostFaultInjection
 
    Generates a fault for a given number of random PEs of a Host.

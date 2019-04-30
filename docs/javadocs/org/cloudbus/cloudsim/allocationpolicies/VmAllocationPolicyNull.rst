@@ -62,6 +62,12 @@ getDatacenter
 .. java:method:: @Override public Datacenter getDatacenter()
    :outertype: VmAllocationPolicyNull
 
+getHostCountForParallelSearch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public int getHostCountForParallelSearch()
+   :outertype: VmAllocationPolicyNull
+
 getHostList
 ^^^^^^^^^^^
 
@@ -90,5 +96,11 @@ setFindHostForVmFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setFindHostForVmFunction(BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+   :outertype: VmAllocationPolicyNull
+
+setHostCountForParallelSearch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setHostCountForParallelSearch(int hostCountForParallelSearch)
    :outertype: VmAllocationPolicyNull
 

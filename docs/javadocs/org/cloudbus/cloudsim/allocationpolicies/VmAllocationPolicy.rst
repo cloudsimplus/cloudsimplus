@@ -32,6 +32,16 @@ VmAllocationPolicy
 
 Fields
 ------
+DEF_HOST_COUNT_FOR_PARALLEL_SEARCH
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:field::  int DEF_HOST_COUNT_FOR_PARALLEL_SEARCH
+   :outertype: VmAllocationPolicy
+
+   Default minimum number of Hosts to start using parallel search.
+
+   **See also:** :java:ref:`.setHostCountForParallelSearch(int)`
+
 NULL
 ^^^^
 
@@ -94,6 +104,14 @@ getDatacenter
 
    Gets the \ :java:ref:`Datacenter`\  associated to the Allocation Policy.
 
+getHostCountForParallelSearch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  int getHostCountForParallelSearch()
+   :outertype: VmAllocationPolicy
+
+   Gets the minimum number of Hosts to start using parallel search.
+
 getHostList
 ^^^^^^^^^^^
 
@@ -115,6 +133,18 @@ getOptimizedAllocationMap
 
    :param vmList: the list of VMs to be reallocated
    :return: the new vm placement map, where each key is a VM and each value is the host where such a Vm has to be placed
+
+isParallelHostSearchEnabled
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isParallelHostSearchEnabled()
+   :outertype: VmAllocationPolicy
+
+   Checks if Host's parallel search is enabled or not.
+
+   :return: true if a Host for a VM is to find in parallel, false if it's to be find sequentially
+
+   **See also:** :java:ref:`.setHostCountForParallelSearch(int)`
 
 scaleVmVertically
 ^^^^^^^^^^^^^^^^^
@@ -155,4 +185,14 @@ setFindHostForVmFunction
    If not Function is set, the default VM selection method provided by implementing classes will be used.
 
    :param findHostForVmFunction: the \ :java:ref:`BiFunction`\  to set
+
+setHostCountForParallelSearch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  void setHostCountForParallelSearch(int hostCountForParallelSearch)
+   :outertype: VmAllocationPolicy
+
+   Sets the minimum number of Hosts to start using parallel search.
+
+   :param hostCountForParallelSearch: the value to set (use \ :java:ref:`Integer.MAX_VALUE`\  to disable parallel search)
 

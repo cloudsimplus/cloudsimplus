@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.hosts Host
 
+.. java:import:: org.cloudbus.cloudsim.hosts HostSimple
+
 .. java:import:: org.cloudbus.cloudsim.provisioners PeProvisioner
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe

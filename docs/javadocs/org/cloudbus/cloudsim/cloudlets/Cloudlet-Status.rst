@@ -10,6 +10,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters DatacenterCharacteristics
 
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel

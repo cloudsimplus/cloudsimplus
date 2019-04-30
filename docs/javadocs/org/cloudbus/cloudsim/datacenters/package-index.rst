@@ -21,5 +21,6 @@ For each created Datacenter, a \ :java:ref:`org.cloudbus.cloudsim.allocationpoli
    DatacenterCharacteristicsNull
    DatacenterCharacteristicsSimple
    DatacenterNull
+   DatacenterPowerSupply
    DatacenterSimple
 

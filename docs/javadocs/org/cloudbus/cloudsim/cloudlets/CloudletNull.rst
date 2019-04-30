@@ -4,6 +4,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
@@ -91,17 +93,6 @@ getAccumulatedBwCost
 
 .. java:method:: @Override public double getAccumulatedBwCost()
    :outertype: CloudletNull
-
-getActualCpuTime
-^^^^^^^^^^^^^^^^
-
-.. java:method:: public double getActualCpuTime(Datacenter datacenter)
-   :outertype: CloudletNull
-
-   Gets the total execution time of this Cloudlet in a given Datacenter ID.
-
-   :param datacenter: the Datacenter entity
-   :return: the total execution time of this Cloudlet in the given Datacenter or 0 if the Cloudlet was not executed there
 
 getActualCpuTime
 ^^^^^^^^^^^^^^^^
@@ -259,6 +250,12 @@ getUid
 .. java:method:: @Override public String getUid()
    :outertype: CloudletNull
 
+getUtilizationModel
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public UtilizationModel getUtilizationModel(Class<? extends ResourceManageable> resourceClass)
+   :outertype: CloudletNull
+
 getUtilizationModelBw
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -325,14 +322,6 @@ getWaitingTime
 .. java:method:: @Override public double getWaitingTime()
    :outertype: CloudletNull
 
-isAssignedToDatacenter
-^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public boolean isAssignedToDatacenter()
-   :outertype: CloudletNull
-
-   :return: true if the cloudlet has even been assigned to a Datacenter in order to run, false otherwise.
-
 isBindToVm
 ^^^^^^^^^^
 
@@ -343,6 +332,12 @@ isFinished
 ^^^^^^^^^^
 
 .. java:method:: @Override public boolean isFinished()
+   :outertype: CloudletNull
+
+isReturnedToBroker
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isReturnedToBroker()
    :outertype: CloudletNull
 
 notifyOnUpdateProcessingListeners

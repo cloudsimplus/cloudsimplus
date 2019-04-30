@@ -46,13 +46,13 @@ getPowerInternal
 .. java:method:: protected abstract double getPowerInternal(double utilization) throws IllegalArgumentException
    :outertype: PowerModelAbstract
 
-   An internal method to be implemented by sub classes to get the power consumption for the current CPU utilization.
+   An internal method to be implemented by sub classes to get the power supply for the current CPU utilization.
 
    The basic parameter validation is performed by the \ :java:ref:`getPower(double)`\  method.
 
-   :param utilization: the utilization percentage (between [0 and 1]) of a resource that is critical for power consumption.
+   :param utilization: the utilization percentage (between [0 and 1]) of a resource that is critical for power supply.
    :throws IllegalArgumentException: when the utilization percentage is not between [0 and 1]
-   :return: the power consumption
+   :return: the power supply for the given CPU utilization
 
 setHost
 ^^^^^^^

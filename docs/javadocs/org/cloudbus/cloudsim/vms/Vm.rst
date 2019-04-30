@@ -271,26 +271,6 @@ getHost
 
    **See also:** :java:ref:`.isCreated()`
 
-getIdleInterval
-^^^^^^^^^^^^^^^
-
-.. java:method::  double getIdleInterval()
-   :outertype: Vm
-
-   Gets the last interval the VM was idle (without running any Cloudlet).
-
-   :return: the last idle time interval (in seconds)
-
-getLastBusyTime
-^^^^^^^^^^^^^^^
-
-.. java:method::  double getLastBusyTime()
-   :outertype: Vm
-
-   Gets the last time the VM was running some Cloudlet.
-
-   :return: the last busy time (in seconds)
-
 getPeVerticalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -359,9 +339,11 @@ getStateHistory
 .. java:method::  List<VmStateHistoryEntry> getStateHistory()
    :outertype: Vm
 
-   Gets a \ **read-only**\  list with the history of requests and allocation of MIPS for this VM.
+   Gets a \ **read-only**\  list with the history of requests and allocation of MIPS for this VM. The VM state history is just collected and stored if the Host is storing such a data.
 
    :return: the state history
+
+   **See also:** :java:ref:`Host.enableStateHistory()`
 
 getStopTime
 ^^^^^^^^^^^
@@ -462,26 +444,11 @@ isFailed
 
    **See also:** :java:ref:`.isWorking()`
 
-isIdle
-^^^^^^
-
-.. java:method::  boolean isIdle()
-   :outertype: Vm
-
-   Checks if the VM is currently idle.
-
-   :return: true if the VM currently idle, false otherwise
-
 isIdleEnough
 ^^^^^^^^^^^^
 
-.. java:method::  boolean isIdleEnough(double time)
+.. java:method:: @Override  boolean isIdleEnough(double time)
    :outertype: Vm
-
-   Checks if the VM has been idle for a given amount of time (in seconds).
-
-   :param time: the time interval to check if the VM has been idle (in seconds). If time is zero, it will be checked if the VM is currently idle.
-   :return: true if the VM has been idle as long as the given time, false if it's active of isn't idle as long enough
 
 isInMigration
 ^^^^^^^^^^^^^

@@ -141,7 +141,7 @@ getDatacenter
 getFailedPesNumber
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getFailedPesNumber()
+.. java:method:: @Override public int getFailedPesNumber()
    :outertype: HostNull
 
 getFinishedVms
@@ -166,6 +166,18 @@ getId
 ^^^^^
 
 .. java:method:: @Override public long getId()
+   :outertype: HostNull
+
+getIdleShutdownDeadline
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getIdleShutdownDeadline()
+   :outertype: HostNull
+
+getLastBusyTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getLastBusyTime()
    :outertype: HostNull
 
 getMigratableVms
@@ -270,6 +282,18 @@ getTotalMipsCapacity
 .. java:method:: @Override public double getTotalMipsCapacity()
    :outertype: HostNull
 
+getTotalUpTime
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalUpTime()
+   :outertype: HostNull
+
+getUpTime
+^^^^^^^^^
+
+.. java:method:: @Override public double getUpTime()
+   :outertype: HostNull
+
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -345,7 +369,13 @@ getWorkingPeList
 getWorkingPesNumber
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getWorkingPesNumber()
+.. java:method:: @Override public int getWorkingPesNumber()
+   :outertype: HostNull
+
+hasEverStarted
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean hasEverStarted()
    :outertype: HostNull
 
 isActive
@@ -358,6 +388,12 @@ isFailed
 ^^^^^^^^
 
 .. java:method:: @Override public boolean isFailed()
+   :outertype: HostNull
+
+isIdle
+^^^^^^
+
+.. java:method:: @Override public boolean isIdle()
    :outertype: HostNull
 
 isStateHistoryEnabled
@@ -399,7 +435,7 @@ removeVmMigratingOut
 setActive
 ^^^^^^^^^
 
-.. java:method:: @Override public Host setActive(boolean active)
+.. java:method:: @Override public Host setActive(boolean activate)
    :outertype: HostNull
 
 setBwProvisioner
@@ -424,6 +460,12 @@ setId
 ^^^^^
 
 .. java:method:: @Override public void setId(long id)
+   :outertype: HostNull
+
+setIdleShutdownDeadline
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Host setIdleShutdownDeadline(double deadline)
    :outertype: HostNull
 
 setPowerModel

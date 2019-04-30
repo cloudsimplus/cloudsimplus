@@ -8,7 +8,7 @@ VmAllocationPolicyMigrationDynamicUpperThreshold
 
 .. java:type:: public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllocationPolicyMigration
 
-   An interface to be implemented by VM allocation policies that define a dynamic over utilization threshold computed using some statistical method such as \ `Median Absolute Deviation (MAD) <https://en.wikipedia.org/wiki/Median_absolute_deviation>`_\ , \ `Interquartile Range (IQR) <https://en.wikipedia.org/wiki/Interquartile_range>`_\ , \ `Local Regression (LR) <https://en.wikipedia.org/wiki/Local_regression>`_\  , etc, depending on the implementing class.
+   An interface to be implemented by VM allocation policies that define a dynamic over utilization threshold computed using some statistical method such as \ `Median Absolute Deviation (MAD) <https://en.wikipedia.org/wiki/Median_absolute_deviation>`_\ , \ `Interquartile Range (IQR) <https://en.wikipedia.org/wiki/Interquartile_range>`_\ , \ `Local Regression (LR) <https://en.wikipedia.org/wiki/Local_regression>`_\ , etc, depending on the implementing class.
 
    :author: Anton Beloglazov, Manoel Campos da Silva Filho
 

@@ -1,12 +1,8 @@
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicy
 
-.. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicyAbstract
-
 .. java:import:: org.cloudbus.cloudsim.allocationpolicies VmAllocationPolicySimple
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
-
-.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
 .. java:import:: org.cloudbus.cloudsim.core CloudSimEntity
 
@@ -150,14 +146,6 @@ addOnHostAvailableListener
 .. java:method:: @Override public Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener)
    :outertype: DatacenterSimple
 
-checkCloudletsCompletionForAllHosts
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected void checkCloudletsCompletionForAllHosts()
-   :outertype: DatacenterSimple
-
-   Verifies if some cloudlet inside the hosts of this Datacenter have already finished. If yes, send them to the User/Broker
-
 disableMigrations
 ^^^^^^^^^^^^^^^^^
 
@@ -190,6 +178,12 @@ finishVmMigration
 
    :param evt: information about the event just happened
    :param ack: indicates if the event's sender expects to receive an acknowledge message when the event finishes to be processed
+
+getActiveHostsNumber
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getActiveHostsNumber()
+   :outertype: DatacenterSimple
 
 getBandwidthPercentForMigration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -253,8 +247,13 @@ getLastProcessTime
 getPower
 ^^^^^^^^
 
-.. java:method:: @Override public double getPower()
+.. java:method:: @Override public double getPower() throws UnsupportedOperationException
    :outertype: DatacenterSimple
+
+   {@inheritDoc}
+
+   :throws UnsupportedOperationException: if Datacenter's power consumption computation was not enabled before the simulation start
+   :return: {@inheritDoc}
 
 getSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^
@@ -404,6 +403,12 @@ setLastProcessTime
    Sets the last time some cloudlet was processed in the Datacenter.
 
    :param lastProcessTime: the new last process time
+
+setPowerSupply
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setPowerSupply(DatacenterPowerSupply powerSupply)
+   :outertype: DatacenterSimple
 
 setSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^

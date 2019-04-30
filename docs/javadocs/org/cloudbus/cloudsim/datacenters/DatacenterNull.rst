@@ -56,6 +56,12 @@ compareTo
 .. java:method:: @Override public int compareTo(SimEntity entity)
    :outertype: DatacenterNull
 
+getActiveHostsNumber
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getActiveHostsNumber()
+   :outertype: DatacenterNull
+
 getBandwidthPercentForMigration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -98,10 +104,10 @@ getPower
 .. java:method:: @Override public double getPower()
    :outertype: DatacenterNull
 
-getPowerInKWattsHour
-^^^^^^^^^^^^^^^^^^^^
+getPowerInKWatts
+^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getPowerInKWattsHour()
+.. java:method:: @Override public double getPowerInKWatts()
    :outertype: DatacenterNull
 
 getSchedulingInterval
@@ -132,6 +138,12 @@ setDatacenterStorage
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage)
+   :outertype: DatacenterNull
+
+setPowerSupply
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public void setPowerSupply(DatacenterPowerSupply powerSupply)
    :outertype: DatacenterNull
 
 setSchedulingInterval

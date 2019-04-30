@@ -50,6 +50,14 @@ Host
 
 Fields
 ------
+DEF_IDLE_SHUTDOWN_DEADLINE
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:field::  double DEF_IDLE_SHUTDOWN_DEADLINE
+   :outertype: Host
+
+   The default value for the \ :java:ref:`getIdleShutdownDeadline()`\ . This value indicates that the Host won't be shutdown when becoming idle.
+
 NULL
 ^^^^
 
@@ -219,7 +227,7 @@ getDatacenter
 getFailedPesNumber
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method::  long getFailedPesNumber()
+.. java:method::  int getFailedPesNumber()
    :outertype: Host
 
    Gets the number of PEs that have failed.
@@ -253,6 +261,18 @@ getFreePesNumber
    Gets the free pes number.
 
    :return: the free pes number
+
+getIdleShutdownDeadline
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getIdleShutdownDeadline()
+   :outertype: Host
+
+   Gets the deadline to shutdown the Host when it become idle. This is the time interval after the Host becoming idle that it will be shutdown.
+
+   :return: the idle shutdown deadline (in seconds)
+
+   **See also:** :java:ref:`.DEF_IDLE_SHUTDOWN_DEADLINE`
 
 getMigratableVms
 ^^^^^^^^^^^^^^^^
@@ -319,7 +339,9 @@ getShutdownTime
 .. java:method::  double getShutdownTime()
    :outertype: Host
 
-   Gets the time the Host shut down.
+   Gets the last time the Host was shut down (in seconds).
+
+   :return: the last shut downtime or -1 if the Host is active
 
 getStartTime
 ^^^^^^^^^^^^
@@ -327,7 +349,11 @@ getStartTime
 .. java:method::  double getStartTime()
    :outertype: Host
 
-   Gets the time the Host was powered-on (in seconds).
+   Gets the last time the Host was powered-on (in seconds).
+
+   :return: the last Host startup time or -1 if the Host has never been powered on
+
+   **See also:** :java:ref:`.setActive(boolean)`
 
 getStateHistory
 ^^^^^^^^^^^^^^^
@@ -361,6 +387,30 @@ getTotalMipsCapacity
    Gets total MIPS capacity of PEs which are not \ :java:ref:`Status.FAILED`\ .
 
    :return: the total MIPS of working PEs
+
+getTotalUpTime
+^^^^^^^^^^^^^^
+
+.. java:method::  double getTotalUpTime()
+   :outertype: Host
+
+   Gets the total time the Host stayed active (powered on). Since the Host can be powered on and off according to demand, this method returns the sum of all interval that the Host was active (in seconds).
+
+   :return: the total up time (in seconds)
+
+   **See also:** :java:ref:`.setActive(boolean)`, :java:ref:`.setIdleShutdownDeadline(double)`, :java:ref:`.getUpTime()`
+
+getUpTime
+^^^^^^^^^
+
+.. java:method::  double getUpTime()
+   :outertype: Host
+
+   Gets the elapsed time since the last time the Host was powered on
+
+   :return: the elapsed time (in seconds)
+
+   **See also:** :java:ref:`.getTotalUpTime()`
 
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
@@ -496,12 +546,20 @@ getWorkingPeList
 getWorkingPesNumber
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  long getWorkingPesNumber()
+.. java:method::  int getWorkingPesNumber()
    :outertype: Host
 
    Gets the number of PEs that are working. That is, the number of PEs that aren't FAIL.
 
    :return: the number of working pes
+
+hasEverStarted
+^^^^^^^^^^^^^^
+
+.. java:method::  boolean hasEverStarted()
+   :outertype: Host
+
+   Checks if the Host has ever started sometime, i.e., if it was active sometime in the simulation execution.
 
 isActive
 ^^^^^^^^
@@ -537,7 +595,7 @@ isSuitableForVm
 .. java:method::  boolean isSuitableForVm(Vm vm)
    :outertype: Host
 
-   Checks if the host is active and is suitable for vm (if it has enough resources to attend the VM).
+   Checks if the host is suitable for vm (if it has enough resources to attend the VM) and it's not failed.
 
    :param vm: the vm to check
    :return: true if is suitable for vm, false otherwise
@@ -586,14 +644,15 @@ removeVmMigratingOut
 setActive
 ^^^^^^^^^
 
-.. java:method::  Host setActive(boolean active)
+.. java:method::  Host setActive(boolean activate)
    :outertype: Host
 
    Sets the powered state of the Host, to indicate if it's powered on or off. When a Host is powered off, no VMs will be submitted to it.
 
    If it is set to powered off while VMs are running inside it, it is simulated a scheduled shutdown, so that, all running VMs will finish, but not more VMs will be submitted to this Host.
 
-   :param active: true to set the Host as powered on, false as powered off
+   :param activate: define the Host activation status: true to power on, false to power off
+   :throws IllegalStateException: when trying to activate a \ :java:ref:`failed <isFailed()>`\  host.
 
 setBwProvisioner
 ^^^^^^^^^^^^^^^^
@@ -626,6 +685,18 @@ setFailed
    :param failed: true to set the Host to "failed", false to set to "working"
    :return: true if the Host status was changed, false otherwise
 
+setIdleShutdownDeadline
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  Host setIdleShutdownDeadline(double deadline)
+   :outertype: Host
+
+   Sets the deadline to shutdown the Host when it become idle. This is the time interval after the Host becoming idle that it will be shutdown.
+
+   :param deadline: the deadline to shutdown the Host after it becoming idle (in seconds). A negative value disables idle host shutdown.
+
+   **See also:** :java:ref:`.DEF_IDLE_SHUTDOWN_DEADLINE`, :java:ref:`.getIdleShutdownDeadline()`
+
 setPowerModel
 ^^^^^^^^^^^^^
 
@@ -652,9 +723,11 @@ setShutdownTime
 .. java:method::  void setShutdownTime(double shutdownTime)
    :outertype: Host
 
-   Sets the time the Host shut down.
+   Sets the the Host shut down time.
 
-   :param shutdownTime: the time to set
+   :param shutdownTime: the time to set (in seconds)
+
+   **See also:** :java:ref:`.getShutdownTime()`
 
 setSimulation
 ^^^^^^^^^^^^^
@@ -672,9 +745,11 @@ setStartTime
 .. java:method::  void setStartTime(double startTime)
    :outertype: Host
 
-   Sets the time the Host was powered-on.
+   Sets the Host start up time (the time it's being powered on).
 
    :param startTime: the time to set (in seconds)
+
+   **See also:** :java:ref:`.getStartTime()`
 
 setVmScheduler
 ^^^^^^^^^^^^^^

@@ -81,10 +81,10 @@ getStatus
 .. java:method:: @Override public Status getStatus()
    :outertype: PeSimple
 
-isBuzy
+isBusy
 ^^^^^^
 
-.. java:method:: @Override public boolean isBuzy()
+.. java:method:: @Override public boolean isBusy()
    :outertype: PeSimple
 
 isFailed

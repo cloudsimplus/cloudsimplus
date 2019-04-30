@@ -158,12 +158,6 @@ hasFinishedCloudlets
 .. java:method:: @Override public boolean hasFinishedCloudlets()
    :outertype: CloudletSchedulerNull
 
-isCloudletReturned
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isCloudletReturned(Cloudlet cloudlet)
-   :outertype: CloudletSchedulerNull
-
 isEmpty
 ^^^^^^^
 

@@ -26,9 +26,9 @@ PowerModelSimple
 
    Instantiates a PowerModelSimple.
 
-   :param maxPower: the max power that can be consumed in Watt-Second (Ws).
-   :param staticPowerPercent: the static power usage percentage between [0 and 1].
-   :param powerFunction: A function defining how the power consumption is computed based on the CPU utilization. When called, this function receives the utilization percentage in scale from [0 to 100] and must return the base power consumption for that CPU utilization. The function is only accountable to compute the base energy consumption because the total energy consumption depends on other factors such as the \ :java:ref:`static power <getStaticPower()>`\  consumed by the Host, independent of its CPU usage.
+   :param maxPower: the max power that can be supplied in Watts (W).
+   :param staticPowerPercent: the static power supply percentage between [0 and 1].
+   :param powerFunction: A function defining how the power supply is computed based on the CPU utilization. When called, this function receives the CPU utilization percentage in scale from [0 to 100] and must return the base power supply for that CPU utilization. The function is only accountable to compute the base power supply because the total power depends on other factors such as the \ :java:ref:`static power <getStaticPower()>`\  supplied by the Host, independent of its CPU usage.
 
 Methods
 -------
@@ -38,9 +38,9 @@ getConstant
 .. java:method:: protected double getConstant()
    :outertype: PowerModelSimple
 
-   Gets the constant which represents the power consumption for each fraction of resource used in Watt-Second (Ws).
+   Gets the constant which represents the power supply for each fraction of resource used in Watts (W).
 
-   :return: the power consumption constant in Watt-Second (Ws)
+   :return: the power supply constant in Watts (W)
 
 getMaxPower
 ^^^^^^^^^^^
@@ -60,9 +60,9 @@ getStaticPower
 .. java:method:: public final double getStaticPower()
    :outertype: PowerModelSimple
 
-   Gets the static power consumption in Watt-Second (Ws) that is not dependent of resource usage, according to the \ :java:ref:`getStaticPowerPercent()`\ . It is the amount of energy consumed even when the host is idle.
+   Gets the static power supply in Watts that is not dependent of resource usage, according to the \ :java:ref:`getStaticPowerPercent()`\ . It is the amount of power supplied even when the host is idle.
 
-   :return: the static power usage in Watt-Second (Ws)
+   :return: the static power supply in Watts (W)
 
 getStaticPowerPercent
 ^^^^^^^^^^^^^^^^^^^^^
@@ -70,7 +70,7 @@ getStaticPowerPercent
 .. java:method:: public double getStaticPowerPercent()
    :outertype: PowerModelSimple
 
-   Gets the static power consumption percentage (between 0 and 1) that is not dependent of resource usage. It is the amount of energy consumed even when the host is idle.
+   Gets the static power supply percentage (between 0 and 1) that is not dependent of resource usage. It is the percentage of power supplied even when the host is idle.
 
-   :return: the static power consumption percentage (between 0 and 1)
+   :return: the static power supply percentage (between 0 and 1)
 

@@ -69,7 +69,9 @@ VmSimple
 .. java:constructor:: public VmSimple(long id, double mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
-   Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+   Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+
+   To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
 
    It receives the amount of MIPS as a double value but converts it internally to a long. The method is just provided as a handy-way to create a Vm using a double value for MIPS that usually is generated from some computations.
 
@@ -87,7 +89,9 @@ VmSimple
 .. java:constructor:: public VmSimple(long id, long mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
-   Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+   Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+
+   To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
 
    \ **NOTE:**\  The Vm will use a \ :java:ref:`CloudletSchedulerTimeShared`\  by default. If you need to change that, just call \ :java:ref:`setCloudletScheduler(CloudletScheduler)`\ .
 
@@ -260,12 +264,6 @@ getHost
 .. java:method:: @Override public Host getHost()
    :outertype: VmSimple
 
-getIdleInterval
-^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getIdleInterval()
-   :outertype: VmSimple
-
 getLastBusyTime
 ^^^^^^^^^^^^^^^
 
@@ -396,18 +394,6 @@ isFailed
 ^^^^^^^^
 
 .. java:method:: @Override public boolean isFailed()
-   :outertype: VmSimple
-
-isIdle
-^^^^^^
-
-.. java:method:: @Override public boolean isIdle()
-   :outertype: VmSimple
-
-isIdleEnough
-^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isIdleEnough(double time)
    :outertype: VmSimple
 
 isInMigration
