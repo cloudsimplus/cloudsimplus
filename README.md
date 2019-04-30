@@ -99,8 +99,7 @@ CloudSim Plus 4.3.4|15.70                 |BestFit**         |1  |20000|40000|50
 CloudSim Plus 4.3.4|&nbsp;&nbsp;1.35      |FirstFit**        |1  |20000|40000|50000 
 
 \* *Results generated using [CloudSim Plus Automation](http://github.com/manoelcampos/cloudsim-plus-automation) tool 
-in a computer powered by a dual-core 2.8 GHz Hyper-Threading Intel i7-4558U processor.*
-
+in a computer powered by a dual-core 2.8 GHz Hyper-Threading Intel i7-4558U processor.* \
 \** *Only available in CloudSim Plus.*
 
 # Project's Structure
