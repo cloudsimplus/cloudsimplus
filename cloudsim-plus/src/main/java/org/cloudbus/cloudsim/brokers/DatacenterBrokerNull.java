@@ -56,6 +56,7 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public List<Cloudlet> getCloudletSubmittedList() { return Collections.emptyList(); }
     @Override public void setVmComparator(Comparator<Vm> comparator) {/**/}
     @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
+    @Override public Function<Cloudlet, Vm> getDefaultVmMapper() { return c -> Vm.NULL; }
     @Override public Function<Cloudlet, Vm> getVmMapper() { return c -> Vm.NULL; }
     @Override public void submitCloudlet(Cloudlet cloudlet) {/**/}
     @Override public void submitCloudletList(List<? extends Cloudlet> list) {/**/}

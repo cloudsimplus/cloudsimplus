@@ -128,13 +128,21 @@ public class CloudletToVmMappingBestFit {
      * @return the VM selected for the Cloudlet or {@link Vm#NULL} if no suitable VM was found
      */
     private Vm bestFitCloudletToVmMapper(final Cloudlet cloudlet) {
+        if (cloudlet.isBindToVm()) {
+            if(broker0.getVmExecList().contains(cloudlet.getVm())) {
+                return cloudlet.getVm();
+            }
+
+            return Vm.NULL;
+        }
+
         return cloudlet
                 .getBroker()
                 .getVmCreatedList()
                 .stream()
                 .filter(vm -> vm.getNumberOfPes() >= cloudlet.getNumberOfPes())
                 .min(Comparator.comparingLong(Vm::getNumberOfPes))
-                .orElse(broker0.getVmMapper().apply(cloudlet));
+                .orElse(broker0.getDefaultVmMapper().apply(cloudlet));
     }
 
     /**

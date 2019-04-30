@@ -255,6 +255,15 @@ public interface DatacenterBroker extends SimEntity {
     void setCloudletComparator(Comparator<Cloudlet> comparator);
 
     /**
+     * Gets a default {@link Function} that maps a given Cloudlet to a Vm.
+     * It defines a default policy used to select a Vm to host a Cloudlet
+     * that is waiting to be created.
+     *
+     * @return the Default Vm mapper Function
+     */
+    Function<Cloudlet, Vm> getDefaultVmMapper();
+
+    /**
      * Gets a {@link Function} that maps a given Cloudlet to a Vm.
      * It defines the policy used to select a Vm to host a Cloudlet
      * that is waiting to be created.

@@ -1118,6 +1118,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
+    public Function<Cloudlet, Vm> getDefaultVmMapper() {
+        return this::defaultVmMapper;
+    }
+
+    @Override
     public Function<Cloudlet, Vm> getVmMapper() {
         return vmMapper;
     }
