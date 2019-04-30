@@ -1,7 +1,5 @@
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
-.. java:import:: org.cloudbus.cloudsim.resources Pe
-
 PowerAware
 ==========
 
@@ -22,21 +20,21 @@ getPower
 .. java:method::  double getPower()
    :outertype: PowerAware
 
-   Gets the current power consumption in Watt-Second (Ws). For this moment, it only computes the power consumed by \ :java:ref:`Pe`\ s.
+   Gets the current power supply in Watts (w).
 
-   :return: the power consumption in Watt-Second (Ws)
+   :return: the power supply in Watts (w)
 
-   **See also:** :java:ref:`.getPowerInKWattsHour()`
+   **See also:** :java:ref:`.getPowerInKWatts()`
 
-getPowerInKWattsHour
-^^^^^^^^^^^^^^^^^^^^
+getPowerInKWatts
+^^^^^^^^^^^^^^^^
 
-.. java:method::  double getPowerInKWattsHour()
+.. java:method::  double getPowerInKWatts()
    :outertype: PowerAware
 
-   Gets the current power consumption in Kilowatt-hour (kWh). For this moment, it only computes the power consumed by \ :java:ref:`Pe`\ s.
+   Gets the current power supply in Kilowatts (kW).
 
-   :return: the power consumption Kilowatt-hour (kWh)
+   :return: the power supply Kilowatts (kW)
 
    **See also:** :java:ref:`.getPower()`
 
@@ -46,7 +44,7 @@ wattsSecToKWattsHour
 .. java:method:: static double wattsSecToKWattsHour(double power)
    :outertype: PowerAware
 
-   Converts from Watts-Second to Kilowatt-hour (kWh).
+   Converts energy consumption from Watts-Second to Kilowatt-hour (kWh).
 
    :param power: the value in Watts-Second
    :return: the value converted to Kilowatt-hour (kWh)

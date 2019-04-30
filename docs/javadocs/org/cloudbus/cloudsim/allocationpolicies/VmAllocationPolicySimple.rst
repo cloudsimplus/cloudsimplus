@@ -4,13 +4,13 @@
 
 .. java:import:: java.util Comparator
 
-.. java:import:: java.util Map
-
 .. java:import:: java.util Optional
 
 .. java:import:: java.util.function BiFunction
 
 .. java:import:: java.util.function Function
+
+.. java:import:: java.util.stream Stream
 
 VmAllocationPolicySimple
 ========================
@@ -22,9 +22,13 @@ VmAllocationPolicySimple
 
    A VmAllocationPolicy implementation that chooses, as the host for a VM, that one with the fewest PEs in use. \ **It is therefore a Worst Fit policy**\ , allocating each VM into the host with most available PEs.
 
+   This is a really computationally complex policy since the worst-case complexity to allocate a Host for a VM is O(N), where N is the number of Hosts. Such an implementation is not appropriate for large scale scenarios.
+
    \ **NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.**\
 
    :author: Rodrigo N. Calheiros, Anton Beloglazov, Manoel Campos da Silva Filho
+
+   **See also:** :java:ref:`VmAllocationPolicyFirstFit`
 
 Constructors
 ------------

@@ -220,14 +220,14 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return the number of working pes
      */
-    long getWorkingPesNumber();
+    int getWorkingPesNumber();
 
     /**
      * Gets the number of PEs that have failed.
      *
      * @return the number of failed pes
      */
-    long getFailedPesNumber();
+    int getFailedPesNumber();
 
     /**
      * Gets the current total amount of available MIPS at the host.

@@ -594,7 +594,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     /**
-     * Saves the current map between a VM and the host where it is place.
+     * Saves the current map between a VM and the host where it is placed.
      *
      * @see #savedAllocation
      */
@@ -675,14 +675,28 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     protected double getUtilizationOfCpuMips(final Host host) {
         double hostUtilizationMips = 0;
-        for (final Vm vm2 : host.getVmList()) {
-            if (host.getVmsMigratingIn().contains(vm2)) {
-                // calculate additional potential CPU usage of a migrating in VM
-                hostUtilizationMips += host.getTotalAllocatedMipsForVm(vm2) * 0.9 / 0.1;
-            }
-            hostUtilizationMips += host.getTotalAllocatedMipsForVm(vm2);
+        for (final Vm vm : host.getVmList()) {
+            final double additionalMips = additionalCpuUtilizationDuringMigration(host, vm);
+            hostUtilizationMips += additionalMips + host.getTotalAllocatedMipsForVm(vm);
         }
+
         return hostUtilizationMips;
+    }
+
+    /**
+     * Calculate additional potential CPU usage of a VM migrating into a given Host.
+     * @param host the Hosts that is being computed the current utilization of CPU MIPS
+     * @param vm a VM from that Host
+     * @return the additional amount of MIPS the Host will use if the VM is migrating into it, 0 otherwise
+     */
+    private double additionalCpuUtilizationDuringMigration(final Host host, final Vm vm) {
+        if (!host.getVmsMigratingIn().contains(vm)) {
+            return 0;
+        }
+
+        final double maxCpuUtilization = host.getVmScheduler().getMaxCpuUsagePercentDuringOutMigration();
+        final double migrationOverhead = host.getVmScheduler().getVmMigrationCpuOverhead();
+        return host.getTotalAllocatedMipsForVm(vm) * maxCpuUtilization / migrationOverhead;
     }
 
     @Override

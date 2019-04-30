@@ -132,7 +132,7 @@ final class HostNull implements Host {
         return this;
     }
     @Override public ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> clazz) { return ResourceProvisioner.NULL; }
-    @Override public long getWorkingPesNumber() {
+    @Override public int getWorkingPesNumber() {
         return 0;
     }
     @Override public String toString() {
@@ -140,7 +140,7 @@ final class HostNull implements Host {
     }
     @Override public void setId(long id) {/**/}
     @Override public double getTotalMipsCapacity() { return 0.0; }
-    @Override public long getFailedPesNumber() { return 0; }
+    @Override public int getFailedPesNumber() { return 0; }
     @Override public List<Pe> getWorkingPeList() { return Collections.emptyList(); }
     @Override public List<Pe> getBusyPeList() { return Collections.emptyList(); }
     @Override public List<Pe> getFreePeList() { return Collections.emptyList(); }

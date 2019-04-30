@@ -1,3 +1,5 @@
+.. java:import:: org.apache.commons.lang3 Range
+
 .. java:import:: org.apache.commons.math3.distribution UniformRealDistribution
 
 .. java:import:: java.util Random
@@ -37,6 +39,27 @@ UniformDistr
 UniformDistr
 ^^^^^^^^^^^^
 
+.. java:constructor:: public UniformDistr(Range<Double> range)
+   :outertype: UniformDistr
+
+   Creates new uniform pseudo random number generator that produces values between a given \ :java:ref:`Range`\ .
+
+   :param range: the \ :java:ref:`Range`\  to generate random values in between
+
+UniformDistr
+^^^^^^^^^^^^
+
+.. java:constructor:: public UniformDistr(Range<Double> range, long seed)
+   :outertype: UniformDistr
+
+   Creates new uniform pseudo random number generator that produces values between a given \ :java:ref:`Range`\ .
+
+   :param range: the \ :java:ref:`Range`\  to generate random values in between
+   :param seed: simulation seed to be used
+
+UniformDistr
+^^^^^^^^^^^^
+
 .. java:constructor:: public UniformDistr(double min, double max)
    :outertype: UniformDistr
 
@@ -65,9 +88,11 @@ isApplyAntitheticVariates
 .. java:method:: public boolean isApplyAntitheticVariates()
    :outertype: UniformDistr
 
-   Indicates if the pseudo random number generator (PRNG) has to apply the \ `Antithetic Variates Technique <https://en.wikipedia.org/wiki/Antithetic_variates>`_\  in order to reduce variance of experiments using this PRNG. This technique doesn't work for all the cases. However, in the cases it can be applied, in order to it work, one have to perform some actions. Consider an experiment that has to run "n" times. The first half of these experiments has to use the seeds the developer want. However, the second half of the experiments have to set the applyAntitheticVariates attribute to true and use the seeds of the first half of experiments. Thus, the first half of experiments are run using PRNGs that return random numbers as U(0, 1)[seed_1], ..., U(0, 1)[seed_n]. The second half of experiments then uses the seeds of the first half of experiments, returning random numbers as 1 - U(0, 1)[seed_1], ..., 1 - U(0, 1)[seed_n].
+   Indicates if the pseudo random number generator (PRNG) applies the \ `Antithetic Variates Technique <https://en.wikipedia.org/wiki/Antithetic_variates>`_\  in order to reduce variance of experiments using the generated numbers. This technique doesn't work for all the cases. However, in the cases it can be applied, in order to it work, one have to perform some actions. Consider an experiment that has to run "n" times. The first half of these experiments has to use the seeds the developer want. However, the second half of the experiments have to set the applyAntitheticVariates attribute to true and use the seeds of the first half of experiments. Thus, the first half of experiments are run using PRNGs that return random numbers as U(0, 1)[seed_1], ..., U(0, 1)[seed_n]. The second half of experiments then uses the seeds of the first half of experiments, returning random numbers as 1 - U(0, 1)[seed_1], ..., 1 - U(0, 1)[seed_n].
 
-   :return: true if the technique has to be applied, false otherwise
+   :return: true if the technique is applied, false otherwise
+
+   **See also:** :java:ref:`.setApplyAntitheticVariates(boolean)`
 
 sample
 ^^^^^^
@@ -94,9 +119,9 @@ setApplyAntitheticVariates
 .. java:method:: public UniformDistr setApplyAntitheticVariates(boolean applyAntitheticVariates)
    :outertype: UniformDistr
 
-   Defines if the pseudo random number generator (PRNG) has to apply the \ `Antithetic Variates Technique <https://en.wikipedia.org/wiki/Antithetic_variates>`_\  in order to reduce variance of experiments using this PRNG.
+   Indicates if the pseudo random number generator (PRNG) applies the \ `Antithetic Variates Technique <https://en.wikipedia.org/wiki/Antithetic_variates>`_\  in order to reduce variance of experiments using the generated numbers.
 
-   :param applyAntitheticVariates: true if the technique has to be applied, false otherwise
+   :param applyAntitheticVariates: true if the technique is to be applied, false otherwise
 
    **See also:** :java:ref:`.isApplyAntitheticVariates()`
 

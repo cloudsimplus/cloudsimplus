@@ -42,6 +42,26 @@ getBw
 
    :return: the machine bw capacity
 
+getIdleInterval
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getIdleInterval()
+   :outertype: Machine
+
+   Gets the interval interval the Machine has been idle.
+
+   :return: the idle time interval (in seconds) or 0 if the Machine is not idle
+
+getLastBusyTime
+^^^^^^^^^^^^^^^
+
+.. java:method::  double getLastBusyTime()
+   :outertype: Machine
+
+   Gets the last time the Machine was running some process.
+
+   :return: the last busy time (in seconds)
+
 getMips
 ^^^^^^^
 
@@ -99,6 +119,27 @@ getTotalMipsCapacity
    Gets total MIPS capacity of all PEs of the machine.
 
    :return: the total MIPS of all PEs
+
+isIdle
+^^^^^^
+
+.. java:method::  boolean isIdle()
+   :outertype: Machine
+
+   Checks if the Machine is currently idle.
+
+   :return: true if the Machine currently idle, false otherwise
+
+isIdleEnough
+^^^^^^^^^^^^
+
+.. java:method::  boolean isIdleEnough(double time)
+   :outertype: Machine
+
+   Checks if the Machine has been idle for a given amount of time (in seconds).
+
+   :param time: the time interval to check if the Machine has been idle (in seconds). If time is zero, it will be checked if the Machine is currently idle. If it's negative, even if the Machine is idle, it's considered that it isn't idle enough. This is useful if you don't want to perform any operation when the machine becomes idle (for instance, if idle machines might be shut down and a negative value is given, they won't).
+   :return: true if the Machine has been idle as long as the given time, false if it's active of isn't idle long enough
 
 validateCapacity
 ^^^^^^^^^^^^^^^^

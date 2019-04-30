@@ -64,11 +64,26 @@ HostSimple
 .. java:constructor:: public HostSimple(List<Pe> peList)
    :outertype: HostSimple
 
-   Creates a Host without a pre-defined ID, 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage. It creates a \ :java:ref:`ResourceProvisionerSimple`\  for RAM and Bandwidth. Finally, it sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
+   Creates and powers on a Host without a pre-defined ID, 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage. It creates a \ :java:ref:`ResourceProvisionerSimple`\  for RAM and Bandwidth. Finally, it sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
 
    :param peList: the host's \ :java:ref:`Pe`\  list
 
-   **See also:** :java:ref:`ChangeableId.setId(long)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setStorage(long)`, :java:ref:`.setVmScheduler(VmScheduler)`, :java:ref:`.setDefaultRamCapacity(long)`, :java:ref:`.setDefaultBwCapacity(long)`, :java:ref:`.setDefaultStorageCapacity(long)`
+   **See also:** :java:ref:`ChangeableId.setId(long)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setVmScheduler(VmScheduler)`, :java:ref:`.setDefaultRamCapacity(long)`, :java:ref:`.setDefaultBwCapacity(long)`, :java:ref:`.setDefaultStorageCapacity(long)`
+
+HostSimple
+^^^^^^^^^^
+
+.. java:constructor:: public HostSimple(List<Pe> peList, boolean activate)
+   :outertype: HostSimple
+
+   Creates a Host without a pre-defined ID, 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage and enabling the host to be powered on or not.
+
+   It creates a \ :java:ref:`ResourceProvisionerSimple`\  for RAM and Bandwidth. Finally, it sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
+
+   :param peList: the host's \ :java:ref:`Pe`\  list
+   :param activate: define the Host activation status: true to power on, false to power off
+
+   **See also:** :java:ref:`ChangeableId.setId(long)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setVmScheduler(VmScheduler)`, :java:ref:`.setDefaultRamCapacity(long)`, :java:ref:`.setDefaultBwCapacity(long)`, :java:ref:`.setDefaultStorageCapacity(long)`
 
 HostSimple
 ^^^^^^^^^^
@@ -76,7 +91,7 @@ HostSimple
 .. java:constructor:: public HostSimple(ResourceProvisioner ramProvisioner, ResourceProvisioner bwProvisioner, long storage, List<Pe> peList)
    :outertype: HostSimple
 
-   Creates a Host with the given parameters and a \ :java:ref:`VmSchedulerSpaceShared`\  as default.
+   Creates and powers on a Host with the given parameters and a \ :java:ref:`VmSchedulerSpaceShared`\  as default.
 
    :param ramProvisioner: the ram provisioner with capacity in Megabytes
    :param bwProvisioner: the bw provisioner with capacity in Megabits/s
@@ -91,12 +106,28 @@ HostSimple
 .. java:constructor:: public HostSimple(long ram, long bw, long storage, List<Pe> peList)
    :outertype: HostSimple
 
+   Creates and powers on a Host without a pre-defined ID. It uses a \ :java:ref:`ResourceProvisionerSimple`\  for RAM and Bandwidth and also sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
+
+   :param ram: the RAM capacity in Megabytes
+   :param bw: the Bandwidth (BW) capacity in Megabits/s
+   :param storage: the storage capacity in Megabytes
+   :param peList: the host's \ :java:ref:`Pe`\  list
+
+   **See also:** :java:ref:`ChangeableId.setId(long)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setVmScheduler(VmScheduler)`
+
+HostSimple
+^^^^^^^^^^
+
+.. java:constructor:: public HostSimple(long ram, long bw, long storage, List<Pe> peList, boolean activate)
+   :outertype: HostSimple
+
    Creates a Host without a pre-defined ID. It uses a \ :java:ref:`ResourceProvisionerSimple`\  for RAM and Bandwidth and also sets a \ :java:ref:`VmSchedulerSpaceShared`\  as default. The ID is automatically set when a List of Hosts is attached to a \ :java:ref:`Datacenter`\ .
 
    :param ram: the RAM capacity in Megabytes
    :param bw: the Bandwidth (BW) capacity in Megabits/s
    :param storage: the storage capacity in Megabytes
    :param peList: the host's \ :java:ref:`Pe`\  list
+   :param activate: define the Host activation status: true to power on, false to power off
 
    **See also:** :java:ref:`ChangeableId.setId(long)`, :java:ref:`.setRamProvisioner(ResourceProvisioner)`, :java:ref:`.setBwProvisioner(ResourceProvisioner)`, :java:ref:`.setVmScheduler(VmScheduler)`
 
@@ -283,7 +314,7 @@ getDefaultStorageCapacity
 getFailedPesNumber
 ^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getFailedPesNumber()
+.. java:method:: @Override public int getFailedPesNumber()
    :outertype: HostSimple
 
 getFinishedVms
@@ -308,6 +339,18 @@ getId
 ^^^^^
 
 .. java:method:: @Override public long getId()
+   :outertype: HostSimple
+
+getIdleShutdownDeadline
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getIdleShutdownDeadline()
+   :outertype: HostSimple
+
+getLastBusyTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getLastBusyTime()
    :outertype: HostSimple
 
 getMaxAvailableMips
@@ -428,6 +471,18 @@ getTotalMipsCapacity
 .. java:method:: @Override public double getTotalMipsCapacity()
    :outertype: HostSimple
 
+getTotalUpTime
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalUpTime()
+   :outertype: HostSimple
+
+getUpTime
+^^^^^^^^^
+
+.. java:method:: @Override public double getUpTime()
+   :outertype: HostSimple
+
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -503,7 +558,13 @@ getWorkingPeList
 getWorkingPesNumber
 ^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public long getWorkingPesNumber()
+.. java:method:: @Override public int getWorkingPesNumber()
+   :outertype: HostSimple
+
+hasEverStarted
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean hasEverStarted()
    :outertype: HostSimple
 
 hashCode
@@ -563,7 +624,7 @@ removeVmMigratingOut
 setActive
 ^^^^^^^^^
 
-.. java:method:: @Override public final Host setActive(boolean active)
+.. java:method:: @Override public final Host setActive(boolean activate)
    :outertype: HostSimple
 
 setBwProvisioner
@@ -614,6 +675,12 @@ setId
 .. java:method:: @Override public final void setId(long id)
    :outertype: HostSimple
 
+setIdleShutdownDeadline
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Host setIdleShutdownDeadline(double deadline)
+   :outertype: HostSimple
+
 setPeList
 ^^^^^^^^^
 
@@ -623,6 +690,17 @@ setPeList
    Sets the pe list.
 
    :param peList: the new pe list
+
+setPeStatus
+^^^^^^^^^^^
+
+.. java:method:: public final void setPeStatus(List<Pe> peList, Pe.Status newStatus)
+   :outertype: HostSimple
+
+   Sets the status of a given (sub)list of \ :java:ref:`Pe`\  to a new status.
+
+   :param peList: the (sub)list of \ :java:ref:`Pe`\  to change the status
+   :param newStatus: the new status
 
 setPowerModel
 ^^^^^^^^^^^^^

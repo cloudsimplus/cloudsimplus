@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
 
+.. java:import:: java.util List
+
 .. java:import:: java.util Optional
 
 VmAllocationPolicyFirstFit
@@ -12,17 +14,16 @@ VmAllocationPolicyFirstFit
 
 .. java:type:: public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy
 
-   An \ **First Fit VM allocation policy**\  which finds the first Host having suitable resources to place a given VM.
+   An \ **First Fit VM allocation policy**\  which finds the first Host having suitable resources to place a given VM. This is a very time efficient policy with a best-case complexity O(1) and a worst-case complexity O(N), where N is the number of Hosts.
 
-   \ **NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.**\
-
-   If you are using any algorithms, policies or workload included in the power package please cite the following paper:
+   \ **NOTES:**\
 
    ..
 
-   * \ `Anton Beloglazov, and Rajkumar Buyya, "Optimal Online Deterministic Algorithms and Adaptive Heuristics for Energy and Performance Efficient Dynamic Consolidation of Virtual Machines in Cloud Data Centers", Concurrency and Computation: Practice and Experience (CCPE), Volume 24, Issue 13, Pages: 1397-1420, John Wiley and Sons, Ltd, New York, USA, 2012 <https://doi.org/10.1002/cpe.1867>`_\
+   * This policy doesn't perform optimization of VM allocation by means of VM migration.
+   * It has a low computational complexity but may return and inactive Host that will be activated, while there may be active Hosts suitable for the VM.
 
-   :author: Anton Beloglazov, Manoel Campos da Silva Filho
+   :author: Manoel Campos da Silva Filho
 
 Methods
 -------

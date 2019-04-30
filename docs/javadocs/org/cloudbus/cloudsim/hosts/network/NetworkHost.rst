@@ -54,7 +54,7 @@ NetworkHost
 .. java:constructor:: public NetworkHost(long ram, long bw, long storage, List<Pe> peList)
    :outertype: NetworkHost
 
-   Creates a NetworkHost using a \ :java:ref:`VmSchedulerSpaceShared`\  as default.
+   Creates and powers on a NetworkHost using a \ :java:ref:`VmSchedulerSpaceShared`\  as default.
 
    :param ram: the RAM capacity in Megabytes
    :param bw: the Bandwidth (BW) capacity in Megabits/s

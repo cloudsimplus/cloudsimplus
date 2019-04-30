@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.faultinjection;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
@@ -35,6 +34,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
@@ -311,7 +311,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param host the Host to generate the fault to.
      * @param numberOfPesToFail number of PEs that must fail
      */
-    public void generateHostFault(final Host host, final long numberOfPesToFail){
+    public void generateHostFault(final Host host, final int numberOfPesToFail){
         if(Host.NULL == host){
             return;
         }
@@ -818,16 +818,15 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param numberOfPesToFail number of PEs to set as failed
      * @return the number of PEs just failed for the Host, which is equals to the input number
      */
-    private int generateHostPesFaults(final long numberOfPesToFail) {
-        final int pesFaults = (int) lastFailedHost.getWorkingPeList()
-                .stream()
-                .limit(numberOfPesToFail)
-                .peek(pe -> pe.setStatus(Pe.Status.FAILED))
-                .count();
+    private int generateHostPesFaults(final int numberOfPesToFail) {
+        final List<Pe> peList = lastFailedHost.getWorkingPeList()
+            .stream()
+            .limit(numberOfPesToFail)
+            .collect(toList());
 
-        //Updates the list of working PEs inside the VmAllocationPolicy
-        ((VmAllocationPolicyAbstract)lastFailedHost.getDatacenter().getVmAllocationPolicy()).addPesFromHost(lastFailedHost);
-        return pesFaults;
+        ((HostSimple)lastFailedHost).setPeStatus(peList, Pe.Status.FAILED);
+
+        return numberOfPesToFail;
     }
 
     /**

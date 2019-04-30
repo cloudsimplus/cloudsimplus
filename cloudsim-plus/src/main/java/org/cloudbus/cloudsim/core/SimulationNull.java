@@ -94,9 +94,6 @@ final class SimulationNull implements Simulation {
         return false;
     }
     @Override public void wait(CloudSimEntity src, Predicate<SimEvent> predicate) {/**/}
-    @Override public long waiting(SimEntity dest, Predicate<SimEvent> predicate) {
-        return 0;
-    }
     @Override public NetworkTopology getNetworkTopology() { return NetworkTopology.NULL; }
     @Override public void setNetworkTopology(NetworkTopology networkTopology) {/**/}
     @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate) { return 0; }

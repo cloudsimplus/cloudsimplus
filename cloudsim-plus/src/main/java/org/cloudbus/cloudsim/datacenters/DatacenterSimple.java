@@ -7,7 +7,6 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyAbstract;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
@@ -559,9 +558,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         if (ackRequested) {
-            /* Acknowledges that the requested was received by the Datacenter
-             * (it's not saying the VM was created or not).
-             * To check that, use Vm.isCreated(). */
+            // Acknowledges that the request was received by the Datacenter
             send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
         }
 
@@ -972,7 +969,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public <T extends Host> Datacenter removeHost(final T host) {
         hostList.remove(host);
-        ((VmAllocationPolicyAbstract)vmAllocationPolicy).addPesFromHost(host);
         return this;
     }
 

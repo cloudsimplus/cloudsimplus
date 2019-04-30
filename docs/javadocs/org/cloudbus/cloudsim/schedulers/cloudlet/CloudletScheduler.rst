@@ -265,17 +265,6 @@ hasFinishedCloudlets
 
    :return: $true if there is at least one finished cloudlet; $false otherwise
 
-isCloudletReturned
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isCloudletReturned(Cloudlet cloudlet)
-   :outertype: CloudletScheduler
-
-   Checks if a Cloudlet has finished and was returned to its \ :java:ref:`DatacenterBroker`\ .
-
-   :param cloudlet: the Cloudlet to be checked
-   :return: true if the Cloudlet has finished and was returned to the broker, falser otherwise
-
 isEmpty
 ^^^^^^^
 

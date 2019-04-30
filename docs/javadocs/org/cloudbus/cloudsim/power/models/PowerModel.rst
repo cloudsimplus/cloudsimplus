@@ -40,12 +40,12 @@ getEnergyLinearInterpolation
 .. java:method::  double getEnergyLinearInterpolation(double fromUtilization, double toUtilization, double time)
    :outertype: PowerModel
 
-   Gets an \ **estimation**\  of energy consumption using linear interpolation of the utilization change. \ **It's required to set a  in order to get power usage data.**\
+   Gets an \ **estimation**\  of energy consumption using linear interpolation of the utilization change for a given time interval. \ **It's required to set a  in order to get power usage data.**\
 
    :param fromUtilization: the initial utilization percentage
    :param toUtilization: the final utilization percentage
-   :param time: the time span between the initial and final utilization to compute the energy consumption
-   :return: the \ **estimated**\  energy consumption
+   :param time: the time span (in seconds) between the initial and final utilization to compute the energy consumption
+   :return: the \ **estimated**\  energy consumption in Watts-sec (Ws)
 
 getHost
 ^^^^^^^
@@ -59,9 +59,9 @@ getMaxPower
 .. java:method::  double getMaxPower()
    :outertype: PowerModel
 
-   Gets the max power that can be consumed by the host in Watt-Second (Ws).
+   Gets the max power that can be supplied by the host in Watts (W).
 
-   :return: the max consumption power in Watt-Second (Ws)
+   :return: the max power supply in Watts (W)
 
 getPower
 ^^^^^^^^
@@ -69,13 +69,11 @@ getPower
 .. java:method::  double getPower(double utilization) throws IllegalArgumentException
    :outertype: PowerModel
 
-   Gets power consumption in Watt-Second (Ws) of the Power Model, according to the utilization percentage of a critical resource, such as CPU.
+   Gets the power supply in Watts (W), according to the utilization percentage of a critical resource, such as CPU (which is currently the only resource considered).
 
-   \ **The power consumption data is just available while the host is active.**\
-
-   :param utilization: the utilization percentage (between [0 and 1]) of a resource that is critical for power consumption.
+   :param utilization: the utilization percentage (between [0 and 1]) of a resource that impacts power supply.
    :throws IllegalArgumentException: when the utilization percentage is not between [0 and 1]
-   :return: the power consumption in Watt-Second (Ws)
+   :return: the power supply in Watts (W)
 
 setHost
 ^^^^^^^

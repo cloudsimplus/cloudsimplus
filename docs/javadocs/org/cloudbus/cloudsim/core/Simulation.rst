@@ -207,6 +207,14 @@ getEntityList
 
    Returns a \ **read-only**\  list of entities created for the simulation.
 
+getLastCloudletProcessingUpdate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getLastCloudletProcessingUpdate()
+   :outertype: Simulation
+
+   Gets the last time (in seconds) some Cloudlet was processed in the simulation.
+
 getMinTimeBetweenEvents
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -505,16 +513,5 @@ wait
    Sets the state of an entity to \ :java:ref:`SimEntity.State.WAITING`\ , making it to wait for events that satisfy a given predicate. Only such events will be passed to the entity. This is done to avoid unnecessary context Datacenter.
 
    :param src: entity that scheduled the event
-   :param p: the event selection predicate
-
-waiting
-^^^^^^^
-
-.. java:method::  long waiting(SimEntity dest, Predicate<SimEvent> p)
-   :outertype: Simulation
-
-   Gets the number of events in the deferred event queue that are targeted to a given entity and match a given predicate.
-
-   :param dest: Id of entity that the event has to be sent to
    :param p: the event selection predicate
 

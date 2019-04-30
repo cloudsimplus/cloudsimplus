@@ -152,7 +152,7 @@ public class PowerExampleSchedulingInterval {
         System.out.printf("Host %d CPU utilization and power consumption\n", host.getId());
         final Map<Double, DoubleSummaryStatistics> utilizationPercentHistory = host.getUtilizationHistory();
         double totalWattsSec = 0;
-        double prevUtilizationPercent = -1, prevWattsPerInterval = -1;
+        double prevUtilizationPercent = -1, prevWattsSec = -1;
         //time difference from the current to the previous line in the history
         double utilizationHistoryTimeInterval;
         double prevTime=0;
@@ -166,13 +166,13 @@ public class PowerExampleSchedulingInterval {
             //Energy consumption in the entire simulation time
             totalWattsSec += wattsSec;
             //only prints when the next utilization is different from the previous one, or it's the first one
-            if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsPerInterval != wattsSec) {
+            if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsSec != wattsSec) {
                 System.out.printf(
                     "\tTime %8.2f | CPU Utilization %6.2f%% | Power Consumption: %8.0f Watts * %.0f Secs = %.0f Watt-Sec\n",
                     entry.getKey(), utilizationPercent * 100, watts, utilizationHistoryTimeInterval, wattsSec);
             }
             prevUtilizationPercent = utilizationPercent;
-            prevWattsPerInterval = wattsSec;
+            prevWattsSec = wattsSec;
             prevTime = entry.getKey();
         }
 

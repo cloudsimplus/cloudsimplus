@@ -4,6 +4,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies NetworkTopology
 
+.. java:import:: org.cloudbus.cloudsim.util Conversion
+
 .. java:import:: org.cloudsimplus.listeners EventInfo
 
 .. java:import:: org.cloudsimplus.listeners EventListener
@@ -154,6 +156,12 @@ getEntityList
 .. java:method:: @Override public List<SimEntity> getEntityList()
    :outertype: CloudSim
 
+getLastCloudletProcessingUpdate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getLastCloudletProcessingUpdate()
+   :outertype: CloudSim
+
 getMinTimeBetweenEvents
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -299,6 +307,16 @@ sendNow
 .. java:method:: @Override public void sendNow(SimEntity src, SimEntity dest, int tag, Object data)
    :outertype: CloudSim
 
+setLastCloudletProcessingUpdate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate)
+   :outertype: CloudSim
+
+   Sets the last time (in seconds) some Cloudlet was processed in the simulation.
+
+   :param lastCloudletProcessingUpdate: the time to set (in seconds)
+
 setNetworkTopology
 ^^^^^^^^^^^^^^^^^^
 
@@ -327,11 +345,5 @@ wait
 ^^^^
 
 .. java:method:: @Override public void wait(CloudSimEntity src, Predicate<SimEvent> predicate)
-   :outertype: CloudSim
-
-waiting
-^^^^^^^
-
-.. java:method:: @Override public long waiting(SimEntity dest, Predicate<SimEvent> predicate)
    :outertype: CloudSim
 

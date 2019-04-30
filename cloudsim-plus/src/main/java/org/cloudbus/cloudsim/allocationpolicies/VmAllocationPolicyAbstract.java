@@ -19,7 +19,10 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.LongStream;
 
@@ -56,20 +59,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private Datacenter datacenter;
 
-    /**
-     * @TODO The number of free PEs in each Host could be determined dynamically, instead of storing
-     * such information in a HashMap.
-     * The information in the map can become out-of-date and cause issues.
-     * There is just a concern about performance if this information
-     * is computed every time when needed.
-     * @see #getHostFreePesMap()
-     */
-    private Map<Host, Long> hostFreePesMap;
-
-    /**
-     * The number of PEs used in each VM.
-     */
-    private Map<Vm, Long> usedPes;
+    /**@see #getHostCountForParallelSearch() */
+    private int hostCountForParallelSearch;
 
     /**
      * Creates a VmAllocationPolicy.
@@ -87,6 +78,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     public VmAllocationPolicyAbstract(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         setDatacenter(Datacenter.NULL);
         setFindHostForVmFunction(findHostForVmFunction);
+        this.hostCountForParallelSearch = DEF_HOST_COUNT_FOR_PARALLEL_SEARCH;
     }
 
     @Override
@@ -106,88 +98,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     @Override
     public final void setDatacenter(final Datacenter datacenter) {
-        addPesFromHostsToFreePesList(requireNonNull(datacenter));
-        this.datacenter = datacenter;
-    }
-
-    /**
-     * Gets the number of free PEs from each Host in a list
-     * and adds these numbers to the {@link #getHostFreePesMap() list of free PEs}.
-     * Before the Host starts being used, the number of free PEs is
-     * the same as the number of working PEs.
-     *
-     * @param datacenter the Datacenter to get Hosts from
-     */
-    private void addPesFromHostsToFreePesList(final Datacenter datacenter) {
-        requireNonNull(datacenter);
-        if (datacenter == Datacenter.NULL || datacenter != this.datacenter) {
-            setHostFreePesMap(new HashMap<>(datacenter.getHostList().size()));
-            setUsedPes(new HashMap<>());
-        }
-
-        datacenter.getHostList().forEach(this::addPesFromHost);
-    }
-
-    /**
-     * Gets the number of working PEs from a given Host
-     * and adds this number to the {@link #getHostFreePesMap() list of free PEs}.
-     * Before the Host starts being used, the number of free PEs is
-     * the same as the number of working PEs.
-     *
-     * @param host the Host to add PEs from
-     */
-    public void addPesFromHost(final Host host) {
-        final long workingPes = host.getWorkingPesNumber();
-        hostFreePesMap.compute(host, (mapHost, freePes) -> freePes == null ? workingPes : Math.min(freePes, workingPes));
-    }
-
-    /**
-     * Gets a map with the number of free and working PEs for each host from {@link #getHostList()}.
-     *
-     * @return a Map where each key is a host and each value is the number of free and working PEs of that host.
-     */
-    protected final Map<Host, Long> getHostFreePesMap() {
-        return hostFreePesMap;
-    }
-
-    /**
-     * Sets the Host free PEs Map.
-     *
-     * @param hostFreePesMap the new Host free PEs map
-     * @return
-     */
-    protected final VmAllocationPolicy setHostFreePesMap(final Map<Host, Long> hostFreePesMap) {
-        this.hostFreePesMap = hostFreePesMap;
-        return this;
-    }
-
-    /**
-     * Adds number used PEs for a Vm to the map between each VM and the number of PEs used.
-     *
-     * @param vm the VM to add the number of used PEs to the map
-     */
-    protected void addUsedPes(final Vm vm) {
-        usedPes.put(vm, vm.getNumberOfPes());
-    }
-
-    /**
-     * Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
-     *
-     * @param vm the VM to remove used PEs from
-     * @return the number of used PEs removed
-     */
-    protected long removeUsedPes(final Vm vm) {
-        final Long pes = usedPes.remove(vm);
-        return pes == null ? 0 : pes;
-    }
-
-    /**
-     * Sets the used pes.
-     *
-     * @param usedPes the used pes
-     */
-    protected final void setUsedPes(final Map<Vm, Long> usedPes) {
-        this.usedPes = requireNonNull(usedPes);
+        this.datacenter = requireNonNull(datacenter);
     }
 
     @Override
@@ -380,14 +291,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         return false;
     }
 
-    //It's ensured the hostFreePesMap always have an entry for each Host (avoiding NullPointerException)
-    @SuppressWarnings("ConstantConditions")
     @Override
     public boolean allocateHostForVm(final Vm vm, final Host host) {
         if (host.createVm(vm)) {
-            addUsedPes(vm);
-            getHostFreePesMap().compute(host, (h, previousFreePes) -> previousFreePes - vm.getNumberOfPes());
-
             LOGGER.info(
                 "{}: {}: {} has been allocated to {}",
                 vm.getSimulation().clock(), getClass().getSimpleName(), vm, host);
@@ -401,12 +307,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public void deallocateHostForVm(final Vm vm) {
-        final Host previousHost = vm.getHost();
         vm.getHost().destroyVm(vm);
-        final long pes = removeUsedPes(vm);
-        if (previousHost != Host.NULL) {
-            getHostFreePesMap().compute(previousHost, (host, freePes) -> freePes == null ? pes : freePes + pes);
-        }
     }
 
     /**
@@ -455,4 +356,15 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
         return Collections.emptyMap();
     }
+
+    @Override
+    public int getHostCountForParallelSearch() {
+        return hostCountForParallelSearch;
+    }
+
+    @Override
+    public void setHostCountForParallelSearch(final int hostCountForParallelSearch) {
+        this.hostCountForParallelSearch = hostCountForParallelSearch;
+    }
 }
+

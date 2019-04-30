@@ -4,13 +4,13 @@
 
 .. java:import:: java.util Comparator
 
-.. java:import:: java.util Map
-
 .. java:import:: java.util Optional
 
 .. java:import:: java.util.function BiFunction
 
 .. java:import:: java.util.function Function
+
+.. java:import:: java.util.stream Stream
 
 VmAllocationPolicyBestFit
 =========================
@@ -20,11 +20,15 @@ VmAllocationPolicyBestFit
 
 .. java:type:: public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract
 
-   A VmAllocationPolicy implementation that chooses, as the host for a VM, that one with the most PEs in use. \ **It is therefore a Best Fit policy**\ , allocating each VM into the host with the least available PEs that are enough for the VM.
+   A VmAllocationPolicy implementation that chooses, as the host for a VM, that one with the most number of PEs in use. \ **It is therefore a Best Fit policy**\ , allocating each VM into the host with the least available PEs that are enough for the VM.
+
+   This is a really computationally complex policy since the worst-case complexity to allocate a Host for a VM is O(N), where N is the number of Hosts. Such an implementation is not appropriate for large scale scenarios.
 
    \ **NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.**\
 
    :author: Manoel Campos da Silva Filho
+
+   **See also:** :java:ref:`VmAllocationPolicyFirstFit`
 
 Constructors
 ------------
@@ -56,7 +60,7 @@ defaultFindHostForVm
 .. java:method:: @Override protected Optional<Host> defaultFindHostForVm(Vm vm)
    :outertype: VmAllocationPolicyBestFit
 
-   Gets the first suitable host from the \ :java:ref:`getHostList()`\  that has the most number of used PEs (i.e, lower free PEs).
+   Gets the first suitable host from the \ :java:ref:`getHostList()`\  that has the most number of PEs in use (i.e. the least number of free PEs).
 
    :return: an \ :java:ref:`Optional`\  containing a suitable Host to place the VM or an empty \ :java:ref:`Optional`\  if not found
 

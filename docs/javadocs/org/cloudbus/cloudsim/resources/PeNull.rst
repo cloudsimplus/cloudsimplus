@@ -96,10 +96,10 @@ isAmountAvailable
 .. java:method:: @Override public boolean isAmountAvailable(double amountToCheck)
    :outertype: PeNull
 
-isBuzy
+isBusy
 ^^^^^^
 
-.. java:method:: @Override public boolean isBuzy()
+.. java:method:: @Override public boolean isBusy()
    :outertype: PeNull
 
 isFailed

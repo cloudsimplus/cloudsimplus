@@ -67,15 +67,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private Datacenter lastSelectedDc;
 
-    /**
-     * A map of requests for VM creation sent to Datacenters.
-     * The key is a VM and the value is a Datacenter to where
-     * a request to create that VM was sent.
-     * If the value is null or the VM isn't in the map,
-     * it wasn't requested to be created yet.
-     */
-    private final Map<Vm, Datacenter> vmCreationRequestsMap;
-
     /** @see #getVmWaitingList() */
     private final List<Vm> vmWaitingList;
 
@@ -102,14 +93,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private boolean wereThereWaitingCloudlets;
 
-    /**
-     * A map of requests for Cloudlet creation sent to Datacenters.
-     * The key is a Cloudlet and the value is a Datacenter to where
-     * a request to create that Cloudlet was sent.
-     * If the value is null or the Cloudlet isn't in the map,
-     * it wasn't requested to be created yet.
-     */
-    private final Map<Cloudlet, Datacenter> cloudletCreationRequestsMap;
     private Supplier<Datacenter> datacenterSupplier;
     private Supplier<Datacenter> fallbackDatacenterSupplier;
     private Function<Cloudlet, Vm> vmMapper;
@@ -182,8 +165,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         setDatacenterList(new TreeSet<>());
         datacenterRequestedList = new TreeSet<>();
-        vmCreationRequestsMap = new HashMap<>();
-        cloudletCreationRequestsMap = new HashMap<>();
         setDefaultPolicies();
 
         vmDestructionDelayFunction = DEF_VM_DESTRUCTION_DELAY_FUNCTION;
@@ -413,7 +394,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public boolean bindCloudletToVm(final Cloudlet cloudlet, final Vm vm) {
-        if (!cloudletWaitingList.contains(cloudlet)) {
+        if (!this.equals(cloudlet.getBroker())) {
             return false;
         }
 
@@ -656,7 +637,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         final Datacenter nextDatacenter = fallbackDatacenterSupplier.get();
         lastSelectedDc = nextDatacenter;
         if (nextDatacenter != Datacenter.NULL) {
-            clearVmCreationRequestsMapToTryNextDatacenter();
             requestDatacenterToCreateWaitingVms(nextDatacenter, true);
             return;
         }
@@ -686,21 +666,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private int getVmsNumber() {
         return vmCreatedList.size() + vmWaitingList.size();
-    }
-
-    /**
-     * After trying to create the waiting VMs at a given Datacenter
-     * and not all VMs could be created, removes the VMs yet waiting
-     * in order to allow requesting their creation in another datacenter.
-     * If a waiting VM is inside the {@link #vmCreationRequestsMap},
-     * it means that it was already sent a request to create it.
-     * Removing it from such a map, will allow
-     * to trying creating the VM at another Datacenter.
-     */
-    private void clearVmCreationRequestsMapToTryNextDatacenter() {
-        for (final Vm vm : vmWaitingList) {
-            vmCreationRequestsMap.remove(vm);
-        }
     }
 
     /**
@@ -876,10 +841,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     protected void requestDatacenterToCreateWaitingVms(final Datacenter datacenter, final boolean isFallbackDatacenter) {
         int requestedVms = 0;
         for (final Vm vm : vmWaitingList) {
-            if (!vmCreationRequestsMap.containsKey(vm)) {
+            final CustomerEntityAbstract entity = (CustomerEntityAbstract) vm;
+            if (!datacenter.equals(entity.getLastTriedDatacenter())) {
                 logVmCreationRequest(datacenter, isFallbackDatacenter, vm);
                 send(datacenter, vm.getSubmissionDelay(), CloudSimTags.VM_CREATE_ACK, vm);
-                vmCreationRequestsMap.put(vm, datacenter);
+                entity.setLastTriedDatacenter(datacenter);
                 requestedVms++;
             }
         }
@@ -919,7 +885,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         final List<Cloudlet> successfullySubmitted = new ArrayList<>();
         for (final Cloudlet cloudlet : cloudletWaitingList) {
-            if (cloudletCreationRequestsMap.containsKey(cloudlet)) {
+            final CustomerEntityAbstract entity = (CustomerEntityAbstract) cloudlet;
+            if (!entity.getLastTriedDatacenter().equals(Datacenter.NULL)) {
                 continue;
             }
 
@@ -934,7 +901,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             cloudlet.setVm(lastSelectedVm);
             send(getDatacenter(lastSelectedVm),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
-            cloudletCreationRequestsMap.put(cloudlet, getDatacenter(lastSelectedVm));
+            entity.setLastTriedDatacenter(getDatacenter(lastSelectedVm));
             cloudletsCreatedList.add(cloudlet);
             successfullySubmitted.add(cloudlet);
         }

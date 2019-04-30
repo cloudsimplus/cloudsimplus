@@ -27,10 +27,10 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
@@ -38,10 +38,16 @@ import java.util.function.Function;
  * <b>It is therefore a Best Fit policy</b>, allocating each VM into the host with the least available PEs
  * that are enough for the VM.
  *
+ * <p>This is a really computationally complex policy since the worst-case complexity
+ * to allocate a Host for a VM is O(N), where N is the number of Hosts.
+ * Such an implementation is not appropriate for large scale scenarios.</p>
+ *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 3.0.1
+ *
+ * @see VmAllocationPolicyFirstFit
  */
 public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
     /**
@@ -66,22 +72,18 @@ public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
      * Gets the first suitable host from the {@link #getHostList()}
      * that has the most number of PEs in use (i.e. the least number of free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
-     *
-     * @TODO See TODOs inside the {@link VmAllocationPolicySimple}
      */
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final Map<Host, Long> map = getHostFreePesMap();
         /* Since it's being used the min operation, the active comparator must be reversed so that
          * we get active hosts with minimum number of free PEs. */
-        final Comparator<Map.Entry<Host, Long>> activeComparator = Comparator.comparing((Map.Entry<Host, Long> entry) -> entry.getKey().isActive()).reversed();
-        final Comparator<Map.Entry<Host, Long>> comparator = activeComparator.thenComparingLong(Map.Entry::getValue);
+        final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive).reversed();
+        final Comparator<Host> comparator = activeComparator.thenComparingLong(Host::getFreePesNumber);
 
-        return map.entrySet()
-            .stream()
-            .filter(entry -> entry.getKey().isSuitableForVm(vm))
-            .min(comparator)
-            .map(Map.Entry::getKey);
+        final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
+        return stream
+                .filter(host -> host.isSuitableForVm(vm))
+                .min(comparator);
     }
 
 }

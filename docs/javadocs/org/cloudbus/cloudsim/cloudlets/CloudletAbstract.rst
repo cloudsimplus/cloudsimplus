@@ -303,6 +303,12 @@ getTotalLength
 .. java:method:: @Override public long getTotalLength()
    :outertype: CloudletAbstract
 
+getUtilizationModel
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public UtilizationModel getUtilizationModel(Class<? extends ResourceManageable> resourceClass)
+   :outertype: CloudletAbstract
+
 getUtilizationModelBw
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -392,6 +398,12 @@ isFinished
 ^^^^^^^^^^
 
 .. java:method:: @Override public boolean isFinished()
+   :outertype: CloudletAbstract
+
+isReturnedToBroker
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isReturnedToBroker()
    :outertype: CloudletAbstract
 
 notifyOnUpdateProcessingListeners

@@ -17,14 +17,14 @@ Constructors
 NormalDistr
 ^^^^^^^^^^^
 
-.. java:constructor:: public NormalDistr(long seed, double mean, double standardDeviation)
+.. java:constructor:: public NormalDistr(double mean, double standardDeviation, long seed)
    :outertype: NormalDistr
 
    Creates a new normal (Gaussian) pseudo random number generator.
 
-   :param seed: the seed to be used.
    :param mean: the mean for the distribution.
    :param standardDeviation: the standard deviation for the distribution.
+   :param seed: the seed to be used.
 
 NormalDistr
 ^^^^^^^^^^^

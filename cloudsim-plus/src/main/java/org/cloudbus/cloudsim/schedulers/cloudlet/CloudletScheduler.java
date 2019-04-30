@@ -256,14 +256,6 @@ public interface CloudletScheduler extends Serializable {
     long getFreePes();
 
     /**
-     * Checks if a Cloudlet has finished and was returned to its {@link DatacenterBroker}.
-     *
-     * @param cloudlet the Cloudlet to be checked
-     * @return true if the Cloudlet has finished and was returned to the broker, falser otherwise
-     */
-	boolean isCloudletReturned(Cloudlet cloudlet);
-
-    /**
      * Adds a Cloudlet to the list of finished Cloudlets that have been returned to its
      * {@link DatacenterBroker}.
      * @param cloudlet the Cloudlet to be added

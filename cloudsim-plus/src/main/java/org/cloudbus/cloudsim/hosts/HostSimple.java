@@ -133,6 +133,11 @@ public class HostSimple implements Host {
      */
     private double previousUtilizationMips;
 
+    /** @see #getFreePesNumber() */
+    private int freePesNumber;
+    /** @see #getFailedPesNumber() */
+    private int failedPesNumber;
+
     /**
      * Creates and powers on a Host without a pre-defined ID,
      * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage.
@@ -442,6 +447,7 @@ public class HostSimple implements Host {
             if (!vmList.contains(vm)) {
                 vmList.add(vm);
             }
+
             allocateResourcesForVm(vm);
         }
     }
@@ -452,10 +458,16 @@ public class HostSimple implements Host {
     }
 
     private boolean hasEnoughResources(final Vm vm) {
-        return vmScheduler.isSuitableForVm(vm, vm.getCurrentRequestedMips()) &&
+        /* Since && is a short-circuit operation,
+         * the more complex method calls are placed last.
+         * The freePesNumber and peList.size() are used just to improve performance
+         * and avoid calling the other complex methods
+         * when all PEs are used. */
+        return freePesNumber > 0 && peList.size() >= vm.getNumberOfPes() &&
+               storage.isAmountAvailable(vm.getStorage()) &&
                ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()) &&
                bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()) &&
-               storage.isAmountAvailable(vm.getStorage());
+               vmScheduler.isSuitableForVm(vm, vm.getCurrentRequestedMips());
     }
 
     @Override
@@ -571,7 +583,7 @@ public class HostSimple implements Host {
 
     @Override
     public int getFreePesNumber() {
-        return (int)peList.stream().filter(Pe::isFree).count();
+        return freePesNumber;
     }
 
     /**
@@ -751,6 +763,9 @@ public class HostSimple implements Host {
             pe.setId(++peId);
         }
 
+        failedPesNumber = 0;
+        freePesNumber = peList.size();
+
         return this;
     }
 
@@ -780,18 +795,45 @@ public class HostSimple implements Host {
     @Override
     public final boolean setFailed(final boolean failed) {
         this.failed = failed;
-        final Pe.Status status = failed ? Pe.Status.FAILED : Pe.Status.FREE;
-        peList.forEach(pe -> pe.setStatus(status));
+        final Pe.Status newStatus = failed ? Pe.Status.FAILED : Pe.Status.FREE;
+        setPeStatus(peList, newStatus);
 
         /*Just changes the active state when the Host is set to active.
         * In other situations, the active status must remain as it was.
         * For example, if the host was inactive and now it's set to failed,
         * it must remain inactive.*/
-        if(failed && active){
-            active = false;
+        if(failed && this.active){
+            this.active = false;
         }
 
         return true;
+    }
+
+    /**
+     * Sets the status of a given (sub)list of {@link Pe} to a new status.
+     * @param peList the (sub)list of {@link Pe} to change the status
+     * @param newStatus the new status
+     */
+    public final void setPeStatus(final List<Pe> peList, final Pe.Status newStatus){
+        /*For performance reasons, stores the number of free and failed PEs
+        instead of iterating over the PE list every time to find out.*/
+        for (final Pe pe : peList) {
+            if(pe.getStatus() == newStatus) {
+                continue;
+            }
+
+            if(newStatus == Pe.Status.FAILED) {
+                this.failedPesNumber++;
+                if(pe.getStatus() == Pe.Status.FREE)
+                    this.freePesNumber--;
+            } else if(newStatus == Pe.Status.FREE) {
+                this.freePesNumber++;
+                if(pe.getStatus() == Pe.Status.FAILED)
+                    this.failedPesNumber--;
+            }
+
+            pe.setStatus(newStatus);
+        }
     }
 
     @Override
@@ -880,15 +922,13 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public long getWorkingPesNumber() {
+    public int getWorkingPesNumber() {
         return peList.size() - getFailedPesNumber();
     }
 
     @Override
-    public long getFailedPesNumber() {
-        return peList.stream()
-                .filter(Pe::isFailed)
-                .count();
+    public int getFailedPesNumber() {
+        return failedPesNumber;
     }
 
     private Host setStorage(final long size) {

@@ -276,7 +276,7 @@ VM_CREATE_ACK
 .. java:field:: public static final int VM_CREATE_ACK
    :outertype: CloudSimTags
 
-   Denotes a request to create a new VM in a \ :java:ref:`Datacenter`\  with acknowledgement information sent by the Datacenter, where the \ :java:ref:`SimEvent.getData()`\  of the reply event is a \ :java:ref:`Vm`\  object. To check if the VM was in fact created inside the requested Datacenter one has only to call \ :java:ref:`Vm.isCreated()`\ .
+   Denotes a request to create a new VM in a \ :java:ref:`Datacenter`\  with where the \ :java:ref:`SimEvent.getData()`\  of the reply event is a \ :java:ref:`Vm`\  object. Using this tag, the Datacenter acknowledges the reception of the request. To check if the VM was in fact created inside the requested Datacenter one has only to call \ :java:ref:`Vm.isCreated()`\ .
 
 VM_DESTROY
 ^^^^^^^^^^

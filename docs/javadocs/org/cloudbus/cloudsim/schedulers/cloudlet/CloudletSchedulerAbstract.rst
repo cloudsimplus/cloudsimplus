@@ -4,11 +4,15 @@
 
 .. java:import:: org.cloudbus.cloudsim.cloudlets CloudletExecution
 
+.. java:import:: org.cloudbus.cloudsim.core CloudSim
+
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
 .. java:import:: org.cloudbus.cloudsim.core.events CloudSimEvent
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
+
+.. java:import:: org.cloudbus.cloudsim.resources Bandwidth
 
 .. java:import:: org.cloudbus.cloudsim.resources Pe
 
@@ -106,6 +110,18 @@ cloudletCancel
 
 .. java:method:: @Override public Cloudlet cloudletCancel(Cloudlet cloudlet)
    :outertype: CloudletSchedulerAbstract
+
+cloudletEstimatedFinishTime
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: protected double cloudletEstimatedFinishTime(CloudletExecution cle, double currentTime)
+   :outertype: CloudletSchedulerAbstract
+
+   Gets the estimated time when a given cloudlet is supposed to finish executing. It considers the amount of Vm PES and the sum of PEs required by all VMs running inside the VM.
+
+   :param cle: cloudlet to get the estimated finish time
+   :param currentTime: current simulation time
+   :return: the estimated finish time of the given cloudlet (which is a relative delay from the current simulation time)
 
 cloudletFail
 ^^^^^^^^^^^^
@@ -298,29 +314,6 @@ getCurrentRequestedRamPercentUtilization
 .. java:method:: @Override public double getCurrentRequestedRamPercentUtilization()
    :outertype: CloudletSchedulerAbstract
 
-getEstimatedFinishTimeOfCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected double getEstimatedFinishTimeOfCloudlet(CloudletExecution cle, double currentTime)
-   :outertype: CloudletSchedulerAbstract
-
-   Gets the estimated time when a given cloudlet is supposed to finish executing. It considers the amount of Vm PES and the sum of PEs required by all VMs running inside the VM.
-
-   :param cle: cloudlet to get the estimated finish time
-   :param currentTime: current simulation time
-   :return: the estimated finish time of the given cloudlet (which is a relative delay from the current simulation time)
-
-getEstimatedFinishTimeOfSoonerFinishingCloudlet
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: protected double getEstimatedFinishTimeOfSoonerFinishingCloudlet(double currentTime)
-   :outertype: CloudletSchedulerAbstract
-
-   Gets the estimated time, considering the current time, that a next Cloudlet is expected to finish.
-
-   :param currentTime: current simulation time
-   :return: the estimated finish time of sooner finishing cloudlet (which is a relative delay from the current simulation time)
-
 getFreePes
 ^^^^^^^^^^
 
@@ -375,12 +368,6 @@ hasFinishedCloudlets
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public boolean hasFinishedCloudlets()
-   :outertype: CloudletSchedulerAbstract
-
-isCloudletReturned
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public boolean isCloudletReturned(Cloudlet cloudlet)
    :outertype: CloudletSchedulerAbstract
 
 isEmpty

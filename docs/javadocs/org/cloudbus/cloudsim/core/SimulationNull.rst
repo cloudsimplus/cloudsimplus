@@ -120,6 +120,12 @@ getEntityList
 .. java:method:: @Override public List<SimEntity> getEntityList()
    :outertype: SimulationNull
 
+getLastCloudletProcessingUpdate
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getLastCloudletProcessingUpdate()
+   :outertype: SimulationNull
+
 getMinTimeBetweenEvents
 ^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -274,11 +280,5 @@ wait
 ^^^^
 
 .. java:method:: @Override public void wait(CloudSimEntity src, Predicate<SimEvent> predicate)
-   :outertype: SimulationNull
-
-waiting
-^^^^^^^
-
-.. java:method:: @Override public long waiting(SimEntity dest, Predicate<SimEvent> predicate)
    :outertype: SimulationNull
 

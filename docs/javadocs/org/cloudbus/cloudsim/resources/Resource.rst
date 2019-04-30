@@ -101,22 +101,10 @@ isFull
 
    :return: true if the storage is full, false otherwise
 
-isObjectSubClassOf
-^^^^^^^^^^^^^^^^^^
+isSubClassOf
+^^^^^^^^^^^^
 
-.. java:method:: static boolean isObjectSubClassOf(Object object, Class classWanted)
-   :outertype: Resource
-
-   Checks if a given object is instance of a given class.
-
-   :param object: the object to check
-   :param classWanted: the class to verify if the object is instance of
-   :return: true if the object is instance of the given class, false otherwise
-
-isObjectSubClassOf
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  boolean isObjectSubClassOf(Class classWanted)
+.. java:method::  boolean isSubClassOf(Class classWanted)
    :outertype: Resource
 
    Checks if this object is instance of a given class.

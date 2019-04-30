@@ -102,7 +102,7 @@ getNextEvent
    Gets the first event matching a predicate from the deferred queue, or if none match, wait for a matching event to arrive.
 
    :param predicate: The predicate to match
-   :return: the simulation event; or null if not found or the simulation is not running
+   :return: the simulation event; or \ :java:ref:`SimEvent.NULL`\  if not found or the simulation is not running
 
 getNextEvent
 ^^^^^^^^^^^^
@@ -112,7 +112,7 @@ getNextEvent
 
    Gets the first event waiting in the entity's deferred queue, or if there are none, wait for an event to arrive.
 
-   :return: the simulation event
+   :return: the simulation event; or \ :java:ref:`SimEvent.NULL`\  if not found or the simulation is not running
 
 getSimulation
 ^^^^^^^^^^^^^
@@ -149,27 +149,6 @@ isStarted
 
 .. java:method:: @Override public boolean isStarted()
    :outertype: CloudSimEntity
-
-numEventsWaiting
-^^^^^^^^^^^^^^^^
-
-.. java:method:: public long numEventsWaiting(Predicate<SimEvent> predicate)
-   :outertype: CloudSimEntity
-
-   Counts how many events matching a predicate are waiting in the entity's deferred queue.
-
-   :param predicate: The event selection predicate
-   :return: The count of matching events
-
-numEventsWaiting
-^^^^^^^^^^^^^^^^
-
-.. java:method:: public long numEventsWaiting()
-   :outertype: CloudSimEntity
-
-   Counts how many events are waiting in the entity's deferred queue.
-
-   :return: The count of events
 
 pause
 ^^^^^
@@ -297,7 +276,7 @@ selectEvent
    Extracts the first event matching a predicate waiting in the entity's deferred queue.
 
    :param predicate: The event selection predicate
-   :return: the simulation event
+   :return: the simulation event; or \ :java:ref:`SimEvent.NULL`\  if not found or the simulation is not running
 
 send
 ^^^^

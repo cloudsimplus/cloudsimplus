@@ -148,6 +148,12 @@ setVmComparator
 .. java:method:: @Override public void setVmComparator(Comparator<Vm> comparator)
    :outertype: DatacenterBrokerNull
 
+setVmDestructionDelay
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public DatacenterBroker setVmDestructionDelay(double delay)
+   :outertype: DatacenterBrokerNull
+
 setVmDestructionDelayFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

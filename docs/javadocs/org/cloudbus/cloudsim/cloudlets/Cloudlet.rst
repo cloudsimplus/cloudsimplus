@@ -10,6 +10,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters DatacenterCharacteristics
 
+.. java:import:: org.cloudbus.cloudsim.resources ResourceManageable
+
 .. java:import:: org.cloudbus.cloudsim.schedulers.cloudlet CloudletScheduler
 
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
@@ -379,6 +381,18 @@ getStatus
 
    :return: the Cloudlet status
 
+getSubmissionDelay
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override  double getSubmissionDelay()
+   :outertype: Cloudlet
+
+   {@inheritDoc}
+
+   If the VM where the Cloudlet will run is submitted with some delay, the \ :java:ref:`DatacenterBroker`\  waits the VM creation. Only after the VM is created, the Cloudlet creation is requested with the delay specified here.
+
+   :return: {@inheritDoc}
+
 getTotalCost
 ^^^^^^^^^^^^
 
@@ -408,6 +422,17 @@ getTotalLength
    :return: the total length of this Cloudlet (in MI)
 
    **See also:** :java:ref:`.getNumberOfPes()`, :java:ref:`.getLength()`
+
+getUtilizationModel
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  UtilizationModel getUtilizationModel(Class<? extends ResourceManageable> resourceClass)
+   :outertype: Cloudlet
+
+   Gets the utilization model for a given resource
+
+   :param resourceClass: the kind of resource to get its \ :java:ref:`UtilizationModel`\
+   :return: the utilization model
 
 getUtilizationModelBw
 ^^^^^^^^^^^^^^^^^^^^^
@@ -553,6 +578,14 @@ isFinished
    Checks whether this Cloudlet has finished executing or not.
 
    :return: true if this Cloudlet has finished execution, false otherwise
+
+isReturnedToBroker
+^^^^^^^^^^^^^^^^^^
+
+.. java:method::  boolean isReturnedToBroker()
+   :outertype: Cloudlet
+
+   Checks if the Cloudlet has finished and returned to the broker, so that the broker is aware about the end of execution of the Cloudlet.
 
 notifyOnUpdateProcessingListeners
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -34,6 +34,12 @@ getId
 .. java:method:: @Override public long getId()
    :outertype: MachineNull
 
+getLastBusyTime
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getLastBusyTime()
+   :outertype: MachineNull
+
 getMips
 ^^^^^^^
 
@@ -74,6 +80,12 @@ getTotalMipsCapacity
 ^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getTotalMipsCapacity()
+   :outertype: MachineNull
+
+isIdle
+^^^^^^
+
+.. java:method:: @Override public boolean isIdle()
    :outertype: MachineNull
 
 setId

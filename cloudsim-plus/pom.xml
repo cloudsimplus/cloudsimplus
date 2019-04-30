@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
-    <version>4.3.2</version>
+    <version>4.3.4</version>
     <name>CloudSim Plus API</name>
     <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
     <url>http://cloudsimplus.org</url>

@@ -20,6 +20,14 @@
 
 .. java:import:: org.slf4j LoggerFactory
 
+.. java:import:: java.util Collections
+
+.. java:import:: java.util List
+
+.. java:import:: java.util Map
+
+.. java:import:: java.util Optional
+
 .. java:import:: java.util.function BiFunction
 
 .. java:import:: java.util.stream LongStream
@@ -62,26 +70,6 @@ VmAllocationPolicyAbstract
 
 Methods
 -------
-addPesFromHost
-^^^^^^^^^^^^^^
-
-.. java:method:: public void addPesFromHost(Host host)
-   :outertype: VmAllocationPolicyAbstract
-
-   Gets the number of working PEs from a given Host and adds this number to the \ :java:ref:`list of free PEs <getHostFreePesMap()>`\ . Before the Host starts being used, the number of free PEs is the same as the number of working PEs.
-
-   :param host: the Host to add PEs from
-
-addUsedPes
-^^^^^^^^^^
-
-.. java:method:: protected void addUsedPes(Vm vm)
-   :outertype: VmAllocationPolicyAbstract
-
-   Adds number used PEs for a Vm to the map between each VM and the number of PEs used.
-
-   :param vm: the VM to add the number of used PEs to the map
-
 allocateHostForVm
 ^^^^^^^^^^^^^^^^^
 
@@ -96,7 +84,7 @@ allocateHostForVm
 allocateHostForVm
 ^^^^^^^^^^^^^^^^^
 
-.. java:method:: @SuppressWarnings @Override public boolean allocateHostForVm(Vm vm, Host host)
+.. java:method:: @Override public boolean allocateHostForVm(Vm vm, Host host)
    :outertype: VmAllocationPolicyAbstract
 
 deallocateHostForVm
@@ -130,15 +118,11 @@ getDatacenter
 .. java:method:: @Override public Datacenter getDatacenter()
    :outertype: VmAllocationPolicyAbstract
 
-getHostFreePesMap
-^^^^^^^^^^^^^^^^^
+getHostCountForParallelSearch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected final Map<Host, Long> getHostFreePesMap()
+.. java:method:: @Override public int getHostCountForParallelSearch()
    :outertype: VmAllocationPolicyAbstract
-
-   Gets a map with the number of free and working PEs for each host from \ :java:ref:`getHostList()`\ .
-
-   :return: a Map where each key is a host and each value is the number of free and working PEs of that host.
 
 getHostList
 ^^^^^^^^^^^
@@ -162,17 +146,6 @@ getOptimizedAllocationMap
 
    :param vmList: {@inheritDoc}
    :return: {@inheritDoc}
-
-removeUsedPes
-^^^^^^^^^^^^^
-
-.. java:method:: protected long removeUsedPes(Vm vm)
-   :outertype: VmAllocationPolicyAbstract
-
-   Removes the used PEs for a Vm from the map between each VM and the number of PEs used.
-
-   :param vm: the VM to remove used PEs from
-   :return: the number of used PEs removed
 
 scaleVmVertically
 ^^^^^^^^^^^^^^^^^
@@ -200,23 +173,9 @@ setFindHostForVmFunction
 
    :param findHostForVmFunction: {@inheritDoc}. Passing null makes the default method to find a Host for a VM to be used.
 
-setHostFreePesMap
-^^^^^^^^^^^^^^^^^
+setHostCountForParallelSearch
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: protected final VmAllocationPolicy setHostFreePesMap(Map<Host, Long> hostFreePesMap)
+.. java:method:: @Override public void setHostCountForParallelSearch(int hostCountForParallelSearch)
    :outertype: VmAllocationPolicyAbstract
-
-   Sets the Host free PEs Map.
-
-   :param hostFreePesMap: the new Host free PEs map
-
-setUsedPes
-^^^^^^^^^^
-
-.. java:method:: protected final void setUsedPes(Map<Vm, Long> usedPes)
-   :outertype: VmAllocationPolicyAbstract
-
-   Sets the used pes.
-
-   :param usedPes: the used pes
 

@@ -88,7 +88,19 @@ CloudSim Plus provides a lot of exclusive features, from the most basic ones to 
 1. Improved class hierarchy, modules and package structure that are easier to understand, following the [Separation of Concerns principle (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns);
 1. As it is usual to extend framework classes to provide some specific behaviors for your simulations, you will find a totally refactored code following clean code programming, [SOLID](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)), [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern) and several other software engineering principles and practices. This way, it will be easier to understand the code and implement the feature you want;
 1. Simpler constructors to instantiate simulation objects, making it less confusing to use the framework. It applies the [Convention over Configuration principle (CoC)](https://en.wikipedia.org/wiki/Convention_over_configuration) to ask just mandatory parameters when instantiating objects ([#30](https://github.com/manoelcampos/cloudsim-plus/issues/30));
-1. Defines types and colors for log messages and enables filtering the level of messages to print. The image below shows how easy is to check things that may be wrong in your simulation ([#24](https://github.com/manoelcampos/cloudsim-plus/issues/24)). ![](docs/images/log-messages-by-type.png) And for instance, if you want to see just messages from warning level, it's as simple as calling `Log.setLevel(ch.qos.logback.classic.Level.WARN);` 
+1. Defines types and colors for log messages and enables filtering the level of messages to print. The image below shows how easy is to check things that may be wrong in your simulation ([#24](https://github.com/manoelcampos/cloudsim-plus/issues/24)). ![](docs/images/log-messages-by-type.png) And for instance, if you want to see just messages from warning level, it's as simple as calling `Log.setLevel(ch.qos.logback.classic.Level.WARN);`
+1. And yeah, it outperforms CloudSim 4, as can be seen in the table below*.
+
+Framework          |Simulation Time (min) |VmAllocationPolicy|DCs|Hosts|VMs  |Cloudlets
+-------------------|----------------------|------------------|---|-----|-----|---------
+CloudSim      4.0.0|23.95                 |Simple (WorstFit) |1  |20000|40000|50000
+CloudSim Plus 4.3.4|15.78                 |Simple (WorstFit) |1  |20000|40000|50000
+CloudSim Plus 4.3.4|15.70                 |BestFit**         |1  |20000|40000|50000
+CloudSim Plus 4.3.4|&nbsp;&nbsp;1.35      |FirstFit**        |1  |20000|40000|50000 
+
+\* *Results generated using [CloudSim Plus Automation](http://github.com/manoelcampos/cloudsim-plus-automation) tool 
+in a computer powered by a dual-core 2.8 GHz Hyper-Threading Intel i7-4558U processor.* \
+\** *Only available in CloudSim Plus.*
 
 # Project's Structure
 

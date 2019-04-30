@@ -262,17 +262,31 @@ setVmComparator
 
    :param comparator: the VM Comparator to set
 
+setVmDestructionDelay
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  DatacenterBroker setVmDestructionDelay(double delay)
+   :outertype: DatacenterBroker
+
+   Sets the delay after which an idle VM should be destroyed. Using such a method defines the same delay for any VM that becomes idle. If you need to define different delays for distinct VMs use the \ :java:ref:`setVmDestructionDelayFunction(Function)`\  method.
+
+   :param delay: the time (in seconds) to wait before destroying idle VMs
+
+   **See also:** :java:ref:`.DEF_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`
+
 setVmDestructionDelayFunction
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method::  DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function)
    :outertype: DatacenterBroker
 
-   Sets a \ :java:ref:`Function`\  to define when an idle VM should be destroyed. The Function receives a \ :java:ref:`Vm`\  and returns the delay to wait (in seconds), after the VM becomes idle, to destroy it.
+   Sets a \ :java:ref:`Function`\  to define the delay after which an idle VM should be destroyed. The Function must receive a \ :java:ref:`Vm`\  and return the delay to wait (in seconds), after the VM becomes idle, to destroy it.
 
-   :param function: the \ :java:ref:`Function`\  to set (if null is given, it sets the default Function)
+   By defining a \ :java:ref:`Function`\  to define when idle VMs should be destroyed enables you to define different delays for every VM that becomes idle, according to desired conditions.
 
-   **See also:** :java:ref:`.DEF_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`
+   :param function: the \ :java:ref:`Function`\  to set (if null is given, no idle VM will be automatically destroyed)
+
+   **See also:** :java:ref:`.DEF_VM_DESTRUCTION_DELAY`, :java:ref:`Vm.getIdleInterval()`, :java:ref:`.setVmDestructionDelay(double)`
 
 setVmMapper
 ^^^^^^^^^^^

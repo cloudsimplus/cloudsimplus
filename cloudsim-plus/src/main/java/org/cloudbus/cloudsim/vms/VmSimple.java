@@ -856,5 +856,4 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         Machine.validateCapacity(defaultCapacity);
         defaultStorageCapacity = defaultCapacity;
     }
-
 }

@@ -51,7 +51,6 @@ public class VmAllocationPolicySimpleTest {
         }
 
         final VmAllocationPolicySimple policy = new VmAllocationPolicySimple();
-        policy.setHostFreePesMap(hostFreePesMap);
 
         final Datacenter datacenter = EasyMock.createMock(Datacenter.class);
         EasyMock.expect(datacenter.getHostList()).andReturn(hosts).anyTimes();

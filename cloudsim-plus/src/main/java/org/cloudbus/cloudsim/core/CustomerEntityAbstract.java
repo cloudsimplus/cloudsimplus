@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,6 +20,13 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
      * @see #getBroker()
      */
     private DatacenterBroker broker;
+
+    /** @see #getLastTriedDatacenter() */
+    private Datacenter lastTriedDatacenter;
+
+    protected CustomerEntityAbstract(){
+        lastTriedDatacenter = Datacenter.NULL;
+    }
 
     @Override
     public final void setBroker(final DatacenterBroker broker) {
@@ -55,5 +63,18 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
         int result = Long.hashCode(id);
         result = 31 * result + broker.hashCode();
         return result;
+    }
+
+    /**
+     * Sets the last Datacenter where VM was tried to be created.
+     * @param lastTriedDatacenter
+     */
+    public void setLastTriedDatacenter(final Datacenter lastTriedDatacenter) {
+        this.lastTriedDatacenter = lastTriedDatacenter;
+    }
+
+    /** Gets the last Datacenter where VM was tried to be created. */
+    public Datacenter getLastTriedDatacenter() {
+        return lastTriedDatacenter;
     }
 }

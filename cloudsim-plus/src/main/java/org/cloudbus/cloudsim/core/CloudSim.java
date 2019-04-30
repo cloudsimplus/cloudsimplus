@@ -37,7 +37,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "4.3.2";
+    public static final String VERSION = "4.3.4";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
@@ -558,14 +558,12 @@ public class CloudSim implements Simulation {
     }
 
     @Override
-    public long waiting(final SimEntity dest, final Predicate<SimEvent> predicate) {
-        return filterEventsToDestinationEntity(deferred, predicate, dest).count();
-    }
-
-    @Override
     public SimEvent select(final SimEntity dest, final Predicate<SimEvent> predicate) {
         final SimEvent evt = findFirstDeferred(dest, predicate);
-        deferred.remove(evt);
+        if(evt != SimEvent.NULL) {
+            deferred.remove(evt);
+        }
+
         return evt;
     }
 

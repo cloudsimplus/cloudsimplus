@@ -90,6 +90,16 @@ addOnHostAvailableListener
 
    :param listener: the event listener to add
 
+getActiveHostsNumber
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getActiveHostsNumber()
+   :outertype: Datacenter
+
+   Gets the current number of Hosts that are powered on inside the Datacenter.
+
+   **See also:** :java:ref:`Host.isActive()`
+
 getBandwidthPercentForMigration
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -166,7 +176,7 @@ getPower
    and use each Host  to compute power usage
    based on the CPU utilization got form the StateHistory.
 
-   :return: th \ **estimated**\  power consumption in Watt-Second (Ws)
+   :return: the \ **estimated**\  power consumption in Watt-Second (Ws)
 
 getSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^
@@ -219,6 +229,16 @@ setDatacenterStorage
    Sets the storage of the Datacenter.
 
    :param datacenterStorage: the new storage
+
+setPowerSupply
+^^^^^^^^^^^^^^
+
+.. java:method::  void setPowerSupply(DatacenterPowerSupply powerSupply)
+   :outertype: Datacenter
+
+   Sets a \ :java:ref:`DatacenterPowerSupply`\  to enable computing the Datacenter's power consumption, based on the consumption of its \ :java:ref:`Host`\ s. Since this computation is expensive for large amount of Hosts and the researcher may not be interested in power consumption, the attribute is initialized with \ :java:ref:`DatacenterPowerSupply.NULL`\ . That avoids computing power consumption by default for every simulation, This way, the computation of power consumption must be explicitly enabled by the researcher by providing an instance to this attribute before the simulation starts.
+
+   :param powerSupply: a \ :java:ref:`DatacenterPowerSupply`\  instance to enable the Datacenter to compute its power consumption (if null is given, it disables such a computation)
 
 setSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^

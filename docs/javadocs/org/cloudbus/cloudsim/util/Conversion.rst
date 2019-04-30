@@ -79,6 +79,17 @@ bitesToBytes
    :param bits: the value in bites, Kb, Mb, Gb, etc
    :return: the value in bites, Kbytes, Mbytes, Gbytes and so on, according to the given value
 
+boolToInt
+^^^^^^^^^
+
+.. java:method:: public static int boolToInt(boolean bool)
+   :outertype: Conversion
+
+   Converts a boolean value to int
+
+   :param bool: the boolean value to convert
+   :return: 1 if the boolean value is true, 0 otherwise.
+
 bytesToBits
 ^^^^^^^^^^^
 
@@ -145,6 +156,19 @@ bytesToSuitableUnit
    :param bytes: the value in bytes
    :return: the converted value concatenated with the unit converted to (KB, MB or GB)
 
+daysToSeconds
+^^^^^^^^^^^^^
+
+.. java:method:: public static double daysToSeconds(double days)
+   :outertype: Conversion
+
+   Converts a value in days to seconds.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
+   :param days: the value in days
+   :return: the value in seconds
+
 gigaToMega
 ^^^^^^^^^^
 
@@ -155,6 +179,32 @@ gigaToMega
 
    :param giga: the value in gigabits or gigabytes
    :return: the value in megabits or megabytes (according to the input value)
+
+hoursToDays
+^^^^^^^^^^^
+
+.. java:method:: public static double hoursToDays(double hours)
+   :outertype: Conversion
+
+   Converts a value in hours to days.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
+   :param hours: the value in hours
+   :return: the value in days
+
+hoursToSeconds
+^^^^^^^^^^^^^^
+
+.. java:method:: public static double hoursToSeconds(double hours)
+   :outertype: Conversion
+
+   Converts a value in hours to seconds.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
+   :param hours: the value in hours
+   :return: the value in seconds
 
 megaBytesToBytes
 ^^^^^^^^^^^^^^^^
@@ -204,6 +254,71 @@ millisecsToMinutes
    The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
 
    :param milli: the value in milliseconds
+   :return: the value in minutes
+
+minutesToSeconds
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public static double minutesToSeconds(double minutes)
+   :outertype: Conversion
+
+   Converts a value in minutes to seconds.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
+   :param minutes: the value in minutes
+   :return: the value in seconds
+
+monthsToSeconds
+^^^^^^^^^^^^^^^
+
+.. java:method:: public static double monthsToSeconds(double months)
+   :outertype: Conversion
+
+   Converts a value in months to an \ **approximated**\  number of seconds, since it considers every month has 30 days.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\ , \ :java:ref:`java.time.Duration`\  and \ :java:ref:`java.time.Period`\  classes don't provide the double precision required here.
+
+   :param months: the value in months
+   :return: the value in seconds
+
+secondsToDays
+^^^^^^^^^^^^^
+
+.. java:method:: public static double secondsToDays(double seconds)
+   :outertype: Conversion
+
+   Converts a value in seconds to days.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
+   :param seconds: the value in seconds
+   :return: the value in days
+
+secondsToHours
+^^^^^^^^^^^^^^
+
+.. java:method:: public static double secondsToHours(double seconds)
+   :outertype: Conversion
+
+   Converts a value in seconds to hours.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
+   :param seconds: the value in seconds
+   :return: the value in hours
+
+secondsToMinutes
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public static double secondsToMinutes(double seconds)
+   :outertype: Conversion
+
+   Converts a value in seconds to minutes.
+
+   The existing \ :java:ref:`java.util.concurrent.TimeUnit`\  and \ :java:ref:`java.time.Duration`\  classes don't provide the double precision required here.
+
+   :param seconds: the value in seconds
    :return: the value in minutes
 
 teraToGiga

@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
+.. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
+
 CustomerEntityAbstract
 ======================
 
@@ -11,6 +13,14 @@ CustomerEntityAbstract
    A base class for \ :java:ref:`CustomerEntity`\  implementations.
 
    :author: Manoel Campos da Silva Filho
+
+Constructors
+------------
+CustomerEntityAbstract
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: protected CustomerEntityAbstract()
+   :outertype: CustomerEntityAbstract
 
 Methods
 -------
@@ -25,6 +35,14 @@ getId
 
 .. java:method:: @Override public long getId()
    :outertype: CustomerEntityAbstract
+
+getLastTriedDatacenter
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Datacenter getLastTriedDatacenter()
+   :outertype: CustomerEntityAbstract
+
+   Gets the last Datacenter where VM was tried to be created.
 
 getSimulation
 ^^^^^^^^^^^^^
@@ -55,4 +73,14 @@ setId
 
 .. java:method:: @Override public final void setId(long id)
    :outertype: CustomerEntityAbstract
+
+setLastTriedDatacenter
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void setLastTriedDatacenter(Datacenter lastTriedDatacenter)
+   :outertype: CustomerEntityAbstract
+
+   Sets the last Datacenter where VM was tried to be created.
+
+   :param lastTriedDatacenter:
 
