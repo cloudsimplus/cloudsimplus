@@ -93,8 +93,8 @@ CloudSim Plus provides a lot of exclusive features, from the most basic ones to 
 
 Framework          |Simulation Time (min) |VmAllocationPolicy|DCs|Hosts|VMs  |Cloudlets
 -------------------|----------------------|------------------|---|-----|-----|---------
-CloudSim      4.0.0|23.95                 |Simple            |1  |20000|40000|50000
-CloudSim Plus 4.3.4|15.78                 |Simple            |1  |20000|40000|50000
+CloudSim      4.0.0|23.95                 |Simple (WorstFit) |1  |20000|40000|50000
+CloudSim Plus 4.3.4|15.78                 |Simple (WorstFit) |1  |20000|40000|50000
 CloudSim Plus 4.3.4|15.70                 |BestFit**         |1  |20000|40000|50000
 CloudSim Plus 4.3.4|&nbsp;&nbsp;1.35      |FirstFit**        |1  |20000|40000|50000 
 
