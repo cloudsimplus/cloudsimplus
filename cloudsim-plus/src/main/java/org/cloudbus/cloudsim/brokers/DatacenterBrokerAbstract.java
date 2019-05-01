@@ -1085,11 +1085,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public Function<Cloudlet, Vm> getDefaultVmMapper() {
-        return this::defaultVmMapper;
-    }
-
-    @Override
     public Function<Cloudlet, Vm> getVmMapper() {
         return vmMapper;
     }
@@ -1157,17 +1152,5 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public List<Cloudlet> getCloudletSubmittedList() {
         return cloudletSubmittedList;
     }
-
-    /**
-     * Defines the default policy used to select a Vm to host a Cloudlet
-     * that is waiting to be created.
-     * <br>It applies a Round-Robin policy to cyclically select
-     * the next Vm from the list of waiting VMs.
-     *
-     * @param cloudlet the cloudlet that needs a VM to be placed into
-     * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
-     * no suitable VM was found
-     */
-    protected abstract Vm defaultVmMapper(Cloudlet cloudlet);
 
 }
