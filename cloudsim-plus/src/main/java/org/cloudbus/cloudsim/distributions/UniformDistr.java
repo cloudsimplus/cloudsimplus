@@ -40,7 +40,8 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * Creates new uniform pseudo random number generator
      * that generates values between [0 and 1[ using a given seed.
      *
-     * @param seed simulation seed to be used
+     * @param seed the seed to initialize the random number generator.
+     *             If -1 is passed, the current time will be used.
      */
     public UniformDistr(final long seed) {
         this(0, 1, seed);
@@ -61,7 +62,8 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * that produces values between a given {@link Range}.
      *
      * @param range the {@link Range} to generate random values in between
-     * @param seed simulation seed to be used
+     * @param seed the seed to initialize the random number generator.
+     *             If -1 is passed, the current time will be used.
      */
     public UniformDistr(final Range<Double> range, final long seed) {
         this(range.getMinimum(), range.getMaximum()+1, seed);
@@ -83,7 +85,8 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      *
      * @param min minimum value (inclusive)
      * @param max maximum value (exclusive)
-     * @param seed simulation seed to be used
+     * @param seed the seed to initialize the random number generator.
+     *             If -1 is passed, the current time will be used.
      */
     public UniformDistr(final double min, final double max, final long seed) {
         super(new UniformRealDistribution(min, max), seed);

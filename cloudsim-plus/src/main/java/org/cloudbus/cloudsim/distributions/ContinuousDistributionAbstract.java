@@ -38,7 +38,7 @@ public abstract class ContinuousDistributionAbstract implements ContinuousDistri
      * @param seed the seed to initialize the random number generator. If
      * it is passed -1, the current time will be used
      */
-    protected ContinuousDistributionAbstract(RealDistribution numGen, long seed) {
+    protected ContinuousDistributionAbstract(final RealDistribution numGen, long seed) {
         this.numGen = numGen;
         if(seed == -1)
             seed = System.currentTimeMillis();
@@ -50,7 +50,7 @@ public abstract class ContinuousDistributionAbstract implements ContinuousDistri
         return seed;
     }
 
-    protected final void setSeed(long seed){
+    protected final void setSeed(final long seed){
         this.seed = seed;
         numGen.reseedRandomGenerator(seed);
     }
