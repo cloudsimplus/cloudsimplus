@@ -129,7 +129,7 @@ public class CloudletToVmMappingBestFit {
      */
     private Vm bestFitCloudletToVmMapper(final Cloudlet cloudlet) {
         if (cloudlet.isBindToVm()) {
-            if(broker0.getVmExecList().contains(cloudlet.getVm())) {
+            if(broker0.equals(vm.getBroker()) && vm.isCreated()) {
                 return cloudlet.getVm();
             }
 
