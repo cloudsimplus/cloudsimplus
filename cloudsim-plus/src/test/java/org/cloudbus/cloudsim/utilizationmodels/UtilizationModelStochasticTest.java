@@ -7,9 +7,12 @@
  */
 package org.cloudbus.cloudsim.utilizationmodels;
 
+import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -18,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since	CloudSim Toolkit 2.0
  */
 public class UtilizationModelStochasticTest {
-
     private UtilizationModelStochastic utilizationModel;
 
     @BeforeEach
@@ -41,15 +43,49 @@ public class UtilizationModelStochasticTest {
 
     @Test
     public void testGetUtilizationNegativeRandomNumber() {
-        final NegativePrng negativePrng = new NegativePrng();
-        utilizationModel.setRandomGenerator(negativePrng);
+        final UniformDistr prng = new NegativePrng();
+        utilizationModel.setRandomGenerator(prng);
         /*Even if the PRNG always return a negative value (-1 in this case),
         * the UtilizationModel must get its absolute value to
         * return the resource utilization.*/
-        System.out.println("Generated Pseudo Random Number: " + negativePrng.sample());
+        System.out.println("Generated Pseudo Random Number: " + prng.sample());
         final double expected = 1;
         final double result = utilizationModel.getUtilization();
         assertEquals(expected, result);
+    }
+
+    /**
+     * Since the {@link UtilizationModelStochastic#getUtilization(double)} may just
+     * return previously generated utilization value for a given time or it can
+     * generate an utilization value if the method was never called with a given time,
+     * we check if, when calling the method with a time that was previously used,
+     * if it returns the same value instead of generating a new random one.
+     */
+    @Test
+    public void testUtilizationCallSequence() {
+        final int MAX_TIME = 4;
+
+        /* Just calls the getUtilization for some number of times to ensure the generated
+        utilization values are stored internally.*/
+        IntStream.range(0, MAX_TIME).forEach(time -> utilizationModel.getUtilization(time));
+
+        /*Calls the getUtilization again to check if the same values generated previously are being returned,
+        instead of generating new random values*/
+        IntStream.range(0, MAX_TIME).forEach(time -> {
+            final double expected = utilizationModel.getUtilizationHistory(time);
+            assertEquals(expected, utilizationModel.getUtilization(time), "Utilization for time " + time);
+        });
+
+        /*Even if calling the getUtilization() again with random time values
+        * in the range of values used before, it has to return the same
+        * values stored in the history map, instead
+        * of generating new utilization values randomly.*/
+        final ContinuousDistribution prng = new UniformDistr(0, MAX_TIME);
+        for (int i = 0; i < MAX_TIME; i++) {
+            final int time = (int)prng.sample();
+            final double expected = utilizationModel.getUtilizationHistory(time);
+            assertEquals(expected, utilizationModel.getUtilization(time), "Utilization for time " + time);
+        }
     }
 
     /**
