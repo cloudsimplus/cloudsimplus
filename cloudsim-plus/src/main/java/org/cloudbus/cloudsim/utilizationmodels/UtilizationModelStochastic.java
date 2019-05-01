@@ -31,19 +31,16 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      */
     private ContinuousDistribution randomGenerator;
 
-    /**
-     * @see #getHistory()
-     */
+    /** @see #getHistory() */
     private Map<Double, Double> history;
 
     /**
      * Instantiates a new utilization model stochastic
      * that defines the resource utilization in percentage.
+     * @see #setUnit(Unit)
      */
     public UtilizationModelStochastic() {
-        super();
-        setHistory(new HashMap<>());
-        setRandomGenerator(new UniformDistr());
+        this(Unit.PERCENTAGE);
     }
 
     /**
@@ -54,39 +51,29 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      */
     public UtilizationModelStochastic(final Unit unit) {
-        this();
-        setUnit(unit);
+        this(unit, new UniformDistr());
     }
 
     /**
-     * Instantiates a new utilization model stochastic using
-     * a given seed and where the resource utilization is defined in the given unit.
+     * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG)
+     * It defines the resource utilization in percentage.
      *
-     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
-     *             resource usage is defined in percentage of the Vm resource or in absolute values)
-     * @param seed the seed to generate the pseudo random utilization values
+     * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
+     * @see #setUnit(Unit)
      */
-    public UtilizationModelStochastic(final Unit unit, final long seed) {
-        this(seed);
-        setUnit(unit);
-    }
-
-    /**
-     * Instantiates a new utilization model stochastic with a specific seed.
-     *
-     * @param seed the seed to generate the pseudo random utilization values
-     */
-    public UtilizationModelStochastic(final long seed) {
-        this(new UniformDistr(seed));
+    public UtilizationModelStochastic(final ContinuousDistribution prng) {
+        this(Unit.PERCENTAGE, prng);
     }
 
     /**
      * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG).
      *
+     * @param unit the {@link Unit} that determines how the resource is used (for instance, if
+     *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
      */
-    public UtilizationModelStochastic(final ContinuousDistribution prng) {
-        super();
+    public UtilizationModelStochastic(final Unit unit, final ContinuousDistribution prng) {
+        super(unit);
         setHistory(new HashMap<>());
         setRandomGenerator(prng);
     }
