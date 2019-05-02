@@ -132,8 +132,6 @@ public class CloudletToVmMappingBestFit {
             if(broker0.equals(cloudlet.getVm().getBroker()) && cloudlet.getVm().isCreated()) {
                 return cloudlet.getVm();
             }
-
-            return Vm.NULL;
         }
 
         return cloudlet
