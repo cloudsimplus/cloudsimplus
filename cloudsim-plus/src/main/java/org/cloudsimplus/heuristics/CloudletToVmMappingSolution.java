@@ -339,8 +339,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         /*
         Loop over the entries until the entries defined by the first and second index
         are found and added to the List.
-        Since there is not way to get the entries inside the map don't have a index,
-        we can't access the ith entry directly.
+        Since Map doesn't have an index, we can't access the ith entry directly.
         This loops ensure we iterate the the least number of times
         until finding the required entries, without creating
         a List with all entries in order to get just two of them.
