@@ -25,6 +25,7 @@ package org.cloudsimplus.examples.brokers;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -60,13 +61,13 @@ import java.util.Map;
  * DatacenterBroker. The number of {@link Pe}s of Vm's and Cloudlets are defined
  * randomly.
  *
- * <p>The {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic} is used
+ * <p>The {@link DatacenterBrokerHeuristic} is used
  * with the {@link CloudletToVmMappingSimulatedAnnealing} class
  * in order to find an acceptable solution with a high
  * {@link HeuristicSolution#getFitness() fitness value}.</p>
  *
  * <p>Different {@link CloudletToVmMappingHeuristic} implementations can be used
- * with the {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic} class.</p>
+ * with the {@link DatacenterBrokerHeuristic} class.</p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
@@ -126,7 +127,7 @@ public class DatacenterBrokerHeuristicExample {
 
         Datacenter datacenter0 = createDatacenter();
 
-        org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0 = createBroker();
+        DatacenterBrokerHeuristic broker0 = createBroker();
 
         createAndSubmitVms(broker0);
         createAndSubmitCloudlets(broker0);
@@ -139,21 +140,21 @@ public class DatacenterBrokerHeuristicExample {
         print(broker0);
     }
 
-	private org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic createBroker() {
+	private DatacenterBrokerHeuristic createBroker() {
 		createSimulatedAnnealingHeuristic();
-		org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0 = new org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic(simulation);
+		DatacenterBrokerHeuristic broker0 = new DatacenterBrokerHeuristic(simulation);
 		broker0.setHeuristic(heuristic);
 		return broker0;
 	}
 
-	private void createAndSubmitCloudlets(org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0) {
+	private void createAndSubmitCloudlets(DatacenterBrokerHeuristic broker0) {
 		for(int i = 0; i < CLOUDLETS_TO_CREATE; i++){
 		    cloudletList.add(createCloudlet(broker0, getRandomNumberOfPes(4)));
 		}
 		broker0.submitCloudletList(cloudletList);
 	}
 
-	private void createAndSubmitVms(org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0) {
+	private void createAndSubmitVms(DatacenterBrokerHeuristic broker0) {
 		vmList = new ArrayList<>(VMS_TO_CREATE);
 		for(int i = 0; i < VMS_TO_CREATE; i++){
 		    vmList.add(createVm(broker0, getRandomNumberOfPes(4)));
@@ -169,7 +170,7 @@ public class DatacenterBrokerHeuristicExample {
 		heuristic.setNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
 	}
 
-	private void print(org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic broker0) {
+	private void print(DatacenterBrokerHeuristic broker0) {
 		double roudRobinMappingCost = computeRoudRobinMappingCost();
 		printSolution(
 		        "Heuristic solution for mapping cloudlets to Vm's         ",
