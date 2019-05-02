@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.heuristics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * <p>Provides the methods to be used for implementation of heuristics
  * to find solution for complex problems where the solution space
@@ -48,6 +51,8 @@ package org.cloudsimplus.heuristics;
  * @since CloudSim Plus 1.0
  */
 public interface Heuristic<S extends HeuristicSolution<?>> {
+
+    Logger LOGGER = LoggerFactory.getLogger(Heuristic.class.getSimpleName());
 
     /**
      * A property that implements the Null Object Design Pattern for {@link Heuristic}

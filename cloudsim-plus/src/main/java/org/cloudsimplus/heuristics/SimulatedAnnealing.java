@@ -129,6 +129,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
     @Override
     public void updateSystemState() {
 	    currentTemperature *= 1 - coolingRate;
+	    LOGGER.debug("{}: Best solution cost so far is {}, current system temperature is {}", System.currentTimeMillis(), getBestSolutionSoFar().getCost(), getCurrentTemperature());
     }
 
     /**

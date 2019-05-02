@@ -49,6 +49,8 @@ import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.HeuristicSolution;
+import org.cloudsimplus.util.Log;
+import ch.qos.logback.classic.Level;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -117,7 +119,7 @@ public class DatacenterBrokerHeuristicExample {
     public DatacenterBrokerHeuristicExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
-        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+        Log.setLevel(Level.WARN);
 
         System.out.println("Starting " + getClass().getSimpleName());
         this.vmList = new ArrayList<>();
@@ -171,14 +173,14 @@ public class DatacenterBrokerHeuristicExample {
 	}
 
 	private void print(DatacenterBrokerHeuristic broker0) {
-		double roudRobinMappingCost = computeRoudRobinMappingCost();
+		double roundRobinMappingCost = computeRoundRobinMappingCost();
 		printSolution(
 		        "Heuristic solution for mapping cloudlets to Vm's         ",
 		        heuristic.getBestSolutionSoFar(), false);
 
 		System.out.printf(
 		    "The heuristic solution cost represents %.2f%% of the round robin mapping cost used by the DatacenterBrokerSimple\n",
-		    heuristic.getBestSolutionSoFar().getCost()*100.0/roudRobinMappingCost);
+		    heuristic.getBestSolutionSoFar().getCost()*100.0/roundRobinMappingCost);
 		System.out.printf("The solution finding spend %.2f seconds to finish\n", broker0.getHeuristic().getSolveTime());
 		System.out.println("Simulated Annealing Parameters");
 		System.out.printf("\tInitial Temperature: %.2f", SA_INITIAL_TEMPERATURE);
@@ -252,19 +254,19 @@ public class DatacenterBrokerHeuristicExample {
         .setUtilizationModel(utilization);
     }
 
-    private double computeRoudRobinMappingCost() {
-        CloudletToVmMappingSolution roudRobinSolution =
+    private double computeRoundRobinMappingCost() {
+        CloudletToVmMappingSolution roundRobinSolution =
                 new CloudletToVmMappingSolution(heuristic);
         int i = 0;
         for (Cloudlet c : cloudletList) {
             //cyclically selects a Vm (as in a circular queue)
-            roudRobinSolution.bindCloudletToVm(c, vmList.get(i));
+            roundRobinSolution.bindCloudletToVm(c, vmList.get(i));
             i = (i+1) % vmList.size();
         }
         printSolution(
             "Round robin solution used by DatacenterBrokerSimple class",
-            roudRobinSolution, false);
-        return roudRobinSolution.getCost();
+            roundRobinSolution, false);
+        return roundRobinSolution.getCost();
     }
 
     private void printSolution(String title,

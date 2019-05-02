@@ -345,11 +345,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         until finding the required entries, without creating
         a List with all entries in order to get just two of them.
         */
-        for(int i = 0; selected.size() < 2 && it.hasNext(); ){
+        for(int i = 0; selected.size() < 2 && it.hasNext(); i++){
             final Map.Entry<Cloudlet, Vm> solution = it.next();
             if(i == firstIdx || i == secondIdx){
                 selected.add(solution);
-                i++;
             }
         }
 
