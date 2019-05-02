@@ -98,7 +98,7 @@ CloudSim Plus 4.3.4|15.78                 |Simple (WorstFit) |1  |20000|40000|50
 CloudSim Plus 4.3.4|15.70                 |BestFit**         |1  |20000|40000|50000
 CloudSim Plus 4.3.4|&nbsp;&nbsp;1.35      |FirstFit**        |1  |20000|40000|50000 
 
-\* *Results generated using [CloudSim Plus Automation](http://github.com/manoelcampos/cloudsim-plus-automation) tool. Check this [document](docs/performance.md) more details and results.* \
+\* *More details and results [here](docs/performance.md).* \
 \** *Only available in CloudSim Plus.*
 
 # Project's Structure

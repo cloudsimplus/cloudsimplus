@@ -3,8 +3,8 @@
 This document provides some data about the performance of different simulation
 scenarios in CloudSim and CloudSim Plus. 
 Each row in the tables below is the results from a single simulation.
-This way, they aren't scentifically valid and are used only to provide a 
-glimpse of how the latest versions of CloudSim Plus outperforms CloudSim.
+This way, they aren't scentifically valid and are only intended to provide a 
+glimpse of how the latest versions of CloudSim Plus outperform CloudSim.
 
 The results were generated using [CloudSim Plus Automation](http://github.com/manoelcampos/cloudsim-plus-automation) tool 
 in a computer powered by a dual-core 2.8 GHz Hyper-Threading Intel i7-4558U processor.
