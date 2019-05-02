@@ -291,9 +291,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     /**
      * Try to get 2 randomly selected entries from the {@link #cloudletVmMap}.
      *
-     * @return a List with 2 entries from the {@link #cloudletVmMap}
-     * if the map has at least 2 entries, an unitary List if the map
-     * has only one entry, or an empty List if there is no entry.
+     * @return a List with 2 entries from the {@link #cloudletVmMap} if the map size is at least 2;
+     *         an unitary List if the map has only 1 entry;
+     *         or an empty List if there is no entry in the map.
      *
      * @see #swapVmsOfTwoMapEntries(List)
      */
@@ -311,8 +311,8 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
 
     /**
      * Creates a List using only the first entry in the {@link #cloudletVmMap}.
-     * @return a single-entry List with either the first {@link #cloudletVmMap} entry
-     * or an empty List in case no entry is found.
+     * @return a single-entry List with either the first {@link #cloudletVmMap} entry,
+     *         or an empty List in case no entry is found.
      */
     private List<Map.Entry<Cloudlet, Vm>> createListWithFirstMapEntry() {
         return cloudletVmMap.entrySet()
@@ -322,10 +322,11 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     /**
+     * Creates a List with 2 randomly selected entries from the {@link #cloudletVmMap}.
      * The way the method is called is ensured there is at least to entries
      * in the {@link #cloudletVmMap}.
      *
-     * @return
+     * @return a List with the 2 randomly selected entries
      */
     private List<Map.Entry<Cloudlet, Vm>> createListWithTwoRandomEntries() {
         final int size = cloudletVmMap.entrySet().size();
@@ -337,10 +338,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
         final Iterator<Map.Entry<Cloudlet, Vm>> it = cloudletVmMap.entrySet().iterator();
 
         /*
-        Loop over the entries until the entries defined by the first and second index
+        Loop over the entries until those ones defined by the first and second index
         are found and added to the List.
         Since Map doesn't have an index, we can't access the ith entry directly.
-        This loops ensure we iterate the the least number of times
+        This loop ensures we iterate the least number of times
         until finding the required entries, without creating
         a List with all entries in order to get just two of them.
         */
