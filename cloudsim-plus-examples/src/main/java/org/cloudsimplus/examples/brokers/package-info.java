@@ -5,7 +5,7 @@
  * <p>
  * Some examples include the utilization of multiple brokers
  * to represent multiple cloud customers, the utilization
- * of a {@link org.cloudsimplus.examples.brokers.DatacenterBrokerHeuristic}
+ * of a {@link org.cloudsimplus.examples.brokers.DatacenterBrokerHeuristicExample}
  * that maps Cloudlets to VMs based on the Simulated Annealing Heuristic,
  * and other example showing how to dynamically change the policy used
  * to map Cloudlets to VMs without requiring to subclass the

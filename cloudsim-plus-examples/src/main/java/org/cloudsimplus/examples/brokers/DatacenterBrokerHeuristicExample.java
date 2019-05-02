@@ -71,7 +71,7 @@ import java.util.Map;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class DatacenterBrokerHeuristic {
+public class DatacenterBrokerHeuristicExample {
     private final CloudSim simulation;
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
@@ -107,13 +107,13 @@ public class DatacenterBrokerHeuristic {
      * @param args
      */
     public static void main(String[] args) {
-        new DatacenterBrokerHeuristic();
+        new DatacenterBrokerHeuristicExample();
     }
 
     /**
      * Default constructor where the simulation is built.
      */
-    public DatacenterBrokerHeuristic() {
+    public DatacenterBrokerHeuristicExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
