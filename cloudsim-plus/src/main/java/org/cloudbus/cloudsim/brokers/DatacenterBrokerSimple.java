@@ -77,6 +77,15 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
                 .orElse(Datacenter.NULL);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p><b>It applies a Round-Robin policy to cyclically select
+     * the next Vm from the list of waiting VMs.</p>
+     *
+     * @param cloudlet {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
         if (cloudlet.isBindToVm()) {

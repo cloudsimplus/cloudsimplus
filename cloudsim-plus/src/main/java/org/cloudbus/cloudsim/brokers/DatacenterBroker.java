@@ -255,23 +255,33 @@ public interface DatacenterBroker extends SimEntity {
     void setCloudletComparator(Comparator<Cloudlet> comparator);
 
     /**
-     * Defines the default policy used to select a Vm to host a Cloudlet
-     * that is waiting to be created.
-     * <br>It applies a Round-Robin policy to cyclically select
-     * the next Vm from the list of waiting VMs.
+     * Selects a VM to execute a given Cloudlet.
+     * The method defines the default policy used to map VMs for Cloudlets
+     * that are waiting to be created.
      *
-     * @param cloudlet the cloudlet that needs a VM to be placed into
+     * <p>Since this default policy can be dynamically changed
+     * by calling {@link #setVmMapper(Function)},
+     * this method will always return the default policy
+     * provided by the subclass where the method is being called.</p>
+     *
+     * @param cloudlet the cloudlet that needs a VM to execute
      * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
      * no suitable VM was found
+     *
+     * @see #getVmMapper()
      */
     Vm defaultVmMapper(Cloudlet cloudlet);
 
     /**
-     * Gets a {@link Function} that maps a given Cloudlet to a Vm.
-     * It defines the policy used to select a Vm to host a Cloudlet
+     * Gets the current {@link Function} used to map a given Cloudlet to a Vm.
+     * It defines the policy used to select a Vm to execute a given Cloudlet
      * that is waiting to be created.
      *
-     * @return the Vm mapper Function
+     * <p>If the default policy was not changed by the {@link #setVmMapper(Function)},
+     * then this method will have the same effect of the {@link #defaultVmMapper(Cloudlet)}.</p>
+     *
+     * @return the Vm mapper {@link Function}
+     * @see #defaultVmMapper(Cloudlet)
      */
     Function<Cloudlet, Vm> getVmMapper();
 
