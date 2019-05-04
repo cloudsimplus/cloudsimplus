@@ -102,6 +102,12 @@ public class UtilizationModelStochasticPerformance {
     private static final boolean MULTIPLE_UTILIZATION_MODELS = true;
 
     /**
+     * See {@link UtilizationModelStochastic#isAlwaysGenerateNewRandomUtilization()}
+     * for details.
+     */
+    private static final boolean ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION = true;
+
+    /**
      * Indicates if the {@link UtilizationModelStochastic} instances
      * will keep a map that stores the resource utilization along simulation
      * execution. Disabling this flag reduces simulation time and memory consumption.
@@ -203,7 +209,9 @@ public class UtilizationModelStochasticPerformance {
         for (int i = 0; i < CLOUDLETS; i++) {
             final Cloudlet cloudlet = new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES);
             this.um = MULTIPLE_UTILIZATION_MODELS || this.um == null ? new UtilizationModelStochastic() : this.um;
-            this.um.setHistoryEnabled(STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY);
+            this.um
+                .setHistoryEnabled(STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY)
+                .setAlwaysGenerateNewRandomUtilization(ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION);
             cloudlet.setUtilizationModelCpu(um).setSizes(1024);
             cloudlets.add(cloudlet);
         }
