@@ -61,11 +61,16 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      */
     private double previousUtilization;
 
+    /** @see #isHistoryEnabled() */
+    private boolean historyEnabled;
+
     /**
      * Instantiates a new utilization model stochastic
      * that defines the resource utilization in percentage.
+     * The resource utilization history is disabled by default.
      *
      * @see #setUnit(Unit)
+     * @see #enableHistory()
      */
     public UtilizationModelStochastic() {
         this(Unit.PERCENTAGE);
@@ -74,9 +79,11 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Instantiates a new utilization model stochastic
      * where the resource utilization is defined in the given unit.
+     * The resource utilization history is disabled by default.
      *
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
+     * @see #enableHistory()
      */
     public UtilizationModelStochastic(final Unit unit) {
         this(unit, -1);
@@ -85,11 +92,13 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Instantiates a new utilization model stochastic
      * where the resource utilization is defined in the given unit.
+     * The resource utilization history is disabled by default.
      *
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param seed the seed to initialize the random number generator.
      *             If -1 is passed, the current time will be used.
+     * @see #enableHistory()
      */
     public UtilizationModelStochastic(final Unit unit, final long seed) {
         this(unit, new UniformDistr(seed));
@@ -98,9 +107,11 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG)
      * It defines the resource utilization in percentage.
+     * The resource utilization history is disabled by default.
      *
      * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
      * @see #setUnit(Unit)
+     * @see #enableHistory()
      */
     public UtilizationModelStochastic(final ContinuousDistribution prng) {
         this(Unit.PERCENTAGE, prng);
@@ -108,10 +119,12 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
     /**
      * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG).
+     * The resource utilization history is disabled by default.
      *
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
+     * @see #enableHistory()
      */
     public UtilizationModelStochastic(final Unit unit, final ContinuousDistribution prng) {
         super(unit);
@@ -144,7 +157,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
             return generateUtilization(time);
         }
 
-        final Double utilization = historyMap.get(time);
+        final Double utilization = historyEnabled ? historyMap.get(time) : null;
         if (utilization == null) {
             return generateUtilization(time);
         }
@@ -154,7 +167,10 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
     private double generateUtilization(final double time) {
         final double utilization = Math.abs(randomGenerator.sample());
-        historyMap.put(time, utilization);
+        if(historyEnabled) {
+            historyMap.put(time, utilization);
+        }
+
         return utilization;
     }
 
@@ -218,4 +234,48 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         this.randomGenerator = Objects.requireNonNull(randomGenerator);
     }
 
+    /**
+     * Checks if the history of resource utilization along simulation time
+     * is to be kept or not.
+     * @return true if the history is to be kept, false otherwise
+     * @see #enableHistory()
+     * @see #disableHistory()
+     */
+    public boolean isHistoryEnabled() {
+        return historyEnabled;
+    }
+
+    /**
+     * Enables or disables the resource utilization history,
+     * so that utilization values is stored along all the simulation execution.
+     * @param enableHistory true to enable the utilization history, false to disable
+     * @return
+     *
+     * @see #enableHistory()
+     * @see #disableHistory()
+     */
+    public UtilizationModelStochastic setHistoryEnabled(final boolean enableHistory) {
+        this.historyEnabled = enableHistory;
+        return this;
+    }
+
+    /**
+     * Enables the resource utilization history,
+     * so that utilization values is stored along all the simulation execution.
+     * @return
+     */
+    public UtilizationModelStochastic enableHistory() {
+        this.historyEnabled = true;
+        return this;
+    }
+
+    /**
+     * Disables the resource utilization history,
+     * so that utilization values is <b>NOT</b> stored along all the simulation execution.
+     * @return
+     */
+    public UtilizationModelStochastic disableHistory() {
+        this.historyEnabled = false;
+        return this;
+    }
 }
