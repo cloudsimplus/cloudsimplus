@@ -143,6 +143,19 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         setRandomGenerator(prng);
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>The method may return different utilization values
+     * for the same requested time.
+     * For performance reasons, this behaviour is dependent of the {@link #isHistoryEnabled()}
+     * and {@link #isAlwaysGenerateNewRandomUtilization()}.
+     * </p>
+     *
+     * @param time {@inheritDoc}
+     * @return {@inheritDoc}
+     * @see <a href="https://github.com/manoelcampos/cloudsim-plus/issues/197">Issue #197 for more details</a>
+     */
     @Override
     public double getUtilization(final double time) {
         if (time < 0) {
