@@ -66,13 +66,13 @@
     <build>
         <plugins>
             <plugin>
-                <!-- The only module that can be deployed to Maven Central is the cloudsim-plus one.
+                <!-- The only module that can be deployed to Maven Central is "cloudsim-plus".
                  It's the only one that have all the configuration to execute the deploy.
                  However, when the "mvn deploy" command is executed from the root directory,
                  it's generated an error when trying to deploy the parent project.
                  To avoid that, this configuration is used to ignore the deployment of the parent.
                  All the other modules that don't have to be deployed
-                 also have the same configuration to avoid them to be deployed.
+                 also have the same configuration too.
 
                  However, executing "mvn deploy" from the cloudsim-plus directory
                  is faster.
@@ -80,9 +80,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.2</version>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
+                <configuration><skip>true</skip></configuration>
             </plugin>
 
             <plugin>
