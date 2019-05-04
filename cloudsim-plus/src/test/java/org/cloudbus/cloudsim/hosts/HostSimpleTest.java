@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
@@ -529,11 +530,11 @@ public class HostSimpleTest {
     public void testVmDestroyAll() {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
-        final VmSimple vm0 = VmTestUtil.createVm(
+        final Vm vm0 = VmTestUtil.createVm(
                 0, HOST_MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
                 new CloudletSchedulerTimeShared());
         vm0.setBroker(broker);
-        final VmSimple vm1 = VmTestUtil.createVm(
+        final Vm vm1 = VmTestUtil.createVm(
                 1, HOST_MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
                 new CloudletSchedulerTimeShared());
         vm1.setBroker(broker);
@@ -548,4 +549,21 @@ public class HostSimpleTest {
         assertEquals(0, host.getVmList().size());
         assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips());
     }
+
+    @Test
+    public void testDestroyVmAndRemoveFromBrokerCreatedList() {
+        final CloudSim cloudsim = new CloudSim();
+
+        final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
+        final Vm vm = VmTestUtil.createVm(0, 2);
+        vm.setBroker(broker);
+        host.createVm(vm);
+        vm.setCreated(true);
+        broker.getVmExecList().add(vm);
+        host.destroyVm(vm);
+        assertFalse(
+            broker.getVmExecList().contains(vm),
+            vm + " was destroyed into the Host but was not removed from the broker's VM exec List.");
+    }
 }
+

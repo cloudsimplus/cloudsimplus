@@ -412,8 +412,9 @@ public interface Host extends Machine, Comparable<Host> {
 
     /**
      * Destroys a VM running in the host and removes it from the {@link #getVmList()}.
+     * If the VM was not created yet, this method has no effect.
      *
-     * @param vm the VM
+     * @param vm the VM to be destroyed
      */
     void destroyVm(Vm vm);
 

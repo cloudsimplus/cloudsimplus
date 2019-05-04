@@ -521,6 +521,10 @@ public class HostSimple implements Host {
 
     @Override
     public void destroyVm(final Vm vm) {
+        if(!vm.isCreated()){
+            return;
+        }
+
         destroyVmInternal(vm);
         vm.notifyOnHostDeallocationListeners(this);
         vm.setStopTime(getSimulation().clock());
@@ -534,6 +538,7 @@ public class HostSimple implements Host {
     private void destroyVmInternal(final Vm vm) {
         deallocateResourcesOfVm(requireNonNull(vm));
         vmList.remove(vm);
+        vm.getBroker().getVmExecList().remove(vm);
     }
 
     /**
