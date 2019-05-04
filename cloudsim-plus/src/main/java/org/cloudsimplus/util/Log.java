@@ -42,20 +42,24 @@ public final class Log {
     private Log(){}
 
     /**
-     * Sets the logging {@link Level} for a given LOGGER instance.
+     * Sets the logging {@link Level} for a given logger instance.
      * You can enable just a specific type of log messages
-     * by using, for instance, {@link Level#WARN} value.
-     * To completely disable the given LOGGER, use {@link Level#OFF}.
+     * by using, for example, {@link Level#WARN} value.
+     * To completely disable the given logger, use {@link Level#OFF}.
      * @param level the logging level to set
      */
     public static void setLevel(final Logger logger, final Level level) {
+        if(!(logger instanceof ch.qos.logback.classic.Logger)) {
+            throw new IllegalArgumentException("The logger must be and instance of " + ch.qos.logback.classic.Logger.class.getName());
+        }
+
         ((ch.qos.logback.classic.Logger) logger).setLevel(level);
     }
 
     /**
-     * Sets the logging {@link Level} for <b>all LOGGER instances</b>.
+     * Sets the logging {@link Level} for <b>all logger instances</b>.
      * You can enable just a specific type of log messages
-     * by using, for instance, {@link Level#WARN} value.
+     * by using, for example, {@link Level#WARN} value.
      * To completely disable logging, use {@link Level#OFF}.
      * @param level the logging level to set
      */
