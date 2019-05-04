@@ -763,6 +763,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         if (vmAlive && delay > DEF_VM_DESTRUCTION_DELAY) {
+            //Sends a message after a while, to check if the VM became idle, so that it can be destroyed
             send(this, getDelayToCheckVmIdleness(vm), CloudSimTags.VM_DESTROY, vm);
         }
     }
@@ -783,10 +784,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         final double schedulingInterval = vm.getHost().getDatacenter().getSchedulingInterval();
         final double delay = vmDestructionDelayFunction.apply(vm);
 
-        if (delay <= 0 && schedulingInterval <= 0) {
-            return getSimulation().getMinTimeBetweenEvents();
-        } else if (delay <= 0) { // if just the delay is not a positive number
-            return schedulingInterval;
+        if (delay <= 0) {
+            return schedulingInterval <= 0 ?
+                        getSimulation().getMinTimeBetweenEvents() :
+                        schedulingInterval;
         }
 
         return Math.min(Math.abs(delay), Math.abs(schedulingInterval));

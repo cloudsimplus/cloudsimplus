@@ -34,25 +34,58 @@
 
 # Overview
 
-CloudSim Plus is a full-featured, highly extensible simulation framework enabling modeling, simulation, and experimentation of Cloud computing infrastructures and application services. It allows users to focus on specific system design issues to be investigated, without concerning the low-level details related to Cloud-based infrastructures and services.
+CloudSim Plus is a full-featured, highly extensible simulation framework enabling modeling, simulation, 
+and experimentation of Cloud computing infrastructures and application services. 
+It allows users to focus on specific system design issues to be investigated, 
+without concerning the low-level details related to Cloud-based infrastructures and services.
  
-Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, and scalable computational services. For assurance of such characteristics in cloud systems under development, it is required timely, repeatable, and controllable methodologies for evaluation of new cloud applications and policies, before actual development of cloud products. Because utilization of real testbeds limits the experiments to the scale of the testbed and makes the reproduction of results cumbersome, computer-base simulation may constitute an interesting tool. This project is suitable to quickly develop such simulation scenarios and run them quickly, in a typical PC. 
+Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, 
+and scalable computational services. 
+For assurance of such characteristics in cloud systems under development, 
+it is required timely, repeatable, and controllable methodologies for evaluation of new cloud applications and policies, 
+before actual development of cloud products. 
+Because utilization of real testbeds limits the experiments to the scale of the testbed and makes the reproduction of results cumbersome, 
+computer-base simulation may constitute an interesting tool. 
+This project is suitable to quickly develop such simulation scenarios and run them quickly, in a typical PC. 
 
-CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318), re-engineered primarily to avoid code duplication. It provides [code reusability](https://en.wikipedia.org/wiki/Code_reuse) and ensures compliance with software engineering principles and recommendations for extensibility improvements. It focuses on usage of software engineering standards and recommendations such as [Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), [SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
+CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318), 
+re-engineered primarily to avoid code duplication. 
+It provides [code reusability](https://en.wikipedia.org/wiki/Code_reuse) and ensures 
+compliance with software engineering principles and recommendations for extensibility improvements. 
+It focuses on usage of software engineering standards and recommendations such as 
+[Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), 
+[SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) 
+and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) 
+and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
 
-The efforts dedicated to this project have been recognized by the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu). A post about CloudSim Plus is available at [this page of the Forum](https://eubrasilcloudforum.eu/en/instituto-federal-de-educação-do-tocantins-brazil-instituto-de-telecomunicações-portugal-and), including a White Paper available in the [Publications Section](#publications).
+The efforts dedicated to this project have been recognized by the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu). 
+A post about CloudSim Plus is available at 
+[this page of the Forum](https://eubrasilcloudforum.eu/en/instituto-federal-de-educação-do-tocantins-brazil-instituto-de-telecomunicações-portugal-and), 
+including a White Paper available in the [Publications Section](#publications).
 
-CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). It is supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
+CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab 
+of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), 
+the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) 
+and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). 
+It is supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) 
+and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
 
-**There are different ways you can contribute to CloudSim Plus, as it is shown in the [contribution guide](CONTRIBUTING.md). One easy way is to click on the "Star" button at the top of the project's GitHub page. It costs you nothing and helps promoting the project.**
+**There are different ways you can contribute to CloudSim Plus, as it is shown in the 
+[contribution guide](CONTRIBUTING.md). 
+One easy way is to click on the "Star" button at the top of the project's GitHub page. 
+It costs you nothing and helps promoting the project.**
 
-The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is developed in the [Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), at the [Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) of the [University of Melbourne](http://www.unimelb.edu.au/).
+The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is developed in the 
+[Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), 
+at the [Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) 
+of the [University of Melbourne](http://www.unimelb.edu.au/).
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # Main Exclusive Features
 
-CloudSim Plus provides a lot of exclusive features, from the most basic ones to build simple simulations, to advanced features for simulating more realistic cloud scenarios: 
+CloudSim Plus provides a lot of exclusive features, from the most basic ones to build simple simulations, 
+to advanced features for simulating more realistic cloud scenarios: 
 
 1. It is easier to use. A complete and easy-to-understand simulation scenario can be built in few lines of code. Check the [Examples Section](#a-minimal-and-complete-simulation-example); 
 1. Process trace files from [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md) 
@@ -115,7 +148,12 @@ CloudSim Plus has a simpler structure to make it ease to use and understand. It 
   allowing a researcher to execute several simulation runs for a given experiment and collect statistical data using a scientific approach. 
 - [cloudsim-plus-benchmarks](/cloudsim-plus-benchmarks): a new module used just internally to implement micro benchmarks to assess framework performance.
 
-It also has a better package organization, improving [Separation of Concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns) and making it easy to know where a desired class is and what is inside each package. The figure below presents the new package organization. The dark yellow packages are new in CloudSim Plus and include its exclusive interfaces and classes. The light yellow ones were introduced just to better organize existing CloudSim classes and interfaces. 
+It also has a better package organization, 
+improving [Separation of Concerns (SoC)](https://en.wikipedia.org/wiki/Separation_of_concerns) 
+and making it easy to know where a desired class is and what is inside each package. 
+The figure below presents the new package organization. 
+The dark yellow packages are new in CloudSim Plus and include its exclusive interfaces and classes. 
+The light yellow ones were introduced just to better organize existing CloudSim classes and interfaces. 
 
 ![CloudSim Plus Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/package-structure-reduced.png)
 
@@ -123,9 +161,14 @@ It also has a better package organization, improving [Separation of Concerns (So
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # How to Use CloudSim Plus 
-There are 3 ways to use CloudSim Plus. It can be downloaded and executed: (i) directly from some IDE; (ii) from the command line; or (iii) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) once you include it as a dependency inside your own project.
+There are 3 ways to use CloudSim Plus. It can be downloaded and executed: 
+(i) directly from some IDE; 
+(ii) from the command line; or 
+(iii) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) 
+since you include it as a dependency inside your own project.
 
-You can watch the video below ([high quality version here](https://youtu.be/k2enNoxTYVw)) or follow the instructions in one of the next subsections.
+You can watch the video below ([high quality version here](https://youtu.be/k2enNoxTYVw)) 
+or follow the instructions in one of the next subsections.
 
 ![Downloading CloudSim Plus and running Examples using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/cloudsim-plus-netbeans.gif)
 
@@ -166,7 +209,9 @@ Below are the steps to start using the project:
 
 ## Adding it as a Maven Dependency into Your Own Project
 
-You can add CloudSim Plus API module (which is the only one required to build simulations) as a dependency inside the pom.xml file of your own maven project, as presened below. This way you can start building your simulations from scratch.
+You can add CloudSim Plus API module (which is the only one required to build simulations) 
+as a dependency inside the pom.xml file of your own maven project, as presened below. 
+This way you can start building your simulations from scratch.
 
 ```xml
 <dependency>
@@ -250,7 +295,9 @@ cloudsim.start();
 new CloudletsTableBuilder(broker0.getCloudletFinishedList()).build();
 ```
 
-The presented results are structured and clear to allow better understanding. For example, the image below shows the output for a simulation with two cloudlets (applications).
+The presented results are structured and clear to allow better understanding. 
+For example, the image below shows the output for a simulation with two cloudlets (applications).
+
 ![Simulation Results](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/simulation-results.png)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
@@ -260,7 +307,8 @@ The presented results are structured and clear to allow better understanding. Fo
 The project documentation originated from CloudSim was entirely updated and extended. 
 You can see the javadoc documentation for classes and their elements directly on your IDE.
 
-The documentation is available online at [ReadTheDocs](http://cloudsimplus.rtfd.io/en/latest/?badge=latest), which includes a FAQ and guides.
+The documentation is available online at [ReadTheDocs](http://cloudsimplus.rtfd.io/en/latest/?badge=latest), 
+which includes a FAQ and guides.
 CloudSim Plus has extended documentation of classes and interfaces and also includes extremely helpful
 package documentation that can be viewed directly on your IDE or at the link provided above.
 Such a package documentation gives a general overview of the classes used to build a cloud simulation.
@@ -284,18 +332,25 @@ a resource `UtilizationModel` with an upper threshold or a `DatacenterBroker` th
 
 Several software engineering principles aim to ease the task of creating new classes to implement those features. 
 They also try to avoid forcing you to change core classes of the simulator in order to introduce a feature you need to implement.
-**Changing these core classes just to implement a particular feature which will be used only in your simulations is a bad practice, since you will not be able to automatically update your project to new versions of the simulator, without losing your changes or struggling to fix merge conflicts.**
+**Changing these core classes just to implement a particular feature which will be used only in your simulations is a bad practice, 
+since you will not be able to automatically update your project to new versions of the simulator, 
+without losing your changes or struggling to fix merge conflicts.**
 
 As we have seen in forums that we've attended, many times users have to perform these changes in core classes 
-just to implement some specific features they need. We think those problems are enough reasons that show the need of a new re-engineered version of the simulator.  
+just to implement some specific features they need. We think those problems are enough reasons 
+that show the need of a new re-engineered version of the simulator.  
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 <a id="why-another-fork"></a>
 
 # But why an independent CloudSim fork? :unamused:
-The original CloudSim moved on to a new major release, introducing a completely new set of classes to provide Container as a Service (CaaS) simulations, 
-before the changes proposed here being merged to the official repository. This way, all the work performed here was not incorporated to allow this new CaaS module to be developed using this redesigned version. Unfortunately, there are several months of hard work that would need to be replicated to merge both projects. In reason of that, CloudSim Plus was born as an independent fork, following its own way and philosophies.
+The original CloudSim moved on to a new major release, 
+introducing a completely new set of classes to provide Container as a Service (CaaS) simulations, 
+before the changes proposed here being merged to the official repository. 
+This way, all the work performed here was not incorporated to allow this new CaaS module to be developed using this redesigned version. 
+Unfortunately, there are several months of hard work that would need to be replicated to merge both projects. 
+In reason of that, CloudSim Plus was born as an independent fork, following its own way and philosophies.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -303,13 +358,19 @@ before the changes proposed here being merged to the official repository. This w
 
 # What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations to use CloudSim Plus?
 
-It's much easier to use CloudSim Plus. A complete, side-by-side [comparison between CloudSim and CloudSim Plus Java simulation scenarios is available here](http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html).
+It's much easier to use CloudSim Plus. 
+A complete, side-by-side [comparison between CloudSim and CloudSim Plus Java simulation scenarios 
+is available here](http://cloudsimplus.org/docs/CloudSim-and-CloudSimPlus-Comparison.html).
 
-To update your simulations to use the CloudSim Plus you have to change the way that some objects are instantiated, because some new interfaces were introduced to follow the "program to an interface, not an implementation" recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). 
-These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) to try avoiding `NullPointerException`s.
+To update your simulations to use the CloudSim Plus you have to change the way that some objects are instantiated, 
+because some new interfaces were introduced to follow the "program to an interface, 
+not an implementation" recommendation and also to increase [abstraction](https://en.wikipedia.org/wiki/Abstraction_(software_engineering)). 
+These new interfaces were also crucial to implement the [Null Object Pattern](https://en.wikipedia.org/wiki/Null_Object_pattern) 
+to try avoiding `NullPointerException`s.
 
 The initialization of the simulation is not performed by the static `CloudSim.startSimulation` method anymore, which required a lot of parameters.
-Now you have just to instantiate a `CloudSim` object using the default, no-arguments constructor, as shown below. This instance is used in the constructor of `DatacenterBroker` and `Datacenter` objects: 
+Now you have just to instantiate a `CloudSim` object using the default, no-arguments constructor, as shown below. 
+This instance is used in the constructor of `DatacenterBroker` and `Datacenter` objects: 
 
 ```java
 CloudSim cloudsim = new CloudSim();
@@ -343,8 +404,12 @@ Now it is just required a `CloudSim`, a `Host` list and a `VmAllocationPolicy` i
 Datacenter dc0 = new DatacenterSimple(cloudsim, hostList, new VmAllocationPolicySimple());
 ```
 
-The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. Now you just have the generic class `ResourceProvisionerSimple` and you can just use its default no-args constructor. RAM and bandwidth capacity of the host now are given in the constructor, as it already was for storage. A `VmScheduler` constructor doesn't require any parameter. You don't need to set an ID for each Host, since
-if one is not given, when the List of hosts is attached to a Datacenter, it will generate an ID for those hosts. Instantiating a host should be now similar to:
+The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. 
+Now you just have the generic class `ResourceProvisionerSimple` and you can just use its default no-args constructor. 
+RAM and bandwidth capacity of the host now are given in the constructor, as it already was for storage. 
+A `VmScheduler` constructor doesn't require any parameter. You don't need to set an ID for each Host, since
+if one is not given, when the List of hosts is attached to a Datacenter, it will generate an ID for those hosts. 
+Instantiating a host should be now similar to:
 
 ```java
 long ram = 20480; //in MB
@@ -356,7 +421,11 @@ host.setRamProvisioner(new ResourceProvisionerSimple())
     .setVmScheduler(new VmSchedulerTimeShared());
 ``` 
 
-Additionally, the interface `Storage` was renamed to `FileStorage` and its implementations are `SanStorage` and `HarddriveStorage`, that can be used as before. Finally, since the packages were reorganized, you have to adjust them. However, use your IDE to correct the imports for you. A complete and clear example was presented in the <a href="#a-minimal-and-complete-simulation-example">Examples</a> section above.
+Additionally, the interface `Storage` was renamed to `FileStorage` and its implementations are 
+`SanStorage` and `HarddriveStorage`, that can be used as before. 
+Finally, since the packages were reorganized, you have to adjust them. 
+However, use your IDE to correct the imports for you. 
+A complete and clear example was presented in the <a href="#a-minimal-and-complete-simulation-example">Examples</a> section above.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -390,6 +459,9 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 
 # Contributing
 
-You are welcome to contribute to the project. However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. The guide provides information on the different ways you can contribute, such as by requesting a feature, reporting an issue, fixing a bug or providing some new feature.
+You are welcome to contribute to the project. 
+However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. 
+The guide provides information on the different ways you can contribute, 
+such as by requesting a feature, reporting an issue, fixing a bug or providing some new feature.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
