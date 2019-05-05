@@ -115,7 +115,7 @@ public class DatacenterBrokerHeuristicExample {
      * Broker.
      */
     private DatacenterBrokerHeuristic broker0;
-    private DatacenterBrokerBestFit broker1;
+    private DatacenterBroker broker1;
     /**
      * Seed.
      */
@@ -139,7 +139,10 @@ public class DatacenterBrokerHeuristicExample {
 
         System.out.println("Starting " + getClass().getSimpleName());
 
-        seed = System.currentTimeMillis();
+        // false: for the best fit version in the CloudletToVmMappingBestFit example
+        // true: for the best fit broker
+        boolean useBestFitBroker = false;
+        seed = 0;
 
         // Heuristic
         random0 = new UniformDistr(0, 1, seed);
@@ -164,7 +167,13 @@ public class DatacenterBrokerHeuristicExample {
 
         final Datacenter datacenter1 = createDatacenter(simulation1);
 
-        broker1 = new DatacenterBrokerBestFit(simulation1);
+        if (useBestFitBroker) {
+            broker1 = new DatacenterBrokerSimple(simulation1);
+            broker1.setVmMapper(this::bestFitCloudletToVmMapper);
+        }
+        else {
+            broker1 = new DatacenterBrokerBestFit(simulation1);
+        }
 
         vmList1 = createVms(random1);
         cloudletList1 = createCloudlets(random1);
@@ -177,12 +186,34 @@ public class DatacenterBrokerHeuristicExample {
         final List<Cloudlet> finishedCloudlets0 = broker0.getCloudletFinishedList();
         new CloudletsTableBuilder(finishedCloudlets0).build();
 
-        print(broker0);
-
         // print simulation1 results
         final List<Cloudlet> finishedCloudlets1 = broker1.getCloudletFinishedList();
         finishedCloudlets1.sort(Comparator.comparingLong(Cloudlet::getId));
         new CloudletsTableBuilder(finishedCloudlets1).build();
+
+        print(broker0);
+    }
+
+    /**
+     * Selects the VM with the lowest number of PEs that is able to run a given Cloudlet.
+     * In case the algorithm can't find such a VM, it uses the
+     * default DatacenterBroker VM mapper as a fallback.
+     *
+     * @param cloudlet the Cloudlet to find a VM to run it
+     * @return the VM selected for the Cloudlet or {@link Vm#NULL} if no suitable VM was found
+     */
+    private Vm bestFitCloudletToVmMapper(final Cloudlet cloudlet) {
+        if (cloudlet.isBindToVm() && broker0.equals(cloudlet.getVm().getBroker()) && cloudlet.getVm().isCreated()) {
+            return cloudlet.getVm();
+        }
+
+        return cloudlet
+            .getBroker()
+            .getVmCreatedList()
+            .stream()
+            .filter(vm -> vm.getNumberOfPes() >= cloudlet.getNumberOfPes())
+            .min(Comparator.comparingLong(Vm::getNumberOfPes))
+            .orElse(broker0.defaultVmMapper(cloudlet));
     }
 
     private DatacenterBrokerHeuristic createBroker() {
@@ -229,8 +260,8 @@ public class DatacenterBrokerHeuristicExample {
 		    "The heuristic solution cost represents %.2f%% of the round robin mapping cost used by the DatacenterBrokerSimple\n",
 		    heuristic.getBestSolutionSoFar().getCost()*100.0/roundRobinMappingCost);
         System.out.printf(
-            "The heuristic solution cost represents %.2f%% of the best fit mapping cost used by the DatacenterBrokerSimple\n",
-            heuristic.getBestSolutionSoFar().getCost()*100.0/bestFitMappingCost);
+            "The heuristic solution cost represents %.2f%% of the best fit mapping cost used by the %s\n",
+            heuristic.getBestSolutionSoFar().getCost()*100.0/bestFitMappingCost, broker1.getClass().getSimpleName());
 		System.out.printf("The solution finding spend %.2f seconds to finish\n", broker0.getHeuristic().getSolveTime());
 		System.out.println("Simulated Annealing Parameters");
 		System.out.printf("\tInitial Temperature: %.2f", SA_INITIAL_TEMPERATURE);
