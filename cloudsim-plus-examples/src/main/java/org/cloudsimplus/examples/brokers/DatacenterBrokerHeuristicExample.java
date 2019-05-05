@@ -141,7 +141,7 @@ public class DatacenterBrokerHeuristicExample {
 
         // false: for the best fit version in the CloudletToVmMappingBestFit example
         // true: for the best fit broker
-        boolean useBestFitBroker = false;
+        boolean useBestFitBroker = true;
         seed = 0;
 
         // Heuristic
@@ -168,11 +168,11 @@ public class DatacenterBrokerHeuristicExample {
         final Datacenter datacenter1 = createDatacenter(simulation1);
 
         if (useBestFitBroker) {
-            broker1 = new DatacenterBrokerSimple(simulation1);
-            broker1.setVmMapper(this::bestFitCloudletToVmMapper);
+            broker1 = new DatacenterBrokerBestFit(simulation1);
         }
         else {
-            broker1 = new DatacenterBrokerBestFit(simulation1);
+            broker1 = new DatacenterBrokerSimple(simulation1);
+            broker1.setVmMapper(this::bestFitCloudletToVmMapper);
         }
 
         vmList1 = createVms(random1);
