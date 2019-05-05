@@ -697,7 +697,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @param evt the cloudlet that has just finished to execute and was returned to the broker
      */
-    private void processCloudletReturn(final SimEvent evt) {
+    protected void processCloudletReturn(final SimEvent evt) {
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
         cloudletsFinishedList.add(cloudlet);
         LOGGER.info("{}: {}: {} finished and returned to broker.", getSimulation().clock(), getName(), cloudlet);
