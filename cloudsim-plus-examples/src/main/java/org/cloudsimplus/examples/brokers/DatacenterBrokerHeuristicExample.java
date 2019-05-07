@@ -119,7 +119,7 @@ public class DatacenterBrokerHeuristicExample {
     /**
      * Seed.
      */
-    long seed;
+    private final long seed;
     UniformDistr random0, random1;
 
     /**
