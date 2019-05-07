@@ -17,6 +17,7 @@ import java.util.stream.LongStream;
  * If there isn't capacity in that one, it will try the other ones.</p>
  *
  * @author Humaira Abdul Salam
+ * @since CloudSim Plus 4.3.8
  */
 public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
 
@@ -30,7 +31,6 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
      */
     public DatacenterBrokerBestFit(final CloudSim simulation) {
         super(simulation);
-        setVmMapper(this::defaultVmMapper);
         this.vmNumberOfPesUpdated = new HashMap<>();
         firstVmMapperCall = true;
     }
@@ -59,7 +59,7 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
      */
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
-        if (cloudlet.isBindToVm() && this.equals(cloudlet.getVm().getBroker()) && cloudlet.getVm().isCreated()) {
+        if (cloudlet.isBoundToCreatedVm()) {
             return cloudlet.getVm();
         }
 
@@ -86,7 +86,7 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
                 .orElse(Vm.NULL);
 
             if (mappedVm != Vm.NULL) {
-                LOGGER.debug("{} (PEs: {}) mapped to {} (available PEs: {})",
+                LOGGER.debug("{}: {}: {} (PEs: {}) mapped to {} (available PEs: {})", getSimulation().clock(), getName(),
                     cloudlet, cloudlet.getNumberOfPes(), mappedVm, vmNumberOfPesUpdated.get(mappedVm.getId()));
                 updateNumberOfPes(mappedVm.getId(), mappedVm.getNumberOfPes() - cloudlet.getNumberOfPes());
             }
@@ -94,8 +94,8 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
         }
         else
         {
-            LOGGER.warn("{} (PEs: {}) couldn't be mapped to any VM",
-                cloudlet, cloudlet.getNumberOfPes());
+            LOGGER.warn(": {}: {}: {} (PEs: {}) couldn't be mapped to any VM",
+                getSimulation().clock(), getName(), cloudlet, cloudlet.getNumberOfPes());
         }
         return Vm.NULL;
     }

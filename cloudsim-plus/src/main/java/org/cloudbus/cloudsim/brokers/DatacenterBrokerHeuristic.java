@@ -50,7 +50,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         heuristic.setVmList(getVmExecList());
         heuristic.setCloudletList(
 	        getCloudletWaitingList().stream()
-                        .filter(cloudlet -> !cloudlet.isBindToVm())
+                        .filter(cloudlet -> !cloudlet.isBoundToVm())
                         .collect(Collectors.toList()));
         /*
         Starts the heuristic to get a sub-optimal solution
