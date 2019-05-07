@@ -79,7 +79,7 @@ import java.util.Map;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public class DatacenterBrokerHeuristicExample {
+public class DatacenterBrokersMappingComparison {
     private static final int HOSTS_TO_CREATE = 100;
     private static final int VMS_TO_CREATE = 50;
     private static final int CLOUDLETS_TO_CREATE = 100;
@@ -127,25 +127,25 @@ public class DatacenterBrokerHeuristicExample {
         final CloudSim simulation0 = new CloudSim();
         UniformDistr random0 = new UniformDistr(0, 1, seed);
         final DatacenterBrokerHeuristic broker0 = createHeuristicBroker(simulation0, random0);
-        new DatacenterBrokerHeuristicExample(broker0, random0, showTables);
+        new DatacenterBrokersMappingComparison(broker0, random0, showTables);
 
         // BestFit
         final CloudSim simulation1 = new CloudSim();
         UniformDistr random1 = new UniformDistr(0, 1, seed);
         final DatacenterBroker broker1 = new DatacenterBrokerBestFit(simulation1);
-        new DatacenterBrokerHeuristicExample(broker1, random1, showTables);
+        new DatacenterBrokersMappingComparison(broker1, random1, showTables);
 
         // Simple - RoundRobin
         final CloudSim simulation2 = new CloudSim();
         UniformDistr random2 = new UniformDistr(0, 1, seed);
         final DatacenterBroker broker2 = new DatacenterBrokerSimple(simulation2);
-        new DatacenterBrokerHeuristicExample(broker2, random2, showTables);
+        new DatacenterBrokersMappingComparison(broker2, random2, showTables);
     }
 
     /**
      * Default constructor where the simulation is built.
      */
-    public DatacenterBrokerHeuristicExample(final DatacenterBroker brkr, final ContinuousDistribution rand, final boolean showTables) {
+    public DatacenterBrokersMappingComparison(final DatacenterBroker brkr, final ContinuousDistribution rand, final boolean showTables) {
         //Enables just some level of log messages.
         Log.setLevel(Level.ERROR);
 
