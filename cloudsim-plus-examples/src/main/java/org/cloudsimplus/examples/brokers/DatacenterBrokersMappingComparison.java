@@ -25,10 +25,7 @@ package org.cloudsimplus.examples.brokers;
 
 import ch.qos.logback.classic.Level;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerBestFit;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerHeuristic;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.brokers.*;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -122,31 +119,31 @@ public class DatacenterBrokersMappingComparison {
      */
     public static void main(String[] args) {
         final long seed = 0;
-        final boolean showTables = false;
+        final boolean verbose = true;
 
         // Heuristic
         final CloudSim simulation0 = new CloudSim();
-       final UniformDistr random0 = new UniformDistr(0, 1, seed);
+        final UniformDistr random0 = new UniformDistr(0, 1, seed);
         final DatacenterBrokerHeuristic broker0 = createHeuristicBroker(simulation0, random0);
-        new DatacenterBrokersMappingComparison(broker0, random0, showTables);
+        new DatacenterBrokersMappingComparison(broker0, random0, verbose);
 
         // BestFit
         final CloudSim simulation1 = new CloudSim();
         final UniformDistr random1 = new UniformDistr(0, 1, seed);
         final DatacenterBroker broker1 = new DatacenterBrokerBestFit(simulation1);
-        new DatacenterBrokersMappingComparison(broker1, random1, showTables);
+        new DatacenterBrokersMappingComparison(broker1, random1, verbose);
 
         // Simple - RoundRobin
         final CloudSim simulation2 = new CloudSim();
         final UniformDistr random2 = new UniformDistr(0, 1, seed);
         final DatacenterBroker broker2 = new DatacenterBrokerSimple(simulation2);
-        new DatacenterBrokersMappingComparison(broker2, random2, showTables);
+        new DatacenterBrokersMappingComparison(broker2, random2, verbose);
     }
 
     /**
      * Default constructor where the simulation is built.
      */
-    public DatacenterBrokersMappingComparison(final DatacenterBroker brkr, final ContinuousDistribution rand, final boolean showTables) {
+    public DatacenterBrokersMappingComparison(final DatacenterBroker brkr, final ContinuousDistribution rand, final boolean verbose) {
         //Enables just some level of log messages.
         Log.setLevel(Level.ERROR);
 
@@ -166,13 +163,13 @@ public class DatacenterBrokersMappingComparison {
         simulation.start();
 
         // print simulation results
-        if (showTables) {
+        if (verbose) {
             final List<Cloudlet> finishedCloudlets = broker.getCloudletFinishedList();
             finishedCloudlets.sort(Comparator.comparingLong(Cloudlet::getId));
             new CloudletsTableBuilder(finishedCloudlets).build();
         }
 
-        print();
+        print(verbose);
     }
 
     private static DatacenterBrokerHeuristic createHeuristicBroker(final CloudSim sim, final ContinuousDistribution rand) {
@@ -209,9 +206,9 @@ public class DatacenterBrokersMappingComparison {
 		return heuristic;
 	}
 
-	private void print() {
-        final double brokersMappingCost = computeBrokersMappingCost(false);
-        final double basicRoundRobinCost = computeRoundRobinMappingCost(false);
+	private void print(final boolean verbose) {
+        final double brokersMappingCost = computeBrokersMappingCost(verbose);
+        final double basicRoundRobinCost = computeRoundRobinMappingCost(verbose);
         System.out.printf(
             "The solution based on %s mapper costs %.2f. Basic round robin implementation in this example costs %.2f.\n", broker.getClass().getSimpleName(), brokersMappingCost, basicRoundRobinCost);
         System.out.println(getClass().getSimpleName() + " finished!");

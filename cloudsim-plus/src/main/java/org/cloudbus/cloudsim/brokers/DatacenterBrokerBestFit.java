@@ -5,10 +5,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import javax.swing.text.html.Option;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.LongStream;
 
 /**
  * <p>A simple implementation of {@link DatacenterBroker} that uses a best fit
@@ -21,9 +18,6 @@ import java.util.stream.LongStream;
  */
 public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
 
-    Map<Long, Long> vmNumberOfPesUpdated;
-    boolean firstVmMapperCall;
-
     /**
      * Creates a new DatacenterBroker object.
      *
@@ -31,8 +25,6 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
      */
     public DatacenterBrokerBestFit(final CloudSim simulation) {
         super(simulation);
-        this.vmNumberOfPesUpdated = new HashMap<>();
-        firstVmMapperCall = true;
     }
 
     /**
@@ -42,13 +34,12 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
      */
     @Override
     protected void processCloudletReturn(final SimEvent evt) {
-        for (Vm vm : getVmCreatedList())
-        {
-            updateNumberOfPes(vm.getId(), vm.getNumberOfPes());
-        }
-
+        final Cloudlet cloudlet = (Cloudlet) evt.getData();
+        cloudlet.getVm().setExpectedFreePesNumber(
+            cloudlet.getVm().getExpectedFreePesNumber() + cloudlet.getNumberOfPes());
         super.processCloudletReturn(evt);
     }
+
     /**
      * Selects the VM with the lowest number of PEs that is able to run a given Cloudlet.
      * In case the algorithm can't find such a VM, it uses the
@@ -63,33 +54,17 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
             return cloudlet.getVm();
         }
 
-        if (firstVmMapperCall)
-        {
-            for (Vm vm : getVmCreatedList())
-            {
-                updateNumberOfPes(vm.getId(), vm.getNumberOfPes());
-            }
-            firstVmMapperCall = false;
-        }
+        Vm mappedVm = getVmCreatedList()
+            .stream()
+            .filter(x -> x.getExpectedFreePesNumber() >= cloudlet.getNumberOfPes())
+            .min(Comparator.comparingLong(x -> x.getExpectedFreePesNumber()))
+            .orElse(Vm.NULL);
 
-        Optional<Map.Entry<Long, Long>> minVmPes = vmNumberOfPesUpdated
-                                                    .entrySet()
-                                                    .stream()
-                                                    .filter(x -> x.getValue() >= cloudlet.getNumberOfPes())
-                                                    .min(Comparator.comparingLong(x -> x.getValue()));
-
-        if (minVmPes.isPresent()) {
-            Vm mappedVm = getVmCreatedList()
-                .stream()
-                .filter(vm -> vm.getId() == minVmPes.get().getKey())
-                .findFirst()
-                .orElse(Vm.NULL);
-
-            if (mappedVm != Vm.NULL) {
-                LOGGER.debug("{}: {}: {} (PEs: {}) mapped to {} (available PEs: {})", getSimulation().clock(), getName(),
-                    cloudlet, cloudlet.getNumberOfPes(), mappedVm, vmNumberOfPesUpdated.get(mappedVm.getId()));
-                updateNumberOfPes(mappedVm.getId(), mappedVm.getNumberOfPes() - cloudlet.getNumberOfPes());
-            }
+        if(mappedVm != Vm.NULL){
+            mappedVm.setExpectedFreePesNumber(mappedVm.getExpectedFreePesNumber()-cloudlet.getNumberOfPes());
+            LOGGER.debug("{}: {}: {} (PEs: {}) mapped to {} (available PEs: {}, tot PEs: {})",
+                getSimulation().clock(), getName(), cloudlet, cloudlet.getNumberOfPes(), mappedVm,
+                mappedVm.getExpectedFreePesNumber(), mappedVm.getFreePesNumber());
             return mappedVm;
         }
         else
@@ -100,8 +75,4 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
         return Vm.NULL;
     }
 
-    private void updateNumberOfPes(final long vmId, final long availablePes)
-    {
-        vmNumberOfPesUpdated.put(vmId, availablePes);
-    }
 }

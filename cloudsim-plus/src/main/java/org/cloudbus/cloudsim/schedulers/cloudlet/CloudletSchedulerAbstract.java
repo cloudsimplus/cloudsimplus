@@ -534,6 +534,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             final CloudletExecution cle = cloudletExecList.get(i);
             updateCloudletProcessingAndPacketsDispatch(cle, currentTime);
             nextCloudletFinishTime = Math.min(nextCloudletFinishTime, cloudletEstimatedFinishTime(cle, currentTime));
+            cle.getCloudlet().getVm().setFreePesNumber(
+                cle.getCloudlet().getVm().getFreePesNumber() - cle.getCloudlet().getNumberOfPes());
         }
 
         return nextCloudletFinishTime;
@@ -998,7 +1000,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Gets a <b>read-only</b> list of Cloudlets that finished executing and were returned the their broker.
-     * A Cloudlet is returned to to notify the broker about the end of its execution.
+     * A Cloudlet is returned to notify the broker about the end of its execution.
      * @return
      */
     protected Set<Cloudlet> getCloudletReturnedList() {
