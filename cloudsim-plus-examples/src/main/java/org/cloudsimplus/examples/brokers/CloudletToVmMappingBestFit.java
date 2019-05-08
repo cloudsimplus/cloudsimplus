@@ -25,7 +25,7 @@ package org.cloudsimplus.examples.brokers;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerBestFit;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
@@ -50,7 +50,6 @@ import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Function;
 
 /**
  * An example showing how to change the policy
@@ -61,17 +60,12 @@ import java.util.function.Function;
  * changing the method used for that goal,
  * without requiring to create a subclass to accomplish that.</p>
  *
- * <p>The example defines a the method {@link #bestFitCloudletToVmMapper(Cloudlet)} that
- * receives a Cloudlet a selects the best VM that fits it. That is,
- * the VM with lower capacity that is able to host that Cloudlet.
- * This method is given as parameter to the {@link DatacenterBroker#setVmMapper(Function)}
- * using Java 8 Functional Programming features.
- * This way, it changes the implementation of the VM selection policy
- * to the method implemented in this example.
+ * <p>The example uses the class {@link DatacenterBrokerBestFit} that
+ * an optimal mapping of Cloudlets to VMs based on the free Pes in VMs.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.3.0
+ * @since CloudSim Plus 4.3.8
  */
 public class CloudletToVmMappingBestFit {
     private static final int HOSTS = 2;
@@ -101,11 +95,7 @@ public class CloudletToVmMappingBestFit {
         datacenter0 = createDatacenter();
 
         //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
-        broker0 = new DatacenterBrokerSimple(simulation);
-
-        /* If you comment this line, the default mapping policy will be used.
-         * This way, you'll see that Cloudlet 0 is mapped to VM 0, Cloudlet 1 to VM 1 and so on. */
-        broker0.setVmMapper(this::bestFitCloudletToVmMapper);
+        broker0 = new DatacenterBrokerBestFit(simulation);
 
         vmList = createVms();
         cloudletList = createCloudlets();
@@ -117,28 +107,6 @@ public class CloudletToVmMappingBestFit {
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         finishedCloudlets.sort(Comparator.comparingLong(Cloudlet::getId));
         new CloudletsTableBuilder(finishedCloudlets).build();
-    }
-
-    /**
-     * Selects the VM with the lowest number of PEs that is able to run a given Cloudlet.
-     * In case the algorithm can't find such a VM, it uses the
-     * default DatacenterBroker VM mapper as a fallback.
-     *
-     * @param cloudlet the Cloudlet to find a VM to run it
-     * @return the VM selected for the Cloudlet or {@link Vm#NULL} if no suitable VM was found
-     */
-    private Vm bestFitCloudletToVmMapper(final Cloudlet cloudlet) {
-        if (cloudlet.isBoundToVm() && broker0.equals(cloudlet.getVm().getBroker()) && cloudlet.getVm().isCreated()) {
-            return cloudlet.getVm();
-        }
-
-        return cloudlet
-                .getBroker()
-                .getVmCreatedList()
-                .stream()
-                .filter(vm -> vm.getNumberOfPes() >= cloudlet.getNumberOfPes())
-                .min(Comparator.comparingLong(Vm::getNumberOfPes))
-                .orElse(broker0.defaultVmMapper(cloudlet));
     }
 
     /**
