@@ -126,7 +126,7 @@ public class DatacenterBrokersMappingComparison {
 
         // Heuristic
         final CloudSim simulation0 = new CloudSim();
-        UniformDistr random0 = new UniformDistr(0, 1, seed);
+       final UniformDistr random0 = new UniformDistr(0, 1, seed);
         final DatacenterBrokerHeuristic broker0 = createHeuristicBroker(simulation0, random0);
         new DatacenterBrokersMappingComparison(broker0, random0, showTables);
 
