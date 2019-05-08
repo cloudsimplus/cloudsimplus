@@ -138,7 +138,7 @@ public class DatacenterBrokersMappingComparison {
 
         // Simple - RoundRobin
         final CloudSim simulation2 = new CloudSim();
-        UniformDistr random2 = new UniformDistr(0, 1, seed);
+        final UniformDistr random2 = new UniformDistr(0, 1, seed);
         final DatacenterBroker broker2 = new DatacenterBrokerSimple(simulation2);
         new DatacenterBrokersMappingComparison(broker2, random2, showTables);
     }
