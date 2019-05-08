@@ -77,7 +77,7 @@ import java.util.Map;
  * heuristic approach and round robin mapping.</p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 1.0
+ * @since CloudSim Plus 4.3.8
  */
 public class DatacenterBrokersMappingComparison {
     private static final int HOSTS_TO_CREATE = 100;
