@@ -118,8 +118,10 @@ public class DatacenterBrokersMappingComparison {
      * @param args
      */
     public static void main(String[] args) {
-        final long seed = 0;
-        final boolean verbose = true;
+        System.out.println("Starting comparison...");
+
+        final long seed = System.currentTimeMillis();
+        final boolean verbose = false;
 
         // Heuristic
         final CloudSim simulation0 = new CloudSim();
@@ -138,6 +140,8 @@ public class DatacenterBrokersMappingComparison {
         final UniformDistr random2 = new UniformDistr(0, 1, seed);
         final DatacenterBroker broker2 = new DatacenterBrokerSimple(simulation2);
         new DatacenterBrokersMappingComparison(broker2, random2, verbose);
+
+        System.out.println("Comparison finished!");
     }
 
     /**
@@ -146,8 +150,6 @@ public class DatacenterBrokersMappingComparison {
     public DatacenterBrokersMappingComparison(final DatacenterBroker brkr, final ContinuousDistribution rand, final boolean verbose) {
         //Enables just some level of log messages.
         Log.setLevel(Level.ERROR);
-
-        System.out.println("Starting " + getClass().getSimpleName());
 
         broker = brkr;
         simulation = broker.getSimulation();
@@ -208,10 +210,8 @@ public class DatacenterBrokersMappingComparison {
 
 	private void print(final boolean verbose) {
         final double brokersMappingCost = computeBrokersMappingCost(verbose);
-        final double basicRoundRobinCost = computeRoundRobinMappingCost(verbose);
         System.out.printf(
-            "The solution based on %s mapper costs %.2f. Basic round robin implementation in this example costs %.2f.\n", broker.getClass().getSimpleName(), brokersMappingCost, basicRoundRobinCost);
-        System.out.println(getClass().getSimpleName() + " finished!");
+            "The solution based on %s mapper costs %.2f.\n", broker.getClass().getSimpleName(), brokersMappingCost);
 	}
 
 	/**
@@ -283,43 +283,24 @@ public class DatacenterBrokersMappingComparison {
                     .setUtilizationModel(utilization);
     }
 
-    private double computeRoundRobinMappingCost(boolean doPrint) {
-        CloudletToVmMappingSimulatedAnnealing heuristic =
-            new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, random);
-        final CloudletToVmMappingSolution roundRobinSolution = new CloudletToVmMappingSolution(heuristic);
-        int i = 0;
-        for (Cloudlet c : cloudletList) {
-            //cyclically selects a Vm (as in a circular queue)
-            roundRobinSolution.bindCloudletToVm(c, vmList.get(i));
-            i = (i+1) % vmList.size();
-        }
-
-        if (doPrint) {
-            printSolution(
-                "Round robin solution used by DatacenterBrokerSimple class",
-                roundRobinSolution, false);
-        }
-        return roundRobinSolution.getCost();
-    }
-
     private double computeBrokersMappingCost(boolean doPrint) {
         CloudletToVmMappingSimulatedAnnealing heuristic =
             new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, random);
 
-        final CloudletToVmMappingSolution bestFitSolution = new CloudletToVmMappingSolution(heuristic);
+        final CloudletToVmMappingSolution mappingSolution = new CloudletToVmMappingSolution(heuristic);
         int i = 0;
         for (Cloudlet c : cloudletList) {
             if (c.isBoundToVm()) {
-                bestFitSolution.bindCloudletToVm(c, c.getVm());
+                mappingSolution.bindCloudletToVm(c, c.getVm());
             }
         }
 
         if (doPrint) {
             printSolution(
                 "Best fit solution used by DatacenterBrokerSimple class",
-                bestFitSolution, false);
+                mappingSolution, false);
         }
-        return bestFitSolution.getCost();
+        return mappingSolution.getCost();
     }
 
     private void printSolution(

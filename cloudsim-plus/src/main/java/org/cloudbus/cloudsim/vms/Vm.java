@@ -21,6 +21,8 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,6 +41,7 @@ import java.util.function.Predicate;
  * @since CloudSim Plus 1.0
  */
 public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity {
+    Logger LOGGER = LoggerFactory.getLogger(Vm.class.getSimpleName());
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
