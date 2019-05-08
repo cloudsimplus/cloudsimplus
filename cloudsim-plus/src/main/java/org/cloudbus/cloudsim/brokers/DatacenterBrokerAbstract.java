@@ -9,11 +9,13 @@ package org.cloudbus.cloudsim.brokers;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.*;
+import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 import org.cloudsimplus.listeners.EventInfo;
@@ -448,9 +450,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             case CloudSimTags.VM_CREATE_ACK:
                 processVmCreateResponseFromDatacenter(evt);
                 return true;
-            case CloudSimTags.VM_DESTROY:
-                requestIdleVmDestruction((Vm) evt.getData());
-                return true;
             case CloudSimTags.VM_VERTICAL_SCALING:
                 requestVmVerticalScaling(evt);
                 return true;
@@ -738,7 +737,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Request an idle VM to be destroyed at the time defined by a delay {@link Function}.
+     * Checks if a VM is idle VM and request it to be destroyed at the time defined by
+     * the {@link #getVmDestructionDelayFunction()}.
      * The request will be sent if the given delay function returns a value
      * greater than {@link #DEF_VM_DESTRUCTION_DELAY}.
      * Otherwise, it doesn't send the request, meaning the VM should not be destroyed according to a specific delay.
@@ -746,25 +746,53 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param vm the VM to destroy
      * @see #getVmDestructionDelayFunction()
      */
-    private void requestIdleVmDestruction(final Vm vm) {
+    public void requestIdleVmDestruction(final Vm vm) {
         final double delay = vmDestructionDelayFunction.apply(vm);
 
-        boolean vmAlive = vm.isCreated();
-        if (vmAlive && ((delay > DEF_VM_DESTRUCTION_DELAY && vm.isIdleEnough(delay)) || isFinished())) {
-            LOGGER.info("{}: {}: Requesting Vm {} destruction.", getSimulation().clock(), getName(), vm.getId());
-            sendNow(getDatacenter(vm), CloudSimTags.VM_DESTROY, vm);
-            vmAlive = false;
+        if (vm.isCreated()) {
+            if((delay > DEF_VM_DESTRUCTION_DELAY && vm.isIdleEnough(delay)) || isFinished()) {
+                LOGGER.info("{}: {}: Requesting Vm {} destruction.", getSimulation().clock(), getName(), vm.getId());
+                sendNow(getDatacenter(vm), CloudSimTags.VM_DESTROY, vm);
+            }
+
+            if(isVmIdlenessVerificationRequired((VmSimple)vm)) {
+                getSimulation().send(
+                    new CloudSimEvent(vmDestructionDelayFunction.apply(vm),
+                        vm.getHost().getDatacenter(),
+                        CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING));
+                return;
+            }
         }
 
         if (isTimeToShutdownBroker() && isBrokerIdle()) {
             shutdownEntity();
-            return;
+        }
+    }
+
+    /**
+     * Checks if an event must be sent to verify if a VM became idle.
+     * That will happen when the {@link #getVmDestructionDelayFunction() VM destruction delay}
+     * is set and is not multiple of the {@link Datacenter#getSchedulingInterval()}
+     *
+     * In such situation, that means it is required to send additional events to check if a VM became idle.
+     * No additional events are required when:
+     * - the VM destruction delay was not set (VMs will be destroyed only when the broker is shutdown)
+     * - the delay was set and it's multiple of the scheduling interval
+     *   (VM idleness will be checked in the interval defined by the Datacenter scheduling).
+     *
+     * Avoiding additional messages improves performance of large scale simulations.
+     *
+     * @param vm the Vm to check
+     * @return true if a message to check VM idleness has to be sent, false otherwise
+     */
+    private boolean isVmIdlenessVerificationRequired(final VmSimple vm) {
+        if(vm.hasStartedSomeCloudlet() && vm.getCloudletScheduler().isEmpty()){
+            final int schedulingInterval = (int)vm.getHost().getDatacenter().getSchedulingInterval();
+            final int delay = vmDestructionDelayFunction.apply(vm).intValue();
+            return delay > DEF_VM_DESTRUCTION_DELAY && (schedulingInterval <= 0 || delay % schedulingInterval != 0);
         }
 
-        if (vmAlive && delay > DEF_VM_DESTRUCTION_DELAY) {
-            //Sends a message after a while, to check if the VM became idle, so that it can be destroyed
-            send(this, getDelayToCheckVmIdleness(vm), CloudSimTags.VM_DESTROY, vm);
-        }
+        return false;
     }
 
     /**

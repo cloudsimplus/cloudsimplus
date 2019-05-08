@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.vms;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerAbstract;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.core.Machine;
@@ -213,7 +214,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         this.description = "";
         this.startTime = -1;
         this.stopTime = -1;
-        this.lastBusyTime = 0;
+        this.lastBusyTime = Double.MAX_VALUE;
 
         setId(id);
         setBroker(DatacenterBroker.NULL);
@@ -267,6 +268,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
          */
         final double decimals = currentTime - (int) currentTime;
         utilizationHistory.addUtilizationHistory(currentTime);
+        ((DatacenterBrokerAbstract)getBroker()).requestIdleVmDestruction(this);
         return nextEventDelay - decimals;
     }
 
@@ -368,6 +370,14 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public double getLastBusyTime() {
         return this.lastBusyTime;
+    }
+
+    /**
+     * Checks if the VM has ever started some Cloudlet.
+     * @return
+     */
+    public boolean hasStartedSomeCloudlet(){
+        return lastBusyTime != Double.MAX_VALUE;
     }
 
     private void setLastBusyTime() {

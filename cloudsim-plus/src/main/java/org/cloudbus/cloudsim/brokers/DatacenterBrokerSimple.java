@@ -30,7 +30,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     /**
      * Creates a new DatacenterBroker.
      *
-     * @param simulation name to be associated with this entity
+     * @param simulation the CloudSim instance that represents the simulation the Entity is related to
      */
     public DatacenterBrokerSimple(final CloudSim simulation) {
         this(simulation, "");

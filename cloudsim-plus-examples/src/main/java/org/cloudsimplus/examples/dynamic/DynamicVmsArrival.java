@@ -69,11 +69,11 @@ public class DynamicVmsArrival {
 
     /**
      * Number of VMs to create.
-     * If you try to increase this number, you'll see that
-     * the additional VMs won't be created because there are no
+     * If you try to increase this number without increases Hosts,
+     * you'll see that the additional VMs won't be created because there are no
      * suitable Hosts.
      */
-    private static final int VMS = (HOSTS*HOST_PES)/VM_PES;
+    private static final int VMS = 4;
 
 
     /** Number of Cloudlets to create simultaneously. */
