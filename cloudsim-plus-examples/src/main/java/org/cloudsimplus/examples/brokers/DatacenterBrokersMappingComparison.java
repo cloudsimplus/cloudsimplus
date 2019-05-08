@@ -76,6 +76,7 @@ import java.util.Map;
  * <p>A comparison of cloudlet-VM mapping is done among the best fit approach,
  * heuristic approach and round robin mapping.</p>
  *
+ * @author Humaira Abdul Salam
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.3.8
  */
