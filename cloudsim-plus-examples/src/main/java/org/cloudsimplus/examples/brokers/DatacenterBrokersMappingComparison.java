@@ -132,7 +132,7 @@ public class DatacenterBrokersMappingComparison {
 
         // BestFit
         final CloudSim simulation1 = new CloudSim();
-        UniformDistr random1 = new UniformDistr(0, 1, seed);
+        final UniformDistr random1 = new UniformDistr(0, 1, seed);
         final DatacenterBroker broker1 = new DatacenterBrokerBestFit(simulation1);
         new DatacenterBrokersMappingComparison(broker1, random1, showTables);
 
