@@ -308,7 +308,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
             LOGGER.warn("Number of free PEs cannot be negative.");
             expFreePes = 0;
         }
-        expectedFreePesNumber = expFreePes;
+        this.expectedFreePesNumber = expectedFreePes;
         return this;
     }
 
