@@ -65,7 +65,7 @@ import java.util.List;
  * </p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.3.8
+ * @since CloudSim Plus 1.3.0
  */
 public class CloudletToVmMappingBestFit {
     private static final int HOSTS = 2;
