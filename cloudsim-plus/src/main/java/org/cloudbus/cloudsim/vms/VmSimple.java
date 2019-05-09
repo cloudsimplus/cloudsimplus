@@ -303,7 +303,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public Vm setExpectedFreePesNumber(long expFreePes) {
+    public Vm setExpectedFreePesNumber(long expectedFreePes) {
         if(expFreePes < 0) {
             LOGGER.warn("Number of free PEs cannot be negative.");
             expFreePes = 0;
