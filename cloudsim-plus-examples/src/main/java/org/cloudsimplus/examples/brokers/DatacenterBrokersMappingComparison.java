@@ -151,7 +151,7 @@ public class DatacenterBrokersMappingComparison {
         //Enables just some level of log messages.
         Log.setLevel(Level.ERROR);
 
-        broker = brkr;
+        this.broker = broker;
         simulation = broker.getSimulation();
         random = rand;
 
