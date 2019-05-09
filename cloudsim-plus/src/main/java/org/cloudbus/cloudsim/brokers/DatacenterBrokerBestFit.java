@@ -65,7 +65,6 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
             LOGGER.debug("{}: {}: {} (PEs: {}) mapped to {} (available PEs: {}, tot PEs: {})",
                 getSimulation().clock(), getName(), cloudlet, cloudlet.getNumberOfPes(), mappedVm,
                 mappedVm.getExpectedFreePesNumber(), mappedVm.getFreePesNumber());
-            return mappedVm;
         }
         else
         {
