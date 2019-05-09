@@ -153,7 +153,7 @@ public class DatacenterBrokersMappingComparison {
 
         this.broker = broker;
         simulation = broker.getSimulation();
-        random = rand;
+        this.random = random;
 
         final Datacenter datacenter = createDatacenter(simulation);
 
