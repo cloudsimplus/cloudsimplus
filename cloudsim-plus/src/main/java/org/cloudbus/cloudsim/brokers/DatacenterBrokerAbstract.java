@@ -15,7 +15,6 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 import org.cloudsimplus.listeners.EventInfo;
@@ -700,7 +699,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void processCloudletReturn(final SimEvent evt) {
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
         cloudletsFinishedList.add(cloudlet);
-        ((VmSimple) cloudlet.getVm()).setExpectedFreePesNumber(
+        cloudlet.getVm().setExpectedFreePesNumber(
             cloudlet.getVm().getExpectedFreePesNumber() + cloudlet.getNumberOfPes());
         LOGGER.info("{}: {}: {} finished and returned to broker.", getSimulation().clock(), getName(), cloudlet);
 
@@ -922,7 +921,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             //selects a VM for the given Cloudlet
             lastSelectedVm = vmMapper.apply(cloudlet);
-            ((VmSimple) lastSelectedVm).setExpectedFreePesNumber(
+            lastSelectedVm.setExpectedFreePesNumber(
                 lastSelectedVm.getExpectedFreePesNumber() - cloudlet.getNumberOfPes());
             if (lastSelectedVm == Vm.NULL) {
                 logPostponingCloudletExecution(cloudlet);
