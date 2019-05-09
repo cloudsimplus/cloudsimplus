@@ -922,12 +922,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             //selects a VM for the given Cloudlet
             lastSelectedVm = vmMapper.apply(cloudlet);
-            ((VmSimple) lastSelectedVm).setExpectedFreePesNumber(
-                lastSelectedVm.getExpectedFreePesNumber() - cloudlet.getNumberOfPes());
             if (lastSelectedVm == Vm.NULL) {
                 logPostponingCloudletExecution(cloudlet);
                 continue;
+            } else {
+                ((VmSimple) lastSelectedVm).setExpectedFreePesNumber(
+                    lastSelectedVm.getExpectedFreePesNumber() - cloudlet.getNumberOfPes());
             }
+
 
             logCloudletCreationRequest(cloudlet);
             cloudlet.setVm(lastSelectedVm);
