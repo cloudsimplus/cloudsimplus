@@ -287,7 +287,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         return freePesNumber;
     }
 
-    @Override
+    /**
+     * Sets the current number of free PEs.
+     *
+     * @return the new free pes number
+     */
     public Vm setFreePesNumber(long freePesNumber) {
         if(freePesNumber < 0) {
             LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");
@@ -302,7 +306,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         return expectedFreePesNumber;
     }
 
-    @Override
+    /**
+     * Sets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
+     *
+     * @param expectedFreePes the expected free pes number to set
+     */
     public Vm setExpectedFreePesNumber(long expectedFreePes) {
         if(expectedFreePes < 0) {
             LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");

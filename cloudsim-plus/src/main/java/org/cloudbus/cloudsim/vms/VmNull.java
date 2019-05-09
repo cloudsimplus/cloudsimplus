@@ -40,9 +40,7 @@ final class VmNull implements Vm {
     }
     @Override public CloudletScheduler getCloudletScheduler() { return CloudletScheduler.NULL; }
     @Override public long getFreePesNumber() { return 0; }
-    @Override public Vm setFreePesNumber(long freePes) { return this; }
     @Override public long getExpectedFreePesNumber() { return 0; }
-    @Override public Vm setExpectedFreePesNumber(long expFreePes) { return this; }
     @Override public long getCurrentRequestedBw() {
         return 0;
     }
