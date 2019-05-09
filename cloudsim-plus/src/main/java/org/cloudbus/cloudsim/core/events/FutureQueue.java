@@ -90,7 +90,7 @@ public class FutureQueue implements EventQueue {
         return sortedSet.removeAll(events);
     }
 
-    public boolean removeIf(final Predicate predicate){
+    public boolean removeIf(final Predicate<SimEvent> predicate){
         return sortedSet.removeIf(predicate);
     }
 

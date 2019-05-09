@@ -12,7 +12,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -370,7 +369,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          the processing update is requested right away.
          */
         final Datacenter dc = vm.getHost().getDatacenter();
-        vm.getSimulation().send(new CloudSimEvent(dc, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING));
+        dc.schedule(0, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING, null);
         return true;
     }
 
