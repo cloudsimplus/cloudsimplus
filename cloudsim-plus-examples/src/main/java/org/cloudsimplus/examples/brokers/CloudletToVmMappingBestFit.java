@@ -60,7 +60,7 @@ import java.util.List;
  * changing the method used for that goal,
  * without requiring to create a subclass to accomplish that.</p>
  *
- * <p>The example uses the class {@link DatacenterBrokerBestFit} that
+ * <p>The example uses the class {@link DatacenterBrokerBestFit} that performs
  * an optimal mapping of Cloudlets to VMs based on the free Pes in VMs.
  * </p>
  *
