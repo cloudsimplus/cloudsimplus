@@ -71,7 +71,7 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
             LOGGER.warn(": {}: {}: {} (PEs: {}) couldn't be mapped to any VM",
                 getSimulation().clock(), getName(), cloudlet, cloudlet.getNumberOfPes());
         }
-        return Vm.NULL;
+        return mappedVm;
     }
 
 }
