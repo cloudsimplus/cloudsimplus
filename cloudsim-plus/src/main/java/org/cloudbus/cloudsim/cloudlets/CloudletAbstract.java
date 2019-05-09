@@ -813,7 +813,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public boolean isBoundToCreatedVm(){
-        return isBoundToVm() && this.getBroker().equals(this.getVm().getBroker()) && this.getVm().isCreated();
+        return isBoundToVm() && this.getVm().isCreated() && this.getBroker().equals(this.getVm().getBroker());
     }
 
     @Override
