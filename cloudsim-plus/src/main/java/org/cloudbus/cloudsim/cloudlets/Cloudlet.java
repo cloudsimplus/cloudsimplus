@@ -497,7 +497,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
 
     /**
      * Checks if the Cloudlet is bound to any Vm and if that Vm is already created.
-     * if the Vm is already created
      *
      * @return true if the Cloudlet is bound to a created VM, false otherwise
      */
