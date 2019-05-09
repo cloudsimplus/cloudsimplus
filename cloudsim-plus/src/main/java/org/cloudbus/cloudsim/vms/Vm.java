@@ -80,7 +80,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     CloudletScheduler getCloudletScheduler();
 
     /**
-     * Gets the free pes number.
+     * Gets the current number of free PEs.
      *
      * @return the free pes number
      */
