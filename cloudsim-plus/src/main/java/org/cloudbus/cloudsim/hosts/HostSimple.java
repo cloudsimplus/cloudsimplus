@@ -10,6 +10,8 @@ import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterPowerSupply;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -333,7 +335,14 @@ public class HostSimple implements Host {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     @Override
     public double updateProcessing(final double currentTime) {
-        setPreviousUtilizationMips(getUtilizationOfCpuMips());
+        /*The previous utilization mips is just used when there is a DatacenterPowerSupply instance
+        attached to the datacenter. Since getting the utilization of CPU is an expensive
+        operation in large scale experiments, if a Datacenter power supply is not set,
+        the value is not stored.*/
+        if(((DatacenterSimple)datacenter).getPowerSupply() != DatacenterPowerSupply.NULL) {
+            setPreviousUtilizationMips(getUtilizationOfCpuMips());
+        }
+
         if (!vmList.isEmpty()) {
             lastBusyTime = simulation.clock();
         } else if(isIdleEnough(idleShutdownDeadline)){

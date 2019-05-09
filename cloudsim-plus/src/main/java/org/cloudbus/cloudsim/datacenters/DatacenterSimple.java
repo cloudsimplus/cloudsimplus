@@ -1070,4 +1070,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     public void setPowerSupply(final DatacenterPowerSupply powerSupply) {
         this.powerSupply = powerSupply == null ? DatacenterPowerSupply.NULL : powerSupply.setDatacenter(this);
     }
+
+    public DatacenterPowerSupply getPowerSupply(){ return powerSupply; }
 }
