@@ -102,7 +102,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     long getExpectedFreePesNumber();
 
     /**
-     * Gets the expected free pes number. This will be updated when cloudlets will be assigned to VMs but not submitted to the broker yet for running.
+     * Sets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
      *
      * @return the expected free pes number
      */
