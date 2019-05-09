@@ -87,7 +87,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     long getFreePesNumber();
 
     /**
-     * Sets the free pes number.
+     * Sets the current number of free PEs.
      *
      * @return the new free pes number
      */
