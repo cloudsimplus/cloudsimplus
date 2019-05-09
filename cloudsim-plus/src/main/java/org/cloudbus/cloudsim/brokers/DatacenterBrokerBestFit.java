@@ -57,7 +57,7 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
         final Vm mappedVm = getVmCreatedList()
             .stream()
             .filter(vm -> vm.getExpectedFreePesNumber() >= cloudlet.getNumberOfPes())
-            .min(Comparator.comparingLong(x -> x.getExpectedFreePesNumber()))
+            .min(Comparator.comparingLong(vm -> vm.getExpectedFreePesNumber()))
             .orElse(Vm.NULL);
 
         if(mappedVm != Vm.NULL){
