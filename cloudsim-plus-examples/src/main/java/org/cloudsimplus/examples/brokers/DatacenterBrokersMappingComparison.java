@@ -147,7 +147,7 @@ public class DatacenterBrokersMappingComparison {
     /**
      * Default constructor where the simulation is built.
      */
-    public DatacenterBrokersMappingComparison(final DatacenterBroker brkr, final ContinuousDistribution rand, final boolean verbose) {
+    public DatacenterBrokersMappingComparison(final DatacenterBroker broker, final ContinuousDistribution random, final boolean verbose) {
         //Enables just some level of log messages.
         Log.setLevel(Level.ERROR);
 
