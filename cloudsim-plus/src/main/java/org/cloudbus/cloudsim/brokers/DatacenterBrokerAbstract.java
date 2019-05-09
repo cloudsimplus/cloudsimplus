@@ -700,7 +700,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void processCloudletReturn(final SimEvent evt) {
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
         cloudletsFinishedList.add(cloudlet);
-        cloudlet.getVm().setExpectedFreePesNumber(
+        ((VmSimple) cloudlet.getVm()).setExpectedFreePesNumber(
             cloudlet.getVm().getExpectedFreePesNumber() + cloudlet.getNumberOfPes());
         LOGGER.info("{}: {}: {} finished and returned to broker.", getSimulation().clock(), getName(), cloudlet);
 
@@ -922,7 +922,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             //selects a VM for the given Cloudlet
             lastSelectedVm = vmMapper.apply(cloudlet);
-            lastSelectedVm.setExpectedFreePesNumber(
+            ((VmSimple) lastSelectedVm).setExpectedFreePesNumber(
                 lastSelectedVm.getExpectedFreePesNumber() - cloudlet.getNumberOfPes());
             if (lastSelectedVm == Vm.NULL) {
                 logPostponingCloudletExecution(cloudlet);

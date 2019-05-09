@@ -87,26 +87,11 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     long getFreePesNumber();
 
     /**
-     * Sets the current number of free PEs.
-     *
-     * @return the new free pes number
-     */
-    Vm setFreePesNumber(long freePes);
-
-
-    /**
      * Gets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
      *
      * @return the expected free pes number
      */
     long getExpectedFreePesNumber();
-
-    /**
-     * Sets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
-     *
-     * @param expectedFreePes the expected free pes number to set
-     */
-    Vm setExpectedFreePesNumber(long expectedFreePes);
 
     /**
      * Gets the current requested bw.
