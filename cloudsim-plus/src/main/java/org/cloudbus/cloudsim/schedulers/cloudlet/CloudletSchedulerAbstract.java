@@ -539,7 +539,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             usedPes += cle.getCloudlet().getNumberOfPes();
         }
 
-        ((VmSimple) vm).setFreePesNumber(vm.getFreePesNumber() - usedPes);
+        ((VmSimple) vm).setFreePesNumber(vm.getNumberOfPes() - usedPes);
 
         return nextCloudletFinishTime;
     }
