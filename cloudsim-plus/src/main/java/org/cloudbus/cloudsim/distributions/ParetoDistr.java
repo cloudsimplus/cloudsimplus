@@ -9,36 +9,81 @@ mulation) Toolkit for Modeling and Simulation of Clouds
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.ParetoDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
- * A pseudo random number generator following the
+ * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Pareto_distribution">Pareto</a>
  * distribution.
  *
  * @author Marcos Dias de Assuncao
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class ParetoDistr extends ContinuousDistributionAbstract {
+public class ParetoDistr extends ParetoDistribution implements ContinuousDistribution {
+
+    private long seed;
 
     /**
-     * Instantiates a new Pareto pseudo random number generator.
+     * Creates a Pareto Pseudo-Random Number Generator (RNG) using the current time as seed.
+     *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param shape the shape parameter of this distribution
+     * @param location the location parameter of this distribution
+     *
+     * @see #ParetoDistr(double, double, long, RandomGenerator)
+     */
+    public ParetoDistr(final double shape, final double location) {
+        this(shape, location, ContinuousDistribution.defaultSeed());
+    }
+
+    /**
+     * Creates a Pareto Pseudo-Random Number Generator (RNG).
+     *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param shape the shape parameter of this distribution
+     * @param location the location parameter of this distribution
      *
      * @param seed the seed
-     * @param shape the shape
-     * @param location the location
+     * @see #ParetoDistr(double, double, long, RandomGenerator)
      */
-    public ParetoDistr(long seed, double shape, double location) {
-        super(new ParetoDistribution(location, shape), seed);
+    public ParetoDistr(final double shape, final double location, final long seed) {
+        this(shape, location, seed, ContinuousDistribution.newDefaultGen(seed));
     }
 
     /**
-     * Instantiates a new Pareto pseudo random number generator.
-     *
-     * @param shape the shape
-     * @param location the location
+     * Creates a Pareto Pseudo-Random Number Generator (RNG).
+     * @param shape the shape parameter of this distribution
+     * @param location the location parameter of this distribution
+     * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
+     * @param rng the actual Pseudo-Random Number Generator that will be the base
+*                 to generate random numbers following a continuous distribution.
      */
-    public ParetoDistr(double shape, double location) {
-        this(-1, shape, location);
+    public ParetoDistr(final double shape, final double location, final long seed, final RandomGenerator rng) {
+        super(rng, location, shape);
+        if(seed < 0){
+            throw new IllegalArgumentException("Seed cannot be negative");
+        }
+        this.seed = seed;
     }
 
+    @Override
+    public void reseedRandomGenerator(final long seed) {
+        super.reseedRandomGenerator(seed);
+        this.seed = seed;
+    }
+
+    @Override
+    public long getSeed() {
+        return this.seed;
+    }
 }

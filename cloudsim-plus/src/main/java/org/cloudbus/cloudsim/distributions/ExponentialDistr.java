@@ -8,32 +8,76 @@
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
- * A pseudo random number generator following the
+ * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Exponential_distribution">Exponential
  * distribution</a>.
  *
  * @author Marcos Dias de Assuncao
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class ExponentialDistr extends ContinuousDistributionAbstract {
+public class ExponentialDistr extends ExponentialDistribution implements ContinuousDistribution {
+    private long seed;
+
     /**
-     * Creates a new exponential pseudo random number generator.
+     * Creates a exponential Pseudo-Random Number Generator (RNG).
      *
-     * @param seed the seed to be used.
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
      * @param mean the mean for the distribution.
+     * @see #ExponentialDistr(double, long, RandomGenerator)
      */
-    public ExponentialDistr(long seed, double mean) {
-        super(new ExponentialDistribution(mean), seed);
+    public ExponentialDistr(final double mean) {
+        this(mean, ContinuousDistribution.defaultSeed());
     }
 
     /**
-     * Creates a new exponential pseudo random number generator.
+     * Creates a exponential Pseudo-Random Number Generator (RNG).
+     *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
      *
      * @param mean the mean for the distribution.
+     *
+     * @param seed the seed to be used.
+     * @see #ExponentialDistr(double, long, RandomGenerator)
      */
-    public ExponentialDistr(double mean) {
-        this(-1, mean);
+    public ExponentialDistr(final double mean, final long seed) {
+        this(mean, seed, ContinuousDistribution.newDefaultGen(seed));
+    }
+
+    /**
+     * Creates a exponential Pseudo-Random Number Generator (RNG).
+     * @param mean the mean for the distribution.
+     * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
+     * @param rng the actual Pseudo-Random Number Generator that will be the base
+     *            to generate random numbers following a continuous distribution.
+     */
+    public ExponentialDistr(final double mean, final long seed, final RandomGenerator rng) {
+        super(rng, mean);
+        if(seed < 0){
+            throw new IllegalArgumentException("Seed cannot be negative");
+        }
+        this.seed = seed;
+    }
+
+    @Override
+    public long getSeed() {
+        return this.seed;
+    }
+
+    @Override
+    public void reseedRandomGenerator(final long seed) {
+        super.reseedRandomGenerator(seed);
+        this.seed = seed;
     }
 }

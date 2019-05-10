@@ -30,7 +30,7 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
- * A pseudo random number generator which returns numbers
+ * A Pseudo-Random Number Generator which returns numbers
  * following a Poisson Distribution, modeling the probability of an event
  * to happen a number of times in a given time interval.
  *
@@ -38,10 +38,12 @@ import java.util.stream.IntStream;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
+ * @todo There is the {@link org.apache.commons.math3.distribution.PoissonDistribution} implementation already.
+ *       This class should simply extend it, as the other class on this package.
  */
 public class PoissonDistr implements ContinuousDistribution {
     /**
-     * A Uniform Pseudo Random Number Generator used internally.
+     * A Uniform Pseudo-Random Number Generator used internally.
      */
     private final UniformDistr rand;
 
@@ -52,24 +54,27 @@ public class PoissonDistr implements ContinuousDistribution {
     private int k;
 
     /**
-     * Creates a Poisson random number generator to check the probability
+     * Creates a Poisson Pseudo-Random Number Generator to check the probability
      * of 1 event ({@link #getK() k = 1}) to happen at each time interval.
      *
      * @param lambda the average number of events that happen at each 1 time unit.
      *               If one considers the unit as minute, this value means the average number of arrivals
      *               at each minute.
-     * @param seed the seed to initialize the internal uniform random number generator
+     * @param seed the seed to initialize the internal uniform Pseudo-Random Number Generator
      * @see #setK(int)
      * @see #setLambda(double)
      */
     public PoissonDistr(final double lambda, final long seed){
+        if(seed < 0){
+            throw new IllegalArgumentException("Seed cannot be negative");
+        }
         this.rand = new UniformDistr(seed);
         this.k = 1;
         this.setLambda(lambda);
     }
 
     /**
-     * Creates a Poisson random number generator to check the probability
+     * Creates a Poisson Pseudo-Random Number Generator to check the probability
      * of 1 event ({@link #getK() k = 1}) to happen at each time interval.
      *
      * @param lambda average number of events by interval.
@@ -80,7 +85,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * @see #setK(int)
      */
     public PoissonDistr(final double lambda){
-        this(lambda, -1);
+        this(lambda, ContinuousDistribution.defaultSeed());
     }
 
     /**
@@ -213,7 +218,7 @@ public class PoissonDistr implements ContinuousDistribution {
      *
      * @param args
      */
-    public static void main(final String args[]){
+    public static void main(final String[] args){
         //@TODO This method should be moved to a meaningful example class that creates Cloudlets instead of customers
 
         /*

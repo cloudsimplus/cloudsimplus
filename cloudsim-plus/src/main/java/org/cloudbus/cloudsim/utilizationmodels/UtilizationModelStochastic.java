@@ -27,7 +27,7 @@ import java.util.Objects;
 public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
     /**
-     * The random generator.
+     * The Random Number Generator (RNG).
      */
     private ContinuousDistribution randomGenerator;
 
@@ -73,7 +73,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * The resource utilization history is disabled by default.
      *
      * @see #setUnit(Unit)
-     * @see #enableHistory()
+     * @see #setHistoryEnabled(boolean)
      * @see #isAlwaysGenerateNewRandomUtilization()
      */
     public UtilizationModelStochastic() {
@@ -87,7 +87,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
-     * @see #enableHistory()
+     * @see #setHistoryEnabled(boolean)
      * @see #isAlwaysGenerateNewRandomUtilization()
      */
     public UtilizationModelStochastic(final Unit unit) {
@@ -103,7 +103,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param seed the seed to initialize the random number generator.
      *             If -1 is passed, the current time will be used.
-     * @see #enableHistory()
+     * @see #setHistoryEnabled(boolean)
      * @see #isAlwaysGenerateNewRandomUtilization()
      */
     public UtilizationModelStochastic(final Unit unit, final long seed) {
@@ -117,7 +117,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
      * @see #setUnit(Unit)
-     * @see #enableHistory()
+     * @see #setHistoryEnabled(boolean)
      * @see #isAlwaysGenerateNewRandomUtilization()
      */
     public UtilizationModelStochastic(final ContinuousDistribution prng) {
@@ -131,7 +131,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
-     * @see #enableHistory()
+     * @see #setHistoryEnabled(boolean)
      * @see #isAlwaysGenerateNewRandomUtilization()
      */
     public UtilizationModelStochastic(final Unit unit, final ContinuousDistribution prng) {
@@ -259,8 +259,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * Checks if the history of resource utilization along simulation time
      * is to be kept or not.
      * @return true if the history is to be kept, false otherwise
-     * @see #enableHistory()
-     * @see #disableHistory()
+     * @see #setHistoryEnabled(boolean)
      */
     public boolean isHistoryEnabled() {
         return historyEnabled;
@@ -268,35 +267,21 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
     /**
      * Enables or disables the resource utilization history,
-     * so that utilization values is stored along all the simulation execution.
-     * @param enableHistory true to enable the utilization history, false to disable
-     * @return
+     * so that utilization values are stored along all the simulation execution.
      *
-     * @see #enableHistory()
-     * @see #disableHistory()
-     */
-    public UtilizationModelStochastic setHistoryEnabled(final boolean enableHistory) {
-        this.historyEnabled = enableHistory;
-        return this;
-    }
-
-    /**
-     * Enables the resource utilization history,
-     * so that utilization values is stored along all the simulation execution.
+     * <p>If utilization history is disable, more pseudo-random numbers will be generated,
+     * decreasing simulation performance.
+     * Changing this attribute is a trade-off between memory and CPU utilization:
+     * <ul>
+     *     <li>enabling reduces CPU utilization but increases RAM utilization;</li>
+     *     <li>disabling reduces RAM utilization but increases CPU utilization.</li>
+     * </ul>
+     * </p>
+     * @param enable true to enable the utilization history, false to disable
      * @return
      */
-    public UtilizationModelStochastic enableHistory() {
-        this.historyEnabled = true;
-        return this;
-    }
-
-    /**
-     * Disables the resource utilization history,
-     * so that utilization values is <b>NOT</b> stored along all the simulation execution.
-     * @return
-     */
-    public UtilizationModelStochastic disableHistory() {
-        this.historyEnabled = false;
+    public UtilizationModelStochastic setHistoryEnabled(final boolean enable) {
+        this.historyEnabled = enable;
         return this;
     }
 
@@ -335,6 +320,8 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Enables or disables the resource utilization history,
      * so that utilization values is stored along all the simulation execution.
+     * Check information about trade-off between memory and CPU utilization in {@link #setHistoryEnabled(boolean)}.
+     *
      * @param alwaysGenerateNewRandomUtilization true to enable the utilization history, false to disable
      * @return
      * @see #isAlwaysGenerateNewRandomUtilization()

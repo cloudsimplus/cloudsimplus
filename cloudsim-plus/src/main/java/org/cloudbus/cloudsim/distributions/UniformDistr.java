@@ -9,114 +9,177 @@ package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.lang3.Range;
 import org.apache.commons.math3.distribution.UniformRealDistribution;
-
-import java.util.Random;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
- * A pseudo random number generator following the
+ * A Pseudo-Random Number Generator (RNG) following the
  * <a href="https://en.wikipedia.org/wiki/Uniform_distribution_(continuous)">
  * Uniform continuous distribution</a>.
  *
  * @author Marcos Dias de Assuncao
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class UniformDistr extends ContinuousDistributionAbstract {
-    /**
-     * @see #isApplyAntitheticVariates()
-     */
+public class UniformDistr extends UniformRealDistribution implements ContinuousDistribution {
+    /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
+    private long seed;
 
     /**
-     * Creates new uniform pseudo random number generator
-     * that generates values between [0 and 1[ using the current
-     * time as seed.
+     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * that generates values between [0 and 1[ using the current time as seed.
      *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @see #UniformDistr(double, double, long, RandomGenerator)
      */
     public UniformDistr() {
         this(0, 1);
     }
 
     /**
-     * Creates new uniform pseudo random number generator
+     * Creates a uniform Pseudo-Random Number Generator (RNG)
      * that generates values between [0 and 1[ using a given seed.
      *
-     * @param seed the seed to initialize the random number generator.
-     *             If -1 is passed, the current time will be used.
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param seed the seed to initialize the Pseudo-Random Number Generator.
+     *
+     * @see #UniformDistr(double, double, long, RandomGenerator)
      */
     public UniformDistr(final long seed) {
         this(0, 1, seed);
     }
 
     /**
-     * Creates new uniform pseudo random number generator
-     * that produces values between a given {@link Range}.
+     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * that generates values between [0 and 1[ using a given seed.
      *
-     * @param range the {@link Range} to generate random values in between
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
+     * @param rng the actual Pseudo-Random Number Generator that will be the base
+     *            to generate random numbers following a continuous distribution.
+     *
+     * @see #UniformDistr(double, double, long, RandomGenerator)
      */
-    public UniformDistr(final Range<Double> range) {
-        this(range, -1);
+    public UniformDistr(final long seed, final RandomGenerator rng) {
+        this(0, 1, seed, rng);
     }
 
     /**
-     * Creates new uniform pseudo random number generator
-     * that produces values between a given {@link Range}.
+     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * that produces values between a given {@link Range},
+     * using the current time as seed.
+     *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
      *
      * @param range the {@link Range} to generate random values in between
-     * @param seed the seed to initialize the random number generator.
-     *             If -1 is passed, the current time will be used.
+     *
+     * @see #UniformDistr(double, double, long, RandomGenerator)
+     */
+    public UniformDistr(final Range<Double> range) {
+        this(range, ContinuousDistribution.defaultSeed());
+    }
+
+    /**
+     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * that produces values between a given {@link Range}.
+     *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param range the {@link Range} to generate random values in between
+     * @param seed the seed to initialize the Pseudo-Random Number Generator
+     *
+     * @see #UniformDistr(double, double, long, RandomGenerator)
      */
     public UniformDistr(final Range<Double> range, final long seed) {
         this(range.getMinimum(), range.getMaximum()+1, seed);
     }
 
     /**
-     * Creates new uniform pseudo random number generator
-     * that produces values between a min (inclusive) and max (exclusive).
+     * Creates a uniform Pseudo-Random Number Generator (RNG)
+     * that produces values between a min (inclusive) and max (exclusive),
+     * using the current time as seed.
      *
-     * @param min minimum value (inclusive)
-     * @param max maximum value (exclusive)
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param minInclusive minimum value to generate (inclusive)
+     * @param maxExclusive maximum value to generate (exclusive)
+     *
+     * @see #UniformDistr(double, double, long, RandomGenerator)
      */
-    public UniformDistr(final double min, final double max) {
-        this(min, max, -1);
+    public UniformDistr(final double minInclusive, final double maxExclusive) {
+        this(minInclusive, maxExclusive, ContinuousDistribution.defaultSeed());
     }
 
     /**
-     * Creates new uniform pseudo random number generator.
+     * Creates a uniform Pseudo-Random Number Generator (RNG).
      *
-     * @param min minimum value (inclusive)
-     * @param max maximum value (exclusive)
-     * @param seed the seed to initialize the random number generator.
-     *             If -1 is passed, the current time will be used.
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param minInclusive minimum value to generate (inclusive)
+     * @param maxExclusive maximum value to generate (exclusive)
+     * @param seed the seed to initialize the Pseudo-Random Number Generator.
+     *
+     * @see #UniformDistr(double, double, long, RandomGenerator)
      */
-    public UniformDistr(final double min, final double max, final long seed) {
-        super(new UniformRealDistribution(min, max), seed);
+    public UniformDistr(final double minInclusive, final double maxExclusive, final long seed) {
+        this(minInclusive, maxExclusive, seed, ContinuousDistribution.newDefaultGen(seed));
+    }
+
+    /**
+     * Creates a uniform Pseudo-Random Number Generator (RNG).
+     * @param minInclusive minimum value to generate (inclusive)
+     * @param maxExclusive maximum value to generate (exclusive)
+     * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
+     * @param rng the actual Pseudo-Random Number Generator that will be the base
+     *            to generate random numbers following a continuous distribution.
+     */
+    public UniformDistr(final double minInclusive, final double maxExclusive, final long seed, final RandomGenerator rng) {
+        super(rng, minInclusive, maxExclusive);
+        if(seed < 0){
+            throw new IllegalArgumentException("Seed cannot be negative");
+        }
+
+        this.seed = seed;
         applyAntitheticVariates = false;
     }
 
     @Override
     public double sample() {
-        return (applyAntitheticVariates ? 1 - super.sample() : super.sample());
+        return applyAntitheticVariates ? 1 - super.sample() : super.sample();
+    }
+
+    @Override
+    public long getSeed() {
+        return seed;
     }
 
     /**
-     * Generates a new pseudo random number based on the generator and values
-     * provided as parameters.
-     *
-     * @param rd the random number generator
-     * @param min the minimum value
-     * @param max the maximum value
-     * @return the next random number in the sequence
-     */
-    public static double sample(final Random rd, final double min, final double max) {
-        if (min >= max) {
-            throw new IllegalArgumentException("Maximum must be greater than the minimum.");
-        }
-
-        return rd.nextDouble() * (max - min) + min;
-    }
-
-    /**
-     * Indicates if the pseudo random number generator (PRNG) applies the
+     * Indicates if the Pseudo-Random Number Generator (RNG) applies the
      * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
      * of experiments using the generated numbers.
      *
@@ -142,7 +205,7 @@ public class UniformDistr extends ContinuousDistributionAbstract {
     }
 
     /**
-     * Indicates if the pseudo random number generator (PRNG) applies the
+     * Indicates if the Pseudo-Random Number Generator (RNG) applies the
      * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
      * of experiments using the generated numbers.
      *
@@ -150,8 +213,19 @@ public class UniformDistr extends ContinuousDistributionAbstract {
      * @see #isApplyAntitheticVariates()
      */
     public UniformDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
+        if(applyAntitheticVariates && random instanceof JDKThreadLocalRandomGenerator){
+            throw new IllegalStateException(
+                "The Antithetic Variates Technique cannot be applied when using the " +
+                JDKThreadLocalRandomGenerator.class.getSimpleName() + " as underlying PRNG, because it doesn't allow setting a seed explicitly.");
+        }
+
         this.applyAntitheticVariates = applyAntitheticVariates;
 	    return this;
     }
 
+    @Override
+    public void reseedRandomGenerator(final long seed) {
+        super.reseedRandomGenerator(seed);
+        this.seed = seed;
+    }
 }

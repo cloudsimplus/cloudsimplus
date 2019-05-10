@@ -8,19 +8,23 @@ mulation) Toolkit for Modeling and Simulation of Clouds
  */
 package org.cloudbus.cloudsim.distributions;
 
-import org.apache.commons.math3.distribution.UniformRealDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
- * A pseudo random number generator following the
+ * A Pseudo-Random Number Generator following the
  * <a href="http://en.wikipedia.org/wiki/Zipf's_law">Zipf</a> distribution.
  *
  * @author Marcos Dias de Assuncao
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class ZipfDistr extends ContinuousDistributionAbstract {
+public class ZipfDistr implements ContinuousDistribution {
+    private final long seed;
+    private final RandomGenerator rng;
 
     /**
-     * The shape.
+     * The shape distribution parameter
      */
     private final double shape;
 
@@ -30,59 +34,94 @@ public class ZipfDistr extends ContinuousDistributionAbstract {
     private double den;
 
     /**
-     * Instantiates a new Zipf pseudo random number generator.
+     * Creates a Zipf Pseudo-Random Number Generator (RNG).
      *
-     * @param seed the seed
-     * @param shape the shape
-     * @param population the population
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param shape the shape distribution parameter
+     * @param population the population distribution parameter
+     *
+     * @see #ZipfDistr(double, int, long, RandomGenerator)
      */
-    public ZipfDistr(long seed, double shape, int population) {
-        super(new UniformRealDistribution(0, 1), seed);
+    public ZipfDistr(final double shape, final int population) {
+        this(shape, population, ContinuousDistribution.defaultSeed());
+    }
+
+    /**
+     * Creates a Zipf Pseudo-Random Number Generator (RNG).
+     *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param shape the shape distribution parameter
+     * @param population the population distribution parameter
+     * @param seed the seed
+     *
+     * @see #ZipfDistr(double, int, long, RandomGenerator)
+     */
+    public ZipfDistr(final double shape, final int population, final long seed) {
+        this(shape, population, seed, ContinuousDistribution.newDefaultGen(seed));
+    }
+
+    /**
+     * Creates a Zipf Pseudo-Random Number Generator (RNG).
+     * @param shape the shape distribution parameter
+     * @param population the population distribution parameter
+     * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
+     * @param rng the actual Pseudo-Random Number Generator that will be the base
+     *            to generate random numbers following a continuous distribution.
+     */
+    public ZipfDistr(final double shape, final int population, final long seed, final RandomGenerator rng) {
         if (shape <= 0.0 || population < 1) {
             throw new IllegalArgumentException("Mean must be greater than 0.0 and population greater than 0");
         }
 
-        this.shape = shape;
-        computeDen(shape, population);
-    }
+        if(seed < 0){
+            throw new IllegalArgumentException("Seed cannot be negative");
+        }
 
-    /**
-     * Instantiates a new Zipf pseudo random number generator.
-     *
-     * @param shape the shape
-     * @param population the population
-     */
-    public ZipfDistr(double shape, int population) {
-        this(-1, shape, population);
+        this.rng = rng;
+        this.shape = shape;
+        this.seed = seed;
+        computeDen(shape, population);
     }
 
     @Override
     public double sample() {
-        final double variate = super.sample();
+        final double variate = rng.nextDouble();
         double num = 1;
         double nextNum = 1 + 1 / Math.pow(2, shape);
-        double j = 3;
+        double i = 3;
 
         while (variate > nextNum / den) {
             num = nextNum;
-            nextNum += 1 / Math.pow(j, shape);
-            j++;
+            nextNum += 1 / Math.pow(i, shape);
+            i++;
         }
 
         return num / den;
     }
 
-    /**
-     * Compute the den.
-     *
-     * @param shape the shape
-     * @param population the population
-     */
-    private void computeDen(double shape, int population) {
-        den = 0.0;
-        for (int j = 1; j <= population; j++) {
-            den += 1 / Math.pow(j, shape);
-        }
+    @Override
+    public long getSeed() {
+        return this.seed;
     }
 
+    /**
+     * Computes and stores the {@link #den}.
+     *
+     * @param shape the shape distribution parameter
+     * @param population the population distribution parameter
+     */
+    private void computeDen(final double shape, final int population) {
+        this.den = 0.0;
+        for (int i = 1; i <= population; i++) {
+            this.den += 1 / Math.pow(i, shape);
+        }
+    }
 }

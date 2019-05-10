@@ -8,35 +8,77 @@
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.GammaDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
- * A pseudo random number generator following the
+ * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Gamma_distribution">Gamma</a>
  * distribution.
  *
  * @author Marcos Dias de Assuncao
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class GammaDistr extends ContinuousDistributionAbstract {
+public class GammaDistr extends GammaDistribution implements ContinuousDistribution {
+    private long seed;
 
     /**
-     * Instantiates a new Gamma pseudo random number generator.
+     * Creates a Gamma Pseudo-Random Number Generator (RNG) using the current time as seed.
      *
-     * @param seed the seed
-     * @param shape the shape
-     * @param scale the scale
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param shape the shape parameter of this distribution
+     * @param scale the scale parameter of this distribution
+     *
+     * @see #GammaDistr(int, double, long, RandomGenerator)
      */
-    public GammaDistr(long seed, int shape, double scale) {
-        super(new GammaDistribution(shape, scale), seed);
+    public GammaDistr(final int shape, final double scale) {
+        this(shape, scale, ContinuousDistribution.defaultSeed());
     }
 
     /**
-     * Instantiates a new Gamma pseudo random number generator.
+     * Creates a Gamma Pseudo-Random Number Generator (RNG).
      *
-     * @param shape the shape
-     * @param scale the scale
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param shape the shape parameter of this distribution
+     * @param scale the scale parameter of this distribution
+     * @param seed the seed
+     *
+     * @see #GammaDistr(int, double, long, RandomGenerator)
      */
-    public GammaDistr(int shape, double scale) {
-        this(-1, shape, scale);
+    public GammaDistr(final int shape, final double scale, final long seed) {
+        this(shape, scale, seed, ContinuousDistribution.newDefaultGen(seed));
+    }
+
+    /**
+     * Creates a Gamma Pseudo-Random Number Generator (RNG).
+     * @param shape the shape parameter of this distribution
+     * @param scale the scale parameter of this distribution
+     * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
+     * @param rng the actual Pseudo-Random Number Generator that will be the base
+*                  to generate random numbers following a continuous distribution.
+     */
+    public GammaDistr(final int shape, final double scale, final long seed, final RandomGenerator rng) {
+        super(rng, shape, scale);
+        this.seed = seed;
+    }
+
+    @Override
+    public long getSeed() {
+        return this.seed;
+    }
+
+    @Override
+    public void reseedRandomGenerator(final long seed) {
+        super.reseedRandomGenerator(seed);
+        this.seed = seed;
     }
 }

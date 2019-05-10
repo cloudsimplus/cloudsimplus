@@ -9,36 +9,80 @@ mulation) Toolkit for Modeling and Simulation of Clouds
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.WeibullDistribution;
+import org.apache.commons.math3.random.JDKRandomGenerator;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
- * A pseudo random number generator following the
+ * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Weibull_distribution">Weibull
  * distribution</a>.
  *
  * @author Marcos Dias de Assuncao
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class WeibullDistr extends ContinuousDistributionAbstract {
+public class WeibullDistr extends WeibullDistribution implements ContinuousDistribution {
+    private long seed;
 
     /**
-     * Instantiates a new Weibull pseudo random number generator.
+     * Creates a Weibull Pseudo-Random Number Generator (RNG) using a given seed.
      *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param alpha the alpha distribution parameter
+     * @param beta the beta distribution parameter
+     *
+     * @see #WeibullDistr(double, double, long, RandomGenerator)
+     */
+    public WeibullDistr(final double alpha, final double beta) {
+        this(alpha, beta, ContinuousDistribution.defaultSeed());
+    }
+
+    /**
+     * Creates a Weibull Pseudo-Random Number Generator (RNG).
+     *
+     * <p>Internally, it relies on the {@link JDKRandomGenerator},
+     * a wrapper for the {@link java.util.Random} class
+     * that doesn't have high-quality randomness properties
+     * but is very fast.</p>
+     *
+     * @param alpha the alpha distribution parameter
+     * @param beta the beta distribution parameter
      * @param seed the seed
-     * @param alpha the alpha
-     * @param beta the beta
+     *
+     * @see #WeibullDistr(double, double, long, RandomGenerator)
      */
-    public WeibullDistr(long seed, double alpha, double beta) {
-        super(new WeibullDistribution(alpha, beta), seed);
+    public WeibullDistr(final double alpha, final double beta, final long seed) {
+        this(alpha, beta, seed, ContinuousDistribution.newDefaultGen(seed));
     }
 
     /**
-     * Instantiates a new Weibull pseudo random number generator.
-     *
-     * @param alpha the alpha
-     * @param beta the beta
+     * Creates a Weibull Pseudo-Random Number Generator (RNG).
+     * @param alpha the alpha distribution parameter
+     * @param beta the beta distribution parameter
+     * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
+     * @param rng the actual Pseudo-Random Number Generator that will be the base
+     *            to generate random numbers following a continuous distribution.
      */
-    public WeibullDistr(double alpha, double beta) {
-        this(-1, alpha, beta);
+    public WeibullDistr(final double alpha, final double beta, final long seed, final RandomGenerator rng) {
+        super(rng, alpha, beta);
+        if(seed < 0){
+            throw new IllegalArgumentException("Seed cannot be negative");
+        }
+        this.seed = seed;
     }
 
+    @Override
+    public void reseedRandomGenerator(final long seed) {
+        super.reseedRandomGenerator(seed);
+        this.seed = seed;
+    }
+
+    @Override
+    public long getSeed() {
+        return this.seed;
+    }
 }

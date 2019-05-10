@@ -8,36 +8,61 @@
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.LogNormalDistribution;
+import org.apache.commons.math3.random.RandomGenerator;
 
 /**
- * A pseudo random number generator following the
+ * A Pseudo-Random Number Generator following the
  * <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">Lognormal</a>
  * distribution.
  *
  * @author Marcos Dias de Assuncao
  * @since CloudSim Toolkit 1.0
  */
-public class LognormalDistr extends ContinuousDistributionAbstract {
+public class LognormalDistr extends LogNormalDistribution implements ContinuousDistribution {
+    private long seed;
 
     /**
-     * Instantiates a new Log-normal pseudo random number generator.
+     * Creates a Log-normal Pseudo-Random Number Generator (RNG).
      *
+     * @param shape the shape parameter of this distribution
+     * @param scale the scale parameter of this distribution
+     */
+    public LognormalDistr(final double shape, final double scale) {
+        this(shape, scale, ContinuousDistribution.defaultSeed());
+    }
+
+    /**
+     * Creates a Log-normal Pseudo-Random Number Generator (RNG).
+     * @param shape the shape parameter of this distribution
+     * @param scale the scale parameter of this distribution
      * @param seed the seed
-     * @param shape the shape
-     * @param scale the scale
      */
-    public LognormalDistr(long seed, double shape, double scale) {
-        super(new LogNormalDistribution(scale, shape), seed);
+    public LognormalDistr(final double shape, final double scale, final long seed) {
+        this(shape, scale, seed, ContinuousDistribution.newDefaultGen(seed));
     }
 
     /**
-     * Instantiates a new Log-normal pseudo random number generator.
-     *
-     * @param shape the shape
-     * @param scale the scale
+     * Creates a Log-normal Pseudo-Random Number Generator (RNG).
+     * @param shape the shape parameter of this distribution
+     * @param scale the scale parameter of this distribution
+     * @param seed the seed
      */
-    public LognormalDistr(double shape, double scale) {
-        this(-1, shape, scale);
+    public LognormalDistr(final double shape, final double scale, final long seed, final RandomGenerator rng) {
+        super(rng, scale, shape);
+        if(seed < 0){
+            throw new IllegalArgumentException("Seed cannot be negative");
+        }
+        this.seed = seed;
     }
 
+    @Override
+    public void reseedRandomGenerator(final long seed) {
+        super.reseedRandomGenerator(seed);
+        this.seed = seed;
+    }
+
+    @Override
+    public long getSeed() {
+        return seed;
+    }
 }
