@@ -194,9 +194,8 @@ final class CloudletNull implements Cloudlet {
         return 0;
     }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
-    @Override public boolean isBindToVm() {
-        return false;
-    }
+    @Override public boolean isBoundToVm() { return false; }
+    @Override public boolean isBoundToCreatedVm() { return false; }
     @Override public int compareTo(Cloudlet cloudlet) {
         return 0;
     }

@@ -20,13 +20,13 @@ public class CloudletTest {
     @Test
     public void testIsBoundedToVm() {
         final Cloudlet cloudlet = createCloudlet(0);
-        assertFalse(cloudlet.isBindToVm());
+        assertFalse(cloudlet.isBoundToVm());
         cloudlet.setVm(Vm.NULL);
-        assertFalse(cloudlet.isBindToVm());
+        assertFalse(cloudlet.isBoundToVm());
         cloudlet.setVm(VmTestUtil.createVm(0, 1));
-        assertTrue(cloudlet.isBindToVm());
+        assertTrue(cloudlet.isBoundToVm());
         cloudlet.setVm(VmTestUtil.createVm(1, 1));
-        assertTrue(cloudlet.isBindToVm());
+        assertTrue(cloudlet.isBoundToVm());
     }
 
     private static CloudletSimple createCloudlet(int id) {
@@ -57,7 +57,7 @@ public class CloudletTest {
         EasyMock.replay(listener);
         Cloudlet.NULL.addOnFinishListener(listener);
 
-        assertFalse(Cloudlet.NULL.isBindToVm());
+        assertFalse(Cloudlet.NULL.isBoundToVm());
     }
 
     @Test

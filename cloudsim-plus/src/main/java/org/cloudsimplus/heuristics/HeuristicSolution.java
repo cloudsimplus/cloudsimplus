@@ -23,6 +23,9 @@
  */
 package org.cloudsimplus.heuristics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A solution for a complex problem found using a {@link Heuristic} implementation.
  * A heuristic can generate multiple solutions until find an optimal or suboptimal
@@ -34,6 +37,8 @@ package org.cloudsimplus.heuristics;
  * @since CloudSim Plus 1.0
  */
 public interface HeuristicSolution<T> extends Comparable<HeuristicSolution<T>> {
+    Logger LOGGER = LoggerFactory.getLogger(HeuristicSolution.class.getSimpleName());
+
     /**
      * An attribute that implements the Null Object Design Pattern for {@link HeuristicSolution}
      * objects.

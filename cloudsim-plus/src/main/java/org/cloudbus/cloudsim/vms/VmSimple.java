@@ -116,6 +116,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      */
     private Bandwidth bw;
 
+    /** @see #getFreePesNumber() */
+    private long freePesNumber;
+
+    /** @see #getFreePesNumber() */
+    private long expectedFreePesNumber;
+
     /**
      * @see #getSubmissionDelay()
      */
@@ -240,6 +246,10 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
         //By default, the VM doesn't store utilization history. This has to be enabled by the user as wanted
         utilizationHistory = new VmUtilizationHistory(this, false);
+
+        //initiate number of free PEs as number of PEs of VM
+        freePesNumber = numberOfPes;
+        expectedFreePesNumber = numberOfPes;
     }
 
     @Override
@@ -270,6 +280,44 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         utilizationHistory.addUtilizationHistory(currentTime);
         ((DatacenterBrokerAbstract)getBroker()).requestIdleVmDestruction(this);
         return nextEventDelay - decimals;
+    }
+
+    @Override
+    public long getFreePesNumber() {
+        return freePesNumber;
+    }
+
+    /**
+     * Sets the current number of free PEs.
+     *
+     * @return the new free pes number
+     */
+    public Vm setFreePesNumber(long freePesNumber) {
+        if(freePesNumber < 0) {
+            LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");
+            freePesNumber = 0;
+        }
+        this.freePesNumber = Math.min(freePesNumber, getNumberOfPes());
+        return this;
+    }
+
+    @Override
+    public long getExpectedFreePesNumber() {
+        return expectedFreePesNumber;
+    }
+
+    /**
+     * Sets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
+     *
+     * @param expectedFreePes the expected free pes number to set
+     */
+    public Vm setExpectedFreePesNumber(long expectedFreePes) {
+        if(expectedFreePes < 0) {
+            LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");
+            expectedFreePes = 0;
+        }
+        this.expectedFreePesNumber = expectedFreePes;
+        return this;
     }
 
     @Override

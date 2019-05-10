@@ -21,6 +21,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -528,13 +529,17 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private double updateCloudletsProcessing(final double currentTime) {
         double nextCloudletFinishTime = Double.MAX_VALUE;
+        long usedPes = 0;
         /* Uses an indexed for to avoid ConcurrentModificationException,
          * e.g., in cases when Cloudlet is cancelled during simulation execution. */
         for (int i = 0; i < cloudletExecList.size(); i++) {
             final CloudletExecution cle = cloudletExecList.get(i);
             updateCloudletProcessingAndPacketsDispatch(cle, currentTime);
             nextCloudletFinishTime = Math.min(nextCloudletFinishTime, cloudletEstimatedFinishTime(cle, currentTime));
+            usedPes += cle.getCloudlet().getNumberOfPes();
         }
+
+        ((VmSimple) vm).setFreePesNumber(vm.getFreePesNumber() - usedPes);
 
         return nextCloudletFinishTime;
     }
@@ -998,7 +1003,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     /**
      * Gets a <b>read-only</b> list of Cloudlets that finished executing and were returned the their broker.
-     * A Cloudlet is returned to to notify the broker about the end of its execution.
+     * A Cloudlet is returned to notify the broker about the end of its execution.
      * @return
      */
     protected Set<Cloudlet> getCloudletReturnedList() {

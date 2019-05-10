@@ -21,6 +21,8 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -39,6 +41,7 @@ import java.util.function.Predicate;
  * @since CloudSim Plus 1.0
  */
 public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity {
+    Logger LOGGER = LoggerFactory.getLogger(Vm.class.getSimpleName());
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Vm}
@@ -75,6 +78,20 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      * @return the cloudlet scheduler
      */
     CloudletScheduler getCloudletScheduler();
+
+    /**
+     * Gets the current number of free PEs.
+     *
+     * @return the current free pes number
+     */
+    long getFreePesNumber();
+
+    /**
+     * Gets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
+     *
+     * @return the expected free pes number
+     */
+    long getExpectedFreePesNumber();
 
     /**
      * Gets the current requested bw.

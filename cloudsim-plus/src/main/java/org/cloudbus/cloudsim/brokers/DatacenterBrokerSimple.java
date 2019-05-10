@@ -88,13 +88,8 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      */
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
-        if (cloudlet.isBindToVm()) {
-            final Vm vm = cloudlet.getVm();
-            if(this.equals(vm.getBroker()) && vm.isCreated()) {
-                return vm;
-            }
-
-            return Vm.NULL;
+        if (cloudlet.isBoundToCreatedVm()) {
+            return cloudlet.getVm();
         }
 
         /*If user didn't bind this cloudlet to a specific Vm
