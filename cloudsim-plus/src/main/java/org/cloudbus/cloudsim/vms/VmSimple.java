@@ -269,11 +269,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
         /* If the current time is some value with the decimals greater than x.0
          * (such as 45.1) and the next event delay is any integer number such as 5,
-         * then the next simulation time will be 50.1.
+         * then the next simulation time would be 50.1.
          * At time 50.1 the utilization will be reduced due to the completion of the Cloudlet.
          * At time 50.0 the Cloudlet is still running, so there is some CPU utilization.
-         * But since the next update will be only at time 50.1, the utilization
-         * at time 50.0 won't be collected to enable knowing the exact time
+         * But since the next update would be only at time 50.1, the utilization
+         * at time 50.0 wouldn't be collected to enable knowing the exact time
          * before the utilization drop.
          */
         final double decimals = currentTime - (int) currentTime;
