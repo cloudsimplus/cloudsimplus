@@ -29,15 +29,17 @@ public class FutureQueue implements EventQueue {
      */
     private final SortedSet<SimEvent> sortedSet = new TreeSet<>();
 
-    /**
-     * A incremental number used for {@link SimEvent#getSerial()} event attribute.
-     */
+    /** @see #getSerial() */
     private long serial;
+
+    /** @see #getMaxEventsNumber() */
+    private long maxEventsNumber;
 
     @Override
     public void addEvent(final SimEvent newEvent) {
         newEvent.setSerial(serial++);
         sortedSet.add(newEvent);
+        maxEventsNumber = Math.max(maxEventsNumber, sortedSet.size());
     }
 
     /**
@@ -106,4 +108,16 @@ public class FutureQueue implements EventQueue {
         sortedSet.clear();
     }
 
+    /** Gets an incremental number used for {@link SimEvent#getSerial()} event attribute. */
+    public long getSerial() {
+        return serial;
+    }
+
+    /**
+     * Maximum number of events that have ever existed at the same time
+     * inside the queue.
+     */
+    public long getMaxEventsNumber() {
+        return maxEventsNumber;
+    }
 }

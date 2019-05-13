@@ -937,4 +937,17 @@ public class CloudSim implements Simulation {
     public void setLastCloudletProcessingUpdate(final double lastCloudletProcessingUpdate) {
         this.lastCloudletProcessingUpdate = lastCloudletProcessingUpdate;
     }
+
+    /**
+     * Gets the maximum number of events that have ever existed at the same time
+     * inside the {@link FutureQueue}.
+     */
+    public long getMaxEventsNumber() {
+        return future.getMaxEventsNumber();
+    }
+
+    /** Gets the total number of events generated in the {@link FutureQueue} */
+    public long getGeneratedEventsNumber() {
+        return future.getSerial();
+    }
 }
