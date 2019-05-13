@@ -255,6 +255,12 @@ getPower
    :throws UnsupportedOperationException: if Datacenter's power consumption computation was not enabled before the simulation start
    :return: {@inheritDoc}
 
+getPowerSupply
+^^^^^^^^^^^^^^
+
+.. java:method:: public DatacenterPowerSupply getPowerSupply()
+   :outertype: DatacenterSimple
+
 getSchedulingInterval
 ^^^^^^^^^^^^^^^^^^^^^
 

@@ -30,7 +30,7 @@ DatacenterBrokerSimple
 
    Creates a new DatacenterBroker.
 
-   :param simulation: name to be associated with this entity
+   :param simulation: the CloudSim instance that represents the simulation the Entity is related to
 
 DatacenterBrokerSimple
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -50,6 +50,14 @@ defaultVmMapper
 
 .. java:method:: @Override public Vm defaultVmMapper(Cloudlet cloudlet)
    :outertype: DatacenterBrokerSimple
+
+   {@inheritDoc}
+
+   It applies a Round-Robin policy to cyclically select
+   the next Vm from the list of waiting VMs.
+
+   :param cloudlet: {@inheritDoc}
+   :return: {@inheritDoc}
 
 selectDatacenterForWaitingVms
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

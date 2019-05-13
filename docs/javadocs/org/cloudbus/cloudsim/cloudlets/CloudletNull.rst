@@ -322,10 +322,16 @@ getWaitingTime
 .. java:method:: @Override public double getWaitingTime()
    :outertype: CloudletNull
 
-isBindToVm
-^^^^^^^^^^
+isBoundToCreatedVm
+^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isBindToVm()
+.. java:method:: @Override public boolean isBoundToCreatedVm()
+   :outertype: CloudletNull
+
+isBoundToVm
+^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isBoundToVm()
    :outertype: CloudletNull
 
 isFinished

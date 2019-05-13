@@ -24,6 +24,10 @@
 
 .. java:import:: org.cloudsimplus.listeners VmHostEventInfo
 
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
 .. java:import:: java.util List
 
 .. java:import:: java.util.function Predicate
@@ -42,6 +46,12 @@ Vm
 
 Fields
 ------
+LOGGER
+^^^^^^
+
+.. java:field::  Logger LOGGER
+   :outertype: Vm
+
 NULL
 ^^^^
 
@@ -247,6 +257,26 @@ getDescription
    :outertype: Vm
 
    Gets the Vm description, which is an optional text which one can use to provide details about this of this VM.
+
+getExpectedFreePesNumber
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getExpectedFreePesNumber()
+   :outertype: Vm
+
+   Gets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
+
+   :return: the expected free pes number
+
+getFreePesNumber
+^^^^^^^^^^^^^^^^
+
+.. java:method::  long getFreePesNumber()
+   :outertype: Vm
+
+   Gets the current number of free PEs.
+
+   :return: the current free pes number
 
 getHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^

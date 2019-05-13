@@ -8,8 +8,6 @@
 
 .. java:import:: org.cloudbus.cloudsim.core CloudSimTags
 
-.. java:import:: org.cloudbus.cloudsim.core.events CloudSimEvent
-
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
 .. java:import:: org.cloudbus.cloudsim.resources Bandwidth
@@ -27,6 +25,8 @@
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.cloudbus.cloudsim.vms VmSimple
 
 .. java:import:: org.slf4j Logger
 
@@ -284,7 +284,7 @@ getCloudletReturnedList
 .. java:method:: protected Set<Cloudlet> getCloudletReturnedList()
    :outertype: CloudletSchedulerAbstract
 
-   Gets a \ **read-only**\  list of Cloudlets that finished executing and were returned the their broker. A Cloudlet is returned to to notify the broker about the end of its execution.
+   Gets a \ **read-only**\  list of Cloudlets that finished executing and were returned the their broker. A Cloudlet is returned to notify the broker about the end of its execution.
 
 getCloudletWaitingList
 ^^^^^^^^^^^^^^^^^^^^^^

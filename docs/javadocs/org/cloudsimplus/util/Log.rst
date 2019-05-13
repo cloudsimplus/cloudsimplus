@@ -24,7 +24,7 @@ setLevel
 .. java:method:: public static void setLevel(Logger logger, Level level)
    :outertype: Log
 
-   Sets the logging \ :java:ref:`Level`\  for a given LOGGER instance. You can enable just a specific type of log messages by using, for instance, \ :java:ref:`Level.WARN`\  value. To completely disable the given LOGGER, use \ :java:ref:`Level.OFF`\ .
+   Sets the logging \ :java:ref:`Level`\  for a given logger instance. You can enable just a specific type of log messages by using, for example, \ :java:ref:`Level.WARN`\  value. To completely disable the given logger, use \ :java:ref:`Level.OFF`\ .
 
    :param level: the logging level to set
 
@@ -34,7 +34,7 @@ setLevel
 .. java:method:: public static void setLevel(Level level)
    :outertype: Log
 
-   Sets the logging \ :java:ref:`Level`\  for \ **all LOGGER instances**\ . You can enable just a specific type of log messages by using, for instance, \ :java:ref:`Level.WARN`\  value. To completely disable logging, use \ :java:ref:`Level.OFF`\ .
+   Sets the logging \ :java:ref:`Level`\  for \ **all logger instances**\ . You can enable just a specific type of log messages by using, for example, \ :java:ref:`Level.WARN`\  value. To completely disable logging, use \ :java:ref:`Level.OFF`\ .
 
    :param level: the logging level to set
 

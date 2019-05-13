@@ -14,6 +14,7 @@ The most basic implementation is the \ :java:ref:`org.cloudbus.cloudsim.brokers.
 
    DatacenterBroker
    DatacenterBrokerAbstract
+   DatacenterBrokerBestFit
    DatacenterBrokerHeuristic
    DatacenterBrokerNull
    DatacenterBrokerSimple

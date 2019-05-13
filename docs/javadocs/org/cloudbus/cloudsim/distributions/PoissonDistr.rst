@@ -14,7 +14,7 @@ PoissonDistr
 
 .. java:type:: public class PoissonDistr implements ContinuousDistribution
 
-   A pseudo random number generator which returns numbers following a Poisson Distribution, modeling the probability of an event to happen a number of times in a given time interval.
+   A Pseudo-Random Number Generator which returns numbers following a Poisson Distribution, modeling the probability of an event to happen a number of times in a given time interval.
 
    :author: Manoel Campos da Silva Filho
 
@@ -28,10 +28,10 @@ PoissonDistr
 .. java:constructor:: public PoissonDistr(double lambda, long seed)
    :outertype: PoissonDistr
 
-   Creates a Poisson random number generator to check the probability of 1 event (\ :java:ref:`k = 1 <getK()>`\ ) to happen at each time interval.
+   Creates a Poisson Pseudo-Random Number Generator to check the probability of 1 event (\ :java:ref:`k = 1 <getK()>`\ ) to happen at each time interval.
 
    :param lambda: the average number of events that happen at each 1 time unit. If one considers the unit as minute, this value means the average number of arrivals at each minute.
-   :param seed: the seed to initialize the internal uniform random number generator
+   :param seed: the seed to initialize the internal uniform Pseudo-Random Number Generator
 
    **See also:** :java:ref:`.setK(int)`, :java:ref:`.setLambda(double)`
 
@@ -41,7 +41,7 @@ PoissonDistr
 .. java:constructor:: public PoissonDistr(double lambda)
    :outertype: PoissonDistr
 
-   Creates a Poisson random number generator to check the probability of 1 event (\ :java:ref:`k = 1 <getK()>`\ ) to happen at each time interval.
+   Creates a Poisson Pseudo-Random Number Generator to check the probability of 1 event (\ :java:ref:`k = 1 <getK()>`\ ) to happen at each time interval.
 
    :param lambda: average number of events by interval. For instance, if it was defined 1 event to be expected at each 2.5 minutes, it means that 0.4 event is expected at each minute (1/2.5).
 

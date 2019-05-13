@@ -1,3 +1,7 @@
+.. java:import:: org.slf4j Logger
+
+.. java:import:: org.slf4j LoggerFactory
+
 Heuristic
 =========
 
@@ -15,6 +19,12 @@ Heuristic
 
 Fields
 ------
+LOGGER
+^^^^^^
+
+.. java:field::  Logger LOGGER
+   :outertype: Heuristic
+
 NULL
 ^^^^
 

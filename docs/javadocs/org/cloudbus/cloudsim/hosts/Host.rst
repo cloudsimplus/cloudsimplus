@@ -150,9 +150,9 @@ destroyVm
 .. java:method::  void destroyVm(Vm vm)
    :outertype: Host
 
-   Destroys a VM running in the host and removes it from the \ :java:ref:`getVmList()`\ .
+   Destroys a VM running in the host and removes it from the \ :java:ref:`getVmList()`\ . If the VM was not created yet, this method has no effect.
 
-   :param vm: the VM
+   :param vm: the VM to be destroyed
 
 disableStateHistory
 ^^^^^^^^^^^^^^^^^^^

@@ -156,11 +156,27 @@ getEntityList
 .. java:method:: @Override public List<SimEntity> getEntityList()
    :outertype: CloudSim
 
+getGeneratedEventsNumber
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public long getGeneratedEventsNumber()
+   :outertype: CloudSim
+
+   Gets the total number of events generated in the \ :java:ref:`FutureQueue`\
+
 getLastCloudletProcessingUpdate
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public double getLastCloudletProcessingUpdate()
    :outertype: CloudSim
+
+getMaxEventsNumber
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public long getMaxEventsNumber()
+   :outertype: CloudSim
+
+   Gets the maximum number of events that have ever existed at the same time inside the \ :java:ref:`FutureQueue`\ .
 
 getMinTimeBetweenEvents
 ^^^^^^^^^^^^^^^^^^^^^^^

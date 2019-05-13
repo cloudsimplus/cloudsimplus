@@ -50,6 +50,22 @@ first
 .. java:method:: @Override public SimEvent first() throws NoSuchElementException
    :outertype: FutureQueue
 
+getMaxEventsNumber
+^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public long getMaxEventsNumber()
+   :outertype: FutureQueue
+
+   Maximum number of events that have ever existed at the same time inside the queue.
+
+getSerial
+^^^^^^^^^
+
+.. java:method:: public long getSerial()
+   :outertype: FutureQueue
+
+   Gets an incremental number used for \ :java:ref:`SimEvent.getSerial()`\  event attribute.
+
 isEmpty
 ^^^^^^^
 
@@ -87,7 +103,7 @@ removeAll
 removeIf
 ^^^^^^^^
 
-.. java:method:: public boolean removeIf(Predicate predicate)
+.. java:method:: public boolean removeIf(Predicate<SimEvent> predicate)
    :outertype: FutureQueue
 
 size

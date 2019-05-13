@@ -559,10 +559,20 @@ getWaitingTime
 
    :return: the waiting time when the cloudlet waited to execute; or 0 if there wasn't any waiting time or the cloudlet hasn't started to execute.
 
-isBindToVm
-^^^^^^^^^^
+isBoundToCreatedVm
+^^^^^^^^^^^^^^^^^^
 
-.. java:method::  boolean isBindToVm()
+.. java:method::  boolean isBoundToCreatedVm()
+   :outertype: Cloudlet
+
+   Checks if the Cloudlet is bound to any Vm and if that Vm is already created.
+
+   :return: true if the Cloudlet is bound to a created VM, false otherwise
+
+isBoundToVm
+^^^^^^^^^^^
+
+.. java:method::  boolean isBoundToVm()
    :outertype: Cloudlet
 
    Indicates if the Cloudlet is bounded to a specific Vm, meaning that the \ :java:ref:`DatacenterBroker`\  doesn't have to select a VM for it. In this case, the Cloudlet was already bounded to a specific VM and must run on it.

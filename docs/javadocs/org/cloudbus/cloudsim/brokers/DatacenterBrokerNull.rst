@@ -58,6 +58,12 @@ compareTo
 .. java:method:: @Override public int compareTo(SimEntity entity)
    :outertype: DatacenterBrokerNull
 
+defaultVmMapper
+^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public Vm defaultVmMapper(Cloudlet cloudlet)
+   :outertype: DatacenterBrokerNull
+
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
 

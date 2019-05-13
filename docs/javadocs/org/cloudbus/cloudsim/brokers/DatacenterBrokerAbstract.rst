@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
+.. java:import:: org.cloudbus.cloudsim.core.events CloudSimEvent
+
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
@@ -9,6 +11,8 @@
 .. java:import:: org.cloudbus.cloudsim.utilizationmodels UtilizationModel
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.cloudbus.cloudsim.vms VmSimple
 
 .. java:import:: org.cloudsimplus.autoscaling VerticalVmScaling
 
@@ -72,17 +76,6 @@ bindCloudletToVm
 
 .. java:method:: @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm)
    :outertype: DatacenterBrokerAbstract
-
-defaultVmMapper
-^^^^^^^^^^^^^^^
-
-.. java:method:: protected abstract Vm defaultVmMapper(Cloudlet cloudlet)
-   :outertype: DatacenterBrokerAbstract
-
-   Defines the default policy used to select a Vm to host a Cloudlet that is waiting to be created. It applies a Round-Robin policy to cyclically select the next Vm from the list of waiting VMs.
-
-   :param cloudlet: the cloudlet that needs a VM to be placed into
-   :return: the selected Vm for the cloudlet or \ :java:ref:`Vm.NULL`\  if no suitable VM was found
 
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -279,6 +272,18 @@ requestDatacentersToCreateWaitingCloudlets
    This method is called after all submitted VMs are created in some Datacenter.
 
    **See also:** :java:ref:`.submitCloudletList(java.util.List)`
+
+requestIdleVmDestruction
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public void requestIdleVmDestruction(Vm vm)
+   :outertype: DatacenterBrokerAbstract
+
+   Checks if a VM is idle VM and request it to be destroyed at the time defined by the \ :java:ref:`getVmDestructionDelayFunction()`\ . The request will be sent if the given delay function returns a value greater than \ :java:ref:`DEF_VM_DESTRUCTION_DELAY`\ . Otherwise, it doesn't send the request, meaning the VM should not be destroyed according to a specific delay.
+
+   :param vm: the VM to destroy
+
+   **See also:** :java:ref:`.getVmDestructionDelayFunction()`
 
 setCloudletComparator
 ^^^^^^^^^^^^^^^^^^^^^

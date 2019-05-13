@@ -2,6 +2,8 @@
 
 .. java:import:: org.cloudbus.cloudsim.brokers DatacenterBroker
 
+.. java:import:: org.cloudbus.cloudsim.brokers DatacenterBrokerAbstract
+
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
 .. java:import:: org.cloudbus.cloudsim.core CustomerEntityAbstract
@@ -252,6 +254,18 @@ getDescription
 .. java:method:: @Override public String getDescription()
    :outertype: VmSimple
 
+getExpectedFreePesNumber
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getExpectedFreePesNumber()
+   :outertype: VmSimple
+
+getFreePesNumber
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getFreePesNumber()
+   :outertype: VmSimple
+
 getHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -383,6 +397,14 @@ getVmm
 
 .. java:method:: @Override public String getVmm()
    :outertype: VmSimple
+
+hasStartedSomeCloudlet
+^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public boolean hasStartedSomeCloudlet()
+   :outertype: VmSimple
+
+   Checks if the VM has ever started some Cloudlet.
 
 isCreated
 ^^^^^^^^^
@@ -518,11 +540,31 @@ setDescription
 .. java:method:: @Override public Vm setDescription(String description)
    :outertype: VmSimple
 
+setExpectedFreePesNumber
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Vm setExpectedFreePesNumber(long expectedFreePes)
+   :outertype: VmSimple
+
+   Sets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
+
+   :param expectedFreePes: the expected free pes number to set
+
 setFailed
 ^^^^^^^^^
 
 .. java:method:: @Override public void setFailed(boolean failed)
    :outertype: VmSimple
+
+setFreePesNumber
+^^^^^^^^^^^^^^^^
+
+.. java:method:: public Vm setFreePesNumber(long freePesNumber)
+   :outertype: VmSimple
+
+   Sets the current number of free PEs.
+
+   :return: the new free pes number
 
 setHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^

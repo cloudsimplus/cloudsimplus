@@ -111,7 +111,7 @@ getRandomMapEntries
 
    Try to get 2 randomly selected entries from the \ :java:ref:`cloudletVmMap`\ .
 
-   :return: a List with 2 entries from the \ :java:ref:`cloudletVmMap`\  if the map has at least 2 entries, an unitary List if the map has only one entry, or an empty List if there is no entry.
+   :return: a List with 2 entries from the \ :java:ref:`cloudletVmMap`\  if the map size is at least 2; an unitary List if the map has only 1 entry; or an empty List if there is no entry in the map.
 
    **See also:** :java:ref:`.swapVmsOfTwoMapEntries(List)`
 

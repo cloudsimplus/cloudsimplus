@@ -6,6 +6,10 @@
 
 .. java:import:: org.cloudbus.cloudsim.datacenters Datacenter
 
+.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterPowerSupply
+
+.. java:import:: org.cloudbus.cloudsim.datacenters DatacenterSimple
+
 .. java:import:: org.cloudbus.cloudsim.power.models PowerModel
 
 .. java:import:: org.cloudbus.cloudsim.provisioners ResourceProvisioner

@@ -388,10 +388,16 @@ getWallClockTime
 
    **See also:** \ `Elapsed real time (wall-clock time) <https://en.wikipedia.org/wiki/Elapsed_real_time>`_\
 
-isBindToVm
-^^^^^^^^^^
+isBoundToCreatedVm
+^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public boolean isBindToVm()
+.. java:method:: @Override public boolean isBoundToCreatedVm()
+   :outertype: CloudletAbstract
+
+isBoundToVm
+^^^^^^^^^^^
+
+.. java:method:: @Override public boolean isBoundToVm()
    :outertype: CloudletAbstract
 
 isFinished

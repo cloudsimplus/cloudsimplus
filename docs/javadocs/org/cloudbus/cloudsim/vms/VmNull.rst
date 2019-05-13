@@ -166,6 +166,18 @@ getDescription
 .. java:method:: @Override public String getDescription()
    :outertype: VmNull
 
+getExpectedFreePesNumber
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getExpectedFreePesNumber()
+   :outertype: VmNull
+
+getFreePesNumber
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getFreePesNumber()
+   :outertype: VmNull
+
 getHorizontalScaling
 ^^^^^^^^^^^^^^^^^^^^
 

@@ -48,7 +48,7 @@ DEF_VM_DESTRUCTION_DELAY
 
    A default delay value to indicate that \ **NO**\  VM should be immediately destroyed after becoming idle.
 
-   This is used as the default value returned by the \ :java:ref:`getVmDestructionDelayFunction()`\  if a \ :java:ref:`Function`\  is not set.
+   This is used as the value returned by the \ :java:ref:`getVmDestructionDelayFunction()`\  if a \ :java:ref:`Function`\  is not set.
 
    **See also:** :java:ref:`.setVmDestructionDelayFunction(Function)`
 
@@ -99,6 +99,21 @@ bindCloudletToVm
    :param cloudlet: the cloudlet to be bind to a given Vm
    :param vm: the vm to bind the Cloudlet to
    :return: true if the Cloudlet was found in the waiting list and was bind to the given Vm, false it the Cloudlet was not found in such a list (that may mean it wasn't submitted yet or was already created)
+
+defaultVmMapper
+^^^^^^^^^^^^^^^
+
+.. java:method::  Vm defaultVmMapper(Cloudlet cloudlet)
+   :outertype: DatacenterBroker
+
+   Selects a VM to execute a given Cloudlet. The method defines the default policy used to map VMs for Cloudlets that are waiting to be created.
+
+   Since this default policy can be dynamically changed by calling \ :java:ref:`setVmMapper(Function)`\ , this method will always return the default policy provided by the subclass where the method is being called.
+
+   :param cloudlet: the cloudlet that needs a VM to execute
+   :return: the selected Vm for the cloudlet or \ :java:ref:`Vm.NULL`\  if no suitable VM was found
+
+   **See also:** :java:ref:`.getVmMapper()`
 
 getCloudletCreatedList
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -180,9 +195,13 @@ getVmMapper
 .. java:method::  Function<Cloudlet, Vm> getVmMapper()
    :outertype: DatacenterBroker
 
-   Gets a \ :java:ref:`Function`\  that maps a given Cloudlet to a Vm. It defines the policy used to select a Vm to host a Cloudlet that is waiting to be created.
+   Gets the current \ :java:ref:`Function`\  used to map a given Cloudlet to a Vm. It defines the policy used to select a Vm to execute a given Cloudlet that is waiting to be created.
 
-   :return: the Vm mapper Function
+   If the default policy was not changed by the \ :java:ref:`setVmMapper(Function)`\ , then this method will have the same effect of the \ :java:ref:`defaultVmMapper(Cloudlet)`\ .
+
+   :return: the Vm mapper \ :java:ref:`Function`\
+
+   **See also:** :java:ref:`.defaultVmMapper(Cloudlet)`
 
 getVmWaitingList
 ^^^^^^^^^^^^^^^^
