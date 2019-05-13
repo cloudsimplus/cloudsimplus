@@ -279,7 +279,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         final double decimals = currentTime - (int) currentTime;
         utilizationHistory.addUtilizationHistory(currentTime);
         ((DatacenterBrokerAbstract)getBroker()).requestIdleVmDestruction(this);
-        return nextEventDelay - decimals;
+        if(nextEventDelay == Double.MAX_VALUE){
+            return nextEventDelay;
+        }
+
+        return nextEventDelay - decimals < 0 ? nextEventDelay : nextEventDelay - decimals;
     }
 
     @Override

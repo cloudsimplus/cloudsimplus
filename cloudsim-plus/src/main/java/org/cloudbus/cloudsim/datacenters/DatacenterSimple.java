@@ -712,7 +712,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         // Guarantees a minimal interval before scheduling the event
         final double minTimeBetweenEvents = getSimulation().getMinTimeBetweenEvents()+0.01;
-        nextSimulationTime = Math.max(nextSimulationTime, minTimeBetweenEvents);
+        nextSimulationTime = nextSimulationTime == 0 ? nextSimulationTime : Math.max(nextSimulationTime, minTimeBetweenEvents);
 
         if (nextSimulationTime == Double.MAX_VALUE) {
             return nextSimulationTime;

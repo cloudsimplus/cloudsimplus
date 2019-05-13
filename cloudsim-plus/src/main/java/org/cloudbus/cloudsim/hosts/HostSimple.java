@@ -356,7 +356,7 @@ public class HostSimple implements Host {
         for (int i = 0; i < vmList.size(); i++) {
             final Vm vm = vmList.get(i);
             final double nextTime = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
-            nextSimulationTime = Math.min(nextTime, nextSimulationTime);
+            nextSimulationTime = nextTime > 0 ? Math.min(nextTime, nextSimulationTime) : nextSimulationTime;
         }
 
         notifyOnUpdateProcessingListeners(nextSimulationTime);

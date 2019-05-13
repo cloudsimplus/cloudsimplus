@@ -505,10 +505,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return Double.MAX_VALUE;
         }
 
+        addCloudletsToFinishedList();
         final double nextSimulationTime = updateCloudletsProcessing(currentTime);
         updateVmResourceAbsoluteUtilization(Ram.class);
         updateVmResourceAbsoluteUtilization(Bandwidth.class);
-        addCloudletsToFinishedList();
         moveNextCloudletsFromWaitingToExecList();
 
         setPreviousTime(currentTime);
