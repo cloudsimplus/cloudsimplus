@@ -311,11 +311,31 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     /**
-     * Sets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
+     * Adds a given number of expected free PEs to the total number of expected free PEs.
+     * This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
      *
-     * @param expectedFreePes the expected free pes number to set
+     * @param pesToAdd the number of expected free PEs to add
      */
-    public Vm setExpectedFreePesNumber(long expectedFreePes) {
+    public Vm addExpectedFreePesNumber(final long pesToAdd) {
+        return setExpectedFreePesNumber(expectedFreePesNumber + pesToAdd);
+    }
+
+    /**
+     * Adds a given number of expected free PEs to the total number of expected free PEs.
+     * This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
+     *
+     * @param pesToRemove the number of expected free PEs to remove
+     */
+    public Vm removeExpectedFreePesNumber(final long pesToRemove) {
+        return setExpectedFreePesNumber(expectedFreePesNumber - pesToRemove);
+    }
+
+    /**
+     * Sets the expected free PEs number before the VM starts executing.
+     *
+     * @param expectedFreePes the expected free PEs number to set
+     */
+    private Vm setExpectedFreePesNumber(long expectedFreePes) {
         if(expectedFreePes < 0) {
             LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");
             expectedFreePes = 0;

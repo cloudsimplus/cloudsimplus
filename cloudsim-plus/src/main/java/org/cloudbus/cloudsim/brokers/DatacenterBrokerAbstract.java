@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.brokers;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -700,8 +701,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void processCloudletReturn(final SimEvent evt) {
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
         cloudletsFinishedList.add(cloudlet);
-        ((VmSimple) cloudlet.getVm()).setExpectedFreePesNumber(
-            cloudlet.getVm().getExpectedFreePesNumber() + cloudlet.getNumberOfPes());
+        ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getNumberOfPes());
         LOGGER.info("{}: {}: {} finished and returned to broker.", getSimulation().clock(), getName(), cloudlet);
 
         if (cloudlet.getVm().getCloudletScheduler().isEmpty()) {
@@ -919,9 +919,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
          * Cloudlets in such new list were removed just after the loop,
          * degrading performance in large scale simulations. */
         for (final Iterator<Cloudlet> it = cloudletWaitingList.iterator(); it.hasNext(); ) {
-            final Cloudlet cloudlet = it.next();
-            final CustomerEntityAbstract entity = (CustomerEntityAbstract) cloudlet;
-            if (!entity.getLastTriedDatacenter().equals(Datacenter.NULL)) {
+            final CloudletSimple cloudlet = (CloudletSimple)it.next();
+            if (!cloudlet.getLastTriedDatacenter().equals(Datacenter.NULL)) {
                 continue;
             }
 
@@ -930,16 +929,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             if (lastSelectedVm == Vm.NULL) {
                 logPostponingCloudletExecution(cloudlet);
                 continue;
-            } else {
-                ((VmSimple) lastSelectedVm).setExpectedFreePesNumber(
-                    lastSelectedVm.getExpectedFreePesNumber() - cloudlet.getNumberOfPes());
             }
+
+            ((VmSimple) lastSelectedVm).removeExpectedFreePesNumber(cloudlet.getNumberOfPes());
 
             logCloudletCreationRequest(cloudlet);
             cloudlet.setVm(lastSelectedVm);
             send(getDatacenter(lastSelectedVm),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
-            entity.setLastTriedDatacenter(getDatacenter(lastSelectedVm));
+            cloudlet.setLastTriedDatacenter(getDatacenter(lastSelectedVm));
             cloudletsCreatedList.add(cloudlet);
             it.remove();
         }
