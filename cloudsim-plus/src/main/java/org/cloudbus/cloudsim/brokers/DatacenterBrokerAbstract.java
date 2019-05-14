@@ -913,8 +913,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
          *       See https://github.com/manoelcampos/cloudsim-plus/issues/126
          */
 
-        final List<Cloudlet> successfullySubmitted = new ArrayList<>();
-        for (final Cloudlet cloudlet : cloudletWaitingList) {
+        /* Uses Iterator to remove Cloudlets from the waiting list
+         * while iterating over that List. This avoids the collection of successfully
+         * created Cloudlets into a separate list.
+         * Cloudlets in such new list were removed just after the loop,
+         * degrading performance in large scale simulations. */
+        for (final Iterator<Cloudlet> it = cloudletWaitingList.iterator(); it.hasNext(); ) {
+            final Cloudlet cloudlet = it.next();
             final CustomerEntityAbstract entity = (CustomerEntityAbstract) cloudlet;
             if (!entity.getLastTriedDatacenter().equals(Datacenter.NULL)) {
                 continue;
@@ -930,17 +935,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                     lastSelectedVm.getExpectedFreePesNumber() - cloudlet.getNumberOfPes());
             }
 
-
             logCloudletCreationRequest(cloudlet);
             cloudlet.setVm(lastSelectedVm);
             send(getDatacenter(lastSelectedVm),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             entity.setLastTriedDatacenter(getDatacenter(lastSelectedVm));
             cloudletsCreatedList.add(cloudlet);
-            successfullySubmitted.add(cloudlet);
+            it.remove();
         }
 
-        cloudletWaitingList.removeAll(successfullySubmitted);
         allWaitingCloudletsSubmittedToVm();
     }
 
