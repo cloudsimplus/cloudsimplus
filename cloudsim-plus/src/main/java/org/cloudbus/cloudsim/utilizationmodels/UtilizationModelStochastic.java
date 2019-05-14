@@ -91,7 +91,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @see #isAlwaysGenerateNewRandomUtilization()
      */
     public UtilizationModelStochastic(final Unit unit) {
-        this(unit, -1);
+        this(unit, ContinuousDistribution.defaultSeed());
     }
 
     /**
@@ -102,13 +102,26 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param seed the seed to initialize the random number generator.
-     *             If -1 is passed, the current time will be used.
      * @see #setHistoryEnabled(boolean)
      * @see #isAlwaysGenerateNewRandomUtilization()
      */
     public UtilizationModelStochastic(final Unit unit, final long seed) {
         this(unit, new UniformDistr(seed));
     }
+
+    /**
+     * Instantiates a new utilization model stochastic
+     * that defines the resource utilization in percentage.
+     * The resource utilization history is disabled by default.
+     *
+     * @param seed the seed to initialize the random number generator.
+     * @see #setHistoryEnabled(boolean)
+     * @see #isAlwaysGenerateNewRandomUtilization()
+     */
+    public UtilizationModelStochastic(final long seed) {
+        this(Unit.PERCENTAGE, new UniformDistr(seed));
+    }
+
 
     /**
      * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG)

@@ -76,7 +76,7 @@ import static java.util.stream.Collectors.toCollection;
  * @see <a href="https://github.com/manoelcampos/cloudsim-plus/issues/197">Issue #197 for more details</a>
  */
 public class UtilizationModelStochasticPerformance {
-    private static final int HOSTS = 10_000;
+    private static final int HOSTS = 20_000;
     private static final int HOST_PES = 16;
 
     private static final int VMS = HOSTS*4;
@@ -84,7 +84,7 @@ public class UtilizationModelStochasticPerformance {
 
     private static final int CLOUDLETS = VMS*2;
     private static final int CLOUDLET_PES = 2;
-    private static final int CLOUDLET_LENGTH = 500_000;
+    private static final int CLOUDLET_LENGTH = 10_000;
     private static final int SCHEDULING_INTERVAL = 10;
 
     /**
@@ -99,22 +99,23 @@ public class UtilizationModelStochasticPerformance {
      * it will be returned the same value. If they send consecutive requests for different times,
      * probably it will be returned distinct randomly generated values.</p>
      */
-    private static final boolean MULTIPLE_UTILIZATION_MODELS = true;
+    private static final boolean MULTIPLE_UTILIZATION_MODELS = false;
 
     /**
      * See {@link UtilizationModelStochastic#isAlwaysGenerateNewRandomUtilization()}
      * for details.
      */
-    private static final boolean ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION = true;
+    private static final boolean ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION = false;
 
     /**
      * Indicates if the {@link UtilizationModelStochastic} instances
      * will keep a map that stores the resource utilization along simulation
      * execution. Disabling this flag reduces simulation time and memory consumption.
      */
-    private static final boolean STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY = false;
+    private static final boolean STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY = true;
 
     private static final VmAllocationPolicy VM_ALLOCATION_POLICY = new VmAllocationPolicyFirstFit();
+    private static final long SEED = 123456;
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
@@ -129,12 +130,6 @@ public class UtilizationModelStochasticPerformance {
 
     public UtilizationModelStochasticPerformance() {
         System.out.println("Starting " + this.getClass().getSimpleName() + " at " + LocalTime.now());
-        System.out.printf(
-            "Hosts: %d | VMs: %d | Cloudlets: %d | DC Scheduling Interval: %d secs\n",
-            HOSTS, VMS, CLOUDLETS, SCHEDULING_INTERVAL);
-        System.out.printf(
-            "Multiple Utilization Models: %s | Store Utilization History: %s | VmAllocationPolicy: %s\n",
-            MULTIPLE_UTILIZATION_MODELS, STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY, VM_ALLOCATION_POLICY.getClass().getSimpleName());
         final long startMillis = System.currentTimeMillis();
         Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
@@ -152,7 +147,17 @@ public class UtilizationModelStochasticPerformance {
         final double maxHeapUtilizationGB = getMaxHeapUtilizationGB();
 
         final double execMinutes = Conversion.millisecsToMinutes(System.currentTimeMillis() - startMillis);
-        System.out.printf("\nExecution time: %.2f min | Max Heap Used: %.2f GB\n", execMinutes, maxHeapUtilizationGB);
+        System.out.printf(
+            "Multiple Utilization Models: %s | Store Utilization History: %s\n\n",
+            MULTIPLE_UTILIZATION_MODELS, STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY);
+
+        System.out.println("| Execution time | Simulation time | Max Heap Used | VmAllocationPolicy | Hosts      | VMs        | Cloudlets  | Cloudlet Len | DC Scheduling Interval |");
+        System.out.println("| ---------------|-----------------|---------------|--------------------|------------|------------|------------|--------------|------------------------|");
+        System.out.printf(
+            "| %10.2f min | %11.2f min | %10.2f GB | %18s | %10d | %10d | %10d | %12d | %22d |",
+            execMinutes, Conversion.secondsToMinutes(simulation.clock()), maxHeapUtilizationGB,
+            VM_ALLOCATION_POLICY.getClass().getSimpleName().replace("VmAllocationPolicy", ""),
+            HOSTS, VMS, CLOUDLETS, CLOUDLET_LENGTH, SCHEDULING_INTERVAL);
     }
 
     /**
@@ -208,7 +213,7 @@ public class UtilizationModelStochasticPerformance {
         final List<Cloudlet> cloudlets = new ArrayList<>(CLOUDLETS);
         for (int i = 0; i < CLOUDLETS; i++) {
             final Cloudlet cloudlet = new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES);
-            this.um = MULTIPLE_UTILIZATION_MODELS || this.um == null ? new UtilizationModelStochastic() : this.um;
+            this.um = MULTIPLE_UTILIZATION_MODELS || this.um == null ? new UtilizationModelStochastic(SEED) : this.um;
             this.um
                 .setHistoryEnabled(STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY)
                 .setAlwaysGenerateNewRandomUtilization(ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION);
