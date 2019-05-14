@@ -37,7 +37,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "4.4.0";
+    public static final String VERSION = "CloudSim Plus 4.4.0";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
@@ -47,7 +47,7 @@ public class CloudSim implements Simulation {
      * the first element is removed to open space for that new one.
      * This queue stores the last 2 simulation clock values.
      * It is used to know when it's time to notify listeners that
-     * the simulation clock has incremented.
+     * the simulation clock has increased.
      *
      * <p>The head (value at index 0) of the queue is the oldest simulation time stored,
      * the tail (value at index 1) is the newest one.</p>
@@ -225,7 +225,7 @@ public class CloudSim implements Simulation {
                 "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
-        LOGGER.info("{}================== Starting CloudSim Plus {} =================={}", System.lineSeparator(), VERSION,  System.lineSeparator());
+        LOGGER.info("{}================== Starting {} =================={}", System.lineSeparator(), VERSION,  System.lineSeparator());
         startEntitiesIfNotRunning();
         this.alreadyRunOnce = true;
 

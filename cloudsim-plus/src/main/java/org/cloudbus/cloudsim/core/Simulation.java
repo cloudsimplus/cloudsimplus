@@ -363,7 +363,7 @@ public interface Simulation {
      * Sets the state of an entity to {@link SimEntity.State#WAITING},
      * making it to wait for events that satisfy a given predicate.
      * Only such events will be passed to the entity.
-     * This is done to avoid unnecessary context Datacenter.
+     * This is done to avoid unnecessary context switch.
      *
      * @param src entity that scheduled the event
      * @param p   the event selection predicate
