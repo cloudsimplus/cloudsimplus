@@ -2,9 +2,14 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.cloudsimplus</groupId>
+    <parent>
+        <groupId>org.cloudsimplus</groupId>
+        <artifactId>cloudsim-plus-modules</artifactId>
+        <version>dev</version>
+    </parent>
+
     <artifactId>cloudsim-plus-testbeds</artifactId>
-    <version>4.4.1</version>
+    <version>${global.version}</version>
     <name>CloudSim Plus Testbeds</name>
     <description>
         A set of more complex and comprehensive CloudSim Plus testbeds used to assess
@@ -135,7 +140,7 @@
         <dependency>
             <groupId>org.cloudsimplus</groupId>
             <artifactId>cloudsim-plus</artifactId>
-            <version>${project.version}</version>
+            <version>${global.version}</version>
         </dependency>
         <dependency>
             <groupId>ch.qos.logback</groupId>

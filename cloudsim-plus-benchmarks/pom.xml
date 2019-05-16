@@ -2,9 +2,14 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.cloudsimplus</groupId>
+    <parent>
+        <groupId>org.cloudsimplus</groupId>
+        <artifactId>cloudsim-plus-modules</artifactId>
+        <version>dev</version>
+    </parent>
+
     <artifactId>cloudsim-plus-benchmarks</artifactId>
-    <version>4.4.1</version>
+    <version>${global.version}</version>
     <name>CloudSim Plus Benchmarks</name>
     <description>A module containing benchmarks created using JMH (Java Microbenchmark Harness framework) to assess CloudSim Plus performance</description>
     <url>http://cloudsimplus.org</url>
@@ -60,7 +65,7 @@
         <dependency>
             <groupId>org.cloudsimplus</groupId>
             <artifactId>cloudsim-plus</artifactId>
-            <version>${project.version}</version>
+            <version>${global.version}</version>
         </dependency>
     </dependencies>
 

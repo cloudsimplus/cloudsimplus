@@ -1,9 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <license.dir>${project.basedir}</license.dir>
+        <license-maven-plugin.version>3.0</license-maven-plugin.version>
+        <!-- License file to be used by the com.mycila.license-maven-plugin -->
+        <copyrightfile>COPYRIGHT</copyrightfile>
+        <!-- Version used by all submodules which is managed by the flatten-maven-plugin -->
+        <global.version>4.4.2</global.version>
+    </properties>
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-modules</artifactId>
-    <version>4.4.1</version>
+    <version>dev</version>
     <packaging>pom</packaging>
 
     <name>CloudSim Plus Modules (All)</name>
@@ -47,14 +56,6 @@
         <url>http://github.com/manoelcampos/cloudsim-plus/issues</url>
         <system>GitHub Issues</system>
     </issueManagement>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <license.dir>${project.basedir}</license.dir>
-        <license-maven-plugin.version>3.0</license-maven-plugin.version>
-        <!-- License file to be used by the com.mycila.license-maven-plugin -->
-        <copyrightfile>COPYRIGHT</copyrightfile>
-    </properties>
 
     <modules>
         <module>cloudsim-plus</module>
@@ -117,6 +118,35 @@
                         <exclude>**/*</exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <!-- Manages version of project's submodules based on the parent version -->
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>flatten-maven-plugin</artifactId>
+                <version>1.1.0</version>
+                <configuration>
+                    <!-- Keeps developer and additional info inside the flattened pom -->
+                    <flattenMode>oss</flattenMode>
+                </configuration>
+                <executions>
+                    <!-- enable flattening -->
+                    <execution>
+                        <id>flatten</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>flatten</goal>
+                        </goals>
+                    </execution>
+                    <!-- ensure proper cleanup -->
+                    <execution>
+                        <id>flatten.clean</id>
+                        <phase>clean</phase>
+                        <goals>
+                            <goal>clean</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
