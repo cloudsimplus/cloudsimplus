@@ -200,6 +200,25 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final CloudSimEvent that = (CloudSimEvent) o;
+
+        if (Double.compare(that.time, time) != 0) return false;
+        return serial == that.serial;
+    }
+
+    @Override
+    public int hashCode() {
+        final long temp = Double.doubleToLongBits(time);
+        int result = (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (int) (serial ^ (serial >>> 32));
+        return result;
+    }
+
+    @Override
     public SimEntity getDestination() {
         return dest;
     }
