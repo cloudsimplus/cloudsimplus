@@ -38,7 +38,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.util.Log;
@@ -55,31 +55,18 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toCollection;
 
 /**
- * An example showing how the {@link UtilizationModelStochastic} can affect
- * the simulation time and memory utilization in large scale simulations.
+ * An example showing how the {@link UtilizationModelFull} increases simulation performance
+ * and reduces memory utilization.
  *
  * <p>There are a set of constants you can change to see how the simulation
  * is impacted. The most impacting ones are {@link #CLOUDLETS},
- * {@link #CLOUDLET_LENGTH}, {@link #SCHEDULING_INTERVAL},
- * {@link #MULTIPLE_UTILIZATION_MODELS}
- * and {@link #STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY}.
+ * {@link #CLOUDLET_LENGTH} and {@link #SCHEDULING_INTERVAL}.
  * Just play with these values to see the results.</p>
  *
- * <p>Since the utilization history Map stored by the {@link UtilizationModelStochastic}
- * is commonly not used after the simulation finishes,
- * maintaining such history is a time and memory expensive operation.
- * This way, if you don't need such a history, you can
- * disable it by setting {@link #STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY} to false.
- * However, keep in mind it is a trade-off between performance and memory consumption,
- * as it's explained in {@link UtilizationModelStochastic#setHistoryEnabled(boolean)}
- * documentation.
- * </p>
- *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.3.6
- * @see <a href="https://github.com/manoelcampos/cloudsim-plus/issues/197">Issue #197 for more details</a>
+ * @since CloudSim Plus 4.4.1
  */
-public class UtilizationModelStochasticPerformance {
+public class UtilizationModelFullPerformance {
     private static final int HOSTS = 20_000;
     private static final int HOST_PES = 16;
 
@@ -89,50 +76,22 @@ public class UtilizationModelStochasticPerformance {
     private static final int CLOUDLETS = VMS*2;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 10_000;
-    private static final int SCHEDULING_INTERVAL = 10;
-
-    /**
-     * Defines if one {@link UtilizationModel} must be instantiated
-     * for each Cloudlet or a single instance used by all Cloudlets.
-     *
-     * <p>Realize that if you use a single {@link UtilizationModel} for all
-     * Cloudlets, the resource utilization will usually be the same
-     * for all of them.
-     * Using the {@link UtilizationModelStochastic}, if two Cloudlets
-     * consecutively request the current resource utilization for the same time,
-     * it will be returned the same value. If they send consecutive requests for different times,
-     * probably it will be returned distinct randomly generated values.</p>
-     */
-    private static final boolean MULTIPLE_UTILIZATION_MODELS = false;
-
-    /**
-     * See {@link UtilizationModelStochastic#isAlwaysGenerateNewRandomUtilization()}
-     * for details.
-     */
-    private static final boolean ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION = false;
-
-    /**
-     * Indicates if the {@link UtilizationModelStochastic} instances
-     * will keep a map that stores the resource utilization along simulation
-     * execution. Disabling this flag reduces simulation time and memory consumption.
-     */
-    private static final boolean STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY = true;
+    private static final int SCHEDULING_INTERVAL = 0;
 
     private static final VmAllocationPolicy VM_ALLOCATION_POLICY = new VmAllocationPolicyFirstFit();
-    private static final long SEED = 123456;
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
     private Datacenter datacenter0;
-    private UtilizationModelStochastic um;
+    private final UtilizationModel um = new UtilizationModelFull();
 
     public static void main(String[] args) {
-        new UtilizationModelStochasticPerformance();
+        new UtilizationModelFullPerformance();
     }
 
-    public UtilizationModelStochasticPerformance() {
+    public UtilizationModelFullPerformance() {
         System.out.println("Starting " + this.getClass().getSimpleName() + " at " + LocalTime.now());
         final long startMillis = System.currentTimeMillis();
         Log.setLevel(ch.qos.logback.classic.Level.WARN);
@@ -151,9 +110,7 @@ public class UtilizationModelStochasticPerformance {
         final double maxHeapUtilizationGB = getMaxHeapUtilizationGB();
 
         final double execMinutes = Conversion.millisecsToMinutes(System.currentTimeMillis() - startMillis);
-        System.out.printf(
-            "Multiple Utilization Models: %s | Store Utilization History: %s\n\n",
-            MULTIPLE_UTILIZATION_MODELS, STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY);
+        System.out.printf("UtilizationModel: %s (single instance)\n\n", um.getClass().getSimpleName());
 
         System.out.println("| Execution time | Simulation time | Max Heap Used | VmAllocationPolicy | Hosts      | VMs        | Cloudlets  | Cloudlet Len | DC Scheduling Interval |");
         System.out.println("| ---------------|-----------------|---------------|--------------------|------------|------------|------------|--------------|------------------------|");
@@ -217,10 +174,6 @@ public class UtilizationModelStochasticPerformance {
         final List<Cloudlet> cloudlets = new ArrayList<>(CLOUDLETS);
         for (int i = 0; i < CLOUDLETS; i++) {
             final Cloudlet cloudlet = new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES);
-            this.um = MULTIPLE_UTILIZATION_MODELS || this.um == null ? new UtilizationModelStochastic(SEED) : this.um;
-            this.um
-                .setHistoryEnabled(STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY)
-                .setAlwaysGenerateNewRandomUtilization(ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION);
             cloudlet.setUtilizationModelCpu(um).setSizes(1024);
             cloudlets.add(cloudlet);
         }
