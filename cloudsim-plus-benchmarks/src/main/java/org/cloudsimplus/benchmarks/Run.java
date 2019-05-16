@@ -23,17 +23,17 @@
  */
 package org.cloudsimplus.benchmarks;
 
-import java.io.IOException;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
 import org.openjdk.jmh.runner.options.Options;
 import org.openjdk.jmh.runner.options.OptionsBuilder;
-import org.openjdk.jmh.runner.options.TimeValue;
 import org.openjdk.jmh.runner.options.VerboseMode;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * Configures parameters for the JMH Microbenchmarking framework and starts
- * benchmarks execution.
+ * execution of all benchmark classes.
  *
  * To run the benchmarks, clean & build the main project.
  * Then clean & build this project and run this class.
@@ -47,20 +47,22 @@ public final class Run {
      * Regex that identifies the classes with benchmarks that have to be
      * executed.
      */
-    private static final String TEST_CLASSES_REGEX = "org.cloudsimplus.*";
+    private static final String TEST_CLASSES_REGEX = "org.cloudsimplus.";
 
     /**
      * A private constructor to avoid class instantiation.
      */
     private Run(){}
 
-    public static void main(String[] args) throws IOException, RunnerException {
+    public static void main(String[] args) throws RunnerException {
         System.out.println(TEST_CLASSES_REGEX);
         Options options = new OptionsBuilder()
                 .include(TEST_CLASSES_REGEX)
                 .forks(1)
-                .measurementIterations(5)
-                .measurementTime(TimeValue.milliseconds(100))
+                .warmupIterations(5)
+                .measurementIterations(25)
+                .timeUnit(TimeUnit.MILLISECONDS)
+                //.measurementTime(TimeValue.milliseconds(100))
                 .threads(1)
                 .verbosity(VerboseMode.NORMAL)
                 .build();

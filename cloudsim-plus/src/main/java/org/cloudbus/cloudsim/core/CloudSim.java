@@ -120,7 +120,7 @@ public class CloudSim implements Simulation {
     /**
      * The deferred event queue.
      */
-    private final DeferredQueue deferred;
+    private final SortedQueue deferred;
 
     /**
      * @see #clock()
@@ -192,7 +192,7 @@ public class CloudSim implements Simulation {
     public CloudSim(final double minTimeBetweenEvents) {
         this.entities = new ArrayList<>();
         this.future = new FutureQueue();
-        this.deferred = new DeferredQueue();
+        this.deferred = new SortedQueue();
         this.waitPredicates = new HashMap<>();
         this.networkTopology = NetworkTopology.NULL;
         this.clock = 0;
