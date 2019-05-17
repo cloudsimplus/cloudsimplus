@@ -8,16 +8,28 @@
 
 package org.cloudbus.cloudsim.core.events;
 
-import org.cloudbus.cloudsim.core.CloudSim;
+import java.util.*;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
- * This class implements the future event queue used by {@link CloudSim}.
+ * An {@link EventQueue} that stores future simulation events.
+ * It uses a {@link TreeSet} in order ensure the events
+ * are stored ordered. Using a {@link java.util.LinkedList}
+ * as defined by {@link DeferredQueue} to improve performance
+ * doesn't work for this queue.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
+ * @see java.util.TreeSet
  * @since CloudSim Toolkit 1.0
  */
-public class FutureQueue extends SortedQueue {
+public class FutureQueue implements EventQueue {
+
+    /**
+     * The sorted set of events.
+     */
+    private final SortedSet<SimEvent> sortedSet = new TreeSet<>();
 
     /** @see #getSerial() */
     private long serial;
@@ -28,13 +40,74 @@ public class FutureQueue extends SortedQueue {
     @Override
     public void addEvent(final SimEvent newEvent) {
         newEvent.setSerial(serial++);
-        super.addEvent(newEvent);
-        maxEventsNumber = Math.max(maxEventsNumber, size());
+        sortedSet.add(newEvent);
+        maxEventsNumber = Math.max(maxEventsNumber, sortedSet.size());
+    }
+
+    /**
+     * Adds a new event to the head of the queue.
+     *
+     * @param newEvent The event to be put in the queue.
+     */
+    public void addEventFirst(final SimEvent newEvent) {
+        newEvent.setSerial(0);
+        sortedSet.add(newEvent);
     }
 
     @Override
-    public void addEventFirst(final SimEvent newEvent) {
-        super.addEventFirst(newEvent);
+    public Iterator<SimEvent> iterator() {
+        return sortedSet.iterator();
+    }
+
+    @Override
+    public Stream<SimEvent> stream() {
+        return sortedSet.stream();
+    }
+
+    @Override
+    public int size() {
+        return sortedSet.size();
+    }
+
+    @Override
+    public boolean isEmpty() {
+        return sortedSet.isEmpty();
+    }
+
+    /**
+     * Removes the event from the queue.
+     *
+     * @param event the event
+     * @return true, if successful
+     */
+    public boolean remove(final SimEvent event) {
+        return sortedSet.remove(event);
+    }
+
+    /**
+     * Removes all the events from the queue.
+     *
+     * @param events the events
+     * @return true, if successful
+     */
+    public boolean removeAll(final Collection<SimEvent> events) {
+        return sortedSet.removeAll(events);
+    }
+
+    public boolean removeIf(final Predicate<SimEvent> predicate){
+        return sortedSet.removeIf(predicate);
+    }
+
+    @Override
+    public SimEvent first() throws NoSuchElementException {
+        return sortedSet.first();
+    }
+
+    /**
+     * Clears the queue.
+     */
+    public void clear() {
+        sortedSet.clear();
     }
 
     /** Gets an incremental number used for {@link SimEvent#getSerial()} event attribute. */

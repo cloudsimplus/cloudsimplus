@@ -5,13 +5,18 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 /**
- * A {@link EventQueue} that orders {@link SimEvent}s based on their time attribute.
+ * An {@link EventQueue} that orders {@link SimEvent}s based on their time attribute.
+ * Since a new event's time is usually equal or higher than the previous event
+ * in regular simulations, this classes uses a {@link LinkedList} instead
+ * of a {@link java.util.SortedSet} such as {@link java.util.TreeSet}
+ * because the {@link LinkedList} provides constant O(1) complexity
+ * to add elements to the end.
  *
  * @author Marcos Dias de Assuncao
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.4.2
  */
-public class SortedQueue implements EventQueue {
+public class DeferredQueue implements EventQueue {
     /**
      * Despite the events are sorted by time and there are
      * sorted collections such as {@link java.util.SortedSet},
@@ -42,12 +47,15 @@ public class SortedQueue implements EventQueue {
             return;
         }
 
-        /*If the event time is smaller than the maxTime, traverses the list
+        /*
+         * Adds an event in some position from the tail of the list.
+         * If the event time is smaller than the maxTime, traverses the list
          * to find the place to insert the event.
          * It uses a reverse iterator because usually in such cases,
          * the time of the new event is close to the last events.
          * Starting from the tail of the list will ensure the lowest number
-         * of iterations of the best cases.*/
+         * of iterations of the best cases.
+         * */
         final ListIterator<SimEvent> reverseIterator = list.listIterator(list.size() - 1);
         while (reverseIterator.hasPrevious()) {
             if (reverseIterator.previous().getTime() <= eventTime) {
@@ -58,16 +66,6 @@ public class SortedQueue implements EventQueue {
         }
 
         list.add(newEvent);
-    }
-
-    /**
-     * Adds a new event to the head of the queue.
-     *
-     * @param newEvent The event to be put in the queue.
-     */
-    protected void addEventFirst(final SimEvent newEvent) {
-        newEvent.setSerial(0);
-        list.add(0, newEvent);
     }
 
     /**
@@ -122,7 +120,7 @@ public class SortedQueue implements EventQueue {
         return list.removeAll(events);
     }
 
-    public boolean removeIf(final Predicate<SimEvent> predicate){
+    public boolean removeIf(final Predicate<SimEvent> predicate) {
         return list.removeIf(predicate);
     }
 

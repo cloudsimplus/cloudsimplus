@@ -120,7 +120,7 @@ public class CloudSim implements Simulation {
     /**
      * The deferred event queue.
      */
-    private final SortedQueue deferred;
+    private final DeferredQueue deferred;
 
     /**
      * @see #clock()
@@ -192,7 +192,7 @@ public class CloudSim implements Simulation {
     public CloudSim(final double minTimeBetweenEvents) {
         this.entities = new ArrayList<>();
         this.future = new FutureQueue();
-        this.deferred = new SortedQueue();
+        this.deferred = new DeferredQueue();
         this.waitPredicates = new HashMap<>();
         this.networkTopology = NetworkTopology.NULL;
         this.clock = 0;
@@ -625,7 +625,7 @@ public class CloudSim implements Simulation {
      */
     private void processEvent(final SimEvent evt) {
         if (evt.getTime() < clock) {
-            throw new IllegalArgumentException("Past event detected.");
+            throw new IllegalArgumentException("Past event detected. Event time: " + evt.getTime() + " Simulation clock: " + clock);
         }
         setClock(evt.getTime());
 
