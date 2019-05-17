@@ -70,7 +70,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Instantiates a new utilization model stochastic
      * that defines the resource utilization in percentage.
-     * The resource utilization history is disabled by default.
+     * The resource utilization history is enabled by default.
      *
      * @see #setUnit(Unit)
      * @see #setHistoryEnabled(boolean)
@@ -83,7 +83,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Instantiates a new utilization model stochastic
      * where the resource utilization is defined in the given unit.
-     * The resource utilization history is disabled by default.
+     * The resource utilization history is enabled by default.
      *
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
@@ -97,7 +97,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Instantiates a new utilization model stochastic
      * where the resource utilization is defined in the given unit.
-     * The resource utilization history is disabled by default.
+     * The resource utilization history is enabled by default.
      *
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
@@ -112,7 +112,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Instantiates a new utilization model stochastic
      * that defines the resource utilization in percentage.
-     * The resource utilization history is disabled by default.
+     * The resource utilization history is enabled by default.
      *
      * @param seed the seed to initialize the random number generator.
      * @see #setHistoryEnabled(boolean)
@@ -126,7 +126,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /**
      * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG)
      * It defines the resource utilization in percentage.
-     * The resource utilization history is disabled by default.
+     * The resource utilization history is enabled by default.
      *
      * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
      * @see #setUnit(Unit)
@@ -139,7 +139,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
 
     /**
      * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG).
-     * The resource utilization history is disabled by default.
+     * The resource utilization history is enabled by default.
      *
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
@@ -152,6 +152,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         this.previousTime = -1;
         this.previousUtilization = -1;
         this.maxPreviousTime = -1;
+        this.historyEnabled = true;
         this.historyMap = new HashMap<>();
         setRandomGenerator(prng);
     }
