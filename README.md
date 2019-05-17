@@ -39,7 +39,7 @@ and experimentation of Cloud computing infrastructures and application services.
 It allows users to focus on specific system design issues to be investigated, 
 without concerning the low-level details related to Cloud-based infrastructures and services.
  
-Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable, 
+Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable,
 and scalable computational services. 
 For assurance of such characteristics in cloud systems under development, 
 it is required timely, repeatable, and controllable methodologies for evaluation of new cloud applications and policies, 
@@ -63,22 +63,12 @@ A post about CloudSim Plus is available at
 [this page of the Forum](https://eubrasilcloudforum.eu/en/instituto-federal-de-educação-do-tocantins-brazil-instituto-de-telecomunicações-portugal-and), 
 including a White Paper available in the [Publications Section](#publications).
 
-CloudSim Plus is developed through a partnership among the Systems, Security and Image Communication Lab 
+CloudSim Plus is developed through a partnership between the Systems, Security and Image Communication Lab 
 of [Instituto de Telecomunicações (IT, Portugal)](http://www.it.pt), 
 the [Universidade da Beira Interior (UBI, Portugal)](http://www.ubi.pt) 
 and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil)](http://www.ifto.edu.br). 
 It is supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) 
 and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
-
-**There are different ways you can contribute to CloudSim Plus, as it is shown in the 
-[contribution guide](CONTRIBUTING.md). 
-One easy way is to click on the "Star" button at the top of the project's GitHub page. 
-It costs you nothing and helps promoting the project.**
-
-The original [CloudSim](http://github.com/Cloudslab/cloudsim) project is developed in the 
-[Cloud Computing and Distributed Systems (CLOUDS) Laboratory](http://cloudbus.org/), 
-at the [Computer Science and Software Engineering Department](http://www.csse.unimelb.edu.au/) 
-of the [University of Melbourne](http://www.unimelb.edu.au/).
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
@@ -126,13 +116,14 @@ to advanced features for simulating more realistic cloud scenarios:
 
 Framework          |Simulation Time (min) |VmAllocationPolicy|DCs|Hosts|VMs  |Cloudlets
 -------------------|----------------------|------------------|---|-----|-----|---------
-CloudSim      4.0.0|23.95                 |Simple (WorstFit) |1  |20000|40000|50000
-CloudSim Plus 4.3.4|15.78                 |Simple (WorstFit) |1  |20000|40000|50000
-CloudSim Plus 4.3.4|15.70                 |BestFit**         |1  |20000|40000|50000
-CloudSim Plus 4.3.4|&nbsp;&nbsp;1.35      |FirstFit**        |1  |20000|40000|50000 
+CloudSim      4.0.0|23.9                  |Simple (WorstFit) |1  |20000|40000|50000
+CloudSim      4.0.0|19.6                  |BestFit**         |1  |20000|40000|50000
+CloudSim      4.0.0|13.6                  |FirstFit**        |1  |20000|40000|50000
+CloudSim Plus 4.3.4|15.7                  |Simple (WorstFit) |1  |20000|40000|50000
+CloudSim Plus 4.3.4|15.7                  |BestFit**         |1  |20000|40000|50000
+CloudSim Plus 4.3.4|&nbsp;&nbsp;1.3       |FirstFit**        |1  |20000|40000|50000 
 
-\* *More details and results [here](docs/performance.md).* \
-\** *Only available in CloudSim Plus.*
+\* *More details and results [here](docs/performance.md).*   \** *Only officially available in CloudSim Plus.*
 
 # Project's Structure
 
@@ -431,13 +422,13 @@ A complete and clear example was presented in the <a href="#a-minimal-and-comple
 
 # General Features of the Framework
 
-* Support for modeling and simulation of large scale Cloud computing data centers.
-* Support for modeling and simulation of virtualized server hosts, with customizable policies for provisioning host resources to virtual machines.
-* Support for modeling and simulation of energy-aware computational resources.
-* Support for modeling and simulation of data center network topologies and message-passing applications.
-* Support for modeling and simulation of federated clouds.
-* Support for dynamic insertion of simulation elements, stop and resume of simulation.
-* Support for user-defined policies for allocation of hosts to virtual machines and policies for allocation of host resources to virtual machines.
+CloudSim Plus supports modeling and simulation of:
+
+* large scale Cloud computing data centers;
+* virtualized server hosts, with customizable policies for provisioning host resources to virtual machines;
+* data center network topologies and message-passing applications;
+* federated clouds;
+* user-defined policies for allocation of hosts to virtual machines and policies for allocation of host resources to virtual machines.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 

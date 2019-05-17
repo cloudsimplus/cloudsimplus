@@ -13,15 +13,16 @@ Each results was generated from a simulation scenario defined in a YML file.
 
 ## Cloudlet's UtilizationModel
 
-- Cloudlet's UtilizationModel for CPU: UtilizationModelStochastic (1 instance for each Cloudlet)
+- Cloudlet's UtilizationModel for CPU: UtilizationModelStochastic (1 instance for each Cloudlet, history enabled)
 - Scenario File: [CloudEnvironment6.yml](https://github.com/manoelcampos/cloudsim-plus-automation/blob/master/CloudEnvironment6.yml)
 
 | Framework          |Simulation Time (min)|VmAllocationPolicy|DCs|Hosts|VMs   |Cloudlets|
 |--------------------|---------------------|------------------|---|-----|------|---------|
-| CloudSim 4.0.0     |21.74                |Simple (WorstFit) |1  |20000|40000 |50000    |
-| CloudSim Plus 4.3.2|38.83                |Simple (WorstFit) |1  |20000|40000 |50000    |
-| CloudSim Plus 4.3.5|14.88                |Simple (WorstFit) |1  |20000|40000 |50000    |
-| CloudSim Plus 4.3.5|15.25                |BestFit**         |1  |20000|40000 |50000    |
-| CloudSim Plus 4.3.5|&nbsp;&nbsp;2.47     |FirstFit**        |1  |20000|40000 |50000    |
+| CloudSim 4.0.0     |21.7                 |Simple (WorstFit) |1  |20000|40000 |50000    |
+| CloudSim 4.0.0     |18.6                 |BestFit**         |1  |20000|40000 |50000    |
+| CloudSim 4.0.0     |13.3                 |FirstFit**        |1  |20000|40000 |50000    |
+| CloudSim Plus 4.3.5|14.8                 |Simple (WorstFit) |1  |20000|40000 |50000    |
+| CloudSim Plus 4.3.5|15.2                 |BestFit**         |1  |20000|40000 |50000    |
+| CloudSim Plus 4.3.5|&nbsp;&nbsp;2.4      |FirstFit**        |1  |20000|40000 |50000    |
 
-\** *Only available in CloudSim Plus.*
+\** *Only officially available in CloudSim Plus.*
