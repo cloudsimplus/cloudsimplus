@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.examples;
 
-import org.apache.commons.lang3.Range;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -43,6 +42,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -98,12 +98,13 @@ public class RandomVmAllocationPolicyExample {
     }
 
     public RandomVmAllocationPolicyExample() {
+        final double startSecs = TimeUtil.currentTimeSecs();
         //Enables just some level of log messages.
         Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSim();
 
-        random = new UniformDistr(Range.between(-1.0, 1.0));
+        random = new UniformDistr();
         datacenter0 = createDatacenter();
 
         //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
@@ -119,6 +120,7 @@ public class RandomVmAllocationPolicyExample {
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         finishedCloudlets.sort(Comparator.comparingLong(cloudlet -> cloudlet.getVm().getId()));
         new CloudletsTableBuilder(finishedCloudlets).build();
+        System.out.println("Execution time: " + TimeUtil.secondsToStr(TimeUtil.elapsedSeconds(startSecs)));
     }
 
     /**
@@ -143,27 +145,29 @@ public class RandomVmAllocationPolicyExample {
 
     /**
      * Define a specific policy to randomly select a suitable Host to place a given VM.
-     * It implements a {@link Comparator} that randomly sorts the Hosts by returning a value between [-1..1]
-     * (according to comparator requirements).
-     * Hosts' attributes aren't even considered to ensure the randomness.
+     * It's a very efficient policy since it doesn't perform sorting
+     * in order to find a suitable Host.
      *
      * @param vmAllocationPolicy the {@link VmAllocationPolicy} containing Host allocation information
      * @param vm the {@link Vm} to find a host to be placed
      * @return an {@link Optional} that may contain a Host in which to place a Vm, or an {@link Optional#empty()}
      *         {@link Optional} if not suitable Host was found.
      */
-    private Optional<Host> findRandomSuitableHostForVm(VmAllocationPolicy vmAllocationPolicy, Vm vm) {
-        /* When comparing two hosts, if they are equal (are the same instance or have the same id, as defined
-         * in HostSimple), return 0 to indicate that.
-         * If they aren't equal, the comparator will return a int number between [-1 and 1]
-         * that results in the random selection of one of these two hosts.*/
-        final Comparator<Host> hostRandomComparator = (host1, host2) -> host1.equals(host2) ? 0 : (int) random.sample();
+    private Optional<Host> findRandomSuitableHostForVm(final VmAllocationPolicy vmAllocationPolicy, final Vm vm) {
+        final List<Host> hostList = vmAllocationPolicy.getHostList();
+        /* Despite the loop is bound to the number of Hosts inside the List,
+        *  the index "i" is not used to get a Host at that position,
+        *  but just to define that the maximum number of tries to find a
+        *  suitable Host will be the number of available Hosts.*/
+        for (int i = 0; i < hostList.size(); i++){
+            final int randomIndex = (int)(random.sample() * hostList.size());
+            final Host host = hostList.get(randomIndex);
+            if(host.isSuitableForVm(vm)){
+                return Optional.of(host);
+            }
+        }
 
-        return vmAllocationPolicy
-            .getHostList()
-            .stream()
-            .filter(host -> host.isSuitableForVm(vm))
-            .min(hostRandomComparator);
+        return Optional.empty();
     }
 
     private Host createHost() {
