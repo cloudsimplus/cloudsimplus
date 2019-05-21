@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.examples;
 
+import org.apache.commons.lang3.Range;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -37,12 +38,10 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
@@ -50,6 +49,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.util.Log;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -98,13 +98,12 @@ public class RandomVmAllocationPolicyExample {
     }
 
     public RandomVmAllocationPolicyExample() {
-        /*Enables just some level of log messages.
-          Make sure to import org.cloudsimplus.util.Log;*/
-        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+        //Enables just some level of log messages.
+        Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSim();
 
-        random = new UniformDistr(-1, 2);
+        random = new UniformDistr(Range.between(-1.0, 1.0));
         datacenter0 = createDatacenter();
 
         //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
@@ -118,6 +117,7 @@ public class RandomVmAllocationPolicyExample {
         simulation.start();
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        finishedCloudlets.sort(Comparator.comparingLong(cloudlet -> cloudlet.getVm().getId()));
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
@@ -153,12 +153,17 @@ public class RandomVmAllocationPolicyExample {
      *         {@link Optional} if not suitable Host was found.
      */
     private Optional<Host> findRandomSuitableHostForVm(VmAllocationPolicy vmAllocationPolicy, Vm vm) {
+        /* When comparing two hosts, if they are equal (are the same instance or have the same id, as defined
+         * in HostSimple), return 0 to indicate that.
+         * If they aren't equal, the comparator will return a int number between [-1 and 1]
+         * that results in the random selection of one of these two hosts.*/
+        final Comparator<Host> hostRandomComparator = (host1, host2) -> host1.equals(host2) ? 0 : (int) random.sample();
+
         return vmAllocationPolicy
-                    .getHostList()
-                    .stream()
-                    .filter(host -> host.isSuitableForVm(vm))
-                    .sorted(Comparator.comparingDouble(host -> random.sample()))
-                    .findAny();
+            .getHostList()
+            .stream()
+            .filter(host -> host.isSuitableForVm(vm))
+            .min(hostRandomComparator);
     }
 
     private Host createHost() {
