@@ -337,9 +337,20 @@ public interface Host extends Machine, Comparable<Host> {
     /**
      * Gets the elapsed time since the last time the Host was powered on
      * @return the elapsed time (in seconds)
+     * @see #getUpTimeHours()
      * @see #getTotalUpTime()
+     * @see #getTotalUpTimeHours()
      */
     double getUpTime();
+
+    /**
+     * Gets the elapsed time since the last time the Host was powered on
+     * @return the elapsed time (in hours)
+     * @see #getUpTime()
+     * @see #getTotalUpTime()
+     * @see #getTotalUpTimeHours()
+     */
+    double getUpTimeHours();
 
     /**
      * Gets the total time the Host stayed active (powered on).
@@ -350,9 +361,26 @@ public interface Host extends Machine, Comparable<Host> {
      * @return the total up time (in seconds)
      * @see #setActive(boolean)
      * @see #setIdleShutdownDeadline(double)
+     * @see #getTotalUpTimeHours()
      * @see #getUpTime()
+     * @see #getUpTimeHours()
      */
     double getTotalUpTime();
+
+    /**
+     * Gets the total time the Host stayed active (powered on).
+     * Since the Host can be powered on and off according to demand,
+     * this method returns the sum of all interval that the Host
+     * was active (in hours).
+     *
+     * @return the total up time (in hours)
+     * @see #setActive(boolean)
+     * @see #setIdleShutdownDeadline(double)
+     * @see #getTotalUpTime()
+     * @see #getUpTime()
+     * @see #getUpTimeHours()
+     */
+    double getTotalUpTimeHours();
 
     /**
      * Gets the deadline to shutdown the Host when it become idle.
