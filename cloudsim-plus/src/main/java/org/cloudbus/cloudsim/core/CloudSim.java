@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
-import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.slf4j.Logger;
@@ -317,7 +317,7 @@ public class CloudSim implements Simulation {
                                 ? extra + " in reason of an explicit request to terminate() or terminateAt()"
                                 : "";
 
-        if(terminationTime > 0 && clock > lastCloudletProcessingUpdate + Conversion.minutesToSeconds(60)){
+        if(terminationTime > 0 && clock > lastCloudletProcessingUpdate + TimeUtil.minutesToSeconds(60)){
             LOGGER.warn(
                 "Your simulation termination time was set to {} but the last time a Cloudlet has processed was {}. "+
                 "If you think your simulation is taking to long to finish, " +

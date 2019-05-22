@@ -79,18 +79,4 @@ public class ConversionTest {
         final double expectedMB = 1048576;
         assertEquals(expectedMB, Conversion.teraToMega(tera));
     }
-
-    @Test
-    public void microToMilli1(){
-        final double micro = 1;
-        final double expectedMilli = 0.001;
-        assertEquals(expectedMilli, Conversion.microToMilli(micro));
-    }
-
-    @Test
-    public void microToMilli1000(){
-        final double micro = 1000;
-        final double expectedMilli = 1;
-        assertEquals(expectedMilli, Conversion.microToMilli(micro));
-    }
 }

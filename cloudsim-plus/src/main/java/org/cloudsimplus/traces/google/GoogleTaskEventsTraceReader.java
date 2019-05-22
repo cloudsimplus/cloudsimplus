@@ -30,8 +30,8 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
-import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudsimplus.listeners.EventInfo;
@@ -117,7 +117,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
              */
             @Override
             public Double getValue(final GoogleTaskEventsTraceReader reader) {
-                return Conversion.microToSeconds(reader.getFieldDoubleValue(this));
+                return TimeUtil.microToSeconds(reader.getFieldDoubleValue(this));
             }
         },
 

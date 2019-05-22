@@ -37,6 +37,7 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -150,7 +151,7 @@ public class UtilizationModelStochasticPerformance {
         simulation.start();
         final double maxHeapUtilizationGB = getMaxHeapUtilizationGB();
 
-        final double execMinutes = Conversion.millisecsToMinutes(System.currentTimeMillis() - startMillis);
+        final double execMinutes = TimeUtil.millisecsToMinutes(System.currentTimeMillis() - startMillis);
         System.out.printf(
             "Multiple Utilization Models: %s | Store Utilization History: %s\n\n",
             MULTIPLE_UTILIZATION_MODELS, STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY);
@@ -159,7 +160,7 @@ public class UtilizationModelStochasticPerformance {
         System.out.println("| ---------------|-----------------|---------------|--------------------|------------|------------|------------|--------------|------------------------|");
         System.out.printf(
             "| %10.2f min | %11.2f min | %10.2f GB | %18s | %10d | %10d | %10d | %12d | %22d |",
-            execMinutes, Conversion.secondsToMinutes(simulation.clock()), maxHeapUtilizationGB,
+            execMinutes, TimeUtil.secondsToMinutes(simulation.clock()), maxHeapUtilizationGB,
             VM_ALLOCATION_POLICY.getClass().getSimpleName().substring(18),
             HOSTS, VMS, CLOUDLETS, CLOUDLET_LENGTH, SCHEDULING_INTERVAL);
     }

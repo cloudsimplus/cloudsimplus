@@ -30,6 +30,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 
 import java.io.FileNotFoundException;
@@ -88,7 +89,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
              */
             @Override
             public Double getValue(final GoogleMachineEventsTraceReader reader) {
-                return Conversion.microToSeconds(reader.getFieldDoubleValue(this));
+                return TimeUtil.microToSeconds(reader.getFieldDoubleValue(this));
             }
         },
 

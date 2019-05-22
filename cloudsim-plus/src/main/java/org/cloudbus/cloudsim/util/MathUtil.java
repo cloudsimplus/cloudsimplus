@@ -20,6 +20,7 @@ import java.util.*;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 3.0
+ * @see TimeUtil
  */
 public final class MathUtil {
     /**
