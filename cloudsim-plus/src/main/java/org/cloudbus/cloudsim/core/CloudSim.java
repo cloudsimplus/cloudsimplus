@@ -217,29 +217,49 @@ public class CloudSim implements Simulation {
         this.circularClockTimeQueue = new double[]{minTimeBetweenEvents, minTimeBetweenEvents};
     }
 
-    @Override
-    public double start() {
+    public void startSync() {
         if(alreadyRunOnce){
             throw new UnsupportedOperationException(
                 "You can't run a simulation that has already run previously. " +
-                "If you've paused the simulation and want to resume it, call the resume() method.");
+                    "If you've paused the simulation and want to resume it, call the resume() method.");
         }
 
         LOGGER.info("{}================== Starting {} =================={}", System.lineSeparator(), VERSION,  System.lineSeparator());
         startEntitiesIfNotRunning();
         this.alreadyRunOnce = true;
+    }
 
-        if(!eventLoop()){
-            return clock;
-        }
-
+    public void finalizeSimulation() {
         notifyEndOfSimulationToEntities();
         running = false;
         LOGGER.info("Simulation: No more future events{}", System.lineSeparator());
 
         finishSimulation();
         printSimulationFinished();
+    }
 
+    public double runFor(double interval) {
+        double until = this.clock + interval;
+        while (runClockTickAndProcessFutureEventsUntil(until)) {
+            notifyOnSimulationStartListeners(); //it's ensured to run just once.
+        }
+
+        if(until > this.clock) {
+            this.clock = until;
+        }
+
+        return clock;
+    }
+
+    @Override
+    public double start() {
+        startSync();
+
+        if(!eventLoop()){
+            return clock;
+        }
+
+        finalizeSimulation();
         return clock;
     }
 
@@ -447,6 +467,22 @@ public class CloudSim implements Simulation {
         return false;
     }
 
+    private boolean runClockTickAndProcessFutureEventsUntil(double until) {
+        executeRunnableEntitiesUntil(until);
+        if (!future.isEmpty()) {
+            SimEvent first = future.first();
+
+            if(first.getTime() <= until) {
+                processFutureEventsHappeningAtSameTimeOfTheFirstOne(first);
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
     private boolean isToWaitClockToReachTerminationTime() {
         if(isTerminationTimeSet()){
             final double increment = minDatacentersSchedulingInterval();
@@ -511,6 +547,17 @@ public class CloudSim implements Simulation {
             CloudSimEntity ent = entities.get(i);
             if (ent.getState() == SimEntity.State.RUNNABLE) {
                 ent.run();
+            }
+        }
+    }
+
+    private void executeRunnableEntitiesUntil(double until) {
+        /*Uses an indexed for instead of anything else to avoid
+        ConcurrencyModificationException when a HostFaultInjection is created inside a Datacenter*/
+        for (int i = 0; i < entities.size(); i++) {
+            CloudSimEntity ent = entities.get(i);
+            if (ent.getState() == SimEntity.State.RUNNABLE) {
+                ent.runUntil(until);
             }
         }
     }
