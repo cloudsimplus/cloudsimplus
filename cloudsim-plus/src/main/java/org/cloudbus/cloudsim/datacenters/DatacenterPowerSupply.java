@@ -42,7 +42,7 @@ public class DatacenterPowerSupply implements PowerAware {
         double datacenterTimeSpanPowerUse = 0;
         for (final Host host : datacenter.getHostList()) {
             final double prevCpuUsage = host.getPreviousUtilizationOfCpu();
-            final double cpuUsage = host.getUtilizationOfCpu();
+            final double cpuUsage = host.getCpuPercentUtilization();
             final double timeFrameHostEnergy =
                 host.getPowerModel().getEnergyLinearInterpolation(prevCpuUsage, cpuUsage, clock - lastDatacenterProcessTime);
             datacenterTimeSpanPowerUse += timeFrameHostEnergy;

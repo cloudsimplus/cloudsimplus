@@ -88,7 +88,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends AbstractCl
         broker0.getVmExecList().forEach(vm
                 -> System.out.printf("#### Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
                         eventInfo.getTime(), vm.getId(),
-                        vm.getCpuPercentUsage(), getCustomerMaxCpuUtilization())
+                        vm.getCpuPercentUtilization(), getCustomerMaxCpuUtilization())
         );
     }
 

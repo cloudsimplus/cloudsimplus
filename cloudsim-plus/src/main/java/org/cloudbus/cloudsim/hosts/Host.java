@@ -518,7 +518,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return
      */
-    double getUtilizationOfCpu();
+    double getCpuPercentUtilization();
 
     /**
      * Gets the current total utilization of CPU in MIPS,
@@ -526,21 +526,21 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return
      */
-    double getUtilizationOfCpuMips();
+    double getCpuMipsUtilization();
 
     /**
-     * Gets the current utilization of bw (in absolute values).
+     * Gets the current utilization of bw (in Megabits/s).
      *
      * @return
      */
-    long getUtilizationOfBw();
+    long getBwUtilization();
 
     /**
-     * Gets the current utilization of memory (in absolute values).
+     * Gets the current utilization of memory (in Megabytes).
      *
      * @return
      */
-    long getUtilizationOfRam();
+    long getRamUtilization();
 
     /**
      * <p>Gets a map containing the host CPU utilization percentage history (between [0 and 1]),

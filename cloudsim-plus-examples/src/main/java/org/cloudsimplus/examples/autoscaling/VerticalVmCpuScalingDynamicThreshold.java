@@ -61,7 +61,6 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static java.util.Comparator.comparingDouble;
 
@@ -162,7 +161,7 @@ public class VerticalVmCpuScalingDynamicThreshold {
         vmList.forEach(vm -> {
             System.out.printf(
                 "\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%02d) Upper Threshold: %.2f History Entries: %d\n",
-                evt.getTime(), vm.getId(), vm.getCpuPercentUsage()*100.0,
+                evt.getTime(), vm.getId(), vm.getCpuPercentUtilization()*100.0,
                 vm.getNumberOfPes(),
                 vm.getCloudletScheduler().getCloudletExecList().size(),
                 vm.getPeVerticalScaling().getUpperThresholdFunction().apply(vm),

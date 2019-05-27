@@ -144,10 +144,10 @@ final class HostNull implements Host {
     @Override public List<Pe> getWorkingPeList() { return Collections.emptyList(); }
     @Override public List<Pe> getBusyPeList() { return Collections.emptyList(); }
     @Override public List<Pe> getFreePeList() { return Collections.emptyList(); }
-    @Override public double getUtilizationOfCpu() { return 0.0; }
-    @Override public double getUtilizationOfCpuMips() { return 0.0; }
-    @Override public long getUtilizationOfBw() { return 0; }
-    @Override public long getUtilizationOfRam() { return 0; }
+    @Override public double getCpuPercentUtilization() { return 0.0; }
+    @Override public double getCpuMipsUtilization() { return 0.0; }
+    @Override public long getBwUtilization() { return 0; }
+    @Override public long getRamUtilization() { return 0; }
     @Override public SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory() { return Collections.emptySortedMap(); }
     @Override public SortedMap<Double, Double> getUtilizationHistorySum() { return Collections.emptySortedMap(); }
     @Override public PowerModel getPowerModel() { return PowerModel.NULL; }

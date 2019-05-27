@@ -123,7 +123,7 @@ public interface HorizontalVmScaling extends VmScaling {
      *                  to define a {@link #getVm() Vm} as overloaded.
      *                  The predicate receives the Vm that has to be checked.
      *                  Such a condition can be defined, for instance,
-     *                  based on Vm's {@link Vm#getCpuPercentUsage(double)} CPU usage}
+     *                  based on Vm's {@link Vm#getCpuPercentUtilization(double)} CPU usage}
      *                  and/or any other VM resource usage.
      *                  Despite the VmScaling already is already linked to a {@link #getVm() Vm},
      *                  the Vm parameter for the {@link Predicate} enables reusing the same predicate

@@ -25,7 +25,7 @@ public abstract class PowerModelAbstract implements PowerModel {
 
     @Override
     public double getPower() {
-        return getPower(host.getUtilizationOfCpu());
+        return getPower(host.getCpuPercentUtilization());
     }
 
     @Override

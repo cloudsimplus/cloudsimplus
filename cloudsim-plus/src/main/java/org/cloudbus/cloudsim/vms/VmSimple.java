@@ -43,77 +43,48 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSimple extends CustomerEntityAbstract implements Vm {
-    /**
-     * @see #setDefaultRamCapacity(long)
-     */
+    /** @see #setDefaultRamCapacity(long) */
     private static long defaultRamCapacity = 1024;
-    /**
-     * @see #setDefaultBwCapacity(long)
-     */
+    /** @see #setDefaultBwCapacity(long) */
     private static long defaultBwCapacity = 100;
-    /**
-     * @see #setDefaultStorageCapacity(long)
-     */
+    /** @see #setDefaultStorageCapacity(long) */
     private static long defaultStorageCapacity = 1024;
-
-    /**
-     * @see #getUtilizationHistory()
-     */
+    /** @see #getUtilizationHistory() */
     private final UtilizationHistory utilizationHistory;
 
-    /**
-     * @see #getStateHistory()
-     */
+    /** @see #getStateHistory() */
     private final List<VmStateHistoryEntry> stateHistory;
 
     private HorizontalVmScaling horizontalScaling;
     private boolean failed;
 
-    /**
-     * @see #getProcessor()
-     */
+    /** @see #getProcessor() */
     private final Processor processor;
 
-    /**
-     * @see #getVmm()
-     */
+    /** @see #getVmm() */
     private String vmm;
 
-    /**
-     * @see #getCloudletScheduler()
-     */
+    /** @see #getCloudletScheduler() */
     private CloudletScheduler cloudletScheduler;
 
-    /**
-     * @see #getHost()
-     */
+    /** @see #getHost() */
     private Host host;
 
-    /**
-     * @see #isInMigration()
-     */
+    /** @see #isInMigration() */
     private boolean inMigration;
 
-    /**
-     * @see #isCreated()
-     */
+    /** @see #isCreated() */
     private boolean created;
 
     private List<ResourceManageable> resources;
 
-    /**
-     * @see #getStorage()
-     */
+    /** @see #getStorage() */
     private Storage storage;
 
-    /**
-     * @see #getRam()
-     */
+    /** @see #getRam() */
     private Ram ram;
 
-    /**
-     * @see #getBw()
-     */
+    /** @see #getBw() */
     private Bandwidth bw;
 
     /** @see #getFreePesNumber() */
@@ -122,9 +93,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #getFreePesNumber() */
     private long expectedFreePesNumber;
 
-    /**
-     * @see #getSubmissionDelay()
-     */
+    /** @see #getSubmissionDelay() */
     private double submissionDelay;
 
     private final Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
@@ -278,8 +247,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
          */
         final double decimals = currentTime - (int) currentTime;
         utilizationHistory.addUtilizationHistory(currentTime);
-        ((DatacenterBrokerAbstract)getBroker()).requestIdleVmDestruction(this);
-        if(nextEventDelay == Double.MAX_VALUE){
+        ((DatacenterBrokerAbstract) getBroker()).requestIdleVmDestruction(this);
+        if (nextEventDelay == Double.MAX_VALUE) {
             return nextEventDelay;
         }
 
@@ -297,7 +266,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @return the new free pes number
      */
     public Vm setFreePesNumber(long freePesNumber) {
-        if(freePesNumber < 0) {
+        if (freePesNumber < 0) {
             LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");
             freePesNumber = 0;
         }
@@ -336,7 +305,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param expectedFreePes the expected free PEs number to set
      */
     private Vm setExpectedFreePesNumber(long expectedFreePes) {
-        if(expectedFreePes < 0) {
+        if (expectedFreePes < 0) {
             LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");
             expectedFreePes = 0;
         }
@@ -345,23 +314,42 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double getCpuPercentUsage() {
-        return getCpuPercentUsage(getSimulation().clock());
+    public double getCpuPercentUtilization() {
+        return getCpuPercentUtilization(getSimulation().clock());
     }
 
     @Override
-    public double getCpuPercentUsage(final double time) {
+    public double getCpuPercentUtilization(final double time) {
         return cloudletScheduler.getRequestedCpuPercentUtilization(time);
     }
 
     @Override
-    public double getTotalCpuMipsUsage() {
-        return getTotalCpuMipsUsage(getSimulation().clock());
+    public double getHostCpuUtilization(final double time) {
+        return hostCpuUtilizationInternal(getCpuPercentUtilization(time));
+    }
+
+    public final double hostCpuUtilizationInternal(final double vmCpuUtilizationPercent) {
+        return vmCpuUtilizationPercent * getRelativeMipsCapacityPercent();
     }
 
     @Override
-    public double getTotalCpuMipsUsage(final double time) {
-        return getCpuPercentUsage(time) * getTotalMipsCapacity();
+    public double getHostRamUtilization() {
+        return ram.getPercentUtilization() * host.getRam().getPercentUtilization();
+    }
+
+    @Override
+    public double getHostBwUtilization() {
+        return bw.getPercentUtilization() * host.getBw().getPercentUtilization();
+    }
+
+    @Override
+    public double getTotalCpuMipsUtilization() {
+        return getTotalCpuMipsUtilization(getSimulation().clock());
+    }
+
+    @Override
+    public double getTotalCpuMipsUtilization(final double time) {
+        return getCpuPercentUtilization(time) * getTotalMipsCapacity();
     }
 
     @Override
@@ -403,8 +391,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         return getMips() * getNumberOfPes();
     }
 
-    @Override
-    public double getRelativeMipsCapacityPercent() {
+    /**
+     * Gets the percentage of the MIPS capacity this VM represents from the total {@link Host} MIPS capacity.
+     *
+     * @return the VM relative MIPS capacity percentage
+     */
+    private double getRelativeMipsCapacityPercent() {
         return getTotalMipsCapacity() / host.getTotalMipsCapacity();
     }
 
@@ -446,9 +438,10 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     /**
      * Checks if the VM has ever started some Cloudlet.
+     *
      * @return
      */
-    public boolean hasStartedSomeCloudlet(){
+    public boolean hasStartedSomeCloudlet() {
         return lastBusyTime != Double.MAX_VALUE;
     }
 

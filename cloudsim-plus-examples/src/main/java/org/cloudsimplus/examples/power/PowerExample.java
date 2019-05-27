@@ -219,7 +219,7 @@ public class PowerExample {
                 final double wattsPerInterval = vmPower*utilizationHistoryTimeInterval;
                 System.out.printf(
                     "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watt-Sec * %6.0f Secs = %10.2f Watt-Sec\n",
-                    time, history.cpuUsageFromHostCapacity(time) *100, vmPower, utilizationHistoryTimeInterval, wattsPerInterval);
+                    time, history.getHostCpuUtilization(time) *100, vmPower, utilizationHistoryTimeInterval, wattsPerInterval);
                 prevTime = time;
             }
             System.out.println();

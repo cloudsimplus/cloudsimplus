@@ -1,15 +1,6 @@
-.flattened-pom.xml
-.DS_Store
-/docs/_build
-/cloudsim-plus/target/
-/cloudsim-plus-examples/target/
-/cloudsim-plus-benchmarks/target/
-/cloudsim-plus-testbeds/target/
-/cloudsim-plus/nbproject/
-/distribution/target/
-/target/
-dependency-reduced-pom.xml
-/cloudsim-plus-examples/output/
+target/
+output/
+
 #Ignore IntelliJ IDEA project files
 .idea/
 *.uml
@@ -29,7 +20,13 @@ nbproject/
 
 #Documentation
 docs/presentation/node_modules/
+/docs/_build
 
+dependency-reduced-pom.xml
+.flattened-pom.xml
+Teste.java
+Test.java
+.DS_Store
 *.jar
 *.~lock*
 ~$*

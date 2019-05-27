@@ -200,12 +200,12 @@ public class VmSimpleTest {
 
     @Test
     public void testGetTotalUtilization() {
-        assertEquals(0, vm.getCpuPercentUsage(0));
+        assertEquals(0, vm.getCpuPercentUtilization(0));
     }
 
     @Test
     public void testGetTotalUtilizationMips() {
-        assertEquals(0, vm.getTotalCpuMipsUsage(0));
+        assertEquals(0, vm.getTotalCpuMipsUtilization(0));
     }
 
     @Test

@@ -199,7 +199,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private String overloadedHostToString(final Host host) {
         return String.format(
             "    Host %d (upper CPU threshold %.2f, current utilization: %.2f)",
-            host.getId(), getOverUtilizationThreshold(host), host.getUtilizationOfCpu());
+            host.getId(), getOverUtilizationThreshold(host), host.getCpuPercentUtilization());
     }
 
     /**
@@ -248,7 +248,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     @Override
     public boolean isHostOverloaded(final Host host) {
-        return isHostOverloaded(host, host.getUtilizationOfCpu());
+        return isHostOverloaded(host, host.getCpuPercentUtilization());
     }
 
     /**
@@ -451,7 +451,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param simulationTime the simulation time to get the current CPU utilization for each Vm
      */
     private void sortByCpuUtilization(final List<? extends Vm> vmList, final double simulationTime) {
-        final Comparator<Vm> comparator = comparingDouble(vm -> vm.getTotalCpuMipsUsage(simulationTime));
+        final Comparator<Vm> comparator = comparingDouble(vm -> vm.getTotalCpuMipsUtilization(simulationTime));
         vmList.sort(comparator.reversed());
     }
 
@@ -562,7 +562,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             .filter(this::isHostUnderloaded)
             .filter(host -> host.getVmsMigratingIn().isEmpty())
             .filter(this::notAllVmsAreMigratingOut)
-            .min(comparingDouble(Host::getUtilizationOfCpu))
+            .min(comparingDouble(Host::getCpuPercentUtilization))
             .orElse(Host.NULL);
     }
 

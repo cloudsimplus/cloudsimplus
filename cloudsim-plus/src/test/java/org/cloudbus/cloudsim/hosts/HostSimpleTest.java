@@ -381,7 +381,7 @@ public class HostSimpleTest {
                     .andReturn(nextCloudletCompletionTimeOfCurrentVm)
                     .times(1);
             EasyMock
-                    .expect(vm.getTotalCpuMipsUsage())
+                    .expect(vm.getTotalCpuMipsUtilization())
                     .andReturn(totalMipsCapacity)
                     .times(1);
             EasyMock.replay(vm);

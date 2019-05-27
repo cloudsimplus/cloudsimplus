@@ -50,7 +50,6 @@ final class VmNull implements Vm {
     @Override public List<Double> getCurrentRequestedMips() {
         return Collections.emptyList();
     }
-    @Override public double getRelativeMipsCapacityPercent() { return 0; }
     @Override public long getCurrentRequestedRam() {
         return 0;
     }
@@ -100,14 +99,17 @@ final class VmNull implements Vm {
     @Override public List<VmStateHistoryEntry> getStateHistory() {
         return Collections.emptyList();
     }
-    @Override public double getCpuPercentUsage(double time) {
+    @Override public double getHostCpuUtilization(double time) { return 0; }
+    @Override public double getCpuPercentUtilization(double time) {
         return 0.0;
     }
-    @Override public double getCpuPercentUsage() {
+    @Override public double getCpuPercentUtilization() {
         return 0;
     }
-    @Override public double getTotalCpuMipsUsage() { return 0; }
-    @Override public double getTotalCpuMipsUsage(double time) {
+    @Override public double getHostRamUtilization() { return 0; }
+    @Override public double getHostBwUtilization() { return 0; }
+    @Override public double getTotalCpuMipsUtilization() { return 0; }
+    @Override public double getTotalCpuMipsUtilization(double time) {
         return 0.0;
     }
     @Override public String getUid() {

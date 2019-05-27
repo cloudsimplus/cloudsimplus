@@ -43,7 +43,7 @@ public class VmSelectionPolicyMinimumUtilization implements VmSelectionPolicy {
 
         final Predicate<Vm> inMigration = Vm::isInMigration;
         final Comparator<? super Vm> cpuUsageComparator =
-            Comparator.comparingDouble(vm -> vm.getCpuPercentUsage(vm.getSimulation().clock()));
+            Comparator.comparingDouble(vm -> vm.getCpuPercentUtilization(vm.getSimulation().clock()));
         final Optional<? extends Vm> optional = migratableVms.stream()
                                                              .filter(inMigration.negate())
                                                              .min(cpuUsageComparator);

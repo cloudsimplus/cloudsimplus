@@ -112,7 +112,7 @@ public class VmUtilizationHistory implements UtilizationHistory {
             return;
         }
 
-        final double utilization = vm.getCpuPercentUsage(vm.getCloudletScheduler().getPreviousTime());
+        final double utilization = vm.getCpuPercentUtilization(vm.getCloudletScheduler().getPreviousTime());
         time = vm.isIdle() ? time : (int)time;
         addUtilizationHistoryValue(time, utilization);
         this.previousTime = time;
@@ -180,7 +180,7 @@ public class VmUtilizationHistory implements UtilizationHistory {
         /* Computes the % of the CPU the VM is using, relative to the Host's USED MIPS.
          * If the Host's USED MIPS is 500 and a VM is using 250 MIPS, this value represents
          * 50% of the Host's USED MIPS.*/
-        final double vmCpuUsageFromHostUsage = hostTotalCpuUsage == 0 ? 0 : cpuUsageFromHostCapacity(time) / hostTotalCpuUsage;
+        final double vmCpuUsageFromHostUsage = hostTotalCpuUsage == 0 ? 0 : getHostCpuUtilization(time) / hostTotalCpuUsage;
 
         //The total power the Host is consuming (considering all running VMs)
         final double hostTotalPower = vm.getHost().getPowerModel().getPower(hostTotalCpuUsage);
@@ -189,10 +189,10 @@ public class VmUtilizationHistory implements UtilizationHistory {
     }
 
     @Override
-    public double cpuUsageFromHostCapacity(final double time){
+    public double getHostCpuUtilization(final double time){
         //VM CPU usage relative to the VM capacity.
         final double vmUsagePercent = history.get(time);
-        return vmUsagePercent * vm.getRelativeMipsCapacityPercent();
+        return ((VmSimple)vm).hostCpuUtilizationInternal(vmUsagePercent);
     }
 
     @Override

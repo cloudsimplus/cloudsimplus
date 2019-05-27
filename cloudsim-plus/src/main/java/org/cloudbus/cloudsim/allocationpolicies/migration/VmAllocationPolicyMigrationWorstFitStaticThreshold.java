@@ -71,6 +71,6 @@ public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends VmAlloca
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream) {
         /*It's ignoring the super class to intentionally avoid the additional filtering performed there
         * and to apply a different method to select the Host to place the VM.*/
-        return hostStream.min(Comparator.comparingDouble(Host::getUtilizationOfCpuMips));
+        return hostStream.min(Comparator.comparingDouble(Host::getCpuMipsUtilization));
     }
 }

@@ -116,12 +116,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     List<Double> getCurrentRequestedMips();
 
     /**
-     * Gets the percentage of the MIPS capacity this VM represents from the total {@link Host} MIPS capacity.
-     * @return the VM relative MIPS capacity percentage
-     */
-    double getRelativeMipsCapacityPercent();
-
-    /**
      * Gets the current requested ram.
      *
      * @return the current requested ram
@@ -294,13 +288,13 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     List<VmStateHistoryEntry> getStateHistory();
 
     /**
-     * Gets the CPU utilization percentage of all Clouddlets running on this
+     * Gets the CPU utilization percentage of all Cloudlets running on this
      * VM at the given time.
      *
      * @param time the time
      * @return total utilization percentage
      */
-    double getCpuPercentUsage(double time);
+    double getCpuPercentUtilization(double time);
 
     /**
      * Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this
@@ -308,16 +302,56 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      *
      * @return total utilization percentage for the current time, in scale from 0 to 1
      */
-    double getCpuPercentUsage();
+    double getCpuPercentUtilization();
+
+    /**
+     * Computes the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity
+     * for a given time.
+     * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
+     * of the Host's capacity.
+     *
+     * @return the relative VM CPU usage percent (from 0 to 1)
+     * @see #getHostCpuUtilization(double)
+     */
+    default double getHostCpuUtilization() {
+        return getHostCpuUtilization(getSimulation().clock());
+    }
+
+    /**
+     * Computes the relative percentage of the RAM the VM is using from the Host's total Capacity
+     * for the current simulation time.
+     *
+     * @return the relative VM RAM usage percent (from 0 to 1)
+     */
+    double getHostRamUtilization();
+
+    /**
+     * Computes the relative percentage of the Bandwidth the VM is using from the Host's total Capacity
+     * for the current simulation time.
+     *
+     * @return the relative VM BW usage percent (from 0 to 1)
+     */
+    double getHostBwUtilization();
+
+    /**
+     * Computes the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity
+     * for the current simulation time.
+     * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
+     * of the Host's capacity.
+     *
+     * @param time the time to get the relative VM CPU utilization
+     * @return the relative VM CPU usage percent (from 0 to 1)
+     */
+    double getHostCpuUtilization(double time);
 
     /**
      * Gets the current total CPU MIPS utilization of all PEs from all cloudlets running on this VM.
      *
      * @return total CPU utilization in MIPS
-     * @see #getCpuPercentUsage(double)
+     * @see #getCpuPercentUtilization(double)
      *
      */
-    double getTotalCpuMipsUsage();
+    double getTotalCpuMipsUtilization();
 
     /**
      * Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the
@@ -325,10 +359,10 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      *
      * @param time the time to get the utilization
      * @return total CPU utilization in MIPS
-     * @see #getCpuPercentUsage(double)
+     * @see #getCpuPercentUtilization(double)
      *
      */
-    double getTotalCpuMipsUsage(double time);
+    double getTotalCpuMipsUtilization(double time);
 
     /**
      * Gets the Virtual Machine Monitor (VMM) that manages the VM.

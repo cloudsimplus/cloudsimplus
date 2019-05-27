@@ -22,6 +22,7 @@ import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
@@ -341,7 +342,7 @@ public class HostSimple implements Host {
         operation in large scale experiments, if a Datacenter power supply is not set,
         the value is not stored.*/
         if(((DatacenterSimple)datacenter).getPowerSupply() != DatacenterPowerSupply.NULL) {
-            setPreviousUtilizationMips(getUtilizationOfCpuMips());
+            setPreviousUtilizationMips(getCpuMipsUtilization());
         }
 
         if (!vmList.isEmpty()) {
@@ -1049,8 +1050,8 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public double getUtilizationOfCpu() {
-        return computeCpuUtilizationPercent(getUtilizationOfCpuMips());
+    public double getCpuPercentUtilization() {
+        return computeCpuUtilizationPercent(getCpuMipsUtilization());
     }
 
     private double computeCpuUtilizationPercent(final double mipsUsage){
@@ -1064,17 +1065,17 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public double getUtilizationOfCpuMips() {
-        return vmList.stream().mapToDouble(Vm::getTotalCpuMipsUsage).sum();
+    public double getCpuMipsUtilization() {
+        return vmList.stream().mapToDouble(Vm::getTotalCpuMipsUtilization).sum();
     }
 
     @Override
-    public long getUtilizationOfRam() {
+    public long getRamUtilization() {
         return ramProvisioner.getTotalAllocatedResource();
     }
 
     @Override
-    public long getUtilizationOfBw() {
+    public long getBwUtilization() {
         return bwProvisioner.getTotalAllocatedResource();
     }
 
@@ -1154,7 +1155,7 @@ public class HostSimple implements Host {
      */
     private Function<Entry<Double, Double>, Double> vmUtilizationMapper(final UtilizationHistory utilizationHistory) {
         //The entry key is the time and the value is the percentage of the VM CPU that is being used
-        return entry -> entry.getValue() * utilizationHistory.getVm().getRelativeMipsCapacityPercent();
+        return entry ->  ((VmSimple)utilizationHistory.getVm()).hostCpuUtilizationInternal(entry.getValue());
     }
 
     @Override
@@ -1262,7 +1263,7 @@ public class HostSimple implements Host {
             hostTotalRequestedMips += totalRequestedMips;
         }
 
-        addStateHistoryEntry(currentTime, getUtilizationOfCpuMips(), hostTotalRequestedMips, active);
+        addStateHistoryEntry(currentTime, getCpuMipsUtilization(), hostTotalRequestedMips, active);
     }
 
     /**
