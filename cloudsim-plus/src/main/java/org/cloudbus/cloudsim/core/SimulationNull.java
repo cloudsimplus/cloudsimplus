@@ -76,6 +76,8 @@ final class SimulationNull implements Simulation {
     @Override public void sendFirst(SimEvent evt) {/**/}
     @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data) {/**/}
     @Override public void sendNow(SimEntity src, SimEntity dest, int tag, Object data) {/**/}
+    @Override public void finishSimulation() { /**/ }
+    @Override public double runFor(double interval) { return 0; }
     @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
         return this;
     }
@@ -86,6 +88,7 @@ final class SimulationNull implements Simulation {
         return false;
     }
     @Override public double start() throws RuntimeException { return 0; }
+    @Override public void startSync() { /**/ }
     @Override public boolean isTimeToTerminateSimulationUnderRequest() { return false; }
     @Override public boolean terminate() {
         return false;

@@ -317,6 +317,23 @@ public interface Simulation {
     void sendNow(SimEntity src, SimEntity dest, int tag, Object data);
 
     /**
+     * Finalizes the simulation and cleans up internal state.
+     *
+     * <b>Note:</b> Should be used only in the <b>synchronous</b> mode (after starting the simulation
+     * with <b>startSync</b>).
+     */
+    void finishSimulation();
+
+    /**
+     * Runs the simulation for a specific period of time and then immediately returns.
+     * In order to complete the whole simulation you need to invoke this method multiple times
+     *
+     * @param interval The interval for which the simulation should be run
+     * @return Clock at the end of simulation interval
+     */
+    double runFor(double interval);
+
+    /**
      * Starts simulation execution and <b>waits for
      * all entities to finish</b>, i.e. until all entities threads reach
      * non-RUNNABLE state or there are no more events in the future event queue.
@@ -331,6 +348,22 @@ public interface Simulation {
      * you must use {@link #resume()} instead of calling the current method.
      */
     double start();
+
+    /**
+     * Starts simulation execution. Simulation is being run in synchronous mode - you need
+     * to call <b>runFor</b> method subsequently to actually process simulation steps. Requires
+     * finalizing the simulation with use of the <b>finishSimulation</b> method.
+     *
+     * <b>Note</b>: This method should be called just after all the entities
+     * have been setup and added. The method returns immediately after preparing the
+     * internal state of the simulation.
+     * </p>
+     *
+     * @throws UnsupportedOperationException When the simulation has already run once.
+     * If you paused the simulation and wants to resume it,
+     * you must use {@link #resume()} instead of calling the current method.
+     */
+    void startSync();
 
     boolean isTimeToTerminateSimulationUnderRequest();
 

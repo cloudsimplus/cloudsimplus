@@ -289,19 +289,6 @@ public abstract class CloudSimEntity implements SimEntity {
         return getNextEvent(Simulation.ANY_EVT);
     }
 
-    public SimEvent getNextEventUntil(double until) {
-        return getNextEvent(anyUntil(until));
-    }
-
-    private Predicate<SimEvent> anyUntil(double until) {
-        return new Predicate<SimEvent>() {
-            @Override
-            public boolean test(SimEvent simEvent) {
-                return simEvent.getTime() <= until;
-            }
-        };
-    }
-
     /**
      * Waits for an event matching a specific predicate. This method does not
      * check the entity's deferred queue.
@@ -319,22 +306,11 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public void run() {
-        SimEvent evt = buffer == null ? getNextEvent() : buffer;
-
-        while (evt != SimEvent.NULL) {
-            processEvent(evt);
-            if (state != State.RUNNABLE) {
-                break;
-            }
-
-            evt = getNextEvent();
-        }
-
-        buffer = null;
+        run(Double.MAX_VALUE);
     }
 
-    public void runUntil(double until) {
-        SimEvent evt = buffer == null ? getNextEventUntil(until) : buffer;
+    public void run(final double until) {
+        SimEvent evt = buffer == null ? getNextEvent(e -> e.getTime() <= until) : buffer;
 
         while (evt != SimEvent.NULL) {
             processEvent(evt);
@@ -342,7 +318,7 @@ public abstract class CloudSimEntity implements SimEntity {
                 break;
             }
 
-            evt = getNextEventUntil(until);
+            evt = getNextEvent(e -> e.getTime() <= until);
         }
 
         buffer = null;
