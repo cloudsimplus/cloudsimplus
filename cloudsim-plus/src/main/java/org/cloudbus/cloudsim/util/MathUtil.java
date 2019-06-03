@@ -40,7 +40,12 @@ public final class MathUtil {
      * @return the double
      */
     public static double sum(final List<? extends Number> list) {
-        return list.stream().mapToDouble(Number::doubleValue).sum();
+        double sum = 0.0;
+        for (final Number number : list) {
+            sum += number.doubleValue();
+        }
+
+        return sum;
     }
 
     /**
@@ -93,7 +98,11 @@ public final class MathUtil {
      * @return the average
      */
     public static double mean(final List<Double> list) {
-        return list.stream().mapToDouble(number->number).average().orElse(0);
+        if(list.isEmpty()){
+            return 0;
+        }
+
+        return sum(list) / (double)list.size();
     }
 
     /**
