@@ -476,7 +476,7 @@ public class CloudSim implements Simulation {
         return runClockTickAndProcessFutureEvents(Double.MAX_VALUE);
     }
 
-    private boolean runClockTickAndProcessFutureEvents(double until) {
+    private boolean runClockTickAndProcessFutureEvents(final double until) {
         executeRunnableEntities(until);
         if (future.isEmpty()) {
             return false;
@@ -548,7 +548,7 @@ public class CloudSim implements Simulation {
      * Gets the list of entities that are in {@link SimEntity.State#RUNNABLE}
      * and execute them.
      */
-    private void executeRunnableEntities(double until) {
+    private void executeRunnableEntities(final double until) {
         /*Uses an indexed for instead of anything else to avoid
         ConcurrencyModificationException when a HostFaultInjection is created inside a Datacenter*/
         for (int i = 0; i < entities.size(); i++) {
