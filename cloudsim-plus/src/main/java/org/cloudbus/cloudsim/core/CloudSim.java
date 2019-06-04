@@ -217,11 +217,8 @@ public class CloudSim implements Simulation {
         this.circularClockTimeQueue = new double[]{minTimeBetweenEvents, minTimeBetweenEvents};
     }
 
-    /**
-     * Finishes execution of running entities before terminating the simulation.
-     */
     @Override
-    public void finishSimulation() {
+    public void finish() {
         notifyEndOfSimulationToEntities();
         running = false;
         LOGGER.info("Simulation: No more future events{}", System.lineSeparator());
@@ -234,7 +231,6 @@ public class CloudSim implements Simulation {
         }
 
         entitiesAlive.forEach(SimEntity::shutdownEntity);
-        running = false;
 
         printSimulationFinished();
     }
@@ -261,7 +257,7 @@ public class CloudSim implements Simulation {
             return clock;
         }
 
-        finishSimulation();
+        finish();
         return clock;
     }
 
