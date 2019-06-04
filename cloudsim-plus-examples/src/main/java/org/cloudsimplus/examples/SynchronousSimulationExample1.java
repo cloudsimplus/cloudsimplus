@@ -34,12 +34,13 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -71,7 +72,7 @@ public class SynchronousSimulationExample1 {
     private static final int VMS = 4;
     private static final int VM_PES = 2;
 
-    private static final int CLOUDLETS = 4;
+    private static final int CLOUDLETS = 8;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 10000;
 
@@ -101,13 +102,16 @@ public class SynchronousSimulationExample1 {
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
+        //Sets a termination time, trying to stop the simulation before such a deadline
+        //simulation.terminateAt(20);
+
         simulation.startSync();
-        //TODO: To know if the simulation must finish, it has to be checked the future.isEmpty(), terminationTime and abortRequested
         while(simulation.isRunning()){
             simulation.runFor(INTERVAL);
         }
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        finishedCloudlets.sort(Comparator.comparingLong(Cloudlet::getId));
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
@@ -160,17 +164,16 @@ public class SynchronousSimulationExample1 {
     }
 
     /**
-     * Creates a list of Cloudlets.
+     * Creates a list of Cloudlets with different submission delays.
      */
     private List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
 
-        //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
-        final UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(0.5);
-
         for (int i = 0; i < CLOUDLETS; i++) {
-            final Cloudlet cloudlet = new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES, utilizationModel);
-            cloudlet.setSizes(1024);
+            final Cloudlet cloudlet = new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES);
+            cloudlet.setUtilizationModelCpu(new UtilizationModelFull())
+                    .setSizes(1024)
+                    .setSubmissionDelay(i);
             list.add(cloudlet);
         }
 

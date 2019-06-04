@@ -219,8 +219,11 @@ public class CloudSim implements Simulation {
 
     @Override
     public void finish() {
+        if(abortRequested){
+            return;
+        }
+
         notifyEndOfSimulationToEntities();
-        running = false;
         LOGGER.info("Simulation: No more future events{}", System.lineSeparator());
 
         final List<SimEntity> entitiesAlive = entities.stream().filter(CloudSimEntity::isAlive).collect(toList());
@@ -231,21 +234,29 @@ public class CloudSim implements Simulation {
         }
 
         entitiesAlive.forEach(SimEntity::shutdownEntity);
+        running = false;
 
         printSimulationFinished();
     }
 
     @Override
     public double runFor(final double interval) {
-        final double until = this.clock + interval;
-        while (runClockTickAndProcessFutureEvents(until)) {
-            notifyOnSimulationStartListeners(); //it's ensured to run just once.
+        final double until = interval == Double.MAX_VALUE ? interval : this.clock + interval;
+
+        if(!processEvents(until)){
+            /* If no event happening up to the given time, increases the clock
+             * so that when the runFor method is called again with the new clock,
+             * some events may be processed that time.
+             * If some event is processed, the clock is automatically increased.*/
+            setClock(until);
+
+            if(future.isEmpty()){
+                finish();
+            }
         }
 
-        if(until > this.clock) {
-            this.clock = until;
-        }
 
+        //Clock is updated when an event is processed
         return clock;
     }
 
@@ -253,8 +264,8 @@ public class CloudSim implements Simulation {
     public double start() {
         startSync();
 
-        if(!eventLoop()){
-            return clock;
+        while(processEvents(Double.MAX_VALUE)){
+            //All the processing happens inside the method called above
         }
 
         finish();
@@ -287,19 +298,16 @@ public class CloudSim implements Simulation {
     }
 
     /**
-     * Keeps waiting for new events to process, until the simulation naturally finishes,
-     * is requested to finish at a given time or is aborted.
+     * Process all the events happening up to a given time are processed.
      *
-     * @return true if the simulation was finished due to its natural end or under request;
-     *         false if it was aborted.
+     * @param until The interval for which the events should be processed (in seconds)
+     * @return true if some event was processed, false if no event was processed
+     *         or a termination time was set and the clock reached that time
      */
-    private boolean eventLoop() {
-        while (runClockTickAndProcessFutureEvents() || isToWaitClockToReachTerminationTime()) {
+    private boolean processEvents(final double until) {
+        while (runClockTickAndProcessFutureEvents(until) || isToWaitClockToReachTerminationTime()) {
             notifyOnSimulationStartListeners(); //it's ensured to run just once.
-            if(abortRequested){
-                LOGGER.info(
-                    "{}================================================== Simulation aborted under request at time {} ==================================================",
-                    System.lineSeparator(), clock);
+            if (logSimulationAborted()) {
                 return false;
             }
 
@@ -309,7 +317,7 @@ public class CloudSim implements Simulation {
              * until a CLOUDLET_FINISH event is sent to the broker or the termination time is reached*/
             if (isTimeToTerminateSimulationUnderRequest()) {
                 if(newTerminationTime != -1 && clock >= newTerminationTime){
-                    return true;
+                    return false;
                 }
 
                 if(newTerminationTime == -1) {
@@ -318,9 +326,20 @@ public class CloudSim implements Simulation {
             }
 
             checkIfSimulationPauseRequested();
+            return true;
         }
 
-        return true;
+        return false;
+    }
+
+    private boolean logSimulationAborted() {
+        if(abortRequested){
+            LOGGER.info(
+                "{}================================================== Simulation aborted under request at time {} ==================================================",
+                System.lineSeparator(), clock);
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -335,7 +354,7 @@ public class CloudSim implements Simulation {
         LOGGER.info("{}: Processing last events before simulation shutdown.", clock);
 
         while (true) {
-            if(!runClockTickAndProcessFutureEvents()){
+            if(!runClockTickAndProcessFutureEvents(Double.MAX_VALUE)){
                 return;
             }
         }
@@ -465,13 +484,11 @@ public class CloudSim implements Simulation {
 
     /**
      * Run one tick of the simulation, processing and removing the
-     * events in the {@link #future future event queue}.
+     * events in the {@link #future future event queue} that happen
+     * up to a given time.
+     * @param until The interval for which the events should be processed (in seconds)
      * @return true if some event was processed, false otherwise
      */
-    private boolean runClockTickAndProcessFutureEvents() {
-        return runClockTickAndProcessFutureEvents(Double.MAX_VALUE);
-    }
-
     private boolean runClockTickAndProcessFutureEvents(final double until) {
         executeRunnableEntities(until);
         if (future.isEmpty()) {
@@ -899,6 +916,7 @@ public class CloudSim implements Simulation {
     @Override
     public void abort() {
         abortRequested = true;
+        running = false;
     }
 
     @Override
