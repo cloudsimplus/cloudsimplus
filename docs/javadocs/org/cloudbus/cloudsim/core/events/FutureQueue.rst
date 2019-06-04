@@ -1,5 +1,3 @@
-.. java:import:: org.cloudbus.cloudsim.core CloudSim
-
 .. java:import:: java.util.function Predicate
 
 .. java:import:: java.util.stream Stream
@@ -12,9 +10,9 @@ FutureQueue
 
 .. java:type:: public class FutureQueue implements EventQueue
 
-   This class implements the future event queue used by \ :java:ref:`CloudSim`\ . The event queue uses a \ :java:ref:`TreeSet`\  in order to store the events.
+   An \ :java:ref:`EventQueue`\  that stores future simulation events. It uses a \ :java:ref:`TreeSet`\  in order ensure the events are stored ordered. Using a \ :java:ref:`java.util.LinkedList`\  as defined by \ :java:ref:`DeferredQueue`\  to improve performance doesn't work for this queue.
 
-   :author: Marcos Dias de Assuncao
+   :author: Marcos Dias de Assuncao, Manoel Campos da Silva Filho
 
    **See also:** :java:ref:`java.util.TreeSet`
 

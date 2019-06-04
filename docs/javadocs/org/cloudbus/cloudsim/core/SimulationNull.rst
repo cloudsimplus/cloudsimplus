@@ -216,6 +216,12 @@ resume
 .. java:method:: @Override public boolean resume()
    :outertype: SimulationNull
 
+runFor
+^^^^^^
+
+.. java:method:: @Override public double runFor(double interval)
+   :outertype: SimulationNull
+
 select
 ^^^^^^
 
@@ -262,6 +268,12 @@ start
 ^^^^^
 
 .. java:method:: @Override public double start() throws RuntimeException
+   :outertype: SimulationNull
+
+startSync
+^^^^^^^^^
+
+.. java:method:: @Override public void startSync()
    :outertype: SimulationNull
 
 terminate

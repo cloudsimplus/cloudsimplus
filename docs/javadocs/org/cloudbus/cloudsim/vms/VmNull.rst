@@ -118,16 +118,16 @@ getCloudletScheduler
 .. java:method:: @Override public CloudletScheduler getCloudletScheduler()
    :outertype: VmNull
 
-getCpuPercentUsage
-^^^^^^^^^^^^^^^^^^
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getCpuPercentUsage(double time)
+.. java:method:: @Override public double getCpuPercentUtilization(double time)
    :outertype: VmNull
 
-getCpuPercentUsage
-^^^^^^^^^^^^^^^^^^
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getCpuPercentUsage()
+.. java:method:: @Override public double getCpuPercentUtilization()
    :outertype: VmNull
 
 getCurrentRequestedBw
@@ -190,6 +190,24 @@ getHost
 .. java:method:: @Override public Host getHost()
    :outertype: VmNull
 
+getHostBwUtilization
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getHostBwUtilization()
+   :outertype: VmNull
+
+getHostCpuUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getHostCpuUtilization(double time)
+   :outertype: VmNull
+
+getHostRamUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getHostRamUtilization()
+   :outertype: VmNull
+
 getId
 ^^^^^
 
@@ -244,12 +262,6 @@ getRamVerticalScaling
 .. java:method:: @Override public VerticalVmScaling getRamVerticalScaling()
    :outertype: VmNull
 
-getRelativeMipsCapacityPercent
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getRelativeMipsCapacityPercent()
-   :outertype: VmNull
-
 getResources
 ^^^^^^^^^^^^
 
@@ -292,16 +304,16 @@ getSubmissionDelay
 .. java:method:: @Override public double getSubmissionDelay()
    :outertype: VmNull
 
-getTotalCpuMipsUsage
-^^^^^^^^^^^^^^^^^^^^
+getTotalCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getTotalCpuMipsUsage()
+.. java:method:: @Override public double getTotalCpuMipsUtilization()
    :outertype: VmNull
 
-getTotalCpuMipsUsage
-^^^^^^^^^^^^^^^^^^^^
+getTotalCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getTotalCpuMipsUsage(double time)
+.. java:method:: @Override public double getTotalCpuMipsUtilization(double time)
    :outertype: VmNull
 
 getTotalExecutionTime

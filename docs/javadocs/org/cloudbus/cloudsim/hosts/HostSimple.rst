@@ -22,9 +22,13 @@
 
 .. java:import:: org.cloudbus.cloudsim.util Conversion
 
+.. java:import:: org.cloudbus.cloudsim.util TimeUtil
+
 .. java:import:: org.cloudbus.cloudsim.vms UtilizationHistory
 
 .. java:import:: org.cloudbus.cloudsim.vms Vm
+
+.. java:import:: org.cloudbus.cloudsim.vms VmSimple
 
 .. java:import:: org.cloudbus.cloudsim.vms VmStateHistoryEntry
 
@@ -285,6 +289,24 @@ getBwProvisioner
 .. java:method:: @Override public ResourceProvisioner getBwProvisioner()
    :outertype: HostSimple
 
+getBwUtilization
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getBwUtilization()
+   :outertype: HostSimple
+
+getCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCpuMipsUtilization()
+   :outertype: HostSimple
+
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCpuPercentUtilization()
+   :outertype: HostSimple
+
 getDatacenter
 ^^^^^^^^^^^^^
 
@@ -427,6 +449,12 @@ getRamProvisioner
 .. java:method:: @Override public ResourceProvisioner getRamProvisioner()
    :outertype: HostSimple
 
+getRamUtilization
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getRamUtilization()
+   :outertype: HostSimple
+
 getResources
 ^^^^^^^^^^^^
 
@@ -481,10 +509,22 @@ getTotalUpTime
 .. java:method:: @Override public double getTotalUpTime()
    :outertype: HostSimple
 
+getTotalUpTimeHours
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalUpTimeHours()
+   :outertype: HostSimple
+
 getUpTime
 ^^^^^^^^^
 
 .. java:method:: @Override public double getUpTime()
+   :outertype: HostSimple
+
+getUpTimeHours
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getUpTimeHours()
    :outertype: HostSimple
 
 getUtilizationHistory
@@ -497,30 +537,6 @@ getUtilizationHistorySum
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public SortedMap<Double, Double> getUtilizationHistorySum()
-   :outertype: HostSimple
-
-getUtilizationOfBw
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getUtilizationOfBw()
-   :outertype: HostSimple
-
-getUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getUtilizationOfCpu()
-   :outertype: HostSimple
-
-getUtilizationOfCpuMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getUtilizationOfCpuMips()
-   :outertype: HostSimple
-
-getUtilizationOfRam
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getUtilizationOfRam()
    :outertype: HostSimple
 
 getVmCreatedList

@@ -28,7 +28,7 @@ UtilizationModelStochastic
 .. java:constructor:: public UtilizationModelStochastic()
    :outertype: UtilizationModelStochastic
 
-   Instantiates a new utilization model stochastic that defines the resource utilization in percentage. The resource utilization history is disabled by default.
+   Instantiates a new utilization model stochastic that defines the resource utilization in percentage. The resource utilization history is enabled by default.
 
    **See also:** :java:ref:`.setUnit(Unit)`, :java:ref:`.setHistoryEnabled(boolean)`, :java:ref:`.isAlwaysGenerateNewRandomUtilization()`
 
@@ -38,7 +38,7 @@ UtilizationModelStochastic
 .. java:constructor:: public UtilizationModelStochastic(Unit unit)
    :outertype: UtilizationModelStochastic
 
-   Instantiates a new utilization model stochastic where the resource utilization is defined in the given unit. The resource utilization history is disabled by default.
+   Instantiates a new utilization model stochastic where the resource utilization is defined in the given unit. The resource utilization history is enabled by default.
 
    :param unit: the \ :java:ref:`Unit`\  that determines how the resource is used (for instance, if resource usage is defined in percentage of the Vm resource or in absolute values)
 
@@ -50,10 +50,22 @@ UtilizationModelStochastic
 .. java:constructor:: public UtilizationModelStochastic(Unit unit, long seed)
    :outertype: UtilizationModelStochastic
 
-   Instantiates a new utilization model stochastic where the resource utilization is defined in the given unit. The resource utilization history is disabled by default.
+   Instantiates a new utilization model stochastic where the resource utilization is defined in the given unit. The resource utilization history is enabled by default.
 
    :param unit: the \ :java:ref:`Unit`\  that determines how the resource is used (for instance, if resource usage is defined in percentage of the Vm resource or in absolute values)
-   :param seed: the seed to initialize the random number generator. If -1 is passed, the current time will be used.
+   :param seed: the seed to initialize the random number generator.
+
+   **See also:** :java:ref:`.setHistoryEnabled(boolean)`, :java:ref:`.isAlwaysGenerateNewRandomUtilization()`
+
+UtilizationModelStochastic
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:constructor:: public UtilizationModelStochastic(long seed)
+   :outertype: UtilizationModelStochastic
+
+   Instantiates a new utilization model stochastic that defines the resource utilization in percentage. The resource utilization history is enabled by default.
+
+   :param seed: the seed to initialize the random number generator.
 
    **See also:** :java:ref:`.setHistoryEnabled(boolean)`, :java:ref:`.isAlwaysGenerateNewRandomUtilization()`
 
@@ -63,7 +75,7 @@ UtilizationModelStochastic
 .. java:constructor:: public UtilizationModelStochastic(ContinuousDistribution prng)
    :outertype: UtilizationModelStochastic
 
-   Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG) It defines the resource utilization in percentage. The resource utilization history is disabled by default.
+   Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG) It defines the resource utilization in percentage. The resource utilization history is enabled by default.
 
    :param prng: the Pseudo Random Number Generator (PRNG) to generate utilization values
 
@@ -75,7 +87,7 @@ UtilizationModelStochastic
 .. java:constructor:: public UtilizationModelStochastic(Unit unit, ContinuousDistribution prng)
    :outertype: UtilizationModelStochastic
 
-   Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG). The resource utilization history is disabled by default.
+   Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG). The resource utilization history is enabled by default.
 
    :param unit: the \ :java:ref:`Unit`\  that determines how the resource is used (for instance, if resource usage is defined in percentage of the Vm resource or in absolute values)
    :param prng: the Pseudo Random Number Generator (PRNG) to generate utilization values

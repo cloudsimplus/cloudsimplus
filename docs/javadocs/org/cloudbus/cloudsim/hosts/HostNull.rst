@@ -132,6 +132,24 @@ getBwProvisioner
 .. java:method:: @Override public ResourceProvisioner getBwProvisioner()
    :outertype: HostNull
 
+getBwUtilization
+^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getBwUtilization()
+   :outertype: HostNull
+
+getCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCpuMipsUtilization()
+   :outertype: HostNull
+
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getCpuPercentUtilization()
+   :outertype: HostNull
+
 getDatacenter
 ^^^^^^^^^^^^^
 
@@ -234,6 +252,12 @@ getRamProvisioner
 .. java:method:: @Override public ResourceProvisioner getRamProvisioner()
    :outertype: HostNull
 
+getRamUtilization
+^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public long getRamUtilization()
+   :outertype: HostNull
+
 getResources
 ^^^^^^^^^^^^
 
@@ -288,10 +312,22 @@ getTotalUpTime
 .. java:method:: @Override public double getTotalUpTime()
    :outertype: HostNull
 
+getTotalUpTimeHours
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getTotalUpTimeHours()
+   :outertype: HostNull
+
 getUpTime
 ^^^^^^^^^
 
 .. java:method:: @Override public double getUpTime()
+   :outertype: HostNull
+
+getUpTimeHours
+^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getUpTimeHours()
    :outertype: HostNull
 
 getUtilizationHistory
@@ -304,30 +340,6 @@ getUtilizationHistorySum
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. java:method:: @Override public SortedMap<Double, Double> getUtilizationHistorySum()
-   :outertype: HostNull
-
-getUtilizationOfBw
-^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getUtilizationOfBw()
-   :outertype: HostNull
-
-getUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getUtilizationOfCpu()
-   :outertype: HostNull
-
-getUtilizationOfCpuMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getUtilizationOfCpuMips()
-   :outertype: HostNull
-
-getUtilizationOfRam
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public long getUtilizationOfRam()
    :outertype: HostNull
 
 getVmCreatedList

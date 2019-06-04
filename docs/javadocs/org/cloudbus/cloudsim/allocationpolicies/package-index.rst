@@ -17,5 +17,7 @@ Provides classes that implement policies for a \ :java:ref:`org.cloudbus.cloudsi
    VmAllocationPolicyBestFit
    VmAllocationPolicyFirstFit
    VmAllocationPolicyNull
+   VmAllocationPolicyRandom
+   VmAllocationPolicyRoundRobin
    VmAllocationPolicySimple
 

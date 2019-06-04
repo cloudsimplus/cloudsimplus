@@ -1,5 +1,7 @@
 .. java:import:: org.cloudbus.cloudsim.cloudlets Cloudlet
 
+.. java:import:: org.cloudbus.cloudsim.cloudlets CloudletSimple
+
 .. java:import:: org.cloudbus.cloudsim.core.events CloudSimEvent
 
 .. java:import:: org.cloudbus.cloudsim.core.events SimEvent

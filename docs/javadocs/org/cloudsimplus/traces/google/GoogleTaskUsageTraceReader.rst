@@ -8,9 +8,9 @@
 
 .. java:import:: org.cloudbus.cloudsim.core.events CloudSimEvent
 
-.. java:import:: org.cloudbus.cloudsim.util Conversion
-
 .. java:import:: org.cloudbus.cloudsim.util ResourceLoader
+
+.. java:import:: org.cloudbus.cloudsim.util TimeUtil
 
 .. java:import:: org.cloudbus.cloudsim.util TraceReaderAbstract
 

@@ -214,6 +214,30 @@ getBwProvisioner
 
    :return: the bw provisioner
 
+getBwUtilization
+^^^^^^^^^^^^^^^^
+
+.. java:method::  long getBwUtilization()
+   :outertype: Host
+
+   Gets the current utilization of bw (in Megabits/s).
+
+getCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getCpuMipsUtilization()
+   :outertype: Host
+
+   Gets the current total utilization of CPU in MIPS, considering the usage of all its PEs.
+
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getCpuPercentUtilization()
+   :outertype: Host
+
+   Gets current utilization of CPU in percentage (between [0 and 1]), considering the usage of all its PEs..
+
 getDatacenter
 ^^^^^^^^^^^^^
 
@@ -333,6 +357,14 @@ getRamProvisioner
 
    :return: the ram provisioner
 
+getRamUtilization
+^^^^^^^^^^^^^^^^^
+
+.. java:method::  long getRamUtilization()
+   :outertype: Host
+
+   Gets the current utilization of memory (in Megabytes).
+
 getShutdownTime
 ^^^^^^^^^^^^^^^
 
@@ -398,7 +430,19 @@ getTotalUpTime
 
    :return: the total up time (in seconds)
 
-   **See also:** :java:ref:`.setActive(boolean)`, :java:ref:`.setIdleShutdownDeadline(double)`, :java:ref:`.getUpTime()`
+   **See also:** :java:ref:`.setActive(boolean)`, :java:ref:`.setIdleShutdownDeadline(double)`, :java:ref:`.getTotalUpTimeHours()`, :java:ref:`.getUpTime()`, :java:ref:`.getUpTimeHours()`
+
+getTotalUpTimeHours
+^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getTotalUpTimeHours()
+   :outertype: Host
+
+   Gets the total time the Host stayed active (powered on). Since the Host can be powered on and off according to demand, this method returns the sum of all interval that the Host was active (in hours).
+
+   :return: the total up time (in hours)
+
+   **See also:** :java:ref:`.setActive(boolean)`, :java:ref:`.setIdleShutdownDeadline(double)`, :java:ref:`.getTotalUpTime()`, :java:ref:`.getUpTime()`, :java:ref:`.getUpTimeHours()`
 
 getUpTime
 ^^^^^^^^^
@@ -410,7 +454,19 @@ getUpTime
 
    :return: the elapsed time (in seconds)
 
-   **See also:** :java:ref:`.getTotalUpTime()`
+   **See also:** :java:ref:`.getUpTimeHours()`, :java:ref:`.getTotalUpTime()`, :java:ref:`.getTotalUpTimeHours()`
+
+getUpTimeHours
+^^^^^^^^^^^^^^
+
+.. java:method::  double getUpTimeHours()
+   :outertype: Host
+
+   Gets the elapsed time since the last time the Host was powered on
+
+   :return: the elapsed time (in hours)
+
+   **See also:** :java:ref:`.getUpTime()`, :java:ref:`.getTotalUpTime()`, :java:ref:`.getTotalUpTimeHours()`
 
 getUtilizationHistory
 ^^^^^^^^^^^^^^^^^^^^^
@@ -449,38 +505,6 @@ getUtilizationHistorySum
    :return: a Map where keys are the data collection time and each value is a \ :java:ref:`DoubleSummaryStatistics`\  objects that provides lots of useful methods to get max, min, average, count and sum of utilization values.
 
    **See also:** :java:ref:`.getUtilizationHistory()`
-
-getUtilizationOfBw
-^^^^^^^^^^^^^^^^^^
-
-.. java:method::  long getUtilizationOfBw()
-   :outertype: Host
-
-   Gets the current utilization of bw (in absolute values).
-
-getUtilizationOfCpu
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getUtilizationOfCpu()
-   :outertype: Host
-
-   Gets current utilization of CPU in percentage (between [0 and 1]), considering the usage of all its PEs..
-
-getUtilizationOfCpuMips
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getUtilizationOfCpuMips()
-   :outertype: Host
-
-   Gets the current total utilization of CPU in MIPS, considering the usage of all its PEs.
-
-getUtilizationOfRam
-^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  long getUtilizationOfRam()
-   :outertype: Host
-
-   Gets the current utilization of memory (in absolute values).
 
 getVmCreatedList
 ^^^^^^^^^^^^^^^^

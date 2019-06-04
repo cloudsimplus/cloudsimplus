@@ -51,12 +51,6 @@ addUtilizationHistory
 .. java:method:: @Override public void addUtilizationHistory(double time)
    :outertype: VmUtilizationHistory
 
-cpuUsageFromHostCapacity
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double cpuUsageFromHostCapacity(double time)
-   :outertype: VmUtilizationHistory
-
 disable
 ^^^^^^^
 
@@ -73,6 +67,12 @@ getHistory
 ^^^^^^^^^^
 
 .. java:method:: @Override public SortedMap<Double, Double> getHistory()
+   :outertype: VmUtilizationHistory
+
+getHostCpuUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getHostCpuUtilization(double time)
    :outertype: VmUtilizationHistory
 
 getMaxHistoryEntries

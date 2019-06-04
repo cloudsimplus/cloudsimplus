@@ -119,6 +119,12 @@ compareTo
 .. java:method:: @Override public int compareTo(SimEvent evt)
    :outertype: CloudSimEvent
 
+equals
+^^^^^^
+
+.. java:method:: @Override public boolean equals(Object o)
+   :outertype: CloudSimEvent
+
 getData
 ^^^^^^^
 
@@ -177,6 +183,12 @@ getType
 ^^^^^^^
 
 .. java:method:: @Override public Type getType()
+   :outertype: CloudSimEvent
+
+hashCode
+^^^^^^^^
+
+.. java:method:: @Override public int hashCode()
    :outertype: CloudSimEvent
 
 scheduledBy

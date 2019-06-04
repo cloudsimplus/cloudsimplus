@@ -60,7 +60,7 @@ abort
 .. java:method::  void abort()
    :outertype: Simulation
 
-   Aborts the simulation without finishing the processing of entities in the \ :java:ref:`entities list <getEntityList()>`\ , what may give
+   Aborts the simulation without finishing the processing of entities in the \ :java:ref:`entities list <getEntityList()>`\ , which may give
    unexpected results.
 
    \ **Use this method just if you want to abandon the simulation an usually ignore the results.**\
@@ -359,6 +359,17 @@ resume
 
    :return: true if the simulation has been restarted or false if it wasn't paused.
 
+runFor
+^^^^^^
+
+.. java:method::  double runFor(double interval)
+   :outertype: Simulation
+
+   Runs the simulation for a specific period of time and then immediately returns. In order to complete the whole simulation you need to invoke this method multiple times \ **Note:**\  Should be used only in the \ **synchronous**\  mode (after starting the simulation with \ :java:ref:`startSync()`\ ).
+
+   :param interval: The interval for which the simulation should be run (in seconds)
+   :return: Clock at the end of simulation interval (in seconds)
+
 select
 ^^^^^^
 
@@ -476,10 +487,24 @@ start
    Starts simulation execution and waits for
    all entities to finish, i.e. until all entities threads reach non-RUNNABLE state or there are no more events in the future event queue.
 
-   \ **Note**\ : This method should be called just after all the entities have been setup and added. The method blocks until the simulation is ended.
+   \ **Note**\ : This method should be called only after all the entities have been setup and added. The method blocks until the simulation is ended.
 
    :throws UnsupportedOperationException: When the simulation has already run once. If you paused the simulation and wants to resume it, you must use \ :java:ref:`resume()`\  instead of calling the current method.
    :return: the last clock time
+
+   **See also:** :java:ref:`.startSync()`
+
+startSync
+^^^^^^^^^
+
+.. java:method::  void startSync()
+   :outertype: Simulation
+
+   Starts simulation execution in synchronous mode, retuning immediately. You need to call \ :java:ref:`runFor(double)`\  method subsequently to actually process simulation steps. \ **Note**\ : This method should be called only after all the entities have been setup and added. The method returns immediately after preparing the internal state of the simulation.
+
+   :throws UnsupportedOperationException: When the simulation has already run once. If you paused the simulation and wants to resume it, you must use \ :java:ref:`resume()`\  instead of calling the current method.
+
+   **See also:** :java:ref:`.runFor(double)`
 
 terminate
 ^^^^^^^^^
@@ -510,7 +535,7 @@ wait
 .. java:method::  void wait(CloudSimEntity src, Predicate<SimEvent> p)
    :outertype: Simulation
 
-   Sets the state of an entity to \ :java:ref:`SimEntity.State.WAITING`\ , making it to wait for events that satisfy a given predicate. Only such events will be passed to the entity. This is done to avoid unnecessary context Datacenter.
+   Sets the state of an entity to \ :java:ref:`SimEntity.State.WAITING`\ , making it to wait for events that satisfy a given predicate. Only such events will be passed to the entity. This is done to avoid unnecessary context switch.
 
    :param src: entity that scheduled the event
    :param p: the event selection predicate

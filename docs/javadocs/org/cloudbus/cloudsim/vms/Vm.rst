@@ -177,21 +177,21 @@ getCloudletScheduler
 
    :return: the cloudlet scheduler
 
-getCpuPercentUsage
-^^^^^^^^^^^^^^^^^^
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getCpuPercentUsage(double time)
+.. java:method::  double getCpuPercentUtilization(double time)
    :outertype: Vm
 
-   Gets the CPU utilization percentage of all Clouddlets running on this VM at the given time.
+   Gets the CPU utilization percentage of all Cloudlets running on this VM at the given time.
 
    :param time: the time
    :return: total utilization percentage
 
-getCpuPercentUsage
-^^^^^^^^^^^^^^^^^^
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getCpuPercentUsage()
+.. java:method::  double getCpuPercentUtilization()
    :outertype: Vm
 
    Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this VM.
@@ -301,6 +301,49 @@ getHost
 
    **See also:** :java:ref:`.isCreated()`
 
+getHostBwUtilization
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getHostBwUtilization()
+   :outertype: Vm
+
+   Computes the relative percentage of the Bandwidth the VM is using from the Host's total Capacity for the current simulation time.
+
+   :return: the relative VM BW usage percent (from 0 to 1)
+
+getHostCpuUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getHostCpuUtilization()
+   :outertype: Vm
+
+   Computes the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity for a given time. If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25% of the Host's capacity.
+
+   :return: the relative VM CPU usage percent (from 0 to 1)
+
+   **See also:** :java:ref:`.getHostCpuUtilization(double)`
+
+getHostCpuUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getHostCpuUtilization(double time)
+   :outertype: Vm
+
+   Computes the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity for the current simulation time. If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25% of the Host's capacity.
+
+   :param time: the time to get the relative VM CPU utilization
+   :return: the relative VM CPU usage percent (from 0 to 1)
+
+getHostRamUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getHostRamUtilization()
+   :outertype: Vm
+
+   Computes the relative percentage of the RAM the VM is using from the Host's total Capacity for the current simulation time.
+
+   :return: the relative VM RAM usage percent (from 0 to 1)
+
 getPeVerticalScaling
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -334,16 +377,6 @@ getRamVerticalScaling
    :outertype: Vm
 
    Gets a \ :java:ref:`VerticalVmScaling`\  that will check if the Vm's RAM is overloaded, based on some conditions defined by a \ :java:ref:`Predicate`\  given to the VerticalVmScaling, and then request the RAM up scaling.
-
-getRelativeMipsCapacityPercent
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double getRelativeMipsCapacityPercent()
-   :outertype: Vm
-
-   Gets the percentage of the MIPS capacity this VM represents from the total \ :java:ref:`Host`\  MIPS capacity.
-
-   :return: the VM relative MIPS capacity percentage
 
 getResources
 ^^^^^^^^^^^^
@@ -395,22 +428,22 @@ getStorage
 
    :return: the storage resource
 
-getTotalCpuMipsUsage
-^^^^^^^^^^^^^^^^^^^^
+getTotalCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getTotalCpuMipsUsage()
+.. java:method::  double getTotalCpuMipsUtilization()
    :outertype: Vm
 
    Gets the current total CPU MIPS utilization of all PEs from all cloudlets running on this VM.
 
    :return: total CPU utilization in MIPS
 
-   **See also:** :java:ref:`.getCpuPercentUsage(double)`
+   **See also:** :java:ref:`.getCpuPercentUtilization(double)`
 
-getTotalCpuMipsUsage
-^^^^^^^^^^^^^^^^^^^^
+getTotalCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method::  double getTotalCpuMipsUsage(double time)
+.. java:method::  double getTotalCpuMipsUtilization(double time)
    :outertype: Vm
 
    Gets the total CPU MIPS utilization of all PEs from all cloudlets running on this VM at the given time.
@@ -418,7 +451,7 @@ getTotalCpuMipsUsage
    :param time: the time to get the utilization
    :return: total CPU utilization in MIPS
 
-   **See also:** :java:ref:`.getCpuPercentUsage(double)`
+   **See also:** :java:ref:`.getCpuPercentUtilization(double)`
 
 getTotalExecutionTime
 ^^^^^^^^^^^^^^^^^^^^^

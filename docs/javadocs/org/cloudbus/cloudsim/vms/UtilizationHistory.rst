@@ -38,17 +38,6 @@ addUtilizationHistory
 
    :param time: the current simulation time
 
-cpuUsageFromHostCapacity
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method::  double cpuUsageFromHostCapacity(double time)
-   :outertype: UtilizationHistory
-
-   Computes the percentage of the CPU the VM is using, relative the Host's total MIPS CAPACITY. If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25% of the Host's capacity
-
-   :param time: the time to get the VM CPU utilization
-   :return: the relative VM CPU usage percent (from 0 to 1)
-
 disable
 ^^^^^^^
 
@@ -72,6 +61,19 @@ getHistory
    :outertype: UtilizationHistory
 
    Gets a \ **read-only**\  CPU utilization percentage history map where each key is the time the utilization was collected and each value is the utilization percentage (between [0 and 1]). There will be at least one entry for each time multiple of the \ :java:ref:`Datacenter.getSchedulingInterval()`\ . \ **This way, it's required to set a Datacenter scheduling interval with the desired value.**\
+
+getHostCpuUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method::  double getHostCpuUtilization(double time)
+   :outertype: UtilizationHistory
+
+   Computes the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity. If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25% of the Host's capacity.
+
+   This method uses the historical data to compute the relative CPU utilization, allowing it to be called after the simulation finishes. It's different from the \ :java:ref:`Vm.getHostCpuUtilization(double)`\  that can be called only when the simulation is running.
+
+   :param time: the time to get the relative VM CPU utilization
+   :return: the relative VM CPU usage percent (from 0 to 1)
 
 getMaxHistoryEntries
 ^^^^^^^^^^^^^^^^^^^^

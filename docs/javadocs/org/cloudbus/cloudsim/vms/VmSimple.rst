@@ -68,6 +68,21 @@ VmSimple
 VmSimple
 ^^^^^^^^
 
+.. java:constructor:: public VmSimple(double mipsCapacity, long numberOfPes, CloudletScheduler cloudletScheduler)
+   :outertype: VmSimple
+
+   Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size. To change these values, use the respective setters. While the Vm \ :java:ref:`is being instantiated <isCreated()>`\ , such values can be changed freely.
+
+   It is not defined an id for the Vm. The id is defined when the Vm is submitted to a \ :java:ref:`DatacenterBroker`\ .
+
+   :param mipsCapacity: the mips capacity of each Vm \ :java:ref:`Pe`\
+   :param numberOfPes: amount of \ :java:ref:`Pe`\  (CPU cores)
+
+   **See also:** :java:ref:`.setRam(long)`, :java:ref:`.setBw(long)`, :java:ref:`.setStorage(Storage)`, :java:ref:`.setDefaultRamCapacity(long)`, :java:ref:`.setDefaultBwCapacity(long)`, :java:ref:`.setDefaultStorageCapacity(long)`
+
+VmSimple
+^^^^^^^^
+
 .. java:constructor:: public VmSimple(long id, double mipsCapacity, long numberOfPes)
    :outertype: VmSimple
 
@@ -105,6 +120,16 @@ VmSimple
 
 Methods
 -------
+addExpectedFreePesNumber
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Vm addExpectedFreePesNumber(long pesToAdd)
+   :outertype: VmSimple
+
+   Adds a given number of expected free PEs to the total number of expected free PEs. This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
+
+   :param pesToAdd: the number of expected free PEs to add
+
 addOnCreationFailureListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -182,16 +207,16 @@ getCloudletScheduler
 .. java:method:: @Override public CloudletScheduler getCloudletScheduler()
    :outertype: VmSimple
 
-getCpuPercentUsage
-^^^^^^^^^^^^^^^^^^
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getCpuPercentUsage()
+.. java:method:: @Override public double getCpuPercentUtilization()
    :outertype: VmSimple
 
-getCpuPercentUsage
-^^^^^^^^^^^^^^^^^^
+getCpuPercentUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getCpuPercentUsage(double time)
+.. java:method:: @Override public double getCpuPercentUtilization(double time)
    :outertype: VmSimple
 
 getCurrentRequestedBw
@@ -278,6 +303,24 @@ getHost
 .. java:method:: @Override public Host getHost()
    :outertype: VmSimple
 
+getHostBwUtilization
+^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getHostBwUtilization()
+   :outertype: VmSimple
+
+getHostCpuUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getHostCpuUtilization(double time)
+   :outertype: VmSimple
+
+getHostRamUtilization
+^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: @Override public double getHostRamUtilization()
+   :outertype: VmSimple
+
 getLastBusyTime
 ^^^^^^^^^^^^^^^
 
@@ -320,12 +363,6 @@ getRamVerticalScaling
 .. java:method:: @Override public VerticalVmScaling getRamVerticalScaling()
    :outertype: VmSimple
 
-getRelativeMipsCapacityPercent
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: @Override public double getRelativeMipsCapacityPercent()
-   :outertype: VmSimple
-
 getResources
 ^^^^^^^^^^^^
 
@@ -362,16 +399,16 @@ getSubmissionDelay
 .. java:method:: @Override public double getSubmissionDelay()
    :outertype: VmSimple
 
-getTotalCpuMipsUsage
-^^^^^^^^^^^^^^^^^^^^
+getTotalCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getTotalCpuMipsUsage()
+.. java:method:: @Override public double getTotalCpuMipsUtilization()
    :outertype: VmSimple
 
-getTotalCpuMipsUsage
-^^^^^^^^^^^^^^^^^^^^
+getTotalCpuMipsUtilization
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. java:method:: @Override public double getTotalCpuMipsUsage(double time)
+.. java:method:: @Override public double getTotalCpuMipsUtilization(double time)
    :outertype: VmSimple
 
 getTotalExecutionTime
@@ -405,6 +442,12 @@ hasStartedSomeCloudlet
    :outertype: VmSimple
 
    Checks if the VM has ever started some Cloudlet.
+
+hostCpuUtilizationInternal
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public final double hostCpuUtilizationInternal(double vmCpuUtilizationPercent)
+   :outertype: VmSimple
 
 isCreated
 ^^^^^^^^^
@@ -461,6 +504,16 @@ notifyOnUpdateProcessingListeners
    :outertype: VmSimple
 
    Notifies all registered listeners when the processing of the Vm is updated in its \ :java:ref:`Host`\ .
+
+removeExpectedFreePesNumber
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. java:method:: public Vm removeExpectedFreePesNumber(long pesToRemove)
+   :outertype: VmSimple
+
+   Adds a given number of expected free PEs to the total number of expected free PEs. This value is updated as cloudlets are assigned to VMs but not submitted to the broker for running yet.
+
+   :param pesToRemove: the number of expected free PEs to remove
 
 removeOnCreationFailureListener
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -539,16 +592,6 @@ setDescription
 
 .. java:method:: @Override public Vm setDescription(String description)
    :outertype: VmSimple
-
-setExpectedFreePesNumber
-^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. java:method:: public Vm setExpectedFreePesNumber(long expectedFreePes)
-   :outertype: VmSimple
-
-   Sets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
-
-   :param expectedFreePes: the expected free pes number to set
 
 setFailed
 ^^^^^^^^^

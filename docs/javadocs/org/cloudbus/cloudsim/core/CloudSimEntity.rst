@@ -166,6 +166,12 @@ run
 .. java:method:: @Override public void run()
    :outertype: CloudSimEntity
 
+run
+^^^
+
+.. java:method:: public void run(double until)
+   :outertype: CloudSimEntity
+
 schedule
 ^^^^^^^^
 

@@ -4,7 +4,7 @@
 
 .. java:import:: org.cloudbus.cloudsim.network.topologies NetworkTopology
 
-.. java:import:: org.cloudbus.cloudsim.util Conversion
+.. java:import:: org.cloudbus.cloudsim.util TimeUtil
 
 .. java:import:: org.cloudsimplus.listeners EventInfo
 
@@ -287,6 +287,12 @@ resume
 .. java:method:: @Override public boolean resume()
    :outertype: CloudSim
 
+runFor
+^^^^^^
+
+.. java:method:: @Override public double runFor(double interval)
+   :outertype: CloudSim
+
 select
 ^^^^^^
 
@@ -343,6 +349,12 @@ start
 ^^^^^
 
 .. java:method:: @Override public double start()
+   :outertype: CloudSim
+
+startSync
+^^^^^^^^^
+
+.. java:method:: @Override public void startSync()
    :outertype: CloudSim
 
 terminate

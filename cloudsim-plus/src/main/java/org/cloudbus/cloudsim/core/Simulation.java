@@ -333,7 +333,7 @@ public interface Simulation {
      * all entities to finish</b>, i.e. until all entities threads reach
      * non-RUNNABLE state or there are no more events in the future event queue.
      * <p>
-     * <b>Note</b>: This method should be called just after all the entities
+     * <b>Note</b>: This method should be called only after all the entities
      * have been setup and added. The method blocks until the simulation is ended.
      * </p>
      *
@@ -347,10 +347,10 @@ public interface Simulation {
     double start();
 
     /**
-     * Starts simulation execution in synchronous mode - you need
+     * Starts simulation execution in synchronous mode, retuning immediately. You need
      * to call {@link #runFor(double)} method subsequently to actually process simulation steps.
      *
-     * <b>Note</b>: This method should be called just after all the entities
+     * <b>Note</b>: This method should be called only after all the entities
      * have been setup and added. The method returns immediately after preparing the
      * internal state of the simulation.
      * </p>

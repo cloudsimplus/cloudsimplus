@@ -18,6 +18,8 @@ MathUtil
 
    :author: Anton Beloglazov
 
+   **See also:** :java:ref:`TimeUtil`
+
 Fields
 ------
 HUNDRED_PERCENT

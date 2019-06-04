@@ -14,6 +14,7 @@ Provides general purpose, helper classes used internally by CloudSim Plus.
    MathUtil
    ResourceLoader
    SwfWorkloadFileReader
+   TimeUtil
    TraceReader
    TraceReaderAbstract
 

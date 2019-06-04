@@ -88,7 +88,7 @@ setOverloadPredicate
 
    Sets a \ :java:ref:`Predicate`\  that defines when the \ :java:ref:`Vm <getVm()>`\  is overloaded or not, making the \ :java:ref:`DatacenterBroker`\  to up scale the VM. The up scaling is performed by creating new VMs to attend new arrived Cloudlets in order to balance the load.
 
-   :param predicate: a predicate that checks certain conditions to define a \ :java:ref:`Vm <getVm()>`\  as overloaded. The predicate receives the Vm that has to be checked. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUsage(double)`\  CPU usage} and/or any other VM resource usage. Despite the VmScaling already is already linked to a \ :java:ref:`Vm <getVm()>`\ , the Vm parameter for the \ :java:ref:`Predicate`\  enables reusing the same predicate to detect overload of different VMs.
+   :param predicate: a predicate that checks certain conditions to define a \ :java:ref:`Vm <getVm()>`\  as overloaded. The predicate receives the Vm that has to be checked. Such a condition can be defined, for instance, based on Vm's \ :java:ref:`Vm.getCpuPercentUtilization(double)`\  CPU usage} and/or any other VM resource usage. Despite the VmScaling already is already linked to a \ :java:ref:`Vm <getVm()>`\ , the Vm parameter for the \ :java:ref:`Predicate`\  enables reusing the same predicate to detect overload of different VMs.
 
 setVmSupplier
 ^^^^^^^^^^^^^

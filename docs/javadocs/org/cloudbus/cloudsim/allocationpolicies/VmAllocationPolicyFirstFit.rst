@@ -14,7 +14,7 @@ VmAllocationPolicyFirstFit
 
 .. java:type:: public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy
 
-   An \ **First Fit VM allocation policy**\  which finds the first Host having suitable resources to place a given VM. This is a very time efficient policy with a best-case complexity O(1) and a worst-case complexity O(N), where N is the number of Hosts.
+   A \ **First Fit VM allocation policy**\  which finds the first Host having suitable resources to place a given VM. This is a high time-efficient policy with a best-case complexity O(1) and a worst-case complexity O(N), where N is the number of Hosts.
 
    \ **NOTES:**\
 
