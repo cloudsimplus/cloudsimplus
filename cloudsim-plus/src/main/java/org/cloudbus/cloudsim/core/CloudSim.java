@@ -37,7 +37,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "CloudSim Plus 4.5.0";
+    public static final String VERSION = "CloudSim Plus 4.5.1";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
@@ -217,8 +217,14 @@ public class CloudSim implements Simulation {
         this.circularClockTimeQueue = new double[]{minTimeBetweenEvents, minTimeBetweenEvents};
     }
 
-    @Override
-    public void finish() {
+    /**
+     * Finishes execution of running entities before terminating the simulation,
+     * then cleans up internal state.
+     *
+     * <b>Note:</b> Should be used only in the <b>synchronous</b> mode (after starting the simulation
+     * with {@link #startSync()}).
+     */
+    private void finish() {
         if(abortRequested){
             return;
         }

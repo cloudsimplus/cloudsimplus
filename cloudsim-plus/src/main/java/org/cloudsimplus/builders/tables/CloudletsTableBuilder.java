@@ -87,6 +87,21 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
         addColumnDataFunction(col, cloudlet -> cloudlet.getFinishTime());
 
         col = getTable().addColumn("ExecTime", SECONDS).setFormat(TIME_FORMAT);
-        addColumnDataFunction(col, cloudlet -> Math.ceil(cloudlet.getActualCpuTime()));
+        addColumnDataFunction(col, this::roundCpuTime);
+    }
+
+    /**
+     * Rounds the Cloudlet CPU time so that decimal places are ignored.
+     * Sometimes a Cloudlet start at time 0.1 and finish at time 10.1.
+     * Previously, in such a situation, the finish time was rounded to 11 (Math.ceil),
+     * giving the wrong idea that the Cloudlet took 11 seconds to finish.
+     * This method makes some little adjustments to avoid such a precision issue.
+     *
+     * @param cloudlet
+     * @return
+     */
+    private double roundCpuTime(final Cloudlet cloudlet) {
+        final double fraction = cloudlet.getExecStartTime() - (int) cloudlet.getExecStartTime();
+        return Math.round(cloudlet.getActualCpuTime() - fraction);
     }
 }

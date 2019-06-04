@@ -76,7 +76,6 @@ final class SimulationNull implements Simulation {
     @Override public void sendFirst(SimEvent evt) {/**/}
     @Override public void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data) {/**/}
     @Override public void sendNow(SimEntity src, SimEntity dest, int tag, Object data) {/**/}
-    @Override public void finish() { /**/ }
     @Override public double runFor(double interval) { return 0; }
     @Override public Simulation addOnEventProcessingListener(EventListener<SimEvent> listener) {
         return this;

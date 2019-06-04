@@ -136,6 +136,28 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     /**
      * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
+     * To change these values, use the respective setters. While the Vm {@link #isCreated()
+     * is being instantiated}, such values can be changed freely.
+     *
+     * <p>It is not defined an id for the Vm. The id is defined when the Vm is submitted to
+     * a {@link DatacenterBroker}.</p>
+     *
+     * @param mipsCapacity the mips capacity of each Vm {@link Pe}
+     * @param numberOfPes  amount of {@link Pe} (CPU cores)
+     * @see #setRam(long)
+     * @see #setBw(long)
+     * @see #setStorage(Storage)
+     * @see #setDefaultRamCapacity(long)
+     * @see #setDefaultBwCapacity(long)
+     * @see #setDefaultStorageCapacity(long)
+     */
+    public VmSimple(final double mipsCapacity, final long numberOfPes, final CloudletScheduler cloudletScheduler) {
+        this(-1, mipsCapacity, numberOfPes);
+        setCloudletScheduler(cloudletScheduler);
+    }
+
+    /**
+     * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      * <p>
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.

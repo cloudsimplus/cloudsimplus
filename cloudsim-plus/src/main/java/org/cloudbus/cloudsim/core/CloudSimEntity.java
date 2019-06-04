@@ -145,7 +145,9 @@ public abstract class CloudSimEntity implements SimEntity {
          * message is sent, it has to be processed to enable entities to shutdown.
          */
         if (!simulation.isRunning() && evt.getTag() != CloudSimTags.END_OF_SIMULATION) {
-            LOGGER.warn("{}: Cannot send events before simulation start. Trying to send message {} to {}", this, evt.getTag(), evt.getDestination());
+            LOGGER.warn(
+                "{}: {}: Cannot send events before simulation starts or after it finishes. Trying to send message {} to {}",
+                getSimulation().clock(), this, evt.getTag(), evt.getDestination());
             return false;
         }
 

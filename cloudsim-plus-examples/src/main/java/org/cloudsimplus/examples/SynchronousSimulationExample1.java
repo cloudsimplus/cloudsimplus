@@ -23,6 +23,7 @@
  */
 package org.cloudsimplus.examples;
 
+import ch.qos.logback.classic.Level;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -38,6 +39,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.util.Log;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -55,6 +57,9 @@ import java.util.List;
  * simulation data inside a loop,
  * without requiring to use {@link org.cloudsimplus.listeners.EventListener}s for that.
  * </p>
+ *
+ * <p>In this example, we are collecting VMs' CPU utilization inside a loop,
+ * after each call of the {@link CloudSim#runFor(double)} method.</p>
  *
  * @author Pawel Koperek
  * @author Manoel Campos da Silva Filho
@@ -81,15 +86,14 @@ public class SynchronousSimulationExample1 {
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
     private Datacenter datacenter0;
+    private double previousClock;
 
     public static void main(String[] args) {
         new SynchronousSimulationExample1();
     }
 
     public SynchronousSimulationExample1() {
-        /*Enables just some level of log messages.
-          Make sure to import org.cloudsimplus.util.Log;*/
-        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+        Log.setLevel(Level.WARN);
 
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
@@ -108,11 +112,30 @@ public class SynchronousSimulationExample1 {
         simulation.startSync();
         while(simulation.isRunning()){
             simulation.runFor(INTERVAL);
+            printVmCpuUtilization();
         }
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         finishedCloudlets.sort(Comparator.comparingLong(Cloudlet::getId));
         new CloudletsTableBuilder(finishedCloudlets).build();
+    }
+
+    private void printVmCpuUtilization() {
+        if(simulation.clock() == previousClock){
+            return;
+        }
+
+        previousClock = simulation.clock();
+        System.out.printf("\t\tVM CPU utilization for Time %.0f\n", simulation.clock());
+        for (final Vm vm : vmList) {
+            System.out.printf(" Vm %5d |", vm.getId());
+        }
+        System.out.println();
+
+        for (final Vm vm : vmList) {
+            System.out.printf(" %7.0f%% |", vm.getCpuPercentUtilization()*100);
+        }
+        System.out.println("\n");
     }
 
     /**

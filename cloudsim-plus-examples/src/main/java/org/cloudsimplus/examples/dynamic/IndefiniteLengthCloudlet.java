@@ -77,6 +77,15 @@ public class IndefiniteLengthCloudlet {
 
     private static final int CLOUDLETS = 2;
     private static final int CLOUDLET_PES = 2;
+    /**
+     * Defines a negative length for Cloudlets so that
+     * they keep running until explicitly requested to finish.
+     * In this example, Cloudlets are finished only when
+     * the simulation termination time is reached.
+     *
+     * @see CloudSim#terminateAt(double)
+     */
+    private static final int CLOUDLET_LENGTH = -10000;
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
@@ -174,7 +183,7 @@ public class IndefiniteLengthCloudlet {
 
         for (int i = 0; i < CLOUDLETS; i++) {
             Cloudlet cloudlet =
-                new CloudletSimple(-10000, CLOUDLET_PES)
+                new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES)
                     .setFileSize(1024)
                     .setOutputSize(1024)
                     .setUtilizationModelCpu(utilizationFull)

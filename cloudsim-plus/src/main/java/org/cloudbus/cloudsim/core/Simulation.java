@@ -46,7 +46,7 @@ public interface Simulation {
 
     /**
      * Aborts the simulation without finishing the processing
-     * of entities in the {@link #getEntityList() entities list}, <b>what may give
+     * of entities in the {@link #getEntityList() entities list}, <b>which may give
      * unexpected results</b>.
      * <p><b>Use this method just if you want to abandon the simulation an usually ignore the results.</b></p>
      */
@@ -317,15 +317,6 @@ public interface Simulation {
     void sendNow(SimEntity src, SimEntity dest, int tag, Object data);
 
     /**
-     * Finishes execution of running entities before terminating the simulation,
-     * then cleans up internal state.
-     *
-     * <b>Note:</b> Should be used only in the <b>synchronous</b> mode (after starting the simulation
-     * with {@link #startSync()}).
-     */
-    void finish();
-
-    /**
      * Runs the simulation for a specific period of time and then immediately returns.
      * In order to complete the whole simulation you need to invoke this method multiple times
      *
@@ -334,8 +325,6 @@ public interface Simulation {
      *
      * @param interval The interval for which the simulation should be run (in seconds)
      * @return Clock at the end of simulation interval (in seconds)
-     *
-     * @see #finish()
      */
     double runFor(double interval);
 
@@ -359,8 +348,7 @@ public interface Simulation {
 
     /**
      * Starts simulation execution in synchronous mode - you need
-     * to call {@link #runFor(double)} method subsequently to actually process simulation steps. Requires
-     * finalizing the simulation with use of the {@link #finish()} method.
+     * to call {@link #runFor(double)} method subsequently to actually process simulation steps.
      *
      * <b>Note</b>: This method should be called just after all the entities
      * have been setup and added. The method returns immediately after preparing the
@@ -372,7 +360,6 @@ public interface Simulation {
      * you must use {@link #resume()} instead of calling the current method.
      *
      * @see #runFor(double)
-     * @see #finish()
      */
     void startSync();
 
