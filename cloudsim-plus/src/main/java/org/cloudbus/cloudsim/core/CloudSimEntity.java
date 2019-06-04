@@ -306,7 +306,11 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public void run() {
-        SimEvent evt = buffer == null ? getNextEvent() : buffer;
+        run(Double.MAX_VALUE);
+    }
+
+    public void run(final double until) {
+        SimEvent evt = buffer == null ? getNextEvent(e -> e.getTime() <= until) : buffer;
 
         while (evt != SimEvent.NULL) {
             processEvent(evt);
@@ -314,7 +318,7 @@ public abstract class CloudSimEntity implements SimEntity {
                 break;
             }
 
-            evt = getNextEvent();
+            evt = getNextEvent(e -> e.getTime() <= until);
         }
 
         buffer = null;
@@ -541,5 +545,4 @@ public abstract class CloudSimEntity implements SimEntity {
         result = 31 * result + Long.hashCode(id);
         return result;
     }
-
 }

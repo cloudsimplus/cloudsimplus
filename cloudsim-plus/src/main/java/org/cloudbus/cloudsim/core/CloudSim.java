@@ -37,7 +37,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "CloudSim Plus 4.4.2";
+    public static final String VERSION = "CloudSim Plus 4.5.0";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
@@ -217,30 +217,65 @@ public class CloudSim implements Simulation {
         this.circularClockTimeQueue = new double[]{minTimeBetweenEvents, minTimeBetweenEvents};
     }
 
+    /**
+     * Finishes execution of running entities before terminating the simulation.
+     */
     @Override
-    public double start() {
-        if(alreadyRunOnce){
-            throw new UnsupportedOperationException(
-                "You can't run a simulation that has already run previously. " +
-                "If you've paused the simulation and want to resume it, call the resume() method.");
+    public void finishSimulation() {
+        notifyEndOfSimulationToEntities();
+        running = false;
+        LOGGER.info("Simulation: No more future events{}", System.lineSeparator());
+
+        final List<SimEntity> entitiesAlive = entities.stream().filter(CloudSimEntity::isAlive).collect(toList());
+
+        // Allow all entities to exit their body method
+        if (!abortRequested) {
+            entitiesAlive.forEach(SimEntity::run);
         }
 
-        LOGGER.info("{}================== Starting {} =================={}", System.lineSeparator(), VERSION,  System.lineSeparator());
-        startEntitiesIfNotRunning();
-        this.alreadyRunOnce = true;
+        entitiesAlive.forEach(SimEntity::shutdownEntity);
+        running = false;
+
+        printSimulationFinished();
+    }
+
+    @Override
+    public double runFor(final double interval) {
+        final double until = this.clock + interval;
+        while (runClockTickAndProcessFutureEvents(until)) {
+            notifyOnSimulationStartListeners(); //it's ensured to run just once.
+        }
+
+        if(until > this.clock) {
+            this.clock = until;
+        }
+
+        return clock;
+    }
+
+    @Override
+    public double start() {
+        startSync();
 
         if(!eventLoop()){
             return clock;
         }
 
-        notifyEndOfSimulationToEntities();
-        running = false;
-        LOGGER.info("Simulation: No more future events{}", System.lineSeparator());
-
         finishSimulation();
-        printSimulationFinished();
-
         return clock;
+    }
+
+    @Override
+    public void startSync() {
+        if(alreadyRunOnce){
+            throw new UnsupportedOperationException(
+                "You can't run a simulation that has already run previously. " +
+                    "If you've paused the simulation and want to resume it, call the resume() method.");
+        }
+
+        LOGGER.info("{}================== Starting {} =================={}", System.lineSeparator(), VERSION,  System.lineSeparator());
+        startEntitiesIfNotRunning();
+        this.alreadyRunOnce = true;
     }
 
     private void notifyOnSimulationStartListeners() {
@@ -438,9 +473,18 @@ public class CloudSim implements Simulation {
      * @return true if some event was processed, false otherwise
      */
     private boolean runClockTickAndProcessFutureEvents() {
-        executeRunnableEntities();
-        if (!future.isEmpty()) {
-            processFutureEventsHappeningAtSameTimeOfTheFirstOne(future.first());
+        return runClockTickAndProcessFutureEvents(Double.MAX_VALUE);
+    }
+
+    private boolean runClockTickAndProcessFutureEvents(final double until) {
+        executeRunnableEntities(until);
+        if (future.isEmpty()) {
+            return false;
+        }
+
+        final SimEvent first = future.first();
+        if(first.getTime() <= until) {
+            processFutureEventsHappeningAtSameTimeOfTheFirstOne(first);
             return true;
         }
 
@@ -504,15 +548,19 @@ public class CloudSim implements Simulation {
      * Gets the list of entities that are in {@link SimEntity.State#RUNNABLE}
      * and execute them.
      */
-    private void executeRunnableEntities() {
+    private void executeRunnableEntities(final double until) {
         /*Uses an indexed for instead of anything else to avoid
         ConcurrencyModificationException when a HostFaultInjection is created inside a Datacenter*/
         for (int i = 0; i < entities.size(); i++) {
             CloudSimEntity ent = entities.get(i);
             if (ent.getState() == SimEntity.State.RUNNABLE) {
-                ent.run();
+                ent.run(until);
             }
         }
+    }
+
+    private void executeRunnableEntities() {
+        executeRunnableEntities(Double.MAX_VALUE);
     }
 
     private void sendNow(final SimEntity dest, final int tag) {
@@ -850,20 +898,6 @@ public class CloudSim implements Simulation {
 
     private boolean isNextFutureEventHappeningAfterTimeToPause() {
         return future.iterator().next().getTime() >= pauseAt;
-    }
-
-    /**
-     * Finishes execution of running entities before terminating the simulation.
-     */
-    private void finishSimulation() {
-        final List<SimEntity> entitiesAlive = entities.stream().filter(CloudSimEntity::isAlive).collect(toList());
-        // Allow all entities to exit their body method
-        if (!abortRequested) {
-            entitiesAlive.forEach(SimEntity::run);
-        }
-
-        entitiesAlive.forEach(SimEntity::shutdownEntity);
-        running = false;
     }
 
     @Override
