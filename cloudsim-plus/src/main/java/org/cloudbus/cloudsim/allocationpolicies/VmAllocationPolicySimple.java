@@ -33,6 +33,8 @@ import java.util.stream.Stream;
  * @since CloudSim Toolkit 1.0
  *
  * @see VmAllocationPolicyFirstFit
+ * @see VmAllocationPolicyBestFit
+ * @see VmAllocationPolicyWorstFit
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**

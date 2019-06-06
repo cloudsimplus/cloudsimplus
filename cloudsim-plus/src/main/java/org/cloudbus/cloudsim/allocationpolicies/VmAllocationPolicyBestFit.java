@@ -28,15 +28,12 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 /**
- * A VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with the most number of PEs in use.
- * <b>It is therefore a Best Fit policy</b>, allocating each VM into the host with the least available PEs
- * that are enough for the VM.
+ * A Worst Fit VmAllocationPolicy implementation that chooses, as
+ * the host for a VM, that one with the most number of PEs in use,
+ * which are enough for a VM.
  *
  * <p>This is a really computationally complex policy since the worst-case complexity
  * to allocate a Host for a VM is O(N), where N is the number of Hosts.
@@ -48,26 +45,9 @@ import java.util.stream.Stream;
  * @since CloudSim Plus 3.0.1
  *
  * @see VmAllocationPolicyFirstFit
+ * @see VmAllocationPolicyWorstFit
  */
 public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
-    /**
-     * Instantiates a VmAllocationPolicyBestFit.
-     */
-    public VmAllocationPolicyBestFit() {
-        super();
-    }
-
-    /**
-     * Instantiates a VmAllocationPolicyBestFit, changing the {@link Function} to select a Host for a Vm
-     * in order to define a different policy.
-     *
-     * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
-     * @see VmAllocationPolicy#setFindHostForVmFunction(BiFunction)
-     */
-    public VmAllocationPolicyBestFit(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
-        super(findHostForVmFunction);
-    }
-
     /**
      * Gets the first suitable host from the {@link #getHostList()}
      * that has the most number of PEs in use (i.e. the least number of free PEs).

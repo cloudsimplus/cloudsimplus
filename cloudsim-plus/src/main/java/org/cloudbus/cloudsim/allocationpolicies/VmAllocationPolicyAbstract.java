@@ -325,12 +325,12 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public final Optional<Host> findHostForVm(final Vm vm) {
         final Optional<Host> optional = findHostForVmFunction == null ? defaultFindHostForVm(vm) : findHostForVmFunction.apply(this, vm);
-        //If the selected Host is not active, activate it (if it's already active, this operation has no effect)
+        //If the selected Host is not active, activate it (if it's already active, setActive has no effect)
         return optional.map(host -> host.setActive(true));
     }
 
     /**
-     * Provides the default implementation of the {@link VmAllocationPolicy}
+     * Provides the default implementation of the policy
      * to find a suitable Host for a given VM.
      *
      * @param vm the VM to find a suitable Host to
