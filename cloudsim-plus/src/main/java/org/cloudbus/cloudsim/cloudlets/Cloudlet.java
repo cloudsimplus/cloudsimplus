@@ -496,13 +496,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     boolean isBoundToVm();
 
     /**
-     * Checks if the Cloudlet is bound to any Vm and if that Vm is already created.
-     *
-     * @return true if the Cloudlet is bound to a created VM, false otherwise
-     */
-    boolean isBoundToCreatedVm();
-
-    /**
      * Gets the time the cloudlet had to wait before start executing on a
      * resource.
      *

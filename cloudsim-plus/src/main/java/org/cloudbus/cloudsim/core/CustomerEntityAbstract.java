@@ -65,15 +65,12 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
         return result;
     }
 
-    /**
-     * Sets the last Datacenter where VM was tried to be created.
-     * @param lastTriedDatacenter
-     */
+    @Override
     public void setLastTriedDatacenter(final Datacenter lastTriedDatacenter) {
         this.lastTriedDatacenter = lastTriedDatacenter;
     }
 
-    /** Gets the last Datacenter where VM was tried to be created. */
+    @Override
     public Datacenter getLastTriedDatacenter() {
         return lastTriedDatacenter;
     }

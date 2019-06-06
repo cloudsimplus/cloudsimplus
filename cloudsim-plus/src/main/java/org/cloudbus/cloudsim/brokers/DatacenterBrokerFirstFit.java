@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * If there isn't capacity in that one, it will try the other ones.
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.5.2
+ * @since CloudSim Plus 4.6.0
  */
 public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
     /**
@@ -39,7 +39,7 @@ public class DatacenterBrokerFirstFit extends DatacenterBrokerSimple {
      */
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
-        if (cloudlet.isBoundToCreatedVm()) {
+        if (cloudlet.isBoundToVm()) {
             return cloudlet.getVm();
         }
 

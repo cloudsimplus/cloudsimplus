@@ -14,7 +14,9 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -293,11 +295,24 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public boolean allocateHostForVm(final Vm vm, final Host host) {
+        if(vm instanceof VmGroup){
+            return createVmsFromGroup((VmGroup)vm, host);
+        }
+
+        return createVm(vm, host);
+    }
+
+    private boolean createVmsFromGroup(final VmGroup vmGroup, final Host host) {
+        final int createdVms = vmGroup.getVmList().stream().mapToInt(vm -> Conversion.boolToInt(createVm(vm, host))).sum();
+        vmGroup.setCreated(createdVms > 0);
+        return vmGroup.isCreated();
+    }
+
+    private boolean createVm(final Vm vm, final Host host) {
         if (host.createVm(vm)) {
             LOGGER.info(
                 "{}: {}: {} has been allocated to {}",
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
-
             return true;
         }
 

@@ -281,11 +281,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private boolean processVmEvents(final SimEvent evt) {
         switch (evt.getTag()) {
-            case CloudSimTags.VM_CREATE:
-                processVmCreate(evt, false);
-                return true;
             case CloudSimTags.VM_CREATE_ACK:
-                processVmCreate(evt, true);
+                processVmCreate(evt);
                 return true;
             case CloudSimTags.VM_VERTICAL_SCALING:
                 requestVmVerticalScaling(evt);
@@ -540,27 +537,20 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * the Broker.
      *
      * @param evt information about the event just happened
-     * @param ackRequested indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
      * @return true if a host was allocated to the VM; false otherwise
      */
-    protected boolean processVmCreate(final SimEvent evt, final boolean ackRequested) {
+    private boolean processVmCreate(final SimEvent evt) {
         final Vm vm = (Vm) evt.getData();
 
         final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm);
-
         if (hostAllocatedForVm) {
-            if (!vm.isCreated()) {
-                vm.setCreated(true);
-            }
-
             vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
         }
 
-        if (ackRequested) {
-            // Acknowledges that the request was received by the Datacenter
-            send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
-        }
+        /* Acknowledges that the request was received by the Datacenter,
+          (the broker is expecting that if the Vm was created or not). */
+        send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
 
         return hostAllocatedForVm;
     }

@@ -20,10 +20,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.TimeUtil;
-import org.cloudbus.cloudsim.vms.UtilizationHistory;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
+import org.cloudbus.cloudsim.vms.*;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.slf4j.Logger;
@@ -373,17 +370,19 @@ public class HostSimple implements Host {
 
     @Override
     public boolean createVm(final Vm vm) {
-        final boolean result = createVmInternal(vm);
-        if(result) {
+        if(createVmInternal(vm)) {
             addVmToCreatedList(vm);
             vm.setHost(this);
+            vm.setCreated(true);
             vm.notifyOnHostAllocationListeners();
             if(vm.getStartTime() < 0) {
                vm.setStartTime(getSimulation().clock());
             }
+
+            return true;
         }
 
-        return result;
+        return false;
     }
 
     @Override
@@ -392,6 +391,10 @@ public class HostSimple implements Host {
     }
 
     private boolean createVmInternal(final Vm vm) {
+        if(vm instanceof VmGroup){
+            return false;
+        }
+
         if(!allocateResourcesForVm(vm, false)){
             return false;
         }

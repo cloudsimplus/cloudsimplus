@@ -218,12 +218,6 @@ public final class CloudSimTags {
     public static final int CLOUDLET_UPDATE_ATTRIBUTES = BASE + 27;
 
     /**
-     * Denotes a request to create a new VM in a {@link Datacenter}
-     * without requiring and acknowledgement to be sent back to the sender.
-     */
-    public static final int VM_CREATE = BASE + 31;
-
-    /**
      * Denotes a request to create a new VM in a {@link Datacenter} with
      * where the {@link SimEvent#getData()} of the reply event
      * is a {@link Vm} object.

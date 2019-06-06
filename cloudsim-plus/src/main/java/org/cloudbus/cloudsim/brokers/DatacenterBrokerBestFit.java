@@ -37,7 +37,7 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
      */
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
-        if (cloudlet.isBoundToCreatedVm()) {
+        if (cloudlet.isBoundToVm()) {
             return cloudlet.getVm();
         }
 

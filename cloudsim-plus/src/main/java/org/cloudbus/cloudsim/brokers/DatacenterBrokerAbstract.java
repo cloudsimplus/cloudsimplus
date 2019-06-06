@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
@@ -192,6 +193,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     /**
      * {@inheritDoc}
+     *
+     * <p>The individual submission delay of VMs inside the group will be ignored.
+     * Only the submission delay set for the {@link VmGroup} will be considered.</p>
+     *
      * <p>If the entity already started (the simulation is running),
      * the creation of previously submitted VMs already was requested
      * by the {@link #start()} method that is called just once.
@@ -202,6 +207,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * simulation execution.</p>
      *
      * @param list {@inheritDoc}
+     * @see VmGroup
      */
     @Override
     public void submitVmList(final List<? extends Vm> list) {
@@ -224,20 +230,25 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param customerEntities the List of {@link CustomerEntity} to set the broker.
      */
     private void setBrokerForEntities(final List<? extends CustomerEntity> customerEntities) {
-        customerEntities.forEach(e -> e.setBroker(this));
+        for (final CustomerEntity entity : customerEntities) {
+            entity.setBroker(this);
+            if(entity instanceof VmGroup) {
+                setBrokerForEntities(((VmGroup)entity).getVmList());
+            }
+        }
     }
 
     /**
      * Defines IDs for a list of {@link CustomerEntity} entities that don't
      * have one already assigned. Such entities can be a {@link Cloudlet},
-     * {@link Vm} or any object that implements {@link CustomerEntity}.
+     * {@link Vm}, {@link VmGroup} or any object that implements {@link CustomerEntity}.
      *
      * @param list                list of objects to define an ID
      * @param lastSubmittedEntity the last Entity that was submitted to the broker
      * @return the last Entity in the given List of the lastSubmittedEntity if the List is empty
      */
     private <T extends CustomerEntity> T setIdForEntitiesWithoutOne(final List<? extends T> list, T lastSubmittedEntity) {
-        return Simulation.setIdForEntitiesWithoutOne(list, lastSubmittedEntity) ? list.get(list.size() - 1) : lastSubmittedEntity;
+        return Simulation.setIdForEntitiesWithoutOne(list, lastSubmittedEntity);
     }
 
     private void sortVmsIfComparatorIsSet(final List<? extends Vm> list) {
@@ -601,11 +612,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         //if the VM was successfully created in the requested Datacenter
         if (vm.isCreated()) {
-            processSuccessVmCreationInDatacenter(vm, vm.getHost().getDatacenter());
+            processSuccessVmCreationInDatacenter(vm);
             vmCreated = true;
-        } else {
-            processFailedVmCreationInDatacenter(vm, lastSelectedDc);
-        }
+        } else vm.notifyOnCreationFailureListeners(lastSelectedDc);
 
         if (allNonDelayedVmsCreated()) {
             requestDatacentersToCreateWaitingCloudlets();
@@ -627,7 +636,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * After the response (ack) of all VM creation request were received
+     * After the response (ack) of all VM creation requests were received
      * but not all VMs could be created (what means some
      * acks informed about Vm creation failures), try to find
      * another Datacenter to request the creation of the VMs
@@ -672,24 +681,28 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * create the VM requested by the broker.
      *
      * @param vm         id of the Vm that succeeded to be created inside the Datacenter
-     * @param datacenter id of the Datacenter where the request to create
-     *                   the Vm succeeded
      */
-    private void processSuccessVmCreationInDatacenter(final Vm vm, final Datacenter datacenter) {
+    private void processSuccessVmCreationInDatacenter(final Vm vm) {
+        if(vm instanceof VmGroup){
+            final VmGroup vmGroup = ((VmGroup)vm);
+            for (final Iterator<Vm> iterator = vmGroup.getVmList().iterator(); iterator.hasNext(); ) {
+                final Vm nextVm = iterator.next();
+                if(nextVm.isCreated()){
+                    processSuccessVmCreationInDatacenter(nextVm);
+                    iterator.remove();
+                }
+            }
+
+            if(vmGroup.getVmList().isEmpty()){
+                vmWaitingList.remove(vmGroup);
+            }
+
+            return;
+        }
+
         vmWaitingList.remove(vm);
         vmExecList.add(vm);
         vmCreatedList.add(vm);
-    }
-
-    /**
-     * Process a response from a Datacenter informing that it was NOT able to
-     * create the VM requested by the broker.
-     *
-     * @param vm         id of the Vm that failed to be created inside the Datacenter
-     * @param datacenter id of the Datacenter where the request to create
-     */
-    private void processFailedVmCreationInDatacenter(final Vm vm, final Datacenter datacenter) {
-        vm.notifyOnCreationFailureListeners(datacenter);
     }
 
     /**
@@ -752,7 +765,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         if (vm.isCreated()) {
             if((delay > DEF_VM_DESTRUCTION_DELAY && vm.isIdleEnough(delay)) || isFinished()) {
-                LOGGER.info("{}: {}: Requesting Vm {} destruction.", getSimulation().clockStr(), getName(), vm.getId());
+                LOGGER.info("{}: {}: Requesting {} destruction.", getSimulation().clockStr(), getName(), vm);
                 sendNow(getDatacenter(vm), CloudSimTags.VM_DESTROY, vm);
             }
 
@@ -868,30 +881,35 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #submitVmList(java.util.List)
      */
     protected void requestDatacenterToCreateWaitingVms(final Datacenter datacenter, final boolean isFallbackDatacenter) {
-        int requestedVms = 0;
         for (final Vm vm : vmWaitingList) {
-            final CustomerEntityAbstract entity = (CustomerEntityAbstract) vm;
-            if (!datacenter.equals(entity.getLastTriedDatacenter())) {
-                logVmCreationRequest(datacenter, isFallbackDatacenter, vm);
-                send(datacenter, vm.getSubmissionDelay(), CloudSimTags.VM_CREATE_ACK, vm);
-                entity.setLastTriedDatacenter(datacenter);
-                requestedVms++;
-            }
+            this.vmCreationRequests += requestVmCreation(datacenter, isFallbackDatacenter, vm);
         }
+
         datacenterRequestedList.add(datacenter);
-        this.vmCreationRequests += requestedVms;
+    }
+
+    private int requestVmCreation(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {
+        if (datacenter.equals(vm.getLastTriedDatacenter())) {
+            return 0;
+        }
+
+        logVmCreationRequest(datacenter, isFallbackDatacenter, vm);
+        send(datacenter, vm.getSubmissionDelay(), CloudSimTags.VM_CREATE_ACK, vm);
+        vm.setLastTriedDatacenter(datacenter);
+        return 1;
+
     }
 
     private void logVmCreationRequest(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {
         final String fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
         if(vm.getSubmissionDelay() == 0)
             LOGGER.info(
-                "{}: {}: Trying to create Vm {} in {}{}",
-                getSimulation().clockStr(), getName(), vm.getId(), datacenter.getName(), fallbackMsg);
+                "{}: {}: Trying to create {} in {}{}",
+                getSimulation().clockStr(), getName(), vm, datacenter.getName(), fallbackMsg);
         else
             LOGGER.info(
-                "{}: {}: Creation of Vm {} in {}{} will be requested in {} seconds",
-                getSimulation().clockStr(), getName(), vm.getId(), datacenter.getName(),
+                "{}: {}: Creation of {} in {}{} will be requested in {} seconds",
+                getSimulation().clockStr(), getName(), vm, datacenter.getName(),
                 fallbackMsg, vm.getSubmissionDelay());
     }
 
@@ -907,11 +925,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #submitCloudletList(java.util.List)
      */
     protected void requestDatacentersToCreateWaitingCloudlets() {
-        /* @TODO autor: manoelcampos Where is checked if the Vm where
-         *       a cloudlet was submitted to has the required resources?
-         *       See https://github.com/manoelcampos/cloudsim-plus/issues/126
-         */
-
         /* Uses Iterator to remove Cloudlets from the waiting list
          * while iterating over that List. This avoids the collection of successfully
          * created Cloudlets into a separate list.
@@ -925,7 +938,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             //selects a VM for the given Cloudlet
             lastSelectedVm = vmMapper.apply(cloudlet);
-            if (lastSelectedVm == Vm.NULL) {
+            if (lastSelectedVm == Vm.NULL || !cloudlet.getVm().isCreated()) {
                 logPostponingCloudletExecution(cloudlet);
                 continue;
             }
@@ -965,9 +978,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                 "";
 
         LOGGER.info(
-            "{}: {}: Sending Cloudlet {} to Vm {} in {}{}.",
+            "{}: {}: Sending Cloudlet {} to {} in {}{}.",
             getSimulation().clockStr(), getName(), cloudlet.getId(),
-            lastSelectedVm.getId(), lastSelectedVm.getHost(), delayMsg);
+            lastSelectedVm, lastSelectedVm.getHost(), delayMsg);
     }
 
     private boolean allWaitingCloudletsSubmittedToVm() {

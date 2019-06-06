@@ -94,7 +94,7 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      */
     @Override
     public Vm defaultVmMapper(final Cloudlet cloudlet) {
-        if (cloudlet.isBoundToCreatedVm()) {
+        if (cloudlet.isBoundToVm()) {
             return cloudlet.getVm();
         }
 

@@ -25,7 +25,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @see Vm#NULL
  */
-final class VmNull implements Vm {
+class VmNull implements Vm {
     @Override public void setId(long id) {/**/}
     @Override public long getId() {
         return -1;
@@ -170,27 +170,20 @@ final class VmNull implements Vm {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
-    @Override public List<ResourceManageable> getResources() {
-        return Collections.emptyList();
-    }
-    @Override public String toString() {
-        return "Vm.NULL";
-    }
-    @Override public HorizontalVmScaling getHorizontalScaling() {
-        return HorizontalVmScaling.NULL;
-    }
+    @Override public void setLastTriedDatacenter(Datacenter lastTriedDatacenter) {/**/}
+    @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
+    @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
+    @Override public String toString() { return "Vm.NULL"; }
+    @Override public HorizontalVmScaling getHorizontalScaling() { return HorizontalVmScaling.NULL; }
     @Override public Vm setHorizontalScaling(HorizontalVmScaling scaling) throws IllegalArgumentException { return this; }
     @Override public Vm setRamVerticalScaling(VerticalVmScaling scaling) throws IllegalArgumentException { return this; }
     @Override public Vm setBwVerticalScaling(VerticalVmScaling scaling) throws IllegalArgumentException { return this; }
     @Override public Vm setPeVerticalScaling(VerticalVmScaling scaling) throws IllegalArgumentException { return this; }
-    @Override public VerticalVmScaling getRamVerticalScaling() {
-        return VerticalVmScaling.NULL;
-    }
-    @Override public VerticalVmScaling getBwVerticalScaling() {
-        return VerticalVmScaling.NULL;
-    }
+    @Override public VerticalVmScaling getRamVerticalScaling() { return VerticalVmScaling.NULL; }
+    @Override public VerticalVmScaling getBwVerticalScaling() { return VerticalVmScaling.NULL; }
     @Override public VerticalVmScaling getPeVerticalScaling() { return VerticalVmScaling.NULL; }
     @Override public Processor getProcessor() { return Processor.NULL; }
     @Override public String getDescription() { return ""; }
     @Override public Vm setDescription(String description) { return this; }
+    @Override public VmGroup getGroup() { return null; }
 }

@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
@@ -808,12 +809,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public boolean isBoundToVm() {
-        return vm != null && vm != Vm.NULL;
-    }
-
-    @Override
-    public boolean isBoundToCreatedVm(){
-        return isBoundToVm() && this.getVm().isCreated() && this.getBroker().equals(this.getVm().getBroker());
+        return vm != null && vm != Vm.NULL && !(vm instanceof VmGroup) && this.getBroker().equals(this.getVm().getBroker());
     }
 
     @Override

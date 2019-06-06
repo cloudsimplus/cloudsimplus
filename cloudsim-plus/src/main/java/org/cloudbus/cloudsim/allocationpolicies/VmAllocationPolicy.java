@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 import java.util.List;
@@ -20,11 +21,11 @@ import java.util.function.BiFunction;
 /**
  * An interface to be implemented by each class that represents a policy used by
  * a {@link Datacenter} to choose a {@link Host} to place or migrate a
- * given {@link Vm}.
+ * given {@link Vm} or {@link VmGroup}.
  *
  * <p>The VmAllocationPolicy uses Java 8 Functional Programming
  * to enable changing, at runtime, the policy used
- * to select a Host for a given VM.</p>
+ * to select a Host for a given {@link Vm} or {@link VmGroup}.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -58,19 +59,21 @@ public interface VmAllocationPolicy {
     void setDatacenter(Datacenter datacenter);
 
     /**
-     * Allocates a host for a given VM.
+     * Allocates a host for a given {@link Vm} or {@link VmGroup}.
      *
-     * @param vm the VM to allocate a host to
-     * @return $true if the host could be allocated; $false otherwise
+     * @param vm the {@link Vm} or {@link VmGroup} to allocate a host to
+     * @return true if the host could be allocated; false otherwise
+     * @see VmGroup
      */
     boolean allocateHostForVm(Vm vm);
 
     /**
-     * Allocates a specified host for a given VM.
+     * Allocates a specified host for a given {@link Vm} or {@link VmGroup}.
      *
-     * @param vm the VM to allocate a host to
-     * @param host the host to allocate to the given VM
-     * @return $true if the host could be allocated; $false otherwise
+     * @param vm the {@link Vm} or {@link VmGroup} to allocate a host to
+     * @param host the host to allocate to the given {@link Vm} or {@link VmGroup}
+     * @return true if the host could be allocated; false otherwise
+     * @see VmGroup
      */
     boolean allocateHostForVm(Vm vm, Host host);
 

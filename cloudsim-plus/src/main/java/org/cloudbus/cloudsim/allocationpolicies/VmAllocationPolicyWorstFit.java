@@ -43,7 +43,7 @@ import java.util.stream.Stream;
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.5.2
+ * @since CloudSim Plus 4.6.0
  *
  * @see VmAllocationPolicyFirstFit
  * @see VmAllocationPolicyBestFit

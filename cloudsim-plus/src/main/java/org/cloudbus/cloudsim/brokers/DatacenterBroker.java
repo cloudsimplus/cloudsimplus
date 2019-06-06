@@ -10,6 +10,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
@@ -122,11 +123,40 @@ public interface DatacenterBroker extends SimEntity {
     <T extends Vm> List<T> getVmCreatedList();
 
     /**
-     * Submits a single {@link Vm} to the broker.
+     * Submits a single {@link Vm} or {@link VmGroup} to the broker.
+     * When a {@link VmGroup} is given, it will try to place all VMs inside it into the same Host.
      *
      * @param vm the Vm to be submitted
+     * @see VmGroup
      */
     void submitVm(Vm vm);
+
+    /**
+     * Submits a list of {@link Vm} or {@link VmGroup} that their creation inside a Host will be requested to some
+     * {@link Datacenter}. The Datacenter that will be chosen to place a VM is
+     * determined by the {@link #setDatacenterSupplier(Supplier)}.
+     *
+     * <p>When a list of {@link VmGroup} is given, it will try to place all VMs from the same group into the same Host.</p>
+     *
+     * @param list the list of VMs to request the creation
+     * @see VmGroup
+     */
+    void submitVmList(List<? extends Vm> list);
+
+    /**
+     * Submits a list of {@link Vm} or {@link VmGroup} to the broker so that their creation inside some Host will be requested just after a given delay.
+     * Just the VMs that don't have a delay already assigned will have its submission delay changed.
+     * All VMs will be added to the {@link #getVmWaitingList()}.
+     *
+     * <p>When a list of {@link VmGroup} is given, it will try to place all VMs from the same group into the same Host.</p>
+     *
+     * @param list            the list of VMs to request the creation
+     * @param submissionDelay the delay the broker has to include when requesting the creation of VMs
+     * @see #submitVmList(java.util.List)
+     * @see Vm#getSubmissionDelay()
+     * @see VmGroup
+     */
+    void submitVmList(List<? extends Vm> list, double submissionDelay);
 
     /**
      * Submits a single {@link Cloudlet} to the broker.
@@ -186,28 +216,6 @@ public interface DatacenterBroker extends SimEntity {
      * @see Cloudlet#getSubmissionDelay()
      */
     void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay);
-
-    /**
-     * Sends to the broker a list with VMs that their creation inside a Host will be requested to some
-     * {@link Datacenter}. The Datacenter that will be chosen to place a VM is
-     * determined by the {@link #setDatacenterSupplier(Supplier)}.
-     *
-     * @param list the list of VMs to request the creation
-     */
-    void submitVmList(List<? extends Vm> list);
-
-    /**
-     * Sends a list of VMs for the broker so that their creation inside some Host will be requested just after a given delay.
-     * Just the VMs that don't have a delay already assigned will have its submission delay changed.
-     * All VMs will be added to the {@link #getVmWaitingList()},
-     * setting their submission delay to the specified value.
-     *
-     * @param list            the list of VMs to request the creation
-     * @param submissionDelay the delay the broker has to include when requesting the creation of VMs
-     * @see #submitVmList(java.util.List)
-     * @see Vm#getSubmissionDelay()
-     */
-    void submitVmList(List<? extends Vm> list, double submissionDelay);
 
     /**
      * Sets the {@link Supplier} that selects and returns a Datacenter
