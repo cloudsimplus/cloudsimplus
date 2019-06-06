@@ -9,7 +9,7 @@ import java.util.Comparator;
 /**
  * A implementation of {@link DatacenterBroker} that uses a Best Fit
  * mapping between submitted cloudlets and Vm's, trying to place a Cloudlet
- * at the best suitable Vm which can be found.
+ * at the best suitable Vm which can be found (according to the required Cloudlet's PEs).
  * The Broker then places the submitted Vm's at the first Datacenter found.
  * If there isn't capacity in that one, it will try the other ones.
  *

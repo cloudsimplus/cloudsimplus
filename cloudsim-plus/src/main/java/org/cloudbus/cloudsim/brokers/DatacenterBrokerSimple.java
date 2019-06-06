@@ -28,6 +28,8 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
+ *
+ * @see DatacenterBrokerFirstFit
  * @see DatacenterBrokerBestFit
  */
 public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
