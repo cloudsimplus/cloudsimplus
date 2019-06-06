@@ -37,7 +37,8 @@ import java.util.stream.Stream;
  *
  * <p>This is a really computationally complex policy since the worst-case complexity
  * to allocate a Host for a VM is O(N), where N is the number of Hosts.
- * Such an implementation is not appropriate for large scale scenarios.</p>
+ * Such an implementation is not appropriate for large scale scenarios.
+ * <b>Additionally, such a policy may increase resource idleness.</b></p>
  *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
  *
