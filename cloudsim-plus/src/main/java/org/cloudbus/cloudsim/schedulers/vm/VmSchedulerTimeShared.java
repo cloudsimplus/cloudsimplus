@@ -168,7 +168,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
                 : "No MIPS were allocated.";
         LOGGER.warn(
                 "{}: {}: {} is requiring a total of {} MIPS but the PEs of {} currently don't have such an available MIPS amount. {}",
-                getHost().getSimulation().clock(),
+                getHost().getSimulation().clockStr(),
                 getClass().getSimpleName(), vm,
                 (long)requestedMipsForVmPe, getHost(), msg);
     }

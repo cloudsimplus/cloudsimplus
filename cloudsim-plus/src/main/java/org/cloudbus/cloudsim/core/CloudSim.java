@@ -357,7 +357,7 @@ public class CloudSim implements Simulation {
         entities.stream()
             .filter(CloudSimEntity::isAlive)
             .forEach(e -> sendNow(e, CloudSimTags.END_OF_SIMULATION));
-        LOGGER.info("{}: Processing last events before simulation shutdown.", clock);
+        LOGGER.info("{}: Processing last events before simulation shutdown.", clockStr());
 
         while (true) {
             if(!runClockTickAndProcessFutureEvents(Double.MAX_VALUE)){
@@ -436,6 +436,11 @@ public class CloudSim implements Simulation {
     @Override
     public double clock() {
         return clock;
+    }
+
+    @Override
+    public String clockStr() {
+        return String.format("%.2f", clock);
     }
 
     @Override
@@ -523,7 +528,7 @@ public class CloudSim implements Simulation {
             * Without increasing the time, the simulation stops due to lack of new events.*/
             LOGGER.info(
                 "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set).{}Checking new events in {} seconds ({})",
-                clock, terminationTime, System.lineSeparator(),
+                clockStr(), terminationTime, System.lineSeparator(),
                 increment, info);
             setClock(clock + increment);
             return true;

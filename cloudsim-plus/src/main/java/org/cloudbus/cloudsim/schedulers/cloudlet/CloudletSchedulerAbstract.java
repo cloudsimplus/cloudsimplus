@@ -601,7 +601,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                         "no amount is available.";
                 LOGGER.warn(
                     "{}: {}: {} requested {} MB of {} but {}",
-                    vm.getSimulation().clock(), getClass().getSimpleName(), cloudlet, requested, resource.getClass().getSimpleName(), msg);
+                    vm.getSimulation().clockStr(), getClass().getSimpleName(), cloudlet, requested, resource.getClass().getSimpleName(), msg);
             }
             resource.allocateResource(Math.min(requested, resource.getAvailableResource()));
         }

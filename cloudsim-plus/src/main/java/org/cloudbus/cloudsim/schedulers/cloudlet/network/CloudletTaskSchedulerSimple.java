@@ -138,7 +138,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         optional.ifPresent(task -> {
             LOGGER.trace(
                 "{}: {}: {} pkts added to be sent from {} in {}",
-                sourceCloudlet.getSimulation().clock(), getClass().getSimpleName(),
+                sourceCloudlet.getSimulation().clockStr(), getClass().getSimpleName(),
                 task.getPacketsToSend().size(), sourceCloudlet,
                 sourceCloudlet.getVm());
 
@@ -163,7 +163,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             receivedPkts.forEach(pkt ->
                 LOGGER.trace(
                     "{}: {}: {} in {} received pkt with {} bytes from {} in {}",
-                    candidateDestinationCloudlet.getSimulation().clock(), getClass().getSimpleName(),
+                    candidateDestinationCloudlet.getSimulation().clockStr(), getClass().getSimpleName(),
                     pkt.getReceiverCloudlet(), pkt.getDestination(),
                     pkt.getSize(), pkt.getSenderCloudlet(), pkt.getSource())
             );

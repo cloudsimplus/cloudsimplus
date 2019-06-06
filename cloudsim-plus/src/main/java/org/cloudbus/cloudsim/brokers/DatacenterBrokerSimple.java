@@ -21,10 +21,14 @@ import org.cloudbus.cloudsim.vms.Vm;
  * cyclically selecting the next VM from the broker VM list for each requesting
  * cloudlet.</p>
  *
+ * <p>Such a policy doesn't check if the selected VM is really suitable for the Cloudlet
+ * and may not provide an optimal mapping.</p>
+ *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
+ * @see DatacenterBrokerBestFit
  */
 public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
     /**

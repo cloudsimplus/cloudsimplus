@@ -99,6 +99,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
 
     @Override
     protected boolean requestUpScaling(final double time) {
+        final String timeStr = String.format("%.2f", time);
         if(!haveNewCloudletsArrived()){
             return false;
         }
@@ -107,7 +108,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
         final Vm newVm = getVmSupplier().get();
         LOGGER.info(
             "{}: {}{}: Requesting creation of {} to receive new Cloudlets in order to balance load of {}. {} CPU usage is {}%",
-            time, getClass().getSimpleName(), getVm(), newVm, getVm(), getVm().getId(), vmCpuUsagePercent);
+            timeStr, getClass().getSimpleName(), getVm(), newVm, getVm(), getVm().getId(), vmCpuUsagePercent);
         getVm().getBroker().submitVm(newVm);
 
         cloudletCreationRequests = getVm().getBroker().getCloudletCreatedList().size();

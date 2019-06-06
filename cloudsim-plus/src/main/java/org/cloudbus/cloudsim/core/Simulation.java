@@ -89,6 +89,14 @@ public interface Simulation {
     double clock();
 
     /**
+     * Gets the current simulation time in seconds as a formatted String.
+     *
+     * @return
+     * @see #clock()
+     */
+    String clockStr();
+
+    /**
      * Gets the current simulation time in minutes.
      *
      * @return

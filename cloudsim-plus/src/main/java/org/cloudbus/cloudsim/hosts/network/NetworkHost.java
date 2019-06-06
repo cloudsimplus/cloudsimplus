@@ -115,13 +115,13 @@ public class NetworkHost extends HostSimple {
             taskScheduler.addPacketToListOfPacketsSentFromVm(vmPacket);
             LOGGER.trace(
                 "{}: {}: {} received pkt with {} bytes from {} in {} and forwarded it to {} in {}",
-                getSimulation().clock(), getClass().getSimpleName(), this,
+                getSimulation().clockStr(), getClass().getSimpleName(), this,
                 vmPacket.getSize(), vmPacket.getSenderCloudlet(), vmPacket.getSource(),
                 vmPacket.getReceiverCloudlet(), vmPacket.getDestination());
         }
         else LOGGER.warn(
                 "{}: {}: Destination {} was not found inside {}",
-                getSimulation().clock(), getClass(), vmPacket.getDestination(), this);
+                getSimulation().clockStr(), getClass(), vmPacket.getDestination(), this);
     }
 
     /**

@@ -85,7 +85,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
-                getHost().getSimulation().clock(), getClass().getSimpleName(), vm, host);
+                getHost().getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
             return false;
         }
 

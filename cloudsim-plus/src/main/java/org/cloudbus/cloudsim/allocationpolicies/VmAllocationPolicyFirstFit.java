@@ -46,7 +46,7 @@ public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract imple
             /* If it gets here, the previous Host doesn't have capacity to place the VM.
              * Then, moves to the next Host.
              * If the end of the Host list is reached, starts from the beginning,
-             * until the .*/
+             * until the max number of tries.*/
             lastHostIndex = ++lastHostIndex % hostList.size();
         }
 

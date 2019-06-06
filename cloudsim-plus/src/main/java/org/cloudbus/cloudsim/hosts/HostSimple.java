@@ -448,7 +448,7 @@ public class HostSimple implements Host {
         final String msg = pmResource.getAvailableResource() > 0 ? "just "+pmResource.getAvailableResource()+" " + resourceUnit : "no amount";
         LOGGER.error(
             "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
-            simulation.clock(), getClass().getSimpleName(), migration, vm, this,
+            simulation.clockStr(), getClass().getSimpleName(), migration, vm, this,
             pmResource.getClass().getSimpleName(), vmRequestedResource.getCapacity(), msg);
     }
 
@@ -522,11 +522,11 @@ public class HostSimple implements Host {
         }
 
         if(activate && !this.active){
-            LOGGER.info("{}: {} is being powered on.", getSimulation().clock(), this);
+            LOGGER.info("{}: {} is being powered on.", getSimulation().clockStr(), this);
         }
         else if(!activate && this.active){
             final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
-            LOGGER.info("{}: {} is being powered off{}.", getSimulation().clock(), this, reason);
+            LOGGER.info("{}: {} is being powered off{}.", getSimulation().clockStr(), this, reason);
         }
     }
 
@@ -1222,7 +1222,7 @@ public class HostSimple implements Host {
     private double addVmResourceUseToHistoryIfNotMigratingIn(final Vm vm, final double currentTime) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (getVmsMigratingIn().contains(vm)) {
-            LOGGER.info("{}: {}: {} is migrating in", getSimulation().clock(), this, vm);
+            LOGGER.info("{}: {}: {} is migrating in", getSimulation().clockStr(), this, vm);
             return totalAllocatedMips;
         }
 
@@ -1232,7 +1232,7 @@ public class HostSimple implements Host {
             final long notAllocatedMipsByPe = (long)((totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes());
             LOGGER.error(
                 "{}: {}: {} MIPS not allocated for each one of the {} PEs from {} due to {}.",
-                getSimulation().clock(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
+                getSimulation().clockStr(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
         }
 
         final VmStateHistoryEntry entry = new VmStateHistoryEntry(
@@ -1243,7 +1243,7 @@ public class HostSimple implements Host {
         vm.addStateHistoryEntry(entry);
 
         if (vm.isInMigration()) {
-            LOGGER.info("{}: {}: {} is migrating out ", getSimulation().clock(), this, vm);
+            LOGGER.info("{}: {}: {} is migrating out ", getSimulation().clockStr(), this, vm);
             totalAllocatedMips /= getVmScheduler().getMaxCpuUsagePercentDuringOutMigration();
         }
 
