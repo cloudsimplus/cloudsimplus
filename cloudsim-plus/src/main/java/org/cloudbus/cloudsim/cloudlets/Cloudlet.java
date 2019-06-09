@@ -840,4 +840,6 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      */
     @Override
     void setBroker(DatacenterBroker broker);
+
+    void reset();
 }

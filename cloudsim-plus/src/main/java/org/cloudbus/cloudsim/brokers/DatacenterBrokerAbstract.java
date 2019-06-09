@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.brokers;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
@@ -26,6 +27,8 @@ import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -771,6 +774,62 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
     }
 
+    private Cloudlet extractCloudlet(CloudletExecution cloudletExecution) {
+        return cloudletExecution.getCloudlet();
+    }
+
+    private void resetCloudletStatus(final Cloudlet cloudlet) {
+        cloudlet.reset();
+    }
+
+    private Cloudlet extractResetCloudlet(CloudletExecution cloudletExecution) {
+        Cloudlet cloudlet = extractCloudlet(cloudletExecution);
+        this.resetCloudletStatus(cloudlet);
+        return cloudlet;
+    }
+
+    private List<Cloudlet> resetCloudlets(List<CloudletExecution> toReset) {
+        return toReset
+            .stream()
+            .map(this::extractResetCloudlet)
+            .collect(Collectors.toList());
+    }
+
+    private List<Cloudlet> resetCloudletsFromVm(final Vm vm) {
+        final List<Cloudlet> cloudletsToReschedule = new ArrayList<>();
+        final CloudletScheduler cloudletScheduler = vm.getCloudletScheduler();
+
+        cloudletsToReschedule.addAll(resetCloudlets(cloudletScheduler.getCloudletWaitingList()));
+        cloudletsToReschedule.addAll(resetCloudlets(cloudletScheduler.getCloudletExecList()));
+
+        cloudletScheduler.clear();
+
+        return cloudletsToReschedule;
+    }
+
+
+    public List<Cloudlet> requestVmDestruction(final Vm vm) {
+        if(getVmExecList().contains(vm)) {
+            final List<Cloudlet> cloudletsFromVm = resetCloudletsFromVm(vm);
+            final List<Cloudlet> cloudlesSubmitted = new ArrayList<>();
+
+            for(Cloudlet cl : cloudletSubmittedList) {
+                if(cl.getVm().equals(vm)) {
+                    cloudlesSubmitted.add(cl);
+                }
+            }
+
+            cloudletSubmittedList.removeAll(cloudlesSubmitted);
+            cloudlesSubmitted.stream().forEach(this::resetCloudletStatus);
+
+            vm.getHost().destroyVm(vm);
+            return Stream.concat(cloudletsFromVm.stream(), cloudlesSubmitted.stream()).collect(Collectors.toList());
+        } else {
+            LOGGER.info("Vm: " + vm.getId() + " does not belong to this broker! Broker: " + this.toString());
+            return new ArrayList<>();
+        }
+    }
+
     /**
      * Checks if an event must be sent to verify if a VM became idle.
      * That will happen when the {@link #getVmDestructionDelayFunction() VM destruction delay}
@@ -778,7 +837,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * In such situation, that means it is required to send additional events to check if a VM became idle.
      * No additional events are required when:
-     * - the VM destruction delay was not set (VMs will be destroyed only when the broker is shutdown)
+     * - the VM destruction delay was not
+    set (VMs will be destroyed only when the broker is shutdown)
      * - the delay was set and it's multiple of the scheduling interval
      *   (VM idleness will be checked in the interval defined by the Datacenter scheduling).
      *

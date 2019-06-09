@@ -261,4 +261,6 @@ public interface CloudletScheduler extends Serializable {
      * @param cloudlet the Cloudlet to be added
      */
 	void addCloudletToReturnedList(Cloudlet cloudlet);
+
+    void clear();
 }

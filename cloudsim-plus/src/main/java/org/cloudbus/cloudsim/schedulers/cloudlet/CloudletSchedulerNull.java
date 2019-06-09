@@ -67,4 +67,5 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public List<CloudletExecution> getCloudletWaitingList() { return Collections.emptyList(); }
     @Override public void deallocatePesFromVm(int pesToRemove) {/**/}
     @Override public List<Cloudlet> getCloudletList() { return Collections.emptyList(); }
+    @Override public void clear() { }
 }

@@ -448,7 +448,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         // if this cloudlet is in the exec queue
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
-            send(this,
+             send(this,
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
