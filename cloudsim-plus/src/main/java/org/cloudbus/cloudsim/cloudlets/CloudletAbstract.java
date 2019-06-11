@@ -198,7 +198,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         onUpdateProcessingListeners = new HashSet<>();
     }
 
-    public void reset() {
+    public final void reset() {
         this.netServiceLevel = 0;
         this.execStartTime = 0.0;
         this.status = Status.INSTANTIATED;
