@@ -48,20 +48,11 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * A example showing how to run the simulation synchronously,
- * (by calling {@link CloudSim#startSync()}).
- * This way, the researcher can interact with the simulation,
- * for instance to collect data.
+ * A example showing how to destroy a VM running within a synchronous simulation,
+ * (by calling {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerAbstract#requestVmDestruction(Vm)} ()}).
  *
- * <p>A synchronous simulation is similar to setting a {@link Datacenter#setSchedulingInterval(double) scheduling interval}:
- * the simulation clock will be increased at the pace of the given interval.
- * However, using the {@link CloudSim#startSync()} we can collect
- * simulation data inside a loop,
- * without requiring to use {@link org.cloudsimplus.listeners.EventListener}s for that.
- * </p>
- *
- * <p>In this example, we are collecting VMs' CPU utilization inside a loop,
- * after each call of the {@link CloudSim#runFor(double)} method.</p>
+ * Being able to kill a virtual machine, while it is still executing cloudlets, enables to simulate interesting
+ * scenarios (e.g. including failures or manually shutting down the system).
  *
  * @author Pawel Koperek
  * @author Manoel Campos da Silva Filho
