@@ -65,7 +65,8 @@ import java.util.function.Consumer;
  *
  * @author Pawel Koperek
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.5.0
+ * @since CloudSim Plus 4.7.0
+ * @see SynchronousSimulationExample1
  */
 public class SynchronousSimulationDestroyVmExample1 {
     /**
