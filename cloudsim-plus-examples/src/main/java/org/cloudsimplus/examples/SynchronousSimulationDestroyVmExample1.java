@@ -100,9 +100,6 @@ public class SynchronousSimulationDestroyVmExample1 {
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
-        //Sets a termination time, trying to stop the simulation before such a deadline
-        //simulation.terminateAt(20);
-
         int iteration = 0;
         simulation.startSync();
         while(simulation.isRunning()){
