@@ -788,6 +788,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             }
 
             vm.getHost().destroyVm(vm);
+            vm.getCloudletScheduler().clear();
             return cloudletsAffected;
         }
 
