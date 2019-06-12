@@ -214,5 +214,5 @@ final class CloudletNull implements Cloudlet {
     @Override public double registerArrivalInDatacenter() {
         return -1;
     }
-    @Override public void reset() { }
+    @Override public Cloudlet reset() { return this; }
 }

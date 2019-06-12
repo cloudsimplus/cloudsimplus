@@ -198,7 +198,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         onUpdateProcessingListeners = new HashSet<>();
     }
 
-    public final void reset() {
+    public final Cloudlet reset() {
         this.netServiceLevel = 0;
         this.execStartTime = 0.0;
         this.status = Status.INSTANTIATED;
@@ -213,6 +213,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         datacenterExecutionList.clear();
 
         this.setLastTriedDatacenter(Datacenter.NULL);
+        return this;
     }
 
     protected int getLastExecutedDatacenterIdx() {
