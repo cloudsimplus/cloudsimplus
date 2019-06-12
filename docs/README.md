@@ -5,7 +5,7 @@ You can browse the [online documentation here](http://cloudsimplus.rtfd.io).
 
 The documentation includes:
 
-- FAQs, guides and [JavaDocs](javadocs) in [reStructuredText (rst)](https://en.wikipedia.org/wiki/ReStructuredText) format to be published at [ReadTheDocs site](http://cloudsimplus.rtfd.io);
+- FAQs and guides in [reStructuredText (rst)](https://en.wikipedia.org/wiki/ReStructuredText) format to be published at [ReadTheDocs site](http://cloudsimplus.rtfd.io);
 - [StarUML](http://staruml.io) project containing [UML diagrams](cloudsim-plus.staruml.mdj); 
 - [Side-by-Side comparison between CloudSim and CloudSim Plus java simulation scenarios](CloudSim-and-CloudSimPlus-Comparison.html) (online version available [here](http://cloudsimplus.org/CloudSim-and-CloudSimPlus-Comparison.html));
 - [White Paper](cloudsim-plus-white-paper.pdf) published at the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu).
@@ -19,12 +19,6 @@ Ensure you have the following environments variables declared, since the python 
 ```bash
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
-```
-
-To generate the rst files from the javadoc comments inside the Java source files use:
-
-```shell
-make javadoc
 ```
 
 To build the documentation in html use:
