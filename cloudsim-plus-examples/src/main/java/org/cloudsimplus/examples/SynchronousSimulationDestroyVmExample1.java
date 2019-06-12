@@ -107,13 +107,7 @@ public class SynchronousSimulationDestroyVmExample1 {
             if(iteration == 15) {
                 Vm vm = vmList.get(0);
                 List<Cloudlet> affected = broker0.requestVmDestruction(vm);
-                affected.stream().forEach(new Consumer<Cloudlet>() {
-                    @Override
-                    public void accept(Cloudlet cloudlet) {
-                        final double initialDelay = cloudlet.getSubmissionDelay();
-                        cloudlet.setSubmissionDelay(initialDelay + simulation.clock());
-                    }
-                });
+                affected.stream().forEach(cl -> cl.setSubmissionDelay(cl.getSubmissionDelay() + simulation.clock()));
 
                 broker0.submitCloudletList(affected);
             }
