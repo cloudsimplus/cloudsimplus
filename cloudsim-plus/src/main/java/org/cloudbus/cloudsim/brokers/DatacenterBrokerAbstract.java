@@ -802,14 +802,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             final List<Cloudlet> cloudletsFromVm = resetCloudletsFromVm(vm);
             final List<Cloudlet> cloudlesSubmitted = new ArrayList<>();
 
-            for(Cloudlet cl : cloudletSubmittedList) {
-                if(cl.getVm().equals(vm)) {
-                    cloudlesSubmitted.add(cl);
+            for (final Iterator<Cloudlet> it = cloudletSubmittedList.iterator(); it.hasNext(); ) {
+                final Cloudlet cloudlet = it.next();
+                if(cloudlet.getVm().equals(vm)) {
+                    cloudlet.reset();
+                    cloudlesSubmitted.add(cloudlet);
+                    it.remove();
                 }
             }
-
-            cloudletSubmittedList.removeAll(cloudlesSubmitted);
-            cloudlesSubmitted.forEach(Cloudlet::reset);
 
             vm.getHost().destroyVm(vm);
             return Stream.concat(cloudletsFromVm.stream(), cloudlesSubmitted.stream()).collect(Collectors.toList());
