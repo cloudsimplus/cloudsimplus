@@ -262,5 +262,8 @@ public interface CloudletScheduler extends Serializable {
      */
 	void addCloudletToReturnedList(Cloudlet cloudlet);
 
+    /**
+     * Clears the internal state of the schedler
+     */
     void clear();
 }
