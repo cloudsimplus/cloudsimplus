@@ -774,49 +774,25 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
     }
 
-    private List<Cloudlet> resetCloudlets(List<CloudletExecution> toReset) {
-        return toReset
-            .stream()
-            .map(CloudletExecution::getCloudlet)
-            .map(Cloudlet::reset)
-            .collect(Collectors.toList());
-    }
-
-    private List<Cloudlet> resetCloudletsFromVm(final Vm vm) {
-        final CloudletScheduler cloudletScheduler = vm.getCloudletScheduler();
-        final int capacity = cloudletScheduler.getCloudletWaitingList().size() + cloudletScheduler.getCloudletExecList().size();
-        final List<Cloudlet> cloudletsToReschedule = new ArrayList<>(capacity);
-        List<CloudletExecution> cloudletWaitingList = cloudletScheduler.getCloudletWaitingList();
-
-        cloudletsToReschedule.addAll(resetCloudlets(cloudletWaitingList));
-        cloudletsToReschedule.addAll(resetCloudlets(cloudletScheduler.getCloudletExecList()));
-
-        cloudletScheduler.clear();
-
-        return cloudletsToReschedule;
-    }
-
-
     public List<Cloudlet> requestVmDestruction(final Vm vm) {
         if(vm.isCreated()) {
-            final List<Cloudlet> cloudletsFromVm = resetCloudletsFromVm(vm);
-            final List<Cloudlet> cloudlesSubmitted = new ArrayList<>();
+            final List<Cloudlet> cloudletsAffected = new ArrayList<>();
 
             for (final Iterator<Cloudlet> it = cloudletSubmittedList.iterator(); it.hasNext(); ) {
                 final Cloudlet cloudlet = it.next();
-                if(cloudlet.getVm().equals(vm)) {
+                if(cloudlet.getVm().equals(vm) && !cloudlet.isFinished()) {
                     cloudlet.reset();
-                    cloudlesSubmitted.add(cloudlet);
+                    cloudletsAffected.add(cloudlet);
                     it.remove();
                 }
             }
 
             vm.getHost().destroyVm(vm);
-            return Stream.concat(cloudletsFromVm.stream(), cloudlesSubmitted.stream()).collect(Collectors.toList());
-        } else {
-            LOGGER.info("Vm: " + vm.getId() + " does not belong to this broker! Broker: " + this.toString());
-            return new ArrayList<>();
+            return cloudletsAffected;
         }
+
+        LOGGER.warn("Vm: " + vm.getId() + " does not belong to this broker! Broker: " + this.toString());
+        return new ArrayList<>();
     }
 
     /**
