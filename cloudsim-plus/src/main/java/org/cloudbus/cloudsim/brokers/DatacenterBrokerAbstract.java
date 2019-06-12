@@ -796,7 +796,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private List<Cloudlet> resetCloudletsFromVm(final Vm vm) {
-        final List<Cloudlet> cloudletsToReschedule = new ArrayList<>();
+        final int capacity = cloudletScheduler.getCloudletWaitingList().size() + cloudletScheduler.getCloudletExecList().size();
+        final List<Cloudlet> cloudletsToReschedule = new ArrayList<>(capacity);
         final CloudletScheduler cloudletScheduler = vm.getCloudletScheduler();
 
         cloudletsToReschedule.addAll(resetCloudlets(cloudletScheduler.getCloudletWaitingList()));
