@@ -49,10 +49,10 @@ import java.util.function.Consumer;
 
 /**
  * A example showing how to destroy a VM running within a synchronous simulation,
- * (by calling {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerAbstract#requestVmDestruction(Vm)} ()}).
+ * by calling {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerAbstract#requestVmDestruction(Vm)}).
  *
  * Being able to kill a virtual machine, while it is still executing cloudlets, enables to simulate interesting
- * scenarios (e.g. including failures or manually shutting down the system).
+ * scenarios (e.g. including VM failures or manually shutting down the system).
  *
  * @author Pawel Koperek
  * @author Manoel Campos da Silva Filho
