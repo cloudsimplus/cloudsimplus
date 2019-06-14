@@ -774,7 +774,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
     }
 
-    public List<Cloudlet> requestVmDestruction(final Vm vm) {
+    @Override
+    public List<Cloudlet> destroyVm(final Vm vm) {
         if(vm.isCreated()) {
             final List<Cloudlet> cloudletsAffected = new ArrayList<>();
 

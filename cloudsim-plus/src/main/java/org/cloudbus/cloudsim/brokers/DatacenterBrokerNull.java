@@ -43,6 +43,7 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public <T extends Vm> List<T> getVmExecList() {
         return Collections.emptyList();
     }
+    @Override public List<Cloudlet> destroyVm(Vm vm) { return Collections.emptyList(); }
     @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
     @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {/**/}
     @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {/**/}
