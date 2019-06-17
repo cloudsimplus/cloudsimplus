@@ -31,7 +31,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Datacenter extends SimEntity, PowerAware {
+public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
     /**
      * A property that implements the Null Object Design Pattern for
      * {@link Datacenter} objects.

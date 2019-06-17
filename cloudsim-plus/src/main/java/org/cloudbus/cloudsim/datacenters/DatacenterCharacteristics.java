@@ -34,10 +34,6 @@ public interface DatacenterCharacteristics extends Identifiable {
      * The default Operating System of Datacenter Hosts to be used if not one is set.
      */
     String DEFAULT_OS = "Linux";
-    /**
-     * The default Datacenter's Time Zone to be used if not one is set.
-     */
-    double DEFAULT_TIMEZONE = 0;
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link Datacenter}
@@ -58,21 +54,6 @@ public interface DatacenterCharacteristics extends Identifiable {
      * @return the Datacenter
      */
     Datacenter getDatacenter();
-
-    /**
-     * Gets the time zone, a value between  [-12 and 13], in which the
-     * Datacenter is physically located.
-     *
-     * @return the time zone
-     */
-    double getTimeZone();
-
-    /**
-     * Sets the time zone. If an invalid value is given, the timezone is set to 0.
-     *
-     * @param timeZone the new time zone value, between  [-12 and 13].
-     */
-    DatacenterCharacteristics setTimeZone(double timeZone);
 
     /**
      * Gets the Virtual Machine Monitor (VMM), also called hypervisor, used in the
@@ -131,13 +112,6 @@ public interface DatacenterCharacteristics extends Identifiable {
      * @return current number of failed PMs the Datacenter has.
      */
     long getNumberOfFailedHosts();
-
-    /**
-     * Gets the total number of <b>FREE</b> or non-busy PEs for all PMs.
-     *
-     * @return number of PEs
-     */
-    int getNumberOfFreePes();
 
     /**
      * Gets the total number of PEs for all PMs.

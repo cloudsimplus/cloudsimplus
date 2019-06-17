@@ -58,5 +58,4 @@ public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
 
         return mappedVm;
     }
-
 }

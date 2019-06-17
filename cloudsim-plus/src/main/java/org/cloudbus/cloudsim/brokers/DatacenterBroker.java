@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Represents a broker acting on behalf of a cloud customer.
@@ -136,20 +136,22 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param vm the Vm to be submitted
      * @see VmGroup
+     * @return
      */
-    void submitVm(Vm vm);
+    DatacenterBroker submitVm(Vm vm);
 
     /**
      * Submits a list of {@link Vm} or {@link VmGroup} that their creation inside a Host will be requested to some
      * {@link Datacenter}. The Datacenter that will be chosen to place a VM is
-     * determined by the {@link #setDatacenterSupplier(Supplier)}.
+     * determined by the {@link #setDatacenterMapper(BiFunction)}.
      *
      * <p>When a list of {@link VmGroup} is given, it will try to place all VMs from the same group into the same Host.</p>
      *
      * @param list the list of VMs to request the creation
      * @see VmGroup
+     * @return
      */
-    void submitVmList(List<? extends Vm> list);
+    DatacenterBroker submitVmList(List<? extends Vm> list);
 
     /**
      * Submits a list of {@link Vm} or {@link VmGroup} to the broker so that their creation inside some Host will be requested just after a given delay.
@@ -163,15 +165,17 @@ public interface DatacenterBroker extends SimEntity {
      * @see #submitVmList(java.util.List)
      * @see Vm#getSubmissionDelay()
      * @see VmGroup
+     * @return
      */
-    void submitVmList(List<? extends Vm> list, double submissionDelay);
+    DatacenterBroker submitVmList(List<? extends Vm> list, double submissionDelay);
 
     /**
      * Submits a single {@link Cloudlet} to the broker.
      *
      * @param cloudlet the Cloudlet to be submitted
+     * @return
      */
-    void submitCloudlet(Cloudlet cloudlet);
+    DatacenterBroker submitCloudlet(Cloudlet cloudlet);
 
     /**
      * Sends a list of cloudlets to the broker so that it requests their
@@ -181,8 +185,9 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param list the list of Cloudlets to request the creation
      * @see #submitCloudletList(java.util.List, double)
+     * @return
      */
-    void submitCloudletList(List<? extends Cloudlet> list);
+    DatacenterBroker submitCloudletList(List<? extends Cloudlet> list);
 
     /**
      * Sends a list of cloudlets to the broker so that it requests their creation
@@ -195,8 +200,9 @@ public interface DatacenterBroker extends SimEntity {
      * @param submissionDelay the delay the broker has to include when requesting the creation of Cloudlets
      * @see #submitCloudletList(java.util.List)
      * @see Cloudlet#getSubmissionDelay()
+     * @return
      */
-    void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay);
+    DatacenterBroker submitCloudletList(List<? extends Cloudlet> list, double submissionDelay);
 
     /**
      * Sends a list of cloudlets to the broker so that it requests their creation inside
@@ -207,8 +213,9 @@ public interface DatacenterBroker extends SimEntity {
      * @param list the list of Cloudlets to request the creation
      * @param vm the VM to which all Cloudlets will be bound to
      * @see #submitCloudletList(java.util.List, double)
+     * @return
      */
-    void submitCloudletList(List<? extends Cloudlet> list, Vm vm);
+    DatacenterBroker submitCloudletList(List<? extends Cloudlet> list, Vm vm);
 
     /**
      * Sends a list of cloudlets to the broker so that it requests their creation
@@ -222,34 +229,37 @@ public interface DatacenterBroker extends SimEntity {
      * @param submissionDelay the delay the broker has to include when requesting the creation of Cloudlets
      * @see #submitCloudletList(java.util.List)
      * @see Cloudlet#getSubmissionDelay()
+     * @return
      */
-    void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay);
+    DatacenterBroker submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay);
 
     /**
-     * Sets the {@link Supplier} that selects and returns a Datacenter
+     * Sets the {@link BiFunction} that selects and returns a Datacenter
      * to place submitted VMs.
      *
-     * <p>The supplier defines the policy to select a Datacenter to host a VM
-     * that is waiting to be created.</p>
+     * <p>It defines the policy to select a Datacenter to host a VM
+     * that is waiting to be created. It receives as parameter the last selected Datacenter,
+     * the VM trying to be created and should return:
+     * <ul>
+     *    <li>the Datacenter for the next VMs in the waiting list</li>
+     *    <li>or {@link Datacenter#NULL} if no suitable Datacenter was found</li>
+     * </ul>
      *
-     * @param datacenterSupplier the datacenterSupplier to set
+     * The provided BiFunction is accountable to define when the
+     * last used Datacenter will be used for waiting VMs
+     * or a next one will be tried.</p>
+     *
+     * <p>When there are VMs in the waiting list, the provided Function
+     * will be called. If it receives {@link Datacenter#NULL} it indicates
+     * that a Datacenter was never selected to place VMs or the previous selected
+     * Datacenter has not enough resources for all the waiting VMs.
+     * The Function you provide here should consider that when returning
+     * the Datacenter where the creation of waiting VMs will be tried.</p>
+     *
+     * @param datacenterMapper the datacenterMapper to set
+     * @return
      */
-    void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier);
-
-    /**
-     * Sets the {@link Supplier} that selects and returns a fallback Datacenter
-     * to place submitted VMs when the Datacenter selected
-     * by the {@link #setDatacenterSupplier(java.util.function.Supplier) Datacenter Supplier}
-     * failed to create all requested VMs.
-     *
-     * <p>The supplier defines the policy to select a Datacenter to host a VM when
-     * all VM creation requests were received but not all VMs could be created.
-     * In this case, a different Datacenter has to be selected to request
-     * the creation of the remaining VMs in the waiting list.</p>
-     *
-     * @param fallbackDatacenterSupplier the fallbackDatacenterSupplier to set
-     */
-    void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier);
+    DatacenterBroker setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper);
 
     /**
      * Sets a {@link Comparator} that will be used to sort every list
@@ -258,8 +268,9 @@ public interface DatacenterBroker extends SimEntity {
      * in the order of the sorted VM list.
      *
      * @param comparator the VM Comparator to set
+     * @return
      */
-    void setVmComparator(Comparator<Vm> comparator);
+    DatacenterBroker setVmComparator(Comparator<Vm> comparator);
 
     /**
      * Sets a {@link Comparator} that will be used to sort every list
@@ -271,37 +282,6 @@ public interface DatacenterBroker extends SimEntity {
     void setCloudletComparator(Comparator<Cloudlet> comparator);
 
     /**
-     * Selects a VM to execute a given Cloudlet.
-     * The method defines the default policy used to map VMs for Cloudlets
-     * that are waiting to be created.
-     *
-     * <p>Since this default policy can be dynamically changed
-     * by calling {@link #setVmMapper(Function)},
-     * this method will always return the default policy
-     * provided by the subclass where the method is being called.</p>
-     *
-     * @param cloudlet the cloudlet that needs a VM to execute
-     * @return the selected Vm for the cloudlet or {@link Vm#NULL} if
-     * no suitable VM was found
-     *
-     * @see #getVmMapper()
-     */
-    Vm defaultVmMapper(Cloudlet cloudlet);
-
-    /**
-     * Gets the current {@link Function} used to map a given Cloudlet to a Vm.
-     * It defines the policy used to select a Vm to execute a given Cloudlet
-     * that is waiting to be created.
-     *
-     * <p>If the default policy was not changed by the {@link #setVmMapper(Function)},
-     * then this method will have the same effect of the {@link #defaultVmMapper(Cloudlet)}.</p>
-     *
-     * @return the Vm mapper {@link Function}
-     * @see #defaultVmMapper(Cloudlet)
-     */
-    Function<Cloudlet, Vm> getVmMapper();
-
-    /**
      * Sets a {@link Function} that maps a given Cloudlet to a Vm.
      * It defines the policy used to select a Vm to host a Cloudlet
      * that is waiting to be created.
@@ -310,8 +290,31 @@ public interface DatacenterBroker extends SimEntity {
      *                 must receive a Cloudlet and return the Vm where it will be placed into.
      *                 If the Function is unable to find a VM for a Cloudlet,
      *                 it should return {@link Vm#NULL}.
+     * @return
      */
-    void setVmMapper(Function<Cloudlet, Vm> vmMapper);
+    DatacenterBroker setVmMapper(Function<Cloudlet, Vm> vmMapper);
+
+    /**
+     * Defines if the broker has to try selecting the closest {@link Datacenter}
+     * to place {@link Vm}s, based on their timezone.
+     * The default behaviour is to ignore {@link Datacenter}s and {@link Vm}s
+     * timezones.
+     *
+     * @param select true to try selecting the closest Datacenter to be selected, false to ignore distance
+     * @return
+     */
+    DatacenterBroker setSelectClosestDatacenter(boolean select);
+
+    /**
+     * Checks if the broker has to try selecting the closest {@link Datacenter}
+     * to place {@link Vm}s, based on their timezone.
+     * The default behaviour is to ignore {@link Datacenter}s and {@link Vm}s
+     * timezones.
+     *
+     * @return true if the closest Datacenter selection is enabled, false if it's disabled
+     * @see #setSelectClosestDatacenter(boolean)
+     */
+    boolean isSelectClosestDatacenter();
 
     /**
      * Gets a <b>read-only</b> list of cloudlets created inside some Vm.

@@ -33,7 +33,6 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
      */
     public DatacenterBrokerHeuristic(final CloudSim simulation) {
         super(simulation);
-        setVmMapper(this::defaultVmMapper);
         heuristic = CloudletToVmMappingHeuristic.NULL;
     }
 

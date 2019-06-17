@@ -35,11 +35,6 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     private String os;
 
     /**
-     * @see #getTimeZone()
-     */
-    private double timeZone;
-
-    /**
      * @see #getCostPerSecond()
      */
     private double costPerSecond;
@@ -69,14 +64,13 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     /**
      * Creates a DatacenterCharacteristics with default values
-     * for {@link #getArchitecture() architecture}, {@link #getOs() OS}, {@link #getTimeZone() Time Zone} and
+     * for {@link #getArchitecture() architecture}, {@link #getOs() OS} and
      * {@link #getVmm() VMM}. The costs for {@link #getCostPerBw() BW}, {@link #getCostPerMem()} () RAM}
      * and {@link #getCostPerStorage()} () Storage} are set to zero.
      */
     public DatacenterCharacteristicsSimple(final Datacenter datacenter){
         setArchitecture(DEFAULT_ARCH);
         setOs(DEFAULT_OS);
-        setTimeZone(DEFAULT_TIMEZONE);
         setVmm(DEFAULT_VMM);
         setCostPerSecond(0);
         setCostPerMem(0);
@@ -93,11 +87,6 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     @Override
     public int getNumberOfPes() {
         return (int)datacenter.getHostList().stream().mapToLong(Host::getNumberOfPes).sum();
-    }
-
-    @Override
-    public int getNumberOfFreePes() {
-        return datacenter.getHostList().stream().mapToInt(Host::getFreePesNumber).sum();
     }
 
     @Override
@@ -181,17 +170,6 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     @Override
     public final DatacenterCharacteristics setOs(String os) {
         this.os = os;
-        return this;
-    }
-
-    @Override
-    public double getTimeZone() {
-        return timeZone;
-    }
-
-    @Override
-    public final DatacenterCharacteristics setTimeZone(final double timeZone) {
-        this.timeZone = timeZone < -12 || timeZone > 13 ? 0 : timeZone;
         return this;
     }
 

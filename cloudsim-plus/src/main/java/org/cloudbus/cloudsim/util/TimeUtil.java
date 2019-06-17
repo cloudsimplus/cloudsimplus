@@ -186,6 +186,18 @@ public final class TimeUtil {
     }
 
     /**
+     * Converts a value in hours to minutes.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param hours the value in hours
+     * @return the value in minutes
+     */
+    public static double hoursToMinutes(final double hours) {
+        return hours*60.0;
+    }
+
+    /**
      * Converts a value in hours to seconds.
      * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
      * don't provide the double precision required here.</p>

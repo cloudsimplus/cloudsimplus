@@ -49,7 +49,7 @@ public class DatacenterBuilder implements Builder {
     private double costPerStorage = 0.001;
     private double costPerMem = 0.05;
     private double schedulingInterval = 1;
-    private double timezone = 10;
+    private int    timezone;
 
     private final List<Datacenter> datacenters;
     private int createdDatacenters;
@@ -75,7 +75,6 @@ public class DatacenterBuilder implements Builder {
         final Datacenter datacenter = datacenterCreationFunction.apply(hosts);
 
         datacenter.getCharacteristics()
-            .setTimeZone(timezone)
             .setCostPerSecond(costPerCpuSecond)
             .setCostPerMem(costPerMem)
             .setCostPerStorage(costPerStorage)
@@ -83,6 +82,7 @@ public class DatacenterBuilder implements Builder {
 
         datacenter.getDatacenterStorage().setStorageList(storageList);
         datacenter.setName(name);
+        datacenter.setTimeZone(timezone);
         this.datacenters.add(datacenter);
         return this;
     }
@@ -148,11 +148,11 @@ public class DatacenterBuilder implements Builder {
         return this;
     }
 
-    public double getTimezone() {
+    public int getTimezone() {
         return timezone;
     }
 
-    public DatacenterBuilder setTimezone(final double defaultTimezone) {
+    public DatacenterBuilder setTimezone(final int defaultTimezone) {
         this.timezone = defaultTimezone;
         return this;
     }

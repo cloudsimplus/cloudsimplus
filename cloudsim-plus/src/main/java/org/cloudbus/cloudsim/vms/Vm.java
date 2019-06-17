@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.TimeZoned;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -40,7 +41,7 @@ import java.util.function.Predicate;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity {
+public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned {
     Logger LOGGER = LoggerFactory.getLogger(Vm.class.getSimpleName());
 
     /**
@@ -702,4 +703,29 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      * @see UtilizationHistory#enable()
      */
     UtilizationHistory getUtilizationHistory();
+
+    /**
+     * Gets the time zone offset, a value between  [-12 and 12],
+     * in which the VM is expected to be placed (if there is a {@link Datacenter}
+     * with enough capacity available at that timezone).
+     *
+     * <p>To know the actual timezone where the VM is placed,
+     * check the {@link Datacenter#getTimeZone() timezone of the Datacenter
+     * of the Host where this is VM placed}.</p>
+     *
+     * @return the expected timezone to place this VM
+     */
+    @Override
+    double getTimeZone();
+
+    /**
+     * Sets the time zone offset, a value between  [-12 and 12],
+     * in which the VM is expected to be placed (if there is a {@link Datacenter}
+     * with enough capacity available at that timezone).
+     *
+     * @param timeZone the new expected time zone offset
+     * @return
+     */
+    @Override
+    Vm setTimeZone(double timeZone);
 }

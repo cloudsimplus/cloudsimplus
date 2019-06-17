@@ -17,9 +17,12 @@ import org.cloudbus.cloudsim.vms.Vm;
  * at the first Datacenter found. If there isn't capacity in that one,
  * it will try the other ones.
  *
- * <p>The selection of VMs for each cloudlet is based on a Round-Robin policy,
+ * <p>The default selection of VMs for each cloudlet is based on a Round-Robin policy,
  * cyclically selecting the next VM from the broker VM list for each requesting
- * cloudlet.</p>
+ * cloudlet.
+ * However, when {@link #setSelectClosestDatacenter(boolean) selection of the closest datacenter}
+ * is enabled, the broker will try to place each VM at the closest Datacenter as possible,
+ * according to their timezone.</p>
  *
  * <p>Such a policy doesn't check if the selected VM is really suitable for the Cloudlet
  * and may not provide an optimal mapping.</p>
@@ -31,8 +34,20 @@ import org.cloudbus.cloudsim.vms.Vm;
  *
  * @see DatacenterBrokerFirstFit
  * @see DatacenterBrokerBestFit
+ * @see DatacenterBrokerHeuristic
  */
 public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
+    /**
+     * Index of the last VM selected from the {@link #getVmExecList()}
+     * to run some Cloudlet.
+     */
+    private int lastSelectedVmIndex;
+
+    /**
+     * Index of the last Datacenter selected to place some VM.
+     */
+    private int lastSelectedDcIndex;
+
     /**
      * Creates a new DatacenterBroker.
      *
@@ -50,73 +65,69 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
      */
     public DatacenterBrokerSimple(final CloudSim simulation, final String name) {
         super(simulation, name);
-        setDatacenterSupplier(this::selectDatacenterForWaitingVms);
-        setFallbackDatacenterSupplier(this::selectFallbackDatacenterForWaitingVms);
-        setVmMapper(this::defaultVmMapper);
-    }
-
-    /**
-     * Defines the policy to select a Datacenter to Host a VM.
-     * It always selects the first Datacenter from the Datacenter list.
-     *
-     * @return the Datacenter selected to request the creating
-     * of waiting VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
-     */
-    protected Datacenter selectDatacenterForWaitingVms() {
-        return getDatacenterList().isEmpty() ? Datacenter.NULL : getDatacenterList().get(0);
-    }
-
-    /**
-     * Defines the policy to select a fallback Datacenter to Host a VM
-     * when a previous selected Datacenter failed to create the requested VMs.
-     *
-     * <p>It gets the first Datacenter that has not been tried yet.</p>
-     *
-     * @return the Datacenter selected to try creating
-     * the remaining VMs or {@link Datacenter#NULL} if no suitable Datacenter was found
-     */
-    protected Datacenter selectFallbackDatacenterForWaitingVms() {
-        return getDatacenterList()
-                .stream()
-                .filter(dc -> !getDatacenterRequestedList().contains(dc))
-                .findFirst()
-                .orElse(Datacenter.NULL);
+        this.lastSelectedVmIndex = -1;
+        this.lastSelectedDcIndex = -1;
     }
 
     /**
      * {@inheritDoc}
      *
      * <p><b>It applies a Round-Robin policy to cyclically select
-     * the next Vm from the list of waiting VMs.</p>
+     * the next Datacenter from the list. However, it just moves
+     * to the next Datacenter when the previous one was not able to create
+     * all {@link #getVmWaitingList() waiting VMs}.</p>
+     *
+     * <p>This policy is just used if the selection of the closest Datacenter is not enabled.
+     * Otherwise, the {@link #closestDatacenterMapper(Datacenter, Vm)} is used instead.</p>
+     *
+     * @param lastDatacenter {@inheritDoc}
+     * @param vm {@inheritDoc}
+     * @return {@inheritDoc}
+     * @see DatacenterBroker#setDatacenterMapper(java.util.function.BiFunction)
+     * @see #setSelectClosestDatacenter(boolean)
+     */
+    @Override
+    protected Datacenter defaultDatacenterMapper(final Datacenter lastDatacenter, final Vm vm) {
+        if(getDatacenterList().isEmpty()) {
+            throw new IllegalStateException("You don't have any Datacenter created.");
+        }
+
+        if (lastDatacenter != Datacenter.NULL) {
+            return getDatacenterList().get(lastSelectedDcIndex);
+        }
+
+        /*If all Datacenter were tried already, return Datacenter.NULL to indicate
+        * there isn't a suitable Datacenter to place waiting VMs.*/
+        if(lastSelectedDcIndex == getDatacenterList().size()-1){
+            return Datacenter.NULL;
+        }
+
+        return getDatacenterList().get(++lastSelectedDcIndex);
+
+    }
+
+    /**
+     * {@inheritDoc}
+     *
+     * <p><b>It applies a Round-Robin policy to cyclically select
+     * the next Vm from the {@link #getVmWaitingList() list of waiting VMs}.</p>
      *
      * @param cloudlet {@inheritDoc}
      * @return {@inheritDoc}
      */
     @Override
-    public Vm defaultVmMapper(final Cloudlet cloudlet) {
+    protected Vm defaultVmMapper(final Cloudlet cloudlet) {
         if (cloudlet.isBoundToVm()) {
             return cloudlet.getVm();
         }
 
-        /*If user didn't bind this cloudlet to a specific Vm
-        or if the bind VM was not created, try the next Vm on the list of created VMs.*/
-        return getVmFromCreatedList(getNextVmIndex());
-    }
-
-    /**
-     * Gets the index of next VM in the broker's created VM list.
-     * If not VM was selected yet, selects the first one,
-     * otherwise, cyclically selects the next VM.
-     *
-     * @return the index of the next VM to bind a cloudlet to
-     */
-    private int getNextVmIndex() {
         if (getVmExecList().isEmpty()) {
-            return -1;
+            return Vm.NULL;
         }
 
-        final int vmIndex = getVmExecList().indexOf(getLastSelectedVm());
-        return (vmIndex + 1) % getVmExecList().size();
+        /*If the cloudlet isn't bound to a specific VM or the bound VM was not created,
+        cyclically selects the next VM on the list of created VMs.*/
+        lastSelectedVmIndex = ++lastSelectedVmIndex % getVmExecList().size();
+        return getVmFromCreatedList(lastSelectedVmIndex);
     }
-
 }

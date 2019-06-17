@@ -80,6 +80,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private DatacenterPowerSupply powerSupply;
 
     /**
+     * @see #getTimeZone()
+     */
+    private double timeZone;
+
+    /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
      * and a {@link VmAllocationPolicySimple} by default.
      *
@@ -92,7 +97,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     public DatacenterSimple(final Simulation simulation, final List<? extends Host> hostList) {
         this(simulation, hostList, new VmAllocationPolicySimple(), new DatacenterStorage());
     }
-
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}.
@@ -903,6 +907,17 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public final Datacenter setSchedulingInterval(final double schedulingInterval) {
         this.schedulingInterval = Math.max(schedulingInterval, 0);
+        return this;
+    }
+
+    @Override
+    public double getTimeZone() {
+        return timeZone;
+    }
+
+    @Override
+    public final Datacenter setTimeZone(final double timeZone) {
+        this.timeZone = validateTimeZone(timeZone);
         return this;
     }
 

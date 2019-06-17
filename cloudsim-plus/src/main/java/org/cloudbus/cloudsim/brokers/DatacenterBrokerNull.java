@@ -12,8 +12,8 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link DatacenterBroker}
@@ -24,7 +24,6 @@ import java.util.function.Supplier;
  */
 final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase {
     @Override public int compareTo(SimEntity entity) { return 0; }
-
     @Override public boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm) {
         return false;
     }
@@ -45,9 +44,10 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     }
     @Override public List<Cloudlet> destroyVm(Vm vm) { return Collections.emptyList(); }
     @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
-    @Override public void setDatacenterSupplier(Supplier<Datacenter> datacenterSupplier) {/**/}
-    @Override public void setFallbackDatacenterSupplier(Supplier<Datacenter> fallbackDatacenterSupplier) {/**/}
-    @Override public void setVmMapper(Function<Cloudlet, Vm> vmMapper) {/**/}
+    @Override public DatacenterBroker setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper) { return this; }
+    @Override public DatacenterBroker setVmMapper(Function<Cloudlet, Vm> vmMapper) { return this; }
+    @Override public DatacenterBroker setSelectClosestDatacenter(boolean select) { return this; }
+    @Override public boolean isSelectClosestDatacenter() { return false; }
     @Override public List<Cloudlet> getCloudletCreatedList() { return Collections.emptyList(); }
     @Override public DatacenterBroker addOnVmsCreatedListener(EventListener<DatacenterBrokerEventInfo> listener) { return this; }
     @Override public DatacenterBroker removeOnVmsCreatedListener(EventListener<? extends EventInfo> listener) { return this; }
@@ -55,16 +55,14 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function) { return this; }
     @Override public DatacenterBroker setVmDestructionDelay(double delay) { return this; }
     @Override public List<Cloudlet> getCloudletSubmittedList() { return Collections.emptyList(); }
-    @Override public void setVmComparator(Comparator<Vm> comparator) {/**/}
+    @Override public DatacenterBroker setVmComparator(Comparator<Vm> comparator) { return this; }
     @Override public void setCloudletComparator(Comparator<Cloudlet> comparator) {/**/}
-    @Override public Vm defaultVmMapper(Cloudlet cloudlet) { return Vm.NULL; }
-    @Override public Function<Cloudlet, Vm> getVmMapper() { return c -> Vm.NULL; }
-    @Override public void submitCloudlet(Cloudlet cloudlet) {/**/}
-    @Override public void submitCloudletList(List<? extends Cloudlet> list) {/**/}
-    @Override public void submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) {/**/}
-    @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm) {/**/}
-    @Override public void submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay) {/**/}
-    @Override public void submitVm(Vm vm) {/**/}
-    @Override public void submitVmList(List<? extends Vm> list) {/**/}
-    @Override public void submitVmList(List<? extends Vm> list, double submissionDelay) {/**/}
+    @Override public DatacenterBroker submitCloudlet(Cloudlet cloudlet) { return this; }
+    @Override public DatacenterBroker submitCloudletList(List<? extends Cloudlet> list) { return this; }
+    @Override public DatacenterBroker submitCloudletList(List<? extends Cloudlet> list, double submissionDelay) { return this; }
+    @Override public DatacenterBroker submitCloudletList(List<? extends Cloudlet> list, Vm vm) { return this; }
+    @Override public DatacenterBroker submitCloudletList(List<? extends Cloudlet> list, Vm vm, double submissionDelay) { return this; }
+    @Override public DatacenterBroker submitVm(Vm vm) { return this; }
+    @Override public DatacenterBroker submitVmList(List<? extends Vm> list) { return this; }
+    @Override public DatacenterBroker submitVmList(List<? extends Vm> list, double submissionDelay) { return this; }
 }

@@ -56,4 +56,6 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public String toString() {
         return "Datacenter.NULL";
     }
+    @Override public double getTimeZone() { return Integer.MAX_VALUE; }
+    @Override public TimeZoned setTimeZone(double timeZone) { return this; }
 }

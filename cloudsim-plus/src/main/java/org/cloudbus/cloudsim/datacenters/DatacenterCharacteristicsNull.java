@@ -14,12 +14,6 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public double getCostPerMem() {
         return 0;
     }
-    @Override public double getTimeZone() {
-        return 0;
-    }
-    @Override public DatacenterCharacteristics setTimeZone(double timeZone) {
-        return DatacenterCharacteristics.NULL;
-    }
     @Override public double getCostPerSecond() {
         return 0;
     }
@@ -50,9 +44,7 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public long getNumberOfFailedHosts() {
         return 0;
     }
-    @Override public int getNumberOfFreePes() {
-        return 0;
-    }
+
     @Override public int getNumberOfPes() {
         return 0;
     }

@@ -186,4 +186,6 @@ class VmNull implements Vm {
     @Override public String getDescription() { return ""; }
     @Override public Vm setDescription(String description) { return this; }
     @Override public VmGroup getGroup() { return null; }
+    @Override public double getTimeZone() { return Integer.MAX_VALUE; }
+    @Override public Vm setTimeZone(double timeZone) { return this; }
 }

@@ -110,6 +110,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private double stopTime;
     private double lastBusyTime;
     private VmGroup group;
+    private double timeZone;
 
     /**
      * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
@@ -960,5 +961,16 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public static void setDefaultStorageCapacity(final long defaultCapacity) {
         Machine.validateCapacity(defaultCapacity);
         defaultStorageCapacity = defaultCapacity;
+    }
+
+    @Override
+    public double getTimeZone() {
+        return timeZone;
+    }
+
+    @Override
+    public final Vm setTimeZone(final double timeZone) {
+        this.timeZone = validateTimeZone(timeZone);
+        return this;
     }
 }
