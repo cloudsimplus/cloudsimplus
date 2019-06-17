@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
@@ -87,6 +88,14 @@ public interface Simulation {
      * @see #isRunning()
      */
     double clock();
+
+    /**
+     * Gets the current simulation time in seconds as a formatted String.
+     *
+     * @return
+     * @see #clock()
+     */
+    String clockStr();
 
     /**
      * Gets the current simulation time in minutes.
@@ -422,9 +431,9 @@ public interface Simulation {
      *
      * @param <T> the type of entities to define an ID
      * @param list list of objects to define an ID
-     * @return true if the List has any Entity, false if it's empty
+     * @return the last entity that had an id set
      */
-    static <T extends ChangeableId> boolean setIdForEntitiesWithoutOne(List<? extends T> list){
+    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(List<? extends T> list){
         return setIdForEntitiesWithoutOne(list, null);
     }
 
@@ -437,24 +446,31 @@ public interface Simulation {
      * @param list list of objects to define an ID
      * @param lastEntity the last created Entity which its ID will be used
      *        as the base for the next IDs
-     * @return true if the List has any Entity, false if it's empty
+     * @return the last entity that had an id set
      */
-    static <T extends ChangeableId> boolean setIdForEntitiesWithoutOne(final List<? extends T> list, final T lastEntity){
+    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(final List<? extends T> list, final T lastEntity){
         Objects.requireNonNull(list);
         if(list.isEmpty()){
-            return false;
+            return lastEntity;
         }
 
         long id = lastEntity == null ? list.get(list.size()-1).getId() : lastEntity.getId();
         //if the ID is a negative number lower than -1, it's set as -1 to start the first ID as 0
         id = Math.max(id, -1);
-        for (final ChangeableId entity : list) {
-            if(entity.getId() < 0) {
+        T entity = lastEntity;
+        for (int i = 0; i < list.size(); i++) {
+            entity = list.get(i);
+            if (entity.getId() < 0) {
                 entity.setId(++id);
+            }
+
+            if (entity instanceof VmGroup) {
+                entity = (T) setIdForEntitiesWithoutOne(((VmGroup) entity).getVmList(), entity);
+                id = entity.getId();
             }
         }
 
-        return true;
+        return entity;
     }
 
     /**

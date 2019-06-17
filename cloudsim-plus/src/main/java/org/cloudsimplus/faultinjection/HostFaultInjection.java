@@ -331,7 +331,7 @@ public class HostFaultInjection extends CloudSimEntity {
             LOGGER.error(
                 "{}: {}: Generated {} PEs failures from {} previously working PEs for {} at minute {}.{}" +
                     "\t  Current Working PEs: {} | Number of VMs: {}{}",
-                getSimulation().clock(), getClass().getSimpleName(), lastNumberOfFailedPes,
+                getSimulation().clockStr(), getClass().getSimpleName(), lastNumberOfFailedPes,
                 previousNumOfWorkingPes, lastFailedHost, getSimulation().clock() / 60, System.lineSeparator(),
                 hostWorkingPes, lastFailedHost.getVmList().size(), msg);
         }
@@ -390,7 +390,7 @@ public class HostFaultInjection extends CloudSimEntity {
         final String msg = vms > 0 ? String.format("affecting all its %d VMs", vms) : "but there was no running VM";
         LOGGER.error(
                 "{}: All the {} PEs of {} failed, {}.",
-                getSimulation().clock(), lastFailedHost.getNumberOfPes(), lastFailedHost, msg);
+                getSimulation().clockStr(), lastFailedHost.getNumberOfPes(), lastFailedHost, msg);
         setVmListToFailed(lastFailedHost.getVmList());
     }
 

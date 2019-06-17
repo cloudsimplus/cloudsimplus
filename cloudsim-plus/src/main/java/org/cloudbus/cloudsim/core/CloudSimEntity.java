@@ -147,7 +147,7 @@ public abstract class CloudSimEntity implements SimEntity {
         if (!simulation.isRunning() && evt.getTag() != CloudSimTags.END_OF_SIMULATION) {
             LOGGER.warn(
                 "{}: {}: Cannot send events before simulation starts or after it finishes. Trying to send message {} to {}",
-                getSimulation().clock(), this, evt.getTag(), evt.getDestination());
+                getSimulation().clockStr(), this, evt.getTag(), evt.getDestination());
             return false;
         }
 

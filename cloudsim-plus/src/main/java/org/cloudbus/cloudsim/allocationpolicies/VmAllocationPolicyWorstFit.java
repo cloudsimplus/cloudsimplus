@@ -32,38 +32,37 @@ import java.util.stream.Stream;
 
 /**
  * A Worst Fit VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with the most number of PEs in use,
- * which are enough for a VM.
+ * the host for a VM, that one with the least number of PEs in use,
+ * which are enough for the VM.
  *
  * <p>This is a really computationally complex policy since the worst-case complexity
  * to allocate a Host for a VM is O(N), where N is the number of Hosts.
- * Such an implementation is not appropriate for large scale scenarios.</p>
+ * Such an implementation is not appropriate for large scale scenarios.
+ * <b>Additionally, such a policy may increase resource idleness.</b></p>
  *
  * <p><b>NOTE: This policy doesn't perform optimization of VM allocation by means of VM migration.</b></p>
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 3.0.1
+ * @since CloudSim Plus 4.6.0
  *
  * @see VmAllocationPolicyFirstFit
- * @see VmAllocationPolicyWorstFit
+ * @see VmAllocationPolicyBestFit
  */
-public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
+public class VmAllocationPolicyWorstFit extends VmAllocationPolicyAbstract {
     /**
      * Gets the first suitable host from the {@link #getHostList()}
-     * that has the most number of PEs in use (i.e. the least number of free PEs).
+     * that has the least number of PEs in use (i.e. the most number of free PEs).
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      */
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        /* Since it's being used the min operation, the active comparator must be reversed so that
-         * we get active hosts with minimum number of free PEs. */
-        final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive).reversed();
+        final Comparator<Host> activeComparator = Comparator.comparing(Host::isActive);
         final Comparator<Host> comparator = activeComparator.thenComparingLong(Host::getFreePesNumber);
 
         final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
         return stream
                 .filter(host -> host.isSuitableForVm(vm))
-                .min(comparator);
+                .max(comparator);
     }
 
 }

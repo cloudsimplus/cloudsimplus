@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -30,4 +31,13 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
      * @return
      */
     Simulation getSimulation();
+
+    /**
+     * Sets the last Datacenter where VM was tried to be created.
+     * @param lastTriedDatacenter
+     */
+    void setLastTriedDatacenter(Datacenter lastTriedDatacenter);
+
+    /** Gets the last Datacenter where VM was tried to be created. */
+    Datacenter getLastTriedDatacenter();
 }

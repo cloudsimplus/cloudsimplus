@@ -65,6 +65,12 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     Vm setDescription(String description);
 
     /**
+     * Gets the {@link VmGroup group} this Vm belongs to
+     * @return the {@link VmGroup} or NULL if the VM doesn't belong to a group
+     */
+    VmGroup getGroup();
+
+    /**
      * Adds a VM state history entry.
      *
      * @param entry the data about the state of the VM at given time

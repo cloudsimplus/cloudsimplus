@@ -195,7 +195,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
-        LOGGER.trace("{}: {}: Unknown event {} received.", getSimulation().clock(), this, evt.getTag());
+        LOGGER.trace("{}: {}: Unknown event {} received.", getSimulation().clockStr(), this, evt.getTag());
     }
 
     private boolean processHostEvents(final SimEvent evt) {
@@ -219,7 +219,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             this.addHost(host);
             LOGGER.info(
                 "{}: {}: Host {} added to {} during simulation runtime",
-                getSimulation().clock(), getClass().getSimpleName(), host.getId(), this);
+                getSimulation().clockStr(), getClass().getSimpleName(), host.getId(), this);
             //Notification must be sent only for Hosts added during simulation runtime
             notifyOnHostAvailableListeners(host);
         });
@@ -235,7 +235,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if(host == Host.NULL) {
             LOGGER.warn(
                 "{}: {}: Host {} was not found to be removed from {}.",
-                getSimulation().clock(), getClass().getSimpleName(), hostId, this);
+                getSimulation().clockStr(), getClass().getSimpleName(), hostId, this);
             return;
         }
 
@@ -243,7 +243,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         try {
             LOGGER.error(
                 "{}: {}: Host {} removed from {} due to injected failure.",
-                getSimulation().clock(), getClass().getSimpleName(), host.getId(), this);
+                getSimulation().clockStr(), getClass().getSimpleName(), host.getId(), this);
             fault.generateHostFault(host);
         } finally{
             fault.shutdownEntity();
@@ -281,11 +281,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private boolean processVmEvents(final SimEvent evt) {
         switch (evt.getTag()) {
-            case CloudSimTags.VM_CREATE:
-                processVmCreate(evt, false);
-                return true;
             case CloudSimTags.VM_CREATE_ACK:
-                processVmCreate(evt, true);
+                processVmCreate(evt);
                 return true;
             case CloudSimTags.VM_VERTICAL_SCALING:
                 requestVmVerticalScaling(evt);
@@ -540,27 +537,20 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * the Broker.
      *
      * @param evt information about the event just happened
-     * @param ackRequested indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
      * @return true if a host was allocated to the VM; false otherwise
      */
-    protected boolean processVmCreate(final SimEvent evt, final boolean ackRequested) {
+    private boolean processVmCreate(final SimEvent evt) {
         final Vm vm = (Vm) evt.getData();
 
         final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm);
-
         if (hostAllocatedForVm) {
-            if (!vm.isCreated()) {
-                vm.setCreated(true);
-            }
-
             vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
         }
 
-        if (ackRequested) {
-            // Acknowledges that the request was received by the Datacenter
-            send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
-        }
+        /* Acknowledges that the request was received by the Datacenter,
+          (the broker is expecting that if the Vm was created or not). */
+        send(vm.getBroker(), getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_CREATE_ACK, vm);
 
         return hostAllocatedForVm;
     }
@@ -584,8 +574,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         final String warningMsg = generateNotFinishedCloudletsWarning(vm);
         final String msg = String.format(
-                "%.2f: %s: %s destroyed on %s. %s",
-                getSimulation().clock(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
+                "%s: %s: %s destroyed on %s. %s",
+                getSimulation().clockStr(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
         if(warningMsg.isEmpty())
             LOGGER.info(msg);
         else LOGGER.warn(msg);
@@ -644,8 +634,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         if (result)
-            LOGGER.info("{}: Migration of {} to {} is completed", getSimulation().clock(), vm, targetHost);
-        else LOGGER.error("{}: Allocation of {} to the destination Host failed!", this, vm);
+            LOGGER.info("{}: Migration of {} to {} is completed", getSimulation().clockStr(), vm, targetHost);
+        else LOGGER.error("{}: {}: Allocation of {} to the destination Host failed!", getSimulation().clockStr(), this, vm);
     }
 
     /**
@@ -780,7 +770,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param entry a Map Entry that indicate to which Host a VM must be migrated
      */
     private void requestVmMigration(final Map.Entry<Vm, Host> entry) {
-        final double currentTime = getSimulation().clock();
+        final String currentTime = getSimulation().clockStr();
         final Host sourceHost = entry.getKey().getHost();
         final Host targetHost = entry.getValue();
 
@@ -788,11 +778,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         String msg1;
         if (sourceHost == Host.NULL) {
             msg1 = String.format(
-                "%.2f: Migration of %s to %s is started.",
+                "%s: Migration of %s to %s is started.",
                 currentTime, entry.getKey(), targetHost);
         } else {
             msg1 = String.format(
-                "%.2f: Migration of %s from %s to %s is started.",
+                "%s: Migration of %s from %s to %s is started.",
                 currentTime, entry.getKey(), sourceHost, targetHost);
         }
 
@@ -823,7 +813,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public void shutdownEntity() {
         super.shutdownEntity();
-        LOGGER.info("{}: {} is shutting down...", getSimulation().clock(), getName());
+        LOGGER.info("{}: {} is shutting down...", getSimulation().clockStr(), getName());
     }
 
     @Override

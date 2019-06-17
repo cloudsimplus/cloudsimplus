@@ -150,7 +150,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
                 break;
             }
 
-            LOGGER.info("{}: PowerVmAllocationPolicy: Underloaded hosts: {}", getDatacenter().getSimulation().clock(),  underloadedHost);
+            LOGGER.info("{}: PowerVmAllocationPolicy: Underloaded hosts: {}", getDatacenter().getSimulation().clockStr(),  underloadedHost);
 
             ignoredSourceHosts.add(underloadedHost);
             ignoredTargetHosts.add(underloadedHost);

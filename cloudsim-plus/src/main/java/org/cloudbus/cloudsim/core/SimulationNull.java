@@ -28,6 +28,7 @@ final class SimulationNull implements Simulation {
         return false;
     }
     @Override public double clock() { return 0.0; }
+    @Override public String clockStr() { return ""; }
     @Override public double clockInMinutes() { return 0.0; }
     @Override public double clockInHours() { return 0.0; }
     @Override public SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> predicate) { return SimEvent.NULL; }

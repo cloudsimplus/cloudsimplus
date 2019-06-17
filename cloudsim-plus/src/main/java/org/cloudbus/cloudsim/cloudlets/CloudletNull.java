@@ -188,14 +188,13 @@ final class CloudletNull implements Cloudlet {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
+    @Override public void setLastTriedDatacenter(Datacenter lastTriedDatacenter) {/**/}
+    @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
-    @Override public double getSubmissionDelay() {
-        return 0;
-    }
+    @Override public double getSubmissionDelay() { return 0; }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
     @Override public boolean isBoundToVm() { return false; }
-    @Override public boolean isBoundToCreatedVm() { return false; }
     @Override public int compareTo(Cloudlet cloudlet) {
         return 0;
     }

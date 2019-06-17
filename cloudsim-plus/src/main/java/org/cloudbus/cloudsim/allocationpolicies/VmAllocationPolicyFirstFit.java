@@ -11,6 +11,9 @@ import java.util.Optional;
  * which finds the first Host having suitable resources to place a given VM.
  * This is a high time-efficient policy with a best-case complexity O(1)
  * and a worst-case complexity O(N), where N is the number of Hosts.
+ * Additionally, such a policy is resource efficient, because it performs
+ * server consolidation by trying to place the maximum number of VMs
+ * into the same Host in order to increase Host's resource usage.
  *
  * <p>
  *     <b>NOTES:</b>
@@ -24,6 +27,8 @@ import java.util.Optional;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0.0
+ * @see VmAllocationPolicyBestFit
+ * @see VmAllocationPolicyWorstFit
  */
 public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
@@ -46,7 +51,7 @@ public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract imple
             /* If it gets here, the previous Host doesn't have capacity to place the VM.
              * Then, moves to the next Host.
              * If the end of the Host list is reached, starts from the beginning,
-             * until the .*/
+             * until the max number of tries.*/
             lastHostIndex = ++lastHostIndex % hostList.size();
         }
 

@@ -1,3 +1,0 @@
-#File used by pip, a python command line tool, to install dependencies
-#https://pip.pypa.io
-javasphinx

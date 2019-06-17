@@ -32,7 +32,7 @@
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 #'sphinx.ext.coverage', 'sphinx.ext.imgmath',
-extensions = ['javasphinx']
+# extensions = ['']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

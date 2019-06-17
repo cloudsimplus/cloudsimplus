@@ -20,10 +20,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.TimeUtil;
-import org.cloudbus.cloudsim.vms.UtilizationHistory;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
+import org.cloudbus.cloudsim.vms.*;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.slf4j.Logger;
@@ -373,17 +370,19 @@ public class HostSimple implements Host {
 
     @Override
     public boolean createVm(final Vm vm) {
-        final boolean result = createVmInternal(vm);
-        if(result) {
+        if(createVmInternal(vm)) {
             addVmToCreatedList(vm);
             vm.setHost(this);
+            vm.setCreated(true);
             vm.notifyOnHostAllocationListeners();
             if(vm.getStartTime() < 0) {
                vm.setStartTime(getSimulation().clock());
             }
+
+            return true;
         }
 
-        return result;
+        return false;
     }
 
     @Override
@@ -392,6 +391,10 @@ public class HostSimple implements Host {
     }
 
     private boolean createVmInternal(final Vm vm) {
+        if(vm instanceof VmGroup){
+            return false;
+        }
+
         if(!allocateResourcesForVm(vm, false)){
             return false;
         }
@@ -448,7 +451,7 @@ public class HostSimple implements Host {
         final String msg = pmResource.getAvailableResource() > 0 ? "just "+pmResource.getAvailableResource()+" " + resourceUnit : "no amount";
         LOGGER.error(
             "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
-            simulation.clock(), getClass().getSimpleName(), migration, vm, this,
+            simulation.clockStr(), getClass().getSimpleName(), migration, vm, this,
             pmResource.getClass().getSimpleName(), vmRequestedResource.getCapacity(), msg);
     }
 
@@ -522,11 +525,11 @@ public class HostSimple implements Host {
         }
 
         if(activate && !this.active){
-            LOGGER.info("{}: {} is being powered on.", getSimulation().clock(), this);
+            LOGGER.info("{}: {} is being powered on.", getSimulation().clockStr(), this);
         }
         else if(!activate && this.active){
             final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
-            LOGGER.info("{}: {} is being powered off{}.", getSimulation().clock(), this, reason);
+            LOGGER.info("{}: {} is being powered off{}.", getSimulation().clockStr(), this, reason);
         }
     }
 
@@ -1222,7 +1225,7 @@ public class HostSimple implements Host {
     private double addVmResourceUseToHistoryIfNotMigratingIn(final Vm vm, final double currentTime) {
         double totalAllocatedMips = getVmScheduler().getTotalAllocatedMipsForVm(vm);
         if (getVmsMigratingIn().contains(vm)) {
-            LOGGER.info("{}: {}: {} is migrating in", getSimulation().clock(), this, vm);
+            LOGGER.info("{}: {}: {} is migrating in", getSimulation().clockStr(), this, vm);
             return totalAllocatedMips;
         }
 
@@ -1232,7 +1235,7 @@ public class HostSimple implements Host {
             final long notAllocatedMipsByPe = (long)((totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes());
             LOGGER.error(
                 "{}: {}: {} MIPS not allocated for each one of the {} PEs from {} due to {}.",
-                getSimulation().clock(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
+                getSimulation().clockStr(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
         }
 
         final VmStateHistoryEntry entry = new VmStateHistoryEntry(
@@ -1243,7 +1246,7 @@ public class HostSimple implements Host {
         vm.addStateHistoryEntry(entry);
 
         if (vm.isInMigration()) {
-            LOGGER.info("{}: {}: {} is migrating out ", getSimulation().clock(), this, vm);
+            LOGGER.info("{}: {}: {} is migrating out ", getSimulation().clockStr(), this, vm);
             totalAllocatedMips /= getVmScheduler().getMaxCpuUsagePercentDuringOutMigration();
         }
 

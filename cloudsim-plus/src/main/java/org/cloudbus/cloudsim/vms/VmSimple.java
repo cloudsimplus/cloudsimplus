@@ -109,6 +109,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private double startTime;
     private double stopTime;
     private double lastBusyTime;
+    private VmGroup group;
 
     /**
      * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
@@ -289,7 +290,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      */
     public Vm setFreePesNumber(long freePesNumber) {
         if (freePesNumber < 0) {
-            LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");
             freePesNumber = 0;
         }
         this.freePesNumber = Math.min(freePesNumber, getNumberOfPes());
@@ -328,7 +328,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      */
     private Vm setExpectedFreePesNumber(long expectedFreePes) {
         if (expectedFreePes < 0) {
-            LOGGER.debug("Number of free PEs cannot be negative, resetting to zero.");
             expectedFreePes = 0;
         }
         this.expectedFreePesNumber = expectedFreePes;
@@ -634,7 +633,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public final boolean isCreated() {
+    public boolean isCreated() {
         return created;
     }
 
@@ -645,7 +644,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public final void setCreated(final boolean created) {
+    public void setCreated(final boolean created) {
         this.created = created;
     }
 
@@ -750,8 +749,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public String toString() {
         final String desc = StringUtils.isBlank(description) ? "" : String.format(" (%s)", description);
-        final String brokerName = getBroker() == DatacenterBroker.NULL ? "" : "/Broker " + getBroker().getId();
-        return String.format("Vm %d%s%s", getId(), brokerName, desc);
+        final String type = this instanceof VmGroup ? "VmGroup" : "Vm";
+        return String.format("%s %d%s", type, getId(), desc);
     }
 
     /**
@@ -896,6 +895,15 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public Vm setDescription(final String description) {
         this.description = description == null ? "" : description;
         return this;
+    }
+
+    @Override
+    public VmGroup getGroup() {
+        return group;
+    }
+
+    public void setGroup(final VmGroup group) {
+        this.group = Objects.requireNonNull(group);
     }
 
     @Override
