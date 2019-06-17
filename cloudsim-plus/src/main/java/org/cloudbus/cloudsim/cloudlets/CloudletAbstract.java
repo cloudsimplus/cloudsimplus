@@ -179,28 +179,17 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         */
         this.datacenterExecutionList = new ArrayList<>(2);
         this.requiredFiles = new LinkedList<>();
-
         this.setId(id);
         this.setJobId(NOT_ASSIGNED);
-
-        this.netServiceLevel = 0;
-        this.execStartTime = 0.0;
-        this.status = Status.INSTANTIATED;
-        this.priority = 0;
         this.setNumberOfPes(pesNumber);
-
-        this.lastExecutedDatacenterIdx = NOT_ASSIGNED;
-        setBroker(DatacenterBroker.NULL);
-        setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
-        setVm(Vm.NULL);
-
         this.setLength(length);
         this.setFileSize(1);
         this.setOutputSize(1);
+        this.setSubmissionDelay(0.0);
+        this.setAccumulatedBwCost(0.0);
+        this.setCostPerBw(0.0);
 
-        setAccumulatedBwCost(0.0);
-        setCostPerBw(0.0);
-        setSubmissionDelay(0.0);
+        this.reset();
 
         setUtilizationModelCpu(new UtilizationModelFull());
         setUtilizationModelRam(UtilizationModel.NULL);
@@ -208,6 +197,24 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         onStartListeners = new HashSet<>();
         onFinishListeners = new HashSet<>();
         onUpdateProcessingListeners = new HashSet<>();
+    }
+
+    public final Cloudlet reset() {
+        this.netServiceLevel = 0;
+        this.execStartTime = 0.0;
+        this.status = Status.INSTANTIATED;
+        this.priority = 0;
+
+        this.lastExecutedDatacenterIdx = NOT_ASSIGNED;
+        setBroker(DatacenterBroker.NULL);
+        setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
+        setVm(Vm.NULL);
+        setExecStartTime(0.0);
+
+        datacenterExecutionList.clear();
+
+        this.setLastTriedDatacenter(Datacenter.NULL);
+        return this;
     }
 
     protected int getLastExecutedDatacenterIdx() {

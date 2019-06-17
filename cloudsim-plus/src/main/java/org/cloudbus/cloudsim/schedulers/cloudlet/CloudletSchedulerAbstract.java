@@ -1063,4 +1063,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #canExecuteCloudlet(CloudletExecution)
      */
     protected abstract boolean canExecuteCloudletInternal(CloudletExecution cle);
+
+    @Override
+    public void clear() {
+        this.cloudletWaitingList.clear();
+        this.cloudletExecList.clear();
+    }
 }

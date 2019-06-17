@@ -21,10 +21,9 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples;
+package org.cloudsimplus.examples.synchronous;
 
 import ch.qos.logback.classic.Level;
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -46,31 +45,23 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * A example showing how to run the simulation synchronously,
- * (by calling {@link CloudSim#startSync()}).
- * This way, the researcher can interact with the simulation,
- * for instance to collect data.
+ * A example showing how to destroy a VM running within a synchronous simulation,
+ * by calling {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerAbstract#destroyVm(Vm)}).
  *
- * <p>A synchronous simulation is similar to setting a {@link Datacenter#setSchedulingInterval(double) scheduling interval}:
- * the simulation clock will be increased at the pace of the given interval.
- * However, using the {@link CloudSim#startSync()} we can collect
- * simulation data inside a loop,
- * without requiring to use {@link org.cloudsimplus.listeners.EventListener}s for that.
- * </p>
- *
- * <p>In this example, we are collecting VMs' CPU utilization inside a loop,
- * after each call of the {@link CloudSim#runFor(double)} method.</p>
+ * Being able to kill a virtual machine, while it is still executing cloudlets, enables to simulate interesting
+ * scenarios (e.g. including VM failures or manually shutting down the system).
  *
  * @author Pawel Koperek
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 4.5.0
+ * @since CloudSim Plus 4.7.0
+ * @see SynchronousSimulationExample1
  */
-public class SynchronousSimulationExample1 {
+public class SynchronousSimulationDestroyVmExample1 {
     /**
      * Defines the time (in seconds) to run the simulation for.
      * The clock is increased in the interval defined here.
      */
-    private static final double INTERVAL = 2;
+    private static final double INTERVAL = 1;
     private static final int HOSTS = 2;
     private static final int HOST_PES = 4;
 
@@ -82,17 +73,17 @@ public class SynchronousSimulationExample1 {
     private static final int CLOUDLET_LENGTH = 10000;
 
     private final CloudSim simulation;
-    private DatacenterBroker broker0;
+    private DatacenterBrokerSimple broker0;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
     private Datacenter datacenter0;
     private double previousClock;
 
     public static void main(String[] args) {
-        new SynchronousSimulationExample1();
+        new SynchronousSimulationDestroyVmExample1();
     }
 
-    public SynchronousSimulationExample1() {
+    public SynchronousSimulationDestroyVmExample1() {
         Log.setLevel(Level.WARN);
 
         simulation = new CloudSim();
@@ -106,13 +97,21 @@ public class SynchronousSimulationExample1 {
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
-        //Sets a termination time, trying to stop the simulation before such a deadline
-        //simulation.terminateAt(20);
-
+        int iteration = 0;
         simulation.startSync();
         while(simulation.isRunning()){
+
+            if(iteration == 15) {
+                Vm vm = vmList.get(0);
+                List<Cloudlet> affected = broker0.destroyVm(vm);
+                affected.stream().forEach(cl -> cl.setSubmissionDelay(cl.getSubmissionDelay() + simulation.clock()));
+
+                broker0.submitCloudletList(affected);
+            }
+
             simulation.runFor(INTERVAL);
             printVmCpuUtilization();
+            iteration++;
         }
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
@@ -127,12 +126,12 @@ public class SynchronousSimulationExample1 {
 
         previousClock = simulation.clock();
         System.out.printf("\t\tVM CPU utilization for Time %.0f\n", simulation.clock());
-        for (final Vm vm : vmList) {
+        for (final Vm vm : broker0.getVmExecList()) {
             System.out.printf(" Vm %5d |", vm.getId());
         }
         System.out.println();
 
-        for (final Vm vm : vmList) {
+        for (final Vm vm : broker0.getVmExecList()) {
             System.out.printf(" %7.0f%% |", vm.getCpuPercentUtilization()*100);
         }
         System.out.println("\n");
