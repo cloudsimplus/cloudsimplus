@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.brokers;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
@@ -28,8 +27,6 @@ import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 
@@ -965,7 +962,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             //selects a VM for the given Cloudlet
             lastSelectedVm = vmMapper.apply(cloudlet);
-            if (lastSelectedVm == Vm.NULL || !cloudlet.getVm().isCreated()) {
+            if (!lastSelectedVm.isCreated()) {
                 logPostponingCloudletExecution(cloudlet);
                 continue;
             }
