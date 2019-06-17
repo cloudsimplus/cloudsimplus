@@ -47,9 +47,12 @@ import java.util.List;
 /**
  * A example showing how to destroy a VM running within a synchronous simulation,
  * by calling {@link org.cloudbus.cloudsim.brokers.DatacenterBrokerAbstract#destroyVm(Vm)}).
+ * By calling that method instead of {@link Host#destroyVm(Vm)} we are able to
+ * get a list of unfinished Cloudlets, so that they can be re-submitted
+ * to the broker to try to run them into another VM.
  *
- * Being able to kill a virtual machine, while it is still executing cloudlets, enables to simulate interesting
- * scenarios (e.g. including VM failures or manually shutting down the system).
+ * <p>Being able to kill a virtual machine, while it is still executing cloudlets, enables to simulate interesting
+ * scenarios (e.g. including VM failures or manually shutting down the system).</p>
  *
  * @author Pawel Koperek
  * @author Manoel Campos da Silva Filho
@@ -105,13 +108,11 @@ public class SynchronousSimulationDestroyVmExample1 {
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
-        int iteration = 0;
         simulation.startSync();
         while(simulation.isRunning()){
             tryDestroyVmAndResubmitCloudlets();
             simulation.runFor(INTERVAL);
             printVmCpuUtilization();
-            iteration++;
         }
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
