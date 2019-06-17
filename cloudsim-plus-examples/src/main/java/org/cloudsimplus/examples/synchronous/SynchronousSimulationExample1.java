@@ -121,7 +121,13 @@ public class SynchronousSimulationExample1 {
     }
 
     private void printVmCpuUtilization() {
-        if(simulation.clock() == previousClock){
+        /*To avoid printing to much data, just prints if the simulation clock
+         * has changed, it's multiple of the interval to increase clock
+         * and there is some VM already running. */
+        if(simulation.clock() == previousClock ||
+            Math.round(simulation.clock()) % INTERVAL != 0 ||
+            broker0.getVmExecList().isEmpty())
+        {
             return;
         }
 

@@ -61,7 +61,7 @@ public class SynchronousSimulationDestroyVmExample1 {
      * Defines the time (in seconds) to run the simulation for.
      * The clock is increased in the interval defined here.
      */
-    private static final double INTERVAL = 1;
+    private static final double INTERVAL = 5;
     private static final int HOSTS = 2;
     private static final int HOST_PES = 4;
 
@@ -71,6 +71,14 @@ public class SynchronousSimulationDestroyVmExample1 {
     private static final int CLOUDLETS = 8;
     private static final int CLOUDLET_PES = 2;
     private static final int CLOUDLET_LENGTH = 10000;
+
+    /**
+     * The time to request the destruction of some VM (in seconds).
+     * Since we can't control how the simulation clock advances,
+     * the VM destruction may not be requested exactly at this time.
+     */
+    private static final int TIME_TO_DESTROY_VM = 10;
+    private boolean vmDestructionRequested;
 
     private final CloudSim simulation;
     private DatacenterBrokerSimple broker0;
@@ -100,31 +108,50 @@ public class SynchronousSimulationDestroyVmExample1 {
         int iteration = 0;
         simulation.startSync();
         while(simulation.isRunning()){
-
-            if(iteration == 15) {
-                Vm vm = vmList.get(0);
-                List<Cloudlet> affected = broker0.destroyVm(vm);
-                affected.stream().forEach(cl -> cl.setSubmissionDelay(cl.getSubmissionDelay() + simulation.clock()));
-
-                broker0.submitCloudletList(affected);
-            }
-
+            tryDestroyVmAndResubmitCloudlets();
             simulation.runFor(INTERVAL);
             printVmCpuUtilization();
             iteration++;
         }
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        finishedCloudlets.sort(Comparator.comparingLong(Cloudlet::getId));
+        //Sorts finished Cloudlets by Vm ID and then Cloudlet ID
+        final Comparator<Cloudlet> comparator = Comparator.comparingLong(cl -> cl.getVm().getId());
+        finishedCloudlets.sort(comparator.thenComparingLong(Cloudlet::getId));
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
+    /**
+     * Checks if the simulation clock reached the time defined to request
+     * a VM destruction. If so, destroys a VM and resubmit its unfinished
+     * Cloudlets to the broker, so that it can decide which VM
+     * to run such Cloudlets.
+     */
+    private void tryDestroyVmAndResubmitCloudlets() {
+        if(simulation.clock() >= TIME_TO_DESTROY_VM && !vmDestructionRequested) {
+            vmDestructionRequested = true;
+            final Vm vm = vmList.get(0);
+            final List<Cloudlet> affected = broker0.destroyVm(vm);
+            System.out.printf("%.2f: Re-submitting %d Cloudlets that weren't finished in the destroyed %s:%n", simulation.clock(), affected.size(), vm);
+            affected.forEach(cl -> System.out.printf("\tCloudlet %d%n", cl.getId()));
+            System.out.println();
+            broker0.submitCloudletList(affected);
+        }
+    }
+
     private void printVmCpuUtilization() {
-        if(simulation.clock() == previousClock){
+        /*To avoid printing to much data, just prints if the simulation clock
+        * has changed, it's multiple of the interval to increase clock
+        * and there is some VM already running. */
+        if(simulation.clock() == previousClock ||
+           Math.round(simulation.clock()) % INTERVAL != 0 ||
+           broker0.getVmExecList().isEmpty())
+        {
             return;
         }
 
         previousClock = simulation.clock();
+
         System.out.printf("\t\tVM CPU utilization for Time %.0f\n", simulation.clock());
         for (final Vm vm : broker0.getVmExecList()) {
             System.out.printf(" Vm %5d |", vm.getId());

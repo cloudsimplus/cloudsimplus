@@ -791,8 +791,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             for (final Iterator<Cloudlet> it = cloudletSubmittedList.iterator(); it.hasNext(); ) {
                 final Cloudlet cloudlet = it.next();
                 if(cloudlet.getVm().equals(vm) && !cloudlet.isFinished()) {
-                    cloudlet.reset();
-                    cloudletsAffected.add(cloudlet);
+                    cloudlet.setVm(Vm.NULL);
+                    cloudletsAffected.add(cloudlet.reset());
                     it.remove();
                 }
             }
