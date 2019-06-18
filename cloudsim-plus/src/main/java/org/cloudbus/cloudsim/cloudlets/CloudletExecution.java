@@ -425,13 +425,13 @@ public class CloudletExecution {
     }
 
     /**
-     * Gets the timeslice assigned by a {@link CloudletScheduler} for a Cloudlet, which is the amount
+     * Gets the time-slice assigned by a {@link CloudletScheduler} for a Cloudlet, which is the amount
      * of time (in seconds) that such a Cloudlet will have to use the PEs
      * of a Vm. Each CloudletScheduler implementation can make use of this attribute or not.
-     * CloudletSchedulers that use it, are in charge to compute the timeslice to
+     * CloudletSchedulers that use it, are in charge to compute the time-slice to
      * assign to each Cloudlet.
      *
-     * @return Cloudlet timeslice (in seconds)
+     * @return Cloudlet time-slice (in seconds)
      *
      */
     public double getTimeSlice() {
@@ -439,13 +439,13 @@ public class CloudletExecution {
     }
 
     /**
-     * Sets the timeslice assigned by a {@link CloudletScheduler} for a Cloudlet, which is the amount
+     * Sets the time-slice assigned by a {@link CloudletScheduler} for a Cloudlet, which is the amount
      * of time (in seconds) that such a Cloudlet will have to use the PEs
      * of a Vm. Each CloudletScheduler implementation can make use of this attribute or not.
-     * CloudletSchedulers that use it, are in charge to compute the timeslice to
+     * CloudletSchedulers that use it, are in charge to compute the time-slice to
      * assign to each Cloudlet.
      *
-     * @param timeSlice the Cloudlet timeslice to set (in seconds)
+     * @param timeSlice the Cloudlet time-slice to set (in seconds)
      *
      */
     public void setTimeSlice(final double timeSlice) {

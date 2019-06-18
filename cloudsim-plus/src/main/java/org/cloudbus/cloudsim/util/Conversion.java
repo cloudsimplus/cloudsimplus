@@ -20,7 +20,7 @@ public final class Conversion {
     public static final int MILLION = 1_000_000;
 
     /**
-     * The value of 1 KiloByte in Bytes or 1 Kilobit in bits.
+     * The value of 1 KiloByte in Bytes or 1 Kilo-bit in bits.
      * It is declared as double because such a value is commonly used
      * in divisions. This way, it avoids explicit double casts
      * to ensure a double instead an integer division.
@@ -28,19 +28,19 @@ public final class Conversion {
     public static final double KILO = 1024;
 
     /**
-     * The value of 1 MegaByte in Bytes or 1 Megabit in bits.
+     * The value of 1 MegaByte in Bytes or 1 Mega-bit in bits.
      * @see #KILO
      */
     public static final double MEGA = KILO * KILO;
 
     /**
-     * The value of 1 GigaByte in Bytes or 1 Gigabit in bits.
+     * The value of 1 GigaByte in Bytes or 1 Giga-bit in bits.
      * @see #MEGA
      */
     public static final double GIGA = MEGA * KILO;
 
     /**
-     * The value of 1 TeraByte in Bytes or 1 TeraBit in bits.
+     * The value of 1 TeraByte in Bytes or 1 Tera-bit in bits.
      * @see #GIGA
      */
     public static final double TERA = GIGA * KILO;
@@ -100,9 +100,9 @@ public final class Conversion {
     }
 
     /**
-     * Converts a value in bytes to Megabites (Mb)
+     * Converts a value in bytes to Megabits (Mb)
      * @param bytes the value in bytes
-     * @return the value in Megabites (Mb)
+     * @return the value in Megabits (Mb)
      */
     public static double bytesToMegaBits(final double bytes){
         return bytesToBits(bytesToMegaBytes(bytes));
@@ -121,7 +121,7 @@ public final class Conversion {
 
     /**
      * Converts any value in bits to bytes,
-     * doesn't matter if the unit is Kilobites (Kb), Megabites (Mb), Gigabites (Gb), etc.
+     * doesn't matter if the unit is Kilobits (Kb), Megabits (Mb), Gigabits (Gb), etc.
      *
      * @param bits the value in bites, Kb, Mb, Gb, etc
      * @return the value in bites, Kbytes, Mbytes, Gbytes and so on, according to the given value

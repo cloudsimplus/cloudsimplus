@@ -7,7 +7,7 @@
         <!-- License file to be used by the com.mycila.license-maven-plugin -->
         <copyrightfile>COPYRIGHT</copyrightfile>
         <!-- Version used by all submodules which is managed by the flatten-maven-plugin -->
-        <global.version>4.8.0</global.version>
+        <global.version>5.0.0</global.version>
     </properties>
 
     <groupId>org.cloudsimplus</groupId>

@@ -5,7 +5,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 /**
  * Internal class that keeps track of Cloudlet's movement in different
  * {@link Datacenter Datacenters}. Each time a cloudlet is run on a given Datacenter, the cloudlet's
- * execution history on each Datacenter is registered at {@link CloudletAbstract#getLastExecutionInDatacenterInfo()}
+ * execution history on each Datacenter is registered inside the {@link Cloudlet}.
  */
 final class CloudletDatacenterExecution {
     /* default */ static final CloudletDatacenterExecution NULL = new CloudletDatacenterExecution();

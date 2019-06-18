@@ -128,10 +128,10 @@ public final class BriteNetworkTopology implements NetworkTopology {
      */
     private void generateMatrices() {
         // creates the delay matrix
-        delayMatrix = new DelayMatrix(getTopologycalGraph(), false);
+        delayMatrix = new DelayMatrix(getTopologicalGraph(), false);
 
         // creates the bw matrix
-        bwMatrix = createBwMatrix(getTopologycalGraph(), false);
+        bwMatrix = createBwMatrix(getTopologicalGraph(), false);
 
         networkEnabled = true;
     }
@@ -169,7 +169,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
     @Override
     public void addLink(final long srcId, final long destId, final double bandwidth, final double latency) {
-        if (getTopologycalGraph() == null) {
+        if (getTopologicalGraph() == null) {
             graph = new TopologicalGraph();
         }
 
@@ -182,14 +182,14 @@ public final class BriteNetworkTopology implements NetworkTopology {
         addNodeMapping(destId);
 
         // generate a new link
-        getTopologycalGraph().addLink(new TopologicalLink(entitiesMap.get(srcId), entitiesMap.get(destId), (float) latency, (float) bandwidth));
+        getTopologicalGraph().addLink(new TopologicalLink(entitiesMap.get(srcId), entitiesMap.get(destId), (float) latency, (float) bandwidth));
 
         generateMatrices();
     }
 
     private void addNodeMapping(final long cloudSimEntityId) {
         if (entitiesMap.putIfAbsent(cloudSimEntityId, nextIdx) == null) {
-            getTopologycalGraph().addNode(new TopologicalNode(nextIdx));
+            getTopologicalGraph().addNode(new TopologicalNode(nextIdx));
             nextIdx++;
         }
     }
@@ -241,7 +241,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public TopologicalGraph getTopologycalGraph() {
+    public TopologicalGraph getTopologicalGraph() {
         return graph;
     }
 

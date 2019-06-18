@@ -92,7 +92,7 @@ public final class TaskEvent extends TaskData {
      * define the CPU utilization along the time.
      * The value of this attribute is not the same as the max resource usage
      * of the CPU {@link UtilizationModel}.
-     * It just represents the maximum number of CPUs the Cloudet will use.
+     * It just represents the maximum number of CPUs the Cloudlet will use.
      * The percentage that such CPUs will be used for a given time is defined
      * by the CPU {@link UtilizationModel#getUtilization()}.
      * Such a value is defined by a "task usage" trace.
@@ -206,7 +206,7 @@ public final class TaskEvent extends TaskData {
     }
 
     /**
-     * Gets the s​cheduling class ​that roughly represents how latency-sensitive the task is.
+     * Gets the scheduling class ​that roughly represents how latency-sensitive the task is.
      * The scheduling class is represented by a single number,
      * with 3 representing a more latency-sensitive task (e.g., serving revenue-generating user requests)
      * and 0 representing a non-production task (e.g., development, non-business-critical analyses, etc.).

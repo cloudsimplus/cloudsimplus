@@ -157,7 +157,7 @@ public class VmAllocationPolicyMigrationLocalRegression extends VmAllocationPoli
         final double maxRam = host.getVmList().stream()
             .map(Vm::getRam)
             .mapToDouble(Resource::getCapacity).max().orElse(0);
-        return maxRam / (host.getBw().getCapacity() / (2 * 8));
+        return maxRam / (host.getBw().getCapacity() / (2.0 * 8.0));
     }
 
     /**

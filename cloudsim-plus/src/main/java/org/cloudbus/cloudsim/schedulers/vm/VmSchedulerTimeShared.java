@@ -129,7 +129,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     /**
      * Clear the allocation of any PE for all VMs in order to start a new allocation.
      * By this way, a PE that was previously allocated to a given VM will be released
-     * and when the new allocation is performed, a different list of PEs can be alocated
+     * and when the new allocation is performed, a different list of PEs can be allocated
      * that VM.
      * @see #updatePesAllocationForAllVms()
      */
@@ -178,7 +178,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @param vm the VM to try to find Host PEs for one of its Virtual PEs
      * @param requestedMipsForVmPe the amount of MIPS requested by such a VM PE
-     * @param hostPesIterator a interator over the PEs of the {@link #getHost() Host} that the schedler will
+     * @param hostPesIterator an {@link Iterator} over the PEs of the {@link #getHost() Host} that the scheduler will
      *                        iterate over to allocate PEs for a VM
      * @return the total MIPS allocated from one or more Host PEs for the requested VM PE
      */
@@ -282,13 +282,9 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
             totalRequestedMips += vmMips;
         }
 
-        final int workingPes = getWorkingPeList().size();
         // This scheduler does not allow over-subscription
-        if(getAvailableMips() >= totalRequestedMips && workingPes >= requestedMips.size()){
-            return true;
-        }
+        return getAvailableMips() >= totalRequestedMips && getWorkingPeList().size() >= requestedMips.size();
 
-        return false;
     }
 
     /**

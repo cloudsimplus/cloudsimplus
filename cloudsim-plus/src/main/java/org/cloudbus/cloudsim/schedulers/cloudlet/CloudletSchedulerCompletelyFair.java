@@ -39,8 +39,8 @@ import static java.util.stream.Collectors.toList;
  * A simplified implementation of the <a href="https://en.wikipedia.org/wiki/Completely_Fair_Scheduler">Completely Fair Scheduler (CFS)</a>
  * that is the default scheduler used for most tasks on recent Linux Kernel. It is a time-shared
  * scheduler that shares CPU cores between running applications by preempting
- * them after a time period (timeslice) to allow other ones to start executing
- * during their timeslices.
+ * them after a time period (time-slice) to allow other ones to start executing
+ * during their time-slices.
  *
  * <p><b>This scheduler supposes that Cloudlets priorities are in the range from [-20 to 19],
  * as used in <a href="http://man7.org/linux/man-pages/man1/nice.1.html">Linux Kernel</a></b>. Despite setting
@@ -134,7 +134,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	private int latency = 3;
 
     /**
-     * A comparator used to ascendingly sort Cloudlets into the waiting list
+     * A comparator used to increasingly sort Cloudlets into the waiting list
      * based on their virtual runtime (vruntime or VRT). By this way, the Cloudlets in the beginning
      * of such a list will be that ones which have run the least and have to be
      * prioritized when getting Cloudlets from this list to add to the execution
@@ -196,7 +196,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	}
 
 	/**
-	 * Computes the timeslice for a Cloudlet, which is the amount
+	 * Computes the time-slice for a Cloudlet, which is the amount
 	 * of time (in seconds) that it will have to use the PEs,
 	 * considering all Cloudlets in the {@link #getCloudletExecList() executing list}.
 	 *
@@ -204,8 +204,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
 	 * and what it represents in percentage of the {@link #getWeightSumOfRunningCloudlets() weight sum} of
 	 * all cloudlets in the execution list.</p>
 	 *
-	 * @param cloudlet Cloudlet to get the timeslice
-	 * @return Cloudlet timeslice (in seconds)
+	 * @param cloudlet Cloudlet to get the time-slice
+	 * @return Cloudlet time-slice (in seconds)
 	 *
 	 * @see #getCloudletWeight(CloudletExecution)
 	 * @see #getWeightSumOfRunningCloudlets()
@@ -360,7 +360,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * {@inheritDoc}
      * @param currentTime {@inheritDoc}
      * @param mipsShare {@inheritDoc}
-     * @return the shorter timeslice assigned to the running cloudlets (which defines
+     * @return the shorter time-slice assigned to the running cloudlets (which defines
      * the time of the next expiring Cloudlet, enabling the preemption process), or Double.MAX_VALUE if there is no next events
      */
     @Override
@@ -444,7 +444,7 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * {@inheritDoc}
      *
      * <p>Prior to start executing, a Cloudlet is added to this list.
-     * When the Cloudlet vruntime reaches its timeslice (the amount of time
+     * When the Cloudlet vruntime reaches its time-slice (the amount of time
      * it can use the CPU), it is removed from this list and added
      * back to the {@link #getCloudletWaitingList()}.</p>
      *

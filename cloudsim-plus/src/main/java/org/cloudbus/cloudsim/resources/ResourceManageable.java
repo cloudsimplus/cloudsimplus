@@ -162,7 +162,7 @@ public interface ResourceManageable extends Resource {
     boolean deallocateAndRemoveResource(long amountToDeallocate);
 
     /**
-     * Deallocates all allocated resources, restoring the total available
+     * De-allocates all allocated resources, restoring the total available
      * resource to the resource capacity.
      *
      * @return the amount of resource freed

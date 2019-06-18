@@ -37,7 +37,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "CloudSim Plus 4.8.0";
+    public static final String VERSION = "CloudSim Plus 5.0.0";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
@@ -311,7 +311,7 @@ public class CloudSim implements Simulation {
      *         or a termination time was set and the clock reached that time
      */
     private boolean processEvents(final double until) {
-        while (runClockTickAndProcessFutureEvents(until) || isToWaitClockToReachTerminationTime()) {
+        if (runClockTickAndProcessFutureEvents(until) || isToWaitClockToReachTerminationTime()) {
             notifyOnSimulationStartListeners(); //it's ensured to run just once.
             if (logSimulationAborted()) {
                 return false;
@@ -572,6 +572,7 @@ public class CloudSim implements Simulation {
      * Gets the list of entities that are in {@link SimEntity.State#RUNNABLE}
      * and execute them.
      */
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     private void executeRunnableEntities(final double until) {
         /*Uses an indexed for instead of anything else to avoid
         ConcurrencyModificationException when a HostFaultInjection is created inside a Datacenter*/

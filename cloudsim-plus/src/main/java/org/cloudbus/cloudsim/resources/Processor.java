@@ -119,7 +119,7 @@ public final class Processor extends ResourceManageableAbstract {
     @Override
     public boolean setCapacity(long numberOfPes) {
         if(numberOfPes < 0){
-            throw new IllegalArgumentException("The Processsor's number of PEs cannot be negative.");
+            throw new IllegalArgumentException("The Processor's number of PEs cannot be negative.");
         }
         return super.setCapacity(numberOfPes);
     }

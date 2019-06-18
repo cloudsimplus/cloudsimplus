@@ -27,7 +27,7 @@ import java.util.function.Function;
  * A BRITE file is structured as follows:<br>
  * <ul>
  * <li>Node-section: NodeID, xpos, ypos, indegree, outdegree, ASid, type(router/AS)
- * <li>Edge-section: EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwith, AS_from, AS_to,
+ * <li>Edge-section: EdgeID, fromNode, toNode, euclideanLength, linkDelay, linkBandwidth, AS_from, AS_to,
  * type
  * </ul>
  *
@@ -57,7 +57,7 @@ public class TopologyReaderBrite implements TopologyReader {
         try(BufferedReader reader = new BufferedReader(streamReader)) {
             String nextLine;
             while ((nextLine = reader.readLine()) != null) {
-                // functionality to diferentiate between all the parsing-states
+                // functionality to differentiate between all the parsing-states
                 // state that should just find the start of node-declaration
                 if (state == PARSE_NOTHING) {
                     if (nextLine.contains("Nodes:")) {

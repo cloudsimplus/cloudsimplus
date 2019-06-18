@@ -75,8 +75,8 @@ public class AggregateSwitch extends AbstractSwitch {
 
     @Override
     protected void processPacketDown(SimEvent evt) {
-        // packet is coming from root so need to be sent to edgelevel swich
-        // find the id for edgelevel switch
+        // packet is coming from root so need to be sent to edge switch
+        // find the id for edge switch
         super.processPacketDown(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
         final Switch downlinkSw = getVmEdgeSwitch(netPkt);
@@ -85,9 +85,9 @@ public class AggregateSwitch extends AbstractSwitch {
 
     @Override
     protected void processPacketUp(SimEvent evt) {
-        // packet is coming from edge level router so need to be sent to
-        // either root or another edge level swich
-        // find the id for edge level switch
+        // packet is coming from edge router so need to be sent to
+        // either root or another edge switch
+        // find the id for edge switch
         super.processPacketUp(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
         final Switch downlinkSw = getVmEdgeSwitch(netPkt);
@@ -101,9 +101,8 @@ public class AggregateSwitch extends AbstractSwitch {
 
     /**
      * Checks if the Aggregate switch is connected to a given Edge switch.
-     * @param edgeSwitch the id of the edge switch to check if the aggregate switch
-     * is connected to
-     * @return true if the edge switch was found, false othersise
+     * @param edgeSwitch the id of the edge switch to check if the aggregate switch is connected to
+     * @return true if the edge switch was found, false otherwise
      */
     private boolean findConnectedEdgeSwitch(Switch edgeSwitch) {
         return getDownlinkSwitches().stream().anyMatch(edgeSwitch::equals);

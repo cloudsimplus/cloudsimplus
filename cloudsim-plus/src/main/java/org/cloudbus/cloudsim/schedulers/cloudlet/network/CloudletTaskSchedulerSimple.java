@@ -76,7 +76,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
         }
 
         /*
-         * @TODO autor: manoelcampos It should be used polymorphism to avoid
+         * @TODO author: manoelcampos It should be used polymorphism to avoid
          *       including these if's for each type of task.
          */
         if (isTimeToUpdateCloudletProcessing(netcl)) {
@@ -174,7 +174,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             getListOfPacketsSentFromVm(task.getSourceVm()).removeAll(receivedPkts);
 
             /*
-             * @TODO autor: manoelcampos The task has to wait the reception
+             * @TODO author: manoelcampos The task has to wait the reception
              *       of the expected packets up to a given timeout.
              *       After that, the task has to stop waiting and fail.
              */

@@ -28,9 +28,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.*;
-
-import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
-
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.resources.ResourceScaling;
@@ -38,6 +35,8 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.function.Function;
+
+import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
 /**
  * A Vm <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">Vertical Scaling</a> mechanism
@@ -58,7 +57,7 @@ import java.util.function.Function;
  *         using an {@link EventListener}, to check if an {@link #getLowerThresholdFunction() under} or
  *         {@link #getUpperThresholdFunction() overload} condition is met;</li>
  *         <li>if any of these conditions is met, the Vm uses the VerticalVmScaling to send a scaling request to its {@link DatacenterBroker};</li>
- *         <li>the DatacenterBroker fowards the request to the {@link Datacenter} where the Vm is hosted;</li>
+ *         <li>the DatacenterBroker forwards the request to the {@link Datacenter} where the Vm is hosted;</li>
  *         <li>the Datacenter delegates the task to its {@link VmAllocationPolicy};</li>
  *         <li>the VmAllocationPolicy checks if there is resource availability and then finally scale the Vm.</li>
  *     </ul>

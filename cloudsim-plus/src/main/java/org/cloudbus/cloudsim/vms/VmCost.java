@@ -37,7 +37,7 @@ import org.cloudbus.cloudsim.resources.Pe;
  */
 public class VmCost {
     /** @see #getVm()  */
-    private Vm vm;
+    private final Vm vm;
 
     /**
      * Creates a VmCost object to compute the monetary cost to run a given VM.

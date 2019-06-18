@@ -12,7 +12,7 @@ import org.apache.commons.math3.random.RandomGenerator;
 
 /**
  * A Pseudo-Random Number Generator following the
- * <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">Lognormal</a>
+ * <a href="https://en.wikipedia.org/wiki/Log-normal_distribution">Log-normal</a>
  * distribution.
  *
  * @author Marcos Dias de Assuncao

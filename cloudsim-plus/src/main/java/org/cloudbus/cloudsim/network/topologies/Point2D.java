@@ -4,8 +4,8 @@ package org.cloudbus.cloudsim.network.topologies;
  * A class to represent the coordinates of a 2-dimensional point.
  */
 public class Point2D {
-    private int x;
-    private int y;
+    private final int x;
+    private final int y;
 
     /**
      * Creates a origin point with coordinates 0,0.

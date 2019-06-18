@@ -104,8 +104,7 @@ public class VmBuilder implements Builder {
     }
 
     private Vm defaultVmCreationFunction(final double mips, final long pes) {
-        final Vm vm = new VmSimple(numberOfCreatedVms++, mips, pes);
-        return vm;
+        return new VmSimple(numberOfCreatedVms++, mips, pes);
     }
 
     public VmBuilder setMips(final double defaultMIPS) {

@@ -580,7 +580,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Updates the VM utilization of given resource, based on the current utilization of all
      * its running Cloudlets, that depends on the Cloudlet's {@link UtilizationModel} for that resource.
      *
-     * <p>It deallocates all resources so that the VM's amount of allocated resource will be update
+     * <p>It de-allocates all resources so that the VM's amount of allocated resource will be update
      * for each running Cloudlet. This way, each Cloudlet requests an amount that is allocated.
      * The request for the next Cloudlet may not be fulfilled due to lack of resources.
      * If a Cloudlet requests more resources than is available, just the available

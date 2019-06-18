@@ -74,8 +74,8 @@ public class TextTable extends CsvTable {
      * @return The centralized version of the string
      */
     private String getCentralizedString(final String str) {
-        final int identationLength = (getLengthOfColumnHeadersRow() - str.length())/2;
-        return String.format("\n%s%s\n", StringUtils.repeat(" ", identationLength), str);
+        final int indentationLength = (getLengthOfColumnHeadersRow() - str.length())/2;
+        return String.format("\n%s%s\n", StringUtils.repeat(" ", indentationLength), str);
     }
 
     /**

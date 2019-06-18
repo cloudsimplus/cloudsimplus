@@ -53,11 +53,8 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips) {
         final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
-        if(selectedPes.size() >= requestedMips.size()){
-            return true;
-        }
+        return selectedPes.size() >= requestedMips.size();
 
-        return false;
     }
 
     /**

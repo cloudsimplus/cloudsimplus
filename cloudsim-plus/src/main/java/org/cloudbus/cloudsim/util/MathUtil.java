@@ -157,7 +157,7 @@ public final class MathUtil {
     }
 
     /**
-     * Gets the <a href="https://en.wikipedia.org/wiki/Interquartile_range">Interquartile Range (IQR)</a>
+     * Gets the <a href="https://en.wikipedia.org/wiki/Interquartile_range">Inter-quartile Range (IQR)</a>
      * from an array of numbers.
      *
      * @param data the array of numbers

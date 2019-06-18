@@ -233,7 +233,7 @@ public class PoissonDistr implements ContinuousDistribution {
         /*
          * Time length of each simulation in minutes.
         */
-        final int SIMULATION_TIME_LENGHT = 25;
+        final int SIMULATION_TIME_LENGTH = 25;
 
         //If the arrival of each customers must be shown.
         final boolean showCustomerArrivals = true;
@@ -260,15 +260,15 @@ public class PoissonDistr implements ContinuousDistribution {
             /*We want to check the probability of 1 customer to arrive at each
             single minute. The default k value is 1, so we dont need to set it.*/
             final int totalArrivedCustomers =
-                IntStream.range(0, SIMULATION_TIME_LENGHT)
+                IntStream.range(0, SIMULATION_TIME_LENGTH)
                     .filter(time -> poisson.eventsHappened())
                     .peek(time -> printArrivals.accept(poisson, time))
                     .map(time -> poisson.getK())
                     .sum();
 
             System.out.printf(
-                    "\t%d customers arrived in %d minutes\n", totalArrivedCustomers, SIMULATION_TIME_LENGHT);
-            System.out.printf("\tArrival rate: %.2f customers per minute. Customers interarrival time: %.2f minutes in average\n",
+                    "\t%d customers arrived in %d minutes\n", totalArrivedCustomers, SIMULATION_TIME_LENGTH);
+            System.out.printf("\tArrival rate: %.2f customers per minute. Customers inter-arrival time: %.2f minutes in average\n",
                     poisson.getLambda(), poisson.getInterArrivalMeanTime());
 
             return totalArrivedCustomers;
@@ -287,8 +287,8 @@ public class PoissonDistr implements ContinuousDistribution {
         System.out.printf("\nArrived customers average after %d simulations: %.2f\n",
                 NUMBER_OF_SIMULATIONS, mean);
         System.out.printf(
-            "%.2f customers expected by each %d minutes of simulation with interarrival time of %.2f minutes\n",
-             poisson.getLambda()*SIMULATION_TIME_LENGHT, SIMULATION_TIME_LENGHT,
+            "%.2f customers expected by each %d minutes of simulation with inter-arrival time of %.2f minutes\n",
+             poisson.getLambda()*SIMULATION_TIME_LENGTH, SIMULATION_TIME_LENGTH,
              poisson.getInterArrivalMeanTime());
     }
 

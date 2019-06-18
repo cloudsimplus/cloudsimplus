@@ -102,11 +102,10 @@ public class HostBuilder implements Builder {
     }
 
     private Host defaultHostCreationFunction(final List<Pe> peList) {
-        final Host host = new HostSimple(peList)
+        return new HostSimple(peList)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .addOnUpdateProcessingListener(onUpdateVmsProcessingListener);
-        return host;
     }
 
     public double getMips() {

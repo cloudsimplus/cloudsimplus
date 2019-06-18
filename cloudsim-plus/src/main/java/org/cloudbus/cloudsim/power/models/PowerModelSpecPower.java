@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.power.models;
 
 /**
  * The abstract class of power models created based on data from
- * <a href="http://www.spec.org/power_ssj2008/">SPECpower benchmark</a>.
+ * <a href="http://www.spec.org/power_ssj2008/">SPEC power benchmark</a>.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
  * the following paper:</p>

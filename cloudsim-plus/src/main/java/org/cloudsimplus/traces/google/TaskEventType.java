@@ -79,8 +79,8 @@ public enum TaskEventType {
     },
 
     /**
-     * 2: A task or job was descheduled because of a higher priority task or job,
-     * because the scheduler overcommitted and the actual demand exceeded the machine capacity,
+     * 2: A task or job was de-scheduled because of a higher priority task or job,
+     * because the scheduler over-committed and the actual demand exceeded the machine capacity,
      * because the machine on which it was running became unusable (e.g. taken offline for repairs),
      * or because a disk holding the task’s data was lost.
      */
@@ -92,7 +92,7 @@ public enum TaskEventType {
     },
 
     /**
-     * 3: A task or job was descheduled (or, in rare cases, ceased to be eligible
+     * 3: A task or job was de-scheduled (or, in rare cases, ceased to be eligible
      * for scheduling while it was pending) due to a task failure.
      */
     FAIL{

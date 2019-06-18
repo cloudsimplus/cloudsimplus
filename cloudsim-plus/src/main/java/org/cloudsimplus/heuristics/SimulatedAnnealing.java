@@ -47,7 +47,7 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  *          <li>{@code if neighbor.getFitness() < current.getFitness()} then randomly decide if move to the new solution;</li>
  *      </ul>
  *  </li>
- *  <li>Repeat steps 3 to 4 until an aceptable solution is found or some number
+ *  <li>Repeat steps 3 to 4 until an acceptable solution is found or some number
  * of iterations or time is reached. These conditions are defined by the developer
  * implementing the heuristic.</li>
  * </ol>

@@ -42,7 +42,7 @@ public final class CloudSimTags {
     /**
      * Starting constant value for network-related tags. *
      */
-    private static final int NETBASE = 100;
+    private static final int NET_BASE = 100;
 
     /**
      * Denotes a request from a Datacenter to register itself. This tag is normally used
@@ -74,12 +74,12 @@ public final class CloudSimTags {
     /**
      * This tag is used by an entity to send ping requests.
      */
-    public static final int ICMP_PKT_SUBMIT = NETBASE + 5;
+    public static final int ICMP_PKT_SUBMIT = NET_BASE + 5;
 
     /**
      * This tag is used to return the ping request back to sender.
      */
-    public static final int ICMP_PKT_RETURN = NETBASE + 6;
+    public static final int ICMP_PKT_RETURN = NET_BASE + 6;
 
     /**
      * Denotes the return of a finished Cloudlet back to the sender.
@@ -236,7 +236,7 @@ public final class CloudSimTags {
 
     /**
      * Denotes a request to destroy a new VM in a {@link Datacenter} with
-     * acknowledgement information sent by the Datacener.
+     * acknowledgement information sent by the Datacenter.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@link Vm} object.
      */

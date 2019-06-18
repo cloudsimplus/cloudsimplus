@@ -196,7 +196,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      * Adds a listener object that will be notified every time when
      * the processing of the Vm is updated in its {@link Host}.
      *
-     * @param listener the listener to seaddt
+     * @param listener the listener to add
      * @return
      * @see #updateProcessing(double, List)
      */

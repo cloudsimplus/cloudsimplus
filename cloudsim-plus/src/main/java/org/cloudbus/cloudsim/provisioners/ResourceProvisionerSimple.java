@@ -60,7 +60,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
          * where it's in fact used.*/
         final long prevVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
         if (getResourceAllocationMap().containsKey(vm)) {
-            //Deallocates any amount of the resource assigned to the Vm in order to allocate a new capacity
+            //De-allocates any amount of the resource assigned to the Vm in order to allocate a new capacity
             deallocateResourceForVm(vm);
         }
 
@@ -98,10 +98,10 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         if (getResourceAllocationMap().containsKey(vm)) {
             final long vmAllocatedResource = getResourceAllocationMap().get(vm);
             getResourceAllocationMap().put(vm, 0L);
-            //Deallocates the virtual resource the VM was using
+            //De-allocates the virtual resource the VM was using
             vm.deallocateResource(getResourceClass());
 
-            //Deallocates the virtual resource from the physical resource
+            //De-allocates the virtual resource from the physical resource
             getResource().deallocateResource(vmAllocatedResource);
             return vmAllocatedResource;
         }

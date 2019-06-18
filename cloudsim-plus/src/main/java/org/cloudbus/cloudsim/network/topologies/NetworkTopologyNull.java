@@ -19,7 +19,5 @@ final class NetworkTopologyNull implements NetworkTopology {
     @Override public boolean isNetworkEnabled() {
         return false;
     }
-    @Override public TopologicalGraph getTopologycalGraph() {
-        return GRAPH;
-    }
+    @Override public TopologicalGraph getTopologicalGraph() { return GRAPH; }
 }

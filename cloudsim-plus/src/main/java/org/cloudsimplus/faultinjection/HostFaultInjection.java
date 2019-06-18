@@ -414,7 +414,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Deallocates the physical PEs failed for the
+     * De-allocates the physical PEs failed for the
      * {@link #getLastFailedHost() last failed Host} from affected VMs.
      */
     private void deallocateFailedHostPesFromVms() {
@@ -461,11 +461,10 @@ public class HostFaultInjection extends CloudSimEntity {
             idx++;
             vmsWithPes = getVmsWithPEsFromFailedHost();
         }
-        failedPesToRemoveFromVms--;
     }
 
     private int numberOfFailedPesToRemoveFromVms() {
-        final int hostWorkingPes = (int)lastFailedHost.getWorkingPesNumber();
+        final int hostWorkingPes = lastFailedHost.getWorkingPesNumber();
         final int vmsRequiredPes = (int)getPesSumOfWorkingVms();
         return vmsRequiredPes - hostWorkingPes;
     }
@@ -595,7 +594,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * @param broker the broker to increase the number of faults
      */
     private void registerFaultOfAllVms(final DatacenterBroker broker) {
-        faultsOfAllVmsByBroker.merge(broker, 1, (old, inc) -> old + inc);
+        faultsOfAllVmsByBroker.merge(broker, 1, Integer::sum);
     }
 
     /**

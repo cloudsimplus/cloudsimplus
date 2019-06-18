@@ -505,7 +505,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private void processCloudletPause(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
-        logCloudletStatusChange(cloudlet, "deschedule (pause)");
+        logCloudletStatusChange(cloudlet, "de-schedule (pause)");
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
     }
 

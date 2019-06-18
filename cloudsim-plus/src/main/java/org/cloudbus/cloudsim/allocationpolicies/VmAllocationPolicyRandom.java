@@ -33,7 +33,7 @@ public class VmAllocationPolicyRandom extends VmAllocationPolicyAbstract impleme
     /**
      * A Pseudo-Random Number Generator (PRNG) used to select a Host.
      */
-    private ContinuousDistribution random;
+    private final ContinuousDistribution random;
 
     /**
      * Instantiates a VmAllocationPolicyRandom.

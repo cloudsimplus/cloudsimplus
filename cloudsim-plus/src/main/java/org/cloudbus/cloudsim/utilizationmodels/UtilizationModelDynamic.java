@@ -156,7 +156,6 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
      *
      * @param source the source UtilizationModelDynamic to create an instance from
      */
-    @SuppressWarnings("CopyConstructorMissesField")
     protected UtilizationModelDynamic(final UtilizationModelDynamic source){
         this(source, source.currentUtilization);
 

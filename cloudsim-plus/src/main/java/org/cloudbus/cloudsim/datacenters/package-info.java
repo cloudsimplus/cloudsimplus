@@ -16,7 +16,7 @@
  *
  * <p><b>All datacenter implementations are natively power-ware.</b>
  * Specific implementations can also be network-aware, enabling the simulation
- * of network communication. There are specifc networtk-aware
+ * of network communication. There are specific network-aware
  * versions for Hosts and VMs and a single kindle of such objects must be used for a
  * simulation. For instance a network-aware simulation must use
  * {@link org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter},

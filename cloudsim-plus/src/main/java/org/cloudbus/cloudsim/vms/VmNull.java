@@ -68,9 +68,7 @@ class VmNull implements Vm {
     @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }
-    @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) {
-        return this;
-    }
+    @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return this; }
     @Override public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
         return this;
     }

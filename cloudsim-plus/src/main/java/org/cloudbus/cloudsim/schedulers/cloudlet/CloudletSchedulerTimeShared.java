@@ -77,7 +77,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
      * <p>
      * <b>For this scheduler, this list is always empty, once the VM PEs
      * are shared across all Cloudlets running inside a VM. Each Cloudlet has
-     * the opportunity to use the PEs for a given timeslice.</b></p>
+     * the opportunity to use the PEs for a given time-slice.</b></p>
      *
      * @return {@inheritDoc}
      */
@@ -109,7 +109,7 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 
     /**
      * This time-shared scheduler shares the CPU time between all executing
-     * cloudlets, giving the same CPU timeslice for each Cloudlet to execute. It
+     * cloudlets, giving the same CPU time-slice for each Cloudlet to execute. It
      * always allow any submitted Cloudlets to be immediately added to the
      * execution list. By this way, it doesn't matter what Cloudlet is being
      * submitted, since it will always include it in the execution list.

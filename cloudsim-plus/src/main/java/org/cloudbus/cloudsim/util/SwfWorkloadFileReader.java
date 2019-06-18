@@ -82,7 +82,7 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
 
     /**
      * Field index of required running time.
-     * This can be either runtime (measured in wallclock seconds), or average CPU time per processor (also in seconds)
+     * This can be either runtime (measured in wall-clock seconds), or average CPU time per processor (also in seconds)
      * -- the exact meaning is determined by a header comment.
      * If a log contains a request for total CPU time, it is divided by the number of requested processors.
      */
@@ -242,12 +242,12 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
         or zero, then use the actual field*/
         final int maxNumProc = Math.max(
                                     Integer.parseInt(parsedLineArray[REQ_NUM_PROC_INDEX].trim()),
-                                    Integer.parseInt(parsedLineArray[this.NUM_PROC_INDEX].trim())
+                                    Integer.parseInt(parsedLineArray[NUM_PROC_INDEX].trim())
                                );
         final int numProc = Math.max(maxNumProc, 1);
 
         final Cloudlet cloudlet = createCloudlet(id, runTime, numProc);
-        final long submitTime = Long.parseLong(parsedLineArray[this.SUBMIT_TIME_INDEX].trim());
+        final long submitTime = Long.parseLong(parsedLineArray[SUBMIT_TIME_INDEX].trim());
         cloudlet.setSubmissionDelay(submitTime);
 
         if(predicate.test(cloudlet)){

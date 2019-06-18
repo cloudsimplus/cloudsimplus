@@ -115,7 +115,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         },
 
         /**
-         * 3: The platform ID is an opaque string representing the microarchitecture and chipset version of the machine.
+         * 3: The platform ID is an opaque string representing the micro-architecture and chipset version of the machine.
          */
         PLATFORM_ID{
             @Override

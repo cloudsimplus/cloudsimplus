@@ -285,8 +285,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     double getTotalCost();
 
     /**
-     * Gets the latest execution start time of this Cloudlet. With new functionalities, such
-     * as CANCEL, PAUSED and RESUMED, this attribute only stores the latest
+     * Gets the latest execution start time of this Cloudlet.
+     * This attribute only stores the latest
      * execution time. Previous execution time are ignored.
      * This time represents the simulation second when the cloudlet started.
      *
@@ -750,8 +750,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
     /**
      * Sets the {@link #getExecStartTime() latest execution start time} of this Cloudlet.
      * <br>
-     * <b>NOTE:</b> With new functionalities, such as being able to cancel,
-     * pause or resume this Cloudlet, the execution start time only holds the
+     * <b>NOTE:</b> The execution start time only holds the
      * latest one. Meaning all previous execution start times are ignored.
      *
      * @param clockTime the latest execution start time

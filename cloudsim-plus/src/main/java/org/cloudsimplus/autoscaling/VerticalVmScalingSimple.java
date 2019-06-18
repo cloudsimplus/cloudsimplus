@@ -118,7 +118,7 @@ public class VerticalVmScalingSimple extends VmScalingAbstract implements Vertic
 
     /**
      * Throws an exception if the under and overload predicates are equal (to make clear
-     * that over and underload situations must be defined by different conditions)
+     * that over and under-load situations must be defined by different conditions)
      * or if any of them are null.
      *
      * @param lowerThresholdFunction the lower threshold function

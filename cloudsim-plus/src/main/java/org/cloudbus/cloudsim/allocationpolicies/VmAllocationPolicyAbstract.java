@@ -276,7 +276,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         if (getHostList().isEmpty()) {
             LOGGER.error(
                 "{}: {}: {} could not be allocated because there isn't any Host for Datacenter {}",
-                vm.getSimulation().clockStr(), vm, getDatacenter().getId());
+                vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, getDatacenter().getId());
             return false;
         }
 

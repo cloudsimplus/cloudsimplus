@@ -1,7 +1,6 @@
 /*
  * Title:        CloudSim Toolkit
- * Descripimport java.util.Random;
-mulation) Toolkit for Modeling and Simulation of Clouds
+ * Description:  Toolkit for Modeling and Simulation of Clouds
  * Licence:      GPL - http://www.gnu.org/copyleft/gpl.html
  *
  * Copyright (c) 2009-2012, The University of Melbourne, Australia

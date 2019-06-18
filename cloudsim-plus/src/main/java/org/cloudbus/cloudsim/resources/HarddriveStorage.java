@@ -371,7 +371,7 @@ public class HarddriveStorage implements FileStorage {
             return result;
         }
 
-        // check if the same file name is alredy taken
+        // check if the same file name is already taken
         if (!contains(file.getName())) {
             fileList.add(file);               // add the file into the HD
             fileNameList.add(file.getName());     // add the name to the name list

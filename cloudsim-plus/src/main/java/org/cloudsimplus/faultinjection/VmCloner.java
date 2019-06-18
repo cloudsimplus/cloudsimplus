@@ -63,12 +63,12 @@ public interface VmCloner {
 
     /**
      * Clones a given {@link Vm} using the Vm Cloner Function
-     * and their Cloudlets using the Clodlets Cloner Function,
+     * and their Cloudlets using the Cloudlets Cloner Function,
      * binding the cloned Cloudlets to the cloned Vm.
      *
      * @param sourceVm the Vm to be cloned
      * @return a {@link Map.Entry} where the key is the cloned Vm
-     * and the value is the List of cloned Cloudltes.
+     * and the value is the List of cloned Cloudlets.
      * @see #setVmClonerFunction(UnaryOperator)
      * @see #setCloudletsClonerFunction(Function)
      */

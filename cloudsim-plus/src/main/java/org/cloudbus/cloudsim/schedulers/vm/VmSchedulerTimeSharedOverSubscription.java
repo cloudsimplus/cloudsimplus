@@ -24,7 +24,7 @@ import java.util.Map.Entry;
  * <p>The scheduler doesn't in fact allocates more MIPS for Virtual PEs (vPEs)
  * than there is in the physical PEs. It just reduces the allocated
  * amount according to the available MIPS.
- * This is an oversubscription, resulting in performance degradation
+ * This is an over-subscription, resulting in performance degradation
  * because less MIPS may be allocated than the required by a VM.
  * </p>
  *
@@ -73,12 +73,8 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      */
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips){
-        final int workingPes = getWorkingPeList().size();
-        if(workingPes >= requestedMips.size()){
-            return true;
-        }
+        return getWorkingPeList().size() >= requestedMips.size();
 
-        return false;
     }
 
     @Override

@@ -49,7 +49,7 @@ public interface NetworkTopology {
     void mapNode(long cloudSimEntityID, int briteID);
 
     /**
-     * Unmaps a previously mapped CloudSim entity to a BRITE node in the network
+     * Un-maps a previously mapped CloudSim entity to a BRITE node in the network
      * topology.
      *
      * @param cloudSimEntityID ID of the entity being unmapped
@@ -81,5 +81,5 @@ public interface NetworkTopology {
     /**
      * @return the graph
      */
-    TopologicalGraph getTopologycalGraph();
+    TopologicalGraph getTopologicalGraph();
 }

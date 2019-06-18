@@ -373,9 +373,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return the list
      */
     private List<Host> extractHostListFromMigrationMap(final Map<Vm, Host> migrationMap) {
-        return migrationMap.entrySet().stream()
-                .map(Map.Entry::getValue)
-                .collect(toList());
+        return new ArrayList<>(migrationMap.values());
     }
 
     /**

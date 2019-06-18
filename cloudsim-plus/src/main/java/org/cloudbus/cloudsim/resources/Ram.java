@@ -24,7 +24,7 @@
 package org.cloudbus.cloudsim.resources;
 
 /**
- * Represents the RAM resource of a PM or VM in Mebabytes.
+ * Represents the RAM resource of a PM or VM in Megabytes.
  * Such a class allows managing the RAM capacity and allocation.
  *
  * @author Manoel Campos da Silva Filho

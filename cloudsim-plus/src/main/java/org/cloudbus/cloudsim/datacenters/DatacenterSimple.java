@@ -74,7 +74,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /** @see #getDatacenterStorage() */
 	private DatacenterStorage datacenterStorage;
 
-    private List<EventListener<HostEventInfo>> onHostAvailableListeners;
+    private final List<EventListener<HostEventInfo>> onHostAvailableListeners;
 
     /** @see #setPowerSupply(DatacenterPowerSupply) */
     private DatacenterPowerSupply powerSupply;
@@ -619,7 +619,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         //Updates processing of all Hosts to get the latest state for all Hosts before migrating VMs
         updateHostsProcessing();
 
-        //Deallocates the VM on the source Host (where it is migrating out)
+        //De-allocates the VM on the source Host (where it is migrating out)
         vmAllocationPolicy.deallocateHostForVm(vm);
 
         targetHost.removeMigratingInVm(vm);

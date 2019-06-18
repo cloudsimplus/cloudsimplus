@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * An interface to be implemented by VM allocation policies that define
  * a dynamic over utilization threshold computed using some statistical method such as
  * <a href="https://en.wikipedia.org/wiki/Median_absolute_deviation">Median Absolute Deviation (MAD)</a>,
- * <a href="https://en.wikipedia.org/wiki/Interquartile_range">Interquartile Range (IQR)</a>,
+ * <a href="https://en.wikipedia.org/wiki/Interquartile_range">Inter-quartile Range (IQR)</a>,
  * <a href="https://en.wikipedia.org/wiki/Local_regression">Local Regression (LR)</a>, etc,
  * depending on the implementing class.
  *
@@ -57,7 +57,7 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
      * As the safety parameter increases, the threshold decreases,
      * what may lead to less SLA violations. So, as higher is that parameter,
      * safer the algorithm will be when defining a host as overloaded.
-     * <b>A value equal to 0 indicates that the safery parameter doesn't affect
+     * <b>A value equal to 0 indicates that the safety parameter doesn't affect
      * the computed CPU utilization threshold.</b>
      * </p>
      *

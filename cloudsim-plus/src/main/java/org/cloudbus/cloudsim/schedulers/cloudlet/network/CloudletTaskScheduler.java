@@ -105,7 +105,7 @@ public interface CloudletTaskScheduler {
      * then it isn't time to update its processing.
      *
      * @param cloudlet the Cloudlet to check if it is time to update its execution
-     * @return true if its timie to update Cloudlet execution, false otherwise.
+     * @return true if it's time to update Cloudlet execution, false otherwise.
      */
     boolean isTimeToUpdateCloudletProcessing(Cloudlet cloudlet);
 }

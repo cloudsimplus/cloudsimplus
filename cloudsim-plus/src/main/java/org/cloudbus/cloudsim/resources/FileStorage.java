@@ -37,16 +37,16 @@ public interface FileStorage extends Resource {
     String getName();
 
     /**
-     * Gets the maximum local transfer rate of the storage in <b>Mbits/sec</b>,
+     * Gets the maximum local transfer rate of the storage in <b>Mega-bits/sec</b>,
      * i.e., the physical device reading speed.
      *
-     * @return the maximum transfer rate in Mbits/sec
+     * @return the maximum transfer rate in Mega-bits/sec
      * @see #setMaxTransferRate(double)
      */
     double getMaxTransferRate();
 
     /**
-     * Sets the maximum transfer rate of this storage system in <b>Mbits/sec</b>,
+     * Sets the maximum transfer rate of this storage system in <b>Mega-bits/sec</b>,
      * i.e., the physical device reading speed.
      *
      * <p>Despite disk transfer rate is usually defined in MBytes/sec,

@@ -50,10 +50,10 @@ import java.util.function.Supplier;
  */
 public abstract class Experiment implements Runnable {
     private final ExperimentRunner runner;
-    private CloudSim simulation;
-    private List<DatacenterSimple> datacenterList;
-    private List<DatacenterBroker> brokerList;
-    private List<Vm> vmList;
+    private final CloudSim simulation;
+    private final List<DatacenterSimple> datacenterList;
+    private final List<DatacenterBroker> brokerList;
+    private final List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
     private final long seed;
 
@@ -260,7 +260,7 @@ public abstract class Experiment implements Runnable {
 
     /**
      * Creates a datacenter using a {@link VmAllocationPolicy}
-     * suplied by the {@link #vmAllocationPolicySupplier}.
+     * supplied by the {@link #vmAllocationPolicySupplier}.
      * @return
      * @see #setVmAllocationPolicySupplier(Supplier)
      */
@@ -477,7 +477,7 @@ public abstract class Experiment implements Runnable {
      * Sets a {@link Function} that receives a {@link DatacenterBroker} and returns the
      * number of Vms to create for that broker.
      * If you want all brokers to have the same amount of VMs,
-     * you can give a lambda expression such as {@code broker -> NUMER_OF_VMS_TO_CREATE}.
+     * you can give a lambda expression such as {@code broker -> NUMBER_OF_VMS_TO_CREATE}.
      * @param vmsByBrokerFunction the {@link Function} to set
      */
     public final void setVmsByBrokerFunction(final Function<DatacenterBroker, Integer> vmsByBrokerFunction) {

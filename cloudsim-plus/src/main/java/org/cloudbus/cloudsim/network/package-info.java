@@ -6,7 +6,7 @@
  * using a implementation of {@link org.cloudbus.cloudsim.network.topologies.readers.TopologyReader}.
  *
  * <p>It also provides class to enable simulation of network package transmission.
- * For more information about the network moduule, please refer to following publication:
+ * For more information about the network module, please refer to following publication:
  * <ul>
  * <li>
  *   <a href="https://doi.org/10.1109/UCC.2011.24">
