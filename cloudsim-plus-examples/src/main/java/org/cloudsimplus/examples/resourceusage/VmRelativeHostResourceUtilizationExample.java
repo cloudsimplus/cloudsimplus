@@ -52,7 +52,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.4.2
  */
-public class VmRelativeHostResourceUtilization {
+public class VmRelativeHostResourceUtilizationExample {
     /**
      * @see Datacenter#getSchedulingInterval()
      */
@@ -80,10 +80,10 @@ public class VmRelativeHostResourceUtilization {
     private Datacenter datacenter0;
 
     public static void main(String[] args) {
-        new VmRelativeHostResourceUtilization();
+        new VmRelativeHostResourceUtilizationExample();
     }
 
-    public VmRelativeHostResourceUtilization() {
+    public VmRelativeHostResourceUtilizationExample() {
         Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSim();
