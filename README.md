@@ -77,7 +77,7 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 CloudSim Plus provides a lot of exclusive features, from the most basic ones to build simple simulations, 
 to advanced features for simulating more realistic cloud scenarios: 
 
-1. It is easier to use. [A complete and easy-to-understand simulation scenario can be built in few lines of code.](#a-minimal-and-complete-simulation-example); 
+1. It is easier to use. [A complete and easy-to-understand simulation scenario can be built in few lines of code.](#a-minimal-and-complete-simulation-example) 
 1. Process trace files from [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md) 
    creating Hosts and Cloudlets (tasks). A script to download the trace files is available at [download-google-cluster-data.sh](script/download-google-cluster-data.sh). Examples are available [here](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/googletraces) ([#149](https://github.com/manoelcampos/cloudsim-plus/issues/149)).
 1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/VerticalVmCpuScalingExample.java) that performs on-demand up and down allocation of VM resources such as Ram, Bandwidth and PEs (CPUs) ([#7](https://github.com/manoelcampos/cloudsim-plus/issues/7));
@@ -106,7 +106,7 @@ to advanced features for simulating more realistic cloud scenarios:
 1. [Enables running the simulation synchronously, making it easier to interact with it and collect data inside a loop, as the simulation progresses](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/synchronous/SynchronousSimulationExample1.java). This brings freedom in the way you can implement your simulations ([#205](https://github.com/manoelcampos/cloudsim-plus/issues/205)).
 1. [Enables Broker to destroy a VM and return the list of unfinished Cloudlets, so that they can be resubmitted to another VM.](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/synchronous/SynchronousSimulationDestroyVmExample1.java) ([#209](https://github.com/manoelcampos/cloudsim-plus/issues/209)).
 1. [Allows placing a group of VMs into the same Host.](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/VmGroupPlacementExample1.java) ([#90](https://github.com/manoelcampos/cloudsim-plus/issues/90)).
-1. [Enables Broker to try selecting the closest Datacenter to place VMs.](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/brokers/DatacenterSelectionByTimeZoneExample.java) ([#212](https://github.com/manoelcampos/cloudsim-plus/issues/212)).
+1. [Enables Broker to try selecting the closest Datacenter to place VMs, according to their time zone.](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/brokers/DatacenterSelectionByTimeZoneExample.java) ([#212](https://github.com/manoelcampos/cloudsim-plus/issues/212)).
 1. And yeah, it outperforms CloudSim 4, as can be seen in the table below*.
 
 Framework          |Simulation Time (min) |VmAllocationPolicy|DCs|Hosts|VMs  |Cloudlets
