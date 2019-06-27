@@ -142,7 +142,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
                 "\t#EventListener: Time %.0f: Updated Cloudlet %d execution inside Vm %d",
                 eventInfo.getTime(), c.getId(), eventInfo.getVm().getId());
         System.out.printf(
-                "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%\n",
+                "\tCurrent Cloudlet resource usage: CPU %3.0f%%, RAM %3.0f%%, BW %3.0f%%%n",
                 cpuUsage,  ramUsage, bwUsage);
     }
 

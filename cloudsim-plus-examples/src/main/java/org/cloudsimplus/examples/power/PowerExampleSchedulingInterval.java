@@ -149,7 +149,7 @@ public class PowerExampleSchedulingInterval {
     }
 
     private void printHostCpuUtilizationAndPowerConsumption(final Host host) {
-        System.out.printf("Host %d CPU utilization and power consumption\n", host.getId());
+        System.out.printf("Host %d CPU utilization and power consumption%n", host.getId());
         final Map<Double, DoubleSummaryStatistics> utilizationPercentHistory = host.getUtilizationHistory();
         double totalWattsSec = 0;
         double prevUtilizationPercent = -1, prevWattsSec = -1;
@@ -168,7 +168,7 @@ public class PowerExampleSchedulingInterval {
             //only prints when the next utilization is different from the previous one, or it's the first one
             if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsSec != wattsSec) {
                 System.out.printf(
-                    "\tTime %8.2f | CPU Utilization %6.2f%% | Power Consumption: %8.0f Watts * %.0f Secs = %.0f Watt-Sec\n",
+                    "\tTime %8.2f | CPU Utilization %6.2f%% | Power Consumption: %8.0f Watts * %.0f Secs = %.0f Watt-Sec%n",
                     entry.getKey(), utilizationPercent * 100, watts, utilizationHistoryTimeInterval, wattsSec);
             }
             prevUtilizationPercent = utilizationPercent;
@@ -177,11 +177,11 @@ public class PowerExampleSchedulingInterval {
         }
 
         System.out.printf(
-            "Total Host %d Power Consumption in %.0f secs: %.0f Watt-Sec (%.5f KWatt-Hour)\n",
+            "Total Host %d Power Consumption in %.0f secs: %.0f Watt-Sec (%.5f KWatt-Hour)%n",
             host.getId(), simulation.clock(), totalWattsSec, PowerAware.wattsSecToKWattsHour(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
-            "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)\n",
+            "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)%n",
             powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
     }
 

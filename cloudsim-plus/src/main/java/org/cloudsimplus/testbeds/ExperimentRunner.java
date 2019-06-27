@@ -234,7 +234,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
         }
 
         System.out.printf(
-                "\tBatch Means Method applied. The number of samples was reduced to %d after computing the mean for each batch.\n", getNumberOfBatches());
+                "\tBatch Means Method applied. The number of samples was reduced to %d after computing the mean for each batch.%n", getNumberOfBatches());
 
         return batchMeans;
     }
@@ -342,7 +342,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
             final TDistribution tDist = new TDistribution(degreesOfFreedom);
             final double significance = 1.0 - confidenceLevel;
             final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
-            System.out.printf("\n\tt-Distribution critical value for %d samples: %f\n", stats.getN(), criticalValue);
+            System.out.printf("%n\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
 
             // Calculates the confidence interval error margin
             return criticalValue * stats.getStandardDeviation() / Math.sqrt(stats.getN());
@@ -532,7 +532,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
             experimentsStartTime = System.currentTimeMillis();
             for (int i = 0; i < getSimulationRuns(); i++) {
                 if (isVerbose()) {
-                    System.out.print(((i + 1) % 100 == 0 ? String.format(". Run #%d\n", i + 1) : "."));
+                    System.out.print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
                 }
                 createExperiment(i).run();
             }
@@ -543,9 +543,9 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
         }
 
         final Map<String, List<Double>> metricsMap = createMetricsMap();
-        System.out.println("\n------------------------------------------------------------------");
+        System.out.printf("%n------------------------------------------------------------------%n");
         metricsMap.entrySet().forEach(this::computeAndPrintFinalResults);
-        System.out.printf("\nExperiments finished in %d seconds!\n", getExperimentsFinishTime());
+        System.out.printf("%nExperiments finished in %d seconds!%n", getExperimentsFinishTime());
     }
 
     /**
@@ -602,7 +602,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
         }
 
         System.out.printf(
-                "\tAntithetic Variates Technique applied. The number of samples was reduced to the half (%d).\n", half);
+                "\tAntithetic Variates Technique applied. The number of samples was reduced to the half (%d).%n", half);
 
         return antitheticMeans;
     }

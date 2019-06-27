@@ -205,7 +205,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
         final long time = (long) eventInfo.getTime();
         if (time % CLOUDLETS_CREATION_INTERVAL == 0 && time <= 50) {
             final int numberOfCloudlets = 4;
-            System.out.printf("\t#Creating %d Cloudlets at time %d.\n", numberOfCloudlets, time);
+            System.out.printf("\t#Creating %d Cloudlets at time %d.%n", numberOfCloudlets, time);
             List<Cloudlet> newCloudlets = new ArrayList<>(numberOfCloudlets);
             for (int i = 0; i < numberOfCloudlets; i++) {
                 Cloudlet cloudlet = createCloudlet();

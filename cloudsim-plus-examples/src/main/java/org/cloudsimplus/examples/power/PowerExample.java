@@ -218,7 +218,7 @@ public class PowerExample {
                 vmPower = history.powerConsumption(time);
                 final double wattsPerInterval = vmPower*utilizationHistoryTimeInterval;
                 System.out.printf(
-                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watt-Sec * %6.0f Secs = %10.2f Watt-Sec\n",
+                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watt-Sec * %6.0f Secs = %10.2f Watt-Sec%n",
                     time, history.getHostCpuUtilization(time) *100, vmPower, utilizationHistoryTimeInterval, wattsPerInterval);
                 prevTime = time;
             }
@@ -239,7 +239,7 @@ public class PowerExample {
     }
 
     private void printHostCpuUtilizationAndPowerConsumption(final Host host) {
-        System.out.printf("Host %d CPU utilization and power consumption\n", host.getId());
+        System.out.printf("Host %d CPU utilization and power consumption%n", host.getId());
         System.out.println("----------------------------------------------------------------------------------------------------------------------");
         final Map<Double, DoubleSummaryStatistics> utilizationPercentHistory = host.getUtilizationHistory();
         double totalWattsSec = 0;
@@ -259,7 +259,7 @@ public class PowerExample {
             //only prints when the next utilization is different from the previous one, or it's the first one
             if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsSec != wattsSec) {
                 System.out.printf(
-                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watts * %6.0f Secs = %10.2f Watt-Sec\n",
+                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watts * %6.0f Secs = %10.2f Watt-Sec%n",
                     entry.getKey(), utilizationPercent * 100, watts, utilizationHistoryTimeInterval, wattsSec);
             }
             prevUtilizationPercent = utilizationPercent;
@@ -268,13 +268,13 @@ public class PowerExample {
         }
 
         System.out.printf(
-            "Total Host %d Power Consumption in %.0f secs: %.0f Watt-Sec (%.5f KWatt-Hour)\n",
+            "Total Host %d Power Consumption in %.0f secs: %.0f Watt-Sec (%.5f KWatt-Hour)%n",
             host.getId(), simulation.clock(), totalWattsSec, PowerAware.wattsSecToKWattsHour(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
-            "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)\n",
+            "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)%n",
             powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
-        System.out.println("----------------------------------------------------------------------------------------------------------------------\n");
+        System.out.printf("----------------------------------------------------------------------------------------------------------------------%n%n");
     }
 
     /**

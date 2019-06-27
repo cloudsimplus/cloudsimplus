@@ -149,14 +149,14 @@ public class VmListenersExample1 {
          * The Listener is created using Java 8 Lambda Expressions.
         */
         vm0.addOnHostAllocationListener(eventInfo -> System.out.printf(
-                "\n\t#EventListener: Host %d allocated to Vm %d at time %.2f\n",
+                "%n\t#EventListener: Host %d allocated to Vm %d at time %.2f%n",
                 eventInfo.getHost().getId(), eventInfo.getVm().getId(), eventInfo.getTime()));
 
         /* Sets the listener to intercept deallocation of a Host for the Vm.
          * The Listener is created using Java 8 Lambda Expressions.
         */
         vm0.addOnHostDeallocationListener(eventInfo -> System.out.printf(
-                "\n\t#EventListener: Vm %d moved/removed from Host %d at time %.2f\n",
+                "%n\t#EventListener: Vm %d moved/removed from Host %d at time %.2f%n",
                 eventInfo.getVm().getId(), eventInfo.getHost().getId(), eventInfo.getTime()));
 
         /* This VM will not be place due to lack of a suitable host.
@@ -164,7 +164,7 @@ public class VmListenersExample1 {
          */
         Vm vm1 = createVm(1);
         vm1.addOnCreationFailureListener(eventInfo -> System.out.printf(
-                "\n\t#EventListener: Vm %d could not be placed into any host of Datacenter %d at time %.2f due to lack of a host with enough resources.\n",
+                "%n\t#EventListener: Vm %d could not be placed into any host of Datacenter %d at time %.2f due to lack of a host with enough resources.%n",
                 eventInfo.getVm().getId(), eventInfo.getDatacenter().getId(), eventInfo.getTime()));
 
         this.vmList.add(vm0);

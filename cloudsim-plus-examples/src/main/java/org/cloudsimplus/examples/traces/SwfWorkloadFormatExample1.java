@@ -177,7 +177,7 @@ public class SwfWorkloadFormatExample1 {
 
             System.out.println(getClass().getSimpleName() + " finished!");
         } catch (Exception e) {
-            System.out.printf("Erro during simulation execution: %s\n", e.getMessage());
+            System.out.printf("Erro during simulation execution: %s%n", e.getMessage());
         }
     }
 
@@ -200,7 +200,7 @@ public class SwfWorkloadFormatExample1 {
             cloudlet.setVm(vm);
         }
 
-        System.out.printf("# Created %d VMs for the %s\n", vmlist.size(), broker);
+        System.out.printf("# Created %d VMs for the %s%n", vmlist.size(), broker);
     }
 
     private void createCloudletsFromWorkloadFile() {
@@ -209,7 +209,7 @@ public class SwfWorkloadFormatExample1 {
         reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();
 
-        System.out.printf("# Created %d Cloudlets for %s\n", this.cloudletList.size(), broker);
+        System.out.printf("# Created %d Cloudlets for %s%n", this.cloudletList.size(), broker);
     }
 
     /**
@@ -221,7 +221,7 @@ public class SwfWorkloadFormatExample1 {
         List<Host> hostList = createHostsAccordingToVmRequirements();
         Datacenter datacenter = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
 
-        System.out.printf("# Created %d Hosts at %s\n", hostList.size(), datacenter);
+        System.out.printf("# Created %d Hosts at %s%n", hostList.size(), datacenter);
         return datacenter;
     }
 
@@ -258,7 +258,7 @@ public class SwfWorkloadFormatExample1 {
                 MINIMUM_NUM_OF_PES_BY_HOST);
         hostList.addAll(subList);
         System.out.printf(
-            "# Total of created hosts: %d Total of PEs of all hosts: %d\n\n", totalOfHosts, totalOfPesOfAllHosts);
+            "# Total of created hosts: %d Total of PEs of all hosts: %d%n%n", totalOfHosts, totalOfPesOfAllHosts);
 
         return hostList;
     }
@@ -288,7 +288,7 @@ public class SwfWorkloadFormatExample1 {
             list.add(host);
         }
 
-        System.out.printf("# Created %d hosts with %d PEs each one\n", numberOfHosts, numberOfPes);
+        System.out.printf("# Created %d hosts with %d PEs each one%n", numberOfHosts, numberOfPes);
 
         return list;
     }
@@ -330,9 +330,9 @@ public class SwfWorkloadFormatExample1 {
         for (Entry<Long, Long> entry : vmsPesCountMap.entrySet()) {
             totalOfVms += entry.getValue();
             totalOfPes += entry.getKey() * entry.getValue();
-            System.out.printf("# There are %d VMs requiring %d PEs\n", entry.getValue(), entry.getKey());
+            System.out.printf("# There are %d VMs requiring %d PEs%n", entry.getValue(), entry.getKey());
         }
-        System.out.printf("# Total of VMs: %d Total of required PEs of all VMs: %d\n", totalOfVms, totalOfPes);
+        System.out.printf("# Total of VMs: %d Total of required PEs of all VMs: %d%n", totalOfVms, totalOfPes);
         return vmsPesCountMap;
     }
 }

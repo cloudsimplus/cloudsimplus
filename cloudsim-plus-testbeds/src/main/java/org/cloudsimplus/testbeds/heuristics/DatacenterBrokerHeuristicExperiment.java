@@ -195,7 +195,7 @@ final class DatacenterBrokerHeuristicExperiment extends Experiment {
     public void printResults() {
         System.out.printf(
                 "Experiment %d > Heuristic solution for mapping cloudlets to Vm's: ", getIndex());
-        System.out.printf("cost %.2f fitness %.6f\n",
+        System.out.printf("cost %.2f fitness %.6f%n",
                 heuristic.getBestSolutionSoFar().getCost(),
                 heuristic.getBestSolutionSoFar().getFitness());
     }

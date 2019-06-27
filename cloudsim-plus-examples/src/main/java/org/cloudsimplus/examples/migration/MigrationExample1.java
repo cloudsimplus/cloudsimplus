@@ -215,7 +215,7 @@ public final class MigrationExample1 {
             Comparator.comparingLong((Cloudlet c) -> c.getVm().getHost().getId())
                       .thenComparingLong(c -> c.getVm().getId()));
         new CloudletsTableBuilder(finishedList).build();
-        System.out.println("\nHosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)");
+        System.out.printf("%nHosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)%n");
 
         hostList.stream().filter(h -> h.getId() <= 2).forEach(this::printHostHistory);
         System.out.println(getClass().getSimpleName() + " finished!");

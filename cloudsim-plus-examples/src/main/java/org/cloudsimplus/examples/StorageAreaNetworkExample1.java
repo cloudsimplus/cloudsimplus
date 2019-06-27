@@ -162,7 +162,7 @@ import java.util.List;
         File file;
         for (int i = 0; i < fileSizesMB.length; i++) {
             file = new File(getFileName(i + initialFileNumber), fileSizesMB[i]);
-            System.out.printf("# Created file %s for SAN %s\n", file, san);
+            System.out.printf("# Created file %s for SAN %s%n", file, san);
             san.addFile(file);
         }
     }

@@ -43,6 +43,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -135,15 +136,15 @@ public final class HostFaultInjectionExample1 {
         new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
 
         System.out.printf(
-            "\n# Mean Number of Failures per Hour: %.3f (1 failure expected at each %.2f hours).\n",
+            "%n# Mean Number of Failures per Hour: %.3f (1 failure expected at each %.2f hours).%n",
             MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterArrivalMeanTime());
-        System.out.printf("# Number of Host faults: %d\n", fault.getNumberOfHostFaults());
-        System.out.printf("# Number of VM faults (VMs destroyed): %d\n", fault.getNumberOfFaults());
-        System.out.printf("# Time the simulations finished: %.4f hours\n", simulation.clockInHours());
-        System.out.printf("# Mean Time To Repair Failures of VMs in minutes (MTTR): %.2f minute\n", fault.meanTimeToRepairVmFaultsInMinutes());
-        System.out.printf("# Mean Time Between Failures (MTBF) affecting all VMs in minutes: %.2f minutes\n", fault.meanTimeBetweenVmFaultsInMinutes());
-        System.out.printf("# Hosts MTBF: %.2f minutes\n", fault.meanTimeBetweenHostFaultsInMinutes());
-        System.out.printf("# Availability: %.2f%%\n\n", fault.availability()*100);
+        System.out.printf("# Number of Host faults: %d%n", fault.getNumberOfHostFaults());
+        System.out.printf("# Number of VM faults (VMs destroyed): %d%n", fault.getNumberOfFaults());
+        System.out.printf("# Time the simulations finished: %.4f hours%n", simulation.clockInHours());
+        System.out.printf("# Mean Time To Repair Failures of VMs in minutes (MTTR): %.2f minute%n", fault.meanTimeToRepairVmFaultsInMinutes());
+        System.out.printf("# Mean Time Between Failures (MTBF) affecting all VMs in minutes: %.2f minutes%n", fault.meanTimeBetweenVmFaultsInMinutes());
+        System.out.printf("# Hosts MTBF: %.2f minutes%n", fault.meanTimeBetweenHostFaultsInMinutes());
+        System.out.printf("# Availability: %.2f%%%n%n", fault.availability()*100);
 
         System.out.println(getClass().getSimpleName() + " finished!");
     }
@@ -169,13 +170,16 @@ public final class HostFaultInjectionExample1 {
      * them to the created broker.
      */
     public void createAndSubmitCloudlets() {
-        UtilizationModel utilizationModel = new UtilizationModelFull();
+        UtilizationModel utilizationModelDynamic = new UtilizationModelDynamic(0.1);
+        UtilizationModel utilizationModelFull = new UtilizationModelFull();
         for (int i = 0; i < CLOUDLETS; i++) {
             Cloudlet c
                 = new CloudletSimple(cloudletList.size()+1, CLOUDLET_LENGHT, CLOUDLET_PES)
                         .setFileSize(CLOUDLET_FILESIZE)
                         .setOutputSize(CLOUDLET_OUTPUTSIZE)
-                        .setUtilizationModel(utilizationModel);
+                        .setUtilizationModelCpu(utilizationModelFull)
+                        .setUtilizationModelBw(utilizationModelDynamic)
+                        .setUtilizationModelBw(utilizationModelDynamic);
             cloudletList.add(c);
         }
 
@@ -259,7 +263,7 @@ public final class HostFaultInjectionExample1 {
             .setBw(vm.getBw().getCapacity())
             .setRam(vm.getBw().getCapacity())
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
-        System.out.printf("\n\n# Cloning %s - MIPS %.2f Number of Pes: %d\n", vm, clone.getMips(), clone.getNumberOfPes());
+        System.out.printf("%n%n# Cloning %s - MIPS %.2f Number of Pes: %d%n", vm, clone.getMips(), clone.getNumberOfPes());
 
         return clone;
     }
@@ -282,7 +286,7 @@ public final class HostFaultInjectionExample1 {
         for (Cloudlet cl : sourceVmCloudlets) {
             Cloudlet clone = cloneCloudlet(cl);
             clonedCloudlets.add(clone);
-            System.out.printf("# Created Cloudlet Clone for %s (Cloned Cloudlet Id: %d)\n", sourceVm, clone.getId());
+            System.out.printf("# Created Cloudlet Clone for %s (Cloned Cloudlet Id: %d)%n", sourceVm, clone.getId());
         }
 
         return clonedCloudlets;

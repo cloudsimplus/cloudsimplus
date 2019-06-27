@@ -129,7 +129,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends AbstractC
         reader.setPredicate(cloudlet -> cloudlet.getLength() > 1000);
         reader.setMaxLinesToRead(CLOUDLETS);
         final List<Cloudlet> list = reader.generateWorkload();
-        System.out.printf("Created %d Cloudlets from the workload file\n", list.size());
+        System.out.printf("Created %d Cloudlets from the workload file%n", list.size());
         return list;
     }
 
@@ -214,8 +214,8 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends AbstractC
         final double mean = super.getTaskCompletionTimeAverage();
 
         System.out.printf(
-                "\t\t\n Task Completion Time simulation: %.2f \n SLA's Max Task Completion Time: %.2f \n",
-            mean, getSlaMaxTaskCompletionTime(getFirstBroker()));
+                "\t\t%nTask Completion Time simulation: %.2f%nSLA's Max Task Completion Time: %.2f%n",
+                mean, getSlaMaxTaskCompletionTime(getFirstBroker()));
         return mean;
     }
 
@@ -228,11 +228,11 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends AbstractC
                 .count();
 
         final double percent = totalOfCloudletSlaSatisfied * 100 / broker.getCloudletFinishedList().size();
-        System.out.printf("\n # Total of cloudlets satisfied SLA completion time of %.2f secs: %.0f de %d",
+        System.out.printf("%n# Total of cloudlets satisfied SLA completion time of %.2f secs: %.0f de %d",
             getSlaMaxTaskCompletionTime(broker), totalOfCloudletSlaSatisfied, broker.getCloudletFinishedList().size());
-        System.out.printf("\n # Percentage of cloudlets that complied with the SLA Agreement:  %.2f %%", percent);
+        System.out.printf("%n# Percentage of cloudlets that complied with the SLA Agreement:  %.2f %%", percent);
 
-        System.out.println("\n\nCloudlets: " + broker.getVmCreatedList().size());
+        System.out.printf("%n%nCloudlets: %d%n", broker.getVmCreatedList().size());
 
         return percent;
     }

@@ -183,7 +183,7 @@ public class MultipleBrokers2 {
 
         final Cloudlet c = createCloudlet(cloudletList.size(), CLOUDLET_LENGTH);
         final DatacenterBroker broker = brokers.get(1);
-        System.out.printf("%.2f: \t\t\tDynamically submitting %s to %s\n", e.getTime(),  c, broker);
+        System.out.printf("%.2f: \t\t\tDynamically submitting %s to %s%n", e.getTime(),  c, broker);
         broker.submitCloudlet(c);
     }
 
@@ -215,7 +215,7 @@ public class MultipleBrokers2 {
 
         System.out.println();
         for (Vm vm : vmList) {
-            System.out.printf("Vm %d Broker %d -> Start Time: %.0f Stop Time: %.0f Total Execution Time: %.0f\n",
+            System.out.printf("Vm %d Broker %d -> Start Time: %.0f Stop Time: %.0f Total Execution Time: %.0f%n",
                 vm.getId(), vm.getBroker().getId(),
                 vm.getStartTime(), vm.getStopTime(), vm.getTotalExecutionTime());
         }

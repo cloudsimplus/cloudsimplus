@@ -141,7 +141,7 @@ public class TerminateSimulationAtGivenConditionExample {
     private void onClouletProcessingUpdate(CloudletVmEventInfo event) {
         if(event.getCloudlet().getFinishedLengthSoFar() >= event.getCloudlet().getLength()/2.0){
             System.out.printf(
-                "%s reached 50%% of execution. Intentionally requesting termination of the simulation at time %.2f\n",
+                "%s reached 50%% of execution. Intentionally requesting termination of the simulation at time %.2f%n",
                 event.getCloudlet(), simulation.clock());
             simulation.terminate();
         }

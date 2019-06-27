@@ -152,12 +152,12 @@ public class VmDestructionExample {
         //Destroys VM 1 when its CPU usage reaches 90%
         if(vm.getCpuPercentUtilization() > 0.9 && vm.isCreated()){
             System.out.printf(
-                "\n# %.2f: Intentionally destroying %s due to CPU overload. Current VM CPU usage is %.2f%%\n",
+                "%n# %.2f: Intentionally destroying %s due to CPU overload. Current VM CPU usage is %.2f%%%n",
                 info.getTime(), vm, vm.getCpuPercentUtilization()*100);
             vm.getHost().destroyVm(vm);
         }
 
-        datacenter0.getHostList().forEach(h -> System.out.printf("# %.2f: %s CPU Utilization %.2f%%\n", info.getTime(), h, h.getCpuPercentUtilization()*100));
+        datacenter0.getHostList().forEach(h -> System.out.printf("# %.2f: %s CPU Utilization %.2f%%%n", info.getTime(), h, h.getCpuPercentUtilization()*100));
     }
 
     /**

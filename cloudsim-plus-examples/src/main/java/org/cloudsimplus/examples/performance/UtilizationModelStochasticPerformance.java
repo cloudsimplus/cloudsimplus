@@ -153,7 +153,7 @@ public class UtilizationModelStochasticPerformance {
 
         final double execMinutes = TimeUtil.millisecsToMinutes(System.currentTimeMillis() - startMillis);
         System.out.printf(
-            "Multiple Utilization Models: %s | Store Utilization History: %s\n\n",
+            "Multiple Utilization Models: %s | Store Utilization History: %s%n%n",
             MULTIPLE_UTILIZATION_MODELS, STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY);
 
         System.out.println("| Execution time | Simulation time | Max Heap Used | VmAllocationPolicy | Hosts      | VMs        | Cloudlets  | Cloudlet Len | DC Scheduling Interval |");

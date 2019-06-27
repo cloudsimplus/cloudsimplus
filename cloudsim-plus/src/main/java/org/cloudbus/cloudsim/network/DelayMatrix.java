@@ -110,14 +110,14 @@ public class DelayMatrix {
 		final StringBuilder builder = new StringBuilder(100);
 
 		builder.append(
-		    "just a simple printout of the distance-aware-topology-class\ndelay-matrix is:\n");
+		    String.format("just a simple printout of the distance-aware-topology-class%ndelay-matrix is:%n"));
 
 		for (int column = 0; column < mTotalNodeNum; ++column) {
 			builder.append('\t').append(column);
 		}
 
 		for (int row = 0; row < mTotalNodeNum; ++row) {
-			builder.append('\n').append(row);
+			builder.append(System.lineSeparator()).append(row);
 
 			for (int col = 0; col < mTotalNodeNum; ++col) {
 				if (mDelayMatrix[row][col] == Double.MAX_VALUE) {

@@ -105,14 +105,14 @@ public class VmRelativeHostResourceUtilizationExample {
 
     private void onClockTick(final EventInfo info) {
         for (Host host : datacenter0.getHostList()) {
-            System.out.printf("Host %-2d Time: %.0f\n", host.getId(), info.getTime());
+            System.out.printf("Host %-2d Time: %.0f%n", host.getId(), info.getTime());
             for (Vm vm : host.getVmList()) {
                 System.out.printf(
-                    "\tVm %2d: Host's CPU utilization: %5.0f%% | Host's RAM utilization: %5.0f%% | Host's BW utilization: %5.0f%%\n",
+                    "\tVm %2d: Host's CPU utilization: %5.0f%% | Host's RAM utilization: %5.0f%% | Host's BW utilization: %5.0f%%%n",
                     vm.getId(), vm.getHostCpuUtilization()*100, vm.getHostRamUtilization()*100, vm.getHostBwUtilization()*100);
             }
             System.out.printf(
-                "Host %-2d Total Utilization:         %5.0f%% |                         %5.0f%% |                        %5.0f%%\n\n",
+                "Host %-2d Total Utilization:         %5.0f%% |                         %5.0f%% |                        %5.0f%%%n%n",
                 host.getId(),host.getCpuPercentUtilization()*100,
                 host.getRam().getPercentUtilization()*100,
                 host.getBw().getPercentUtilization()*100);

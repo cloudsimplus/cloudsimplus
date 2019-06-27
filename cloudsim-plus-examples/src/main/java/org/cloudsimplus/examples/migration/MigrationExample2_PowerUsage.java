@@ -213,7 +213,7 @@ public final class MigrationExample2_PowerUsage {
             Comparator.comparingLong((Cloudlet c) -> c.getVm().getHost().getId())
                       .thenComparingLong(c -> c.getVm().getId()));
         new CloudletsTableBuilder(finishedList).build();
-        System.out.println("\n    WHEN A HOST CPU ALLOCATED MIPS IS LOWER THAN THE REQUESTED, IT'S DUE TO VM MIGRATION OVERHEAD)\n");
+        System.out.printf("%n    WHEN A HOST CPU ALLOCATED MIPS IS LOWER THAN THE REQUESTED, IT'S DUE TO VM MIGRATION OVERHEAD)%n%n");
 
         hostList.stream().forEach(this::printHistory);
         System.out.println(getClass().getSimpleName() + " finished!");
@@ -232,13 +232,13 @@ public final class MigrationExample2_PowerUsage {
      */
     private boolean printHostStateHistory(Host host) {
         if(host.getStateHistory().stream().anyMatch(HostStateHistoryEntry::isActive)) {
-            System.out.printf("\nHost: %6d State History\n", host.getId());
+            System.out.printf("%nHost: %6d State History%n", host.getId());
             System.out.println("-------------------------------------------------------------------------------------------");
             host.getStateHistory().forEach(System.out::print);
             System.out.println();
             return true;
         }
-        else System.out.printf("Host: %6d was powered off during all the simulation\n", host.getId());
+        else System.out.printf("Host: %6d was powered off during all the simulation%n", host.getId());
         return false;
     }
 
@@ -255,7 +255,7 @@ public final class MigrationExample2_PowerUsage {
      * @param host the Host to print information
      */
     private void printHostCpuUsageAndPowerConsumption(final Host host) {
-        System.out.printf("Host: %6d | CPU Usage | Power Consumption in Watt-Second (Ws)\n", host.getId());
+        System.out.printf("Host: %6d | CPU Usage | Power Consumption in Watt-Second (Ws)%n", host.getId());
         System.out.println("-------------------------------------------------------------------------------------------");
         SortedMap<Double, DoubleSummaryStatistics> utilizationHistory = host.getUtilizationHistory();
         //The total power the Host consumed in the period (in Watt-Sec)
@@ -264,10 +264,10 @@ public final class MigrationExample2_PowerUsage {
             final double time = entry.getKey();
             //The sum of CPU usage of every VM which has run in the Host
             final double hostCpuUsage = entry.getValue().getSum();
-            System.out.printf("Time: %6.1f | %9.2f | %.2f\n", time, hostCpuUsage, host.getPowerModel().getPower(hostCpuUsage));
+            System.out.printf("Time: %6.1f | %9.2f | %.2f%n", time, hostCpuUsage, host.getPowerModel().getPower(hostCpuUsage));
             totalHostPowerConsumptionWattSec += host.getPowerModel().getPower(hostCpuUsage);
         }
-        System.out.printf("Total Host power consumption in the period: %.2f Watt-Sec\n", totalHostPowerConsumptionWattSec);
+        System.out.printf("Total Host power consumption in the period: %.2f Watt-Sec%n", totalHostPowerConsumptionWattSec);
         System.out.println();
     }
 

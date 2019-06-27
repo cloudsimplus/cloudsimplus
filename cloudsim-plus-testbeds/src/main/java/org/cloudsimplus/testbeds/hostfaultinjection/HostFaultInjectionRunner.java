@@ -221,20 +221,20 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
 
     @Override
     protected void printSimulationParameters() {
-        System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getSimulationRuns());
+        System.out.printf("Executing %d experiments. Please wait ... It may take a while.%n", getSimulationRuns());
         System.out.println("Experiments configurations:");
-        System.out.printf("\tBase seed: %d \n", getBaseSeed());
-        System.out.printf("\tApply Antithetic Variates Technique: %b\n", isApplyAntitheticVariatesTechnique());
+        System.out.printf("\tBase seed: %d %n", getBaseSeed());
+        System.out.printf("\tApply Antithetic Variates Technique: %b%n", isApplyAntitheticVariatesTechnique());
         if (isApplyBatchMeansMethod()) {
             System.out.println("\tApply Batch Means Method to reduce simulation results correlation: true");
             System.out.printf("\tNumber of Batches for Batch Means Method: %d", getNumberOfBatches());
-            System.out.printf("\tBatch Size: %d\n", batchSizeCeil());
+            System.out.printf("\tBatch Size: %d%n", batchSizeCeil());
         }
     }
 
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
-        System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
+        System.out.printf("%n# %s for %d simulation runs%n", metricName, getSimulationRuns());
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
@@ -250,9 +250,9 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
         double lower = stats.getMean() - intervalSize;
         double upper = stats.getMean() + intervalSize;
         System.out.printf(
-            "\tThis METRIC mean 95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]\n",
+            "\tThis METRIC mean 95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
             stats.getMean(), intervalSize, lower, upper);
-        System.out.printf("\tStandard Deviation: %.4f \n", stats.getStandardDeviation());
+        System.out.printf("\tStandard Deviation: %.4f%n", stats.getStandardDeviation());
     }
 
 }

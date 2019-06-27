@@ -166,8 +166,9 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         final int SIZE = 1000;   // number of chars
         final StringBuilder sb = new StringBuilder(SIZE);
         sb.append("Ping information for ").append(name)
-          .append("\nEntity Name\tEntry TiOme\tExit Time\t Bandwidth\n")
-          .append("----------------------------------------------------------\n");
+          .append(String.format("%nEntity Name\tEntry TiOme\tExit Time\t Bandwidth%n"))
+          .append("----------------------------------------------------------")
+          .append(System.lineSeparator());
 
         final String tab = "    ";  // 4 spaces
         for (int i = 0; i < entities.size(); i++) {
@@ -177,14 +178,16 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
             final String bandwidth = getData(baudRates, i);
 
             sb.append("Entity ").append(resID).append("\t\t")
-              .append(String.format("%s%s%s%s%s%s%s\n", entry, tab, tab, exit, tab, tab, bandwidth));
+              .append(String.format("%s%s%s%s%s%s%s%n", entry, tab, tab, exit, tab, tab, bandwidth));
         }
 
-        sb.append("\nRound Trip Time : ")
+        sb.append(System.lineSeparator())
+          .append("Round Trip Time : ")
           .append(num.format(getTotalResponseTime()))
-          .append(" seconds\nNumber of Hops  : ")
+          .append(String.format(" seconds%nNumber of Hops  : "))
           .append(getNumberOfHops())
-          .append("\nBottleneck Bandwidth : ")
+          .append(System.lineSeparator())
+          .append("Bottleneck Bandwidth : ")
           .append(bandwidth).append(" bits/s");
 
         return sb.toString();

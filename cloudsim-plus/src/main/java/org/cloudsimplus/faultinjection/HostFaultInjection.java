@@ -407,7 +407,7 @@ public class HostFaultInjection extends CloudSimEntity {
         final int vmsRequiredPes = (int) getPesSumOfWorkingVms();
         LOGGER.info(
                 "\tNumber of failed PEs is less than PEs required by all its {} VMs, thus it doesn't affect any VM.{}" +
-                "Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.\n",
+                "Total PEs: {} | Total Failed PEs: {} | Working PEs: {} | Current PEs required by VMs: {}.",
                 lastFailedHost.getVmList().size(), System.lineSeparator(),
                 lastFailedHost.getNumberOfPes(), lastFailedHost.getFailedPesNumber(),
                 lastFailedHost.getWorkingPesNumber(), vmsRequiredPes);
@@ -456,7 +456,7 @@ public class HostFaultInjection extends CloudSimEntity {
             vm.getProcessor().deallocateAndRemoveResource(1);
 
             LOGGER.warn(
-                    "\tRemoving 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}\n",
+                    "\tRemoving 1 PE from VM {} due to Host PE failure. New VM PEs Number: {}",
                     vm.getId(), vm.getNumberOfPes());
             idx++;
             vmsWithPes = getVmsWithPEsFromFailedHost();

@@ -201,7 +201,7 @@ public class DatacenterBrokersMappingComparison {
     private void print(final boolean verbose) {
         final double brokersMappingCost = computeBrokersMappingCost(verbose);
         System.out.printf(
-            "The solution based on %s mapper costs %.2f.\n", broker.getClass().getSimpleName(), brokersMappingCost);
+            "The solution based on %s mapper costs %.2f.%n", broker.getClass().getSimpleName(), brokersMappingCost);
     }
 
     /**
@@ -297,14 +297,14 @@ public class DatacenterBrokersMappingComparison {
         final String title,
         final CloudletToVmMappingSolution solution,
         final boolean showIndividualCloudletFitness) {
-        System.out.printf("%s (cost %.2f fitness %.6f)\n",
+        System.out.printf("%s (cost %.2f fitness %.6f)%n",
             title, solution.getCost(), solution.getFitness());
         if (!showIndividualCloudletFitness)
             return;
 
         for (Map.Entry<Cloudlet, Vm> e : solution.getResult().entrySet()) {
             System.out.printf(
-                "Cloudlet %3d (%d PEs, %6d MI) mapped to Vm %3d (%d PEs, %6.0f MIPS)\n",
+                "Cloudlet %3d (%d PEs, %6d MI) mapped to Vm %3d (%d PEs, %6.0f MIPS)%n",
                 e.getKey().getId(),
                 e.getKey().getNumberOfPes(), e.getKey().getLength(),
                 e.getValue().getId(),

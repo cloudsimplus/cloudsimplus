@@ -86,7 +86,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends AbstractCl
         broker0.getVmExecList().sort(Comparator.comparingLong(Vm::getId));
 
         broker0.getVmExecList().forEach(vm
-                -> System.out.printf("#### Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.\n",
+                -> System.out.printf("#### Time %.0f: Vm %d CPU usage: %.2f. SLA: %.2f.%n",
                         eventInfo.getTime(), vm.getId(),
                         vm.getCpuPercentUtilization(), getCustomerMaxCpuUtilization())
         );
@@ -146,7 +146,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends AbstractCl
         final double mean = super.getTaskCompletionTimeAverage();
 
         System.out.printf(
-                "\t\t\nTaskCompletionTime simulation: %.2f \n SLA's Task Completion Time: %.2f \n",
+                "\t\t%nTaskCompletionTime simulation: %.2f%n SLA's Task Completion Time: %.2f%n",
                 mean, getSlaMaxTaskCompletionTime());
         return mean;
     }
@@ -165,10 +165,10 @@ class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends AbstractCl
                 .filter(rt -> rt <= getSlaMaxTaskCompletionTime())
                 .count();
 
-        System.out.printf("\n ** Percentage of cloudlets that complied with "
-                + "the SLA Agreement:  %.2f %%",
+        System.out.printf(
+                "%n ** Percentage of cloudlets that complied with the SLA Agreement:  %.2f%%",
                 ((totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size()));
-        System.out.printf("\nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletFinishedList().size());
+        System.out.printf("%nTotal of cloudlets SLA satisfied: %.0f de %d", totalOfcloudletSlaSatisfied, broker.getCloudletFinishedList().size());
         return (totalOfcloudletSlaSatisfied * 100) / broker.getCloudletFinishedList().size();
     }
 
@@ -196,15 +196,13 @@ class CloudletTaskCompletionTimeWithoutMinimizationExperiment extends AbstractCl
     double getTotalCostPrice() {
         VmCost vmCost;
         double totalCost = 0.0;
-        for (Vm vm : getVmList()) {
+        for (final Vm vm : getVmList()) {
             if (vm.getCloudletScheduler().hasFinishedCloudlets()) {
                 vmCost = new VmCost(vm);
                 totalCost += vmCost.getTotalCost();
-            } else {
-                System.out.printf(
-                        "\t%s didn't execute any Cloudlet.\n", vm);
-            }
+            } else System.out.printf("\t%s didn't execute any Cloudlet.%n", vm);
         }
+
         return totalCost;
     }
 

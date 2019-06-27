@@ -160,7 +160,7 @@ public class CreateCloudletAfterLastFinishedOne {
 
         if(cloudletList.size() < CLOUDLETS){
             cloudlet.addOnFinishListener(info -> {
-                System.out.printf("\t# %.2f: Requesting creation of new Cloudlet after %s finishes executing.\n", info.getTime(), info.getCloudlet());
+                System.out.printf("\t# %.2f: Requesting creation of new Cloudlet after %s finishes executing.%n", info.getTime(), info.getCloudlet());
                 createAndSubmitOneCloudlet();
             });
         }

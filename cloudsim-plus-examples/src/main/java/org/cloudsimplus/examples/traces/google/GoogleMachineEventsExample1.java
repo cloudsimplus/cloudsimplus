@@ -166,9 +166,9 @@ public class GoogleMachineEventsExample1 {
         reader.setDatacenterForLaterHosts(datacenters.get(1));
         final List<Host> hostList = new ArrayList<>(reader.process());
 
-        System.out.printf("# Created %d Hosts that were immediately available from the Google trace file\n", hostList.size());
-        System.out.printf("# %d Hosts will be available later on (according to the trace timestamp)\n", reader.getNumberOfLaterAvailableHosts());
-        System.out.printf("# %d Hosts will be removed later on (according to the trace timestamp)\n\n", reader.getNumberOfHostsForRemoval());
+        System.out.printf("# Created %d Hosts that were immediately available from the Google trace file%n", hostList.size());
+        System.out.printf("# %d Hosts will be available later on (according to the trace timestamp)%n", reader.getNumberOfLaterAvailableHosts());
+        System.out.printf("# %d Hosts will be removed later on (according to the trace timestamp)%n%n", reader.getNumberOfHostsForRemoval());
 
         //Finally, the immediately created Hosts are added to the first Datacenter
         datacenters.get(0).addHostList(hostList);

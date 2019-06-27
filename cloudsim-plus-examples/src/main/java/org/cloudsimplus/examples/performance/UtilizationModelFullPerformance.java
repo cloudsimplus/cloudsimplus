@@ -111,7 +111,7 @@ public class UtilizationModelFullPerformance {
         final double maxHeapUtilizationGB = getMaxHeapUtilizationGB();
 
         final double execMinutes = TimeUtil.millisecsToMinutes(System.currentTimeMillis() - startMillis);
-        System.out.printf("UtilizationModel: %s (single instance)\n\n", um.getClass().getSimpleName());
+        System.out.printf("UtilizationModel: %s (single instance)%n%n", um.getClass().getSimpleName());
 
         System.out.println("| Execution time | Simulation time | Max Heap Used | VmAllocationPolicy | Hosts      | VMs        | Cloudlets  | Cloudlet Len | DC Scheduling Interval |");
         System.out.println("| ---------------|-----------------|---------------|--------------------|------------|------------|------------|--------------|------------------------|");

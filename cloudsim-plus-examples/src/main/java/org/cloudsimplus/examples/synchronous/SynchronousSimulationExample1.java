@@ -132,7 +132,7 @@ public class SynchronousSimulationExample1 {
         }
 
         previousClock = simulation.clock();
-        System.out.printf("\t\tVM CPU utilization for Time %.0f\n", simulation.clock());
+        System.out.printf("\t\tVM CPU utilization for Time %.0f%n", simulation.clock());
         for (final Vm vm : vmList) {
             System.out.printf(" Vm %5d |", vm.getId());
         }
@@ -141,7 +141,7 @@ public class SynchronousSimulationExample1 {
         for (final Vm vm : vmList) {
             System.out.printf(" %7.0f%% |", vm.getCpuPercentUtilization()*100);
         }
-        System.out.println("\n");
+        System.out.printf("%n%n");
     }
 
     /**

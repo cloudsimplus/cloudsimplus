@@ -161,10 +161,10 @@ public class VmsCpuUsageExample {
     }
 
     private void showCpuUtilizationForAllVms(final double simulationFinishTime) {
-        System.out.println("\nHosts CPU utilization history for the entire simulation period\n");
+        System.out.printf("%nHosts CPU utilization history for the entire simulation period%n%n");
         int numberOfUsageHistoryEntries = 0;
         for (Vm vm : vmlist) {
-            System.out.printf("VM %d\n", vm.getId());
+            System.out.printf("VM %d%n", vm.getId());
             if (vm.getUtilizationHistory().getHistory().isEmpty()) {
                 System.out.println("\tThere isn't any usage history");
                 continue;
@@ -175,7 +175,7 @@ public class VmsCpuUsageExample {
                 final double vmCpuUsage = entry.getValue()*100;
                 if (vmCpuUsage > 0) {
                     numberOfUsageHistoryEntries++;
-                    System.out.printf("\tTime: %2.0f CPU Utilization: %6.2f%%\n", time, vmCpuUsage);
+                    System.out.printf("\tTime: %2.0f CPU Utilization: %6.2f%%%n", time, vmCpuUsage);
                 }
             }
         }

@@ -237,7 +237,7 @@ public class RandomCloudletsArrivalExample {
      */
     private void createRandomCloudlets(final EventInfo evt) {
         if(random.sample() <= 0.3){
-            System.out.printf("\n# Randomly creating 1 Cloudlet at time %.2f\n", evt.getTime());
+            System.out.printf("%n# Randomly creating 1 Cloudlet at time %.2f%n", evt.getTime());
             Cloudlet cloudlet = createCloudlet();
             cloudletList.add(cloudlet);
             broker0.submitCloudlet(cloudlet);

@@ -162,11 +162,11 @@ public class DynamicVmsArrival {
         this.cloudletList.addAll(createAndSubmitCloudlets(vms));
 
         if(submissionDelay == 0) {
-            System.out.printf("# Submitting %d VMs at the beginning of the simulation.\n", VMS);
-            System.out.printf("# Submitting %d Cloudlets at the beginning of the simulation.\n", CLOUDLETS);
+            System.out.printf("# Submitting %d VMs at the beginning of the simulation.%n", VMS);
+            System.out.printf("# Submitting %d Cloudlets at the beginning of the simulation.%n", CLOUDLETS);
         } else {
-            System.out.printf("# Submitting %d VMs after %.0f seconds.\n", VMS, submissionDelay);
-            System.out.printf("# Submitting %d Cloudlets after %.0f seconds.\n", CLOUDLETS, submissionDelay);
+            System.out.printf("# Submitting %d VMs after %.0f seconds.%n", VMS, submissionDelay);
+            System.out.printf("# Submitting %d Cloudlets after %.0f seconds.%n", CLOUDLETS, submissionDelay);
         }
         System.out.println();
     }

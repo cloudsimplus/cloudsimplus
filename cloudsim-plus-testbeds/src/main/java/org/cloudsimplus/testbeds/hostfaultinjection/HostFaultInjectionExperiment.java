@@ -254,12 +254,12 @@ final class HostFaultInjectionExperiment extends Experiment {
 
         final int faultToleranceLevel = getFaultToleranceLevelForTemplate(contract, instance);
         System.out.printf(
-            "# There isn't any available VM template having an individual price of $%.2f, \n", contract.getExpectedMaxPriceForSingleVm());
+            "# There isn't any available VM template having an individual price of $%.2f, %n", contract.getExpectedMaxPriceForSingleVm());
         System.out.printf(
-            "  which enables meeting the %d-fault-tolerance level defined by broker %d.\n",
+            "  which enables meeting the %d-fault-tolerance level defined by broker %d.%n",
             contract.getMinFaultToleranceLevel(), broker.getId());
         System.out.printf(
-            "  The fault-tolerance level was reduced to %d (enabling %d VMs to run simultaneously).\n", faultToleranceLevel, faultToleranceLevel);
+            "  The fault-tolerance level was reduced to %d (enabling %d VMs to run simultaneously).%n", faultToleranceLevel, faultToleranceLevel);
         /*
         After the k fault tolerance level was reduced because there isn't any VM that it's individual
         price multiplied by the k is lower or equal to the total price the customer is willing to pay.
@@ -378,7 +378,7 @@ final class HostFaultInjectionExperiment extends Experiment {
         }
 
         System.out.printf(
-            "\tFault Injection created for %s.\n\tMean Number of Failures per hour: %.6f (1 failure expected at each %.4f hours).\n",
+            "\tFault Injection created for %s.%n\tMean Number of Failures per hour: %.6f (1 failure expected at each %.4f hours).%n",
             datacenter, MEAN_FAILURE_NUMBER_PER_HOUR, poisson.getInterArrivalMeanTime());
     }
 
@@ -406,7 +406,7 @@ final class HostFaultInjectionExperiment extends Experiment {
             .setBw(vm.getBw().getCapacity())
             .setRam(vm.getBw().getCapacity())
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
-        System.out.printf("\n\n#Cloning VM %d from Host %d\n\tMips %.2f Number of Pes: %d\n",
+        System.out.printf("%n%n#Cloning VM %d from Host %d%n\tMips %.2f Number of Pes: %d%n",
             vm.getId(), vm.getHost().getId(), clone.getMips(), clone.getNumberOfPes());
 
         return clone;
@@ -565,16 +565,16 @@ final class HostFaultInjectionExperiment extends Experiment {
         final HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(System.currentTimeMillis());
 
         exp.setVerbose(true).run();
-        exp.getBrokerList().forEach(b -> System.out.printf("%s - Availability %%: %.4f\n", b, exp.getFaultInjection().availability(b) * 100));
+        exp.getBrokerList().forEach(b -> System.out.printf("%s - Availability %%: %.4f%n", b, exp.getFaultInjection().availability(b) * 100));
 
         System.out.println("Percentage of Brokers meeting the Availability Metric in SLA: " + exp.getPercentageOfAvailabilityMeetingSla() * 100);
         System.out.println("# Ratio VMS per HOST: " + exp.getRatioVmsPerHost());
-        System.out.println("\n# Number of Host faults: " + exp.getFaultInjection().getNumberOfHostFaults());
+        System.out.printf("%n# Number of Host faults: %d%n", exp.getFaultInjection().getNumberOfHostFaults());
         System.out.println("# Number of VM faults (VMs destroyed): " + exp.getFaultInjection().getNumberOfFaults());
-        System.out.printf("# VMs MTBF average: %.2f minutes\n", exp.getFaultInjection().meanTimeBetweenVmFaultsInMinutes());
-        System.out.printf("# Time the simulations finished: %.2f minutes\n", exp.getSimulation().clockInMinutes());
-        System.out.printf("# Hosts MTBF: %.2f minutes\n", exp.getFaultInjection().meanTimeBetweenHostFaultsInMinutes());
-        System.out.printf("\n# If the hosts are showing in the result equal to 0, it was because the vms ended before the failure was set.\n\n");
+        System.out.printf("# VMs MTBF average: %.2f minutes%n", exp.getFaultInjection().meanTimeBetweenVmFaultsInMinutes());
+        System.out.printf("# Time the simulations finished: %.2f minutes%n", exp.getSimulation().clockInMinutes());
+        System.out.printf("# Hosts MTBF: %.2f minutes%n", exp.getFaultInjection().meanTimeBetweenHostFaultsInMinutes());
+        System.out.printf("%n# If the hosts are showing in the result equal to 0, it was because the vms ended before the failure was set.%n%n");
     }
 
     public HostFaultInjection getFaultInjection() {

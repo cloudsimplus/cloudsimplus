@@ -152,9 +152,9 @@ public class VmListenersExample3_DynamicVmCreation {
     private void onHostDeallocationListener(VmHostEventInfo eventInfo) {
         numberOfFinishedVms++;
         System.out.printf(
-                "\t# EventListener: Vm %d finished running all its cloudlets at time %.0f.\n",
+                "\t# EventListener: Vm %d finished running all its cloudlets at time %.0f.%n",
                 eventInfo.getVm().getId(), eventInfo.getTime());
-        System.out.printf("\t VMs finished so far: %d\n", numberOfFinishedVms);
+        System.out.printf("\t VMs finished so far: %d%n", numberOfFinishedVms);
 
         createNextVmIfNotReachedMaxNumberOfVms();
     }
@@ -168,7 +168,7 @@ public class VmListenersExample3_DynamicVmCreation {
     private void createNextVmIfNotReachedMaxNumberOfVms() {
         if(numberOfFinishedVms < TOTAL_NUMBER_OF_VMS) {
             Vm vm = createAndSubmitVmForNewBroker();
-            System.out.printf("\tCreated VM %d at time %.0f\n", vm.getId(), simulation.clock());
+            System.out.printf("\tCreated VM %d at time %.0f%n", vm.getId(), simulation.clock());
         }
     }
 

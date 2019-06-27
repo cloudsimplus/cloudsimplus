@@ -87,19 +87,19 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
 
     @Override
     protected void printSimulationParameters() {
-        System.out.printf("\n----------------------------------%s----------------------------------\n", getClass().getSimpleName());
-        System.out.printf("Hosts:           %5d | PEs:               %2d | VMs: %d | PEs: %d\n", HOSTS, HOST_PES, VMS, VM_PES);
-        System.out.printf("Experiment Runs: %5d | Max Cloudlets PES: %2d\n",
+        System.out.printf("%n----------------------------------%s----------------------------------%n", getClass().getSimpleName());
+        System.out.printf("Hosts:           %5d | PEs:               %2d | VMs: %d | PEs: %d%n", HOSTS, HOST_PES, VMS, VM_PES);
+        System.out.printf("Experiment Runs: %5d | Max Cloudlets PES: %2d%n",
                 getSimulationRuns(), (MAX_CLOUDLET_PES - 1));
 
     }
 
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
-        System.out.printf("Results for metric %s\n", metricName);
-        System.out.printf("  Mean Number of Cloudlets:         %.2f\n", cloudletsNumber.stream().mapToDouble(n -> n).average().orElse(0.0));
-        System.out.printf("  Cloudlet Completion Time Avg:     %.2f | Std dev:      %.2f\n", stats.getMean(), stats.getStandardDeviation());
-        System.out.printf("  Cloudlet Completion Min Avg Time: %.2f | Max avg time: %.2f\n", stats.getMin(), stats.getMax());
+        System.out.printf("Results for metric %s%n", metricName);
+        System.out.printf("  Mean Number of Cloudlets:         %.2f%n", cloudletsNumber.stream().mapToDouble(n -> n).average().orElse(0.0));
+        System.out.printf("  Cloudlet Completion Time Avg:     %.2f | Std dev:      %.2f%n", stats.getMean(), stats.getStandardDeviation());
+        System.out.printf("  Cloudlet Completion Min Avg Time: %.2f | Max avg time: %.2f%n", stats.getMin(), stats.getMax());
         System.out.println();
     }
 

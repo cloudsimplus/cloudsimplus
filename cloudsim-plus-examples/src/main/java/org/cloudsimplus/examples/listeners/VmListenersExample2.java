@@ -166,7 +166,7 @@ public class VmListenersExample2 {
         The Listener is created using Java 8 Lambda Expressions.
         */
         this.onHostAllocationListener = eventInfo -> System.out.printf(
-                "\t#EventListener: Host %d allocated to Vm %d at time %.2f\n",
+                "\t#EventListener: Host %d allocated to Vm %d at time %.2f%n",
                 eventInfo.getHost().getId(), eventInfo.getVm().getId(), eventInfo.getTime());
 
         /*
@@ -175,7 +175,7 @@ public class VmListenersExample2 {
         The Listener is created using Java 8 Lambda Expressions.
         */
         this.onHostDeallocationListener = evt -> System.out.printf(
-                "\t#EventListener: Vm %d moved/removed from Host %d at time %.2f\n",
+                "\t#EventListener: Vm %d moved/removed from Host %d at time %.2f%n",
                 evt.getVm().getId(), evt.getHost().getId(), evt.getTime());
     }
 

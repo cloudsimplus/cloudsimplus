@@ -100,7 +100,7 @@ abstract class CloudletSchedulerExperiment extends Experiment {
 
     @Override
     public void printResults() {
-        System.out.printf("\nCloudlets: %d\n", numCloudletsToCreate);
+        System.out.printf("%nCloudlets: %d%n", numCloudletsToCreate);
         final DatacenterBroker broker = getBrokerList().stream().findFirst().orElse(DatacenterBroker.NULL);
         new CloudletsTableBuilder(broker.getCloudletFinishedList())
             .addColumn(2, new TextTableColumn("Priority"), Cloudlet::getPriority)

@@ -161,16 +161,16 @@ public class HostsCpuUsageExample {
      * Shows CPU utilization of all hosts into a given Datacenter.
      */
     private void showCpuUtilizationForAllHosts() {
-        System.out.println("\nHosts CPU utilization history for the entire simulation period");
+        System.out.printf("%nHosts CPU utilization history for the entire simulation period%n");
         int numberOfUsageHistoryEntries = 0;
         for (Host host : hostList) {
             double mipsByPe = host.getTotalMipsCapacity() / (double)host.getNumberOfPes();
-            System.out.printf("Host %d: Number of PEs %2d, MIPS by PE %.0f\n", host.getId(), host.getNumberOfPes(), mipsByPe);
+            System.out.printf("Host %d: Number of PEs %2d, MIPS by PE %.0f%n", host.getId(), host.getNumberOfPes(), mipsByPe);
             for (Map.Entry<Double, Double> entry : host.getUtilizationHistorySum().entrySet()) {
                 final double time = entry.getKey();
                 final double cpuUsage = entry.getValue()*100;
                 numberOfUsageHistoryEntries++;
-                System.out.printf("\tTime: %4.1f CPU Utilization: %6.2f%%\n", time, cpuUsage);
+                System.out.printf("\tTime: %4.1f CPU Utilization: %6.2f%%%n", time, cpuUsage);
             }
             System.out.println("--------------------------------------------------");
         }

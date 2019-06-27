@@ -234,7 +234,7 @@ public class KeepSimulationRunningExample {
      */
     private void createDynamicCloudletAndVm(final EventInfo evt) {
         if((int)evt.getTime() == TIME_TO_CREATE_NEW_CLOUDLET){
-            System.out.printf("\n# Dynamically creating 1 Cloudlet and 1 VM at time %.2f\n", evt.getTime());
+            System.out.printf("%n# Dynamically creating 1 Cloudlet and 1 VM at time %.2f%n", evt.getTime());
             Vm vm = createVm(VM_PES*2);
             vmList.add(vm);
             Cloudlet cloudlet = createCloudlet();

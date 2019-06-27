@@ -297,12 +297,12 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
         exp.setVerbose(true);
         exp.run();
         System.out.println();
-        System.out.printf("Average Task Completion Time (TCT): %.2f seconds\n", exp.getTaskCompletionTimeAverage());
+        System.out.printf("Average Task Completion Time (TCT): %.2f seconds%n", exp.getTaskCompletionTimeAverage());
         for (DatacenterBroker broker : exp.getBrokerList()) {
-            System.out.printf("%s SLA's TCT: %.2f seconds\n", broker, exp.getTaskCompletionTimeFromContract(broker));
+            System.out.printf("%s SLA's TCT: %.2f seconds%n", broker, exp.getTaskCompletionTimeFromContract(broker));
         }
 
-        System.out.printf("Percentage of cloudlet that met TCT (i.e, the execution time was less or equal to the TCT defined in the SLA): %.2f%%\n",  exp.getPercentageOfCloudletsMeetingTaskCompletionTime());
-        System.out.printf("Ratio of existing total VM PEs to required Cloudlets PEs: %.2f\n", exp.getRatioOfExistingVmPesToRequiredCloudletPes());
+        System.out.printf("Percentage of cloudlet that met TCT (i.e, the execution time was less or equal to the TCT defined in the SLA): %.2f%%%n",  exp.getPercentageOfCloudletsMeetingTaskCompletionTime());
+        System.out.printf("Ratio of existing total VM PEs to required Cloudlets PEs: %.2f%n", exp.getRatioOfExistingVmPesToRequiredCloudletPes());
     }
 }

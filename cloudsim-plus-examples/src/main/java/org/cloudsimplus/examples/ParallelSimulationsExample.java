@@ -120,7 +120,7 @@ public class ParallelSimulationsExample implements Runnable {
         final long finishTimeMilliSec = System.currentTimeMillis() - startTimeMilliSec;
 
         Log.setLevel(Level.INFO);
-        System.out.printf("Time to run %d simulations: %d milliseconds\n", simulationList.size(), finishTimeMilliSec);
+        System.out.printf("Time to run %d simulations: %d milliseconds%n", simulationList.size(), finishTimeMilliSec);
 
         //Prints the cloudlet list of all executed simulations
         simulationList.forEach(ParallelSimulationsExample::printResults);

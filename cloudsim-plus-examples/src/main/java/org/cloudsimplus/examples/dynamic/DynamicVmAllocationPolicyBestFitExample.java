@@ -263,7 +263,7 @@ public final class DynamicVmAllocationPolicyBestFitExample {
 
         DatacenterSimple dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
 
-        hostList.forEach(host -> System.out.printf("#Created %s with %d PEs\n", host, host.getNumberOfPes()));
+        hostList.forEach(host -> System.out.printf("#Created %s with %d PEs%n", host, host.getNumberOfPes()));
         System.out.println();
 
         dc.setSchedulingInterval(SCHEDULE_INTERVAL);

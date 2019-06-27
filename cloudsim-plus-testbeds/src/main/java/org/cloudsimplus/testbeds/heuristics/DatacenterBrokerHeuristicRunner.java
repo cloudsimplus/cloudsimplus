@@ -231,18 +231,18 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected void printSimulationParameters() {
-        System.out.printf("Executing %d experiments. Please wait ... It may take a while.\n", getSimulationRuns());
+        System.out.printf("Executing %d experiments. Please wait ... It may take a while.%n", getSimulationRuns());
         System.out.println("Experiments configurations:");
-        System.out.printf("\tBase seed: %d | Number of VMs: %d | Number of Cloudlets: %d\n", getBaseSeed(), VMS_TO_CREATE, CLOUDLETS_TO_CREATE);
-        System.out.printf("\tApply Antithetic Variates Technique: %b\n", isApplyAntitheticVariatesTechnique());
+        System.out.printf("\tBase seed: %d | Number of VMs: %d | Number of Cloudlets: %d%n", getBaseSeed(), VMS_TO_CREATE, CLOUDLETS_TO_CREATE);
+        System.out.printf("\tApply Antithetic Variates Technique: %b%n", isApplyAntitheticVariatesTechnique());
         if (isApplyBatchMeansMethod()) {
             System.out.println("\tApply Batch Means Method to reduce simulation results correlation: true");
             System.out.printf("\tNumber of Batches for Batch Means Method: %d", getNumberOfBatches());
-            System.out.printf("\tBatch Size: %d\n", batchSizeCeil());
+            System.out.printf("\tBatch Size: %d%n", batchSizeCeil());
         }
-        System.out.printf("\nSimulated Annealing Parameters\n");
+        System.out.printf("%nSimulated Annealing Parameters%n");
         System.out.printf(
-                "\tInitial Temperature: %.2f | Cold Temperature: %.4f | Cooling Rate: %.3f | Neighborhood searches by iteration: %d\n",
+                "\tInitial Temperature: %.2f | Cold Temperature: %.4f | Cooling Rate: %.3f | Neighborhood searches by iteration: %d%n",
                 DatacenterBrokerHeuristicExperiment.SA_INIT_TEMPERATURE,
                 DatacenterBrokerHeuristicExperiment.SA_COLD_TEMPERATURE,
                 DatacenterBrokerHeuristicExperiment.SA_COOLING_RATE,
@@ -251,23 +251,23 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected void printFinalResults(String metricName, SummaryStatistics stats) {
-        System.out.printf("\n# %s for %d simulation runs\n", metricName, getSimulationRuns());
+        System.out.printf("%n# %s for %d simulation runs%n", metricName, getSimulationRuns());
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
         System.out.printf(
-                "\tRound-robin solution used by DatacenterBrokerSimple - Cost: %.2f\n",
+                "\tRound-robin solution used by DatacenterBrokerSimple - Cost: %.2f%n",
                 roundRobinSolution.getCost());
 
         if (getSimulationRuns() > 1) {
             System.out.printf(
-                    "\tHeuristic solutions - Mean cost: %.2f Std. Dev.: %.2f\n",
+                    "\tHeuristic solutions - Mean cost: %.2f Std. Dev.: %.2f%n",
                     stats.getMean(), stats.getStandardDeviation());
             showConfidenceInterval(stats);
             System.out.printf(
-                    "\n\tThe mean cost of heuristic solutions represent %.2f%% of the Round-robin mapping used by the DatacenterBrokerSimple\n",
+                    "%n\tThe mean cost of heuristic solutions represent %.2f%% of the Round-robin mapping used by the DatacenterBrokerSimple%n",
                     heuristicSolutionCostPercentageOfRoundRobinSolution(stats.getMean()));
-            System.out.printf("Experiment execution mean time: %.2f seconds\n", runtimeStats.getMean());
+            System.out.printf("Experiment execution mean time: %.2f seconds%n", runtimeStats.getMean());
         }
     }
 
@@ -290,7 +290,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
         final double lower = stats.getMean() - intervalSize;
         final double upper = stats.getMean() + intervalSize;
         System.out.printf(
-                "\tSolution cost mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]\n",
+                "\tSolution cost mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]%n",
                 stats.getMean(), intervalSize, lower, upper);
     }
 

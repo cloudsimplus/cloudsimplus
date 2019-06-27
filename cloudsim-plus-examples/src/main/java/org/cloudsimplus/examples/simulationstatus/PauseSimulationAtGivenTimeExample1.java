@@ -167,7 +167,7 @@ public class PauseSimulationAtGivenTimeExample1 {
     }
 
     private void printCloudletsFinishedSoFarAndResumeSimulation(EventInfo pauseInfo) {
-        System.out.printf("\n# Simulation paused at %.2f second\n", pauseInfo.getTime());
+        System.out.printf("%n# Simulation paused at %.2f second%n", pauseInfo.getTime());
         printsListOfFinishedCloudlets("Cloudlets Finished So Far");
         this.simulation.resume();
     }

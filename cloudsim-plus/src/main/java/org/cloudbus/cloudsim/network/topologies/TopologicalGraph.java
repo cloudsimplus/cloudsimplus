@@ -90,19 +90,19 @@ public class TopologicalGraph {
     @Override
     public String toString() {
         final StringBuilder builder = new StringBuilder(61);
-        builder.append("topological-node-information: \n");
+        builder.append("topological-node-information: ").append(System.lineSeparator());
 
         for (final TopologicalNode node : nodeList) {
             builder.append(
-                String.format("%d | %s\n",
+                String.format("%d | %s%n",
                 node.getNodeId(), node.getWorldCoordinates()));
         }
 
-        builder.append("\n\n node-link-information:\n");
+        builder.append(String.format("%n%n node-link-information:%n"));
 
         for (final TopologicalLink link : linksList) {
             builder.append(
-                String.format("from: %d to: %d delay: %.2f\n",
+                String.format("from: %d to: %d delay: %.2f%n",
                 link.getSrcNodeID(), link.getDestNodeID(), link.getLinkDelay()));
         }
 

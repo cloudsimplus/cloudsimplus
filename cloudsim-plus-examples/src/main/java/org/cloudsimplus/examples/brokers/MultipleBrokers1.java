@@ -139,7 +139,7 @@ public class MultipleBrokers1 {
 
         System.out.println();
         for (Vm vm : vmList) {
-            System.out.printf("Vm %d Broker %d -> Start Time: %.0f Stop Time: %.0f Total Execution Time: %.0f\n",
+            System.out.printf("Vm %d Broker %d -> Start Time: %.0f Stop Time: %.0f Total Execution Time: %.0f%n",
                 vm.getId(), vm.getBroker().getId(),
                 vm.getStartTime(), vm.getStopTime(), vm.getTotalExecutionTime());
         }

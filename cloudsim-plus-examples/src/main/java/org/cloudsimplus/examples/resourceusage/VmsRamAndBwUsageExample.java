@@ -162,11 +162,11 @@ public class VmsRamAndBwUsageExample {
 
         for (final double time : timeSet) {
             System.out.printf(
-                "Time: %10.1f secs | RAM Utilization: %10.2f%% | BW Utilization: %10.2f%%\n",
+                "Time: %10.1f secs | RAM Utilization: %10.2f%% | BW Utilization: %10.2f%%%n",
                 time, vmRamUtilization.get(time) * 100, vmBwUtilization.get(time) * 100);
         }
 
-        System.out.println("----------------------------------------------------------------------------------\n");
+        System.out.printf("----------------------------------------------------------------------------------%n%n");
     }
 
 

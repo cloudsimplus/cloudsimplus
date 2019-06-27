@@ -140,7 +140,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample1 {
             .addColumn(10, new TextTableColumn("  VM MIPS", "allocated"), this::getVmAllocatedMips)
             .build();
 
-        System.out.println("\n-------------------------------------- Hosts CPU usage History --------------------------------------");
+        System.out.printf("%n-------------------------------------- Hosts CPU usage History --------------------------------------%n");
         hostList.forEach(this::printHostStateHistory);
     }
 
@@ -152,7 +152,7 @@ public class VmSchedulerTimeSharedOverSubscriptionExample1 {
      * @param host
      */
     private void printHostStateHistory(Host host) {
-        System.out.printf("Host: %d\n", host.getId());
+        System.out.printf("Host: %d%n", host.getId());
         System.out.println("-----------------------------------------------------------------------------------------------------");
         host.getStateHistory().stream().forEach(System.out::print);
         System.out.println();

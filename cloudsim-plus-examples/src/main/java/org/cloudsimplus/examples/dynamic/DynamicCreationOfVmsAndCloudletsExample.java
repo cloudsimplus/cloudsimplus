@@ -150,7 +150,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
         final int numberOfNewVms = 2;
         final int numberOfCloudletsByVm = 4;
         System.out.printf(
-            "\n\t# Cloudlet %d finished. Submitting %d new VMs to the broker\n",
+            "%n\t# Cloudlet %d finished. Submitting %d new VMs to the broker%n",
             eventInfo.getCloudlet().getId(), numberOfNewVms);
 
         createAndSubmitVmsAndCloudlets(numberOfNewVms, numberOfCloudletsByVm);

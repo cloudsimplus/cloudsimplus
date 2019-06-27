@@ -129,7 +129,7 @@ public class CloudletListenersExample1 {
      */
     private void onCloudletStartListener(CloudletVmEventInfo eventInfo) {
         System.out.printf(
-            "\n\t#EventListener: Cloudlet %d just started running at Vm %d at time %.2f\n",
+            "%n\t#EventListener: Cloudlet %d just started running at Vm %d at time %.2f%n",
             eventInfo.getCloudlet().getId(), eventInfo.getVm().getId(), eventInfo.getTime());
     }
 
@@ -142,7 +142,7 @@ public class CloudletListenersExample1 {
      */
     private void onCloudletFinishListener(CloudletVmEventInfo eventInfo) {
         System.out.printf(
-                "\n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f\n",
+                "%n\t#EventListener: Cloudlet %d finished running at Vm %d at time %.2f%n",
                 eventInfo.getCloudlet().getId(), eventInfo.getVm().getId(), eventInfo.getTime());
     }
 

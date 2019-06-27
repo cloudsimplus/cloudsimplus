@@ -42,6 +42,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -178,14 +179,14 @@ public class DatacenterBrokerHeuristicExample {
 		        heuristic.getBestSolutionSoFar(), false);
 
 		System.out.printf(
-		    "The heuristic solution cost represents %.2f%% of the round robin mapping cost used by the DatacenterBrokerSimple\n",
+		    "\tThe heuristic solution cost represents %.2f%% of the round robin mapping cost used by the DatacenterBrokerSimple%n",
 		    heuristic.getBestSolutionSoFar().getCost()*100.0/roundRobinMappingCost);
-		System.out.printf("The solution finding spend %.2f seconds to finish\n", broker0.getHeuristic().getSolveTime());
-		System.out.println("Simulated Annealing Parameters");
-		System.out.printf("\tInitial Temperature: %.2f", SA_INITIAL_TEMPERATURE);
-		System.out.printf(" Cooling Rate: %.4f", SA_COOLING_RATE);
-		System.out.printf(" Cold Temperature: %.6f", SA_COLD_TEMPERATURE);
-		System.out.printf(" Number of neighborhood searches by iteration: %d\n", SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+		System.out.printf("\tThe solution finding spend %.2f seconds to finish%n", broker0.getHeuristic().getSolveTime());
+		System.out.println("\tSimulated Annealing Parameters");
+        System.out.printf("\t\tNeighborhood searches by iteration: %d%n", SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+        System.out.printf("\t\tInitial Temperature: %18.6f%n", SA_INITIAL_TEMPERATURE);
+        System.out.printf("\t\tCooling Rate       : %18.6f%n", SA_COOLING_RATE);
+        System.out.printf("\t\tCold Temperature   : %18.6f%n%n", SA_COLD_TEMPERATURE);
         System.out.println(getClass().getSimpleName() + " finished!");
 	}
 
@@ -242,14 +243,15 @@ public class DatacenterBrokerHeuristicExample {
         final long fileSize = 300; //Size (in bytes) before execution
         final long outputSize = 300; //Size (in bytes) after execution
 
-        //Defines how CPU, RAM and Bandwidth resources are used
-        //Sets the same utilization model for all these resources.
-        final UtilizationModel utilization = new UtilizationModelFull();
+        final UtilizationModel utilizationFull = new UtilizationModelFull();
+        final UtilizationModel utilizationDynamic = new UtilizationModelDynamic(0.1);
 
         return new CloudletSimple(createdCloudlets++, length, numberOfPes)
                     .setFileSize(fileSize)
                     .setOutputSize(outputSize)
-                    .setUtilizationModel(utilization);
+                    .setUtilizationModelCpu(utilizationFull)
+                    .setUtilizationModelRam(utilizationDynamic)
+                    .setUtilizationModelBw(utilizationDynamic);
     }
 
     private double computeRoundRobinMappingCost() {
@@ -272,14 +274,14 @@ public class DatacenterBrokerHeuristicExample {
         final CloudletToVmMappingSolution solution,
         final boolean showIndividualCloudletFitness)
     {
-        System.out.printf("%s (cost %.2f fitness %.6f)\n",
+        System.out.printf("%n%s (cost %.2f fitness %.6f)%n",
                 title, solution.getCost(), solution.getFitness());
         if(!showIndividualCloudletFitness)
             return;
 
         for(Map.Entry<Cloudlet, Vm> e: solution.getResult().entrySet()){
             System.out.printf(
-                "Cloudlet %3d (%d PEs, %6d MI) mapped to Vm %3d (%d PEs, %6.0f MIPS)\n",
+                "Cloudlet %3d (%d PEs, %6d MI) mapped to Vm %3d (%d PEs, %6.0f MIPS)%n",
                 e.getKey().getId(),
                 e.getKey().getNumberOfPes(), e.getKey().getLength(),
                 e.getValue().getId(),

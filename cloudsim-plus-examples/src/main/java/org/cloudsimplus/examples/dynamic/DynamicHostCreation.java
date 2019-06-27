@@ -160,17 +160,17 @@ public class DynamicHostCreation {
         if(time == SCHEDULING_INTERVAL) {
             Host host = createHost();
             datacenter0.addHost(host);
-            System.out.printf("\n %.2f: # Physically expanding the %s by adding the new %s to it.", info.getTime(), datacenter0, host);
+            System.out.printf("%n %.2f: # Physically expanding the %s by adding the new %s to it.", info.getTime(), datacenter0, host);
 
             //Creates and submits a new VM
             Vm vm = createVm(vmList.size());
-            System.out.printf("%.2f: # Created %s\n", info.getTime(), vm);
+            System.out.printf("%.2f: # Created %s%n", info.getTime(), vm);
             broker0.submitVm(vm);
 
             //Creates and submits 2 Cloudlets, binding them to the new VM
             List<Cloudlet> newCloudletList = createCloudlets(2);
             broker0.submitCloudletList(newCloudletList, vm);
-            System.out.printf("%.2f: # Created %d Cloudlets for %s\n", info.getTime(), newCloudletList.size(), vm);
+            System.out.printf("%.2f: # Created %d Cloudlets for %s%n", info.getTime(), newCloudletList.size(), vm);
 
             /* Removes the listener so that this event is fired just once.
              * This way, it's ensured the new Host, VMs and Cloudlets are created only one time. */

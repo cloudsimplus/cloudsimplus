@@ -227,14 +227,14 @@ public class MinTimeBetweenEventsExample {
             .build();
 
         final int notFinished = broker.getCloudletCreatedList().size() - broker.getCloudletFinishedList().size();
-        System.out.println("\nDatacenter Scheduling Interval: " + datacenter.getSchedulingInterval());
-        System.out.println("Min time between events: " + simulation.getMinTimeBetweenEvents());
-        System.out.println("Seed for the random Cloudlet's submission delay generator: " + random.getSeed() + "\n");
-        System.out.println("Cloudlets created: " +cloudletList.size() + " | Cloudlets not finished: " + notFinished);
+        System.out.printf("%nDatacenter Scheduling Interval: %.2f%n", datacenter.getSchedulingInterval());
+        System.out.printf("Min time between events: %.2f%n", simulation.getMinTimeBetweenEvents());
+        System.out.printf("Seed for the random Cloudlet's submission delay generator: %d%n", random.getSeed());
+        System.out.printf("Cloudlets created: %d | Cloudlets not finished: %d%n", cloudletList.size(), notFinished);
         if(notFinished > 0){
-            System.out.println("\n----------> Try decreasing the value of MIN_TIME_BETWEEN_EVENTS constant in this example! <----------\n");
+            System.out.printf("%n----------> Try decreasing the value of MIN_TIME_BETWEEN_EVENTS constant in this example! <----------%n%n");
         }
-        System.out.println(getClass().getSimpleName() + " finished!");
+        System.out.printf("%n%s finished!%n", getClass().getSimpleName());
     }
 
     private void formatColumn(final TableColumn col) {

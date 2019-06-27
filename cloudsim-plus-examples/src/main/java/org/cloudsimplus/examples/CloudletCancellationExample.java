@@ -133,7 +133,7 @@ public class CloudletCancellationExample {
         final Cloudlet cloudlet = e.getCloudlet();
         if(cloudlet.getFinishedLengthSoFar() >= CLOUDLET_LENGTH / 2){
             System.out.printf(
-                "\n# %.2f: Intentionally cancelling %s execution after it has executed half of its length.\n",
+                "%n# %.2f: Intentionally cancelling %s execution after it has executed half of its length.%n",
                 e.getTime(), cloudlet);
             cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
         }

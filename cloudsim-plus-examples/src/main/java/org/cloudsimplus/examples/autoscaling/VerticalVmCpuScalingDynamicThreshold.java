@@ -160,7 +160,7 @@ public class VerticalVmCpuScalingDynamicThreshold {
     private void onClockTickListener(EventInfo evt) {
         vmList.forEach(vm -> {
             System.out.printf(
-                "\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%02d) Upper Threshold: %.2f History Entries: %d\n",
+                "\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%02d) Upper Threshold: %.2f History Entries: %d%n",
                 evt.getTime(), vm.getId(), vm.getCpuPercentUtilization()*100.0,
                 vm.getNumberOfPes(),
                 vm.getCloudletScheduler().getCloudletExecList().size(),

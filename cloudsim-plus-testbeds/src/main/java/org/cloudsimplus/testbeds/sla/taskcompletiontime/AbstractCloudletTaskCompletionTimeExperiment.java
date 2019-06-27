@@ -69,7 +69,7 @@ abstract class AbstractCloudletTaskCompletionTimeExperiment extends Experiment {
      */
     protected final void waitTimeAverage(final List<Cloudlet> cloudletList) {
         final double averageWaitTime = cloudletList.stream().mapToDouble(Cloudlet::getWaitingTime).average().orElse(0);
-        System.out.println("\n# The wait time is: " + averageWaitTime);
+        System.out.printf("%n# The wait time is: %f%n", averageWaitTime);
     }
 
     /**
