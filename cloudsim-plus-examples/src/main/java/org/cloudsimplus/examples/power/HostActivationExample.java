@@ -75,7 +75,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.2.0
  */
-public class HostActivation {
+public class HostActivationExample {
     /**
      * Defines, between other things, the time intervals
      * to keep Hosts CPU utilization history records.
@@ -100,10 +100,10 @@ public class HostActivation {
     private long currentActiveHosts;
 
     public static void main(String[] args) {
-        new HostActivation();
+        new HostActivationExample();
     }
 
-    public HostActivation() {
+    public HostActivationExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
@@ -126,9 +126,9 @@ public class HostActivation {
     }
 
     private void printHostsUpTime() {
-        System.out.println("\nHosts' up time");
+        System.out.printf("%nHosts' up time%n");
         for (Host host : datacenter0.getHostList()) {
-            System.out.printf("\tHost %4d Total up time: %15.0f seconds\n", host.getId(), host.getTotalUpTime());
+            System.out.printf("\tHost %4d Total up time: %15.0f seconds%n", host.getId(), host.getTotalUpTime());
         }
     }
 
@@ -167,10 +167,10 @@ public class HostActivation {
                 .filter(Host::isActive)
                 .count();
 
-        System.out.printf("# %.2f: %d Active Host(s):\n", simulation.clock(), currentActiveHosts);
+        System.out.printf("# %.2f: %d Active Host(s):%n", simulation.clock(), currentActiveHosts);
         datacenter0
             .getHostList()
-            .forEach(host -> System.out.printf("\tHost %3d | VMs: %4d | Active: %s \n", host.getId(), host.getVmList().size(), host.isActive()));
+            .forEach(host -> System.out.printf("\tHost %3d | VMs: %4d | Active: %s %n", host.getId(), host.getVmList().size(), host.isActive()));
         System.out.println();
     }
 
