@@ -28,6 +28,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -51,7 +52,7 @@ import java.util.function.Supplier;
 public abstract class Experiment implements Runnable {
     private final ExperimentRunner runner;
     private final CloudSim simulation;
-    private final List<DatacenterSimple> datacenterList;
+    private final List<Datacenter> datacenterList;
     private final List<DatacenterBroker> brokerList;
     private final List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
@@ -254,19 +255,19 @@ public abstract class Experiment implements Runnable {
         }
 
         for (int i = 0; i < datacentersNumber; i++) {
-            datacenterList.add(createDatacenter());
+            datacenterList.add(createDatacenter(i));
         }
     }
 
     /**
      * Creates a datacenter using a {@link VmAllocationPolicy}
      * supplied by the {@link #vmAllocationPolicySupplier}.
+     * @param index index of the datatacenter being created, from the {@link #datacentersNumber}.
      * @return
      * @see #setVmAllocationPolicySupplier(Supplier)
      */
-    protected DatacenterSimple createDatacenter() {
-        final List<Host> hosts = createHosts();
-        return new DatacenterSimple(simulation, hosts, newVmAllocationPolicy());
+    protected Datacenter createDatacenter(final int index) {
+        return new DatacenterSimple(simulation, createHosts(), newVmAllocationPolicy());
     }
 
     /**
@@ -460,7 +461,7 @@ public abstract class Experiment implements Runnable {
         return this;
     }
 
-    public List<DatacenterSimple> getDatacenterList() {
+    public List<Datacenter> getDatacenterList() {
         return datacenterList;
     }
 

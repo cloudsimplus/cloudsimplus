@@ -96,8 +96,8 @@
 				</configuration>
 			</plugin>
 
-            <!-- Creates a "uber jar" that includes all external dependencies
-            inside it. By this way, the jar can be run directly in any
+            <!-- Creates an "uber jar" that includes all external dependencies
+            inside it. This way, the jar can be run directly in any
             computer with a regular JVM installed. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

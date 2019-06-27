@@ -37,6 +37,19 @@ public class VmGroup extends VmSimple {
      * @param vmList the List of VMs to create the group
      */
     public VmGroup(final List<Vm> vmList) {
+        this(vmList, Double.MIN_VALUE);
+    }
+
+    /**
+     * Creates a VmGroup for a List of VMs to be placed
+     * at the datacenter closest to a given timezone.
+     * All VMs will be changed to the given timezone.
+     * @param vmList the List of VMs to create the group
+     * @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
+     *                 as close as possible
+     * @see DatacenterBroker#setSelectClosestDatacenter(boolean)
+     */
+    public VmGroup(final List<Vm> vmList, final double timeZone) {
         super(getMaxMips(vmList), getTotalPes(vmList));
 
         this.vmList = vmList;
@@ -45,12 +58,24 @@ public class VmGroup extends VmSimple {
         if(vmList.isEmpty()){
             throw new IllegalStateException("The List of VMs belonging to a " + VmGroup.class.getSimpleName() + " cannot be empty.");
         }
+
         setBroker(vmList.get(0).getBroker());
         setCloudletScheduler(CloudletScheduler.NULL);
         setVmm("None");
         setTotalRam();
         setTotalBw();
         setTotalStorage();
+        setTimeZone(timeZone);
+    }
+
+    @Override
+    public final Vm setTimeZone(final double timeZone) {
+        if(timeZone != Double.MIN_VALUE) {
+            super.setTimeZone(timeZone);
+            vmList.forEach(vm -> vm.setTimeZone(timeZone));
+        }
+
+        return this;
     }
 
     /**
@@ -99,6 +124,14 @@ public class VmGroup extends VmSimple {
      */
     public List<Vm> getVmList() {
         return vmList;
+    }
+
+    /**
+     * Gets the number of VMs in this group.
+     * @return
+     */
+    public int size(){
+        return vmList.size();
     }
 
     @Override

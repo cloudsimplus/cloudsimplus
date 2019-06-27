@@ -28,6 +28,9 @@ import java.util.Objects;
  * @since CloudSim Toolkit 1.0
  */
 public class PeSimple extends ResourceManageableAbstract implements Pe {
+    /** @see #setDefaultMips(double) */
+    private static double defaultMips = 1000;
+
     /** @see #getId()  */
     private long id;
 
@@ -38,22 +41,37 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     private PeProvisioner peProvisioner;
 
     /**
-     * Instantiates a new PE object using a {@link PeProvisionerSimple}.
+     * Instantiates a PE object with the {@link #getDefaultMips() default MIPS capacity} and using a {@link PeProvisionerSimple}.
+     * The id of the PE is just set when a List of PEs is assigned to a Host.
+     *
+     * @see #PeSimple(double, PeProvisioner)
+     * @see #PeSimple(double)
+     * @see #setDefaultMips(double)
+     */
+    public PeSimple() {
+        this(PeSimple.defaultMips);
+    }
+
+    /**
+     * Instantiates a PE object using a {@link PeProvisionerSimple}.
      * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
      * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
      * @see #PeSimple(double, PeProvisioner)
+     * @see #PeSimple()
      */
     public PeSimple(final double mipsCapacity) {
         this(mipsCapacity, new PeProvisionerSimple());
     }
+
     /**
-     * Instantiates a new PE object.
+     * Instantiates a PE object.
      * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
      * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
      * @param peProvisioner the provisioner that will manage the allocation of this physical Pe for VMs
      * @see #PeSimple(double)
+     * @see #PeSimple()
      */
     public PeSimple(final double mipsCapacity, final PeProvisioner peProvisioner) {
         super((long)mipsCapacity);
@@ -65,16 +83,36 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
     }
 
     /**
-     * Instantiates a new PE object defining a given id.
+     * Instantiates a PE object defining a given id.
      * The id of the PE is just set when a List of PEs is assigned to a Host.
      *
      * @param id the PE id
      * @param mipsCapacity the capacity of the PE in MIPS (Million Instructions per Second)
      * @param peProvisioner the provisioner that will manage the allocation of this physical Pe for VMs
+     * @see #PeSimple(double, PeProvisioner)
+     * @see #PeSimple(double)
+     * @see #PeSimple()
      */
     public PeSimple(final int id, final double mipsCapacity, final PeProvisioner peProvisioner) {
         this(mipsCapacity, peProvisioner);
         this.setId(id);
+    }
+
+    /**
+     * Gets the default MIPS capacity to be used to create PEs when the no-args constructor is used.
+     * @return
+     */
+    public static double getDefaultMips() {
+        return defaultMips;
+    }
+
+    /**
+     * Sets the default MIPS capacity to be used to create PEs when the no-args constructor is used.
+     * @param defaultMips the new default MIPS capacity to set
+     * @return
+     */
+    public static void setDefaultMips(final double defaultMips) {
+        PeSimple.defaultMips = defaultMips;
     }
 
     @Override

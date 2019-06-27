@@ -12,7 +12,7 @@ The documentation includes:
 - [Web Slides](presentation/index.html) presenting CloudSim Plus (online version available [here](http://cloudsimplus.org/presentation/)).
 
 ## Building the reStructuredText files for the Documentation Site
-To generate the [Sphinx](http://sphinx-doc.org) documentation to publish at the [ReadTheDocs](http://cloudsimplus.rtfd.io) or to read locally, considering you have python installed, you can execute `make install` to install the additional tools.
+To generate the [Sphinx](http://sphinx-doc.org) documentation to read locally, considering you have python installed, you can execute `make install` to install the additional tools.
 
 Ensure you have the following environments variables declared, since the python scripts use UTF-8 encoding:
 

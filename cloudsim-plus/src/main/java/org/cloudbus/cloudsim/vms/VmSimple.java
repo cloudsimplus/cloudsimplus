@@ -969,7 +969,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public final Vm setTimeZone(final double timeZone) {
+    public Vm setTimeZone(final double timeZone) {
         this.timeZone = validateTimeZone(timeZone);
         return this;
     }

@@ -140,6 +140,28 @@ public final class Conversion {
     }
 
     /**
+     * Converts any value in mega to giga,
+     * doesn't matter if it's megabits or megabytes.
+     *
+     * @param mega the value in megabits or megabytes
+     * @return the value in gigabits or gigabytes (according to the input value)
+     */
+    public static double megaToGiga(final double mega){
+        return mega / KILO;
+    }
+
+    /**
+     * Converts any value in mega to tera,
+     * doesn't matter if it's megabits or megabytes.
+     *
+     * @param mega the value in megabits or megabytes
+     * @return the value in terabits or terabytes (according to the input value)
+     */
+    public static double megaToTera(final double mega){
+        return mega / MEGA;
+    }
+
+    /**
      * Converts any value in giga to mega,
      * doesn't matter if it's gigabits or gigabytes.
      *
@@ -151,17 +173,6 @@ public final class Conversion {
     }
 
     /**
-     * Converts any value in tera to giga,
-     * doesn't matter if it's terabits or terabytes.
-     *
-     * @param tera the value in terabits or terabytes
-     * @return the value in gigabits or gigabytes (according to the input value)
-     */
-    public static double teraToGiga(final double tera){
-        return tera * KILO;
-    }
-
-    /**
      * Converts any value in tera to mega,
      * doesn't matter if it's terabits or terabytes.
      *
@@ -170,6 +181,17 @@ public final class Conversion {
      */
     public static double teraToMega(final double tera){
         return teraToGiga(tera) * KILO;
+    }
+
+    /**
+     * Converts any value in tera to giga,
+     * doesn't matter if it's terabits or terabytes.
+     *
+     * @param tera the value in terabits or terabytes
+     * @return the value in gigabits or gigabytes (according to the input value)
+     */
+    public static double teraToGiga(final double tera){
+        return tera * KILO;
     }
 
     /**

@@ -26,7 +26,7 @@ package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerCompletelyFair;
@@ -157,8 +157,8 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
     }
 
     @Override
-    protected DatacenterSimple createDatacenter() {
-        DatacenterSimple dc = super.createDatacenter();
+    protected Datacenter createDatacenter(final int index) {
+        final Datacenter dc = super.createDatacenter(index);
         dc.setSchedulingInterval(SCHEDULING_INTERVAL);
         return dc;
     }

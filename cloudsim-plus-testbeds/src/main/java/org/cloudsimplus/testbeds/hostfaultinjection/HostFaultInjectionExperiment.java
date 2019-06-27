@@ -30,7 +30,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -341,8 +340,8 @@ final class HostFaultInjectionExperiment extends Experiment {
     }
 
     @Override
-    protected DatacenterSimple createDatacenter() {
-        DatacenterSimple dc = super.createDatacenter();
+    protected Datacenter createDatacenter(final int index) {
+        final Datacenter dc = super.createDatacenter(index);
         dc.setSchedulingInterval(SCHEDULE_TIME_TO_PROCESS_DATACENTER_EVENTS);
         return dc;
     }
