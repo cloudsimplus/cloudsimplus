@@ -86,7 +86,7 @@ public class NetworkVmsExampleSimpleApp {
         new CloudletsTableBuilder(newList).build();
 
         for (NetworkHost host : datacenter.<NetworkHost>getHostList()) {
-            System.out.printf("\nHost %d data transferred: %d bytes",
+            System.out.printf("%nHost %d data transferred: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
 
@@ -212,8 +212,9 @@ public class NetworkVmsExampleSimpleApp {
                 .setMemory(TASK_RAM)
                 .setFileSize(CLOUDLET_FILE_SIZE)
                 .setOutputSize(CLOUDLET_OUTPUT_SIZE)
-                .setUtilizationModel(new UtilizationModelFull());
-        netCloudlet.setVm(vm);
+                .setUtilizationModel(new UtilizationModelFull())
+                .setVm(vm)
+                .setBroker(vm.getBroker());
 
         return netCloudlet;
     }

@@ -42,7 +42,7 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
             networkCloudletList[i] =
                     createNetworkCloudlet(selectedVms.get(i), broker);
             System.out.printf(
-                "Created NetworkCloudlet %d for Application %d\n",
+                "Created NetworkCloudlet %d for Application %d%n",
                 networkCloudletList[i].getId(), broker.getId());
         }
 
@@ -77,7 +77,8 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
                 .setFileSize(NETCLOUDLET_FILE_SIZE)
                 .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                 .setUtilizationModel(utilizationModel)
-                .setVm(vm);
+                .setVm(vm)
+                .setBroker(vm.getBroker());
 
         return cloudlet;
     }

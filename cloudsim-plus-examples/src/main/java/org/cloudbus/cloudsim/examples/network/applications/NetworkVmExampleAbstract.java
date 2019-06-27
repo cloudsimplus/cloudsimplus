@@ -140,11 +140,11 @@ abstract class NetworkVmExampleAbstract {
                     .setTitle(caption)
                     .build();
             System.out.printf(
-                "Number of NetworkCloudlets for Application %s: %d\n", broker.getId(), newList.size());
+                "Number of NetworkCloudlets for Application %s: %d%n", broker.getId(), newList.size());
         }
 
         for(NetworkHost host: datacenter.<NetworkHost>getHostList()){
-            System.out.printf("\nHost %d data transferred: %d bytes",
+            System.out.printf("%nHost %d data transferred: %d bytes",
                     host.getId(), host.getTotalDataTransferBytes());
         }
 

@@ -4,6 +4,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.network.NetworkVm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,12 +48,14 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
         for(int i = 0; i < NETCLOUDLETS_FOR_EACH_APP; i++){
             UtilizationModel utilizationModel = new UtilizationModelFull();
             NetworkCloudlet cloudlet = new NetworkCloudlet(i, NETWORK_CLOUDLET_LENGTH, NETCLOUDLET_PES_NUMBER);
+            NetworkVm vm = getVmList().get(i);
             cloudlet
                     .setMemory(CLOUDLET_TASK_MEMORY)
                     .setFileSize(NETCLOUDLET_FILE_SIZE)
                     .setOutputSize(NETCLOUDLET_OUTPUT_SIZE)
                     .setUtilizationModel(utilizationModel)
-                    .setVm(getVmList().get(i));
+                    .setVm(vm)
+                    .setBroker(vm.getBroker());
             networkCloudletList.add(cloudlet);
         }
 
