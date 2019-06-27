@@ -619,7 +619,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (allNonDelayedVmsCreated()) {
             requestDatacentersToCreateWaitingCloudlets();
             notifyOnVmsCreatedListeners();
-        } else if (getVmCreationRequests() == getVmCreationAcks()) {
+        } else if (vmCreationRequests == vmCreationAcks) {
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
 
@@ -668,6 +668,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /**
      * Request the creation of {@link #getVmWaitingList() waiting VMs} in some Datacenter.
      *
+     * <p>If it's trying a fallback datacenter and the {@link #selectClosestDatacenter} is enabled,
+     * that means the function assigned to the {@link #datacenterMapper} is the
+     * {@link #closestDatacenterMapper(Datacenter, Vm)}
+     * which has failed to find a suitable Datacenter for the VM.
+     * This way, it uses the {@link #defaultDatacenterMapper(Datacenter, Vm)} instead.
+     * </p>
+     *
      * @param isFallbackDatacenter true to indicate that a fallback Datacenter will be tried,
      *                             after the previous one was not able to create all waiting VMs,
      *                             false to indicate it will try the default datacenter.
@@ -677,7 +684,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private boolean requestDatacenterToCreateWaitingVms(final boolean isFallbackDatacenter) {
         for (final Vm vm : vmWaitingList) {
-            this.lastSelectedDc = datacenterMapper.apply(lastSelectedDc, vm);
+            this.lastSelectedDc = isFallbackDatacenter && selectClosestDatacenter ?
+                                        defaultDatacenterMapper(lastSelectedDc, vm) :
+                                        datacenterMapper.apply(lastSelectedDc, vm);
             this.vmCreationRequests += requestVmCreation(lastSelectedDc, isFallbackDatacenter, vm);
         }
 
@@ -861,8 +870,17 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                vmExecList.isEmpty();
     }
 
+    /**
+     * Try to request the creation of a VM into a given datacenter
+     * @param datacenter the Datacenter to try creating the VM (or {@link Datacenter#NULL} if not Datacenter is available)
+     * @param isFallbackDatacenter indicate if the given Datacenter was selected when
+     *                             a previous one don't have enough capacity to place the requested VM
+     * @param vm the VM to be placed
+     * @return 1 to indicate a VM creation request was sent to the datacenter,
+     *         0 to indicate the request was not sent due to lack of available datacenter
+     */
     private int requestVmCreation(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {
-        if (datacenter.equals(vm.getLastTriedDatacenter())) {
+        if (datacenter == Datacenter.NULL || datacenter.equals(vm.getLastTriedDatacenter())) {
             return 0;
         }
 
