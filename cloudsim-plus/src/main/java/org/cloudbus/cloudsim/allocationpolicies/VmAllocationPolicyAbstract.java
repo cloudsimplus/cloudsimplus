@@ -381,5 +381,10 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     public void setHostCountForParallelSearch(final int hostCountForParallelSearch) {
         this.hostCountForParallelSearch = hostCountForParallelSearch;
     }
+
+    @Override
+    public boolean isVmMigrationSupported() {
+        return false;
+    }
 }
 

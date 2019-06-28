@@ -145,6 +145,17 @@ public interface VmAllocationPolicy {
     Optional<Host> findHostForVm(Vm vm);
 
     /**
+     * Checks if VM migrations are supported by this VmAllocationPolicy.
+     * Realize that even if the policy allows VM migration,
+     * such operations can be dynamically enabled/disabled by the Datacenter.
+     *
+     * @return
+     * @see Datacenter#enableMigrations()
+     * @see Datacenter#disableMigrations()
+     */
+    boolean isVmMigrationSupported();
+
+    /**
      * Checks if Host's parallel search is enabled or not.
      * @return true if a Host for a VM is to find in parallel, false if it's to be find sequentially
      * @see #setHostCountForParallelSearch(int)

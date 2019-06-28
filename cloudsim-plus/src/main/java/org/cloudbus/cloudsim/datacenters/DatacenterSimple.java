@@ -757,6 +757,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Checks if the {@link #getVmAllocationPolicy()} has defined
      * a new VM placement map, then sends the request to migrate VMs.
+     * This is an expensive operation for large scale simulations.
      */
     private void checkIfVmMigrationsAreNeeded() {
         if (!isMigrationsEnabled()) {
@@ -1042,7 +1043,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public boolean isMigrationsEnabled() {
-        return migrationsEnabled;
+        return migrationsEnabled && vmAllocationPolicy.isVmMigrationSupported();
     }
 
     @Override

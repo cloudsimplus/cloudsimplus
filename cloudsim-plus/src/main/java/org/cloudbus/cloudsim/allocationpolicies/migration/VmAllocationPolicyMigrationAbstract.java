@@ -730,4 +730,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     protected double[] getHostCpuUsageArray(final Host host) {
         return host.getUtilizationHistorySum().values().stream().mapToDouble(cpuUsage -> cpuUsage).toArray();
     }
+
+    @Override
+    public final boolean isVmMigrationSupported() {
+        return true;
+    }
 }
