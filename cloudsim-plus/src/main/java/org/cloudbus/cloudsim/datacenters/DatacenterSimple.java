@@ -1040,30 +1040,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return this;
     }
 
-    /**
-     * Checks if migrations are enabled.
-     *
-     * @return true, if migrations are enable; false otherwise
-     */
+    @Override
     public boolean isMigrationsEnabled() {
         return migrationsEnabled;
     }
 
-    /**
-     * Enable VM migrations.
-     *
-     * @return
-     */
+    @Override
     public final Datacenter enableMigrations() {
         this.migrationsEnabled = true;
         return this;
     }
 
-    /**
-     * Disable VM migrations.
-     *
-     * @return
-     */
+    @Override
     public final Datacenter disableMigrations() {
         this.migrationsEnabled = false;
         return this;

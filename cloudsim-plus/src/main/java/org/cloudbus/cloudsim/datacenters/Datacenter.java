@@ -220,6 +220,27 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
     Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener);
 
     /**
+     * Checks if migrations are enabled.
+     *
+     * @return true, if migrations are enable; false otherwise
+     */
+    boolean isMigrationsEnabled();
+
+    /**
+     * Enable VM migrations.
+     *
+     * @return
+     */
+    Datacenter enableMigrations();
+
+    /**
+     * Disable VM migrations.
+     *
+     * @return
+     */
+    Datacenter disableMigrations();
+
+    /**
      * Sets a {@link DatacenterPowerSupply} to enable computing the Datacenter's power consumption,
      * based on the consumption of its {@link Host}s.
      * Since this computation is expensive for large amount of Hosts

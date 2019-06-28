@@ -51,6 +51,9 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration) {/**/}
     @Override public double getPower() { return 0; }
     @Override public Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener) { return this; }
+    @Override public boolean isMigrationsEnabled() { return false; }
+    @Override public Datacenter enableMigrations() { return this; }
+    @Override public Datacenter disableMigrations() { return this; }
     @Override public void setPowerSupply(DatacenterPowerSupply powerSupply) {}
     @Override public double getPowerInKWatts() { return 0; }
     @Override public String toString() {
