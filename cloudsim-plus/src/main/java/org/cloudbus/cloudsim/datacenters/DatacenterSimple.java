@@ -1048,6 +1048,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public final Datacenter enableMigrations() {
+        if(!vmAllocationPolicy.isVmMigrationSupported()){
+            LOGGER.warn(
+                "{}: {}: It was requested to enable VM migrations but the {} doesn't support that.",
+                getSimulation().clockStr(), getName(), vmAllocationPolicy.getClass().getSimpleName());
+            return this;
+        }
+
         this.migrationsEnabled = true;
         return this;
     }

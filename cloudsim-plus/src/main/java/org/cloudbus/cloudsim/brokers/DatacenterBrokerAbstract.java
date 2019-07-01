@@ -706,20 +706,20 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * Process a response from a Datacenter informing that it was able to
      * create the VM requested by the broker.
      *
-     * @param vm         id of the Vm that succeeded to be created inside the Datacenter
+     * @param vm id of the Vm that succeeded to be created inside the Datacenter
      */
     private void processSuccessVmCreationInDatacenter(final Vm vm) {
         if(vm instanceof VmGroup){
+            int createdVms = 0;
             final VmGroup vmGroup = ((VmGroup)vm);
-            for (final Iterator<Vm> iterator = vmGroup.getVmList().iterator(); iterator.hasNext(); ) {
-                final Vm nextVm = iterator.next();
-                if(nextVm.isCreated()){
+            for (final Vm nextVm : vmGroup.getVmList()) {
+                if (nextVm.isCreated()) {
                     processSuccessVmCreationInDatacenter(nextVm);
-                    iterator.remove();
+                    createdVms++;
                 }
             }
 
-            if(vmGroup.getVmList().isEmpty()){
+            if(createdVms == vmGroup.size()){
                 vmWaitingList.remove(vmGroup);
             }
 

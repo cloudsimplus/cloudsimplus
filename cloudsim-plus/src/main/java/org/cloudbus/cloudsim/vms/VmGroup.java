@@ -69,6 +69,21 @@ public class VmGroup extends VmSimple {
     }
 
     @Override
+    public double getHostCpuUtilization(final double time) {
+        return vmList.stream().mapToDouble(vm -> vm.getHostCpuUtilization(time)).sum();
+    }
+
+    @Override
+    public double getHostRamUtilization() {
+        return vmList.stream().mapToDouble(Vm::getHostRamUtilization).sum();
+    }
+
+    @Override
+    public double getHostBwUtilization() {
+        return vmList.stream().mapToDouble(Vm::getHostBwUtilization).sum();
+    }
+
+    @Override
     public final Vm setTimeZone(final double timeZone) {
         if(timeZone != Double.MIN_VALUE) {
             super.setTimeZone(timeZone);
