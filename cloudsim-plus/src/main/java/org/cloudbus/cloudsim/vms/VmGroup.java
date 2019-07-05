@@ -37,19 +37,6 @@ public class VmGroup extends VmSimple {
      * @param vmList the List of VMs to create the group
      */
     public VmGroup(final List<Vm> vmList) {
-        this(vmList, Double.MIN_VALUE);
-    }
-
-    /**
-     * Creates a VmGroup for a List of VMs to be placed
-     * at the datacenter closest to a given timezone.
-     * All VMs will be changed to the given timezone.
-     * @param vmList the List of VMs to create the group
-     * @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
-     *                 as close as possible
-     * @see DatacenterBroker#setSelectClosestDatacenter(boolean)
-     */
-    public VmGroup(final List<Vm> vmList, final double timeZone) {
         super(getMaxMips(vmList), getTotalPes(vmList));
 
         this.vmList = vmList;
@@ -65,7 +52,36 @@ public class VmGroup extends VmSimple {
         setTotalRam();
         setTotalBw();
         setTotalStorage();
+        setTimeZone(Double.MIN_VALUE);
+    }
+
+    /**
+     * Creates a VmGroup for a List of VMs to be placed
+     * at the datacenter closest to a given timezone.
+     * All VMs will be changed to the given timezone.
+     * @param vmList the List of VMs to create the group
+     * @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
+     *                 as close as possible
+     * @see DatacenterBroker#setSelectClosestDatacenter(boolean)
+     */
+    public VmGroup(final List<Vm> vmList, final double timeZone) {
+        this(vmList);
         setTimeZone(timeZone);
+    }
+
+    /**
+     * Creates a VmGroup for a List of VMs to be placed
+     * at the datacenter closest to a given timezone.
+     * All VMs will be changed to the given timezone.
+     * @param id the VmGroup ID
+     * @param vmList the List of VMs to create the group
+     * @param timeZone the timezone of the Datacenter where it's expected the VMs to be placed
+     *                 as close as possible
+     * @see DatacenterBroker#setSelectClosestDatacenter(boolean)
+     */
+    public VmGroup(final long id, final List<Vm> vmList, final double timeZone) {
+        this(vmList, timeZone);
+        setId(id);
     }
 
     @Override
