@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import java.util.List;
 
 /**
- * CloudletSchedulerTimeShared implements a policy of scheduling performed by a
+ * Implements a policy of scheduling performed by a
  * virtual machine to run its {@link Cloudlet Cloudlets}. Cloudlets execute in
  * time-shared manner in VM. Each VM has to have its own instance of a
  * CloudletScheduler. <b>This scheduler does not consider Cloudlets priorities
@@ -62,12 +62,16 @@ import java.util.List;
  * this example, one Cloudlet will finish 1 second after the other.
  * </p>
  *
+ * <p><b>WARNING</b>: Time-shared schedulers drastically degrade performance
+ * of large scale simulations.</p>
+ *
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  * @see CloudletSchedulerCompletelyFair
+ * @see CloudletSchedulerSpaceShared
  */
 public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
 

@@ -826,6 +826,7 @@ public class CloudSim implements Simulation {
             return false;
         } else {
             pauseAt = time;
+            LOGGER.info("{}: Pausing simulation under request", clockStr());
             return true;
         }
     }
@@ -834,6 +835,9 @@ public class CloudSim implements Simulation {
     public boolean resume() {
         final boolean wasPaused = this.paused;
         this.paused = false;
+        if(wasPaused){
+            LOGGER.info("{}: Resuming simulation under request", clockStr());
+        }
 
         if (pauseAt <= clock) {
             pauseAt = -1;

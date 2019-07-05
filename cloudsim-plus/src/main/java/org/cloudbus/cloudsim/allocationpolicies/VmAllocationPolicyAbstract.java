@@ -7,7 +7,7 @@
  */
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigrationAbstract;
+import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
@@ -85,7 +85,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public final <T extends Host> List<T> getHostList() {
-        return (List<T>) datacenter.getHostList();
+        return datacenter.getHostList();
     }
 
     @Override
@@ -359,8 +359,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      *
      * <p><b>This method implementation doesn't perform any
      * VM placement optimization and, in fact, has no effect.
-     * The {@link VmAllocationPolicyMigrationAbstract} class
-     * provides an actual implementation for this method that can be overridden
+     * Classes implementing the {@link VmAllocationPolicyMigration}
+     * provide actual implementations for this method that can be overridden
      * by subclasses.
      * </b></p>
      *

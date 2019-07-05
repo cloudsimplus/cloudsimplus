@@ -757,7 +757,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Checks if the {@link #getVmAllocationPolicy()} has defined
      * a new VM placement map, then sends the request to migrate VMs.
-     * This is an expensive operation for large scale simulations.
+     *
+     * <p><b>This is an expensive operation for large scale simulations.</b></p>
      */
     private void checkIfVmMigrationsAreNeeded() {
         if (!isMigrationsEnabled()) {

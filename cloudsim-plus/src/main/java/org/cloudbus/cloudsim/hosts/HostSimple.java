@@ -1233,7 +1233,7 @@ public class HostSimple implements Host {
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
             final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
             final long notAllocatedMipsByPe = (long)((totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes());
-            LOGGER.error(
+            LOGGER.warn(
                 "{}: {}: {} MIPS not allocated for each one of the {} PEs from {} due to {}.",
                 getSimulation().clockStr(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
         }
