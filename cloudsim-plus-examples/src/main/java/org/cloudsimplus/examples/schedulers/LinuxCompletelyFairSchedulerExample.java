@@ -52,6 +52,8 @@ import java.util.List;
 /**
  * An example that uses an implementation of the {@link CloudletSchedulerCompletelyFair Completely Fair Scheduler}
  * used in the Linux Kernel for scheduling of Cloudlets execution inside a Vm.
+ * It defines priority for some Cloudlets, so that they will have more time to use the CPU
+ * than other Cloudlets.
  *
  * <p>It is strongly recommended to read the {@link CloudletSchedulerCompletelyFair} class documentation
  * to understand how this scheduler works.</p>
@@ -181,7 +183,7 @@ public class LinuxCompletelyFairSchedulerExample {
 
         //Defines how CPU, RAM and Bandwidth resources are used
         //Sets the same utilization model for all these resources.
-        UtilizationModel utilization = new UtilizationModelFull();
+        final UtilizationModel utilization = new UtilizationModelFull();
 
         return new CloudletSimple(numberOfCreatedCloudlets++, CLOUDLET_LEN, CLOUDLET_PES)
             .setFileSize(fileSize)

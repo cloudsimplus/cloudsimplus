@@ -317,8 +317,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public void setPriority(final int priority) {
+    public Cloudlet setPriority(final int priority) {
         this.priority = priority;
+        return this;
     }
 
     @Override

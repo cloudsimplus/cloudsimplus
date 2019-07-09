@@ -142,7 +142,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean requiresFiles() {
         return false;
     }
-    @Override public void setPriority(int priority) {/**/}
+    @Override public Cloudlet setPriority(int priority) { return this; }
     @Override public Cloudlet setLength(long length) {
         return Cloudlet.NULL;
     }

@@ -226,7 +226,7 @@ public final class MigrationExample1 {
     }
 
     public void createAndSubmitCloudlets(DatacenterBroker broker) {
-        final List<Cloudlet> list = new ArrayList<>(VMS -1);
+        final List<Cloudlet> list = new ArrayList<>(VMS);
         Cloudlet cloudlet = Cloudlet.NULL;
         UtilizationModelDynamic um = createCpuUtilizationModel(CLOUDLET_INITIAL_CPU_PERCENTAGE, 1);
         for(Vm vm: vmList){

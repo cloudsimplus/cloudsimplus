@@ -364,8 +364,9 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * that is being used by the Vm running the Cloudlet.
      *
      * @param priority priority of this Cloudlet
+     * @return
      */
-    void setPriority(int priority);
+    Cloudlet setPriority(int priority);
 
     /**
      * Gets the Type of Service (ToS) of IPv4 for sending Cloudlet over the network.
