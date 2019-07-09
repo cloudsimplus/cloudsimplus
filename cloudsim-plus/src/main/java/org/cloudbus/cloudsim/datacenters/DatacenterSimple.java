@@ -767,41 +767,30 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         final Map<Vm, Host> migrationMap = getVmAllocationPolicy().getOptimizedAllocationMap(getVmList());
         for (final Map.Entry<Vm, Host> entry : migrationMap.entrySet()) {
-            requestVmMigration(entry);
+            requestVmMigration(entry.getKey(), entry.getValue());
         }
     }
 
-    /**
-     * Actually fires the event that starts the VM migration
-     * @param entry a Map Entry that indicate to which Host a VM must be migrated
-     */
-    private void requestVmMigration(final Map.Entry<Vm, Host> entry) {
+    @Override
+    public void requestVmMigration(final Vm sourceVm, final Host targetHost) {
         final String currentTime = getSimulation().clockStr();
-        final Host sourceHost = entry.getKey().getHost();
-        final Host targetHost = entry.getValue();
+        final Host sourceHost = sourceVm.getHost();
 
-        final double delay = timeToMigrateVm(entry.getKey(), targetHost);
-        String msg1;
-        if (sourceHost == Host.NULL) {
-            msg1 = String.format(
-                "%s: Migration of %s to %s is started.",
-                currentTime, entry.getKey(), targetHost);
-        } else {
-            msg1 = String.format(
-                "%s: Migration of %s from %s to %s is started.",
-                currentTime, entry.getKey(), sourceHost, targetHost);
-        }
+        final double delay = timeToMigrateVm(sourceVm, targetHost);
+        final String msg1 =
+            sourceHost == Host.NULL ?
+                String.format("%s to %s", sourceVm, targetHost) :
+                String.format("%s from %s to %s", sourceVm, sourceHost, targetHost);
 
         final String msg2 = String.format(
             "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.",
             delay, getBandwidthPercentForMigration()*100);
-        LOGGER.info("{}{}{}", msg1, System.lineSeparator(), msg2);
+        LOGGER.info("{}: {}: Migration of {} is started. {}", currentTime, getName(), msg1, msg2);
 
+        sourceHost.addVmMigratingOut(sourceVm);
+        targetHost.addMigratingInVm(sourceVm);
 
-        sourceHost.addVmMigratingOut(entry.getKey());
-        targetHost.addMigratingInVm(entry.getKey());
-
-        send(this, delay, CloudSimTags.VM_MIGRATE, entry);
+        send(this, delay, CloudSimTags.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
     }
 
     /**

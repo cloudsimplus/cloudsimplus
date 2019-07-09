@@ -8,12 +8,14 @@
 package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
+import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.models.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
+import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 
@@ -44,6 +46,17 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
      * @see #setBandwidthPercentForMigration(double)
      */
     double DEF_BW_PERCENT_FOR_MIGRATION = 0.5;
+
+    /**
+     * Sends an event to request the migration of a {@link Vm} to a given target {@link Host}.
+     * If you want VM migrations to be performed automatically,
+     * use a {@link VmAllocationPolicyMigration}.
+     *
+     * @param sourceVm the VM to be migrated
+     * @param targetHost the target Host to migrate the VM to
+     * @see #getVmAllocationPolicy()
+     */
+    void requestVmMigration(Vm sourceVm, Host targetHost);
 
     /**
      * Gets an <b>unmodifiable</b> host list.
