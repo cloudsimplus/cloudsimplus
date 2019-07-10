@@ -305,6 +305,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     private boolean createVmsFromGroup(final VmGroup vmGroup, final Host host) {
         final int createdVms = vmGroup.getVmList().stream().mapToInt(vm -> Conversion.boolToInt(createVm(vm, host))).sum();
         vmGroup.setCreated(createdVms > 0);
+        if(vmGroup.isCreated()) {
+            vmGroup.setHost(host);
+        }
         return vmGroup.isCreated();
     }
 
