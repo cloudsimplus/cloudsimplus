@@ -518,13 +518,43 @@ public abstract class Experiment implements Runnable {
     }
 
     /**
+     * Prints a line break only if {@link #isVerbose()}.
+     */
+    public Experiment println(){
+        return println("");
+    }
+
+    /**
+     * Prints a message and a line break only if {@link #isVerbose()}.
+     * @param msg the message to print
+     */
+    public Experiment println(final String msg){
+        if(verbose){
+            System.out.println(msg);
+        }
+
+        return this;
+    }
+
+    /**
+     * Prints a formatted message and a line break only if {@link #isVerbose()}.
+     * @param format the message format
+     * @param args the values to print
+     */
+    public Experiment println(final String format, final Object ...args){
+        return print(format + "%n", args);
+    }
+
+    /**
      * Prints a message only if {@link #isVerbose()}.
      * @param msg the message to print
      */
-    public void print(final String msg){
+    public Experiment print(final String msg){
         if(verbose){
             System.out.print(msg);
         }
+
+        return this;
     }
 
     /**
@@ -532,36 +562,11 @@ public abstract class Experiment implements Runnable {
      * @param format the message format
      * @param args the values to print
      */
-    public void print(final String format, final Object ...args){
+    public Experiment print(final String format, final Object ...args){
         if(verbose){
             System.out.printf(format, args);
         }
-    }
 
-    /**
-     * Prints a line break only if {@link #isVerbose()}.
-     */
-    public void println(){
-        print("");
-    }
-
-    /**
-     * Prints a message and a line break only if {@link #isVerbose()}.
-     * @param msg the message to print
-     */
-    public void println(final String msg){
-        if(verbose){
-            System.out.println(msg);
-        }
-    }
-    /**
-     * Prints a formatted message and a line break only if {@link #isVerbose()}.
-     * @param format the message format
-     * @param args the values to print
-     */
-    public void println(final String format, final Object ...args){
-        if(verbose){
-            System.out.printf(format + System.lineSeparator(), args);
-        }
+        return this;
     }
 }
