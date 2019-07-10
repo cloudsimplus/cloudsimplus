@@ -18,14 +18,13 @@ import java.util.TreeSet;
 
 /**
  * A Cloud Information Service (CIS) is an entity that provides cloud resource
- * registration, indexing and discovery services. The Cloud hostList tell their
+ * registration, indexing and discovery services. The Cloud datacenters tell their
  * readiness to process Cloudlets by registering themselves with this entity.
- * Other entities such as the resource broker can contact this class for
- * resource discovery service, which returns a list of registered resource IDs.
+ * Other entities such as the broker can contact this class for
+ * resource discovery service, which returns a list of registered resource.
  * <p>
- * In summary, it acts like a yellow page service. This class will be created by
- * CloudSim upon initialisation of the simulation. Hence, do not need to worry
- * about creating an object of this class.
+ * In summary, it acts like a yellow page service.
+ * An instance of this class is automatically created by CloudSim upon initialisation of the simulation.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
@@ -113,12 +112,10 @@ public class CloudInformationService extends CloudSimEntity {
      * @param list List of entities to notify about simulation end
      */
     private void signalShutdown(final Collection<? extends SimEntity> list) {
-        // checks whether a list is empty or not
         if (list == null) {
             return;
         }
 
-        // Send END_OF_SIMULATION event to all entities in the list
         list.forEach(entity -> super.send(entity, 0L, CloudSimTags.END_OF_SIMULATION));
     }
 
