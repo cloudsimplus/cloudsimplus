@@ -109,14 +109,11 @@ to advanced features for simulating more realistic cloud scenarios:
 1. [Enables Broker to try selecting the closest Datacenter to place VMs, according to their time zone.](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/brokers/DatacenterSelectionByTimeZoneExample.java) ([#212](https://github.com/manoelcampos/cloudsim-plus/issues/212)).
 1. And yeah, it outperforms CloudSim 4, as can be seen in the table below*.
 
-Framework          |Simulation Time (min) |VmAllocationPolicy|DCs|Hosts|VMs  |Cloudlets
--------------------|----------------------|------------------|---|-----|-----|---------
-CloudSim      4.0.0|23.9                  |Simple (WorstFit) |1  |20000|40000|50000
-CloudSim      4.0.0|19.6                  |BestFit**         |1  |20000|40000|50000
-CloudSim      4.0.0|13.6                  |FirstFit**        |1  |20000|40000|50000
-CloudSim Plus 4.3.4|15.7                  |Simple (WorstFit) |1  |20000|40000|50000
-CloudSim Plus 4.3.4|15.7                  |BestFit**         |1  |20000|40000|50000
-CloudSim Plus 4.3.4|&nbsp;&nbsp;1.3       |FirstFit**        |1  |20000|40000|50000 
+VmAllocationPolicy|CloudSim 4.0.0 Simulation Time (min) |CloudSim Plus 4.3.4 Simulation Time (min) |DCs|Hosts|VMs  |Cloudlets
+------------------|-------------------------------------|------------------------------------------|---|-----|-----|---------
+Simple (WorstFit) |23.9                                 |15.7                                      |1  |20000|40000|50000
+BestFit**         |19.6                                 |15.7                                      |1  |20000|40000|50000
+FirstFit**        |13.6                                 |&nbsp;&nbsp;1.3                           |1  |20000|40000|50000
 
 \* *More details and results [here](docs/performance.md).*   \** *Only officially available in CloudSim Plus.*
 
