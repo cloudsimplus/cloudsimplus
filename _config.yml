@@ -10,6 +10,7 @@ exclude:
   - .github
 
 gems:
+  - jekyll-asciidoc
   - jekyll-mentions
   - jemoji
 
