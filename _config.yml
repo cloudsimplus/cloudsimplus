@@ -5,6 +5,10 @@ show_downloads: true
 theme: jekyll-theme-architect
 encoding: utf-8
 
+exclude:
+  - CONTRIBUTING.adoc
+  - .github
+
 gems:
   - jekyll-mentions
   - jemoji
@@ -12,3 +16,10 @@ gems:
 webrick:
   headers:
     keywords: "CloudSim Plus,CloudSim,Cloud Computing,Simulation,Framework,IaaS,PaaS,SaaS,Java 8,Maven,Maven Central"
+
+asciidoc: {}
+asciidoctor:
+  safe: unsafe
+  attributes:
+    - source-highlighter=coderay
+    - icons=font

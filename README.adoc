@@ -127,7 +127,7 @@ image:https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/packa
 There are 3 ways to use CloudSim Plus. It can be downloaded and executed:
 (i) directly from some IDE;
 (ii) from the command line; or
-(iii) from https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus[Maven Central]
+(iii) from https://search.maven.org/search?q=g:%22org.cloudsimplus%22%20AND%20a:%22cloudsim-plus%22[Maven Central]
 since you include it as a dependency inside your own project.
 
 You can watch the video below (https://youtu.be/k2enNoxTYVw[high quality version here])
