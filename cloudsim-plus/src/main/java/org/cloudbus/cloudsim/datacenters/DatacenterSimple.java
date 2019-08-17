@@ -927,6 +927,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
+    public long size() {
+        return hostList.size();
+    }
+
+    @Override
     public Host getHostById(final long id) {
         return hostList.stream().filter(host -> host.getId()==id).findFirst().map(host -> (Host)host).orElse(Host.NULL);
     }

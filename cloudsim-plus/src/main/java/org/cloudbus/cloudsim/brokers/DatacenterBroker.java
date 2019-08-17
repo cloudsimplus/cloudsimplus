@@ -324,7 +324,7 @@ public interface DatacenterBroker extends SimEntity {
 
     /**
      * Adds an {@link EventListener} that will be notified every time
-     * VMs in the waiting list are all created.
+     * VMs in the waiting list are all created (placed) in some Host.
      *
      * <p>Events are fired according to the following conditions:
      * <ul>

@@ -81,6 +81,12 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
     long getActiveHostsNumber();
 
     /**
+     * Gets the total number of existing Hosts in this Datacenter.
+     * @return
+     */
+    long size();
+
+    /**
      * Gets a Host from its id.
      * @param id the ID of the Host to get from the List.
      * @return the Host if found or {@link Host#NULL} otherwise
