@@ -9,7 +9,7 @@ exclude:
   - CONTRIBUTING.adoc
   - .github
 
-gems:
+plugins:
   - jekyll-asciidoc
   - jekyll-mentions
   - jemoji
