@@ -5,6 +5,10 @@ show_downloads: true
 theme: jekyll-theme-architect
 encoding: utf-8
 
+
+whitelist:
+  - jekyll-asciidoc
+  
 exclude:
   - CONTRIBUTING.adoc
   - .github
