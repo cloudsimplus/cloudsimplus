@@ -173,8 +173,8 @@ public class IndefiniteLengthCloudlet {
 
     /**
      * Creates Cloudlets with indefinite length by setting a negative value.
-     * This way, the Cloudlets keep running until until one of the conditions explained
-     * in the documentation of this class happens.
+     * This way, the Cloudlets keep running until one of the conditions explained
+     * in the documentation of this class is met.
      */
     private List<Cloudlet> createCloudlets() {
         final List<Cloudlet> list = new ArrayList<>(CLOUDLETS);
@@ -191,6 +191,7 @@ public class IndefiniteLengthCloudlet {
                     .setUtilizationModelBw(utilizationDynamic);
             list.add(cloudlet);
         }
+
         return list;
     }
 }
