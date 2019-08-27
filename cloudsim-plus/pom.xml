@@ -238,9 +238,9 @@
                         <configuration>
                             <serverId>ossrh</serverId>
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                            <!--If the artifact will be automatically released to maven central
-                            after the upload to sonatype.-->
+                            <!--If the artifact will be automatically released to maven central after the upload to sonatype.-->
                             <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                            <autoDropAfterRelease>true</autoDropAfterRelease>
                         </configuration>
                     </plugin>
                 </plugins>
