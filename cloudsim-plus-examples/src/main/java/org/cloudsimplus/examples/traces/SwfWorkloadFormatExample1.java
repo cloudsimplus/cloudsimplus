@@ -32,7 +32,7 @@ package org.cloudsimplus.examples.traces;
  * Copyright (c) 2009, The University of Melbourne, Australia
  */
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyFirstFit;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -41,24 +41,21 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.SwfWorkloadFileReader;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
 import org.cloudsimplus.util.Log;
 
-import java.util.*;
-import java.util.Map.Entry;
-
-import static java.util.Comparator.comparingLong;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An example showing how to dynamically create cloudlets from a workload trace
@@ -95,21 +92,8 @@ public class SwfWorkloadFormatExample1 {
     /**
      * The workload file to be read.
      */
-    private static final String WORKLOAD_FILENAME = "NASA-iPSC-1993-3.1-cln.swf.gz";
+    private static final String WORKLOAD_FILENAME = "workload/swf/NASA-iPSC-1993-3.1-cln.swf.gz";
 
-    /**
-     * The base dir inside the resource directory to get SWF workload files.
-     */
-    private static final String WORKLOAD_BASE_DIR = "workload/swf/";
-
-    /**
-     * A {@link Comparator} that sorts VMs submitted to a broker
-     * by the VM's required PEs number in decreasing order.
-     * This way, VMs requiring more PEs are created first.
-     *
-     * @see DatacenterBroker#setVmComparator(Comparator)
-     */
-    private static final Comparator<Vm> VM_COMPARATOR = comparingLong(Vm::getNumberOfPes).reversed();
     private final CloudSim simulation;
 
     /**
@@ -120,24 +104,18 @@ public class SwfWorkloadFormatExample1 {
      */
     private int maximumNumberOfCloudletsToCreateFromTheWorkloadFile = -1;
 
-    private static final int NUMBER_OF_VMS_PER_HOST = 10;
+    private final int HOST_PES = 12;
 
-    /**
-     * The minimum number of PEs to be created for each host.
-     */
-    private final int MINIMUM_NUM_OF_PES_BY_HOST = 8;
-
-    private static final int VM_MIPS = 10000;
+    private static final int  VM_MIPS = 10000;
+    private static final int  VM_PES = 4;
     private static final long VM_SIZE = 2000;
-    private static final int VM_RAM = 1000;
+    private static final int  VM_RAM = 1000;
     private static final long VM_BW = 50000;
 
     private List<Cloudlet> cloudletList;
     private List<Vm> vmlist;
     private Datacenter datacenter0;
     private DatacenterBroker broker;
-
-    private int lastCreatedHostId = 0;
 
     /**
      * Creates main() to run this example.
@@ -153,26 +131,27 @@ public class SwfWorkloadFormatExample1 {
 
         final int waitSecs = 5;
         System.out.printf(
-            "Starting %s in %d seconds. Since it reads a workload file, it can take a long time to finish...%n%n",
+            "Starting %s in %d seconds. Since it reads a workload file, it can take several minutes to finish...%n",
             getClass().getSimpleName(), waitSecs);
         sleep(waitSecs);
         final double startSecs = TimeUtil.currentTimeSecs();
+        System.out.printf("Simulation started at %s%n%n", LocalTime.now());
 
         simulation = new CloudSim();
         try {
             broker = new DatacenterBrokerSimple(simulation);
-            broker.setVmComparator(VM_COMPARATOR);
 
             /*Vms and cloudlets are created before the Datacenter and host
             because the example is defining the hosts based on VM requirements
             and VMs are created based on cloudlet requirements.*/
             createCloudletsFromWorkloadFile();
-            createOneVmForEachCloudlet(broker);
+            createVms();
 
-            datacenter0 = createDatacenterAndHostsBasedOnVmRequirements();
+            datacenter0 = createDatacenterAndHosts();
 
             broker.submitVmList(vmlist);
             broker.submitCloudletList(cloudletList);
+            broker.addOnVmsCreatedListener(this::onVmsCreated);
 
             simulation.start();
 
@@ -180,10 +159,19 @@ public class SwfWorkloadFormatExample1 {
             new CloudletsTableBuilder(newList).build();
 
             System.out.println(getClass().getSimpleName() + " finished!");
-            System.out.printf("Simulation execution time: %s%n", TimeUtil.secondsToStr(TimeUtil.elapsedSeconds(startSecs)));
+            System.out.printf("Simulation finished at %s. Execution time: %.2f seconds%n", LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
         } catch (Exception e) {
             System.out.printf("Erro during simulation execution: %s%n", e.getMessage());
         }
+    }
+
+    /**
+     * Method executed when all VMs submitted to the broker are placed
+     * into some Host.
+     * @param info
+     */
+    private void onVmsCreated(DatacenterBrokerEventInfo info) {
+        System.out.printf("%d VMs from Broker %d placed into some Host%n", vmlist.size(), info.getDatacenterBroker().getId());
     }
 
     private void sleep(final long seconds) {
@@ -194,150 +182,77 @@ public class SwfWorkloadFormatExample1 {
         }
     }
 
-    private void createOneVmForEachCloudlet(DatacenterBroker broker) {
-        int vmId = -1;
+    /**
+     * Creates a list of VMs according to the number of Cloudlets,
+     * in order to try accommodating all Cloudlets into those VMs.
+     */
+    private void createVms() {
+        final double totalCloudletPes = cloudletList.stream().mapToDouble(Cloudlet::getNumberOfPes).sum();
+        /* The number to multiple the VM_PES was chosen at random.
+        * It's used to reduce the number of VMs to create. */
+        final int totalVms = (int)Math.ceil(totalCloudletPes / (VM_PES*6));
+
         vmlist = new ArrayList<>();
-        for (Cloudlet cloudlet : this.cloudletList) {
-            Vm vm = new VmSimple(++vmId, VM_MIPS, cloudlet.getNumberOfPes())
-                .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-                .setCloudletScheduler(new CloudletSchedulerSpaceShared());
+        for (int i = 0; i < totalVms; i++) {
+            Vm vm = new VmSimple(VM_MIPS, VM_PES)
+                            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
+                            .setCloudletScheduler(new CloudletSchedulerSpaceShared());
             vmlist.add(vm);
-            cloudlet.setVm(vm);
         }
 
-        System.out.printf("# Created %d VMs for the %s%n", vmlist.size(), broker);
+        System.out.printf("# Created %12d VMs for the %s%n", vmlist.size(), broker);
     }
 
     private void createCloudletsFromWorkloadFile() {
-        final String fileName = WORKLOAD_BASE_DIR + WORKLOAD_FILENAME;
-        SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(fileName, VM_MIPS);
+        SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(WORKLOAD_FILENAME, VM_MIPS);
         reader.setMaxLinesToRead(maximumNumberOfCloudletsToCreateFromTheWorkloadFile);
         this.cloudletList = reader.generateWorkload();
 
-        System.out.printf("# Created %d Cloudlets for %s%n", this.cloudletList.size(), broker);
+        System.out.printf("# Created %12d Cloudlets for %s%n", this.cloudletList.size(), broker);
     }
 
     /**
-     * Creates the Datacenter.
+     * Creates the Datacenter with a number of Hosts according to the number of created VMs,
+     * in order to try accommodating all VMs into those Hosts.
      *
-     * @return the Datacenter
+     * @return the created Datacenter
      */
-    private Datacenter createDatacenterAndHostsBasedOnVmRequirements() {
-        List<Host> hostList = createHostsAccordingToVmRequirements();
-        Datacenter datacenter = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+    private Datacenter createDatacenterAndHosts() {
+        List<Host> hostList = createHosts(vmlist.size()/2);
+        Datacenter datacenter = new DatacenterSimple(simulation, hostList, new VmAllocationPolicyFirstFit());
 
-        System.out.printf("# Created %d Hosts at %s%n", hostList.size(), datacenter);
+        System.out.printf("# Added   %12d Hosts to %s%n", hostList.size(), datacenter);
         return datacenter;
-    }
-
-    /**
-     * Creates a list of hosts considering the requirements of the list of VMs.
-     *
-     * @return
-     */
-    private List<Host> createHostsAccordingToVmRequirements() {
-        List<Host> hostList = new ArrayList<>();
-        Map<Long, Long> vmsPesCountMap = getMapWithNumberOfVmsGroupedByRequiredPesNumber();
-        long numberOfPesRequiredByVms, numberOfVms, numberOfVmsRequiringUpToTheMinimumPesNumber = 0;
-        long totalOfHosts = 0, totalOfPesOfAllHosts = 0;
-        for (Entry<Long, Long> entry : vmsPesCountMap.entrySet()) {
-            numberOfPesRequiredByVms = entry.getKey();
-            numberOfVms = entry.getValue();
-            /*For VMs requiring MINIMUM_NUM_OF_PES_BY_HOST or less PEs,
-            it will be created a set of Hosts which all of them contain
-            this number of PEs.*/
-            if (numberOfPesRequiredByVms <= MINIMUM_NUM_OF_PES_BY_HOST) {
-                numberOfVmsRequiringUpToTheMinimumPesNumber += numberOfVms;
-            } else {
-                hostList.addAll(createHostsOfSameCapacity(numberOfVms, numberOfPesRequiredByVms));
-                totalOfHosts += numberOfVms;
-                totalOfPesOfAllHosts += numberOfVms * numberOfPesRequiredByVms;
-            }
-        }
-
-        totalOfHosts += numberOfVmsRequiringUpToTheMinimumPesNumber;
-        totalOfPesOfAllHosts += numberOfVmsRequiringUpToTheMinimumPesNumber * MINIMUM_NUM_OF_PES_BY_HOST;
-        List<Host> subList =
-            createHostsOfSameCapacity(
-                numberOfVmsRequiringUpToTheMinimumPesNumber,
-                MINIMUM_NUM_OF_PES_BY_HOST);
-        hostList.addAll(subList);
-        System.out.printf(
-            "# Total of created hosts: %d Total of PEs of all hosts: %d%n%n", totalOfHosts, totalOfPesOfAllHosts);
-
-        return hostList;
     }
 
     /**
      * Creates a specific number of PM's with the same capacity.
      *
-     * @param numberOfHosts number of hosts to create
-     * @param numberOfPes   number of PEs of the host
+     * @param hostsNumber number of hosts to create
      * @return the created host
      */
-    private List<Host> createHostsOfSameCapacity(long numberOfHosts, long numberOfPes) {
-        final long ram = VM_RAM * NUMBER_OF_VMS_PER_HOST;
-        final long storage = VM_SIZE * NUMBER_OF_VMS_PER_HOST;
-        final long bw = VM_BW * NUMBER_OF_VMS_PER_HOST;
+    private List<Host> createHosts(final long hostsNumber) {
+        final long ram = VM_RAM * 100;
+        final long storage = VM_SIZE * 1000;
+        final long bw = VM_BW * 1000;
 
-        List<Host> list = new ArrayList<>();
-        for (int i = 0; i < numberOfHosts; i++) {
-            List<Pe> peList = createPeList(numberOfPes, VM_MIPS);
-
-            Host host =
-                new HostSimple(ram, bw, storage, peList)
-                    .setRamProvisioner(new ResourceProvisionerSimple())
-                    .setBwProvisioner(new ResourceProvisionerSimple())
-                    .setVmScheduler(new VmSchedulerTimeShared());
-
+        final List<Host> list = new ArrayList<>((int)hostsNumber);
+        for (int i = 0; i < hostsNumber; i++) {
+            List<Pe> peList = createPeList(VM_MIPS);
+            Host host = new HostSimple(ram, bw, storage, peList);
             list.add(host);
         }
-
-        System.out.printf("# Created %d hosts with %d PEs each one%n", numberOfHosts, numberOfPes);
 
         return list;
     }
 
-    private List<Pe> createPeList(long numberOfPes, long mips) {
-        List<Pe> peList = new ArrayList<>();
-        for (int i = 0; i < numberOfPes; i++) {
-            peList.add(new PeSimple(mips, new PeProvisionerSimple()));
+    private List<Pe> createPeList(final long mips) {
+        final List<Pe> peList = new ArrayList<>(HOST_PES);
+        for (int i = 0; i < HOST_PES; i++) {
+            peList.add(new PeSimple(mips));
         }
 
         return peList;
     }
 
-    /**
-     * Gets a map containing the number of PEs that existing VMs require and the
-     * total of VMs that required the same number of PEs. This map is a way to
-     * know how many PMs will be required to host the VMs.
-     *
-     * @return a map that counts the number of VMs that requires the same amount
-     * of PEs. Each map key is number of PEs and each value is the number of VMs
-     * that require that number of PEs. For instance, a key = 8 and a value = 5
-     * means there is 5 VMs that require 8 PEs.
-     */
-    private Map<Long, Long> getMapWithNumberOfVmsGroupedByRequiredPesNumber() {
-        Map<Long, Long> vmsPesCountMap = new HashMap<>();
-        for (Vm vm : vmlist) {
-            final long pesNumber = vm.getNumberOfPes();
-            //checks if the map already has an entry to the given pesNumber
-            Long numberOfVmsWithGivenPesNumber = vmsPesCountMap.get(pesNumber);
-            if (numberOfVmsWithGivenPesNumber == null) {
-                numberOfVmsWithGivenPesNumber = 0L;
-            }
-            //updates the number of VMs that have the given pesNumber
-            vmsPesCountMap.put(pesNumber, ++numberOfVmsWithGivenPesNumber);
-        }
-
-        System.out.println();
-        long totalOfVms = 0, totalOfPes = 0;
-        for (Entry<Long, Long> entry : vmsPesCountMap.entrySet()) {
-            totalOfVms += entry.getValue();
-            totalOfPes += entry.getKey() * entry.getValue();
-            System.out.printf("# There are %d VMs requiring %d PEs%n", entry.getValue(), entry.getKey());
-        }
-        System.out.printf("# Total of VMs: %d Total of required PEs of all VMs: %d%n", totalOfVms, totalOfPes);
-        return vmsPesCountMap;
-    }
 }
