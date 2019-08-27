@@ -1140,7 +1140,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public String toString() {
-        return getName();
+        return "Broker " + getId();
     }
 
     @Override
