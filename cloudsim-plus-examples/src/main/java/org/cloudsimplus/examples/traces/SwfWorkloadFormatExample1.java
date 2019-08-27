@@ -51,6 +51,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.DatacenterBrokerEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.util.Log;
 
 import java.time.LocalTime;
@@ -131,7 +132,7 @@ public class SwfWorkloadFormatExample1 {
 
         final int waitSecs = 5;
         System.out.printf(
-            "Starting %s in %d seconds. Since it reads a workload file, it can take several minutes to finish...%n",
+            "Starting %s in %d seconds. Since it reads a workload file, it can take some minutes to finish...%n",
             getClass().getSimpleName(), waitSecs);
         sleep(waitSecs);
         final double startSecs = TimeUtil.currentTimeSecs();
@@ -142,12 +143,12 @@ public class SwfWorkloadFormatExample1 {
             broker = new DatacenterBrokerSimple(simulation);
 
             /*Vms and cloudlets are created before the Datacenter and host
-            because the example is defining the hosts based on VM requirements
-            and VMs are created based on cloudlet requirements.*/
+            because the example is creating: (i) hosts based on VM requirements;
+            (ii) VMs based on cloudlet requirements.*/
             createCloudletsFromWorkloadFile();
             createVms();
 
-            datacenter0 = createDatacenterAndHosts();
+            datacenter0 = createDatacenter();
 
             broker.submitVmList(vmlist);
             broker.submitCloudletList(cloudletList);
@@ -161,7 +162,7 @@ public class SwfWorkloadFormatExample1 {
             System.out.println(getClass().getSimpleName() + " finished!");
             System.out.printf("Simulation finished at %s. Execution time: %.2f seconds%n", LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
         } catch (Exception e) {
-            System.out.printf("Erro during simulation execution: %s%n", e.getMessage());
+            System.out.printf("Error during simulation execution: %s%n", e.getMessage());
         }
     }
 
@@ -169,6 +170,7 @@ public class SwfWorkloadFormatExample1 {
      * Method executed when all VMs submitted to the broker are placed
      * into some Host.
      * @param info
+     * @see DatacenterBroker#addOnVmsCreatedListener(EventListener)
      */
     private void onVmsCreated(DatacenterBrokerEventInfo info) {
         System.out.printf("%d VMs from Broker %d placed into some Host%n", vmlist.size(), info.getDatacenterBroker().getId());
@@ -217,7 +219,7 @@ public class SwfWorkloadFormatExample1 {
      *
      * @return the created Datacenter
      */
-    private Datacenter createDatacenterAndHosts() {
+    private Datacenter createDatacenter() {
         List<Host> hostList = createHosts(vmlist.size()/2);
         Datacenter datacenter = new DatacenterSimple(simulation, hostList, new VmAllocationPolicyFirstFit());
 
