@@ -168,6 +168,7 @@ public class CloudSim implements Simulation {
     private final Set<EventListener<EventInfo>> onSimulationPauseListeners;
     private final Set<EventListener<EventInfo>> onClockTickListeners;
     private final Set<EventListener<EventInfo>> onSimulationStartListeners;
+    private boolean processEventsInParallel;
 
     /**
      * Creates a CloudSim simulation.
@@ -705,6 +706,27 @@ public class CloudSim implements Simulation {
         for (final EventListener<SimEvent> listener : onEventProcessingListeners) {
             listener.update(evt);
         }
+    }
+
+    /**
+     * Checks if the simulation must {@link #processEventsInParallel process events in parallel}
+     * and then synchronizes some code block encapsulated into a {@link Runnable} object
+     * (or lambda expression). This ensures thread safety to call the code block.
+     *
+     * <p>For instance, if you want to change the simulation clock in a synchronous way,
+     * call {@code sync(() -> setClock(NEW_TIME))}.
+     * This gives the sync() method a lambda expression representing a {@link Runnable}.
+     * </p>
+     *
+     * <p><b>WARNING:</b> this is a very experimental feature. It may result
+     * in unexpected simulation behaviour. Use at your own risk.</p>
+     *
+     * @param runnable The {@link Runnable} that encapsulates the code block to be called synchronously.
+     */
+    private void sync(final Runnable runnable){
+        if(processEventsInParallel)
+            synchronized(this){ runnable.run(); }
+        else runnable.run();
     }
 
     /**
