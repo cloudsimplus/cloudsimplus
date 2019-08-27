@@ -464,7 +464,6 @@ public class CloudSim implements Simulation {
     private double setClock(final double newTime){
         final double oldTime = clock;
         this.clock = newTime;
-
         notifyOnClockTickListenersIfClockChanged();
         return oldTime;
     }
@@ -700,8 +699,8 @@ public class CloudSim implements Simulation {
         if (evt.getTime() < clock) {
             throw new IllegalArgumentException("Past event detected. Event time: " + evt.getTime() + " Simulation clock: " + clock);
         }
-        setClock(evt.getTime());
 
+        setClock(evt.getTime());
         processEventByType(evt);
         for (final EventListener<SimEvent> listener : onEventProcessingListeners) {
             listener.update(evt);
