@@ -240,7 +240,7 @@
                             <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                             <!--If the artifact will be automatically released to maven central
                             after the upload to sonatype.-->
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
                         </configuration>
                     </plugin>
                 </plugins>
