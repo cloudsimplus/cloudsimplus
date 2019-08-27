@@ -172,7 +172,7 @@ public class PoissonDistr implements ContinuousDistribution {
      */
     @Override
     public double sample() {
-        return Math.exp(1.0 - rand.sample()) / getLambda();
+        return -Math.log(1.0 - rand.sample()) / getLambda();
     }
 
     @Override
