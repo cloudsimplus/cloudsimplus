@@ -48,10 +48,12 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.SwfWorkloadFileReader;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.util.Log;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -147,12 +149,14 @@ public class SwfWorkloadFormatExample1 {
     }
 
     private SwfWorkloadFormatExample1() {
-        /*Enables just some level of log messages.
-          Make sure to import org.cloudsimplus.util.Log;*/
-        //Log.setLevel(ch.qos.logback.classic.Level.WARN);
+        Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
-        System.out.println("Starting " + getClass().getSimpleName() + " in 5 seconds. Since it reads a workload file, it can take a long time to finish.");
-        sleep(5);
+        final int waitSecs = 5;
+        System.out.printf(
+            "Starting %s in %d seconds. Since it reads a workload file, it can take a long time to finish...%n%n",
+            getClass().getSimpleName(), waitSecs);
+        sleep(waitSecs);
+        final double startSecs = TimeUtil.currentTimeSecs();
 
         simulation = new CloudSim();
         try {
@@ -176,6 +180,7 @@ public class SwfWorkloadFormatExample1 {
             new CloudletsTableBuilder(newList).build();
 
             System.out.println(getClass().getSimpleName() + " finished!");
+            System.out.printf("Simulation execution time: %s%n", TimeUtil.secondsToStr(TimeUtil.elapsedSeconds(startSecs)));
         } catch (Exception e) {
             System.out.printf("Erro during simulation execution: %s%n", e.getMessage());
         }

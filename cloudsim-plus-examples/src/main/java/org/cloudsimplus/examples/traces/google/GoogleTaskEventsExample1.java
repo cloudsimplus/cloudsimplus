@@ -43,6 +43,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -55,6 +56,7 @@ import org.cloudsimplus.traces.google.GoogleTaskUsageTraceReader;
 import org.cloudsimplus.traces.google.TaskEvent;
 import org.cloudsimplus.util.Log;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -120,6 +122,8 @@ public class GoogleTaskEventsExample1 {
     }
 
     private GoogleTaskEventsExample1() {
+        final double startSecs = TimeUtil.currentTimeSecs();
+        System.out.printf("Simulation started at %s%n%n", LocalTime.now());
         Log.setLevel(Level.TRACE);
 
         simulation = new CloudSim();
@@ -132,6 +136,7 @@ public class GoogleTaskEventsExample1 {
         simulation.start();
 
         brokers.forEach(this::printCloudlets);
+        System.out.printf("Simulation finished at %s. Execution time: %.2f seconds%n", LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
     }
 
     /**
