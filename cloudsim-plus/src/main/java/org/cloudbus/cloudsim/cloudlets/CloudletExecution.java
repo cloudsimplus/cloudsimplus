@@ -102,6 +102,9 @@ public class CloudletExecution {
      */
     private double timeSlice;
 
+    /** @see #getLastAllocatedMips() */
+    private double lastAllocatedMips;
+
     /**
      * Instantiates a CloudletExecutionInfo object upon the arrival of a Cloudlet inside a Datacenter.
      * The arriving time is determined by {@link CloudSim#clock()}.
@@ -220,13 +223,13 @@ public class CloudletExecution {
          * is received by the broker to finish the cloudlet.
          */
 
-        /* Getting here, it's ensure the length is negative. This way,
+        /* Getting here, it's ensured the length is negative. This way,
          * if the different between the length and the number of executed MI is
          * zero, in a scenario of a regular Cloudlet with a positive length,
          * that means the Cloudlet has finished.
          * If the length is negative yet, that doesn't mean it is finished.
-         * In this case, we just return the absolute length to ensure the
-         * Cloudlet keeps running. */
+         * In this case, we just return the absolute length to make the
+         * Cloudlet keep running. */
         if(absLength-miFinishedSoFar == 0) {
             return absLength;
         }
@@ -446,7 +449,6 @@ public class CloudletExecution {
      * assign to each Cloudlet.
      *
      * @param timeSlice the Cloudlet time-slice to set (in seconds)
-     *
      */
     public void setTimeSlice(final double timeSlice) {
         this.timeSlice = timeSlice;
@@ -466,5 +468,35 @@ public class CloudletExecution {
     @Override
     public int hashCode() {
         return Objects.hash(cloudlet.getId());
+    }
+
+    /**
+     * Gets the last actually allocated MIPS for the Cloudlet.
+     * That means if no MIPS was allocated for a given time,
+     * it is not stored.
+     * This value is used to compute the expected finish time
+     * of a Cloudlet. If the allocated MIPS is zero,
+     * we don't have how to compute that.
+     *
+     * @return
+     */
+    public double getLastAllocatedMips() {
+        return lastAllocatedMips;
+    }
+
+    /**
+     * Sets the last actually allocated MIPS for the Cloudlet.
+     * That means if no MIPS was allocated for a given time,
+     * it is not stored.
+     * This value is used to compute the expected finish time
+     * of a Cloudlet. If the allocated MIPS is zero,
+     * we don't have how to compute that.
+     *
+     * @param lastAllocatedMips the value to set (if zero or negative, the attribute is not changed)
+     */
+    public void setLastAllocatedMips(final double lastAllocatedMips) {
+        if(lastAllocatedMips > 0) {
+            this.lastAllocatedMips = lastAllocatedMips;
+        }
     }
 }

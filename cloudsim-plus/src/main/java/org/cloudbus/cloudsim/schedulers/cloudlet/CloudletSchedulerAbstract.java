@@ -750,8 +750,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * (which is a relative delay from the current simulation time)
      */
     protected double cloudletEstimatedFinishTime(final CloudletExecution cle, final double currentTime) {
-        final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime);
-        final double estimatedFinishTime = cle.getRemainingCloudletLength() / cloudletUsedMips;
+        final double cloudletAllocatedMips = getAllocatedMipsForCloudlet(cle, currentTime);
+        cle.setLastAllocatedMips(cloudletAllocatedMips);
+        /*If no MIPS were currently allocated for the Cloudlet,
+        * it would cause a division by zero when trying to compute the estimated finish time.
+        * In such a case, gets the last allocated MIPS to compute that.
+        * That value will be the current allocated MIPS if some MIPS were
+        * actually allocated or the previous allocated MIPS otherwise.*/
+        final double estimatedFinishTime = cle.getRemainingCloudletLength() / cle.getLastAllocatedMips();
 
         if (estimatedFinishTime < vm.getSimulation().getMinTimeBetweenEvents()) {
             return vm.getSimulation().getMinTimeBetweenEvents();
