@@ -147,28 +147,19 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
 
     @Override
     public double getUtilization(final double time) {
-        //If the time requested is multiple of the scheduling interval, gets a precise value from the trace utilization
+        //If the time requested is multiple of the scheduling interval, gets a precise value from the trace file
         if (Math.round(time) % getSchedulingInterval() == 0) {
             return utilization[(int) getUtilizationIndex(time)];
         }
 
         /* Otherwise, computes a utilization based the
-         * utilization between the a interval [start - end] for which
-         * we have the utilization stored in the trace. */
-        final int prevIndex = getPrevUtilizationIndex(time);
-
-        //Elapsed time since the previous utilization index
-        final double elapsedTimeSincePrevUsage = prevIndex * getSchedulingInterval();
-
-        final double totalElapsedTime = time - elapsedTimeSincePrevUsage;
-        return utilization[prevIndex] + getUtilizationPerSec(time) * totalElapsedTime;
-    }
-
-    private double getUtilizationPerSec(final double time) {
+         * utilization mean between the a interval [start - end]
+         * for which we have the utilization stored in the trace. */
         final int prevIndex = getPrevUtilizationIndex(time);
         final int nextIndex = getNextUtilizationIndex(time);
 
-        return (utilization[nextIndex] - utilization[prevIndex]) / getSecondsInsideInterval(prevIndex, nextIndex);
+        return (utilization[prevIndex] + utilization[nextIndex]) / 2.0;
+
     }
 
     protected final double getSecondsInsideInterval(final int prevIndex, final int nextIndex) {
