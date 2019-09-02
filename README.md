@@ -23,9 +23,9 @@
 |
 <b><a href="#differences">Differences from CloudSim</a></b>
 |
-<b><a href="#7-general-features-of-the-simulator">General Features</a></b>
+<b><a href="#7-general-features-of-the-framework">General Features</a></b>
 |
-<b><a href="#8-publications">Publications</a></b>
+<b><a href="#8-cloudsim-plus-publications">Publications</a></b>
 |
 <b><a href="#9-license">License</a></b>
 |
