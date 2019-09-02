@@ -318,7 +318,7 @@ public class CloudSim implements Simulation {
                 return false;
             }
 
-            /* If it is time to terminate the simulation, sets a new termination time
+            /* If it's time to terminate the simulation, sets a new termination time
              * so that events to finish Cloudlets with a negative length are received.
              * Cloudlets with a negative length must keep running
              * until a CLOUDLET_FINISH event is sent to the broker or the termination time is reached*/
@@ -527,9 +527,8 @@ public class CloudSim implements Simulation {
             * (such as the dynamic arrival of VMs or Cloudlets).
             * Without increasing the time, the simulation stops due to lack of new events.*/
             LOGGER.info(
-                "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set).{}Checking new events in {} seconds ({})",
-                clockStr(), terminationTime, System.lineSeparator(),
-                increment, info);
+                "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set). Checking new events in {} seconds ({})",
+                clockStr(), terminationTime, increment, info);
             setClock(clock + increment);
             return true;
         }
