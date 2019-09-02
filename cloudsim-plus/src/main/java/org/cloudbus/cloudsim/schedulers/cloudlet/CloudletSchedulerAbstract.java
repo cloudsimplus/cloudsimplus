@@ -571,9 +571,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the executed length, in <b>Million Instructions (MI)</b>, since the last time cloudlet was processed.
      */
     protected long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
-        final long partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(cle, currentTime);
+        final double partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(cle, currentTime);
         cle.updateProcessing(partialFinishedInstructions);
-        return partialFinishedInstructions/Conversion.MILLION;
+        return (long)(partialFinishedInstructions/Conversion.MILLION);
     }
 
     /**
@@ -651,7 +651,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *       method is being called 4 times instead of just 2 (1 for each cloudlet for
      *       that time).
      */
-    private long cloudletExecutedInstructionsForTimeSpan(final CloudletExecution cle, final double currentTime) {
+    private double cloudletExecutedInstructionsForTimeSpan(final CloudletExecution cle, final double currentTime) {
         /* The time the Cloudlet spent executing in fact, since the last time Cloudlet update was
          * called by the scheduler. If it is zero, indicates that the Cloudlet didn't use
          * the CPU in this time span, because it is waiting for its required files
@@ -659,7 +659,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          */
         final double actualProcessingTime = hasCloudletFileTransferTimePassed(cle, currentTime) ? timeSpan(cle, currentTime) : 0;
         final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime);
-        return (long) (cloudletUsedMips * actualProcessingTime * Conversion.MILLION);
+        return cloudletUsedMips * actualProcessingTime * Conversion.MILLION;
     }
 
     /**
