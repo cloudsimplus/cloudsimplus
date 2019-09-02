@@ -32,7 +32,7 @@ import java.util.Optional;
  */
 public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /**
-     * The index of the last host used to place a VM.
+     * The index of the last host where a VM was placed.
      */
     private int lastHostIndex;
 

@@ -28,7 +28,13 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * This is default number of samples to try to read from the trace file
      * if a different value isn't provided to the constructors.
      */
-    private static final int DATA_SAMPLES = 288;
+    public static final int DEF_DATA_SAMPLES = 288;
+
+    /**
+     * The default interval between each data line inside a
+     * PlanetLab trace file (in seconds)
+     */
+    public static final int DEF_SCHEDULING_INTERVAL = 300;
 
     /**
      * @see #getSchedulingInterval()
@@ -40,9 +46,24 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * minutes. The size of the array is defined according to the number of utilization samples
      * specified in the constructor.
      *
-     * @see #DATA_SAMPLES
+     * @see #DEF_DATA_SAMPLES
      */
     private final double[] utilization;
+
+    /**
+     * Instantiates a new PlanetLab resource utilization model from a trace
+     * file inside the <b>application's resource directory</b>,
+     * considering that the interval between each data line inside a
+     * PlanetLab trace file is the {@link #DEF_SCHEDULING_INTERVAL default one}.
+     *
+     * @param traceFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
+     * @throws NumberFormatException the number format exception
+     * @see #getSchedulingInterval()
+     */
+    public static UtilizationModelPlanetLab getInstance(final String traceFilePath) {
+        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(traceFilePath, UtilizationModelPlanetLab.class));
+        return new UtilizationModelPlanetLab(reader, DEF_SCHEDULING_INTERVAL, DEF_DATA_SAMPLES);
+    }
 
     /**
      * Instantiates a new PlanetLab resource utilization model from a trace
@@ -55,7 +76,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      */
     public static UtilizationModelPlanetLab getInstance(final String traceFilePath, final double schedulingInterval) {
         final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(traceFilePath, UtilizationModelPlanetLab.class));
-        return new UtilizationModelPlanetLab(reader, schedulingInterval, DATA_SAMPLES);
+        return new UtilizationModelPlanetLab(reader, schedulingInterval, DEF_DATA_SAMPLES);
     }
 
     /**
@@ -69,7 +90,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      */
     public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval) throws NumberFormatException
     {
-        this(workloadFilePath, schedulingInterval, DATA_SAMPLES);
+        this(workloadFilePath, schedulingInterval, DEF_DATA_SAMPLES);
     }
 
     /**
@@ -153,13 +174,12 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         }
 
         /* Otherwise, computes a utilization based the
-         * utilization mean between the a interval [start - end]
+         * utilization mean between the interval [prevIndex to nextIndex]
          * for which we have the utilization stored in the trace. */
         final int prevIndex = getPrevUtilizationIndex(time);
         final int nextIndex = getNextUtilizationIndex(time);
 
         return (utilization[prevIndex] + utilization[nextIndex]) / 2.0;
-
     }
 
     protected final double getSecondsInsideInterval(final int prevIndex, final int nextIndex) {

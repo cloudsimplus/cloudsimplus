@@ -103,7 +103,6 @@ public class DatacenterBrokerSimple extends DatacenterBrokerAbstract {
         }
 
         return getDatacenterList().get(++lastSelectedDcIndex);
-
     }
 
     /**
