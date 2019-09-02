@@ -17,11 +17,11 @@
 |
 <b><a href="#6-documentation-and-help">Docs and Help</a></b>
 |
-<b><a href="#61-why-care">Why should I care?</a></b>
+<b><a href="#why-care">Why should I care?</a></b>
 |
-<b><a href="#62-why-another-fork">Why an independent fork?</a></b>
+<b><a href="#why-another-fork">Why an independent fork?</a></b>
 |
-<b><a href="#63-differences">Differences from CloudSim</a></b>
+<b><a href="#differences">Differences from CloudSim</a></b>
 |
 <b><a href="#7-general-features-of-the-simulator">General Features</a></b>
 |
