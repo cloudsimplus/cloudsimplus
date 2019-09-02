@@ -64,6 +64,13 @@ public class CloudletExecution {
     private double finishedTime;
 
     /**
+     * The time a request was sent to the broker to finish the Cloudlet
+     * when it has a negative length.
+     * @see Cloudlet#getLength()
+     */
+    private double finishRequestTime;
+
+    /**
      * The length of Cloudlet finished so far in number of Instructions (I).
      * The attribute stores the execution length of the cloudlet
      * in previous datacenters. Thus, it represents the actual executed
@@ -278,7 +285,8 @@ public class CloudletExecution {
         final Simulation simulation = cloudlet.getSimulation();
         setLastProcessingTime(simulation.clock());
 
-        if(partialFinishedInstructions <= 0){
+        final boolean terminate = simulation.isTimeToTerminateSimulationUnderRequest();
+        if(partialFinishedInstructions == 0 && !terminate){
             return;
         }
 
@@ -289,7 +297,8 @@ public class CloudletExecution {
         /* If a simulation termination time was defined and the length of the Cloudlet is negative
          * (to indicate that they must not finish before the termination time),
          * then sends a request to finish the Cloudlet. */
-        if(cloudlet.getLength() < 0 && simulation.isTimeToTerminateSimulationUnderRequest()){
+        if(finishRequestTime <= 0 && terminate && cloudlet.getLength() < 0){
+            finishRequestTime = simulation.clock();
             simulation.sendFirst(new CloudSimEvent(cloudlet.getBroker(), CloudSimTags.CLOUDLET_FINISH, cloudlet));
         }
     }
