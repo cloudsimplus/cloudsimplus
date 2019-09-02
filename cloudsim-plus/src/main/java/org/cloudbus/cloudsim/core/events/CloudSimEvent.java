@@ -64,7 +64,7 @@ public final class CloudSimEvent implements SimEvent {
      * Creates a {@link Type#SEND} CloudSimEvent.
      * @param delay how many seconds after the current simulation time the event should be scheduled
      * @param src the source entity which is sending the message
-     * @param dest the source entity which has to receive the message
+     * @param dest the destination entity which has to receive the message
      * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
      * @param data the data attached to the message, that depends on the message tag
      */
@@ -79,7 +79,7 @@ public final class CloudSimEvent implements SimEvent {
     /**
      * Creates a {@link Type#SEND} CloudSimEvent where the sender and destination are the same entity.
      * @param delay how many seconds after the current simulation time the event should be scheduled
-     * @param dest the source entity which has to receive the message
+     * @param dest the destination entity which has to receive the message
      * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
      */
     public CloudSimEvent(final double delay, final SimEntity dest, final int tag) {
@@ -87,9 +87,21 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     /**
+     * Creates a {@link Type#SEND} CloudSimEvent where the sender and destination are the same entity
+     * and the message is sent with no delay.
+     *
+     * @param dest the destination entity which has to receive the message
+     * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
+     * @param data the data attached to the message, that depends on the message tag
+     */
+    public CloudSimEvent(final SimEntity dest, final int tag, Object data) {
+        this(0, dest, tag, data);
+    }
+
+    /**
      * Creates a {@link Type#SEND} CloudSimEvent where the sender and destination are the same entity.
      * @param delay how many seconds after the current simulation time the event should be scheduled
-     * @param dest the source entity which has to receive the message
+     * @param dest the destination entity which has to receive the message
      * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
      * @param data the data attached to the message, that depends on the message tag
      */

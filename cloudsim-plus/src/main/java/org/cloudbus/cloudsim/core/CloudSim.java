@@ -328,7 +328,7 @@ public class CloudSim implements Simulation {
                 }
 
                 if(newTerminationTime == -1) {
-                    newTerminationTime = Math.max(terminationTime, clock) + (minTimeBetweenEvents*2);
+                    newTerminationTime = Math.max(terminationTime, clock) + minTimeBetweenEvents*2;
                 }
             }
 

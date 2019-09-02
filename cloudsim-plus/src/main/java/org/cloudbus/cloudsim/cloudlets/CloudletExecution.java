@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.cloudlets;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
@@ -290,7 +291,7 @@ public class CloudletExecution {
          * (to indicate that they must not finish before the termination time),
          * then sends a request to finish the Cloudlet. */
         if(cloudlet.getLength() < 0 && simulation.isTimeToTerminateSimulationUnderRequest()){
-            cloudlet.getBroker().schedule(CloudSimTags.CLOUDLET_FINISH, cloudlet);
+            simulation.sendFirst(new CloudSimEvent(cloudlet.getBroker(), CloudSimTags.CLOUDLET_FINISH, cloudlet));
         }
     }
 
