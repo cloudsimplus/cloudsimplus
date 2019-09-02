@@ -5,31 +5,31 @@
 [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 <p align="center">
-<b><a href="#overview">Overview</a></b>
+<b><a href="#1-overview">Overview</a></b>
 |
-<b><a href="#main-exclusive-features">Exclusive Features</a></b>
+<b><a href="#2-main-exclusive-features">Exclusive Features</a></b>
 |
-<b><a href="#projects-structure">Structure</a></b>
+<b><a href="#3-projects-structure">Structure</a></b>
 |
-<b><a href="#how-to-use-cloudsim-plus">How to use</a></b>
+<b><a href="#4-how-to-use-cloudsim-plus">How to use</a></b>
 |
-<b><a href="#a-minimal-and-complete-simulation-example">Examples</a></b>
+<b><a href="#5-a-minimal-and-complete-simulation-example">Examples</a></b>
 |
-<b><a href="#documentation-and-help">Docs and Help</a></b>
+<b><a href="#6-documentation-and-help">Docs and Help</a></b>
 |
-<b><a href="#why-care">Why should I care?</a></b>
+<b><a href="#61-why-care">Why should I care?</a></b>
 |
-<b><a href="#why-another-fork">Why an independent fork?</a></b>
+<b><a href="#62-why-another-fork">Why an independent fork?</a></b>
 |
-<b><a href="#differences">Differences from CloudSim</a></b>
+<b><a href="#63-differences">Differences from CloudSim</a></b>
 |
-<b><a href="#general-features-of-the-simulator">General Features</a></b>
+<b><a href="#7-general-features-of-the-simulator">General Features</a></b>
 |
-<b><a href="#publications">Publications</a></b>
+<b><a href="#8-publications">Publications</a></b>
 |
-<b><a href="#license">License</a></b>
+<b><a href="#9-license">License</a></b>
 |
-<b><a href="#contributing">Contributing</a></b>
+<b><a href="#10-contributing">Contributing</a></b>
 </p>
 
 # 1. Overview
@@ -303,7 +303,7 @@ See the [publications](#publications) section to access published CloudSim Plus 
 
 <a id="why-care"></a>
 
-# 7. Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
+## 6.1. Why should I care about this CloudSim fork? I just want to build my simulations. :neutral_face:
 Well, the design of the tool has a direct impact when you need to extend it to include some feature required for your simulations. 
 The simulator has a set of classes that implement interfaces such as `VmScheduler`, `CloudletScheduler`, `VmAllocationPolicy`, `ResourceProvisioner`, 
 `UtilizationModel`, `PowerModel` and `DatacenterBroker` and provide basic algorithms for different goals. 
@@ -327,7 +327,7 @@ that show the need of a new re-engineered version of the simulator.
 
 <a id="why-another-fork"></a>
 
-# 8. But why an independent CloudSim fork? :unamused:
+## 6.2. But why an independent CloudSim fork? :unamused:
 The original CloudSim moved on to a new major release, 
 introducing a completely new set of classes to provide Container as a Service (CaaS) simulations, 
 before the changes proposed here being merged to the official repository. 
@@ -339,7 +339,7 @@ In reason of that, CloudSim Plus was born as an independent fork, following its 
 
 <a id="differences"></a>
 
-# 9. What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations to use CloudSim Plus?
+## 6.3. What are the practical differences of using CloudSim Plus instead of CloudSim? How can I update my simulations to use CloudSim Plus?
 
 It's much easier to use CloudSim Plus. 
 A complete, side-by-side [comparison between CloudSim and CloudSim Plus Java simulation scenarios 
@@ -412,7 +412,7 @@ A complete and clear example was presented in the <a href="#a-minimal-and-comple
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# 10. General Features of the Framework
+# 7. General Features of the Framework
 
 CloudSim Plus supports modeling and simulation of:
 
@@ -426,7 +426,7 @@ CloudSim Plus supports modeling and simulation of:
 
 <a id="publications"></a>
 
-# 11. CloudSim Plus Publications
+# 8. CloudSim Plus Publications
 
 1. M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire. [CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,](https://doi.org/10.23919/INM.2017.7987304) in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7. If you are using CloudSim Plus in your research, please make sure you cite that paper. You can check the paper presentation [here](http://cloudsimplus.org/docs/presentation/).
 2. White Paper. [CloudSim Plus: A Modern Java 8 Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services](https://github.com/manoelcampos/cloudsim-plus/blob/master/docs/cloudsim-plus-white-paper.pdf). 2016.
@@ -434,13 +434,13 @@ CloudSim Plus supports modeling and simulation of:
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
   
-# 12. License
+# 9. License
 
 This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0), as defined inside CloudSim 3 source files.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# 13. Contributing
+# 10. Contributing
 
 You are welcome to contribute to the project. 
 However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. 
