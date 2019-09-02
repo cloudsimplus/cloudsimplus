@@ -545,15 +545,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
          * is updated at this clock tick instead of the next one.*/
         updateHostProcessing(cloudlet);
 
-        /* If the Cloudlet length was negative,
-         * after finishing it a VM update event is sent to ensure the broker is notified
-         * the Cloudlet has finished.
+        /* If the Cloudlet length was negative, after finishing it,
+         * a VM update event is sent to ensure the broker is notified the Cloudlet has finished.
          * A negative length makes the Cloudlet to keep running until a finish message is
          * sent to the broker. */
         if(prevLength < 0){
             final double delay = cloudlet.getSimulation().getMinTimeBetweenEvents();
             final Datacenter dc = cloudlet.getVm().getHost().getDatacenter();
-            dc.schedule(delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING, null);
+            dc.schedule(delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
     }
 
