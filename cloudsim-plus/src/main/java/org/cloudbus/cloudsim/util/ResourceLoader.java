@@ -37,6 +37,19 @@ public final class ResourceLoader {
     }
 
     /**
+     * Gets a {@link FileReader}
+     * @param file the {@link java.io.File} to be read
+     * @return the {@link FileReader} instance.
+     */
+    public static FileReader getFileReader(final java.io.File file){
+        try {
+            return new FileReader(file);
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
      * Gets the absolute path of a resource (a file or sub-directory) inside the resources directory.
      *
      * @param klass a class from the project which will be used just to assist in getting the path
