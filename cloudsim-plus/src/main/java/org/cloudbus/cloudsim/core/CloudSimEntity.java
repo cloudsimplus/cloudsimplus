@@ -121,6 +121,11 @@ public abstract class CloudSimEntity implements SimEntity {
     }
 
     @Override
+    public boolean schedule(final double delay, final int tag) {
+        return schedule(this, delay, tag, null);
+    }
+
+    @Override
     public boolean schedule(final SimEntity dest, final double delay, final int tag) {
         return schedule(dest, delay, tag, null);
     }
