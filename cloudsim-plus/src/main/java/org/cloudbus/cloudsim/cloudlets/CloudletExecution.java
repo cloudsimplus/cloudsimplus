@@ -221,14 +221,13 @@ public class CloudletExecution {
          * If length is negative, that means it is undefined.
          * This way, here it's ensured the remaining length keeps
          * increasing until a {@link CloudSimTags#CLOUDLET_FINISH} message
-         * is received by the broker to finish the cloudlet.
-         */
-
-        /* Getting here, it's ensured the length is negative. This way,
+         * is received by the broker to finish the cloudlet
+         *
+         * Getting here, it's ensured the length is negative. This way,
          * if the different between the length and the number of executed MI is
          * zero, in a scenario of a regular Cloudlet with a positive length,
          * that means the Cloudlet has finished.
-         * If the length is negative yet, that doesn't mean it is finished.
+         * If the length is negative, that doesn't mean it is finished.
          * In this case, we just return the absolute length to make the
          * Cloudlet keep running. */
         if(absLength-miFinishedSoFar == 0) {
