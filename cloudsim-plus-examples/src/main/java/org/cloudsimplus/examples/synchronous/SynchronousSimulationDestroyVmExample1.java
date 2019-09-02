@@ -94,7 +94,7 @@ public class SynchronousSimulationDestroyVmExample1 {
         new SynchronousSimulationDestroyVmExample1();
     }
 
-    public SynchronousSimulationDestroyVmExample1() {
+    private SynchronousSimulationDestroyVmExample1() {
         Log.setLevel(Level.WARN);
 
         simulation = new CloudSim();

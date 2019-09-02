@@ -96,7 +96,7 @@ public class VmListenersExample1 {
     /**
      * Default constructor that builds and starts the simulation.
      */
-    public VmListenersExample1() {
+    private VmListenersExample1() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

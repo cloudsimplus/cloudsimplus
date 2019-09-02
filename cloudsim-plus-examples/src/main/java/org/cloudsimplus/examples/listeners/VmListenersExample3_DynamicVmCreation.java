@@ -112,7 +112,7 @@ public class VmListenersExample3_DynamicVmCreation {
     /**
      * Default constructor that builds and starts the simulation.
      */
-    public VmListenersExample3_DynamicVmCreation() {
+    private VmListenersExample3_DynamicVmCreation() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

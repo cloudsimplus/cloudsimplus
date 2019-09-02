@@ -83,7 +83,7 @@ public class VmRelativeHostResourceUtilizationExample {
         new VmRelativeHostResourceUtilizationExample();
     }
 
-    public VmRelativeHostResourceUtilizationExample() {
+    private VmRelativeHostResourceUtilizationExample() {
         Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSim();

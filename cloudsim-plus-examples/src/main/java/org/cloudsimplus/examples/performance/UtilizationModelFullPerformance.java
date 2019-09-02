@@ -92,7 +92,7 @@ public class UtilizationModelFullPerformance {
         new UtilizationModelFullPerformance();
     }
 
-    public UtilizationModelFullPerformance() {
+    private UtilizationModelFullPerformance() {
         System.out.println("Starting " + this.getClass().getSimpleName() + " at " + LocalTime.now());
         final long startMillis = System.currentTimeMillis();
         Log.setLevel(ch.qos.logback.classic.Level.WARN);

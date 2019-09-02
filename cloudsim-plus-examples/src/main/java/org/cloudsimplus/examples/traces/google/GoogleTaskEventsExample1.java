@@ -68,24 +68,33 @@ import java.util.stream.IntStream;
 import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 
 /**
- * An example showing how to create Cloudlets (tasks) from a Google Task Events Trace
- * using a {@link GoogleTaskEventsTraceReader}. Then
- * it uses a {@link GoogleTaskUsageTraceReader} to read "task usage" trace files
- * that define how the created Cloudlets will use resources along the time.
+ * An example showing how to create Cloudlets (tasks) from a Google Task Events
+ * Trace using a {@link GoogleTaskEventsTraceReader}. Then it uses a
+ * {@link GoogleTaskUsageTraceReader} to read "task usage" trace files that
+ * define how the created Cloudlets will use resources along the time.
  *
- * <p>The trace are located in resources/workload/google-traces/.
- * Each line in the "task events" trace defines the scheduling of tasks (Cloudlets) inside a Datacenter.</p>
+ * <p>
+ * The trace are located in resources/workload/google-traces/. Each line in the
+ * "task events" trace defines the scheduling of tasks (Cloudlets) inside a
+ * Datacenter.
+ * </p>
  *
- * <p>Check important details at {@link TraceReaderAbstract}.</p>
+ * <p>
+ * Check important details at {@link TraceReaderAbstract}. To better understand
+ * the structure of trace files, check the google-cluster-data-samples.xlsx
+ * spreadsheet inside the docs dir.
+ * </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  *
- * @TODO A joint example that creates Hosts and Cloudlets from trace files will be useful.
+ * @TODO A joint example that creates Hosts and Cloudlets from trace files will
+ *       be useful.
  *
  * @TODO See https://github.com/manoelcampos/cloudsim-plus/issues/151
  * @TODO {@link CloudSimTags#CLOUDLET_FAIL} events aren't been processed.
- * @TODO It has to be checked how to make the Cloudlet to be executed in the Host specified in the trace file.
+ * @TODO It has to be checked how to make the Cloudlet to be executed in the
+ *       Host specified in the trace file.
  */
 public class GoogleTaskEventsExample1 {
     private static final String TRACE_FILENAME = "workload/google-traces/task-events-sample-1.csv";

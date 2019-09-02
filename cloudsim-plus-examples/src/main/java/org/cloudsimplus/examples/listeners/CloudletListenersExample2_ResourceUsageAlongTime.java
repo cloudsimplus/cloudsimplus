@@ -105,7 +105,7 @@ public class CloudletListenersExample2_ResourceUsageAlongTime {
     /**
      * Default constructor that builds and starts the simulation.
      */
-    public CloudletListenersExample2_ResourceUsageAlongTime() {
+    private CloudletListenersExample2_ResourceUsageAlongTime() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

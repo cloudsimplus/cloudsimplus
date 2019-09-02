@@ -124,7 +124,7 @@ public class DynamicHostCreation {
         new DynamicHostCreation();
     }
 
-    public DynamicHostCreation() {
+    private DynamicHostCreation() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

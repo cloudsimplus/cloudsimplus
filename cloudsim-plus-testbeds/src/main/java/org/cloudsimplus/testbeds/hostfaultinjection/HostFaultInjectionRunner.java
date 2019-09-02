@@ -100,16 +100,6 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
 
     private final Map<String, List<Double>> template;
 
-    private HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
-        super(applyAntitheticVariatesTechnique, baseSeed);
-        availabilityByBroker = new HashMap<>();
-        availability = new ArrayList<>();
-        percentageOfBrokersMeetingAvailability = new ArrayList<>();
-        ratioVmsPerHost = new ArrayList<>();
-        costTotal = new HashMap<>();
-        template = new HashMap<>();
-    }
-
     /**
      * Starts the execution of the experiments the number of times defines in
      * {@link #getSimulationRuns()}.
@@ -122,6 +112,16 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
             .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
             .setVerbose(true)
             .run();
+    }
+
+    private HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+        super(applyAntitheticVariatesTechnique, baseSeed);
+        availabilityByBroker = new HashMap<>();
+        availability = new ArrayList<>();
+        percentageOfBrokersMeetingAvailability = new ArrayList<>();
+        ratioVmsPerHost = new ArrayList<>();
+        costTotal = new HashMap<>();
+        template = new HashMap<>();
     }
 
     @Override

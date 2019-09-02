@@ -192,7 +192,7 @@ public final class MigrationExample2_PowerUsage {
         new MigrationExample2_PowerUsage();
     }
 
-    public MigrationExample2_PowerUsage(){
+    private MigrationExample2_PowerUsage(){
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

@@ -192,7 +192,7 @@ public final class MigrationExample1 {
         new MigrationExample1();
     }
 
-    public MigrationExample1(){
+    private MigrationExample1(){
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

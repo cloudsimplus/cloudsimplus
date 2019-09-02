@@ -31,7 +31,7 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
         new NetworkVmsExampleBagOfTasksApp();
     }
 
-    public NetworkVmsExampleBagOfTasksApp(){
+    private NetworkVmsExampleBagOfTasksApp(){
         super();
     }
 

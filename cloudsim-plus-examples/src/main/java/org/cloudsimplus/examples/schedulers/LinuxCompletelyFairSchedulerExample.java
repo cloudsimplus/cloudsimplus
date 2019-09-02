@@ -92,7 +92,7 @@ public class LinuxCompletelyFairSchedulerExample {
     /**
      * Default constructor which builds and runs the simulation.
      */
-    public LinuxCompletelyFairSchedulerExample() {
+    private LinuxCompletelyFairSchedulerExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

@@ -84,7 +84,7 @@ final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunne
                 .run();
     }
 
-    CloudletTaskCompletionTimeMinimizationRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
+    private CloudletTaskCompletionTimeMinimizationRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
         super(antitheticVariatesTechnique, baseSeed);
         cloudletTaskCompletionTime = new ArrayList<>();
         percentageOfCloudletsMeetingTaskCompletionTime = new ArrayList<>();

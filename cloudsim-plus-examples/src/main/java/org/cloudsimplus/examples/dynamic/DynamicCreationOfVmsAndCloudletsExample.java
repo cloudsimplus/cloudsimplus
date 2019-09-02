@@ -87,7 +87,7 @@ public class DynamicCreationOfVmsAndCloudletsExample {
     /**
      * Default constructor that builds the simulation.
      */
-    public DynamicCreationOfVmsAndCloudletsExample() {
+    private DynamicCreationOfVmsAndCloudletsExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

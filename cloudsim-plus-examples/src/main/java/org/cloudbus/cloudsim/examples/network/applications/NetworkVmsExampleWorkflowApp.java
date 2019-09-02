@@ -28,7 +28,7 @@ public class NetworkVmsExampleWorkflowApp extends NetworkVmExampleAbstract {
         new NetworkVmsExampleWorkflowApp();
     }
 
-    public NetworkVmsExampleWorkflowApp(){
+    private NetworkVmsExampleWorkflowApp(){
         super();
     }
 

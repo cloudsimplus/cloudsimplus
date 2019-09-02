@@ -101,7 +101,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      */
     private final boolean experimentVerbose = false;
 
-    DatacenterBrokerHeuristicRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
+    private DatacenterBrokerHeuristicRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
         experimentCosts = new ArrayList<>();
         runtimeStats = new SummaryStatistics();

@@ -117,7 +117,7 @@ public class DatacenterBrokerHeuristicExample {
     /**
      * Default constructor where the simulation is built.
      */
-    public DatacenterBrokerHeuristicExample() {
+    private DatacenterBrokerHeuristicExample() {
         //Enables just some level of log messages.
         Log.setLevel(Level.WARN);
 

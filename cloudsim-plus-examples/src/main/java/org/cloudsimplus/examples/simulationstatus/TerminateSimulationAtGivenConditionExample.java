@@ -90,7 +90,7 @@ public class TerminateSimulationAtGivenConditionExample {
     /**
      * Default constructor that builds the simulation.
      */
-    public TerminateSimulationAtGivenConditionExample() {
+    private TerminateSimulationAtGivenConditionExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

@@ -146,7 +146,7 @@ public final class ManualMigrationExample1 {
         new ManualMigrationExample1();
     }
 
-    public ManualMigrationExample1(){
+    private ManualMigrationExample1(){
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

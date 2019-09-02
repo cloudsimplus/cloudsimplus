@@ -97,7 +97,7 @@ public class RandomVmAllocationPolicyExample {
         new RandomVmAllocationPolicyExample();
     }
 
-    public RandomVmAllocationPolicyExample() {
+    private RandomVmAllocationPolicyExample() {
         final double startSecs = TimeUtil.currentTimeSecs();
         //Enables just some level of log messages.
         Log.setLevel(ch.qos.logback.classic.Level.WARN);

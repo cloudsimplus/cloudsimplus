@@ -109,7 +109,7 @@ public class DynamicVmsArrival {
     /**
      * Default constructor that builds and starts the simulation.
      */
-    public DynamicVmsArrival() {
+    private DynamicVmsArrival() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

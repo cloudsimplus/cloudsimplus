@@ -122,7 +122,7 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
     /**
      * Default constructor where the simulation is built.
      */
-    public SharingHostPEsUsingVmSchedulerSpaceSharedExample() {
+    private SharingHostPEsUsingVmSchedulerSpaceSharedExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

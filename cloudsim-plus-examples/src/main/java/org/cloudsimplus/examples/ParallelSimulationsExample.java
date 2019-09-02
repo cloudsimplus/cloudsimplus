@@ -126,7 +126,7 @@ public class ParallelSimulationsExample implements Runnable {
         simulationList.forEach(ParallelSimulationsExample::printResults);
     }
 
-    public void printResults(){
+    private void printResults(){
         new CloudletsTableBuilder(getFinishedCloudletList())
             .setTitle(this.title)
             .build();
@@ -137,7 +137,7 @@ public class ParallelSimulationsExample implements Runnable {
      * @param title a title for the simulation scenario (just for log purposes)
      * @see #run()
      */
-    public ParallelSimulationsExample(String title) {
+    private ParallelSimulationsExample(String title) {
         //Number of cloud customers
         int numberOfCloudUsers = 1;
         this.title = title;

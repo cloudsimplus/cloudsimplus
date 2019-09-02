@@ -55,20 +55,24 @@ import java.util.function.Function;
 
 /**
  * An example showing how to create Hosts from a Google Machine Events Trace
- * using a {@link GoogleMachineEventsTraceReader}.
- * The trace is located in resources/workload/google-traces/machine-events-sample-1.csv
- * It has some records that defines the addition and removal of Hosts
- * to the Datacenters.
+ * using a {@link GoogleMachineEventsTraceReader}. The trace is located in
+ * resources/workload/google-traces/machine-events-sample-1.csv It has some
+ * records that defines the addition and removal of Hosts to the Datacenters.
  *
- * <p>The removal is used to simulate maintenance or failure
- * but the trace doesn't provide information about the cause of the removal.
- * This way, CloudSim Plus considers that any Host removal is due to a failure
- * and injects that failure for the Host at the specified timestamp.
- * The same Host can fail and recover as specified in the trace.
- * CloudSim Plus accordingly process such events.
- * You can confirm in the logs that Host 3 is added and removed multiple times.</p>
+ * <p>
+ * The removal is used to simulate maintenance or failure but the trace doesn't
+ * provide information about the cause of the removal. This way, CloudSim Plus
+ * considers that any Host removal is due to a failure and injects that failure
+ * for the Host at the specified timestamp. The same Host can fail and recover
+ * as specified in the trace. CloudSim Plus accordingly process such events. You
+ * can confirm in the logs that Host 3 is added and removed multiple times.
+ * </p>
  *
- * <p>Check important details at {@link TraceReaderAbstract}.</p>
+ * <p>
+ * Check important details at {@link TraceReaderAbstract}. To better understand
+ * the structure of trace files, check the google-cluster-data-samples.xlsx
+ * spreadsheet inside the docs dir.
+ * </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0

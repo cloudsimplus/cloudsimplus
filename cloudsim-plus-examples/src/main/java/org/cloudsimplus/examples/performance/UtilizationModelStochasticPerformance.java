@@ -133,7 +133,7 @@ public class UtilizationModelStochasticPerformance {
         new UtilizationModelStochasticPerformance();
     }
 
-    public UtilizationModelStochasticPerformance() {
+    private UtilizationModelStochasticPerformance() {
         System.out.println("Starting " + this.getClass().getSimpleName() + " at " + LocalTime.now());
         final long startMillis = System.currentTimeMillis();
         Log.setLevel(ch.qos.logback.classic.Level.WARN);

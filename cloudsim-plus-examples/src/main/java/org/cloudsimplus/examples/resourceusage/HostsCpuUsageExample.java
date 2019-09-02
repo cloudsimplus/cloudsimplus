@@ -81,7 +81,7 @@ public class HostsCpuUsageExample {
         new HostsCpuUsageExample();
     }
 
-    public HostsCpuUsageExample(){
+    private HostsCpuUsageExample(){
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

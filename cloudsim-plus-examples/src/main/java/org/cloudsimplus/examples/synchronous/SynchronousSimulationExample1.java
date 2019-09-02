@@ -92,7 +92,7 @@ public class SynchronousSimulationExample1 {
         new SynchronousSimulationExample1();
     }
 
-    public SynchronousSimulationExample1() {
+    private SynchronousSimulationExample1() {
         Log.setLevel(Level.WARN);
 
         simulation = new CloudSim();

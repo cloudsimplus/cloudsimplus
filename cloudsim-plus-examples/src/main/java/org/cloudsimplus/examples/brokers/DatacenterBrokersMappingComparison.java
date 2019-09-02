@@ -140,7 +140,7 @@ public class DatacenterBrokersMappingComparison {
     /**
      * Default constructor where the simulation is built.
      */
-    public DatacenterBrokersMappingComparison(final DatacenterBroker broker, final ContinuousDistribution random, final boolean verbose) {
+    private DatacenterBrokersMappingComparison(final DatacenterBroker broker, final ContinuousDistribution random, final boolean verbose) {
         this.broker = broker;
         this.simulation = broker.getSimulation();
         this.random = random;

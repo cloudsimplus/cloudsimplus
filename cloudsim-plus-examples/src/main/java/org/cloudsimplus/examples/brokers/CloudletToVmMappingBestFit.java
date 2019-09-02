@@ -86,7 +86,7 @@ public class CloudletToVmMappingBestFit {
         new CloudletToVmMappingBestFit();
     }
 
-    public CloudletToVmMappingBestFit() {
+    private CloudletToVmMappingBestFit() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

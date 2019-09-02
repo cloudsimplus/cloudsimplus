@@ -106,7 +106,7 @@ public class DatacenterSelectionByTimeZoneExample {
         new DatacenterSelectionByTimeZoneExample();
     }
 
-    public DatacenterSelectionByTimeZoneExample() {
+    private DatacenterSelectionByTimeZoneExample() {
         Log.setLevel(Level.WARN);
 
         simulation = new CloudSim();

@@ -57,7 +57,7 @@ public class NetworkExample4 {
         new NetworkExample4();
     }
 
-    public NetworkExample4() {
+    private NetworkExample4() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

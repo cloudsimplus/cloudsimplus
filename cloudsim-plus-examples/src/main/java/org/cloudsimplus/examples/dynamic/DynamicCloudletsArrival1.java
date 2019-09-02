@@ -96,7 +96,7 @@ public class DynamicCloudletsArrival1 {
     /**
      * Default constructor that builds and starts the simulation.
      */
-    public DynamicCloudletsArrival1() {
+    private DynamicCloudletsArrival1() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

@@ -117,7 +117,7 @@ public final class HostFaultInjectionExample1 {
         new HostFaultInjectionExample1();
     }
 
-    public HostFaultInjectionExample1() {
+    private HostFaultInjectionExample1() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);

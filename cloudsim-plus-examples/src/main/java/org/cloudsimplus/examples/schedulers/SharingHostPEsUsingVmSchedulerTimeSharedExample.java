@@ -95,7 +95,6 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
     private static final long VM_MIPS = HOST_TOTAL_MIPS_CAPACITY/NUMBER_OF_VMS;
     private final CloudSim simulation;
 
-
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
     private int numberOfCreatedCloudlets = 0;
@@ -113,7 +112,7 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
     /**
      * Default constructor where the simulation is built.
      */
-    public SharingHostPEsUsingVmSchedulerTimeSharedExample() {
+    private SharingHostPEsUsingVmSchedulerTimeSharedExample() {
         /*Enables just some level of log messages.
           Make sure to import org.cloudsimplus.util.Log;*/
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
