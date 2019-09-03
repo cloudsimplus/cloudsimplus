@@ -376,6 +376,21 @@ public final class MathUtil {
     }
 
     /**
+     * Try to convert a String to an int value.
+     * If the conversion is not possible, returns a default value.
+     * @param value the value to try converting
+     * @param defaultValue the default value to return in case of error
+     * @return the converted value or the default one in case of error
+     */
+    public static int parseInt(final String value, final int defaultValue){
+        try {
+            return Integer.parseInt(value);
+        } catch(NumberFormatException e){
+            return defaultValue;
+        }
+    }
+
+    /**
      * Checks if two double numbers are equals, considering a precision error or 0.01.
      * That is, if the different between the two numbers are lower or equal to 0.01, they are considered equal.
      * @param first the first number to check
