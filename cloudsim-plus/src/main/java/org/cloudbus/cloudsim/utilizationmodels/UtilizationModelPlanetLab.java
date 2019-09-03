@@ -13,8 +13,6 @@ import java.util.function.UnaryOperator;
 
 import static org.cloudbus.cloudsim.util.ResourceLoader.getInputStream;
 
-
-
 /**
  * Defines a resource utilization model based on a
  * <a href="https://www.planet-lab.org">PlanetLab</a>
