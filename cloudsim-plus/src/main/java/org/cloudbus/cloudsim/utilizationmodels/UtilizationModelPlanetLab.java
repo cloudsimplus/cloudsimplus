@@ -56,8 +56,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * considering that the interval between each data line inside a
      * PlanetLab trace file is the {@link #DEF_SCHEDULING_INTERVAL default one}.
      *
-     * @param traceFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
-     * @throws NumberFormatException the number format exception
+     * @param workloadFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
+     * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      */
     public static UtilizationModelPlanetLab getInstance(final String traceFilePath) {
@@ -69,9 +69,9 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * Instantiates a new PlanetLab resource utilization model from a trace
      * file inside the <b>application's resource directory</b>.
      *
-     * @param traceFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
+     * @param workloadFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
-     * @throws NumberFormatException the number format exception
+     * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      */
     public static UtilizationModelPlanetLab getInstance(final String traceFilePath, final double schedulingInterval) {
@@ -85,7 +85,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
-     * @throws NumberFormatException the number format exception
+     * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      */
     public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval) throws NumberFormatException
@@ -180,10 +180,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         final int nextIndex = getNextUtilizationIndex(time);
 
         return (utilization[prevIndex] + utilization[nextIndex]) / 2.0;
-    }
-
-    protected final double getSecondsInsideInterval(final int prevIndex, final int nextIndex) {
-        return getIntervalSize(prevIndex, nextIndex) * schedulingInterval;
     }
 
     /**

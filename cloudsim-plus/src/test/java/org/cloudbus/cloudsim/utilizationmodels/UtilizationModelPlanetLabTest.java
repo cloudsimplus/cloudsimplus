@@ -58,29 +58,6 @@ public class UtilizationModelPlanetLabTest {
         assertEquals(expected, instance.getIntervalSize(1, 11));
     }
 
-    @Test
-    public void testGetSecondsInsideInterval1() {
-        final int expected = 300;
-        assertEquals(expected, instance.getSecondsInsideInterval(1, 2));
-    }
-
-    @Test
-    public void testGetSecondsInsideInterval10() {
-        final int expected = 300;
-        assertEquals(expected, instance.getSecondsInsideInterval(1, 2));
-    }
-
-    @Test
-    public void testGetSecondsInsideInterval10EndLowerThanStart() {
-        final int expected = 3000;
-        assertEquals(expected, instance.getSecondsInsideInterval(287, 9));
-    }
-
-    @Test
-    public void testGetSecondsInsideInterval20EndLowerThanStart() {
-        final int expected = 6000;
-        assertEquals(expected, instance.getSecondsInsideInterval(277, 9));
-    }
 
     @Test
     public void testGetUtilization() {
