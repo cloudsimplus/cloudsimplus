@@ -1,5 +1,7 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
+
+import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
 import java.io.BufferedReader;
@@ -25,6 +27,8 @@ import static org.cloudbus.cloudsim.util.ResourceLoader.getInputStream;
  * </p>
  */
 public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
+    /** @see #setMapper(UnaryOperator) */
+    private UnaryOperator<Double> mapper;
 
     /**
      * The number of 5 minutes intervals inside one day (24 hours),
@@ -51,7 +55,12 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * minutes. The size of the array is defined according to the number of utilization samples
      * specified in the constructor.
      *
-     * @see #DEF_DATA_SAMPLES
+     * <p>If there is a {@link #setMapper(UnaryOperator) mapper Function} set,
+     * the values are returned and stored according to the operation performed
+     * by such a Function. If no mapper Function is set, the values
+     * are returned and stored as read from the trace file (always in scale from 0 to 1).</p>
+     *
+     * @see #readWorkloadFile(InputStreamReader, int)
      */
     private final double[] utilization;
 
@@ -182,6 +191,9 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     {
         super();
         setSchedulingInterval(schedulingInterval);
+        /*The default mapper Function doesn't change the value read from the trace file.
+         Therefore, the value is used as is.*/
+        setMapper(UnaryOperator.identity());
         try {
             utilization = readWorkloadFile(reader, dataSamples);
         } catch (IOException e) {
@@ -224,7 +236,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
                 }
 
                 if(!isComment(line)) {
-                    utilization[lineNum++] = Double.parseDouble(line) / 100.0;
+                    utilization[lineNum++] = Math.min(mapper.apply(Double.parseDouble(line) / 100.0), 1.0);
                 }
             }
         }
@@ -400,5 +412,22 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         }
 
         this.schedulingInterval = schedulingInterval;
+    }
+
+    /**
+     * A {@link UnaryOperator} Function that will be used to map the utilization values
+     * read from the trace value to a different value.
+     * That Function is useful when you don't want to use the values from the trace as they are,
+     * but you want to scale the values applying any mathematical operation over them.
+     * For instance, you can provide a mapper Function that scale the values in 10 times,
+     * by giving a Lambda Expression such as {@code setMapper(value -> value * 10)}.
+     *
+     * <p>If a mapper Function is not set, the values are used as read from the trace file,
+     * without any change (except that the scale is always converted to [0..1]).</p>
+     * @param mapper a {@link UnaryOperator} Function to set
+     */
+    public final UtilizationModelPlanetLab setMapper(final UnaryOperator<Double> mapper) {
+        this.mapper = Objects.requireNonNull(mapper);
+        return this;
     }
 }
