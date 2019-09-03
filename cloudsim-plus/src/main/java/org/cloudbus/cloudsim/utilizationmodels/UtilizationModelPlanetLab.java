@@ -7,6 +7,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UncheckedIOException;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
+
+import static org.cloudbus.cloudsim.util.ResourceLoader.getInputStream;
+
+
 
 /**
  * Defines a resource utilization model based on a
@@ -77,6 +82,13 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * considering that the interval between each data line inside a
      * PlanetLab trace file is the {@link #DEF_SCHEDULING_INTERVAL default one}.
      *
+     * <p>It checks if the first line of the trace has a comment representing its number of lines.
+     * In this case, it will be used to accordingly create an array
+     * of that size to store the values read from the trace.
+     * If the file doesn't have such a comment with a valid line number,
+     * it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     * from the trace.</p>
+     *
      * @param workloadFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
      * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
@@ -88,6 +100,13 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     /**
      * Instantiates a new PlanetLab resource utilization model from a trace
      * file inside the <b>application's resource directory</b>.
+     *
+     * <p>It checks if the first line of the trace has a comment representing its number of lines.
+     * In this case, it will be used to accordingly create an array
+     * of that size to store the values read from the trace.
+     * If the file doesn't have such a comment with a valid line number,
+     * it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     * from the trace.</p>
      *
      * @param workloadFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
@@ -103,6 +122,13 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * Instantiates a new PlanetLab resource utilization model from a trace
      * file.
      *
+     * <p>It checks if the first line of the trace has a comment representing its number of lines.
+     * In this case, it will be used to accordingly create an array
+     * of that size to store the values read from the trace.
+     * If the file doesn't have such a comment with a valid line number,
+     * it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     * from the trace.</p>
+     *
      * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
      * @throws NumberFormatException when a value inside the side is not a valid number
@@ -110,7 +136,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      */
     public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval) throws NumberFormatException
     {
-        this(workloadFilePath, schedulingInterval, DEF_DATA_SAMPLES);
+        this(workloadFilePath, schedulingInterval, -1);
     }
 
     /**
@@ -119,8 +145,15 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
-     * @param dataSamples number of samples to read from the workload file
-     * @throws NumberFormatException the number format exception
+     * @param dataSamples number of samples to read from the workload file.
+     *                    If -1 is given, it checks if the first line of the trace has a comment.
+     *                    In this case, that comment is expected to represent the number of lines
+     *                    inside the trace and it will be used to accordingly create an array
+     *                    of that size to store the values read from the trace.
+     *                    If the file doesn't have such a comment with a valid line number,
+     *                    it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     *                    from the trace.
+     * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      */
     public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval, final int dataSamples) throws NumberFormatException
@@ -134,8 +167,15 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * @param reader the {@link InputStreamReader} to read the workload file
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
-     * @param dataSamples number of samples to read from the workload file
-     * @throws NumberFormatException the number format exception
+     * @param dataSamples number of samples to read from the workload file.
+     *                    If -1 is given, it checks if the first line of the trace has a comment.
+     *                    In this case, that comment is expected to represent the number of lines
+     *                    inside the trace and it will be used to accordingly create an array
+     *                    of that size to store the values read from the trace.
+     *                    If the file doesn't have such a comment with a valid line number,
+     *                    it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     *                    from the trace.
+     * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      */
     private UtilizationModelPlanetLab(final InputStreamReader reader, final double schedulingInterval, final int dataSamples) throws NumberFormatException
@@ -158,23 +198,71 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * simulation time 0.
      *
      * @param reader the {@link InputStreamReader} to read the file
-     * @param dataSamples the number of lines to read
-     * @return an array containing the lines read from the file
-     * @throws IOException
+     * @param dataSamples number of samples to read from the workload file.
+     *                    If -1 is given, it checks if the first line of the trace has a comment.
+     *                    In this case, that comment is expected to represent the number of lines
+     *                    inside the trace and it will be used to accordingly create an array
+     *                    of that size to store the values read from the trace.
+     *                    If the file doesn't have such a comment with a valid line number,
+     *                    it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     *                    from the trace.
+     * @return an array containing the utilization values read from the trace file (in scale from 0 to 1)
+     * @throws IOException when the trace file cannot be read
+     * @see #utilization
      */
-    private double[] readWorkloadFile(final InputStreamReader reader, final int dataSamples) throws IOException {
+    private double[] readWorkloadFile(final InputStreamReader reader, int dataSamples) throws IOException {
         Objects.requireNonNull(reader);
-        final double[] utilization = createEmptyArray(Math.max(2, dataSamples));
+        double[] utilization = {0};
 
         try (BufferedReader input = new BufferedReader(reader)) {
             int lineNum = 0;
             String line;
-            while((line=input.readLine())!=null && !line.startsWith("#") && lineNum < utilization.length){
-                utilization[lineNum++] = Double.parseDouble(line) / 100.0;
+            while((line=input.readLine())!=null && lineNum < utilization.length){
+                if(lineNum == 0){
+                    dataSamples = parseDataSamples(line, dataSamples);
+                    utilization = createEmptyArray(dataSamples);
+                }
+
+                if(!isComment(line)) {
+                    utilization[lineNum++] = Double.parseDouble(line) / 100.0;
+                }
             }
         }
 
         return utilization;
+    }
+
+    /**
+     * Try to get the number of lines from the trace file (data samples).
+     * @param line the first line read from the trace
+     * @param dataSamples The number of lines to read.
+     *                    If negative it means it will try to get the
+     *                    number of lines directly from the file.
+     *                    The trace may have its number of lines as a comment in the
+     *                    first line of the file.
+     * @return the given data sample if it's a positive number;
+     *         the default data sample if the given value is negative
+     *         and the file doesn't contain the number of lines in the first line;
+     *         the number of lines read from the file
+     */
+    private int parseDataSamples(final String line, int dataSamples) {
+        if(dataSamples < 0){
+            dataSamples = isComment(line) ? MathUtil.parseInt(line.substring(1), DEF_DATA_SAMPLES) : DEF_DATA_SAMPLES;
+        }
+
+        return Math.max(2, dataSamples);
+    }
+
+    /**
+     * Gets the number of data samples actually read from the trace file.
+     * @return
+     */
+    public int getDataSamples(){
+        return utilization.length;
+    }
+
+    private boolean isComment(final String line) {
+        return line.startsWith("#");
     }
 
     private double[] createEmptyArray(final int size) {
