@@ -56,13 +56,33 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * considering that the interval between each data line inside a
      * PlanetLab trace file is the {@link #DEF_SCHEDULING_INTERVAL default one}.
      *
+     * <p>It checks if the first line of the trace has a comment representing its number of lines.
+     * In this case, it will be used to accordingly create an array
+     * of that size to store the values read from the trace.
+     * If the file doesn't have such a comment with a valid line number,
+     * it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     * from the trace.</p>
+     *
+     * @param workloadFile a PlanetLab Datacenter workload {@link java.io.File}.
+     * @throws NumberFormatException when a value inside the side is not a valid number
+     * @see #getSchedulingInterval()
+     */
+    public static UtilizationModelPlanetLab getInstance(final java.io.File workloadFile) {
+        return getInstance(workloadFile.getAbsolutePath());
+    }
+
+    /**
+     * Instantiates a new PlanetLab resource utilization model from a trace
+     * file inside the <b>application's resource directory</b>,
+     * considering that the interval between each data line inside a
+     * PlanetLab trace file is the {@link #DEF_SCHEDULING_INTERVAL default one}.
+     *
      * @param workloadFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
      * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      */
-    public static UtilizationModelPlanetLab getInstance(final String traceFilePath) {
-        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(traceFilePath, UtilizationModelPlanetLab.class));
-        return new UtilizationModelPlanetLab(reader, DEF_SCHEDULING_INTERVAL, DEF_DATA_SAMPLES);
+    public static UtilizationModelPlanetLab getInstance(final String workloadFilePath) {
+        return getInstance(workloadFilePath, DEF_SCHEDULING_INTERVAL);
     }
 
     /**
@@ -74,9 +94,9 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      */
-    public static UtilizationModelPlanetLab getInstance(final String traceFilePath, final double schedulingInterval) {
-        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(traceFilePath, UtilizationModelPlanetLab.class));
-        return new UtilizationModelPlanetLab(reader, schedulingInterval, DEF_DATA_SAMPLES);
+    public static UtilizationModelPlanetLab getInstance(final String workloadFilePath, final double schedulingInterval) {
+        final InputStreamReader reader = new InputStreamReader(getInputStream(workloadFilePath, UtilizationModelPlanetLab.class));
+        return new UtilizationModelPlanetLab(reader, schedulingInterval, -1);
     }
 
     /**
