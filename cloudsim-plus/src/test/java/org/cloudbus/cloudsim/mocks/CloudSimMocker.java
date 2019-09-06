@@ -109,6 +109,12 @@ public final class CloudSimMocker {
                 .andReturn(clockTimeToReturn);
     }
 
+    public IExpectationSetters<String> clockStr() {
+        return EasyMock
+            .expect(mock.clockStr())
+            .andReturn("0");
+    }
+
     /**
      * Makes the {@link CloudSim#clock()} method from the mocked CloudSim class
      * to return each one of the values inside the given List for each

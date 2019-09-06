@@ -94,7 +94,10 @@ public final class VmTestUtil {
         final long ram, final long bw, final long storage,
         final CloudletScheduler scheduler)
     {
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+            mocker.clock(0).anyTimes();
+            mocker.clockStr().anyTimes();
+        });
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
         vm.setRam(ram).setBw(bw)

@@ -141,7 +141,7 @@ public class HostSimpleTest {
         final List<Vm> vmList = createMockVmsWithUtilizationHistory(VMS);
         vmList.forEach(vm -> host.addVmToCreatedList(vm));
 
-        final double expected[] = {0.0, 0.75, 0.5, 0.25};
+        final double[] expected = {0.0, 0.75, 0.5, 0.25};
         final double[] result = host.getUtilizationHistory().values().stream().mapToDouble(DoubleSummaryStatistics::getSum).toArray();
         assertEquals(expected.length, result.length, "The number of history entries is not equal");
         for (int i = 0; i < result.length; i++) {
