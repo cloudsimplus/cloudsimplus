@@ -275,4 +275,11 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
      *                    (if null is given, it disables such a computation)
      */
     void setPowerSupply(DatacenterPowerSupply powerSupply);
+
+    /**
+     * Gets the {@link DatacenterPowerSupply} that enables computing the current amount of power being consumed by
+     * the {@link Host}s of a {@link Datacenter}.
+     * @return
+     */
+    DatacenterPowerSupply getPowerSupply();
 }
