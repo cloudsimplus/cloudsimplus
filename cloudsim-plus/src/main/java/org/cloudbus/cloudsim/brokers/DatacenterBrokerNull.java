@@ -42,6 +42,7 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public <T extends Vm> List<T> getVmExecList() {
         return Collections.emptyList();
     }
+    @Override public void requestIdleVmDestruction(Vm vm) {}
     @Override public List<Cloudlet> destroyVm(Vm vm) { return Collections.emptyList(); }
     @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
     @Override public DatacenterBroker setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper) { return this; }

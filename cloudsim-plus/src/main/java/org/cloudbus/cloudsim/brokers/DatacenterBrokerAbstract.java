@@ -775,16 +775,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         requestDatacenterToCreateWaitingVms(false);
     }
 
-    /**
-     * Checks if a VM is idle VM and request it to be destroyed at the time defined by
-     * the {@link #getVmDestructionDelayFunction()}.
-     * The request will be sent if the given delay function returns a value
-     * greater than {@link #DEF_VM_DESTRUCTION_DELAY}.
-     * Otherwise, it doesn't send the request, meaning the VM should not be destroyed according to a specific delay.
-     *
-     * @param vm the VM to destroy
-     * @see #getVmDestructionDelayFunction()
-     */
+    @Override
     public void requestIdleVmDestruction(final Vm vm) {
         final double delay = vmDestructionDelayFunction.apply(vm);
 
