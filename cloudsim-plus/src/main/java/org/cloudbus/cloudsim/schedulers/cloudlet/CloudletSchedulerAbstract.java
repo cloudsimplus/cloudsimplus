@@ -511,7 +511,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         nextCloudletFinishTime = Math.min(nextCloudletFinishTime, moveNextCloudletsFromWaitingToExecList(currentTime));
 
         setPreviousTime(currentTime);
-        ((CloudSim)vm.getSimulation()).setLastCloudletProcessingUpdate(currentTime);
+        vm.getSimulation().setLastCloudletProcessingUpdate(currentTime);
 
         return nextCloudletFinishTime;
     }
@@ -758,11 +758,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         * actually allocated or the previous allocated MIPS otherwise.*/
         final double estimatedFinishTime = cle.getRemainingCloudletLength() / cle.getLastAllocatedMips();
 
-        if (estimatedFinishTime < vm.getSimulation().getMinTimeBetweenEvents()) {
-            return vm.getSimulation().getMinTimeBetweenEvents();
-        }
-
-        return estimatedFinishTime;
+        return Math.max(estimatedFinishTime, vm.getSimulation().getMinTimeBetweenEvents());
     }
 
     /**
