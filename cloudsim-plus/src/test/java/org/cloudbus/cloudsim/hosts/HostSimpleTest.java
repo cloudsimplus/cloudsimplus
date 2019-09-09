@@ -475,17 +475,17 @@ public class HostSimpleTest {
     @Test
     public void testGetNumberOfFreePesWhenOneBusyPes() {
         final int numberOfPes = 2;
-        final Host host = createHostSimple(0, numberOfPes);
-        host.getPeList().get(0).setStatus(Pe.Status.BUSY);
+        final HostSimple host = createHostSimple(0, numberOfPes);
+        host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.BUSY);
         assertEquals(numberOfPes-1, host.getFreePesNumber());
     }
 
     @Test
     public void testGetNumberOfFreePesWhenNoFreePes() {
         final int numberOfPes = 4;
-        final Host host = createHostSimple(0, numberOfPes);
+        final HostSimple host = createHostSimple(0, numberOfPes);
 
-        host.getPeList().forEach(pe -> pe.setStatus(Pe.Status.BUSY));
+        host.setPeStatus(host.getPeList(), Pe.Status.BUSY);
         assertEquals(0, host.getFreePesNumber());
     }
 

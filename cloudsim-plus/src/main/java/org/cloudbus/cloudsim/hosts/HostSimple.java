@@ -793,6 +793,7 @@ public class HostSimple implements Host {
         }
 
         failedPesNumber = 0;
+        setPeStatus(peList, Pe.Status.FREE);
         freePesNumber = peList.size();
 
     }
@@ -850,15 +851,16 @@ public class HostSimple implements Host {
                 continue;
             }
 
-            if(newStatus == Pe.Status.FAILED) {
-                this.failedPesNumber++;
-                if(pe.getStatus() == Pe.Status.FREE)
-                    this.freePesNumber--;
-            } else if(newStatus == Pe.Status.FREE) {
-                this.freePesNumber++;
-                if(pe.getStatus() == Pe.Status.FAILED)
-                    this.failedPesNumber--;
+            switch (pe.getStatus()) {
+                case FAILED: this.failedPesNumber--; break;
+                case FREE: this.freePesNumber--; break;
             }
+
+            switch (newStatus) {
+                case FAILED: this.failedPesNumber++; break;
+                case FREE:  this.freePesNumber++; break;
+            }
+
 
             pe.setStatus(newStatus);
         }
