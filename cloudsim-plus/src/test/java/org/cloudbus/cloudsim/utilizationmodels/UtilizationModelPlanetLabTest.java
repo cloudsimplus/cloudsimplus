@@ -11,7 +11,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.*;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class UtilizationModelPlanetLabTest {
@@ -160,23 +159,6 @@ public class UtilizationModelPlanetLabTest {
     public void testGetIntervalSize10() {
         final int expected = 10;
         assertEquals(expected, instance.getIntervalSize(1, 11));
-    }
-
-
-    @Test
-    public void testGetUtilization() {
-        final double expected1 = (24 + 0.2 * SCHEDULING_INTERVAL * (34 - 24) / SCHEDULING_INTERVAL) / 100;
-        final double expected2 = (18 + 0.7 * SCHEDULING_INTERVAL * (21 - 18) / SCHEDULING_INTERVAL) / 100;
-
-        assertAll(
-            () -> assertEquals(0.24, instance.getUtilization(0)),
-            () -> assertEquals(0.34, instance.getUtilization(1 * SCHEDULING_INTERVAL)),
-            () -> assertEquals(expected1, instance.getUtilization(0.2 * SCHEDULING_INTERVAL), 0.01),
-            () -> assertEquals(0.29, instance.getUtilization(2 * SCHEDULING_INTERVAL)),
-            () -> assertEquals(0.18, instance.getUtilization(136 * SCHEDULING_INTERVAL)),
-            () -> assertEquals(expected2, instance.getUtilization(136.7 * SCHEDULING_INTERVAL), 0.01),
-            () -> assertEquals(0.51, instance.getUtilization(287 * SCHEDULING_INTERVAL))
-        );
     }
 
 }

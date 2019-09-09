@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.schedulers.cloudlet;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -11,7 +12,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -47,9 +48,9 @@ public class CloudletSchedulerSpaceSharedTest {
         });
 
         final Vm vm = new VmSimple(0, mips, 1);
-        vm.setBroker(MocksHelper.createMockBroker(cloudsim));
+        vm.setBroker(DatacenterBroker.NULL);
         final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler(vm);
-        final List<Double> mipsList = Arrays.asList(mips);
+        final List<Double> mipsList = Collections.singletonList(mips);
         instance.setCurrentMipsShare(mipsList);
 
         final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(0, cloudletLen, 1);

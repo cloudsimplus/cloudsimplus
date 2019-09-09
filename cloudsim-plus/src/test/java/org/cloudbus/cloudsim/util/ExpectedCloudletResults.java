@@ -10,7 +10,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
  *
  * @author Manoel Campos da Silva Filho
  */
-public final class ExpectedCloudletExecutionResults {
+public final class ExpectedCloudletResults {
     /** @see #getExpectedExecTime() */
     private final double expectedExecTime;
     /** @see #getExpectedStartTime() */
@@ -20,7 +20,7 @@ public final class ExpectedCloudletExecutionResults {
     /** @see #getCloudlet() */
     private Cloudlet cloudlet;
 
-    public ExpectedCloudletExecutionResults(final double execTime, final double startTime, final double finishTime) {
+    public ExpectedCloudletResults(final double execTime, final double startTime, final double finishTime) {
         this.expectedExecTime = execTime;
         this.expectedStartTime = startTime;
         this.expectedFinishTime = finishTime;

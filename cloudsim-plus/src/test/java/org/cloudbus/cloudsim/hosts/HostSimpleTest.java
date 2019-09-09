@@ -154,6 +154,8 @@ public class HostSimpleTest {
 
         for (int i = 0; i < vmsNumber; i++) {
             final Vm vm = EasyMock.createMock(Vm.class);
+            EasyMock.expect(vm.getExpectedHostCpuUtilization(0.0)).andReturn(0.0).anyTimes();
+            EasyMock.expect(vm.getExpectedHostCpuUtilization(1.0)).andReturn(0.25).anyTimes();
 
             /*
             A history map where keys are times and values are CPU utilization percentage for that time.
@@ -212,10 +214,18 @@ public class HostSimpleTest {
         final int numberOfVms = 4;
         final HostSimple host = createHostSimple(0, numberOfVms);
 
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
+            mocker.clock(0).anyTimes();
+            mocker.getNumEntities().anyTimes();
+            mocker.isTerminationTimeSet().once();
+            mocker.addEntity().anyTimes();
+            mocker.clockStr().anyTimes();
+        });
+
         final List<Vm> vms = new ArrayList<>(numberOfVms);
         for (int i = 0; i < numberOfVms; i++) {
             final Vm vm = VmTestUtil.createVm(
-                i, HOST_MIPS / numberOfVms, 1, RAM / numberOfVms, BW / numberOfVms, STORAGE / numberOfVms);
+                i, HOST_MIPS / numberOfVms, 1, RAM / numberOfVms, BW / numberOfVms, STORAGE / numberOfVms, cloudsim);
             if (i == 0) {
                 /*considers that one of the migrating in VMs already was placed at the host,
                 thus, it will not be added again to the host vm list.
@@ -380,10 +390,6 @@ public class HostSimpleTest {
                     .expect(vm.updateProcessing(simulationClock, mipsShare))
                     .andReturn(nextCloudletCompletionTimeOfCurrentVm)
                     .times(1);
-            EasyMock
-                    .expect(vm.getTotalCpuMipsUtilization())
-                    .andReturn(totalMipsCapacity)
-                    .times(1);
             EasyMock.replay(vm);
 
             vmList.add(vm);
@@ -512,10 +518,12 @@ public class HostSimpleTest {
     @Test
     public void testVmDestroy() {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
-        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final VmSimple vm = VmTestUtil.createVm(
                 0, HOST_MIPS, 1, RAM / 2, BW / 2, STORAGE,
                 new CloudletSchedulerTimeShared());
+        final List<Vm> vmExecList = new ArrayList<>(1);
+        vmExecList.add(vm);
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, b -> EasyMock.expect(b.getVmExecList()).andReturn(vmExecList));
         vm.setBroker(broker);
 
         assertTrue(host.createVm(vm));

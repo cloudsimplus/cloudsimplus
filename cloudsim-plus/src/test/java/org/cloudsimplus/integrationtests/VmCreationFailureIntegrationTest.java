@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.util.ExpectedCloudletExecutionResults;
+import org.cloudbus.cloudsim.util.ExpectedCloudletResults;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -109,9 +109,9 @@ public final class VmCreationFailureIntegrationTest {
      */
     private void onHostAllocation(final VmHostEventInfo evt) {
         numberOfHostAllocations++;
-        LOGGER.info(
+        /*LOGGER.info(
                 "# Host {} allocated to Vm {} at time {}",
-                evt.getHost().getId(), evt.getVm().getId(), evt.getTime());
+                evt.getHost().getId(), evt.getVm().getId(), evt.getTime());*/
         if (scenario.getFirstHostFromFirstDatacenter().equals(evt.getHost())
                 && scenario.getFirstVmFromFirstBroker().equals(evt.getVm())) {
             assertEquals(0, evt.getTime(), 0.2, "Host wasn't allocated to Vm at the expected time");
@@ -160,7 +160,7 @@ public final class VmCreationFailureIntegrationTest {
      * @see CloudSim#addOnEventProcessingListener(EventListener)
      */
     private void onEventProcessing(final SimEvent evt) {
-        LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
+        //LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
         final int time = (int) evt.getTime();
         if (time == 10 || time == 20) {
             assertEquals(200, scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
@@ -178,9 +178,9 @@ public final class VmCreationFailureIntegrationTest {
      * @see Vm#addOnUpdateProcessingListener(EventListener)}
      */
     private void onUpdateVmProcessing(final VmHostEventInfo evt) {
-        LOGGER.info(
+        /*LOGGER.info(
             "- onUpdateVmProcessing at time {} for {}: {} available mips: {}",
-            evt.getTime(), evt.getVm(), evt.getHost(), evt.getHost().getAvailableMips());
+            evt.getTime(), evt.getVm(), evt.getHost(), evt.getHost().getAvailableMips());*/
         assertEquals(200, evt.getHost().getAvailableMips());
     }
 
@@ -231,10 +231,9 @@ public final class VmCreationFailureIntegrationTest {
     public void integrationTest() {
         simulation.start();
         final DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
+        printCloudletsExecutionResults(broker);
         assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(broker);
         assertThatListenersWereCalledTheExpectedAmountOfTimes();
-
-        printCloudletsExecutionResults(broker);
     }
 
     public void printCloudletsExecutionResults(DatacenterBroker broker) {
@@ -243,14 +242,14 @@ public final class VmCreationFailureIntegrationTest {
 
     public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBroker broker) {
         /*The array of expected results for each broker cloudlet*/
-        final ExpectedCloudletExecutionResults expectedResults[]
-                = new ExpectedCloudletExecutionResults[]{
-                    new ExpectedCloudletExecutionResults(10, 0, 10),
-                    new ExpectedCloudletExecutionResults(10, 10, 20)
-                };
+        final ExpectedCloudletResults[] expectedResults = {
+                new ExpectedCloudletResults(10, 0, 10),
+                new ExpectedCloudletResults(10, 10, 20)
+        };
 
         final List<Cloudlet> cloudletList = broker.getCloudletFinishedList();
         assertEquals(expectedResults.length, cloudletList.size(), "The number of finished cloudlets was not as expected");
+
         int idx = -1;
         for (final Cloudlet cloudlet : cloudletList) {
             expectedResults[++idx].setCloudlet(cloudlet);
@@ -258,10 +257,11 @@ public final class VmCreationFailureIntegrationTest {
         }
     }
 
-    private void assertThatOneGivenCloudletHasTheExpectedExecutionTimes(final ExpectedCloudletExecutionResults results) {
-        assertEquals(results.getExpectedExecTime(), results.getCloudlet().getActualCpuTime(), 0.3, results.getCloudlet()+" getActualCPUTime");
-        assertEquals(results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), 0.3, results.getCloudlet()+" getExecStartTime");
-        assertEquals(results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), 0.3, results.getCloudlet()+" getFinishTime");
+    private void assertThatOneGivenCloudletHasTheExpectedExecutionTimes(final ExpectedCloudletResults results) {
+        final double delta = 0.4;
+        assertEquals(results.getExpectedExecTime(), results.getCloudlet().getActualCpuTime(), delta, results.getCloudlet()+" getActualCPUTime");
+        assertEquals(results.getExpectedStartTime(), results.getCloudlet().getExecStartTime(), delta, results.getCloudlet()+" getExecStartTime");
+        assertEquals(results.getExpectedFinishTime(), results.getCloudlet().getFinishTime(), delta, results.getCloudlet()+" getFinishTime");
         assertEquals(0, results.getCloudlet().getVm().getId());
         assertEquals(Cloudlet.Status.SUCCESS, results.getCloudlet().getStatus());
     }

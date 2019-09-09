@@ -1,6 +1,7 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
@@ -36,6 +37,12 @@ public final class VmTestUtil {
      */
     public static VmSimple createVm(final int vmId, final int pesNumber) {
         return createVm(vmId, MIPS, pesNumber);
+    }
+
+    public static VmSimple createVm(final int vmId, final int pesNumber, final DatacenterBroker broker) {
+        final VmSimple vm = createVm(vmId, pesNumber);
+        vm.setBroker(broker);
+        return vm;
     }
 
     /**
@@ -76,10 +83,9 @@ public final class VmTestUtil {
     public static VmSimple createVm(
         final int vmId,
         final double mips, final int pesNumber,
-        final long ram, final long bw, final long storage)
+        final long ram, final long bw, final long storage, CloudSim cloudsim)
     {
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
-        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
+        final DatacenterBroker broker = new DatacenterBrokerSimple(cloudsim);
         final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
         vm.setRam(ram).setBw(bw)
                 .setSize(storage)

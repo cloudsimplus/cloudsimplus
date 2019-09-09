@@ -23,9 +23,14 @@ public class CloudletTest {
         assertFalse(cloudlet.isBoundToVm());
         cloudlet.setVm(Vm.NULL);
         assertFalse(cloudlet.isBoundToVm());
+
         cloudlet.setVm(VmTestUtil.createVm(0, 1));
+        assertFalse(cloudlet.isBoundToVm());
+
+        cloudlet.setVm(VmTestUtil.createVm(1, 1, cloudlet.getBroker()));
         assertTrue(cloudlet.isBoundToVm());
-        cloudlet.setVm(VmTestUtil.createVm(1, 1));
+
+        cloudlet.setVm(VmTestUtil.createVm(2, 1, cloudlet.getBroker()));
         assertTrue(cloudlet.isBoundToVm());
     }
 

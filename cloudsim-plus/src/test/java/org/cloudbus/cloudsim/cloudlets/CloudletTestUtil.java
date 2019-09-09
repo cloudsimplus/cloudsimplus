@@ -2,7 +2,6 @@ package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
-import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -68,6 +67,7 @@ public final class CloudletTestUtil {
         final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(0).anyTimes();
+            mocker.sendNow();
         });
 
         cloudlet
@@ -76,7 +76,6 @@ public final class CloudletTestUtil {
             .setUtilizationModelCpu(utilizationModelCPU)
             .setUtilizationModelRam(utilizationModelRAM)
             .setUtilizationModelBw(utilizationModelBW);
-        cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         return cloudlet;
     }
 

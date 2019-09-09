@@ -4,6 +4,8 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.easymock.EasyMock;
 
+import java.util.function.Consumer;
+
 /**
  * A utility class to create Mock objects.
  *
@@ -43,12 +45,22 @@ public final class MocksHelper {
         return broker;
     }
 
-    public static DatacenterBroker createMockBroker(CloudSim cloudsim) {
+    public static DatacenterBroker createMockBroker(final CloudSim cloudsim) {
+        return createMockBroker(cloudsim, broker -> {});
+    }
+
+    /**
+     * Creates a DatacenterBroker mock object.
+     * @param cloudsim the CloudSim instance or mock to use
+     * @param consumer a {@link Runnable} that can be used to call additional {@link EasyMock#expect(Object)}
+     * @return
+     */
+    public static DatacenterBroker createMockBroker(final CloudSim cloudsim, final Consumer<DatacenterBroker> consumer) {
         final DatacenterBroker broker = EasyMock.createMock(DatacenterBroker.class);
         EasyMock.expect(broker.getSimulation()).andReturn(cloudsim).anyTimes();
         EasyMock.expect(broker.getId()).andReturn(0L).anyTimes();
+        consumer.accept(broker);
         EasyMock.replay(broker);
         return broker;
     }
-
 }

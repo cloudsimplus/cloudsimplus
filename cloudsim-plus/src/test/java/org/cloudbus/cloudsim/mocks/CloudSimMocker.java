@@ -109,6 +109,23 @@ public final class CloudSimMocker {
                 .andReturn(clockTimeToReturn);
     }
 
+    public IExpectationSetters<Boolean> isTerminationTimeSet() {
+        return EasyMock
+            .expect(mock.isTerminationTimeSet())
+            .andReturn(false);
+    }
+
+    public IExpectationSetters<Integer> getNumEntities() {
+        return EasyMock
+            .expect(mock.getNumEntities())
+            .andReturn(1);
+    }
+
+    public IExpectationSetters<Integer> addEntity() {
+        mock.addEntity(EasyMock.anyObject());
+        return EasyMock.expectLastCall();
+    }
+
     public IExpectationSetters<String> clockStr() {
         return EasyMock
             .expect(mock.clockStr())
@@ -141,6 +158,11 @@ public final class CloudSimMocker {
             .andReturn(clockTimeToReturn);
     }
 
+    public void sendNow() {
+        mock.sendNow(EasyMock.anyObject(), EasyMock.anyObject(), EasyMock.anyInt(), EasyMock.anyObject());
+        EasyMock.expectLastCall();
+    }
+
     /**
      * Finishes the mocking process, making the mocked CloudSim class ready to
      * use. The method is used just internally as the final step in the
@@ -162,6 +184,5 @@ public final class CloudSimMocker {
     public static void verify(CloudSim mock) {
         EasyMock.verify(mock);
     }
-
 
 }

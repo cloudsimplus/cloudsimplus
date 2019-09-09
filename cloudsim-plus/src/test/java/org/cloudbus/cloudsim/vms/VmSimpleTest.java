@@ -42,7 +42,7 @@ public class VmSimpleTest {
     public void setUp() {
         cloudletScheduler = new CloudletSchedulerTimeShared();
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
-        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, b -> EasyMock.expect(b.requestIdleVmDestruction(EasyMock.anyObject())).andReturn(b));
         vm = VmTestUtil.createVm(cloudletScheduler);
         vm.setBroker(broker);
     }
@@ -55,7 +55,7 @@ public class VmSimpleTest {
 
     @Test
     public void testToString() {
-        assertEquals(String.format("Vm %d/Broker %d", vm.getId(), vm.getBroker().getId()), vm.toString());
+        assertEquals(String.format("Vm %d", vm.getId()), vm.toString());
     }
 
     @Test
