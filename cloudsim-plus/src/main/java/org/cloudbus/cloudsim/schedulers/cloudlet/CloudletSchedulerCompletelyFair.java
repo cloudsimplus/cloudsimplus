@@ -478,11 +478,13 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
      * in the beginning of the list).
      *
      * @see #preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList()
+     * @param currentTime {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
-    protected void moveNextCloudletsFromWaitingToExecList() {
+    protected double moveNextCloudletsFromWaitingToExecList(final double currentTime) {
         final List<CloudletExecution> preemptedCloudlets = preemptExecCloudletsWithExpiredVRuntimeAndMoveToWaitingList();
-        super.moveNextCloudletsFromWaitingToExecList();
+        final double nextCloudletFinishTime = super.moveNextCloudletsFromWaitingToExecList(currentTime);
 
         /*After preempted Cloudlets are moved to the waiting list
         and next Cloudlets on the beginning of this list are moved
@@ -492,6 +494,8 @@ public final class CloudletSchedulerCompletelyFair extends CloudletSchedulerTime
         for(final CloudletExecution c: preemptedCloudlets) {
             c.setVirtualRuntime(computeCloudletInitialVirtualRuntime(c));
         }
+
+        return nextCloudletFinishTime;
     }
 
     /**

@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.resources.Bandwidth;
@@ -506,15 +505,15 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         }
 
         addCloudletsToFinishedList();
-        final double nextSimulationTime = updateCloudletsProcessing(currentTime);
+        double nextCloudletFinishTime = updateCloudletsProcessing(currentTime);
         updateVmResourceAbsoluteUtilization(Ram.class);
         updateVmResourceAbsoluteUtilization(Bandwidth.class);
-        moveNextCloudletsFromWaitingToExecList();
+        nextCloudletFinishTime = Math.min(nextCloudletFinishTime, moveNextCloudletsFromWaitingToExecList(currentTime));
 
         setPreviousTime(currentTime);
         ((CloudSim)vm.getSimulation()).setLastCloudletProcessingUpdate(currentTime);
 
-        return nextSimulationTime;
+        return nextCloudletFinishTime;
     }
 
     /**
@@ -786,13 +785,25 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * <p>
      * This method is called internally by the
      * {@link CloudletScheduler#updateProcessing(double, List)}.</p>
+     * @param currentTime current simulation time
+     * @return the predicted completion time of the earliest finishing cloudlet
+     * (which is a relative delay from the current simulation time),
+     * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
-    protected void moveNextCloudletsFromWaitingToExecList() {
+    protected double moveNextCloudletsFromWaitingToExecList(final double currentTime) {
         Optional<CloudletExecution> optional = Optional.of(CloudletExecution.NULL);
+        double nextCloudletFinishTime = Double.MAX_VALUE;
         while (!cloudletWaitingList.isEmpty() && optional.isPresent()) {
             optional = findSuitableWaitingCloudlet();
-            optional.ifPresent(this::addWaitingCloudletToExecList);
+            final double estimatedFinishTime =
+                optional
+                    .map(this::addWaitingCloudletToExecList)
+                    .map(cle -> cloudletEstimatedFinishTime(cle, currentTime))
+                    .orElse(Double.MAX_VALUE);
+            nextCloudletFinishTime = Math.min(nextCloudletFinishTime, estimatedFinishTime);
         }
+
+        return nextCloudletFinishTime;
     }
 
     /**
