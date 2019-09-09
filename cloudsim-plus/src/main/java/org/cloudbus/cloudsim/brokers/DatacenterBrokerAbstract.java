@@ -776,7 +776,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public void requestIdleVmDestruction(final Vm vm) {
+    public DatacenterBroker requestIdleVmDestruction(final Vm vm) {
         final double delay = vmDestructionDelayFunction.apply(vm);
 
         if (vm.isCreated()) {
@@ -790,13 +790,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
                     new CloudSimEvent(vmDestructionDelayFunction.apply(vm),
                         vm.getHost().getDatacenter(),
                         CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING));
-                return;
+                return this;
             }
         }
 
         if (isTimeToShutdownBroker() && isBrokerIdle()) {
             shutdownEntity();
         }
+
+        return this;
     }
 
     @Override

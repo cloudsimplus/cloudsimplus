@@ -124,7 +124,7 @@ public class HostSimple implements Host {
 
     /** @see #getResources() */
     private List<ResourceManageable> resources;
-    
+
     private List<ResourceProvisioner> provisioners;
     private final List<Vm> vmCreatedList;
 
@@ -135,6 +135,7 @@ public class HostSimple implements Host {
 
     /** @see #getFreePesNumber() */
     private int freePesNumber;
+
     /** @see #getFailedPesNumber() */
     private int failedPesNumber;
 
@@ -776,12 +777,11 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Sets the pe list.
+     * Sets the PE list.
      *
      * @param peList the new pe list
-     * @return
      */
-    protected final Host setPeList(final List<Pe> peList) {
+    private void setPeList(final List<Pe> peList) {
         requireNonNull(peList);
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
         this.peList = peList;
@@ -795,7 +795,6 @@ public class HostSimple implements Host {
         failedPesNumber = 0;
         freePesNumber = peList.size();
 
-        return this;
     }
 
     @Override
@@ -1157,7 +1156,7 @@ public class HostSimple implements Host {
      */
     private Function<Entry<Double, Double>, Double> vmUtilizationMapper(final UtilizationHistory utilizationHistory) {
         //The entry key is the time and the value is the percentage of the VM CPU that is being used
-        return entry ->  ((VmSimple)utilizationHistory.getVm()).hostCpuUtilizationInternal(entry.getValue());
+        return entry ->  utilizationHistory.getVm().getExpectedHostCpuUtilization(entry.getValue());
     }
 
     @Override

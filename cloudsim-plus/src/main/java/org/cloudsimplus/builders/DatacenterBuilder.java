@@ -48,7 +48,7 @@ public class DatacenterBuilder implements Builder {
     private double costPerCpuSecond = 3.0;
     private double costPerStorage = 0.001;
     private double costPerMem = 0.05;
-    private double schedulingInterval = 1;
+    private double schedulingInterval = -1;
     private int    timezone;
 
     private final List<Datacenter> datacenters;

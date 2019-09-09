@@ -104,6 +104,7 @@ class VmNull implements Vm {
     @Override public double getCpuPercentUtilization() {
         return 0;
     }
+    @Override public double getExpectedHostCpuUtilization(double vmCpuUtilizationPercent) { return 0; }
     @Override public double getHostRamUtilization() { return 0; }
     @Override public double getHostBwUtilization() { return 0; }
     @Override public double getTotalCpuMipsUtilization() { return 0; }

@@ -49,7 +49,7 @@ public class CloudletBuilder implements Builder {
     private long fileSize = 300;
     private int  pes = 1;
     /**
-     * The id of the VM to be bind to created cloudlets.
+     * The VM to be bind to created cloudlets.
      */
     private Vm vm = Vm.NULL;
     private UtilizationModel utilizationModelRam;

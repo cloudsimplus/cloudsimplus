@@ -1014,10 +1014,7 @@ public class CloudSim implements Simulation {
         return lastCloudletProcessingUpdate;
     }
 
-    /**
-     * Sets the last time (in seconds) some Cloudlet was processed in the simulation.
-     * @param lastCloudletProcessingUpdate the time to set (in seconds)
-     */
+    @Override
     public void setLastCloudletProcessingUpdate(final double lastCloudletProcessingUpdate) {
         this.lastCloudletProcessingUpdate = lastCloudletProcessingUpdate;
     }

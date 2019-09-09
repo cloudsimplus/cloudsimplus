@@ -192,7 +192,7 @@ public class VmUtilizationHistory implements UtilizationHistory {
     public double getHostCpuUtilization(final double time){
         //VM CPU usage relative to the VM capacity.
         final double vmUsagePercent = history.get(time);
-        return ((VmSimple)vm).hostCpuUtilizationInternal(vmUsagePercent);
+        return vm.getExpectedHostCpuUtilization(vmUsagePercent);
     }
 
     @Override

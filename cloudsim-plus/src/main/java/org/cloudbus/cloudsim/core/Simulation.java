@@ -485,4 +485,10 @@ public interface Simulation {
      * Gets the last time (in seconds) some Cloudlet was processed in the simulation.
      */
     double getLastCloudletProcessingUpdate();
+
+    /**
+     * Sets the last time (in seconds) some Cloudlet was processed in the simulation.
+     * @param lastCloudletProcessingUpdate the time to set (in seconds)
+     */
+    void setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate);
 }

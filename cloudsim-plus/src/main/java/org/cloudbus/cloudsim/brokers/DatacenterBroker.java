@@ -119,8 +119,9 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param vm the VM to destroy
      * @see #getVmDestructionDelayFunction()
+     * @return
      */
-    void requestIdleVmDestruction(Vm vm);
+    DatacenterBroker requestIdleVmDestruction(Vm vm);
 
     /**
      * Destroys the passed VM.

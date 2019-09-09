@@ -8,7 +8,6 @@ package org.cloudbus.cloudsim.vms;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerAbstract;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.core.Machine;
@@ -347,10 +346,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public double getHostCpuUtilization(final double time) {
-        return hostCpuUtilizationInternal(getCpuPercentUtilization(time));
+        return getExpectedHostCpuUtilization(getCpuPercentUtilization(time));
     }
 
-    public final double hostCpuUtilizationInternal(final double vmCpuUtilizationPercent) {
+    @Override
+    public final double getExpectedHostCpuUtilization(final double vmCpuUtilizationPercent) {
         return vmCpuUtilizationPercent * getRelativeMipsCapacityPercent();
     }
 

@@ -208,7 +208,7 @@ public interface Host extends Machine, Comparable<Host> {
     List<Pe> getFreePeList();
 
     /**
-     * Gets the free pes number.
+     * Gets the number of PEs that are free to be used by any VM.
      *
      * @return the free pes number
      */
