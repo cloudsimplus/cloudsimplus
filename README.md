@@ -34,7 +34,7 @@
 
 <a id="overview"></a>
 
-# 1. CloudSim Plus Overview [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CloudSim%20Plus:%20a%20modern%20and%20full-featured%20Java%208%20framework%20for%20cloud%20computing%20simulation.%20It's%20actively%20maintained%20and%20fully%20documented,%20making%20it%20easier%20to%20developer%20your%20research.%20via%20@manoelcampos&url=https://cloudsimplus.org&hashtags=cloudsimplus,simulation-framework,cloud-computing)
+# 1. CloudSim Plus Overview [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CloudSim%20Plus:%20a%20modern%20and%20full-featured%20Java%208%20framework%20for%20cloud%20computing%20simulation.%20It's%20actively%20maintained%20and%20fully%20documented,%20making%20it%20easier%20to%20develop%20your%20research.%20via%20@manoelcampos&url=https://cloudsimplus.org&hashtags=cloudsimplus,simulation-framework,cloud-computing)
 
 CloudSim Plus is a full-featured, highly extensible simulation framework enabling modeling, simulation, 
 and experimentation of Cloud computing infrastructures and application services. 
