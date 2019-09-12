@@ -1,7 +1,7 @@
 <a id="top"></a>
 
 <p align="center">
-<b><a href="overview">Overview</a></b>
+<b><a href="#overview">Overview</a></b>
 |
 <b><a href="#2-main-exclusive-features">Exclusive Features</a></b>
 |
