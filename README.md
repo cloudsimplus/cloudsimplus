@@ -1,7 +1,7 @@
 <a id="top"></a>
 
 <p align="center">
-<b><a href="#1-overview">Overview</a></b>
+<b><a href="#overview">Overview</a></b>
 |
 <b><a href="#2-main-exclusive-features">Exclusive Features</a></b>
 |
@@ -32,9 +32,10 @@
 [![GitHub Closed Issues](https://img.shields.io/github/issues-closed-raw/manoelcampos/cloudsim-plus.svg?style=rounded-square)](http://github.com/manoelcampos/cloudsim-plus/issues) 
 [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
-<a href="https://twitter.com/intent/tweet?text=Check%20out%20CloudSim%20Plus:%20a%20modern%20and%20full-featured%20framework%20for%20cloud%20computing%20simulation.%20It's%20actively%20maintained%20and%20fully%20documented,%20making%20your%20research%20easier.%20via%20@manoelcampos&url=https://cloudsimplus.org&hashtags=cloudsimplus,cloud,computing,simulation,framework"><img alt="Share on Twitter" src="https://img.shields.io/twitter/url/https/cloudsimplus.org?style=social"></a> <iframe src="https://ghbtns.com/github-btn.html?user=twbs&repo=bootstrap&type=star&count=true" frameborder="0" scrolling="0" width="170px" height="20px"></iframe> 
+<a id="overview"></a>
 
-# 1. Overview
+# 1. CloudSim Plus Overview ![GitHub Stars](https://img.shields.io/github/stars/manoelcampos/cloudsim-plus?style=social) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CloudSim%20Plus:%20a%20modern%20and%20full-featured%20framework%20for%20cloud%20computing%20simulation.%20It's%20actively%20maintained%20and%20fully%20documented,%20making%20your%20research%20easier.%20via%20@manoelcampos&url=https://cloudsimplus.org&hashtags=cloudsimplus,cloud,computing,simulation,framework) 
+
 
 CloudSim Plus is a full-featured, highly extensible simulation framework enabling modeling, simulation, 
 and experimentation of Cloud computing infrastructures and application services. 
