@@ -34,7 +34,7 @@
 
 <a id="overview"></a>
 
-# 1. CloudSim Plus Overview [![GitHub stars](https://img.shields.io/github/stars/manoelcampos/cloudsim-plus.svg?style=social&label=Star&maxAge=2592000)](https://github.com/manoelcampos/cloudsim-plus/) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CloudSim%20Plus:%20a%20modern%20and%20full-featured%20framework%20for%20cloud%20computing%20simulation.%20It's%20actively%20maintained%20and%20fully%20documented,%20making%20your%20research%20easier.%20via%20@manoelcampos&url=https://cloudsimplus.org&hashtags=cloudsimplus,cloud,computing,simulation,framework) 
+# 1. CloudSim Plus Overview [![GitHub stars](https://img.shields.io/github/stars/manoelcampos/cloudsim-plus.svg?style=social&label=Star%20It%20&#128077;&maxAge=2592000)](https://github.com/manoelcampos/cloudsim-plus/) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CloudSim%20Plus:%20a%20modern%20and%20full-featured%20framework%20for%20cloud%20computing%20simulation.%20It's%20actively%20maintained%20and%20fully%20documented,%20making%20your%20research%20easier.%20via%20@manoelcampos&url=https://cloudsimplus.org&hashtags=cloudsimplus,cloud,computing,simulation,framework) 
 
 
 CloudSim Plus is a full-featured, highly extensible simulation framework enabling modeling, simulation, 
