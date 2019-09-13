@@ -880,7 +880,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         send(datacenter, vm.getSubmissionDelay(), CloudSimTags.VM_CREATE_ACK, vm);
         vm.setLastTriedDatacenter(datacenter);
         return 1;
-
     }
 
     private void logVmCreationRequest(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {

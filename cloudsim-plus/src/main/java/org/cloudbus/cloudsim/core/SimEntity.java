@@ -91,6 +91,15 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
     boolean schedule(SimEvent evt);
 
     /**
+     * Sends an event from the entity to itself with no delay.
+     * @param tag   An user-defined number representing the type of event.
+     * @return true if the event was sent, false if the simulation was not started yet
+     */
+    default boolean schedule(int tag) {
+        return schedule(0, tag);
+    }
+
+    /**
      * Sends an event from the entity to itself.
      * @param delay How many seconds after the current simulation time the event should be sent
      * @param tag   An user-defined number representing the type of event.

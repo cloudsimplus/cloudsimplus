@@ -136,11 +136,11 @@ public interface VmAllocationPolicy {
 
     /**
      * Finds a suitable host that has enough resources to place a given VM.
-     * Internally it may use a default implementation or one set in runtime
-     * by calling {@link #setFindHostForVmFunction(BiFunction)}.
+     * Internally it may use a default implementation or one set in runtime.
      *
      * @param vm the vm to find a host for it
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
+     * @see #setFindHostForVmFunction(BiFunction)
      */
     Optional<Host> findHostForVm(Vm vm);
 

@@ -738,7 +738,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         if (nextSimulationTime != Double.MAX_VALUE) {
             nextSimulationTime = getCloudletProcessingUpdateInterval(nextSimulationTime);
-            schedule(this, nextSimulationTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
+            schedule(nextSimulationTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
         setLastProcessTime(getSimulation().clock());
 
