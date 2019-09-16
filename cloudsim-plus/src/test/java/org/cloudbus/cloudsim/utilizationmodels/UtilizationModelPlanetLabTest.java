@@ -19,7 +19,7 @@ public class UtilizationModelPlanetLabTest {
     /**
      * Time interval (in seconds) in which the data inside a PlanetLab trace file is collected.
      */
-    public static final double SCHEDULING_INTERVAL = 300;
+    public static final int SCHEDULING_INTERVAL = 300;
 
     public static final String FILE = "146-179_surfsnel_dsl_internl_net_colostate_557.dat";
 
@@ -82,6 +82,18 @@ public class UtilizationModelPlanetLabTest {
         final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, SCHEDULING_INTERVAL, linesToRead);
         assertEquals(linesToRead, planetlab.getDataSamples());
         checkUtilizationValuesFromTempTrace(planetlab, linesToRead);
+    }
+
+    @Test
+    public void testScaleValues() {
+        final double expectedValues[] = {0.0, 0.2, 0.4, 0.6};
+        final int totalLines = expectedValues.length;
+        final String path = createTempTraceFile(totalLines, true);
+        final UtilizationModelPlanetLab planetlab = new UtilizationModelPlanetLab(path, cpuUtilization -> cpuUtilization*20);
+        for (int i = 0; i < totalLines; i++) {
+            final int time = i * SCHEDULING_INTERVAL;
+            assertEquals(expectedValues[i], planetlab.getUtilization(time));
+        }
     }
 
     @Test

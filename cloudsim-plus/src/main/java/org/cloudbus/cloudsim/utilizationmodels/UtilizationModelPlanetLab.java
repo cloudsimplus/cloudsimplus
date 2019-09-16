@@ -4,14 +4,9 @@ package org.cloudbus.cloudsim.utilizationmodels;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.UncheckedIOException;
+import java.io.*;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
-
-import static org.cloudbus.cloudsim.util.ResourceLoader.getInputStream;
 
 /**
  * Defines a resource utilization model based on a
@@ -25,7 +20,19 @@ import static org.cloudbus.cloudsim.util.ResourceLoader.getInputStream;
  * </p>
  */
 public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
-    /** @see #setMapper(UnaryOperator) */
+    /**
+     * A {@link UnaryOperator} Function that will be used to map the utilization values
+     * read from the trace value to a different value.
+     * That Function is useful when you don't want to use the values from the trace as they are,
+     * but you want to scale the values applying any mathematical operation over them.
+     * For instance, you can provide a mapper Function that scale the values in 10 times,
+     * by giving a Lambda Expression such as {@code value -> value * 10}
+     * in the mapper parameter of some constructor.
+     *
+     * <p>If a mapper Function is not set, the values are used as read from the trace file,
+     * without any change (except that the scale is always converted to [0..1]).</p>
+     * @see #UtilizationModelPlanetLab(String, UnaryOperator)
+     */
     private UnaryOperator<Double> mapper;
 
     /**
@@ -53,7 +60,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * minutes. The size of the array is defined according to the number of utilization samples
      * specified in the constructor.
      *
-     * <p>If there is a {@link #setMapper(UnaryOperator) mapper Function} set,
+     * <p>If there is a {@link #mapper} Function set,
      * the values are returned and stored according to the operation performed
      * by such a Function. If no mapper Function is set, the values
      * are returned and stored as read from the trace file (always in scale from 0 to 1).</p>
@@ -121,13 +128,16 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @see #getSchedulingInterval()
      */
     public static UtilizationModelPlanetLab getInstance(final String workloadFilePath, final double schedulingInterval) {
-        final InputStreamReader reader = new InputStreamReader(getInputStream(workloadFilePath, UtilizationModelPlanetLab.class));
-        return new UtilizationModelPlanetLab(reader, schedulingInterval, -1);
+        return new UtilizationModelPlanetLab(getResourcePath(workloadFilePath), schedulingInterval, -1);
+    }
+
+    private static String getResourcePath(final String workloadFilePath) {
+        return ResourceLoader.getResourcePath(UtilizationModelPlanetLab.class, workloadFilePath);
     }
 
     /**
      * Instantiates a new PlanetLab resource utilization model from a trace
-     * file.
+     * file not located inside the application's resource directory.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
      * In this case, it will be used to accordingly create an array
@@ -140,6 +150,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
      * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
+     * @see #getInstance(String)
      */
     public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval) throws NumberFormatException
     {
@@ -147,8 +158,38 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new PlanetLab resource utilization model with variable
-     * utilization samples from a workload file.
+     * Instantiates a new PlanetLab resource utilization model from a trace
+     * file not located inside the application's resource directory.
+     *
+     * <p>It checks if the first line of the trace has a comment representing its number of lines.
+     * In this case, it will be used to accordingly create an array
+     * of that size to store the values read from the trace.
+     * If the file doesn't have such a comment with a valid line number,
+     * it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     * from the trace.</p>
+     *
+     * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
+     * @param mapper A {@link UnaryOperator} Function that will be used to map the utilization values
+     * read from the trace value to a different value.
+     * That Function is useful when you don't want to use the values from the trace as they are,
+     * but you want to scale the values applying any mathematical operation over them.
+     * For instance, you can provide a mapper Function that scale the values in 10 times,
+     * by giving a Lambda Expression such as {@code setMapper(value -> value * 10)}.
+     *
+     * <p>If a mapper Function is not set, the values are used as read from the trace file,
+     * without any change (except that the scale is always converted to [0..1]).</p>
+     * @param mapper a {@link UnaryOperator} Function to set
+     * @throws NumberFormatException when a value inside the side is not a valid number
+     * @see #getSchedulingInterval()
+     * @see #getInstance(String)
+     */
+    public UtilizationModelPlanetLab(final String workloadFilePath, final UnaryOperator<Double> mapper) throws NumberFormatException {
+        this(workloadFilePath, DEF_SCHEDULING_INTERVAL, -1, mapper);
+    }
+
+    /**
+     * Instantiates a new PlanetLab resource utilization model from a workload file
+     * not located inside the application's resource directory.
      *
      * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
@@ -162,37 +203,24 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *                    from the trace.
      * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
+     * @see #getInstance(String)
      */
-    public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval, final int dataSamples) throws NumberFormatException
-    {
-        this(ResourceLoader.getFileReader(workloadFilePath), schedulingInterval, dataSamples);
-    }
-
-    /**
-     * Instantiates a new PlanetLab resource utilization model with variable
-     * utilization samples from a workload file.
-     *
-     * @param reader the {@link InputStreamReader} to read the workload file
-     * @param schedulingInterval the time interval in which precise utilization can be got from the file
-     * @param dataSamples number of samples to read from the workload file.
-     *                    If -1 is given, it checks if the first line of the trace has a comment.
-     *                    In this case, that comment is expected to represent the number of lines
-     *                    inside the trace and it will be used to accordingly create an array
-     *                    of that size to store the values read from the trace.
-     *                    If the file doesn't have such a comment with a valid line number,
-     *                    it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
-     *                    from the trace.
-     * @throws NumberFormatException when a value inside the side is not a valid number
-     * @see #getSchedulingInterval()
-     */
-    private UtilizationModelPlanetLab(final InputStreamReader reader, final double schedulingInterval, final int dataSamples) throws NumberFormatException
-    {
-        super();
-        setSchedulingInterval(schedulingInterval);
+    public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval, final int dataSamples) throws NumberFormatException {
         /*The default mapper Function doesn't change the value read from the trace file.
          Therefore, the value is used as is.*/
-        setMapper(UnaryOperator.identity());
-        try {
+        this(workloadFilePath, schedulingInterval, dataSamples, UnaryOperator.identity());
+    }
+
+    private UtilizationModelPlanetLab(
+        final String workloadFilePath,
+        final double schedulingInterval,
+        final int dataSamples,
+        final UnaryOperator<Double> mapper) throws NumberFormatException
+    {
+        super();
+        try(final FileReader reader = ResourceLoader.getFileReader(workloadFilePath)) {
+            setSchedulingInterval(schedulingInterval);
+            this.mapper = Objects.requireNonNull(mapper);
             utilization = readWorkloadFile(reader, dataSamples);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -412,20 +440,4 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         this.schedulingInterval = schedulingInterval;
     }
 
-    /**
-     * A {@link UnaryOperator} Function that will be used to map the utilization values
-     * read from the trace value to a different value.
-     * That Function is useful when you don't want to use the values from the trace as they are,
-     * but you want to scale the values applying any mathematical operation over them.
-     * For instance, you can provide a mapper Function that scale the values in 10 times,
-     * by giving a Lambda Expression such as {@code setMapper(value -> value * 10)}.
-     *
-     * <p>If a mapper Function is not set, the values are used as read from the trace file,
-     * without any change (except that the scale is always converted to [0..1]).</p>
-     * @param mapper a {@link UnaryOperator} Function to set
-     */
-    public final UtilizationModelPlanetLab setMapper(final UnaryOperator<Double> mapper) {
-        this.mapper = Objects.requireNonNull(mapper);
-        return this;
-    }
 }
