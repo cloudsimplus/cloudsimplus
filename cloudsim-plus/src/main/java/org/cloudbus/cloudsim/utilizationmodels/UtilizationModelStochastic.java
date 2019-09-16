@@ -122,7 +122,6 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         this(Unit.PERCENTAGE, new UniformDistr(seed));
     }
 
-
     /**
      * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG)
      * It defines the resource utilization in percentage.

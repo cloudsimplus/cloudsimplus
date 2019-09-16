@@ -82,27 +82,6 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
      * from the trace.</p>
      *
-     * @param workloadFile a PlanetLab Datacenter workload {@link java.io.File}.
-     * @throws NumberFormatException when a value inside the side is not a valid number
-     * @see #getSchedulingInterval()
-     */
-    public static UtilizationModelPlanetLab getInstance(final java.io.File workloadFile) {
-        return getInstance(workloadFile.getAbsolutePath());
-    }
-
-    /**
-     * Instantiates a new PlanetLab resource utilization model from a trace
-     * file inside the <b>application's resource directory</b>,
-     * considering that the interval between each data line inside a
-     * PlanetLab trace file is the {@link #DEF_SCHEDULING_INTERVAL default one}.
-     *
-     * <p>It checks if the first line of the trace has a comment representing its number of lines.
-     * In this case, it will be used to accordingly create an array
-     * of that size to store the values read from the trace.
-     * If the file doesn't have such a comment with a valid line number,
-     * it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
-     * from the trace.</p>
-     *
      * @param workloadFilePath the <b>relative path</b> of a PlanetLab Datacenter trace file.
      * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
@@ -129,6 +108,36 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      */
     public static UtilizationModelPlanetLab getInstance(final String workloadFilePath, final double schedulingInterval) {
         return new UtilizationModelPlanetLab(getResourcePath(workloadFilePath), schedulingInterval, -1);
+    }
+
+    /**
+     * Instantiates a new PlanetLab resource utilization model from a trace
+     * file located inside the <b>application's resource directory</b>.
+     *
+     * <p>It checks if the first line of the trace has a comment representing its number of lines.
+     * In this case, it will be used to accordingly create an array
+     * of that size to store the values read from the trace.
+     * If the file doesn't have such a comment with a valid line number,
+     * it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
+     * from the trace.</p>
+     *
+     * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
+     * @param mapper A {@link UnaryOperator} Function that will be used to map the utilization values
+     * read from the trace value to a different value.
+     * That Function is useful when you don't want to use the values from the trace as they are,
+     * but you want to scale the values applying any mathematical operation over them.
+     * For instance, you can provide a mapper Function that scale the values in 10 times,
+     * by giving a Lambda Expression such as {@code setMapper(value -> value * 10)}.
+     *
+     * <p>If a mapper Function is not set, the values are used as read from the trace file,
+     * without any change (except that the scale is always converted to [0..1]).</p>
+     * @param mapper a {@link UnaryOperator} Function to set
+     * @throws NumberFormatException when a value inside the side is not a valid number
+     * @see #getSchedulingInterval()
+     * @see #getInstance(String)
+     */
+    public static UtilizationModelPlanetLab getInstance(final String workloadFilePath, final UnaryOperator<Double> mapper) throws NumberFormatException {
+        return new UtilizationModelPlanetLab(getResourcePath(workloadFilePath), mapper);
     }
 
     private static String getResourcePath(final String workloadFilePath) {
