@@ -31,6 +31,10 @@ public class DeferredQueue implements EventQueue {
      */
     private double maxTime = -1;
 
+    private int addedToTail;
+    private int addedToMiddle;
+    private int maxSize;
+
     /**
      * Adds a new event to the queue, preserving the temporal order
      * of the events.
@@ -41,9 +45,11 @@ public class DeferredQueue implements EventQueue {
         // The event has to be inserted as the last of all events
         // with the same event_time(). Yes, this matters.
         final double eventTime = newEvent.getTime();
+        maxSize = Math.max(maxSize, list.size());
         if (eventTime >= maxTime) {
             list.add(newEvent);
             maxTime = eventTime;
+            addedToTail++;
             return;
         }
 
@@ -61,6 +67,7 @@ public class DeferredQueue implements EventQueue {
             if (reverseIterator.previous().getTime() <= eventTime) {
                 reverseIterator.next();
                 reverseIterator.add(newEvent);
+                addedToMiddle++;
                 return;
             }
         }
@@ -138,5 +145,31 @@ public class DeferredQueue implements EventQueue {
         }
 
         return list.get(0);
+    }
+
+    /**
+     * Keeps track of the total number of events
+     * added to the tail of the queue,
+     * just for debug purpose.
+     */
+    public int getAddedToTail() {
+        return addedToTail;
+    }
+
+    /**
+     * Keeps track of the total number of events
+     * added to the middle of the queue,
+     * just for debug purpose.
+     */
+    public int getAddedToMiddle() {
+        return addedToMiddle;
+    }
+
+    /**
+     * Keeps track of the maximum number of events
+     * added to the queue, just for debug purpose.
+     */
+    public int getMaxSize() {
+        return maxSize;
     }
 }

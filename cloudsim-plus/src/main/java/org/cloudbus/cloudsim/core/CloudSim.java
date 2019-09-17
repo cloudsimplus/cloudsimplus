@@ -39,7 +39,7 @@ public class CloudSim implements Simulation {
      */
     public static final String VERSION = "CloudSim Plus 5.1.0";
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
+    public static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
     /**
      * An array that works as a circular queue with capacity for just 2 elements
@@ -244,6 +244,10 @@ public class CloudSim implements Simulation {
         running = false;
 
         printSimulationFinished();
+
+        LOGGER.debug(
+            "DeferredQueue >> max size: {} added to middle: {} added to tail: {}",
+            deferred.getMaxSize(), deferred.getAddedToMiddle(), deferred.getAddedToTail());
     }
 
     @Override
