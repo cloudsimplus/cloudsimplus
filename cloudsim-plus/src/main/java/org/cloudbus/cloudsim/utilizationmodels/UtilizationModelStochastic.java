@@ -192,11 +192,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
         }
 
         final Double utilization = historyEnabled ? historyMap.get(time) : null;
-        if (utilization == null) {
-            return generateUtilization(time);
-        }
-
-        return utilization;
+        return utilization == null ? generateUtilization(time) : utilization;
     }
 
     private double generateUtilization(final double time) {

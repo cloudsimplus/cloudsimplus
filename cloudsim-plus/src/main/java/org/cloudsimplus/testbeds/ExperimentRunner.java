@@ -119,7 +119,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * once they can become invalid or out-of-date because dependency between
      * parameters.</b>
      * The constructor has just to initialize objects to avoid
-     * {@link NullPointerException}. By this way, one have to set all the
+     * {@link NullPointerException}. This way, one have to set all the
      * parameters inside this method. For instance, if the constructor creates
      * and Random Number Generator (PRNG) using a default seed but the method
      * setSeed is called after the constructor, the PRNG will not be update to
@@ -223,7 +223,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * the returned array will be the mean of every sample batch). Otherwise,
      * returns the same given array
      */
-    protected List<Double> computeBatchMeans(List<Double> samples) {
+    protected List<Double> computeBatchMeans(final List<Double> samples) {
         if (!isApplyBatchMeansMethod()) {
             return samples;
         }
@@ -330,7 +330,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
      * Computation and Statistical Data Analysis on the Java Platform</a>
      */
-    protected double computeConfidenceErrorMargin(SummaryStatistics stats, double confidenceLevel) {
+    protected double computeConfidenceErrorMargin(final SummaryStatistics stats, final double confidenceLevel) {
         try {
             // Creates a T-Distribution with N-1 degrees of freedom
             final double degreesOfFreedom = stats.getN() - 1;
@@ -375,7 +375,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
         return simulationRuns;
     }
 
-    protected ExperimentRunner setSimulationRuns(int simulationRuns) {
+    protected ExperimentRunner setSimulationRuns(final int simulationRuns) {
         this.simulationRuns = simulationRuns;
         return this;
     }
@@ -413,7 +413,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * @return
      * @see #getNumberOfBatches()
      */
-    public final ExperimentRunner setNumberOfBatches(int numberOfBatches) {
+    public final ExperimentRunner setNumberOfBatches(final int numberOfBatches) {
         this.numberOfBatches = numberOfBatches;
         return this;
     }
@@ -589,7 +589,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      *
      * @see #createRandomGen(int, double, double)
      */
-    protected List<Double> computeAntitheticMeans(List<Double> samples) {
+    protected List<Double> computeAntitheticMeans(final List<Double> samples) {
         if (!isApplyAntitheticVariatesTechnique()) {
             return samples;
         }
@@ -642,7 +642,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * statistics
      * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics)
      */
-    private void computeAndPrintFinalResults(Map.Entry<String, List<Double>> metricEntry){
+    private void computeAndPrintFinalResults(final Map.Entry<String, List<Double>> metricEntry){
         printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
     }
 
@@ -657,7 +657,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      */
     protected abstract void printFinalResults(String metricName, SummaryStatistics stats);
 
-    public final ExperimentRunner setBaseSeed(long baseSeed) {
+    public final ExperimentRunner setBaseSeed(final long baseSeed) {
         this.baseSeed = baseSeed;
         return this;
     }
@@ -680,7 +680,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * @param verbose true if results have to be output, false otherwise
      * @return
      */
-    public ExperimentRunner setVerbose(boolean verbose) {
+    public ExperimentRunner setVerbose(final boolean verbose) {
         this.verbose = verbose;
         return this;
     }
