@@ -6,13 +6,11 @@
         <license-maven-plugin.version>3.0</license-maven-plugin.version>
         <!-- License file to be used by the com.mycila.license-maven-plugin -->
         <copyrightfile>COPYRIGHT</copyrightfile>
-        <!-- Version used by all submodules which is managed by the flatten-maven-plugin -->
-        <global.version>5.1.1</global.version>
     </properties>
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-modules</artifactId>
-    <version>dev</version>
+    <version>5.1.1</version>
     <packaging>pom</packaging>
 
     <name>CloudSim Plus Modules (All)</name>
@@ -118,35 +116,6 @@
                         <exclude>**/*</exclude>
                     </excludes>
                 </configuration>
-            </plugin>
-
-            <plugin>
-                <!-- Manages version of project's submodules based on the parent version -->
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>flatten-maven-plugin</artifactId>
-                <version>1.1.0</version>
-                <configuration>
-                    <!-- Keeps developer and additional info inside the flattened pom -->
-                    <flattenMode>oss</flattenMode>
-                </configuration>
-                <executions>
-                    <!-- enable flattening -->
-                    <execution>
-                        <id>flatten</id>
-                        <phase>process-resources</phase>
-                        <goals>
-                            <goal>flatten</goal>
-                        </goals>
-                    </execution>
-                    <!-- ensure proper cleanup -->
-                    <execution>
-                        <id>flatten.clean</id>
-                        <phase>clean</phase>
-                        <goals>
-                            <goal>clean</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
