@@ -73,7 +73,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * @return the BriteNetworkTopology instance.
      */
     public static BriteNetworkTopology getInstance(final String fileName){
-        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(fileName, BriteNetworkTopology.class));
+        final InputStreamReader reader = ResourceLoader.newInputStreamReader(fileName, BriteNetworkTopology.class);
         return new BriteNetworkTopology(reader);
     }
 
@@ -101,7 +101,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * @see #getInstance(String)
      */
     public BriteNetworkTopology(final String filePath) {
-        this(ResourceLoader.getFileReader(filePath));
+        this(ResourceLoader.newInputStreamReader(filePath));
         LOGGER.info("Topology file: {}", filePath);
     }
 
@@ -110,15 +110,15 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * The file is written in the BRITE format and contains
      * topological information on simulation entities.
      *
-     * @param streamReader the reader to read the topology file
+     * @param reader the reader for the topology file
      * @see #BriteNetworkTopology()
      * @see #BriteNetworkTopology(InputStreamReader)
      * @see #getInstance(String)
      */
-    private BriteNetworkTopology(final InputStreamReader streamReader) {
+    private BriteNetworkTopology(final InputStreamReader reader) {
         this();
-        final TopologyReaderBrite reader = new TopologyReaderBrite();
-        graph = reader.readGraphFile(streamReader);
+        final TopologyReaderBrite instance = new TopologyReaderBrite();
+        graph = instance.readGraphFile(reader);
         generateMatrices();
     }
 

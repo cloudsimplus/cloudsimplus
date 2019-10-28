@@ -1,10 +1,12 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
-
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UncheckedIOException;
 import java.util.Objects;
 import java.util.function.UnaryOperator;
 
@@ -70,7 +72,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     private final double[] utilization;
 
     /**
-     * Instantiates a new PlanetLab resource utilization model from a trace
+     * Instantiates a new PlanetLab utilization model from a trace
      * file inside the <b>application's resource directory</b>,
      * considering that the interval between each data line inside a
      * PlanetLab trace file is the {@link #DEF_SCHEDULING_INTERVAL default one}.
@@ -91,8 +93,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new PlanetLab resource utilization model from a trace
-     * file inside the <b>application's resource directory</b>.
+     * Instantiates a PlanetLab utilization model from a trace
+     * file located <b>inside the application's resource directory</b>.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
      * In this case, it will be used to accordingly create an array
@@ -107,12 +109,12 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @see #getSchedulingInterval()
      */
     public static UtilizationModelPlanetLab getInstance(final String workloadFilePath, final double schedulingInterval) {
-        return new UtilizationModelPlanetLab(getResourcePath(workloadFilePath), schedulingInterval, -1);
+        return new UtilizationModelPlanetLab(newReader(workloadFilePath), schedulingInterval, -1);
     }
 
     /**
-     * Instantiates a new PlanetLab resource utilization model from a trace
-     * file located inside the <b>application's resource directory</b>.
+     * Instantiates a PlanetLab utilization model from a trace
+     * file located <b>inside the application's resource directory</b>.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
      * In this case, it will be used to accordingly create an array
@@ -137,16 +139,16 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @see #getInstance(String)
      */
     public static UtilizationModelPlanetLab getInstance(final String workloadFilePath, final UnaryOperator<Double> mapper) throws NumberFormatException {
-        return new UtilizationModelPlanetLab(getResourcePath(workloadFilePath), mapper);
+        return new UtilizationModelPlanetLab(newReader(workloadFilePath), DEF_SCHEDULING_INTERVAL, -1, mapper);
     }
 
-    private static String getResourcePath(final String workloadFilePath) {
-        return ResourceLoader.getResourcePath(UtilizationModelPlanetLab.class, workloadFilePath);
+    private static InputStreamReader newReader(final String workloadFilePath) {
+        return ResourceLoader.newInputStreamReader(workloadFilePath, UtilizationModelPlanetLab.class);
     }
 
     /**
      * Instantiates a new PlanetLab resource utilization model from a trace
-     * file not located inside the application's resource directory.
+     * file <b>outside</b> the application's resource directory.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
      * In this case, it will be used to accordingly create an array
@@ -168,7 +170,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
 
     /**
      * Instantiates a new PlanetLab resource utilization model from a trace
-     * file not located inside the application's resource directory.
+     * file <b>outside</b> the application's resource directory.
      *
      * <p>It checks if the first line of the trace has a comment representing its number of lines.
      * In this case, it will be used to accordingly create an array
@@ -187,18 +189,17 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * <p>If a mapper Function is not set, the values are used as read from the trace file,
      * without any change (except that the scale is always converted to [0..1]).</p>
-     * @param mapper a {@link UnaryOperator} Function to set
      * @throws NumberFormatException when a value inside the side is not a valid number
      * @see #getSchedulingInterval()
      * @see #getInstance(String)
      */
     public UtilizationModelPlanetLab(final String workloadFilePath, final UnaryOperator<Double> mapper) throws NumberFormatException {
-        this(workloadFilePath, DEF_SCHEDULING_INTERVAL, -1, mapper);
+        this(newReader(workloadFilePath), DEF_SCHEDULING_INTERVAL, -1, mapper);
     }
 
     /**
-     * Instantiates a new PlanetLab resource utilization model from a workload file
-     * not located inside the application's resource directory.
+     * Instantiates a new PlanetLab resource utilization model from a trace
+     * file <b>outside</b> the application's resource directory.
      *
      * @param workloadFilePath the path of a PlanetLab Datacenter workload file.
      * @param schedulingInterval the time interval in which precise utilization can be got from the file
@@ -217,23 +218,27 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     public UtilizationModelPlanetLab(final String workloadFilePath, final double schedulingInterval, final int dataSamples) throws NumberFormatException {
         /*The default mapper Function doesn't change the value read from the trace file.
          Therefore, the value is used as is.*/
-        this(workloadFilePath, schedulingInterval, dataSamples, UnaryOperator.identity());
+        this(newReader(workloadFilePath), schedulingInterval, dataSamples);
     }
 
     private UtilizationModelPlanetLab(
-        final String workloadFilePath,
+        final InputStreamReader sreader,
+        final double schedulingInterval,
+        final int dataSamples) throws NumberFormatException
+    {
+        this(sreader, schedulingInterval, dataSamples, UnaryOperator.identity());
+    }
+
+    private UtilizationModelPlanetLab(
+        final InputStreamReader sreader,
         final double schedulingInterval,
         final int dataSamples,
         final UnaryOperator<Double> mapper) throws NumberFormatException
     {
         super();
-        try(final FileReader reader = ResourceLoader.getFileReader(workloadFilePath)) {
-            setSchedulingInterval(schedulingInterval);
-            this.mapper = Objects.requireNonNull(mapper);
-            utilization = readWorkloadFile(reader, dataSamples);
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        setSchedulingInterval(schedulingInterval);
+        this.mapper = Objects.requireNonNull(mapper);
+        utilization = readWorkloadFile(sreader, dataSamples);
     }
 
     /**
@@ -244,7 +249,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * For instance, the line 0 represents a resource utilization percentage for
      * simulation time 0.
      *
-     * @param reader the {@link InputStreamReader} to read the file
+     * @param sreader the {@link InputStreamReader} to read the file
      * @param dataSamples number of samples to read from the workload file.
      *                    If -1 is given, it checks if the first line of the trace has a comment.
      *                    In this case, that comment is expected to represent the number of lines
@@ -254,17 +259,17 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *                    it will be tried to read just {@link #DEF_DATA_SAMPLES} lines
      *                    from the trace.
      * @return an array containing the utilization values read from the trace file (in scale from 0 to 1)
-     * @throws IOException when the trace file cannot be read
+     * @throws UncheckedIOException when the trace file cannot be read
      * @see #utilization
      */
-    private double[] readWorkloadFile(final InputStreamReader reader, int dataSamples) throws IOException {
-        Objects.requireNonNull(reader);
+    private double[] readWorkloadFile(final InputStreamReader sreader, int dataSamples) {
+        Objects.requireNonNull(sreader);
         double[] utilization = {0};
 
-        try (BufferedReader input = new BufferedReader(reader)) {
+        try (BufferedReader reader = new BufferedReader(sreader)) {
             int lineNum = 0;
             String line;
-            while((line=input.readLine())!=null && lineNum < utilization.length){
+            while((line=reader.readLine())!=null && lineNum < utilization.length){
                 if(lineNum == 0){
                     dataSamples = parseDataSamples(line, dataSamples);
                     utilization = createEmptyArray(dataSamples);
@@ -274,6 +279,8 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
                     utilization[lineNum++] = Math.min(mapper.apply(Double.parseDouble(line) / 100.0), 1.0);
                 }
             }
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
         }
 
         return utilization;

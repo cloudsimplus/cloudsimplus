@@ -331,7 +331,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
         final String filePath,
         final Function<TaskEvent, Cloudlet> cloudletCreationFunction)
     {
-        final InputStream reader = ResourceLoader.getInputStream(filePath, GoogleTaskEventsTraceReader.class);
+        final InputStream reader = ResourceLoader.newInputStream(filePath, GoogleTaskEventsTraceReader.class);
         return new GoogleTaskEventsTraceReader(simulation, filePath, reader, cloudletCreationFunction);
     }
 

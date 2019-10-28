@@ -124,7 +124,7 @@ final class CloudletTaskCompletionTimeMinimizationExperiment extends AbstractClo
 
     private List<String> readContractList() {
         return ResourceLoader
-            .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
+            .newBufferedReader(SLA_CONTRACTS_LIST, getClass())
             .lines()
             .filter(l -> !l.startsWith("#"))
             .filter(l -> !l.trim().isEmpty())

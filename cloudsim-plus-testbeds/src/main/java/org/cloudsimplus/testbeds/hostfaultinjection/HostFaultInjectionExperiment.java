@@ -177,7 +177,7 @@ final class HostFaultInjectionExperiment extends Experiment {
 
     private List<String> readContractList() {
         return ResourceLoader
-                .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
+                .newBufferedReader(SLA_CONTRACTS_LIST, getClass())
                 .lines()
                 .filter(l -> !l.startsWith("#"))
                 .filter(l -> !l.trim().isEmpty())
@@ -287,7 +287,7 @@ final class HostFaultInjectionExperiment extends Experiment {
     private List<AwsEc2Template> readAllAvailableAwsEc2Instances() throws IOException {
         final List<AwsEc2Template> instances = new ArrayList<>();
         //Lists the files into the given directory
-        try (BufferedReader br = ResourceLoader.getBufferedReader(getClass(), "instance-files.txt")) {
+        try (BufferedReader br = ResourceLoader.newBufferedReader("instance-files.txt", getClass())) {
             while (br.ready()) {
                 final String file = br.readLine();
                 final AwsEc2Template instance = AwsEc2Template.getInstance("vmtemplates/aws/"+file);

@@ -47,6 +47,7 @@ import java.util.List;
  * causing the Cloudlet to start executing just after a few seconds.</p>
  */
 public class NetworkExample1 {
+    private static final String NETWORK_TOPOLOGY_FILE = "topology.brite";
     private static final int VM_PES = 1;
     private final Datacenter datacenter0;
     private final DatacenterBroker broker;
@@ -91,7 +92,7 @@ public class NetworkExample1 {
 
     private void configureNetwork() {
         //load the network topology file
-        NetworkTopology networkTopology = BriteNetworkTopology.getInstance("topology.brite");
+        NetworkTopology networkTopology = BriteNetworkTopology.getInstance(NETWORK_TOPOLOGY_FILE);
         simulation.setNetworkTopology(networkTopology);
 
         //maps CloudSim entities to BRITE entities

@@ -45,16 +45,15 @@ public class TopologyReaderBrite implements TopologyReader {
      */
     private TopologicalGraph graph;
 
-
     @Override
     public TopologicalGraph readGraphFile(final String filename) {
-        return readGraphFile(ResourceLoader.getFileReader(filename));
+        return readGraphFile(ResourceLoader.newInputStreamReader(filename));
     }
 
     @Override
-    public TopologicalGraph readGraphFile(final InputStreamReader streamReader) {
+    public TopologicalGraph readGraphFile(final InputStreamReader sreader) {
         graph = new TopologicalGraph();
-        try(BufferedReader reader = new BufferedReader(streamReader)) {
+        try(BufferedReader reader = new BufferedReader(sreader)) {
             String nextLine;
             while ((nextLine = reader.readLine()) != null) {
                 // functionality to differentiate between all the parsing-states
@@ -73,7 +72,6 @@ public class TopologyReaderBrite implements TopologyReader {
                 else if (state == PARSE_EDGES) {
                     parseEdgesString(nextLine);
                 }
-
             }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -81,6 +79,7 @@ public class TopologyReaderBrite implements TopologyReader {
 
         return graph;
     }
+
 
     /**
      * Parses nodes inside a line from the BRITE file.

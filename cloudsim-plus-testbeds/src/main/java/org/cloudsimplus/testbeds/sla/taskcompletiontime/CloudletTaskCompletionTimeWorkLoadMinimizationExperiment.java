@@ -103,7 +103,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationExperiment extends AbstractC
 
     private List<String> readContractList() {
         return ResourceLoader
-            .getBufferedReader(getClass(), SLA_CONTRACTS_LIST)
+            .newBufferedReader(SLA_CONTRACTS_LIST, getClass())
             .lines()
             .map(String::trim)
             .filter(line -> !line.isEmpty())

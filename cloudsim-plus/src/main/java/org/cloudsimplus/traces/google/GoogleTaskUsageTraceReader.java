@@ -273,7 +273,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
         final List<DatacenterBroker> brokers,
         final String filePath)
     {
-        final InputStream reader = ResourceLoader.getInputStream(filePath, GoogleTaskUsageTraceReader.class);
+        final InputStream reader = ResourceLoader.newInputStream(filePath, GoogleTaskUsageTraceReader.class);
         return new GoogleTaskUsageTraceReader(brokers, filePath, reader);
     }
 

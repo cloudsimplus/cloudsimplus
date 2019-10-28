@@ -24,26 +24,75 @@ public final class ResourceLoader {
     private ResourceLoader(){}
 
     /**
-     * Gets a {@link FileReader}
-     * @param filePath the path to the file
-     * @return the {@link FileReader} instance.
+     * Instantiates a {@link BufferedReader} to read a file
+     * (a file or sub-directory inside the resources directory) from its path.
+     *
+     * @param filePath the path of the resource to get a {@link BufferedReader} for it
+     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
+     * @return a {@link BufferedReader} to read the resource
+     * @throws FileNotFoundException when the file doesn't exist
      */
-    public static FileReader getFileReader(final String filePath){
+    public static BufferedReader newBufferedReader(final String filePath, final Class klass) {
+        return new BufferedReader(newInputStreamReader(filePath, klass));
+    }
+
+    /**
+     * Instantiates a {@link InputStreamReader} to read a file,
+     * trying to load the file from a jar file, in case the user is running simulations from a jar package.
+     * If it cant get a reader directly, the simulation is not being executed from a jar package,
+     * so try to load the file from a directory in the filesystem.
+     *
+     * @param filePath the path of the file to get a reader for it
+     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
+     * @return a {@link InputStreamReader} to read the resource
+     * @throws UncheckedIOException when the file cannot be accessed (such as when it doesn't exist)
+     */
+    public static InputStreamReader newInputStreamReader(final String filePath, final Class klass) {
+        return new InputStreamReader(newInputStream(filePath, klass));
+    }
+
+    /**
+     * Instantiates a {@link InputStream} to read a file,
+     * trying to load the file from a jar file, in case the user is running simulations from a jar package.
+     * If it cant get a reader directly, the simulation is not being executed from a jar package,
+     * so try to load the file from a directory in the filesystem.
+     *
+     * @param filePath the path of the file to get a reader for it
+     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
+     * @return a {@link InputStreamReader} to read the resource
+     * @throws UncheckedIOException when the file cannot be accessed (such as when it doesn't exist)
+     */
+    public static InputStream newInputStream(final String filePath, final Class klass) {
+        //Try to load the resource from the resource directory in the filesystem
+        InputStream input = klass.getClassLoader().getResourceAsStream("/"+filePath);
+        if(input != null){
+            return input;
+        }
+
+        //Try to load the resource from a jar file
+        input = klass.getResourceAsStream("/"+filePath);
+        if(input != null){
+            return input;
+        }
+
+        //Try to load the resource from anywhere else than the resource directory
         try {
-            return new FileReader(filePath);
+            return new FileInputStream(filePath);
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }
     }
 
     /**
-     * Gets a {@link FileReader}
-     * @param file the {@link java.io.File} to be read
-     * @return the {@link FileReader} instance.
+     * Instantiates a {@link InputStreamReader} to read a file <b>outside</b> the resource directory.
+     *
+     * @param filePath the path to the file
+     * @return a {@link InputStreamReader} to read the resource
+     * @throws FileNotFoundException when the file doesn't exist
      */
-    public static FileReader getFileReader(final java.io.File file){
+    public static InputStreamReader newInputStreamReader(final String filePath) {
         try {
-            return new FileReader(file);
+            return new InputStreamReader(new FileInputStream(filePath));
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }
@@ -120,50 +169,5 @@ public final class ResourceLoader {
         }
 
         return Paths.get(uri);
-    }
-
-    /**
-     * Gets a {@link BufferedReader} to read a resource (a file or sub-directory inside the resources directory)
-     * from its absolute path.
-     *
-     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
-     * @param resourceName the name of the resource to get a {@link BufferedReader} for it
-     * @return a {@link BufferedReader} to read the resource
-     * @throws FileNotFoundException when the file doesn't exist
-     */
-    public static BufferedReader getBufferedReader(final Class klass, final String resourceName) {
-        return new BufferedReader(new InputStreamReader(getInputStream(resourceName, klass)));
-    }
-
-    /**
-     * Try to load the resource from a jar file, in case the user is running simulations
-     * from a jar instead of directly from the IDE.
-     * If the input is null, the simulation is not being executed from a jar file,
-     * so try to load the resource from a directory in the filesystem.
-     *
-     * @param resourceName the name of the resource to get a {@link BufferedReader} for it
-     * @param klass a class from the project that will be used just to assist in getting the path of the given resource
-     * @return a {@link InputStream} to read the resource
-     * @throws UncheckedIOException when the file cannot be accessed (such as when it doesn't exist)
-     */
-    public static InputStream getInputStream(final String resourceName, final Class klass) {
-        //Try to load the resource from the resource directory in the filesystem
-        InputStream input = klass.getClassLoader().getResourceAsStream("/"+resourceName);
-        if(input != null){
-            return input;
-        }
-
-        //Try to load the resource from a jar file
-        input = klass.getResourceAsStream("/"+resourceName);
-        if(input != null){
-            return input;
-        }
-
-        //Try to load the resource from anywhere else than the resource directory
-        try {
-            return new FileInputStream(resourceName);
-        } catch (FileNotFoundException e) {
-            throw new UncheckedIOException(e);
-        }
     }
 }

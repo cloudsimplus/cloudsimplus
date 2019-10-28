@@ -153,8 +153,7 @@ public class GoogleMachineEventsExample1 {
     private void createDatacenters() {
         datacenters = new ArrayList<>(DATACENTERS_NUMBER);
 
-        final GoogleMachineEventsTraceReader reader =
-            GoogleMachineEventsTraceReader.getInstance(TRACE_FILENAME, this::createHost);
+        final GoogleMachineEventsTraceReader reader = GoogleMachineEventsTraceReader.getInstance(TRACE_FILENAME, this::createHost);
         reader.setMaxRamCapacity(32);
         reader.setMaxCpuCores(10);
 
@@ -170,6 +169,7 @@ public class GoogleMachineEventsExample1 {
         reader.setDatacenterForLaterHosts(datacenters.get(1));
         final List<Host> hostList = new ArrayList<>(reader.process());
 
+        System.out.println();
         System.out.printf("# Created %d Hosts that were immediately available from the Google trace file%n", hostList.size());
         System.out.printf("# %d Hosts will be available later on (according to the trace timestamp)%n", reader.getNumberOfLaterAvailableHosts());
         System.out.printf("# %d Hosts will be removed later on (according to the trace timestamp)%n%n", reader.getNumberOfHostsForRemoval());

@@ -83,7 +83,7 @@ public class SlaContract {
      * @return a {@link SlaContract} read from the JSON file
      */
     public static SlaContract getInstance(final String jsonFilePath) {
-        return getInstanceInternal(ResourceLoader.getInputStream(jsonFilePath, SlaContract.class));
+        return getInstanceInternal(ResourceLoader.newInputStream(jsonFilePath, SlaContract.class));
     }
 
     /**

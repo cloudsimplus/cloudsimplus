@@ -86,7 +86,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * @see #getInstance(String)
      */
     public AwsEc2Template(final String jsonFilePath) {
-        this(getInstanceInternal(jsonFilePath, ResourceLoader.getFileReader(jsonFilePath)));
+        this(getInstanceInternal(jsonFilePath, ResourceLoader.newInputStreamReader(jsonFilePath)));
     }
 
     /**
@@ -98,7 +98,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * @return the AWS EC2 Instance from the JSON file
      */
     public static AwsEc2Template getInstance(final String jsonFilePath) {
-        final InputStreamReader reader = new InputStreamReader(ResourceLoader.getInputStream(jsonFilePath, AwsEc2Template.class));
+        final InputStreamReader reader = ResourceLoader.newInputStreamReader(jsonFilePath, AwsEc2Template.class);
         return getInstanceInternal(jsonFilePath, reader);
     }
 

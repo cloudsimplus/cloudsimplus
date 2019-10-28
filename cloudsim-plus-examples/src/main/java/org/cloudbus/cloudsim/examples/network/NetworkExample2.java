@@ -37,6 +37,7 @@ import java.util.List;
  * It sets a network topology and then run 2 cloudlets.
  */
 public class NetworkExample2 {
+    private static final String NETWORK_TOPOLOGY_FILE = "topology.brite";
     private static final int VM_PES = 1;
 
     private final List<Datacenter> datacenterList;
@@ -84,7 +85,7 @@ public class NetworkExample2 {
 
     private void configureNetwork() {
         //Configures network by loading the network topology file
-        NetworkTopology networkTopology = BriteNetworkTopology.getInstance("topology.brite");
+        NetworkTopology networkTopology = BriteNetworkTopology.getInstance(NETWORK_TOPOLOGY_FILE);
         simulation.setNetworkTopology(networkTopology);
 
         //Maps CloudSim entities to BRITE entities

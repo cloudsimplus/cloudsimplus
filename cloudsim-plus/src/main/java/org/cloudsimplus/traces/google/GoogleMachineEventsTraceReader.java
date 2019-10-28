@@ -211,7 +211,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
         final String filePath,
         final Function<MachineEvent, Host> hostCreationFunction)
     {
-        final InputStream reader = ResourceLoader.getInputStream(filePath, GoogleMachineEventsTraceReader.class);
+        final InputStream reader = ResourceLoader.newInputStream(filePath, GoogleMachineEventsTraceReader.class);
         return new GoogleMachineEventsTraceReader(filePath, reader, hostCreationFunction);
     }
 
