@@ -487,7 +487,7 @@ public class CloudSim implements Simulation {
     public void addEntity(final CloudSimEntity entity) {
         requireNonNull(entity);
         if (running) {
-            final SimEvent evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, null, -1, entity);
+            final SimEvent evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, SimEntity.NULL, -1, entity);
             future.addEvent(evt);
         }
 

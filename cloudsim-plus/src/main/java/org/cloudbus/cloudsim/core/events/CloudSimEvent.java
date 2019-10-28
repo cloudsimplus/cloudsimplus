@@ -151,7 +151,7 @@ public final class CloudSimEvent implements SimEvent {
      * @param type the internal type of the event
      * @param delay how many seconds after the current simulation time the event should be scheduled
      * @param src the source entity which is sending the message
-     * @param dest the source entity which has to receive the message
+     * @param dest the destination entity which has to receive the message
      * @param tag the tag that identifies the type of the message (which is used by the destination entity to perform operations based on the message type)
      * @param data the data attached to the message, that depends on the message tag
      */
