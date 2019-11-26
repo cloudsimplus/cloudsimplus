@@ -23,9 +23,11 @@
 |
 <b><a href="#8-cloudsim-plus-publications">Publications</a></b>
 |
-<b><a href="#9-license">License</a></b>
+<b><a href="#9-related-projects">Related Projects</a></b>
 |
-<b><a href="#10-contributing">Contributing</a></b>
+<b><a href="#10-license">License</a></b>
+|
+<b><a href="#11-contributing">Contributing</a></b>
 </p>
 
 
@@ -437,14 +439,25 @@ CloudSim Plus supports modeling and simulation of:
 3. R. L. Oliveira. [Virtual Machine Allocation in Cloud Computing Environments based on Service Level Agreements](docs/MScDissertation-RaysaOliveira.pdf) (only in Portuguese). Master's Dissertation. University of Beira Interior, 2017 (Supervisor: M. M. Freire).
   
 <p align="right"><a href="#top">:arrow_up:</a></p>
-  
-# 9. License
+
+# 9. Related Projects
+
+Here, it's presented a list of some projects based on CloudSim Plus, which trust in its accuracy, performance, maintainability and extensibility.
+If you want your project to be listed here, send us a Pull Request. Make sure your project has a descriptive README.
+
+- [PureEdgeSim: A simulation toolkit for performance evaluation of Fog and pure Edge computing environments.](https://github.com/CharafeddineMechalikh/PureEdgeSim)
+- [CloudSim Plus Py4j gateway: A py4j gateway for Cloud Sim Plus framework.](https://github.com/pkoperek/cloudsimplus-gateway)
+- [CloudSim Plus Automation: Human-Readable Scenario Specification for Automated Creation of Simulations on CloudSim and CloudSim Plus.](http://manoelcampos.github.io/cloudsim-plus-automation/)
+
+<p align="right"><a href="#top">:arrow_up:</a></p>
+
+# 10. License
 
 This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0), as defined inside CloudSim 3 source files.
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# 10. Contributing
+# 11. Contributing
 
 You are welcome to contribute to the project. 
 However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. 
