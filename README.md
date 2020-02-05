@@ -83,7 +83,7 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 CloudSim Plus provides a lot of exclusive features, from the most basic ones to build simple simulations, 
 to advanced features for simulating more realistic cloud scenarios: 
 
-1. It is easier to use. [A complete and easy-to-understand simulation scenario can be built in few lines of code.](#a-minimal-and-complete-simulation-example) 
+1. It is easier to use. [A complete and easy-to-understand simulation scenario can be built in few lines of code.](#5-a-minimal-and-complete-simulation-example) 
 1. Process trace files from [Google Cluster Data](https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md) 
    creating Hosts and Cloudlets (tasks). A script to download the trace files is available at [download-google-cluster-data.sh](script/download-google-cluster-data.sh). Examples are available [here](cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/googletraces) ([#149](https://github.com/manoelcampos/cloudsim-plus/issues/149)).
 1. [Vertical VM Scaling](/cloudsim-plus-examples/src/main/java/org/cloudsimplus/examples/autoscaling/VerticalVmCpuScalingExample.java) that performs on-demand up and down allocation of VM resources such as Ram, Bandwidth and PEs (CPUs) ([#7](https://github.com/manoelcampos/cloudsim-plus/issues/7));
@@ -150,10 +150,11 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # 4. How to Use CloudSim Plus 
-There are 3 ways to use CloudSim Plus. It can be downloaded and executed: 
-(i) directly from some IDE; 
-(ii) from the command line; or 
-(iii) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) 
+There are 4 ways to use CloudSim Plus. It can be downloaded and executed: 
+(i) downloading a zip file using the button at the top of this page;
+(ii) from the command line; 
+(iii) directly from some IDE; 
+(iv) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) 
 since you include it as a dependency inside your own project.
 
 You can watch the video below ([high quality version here](https://youtu.be/k2enNoxTYVw)) 
@@ -169,7 +170,7 @@ at a terminal.
 The project has a [bash script](script/bootstrap.sh) you can use to build and run CloudSim Plus examples. 
 This is a script for Unix-like systems such as Linux, FreeBSD and macOS.
 
-To run some example type the command: `sh script/bootstrap.sh package.ExampleClassName`.
+To run some example, type the following command at a terminal inside the project's root directory: `sh script/bootstrap.sh package.ExampleClassName`.
 For instance, to run the `CloudSimExample0` you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample0`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
@@ -446,8 +447,8 @@ Here, it's presented a list of some projects based on CloudSim Plus, which trust
 If you want your project to be listed here, send us a Pull Request. Make sure your project has a descriptive README.
 
 - [PureEdgeSim: A simulation toolkit for performance evaluation of Fog and pure Edge computing environments.](https://github.com/CharafeddineMechalikh/PureEdgeSim)
-- [CloudSim Plus Py4j gateway: A py4j gateway for Cloud Sim Plus framework.](https://github.com/pkoperek/cloudsimplus-gateway)
-- [CloudSim Plus Automation: Human-Readable Scenario Specification for Automated Creation of Simulations on CloudSim and CloudSim Plus.](http://manoelcampos.github.io/cloudsim-plus-automation/)
+- [CloudSim Plus Py4j gateway: building CloudSim Plus simulations in Python.](https://github.com/pkoperek/cloudsimplus-gateway)
+- [CloudSim Plus Automation: defining CloudSim Plus simulation scenarios into a YAML file.](http://manoelcampos.github.io/cloudsim-plus-automation/)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 

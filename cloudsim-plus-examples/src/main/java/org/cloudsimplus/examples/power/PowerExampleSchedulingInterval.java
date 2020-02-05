@@ -61,9 +61,9 @@ import java.util.Map;
  * because power consumption data will be collected in smaller intervals.
  *
  * <p>CloudSim Plus has a very accurate and consistent power consumption computation.
- * This way, you can see in this example that the values just change
- * when a scheduling interval equals to the time of the last finished
- * Cloudlet is set.</p>
+ * This way, you can see in this example that results just change
+ * when a scheduling interval is set with a value equals to the time the last
+ * Cloudlet finishes.
  *
  * <p>You are strongly encouraged to firstly check the {@link PowerExample} to understand the details.</p>
  *
