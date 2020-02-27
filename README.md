@@ -40,29 +40,15 @@
 [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0)
 
 
-CloudSim Plus is a full-featured, highly extensible simulation framework enabling modeling, simulation, 
+CloudSim Plus is a modern, up-to-date, full-featured and fully documented simulation framework. It's easy to use and extend, enabling modeling, simulation, 
 and experimentation of Cloud computing infrastructures and application services. 
-It allows users to focus on specific system design issues to be investigated, 
+It allows developers to focus on specific system design issues to be investigated, 
 without concerning the low-level details related to Cloud-based infrastructures and services.
  
-Cloud computing is the leading technology for delivery of reliable, secure, fault-tolerant, sustainable,
-and scalable computational services. 
-For assurance of such characteristics in cloud systems under development, 
-it is required timely, repeatable, and controllable methodologies for evaluation of new cloud applications and policies, 
-before actual development of cloud products. 
-Because utilization of real testbeds limits the experiments to the scale of the testbed and makes the reproduction of results cumbersome, 
-computer-base simulation may constitute an interesting tool. 
-This project is suitable to quickly develop such simulation scenarios and run them quickly, in a typical PC. 
-
-CloudSim Plus is a fork of [CloudSim 3](https://github.com/Cloudslab/cloudsim/tree/20a7a55e537181489fcb9a2d42a3e539db6c0318), 
-re-engineered primarily to avoid code duplication. 
-It provides [code reusability](https://en.wikipedia.org/wiki/Code_reuse) and ensures 
-compliance with software engineering principles and recommendations for extensibility improvements. 
-It focuses on usage of software engineering standards and recommendations such as 
-[Design Patterns](https://en.wikipedia.org/wiki/Software_design_pattern), 
-[SOLID principles](https://en.wikipedia.org/wiki/SOLID_(object-oriented_design)) 
-and other ones such as [KISS](https://en.wikipedia.org/wiki/KISS_principle) 
-and [DRY](https://pt.wikipedia.org/wiki/Don't_repeat_yourself).
+CloudSim Plus is a fork of CloudSim 3, 
+re-engineered primarily to avoid code duplication,
+provide [code reusability](https://en.wikipedia.org/wiki/Code_reuse) and ensure 
+compliance with software engineering principles and recommendations for extensibility improvements and accuracy. It's currently the state-of-the-art in cloud computing simulation framework. 
 
 The efforts dedicated to this project have been recognized by the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu). 
 A post about CloudSim Plus is available at 
