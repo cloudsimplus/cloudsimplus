@@ -312,7 +312,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     double getCpuPercentUtilization();
 
     /**
-     * Computes current the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity.
+     * Computes the current relative percentage of the CPU the VM is using from the Host's total MIPS Capacity.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
      * of the Host's capacity.
      *
