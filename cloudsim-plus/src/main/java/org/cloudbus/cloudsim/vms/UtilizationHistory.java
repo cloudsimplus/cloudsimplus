@@ -1,12 +1,12 @@
 package org.cloudbus.cloudsim.vms;
 
-import org.cloudbus.cloudsim.core.Machine;
+import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 
 import java.util.SortedMap;
 
 /**
- * Stores resource utilization data for a specific {@link Machine}.
+ * Stores resource utilization data for a specific {@link AbstractMachine}.
  *
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho

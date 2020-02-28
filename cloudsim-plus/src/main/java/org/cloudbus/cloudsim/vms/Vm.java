@@ -9,8 +9,8 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.CustomerEntity;
-import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.TimeZoned;
@@ -41,7 +41,7 @@ import java.util.function.Predicate;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned {
+public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned {
     Logger LOGGER = LoggerFactory.getLogger(Vm.class.getSimpleName());
 
     /**
@@ -351,12 +351,10 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     double getHostCpuUtilization(double time);
 
     /**
-     * Computes what would be the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity,
+     * Computes what would be the relative percentage of the CPU the VM is using from a PM's total MIPS Capacity,
      * considering that the VM 's CPU load is at a given percentage.
-     *
+     * @param vmCpuUtilizationPercent the VM's CPU utilization percentage for a given time
      * @return the relative VM CPU usage percent (from 0 to 1)
-     * @see #getHostCpuUtilization()
-     * @see #getHostCpuUtilization(double)
      */
     double getExpectedHostCpuUtilization(double vmCpuUtilizationPercent);
 
@@ -522,7 +520,7 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
          * To avoid that, we check if the VM has running cloudlets.
         * If the VM's lastBusyTime attribute was not set recently,
         * it may be because we have a large Datacenter's scheduling interval.*/
-        return getCloudletScheduler().getCloudletExecList().isEmpty() && Machine.super.isIdleEnough(time);
+        return getCloudletScheduler().getCloudletExecList().isEmpty() && AbstractMachine.super.isIdleEnough(time);
     }
 
     /**
@@ -737,4 +735,5 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      */
     @Override
     Vm setTimeZone(double timeZone);
+
 }

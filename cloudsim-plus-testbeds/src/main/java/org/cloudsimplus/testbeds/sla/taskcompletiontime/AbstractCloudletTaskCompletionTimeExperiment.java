@@ -4,7 +4,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
-import org.cloudbus.cloudsim.core.Machine;
+import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -52,7 +52,7 @@ abstract class AbstractCloudletTaskCompletionTimeExperiment extends Experiment {
      */
     protected final double getSumPesVms() {
         return getVmList().stream()
-            .mapToDouble(Machine::getNumberOfPes)
+            .mapToDouble(AbstractMachine::getNumberOfPes)
             .sum();
     }
 

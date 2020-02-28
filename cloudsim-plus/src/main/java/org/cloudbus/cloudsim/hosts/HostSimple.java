@@ -6,8 +6,8 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.ChangeableId;
-import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterPowerSupply;
@@ -288,7 +288,7 @@ public class HostSimple implements Host {
      * This value is used when the RAM capacity is not given in a Host constructor.
      */
     public static void setDefaultRamCapacity(final long defaultCapacity) {
-        Machine.validateCapacity(defaultCapacity);
+        AbstractMachine.validateCapacity(defaultCapacity);
         defaultRamCapacity = defaultCapacity;
     }
 
@@ -305,7 +305,7 @@ public class HostSimple implements Host {
      * This value is used when the BW capacity is not given in a Host constructor.
      */
     public static void setDefaultBwCapacity(final long defaultCapacity) {
-        Machine.validateCapacity(defaultCapacity);
+        AbstractMachine.validateCapacity(defaultCapacity);
         defaultBwCapacity = defaultCapacity;
     }
 
@@ -322,7 +322,7 @@ public class HostSimple implements Host {
      * This value is used when the Storage capacity is not given in a Host constructor.
      */
     public static void setDefaultStorageCapacity(final long defaultCapacity) {
-        Machine.validateCapacity(defaultCapacity);
+        AbstractMachine.validateCapacity(defaultCapacity);
         defaultStorageCapacity = defaultCapacity;
     }
 
@@ -1161,7 +1161,7 @@ public class HostSimple implements Host {
      */
     private Function<Entry<Double, Double>, Double> vmUtilizationMapper(final UtilizationHistory utilizationHistory) {
         //The entry key is the time and the value is the percentage of the VM CPU that is being used
-        return entry ->  utilizationHistory.getVm().getExpectedHostCpuUtilization(entry.getValue());
+        return entry ->  getExpectedRelativeCpuUtilization(utilizationHistory.getVm(), entry.getValue());
     }
 
     @Override

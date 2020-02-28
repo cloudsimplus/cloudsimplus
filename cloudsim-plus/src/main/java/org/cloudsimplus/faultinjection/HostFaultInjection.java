@@ -25,9 +25,9 @@ package org.cloudsimplus.faultinjection;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -835,7 +835,7 @@ public class HostFaultInjection extends CloudSimEntity {
     private long getPesSumOfWorkingVms() {
         return lastFailedHost.getVmList().stream()
                 .filter(Vm::isWorking)
-                .mapToLong(Machine::getNumberOfPes)
+                .mapToLong(AbstractMachine::getNumberOfPes)
                 .sum();
     }
 

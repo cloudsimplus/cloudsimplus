@@ -7,14 +7,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A class that implements the Null Object Design Pattern for {@link Machine}
+ * A class that implements the Null Object Design Pattern for {@link AbstractMachine}
  * objects.
  *
  * @author Manoel Campos da Silva Filho
- * @see Machine#NULL
+ * @see AbstractMachine#NULL
  * @since CloudSim 1.2.0
  */
-final class MachineNull implements Machine {
+final class AbstractMachineNull implements AbstractMachine {
     @Override public Resource getBw() {
         return Resource.NULL;
     }

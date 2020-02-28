@@ -1,127 +1,64 @@
 package org.cloudbus.cloudsim.core;
 
-import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.Resource;
-import org.cloudbus.cloudsim.resources.Resourceful;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * Represents either a: (i) Physical Machine (PM) which implements the interface {@link Host};
- * or (ii) Virtual Machine (VM), which implements the interface {@link Vm}.
+ * An interface to be implemented by different kinds of Physical Machines (PMs).
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public interface Machine extends ChangeableId, Resourceful {
+public interface Machine extends AbstractMachine {
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link Machine}
-     * objects.
-     */
-    Machine NULL = new MachineNull();
-
-    /**
-     * Gets the machine bandwidth (bw) capacity in Megabits/s.
+     * Computes the current relative percentage of the CPU the VM is using from the Machine's total MIPS Capacity.
+     * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
+     * of the Machines's capacity.
      *
-     * @return the machine bw capacity
+     * @return the relative VM CPU usage percent (from 0 to 1)
      */
-    Resource getBw();
-
-    /**
-     * Gets the machine memory resource in Megabytes.
-     *
-     * @return the machine memory
-     */
-    Resource getRam();
-
-    /**
-     * Gets the storage device of the machine with capacity in Megabytes.
-     *
-     * @return the machine storage device
-     */
-    Resource getStorage();
-
-    /**
-     * Gets the overall number of {@link Pe}s the machine has,
-     * that include PEs of all statuses, including failed PEs.
-     *
-     * @return the machine's number of PEs
-     */
-    long getNumberOfPes();
-
-    /**
-     * Gets the individual MIPS capacity of any machine's {@link Pe}, considering that all
-     * PEs have the same capacity.
-     *
-     * @return the MIPS capacity of a single {@link Pe}
-     */
-    double getMips();
-
-    /**
-     * Gets total MIPS capacity of all PEs of the machine.
-     *
-     * @return the total MIPS of all PEs
-     */
-    double getTotalMipsCapacity();
-
-    /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     * @return
-     */
-    Simulation getSimulation();
-
-
-    /**
-     * Checks if the Machine has been idle for a given amount of time (in seconds).
-     * @param time the time interval to check if the Machine has been idle (in seconds).
-     *             If time is zero, it will be checked if the Machine is currently idle.
-     *             If it's negative, even if the Machine is idle, it's considered
-     *             that it isn't idle enough. This is useful if you don't want to perform
-     *             any operation when the machine becomes idle (for instance,
-     *             if idle machines might be shut down and a negative value is given,
-     *             they won't).
-     * @return true if the Machine has been idle as long as the given time,
-     *         false if it's active of isn't idle long enough
-     */
-    default boolean isIdleEnough(final double time) {
-        if(time < 0) {
-            return false;
-        }
-
-        return getIdleInterval() >= time;
+    default double getRelativeCpuUtilization(final Vm vm) {
+        return getExpectedRelativeCpuUtilization(vm, vm.getCpuPercentUtilization());
     }
 
     /**
-     * Gets the interval interval the Machine has been idle.
-     * @return the idle time interval (in seconds) or 0 if the Machine is not idle
+     * Computes what would be the relative percentage of the CPU the VM is using from a Machine's total MIPS Capacity,
+     * considering that the VM 's CPU load is at a given percentage.
+     * @param vm the VM to get its relative percentage of CPU utilization
+     * @param vmCpuUtilizationPercent the VM's CPU utilization percentage for a given time
+     * @return the relative VM CPU usage percent (from 0 to 1)
      */
-    default double getIdleInterval() {
-        return getSimulation().clock() - getLastBusyTime();
+    default double getExpectedRelativeCpuUtilization(final Vm vm, final double vmCpuUtilizationPercent){
+        return vmCpuUtilizationPercent * getRelativeMipsCapacityPercent(vm);
     }
 
     /**
-     * Gets the last time the Machine was running some process.
-     * @return the last busy time (in seconds)
+     * Gets the percentage of the MIPS capacity a VM represents from the total Machine's MIPS capacity.
+     *
+     * @return the VM relative MIPS capacity percentage
      */
-    double getLastBusyTime();
-
-    /**
-     * Checks if the Machine is currently idle.
-     * @return true if the Machine currently idle, false otherwise
-     */
-    default boolean isIdle(){
-        return getIdleInterval() > 0;
+    default double getRelativeMipsCapacityPercent(final Vm vm) {
+        return vm.getTotalMipsCapacity() / getTotalMipsCapacity();
     }
 
     /**
-     * Validates a capacity for a machine resource.
-     * @param capacity the capacity to check
+     * Computes the relative percentage of the RAM a VM is using from a Machine's total Capacity
+     * for the current simulation time.
+     *
+     * @param vm the {@link Vm} to compute the relative utilization of RAM from this machine
+     * @return the relative VM RAM usage percent (from 0 to 1)
      */
-    static void validateCapacity(final double capacity){
-        if(capacity <= 0){
-            throw new IllegalArgumentException("Capacity must be greater than zero");
-        }
+    default double getRelativeRamUtilization(final Vm vm){
+        return vm.getRam().getPercentUtilization() * getRam().getPercentUtilization();
     }
 
-
+    /**
+     * Computes the relative percentage of the BW a VM is using from a Machine's total Capacity
+     * for the current simulation time.
+     *
+     * @param vm the {@link Vm} to compute the relative utilization of BW from this machine
+     * @return the relative VM BW usage percent (from 0 to 1)
+     */
+    default double getRelativeBwUtilization(final Vm vm){
+        return vm.getBw().getPercentUtilization() * getBw().getPercentUtilization();
+    }
 }

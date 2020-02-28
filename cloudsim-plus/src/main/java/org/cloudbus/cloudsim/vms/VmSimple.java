@@ -9,8 +9,8 @@ package org.cloudbus.cloudsim.vms;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
-import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
@@ -346,22 +346,22 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public double getHostCpuUtilization(final double time) {
-        return getExpectedHostCpuUtilization(getCpuPercentUtilization(time));
+        return host.getExpectedRelativeCpuUtilization(this, getCpuPercentUtilization(time));
     }
 
     @Override
-    public final double getExpectedHostCpuUtilization(final double vmCpuUtilizationPercent) {
-        return vmCpuUtilizationPercent * getRelativeMipsCapacityPercent();
+    public double getExpectedHostCpuUtilization(final double vmCpuUtilizationPercent) {
+        return host.getExpectedRelativeCpuUtilization(this, vmCpuUtilizationPercent);
     }
 
     @Override
     public double getHostRamUtilization() {
-        return ram.getPercentUtilization() * host.getRam().getPercentUtilization();
+        return host.getRelativeRamUtilization(this);
     }
 
     @Override
     public double getHostBwUtilization() {
-        return bw.getPercentUtilization() * host.getBw().getPercentUtilization();
+        return host.getRelativeBwUtilization(this);
     }
 
     @Override
@@ -411,15 +411,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public double getTotalMipsCapacity() {
         return getMips() * getNumberOfPes();
-    }
-
-    /**
-     * Gets the percentage of the MIPS capacity this VM represents from the total {@link Host} MIPS capacity.
-     *
-     * @return the VM relative MIPS capacity percentage
-     */
-    private double getRelativeMipsCapacityPercent() {
-        return getTotalMipsCapacity() / host.getTotalMipsCapacity();
     }
 
     @Override
@@ -925,7 +916,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * This value is used when the RAM capacity is not given in a VM constructor.
      */
     public static void setDefaultRamCapacity(final long defaultCapacity) {
-        Machine.validateCapacity(defaultCapacity);
+        AbstractMachine.validateCapacity(defaultCapacity);
         defaultRamCapacity = defaultCapacity;
     }
 
@@ -942,7 +933,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * This value is used when the BW capacity is not given in a VM constructor.
      */
     public static void setDefaultBwCapacity(final long defaultCapacity) {
-        Machine.validateCapacity(defaultCapacity);
+        AbstractMachine.validateCapacity(defaultCapacity);
         defaultBwCapacity = defaultCapacity;
     }
 
@@ -959,7 +950,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * This value is used when the Storage capacity is not given in a VM constructor.
      */
     public static void setDefaultStorageCapacity(final long defaultCapacity) {
-        Machine.validateCapacity(defaultCapacity);
+        AbstractMachine.validateCapacity(defaultCapacity);
         defaultStorageCapacity = defaultCapacity;
     }
 
