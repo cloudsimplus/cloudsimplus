@@ -312,28 +312,6 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     double getCpuPercentUtilization();
 
     /**
-     * Computes the current relative percentage of the CPU the VM is using from the Host's total MIPS Capacity.
-     * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
-     * of the Host's capacity.
-     *
-     * @return the relative VM CPU usage percent (from 0 to 1)
-     * @see #getHostCpuUtilization(double)
-     */
-    default double getHostCpuUtilization() {
-        return getHostCpuUtilization(getSimulation().clock());
-    }
-
-    /**
-     * Computes what would be the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity,
-     * considering that the VM 's CPU load is at a given percentage.
-     *
-     * @return the relative VM CPU usage percent (from 0 to 1)
-     * @see #getHostCpuUtilization()
-     * @see #getHostCpuUtilization(double)
-     */
-    double getExpectedHostCpuUtilization(double vmCpuUtilizationPercent);
-
-    /**
      * Computes the relative percentage of the RAM the VM is using from the Host's total Capacity
      * for the current simulation time.
      *
@@ -350,6 +328,18 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
     double getHostBwUtilization();
 
     /**
+     * Computes the current relative percentage of the CPU the VM is using from the Host's total MIPS Capacity.
+     * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
+     * of the Host's capacity.
+     *
+     * @return the relative VM CPU usage percent (from 0 to 1)
+     * @see #getHostCpuUtilization(double)
+     */
+    default double getHostCpuUtilization() {
+        return getHostCpuUtilization(getSimulation().clock());
+    }
+
+    /**
      * Computes the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity
      * for the current simulation time.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
@@ -359,6 +349,16 @@ public interface Vm extends Machine, UniquelyIdentifiable, Comparable<Vm>, Custo
      * @return the relative VM CPU usage percent (from 0 to 1)
      */
     double getHostCpuUtilization(double time);
+
+    /**
+     * Computes what would be the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity,
+     * considering that the VM 's CPU load is at a given percentage.
+     *
+     * @return the relative VM CPU usage percent (from 0 to 1)
+     * @see #getHostCpuUtilization()
+     * @see #getHostCpuUtilization(double)
+     */
+    double getExpectedHostCpuUtilization(double vmCpuUtilizationPercent);
 
     /**
      * Gets the current total CPU MIPS utilization of all PEs from all cloudlets running on this VM.
