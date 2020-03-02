@@ -73,6 +73,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private Datacenter lastSelectedDc;
 
+    /** @see #isRetryFailedVms() */
+    private boolean retryFailedVms;
+
+    /** @see #getVmFailedList() */
+    private final List<Vm> vmFailedList;
+
     /** @see #getVmWaitingList() */
     private final List<Vm> vmWaitingList;
 
@@ -151,6 +157,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         vmCreationRequests = 0;
         vmCreationAcks = 0;
 
+        this.retryFailedVms = true;
+        this.vmFailedList = new ArrayList<>();
         this.vmWaitingList = new ArrayList<>();
         this.vmExecList = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
@@ -613,7 +621,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (vm.isCreated()) {
             processSuccessVmCreationInDatacenter(vm);
             vmCreated = true;
-        } else vm.notifyOnCreationFailureListeners(lastSelectedDc);
+        } else {
+            if(!retryFailedVms){
+                vmWaitingList.remove(vm);
+                vmFailedList.add(vm);
+                LOGGER.warn("{}: {}: {} has been moved to the failed list because creation retry is not enabled.", getSimulation().clockStr(), getName(), vm);
+            }
+
+            vm.notifyOnCreationFailureListeners(lastSelectedDc);
+        }
 
         if (allNonDelayedVmsCreated()) {
             requestDatacentersToCreateWaitingCloudlets();
@@ -1200,4 +1216,19 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #setVmMapper(Function)
      */
     protected abstract Vm defaultVmMapper(Cloudlet cloudlet);
+
+    @Override
+    public <T extends Vm> List<T> getVmFailedList() {
+        return  (List<T>) vmFailedList;
+    }
+
+    @Override
+    public boolean isRetryFailedVms() {
+        return retryFailedVms;
+    }
+
+    @Override
+    public void setRetryFailedVms(final boolean retryFailedVms) {
+        this.retryFailedVms = retryFailedVms;
+    }
 }

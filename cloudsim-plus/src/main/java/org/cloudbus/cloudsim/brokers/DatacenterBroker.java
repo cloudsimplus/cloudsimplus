@@ -412,4 +412,38 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker setVmDestructionDelayFunction(Function<Vm, Double> function);
 
     List<Cloudlet> getCloudletSubmittedList();
+
+    /**
+     * Gets a List of VMs submitted to the broker that are failed to be created inside
+     * some Datacenter due to lack of suitable Hosts.
+     * <b>VMs are just moved to that list if {@code retryFailedVms} is set to true.</b>
+     *
+     * @param <T> the class of VMs inside the list
+     * @return the list of failed VMs
+     * @see #setRetryFailedVms(boolean)}
+     */
+    <T extends Vm> List<T> getVmFailedList();
+
+    /**
+     * Checks if the broker has to retry allocating VMs
+     * that couldn't be placed due to lack of suitable Hosts.
+     * @return
+     */
+    boolean isRetryFailedVms();
+
+    /**
+     * Sets if the broker has to retry allocating VMs
+     * that couldn't be placed due to lack of suitable Hosts.
+     *
+     * Setting the attribute to:
+     * <ul>
+     *  <li>{@code true}, the broker will retry to place the failed VM as soon as new VMs or Cloudlets
+     * are submitted.</li>
+     * <li>{@code false}, the VM will be just added to the {@link #getVmFailedList()} and the user simulation
+     * have to deal with it.
+     * If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
+     * the VM will be notified about the failure.</li>
+     * </ul>
+     */
+    void setRetryFailedVms(boolean retryFailedVms);
 }
