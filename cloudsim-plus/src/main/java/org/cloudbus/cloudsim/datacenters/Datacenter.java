@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.models.PowerAware;
-import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
@@ -35,7 +35,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
+public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>, TimeZoned {
     Logger LOGGER = LoggerFactory.getLogger(Datacenter.class.getSimpleName());
 
     /**
@@ -218,20 +218,6 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
     void setBandwidthPercentForMigration(double bandwidthPercentForMigration);
 
     /**
-     * Gets an <b>estimation</b> of Datacenter power consumption in Watt-Second (Ws).
-     * <p><b>To get actual power consumption, it's required to enable
-     * {@link Host#getStateHistory() Host's StateHistory}
-     * by calling {@link Host#enableStateHistory()}
-     * and use each Host {@link PowerModel} to compute power usage
-     * based on the CPU utilization got form the StateHistory.</b>
-     * </p>
-     *
-     * @return the <b>estimated</b> power consumption in Watt-Second (Ws)
-     */
-    @Override
-    double getPower();
-
-    /**
      * Adds a {@link EventListener} object that will be notified every time when the
      * a new Hosts is available for the Datacenter during simulation runtime.
      * If the {@link #addHost(Host)} or {@link #addHostList(List)} is called
@@ -263,30 +249,6 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
      * @return
      */
     Datacenter disableMigrations();
-
-    /**
-     * Sets a {@link DatacenterPowerSupply} to enable computing the Datacenter's power consumption,
-     * based on the consumption of its {@link Host}s.
-     * Since this computation is expensive for large amount of Hosts
-     * and the researcher may not be interested in power consumption,
-     * the attribute is initialized with {@link DatacenterPowerSupply#NULL}.
-     * That avoids computing power consumption by default for every simulation,
-     * This way, the computation of power consumption must be explicitly
-     * enabled by the researcher by providing an instance to this attribute
-     * before the simulation starts.
-     *
-     * @param powerSupply a {@link DatacenterPowerSupply} instance to enable
-     *                    the Datacenter to compute its power consumption
-     *                    (if null is given, it disables such a computation)
-     */
-    void setPowerSupply(DatacenterPowerSupply powerSupply);
-
-    /**
-     * Gets the {@link DatacenterPowerSupply} that enables computing the current amount of power being consumed by
-     * the {@link Host}s of a {@link Datacenter}.
-     * @return
-     */
-    DatacenterPowerSupply getPowerSupply();
 
     /**
      * Gets the time interval before trying to find suitable Hosts to migrate VMs

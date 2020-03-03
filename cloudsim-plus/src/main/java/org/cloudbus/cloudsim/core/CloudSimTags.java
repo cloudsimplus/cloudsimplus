@@ -323,6 +323,8 @@ public final class CloudSimTags {
      */
     public static final int HOST_REMOVE = BASE + 61;
 
+    public static final int MEASURE_POWER = BASE + 70;
+
     /**
      * Private constructor to avoid class instantiation.
      */

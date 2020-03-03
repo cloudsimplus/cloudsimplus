@@ -34,8 +34,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.power.models.PowerAware;
-import org.cloudbus.cloudsim.power.models.PowerModelLinear;
+import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -86,21 +85,17 @@ public class PowerExampleSchedulingInterval {
      * Defines the minimum percentage of power a Host uses,
      * even when it's idle.
      */
-    private static final double STATIC_POWER_PERCENT = 0.7;
+    private static final double STATIC_POWER = 35;
 
     /**
-     * The max number of watt-second (Ws) of power a Host uses.
+     * The max number of watts of power a Host uses.
      */
-    private static final int MAX_POWER_WATTS_SEC = 50;
+    private static final int MAX_POWER = 50;
 
     private final int schedulingInterval;
     private boolean showAllHostUtilizationHistoryEntries;
 
     private CloudSim simulation;
-    private DatacenterBroker broker0;
-    private List<Vm> vmList;
-    private List<Cloudlet> cloudletList;
-    private Datacenter datacenter0;
     private List<Host> hostList;
 
     public static void main(String[] args) {
@@ -124,11 +119,11 @@ public class PowerExampleSchedulingInterval {
         simulation = new CloudSim();
         hostList = new ArrayList<>(HOSTS);
         this.schedulingInterval = schedulingInterval;
-        datacenter0 = createDatacenterSimple();
-        broker0 = new DatacenterBrokerSimple(simulation);
+        Datacenter datacenter0 = createDatacenterSimple();
+        DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
 
-        vmList = createVms();
-        cloudletList = createCloudlets();
+        List<Vm> vmList = createVms();
+        List<Cloudlet> cloudletList = createCloudlets();
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
@@ -165,7 +160,7 @@ public class PowerExampleSchedulingInterval {
             utilizationHistoryTimeInterval = entry.getKey() - prevTime;
             //The total Host's CPU utilization for the time specified by the map key
             final double utilizationPercent = entry.getValue().getSum();
-            final double watts = host.getPowerModel().getPower(utilizationPercent);
+            final double watts = host.getPowerModel().computePowerUsage(utilizationPercent).getTotalUsage();
             //Energy consumption in the time interval
             final double wattsSec = watts*utilizationHistoryTimeInterval;
             //Energy consumption in the entire simulation time
@@ -183,11 +178,11 @@ public class PowerExampleSchedulingInterval {
 
         System.out.printf(
             "Total Host %d Power Consumption in %.0f secs: %.0f Watt-Sec (%.5f KWatt-Hour)%n",
-            host.getId(), simulation.clock(), totalWattsSec, PowerAware.wattsSecToKWattsHour(totalWattsSec));
+            host.getId(), simulation.clock(), totalWattsSec, PowerExample.wattsSecToKWattsHour(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
             "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)%n",
-            powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
+            powerWattsSecMean, utilizationPercentHistory.size(), PowerExample.wattsSecToKWattsHour(powerWattsSecMean));
     }
 
     private Datacenter createDatacenterSimple() {
@@ -212,7 +207,7 @@ public class PowerExampleSchedulingInterval {
         final long storage = 1000000; //in Megabytes
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.setPowerModel(new PowerModelLinear(MAX_POWER_WATTS_SEC, STATIC_POWER_PERCENT));
+        host.setPowerModel(new PowerModelHost(STATIC_POWER, MAX_POWER));
         host
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())

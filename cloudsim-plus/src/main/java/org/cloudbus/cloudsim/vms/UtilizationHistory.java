@@ -61,15 +61,6 @@ public interface UtilizationHistory {
     SortedMap<Double, Double> getHistory();
 
     /**
-     * Computes the amount of power the VM is using, relative to the total Host's power consumption
-     * (in watt-sec).
-     *
-     * @param time the time to get the VM power consumption
-     * @return the relative VM power consumption in watt-sec
-     */
-    double powerConsumption(double time);
-
-    /**
      * Computes the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
      * of the Host's capacity.

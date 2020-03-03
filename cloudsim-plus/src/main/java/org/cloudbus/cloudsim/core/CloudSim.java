@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -561,15 +562,16 @@ public class CloudSim implements Simulation {
         processEvent(firstEvent);
         future.remove(firstEvent);
 
-        //Uses iterator to increase efficiency and avoid ConcurrentModificationException while removing
-        for(final Iterator<SimEvent> it = future.iterator(); it.hasNext();){
-            SimEvent evt = it.next();
-            if(evt.getTime() == firstEvent.getTime()){
-                processEvent(evt);
-                it.remove();
-            }
+        while(!future.isEmpty()) {
+            SimEvent evt = future.first();
+            if(evt.getTime() != firstEvent.getTime()) break;
+            processEvent(evt);
+            future.remove(evt);
         }
     }
+
+    private long lastPurge = System.currentTimeMillis();
+    private List<CloudSimEntity> removeEntityList = new LinkedList();
 
     /**
      * Gets the list of entities that are in {@link SimEntity.State#RUNNABLE}
@@ -577,6 +579,7 @@ public class CloudSim implements Simulation {
      */
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private void executeRunnableEntities(final double until) {
+
         /*Uses an indexed for instead of anything else to avoid
         ConcurrencyModificationException when a HostFaultInjection is created inside a Datacenter*/
         for (int i = 0; i < entities.size(); i++) {
@@ -584,6 +587,15 @@ public class CloudSim implements Simulation {
             if (ent.getState() == SimEntity.State.RUNNABLE) {
                 ent.run(until);
             }
+        }
+
+        // Note: The fact that elements never get removed from entities is a massive memory leak
+        // This hacky fix enables fast, large-scale experiments: The list of finished entities is purged every 5s
+        long now = System.currentTimeMillis();
+        if (now - lastPurge > 5000) {
+            removeEntityList.forEach(entities::remove);
+            removeEntityList = entities.stream().filter(CloudSimEntity::isFinished).collect(Collectors.toList());
+            lastPurge = now;
         }
     }
 

@@ -58,7 +58,8 @@ import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
-import org.cloudbus.cloudsim.power.models.PowerModelLinear;
+import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -83,7 +84,7 @@ import java.util.*;
  * dynamic host CPU utilization threshold} based on CPU utilization.
  *
  * <p>This VmAllocationPolicy considers the power usage of Hosts to place VMs.
- * So that, a {@link org.cloudbus.cloudsim.power.models.PowerModel} is being
+ * So that, a {@link PowerModel} is being
  * set to every created Host by means of {@code host.setPowerModel(powerModel)}.</p>
  *
  * <p>The example uses a {@link UtilizationModelDynamic} that defines the CPU usage of cloudlets
@@ -268,8 +269,8 @@ public final class MigrationExample2_PowerUsage {
             final double time = entry.getKey();
             //The sum of CPU usage of every VM which has run in the Host
             final double hostCpuUsage = entry.getValue().getSum();
-            System.out.printf("Time: %6.1f | %9.2f | %.2f%n", time, hostCpuUsage, host.getPowerModel().getPower(hostCpuUsage));
-            totalHostPowerConsumptionWattSec += host.getPowerModel().getPower(hostCpuUsage);
+            System.out.printf("Time: %6.1f | %9.2f | %.2f%n", time, hostCpuUsage, host.getPowerModel().computePowerUsage(hostCpuUsage).getTotalUsage());
+            totalHostPowerConsumptionWattSec += host.getPowerModel().computePowerUsage(hostCpuUsage).getTotalUsage();
         }
         System.out.printf("Total Host power consumption in the period: %.2f Watt-Sec%n", totalHostPowerConsumptionWattSec);
         System.out.println();
@@ -444,7 +445,7 @@ public final class MigrationExample2_PowerUsage {
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
             host.enableStateHistory();
-            host.setPowerModel(new PowerModelLinear(50, 0.3));
+            host.setPowerModel(new PowerModelHost(35, 50));
             return host;
     }
 

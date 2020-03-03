@@ -85,7 +85,7 @@ public class NetworkExample4 {
         //Configure network by mapping CloudSim entities to BRITE entities
         NetworkTopology networkTopology = new BriteNetworkTopology();
         simulation.setNetworkTopology(networkTopology);
-        networkTopology.addLink(datacenter0.getId(), broker.getId(), 10.0, 10);
+        networkTopology.addLink(datacenter0, broker, 10.0, 10);
     }
 
     private void createAndSubmitCloudlets() {

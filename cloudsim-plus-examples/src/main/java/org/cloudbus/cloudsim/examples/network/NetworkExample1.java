@@ -92,17 +92,17 @@ public class NetworkExample1 {
 
     private void configureNetwork() {
         //load the network topology file
-        NetworkTopology networkTopology = BriteNetworkTopology.getInstance(NETWORK_TOPOLOGY_FILE);
+        BriteNetworkTopology networkTopology = BriteNetworkTopology.getInstance(NETWORK_TOPOLOGY_FILE);
         simulation.setNetworkTopology(networkTopology);
 
         //maps CloudSim entities to BRITE entities
         //Datacenter will correspond to BRITE node 0
         int briteNode = 0;
-        networkTopology.mapNode(datacenter0.getId(), briteNode);
+        networkTopology.mapNode(datacenter0, briteNode);
 
         //Broker will correspond to BRITE node 3
         briteNode = 3;
-        networkTopology.mapNode(broker.getId(), briteNode);
+        networkTopology.mapNode(broker, briteNode);
     }
 
     private void createAndSubmitCloudlets(DatacenterBroker broker) {

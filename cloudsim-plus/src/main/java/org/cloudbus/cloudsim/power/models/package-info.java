@@ -7,6 +7,6 @@
  * specif versions of a physical machine from a given manufacturer
  * such as IBM or HP.</p>
  *
- * <p>The most basic PowerModel is the {@link org.cloudbus.cloudsim.power.models.PowerModelLinear}.</p>
+ * <p>The most basic PowerModel is the {@link org.cloudbus.cloudsim.power.models.PowerModelHost}.</p>
  */
 package org.cloudbus.cloudsim.power.models;

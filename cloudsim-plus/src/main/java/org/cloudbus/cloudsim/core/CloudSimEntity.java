@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.core;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -447,11 +448,6 @@ public abstract class CloudSimEntity implements SimEntity {
             throw new IllegalArgumentException("The specified delay is infinite value");
         }
 
-        // only considers network delay when sending messages between different entities
-        if (dest.getId() != getId()) {
-            delay += getNetworkDelay(getId(), dest.getId());
-        }
-
         schedule(dest, delay, cloudSimTag, data);
     }
 
@@ -492,18 +488,6 @@ public abstract class CloudSimEntity implements SimEntity {
      */
     protected void sendNow(final SimEntity dest, final int cloudSimTag) {
         send(dest, 0, cloudSimTag, null);
-    }
-
-    /**
-     * Gets the network delay associated to the sent of a message from a given
-     * source to a given destination.
-     *
-     * @param src source of the message
-     * @param dst destination of the message
-     * @return delay to send a message from src to dst
-     */
-    private double getNetworkDelay(final long src, final long dst) {
-        return getSimulation().getNetworkTopology().getDelay(src, dst);
     }
 
     @Override

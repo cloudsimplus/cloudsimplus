@@ -225,7 +225,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     protected double getPowerDifferenceAfterAllocation(final Host host, final Vm vm){
         final double powerAfterAllocation = getPowerAfterAllocation(host, vm);
         if (powerAfterAllocation > 0) {
-            return powerAfterAllocation - host.getPowerModel().getPower();
+            return powerAfterAllocation - host.getPowerModel().measure().getTotalUsage();
         }
 
         return 0;
@@ -644,7 +644,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     protected double getPowerAfterAllocation(final Host host, final Vm vm) {
         try {
-            return host.getPowerModel().getPower(getMaxUtilizationAfterAllocation(host, vm));
+            return host.getPowerModel().computePowerUsage(getMaxUtilizationAfterAllocation(host, vm)).getTotalUsage();
         } catch (IllegalArgumentException e) {
             LOGGER.error("Power consumption for {} could not be determined: {}", host, e.getMessage());
         }
