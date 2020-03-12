@@ -95,7 +95,7 @@ public class VmSchedulerTimeSharedExample {
     private static final int HOST_MIPS = 1000;
     private static final int VM_MIPS   = HOST_MIPS/2;
 
-    private static final int CLOUDLET_LENGTH = VM_MIPS*10;
+    private static final int CLOUDLET_LENGTH = HOST_MIPS*10;
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
