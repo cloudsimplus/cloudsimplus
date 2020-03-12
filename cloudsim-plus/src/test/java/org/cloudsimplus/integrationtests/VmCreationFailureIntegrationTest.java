@@ -163,7 +163,7 @@ public final class VmCreationFailureIntegrationTest {
         //LOGGER.info("* onEventProcessing at time {}: {}", evt.getTime(), evt);
         final int time = (int) evt.getTime();
         if (time == 10 || time == 20) {
-            assertEquals(200, scenario.getFirstHostFromFirstDatacenter().getAvailableMips(), 0.1);
+            assertEquals(200, scenario.getFirstHostFromFirstDatacenter().getTotalAvailableMips(), 0.1);
         }
     }
 
@@ -181,7 +181,7 @@ public final class VmCreationFailureIntegrationTest {
         /*LOGGER.info(
             "- onUpdateVmProcessing at time {} for {}: {} available mips: {}",
             evt.getTime(), evt.getVm(), evt.getHost(), evt.getHost().getAvailableMips());*/
-        assertEquals(200, evt.getHost().getAvailableMips());
+        assertEquals(200, evt.getHost().getTotalAvailableMips());
     }
 
     @BeforeEach

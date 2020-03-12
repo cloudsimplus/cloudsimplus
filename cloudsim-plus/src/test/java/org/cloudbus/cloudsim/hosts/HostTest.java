@@ -20,7 +20,7 @@ public class HostTest {
         final Vm vm = Vm.NULL;
 
         assertAll(
-            () -> assertEquals(0, instance.getAvailableMips()),
+            () -> assertEquals(0, instance.getTotalAvailableMips()),
             () -> assertEquals(0, instance.getAvailableStorage()),
             () -> assertEquals(0, instance.getBw().getCapacity()),
             () -> assertEquals(ResourceProvisioner.NULL, instance.getBwProvisioner()),

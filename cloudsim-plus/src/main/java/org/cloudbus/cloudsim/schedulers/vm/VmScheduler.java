@@ -108,7 +108,7 @@ public interface VmScheduler {
      *
      * @return
      */
-    double getAvailableMips();
+    double getTotalAvailableMips();
 
     /**
      * Gets the List of MIPS requested by a VM.

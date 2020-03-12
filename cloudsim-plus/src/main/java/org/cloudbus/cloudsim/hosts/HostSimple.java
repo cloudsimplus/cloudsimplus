@@ -620,8 +620,8 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public double getAvailableMips() {
-        return vmScheduler.getAvailableMips();
+    public double getTotalAvailableMips() {
+        return vmScheduler.getTotalAvailableMips();
     }
 
     @Override

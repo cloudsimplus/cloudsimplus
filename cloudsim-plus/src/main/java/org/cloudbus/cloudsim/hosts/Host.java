@@ -234,7 +234,7 @@ public interface Host extends Machine, Comparable<Host> {
      *
      * @return the total available amount of MIPS
      */
-    double getAvailableMips();
+    double getTotalAvailableMips();
 
     /**
      * Gets the total free storage available at the host in Megabytes.

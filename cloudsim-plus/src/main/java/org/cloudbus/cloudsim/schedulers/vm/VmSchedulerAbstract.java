@@ -311,7 +311,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public double getAvailableMips() {
+    public double getTotalAvailableMips() {
         final double allocatedMips =
             allocatedMipsMap.entrySet()
                             .stream()

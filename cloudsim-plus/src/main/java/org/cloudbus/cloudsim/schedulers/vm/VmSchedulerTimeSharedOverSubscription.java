@@ -83,7 +83,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
         }
 
         final double totalRequestedMips = requestedMipsReduced.get(0) * requestedMipsReduced.size();
-        if (getAvailableMips() >= totalRequestedMips) {
+        if (getTotalAvailableMips() >= totalRequestedMips) {
             super.allocateMipsShareForVm(vm, requestedMipsReduced);
             return;
         }

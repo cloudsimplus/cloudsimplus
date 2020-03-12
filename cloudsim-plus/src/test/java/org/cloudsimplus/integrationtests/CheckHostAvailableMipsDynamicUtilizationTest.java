@@ -80,10 +80,10 @@ public final class CheckHostAvailableMipsDynamicUtilizationTest {
 
         LOGGER.info(
             "- onUpdateVmProcessing at time {}: {} available mips: {} expected availability: {}",
-            evt.getTime(), evt.getHost(), evt.getHost().getAvailableMips(), expectedAvailableHostMips);
+            evt.getTime(), evt.getHost(), evt.getHost().getTotalAvailableMips(), expectedAvailableHostMips);
 
         assertEquals(
-                 expectedAvailableHostMips, evt.getHost().getAvailableMips(), 0,
+                 expectedAvailableHostMips, evt.getHost().getTotalAvailableMips(), 0,
                  "The amount of Host available HOST_MIPS was not as expected.");
     }
 

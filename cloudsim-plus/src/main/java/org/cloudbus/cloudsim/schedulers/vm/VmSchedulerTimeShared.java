@@ -277,7 +277,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         final double totalRequestedMips = requestedMips.get(0) * requestedMips.size();
 
         // This scheduler does not allow over-subscription
-        return getHost().getWorkingPesNumber() >= requestedMips.size() && getAvailableMips() >= totalRequestedMips;
+        return getHost().getWorkingPesNumber() >= requestedMips.size() && getTotalAvailableMips() >= totalRequestedMips;
     }
 
     /**

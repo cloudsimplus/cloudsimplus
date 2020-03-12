@@ -120,7 +120,7 @@ public final class CheckHostAvailableMipsTest {
 
         LOGGER.info(
             "- VMs processing at time {}: {} available mips: {} expected availability: {}",
-            time, evt.getHost(), evt.getHost().getAvailableMips(), expectedAvailableHostMips);
+            time, evt.getHost(), evt.getHost().getTotalAvailableMips(), expectedAvailableHostMips);
     }
 
     private double getExpectedAvailableHostMips(final double time) {
