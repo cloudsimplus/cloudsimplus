@@ -270,20 +270,15 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         return hostPe.getPeProvisioner().getAvailableResource();
     }
 
+    /**
+     * The no-emptiness of the list is ensured by the {@link #isSuitableForVm(Vm, List)} method.
+     */
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips) {
-        final double pmMips = getPeCapacity();
-        double totalRequestedMips = 0;
-        for (final double vmMips : requestedMips) {
-            // each virtual PE of a VM must require not more than the capacity of a physical PE
-            if (vmMips > pmMips) {
-                return false;
-            }
-            totalRequestedMips += vmMips;
-        }
+        final double totalRequestedMips = requestedMips.get(0) * requestedMips.size();
 
         // This scheduler does not allow over-subscription
-        return getAvailableMips() >= totalRequestedMips && getWorkingPeList().size() >= requestedMips.size();
+        return getHost().getWorkingPesNumber() >= requestedMips.size() && getAvailableMips() >= totalRequestedMips;
     }
 
     /**

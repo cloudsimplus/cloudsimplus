@@ -73,13 +73,16 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      */
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips){
-        return getWorkingPeList().size() >= requestedMips.size();
-
+        return getHost().getWorkingPesNumber() >= requestedMips.size();
     }
 
     @Override
     protected void allocateMipsShareForVm(final Vm vm, final List<Double> requestedMipsReduced) {
-        final double totalRequestedMips = requestedMipsReduced.stream().reduce(0.0, Double::sum);
+        if(requestedMipsReduced.isEmpty()){
+            return;
+        }
+
+        final double totalRequestedMips = requestedMipsReduced.get(0) * requestedMipsReduced.size();
         if (getAvailableMips() >= totalRequestedMips) {
             super.allocateMipsShareForVm(vm, requestedMipsReduced);
             return;
