@@ -39,7 +39,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     public static final double DEFAULT_VM_MIGRATION_CPU_OVERHEAD = 0.1;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VmSchedulerSpaceShared.class.getSimpleName());
-    
+
     /**
      * @see #getRequestedMipsMap()
      */
@@ -294,7 +294,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
 
     @Override
     public List<Double> getRequestedMips(final Vm vm) {
-        return new ArrayList<>(requestedMipsMap.getOrDefault(vm, Collections.emptyList()));
+        return requestedMipsMap.getOrDefault(vm, Collections.emptyList());
     }
 
     /**
