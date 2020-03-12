@@ -267,10 +267,10 @@ public class HostSimpleTest {
         final VmSimple vm = VmTestUtil.createVm(
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared());
-        assertEquals(HOST_MIPS, targetHost.getAvailableMips());
+        assertEquals(HOST_MIPS, targetHost.getTotalAvailableMips());
         assertTrue(targetHost.addMigratingInVm(vm));
         final double availableMips = HOST_MIPS - VM_MIPS;
-        assertEquals(availableMips, targetHost.getAvailableMips());
+        assertEquals(availableMips, targetHost.getTotalAvailableMips());
         assertEquals(0, targetHost.getAvailableStorage());
     }
 
@@ -527,11 +527,11 @@ public class HostSimpleTest {
         vm.setBroker(broker);
 
         assertTrue(host.createVm(vm));
-        assertEquals(HOST_MIPS, host.getVmScheduler().getAvailableMips());
+        assertEquals(HOST_MIPS, host.getVmScheduler().getTotalAvailableMips());
 
         host.destroyVm(vm);
         assertEquals(0, host.getVmList().size());
-        assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips());
+        assertEquals(HOST_MIPS * 2, host.getVmScheduler().getTotalAvailableMips());
     }
 
     @Test
@@ -548,14 +548,14 @@ public class HostSimpleTest {
         vm1.setBroker(broker);
 
         assertTrue(host.createVm(vm0));
-        assertEquals(HOST_MIPS, host.getVmScheduler().getAvailableMips());
+        assertEquals(HOST_MIPS, host.getVmScheduler().getTotalAvailableMips());
 
         assertTrue(host.createVm(vm1));
-        assertEquals(0, host.getVmScheduler().getAvailableMips());
+        assertEquals(0, host.getVmScheduler().getTotalAvailableMips());
 
         host.destroyAllVms();
         assertEquals(0, host.getVmList().size());
-        assertEquals(HOST_MIPS * 2, host.getVmScheduler().getAvailableMips());
+        assertEquals(HOST_MIPS * 2, host.getVmScheduler().getTotalAvailableMips());
     }
 
     @Test

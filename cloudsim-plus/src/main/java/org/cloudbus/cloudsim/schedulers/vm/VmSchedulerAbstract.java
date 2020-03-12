@@ -79,11 +79,16 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips) {
+    public final boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips) {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
                 getHost().getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
+            return false;
+        }
+
+
+        if(getHost().isFailed()){
             return false;
         }
 
@@ -256,7 +261,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      *       heterogeneous PEs.
      */
     public long getPeCapacity() {
-        return getWorkingPeList().stream().map(Pe::getCapacity).findFirst().orElse(0L);
+        return getWorkingPeList().isEmpty() ? 0 : getWorkingPeList().get(0).getCapacity();
     }
 
     /**
@@ -306,7 +311,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public double getAvailableMips() {
+    public double getTotalAvailableMips() {
         final double allocatedMips =
             allocatedMipsMap.entrySet()
                             .stream()

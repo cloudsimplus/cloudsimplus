@@ -64,8 +64,8 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      *         with requested MIPS to be allocated to the VM
      */
     private List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> requestedMips) {
-        if (getHost().getFreePeList().size() < requestedMips.size()) {
-            return getHost().getFreePeList();
+        if (getHost().getWorkingPesNumber() < requestedMips.size()) {
+            return getHost().getWorkingPeList();
         }
 
         final List<Pe> selectedPes = new ArrayList<>();

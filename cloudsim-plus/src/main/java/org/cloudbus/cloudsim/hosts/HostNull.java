@@ -38,7 +38,7 @@ final class HostNull implements Host {
     @Override public boolean removeVmMigratingOut(Vm vm) {
         return false;
     }
-    @Override public double getAvailableMips() {
+    @Override public double getTotalAvailableMips() {
         return 0;
     }
     @Override public Resource getBw() {
