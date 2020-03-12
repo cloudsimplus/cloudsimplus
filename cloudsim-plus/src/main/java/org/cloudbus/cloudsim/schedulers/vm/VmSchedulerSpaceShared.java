@@ -68,8 +68,13 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             return getHost().getWorkingPeList();
         }
 
+        final List<Pe> freePeList = getHost().getFreePeList();
         final List<Pe> selectedPes = new ArrayList<>();
-        final Iterator<Pe> peIterator = getHost().getFreePeList().iterator();
+        if(freePeList.isEmpty()){
+            return selectedPes;
+        }
+
+        final Iterator<Pe> peIterator = freePeList.iterator();
         Pe pe = peIterator.next();
         for (final double mips : requestedMips) {
             if (mips <= pe.getCapacity()) {
