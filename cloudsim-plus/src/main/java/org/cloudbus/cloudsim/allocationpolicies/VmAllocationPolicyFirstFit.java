@@ -31,9 +31,7 @@ import java.util.Optional;
  * @see VmAllocationPolicyWorstFit
  */
 public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
-    /**
-     * The index of the last host where a VM was placed.
-     */
+    /** @see #getLastHostIndex() */
     private int lastHostIndex;
 
     @Override
@@ -49,12 +47,24 @@ public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract imple
             }
 
             /* If it gets here, the previous Host doesn't have capacity to place the VM.
-             * Then, moves to the next Host.
-             * If the end of the Host list is reached, starts from the beginning,
-             * until the max number of tries.*/
-            lastHostIndex = ++lastHostIndex % hostList.size();
+             * Then, moves to the next Host.*/
+            incLastHostIndex();
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * Gets the index of the last host where a VM was placed.
+     */
+    protected int getLastHostIndex() {
+        return lastHostIndex;
+    }
+
+    /**
+     * Increment the index to move to the next Host.
+     * If the end of the Host list is reached, starts from the beginning. */
+    protected void incLastHostIndex() {
+        lastHostIndex = ++lastHostIndex % getHostList().size();
     }
 }
