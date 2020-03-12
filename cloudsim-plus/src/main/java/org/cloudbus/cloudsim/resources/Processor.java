@@ -44,7 +44,7 @@ public final class Processor extends ResourceManageableAbstract {
      *
      * @param vm the {@link Vm} the processor will belong to
      * @param pesMips MIPS of each {@link Pe}
-     * @param numberOfPes number of {@link Pe}s
+     * @param numberOfPes number of {@link Pe}s (the processor {@link #getCapacity() capacity})
      */
     public Processor(Vm vm, double pesMips, long numberOfPes) {
         super(numberOfPes);
