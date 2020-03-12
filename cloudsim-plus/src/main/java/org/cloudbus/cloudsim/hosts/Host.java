@@ -100,7 +100,7 @@ public interface Host extends Machine, Comparable<Host> {
      * VMs will finish, but not more VMs will be submitted to this Host.</p>
      *
      * @param activate define the Host activation status: true to power on, false to power off
-     * @return
+     * @return this Host instance
      * @throws IllegalStateException when trying to activate a {@link #isFailed() failed} host.
      */
     Host setActive(boolean activate);

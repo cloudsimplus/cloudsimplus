@@ -99,7 +99,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         }
 
         allocateMipsShareForVm(vm, requestedMips);
-
         return true;
     }
 
