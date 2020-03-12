@@ -284,7 +284,6 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
         // This scheduler does not allow over-subscription
         return getAvailableMips() >= totalRequestedMips && getWorkingPeList().size() >= requestedMips.size();
-
     }
 
     /**
