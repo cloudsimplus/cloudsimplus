@@ -270,13 +270,13 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
-     * The no-emptiness of the list is ensured by the {@link #isSuitableForVm(Vm, List)} method.
+     * The non-emptiness of the list is ensured by the {@link #isSuitableForVm(Vm, List)} method.
      */
     @Override
     protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips) {
         final double totalRequestedMips = requestedMips.get(0) * requestedMips.size();
 
-        // This scheduler does not allow over-subscription
+        // This scheduler does not allow over-subscription of PEs' MIPS
         return getHost().getWorkingPesNumber() >= requestedMips.size() && getTotalAvailableMips() >= totalRequestedMips;
     }
 
