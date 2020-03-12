@@ -25,7 +25,7 @@ final class VmSchedulerNull implements VmScheduler {
         return 0.0;
     }
     @Override public List<Double> getRequestedMips(Vm vm) { return Collections.EMPTY_LIST; }
-    @Override public double getMaxAvailableMips() { return 0.0; }
+
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }

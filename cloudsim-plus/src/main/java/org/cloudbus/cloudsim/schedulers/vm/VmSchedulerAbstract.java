@@ -8,7 +8,6 @@ package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
@@ -30,7 +29,6 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class VmSchedulerAbstract implements VmScheduler {
-
     /**
      * The default percentage to define the CPU overhead of VM migration
      * if one is not explicitly set.
@@ -246,14 +244,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     @Override
     public double getTotalAllocatedMipsForVm(final Vm vm) {
         return getAllocatedMips(vm).stream().mapToDouble(v -> v).sum();
-    }
-
-    @Override
-    public double getMaxAvailableMips() {
-        return getWorkingPeList().stream()
-                .map(Pe::getPeProvisioner)
-                .mapToDouble(PeProvisioner::getAvailableResource)
-                .max().orElse(0.0);
     }
 
     /**

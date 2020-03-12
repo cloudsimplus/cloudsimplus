@@ -623,15 +623,6 @@ public class HostSimple implements Host {
         return vmScheduler.getTotalAllocatedMipsForVm(vm);
     }
 
-    /**
-     * Returns the maximum available MIPS among all the PEs of the host.
-     *
-     * @return max mips
-     */
-    protected double getMaxAvailableMips() {
-        return vmScheduler.getMaxAvailableMips();
-    }
-
     @Override
     public double getMips() {
         return peList.stream().mapToDouble(Pe::getCapacity).findFirst().orElse(0);

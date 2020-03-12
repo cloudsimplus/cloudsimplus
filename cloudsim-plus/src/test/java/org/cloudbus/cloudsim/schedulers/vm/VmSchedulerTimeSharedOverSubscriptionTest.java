@@ -67,7 +67,6 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         final List<Pe> peList = vmScheduler.getHost().getWorkingPeList();
         assertEquals(peList, vmScheduler.getWorkingPeList());
         assertEquals(2000, vmScheduler.getAvailableMips());
-        assertEquals(1000, vmScheduler.getMaxAvailableMips());
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm1));
     }
 
@@ -78,7 +77,6 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
         assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
         assertEquals(1750, vmScheduler.getAvailableMips());
-        assertEquals(1000, vmScheduler.getMaxAvailableMips());
         assertEquals(MIPS / 4, vmScheduler.getTotalAllocatedMipsForVm(vm1));
 
         final List<Double> mipsShare2 = new ArrayList<>();
@@ -88,13 +86,11 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         assertTrue(vmScheduler.allocatePesForVm(vm2, mipsShare2));
 
         assertEquals(1125.0, vmScheduler.getAvailableMips());
-        assertEquals(875.0, vmScheduler.getMaxAvailableMips());
         assertEquals(625.0, vmScheduler.getTotalAllocatedMipsForVm(vm2));
 
         vmScheduler.deallocatePesForAllVms();
 
         assertEquals(2000, vmScheduler.getAvailableMips());
-        assertEquals(1000, vmScheduler.getMaxAvailableMips());
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm2));
     }
 
@@ -113,7 +109,6 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         vmScheduler.deallocatePesForAllVms();
 
         assertEquals(2000, vmScheduler.getAvailableMips());
-        assertEquals(1000, vmScheduler.getMaxAvailableMips());
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm2));
     }
 
@@ -156,7 +151,6 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         vmScheduler.deallocatePesForAllVms();
 
         assertEquals(3500, vmScheduler.getAvailableMips());
-        assertEquals(3500, vmScheduler.getMaxAvailableMips());
     }
 
     @Test
@@ -193,6 +187,5 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         vmScheduler.deallocatePesForAllVms();
 
         assertEquals(1000, vmScheduler.getAvailableMips());
-        assertEquals(1000, vmScheduler.getMaxAvailableMips());
     }
 }

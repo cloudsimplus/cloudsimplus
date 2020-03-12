@@ -61,7 +61,6 @@ public class VmSchedulerTimeSharedTest {
         final List<Pe> peList = vmScheduler.getHost().getWorkingPeList();
         assertAll(
             () -> assertEquals(2000, vmScheduler.getAvailableMips()),
-            () -> assertEquals(1000, vmScheduler.getMaxAvailableMips()),
             () -> assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm0))
         );
     }
@@ -94,7 +93,6 @@ public class VmSchedulerTimeSharedTest {
 
         assertTrue(vmScheduler.allocatePesForVm(vm0, mipsShare1));
         assertEquals(1750, vmScheduler.getAvailableMips());
-        assertEquals(1000, vmScheduler.getMaxAvailableMips());
         assertEquals(MIPS / 4, vmScheduler.getTotalAllocatedMipsForVm(vm0));
 
         final List<Double> mipsShare2 = new ArrayList<>(2);
@@ -104,13 +102,11 @@ public class VmSchedulerTimeSharedTest {
         assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare2));
 
         assertEquals(1125, vmScheduler.getAvailableMips());
-        assertEquals(875, vmScheduler.getMaxAvailableMips());
         assertEquals(625, vmScheduler.getTotalAllocatedMipsForVm(vm1));
 
         vmScheduler.deallocatePesForAllVms();
 
         assertEquals(2000, vmScheduler.getAvailableMips());
-        assertEquals(1000, vmScheduler.getMaxAvailableMips());
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm1));
     }
 
@@ -127,7 +123,6 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler.deallocatePesForAllVms();
 
         assertEquals(2000, vmScheduler.getAvailableMips());
-        assertEquals(1000, vmScheduler.getMaxAvailableMips());
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm1));
     }
 

@@ -151,13 +151,6 @@ public interface VmScheduler {
     boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips);
 
     /**
-     * Gets the maximum available MIPS among all the host's PEs.
-     *
-     * @return
-     */
-    double getMaxAvailableMips();
-
-    /**
      * Gets the actual total allocated MIPS for a VM along all its allocated PEs.
      * If the VM is migrating into the Host, then just a fraction
      * of the requested MIPS is actually allocated, representing
