@@ -102,7 +102,15 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
      * @return
      */
     private double roundTime(final Cloudlet cloudlet, final double time) {
-        final double fraction = cloudlet.getExecStartTime() - (int) cloudlet.getExecStartTime();
-        return Math.round(time - fraction);
+
+        /*If the given time minus the start time is less than 1,
+        * it means the execution time was less than 1 second.
+        * This way, it can't be round.*/
+        if(time - cloudlet.getExecStartTime() < 1){
+            return time;
+        }
+
+        final double startFraction = cloudlet.getExecStartTime() - (int) cloudlet.getExecStartTime();
+        return Math.round(time - startFraction);
     }
 }

@@ -58,17 +58,19 @@ import java.util.List;
 
 /**
  * An example showing how the {@link Simulation#getMinTimeBetweenEvents()} may affect the processing
- * of events in your simulation and cause some events to be missed.
- * This way, some Cloudlets may not be totally processed and never finish.
- * The issue happens when the time between some events is smaller than the
- * {@link Simulation#getMinTimeBetweenEvents()}.
- * Therefore, you may need to fine tune such attribute according to your simulation.
+ * of events in your simulation.
+ * This way, it may affect simulation accuracy, regarding the execution time of Cloudlets.
+ *
+ * <p>These issues happen when the time between some events is smaller than the
+ * {@link Simulation#getMinTimeBetweenEvents()} (for instance, some Cloudlets are finishing
+ * in a time interval smaller than the mentioned simulation attribute).
+ * Therefore, you may need to fine tune such attribute according to your simulation.</p>
  *
  * <p>This example reproduces the configuration
  * <a href="https://github.com/manoelcampos/cloudsim-plus/issues/163">Issue #163</a>.
  * The documentation of the {@link #MIN_TIME_BETWEEN_EVENTS} constant below shows how
  * to configure the attribute to make CloudSim Plus process all events
- * in this scenario and then all submitted Cloudlets be finished.
+ * accurately in this scenario and then all submitted Cloudlets be finished.
  * </p>
  *
  * @author Natthasak Vechprasit
@@ -78,23 +80,26 @@ import java.util.List;
 public class MinTimeBetweenEventsExample {
     /**
      * The minimum time between an event and the previous one to get the current event to be processed.
-     * <b>If two events happen in a time interval smaller than this value, the last event won't be processed</b>.
      *
-     * <p>Changing this constant to the default 0.1 value, events happening with a interval
-     * smaller than this value will be ignored. This way, the simulation is finished
-     * without processing those events.</p>
+     * If events are happen in a time interval smaller than this value, that will
+     * impact results accuracy. The defined Cloudlets take about 0.1 seconds to finish
+     * but with the current MIN_TIME_BETWEEN_EVENTS, you'll see the ExecTime is greater than
+     * that.
      *
-     * <p>You can check that the difference from the finish time of some Cloudlet
-     * and the start time of the next one is smaller than 0.1.
-     * Changing this constant to 0.01 fix the issue.</p>
+     * You can fix that by changing this constant to 0.01, for instance.
      *
      * @see CloudSim#getMinTimeBetweenEvents()
      */
-    private static final double MIN_TIME_BETWEEN_EVENTS = 0.1;
+    private static final double MIN_TIME_BETWEEN_EVENTS = 0.5;
 
     private static final int HOST_PES_NUMBER = 4;
     private static final int VM_PES_NUMBER = HOST_PES_NUMBER;
     private static final int CLOUDLETS = 6;
+
+    private static final long HOST_MIPS = 1000;
+    private static final int VM_MIPS = 1000;
+    private static final int CLOUDLET_PES = 1;
+    private static final long CLOUDLET_LENGTH = 100;     //in number of Million Instructions (MI)
 
     private final List<Host> hostList;
     private final List<Vm> vmList;
@@ -134,10 +139,9 @@ public class MinTimeBetweenEventsExample {
     }
 
     private Host createHost() {
-        final long mips = 10000;
         final List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < HOST_PES_NUMBER; i++) {
-            PeSimple peSimple = new PeSimple(mips, new PeProvisionerSimple());
+            PeSimple peSimple = new PeSimple(HOST_MIPS, new PeProvisionerSimple());
             peList.add(peSimple);
         }
 
@@ -163,13 +167,12 @@ public class MinTimeBetweenEventsExample {
     }
 
     private Vm createVm(final int id) {
-        final int mips = 10000;
         final long size = 10000; // image size (Megabyte)
         final int ram = 4096;    // vm memory (Megabyte)
         final long bw = 1000;
 
         //It uses a CloudletSchedulerTimeShared by default
-        final Vm vm = new VmSimple(id, mips, VM_PES_NUMBER);
+        final Vm vm = new VmSimple(id, VM_MIPS, VM_PES_NUMBER);
         vm.setRam(ram).setBw(bw).setSize(size);
         return vm;
     }
@@ -197,11 +200,9 @@ public class MinTimeBetweenEventsExample {
     private Cloudlet createCloudlet(final Vm vm) {
         final long fileSize = 300;   //in bytes
         final long outputSize = 300; //in bytes
-        final long length = 100;     //in number of Million Instructions (MI)
-        final int pesNumber = 1;
-        final UtilizationModel utilizationModel = new UtilizationModelDynamic(0.2);
+        final UtilizationModel utilizationModel = new UtilizationModelDynamic(0.1);
 
-        final Cloudlet cloudlet = new CloudletSimple(length, pesNumber)
+        final Cloudlet cloudlet = new CloudletSimple(CLOUDLET_LENGTH, CLOUDLET_PES)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
             .setUtilizationModelCpu(new UtilizationModelFull())
