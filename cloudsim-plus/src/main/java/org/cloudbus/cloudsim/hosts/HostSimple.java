@@ -427,8 +427,8 @@ public class HostSimple implements Host {
     private void allocateResourcesForVm(Vm vm) {
         ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
         bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
-        vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
         storage.allocateResource(vm.getStorage());
+        vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
     }
 
     private boolean logAllocationError(
@@ -911,7 +911,7 @@ public class HostSimple implements Host {
     @Override
     public String toString() {
         final String dc =
-                Datacenter.NULL.equals(datacenter) ? "" :
+                datacenter == null || Datacenter.NULL.equals(datacenter) ? "" :
                 String.format("/DC %d", datacenter.getId());
         return String.format("Host %d%s", getId(), dc);
     }
