@@ -115,7 +115,7 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
             final Vm vm = entry.getKey();
             List<Double> updatedMipsAllocation = getMipsShareToAllocate(vm, entry.getValue());
             updatedMipsAllocation = getMipsShareToAllocate(updatedMipsAllocation, scalingFactor);
-            getAllocatedMipsMap().put(vm, updatedMipsAllocation);
+            putAllocatedMipsMap(vm, updatedMipsAllocation);
         }
     }
 

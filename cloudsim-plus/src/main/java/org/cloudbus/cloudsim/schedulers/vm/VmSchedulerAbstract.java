@@ -310,6 +310,11 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return allocatedMipsMap;
     }
 
+    /** @see #getAllocatedMips(Vm) */
+    protected final void putAllocatedMipsMap(final Vm vm, final List<Double> requestedMips) {
+        allocatedMipsMap.put(vm, requestedMips);
+    }
+
     @Override
     public double getTotalAvailableMips() {
         final double allocatedMips =

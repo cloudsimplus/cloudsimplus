@@ -96,7 +96,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             return false;
         }
 
-        getAllocatedMipsMap().put(vm, requestedMips);
+        putAllocatedMipsMap(vm, requestedMips);
         return true;
     }
 

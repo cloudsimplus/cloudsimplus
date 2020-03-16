@@ -114,7 +114,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     protected void allocateMipsShareForVm(final Vm vm, final List<Double> requestedMipsReduced) {
         final List<Double> mipsShare = getMipsShareToAllocate(vm, requestedMipsReduced);
-        getAllocatedMipsMap().put(vm, mipsShare);
+        putAllocatedMipsMap(vm, mipsShare);
     }
 
     /**
