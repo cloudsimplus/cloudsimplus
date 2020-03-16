@@ -354,15 +354,19 @@ public class HostSimpleTest {
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
 
         final VmScheduler vmScheduler = EasyMock.createMock(VmScheduler.class);
+        final HostSimple host = createHostSimple(numberOfVms, VmScheduler.NULL);
+
         EasyMock.expect(vmScheduler.getAllocatedMips(EasyMock.anyObject()))
                 .andReturn(mipsShare)
                 .times(numberOfVms);
         EasyMock.expect(vmScheduler.setHost(EasyMock.anyObject()))
             .andReturn(vmScheduler)
             .once();
-        EasyMock.replay(vmScheduler);
+        EasyMock.expect(vmScheduler.getHost()).andReturn(host).anyTimes();
 
-        final HostSimple host = createHostSimple(numberOfVms, vmScheduler);
+        EasyMock.replay(vmScheduler);
+        host.setVmScheduler(vmScheduler);
+
         vmList.forEach(host::addVmToList);
 
         final int idx = 0;
