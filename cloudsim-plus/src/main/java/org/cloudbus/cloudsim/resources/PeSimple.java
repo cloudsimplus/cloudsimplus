@@ -161,7 +161,7 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
 
     @Override
     public String toString() {
-        return String.valueOf(getId());
+        return String.format("%s %d", getClass().getSimpleName(), getId());
     }
 
     @Override
