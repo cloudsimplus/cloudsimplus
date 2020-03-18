@@ -1,0 +1,7 @@
+{
+  "name": "a1.medium",
+  "cpus": 1,
+  "memoryInMB": 2048,
+  "pricePerHour": 0.0255,
+  "region": "US East (Ohio)"
+}

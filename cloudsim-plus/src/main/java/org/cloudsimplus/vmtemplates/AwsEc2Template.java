@@ -32,7 +32,7 @@ import java.nio.file.Paths;
 
 /**
  * Represents an
- * <a href="http://aws.amazon.com/ec2/">Amazon EC2 Instance</a> template.
+ * <a href="http://aws.amazon.com/ec2/">Amazon EC2 VM Instance</a> template.
  * This class enables reading a template from a JSON file, containing actual configurations for VMs
  * available in <a href="http://aws.amazon.com/">Amazon Web Services</a>.
  *
@@ -50,6 +50,7 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
     private int cpus;
     private int memoryInMB;
     private double pricePerHour;
+    private String region;
 
     /**
      * Default constructor used to create an {@link AwsEc2Template} instance.
@@ -147,6 +148,19 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
 
     public void setPricePerHour(final double pricePerHour) {
         this.pricePerHour = pricePerHour;
+    }
+
+    /**
+     * Gets the AWS Region in which the instance is run.
+     * @return
+     * @see <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/using-regions-availability-zones.html">AWS Regions, Availability Zones, and Local Zones</a>
+     */
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
     }
 
     /**

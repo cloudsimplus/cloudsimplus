@@ -1,0 +1,7 @@
+{
+  "name": "a1.metal",
+  "cpus": 16,
+  "memoryInMB": 32768,
+  "pricePerHour": 0.408,
+  "region": "US East (Ohio)"
+}

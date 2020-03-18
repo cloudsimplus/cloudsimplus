@@ -1,0 +1,7 @@
+{
+  "name": "m4.xlarge",
+  "cpus": 4,
+  "memoryInMB": 16384,
+  "pricePerHour": 0.2,
+  "region": "US East (Ohio)"
+}

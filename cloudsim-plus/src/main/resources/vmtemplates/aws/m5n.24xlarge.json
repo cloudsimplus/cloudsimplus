@@ -1,0 +1,7 @@
+{
+  "name": "m5n.24xlarge",
+  "cpus": 96,
+  "memoryInMB": 393216,
+  "pricePerHour": 5.712,
+  "region": "US East (Ohio)"
+}

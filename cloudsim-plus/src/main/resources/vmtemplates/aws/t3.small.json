@@ -1,0 +1,7 @@
+{
+  "name": "t3.small",
+  "cpus": 2,
+  "memoryInMB": 2048,
+  "pricePerHour": 0.0208,
+  "region": "US East (Ohio)"
+}
