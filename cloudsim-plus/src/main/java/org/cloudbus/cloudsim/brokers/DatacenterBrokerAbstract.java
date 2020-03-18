@@ -614,14 +614,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private boolean processVmCreateResponseFromDatacenter(final SimEvent evt) {
         final Vm vm = (Vm) evt.getData();
-        boolean vmCreated = false;
         vmCreationAcks++;
 
         //if the VM was successfully created in the requested Datacenter
         if (vm.isCreated()) {
             processSuccessVmCreationInDatacenter(vm);
-            vmCreated = true;
         } else {
+            vm.setFailed(true);
             if(!retryFailedVms){
                 vmWaitingList.remove(vm);
                 vmFailedList.add(vm);
@@ -638,7 +637,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
 
-        return vmCreated;
+        return vm.isCreated();
     }
 
     @SuppressWarnings("ForLoopReplaceableByForEach")

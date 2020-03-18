@@ -638,6 +638,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public void setCreated(final boolean created) {
         this.created = created;
+        this.setFailed(false);
     }
 
     @Override
@@ -770,6 +771,17 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public void setFailed(final boolean failed) {
         this.failed = failed;
+
+        if(failed) {
+            setCloudletsToFailed();
+        }
+    }
+
+    public void setCloudletsToFailed() {
+        getBroker().getCloudletWaitingList()
+                   .stream()
+                   .filter(cl -> this.equals(cl.getVm()))
+                   .forEach(cl -> cl.setStatus(Cloudlet.Status.FAILED_RESOURCE_UNAVAILABLE));
     }
 
     @Override

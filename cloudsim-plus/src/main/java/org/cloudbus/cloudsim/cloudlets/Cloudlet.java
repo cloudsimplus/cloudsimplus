@@ -96,7 +96,9 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
         RESUMED,
 
         /**
-         * The cloudlet has failed due to a resource failure.
+         * The cloudlet has failed to start in reason of a failure in some resource such as a Host or VM.
+         * That may happen too when the VM to run the Cloudlet cannot be created for some reason
+         * (such as the lack of a suitable Host).
          */
         FAILED_RESOURCE_UNAVAILABLE
     }
