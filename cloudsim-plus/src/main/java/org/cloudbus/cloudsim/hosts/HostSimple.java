@@ -876,7 +876,6 @@ public class HostSimple implements Host {
 
     @Override
     public void removeMigratingInVm(final Vm vm) {
-        deallocateResourcesOfVm(vm);
         vmsMigratingIn.remove(vm);
         vmList.remove(vm);
         vm.setInMigration(false);

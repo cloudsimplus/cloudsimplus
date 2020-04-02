@@ -624,12 +624,15 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         targetHost.removeMigratingInVm(vm);
         final boolean result = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
+        if(result) {
+            /*When the VM is destroyed from the source host, it's removed from the vmExecList.
+            After migration, we need to add it again.*/
+            vm.getBroker().getVmExecList().add(vm);
 
-        if (ack) {
-            sendNow(evt.getSource(), CloudSimTags.VM_CREATE_ACK, vm);
+            if (ack) {
+                sendNow(evt.getSource(), CloudSimTags.VM_CREATE_ACK, vm);
+            }
         }
-
-        vm.setInMigration(false);
 
         final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTags.VM_MIGRATE));
         if (event == null || event.getTime() > getSimulation().clock()) {
@@ -787,10 +790,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             delay, getBandwidthPercentForMigration()*100);
         LOGGER.info("{}: {}: Migration of {} is started. {}", currentTime, getName(), msg1, msg2);
 
-        sourceHost.addVmMigratingOut(sourceVm);
-        targetHost.addMigratingInVm(sourceVm);
-
-        send(this, delay, CloudSimTags.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
+        if(targetHost.addMigratingInVm(sourceVm)) {
+            sourceHost.addVmMigratingOut(sourceVm);
+            send(this, delay, CloudSimTags.VM_MIGRATE, new TreeMap.SimpleEntry<>(sourceVm, targetHost));
+        }
     }
 
     /**
