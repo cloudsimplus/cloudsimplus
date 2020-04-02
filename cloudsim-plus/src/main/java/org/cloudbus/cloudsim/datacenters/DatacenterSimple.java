@@ -623,8 +623,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         vmAllocationPolicy.deallocateHostForVm(vm);
 
         targetHost.removeMigratingInVm(vm);
-        final boolean result = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
-        if(result) {
+        final boolean migrated = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
+        if(migrated) {
             /*When the VM is destroyed from the source host, it's removed from the vmExecList.
             After migration, we need to add it again.*/
             vm.getBroker().getVmExecList().add(vm);
@@ -640,7 +640,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             updateHostsProcessing();
         }
 
-        if (result)
+        if (migrated)
             LOGGER.info("{}: Migration of {} to {} is completed", getSimulation().clockStr(), vm, targetHost);
         else LOGGER.error("{}: {}: Allocation of {} to the destination Host failed!", getSimulation().clockStr(), this, vm);
     }
