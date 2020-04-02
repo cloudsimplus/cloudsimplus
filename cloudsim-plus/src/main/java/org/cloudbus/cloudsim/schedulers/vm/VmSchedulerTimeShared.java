@@ -127,9 +127,9 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     /**
      * Clear the allocation of any PE for all VMs in order to start a new allocation.
-     * By this way, a PE that was previously allocated to a given VM will be released
+     * This way, a PE that was previously allocated to a given VM will be released
      * and when the new allocation is performed, a different list of PEs can be allocated
-     * that VM.
+     * to that VM.
      * @see #updatePesAllocationForAllVms()
      */
     private void clearAllocationOfPesForAllVms() {
@@ -327,6 +327,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         removePesFromMap(vm, getRequestedMipsMap(), pesToRemove);
         removePesFromMap(vm, getAllocatedMipsMap(), pesToRemove);
 
+        //After removing some PEs from a VM, updates the MIPS allocation for all VMs on this scheduler
         for (final Map.Entry<Vm, List<Double>> entry : getRequestedMipsMap().entrySet()) {
             allocateMipsShareForVmInternal(entry.getKey(), entry.getValue());
         }
