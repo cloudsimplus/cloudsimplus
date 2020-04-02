@@ -84,7 +84,7 @@ public class PowerExampleSchedulingInterval {
 
     /**
      * Defines the minimum percentage of power a Host uses,
-     * even it it's idle.
+     * even when it's idle.
      */
     private static final double STATIC_POWER_PERCENT = 0.7;
 
@@ -105,12 +105,17 @@ public class PowerExampleSchedulingInterval {
 
     public static void main(String[] args) {
         Log.setLevel(Level.WARN);
-        final int[] SCHEDULING_INTERVALS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100};
-        for(final int interval : SCHEDULING_INTERVALS) {
-            new PowerExampleSchedulingInterval(interval, true);
+        final int[] SCHEDULING_INTERVALS_SECS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100};
+        for(final int interval : SCHEDULING_INTERVALS_SECS) {
+            new PowerExampleSchedulingInterval(interval, false);
         }
     }
 
+    /**
+     * Instantiates and run the example with a specific configuration.
+     * @param schedulingInterval the {@link Datacenter#getSchedulingInterval()} (in seconds)
+     * @param showAllHostUtilizationHistoryEntries show all host CPU utilization history or just when the values change
+     */
     private PowerExampleSchedulingInterval(
         final int schedulingInterval,
         final boolean showAllHostUtilizationHistoryEntries)

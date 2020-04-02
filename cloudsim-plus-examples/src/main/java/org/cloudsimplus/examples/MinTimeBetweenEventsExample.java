@@ -81,8 +81,8 @@ public class MinTimeBetweenEventsExample {
     /**
      * The minimum time between an event and the previous one to get the current event to be processed.
      *
-     * If events are happen in a time interval smaller than this value, that will
-     * impact results accuracy. The defined Cloudlets take about 0.1 seconds to finish
+     * If events happen in a time interval smaller than this value, that will
+     * impact results accuracy. The created Cloudlets take about 0.1 second to finish,
      * but with the current MIN_TIME_BETWEEN_EVENTS, you'll see the ExecTime is greater than
      * that.
      *
