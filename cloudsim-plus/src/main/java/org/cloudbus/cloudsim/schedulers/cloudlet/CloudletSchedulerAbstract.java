@@ -504,11 +504,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return Double.MAX_VALUE;
         }
 
-        addCloudletsToFinishedList();
         double nextCloudletFinishTime = updateCloudletsProcessing(currentTime);
         updateVmResourceAbsoluteUtilization(Ram.class);
         updateVmResourceAbsoluteUtilization(Bandwidth.class);
         nextCloudletFinishTime = Math.min(nextCloudletFinishTime, moveNextCloudletsFromWaitingToExecList(currentTime));
+        addCloudletsToFinishedList();
 
         setPreviousTime(currentTime);
         vm.getSimulation().setLastCloudletProcessingUpdate(currentTime);
