@@ -243,7 +243,7 @@ public class CloudletSchedulerTimeSharedTest {
     }
 
     /**
-     * This test runs 2 cloudlets requiring just 1 PE each one.
+     * Runs 2 cloudlets requiring just 1 PE each one.
      * These cloudlets are run in a CloudletScheduler having 2 PEs,
      * one for each cloudlet. The cloudlet length is equals to the capacity of
      * each PE, meaning that each cloudlet will finish in just one second.
@@ -255,25 +255,17 @@ public class CloudletSchedulerTimeSharedTest {
 
         final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfCloudlets, numberOfCloudlets);
 
-        final double time0 = 0.5;
-        instance.updateProcessing(time0, instance.getCurrentMipsShare());
-        assertEquals(2, instance.getCloudletExecList().size());
-
-        final double time1 = 1.0;
-        instance.updateProcessing(time1, instance.getCurrentMipsShare());
-        assertFalse(instance.getCloudletExecList().isEmpty());
-
-        final double time2 = 1.1;
-        instance.updateProcessing(time2, instance.getCurrentMipsShare());
+        final double time = 1.0;
+        instance.updateProcessing(time, instance.getCurrentMipsShare());
         assertTrue(instance.getCloudletExecList().isEmpty());
     }
 
     /**
-     * This test runs 2 cloudlets requiring just 1 PE each one.
+     * Runs 2 cloudlets requiring just 1 PE each one.
      * These cloudlets are run in a CloudletScheduler having just 1 PE
      * that is shared between the cloudlets.
      * The cloudlet length is equals to the capacity of
-     * each PE, meaning that each cloudlet will finish in just 2 second
+     * each PE, meaning that each cloudlet will finish in 2 seconds
      * because there is just 1 PE.
      */
     @Test
@@ -284,16 +276,8 @@ public class CloudletSchedulerTimeSharedTest {
 
         final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, vmPes, cloudlets);
 
-        final double time1 = 1.0;
-        instance.updateProcessing(time1, instance.getCurrentMipsShare());
-        assertEquals(2, instance.getCloudletExecList().size());
-
-        final double time2 = 2.0;
-        instance.updateProcessing(time2, instance.getCurrentMipsShare());
-        assertFalse(instance.getCloudletExecList().isEmpty());
-
-        final double time3 = 2.1;
-        instance.updateProcessing(time3, instance.getCurrentMipsShare());
+        final double time = 2.0;
+        instance.updateProcessing(time, instance.getCurrentMipsShare());
         assertTrue(instance.getCloudletExecList().isEmpty());
 
     }
