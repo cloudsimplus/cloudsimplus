@@ -243,7 +243,7 @@ public final class CloudSimTags {
     public static final int VM_DESTROY_ACK = BASE + 34;
 
     /**
-     * Denotes a request to migrate a new VM in a {@link Datacenter}.
+     * Denotes a request to finish the migration of a new VM in a {@link Datacenter}.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@code Map.Entry<Vm, Host>} representing to which Host
      * a VM must be migrated.
@@ -251,7 +251,7 @@ public final class CloudSimTags {
     public static final int VM_MIGRATE = BASE + 35;
 
     /**
-     * Denotes a request to migrate a new VM in a {@link Datacenter} with
+     * Denotes a request to finish the migration of a new VM in a {@link Datacenter} with
      * acknowledgement information sent by the Datacenter.
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@code Map.Entry<Vm, Host>} representing to which Host
