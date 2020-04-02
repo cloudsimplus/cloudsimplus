@@ -160,7 +160,9 @@ public interface Host extends Machine, Comparable<Host> {
     double getTotalMipsCapacity();
 
     /**
-     * Removes a migrating in vm.
+     * Removes a VM migrating into this Host from the migrating-in list,
+     * so that the VM can be actually placed into the Host
+     * and the migration process finished.
      *
      * @param vm the vm
      */
