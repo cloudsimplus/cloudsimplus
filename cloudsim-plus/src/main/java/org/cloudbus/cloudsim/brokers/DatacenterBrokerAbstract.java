@@ -754,7 +754,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
         cloudletsFinishedList.add(cloudlet);
         ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getNumberOfPes());
-        LOGGER.info("{}: {}: {} finished and returned to broker.", getSimulation().clockStr(), getName(), cloudlet);
+        LOGGER.info("{}: {}: {} finished in {} and returned to broker.", getSimulation().clockStr(), getName(), cloudlet, cloudlet.getVm());
 
         if (cloudlet.getVm().getCloudletScheduler().isEmpty()) {
             requestIdleVmDestruction(cloudlet.getVm());
