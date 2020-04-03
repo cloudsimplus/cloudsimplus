@@ -398,8 +398,7 @@ public class HostSimple implements Host {
             return false;
         }
 
-        vmList.add(vm);
-        return true;
+        return vmList.add(vm);
     }
 
     /**
