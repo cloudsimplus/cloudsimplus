@@ -10,8 +10,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.stream.IntStream;
@@ -35,8 +33,6 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @see #getVmMigrationCpuOverhead()
      */
     public static final double DEFAULT_VM_MIGRATION_CPU_OVERHEAD = 0.1;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(VmSchedulerSpaceShared.class.getSimpleName());
 
     /**
      * @see #getRequestedMipsMap()

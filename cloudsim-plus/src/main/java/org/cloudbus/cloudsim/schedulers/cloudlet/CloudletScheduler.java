@@ -14,6 +14,8 @@ import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public interface CloudletScheduler extends Serializable {
+    Logger LOGGER = LoggerFactory.getLogger(CloudletScheduler.class.getSimpleName());
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link CloudletScheduler}

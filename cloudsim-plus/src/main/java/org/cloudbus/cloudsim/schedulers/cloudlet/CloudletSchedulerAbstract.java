@@ -21,8 +21,6 @@ import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -48,7 +46,6 @@ import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CloudletSchedulerAbstract.class.getSimpleName());
 
     /**
      * @see #getCloudletPausedList()

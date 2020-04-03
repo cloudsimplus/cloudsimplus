@@ -18,6 +18,8 @@ import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -34,6 +36,8 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
+    Logger LOGGER = LoggerFactory.getLogger(Datacenter.class.getSimpleName());
+
     /**
      * A property that implements the Null Object Design Pattern for
      * {@link Datacenter} objects.

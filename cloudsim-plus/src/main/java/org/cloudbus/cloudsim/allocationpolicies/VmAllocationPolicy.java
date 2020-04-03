@@ -12,6 +12,8 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.Map;
@@ -34,6 +36,8 @@ import java.util.function.BiFunction;
  * @see #setFindHostForVmFunction(BiFunction)
  */
 public interface VmAllocationPolicy {
+    Logger LOGGER = LoggerFactory.getLogger(VmAllocationPolicy.class.getSimpleName());
+
     /**
      * Default minimum number of Hosts to start using parallel search.
      * @see #setHostCountForParallelSearch(int)

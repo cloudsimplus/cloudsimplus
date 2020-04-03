@@ -25,8 +25,6 @@ import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
@@ -53,8 +51,6 @@ import static java.util.stream.Collectors.*;
  * @since CloudSim Toolkit 1.0
  */
 public class HostSimple implements Host {
-    private static final Logger LOGGER = LoggerFactory.getLogger(HostSimple.class.getSimpleName());
-
     private static long defaultRamCapacity = (long)Conversion.gigaToMega(10);
     private static long defaultBwCapacity = 1000;
     private static long defaultStorageCapacity = (long)Conversion.gigaToMega(500);

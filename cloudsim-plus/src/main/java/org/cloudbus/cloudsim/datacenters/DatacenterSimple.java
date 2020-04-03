@@ -26,8 +26,6 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -44,7 +42,6 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterSimple extends CloudSimEntity implements Datacenter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(DatacenterSimple.class.getSimpleName());
 
     /**
      * @see #getBandwidthPercentForMigration()

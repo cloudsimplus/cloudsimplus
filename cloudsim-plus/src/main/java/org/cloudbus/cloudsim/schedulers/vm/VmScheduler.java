@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.schedulers.vm;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -31,6 +33,7 @@ import java.util.List;
  * @since CloudSim Plus 1.0
  */
 public interface VmScheduler {
+    Logger LOGGER = LoggerFactory.getLogger(VmScheduler.class.getSimpleName());
 
     /**
      * An attribute that implements the Null Object Design Pattern for {@link VmScheduler}
