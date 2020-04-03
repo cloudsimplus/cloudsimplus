@@ -342,28 +342,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param hostStream a {@link Stream} containing the Hosts after passing the basic filtering
      * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if not found
      * @see #findHostForVm(Vm, Set)
-     * @see #additionalHostFilters(Vm, Stream)
      */
     protected Optional<Host> findHostForVmInternal(final Vm vm, final Stream<Host> hostStream){
         final Comparator<Host> hostPowerConsumptionComparator =
             comparingDouble(host -> getPowerDifferenceAfterAllocation(host, vm));
 
-        return additionalHostFilters(vm, hostStream).min(hostPowerConsumptionComparator);
-    }
-
-    /**
-     * Applies additional filters to select a Host to place a given VM.
-     * This implementation filters the stream of Hosts to get those ones
-     * that the placement of the VM impacts its power usage.
-     *
-     * <p>This method can be overridden by sub-classes to change filtering.</p>
-     *
-     * @param vm the VM to find a Host to be placed into
-     * @param hostStream a {@link Stream} containing the Hosts after passing the basic filtering
-     * @return the Hosts {@link Stream} after applying the additional filters
-     */
-    private Stream<Host> additionalHostFilters(final Vm vm, final Stream<Host> hostStream){
-        return hostStream.filter(host -> getPowerAfterAllocation(host, vm) > 0);
+        return hostStream.min(hostPowerConsumptionComparator);
     }
 
     /**
