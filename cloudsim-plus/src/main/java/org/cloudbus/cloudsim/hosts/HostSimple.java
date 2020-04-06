@@ -357,7 +357,7 @@ public class HostSimple implements Host {
             nextSimulationTime = nextTime > 0 ? Math.min(nextTime, nextSimulationTime) : nextSimulationTime;
         }
 
-        notifyOnUpdateProcessingListeners(nextSimulationTime);
+        notifyOnUpdateProcessingListeners(currentTime);
         addStateHistory(currentTime);
 
         return nextSimulationTime;
