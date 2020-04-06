@@ -186,9 +186,12 @@ Below are the steps to start using the project:
 
 ## 4.3 Adding it as a Maven Dependency into Your Own Project
 
-You can add CloudSim Plus API module (which is the only one required to build simulations) 
-as a dependency inside the pom.xml file of your own maven project, as presened below. 
+You can add CloudSim Plus API module (which is the only one required to build simulations) as a dependency inside your own Maven or Gradle project.
 This way you can start building your simulations from scratch.
+
+### 4.3.1 Maven
+
+Add the following dependency into the pom.xml file of your own Maven project. 
 
 ```xml
 <dependency>
@@ -197,6 +200,17 @@ This way you can start building your simulations from scratch.
     <!-- Set a specific version or use the latest one -->
     <version>LATEST</version>
 </dependency>
+```
+
+### 4.3.2 Gradle
+
+Add the following dependency into the build.gradle file of your own Gradle project. 
+
+```groovy
+dependencies {
+    //Set a specific version or use the latest one
+    implementation 'org.cloudsimplus:cloudsim-plus:LATEST'
+}
 ```
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
