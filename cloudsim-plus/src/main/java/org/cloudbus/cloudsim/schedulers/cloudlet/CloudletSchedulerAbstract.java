@@ -501,16 +501,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return Double.MAX_VALUE;
         }
 
-        double nextCloudletFinishTime = updateCloudletsProcessing(currentTime);
+        double nextSimulationDelay = updateCloudletsProcessing(currentTime);
         updateVmResourceAbsoluteUtilization(Ram.class);
         updateVmResourceAbsoluteUtilization(Bandwidth.class);
-        nextCloudletFinishTime = Math.min(nextCloudletFinishTime, moveNextCloudletsFromWaitingToExecList(currentTime));
+        nextSimulationDelay = Math.min(nextSimulationDelay, moveNextCloudletsFromWaitingToExecList(currentTime));
         addCloudletsToFinishedList();
 
         setPreviousTime(currentTime);
         vm.getSimulation().setLastCloudletProcessingUpdate(currentTime);
 
-        return nextCloudletFinishTime;
+        return nextSimulationDelay;
     }
 
     /**

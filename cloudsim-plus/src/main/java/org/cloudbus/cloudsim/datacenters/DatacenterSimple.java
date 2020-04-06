@@ -473,7 +473,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return nextFinishingCloudletTime;
         }
 
-        final double time = Math.floor(getSimulation().clock());
+        final double time = Math.floor(clock());
         final double mod = time % schedulingInterval;
         /* If a scheduling interval is set, ensures the next time that Cloudlets' processing
          * are updated is multiple of the scheduling interval.
@@ -482,6 +482,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
          * is scheduled to the next time multiple of the scheduling interval.*/
         final double delay = mod == 0 ? schedulingInterval : (time - mod + schedulingInterval) - time;
         return Math.min(nextFinishingCloudletTime, delay);
+    }
+
+    private double clock() {
+        return getSimulation().clock();
     }
 
     /**
@@ -495,7 +499,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final double estimatedFinishTime = cloudlet.getVm()
             .getCloudletScheduler().cloudletResume(cloudlet);
 
-        if (estimatedFinishTime > 0.0 && estimatedFinishTime > getSimulation().clock()) {
+        if (estimatedFinishTime > 0.0 && estimatedFinishTime > clock()) {
             schedule(this,
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
@@ -632,7 +636,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTags.VM_MIGRATE));
-        if (event == null || event.getTime() > getSimulation().clock()) {
+        if (event == null || event.getTime() > clock()) {
             //Updates processing of all Hosts again to get the latest state for all Hosts after the VMs migrations
             updateHostsProcessing();
         }
@@ -698,23 +702,23 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
     private double updateHostsProcessing() {
-        double nextSimulationTime = Double.MAX_VALUE;
+        double nextSimulationDelay = Double.MAX_VALUE;
         for (final Host host : getHostList()) {
-            final double time = host.updateProcessing(getSimulation().clock());
-            nextSimulationTime = Math.min(time, nextSimulationTime);
+            final double delay = host.updateProcessing(clock());
+            nextSimulationDelay = Math.min(delay, nextSimulationDelay);
         }
 
         // Guarantees a minimal interval before scheduling the event
         final double minTimeBetweenEvents = getSimulation().getMinTimeBetweenEvents()+0.01;
-        nextSimulationTime = nextSimulationTime == 0 ? nextSimulationTime : Math.max(nextSimulationTime, minTimeBetweenEvents);
+        nextSimulationDelay = nextSimulationDelay == 0 ? nextSimulationDelay : Math.max(nextSimulationDelay, minTimeBetweenEvents);
 
-        if (nextSimulationTime == Double.MAX_VALUE) {
-            return nextSimulationTime;
+        if (nextSimulationDelay == Double.MAX_VALUE) {
+            return nextSimulationDelay;
         }
 
         powerSupply.computePowerUtilizationForTimeSpan(lastProcessTime);
 
-        return nextSimulationTime;
+        return nextSimulationDelay;
     }
 
     /**
@@ -734,24 +738,24 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (!isTimeToUpdateCloudletsProcessing()){
             return Double.MAX_VALUE;
         }
-        double nextSimulationTime = updateHostsProcessing();
+        double nextSimulationDelay = updateHostsProcessing();
 
-        if (nextSimulationTime != Double.MAX_VALUE) {
-            nextSimulationTime = getCloudletProcessingUpdateInterval(nextSimulationTime);
-            schedule(nextSimulationTime, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
+        if (nextSimulationDelay != Double.MAX_VALUE) {
+            nextSimulationDelay = getCloudletProcessingUpdateInterval(nextSimulationDelay);
+            schedule(nextSimulationDelay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
-        setLastProcessTime(getSimulation().clock());
+        setLastProcessTime(clock());
 
         checkIfVmMigrationsAreNeeded();
-        return nextSimulationTime;
+        return nextSimulationDelay;
     }
 
     private boolean isTimeToUpdateCloudletsProcessing() {
         // if some time passed since last processing
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
-        return getSimulation().clock() < 0.111 ||
-               getSimulation().clock() >= lastProcessTime + getSimulation().getMinTimeBetweenEvents();
+        return clock() < 0.111 ||
+               clock() >= lastProcessTime + getSimulation().getMinTimeBetweenEvents();
     }
 
     /**
@@ -962,7 +966,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private <T extends Host> void notifyOnHostAvailableListeners(final T host) {
-        onHostAvailableListeners.forEach(listener -> listener.update(HostEventInfo.of(listener, host, getSimulation().clock())));
+        onHostAvailableListeners.forEach(listener -> listener.update(HostEventInfo.of(listener, host, clock())));
     }
 
     @Override

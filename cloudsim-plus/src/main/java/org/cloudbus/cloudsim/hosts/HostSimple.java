@@ -347,20 +347,20 @@ public class HostSimple implements Host {
             setActive(false);
         }
 
-        double nextSimulationTime = Double.MAX_VALUE;
+        double nextSimulationDelay = Double.MAX_VALUE;
 
         /* Uses an indexed for to avoid ConcurrentModificationException,
          * e.g., in cases when Vm is destroyed during simulation execution.*/
         for (int i = 0; i < vmList.size(); i++) {
             final Vm vm = vmList.get(i);
-            final double nextTime = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
-            nextSimulationTime = nextTime > 0 ? Math.min(nextTime, nextSimulationTime) : nextSimulationTime;
+            final double delay = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
+            nextSimulationDelay = delay > 0 ? Math.min(delay, nextSimulationDelay) : nextSimulationDelay;
         }
 
         notifyOnUpdateProcessingListeners(currentTime);
         addStateHistory(currentTime);
 
-        return nextSimulationTime;
+        return nextSimulationDelay;
     }
 
     private void notifyOnUpdateProcessingListeners(final double nextSimulationTime) {

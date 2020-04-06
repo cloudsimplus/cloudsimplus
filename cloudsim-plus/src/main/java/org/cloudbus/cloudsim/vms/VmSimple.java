@@ -256,7 +256,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         if (!cloudletScheduler.isEmpty()) {
             setLastBusyTime();
         }
-        final double nextEventDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
+        final double nextSimulationDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
 
         /* If the current time is some value with the decimals greater than x.0
@@ -271,11 +271,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         final double decimals = currentTime - (int) currentTime;
         utilizationHistory.addUtilizationHistory(currentTime);
         getBroker().requestIdleVmDestruction(this);
-        if (nextEventDelay == Double.MAX_VALUE) {
-            return nextEventDelay;
+        if (nextSimulationDelay == Double.MAX_VALUE) {
+            return nextSimulationDelay;
         }
 
-        return nextEventDelay - decimals < 0 ? nextEventDelay : nextEventDelay - decimals;
+        return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
     }
 
     @Override
