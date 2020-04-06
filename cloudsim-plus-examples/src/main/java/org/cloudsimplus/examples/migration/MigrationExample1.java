@@ -146,6 +146,9 @@ public final class MigrationExample1 {
      */
     private static final double HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION = 0.7;
 
+    /** @see Datacenter#setHostSearchRetryDelay(double) */
+    private static final int HOST_SEARCH_RETRY_DELAY = 60;
+
     private static final int    VM_MIPS = 1000; //for each PE
     private static final long   VM_SIZE = 1000; //image size (MB)
     private static final int    VM_RAM = 10000; //VM memory (MB)
@@ -372,7 +375,8 @@ public final class MigrationExample1 {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2);
 
         DatacenterSimple dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
-        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL)
+          .setHostSearchRetryDelay(HOST_SEARCH_RETRY_DELAY);
         return dc;
     }
 

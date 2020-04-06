@@ -253,6 +253,7 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
      * Enable VM migrations.
      *
      * @return
+     * @see #getHostSearchRetryDelay()
      */
     Datacenter enableMigrations();
 
@@ -301,6 +302,7 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
      *                                      Give a positive value to define an actual delay or
      *                                      a negative value to indicate a new Host search to migrate VMs
      *                                      must be tried as soon as possible
+     * @return
      */
-    void setHostSearchRetryDelay(double hostSearchRetryDelay);
+    Datacenter setHostSearchRetryDelay(double hostSearchRetryDelay);
 }

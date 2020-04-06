@@ -115,6 +115,10 @@ import java.util.*;
 public final class MigrationExample2_PowerUsage {
     private static final int SCHEDULING_INTERVAL = 5;
 
+    /** @see Datacenter#setHostSearchRetryDelay(double) */
+    private static final int HOST_SEARCH_RETRY_DELAY = 60;
+
+
     private static final int HOSTS = 5;
     private static final int VMS = 3;
 
@@ -426,7 +430,8 @@ public final class MigrationExample2_PowerUsage {
                 HOST_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION+0.2, fallback);
 
         Datacenter dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
-        dc.setSchedulingInterval(SCHEDULING_INTERVAL);
+        dc.setSchedulingInterval(SCHEDULING_INTERVAL)
+          .setHostSearchRetryDelay(HOST_SEARCH_RETRY_DELAY);
         return dc;
     }
 
