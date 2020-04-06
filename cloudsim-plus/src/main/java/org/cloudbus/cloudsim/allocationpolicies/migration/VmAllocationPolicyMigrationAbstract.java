@@ -102,6 +102,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
         final Map<Vm, Host> migrationMap = getMigrationMapFromOverloadedHosts(overloadedHosts);
         updateMigrationMapFromUnderloadedHosts(overloadedHosts, migrationMap);
+        if(migrationMap.isEmpty()){
+            return migrationMap;
+        }
+
         restoreAllocation();
         return migrationMap;
     }
@@ -227,13 +231,15 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *         false otherwise
      */
     private boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
-        if (!host.createTemporaryVm(vm)) {
+        final Vm tempVm = new VmSimple(vm);
+
+        if (!host.createTemporaryVm(tempVm)) {
             return false;
         }
 
         final double usagePercent = getHostCpuPercentRequested(host);
         final boolean notOverloadedAfterAllocation = !isHostOverloaded(host, usagePercent);
-        host.destroyTemporaryVm(vm);
+        host.destroyTemporaryVm(tempVm);
         return notOverloadedAfterAllocation;
     }
 

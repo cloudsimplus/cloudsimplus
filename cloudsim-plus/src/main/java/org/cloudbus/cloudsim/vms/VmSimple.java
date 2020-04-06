@@ -244,6 +244,20 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         expectedFreePesNumber = numberOfPes;
     }
 
+    /**
+     * A copy constructor that creates a VM based on the configuration of another one.
+     * The created VM will have the same MIPS capacity, number of PEs,
+     * BW, RAM and size of the given VM, but a default CloudletScheduler and no broker.
+     * @param sourceVm the VM to be cloned
+     * @see #VmSimple(double, long)
+     */
+    public VmSimple(final Vm sourceVm) {
+        this(sourceVm.getMips(), sourceVm.getNumberOfPes());
+        this.setBw(sourceVm.getBw().getCapacity())
+            .setRam(sourceVm.getRam().getCapacity())
+            .setSize(sourceVm.getStorage().getCapacity());
+    }
+
     @Override
     public double updateProcessing(List<Double> mipsShare) {
         return updateProcessing(getSimulation().clock(), mipsShare);
