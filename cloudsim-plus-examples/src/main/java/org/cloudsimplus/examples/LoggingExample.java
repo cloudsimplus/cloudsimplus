@@ -121,6 +121,7 @@ public class LoggingExample {
         simulation.start();
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        finishedCloudlets.sort(Comparator.comparingLong(Cloudlet::getId));
         new CloudletsTableBuilder(finishedCloudlets).build();
     }
 
