@@ -464,7 +464,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param nextFinishingCloudletTime the predicted completion time of the earliest finishing cloudlet
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
-     * @return next time cloudlets processing will be updated
+     * @return next time cloudlets processing will be updated (a relative delay from the current simulation time)
      *
      * @see #updateCloudletProcessing()
      */
