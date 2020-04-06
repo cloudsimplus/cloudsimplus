@@ -63,6 +63,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     private final Map<Vm, Host> savedAllocation;
 
+    /** @see #areHostsUnderloaded() */
+    private boolean hostsUnderloaded;
+
+    /** @see #areHostsOverloaded() */
+    private boolean hostsOverloaded;
+
     /**
      * Creates a VmAllocationPolicy.
      * It uses a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
@@ -97,6 +103,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     public Map<Vm, Host> getOptimizedAllocationMap(final List<? extends Vm> vmList) {
         //@TODO See https://github.com/manoelcampos/cloudsim-plus/issues/94
         final Set<Host> overloadedHosts = getOverloadedHosts();
+        this.hostsOverloaded = !overloadedHosts.isEmpty();
         printOverUtilizedHosts(overloadedHosts);
         saveAllocation();
 
@@ -142,6 +149,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
         final int numberOfHosts = getHostList().size();
 
+        this.hostsUnderloaded = false;
         while (true) {
             if (numberOfHosts == ignoredSourceHosts.size()) {
                 break;
@@ -151,6 +159,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             if (underloadedHost == Host.NULL) {
                 break;
             }
+            this.hostsUnderloaded = true;
 
             LOGGER.info("{}: VmAllocationPolicy: Underloaded hosts: {}", getDatacenter().getSimulation().clockStr(), underloadedHost);
 
@@ -730,5 +739,15 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     @Override
     public final boolean isVmMigrationSupported() {
         return true;
+    }
+
+    @Override
+    public boolean areHostsUnderloaded() {
+        return hostsUnderloaded;
+    }
+
+    @Override
+    public boolean areHostsOverloaded() {
+        return hostsOverloaded;
     }
 }

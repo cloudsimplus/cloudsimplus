@@ -83,4 +83,24 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
      * @param underUtilizationThreshold the under utilization threshold (in scale is from 0 to 1, where 1 is 100%)
      */
     void setUnderUtilizationThreshold(double underUtilizationThreshold);
+
+    /**
+     * Checks if there are some Hosts underloaded.
+     * @return
+     */
+    boolean areHostsUnderloaded();
+
+    /**
+     * Checks if there are some Hosts overloaded.
+     * @return
+     */
+    boolean areHostsOverloaded();
+
+    /**
+     * Checks if there are some Hosts either under or overloaded.
+     * @return
+     */
+    default boolean areHostsUnderOrOverloaded() {
+        return areHostsUnderloaded() || areHostsOverloaded();
+    }
 }

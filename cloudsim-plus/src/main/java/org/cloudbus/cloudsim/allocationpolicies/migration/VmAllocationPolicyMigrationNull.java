@@ -53,4 +53,6 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
         return 0;
     }
     @Override public void setUnderUtilizationThreshold(double underUtilizationThreshold) {/**/}
+    @Override public boolean areHostsUnderloaded() { return false; }
+    @Override public boolean areHostsOverloaded() { return false; }
 }

@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.datacenters;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
@@ -21,6 +22,7 @@ import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.MathUtil;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
@@ -42,6 +44,16 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterSimple extends CloudSimEntity implements Datacenter {
+
+    /**
+     * The last time some Host on the Datacenter was under or overloaded.
+     *
+     * <p>Double.MIN_VALUE is surprisingly not a negative number.
+     * Initializing this attribute with a too small value makes that the first
+     * time an under or overload condition is detected,
+     * it will try immediately to find suitable Hosts for migration.</p>
+     */
+    private double lastTimeUnderOrOverloadedHostsDetected = -Double.MAX_VALUE;
 
     /**
      * @see #getBandwidthPercentForMigration()
@@ -80,6 +92,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @see #getTimeZone()
      */
     private double timeZone;
+    private Map<Vm, Host> lastMigrationMap;
+
+    /** @see #getHostSearchRetryDelay() */
+    private double hostSearchRetryDelay;
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
@@ -172,6 +188,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         this.characteristics = new DatacenterCharacteristicsSimple(this);
         this.bandwidthPercentForMigration = DEF_BW_PERCENT_FOR_MIGRATION;
         this.migrationsEnabled = true;
+        this.hostSearchRetryDelay = -1;
+
+        this.lastMigrationMap = Collections.emptyMap();
 
         setVmAllocationPolicy(vmAllocationPolicy);
     }
@@ -765,14 +784,51 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * <p><b>This is an expensive operation for large scale simulations.</b></p>
      */
     private void checkIfVmMigrationsAreNeeded() {
-        if (!isMigrationsEnabled()) {
+        if (!isTimeToSearchForSuitableHosts()) {
             return;
         }
 
-        final Map<Vm, Host> migrationMap = getVmAllocationPolicy().getOptimizedAllocationMap(getVmList());
-        for (final Map.Entry<Vm, Host> entry : migrationMap.entrySet()) {
+        lastMigrationMap = getVmAllocationPolicy().getOptimizedAllocationMap(getVmList());
+        for (final Map.Entry<Vm, Host> entry : lastMigrationMap.entrySet()) {
             requestVmMigration(entry.getKey(), entry.getValue());
         }
+
+        if(areThereUnderOrOverloadedHostsAndMigrationIsSupported()){
+            logHostSearchRetry();
+            lastTimeUnderOrOverloadedHostsDetected = clock();
+        }
+    }
+
+    private void logHostSearchRetry() {
+        if(lastMigrationMap.isEmpty()) {
+            final String msg = hostSearchRetryDelay > 0 ?
+                                    "in " + TimeUtil.secondsToStr(hostSearchRetryDelay) :
+                                    "as soon as possible";
+            LOGGER.warn(
+                "{}: Datacenter: An under or overload situation was detected but currently, however there aren't suitable Hosts to manage that. Trying again {}.",
+                clock(), msg);
+        }
+    }
+
+    /**
+     * Indicates if it's time to check if suitable Hosts are available to migrate VMs
+     * from under or overload Hosts.
+     * @return
+     */
+    private boolean isTimeToSearchForSuitableHosts(){
+        final double elapsedSecs = clock() - lastTimeUnderOrOverloadedHostsDetected;
+        /* If the last migration map is empty, that means the last time checked,
+         * no suitable Host was found to migrate VMs. */
+        return isMigrationsEnabled() && lastMigrationMap.isEmpty() && (elapsedSecs >= hostSearchRetryDelay);
+    }
+
+    private boolean areThereUnderOrOverloadedHostsAndMigrationIsSupported(){
+        if(vmAllocationPolicy instanceof VmAllocationPolicyMigration){
+            final VmAllocationPolicyMigration policy = (VmAllocationPolicyMigration) vmAllocationPolicy;
+            return policy.areHostsUnderOrOverloaded();
+        }
+
+        return false;
     }
 
     @Override
@@ -1071,4 +1127,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public DatacenterPowerSupply getPowerSupply(){ return powerSupply; }
+
+    @Override
+    public double getHostSearchRetryDelay() {
+        return hostSearchRetryDelay;
+    }
+
+    @Override
+    public void setHostSearchRetryDelay(final double hostSearchRetryDelay) {
+        if(hostSearchRetryDelay == 0){
+            throw new IllegalArgumentException("hostSearchRetryDelay cannot be 0. Set a positive value to define an actual delay or a negative value to indicate a new Host search must be tried as soon as possible.");
+        }
+
+        this.hostSearchRetryDelay = hostSearchRetryDelay;
+    }
 }

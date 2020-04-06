@@ -70,7 +70,7 @@ public class LoggingExample {
 
     private static final int CLOUDLETS = 2;
     private static final int CLOUDLET_PES = 1;
-    private static final int CLOUDLET_LENGTH = 2_000;
+    private static final int CLOUDLET_LENGTH = 50_000;
 
     private static final int HOST_MIPS =       10_000;
     private static final int HOST_RAM =         8_000;
@@ -162,8 +162,10 @@ public class LoggingExample {
                 new VmSelectionPolicyRandomSelection(), HOST_OVER_UTILIZATION_MIGRATION_THRESHOLD);
         Datacenter dc = new DatacenterSimple(simulation, hostList, vmAllocationPolicy);
         dc.setSchedulingInterval(SCHEDULING_INTERVAL_SECS);
-        if(DISABLE_MIGRATIONS)
+        if(DISABLE_MIGRATIONS) {
             dc.disableMigrations();
+        }
+        dc.setHostSearchRetryDelay(60);
         return dc;
     }
 
