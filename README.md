@@ -33,7 +33,7 @@
 
 <a id="overview"></a>
 
-# 1. CloudSim Plus Overview [![Open in Gitpod (You need to log in at gitpod.io first)](https://img.shields.io/badge/Gitpod-Open%20in%20Gitpod-%230092CF.svg)](https://gitpod.io/#https://github.com/manoelcampos/cloudsim-plus) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CloudSim%20Plus:%20a%20modern%20and%20full-featured%20framework%20for%20cloud%20computing%20simulation.%20It's%20actively%20maintained%20and%20fully%20documented,%20making%20your%20research%20easier.%20via%20@manoelcampos&url=https://cloudsimplus.org&hashtags=cloudsimplus,cloud,computing,simulation,framework) [![GitHub stars](https://img.shields.io/github/stars/manoelcampos/cloudsim-plus.svg?style=social&label=Contribute.%20Star%20It.%20&#11088;%20&#128077;&maxAge=2592000)](https://github.com/manoelcampos/cloudsim-plus/)
+# 1. CloudSim Plus Overview [![Financial Contributors on Open Collective](https://opencollective.com/cloudsim-plus/all/badge.svg?label=financial+contributors)](https://opencollective.com/cloudsim-plus) [![Open in Gitpod (You need to log in at gitpod.io first)](https://img.shields.io/badge/Gitpod-Open%20in%20Gitpod-%230092CF.svg)](https://gitpod.io/#https://github.com/manoelcampos/cloudsim-plus) [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Check%20out%20CloudSim%20Plus:%20a%20modern%20and%20full-featured%20framework%20for%20cloud%20computing%20simulation.%20It's%20actively%20maintained%20and%20fully%20documented,%20making%20your%20research%20easier.%20via%20@manoelcampos&url=https://cloudsimplus.org&hashtags=cloudsimplus,cloud,computing,simulation,framework) [![GitHub stars](https://img.shields.io/github/stars/manoelcampos/cloudsim-plus.svg?style=social&label=Contribute.%20Star%20It.%20&#11088;%20&#128077;&maxAge=2592000)](https://github.com/manoelcampos/cloudsim-plus/)
 
 [![Build Status](https://img.shields.io/travis/manoelcampos/cloudsim-plus/master.svg)](https://travis-ci.org/manoelcampos/cloudsim-plus) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsim-plus&amp;utm_campaign=Badge_Grade) [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/app/manoelcampos/cloudsim-plus?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsim-plus&utm_campaign=Badge_Coverage) [![Maven Central](https://img.shields.io/maven-central/v/org.cloudsimplus/cloudsim-plus.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.cloudsimplus%22%20AND%20a:%22cloudsim-plus%22) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.rtfd.io/en/latest/?badge=latest) 
 [![GitHub Closed Issues](https://img.shields.io/github/issues-closed-raw/manoelcampos/cloudsim-plus.svg?style=rounded-square)](http://github.com/manoelcampos/cloudsim-plus/issues) 
@@ -451,6 +451,36 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 - [CloudSim Plus Automation: defining CloudSim Plus simulation scenarios into a YAML file.](http://manoelcampos.github.io/cloudsim-plus-automation/)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
+
+## Contributors
+
+### Code Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="https://github.com/manoelcampos/cloudsim-plus/graphs/contributors"><img src="https://opencollective.com/cloudsim-plus/contributors.svg?width=890&button=false" /></a>
+
+### Financial Contributors
+
+Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/cloudsim-plus/contribute)]
+
+#### Individuals
+
+<a href="https://opencollective.com/cloudsim-plus"><img src="https://opencollective.com/cloudsim-plus/individuals.svg?width=890"></a>
+
+#### Organizations
+
+Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/cloudsim-plus/contribute)]
+
+<a href="https://opencollective.com/cloudsim-plus/organization/0/website"><img src="https://opencollective.com/cloudsim-plus/organization/0/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/1/website"><img src="https://opencollective.com/cloudsim-plus/organization/1/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/2/website"><img src="https://opencollective.com/cloudsim-plus/organization/2/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/3/website"><img src="https://opencollective.com/cloudsim-plus/organization/3/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/4/website"><img src="https://opencollective.com/cloudsim-plus/organization/4/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/5/website"><img src="https://opencollective.com/cloudsim-plus/organization/5/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/6/website"><img src="https://opencollective.com/cloudsim-plus/organization/6/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/7/website"><img src="https://opencollective.com/cloudsim-plus/organization/7/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/8/website"><img src="https://opencollective.com/cloudsim-plus/organization/8/avatar.svg"></a>
+<a href="https://opencollective.com/cloudsim-plus/organization/9/website"><img src="https://opencollective.com/cloudsim-plus/organization/9/avatar.svg"></a>
 
 # 10. License
 
