@@ -456,7 +456,7 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# Contributors
+# 10. Contributors
 
 ## Code Contributors
 
@@ -488,7 +488,7 @@ Support this project with your organization. Your logo will show up here with a 
 
 <a id="license"></a>
 
-# 10. License
+# 11. License
 
 This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0), as defined inside CloudSim 3 source files.
 
@@ -496,7 +496,7 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 
 <a id="contributing"></a>
 
-# 11. Contributing
+# 12. Contributing
 
 You are welcome to contribute to the project. 
 However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. 
