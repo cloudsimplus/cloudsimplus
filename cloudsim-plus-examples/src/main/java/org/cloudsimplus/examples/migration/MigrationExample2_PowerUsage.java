@@ -332,21 +332,6 @@ public final class MigrationExample2_PowerUsage {
     }
 
     /**
-     * Creates a CPU UtilizationModel for a Cloudlet
-     * which will always use the given initial CPU usage percentage.
-     * This way, the usage will not change over the time,
-     * since the max usage will be the initial usage.
-     *
-     * @param initialCpuUsagePercent the percentage of CPU utilization
-     * that created Cloudlets will use when they start to execute.
-     * If this value is greater than 1 (100%), it will be changed to 1.
-     * @return
-     */
-    private UtilizationModelDynamic createCpuUtilizationModel(double initialCpuUsagePercent) {
-        return createCpuUtilizationModel(initialCpuUsagePercent, initialCpuUsagePercent);
-    }
-
-    /**
      * Creates a CPU UtilizationModel for a Cloudlet.
      * If the initial usage is lower than the max usage, the usage will
      * be dynamically incremented along the time, according to the
