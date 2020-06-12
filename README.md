@@ -450,9 +450,11 @@ CloudSim Plus supports modeling and simulation of:
 Here, it's presented a list of some projects based on CloudSim Plus, which trust in its accuracy, performance, maintainability and extensibility.
 If you want your project to be listed here, send us a Pull Request. Make sure your project has a descriptive README.
 
-- [PureEdgeSim: A simulation toolkit for performance evaluation of Fog and pure Edge computing environments.](https://github.com/CharafeddineMechalikh/PureEdgeSim)
-- [CloudSim Plus Py4j gateway: building CloudSim Plus simulations in Python.](https://github.com/pkoperek/cloudsimplus-gateway)
-- [CloudSim Plus Automation: defining CloudSim Plus simulation scenarios into a YAML file.](http://manoelcampos.github.io/cloudsim-plus-automation/)
+1. [PureEdgeSim: A simulation toolkit for performance evaluation of Fog and pure Edge computing environments.](https://github.com/CharafeddineMechalikh/PureEdgeSim)
+1. [CloudSim Plus Py4j gateway: building CloudSim Plus simulations in Python](https://github.com/pkoperek/cloudsimplus-gateway)
+1. [RECAP Discrete Event Simulation Framework an extension for CloudSimPlus](https://bitbucket.org/RECAP-DES/recap-des/src/master/)
+1. [CloudSim Plus Automation: defining CloudSim Plus simulation scenarios into a YAML file.](http://manoelcampos.github.io/cloudsim-plus-automation/)
+1. [LEAF: Simulator for modeling Large Energy-Aware Fog computing environments](https://github.com/birnbaum/LEAF)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
