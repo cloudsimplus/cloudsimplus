@@ -41,6 +41,9 @@ import java.util.stream.IntStream;
  * @since CloudSim Plus 1.2.0
  */
 public class PoissonDistr implements ContinuousDistribution {
+    /** @see #isApplyAntitheticVariates() */
+    private boolean applyAntitheticVariates;
+
     /**
      * A Uniform Pseudo-Random Number Generator used internally.
      */
@@ -181,6 +184,22 @@ public class PoissonDistr implements ContinuousDistribution {
         return rand.getSeed();
     }
 
+    @Override
+    public boolean isApplyAntitheticVariates() {
+        return applyAntitheticVariates;
+    }
+
+    @Override
+    public PoissonDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
+        this.applyAntitheticVariates = applyAntitheticVariates;
+        return this;
+    }
+
+    @Override
+    public double originalSample() {
+        return rand.sample();
+    }
+
     /**
      * Gets the number of events to check the probability for them to happen
      * in a time interval (default 1).
@@ -262,13 +281,13 @@ public class PoissonDistr implements ContinuousDistribution {
          */
         final Function<PoissonDistr, Integer> runSimulation = poisson -> {
             /*We want to check the probability of 1 customer to arrive at each
-            single minute. The default k value is 1, so we dont need to set it.*/
+            single minute. The default k value is 1, so we don't need to set it.*/
             final int totalArrivedCustomers =
                 IntStream.range(0, SIMULATION_TIME_LENGTH)
-                    .filter(time -> poisson.eventsHappened())
-                    .peek(time -> printArrivals.accept(poisson, time))
-                    .map(time -> poisson.getK())
-                    .sum();
+                         .filter(time -> poisson.eventsHappened())
+                         .peek(time -> printArrivals.accept(poisson, time))
+                         .map(time -> poisson.getK())
+                         .sum();
 
             System.out.printf(
                 "\t%d customers arrived in %d minutes%n", totalArrivedCustomers, SIMULATION_TIME_LENGTH);

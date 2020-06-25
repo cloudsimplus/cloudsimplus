@@ -11,6 +11,8 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @author Manoel Campos da Silva Filho
  */
 public class NormalDistr extends NormalDistribution implements ContinuousDistribution{
+    /** @see #isApplyAntitheticVariates() */
+    private boolean applyAntitheticVariates;
     private long seed;
 
     /**
@@ -73,5 +75,21 @@ public class NormalDistr extends NormalDistribution implements ContinuousDistrib
     public void reseedRandomGenerator(final long seed) {
         super.reseedRandomGenerator(seed);
         this.seed = seed;
+    }
+
+    @Override
+    public boolean isApplyAntitheticVariates() {
+        return applyAntitheticVariates;
+    }
+
+    @Override
+    public NormalDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
+        this.applyAntitheticVariates = applyAntitheticVariates;
+        return this;
+    }
+
+    @Override
+    public double originalSample() {
+        return super.sample();
     }
 }

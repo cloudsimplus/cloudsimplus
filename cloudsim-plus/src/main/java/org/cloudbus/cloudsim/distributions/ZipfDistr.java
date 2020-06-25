@@ -19,6 +19,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @since CloudSim Toolkit 1.0
  */
 public class ZipfDistr implements ContinuousDistribution {
+    /** @see #isApplyAntitheticVariates() */
+    private boolean applyAntitheticVariates;
+
     private final long seed;
     private final RandomGenerator rng;
 
@@ -109,6 +112,22 @@ public class ZipfDistr implements ContinuousDistribution {
     @Override
     public long getSeed() {
         return this.seed;
+    }
+
+    @Override
+    public boolean isApplyAntitheticVariates() {
+        return applyAntitheticVariates;
+    }
+
+    @Override
+    public ZipfDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
+        this.applyAntitheticVariates = applyAntitheticVariates;
+        return this;
+    }
+
+    @Override
+    public double originalSample() {
+        return rng.nextDouble();
     }
 
     /**

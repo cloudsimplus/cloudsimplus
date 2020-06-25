@@ -178,49 +178,20 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
         return seed;
     }
 
-    /**
-     * Indicates if the Pseudo-Random Number Generator (RNG) applies the
-     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
-     * of experiments using the generated numbers.
-     *
-     * This technique doesn't work for all the cases. However,
-     * in the cases it can be applied, in order to it work, one have to
-     * perform some actions. Consider an experiment that has to run "n" times.
-     * The first half of these experiments has to use the seeds the developer
-     * want. However, the second half of the experiments have to
-     * set the applyAntitheticVariates attribute to true
-     * and use the seeds of the first half of experiments.
-     *
-     * Thus, the first half of experiments are run using PRNGs that return
-     * random numbers as U(0, 1)[seed_1], ..., U(0, 1)[seed_n].
-     * The second half of experiments then uses the seeds of the first
-     * half of experiments, returning random numbers as
-     * 1 - U(0, 1)[seed_1], ..., 1 - U(0, 1)[seed_n].
-     *
-     * @return true if the technique is applied, false otherwise
-     * @see #setApplyAntitheticVariates(boolean)
-     */
+    @Override
     public boolean isApplyAntitheticVariates() {
         return applyAntitheticVariates;
     }
 
-    /**
-     * Indicates if the Pseudo-Random Number Generator (RNG) applies the
-     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
-     * of experiments using the generated numbers.
-     *
-     * @param applyAntitheticVariates true if the technique is to be applied, false otherwise
-     * @see #isApplyAntitheticVariates()
-     */
+    @Override
     public UniformDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
-        if(applyAntitheticVariates && random instanceof JDKThreadLocalRandomGenerator){
-            throw new IllegalStateException(
-                "The Antithetic Variates Technique cannot be applied when using the " +
-                JDKThreadLocalRandomGenerator.class.getSimpleName() + " as underlying PRNG, because it doesn't allow setting a seed explicitly.");
-        }
-
         this.applyAntitheticVariates = applyAntitheticVariates;
 	    return this;
+    }
+
+    @Override
+    public double originalSample() {
+        return super.sample();
     }
 
     @Override

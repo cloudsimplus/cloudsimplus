@@ -21,6 +21,9 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @since CloudSim Toolkit 1.0
  */
 public class WeibullDistr extends WeibullDistribution implements ContinuousDistribution {
+    /** @see #isApplyAntitheticVariates() */
+    private boolean applyAntitheticVariates;
+
     private long seed;
 
     /**
@@ -83,5 +86,21 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
     @Override
     public long getSeed() {
         return this.seed;
+    }
+
+    @Override
+    public boolean isApplyAntitheticVariates() {
+        return applyAntitheticVariates;
+    }
+
+    @Override
+    public WeibullDistr setApplyAntitheticVariates(final boolean applyAntitheticVariates) {
+        this.applyAntitheticVariates = applyAntitheticVariates;
+        return this;
+    }
+
+    @Override
+    public double originalSample() {
+        return super.sample();
     }
 }
