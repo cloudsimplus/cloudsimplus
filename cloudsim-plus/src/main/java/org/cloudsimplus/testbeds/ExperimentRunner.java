@@ -34,6 +34,8 @@ import org.cloudsimplus.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 /**
@@ -434,6 +436,40 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
     }
 
     /**
+     * Uses the provided {@link Function} to create a pseudo random number generator (PRNG) for a experiment run.
+     * The kind and parameters for this PRNG is defined internally by the given Function.
+     * This method calls that Function just providing the seed to be used for the current experiment run.
+     *
+     * If it is to apply the
+     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+     * to reduce results variance, the second half of experiments will used the
+     * seeds from the first half.
+     *
+     * @param experimentIndex index of the experiment run to create a PRNG
+     * @return the created PRNG
+     *
+     * @see UniformDistr#isApplyAntitheticVariates()
+     * @see #createRandomGen(int, double, double)
+     */
+    public <T extends ContinuousDistribution> T createRandomGen(final int experimentIndex, final Function<Long, T> randomGenCreator) {
+        Objects.requireNonNull(randomGenCreator, "The Function to instantiate the Random Number Generator cannot be null.");
+
+        if(seeds.isEmpty()){
+            throw new IllegalStateException(
+                "You have to create at least 1 SimulationExperiment before requesting a ExperimentRunner to create a pseudo random number generator (PRNG)!");
+        }
+
+        if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
+            final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
+            final T prng = randomGenCreator.apply(seeds.get(expIndexFromFirstHalf));
+            prng.setApplyAntitheticVariates(true);
+            return prng;
+        }
+
+        return randomGenCreator.apply(seeds.get(experimentIndex));
+    }
+
+    /**
      * Creates a pseudo random number generator (PRNG) for a experiment run that
      * generates uniform values between [0 and 1[. If it is to apply the
      * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
@@ -447,7 +483,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * @see #createRandomGen(int, double, double)
      */
     public ContinuousDistribution createRandomGen(final int experimentIndex) {
-        return createRandomGen(experimentIndex, 0, 1);
+        return createRandomGen(experimentIndex,0, 1);
     }
 
     /**
@@ -466,22 +502,14 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * @see #createRandomGen(int)
      */
     public ContinuousDistribution createRandomGen(final int experimentIndex, final double minInclusive, final double maxExclusive) {
-        if(seeds.isEmpty()){
-            throw new IllegalStateException(
-                "You have to create at least 1 SimulationExperiment before requesting a ExperimentRunner to create a pseudo random number generator (PRNG)!");
-        }
-
-        if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
-            final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
-            return new UniformDistr(minInclusive, maxExclusive, seeds.get(expIndexFromFirstHalf)).setApplyAntitheticVariates(true);
-        }
-
-        return new UniformDistr(minInclusive, maxExclusive, seeds.get(experimentIndex));
+        return createRandomGen(
+            experimentIndex,
+            seed -> new UniformDistr(minInclusive, maxExclusive, seed));
     }
 
     public boolean isToReuseSeedFromFirstHalfOfExperiments(final int currentExperimentIndex) {
         return isApplyAntitheticVariatesTechnique() &&
-        simulationRuns > 1 && currentExperimentIndex >= halfSimulationRuns();
+               simulationRuns > 1 && currentExperimentIndex >= halfSimulationRuns();
     }
 
     /**
