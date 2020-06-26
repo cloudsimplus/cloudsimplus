@@ -917,7 +917,7 @@ public class HostSimple implements Host {
 
     @Override
     public Host addOnUpdateProcessingListener(final EventListener<HostUpdatesVmsProcessingEventInfo> listener) {
-        if(listener.equals(EventListener.NULL)){
+        if(EventListener.NULL.equals(listener)){
             return this;
         }
 
