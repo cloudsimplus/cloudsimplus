@@ -232,8 +232,8 @@ public interface Datacenter extends SimEntity, PowerAware, TimeZoned {
     double getPower();
 
     /**
-     * Adds a {@link EventListener} object that will be notified every time when the
-     * a new Hosts is available for the Datacenter during simulation runtime.
+     * Adds a {@link EventListener} object that will be notified every time
+     * a new Host is available for the Datacenter during simulation runtime.
      * If the {@link #addHost(Host)} or {@link #addHostList(List)} is called
      * before the simulation starts, the listeners will not be notified.
      *

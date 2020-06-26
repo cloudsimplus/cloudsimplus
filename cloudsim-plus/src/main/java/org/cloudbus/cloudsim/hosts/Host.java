@@ -484,7 +484,7 @@ public interface Host extends Machine, Comparable<Host> {
     void destroyAllVms();
 
     /**
-     * Adds a listener object that will be notified every time when
+     * Adds a listener object that will be notified every time
      * the host updates the processing of all its {@link Vm VMs}.
      *
      * @param listener the OnUpdateProcessingListener to add

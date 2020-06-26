@@ -115,7 +115,7 @@ public class HostSimple implements Host {
     /** @see #getDatacenter() */
     private Datacenter datacenter;
 
-    /** @see Host#removeOnUpdateProcessingListener(EventListener) */
+    /** @see #addOnUpdateProcessingListener(EventListener) */
     private final Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
 
     /** @see #getSimulation() */
