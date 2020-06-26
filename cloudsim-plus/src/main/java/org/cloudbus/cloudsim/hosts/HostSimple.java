@@ -24,6 +24,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
 import java.util.*;
@@ -117,6 +118,12 @@ public class HostSimple implements Host {
 
     /** @see #addOnUpdateProcessingListener(EventListener) */
     private final Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
+
+    /** @see #addOnStartupListener(EventListener) (EventListener) */
+    private final Set<EventListener<HostEventInfo>> onStartupListeners;
+
+    /** @see #addOnShutdownListener(EventListener) (EventListener) */
+    private final Set<EventListener<HostEventInfo>> onShutdownListeners;
 
     /** @see #getSimulation() */
     private Simulation simulation;
@@ -261,7 +268,11 @@ public class HostSimple implements Host {
         this.setFailed(false);
         this.shutdownTime = -1;
         this.setDatacenter(Datacenter.NULL);
+
         this.onUpdateProcessingListeners = new HashSet<>();
+        this.onStartupListeners = new HashSet<>();
+        this.onShutdownListeners = new HashSet<>();
+
         this.resources = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
         this.provisioners = new ArrayList<>();
@@ -489,7 +500,7 @@ public class HostSimple implements Host {
             throw new IllegalStateException("The Host is failed and cannot be activated.");
         }
 
-        showActivationLogBeforeModification(activate);
+        notifyStartupOrShutdown(activate);
 
         if(activate && !this.active) {
             setStartTime(getSimulation().clock());
@@ -502,23 +513,27 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Prints information about the (de)activation of the Host,
-     * before its status is changed
+     * Notifies registered listeners about
+     * host start up or shutdown.
+     * Prints information when the Host starts up or shuts down,
+     * before its status is changed.
      * @param activate the activation value that is being requested to set
      *                 (and will be set after this method call)
      * @see #setActive(boolean)
      */
-    private void showActivationLogBeforeModification(final boolean activate) {
+    private void notifyStartupOrShutdown(final boolean activate) {
         if(simulation == null || !simulation.isRunning() ) {
             return;
         }
 
         if(activate && !this.active){
             LOGGER.info("{}: {} is being powered on.", getSimulation().clockStr(), this);
+            onStartupListeners.forEach(l -> l.update(HostEventInfo.of(l, this, simulation.clock())));
         }
         else if(!activate && this.active){
             final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
             LOGGER.info("{}: {} is being powered off{}.", getSimulation().clockStr(), this, reason);
+            onShutdownListeners.forEach(l -> l.update(HostEventInfo.of(l, this, simulation.clock())));
         }
     }
 
@@ -566,6 +581,36 @@ public class HostSimple implements Host {
         }
 
         vmList.clear();
+    }
+
+    @Override
+    public Host addOnStartupListener(final EventListener<HostEventInfo> listener) {
+        if(EventListener.NULL.equals(listener)){
+            return this;
+        }
+
+        onStartupListeners.add(Objects.requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public boolean removeOnStartupListener(final EventListener<HostEventInfo> listener) {
+        return onStartupListeners.remove(listener);
+    }
+
+    @Override
+    public Host addOnShutdownListener(final EventListener<HostEventInfo> listener) {
+        if(EventListener.NULL.equals(listener)){
+            return this;
+        }
+
+        onShutdownListeners.add(Objects.requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public boolean removeOnShutdownListener(final EventListener<HostEventInfo> listener) {
+        return onShutdownListeners.remove(listener);
     }
 
     /**

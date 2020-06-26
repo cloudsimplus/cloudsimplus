@@ -21,6 +21,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmUtilizationHistory;
 import org.cloudsimplus.listeners.EventListener;
+import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -482,6 +483,38 @@ public interface Host extends Machine, Comparable<Host> {
      * Destroys all VMs running in the host and remove them from the {@link #getVmList()}.
      */
     void destroyAllVms();
+
+    /**
+     * Adds a listener object that will be notified every time
+     * the host is <b>powered on</b>.
+     *
+     * @param listener the Listener to add
+     * @return
+     */
+    Host addOnStartupListener(EventListener<HostEventInfo> listener);
+
+    /**
+     * Removes a Listener object from the registered List.
+     * @param listener the Listener to remove
+     * @return true if the Listener was removed, false otherwise
+     */
+    boolean removeOnStartupListener(EventListener<HostEventInfo> listener);
+
+    /**
+     * Adds a listener object that will be notified every time
+     * the host is <b>powered off</b>.
+     *
+     * @param listener the Listener to add
+     * @return
+     */
+    Host addOnShutdownListener(EventListener<HostEventInfo> listener);
+
+    /**
+     * Removes a Listener object from the registered List.
+     * @param listener the Listener to remove
+     * @return true if the Listener was removed, false otherwise
+     */
+    boolean removeOnShutdownListener(EventListener<HostEventInfo> listener);
 
     /**
      * Adds a listener object that will be notified every time
