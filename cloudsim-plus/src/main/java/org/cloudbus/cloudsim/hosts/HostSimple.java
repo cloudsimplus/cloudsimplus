@@ -494,7 +494,7 @@ public class HostSimple implements Host {
 
     @Override
     public boolean hasEverStarted() {
-        return this.startTime > -1;
+        return this.firstStartTime > -1;
     }
 
     @Override
