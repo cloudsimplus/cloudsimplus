@@ -503,7 +503,7 @@ public class HostSimple implements Host {
             throw new IllegalStateException("The Host is failed and cannot be activated.");
         }
 
-        notifyStartupOrShutdown(activate);
+        final boolean wasActive = this.active;
 
         if(activate && !this.active) {
             setStartTime(getSimulation().clock());
@@ -512,28 +512,28 @@ public class HostSimple implements Host {
         }
 
         this.active = activate;
+        notifyStartupOrShutdown(activate, wasActive);
         return this;
     }
 
     /**
-     * Notifies registered listeners about
-     * host start up or shutdown.
-     * Prints information when the Host starts up or shuts down,
-     * before its status is changed.
+     * Notifies registered listeners about host start up or shutdown,
+     * then prints information when the Host starts up or shuts down.
      * @param activate the activation value that is being requested to set
-     *                 (and will be set after this method call)
+     * @param wasActive the previous value of the {@link #active} attribute
+     *                  (before being updated)
      * @see #setActive(boolean)
      */
-    private void notifyStartupOrShutdown(final boolean activate) {
+    private void notifyStartupOrShutdown(final boolean activate, final boolean wasActive) {
         if(simulation == null || !simulation.isRunning() ) {
             return;
         }
 
-        if(activate && !this.active){
+        if(activate && !wasActive){
             LOGGER.info("{}: {} is being powered on.", getSimulation().clockStr(), this);
             onStartupListeners.forEach(l -> l.update(HostEventInfo.of(l, this, simulation.clock())));
         }
-        else if(!activate && this.active){
+        else if(!activate && wasActive){
             final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
             LOGGER.info("{}: {} is being powered off{}.", getSimulation().clockStr(), this, reason);
             onShutdownListeners.forEach(l -> l.update(HostEventInfo.of(l, this, simulation.clock())));
