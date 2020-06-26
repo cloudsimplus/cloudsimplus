@@ -494,7 +494,7 @@ public interface Host extends Machine, Comparable<Host> {
     Host addOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     /**
-     * Removes a listener object from the OnUpdateProcessingListener List.
+     * Removes a Listener object from the registered List.
      *
      * @param listener the listener to remove
      * @return true if the listener was found and removed, false otherwise
