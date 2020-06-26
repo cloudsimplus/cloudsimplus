@@ -317,6 +317,7 @@ public interface Host extends Machine, Comparable<Host> {
     /**
      * Gets the last time the Host was powered-on (in seconds).
      * @return the last Host startup time or -1 if the Host has never been powered on
+     * @see #getFirstStartTime()
      * @see #setActive(boolean)
      */
     double getStartTime();
