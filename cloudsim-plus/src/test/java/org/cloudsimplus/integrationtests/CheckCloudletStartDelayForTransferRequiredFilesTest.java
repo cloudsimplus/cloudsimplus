@@ -36,7 +36,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -161,13 +160,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 			assertEquals( CLOUDLET_LENGTH, c.getLength(), 0.1, c.toString());
 		}
 
-	    printCloudletsExecutionResults();
-    }
-
-    private void printCloudletsExecutionResults() {
-        new CloudletsTableBuilder(broker.getCloudletFinishedList())
-                .setTitle(broker.getName())
-                .build();
+        //new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.getName()).build();
     }
 
 }

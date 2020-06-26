@@ -38,7 +38,6 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
@@ -231,13 +230,9 @@ public final class VmCreationFailureIntegrationTest {
     public void integrationTest() {
         simulation.start();
         final DatacenterBroker broker = scenario.getBrokerBuilder().getBrokers().get(0);
-        printCloudletsExecutionResults(broker);
+        //new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
         assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(broker);
         assertThatListenersWereCalledTheExpectedAmountOfTimes();
-    }
-
-    public void printCloudletsExecutionResults(DatacenterBroker broker) {
-        new CloudletsTableBuilder(broker.getCloudletFinishedList()).build();
     }
 
     public void assertThatBrokerCloudletsHaveTheExpectedExecutionTimes(DatacenterBroker broker) {

@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.integrationtests;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -31,7 +30,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.junit.jupiter.api.BeforeEach;
@@ -144,13 +142,7 @@ public final class CheckHostAvailableMipsTest {
     @Test
     public void integrationTest() {
         simulation.start();
-        scenario.getBrokerBuilder().getBrokers().forEach(this::printCloudletsExecutionResults);
-    }
-
-    private void printCloudletsExecutionResults(final DatacenterBroker broker) {
-        new CloudletsTableBuilder(broker.getCloudletFinishedList())
-                .setTitle(broker.getName())
-                .build();
+        //scenario.getBrokerBuilder().getBrokers().forEach(b -> new CloudletsTableBuilder(b.getCloudletFinishedList()).setTitle(b.getName()).build());
     }
 
 }
