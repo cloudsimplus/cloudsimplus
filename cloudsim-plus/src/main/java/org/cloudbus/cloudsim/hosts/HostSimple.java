@@ -74,6 +74,9 @@ public class HostSimple implements Host {
     /** @see #getStartTime() */
     private double startTime = -1;
 
+    /** @see #getFirstStartTime() */
+    private double firstStartTime = -1;
+
     /** @see #getShutdownTime() */
     private double shutdownTime;
 
@@ -739,12 +742,21 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public double getFirstStartTime(){
+        return firstStartTime;
+    }
+
+    @Override
     public void setStartTime(final double startTime) {
         if(startTime < 0){
             throw new IllegalArgumentException("Host start time cannot be negative");
         }
 
         this.startTime = Math.floor(startTime);
+        if(firstStartTime == -1){
+            firstStartTime = this.startTime;
+        }
+
         //If the Host is being activated or re-activated, the shutdown time is reset
         this.shutdownTime = -1;
     }

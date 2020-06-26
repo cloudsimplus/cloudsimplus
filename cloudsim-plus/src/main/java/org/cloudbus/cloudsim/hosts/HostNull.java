@@ -88,7 +88,8 @@ final class HostNull implements Host {
     @Override public Host setVmScheduler(VmScheduler vmScheduler) {
         return Host.NULL;
     }
-    @Override public double getStartTime() { return 0; }
+    @Override public double getStartTime() { return -1; }
+    @Override public double getFirstStartTime() { return -1; }
     @Override public void setStartTime(double startTime) {/**/}
     @Override public double getShutdownTime() { return 0; }
     @Override public boolean isFailed() {

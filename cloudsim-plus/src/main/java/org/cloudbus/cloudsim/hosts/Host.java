@@ -322,6 +322,14 @@ public interface Host extends Machine, Comparable<Host> {
     double getStartTime();
 
     /**
+     * Gets the first time the Host was powered-on (in seconds).
+     * @return the first Host startup time or -1 if the Host has never been powered on
+     * @see #getStartTime()
+     * @see #setActive(boolean)
+     */
+    double getFirstStartTime();
+
+    /**
      * Sets the Host start up time (the time it's being powered on).
      * @param startTime the time to set (in seconds)
      * @see #getStartTime()
