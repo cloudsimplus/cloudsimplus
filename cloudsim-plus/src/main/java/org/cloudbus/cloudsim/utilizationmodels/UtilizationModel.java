@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.utilizationmodels;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -93,4 +94,34 @@ public interface UtilizationModel {
      */
     double getUtilization();
 
+    /**
+     * Checks if the resource utilization requested by a Cloudlet is allowed to exceed 100% or not.
+     * <p><b>This attribute is just considered when the {@link #getUnit()}
+     * is defined as {@link Unit#PERCENTAGE}.</b></p>
+     *
+     * @return true if Cloudlets can request more than 100% of a resource, false otherwise
+     * @see #setOverCapacityRequestAllowed(boolean)
+     */
+    boolean isOverCapacityRequestAllowed();
+
+    /**
+     * Allow the resource utilization requested by a Cloudlet to exceed 100% or not.
+     *
+     * <p>The VM's {@link CloudletScheduler} won't allocate more resources than there is available,
+     * showing a warning if such a request is received.
+     * While requesting more than 100% of a resource may be useful to try simulating an overloading scenario,
+     * in other ones it may not be desired.
+     * You may want your Cloudlets to request the maximum of 100% of a given resource.
+     * In such a case, you can disable this attribute and the {@link #getUtilization(double)}
+     * method will only return values strictly between the closed range [0..1].
+     * If a value greater than 1 is generated, it's returned 1.
+     * </p>
+     *
+     * <p><b>This attribute is just considered when the {@link #getUnit()}
+     * is defined as {@link Unit#PERCENTAGE}.</b></p>
+     *
+     * @param allow true to allow requesting more than 100% of a resource, false to disallow that
+     * @return
+     */
+    UtilizationModel setOverCapacityRequestAllowed(boolean allow);
 }

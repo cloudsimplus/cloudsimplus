@@ -20,6 +20,12 @@ import java.util.Objects;
  * Implements a model, according to which a Cloudlet generates
  * random resource utilization every time frame.
  *
+ * <p>The class may return different utilization values
+ * for the same requested time.
+ * For performance reasons, this behaviour is dependent of the {@link #isHistoryEnabled()}
+ * and {@link #isAlwaysGenerateNewRandomUtilization()}.
+ * </p>
+ *
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 2.0
@@ -157,24 +163,10 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * {@inheritDoc}
-     *
-     * <p>The method may return different utilization values
-     * for the same requested time.
-     * For performance reasons, this behaviour is dependent of the {@link #isHistoryEnabled()}
-     * and {@link #isAlwaysGenerateNewRandomUtilization()}.
-     * </p>
-     *
-     * @param time {@inheritDoc}
-     * @return {@inheritDoc}
      * @see <a href="https://github.com/manoelcampos/cloudsim-plus/issues/197">Issue #197 for more details</a>
      */
     @Override
-    public double getUtilization(final double time) {
-        if (time < 0) {
-            throw new IllegalArgumentException("Time cannot be negative.");
-        }
-
+    protected double getUtilizationInternal(final double time) {
         if (time == this.previousTime && !alwaysGenerateNewRandomUtilization) {
             return this.previousUtilization;
         }

@@ -27,4 +27,6 @@ final class UtilizationModelNull implements UtilizationModel {
     @Override public double getUtilization() {
         return 0;
     }
+    @Override public boolean isOverCapacityRequestAllowed() { return false; }
+    @Override public UtilizationModel setOverCapacityRequestAllowed(boolean allow) { return this; }
 }

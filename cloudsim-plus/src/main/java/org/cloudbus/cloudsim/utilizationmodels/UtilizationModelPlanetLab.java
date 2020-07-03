@@ -276,7 +276,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
                 }
 
                 if(!isComment(line)) {
-                    utilization[lineNum++] = Math.min(mapper.apply(Double.parseDouble(line) / 100.0), 1.0);
+                    utilization[lineNum++] = mapper.apply(Double.parseDouble(line) / 100.0);
                 }
             }
         } catch (IOException e) {
@@ -329,7 +329,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     @Override
-    public double getUtilization(final double time) {
+    protected double getUtilizationInternal(final double time) {
         //If the time requested is multiple of the scheduling interval, gets a precise value from the trace file
         if (Math.round(time) % getSchedulingInterval() == 0) {
             return utilization[(int) getUtilizationIndex(time)];

@@ -84,10 +84,25 @@ public class UtilizationModelDynamicTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new UtilizationModelDynamic(-1.1));
     }
 
+    /**
+     * Despite the initial utilization is greater than 1,
+     * since {@link UtilizationModel#isOverCapacityRequestAllowed()}
+     * default value is false,
+     * the max percent utilization allowed is 1 (100%)-
+     */
     @Test
     public void testConstructorWhenUtilizationPercentageIncrementGreaterThan1() {
         final double initialUtilizationPercent = 1.1;
+        final double maxUtilizationPercent = 1.0;
         final UtilizationModelDynamic model = new UtilizationModelDynamic(initialUtilizationPercent);
+        assertEquals(maxUtilizationPercent, model.getUtilization());
+    }
+
+    @Test
+    public void testConstructorWhenUtilizationPercentageIncrementGreaterThan1OverCapacity() {
+        final double initialUtilizationPercent = 1.1;
+        final UtilizationModelDynamic model = new UtilizationModelDynamic(initialUtilizationPercent);
+        model.setOverCapacityRequestAllowed(true);
         assertEquals(initialUtilizationPercent, model.getUtilization());
     }
 
@@ -96,10 +111,25 @@ public class UtilizationModelDynamicTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new UtilizationModelDynamic(Unit.PERCENTAGE, -1.1));
     }
 
+    /**
+     * Despite the initial utilization is greater than 1,
+     * since {@link UtilizationModel#isOverCapacityRequestAllowed()}
+     * default value is false,
+     * the max percent utilization allowed is 1 (100%)-
+     */
     @Test
     public void testConstructorWhenInitialValueGreaterThan1() {
         final int initialUtilization = 2;
+        final int maxUtilization = 1;
         final UtilizationModelDynamic model = new UtilizationModelDynamic(Unit.PERCENTAGE, initialUtilization);
+        assertEquals(maxUtilization, model.getUtilization());
+    }
+
+    @Test
+    public void testConstructorWhenInitialValueGreaterThan1NoOverCapacityAllowed() {
+        final int initialUtilization = 2;
+        final UtilizationModelDynamic model = new UtilizationModelDynamic(Unit.PERCENTAGE, initialUtilization);
+        model.setOverCapacityRequestAllowed(true);
         assertEquals(initialUtilization, model.getUtilization());
     }
 

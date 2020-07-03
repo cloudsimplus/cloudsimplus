@@ -27,6 +27,9 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
     private Simulation simulation;
     private Unit unit;
 
+    /** @see #setOverCapacityRequestAllowed(boolean) */
+    private boolean overCapacityRequestAllowed;
+
     public UtilizationModelAbstract(){
         this(Unit.PERCENTAGE);
     }
@@ -63,9 +66,21 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
     }
 
     @Override
-    public double getUtilization() {
+    public final double getUtilization() {
         return getUtilization(simulation.clock());
     }
+
+    @Override
+    public final double getUtilization(final double time) {
+        if (time < 0) {
+            throw new IllegalArgumentException("Time cannot be negative.");
+        }
+
+        final double utilization = getUtilizationInternal(time);
+        return unit == Unit.ABSOLUTE || overCapacityRequestAllowed ? utilization : Math.min(utilization, 1);
+    }
+
+    protected abstract double getUtilizationInternal(double time);
 
     /**
      * Checks if a given field has a valid value, considering that the minimum value is zero.
@@ -83,4 +98,14 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
         }
     }
 
+    @Override
+    public boolean isOverCapacityRequestAllowed() {
+        return overCapacityRequestAllowed;
+    }
+
+    @Override
+    public UtilizationModel setOverCapacityRequestAllowed(final boolean allow) {
+        this.overCapacityRequestAllowed = allow;
+        return this;
+    }
 }

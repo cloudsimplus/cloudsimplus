@@ -189,15 +189,15 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * <p>It will automatically increment the {@link #getUtilization()}
      * by applying the {@link #setUtilizationUpdateFunction(Function) increment function}.</p>
-     * @param time {@inheritDoc}
-     * @return {@inheritDoc}
      */
     @Override
-    public double getUtilization(final double time) {
+    protected double getUtilizationInternal(final double time) {
+        if(readOnly) {
+            return currentUtilization;
+        }
+
         currentUtilizationTime = time;
         if(previousUtilizationTime != time) {
             /*
@@ -221,11 +221,6 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
         }
 
         return currentUtilization;
-    }
-
-    @Override
-    public double getUtilization() {
-        return readOnly ? currentUtilization : super.getUtilization();
     }
 
     /**
