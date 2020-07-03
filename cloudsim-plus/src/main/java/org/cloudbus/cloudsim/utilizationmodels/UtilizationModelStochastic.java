@@ -68,7 +68,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     private boolean alwaysGenerateNewRandomUtilization;
 
     /**
-     * Instantiates a new utilization model stochastic
+     * Instantiates a utilization model stochastic
      * that defines the resource utilization in percentage.
      * The resource utilization history is enabled by default.
      *
@@ -81,7 +81,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new utilization model stochastic
+     * Instantiates a utilization model stochastic
      * where the resource utilization is defined in the given unit.
      * The resource utilization history is enabled by default.
      *
@@ -95,7 +95,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new utilization model stochastic
+     * Instantiates a utilization model stochastic
      * where the resource utilization is defined in the given unit.
      * The resource utilization history is enabled by default.
      *
@@ -110,7 +110,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new utilization model stochastic
+     * Instantiates a utilization model stochastic
      * that defines the resource utilization in percentage.
      * The resource utilization history is enabled by default.
      *
@@ -123,7 +123,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Instantiates a new utilization model stochastic based on a given Pseudo Random Number Generator (PRNG)
+     * Instantiates a utilization model stochastic based on a given Pseudo Random Number Generator (PRNG).
      * It defines the resource utilization in percentage.
      * The resource utilization history is enabled by default.
      *
