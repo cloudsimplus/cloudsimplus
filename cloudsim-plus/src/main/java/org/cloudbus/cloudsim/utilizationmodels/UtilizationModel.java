@@ -30,7 +30,7 @@ public interface UtilizationModel {
     enum Unit {
         /**
          * Indicate that the resource utilization is defined in percentage values
-         * in scale from 0 to 1 (where 1 is 100%).
+         * in scale from 0..1 (where 1 is 100%).
          */
         PERCENTAGE,
         /**
@@ -68,7 +68,7 @@ public interface UtilizationModel {
 
     /**
      * Gets the <b>expected</b> utilization of resource at a given simulation time.
-     * Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * Such a value can be a percentage in scale from 0..1 or an absolute value,
      * depending on the {@link #getUnit()}.
      *
      * <p><b>It is an expected usage value because the actual {@link Cloudlet} resource usage
@@ -82,7 +82,7 @@ public interface UtilizationModel {
 
     /**
      * Gets the <b>expected</b> utilization of resource at the current simulation time.
-     * Such a value can be a percentage in scale from [0 to 1] or an absolute value,
+     * Such a value can be a percentage in scale from 0..1 or an absolute value,
      * depending on the {@link #getUnit()}.
      *
      * <p><b>It is an expected usage value because the actual {@link Cloudlet} resource usage
