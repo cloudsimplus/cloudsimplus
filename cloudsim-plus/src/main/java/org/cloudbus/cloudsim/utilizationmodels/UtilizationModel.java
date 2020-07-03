@@ -96,8 +96,8 @@ public interface UtilizationModel {
 
     /**
      * Checks if the resource utilization requested by a Cloudlet is allowed to exceed 100% or not.
-     * <p><b>This attribute is just considered when the {@link #getUnit()}
-     * is defined as {@link Unit#PERCENTAGE}.</b></p>
+     * <p><b>WARNING:</b> This attribute is just considered when the {@link #getUnit()}
+     * is defined as {@link Unit#PERCENTAGE}.</p>
      *
      * @return true if Cloudlets can request more than 100% of a resource, false otherwise
      * @see #setOverCapacityRequestAllowed(boolean)
@@ -117,8 +117,15 @@ public interface UtilizationModel {
      * If a value greater than 1 is generated, it's returned 1.
      * </p>
      *
-     * <p><b>This attribute is just considered when the {@link #getUnit()}
-     * is defined as {@link Unit#PERCENTAGE}.</b></p>
+     * <p>For specific implementations such as
+     * the {@link UtilizationModelPlanetLab} (which reads data from a trace file that may be manipulated)
+     * and {@link UtilizationModelStochastic} (which generates utilization values randomly),
+     * the model may return values greater than 1 (100%).
+     * In such cases, you may consider disabling this attribute
+     * if you don't want such a behaviour.</p>
+     *
+     * <p><b>WARNING:</b> This attribute is just considered when the {@link #getUnit()}
+     * is defined as {@link Unit#PERCENTAGE}.</p>
      *
      * @param allow true to allow requesting more than 100% of a resource, false to disallow that
      * @return
