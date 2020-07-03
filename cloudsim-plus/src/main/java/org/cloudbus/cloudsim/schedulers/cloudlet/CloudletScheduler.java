@@ -14,6 +14,8 @@ import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -269,4 +271,21 @@ public interface CloudletScheduler extends Serializable {
      * Clears the internal state of the scheduler
      */
     void clear();
+
+    /**
+     * Adds a listener object that will be notified every time
+     * a {@link CloudletScheduler} <b>is not able to allocated the amount of resource a {@link Cloudlet}
+     * is requesting due to lack of available capacity.
+     *
+     * @param listener the Listener to add
+     * @return
+     */
+    CloudletScheduler addOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener);
+
+    /**
+     * Removes a Listener object from the registered List.
+     * @param listener the Listener to remove
+     * @return true if the Listener was removed, false otherwise
+     */
+    boolean removeOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener);
 }

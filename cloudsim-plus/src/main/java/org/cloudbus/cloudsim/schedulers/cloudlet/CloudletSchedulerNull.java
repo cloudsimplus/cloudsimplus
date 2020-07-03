@@ -4,6 +4,8 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.Collections;
 import java.util.List;
@@ -68,4 +70,6 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public void deallocatePesFromVm(int pesToRemove) {/**/}
     @Override public List<Cloudlet> getCloudletList() { return Collections.emptyList(); }
     @Override public void clear() { }
+    @Override public CloudletScheduler addOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener) { return this; }
+    @Override public boolean removeOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener) { return false; }
 }

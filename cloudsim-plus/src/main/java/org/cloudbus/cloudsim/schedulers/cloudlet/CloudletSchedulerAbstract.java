@@ -21,6 +21,8 @@ import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
+import org.cloudsimplus.listeners.EventListener;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -32,6 +34,7 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
+import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo.of;
 
 /**
  * Implements the basic features of a {@link CloudletScheduler}, representing
@@ -91,6 +94,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private final Set<Cloudlet> cloudletReturnedList;
 
     /**
+     * @see #addOnCloudletResourceAllocationFail(EventListener)
+     */
+    private final List<EventListener<CloudletResourceAllocationFailEventInfo>> resourceAllocationFailListeners;
+
+    /**
      * Creates a new CloudletScheduler object.
      */
     protected CloudletSchedulerAbstract() {
@@ -104,6 +112,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudletReturnedList = new HashSet<>();
         currentMipsShare = new ArrayList<>();
         taskScheduler = CloudletTaskScheduler.NULL;
+        resourceAllocationFailListeners = new ArrayList<>();
     }
 
     @Override
@@ -590,18 +599,37 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         for (final CloudletExecution cle : cloudletExecList) {
             final Cloudlet cloudlet = cle.getCloudlet();
             final long requested = (long) getCloudletResourceAbsoluteUtilization(cloudlet, resourceClass);
-            if(requested > resource.getAvailableResource()){
+            final long available = resource.getAvailableResource();
+            if(requested > available){
                 final String msg =
-                        resource.getAvailableResource() > 0 ?
-                        String.format("just %d was available and allocated to it.", resource.getAvailableResource()):
+                        available > 0 ?
+                        String.format("just %d was available and allocated to it.", available):
                         "no amount is available.";
                 LOGGER.warn(
                     "{}: {}: {} requested {} MB of {} but {}",
                     vm.getSimulation().clockStr(), getClass().getSimpleName(),
                     cloudlet, requested, resource.getClass().getSimpleName(), msg);
+                resourceAllocationFailListeners.forEach(
+                    l -> l.update(of(l, cloudlet, resource.getClass(), requested, available, vm.getSimulation().clock()))
+                );
             }
-            resource.allocateResource(Math.min(requested, resource.getAvailableResource()));
+            resource.allocateResource(Math.min(requested, available));
         }
+    }
+
+    @Override
+    public CloudletScheduler addOnCloudletResourceAllocationFail(final EventListener<CloudletResourceAllocationFailEventInfo> listener) {
+        if(EventListener.NULL.equals(listener)){
+            return this;
+        }
+
+        resourceAllocationFailListeners.add(Objects.requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public boolean removeOnCloudletResourceAllocationFail(final EventListener<CloudletResourceAllocationFailEventInfo> listener) {
+        return resourceAllocationFailListeners.remove(listener);
     }
 
     /**
