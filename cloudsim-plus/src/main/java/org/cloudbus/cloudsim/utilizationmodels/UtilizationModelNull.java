@@ -21,9 +21,7 @@ final class UtilizationModelNull implements UtilizationModel {
     @Override public UtilizationModel setSimulation(final Simulation simulation) {
         return this;
     }
-    @Override public double getUtilization(final double time) {
-        return 0;
-    }
+    @Override public double getUtilization(final double time) { return 0; }
     @Override public double getUtilization() {
         return 0;
     }
