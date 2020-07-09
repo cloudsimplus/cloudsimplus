@@ -35,6 +35,9 @@ public interface CloudletResourceAllocationFailEventInfo extends CloudletEventIn
      */
     long getAvailableAmount();
 
+    @Override
+    EventListener<CloudletResourceAllocationFailEventInfo> getListener();
+
     /**
      * Gets a EventInfo instance from the given parameters.
      *
@@ -48,7 +51,7 @@ public interface CloudletResourceAllocationFailEventInfo extends CloudletEventIn
      * @return
      */
     static CloudletResourceAllocationFailEventInfo of(
-        final EventListener<? extends EventInfo> listener,
+        final EventListener<CloudletResourceAllocationFailEventInfo> listener,
         final Cloudlet cloudlet,
         final Class<? extends ResourceManageable> resourceClass,
         final long requestedAmount,
@@ -56,7 +59,7 @@ public interface CloudletResourceAllocationFailEventInfo extends CloudletEventIn
         final double time)
     {
         return new CloudletResourceAllocationFailEventInfo() {
-            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
+            @Override public EventListener<CloudletResourceAllocationFailEventInfo> getListener() { return listener; }
             @Override public Cloudlet getCloudlet() { return cloudlet; }
             @Override public Class<? extends ResourceManageable> getResourceClass() { return resourceClass; }
             @Override public long getRequestedAmount() { return requestedAmount; }

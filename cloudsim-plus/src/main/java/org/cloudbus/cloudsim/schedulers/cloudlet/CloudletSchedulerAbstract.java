@@ -609,11 +609,21 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                     "{}: {}: {} requested {} MB of {} but {}",
                     vm.getSimulation().clockStr(), getClass().getSimpleName(),
                     cloudlet, requested, resource.getClass().getSimpleName(), msg);
-                resourceAllocationFailListeners.forEach(
-                    l -> l.update(of(l, cloudlet, resource.getClass(), requested, available, vm.getSimulation().clock()))
-                );
+
+                updaterOnRsourceAllocationFailListeners(resource, cloudlet, requested, available);
             }
             resource.allocateResource(Math.min(requested, available));
+        }
+    }
+
+    private void updaterOnRsourceAllocationFailListeners(
+        final ResourceManageable resource, final Cloudlet cloudlet, final long requested, final long available)
+    {
+        final Iterator<EventListener<CloudletResourceAllocationFailEventInfo>> it = resourceAllocationFailListeners.iterator();
+        //Uses Iterator to avoid ConcurrentModificationException if some Listener is deregistered during loop
+        while (it.hasNext()) {
+            final EventListener<CloudletResourceAllocationFailEventInfo> l = it.next();
+            l.update(of(l, cloudlet, resource.getClass(), requested, available, vm.getSimulation().clock()));
         }
     }
 
