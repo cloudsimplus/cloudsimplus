@@ -1136,7 +1136,9 @@ public class HostSimple implements Host {
 
     @Override
     public SortedMap<Double, Double> getUtilizationHistorySum() {
-        /*Remaps the value of an entry inside the Utilization History map.*/
+        /*Remaps the value of an entry inside the Utilization History map
+        from DoubleSummaryStatistics to the sum of all values
+        inside the that DoubleSummaryStatistics.*/
         final Function<Entry<Double, DoubleSummaryStatistics>, Double> valueMapper = entry -> entry.getValue().getSum();
 
         return getUtilizationHistory()
