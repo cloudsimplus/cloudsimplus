@@ -643,8 +643,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         //De-allocates the VM on the source Host (where it is migrating out)
         vmAllocationPolicy.deallocateHostForVm(vm);
 
-        targetHost.removeMigratingInVm(vm);
         final boolean migrated = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
+        targetHost.removeMigratingInVm(vm);
         if(migrated) {
             ((VmSimple)vm).updateMigrationFinishListeners(targetHost);
             /*When the VM is destroyed from the source host, it's removed from the vmExecList.
