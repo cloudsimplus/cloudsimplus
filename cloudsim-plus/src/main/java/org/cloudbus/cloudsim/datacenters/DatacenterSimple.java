@@ -636,7 +636,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final Vm vm = entry.getKey();
         final Host targetHost = entry.getValue();
 
-        //Updates processing of all Hosts to get the latest state for all Hosts before migrating VMs
+        //Updates processing of all Hosts to get their latest state before migrating VMs
         updateHostsProcessing();
 
         //De-allocates the VM on the source Host (where it is migrating out)
@@ -656,7 +656,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         final SimEvent event = getSimulation().findFirstDeferred(this, new PredicateType(CloudSimTags.VM_MIGRATE));
         if (event == null || event.getTime() > clock()) {
-            //Updates processing of all Hosts again to get the latest state for all Hosts after the VMs migrations
+            //Updates processing of all Hosts again to get their latest state after the VMs migrations
             updateHostsProcessing();
         }
 

@@ -419,7 +419,7 @@ public class HostSimple implements Host {
      * Try to allocate all resources that a VM requires (Storage, RAM, BW and MIPS) to be placed at this Host.
      *
      * @param vm the VM to try allocating resources to
-     * @param inMigration If the VM is migrating into the Host or it is being just created for the first time
+     * @param inMigration If the VM is migrating into the Host or it is being just created for the first time.
      * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
      */
     private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
@@ -471,6 +471,14 @@ public class HostSimple implements Host {
         return isSuitableForVm(vm, false, false);
     }
 
+    /**
+     *
+     * @param vm
+     * @param inMigration If the VM is migrating into the Host or it is being just created for the first time,
+     *                    in this case, just for logging purposes.
+     * @param showFailureLog
+     * @return
+     */
     private boolean isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
         if (!storage.isAmountAvailable(vm.getStorage())) {
             return showFailureLog && logAllocationError(vm, inMigration, "MB", this.getStorage(), vm.getStorage());
