@@ -924,6 +924,11 @@ public class HostSimple implements Host {
 
     @Override
     public boolean addMigratingInVm(final Vm vm) {
+        /* TODO: Instead of keeping a list of VMs which are migrating into a Host,
+        *  which requires searching in such a list every time a VM is requested to be migrated
+        *  to that Host (to check if it isn't migrating to that same host already),
+        *  we can add a migratingHost attribute to Vm, so that the worst time complexity
+        *  will change from O(N) to a constant time O(1). */
         if (vmsMigratingIn.contains(vm)) {
             return false;
         }
