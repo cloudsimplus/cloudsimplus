@@ -884,22 +884,28 @@ public class HostSimple implements Host {
         /*For performance reasons, stores the number of free and failed PEs
         instead of iterating over the PE list every time to find out.*/
         for (final Pe pe : peList) {
-            if(pe.getStatus() == newStatus) {
-                continue;
-            }
+            updatePeStatus(pe, newStatus);
+        }
+    }
 
-            switch (pe.getStatus()) {
-                case FAILED: this.failedPesNumber--; break;
-                case FREE: this.freePesNumber--; break;
-            }
-
-            switch (newStatus) {
-                case FAILED: this.failedPesNumber++; break;
-                case FREE:  this.freePesNumber++; break;
-            }
-
-
+    private void updatePeStatus(final Pe pe, final Pe.Status newStatus) {
+        if(pe.getStatus() != newStatus) {
+            updateFailedAndFreePesNumber(pe.getStatus(), false);
+            updateFailedAndFreePesNumber(newStatus, true);
             pe.setStatus(newStatus);
+        }
+    }
+
+    /**
+     * Update the number of Failed and Free PEs.
+     * @param newStatus the new status which is being set for a PE
+     * @param increment true to increment the numbers of Failed and Free PEs to 1, false to decrement
+     */
+    private void updateFailedAndFreePesNumber(final Pe.Status newStatus, final boolean increment) {
+        final int i = increment ? 1 : -1;
+        switch (newStatus) {
+            case FAILED: this.failedPesNumber += i; break;
+            case FREE:  this.freePesNumber += i; break;
         }
     }
 
