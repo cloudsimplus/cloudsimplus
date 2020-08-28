@@ -333,14 +333,6 @@ public class HostSimple implements Host {
         defaultStorageCapacity = defaultCapacity;
     }
 
-    @Override
-    public double getTotalMipsCapacity() {
-        return peList.stream()
-                .filter(Pe::isWorking)
-                .mapToDouble(Pe::getCapacity)
-                .sum();
-    }
-
     @SuppressWarnings("ForLoopReplaceableByForEach")
     @Override
     public double updateProcessing(final double currentTime) {
@@ -658,18 +650,26 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public double getTotalAllocatedMipsForVm(final Vm vm) {
-        return vmScheduler.getTotalAllocatedMipsForVm(vm);
-    }
-
-    @Override
     public double getMips() {
         return peList.stream().mapToDouble(Pe::getCapacity).findFirst().orElse(0);
     }
 
     @Override
+    public double getTotalMipsCapacity() {
+        return peList.stream()
+                     .filter(Pe::isWorking)
+                     .mapToDouble(Pe::getCapacity)
+                     .sum();
+    }
+
+    @Override
     public double getTotalAvailableMips() {
         return vmScheduler.getTotalAvailableMips();
+    }
+
+    @Override
+    public double getTotalAllocatedMipsForVm(final Vm vm) {
+        return vmScheduler.getTotalAllocatedMipsForVm(vm);
     }
 
     @Override

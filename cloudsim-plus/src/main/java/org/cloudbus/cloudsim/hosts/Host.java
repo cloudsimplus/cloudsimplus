@@ -165,13 +165,11 @@ public interface Host extends Machine, Comparable<Host> {
     double getTotalMipsCapacity();
 
     /**
-     * Removes a VM migrating into this Host from the migrating-in list,
-     * so that the VM can be actually placed into the Host
-     * and the migration process finished.
+     * Gets the current total amount of available MIPS at the host.
      *
-     * @param vm the vm
+     * @return the total available amount of MIPS
      */
-    void removeMigratingInVm(Vm vm);
+    double getTotalAvailableMips();
 
     /**
      * Gets the total allocated MIPS for a VM along all its PEs.
@@ -180,6 +178,15 @@ public interface Host extends Machine, Comparable<Host> {
      * @return the allocated mips for vm
      */
     double getTotalAllocatedMipsForVm(Vm vm);
+
+    /**
+     * Removes a VM migrating into this Host from the migrating-in list,
+     * so that the VM can be actually placed into the Host
+     * and the migration process finished.
+     *
+     * @param vm the vm
+     */
+    void removeMigratingInVm(Vm vm);
 
     /**
      * Gets the list of all Processing Elements (PEs) of the host,
@@ -235,13 +242,6 @@ public interface Host extends Machine, Comparable<Host> {
      * @return the number of failed pes
      */
     int getFailedPesNumber();
-
-    /**
-     * Gets the current total amount of available MIPS at the host.
-     *
-     * @return the total available amount of MIPS
-     */
-    double getTotalAvailableMips();
 
     /**
      * Gets the total free storage available at the host in Megabytes.
