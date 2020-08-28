@@ -262,9 +262,9 @@ public final class MigrationExample1 {
             info.getTime(), vm, targetHost);
         showVmAllocatedMips(vm, targetHost, info.getTime());
         //VM current host (source)
-        showHostAllocatedMips(vm.getHost());
+        showHostAllocatedMips(info.getTime(), vm.getHost());
         //Migration host (target)
-        showHostAllocatedMips(targetHost);
+        showHostAllocatedMips(info.getTime(), targetHost);
         System.out.println();
 
         migrationsNumber++;
@@ -300,15 +300,15 @@ public final class MigrationExample1 {
             "# %.2f: %s finished migrating to %s (you can perform any operation you want here)%n",
             info.getTime(), info.getVm(), host);
         System.out.print("\t\t");
-        showHostAllocatedMips(hostList.get(1));
+        showHostAllocatedMips(info.getTime(), hostList.get(1));
         System.out.print("\t\t");
-        showHostAllocatedMips(host);
+        showHostAllocatedMips(info.getTime(), host);
     }
 
-    private void showHostAllocatedMips(Host host) {
+    private void showHostAllocatedMips(final double time, final Host host) {
         System.out.printf(
-            "%s allocated %.2f MIPS from %.2f total capacity%n",
-            host, host.getTotalAllocatedMips(), host.getTotalMipsCapacity());
+            "%.2f: %s allocated %.2f MIPS from %.2f total capacity%n",
+            time, host, host.getTotalAllocatedMips(), host.getTotalMipsCapacity());
     }
 
     private void printHostHistory(Host host) {
@@ -491,13 +491,13 @@ public final class MigrationExample1 {
      * The listener is removed after finishing, so that it's called just once,
      * even if new VMs are submitted and created latter on.
      */
-    private void onVmsCreatedListener(final DatacenterBrokerEventInfo evt) {
+    private void onVmsCreatedListener(final DatacenterBrokerEventInfo info) {
         allocationPolicy.setOverUtilizationThreshold(HOST_OVER_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
-        broker.removeOnVmsCreatedListener(evt.getListener());
-        vmList.forEach(vm -> showVmAllocatedMips(vm, vm.getHost(), evt.getTime()));
+        broker.removeOnVmsCreatedListener(info.getListener());
+        vmList.forEach(vm -> showVmAllocatedMips(vm, vm.getHost(), info.getTime()));
 
         System.out.println();
-        hostList.forEach(this::showHostAllocatedMips);
+        hostList.forEach(host -> showHostAllocatedMips(info.getTime(), host));
         System.out.println();
     }
 }
