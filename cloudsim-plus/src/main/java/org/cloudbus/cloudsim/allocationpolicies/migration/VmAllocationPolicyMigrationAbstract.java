@@ -380,6 +380,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param overloadedHosts the list of overloaded Hosts
      * @return the new VM placement map where each key is a VM
      * and each value is the Host to place it.
+     * @TODO See issue in {@link #getVmsToMigrateFromOverloadedHost(Host)}
      */
     private Map<Vm, Host> getMigrationMapFromOverloadedHosts(final Set<Host> overloadedHosts) {
         if(overloadedHosts.isEmpty()) {
@@ -480,6 +481,11 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     private List<Vm> getVmsToMigrateFromOverloadedHost(final Host host) {
+        /*
+        @TODO The method doesn't just gets a list of VMs to migrate from an overloaded Host,
+        but it temporarily destroys VMs on such Hosts.
+        See https://github.com/manoelcampos/cloudsim-plus/issues/94
+        */
         final List<Vm> vmsToMigrate = new LinkedList<>();
         while (true) {
             final Vm vm = getVmSelectionPolicy().getVmToMigrate(host);
@@ -614,6 +620,10 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * Restore VM allocation from the allocation history.
+     *  TODO: The allocation map only needs to be restored because
+     *  VMs are destroyed in order to assess a new VM placement.
+     *  After fixing this issue, there will be no need to restore VM mapping.
+     *  https://github.com/manoelcampos/cloudsim-plus/issues/94
      *
      * @see #savedAllocation
      */
