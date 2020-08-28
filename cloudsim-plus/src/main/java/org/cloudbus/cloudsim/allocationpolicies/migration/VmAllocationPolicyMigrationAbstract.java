@@ -635,10 +635,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
         for (final Vm vm : savedAllocation.keySet()) {
             final Host host = savedAllocation.get(vm);
-            if (!host.createTemporaryVm(vm)) {
-                LOGGER.error("VmAllocationPolicy: Couldn't restore {} on {}", vm, host);
-                return;
-            }
+            if (host.createTemporaryVm(vm))
+                vm.setCreated(true);
+            else LOGGER.error("VmAllocationPolicy: Couldn't restore {} on {}", vm, host);
         }
     }
 
