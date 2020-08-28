@@ -165,7 +165,8 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
     /**
      * Adds a listener object that will be notified when a {@link Host}
      * is allocated to the Vm, that is, when the Vm is placed into a
-     * given Host.
+     * given Host. That happens when the VM is placed for the first
+     * time into a Host or when it's migrated to another Host.
      *
      * @param listener the listener to add
      * @return
