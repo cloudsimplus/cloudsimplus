@@ -170,6 +170,7 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      *
      * @param listener the listener to add
      * @return
+     * @see #addOnMigrationStartListener(EventListener)
      */
     Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener);
 
@@ -180,6 +181,7 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      *
      * @param listener the listener to add
      * @return
+     * @see #addOnHostAllocationListener(EventListener)
      */
     Vm addOnMigrationStartListener(EventListener<VmHostEventInfo> listener);
 
