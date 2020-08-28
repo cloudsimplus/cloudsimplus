@@ -24,6 +24,7 @@
 package org.cloudsimplus.examples.migration;
 
 import ch.qos.logback.classic.Level;
+import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigrationBestFitStaticThreshold;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigrationStaticThreshold;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
@@ -221,6 +222,7 @@ public final class MigrationExample1 {
 
         System.out.println("Starting " + getClass().getSimpleName());
         simulation = new CloudSim();
+        Log.setLevel(CloudSim.LOGGER, Level.WARN);
 
         @SuppressWarnings("unused")
         Datacenter datacenter0 = createDatacenter();
@@ -259,6 +261,11 @@ public final class MigrationExample1 {
             "# %.2f: %s started migrating to %s (you can perform any operation you want here)%n",
             info.getTime(), vm, targetHost);
         showVmAllocatedMips(vm, targetHost, info.getTime());
+        //VM current host (source)
+        showHostAllocatedMips(vm.getHost());
+        //Migration host (target)
+        showHostAllocatedMips(targetHost);
+        System.out.println();
 
         migrationsNumber++;
         if(migrationsNumber > 1){
@@ -273,11 +280,11 @@ public final class MigrationExample1 {
     }
 
     private void showVmAllocatedMips(Vm vm, Host targetHost, final double time) {
-        final String msg = String.format("# %.2f: %s in %s allocated", time, vm, targetHost);
+        final String msg = String.format("# %.2f: %s in %s total allocated", time, vm, targetHost);
         final List<Double> allocatedMips = targetHost.getVmScheduler().getAllocatedMips(vm);
-        final double mips = allocatedMips.stream().findFirst().orElse(0.0);
-        final String msg2 = mips == VM_MIPS * 0.9 ? " - reduction due to migration overhead" : "";
-        System.out.printf("%s %.0f MIPs (for %d PEs)%s\n", msg, mips, allocatedMips.size(), msg2);
+        final double totalMips = allocatedMips.stream().findFirst().orElse(0.0) * allocatedMips.size();
+        final String msg2 = totalMips == VM_MIPS * 0.9 ? " - reduction due to migration overhead" : "";
+        System.out.printf("%s %.0f MIPs (divided by %d PEs)%s\n", msg, totalMips, allocatedMips.size(), msg2);
     }
 
     /**
@@ -288,9 +295,20 @@ public final class MigrationExample1 {
      * @see Vm#addOnMigrationStartListener(EventListener)
      */
     private void finishMigration(final VmHostEventInfo info) {
+        final Host host = info.getHost();
         System.out.printf(
             "# %.2f: %s finished migrating to %s (you can perform any operation you want here)%n",
-            info.getTime(), info.getVm(), info.getHost());
+            info.getTime(), info.getVm(), host);
+        System.out.print("\t\t");
+        showHostAllocatedMips(hostList.get(1));
+        System.out.print("\t\t");
+        showHostAllocatedMips(host);
+    }
+
+    private void showHostAllocatedMips(Host host) {
+        System.out.printf(
+            "%s allocated %.2f MIPS from %.2f total capacity%n",
+            host, host.getTotalAllocatedMips(), host.getTotalMipsCapacity());
     }
 
     private void printHostHistory(Host host) {
@@ -430,11 +448,14 @@ public final class MigrationExample1 {
             new VmAllocationPolicyMigrationBestFitStaticThreshold(
                 new VmSelectionPolicyMinimumUtilization(),
                 HOST_OVER_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION +0.2);
+        Log.setLevel(VmAllocationPolicy.LOGGER, Level.WARN);
         this.allocationPolicy.setUnderUtilizationThreshold(HOST_UNDER_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
 
         DatacenterSimple dc = new DatacenterSimple(simulation, hostList, allocationPolicy);
         for (Host host : hostList) {
-            System.out.printf("# Created %s with %d PEs\n", host, host.getNumberOfPes());
+            System.out.printf(
+                "# Created %s with %.0f MIPS x %d PEs (%.0f total MIPS)%n",
+                host, host.getMips(), host.getNumberOfPes(), host.getTotalMipsCapacity());
         }
         dc.setSchedulingInterval(SCHEDULING_INTERVAL)
           .setHostSearchRetryDelay(HOST_SEARCH_RETRY_DELAY);
@@ -474,5 +495,9 @@ public final class MigrationExample1 {
         allocationPolicy.setOverUtilizationThreshold(HOST_OVER_UTILIZATION_THRESHOLD_FOR_VM_MIGRATION);
         broker.removeOnVmsCreatedListener(evt.getListener());
         vmList.forEach(vm -> showVmAllocatedMips(vm, vm.getHost(), evt.getTime()));
+
+        System.out.println();
+        hostList.forEach(this::showHostAllocatedMips);
+        System.out.println();
     }
 }
