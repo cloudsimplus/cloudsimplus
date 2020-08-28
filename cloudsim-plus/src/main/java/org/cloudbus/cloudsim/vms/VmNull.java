@@ -68,6 +68,8 @@ class VmNull implements Vm {
     @Override public Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener) {
         return this;
     }
+    @Override public Vm addOnMigrationStartListener(EventListener<VmHostEventInfo> listener) { return this; }
+    @Override public Vm addOnMigrationFinishListener(EventListener<VmHostEventInfo> listener) { return this; }
     @Override public Vm addOnHostDeallocationListener(EventListener<VmHostEventInfo> listener) { return this; }
     @Override public Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener) {
         return this;
@@ -78,6 +80,8 @@ class VmNull implements Vm {
     @Override public void notifyOnHostAllocationListeners() {/**/}
     @Override public void notifyOnHostDeallocationListeners(Host deallocatedHost) {/**/}
     @Override public void notifyOnCreationFailureListeners(Datacenter failedDatacenter) {/**/}
+    @Override public boolean removeOnMigrationStartListener(EventListener<VmHostEventInfo> listener) { return false; }
+    @Override public boolean removeOnMigrationFinishListener(EventListener<VmHostEventInfo> listener) { return false; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener) {
         return false;
     }

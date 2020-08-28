@@ -19,10 +19,7 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.TimeUtil;
-import org.cloudbus.cloudsim.vms.UtilizationHistory;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmGroup;
-import org.cloudbus.cloudsim.vms.VmStateHistoryEntry;
+import org.cloudbus.cloudsim.vms.*;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
@@ -939,6 +936,8 @@ public class HostSimple implements Host {
             return false;
         }
 
+        ((VmSimple)vm).updateMigrationStartListeners(this);
+
         updateProcessing(simulation.clock());
         vm.getHost().updateProcessing(simulation.clock());
 
@@ -950,6 +949,7 @@ public class HostSimple implements Host {
         vmsMigratingIn.remove(vm);
         vmList.remove(vm);
         vm.setInMigration(false);
+        ((VmSimple)vm).updateMigrationFinishListeners(this);
     }
 
     @Override

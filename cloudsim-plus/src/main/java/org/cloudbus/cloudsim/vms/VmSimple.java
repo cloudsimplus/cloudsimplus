@@ -95,6 +95,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #getSubmissionDelay() */
     private double submissionDelay;
 
+    private final Set<EventListener<VmHostEventInfo>> onMigrationStartListeners;
+    private final Set<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
     private final Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
     private final Set<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
     private final Set<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
@@ -227,6 +229,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         setVmm("Xen");
         stateHistory = new LinkedList<>();
 
+        this.onMigrationStartListeners = new HashSet<>();
+        this.onMigrationFinishListeners = new HashSet<>();
         this.onHostAllocationListeners = new HashSet<>();
         this.onHostDeallocationListeners = new HashSet<>();
         this.onCreationFailureListeners = new HashSet<>();
@@ -638,6 +642,22 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         this.inMigration = migrating;
     }
 
+    /**
+     * Notifies the listeners when the VM starts migration to a target Host.
+     * @param targetHost the Host the VM is migrating to
+     */
+    public void updateMigrationStartListeners(final Host targetHost){
+        onMigrationStartListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this, targetHost)));
+    }
+
+    /**
+     * Notifies the listeners when the VM finishes migration to a target Host.
+     * @param targetHost the Host the VM has just migrated to
+     */
+    public void updateMigrationFinishListeners(final Host targetHost){
+        onMigrationFinishListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this, targetHost)));
+    }
+
     @Override
     public boolean isCreated() {
         return created;
@@ -700,6 +720,18 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     @Override
     public Vm addOnHostAllocationListener(final EventListener<VmHostEventInfo> listener) {
         this.onHostAllocationListeners.add(requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public Vm addOnMigrationStartListener(final EventListener<VmHostEventInfo> listener) {
+        onMigrationStartListeners.add(requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public Vm addOnMigrationFinishListener(final EventListener<VmHostEventInfo> listener) {
+        onMigrationFinishListeners.add(requireNonNull(listener));
         return this;
     }
 
@@ -843,6 +875,16 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public void notifyOnCreationFailureListeners(final Datacenter failedDatacenter) {
         requireNonNull(failedDatacenter);
         onCreationFailureListeners.forEach(l -> l.update(VmDatacenterEventInfo.of(l, this, failedDatacenter)));
+    }
+
+    @Override
+    public boolean removeOnMigrationStartListener(final EventListener<VmHostEventInfo> listener) {
+        return onMigrationStartListeners.remove(requireNonNull(listener));
+    }
+
+    @Override
+    public boolean removeOnMigrationFinishListener(final EventListener<VmHostEventInfo> listener) {
+        return onMigrationFinishListeners.remove(requireNonNull(listener));
     }
 
     @Override

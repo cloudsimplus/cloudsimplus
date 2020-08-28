@@ -174,6 +174,26 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
     Vm addOnHostAllocationListener(EventListener<VmHostEventInfo> listener);
 
     /**
+     * Adds a listener object that will be notified when a VM starts migrating to a target {@link Host}.
+     * When the listener is notified, it receives a {@link VmHostEventInfo} object
+     * informing the target Host where the VM is being migrated.
+     *
+     * @param listener the listener to add
+     * @return
+     */
+    Vm addOnMigrationStartListener(EventListener<VmHostEventInfo> listener);
+
+    /**
+     * Adds a listener object that will be notified when a VM finishes migrating to a target {@link Host}.
+     * When the listener is notified, it receives a {@link VmHostEventInfo} object
+     * informing the target Host where the VM has just migrated.
+     *
+     * @param listener the listener to add
+     * @return
+     */
+    Vm addOnMigrationFinishListener(EventListener<VmHostEventInfo> listener);
+
+    /**
      * Adds a listener object that will be notified when the Vm is moved/removed from a {@link Host}.
      *
      * @param listener the listener to add
@@ -226,6 +246,22 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      * @param failedDatacenter the Datacenter where the VM creation failed
      */
     void notifyOnCreationFailureListeners(Datacenter failedDatacenter);
+
+    /**
+     * Removes a listener from the onMigrationStartListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnMigrationStartListener(EventListener<VmHostEventInfo> listener);
+
+    /**
+     * Removes a listener from the onMigrationFinishListener List.
+     *
+     * @param listener the listener to remove
+     * @return true if the listener was found and removed, false otherwise
+     */
+    boolean removeOnMigrationFinishListener(EventListener<VmHostEventInfo> listener);
 
     /**
      * Removes a listener from the onUpdateVmProcessingListener List.
