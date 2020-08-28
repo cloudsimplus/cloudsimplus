@@ -24,6 +24,7 @@ import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.listeners.EventListener;
@@ -645,6 +646,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         targetHost.removeMigratingInVm(vm);
         final boolean migrated = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
         if(migrated) {
+            ((VmSimple)vm).updateMigrationFinishListeners(targetHost);
             /*When the VM is destroyed from the source host, it's removed from the vmExecList.
             After migration, we need to add it again.*/
             vm.getBroker().getVmExecList().add(vm);

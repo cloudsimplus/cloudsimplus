@@ -954,7 +954,6 @@ public class HostSimple implements Host {
         vmsMigratingIn.remove(vm);
         vmList.remove(vm);
         vm.setInMigration(false);
-        ((VmSimple)vm).updateMigrationFinishListeners(this);
     }
 
     @Override
