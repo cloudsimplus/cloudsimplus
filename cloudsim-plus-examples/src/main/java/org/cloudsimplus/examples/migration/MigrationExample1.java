@@ -280,7 +280,7 @@ public final class MigrationExample1 {
     }
 
     private void showVmAllocatedMips(Vm vm, Host targetHost, final double time) {
-        final String msg = String.format("# %.2f: %s in %s total allocated", time, vm, targetHost);
+        final String msg = String.format("# %.2f: %s in %s: total allocated", time, vm, targetHost);
         final List<Double> allocatedMips = targetHost.getVmScheduler().getAllocatedMips(vm);
         final double totalMips = allocatedMips.stream().findFirst().orElse(0.0) * allocatedMips.size();
         final String msg2 = totalMips == VM_MIPS * 0.9 ? " - reduction due to migration overhead" : "";
