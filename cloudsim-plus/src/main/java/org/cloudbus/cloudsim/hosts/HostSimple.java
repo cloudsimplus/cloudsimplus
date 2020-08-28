@@ -412,24 +412,21 @@ public class HostSimple implements Host {
      * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
      */
     private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
-        final boolean finishingMigration = vmsMigratingIn.contains(vm) && !inMigration;
-        vm.setInMigration(inMigration);
-
-        /*If the migration into this Host is finishing,
-        * the VM resources were already allocated previously. */
-        if (finishingMigration) {
-            return true;
+        if(!isSuitableForVm(vm, inMigration, true)) {
+            return false;
         }
 
-        return isSuitableForVm(vm, inMigration, true) && allocateResourcesForVm(vm);
+        vm.setInMigration(inMigration);
+        allocateResourcesForVm(vm);
+
+        return true;
     }
 
-    private boolean allocateResourcesForVm(final Vm vm) {
+    private void allocateResourcesForVm(Vm vm) {
         ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
         bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
         storage.allocateResource(vm.getStorage());
         vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
-        return true;
     }
 
     private boolean logAllocationError(
