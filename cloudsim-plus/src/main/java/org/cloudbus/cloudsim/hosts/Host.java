@@ -172,6 +172,13 @@ public interface Host extends Machine, Comparable<Host> {
     double getTotalAvailableMips();
 
     /**
+     * Gets the total allocated MIPS at the host.
+     *
+     * @return the total allocated amount of MIPS
+     */
+    double getTotalAllocatedMips();
+
+    /**
      * Gets the total allocated MIPS for a VM along all its PEs.
      *
      * @param vm the vm

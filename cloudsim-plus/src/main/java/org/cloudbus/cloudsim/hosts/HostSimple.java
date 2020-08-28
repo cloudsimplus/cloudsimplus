@@ -668,6 +668,11 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public double getTotalAllocatedMips() {
+        return getTotalMipsCapacity() - getTotalAvailableMips();
+    }
+
+    @Override
     public double getTotalAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getTotalAllocatedMipsForVm(vm);
     }

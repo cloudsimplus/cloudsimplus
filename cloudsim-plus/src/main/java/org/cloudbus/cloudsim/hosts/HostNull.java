@@ -42,6 +42,8 @@ final class HostNull implements Host {
     @Override public double getTotalAvailableMips() {
         return 0;
     }
+    @Override public double getTotalAllocatedMips() { return 0; }
+
     @Override public Resource getBw() {
         return Resource.NULL;
     }
