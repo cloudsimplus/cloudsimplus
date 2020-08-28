@@ -316,6 +316,10 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @return the List of MIPS allocated to the VM
      */
     protected List<Double> getMipsShareToAllocate(final List<Double> requestedMips, final double scalingFactor) {
+        if(scalingFactor == 1){
+            return requestedMips;
+        }
+
         return requestedMips
                 .stream()
                 .map(mips -> mips*scalingFactor)
