@@ -18,7 +18,7 @@ import org.apache.commons.math3.random.RandomGenerator;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  */
-public class ZipfDistr implements ContinuousDistribution {
+public class ZipfDistr implements DiscreteDistribution {
     /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
 
@@ -49,7 +49,7 @@ public class ZipfDistr implements ContinuousDistribution {
      * @see #ZipfDistr(double, int, long, RandomGenerator)
      */
     public ZipfDistr(final double shape, final int population) {
-        this(shape, population, ContinuousDistribution.defaultSeed());
+        this(shape, population, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -67,7 +67,7 @@ public class ZipfDistr implements ContinuousDistribution {
      * @see #ZipfDistr(double, int, long, RandomGenerator)
      */
     public ZipfDistr(final double shape, final int population, final long seed) {
-        this(shape, population, seed, ContinuousDistribution.newDefaultGen(seed));
+        this(shape, population, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
     /**

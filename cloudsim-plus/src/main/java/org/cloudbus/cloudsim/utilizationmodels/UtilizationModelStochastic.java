@@ -9,6 +9,7 @@
 package org.cloudbus.cloudsim.utilizationmodels;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 
 import java.io.*;
@@ -97,7 +98,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @see #isAlwaysGenerateNewRandomUtilization()
      */
     public UtilizationModelStochastic(final Unit unit) {
-        this(unit, ContinuousDistribution.defaultSeed());
+        this(unit, StatisticalDistribution.defaultSeed());
     }
 
     /**

@@ -40,7 +40,7 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
      * @see #WeibullDistr(double, double, long, RandomGenerator)
      */
     public WeibullDistr(final double alpha, final double beta) {
-        this(alpha, beta, ContinuousDistribution.defaultSeed());
+        this(alpha, beta, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -58,7 +58,7 @@ public class WeibullDistr extends WeibullDistribution implements ContinuousDistr
      * @see #WeibullDistr(double, double, long, RandomGenerator)
      */
     public WeibullDistr(final double alpha, final double beta, final long seed) {
-        this(alpha, beta, seed, ContinuousDistribution.newDefaultGen(seed));
+        this(alpha, beta, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
     /**

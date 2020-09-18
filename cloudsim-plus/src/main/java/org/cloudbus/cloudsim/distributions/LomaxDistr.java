@@ -42,7 +42,7 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
      * @see #LomaxDistr(double, double, double, long, RandomGenerator)
      */
     public LomaxDistr(final double shape, final double location, final double shift) {
-        this(shape, location, shift, ContinuousDistribution.defaultSeed());
+        this(shape, location, shift, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -61,7 +61,7 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
      * @see #LomaxDistr(double, double, double, long, RandomGenerator)
      */
     public LomaxDistr(final double shape, final double location, final double shift, final long seed) {
-        this(shape, location, shift, seed, ContinuousDistribution.newDefaultGen(seed));
+        this(shape, location, shift, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
     /**

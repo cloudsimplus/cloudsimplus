@@ -40,7 +40,7 @@ public class GammaDistr extends GammaDistribution implements ContinuousDistribut
      * @see #GammaDistr(int, double, long, RandomGenerator)
      */
     public GammaDistr(final int shape, final double scale) {
-        this(shape, scale, ContinuousDistribution.defaultSeed());
+        this(shape, scale, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -58,7 +58,7 @@ public class GammaDistr extends GammaDistribution implements ContinuousDistribut
      * @see #GammaDistr(int, double, long, RandomGenerator)
      */
     public GammaDistr(final int shape, final double scale, final long seed) {
-        this(shape, scale, seed, ContinuousDistribution.newDefaultGen(seed));
+        this(shape, scale, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
     /**

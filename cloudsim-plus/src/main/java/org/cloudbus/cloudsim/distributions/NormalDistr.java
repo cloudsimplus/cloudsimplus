@@ -29,7 +29,7 @@ public class NormalDistr extends NormalDistribution implements ContinuousDistrib
      * @see #NormalDistr(double, double, long, RandomGenerator)
      */
     public NormalDistr(final double mean, final double standardDeviation) {
-        this(mean, standardDeviation, ContinuousDistribution.defaultSeed());
+        this(mean, standardDeviation, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -47,7 +47,7 @@ public class NormalDistr extends NormalDistribution implements ContinuousDistrib
      * @see #NormalDistr(double, double, long, RandomGenerator)
      */
 	public NormalDistr(final double mean, final double standardDeviation, final long seed) {
-		this(mean, standardDeviation, seed, ContinuousDistribution.newDefaultGen(seed));
+		this(mean, standardDeviation, seed, StatisticalDistribution.newDefaultGen(seed));
 	}
 
     /**

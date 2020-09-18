@@ -32,6 +32,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.PoissonDistr;
+import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
@@ -183,7 +184,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * A Pseudo Random Number Generator which generates the times (in hours)
      * that Hosts failures will occur.
      */
-    private final ContinuousDistribution faultArrivalHoursGenerator;
+    private final StatisticalDistribution faultArrivalHoursGenerator;
 
     /**
      * The attribute counts how many host failures the simulation had
@@ -221,7 +222,7 @@ public class HostFaultInjection extends CloudSimEntity {
      * (which is also called <b>event rate</b> or <b>rate parameter</b>).
      *
      * @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
-     * @see #HostFaultInjection(Datacenter, ContinuousDistribution)
+     * @see #HostFaultInjection(Datacenter, StatisticalDistribution)
      */
     public HostFaultInjection(final Datacenter datacenter) {
       this(datacenter, new UniformDistr());
@@ -232,17 +233,15 @@ public class HostFaultInjection extends CloudSimEntity {
      * The Hosts failures are randomly injected according to the given
      * pseudo random number generator, that indicates the mean of failures to be generated per <b>minute</b>,
      * (which is also called <b>event rate</b> or <b>rate parameter</b>).
-     *
-     * @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
+     *  @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
      *
      * @param faultArrivalHoursGenerator a Pseudo Random Number Generator which generates the
      * times Hosts failures will occur (in hours).
      * <b>The values returned by the generator will be considered to be hours</b>.
      * Frequently it is used a
      * {@link PoissonDistr} to generate failure arrivals, but any {@link ContinuousDistribution}
-     * can be used.
      */
-    public HostFaultInjection(final Datacenter datacenter, final ContinuousDistribution faultArrivalHoursGenerator) {
+    public HostFaultInjection(final Datacenter datacenter, final StatisticalDistribution faultArrivalHoursGenerator) {
         super(datacenter.getSimulation());
         this.setDatacenter(datacenter);
         this.lastFailedHost = Host.NULL;

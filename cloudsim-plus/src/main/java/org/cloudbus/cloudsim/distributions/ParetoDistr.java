@@ -40,7 +40,7 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
      * @see #ParetoDistr(double, double, long, RandomGenerator)
      */
     public ParetoDistr(final double shape, final double location) {
-        this(shape, location, ContinuousDistribution.defaultSeed());
+        this(shape, location, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -58,7 +58,7 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
      * @see #ParetoDistr(double, double, long, RandomGenerator)
      */
     public ParetoDistr(final double shape, final double location, final long seed) {
-        this(shape, location, seed, ContinuousDistribution.newDefaultGen(seed));
+        this(shape, location, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
     /**

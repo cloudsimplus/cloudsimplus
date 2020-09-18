@@ -37,7 +37,7 @@ public class ExponentialDistr extends ExponentialDistribution implements Continu
      * @see #ExponentialDistr(double, long, RandomGenerator)
      */
     public ExponentialDistr(final double mean) {
-        this(mean, ContinuousDistribution.defaultSeed());
+        this(mean, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -54,7 +54,7 @@ public class ExponentialDistr extends ExponentialDistribution implements Continu
      * @see #ExponentialDistr(double, long, RandomGenerator)
      */
     public ExponentialDistr(final double mean, final long seed) {
-        this(mean, seed, ContinuousDistribution.newDefaultGen(seed));
+        this(mean, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
     /**

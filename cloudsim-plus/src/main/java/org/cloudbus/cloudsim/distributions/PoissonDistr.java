@@ -40,7 +40,7 @@ import java.util.stream.IntStream;
  * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson Distribution</a>
  * @since CloudSim Plus 1.2.0
  */
-public class PoissonDistr implements ContinuousDistribution {
+public class PoissonDistr implements DiscreteDistribution {
     /** @see #isApplyAntitheticVariates() */
     private boolean applyAntitheticVariates;
 
@@ -86,7 +86,7 @@ public class PoissonDistr implements ContinuousDistribution {
      * @see #setK(int)
      */
     public PoissonDistr(final double lambda) {
-        this(lambda, ContinuousDistribution.defaultSeed());
+        this(lambda, StatisticalDistribution.defaultSeed());
     }
 
     /**

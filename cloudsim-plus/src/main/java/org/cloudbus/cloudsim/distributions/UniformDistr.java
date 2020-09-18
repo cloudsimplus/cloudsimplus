@@ -92,7 +92,7 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * @see #UniformDistr(double, double, long, RandomGenerator)
      */
     public UniformDistr(final Range<Double> range) {
-        this(range, ContinuousDistribution.defaultSeed());
+        this(range, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -129,7 +129,7 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * @see #UniformDistr(double, double, long, RandomGenerator)
      */
     public UniformDistr(final double minInclusive, final double maxExclusive) {
-        this(minInclusive, maxExclusive, ContinuousDistribution.defaultSeed());
+        this(minInclusive, maxExclusive, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -147,7 +147,7 @@ public class UniformDistr extends UniformRealDistribution implements ContinuousD
      * @see #UniformDistr(double, double, long, RandomGenerator)
      */
     public UniformDistr(final double minInclusive, final double maxExclusive, final long seed) {
-        this(minInclusive, maxExclusive, seed, ContinuousDistribution.newDefaultGen(seed));
+        this(minInclusive, maxExclusive, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
     /**

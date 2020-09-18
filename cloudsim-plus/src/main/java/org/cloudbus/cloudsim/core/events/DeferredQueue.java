@@ -60,7 +60,7 @@ public class DeferredQueue implements EventQueue {
          * It uses a reverse iterator because usually in such cases,
          * the time of the new event is close to the last events.
          * Starting from the tail of the list will ensure the lowest number
-         * of iterations of the best cases.
+         * of iterations on the best cases.
          * */
         final ListIterator<SimEvent> reverseIterator = list.listIterator(list.size() - 1);
         while (reverseIterator.hasPrevious()) {

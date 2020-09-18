@@ -31,7 +31,7 @@ public class LognormalDistr extends LogNormalDistribution implements ContinuousD
      * @param scale the scale parameter of this distribution
      */
     public LognormalDistr(final double shape, final double scale) {
-        this(shape, scale, ContinuousDistribution.defaultSeed());
+        this(shape, scale, StatisticalDistribution.defaultSeed());
     }
 
     /**
@@ -41,7 +41,7 @@ public class LognormalDistr extends LogNormalDistribution implements ContinuousD
      * @param seed the seed
      */
     public LognormalDistr(final double shape, final double scale, final long seed) {
-        this(shape, scale, seed, ContinuousDistribution.newDefaultGen(seed));
+        this(shape, scale, seed, StatisticalDistribution.newDefaultGen(seed));
     }
 
     /**
