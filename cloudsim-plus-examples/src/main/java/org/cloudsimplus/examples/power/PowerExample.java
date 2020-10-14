@@ -89,7 +89,7 @@ import java.util.Map;
  * <p>Each line in the table with CPU utilization and power consumption shows
  * the data from the time specified in the line up to the time before the value in the next line.
  * For instance, consider the scheduling interval is 10, the time in the first line is 0 and
- * it shows 100% CPU utilization and 100 Watt-Sec of power consumption.
+ * it shows 100% CPU utilization and 100 W of power consumption.
  * Then, the next line contains data for time 10.
  * That means between time 0 and time 9 (from time 0 to 9 we have 10 samples),
  * the CPU utilization and power consumption
@@ -118,15 +118,15 @@ public class PowerExample {
     private static final int CLOUDLET_LENGTH = 50000;
 
     /**
-     * Defines the minimum percentage of power a Host uses,
-     * even it it's idle.
+     * Defines the percentage of power a Host uses,
+     * even if it's idle.
      */
     private static final double STATIC_POWER_PERCENT = 0.7;
 
     /**
-     * The max number of watt-second (Ws) of power a Host uses.
+     * The max power (in W) a Host uses.
      */
-    private static final int MAX_POWER_WATTS_SEC = 50;
+    private static final int MAX_POWER = 50;
 
     private final CloudSim simulation;
     private DatacenterBroker broker0;
@@ -185,19 +185,19 @@ public class PowerExample {
      * (as demonstrated above) and compute the VM power consumption we'll get an wrong value.
      *
      * <p>A Host, even if idle, may consume a static amount of power.
-     * Lets say it consumes 20 watt-sec in idle state and that for each 1% of CPU use it consumes 1 watt-sec more.
-     * For the 2 VMs of the example above, each one using 50% of CPU will consume 50 watt-sec.
-     * That is 100 watt-sec for the 2 VMs, plus the 20 watt-sec that is static.
-     * Therefore we have a total Host power consumption of 120 watt-sec.
+     * Lets say it consumes 20 W in idle state and that for each 1% of CPU use it consumes 1 W more.
+     * For the 2 VMs of the example above, each one using 50% of CPU will consume 50 W.
+     * That is 100 W for the 2 VMs, plus the 20 W that is static.
+     * Therefore we have a total Host power consumption of 120 W.
      * </p>
      *
      * <p>
      * If we computer the power consumption for a single VM by
      * calling {@code vm.getHost().getPowerModel().getPower(hostCpuUsage)},
-     * we get the 50 watt-sec consumed by the VM, plus the 20 watt-sec of static power.
-     * This adds up to 70 watt-sec. If the two VMs are equal and using the same amount of CPU,
+     * we get the 50 W consumed by the VM, plus the 20 W of static power.
+     * This adds up to 70 W. If the two VMs are equal and using the same amount of CPU,
      * their power consumption would be the half of the total Host's power consumption.
-     * This would be 60 watt-sec, not 70.
+     * This would be 60 W, not 70.
      *
      * This way, we have to compute VM power consumption by sharing a supposed Host static power
      * consumption with each VM, as it's being shown here.
@@ -210,7 +210,7 @@ public class PowerExample {
         for (Vm vm : vmList) {
             System.out.println("Vm " + vm.getId() + " at Host " + vm.getHost().getId() + " CPU Usage and Power Consumption");
             System.out.println("----------------------------------------------------------------------------------------------------------------------");
-            double vmPower; //watt-sec
+            double vmPower; // W
             double utilizationHistoryTimeInterval, prevTime = 0;
             final UtilizationHistory history = vm.getUtilizationHistory();
             for (final double time : history.getHistory().keySet()) {
@@ -218,7 +218,7 @@ public class PowerExample {
                 vmPower = history.powerConsumption(time);
                 final double wattsPerInterval = vmPower*utilizationHistoryTimeInterval;
                 System.out.printf(
-                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watt-Sec * %6.0f Secs = %10.2f Watt-Sec%n",
+                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f W * %6.0f s = %10.2f Ws%n",
                     time, history.getHostCpuUtilization(time) *100, vmPower, utilizationHistoryTimeInterval, wattsPerInterval);
                 prevTime = time;
             }
@@ -259,7 +259,7 @@ public class PowerExample {
             //only prints when the next utilization is different from the previous one, or it's the first one
             if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsSec != wattsSec) {
                 System.out.printf(
-                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f Watts * %6.0f Secs = %10.2f Watt-Sec%n",
+                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f W * %6.0f s = %10.2f Ws%n",
                     entry.getKey(), utilizationPercent * 100, watts, utilizationHistoryTimeInterval, wattsSec);
             }
             prevUtilizationPercent = utilizationPercent;
@@ -268,11 +268,11 @@ public class PowerExample {
         }
 
         System.out.printf(
-            "Total Host %d Power Consumption in %.0f secs: %.0f Watt-Sec (%.5f KWatt-Hour)%n",
+            "Total Host %d Power Consumption in %.0f s: %.0f Ws (%.5f kWh)%n",
             host.getId(), simulation.clock(), totalWattsSec, PowerAware.wattsSecToKWattsHour(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
-            "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)%n",
+            "Mean %.2f Ws for %d usage samples (%.5f kWh)%n",
             powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
         System.out.printf("----------------------------------------------------------------------------------------------------------------------%n%n");
     }
@@ -298,7 +298,7 @@ public class PowerExample {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        final PowerModel powerModel = new PowerModelLinear(MAX_POWER_WATTS_SEC, STATIC_POWER_PERCENT);
+        final PowerModel powerModel = new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT);
 
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
