@@ -266,13 +266,13 @@ vm0.setRam(1000).setBw(1000).setSize(1000);
 vmList.add(vm0);
 
 //Creates Cloudlets that represent applications to be run inside a VM.
-List<Cloudlet> cloudletList = new ArrayList<>(1);
+List<Cloudlet> cloudletList = new ArrayList<>();
 //UtilizationModel defining the Cloudlets use only 50% of any resource all the time
 UtilizationModelDynamic utilizationModel = new UtilizationModelDynamic(0.5);
 Cloudlet cloudlet0 = new CloudletSimple(10000, 1, utilizationModel);
 Cloudlet cloudlet1 = new CloudletSimple(10000, 1, utilizationModel);
-cloudlets.add(cloudlet0);
-cloudlets.add(cloudlet1);
+cloudletList.add(cloudlet0);
+cloudletList.add(cloudlet1);
 
 broker0.submitVmList(vmList);
 broker0.submitCloudletList(cloudletList);
