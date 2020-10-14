@@ -89,9 +89,9 @@ public class PowerExampleSchedulingInterval {
     private static final double STATIC_POWER_PERCENT = 0.7;
 
     /**
-     * The max number of watt-second (Ws) of power a Host uses.
+     * The max power (in W) a Host uses.
      */
-    private static final int MAX_POWER_WATTS_SEC = 50;
+    private static final int MAX_POWER = 50;
 
     private final int schedulingInterval;
     private boolean showAllHostUtilizationHistoryEntries;
@@ -173,7 +173,7 @@ public class PowerExampleSchedulingInterval {
             //only prints when the next utilization is different from the previous one, or it's the first one
             if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsSec != wattsSec) {
                 System.out.printf(
-                    "\tTime %8.2f | CPU Utilization %6.2f%% | Power Consumption: %8.0f Watts * %.0f Secs = %.0f Watt-Sec%n",
+                    "\tTime %8.2f | CPU Utilization %6.2f%% | Power Consumption: %8.0f W * %.0f s = %.0f Ws%n",
                     entry.getKey(), utilizationPercent * 100, watts, utilizationHistoryTimeInterval, wattsSec);
             }
             prevUtilizationPercent = utilizationPercent;
@@ -182,11 +182,11 @@ public class PowerExampleSchedulingInterval {
         }
 
         System.out.printf(
-            "Total Host %d Power Consumption in %.0f secs: %.0f Watt-Sec (%.5f KWatt-Hour)%n",
+            "Total Host %d Power Consumption in %.0f s: %.0f Ws (%.5f kWh)%n",
             host.getId(), simulation.clock(), totalWattsSec, PowerAware.wattsSecToKWattsHour(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
-            "Mean %.2f Watt-Sec for %d usage samples (%.5f KWatt-Hour)%n",
+            "Mean %.2f Ws for %d usage samples (%.5f kWh)%n",
             powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
     }
 
@@ -212,7 +212,7 @@ public class PowerExampleSchedulingInterval {
         final long storage = 1000000; //in Megabytes
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.setPowerModel(new PowerModelLinear(MAX_POWER_WATTS_SEC, STATIC_POWER_PERCENT));
+        host.setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT));
         host
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
