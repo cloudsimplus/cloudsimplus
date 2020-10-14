@@ -34,9 +34,8 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.power.models.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModel;
-import org.cloudbus.cloudsim.power.models.PowerModelLinear;
+import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -76,8 +75,8 @@ import java.util.Map;
  * <p>However, you may notice in this case that the power usage isn't
  * half of the maximum consumption, because there is a minimum
  * amount of power to use, even if the Host is idle,
- * which is defined by {@link #STATIC_POWER_PERCENT}.
- * In the case of the {@link PowerModelLinear},
+ * which is defined by {@link #STATIC_POWER}.
+ * In the case of the {@link PowerModelHost},
  * there is a constant power which is computed
  * and added to consumer power when it
  * is lower or equal to the minimum usage percentage.</p>
@@ -121,7 +120,7 @@ public class PowerExample {
      * Defines the percentage of power a Host uses,
      * even if it's idle.
      */
-    private static final double STATIC_POWER_PERCENT = 0.7;
+    private static final double STATIC_POWER = 35;
 
     /**
      * The max power (in W) a Host uses.
@@ -269,11 +268,11 @@ public class PowerExample {
 
         System.out.printf(
             "Total Host %d Power Consumption in %.0f s: %.0f Ws (%.5f kWh)%n",
-            host.getId(), simulation.clock(), totalWattsSec, PowerAware.wattsSecToKWattsHour(totalWattsSec));
+            host.getId(), simulation.clock(), totalWattsSec, wattsSecToKWattsHour(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
             "Mean %.2f Ws for %d usage samples (%.5f kWh)%n",
-            powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
+            powerWattsSecMean, utilizationPercentHistory.size(), wattsSecToKWattsHour(powerWattsSecMean));
         System.out.printf("----------------------------------------------------------------------------------------------------------------------%n%n");
     }
 
@@ -298,7 +297,7 @@ public class PowerExample {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        final PowerModel powerModel = new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT);
+        final PowerModelHost powerModel = new PowerModelHost(STATIC_POWER, MAX_POWER);
 
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
@@ -309,10 +308,9 @@ public class PowerExample {
 
         final Host host = new HostSimple(ram, bw, storage, peList);
         host.setPowerModel(powerModel);
-        host
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+        host.setRamProvisioner(ramProvisioner);
+        host.setBwProvisioner(bwProvisioner);
+        host.setVmScheduler(vmScheduler);
         return host;
     }
 
@@ -352,6 +350,10 @@ public class PowerExample {
         }
 
         return list;
+    }
+
+    static double wattsSecToKWattsHour(final double power) {
+        return power / (3600.0 * 1000.0);
     }
 
 }
