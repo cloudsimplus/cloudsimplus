@@ -12,7 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-import static org.cloudbus.cloudsim.core.CloudSimTags.MEASURE_POWER;
+import static org.cloudbus.cloudsim.core.CloudSimTags.POWER_MEASUREMENT;
 
 /**
  * Periodically measures the current power usage of one or more {@link PowerAware} entities and stores the results.
@@ -53,13 +53,13 @@ public class PowerMeter extends CloudSimEntity {
 
     @Override
     protected void startEntity() {
-        schedule(this, startTime, MEASURE_POWER);
+        schedule(this, startTime, POWER_MEASUREMENT);
     }
 
     @Override
     public void processEvent(SimEvent evt) {
         switch (evt.getTag()) {
-            case MEASURE_POWER:
+            case POWER_MEASUREMENT:
                 List<? extends PowerAware<? extends PowerModel>> powerAwareEntities;
                 try {
                     powerAwareEntities = powerAwareEntitiesFn.call();
@@ -74,7 +74,7 @@ public class PowerMeter extends CloudSimEntity {
                     powerMeasurements.add(new PowerMeasurement());
                 }
 
-                schedule(this, measurementInterval, MEASURE_POWER);
+                schedule(this, measurementInterval, POWER_MEASUREMENT);
                 break;
             case CloudSimTags.END_OF_SIMULATION:
                 this.shutdownEntity();

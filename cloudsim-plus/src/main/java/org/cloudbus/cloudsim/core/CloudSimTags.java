@@ -11,6 +11,8 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.power.PowerMeter;
+import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -324,9 +326,9 @@ public final class CloudSimTags {
     public static final int HOST_REMOVE = BASE + 61;
 
     /**
-     * TODO
+     * Denotes a power measurement performed by a {@link PowerMeter} on a {@link PowerModel}.
      */
-    public static final int MEASURE_POWER = BASE + 70;
+    public static final int POWER_MEASUREMENT = BASE + 70;
 
     /**
      * Private constructor to avoid class instantiation.
