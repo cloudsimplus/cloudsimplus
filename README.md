@@ -316,7 +316,7 @@ Well, the design of the tool has a direct impact when you need to extend it to i
 The simulator has a set of classes that implement interfaces such as `VmScheduler`, `CloudletScheduler`, `VmAllocationPolicy`, `ResourceProvisioner`, 
 `UtilizationModel`, `PowerModel` and `DatacenterBroker` and provide basic algorithms for different goals. 
 For instance, the `VmAllocationPolicySimple` class implements a Worst Fit
-policy that selects the PM which less processor cores in use to host a VM and, in fact, it is the only policy available. 
+policy that selects the PM having the least number of processor cores in use to host a VM. 
 
 Usually you have to write your own implementations of these classes, such as a Best Fit `VmAllocationPolicy`, 
 a resource `UtilizationModel` with an upper threshold or a `DatacenterBroker` that selects the best `Datacenter` to submit a VM.
