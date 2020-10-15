@@ -14,10 +14,8 @@ public class PowerModelHost extends PowerModel {
 
     private Host host;
 
-    private boolean shared;
     private double staticPower;
     private double maxPower;
-    private double wattPerMips;
 
     /**
      * Instantiates a {@link PowerModelHost} by specifying its static and max power usage.
@@ -25,32 +23,12 @@ public class PowerModelHost extends PowerModel {
      * @param maxPower power (in watts) the host consumes under full load.
      * @param staticPower power (in watts) the host consumes when idle.
      */
-    public PowerModelHost(final double staticPower, final double maxPower) {
-        this.shared = false;
-        this.staticPower = staticPower;
-        this.maxPower = maxPower;
-    }
-
-    /**
-     * Instantiates a shared {@link PowerModelHost} by specifying its watt per MIPS.
-     *
-     * @param wattPerMips Incremental watt per MIPS the host consumes under load.
-     */
-    public PowerModelHost(final double wattPerMips) {
-        this.shared = true;
-        this.staticPower = 0;
-        this.wattPerMips = wattPerMips;
-    }
-
-    public Host getHost() {
-        return host;
-    }
-
-    public void setHost(Host host) {
-        this.host = host;
-        if (!shared) {
-            wattPerMips = (maxPower - staticPower) / host.getTotalMipsCapacity();
+    public PowerModelHost(final double maxPower, final double staticPower) {
+        if (maxPower < staticPower) {
+            throw new IllegalArgumentException("maxPower has to be bigger than staticPower");
         }
+        this.maxPower = maxPower;
+        this.staticPower = staticPower;
     }
 
     @Override
@@ -59,12 +37,8 @@ public class PowerModelHost extends PowerModel {
             return new PowerMeasurement();
         }
 
-        double mips = host.getCpuMipsUtilization();
-        if (shared) {
-            return new PowerMeasurement(0, mips * wattPerMips);
-        } else {
-            return new PowerMeasurement(staticPower, mips * wattPerMips);
-        }
+        double utilizationFraction = host.getCpuMipsUtilization() / host.getTotalMipsCapacity();
+        return new PowerMeasurement(staticPower, (maxPower - staticPower) * utilizationFraction);
     }
 
     /**
@@ -77,7 +51,18 @@ public class PowerModelHost extends PowerModel {
      * @throws IllegalArgumentException if utilizationFraction is not between [0 and 1]
      */
     public double getPower(double utilizationFraction) throws IllegalArgumentException {
+        if (utilizationFraction < 0 || utilizationFraction > 1) {
+            throw new IllegalArgumentException("utilizationFraction has to be between [0 and 1]");
+        }
         return staticPower + (maxPower - staticPower) * utilizationFraction;
+    }
+
+    public Host getHost() {
+        return host;
+    }
+
+    public void setHost(Host host) {
+        this.host = host;
     }
 
 }

@@ -297,7 +297,7 @@ public class PowerExample {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        final PowerModelHost powerModel = new PowerModelHost(STATIC_POWER, MAX_POWER);
+        final PowerModelHost powerModel = new PowerModelHost(MAX_POWER, STATIC_POWER);
 
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s

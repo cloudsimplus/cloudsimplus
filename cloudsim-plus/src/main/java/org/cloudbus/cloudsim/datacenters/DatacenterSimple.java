@@ -730,7 +730,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         // Guarantees a minimal interval before scheduling the event
-        final double minTimeBetweenEvents = getSimulation().getMinTimeBetweenEvents()+0.01;  // TODO what is this +0.01 doing?
+        final double minTimeBetweenEvents = getSimulation().getMinTimeBetweenEvents()+0.01;
         nextSimulationDelay = nextSimulationDelay == 0 ? nextSimulationDelay : Math.max(nextSimulationDelay, minTimeBetweenEvents);
 
         if (nextSimulationDelay == Double.MAX_VALUE) {
@@ -773,7 +773,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         // if some time passed since last processing
         // R: for term is to allow loop at simulation start. Otherwise, one initial
         // simulation step is skipped and schedulers are not properly initialized
-        return clock() < 0.111 ||  // TODO What is this constant?
+        return clock() < 0.111 ||
                clock() >= lastProcessTime + getSimulation().getMinTimeBetweenEvents();
     }
 

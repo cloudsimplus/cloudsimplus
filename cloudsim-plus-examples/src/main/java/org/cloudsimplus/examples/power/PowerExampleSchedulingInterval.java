@@ -211,7 +211,7 @@ public class PowerExampleSchedulingInterval {
         final long storage = 1000000; //in Megabytes
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.setPowerModel(new PowerModelHost(STATIC_POWER, MAX_POWER));
+        host.setPowerModel(new PowerModelHost(MAX_POWER, STATIC_POWER));
         host.setRamProvisioner(new ResourceProvisionerSimple());
         host.setBwProvisioner(new ResourceProvisionerSimple());
         host.setVmScheduler(new VmSchedulerTimeShared());

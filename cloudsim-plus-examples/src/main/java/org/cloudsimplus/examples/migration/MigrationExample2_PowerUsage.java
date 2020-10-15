@@ -429,7 +429,7 @@ public final class MigrationExample2_PowerUsage {
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
             host.enableStateHistory();
-            host.setPowerModel(new PowerModelHost(35, 50));
+            host.setPowerModel(new PowerModelHost(50, 35));
             return host;
     }
 
