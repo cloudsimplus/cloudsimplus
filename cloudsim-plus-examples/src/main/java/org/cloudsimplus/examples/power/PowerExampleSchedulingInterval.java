@@ -41,6 +41,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -182,11 +183,11 @@ public class PowerExampleSchedulingInterval {
 
         System.out.printf(
             "Total Host %d Power Consumption in %.0f s: %.0f Ws (%.5f kWh)%n",
-            host.getId(), simulation.clock(), totalWattsSec, PowerExample.wattsSecToKWattsHour(totalWattsSec));
+            host.getId(), simulation.clock(), totalWattsSec, Conversion.wattSecondsToKWattHours(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
             "Mean %.2f Ws for %d usage samples (%.5f kWh)%n",
-            powerWattsSecMean, utilizationPercentHistory.size(), PowerExample.wattsSecToKWattsHour(powerWattsSecMean));
+            powerWattsSecMean, utilizationPercentHistory.size(), Conversion.wattSecondsToKWattHours(powerWattsSecMean));
     }
 
     private Datacenter createDatacenterSimple() {

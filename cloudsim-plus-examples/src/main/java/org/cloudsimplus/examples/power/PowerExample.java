@@ -44,6 +44,7 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -268,11 +269,11 @@ public class PowerExample {
 
         System.out.printf(
             "Total Host %d Power Consumption in %.0f s: %.0f Ws (%.5f kWh)%n",
-            host.getId(), simulation.clock(), totalWattsSec, wattsSecToKWattsHour(totalWattsSec));
+            host.getId(), simulation.clock(), totalWattsSec, Conversion.wattSecondsToKWattHours(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
             "Mean %.2f Ws for %d usage samples (%.5f kWh)%n",
-            powerWattsSecMean, utilizationPercentHistory.size(), wattsSecToKWattsHour(powerWattsSecMean));
+            powerWattsSecMean, utilizationPercentHistory.size(), Conversion.wattSecondsToKWattHours(powerWattsSecMean));
         System.out.printf("----------------------------------------------------------------------------------------------------------------------%n%n");
     }
 
@@ -350,10 +351,6 @@ public class PowerExample {
         }
 
         return list;
-    }
-
-    static double wattsSecToKWattsHour(final double power) {
-        return power / (3600.0 * 1000.0);
     }
 
 }
