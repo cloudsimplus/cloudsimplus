@@ -18,6 +18,8 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
+import org.cloudbus.cloudsim.power.models.PowerModelDatacenterNull;
+import org.cloudbus.cloudsim.power.models.PowerModelDatacenterSimple;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -96,7 +98,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /** @see #getHostSearchForMigrationDelay() */
     private double hostSearchForMigrationDelay;
 
-    private PowerModelDatacenter powerModel = PowerModelDatacenter.NULL;
+    private PowerModelDatacenter powerModel = new PowerModelDatacenterNull();
 
 
     /**
@@ -183,7 +185,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
         setDatacenterStorage(storage);
-        setPowerModel(new PowerModelDatacenter(this));
+        setPowerModel(new PowerModelDatacenterSimple(this));
 
         this.onHostAvailableListeners = new ArrayList<>();
         this.characteristics = new DatacenterCharacteristicsSimple(this);

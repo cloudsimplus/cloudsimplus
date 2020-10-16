@@ -58,7 +58,7 @@ import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostStateHistoryEntry;
-import org.cloudbus.cloudsim.power.models.PowerModelHost;
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -429,7 +429,7 @@ public final class MigrationExample2_PowerUsage {
                 .setBwProvisioner(new ResourceProvisionerSimple())
                 .setVmScheduler(new VmSchedulerTimeShared());
             host.enableStateHistory();
-            host.setPowerModel(new PowerModelHost(50, 35));
+            host.setPowerModel(new PowerModelHostSimple(50, 35));
             return host;
     }
 

@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
+import org.cloudbus.cloudsim.power.models.PowerModelHostNull;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Resource;
@@ -158,7 +159,7 @@ final class HostNull implements Host {
     @Override public long getRamUtilization() { return 0; }
     @Override public SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory() { return Collections.emptySortedMap(); }
     @Override public SortedMap<Double, Double> getUtilizationHistorySum() { return Collections.emptySortedMap(); }
-    @Override public PowerModelHost getPowerModel() { return PowerModelHost.NULL; }
+    @Override public PowerModelHost getPowerModel() { return new PowerModelHostNull(); }
     @Override public void setPowerModel(PowerModelHost powerModel) {/**/}
     @Override public void enableStateHistory() {/**/}
     @Override public void disableStateHistory() {/**/}

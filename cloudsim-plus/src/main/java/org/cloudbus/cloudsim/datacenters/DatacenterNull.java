@@ -5,6 +5,7 @@ import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEntityNullBase;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
+import org.cloudbus.cloudsim.power.models.PowerModelDatacenterNull;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
@@ -54,6 +55,6 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public String toString() { return "Datacenter.NULL"; }
     @Override public double getTimeZone() { return Integer.MAX_VALUE; }
     @Override public TimeZoned setTimeZone(double timeZone) { return this; }
-    @Override public PowerModelDatacenter getPowerModel() { return PowerModelDatacenter.NULL; }
+    @Override public PowerModelDatacenter getPowerModel() { return new PowerModelDatacenterNull(); }
     @Override public void setPowerModel(PowerModelDatacenter powerModel) {/**/}
 }

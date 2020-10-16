@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.power.models.PowerModelHost;
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -212,7 +212,7 @@ public class PowerExampleSchedulingInterval {
         final long storage = 1000000; //in Megabytes
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.setPowerModel(new PowerModelHost(MAX_POWER, STATIC_POWER));
+        host.setPowerModel(new PowerModelHostSimple(MAX_POWER, STATIC_POWER));
         host.setRamProvisioner(new ResourceProvisionerSimple());
         host.setBwProvisioner(new ResourceProvisionerSimple());
         host.setVmScheduler(new VmSchedulerTimeShared());

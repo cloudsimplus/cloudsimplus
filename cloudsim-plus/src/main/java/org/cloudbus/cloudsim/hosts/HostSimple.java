@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
+import org.cloudbus.cloudsim.power.models.PowerModelHostNull;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
@@ -272,7 +273,7 @@ public class HostSimple implements Host {
         this.provisioners = new ArrayList<>();
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
-        this.powerModel = PowerModelHost.NULL;
+        this.powerModel = new PowerModelHostNull();
         this.stateHistory = new LinkedList<>();
     }
 

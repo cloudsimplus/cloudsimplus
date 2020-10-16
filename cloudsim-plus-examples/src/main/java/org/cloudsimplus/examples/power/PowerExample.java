@@ -36,6 +36,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -298,7 +299,7 @@ public class PowerExample {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        final PowerModelHost powerModel = new PowerModelHost(MAX_POWER, STATIC_POWER);
+        final PowerModelHost powerModel = new PowerModelHostSimple(MAX_POWER, STATIC_POWER);
 
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
