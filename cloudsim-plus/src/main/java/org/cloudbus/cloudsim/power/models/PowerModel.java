@@ -14,14 +14,15 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
 public interface PowerModel {
 
     /**
-     * Returns the entity's current power usage as a PowerMeasurement,
+     * Returns the entity's current power usage as a {@link PowerMeasurement},
      * which can hold additional information like static and dynamic fraction
      * of power usage.
      */
     PowerMeasurement getPowerMeasurement();
 
     /**
-     * Returns the entity's current total power usage as a double.
+     * Returns the entity's current total power usage as a double value,
+     * representing the Watts consumed.
      */
     default double getPower() {
         return getPowerMeasurement().getTotalUsage();
