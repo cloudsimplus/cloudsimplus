@@ -2,6 +2,8 @@ package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.power.PowerMeasurement;
 
+import static org.cloudbus.cloudsim.power.PowerMeasurement.validatePower;
+
 /**
  * Simple power model for hosts with linear power profile.
  * @since CloudSim Plus 6.0.0
@@ -21,24 +23,8 @@ public class PowerModelHostSimple extends PowerModelHost {
             throw new IllegalArgumentException("maxPower has to be bigger than staticPower");
         }
 
-        if(maxPower < 0){
-            throw new IllegalArgumentException("maxPower cannot be negative");
-        }
-
-        if(staticPower < 0){
-            throw new IllegalArgumentException("staticPower cannot be negative");
-        }
-
-        if(maxPower < 1){
-            throw new IllegalArgumentException("maxPower is in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.");
-        }
-
-        if(staticPower < 1){
-            throw new IllegalArgumentException("staticPower is in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.");
-        }
-
-        this.maxPower = maxPower;
-        this.staticPower = staticPower;
+        this.maxPower = validatePower(maxPower, "maxPower");
+        this.staticPower = validatePower(staticPower, "staticPower");
     }
 
     @Override

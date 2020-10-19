@@ -21,10 +21,33 @@ public class PowerMeasurement {
 
     /**
      * Instantiates a power measurement with a given static and dynamic power consumption.
+     * @param staticUsage power (in watts) the entity consumes when idle
+     * @param dynamicUsage power (in watts) the entity consumes according to its load
      */
-    public PowerMeasurement(double staticUsage, double dynamicUsage) {
-        this.staticUsage = staticUsage;
-        this.dynamicUsage = dynamicUsage;
+    public PowerMeasurement(final double staticUsage, final double dynamicUsage) {
+        this.staticUsage = validatePower(staticUsage, "staticPower");
+        this.dynamicUsage = validatePower(dynamicUsage, "maxPower");
+    }
+
+    /**
+     * Checks if a power value (in Watts) is valid.
+     * @param power the value to validate
+     * @param fieldName the name of the field/variable storing the value
+     * @return the given power if it's valid
+     * @throws IllegalArgumentException when the value is smaller than 1
+     */
+    public static double validatePower(final double power, final String fieldName) {
+        if (power < 0) {
+            throw new IllegalArgumentException(fieldName+" cannot be negative");
+        }
+
+        if(power < 1){
+            throw new IllegalArgumentException(
+                fieldName +
+                " must be in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.");
+        }
+
+        return power;
     }
 
     /**
@@ -35,7 +58,7 @@ public class PowerMeasurement {
     }
 
     /**
-     * Gets the total power consumed by the
+     * Gets the total power consumed by the entity
      * @return
      */
     public double getTotalUsage() {
@@ -51,7 +74,7 @@ public class PowerMeasurement {
     }
 
     /**
-     * Gets the dynamic power the entity consumes (in Watts).
+     * Gets the dynamic power the entity consumes according to its load (in Watts).
      * @return
      */
     public double getDynamicUsage() {
