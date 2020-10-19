@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
  * @since CloudSim Plus 6.0.0
  */
 public class PowerModelDatacenterSimple extends PowerModelDatacenter {
-
+    /** @see #getPowerUsageEffectiveness() */
     private double powerUsageEffectiveness = 1;
 
     /**
@@ -20,7 +20,7 @@ public class PowerModelDatacenterSimple extends PowerModelDatacenter {
      * defining the Power Usage Effectiveness (PUE) as 1 (100%).
      * @param datacenter the Datacenter for which the power model will be defined
      */
-    public PowerModelDatacenterSimple(Datacenter datacenter) {
+    public PowerModelDatacenterSimple(final Datacenter datacenter) {
         setDatacenter(datacenter);
     }
 
@@ -48,7 +48,11 @@ public class PowerModelDatacenterSimple extends PowerModelDatacenter {
      * defining how effective power usage is.
      * @param powerUsageEffectiveness a percentage value between [0 and 1]
      */
-    public void setPowerUsageEffectiveness(double powerUsageEffectiveness) {
+    public void setPowerUsageEffectiveness(final double powerUsageEffectiveness) {
+        if(powerUsageEffectiveness < 0 || powerUsageEffectiveness > 1){
+            throw new IllegalArgumentException("powerUsageEffectiveness must be between [0 and 1].");
+        }
+
         this.powerUsageEffectiveness = powerUsageEffectiveness;
     }
 }
