@@ -2,6 +2,8 @@ package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.hosts.Host;
 
+import java.util.Objects;
+
 /**
  * Abstract implementation of a host power model.
  * @since CloudSim Plus 6.0.0
@@ -28,8 +30,8 @@ public abstract class PowerModelHost implements PowerModel {
      * @param host the Host to set
      * @return
      */
-    public void setHost(Host host) {
-        this.host = host;
+    public void setHost(final Host host) {
+        this.host = Objects.requireNonNull(host);
     }
 
     /**
