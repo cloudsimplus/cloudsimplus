@@ -15,9 +15,11 @@ import java.util.concurrent.Callable;
 import static org.cloudbus.cloudsim.core.CloudSimTags.POWER_MEASUREMENT;
 
 /**
- * Periodically measures the current power usage of one or more {@link PowerAware} entities and stores the results.
+ * Periodically measures the current power usage of one or more {@link PowerAware} entities,
+ * according to a defined {@link #getMeasurementInterval() interval}, storing the results.
+ *
+ * @see #getPowerMeasurements()
  * @since CloudSim Plus 6.0.0
- * @see #getMeasurementInterval()
  */
 public class PowerMeter extends CloudSimEntity {
 
