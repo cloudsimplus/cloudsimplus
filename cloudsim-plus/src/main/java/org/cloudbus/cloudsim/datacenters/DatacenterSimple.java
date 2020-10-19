@@ -18,7 +18,6 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
-import org.cloudbus.cloudsim.power.models.PowerModelDatacenterNull;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenterSimple;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.FileStorage;
@@ -98,8 +97,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /** @see #getHostSearchForMigrationDelay() */
     private double hostSearchForMigrationDelay;
 
-    private PowerModelDatacenter powerModel = new PowerModelDatacenterNull();
-
+    private PowerModelDatacenter powerModel = PowerModelDatacenter.NULL;
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
@@ -1108,8 +1106,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public void setPowerModel(PowerModelDatacenter powerModel) {
-        this.powerModel = powerModel;
+    public final void setPowerModel(final PowerModelDatacenter powerModel) {
+        if(powerModel == null)
+            this.powerModel = PowerModelDatacenter.NULL;
+        else this.powerModel = powerModel;
     }
 
     @Override

@@ -7,7 +7,7 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
  * {@link PowerModelDatacenter} objects.
  * @since CloudSim Plus 6.0.0
  */
-public class PowerModelDatacenterNull extends PowerModelDatacenter {
+class PowerModelDatacenterNull extends PowerModelDatacenter {
 
     @Override
     public PowerMeasurement getPowerMeasurement() {

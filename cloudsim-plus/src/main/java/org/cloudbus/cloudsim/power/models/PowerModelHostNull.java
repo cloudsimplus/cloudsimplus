@@ -7,8 +7,7 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
  * {@link PowerModelHost} objects.
  * @since CloudSim Plus 6.0.0
  */
-public class PowerModelHostNull extends PowerModelHost {
-
+class PowerModelHostNull extends PowerModelHost {
     @Override
     public PowerMeasurement getPowerMeasurement() {
         return new PowerMeasurement();

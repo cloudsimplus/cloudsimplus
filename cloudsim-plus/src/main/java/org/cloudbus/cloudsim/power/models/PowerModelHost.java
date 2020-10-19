@@ -7,6 +7,12 @@ import org.cloudbus.cloudsim.hosts.Host;
  * @since CloudSim Plus 6.0.0
  */
 public abstract class PowerModelHost implements PowerModel {
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link PowerModelHost}
+     * objects.
+     */
+    public static final PowerModelHost NULL = new PowerModelHostNull();
+
     private Host host;
 
     /**

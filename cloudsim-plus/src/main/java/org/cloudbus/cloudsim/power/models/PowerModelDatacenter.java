@@ -7,6 +7,11 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * @since CloudSim Plus 6.0.0
  */
 public abstract class PowerModelDatacenter implements PowerModel {
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link PowerModelDatacenter}
+     * objects.
+     */
+    public static final PowerModelDatacenterNull NULL = new PowerModelDatacenterNull();
 
     private Datacenter datacenter;
 
