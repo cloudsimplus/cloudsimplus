@@ -83,6 +83,12 @@ public class PowerMeasurement {
         return dynamicUsage;
     }
 
+    /**
+     * Adds up the values from the given measurement and this one,
+     * returning a new instance.
+     * @param measurement the measurement to add the values to this instance
+     * @return the new instance with the added up values
+     */
     public PowerMeasurement add(final PowerMeasurement measurement) {
         Objects.requireNonNull(measurement, "measurement cannot be null");
         return new PowerMeasurement(
@@ -91,11 +97,17 @@ public class PowerMeasurement {
         );
     }
 
+
+    /**
+     * Multiplies the values of this measurement by a given factor,
+     * returning a new instance.
+     * @param factor the factor to multiply the values of this measurement
+     * @return the new instance with the multiplied values
+     */
     public PowerMeasurement multiply(final double factor) {
         return new PowerMeasurement(
             staticUsage * factor,
             dynamicUsage * factor
         );
     }
-
 }
