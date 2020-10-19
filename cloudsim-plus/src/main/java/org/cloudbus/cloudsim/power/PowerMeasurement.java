@@ -2,6 +2,8 @@ package org.cloudbus.cloudsim.power;
 
 import org.cloudbus.cloudsim.power.models.PowerModel;
 
+import java.util.Objects;
+
 /**
  * Power consumption measurement produced by a {@link PowerModel},
  * consisting of a static and a dynamic fraction (in Watts).
@@ -81,14 +83,15 @@ public class PowerMeasurement {
         return dynamicUsage;
     }
 
-    public PowerMeasurement add(PowerMeasurement measurement) {
+    public PowerMeasurement add(final PowerMeasurement measurement) {
+        Objects.requireNonNull(measurement, "measurement cannot be null");
         return new PowerMeasurement(
             staticUsage + measurement.getStaticUsage(),
             dynamicUsage + measurement.getDynamicUsage()
         );
     }
 
-    public PowerMeasurement multiply(double factor) {
+    public PowerMeasurement multiply(final double factor) {
         return new PowerMeasurement(
             staticUsage * factor,
             dynamicUsage * factor
