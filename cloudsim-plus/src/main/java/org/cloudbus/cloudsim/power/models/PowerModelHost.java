@@ -6,7 +6,7 @@ import org.cloudbus.cloudsim.hosts.Host;
  * Abstract implementation of a host power model.
  * @since CloudSim Plus 6.0.0
  */
-public abstract class PowerModelHost extends PowerModel {
+public abstract class PowerModelHost implements PowerModel {
     private Host host;
 
     /**

@@ -6,7 +6,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
  * Abstract implementation of a data center power model.
  * @since CloudSim Plus 6.0.0
  */
-public abstract class PowerModelDatacenter extends PowerModel {
+public abstract class PowerModelDatacenter implements PowerModel {
 
     private Datacenter datacenter;
 

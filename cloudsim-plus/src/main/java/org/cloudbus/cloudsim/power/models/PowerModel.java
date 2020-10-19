@@ -11,21 +11,20 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
  * A PowerModel computes the current power usage (in Watts) of an entity during the simulation.
  * @since CloudSim Plus 6.0.0
  */
-public abstract class PowerModel {
+public interface PowerModel {
 
     /**
      * Returns the entity's current power usage as a PowerMeasurement,
      * which can hold additional information like static and dynamic fraction
      * of power usage.
      */
-    public abstract PowerMeasurement getPowerMeasurement();
+    PowerMeasurement getPowerMeasurement();
 
     /**
      * Returns the entity's current total power usage as a double.
      */
-    public double getPower() {
+    default double getPower() {
         return getPowerMeasurement().getTotalUsage();
     }
-
 }
 
