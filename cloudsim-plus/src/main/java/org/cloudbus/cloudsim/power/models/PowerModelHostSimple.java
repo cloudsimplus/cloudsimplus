@@ -29,6 +29,14 @@ public class PowerModelHostSimple extends PowerModelHost {
             throw new IllegalArgumentException("staticPower cannot be negative");
         }
 
+        if(maxPower < 1){
+            throw new IllegalArgumentException("maxPower is in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.");
+        }
+
+        if(staticPower < 1){
+            throw new IllegalArgumentException("staticPower is in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.");
+        }
+
         this.maxPower = maxPower;
         this.staticPower = staticPower;
     }
