@@ -20,6 +20,15 @@ public class PowerModelHostSimple extends PowerModelHost {
         if (maxPower < staticPower) {
             throw new IllegalArgumentException("maxPower has to be bigger than staticPower");
         }
+
+        if(maxPower < 0){
+            throw new IllegalArgumentException("maxPower cannot be negative");
+        }
+
+        if(staticPower < 0){
+            throw new IllegalArgumentException("staticPower cannot be negative");
+        }
+
         this.maxPower = maxPower;
         this.staticPower = staticPower;
     }
@@ -38,12 +47,12 @@ public class PowerModelHostSimple extends PowerModelHost {
      * Computes the hosts power usage in Watts (W) at a certain degree of utilization.
      * Mainly for backwards compatibility.
      *
-     * @param utilizationFraction the utilization percentage (between [0 and 1]) o the host.
+     * @param utilizationFraction the utilization percentage (between [0 and 1]) of the host.
      * @return the power supply in Watts (W)
      * @throws IllegalArgumentException if utilizationFraction is not between [0 and 1]
      */
     @Override
-    public double getPower(double utilizationFraction) throws IllegalArgumentException {
+    public double getPower(final double utilizationFraction) throws IllegalArgumentException {
         if (utilizationFraction < 0 || utilizationFraction > 1) {
             throw new IllegalArgumentException("utilizationFraction has to be between [0 and 1]");
         }
