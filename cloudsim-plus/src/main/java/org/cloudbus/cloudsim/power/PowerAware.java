@@ -20,7 +20,6 @@ public interface PowerAware<T extends PowerModel> {
     /**
      * Sets the model defining how the entity consumes power.
      * @param powerModel the model to set
-     * @return
      */
     void setPowerModel(T powerModel);
 }

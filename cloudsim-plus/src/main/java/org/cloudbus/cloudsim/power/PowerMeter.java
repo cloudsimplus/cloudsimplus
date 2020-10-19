@@ -35,7 +35,7 @@ public class PowerMeter extends CloudSimEntity {
      *
      * This is useful if the list of entities varies during a simulation run.
      */
-    public PowerMeter(Simulation simulation, Callable<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn) {
+    public PowerMeter(final Simulation simulation, final Callable<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn) {
         super(simulation);
         this.powerAwareEntitiesFn = powerAwareEntitiesFn;
         this.startTime = 0;
@@ -44,14 +44,14 @@ public class PowerMeter extends CloudSimEntity {
     /**
      * Initializes a {@link PowerMeter} with a list of {@link PowerAware} entities.
      */
-    public PowerMeter(Simulation simulation, List<? extends PowerAware<? extends PowerModel>> powerAwareEntities) {
+    public PowerMeter(final Simulation simulation, final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities) {
         this(simulation, () -> powerAwareEntities);
     }
 
     /**
      * Initializes a {@link PowerMeter} with a single {@link PowerAware} entity.
      */
-    public PowerMeter(Simulation simulation, PowerAware<? extends PowerModel> powerAwareEntity) {
+    public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
         this(simulation, new ArrayList<>(Arrays.asList(powerAwareEntity)));
     }
 
@@ -61,24 +61,10 @@ public class PowerMeter extends CloudSimEntity {
     }
 
     @Override
-    public void processEvent(SimEvent evt) {
+    public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
             case POWER_MEASUREMENT:
-                List<? extends PowerAware<? extends PowerModel>> powerAwareEntities;
-                try {
-                    powerAwareEntities = powerAwareEntitiesFn.call();
-                    powerMeasurements.add(powerAwareEntities.stream()
-                        .map(PowerAware::getPowerModel)
-                        .map(PowerModel::getPowerMeasurement)
-                        .reduce(PowerMeasurement::add)
-                        .orElse(new PowerMeasurement()));
-                } catch (Exception e) {
-                    // call() may raise, in this case we append an empty measurement
-                    e.printStackTrace();
-                    powerMeasurements.add(new PowerMeasurement());
-                }
-
-                schedule(this, measurementInterval, POWER_MEASUREMENT);
+                measurePowerConsumption();
                 break;
             case CloudSimTags.END_OF_SIMULATION:
                 this.shutdownEntity();
@@ -88,8 +74,28 @@ public class PowerMeter extends CloudSimEntity {
         }
     }
 
+    private void measurePowerConsumption() {
+        try {
+            final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities = powerAwareEntitiesFn.call();
+            final PowerMeasurement measurement =
+                powerAwareEntities.stream()
+                                  .map(PowerAware::getPowerModel)
+                                  .map(PowerModel::getPowerMeasurement)
+                                  .reduce(PowerMeasurement::add)
+                                  .orElse(new PowerMeasurement());
+
+            powerMeasurements.add(measurement);
+        } catch (Exception e) {
+            // call() may raise, in this case we append an empty measurement
+            e.printStackTrace();
+            powerMeasurements.add(new PowerMeasurement());
+        }
+
+        schedule(this, measurementInterval, POWER_MEASUREMENT);
+    }
+
     @Override
-    public PowerMeter setName(String name) {
+    public PowerMeter setName(final String name) {
         super.setName(name);
         return this;
     }
@@ -115,7 +121,11 @@ public class PowerMeter extends CloudSimEntity {
      * @param measurementInterval the value to set
      * @return
      */
-    public void setMeasurementInterval(double measurementInterval) {
+    public void setMeasurementInterval(final double measurementInterval) {
+        if(measurementInterval <= 0){
+            throw new IllegalArgumentException("measurementInterval must be a positive number.");
+        }
+
         this.measurementInterval = measurementInterval;
     }
 
@@ -127,7 +137,7 @@ public class PowerMeter extends CloudSimEntity {
         return startTime;
     }
 
-    public void setStartTime(double startTime) {
+    public void setStartTime(final double startTime) {
         this.startTime = startTime;
     }
 }
