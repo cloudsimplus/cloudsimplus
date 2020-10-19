@@ -1107,9 +1107,16 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public final void setPowerModel(final PowerModelDatacenter powerModel) {
-        if(powerModel == null)
+        if(powerModel == null) {
             this.powerModel = PowerModelDatacenter.NULL;
-        else this.powerModel = powerModel;
+            return;
+        }
+
+        if(powerModel.getDatacenter() != null && powerModel.getDatacenter() != Datacenter.NULL && !this.equals(powerModel.getDatacenter())){
+            throw new IllegalStateException("The given PowerModel is already assigned to another Datacenter. Each Datacenter must have its own PowerModel instance.");
+        }
+
+        this.powerModel = powerModel;
     }
 
     @Override
