@@ -16,6 +16,8 @@ import static org.cloudbus.cloudsim.core.CloudSimTags.POWER_MEASUREMENT;
 
 /**
  * Periodically measures the current power usage of one or more {@link PowerAware} entities and stores the results.
+ * @since CloudSim Plus 6.0.0
+ * @see #getMeasurementInterval()
  */
 public class PowerMeter extends CloudSimEntity {
 
@@ -90,18 +92,35 @@ public class PowerMeter extends CloudSimEntity {
         return this;
     }
 
+    /**
+     * Gets the list of all measurements collected up to now.
+     * @return
+     */
     public List<PowerMeasurement> getPowerMeasurements() {
         return powerMeasurements;
     }
 
+    /**
+     * Gets the time interval to collect power measurements.
+     * @return
+     */
     public double getMeasurementInterval() {
         return measurementInterval;
     }
 
+    /**
+     * Sets the time interval to collect power measurements.
+     * @param measurementInterval the value to set
+     * @return
+     */
     public void setMeasurementInterval(double measurementInterval) {
         this.measurementInterval = measurementInterval;
     }
 
+    /**
+     * Gets the time the power meter started to collect measurements.
+     * @return
+     */
     public double getStartTime() {
         return startTime;
     }

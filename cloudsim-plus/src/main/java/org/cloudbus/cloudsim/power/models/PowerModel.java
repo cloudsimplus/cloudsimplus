@@ -1,11 +1,15 @@
 package org.cloudbus.cloudsim.power.models;
 
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
 
 /**
- * Common interface for PowerModels.
+ * A common interface for implementing models of power consumption
+ * for entities such as {@link Datacenter}s and {@link Host}s.
  *
- * A PowerModel computes the current power usage of an entity during the simulation.
+ * A PowerModel computes the current power usage (in Watts) of an entity during the simulation.
+ * @since CloudSim Plus 6.0.0
  */
 public abstract class PowerModel {
 

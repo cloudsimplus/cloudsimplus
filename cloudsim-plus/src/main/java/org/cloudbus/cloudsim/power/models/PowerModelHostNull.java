@@ -5,6 +5,7 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
 /**
  * A class that implements the Null Object Design Pattern for
  * {@link PowerModelHost} objects.
+ * @since CloudSim Plus 6.0.0
  */
 public class PowerModelHostNull extends PowerModelHost {
 

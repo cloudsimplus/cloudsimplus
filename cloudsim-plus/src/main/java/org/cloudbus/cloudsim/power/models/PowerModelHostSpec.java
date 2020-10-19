@@ -1,14 +1,11 @@
 package org.cloudbus.cloudsim.power.models;
 
 import org.cloudbus.cloudsim.power.PowerMeasurement;
-import org.cloudbus.cloudsim.power.models.PowerModelHost;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
- * The abstract class of power models created based on data from
+ * A power model created based on data from
  * <a href="http://www.spec.org/power_ssj2008/">SPEC power benchmark</a>.
  *
  * <p>If you are using any algorithms, policies or workload included in the power package please cite
@@ -22,7 +19,7 @@ import java.util.Set;
  * </ul>
  *
  * @author Anton Beloglazov
- * @since CloudSim Toolkit 3.0
+ * @since CloudSim Plus 6.0.0
  */
 public class PowerModelHostSpec extends PowerModelHost {
 

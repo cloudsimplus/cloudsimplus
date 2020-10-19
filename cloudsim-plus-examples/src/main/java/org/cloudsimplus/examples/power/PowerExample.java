@@ -119,13 +119,12 @@ public class PowerExample {
     private static final int CLOUDLET_LENGTH = 50000;
 
     /**
-     * Defines the percentage of power a Host uses,
-     * even if it's idle.
+     * Defines the power a Host uses, even if it's idle (in Watts).
      */
     private static final double STATIC_POWER = 35;
 
     /**
-     * The max power (in W) a Host uses.
+     * The max power a Host uses (in Watts).
      */
     private static final int MAX_POWER = 50;
 

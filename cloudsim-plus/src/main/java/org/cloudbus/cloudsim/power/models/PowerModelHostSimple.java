@@ -1,13 +1,12 @@
 package org.cloudbus.cloudsim.power.models;
 
-import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
 
 /**
  * Simple power model for hosts with linear power profile.
+ * @since CloudSim Plus 6.0.0
  */
 public class PowerModelHostSimple extends PowerModelHost {
-
     private double maxPower;
     private double staticPower;
 
@@ -39,8 +38,7 @@ public class PowerModelHostSimple extends PowerModelHost {
      * Computes the hosts power usage in Watts (W) at a certain degree of utilization.
      * Mainly for backwards compatibility.
      *
-     * @param utilizationFraction the utilization percentage (between [0 and 1]) of
-     * the host.
+     * @param utilizationFraction the utilization percentage (between [0 and 1]) o the host.
      * @return the power supply in Watts (W)
      * @throws IllegalArgumentException if utilizationFraction is not between [0 and 1]
      */
