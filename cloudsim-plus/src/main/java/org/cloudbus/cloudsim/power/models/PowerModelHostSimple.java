@@ -47,7 +47,7 @@ public class PowerModelHostSimple extends PowerModelHost {
             return new PowerMeasurement();
         }
 
-        double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
+        final double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
         return new PowerMeasurement(staticPower, (maxPower - staticPower) * utilizationFraction);
     }
 
@@ -64,6 +64,7 @@ public class PowerModelHostSimple extends PowerModelHost {
         if (utilizationFraction < 0 || utilizationFraction > 1) {
             throw new IllegalArgumentException("utilizationFraction has to be between [0 and 1]");
         }
+
         return staticPower + (maxPower - staticPower) * utilizationFraction;
     }
 
