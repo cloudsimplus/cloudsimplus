@@ -28,7 +28,9 @@ public abstract class PowerModelDatacenter implements PowerModel {
      * @param datacenter the Datacenter to set
      * @return
      */
-    public void setDatacenter(Datacenter datacenter) {
-        this.datacenter = datacenter;
+    public void setDatacenter(final Datacenter datacenter) {
+        if(datacenter == null)
+            this.datacenter = Datacenter.NULL;
+        else this.datacenter = datacenter;
     }
 }
