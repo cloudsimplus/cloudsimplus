@@ -23,9 +23,33 @@ import java.util.Objects;
  * @since CloudSim Plus 6.0.0
  */
 public class PowerModelHostSpec extends PowerModelHost {
-
     private final List<Double> powerSpec;
 
+    /**
+     * Instantiates a PowerModelHostSpec providing
+     * the power consumption data of the entity for different
+     * CPU utilization percentages.
+     *
+     * @param powerSpec a list where each element represents the
+     * power consumption of the entity for specific
+     * CPU utilization percentage.
+     * The index of the list represents
+     * the CPU utilization percentage and the
+     * value, the power consumption for that
+     * percentage.
+     *
+     * <p>If there are 100 elements in this list,
+     * element at position 1 represents the power consumption
+     * for 1% of CPU utilization, where element 100,</p>
+     * represents power consumption for 100% of CPU utilization.
+     *
+     * <p>If there are only 10 elements in this list,
+     * each element represents the power consumption
+     * when the CPU utilization is between an interval between [p .. p+10],
+     * where p is the CPU utilization percentage.
+     * For instance, element 0 represents the power consumption
+     * when CPU utilization is between [0 .. 10%].</p>
+     */
     public PowerModelHostSpec(final List<Double> powerSpec) {
         Objects.requireNonNull(powerSpec);
         if (powerSpec.size() >= 2) {
