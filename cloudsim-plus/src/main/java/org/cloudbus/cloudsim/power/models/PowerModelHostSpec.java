@@ -62,14 +62,14 @@ public class PowerModelHostSpec extends PowerModelHost {
 
     @Override
     public PowerMeasurement getPowerMeasurement() {
-        double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
-        int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.size());
-        double powerUsage = powerSpec.get(utilizationIndex);
+        final double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
+        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.size());
+        final double powerUsage = powerSpec.get(utilizationIndex);
         return new PowerMeasurement(powerSpec.get(0), powerUsage - powerSpec.get(0));
     }
 
     @Override
-    public double getPower(double utilizationFraction) throws IllegalArgumentException {
+    public double getPower(final double utilizationFraction) throws IllegalArgumentException {
         int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.size());
         return powerSpec.get(utilizationIndex);
     }
