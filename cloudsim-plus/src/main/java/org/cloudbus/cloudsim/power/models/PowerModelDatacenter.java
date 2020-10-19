@@ -26,9 +26,8 @@ public abstract class PowerModelDatacenter implements PowerModel {
     /**
      * Sets the Datacenter this PowerModel will collect power consumption measurements from.
      * @param datacenter the Datacenter to set
-     * @return
      */
-    public void setDatacenter(final Datacenter datacenter) {
+    public final void setDatacenter(final Datacenter datacenter) {
         if(datacenter == null)
             this.datacenter = Datacenter.NULL;
         else this.datacenter = datacenter;
