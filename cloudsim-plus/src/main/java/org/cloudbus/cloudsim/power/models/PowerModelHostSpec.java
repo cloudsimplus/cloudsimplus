@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.power.models;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A power model created based on data from
@@ -26,10 +27,12 @@ public class PowerModelHostSpec extends PowerModelHost {
     private final List<Double> powerSpec;
 
     public PowerModelHostSpec(final List<Double> powerSpec) {
+        Objects.requireNonNull(powerSpec);
         if (powerSpec.size() >= 2) {
             throw new IllegalArgumentException("powerSpec has to contain at least 2 elements " +
                 "(utilizazion at 0% and 100% load)");
         }
+
         this.powerSpec = powerSpec;
     }
 
