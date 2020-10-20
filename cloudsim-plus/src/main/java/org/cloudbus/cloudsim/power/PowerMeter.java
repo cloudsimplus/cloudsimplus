@@ -32,7 +32,8 @@ public class PowerMeter extends CloudSimEntity {
     private final List<PowerMeasurement> powerMeasurements = new LinkedList<>();
 
     /**
-     * Initializes a {@link PowerMeter} with a function that returns a list of {@link PowerAware} entities on every measurement.
+     * Initializes a {@link PowerMeter} with a function that returns a list of {@link PowerAware} entities
+     * to have their power consumption measured.
      *
      * This is useful if the list of entities varies during a simulation run.
      */

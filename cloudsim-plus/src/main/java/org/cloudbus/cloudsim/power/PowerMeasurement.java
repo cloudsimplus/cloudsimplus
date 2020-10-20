@@ -60,7 +60,7 @@ public class PowerMeasurement {
     }
 
     /**
-     * Gets the total power consumed by the entity
+     * Gets the total power consumed by the entity (in Watts)
      * @return
      */
     public double getTotalUsage() {
@@ -86,7 +86,7 @@ public class PowerMeasurement {
     /**
      * Adds up the values from the given measurement and this one,
      * returning a new instance.
-     * @param measurement the measurement to add the values to this instance
+     * @param measurement another measurement to add its values with this instance
      * @return the new instance with the added up values
      */
     public PowerMeasurement add(final PowerMeasurement measurement) {
@@ -97,9 +97,8 @@ public class PowerMeasurement {
         );
     }
 
-
     /**
-     * Multiplies the values of this measurement by a given factor,
+     * Multiplies the values from this measurement by a given factor,
      * returning a new instance.
      * @param factor the factor to multiply the values of this measurement
      * @return the new instance with the multiplied values
