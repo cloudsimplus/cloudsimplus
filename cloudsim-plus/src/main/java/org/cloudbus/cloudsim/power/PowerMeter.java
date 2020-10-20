@@ -32,24 +32,29 @@ public class PowerMeter extends CloudSimEntity {
     private final List<PowerMeasurement> powerMeasurements = new LinkedList<>();
 
     /**
-     * Initializes a {@link PowerMeter} with a single {@link PowerAware} entity.
+     * Initializes a {@link PowerMeter} to measure power consumption of a single {@link PowerAware} entity.
      */
     public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
         this(simulation, new ArrayList<>(Arrays.asList(powerAwareEntity)));
     }
 
     /**
-     * Initializes a {@link PowerMeter} with a list of {@link PowerAware} entities.
+     * Initializes a {@link PowerMeter} to measure the combined power consumption of a list of {@link PowerAware} entities.
+     *
+     * <p>If you want to compute power consumption individually for each entity,
+     * check {@link #PowerMeter(Simulation, PowerAware)}.</p>
      */
     public PowerMeter(final Simulation simulation, final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities) {
         this(simulation, () -> powerAwareEntities);
     }
 
     /**
-     * Initializes a {@link PowerMeter} with a function that returns a list of {@link PowerAware} entities
-     * to have their power consumption measured.
-     *
+     * Initializes a {@link PowerMeter} with a function that supplies a list of {@link PowerAware} entities
+     * to have their combined power consumption measured.
      * This is useful if the list of entities varies during a simulation run.
+     *
+     * <p>If you want to compute power consumption individually for each entity,
+     * check {@link #PowerMeter(Simulation, PowerAware)}.</p>
      */
     public PowerMeter(final Simulation simulation, final Callable<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn) {
         super(simulation);
@@ -104,6 +109,9 @@ public class PowerMeter extends CloudSimEntity {
 
     /**
      * Gets the list of all measurements collected up to now.
+     * Each entry is a measurement collected in the defined {@link #measurementInterval}.
+     * If you provided a list of entities on the class constructor,
+     * a entry is the combined measurement for those entities.
      * @return
      */
     public List<PowerMeasurement> getPowerMeasurements() {
