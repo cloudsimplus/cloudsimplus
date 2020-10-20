@@ -32,15 +32,10 @@ public class PowerMeter extends CloudSimEntity {
     private final List<PowerMeasurement> powerMeasurements = new LinkedList<>();
 
     /**
-     * Initializes a {@link PowerMeter} with a function that returns a list of {@link PowerAware} entities
-     * to have their power consumption measured.
-     *
-     * This is useful if the list of entities varies during a simulation run.
+     * Initializes a {@link PowerMeter} with a single {@link PowerAware} entity.
      */
-    public PowerMeter(final Simulation simulation, final Callable<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn) {
-        super(simulation);
-        this.powerAwareEntitiesFn = powerAwareEntitiesFn;
-        this.startTime = 0;
+    public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
+        this(simulation, new ArrayList<>(Arrays.asList(powerAwareEntity)));
     }
 
     /**
@@ -51,10 +46,15 @@ public class PowerMeter extends CloudSimEntity {
     }
 
     /**
-     * Initializes a {@link PowerMeter} with a single {@link PowerAware} entity.
+     * Initializes a {@link PowerMeter} with a function that returns a list of {@link PowerAware} entities
+     * to have their power consumption measured.
+     *
+     * This is useful if the list of entities varies during a simulation run.
      */
-    public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
-        this(simulation, new ArrayList<>(Arrays.asList(powerAwareEntity)));
+    public PowerMeter(final Simulation simulation, final Callable<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn) {
+        super(simulation);
+        this.powerAwareEntitiesFn = powerAwareEntitiesFn;
+        this.startTime = 0;
     }
 
     @Override
