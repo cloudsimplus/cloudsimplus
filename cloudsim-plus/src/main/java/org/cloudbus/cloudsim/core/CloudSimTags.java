@@ -326,7 +326,9 @@ public final class CloudSimTags {
     public static final int HOST_REMOVE = BASE + 61;
 
     /**
-     * Denotes a power measurement performed periodically by a {@link PowerMeter} on a {@link PowerModel}.
+     * Denotes a power measurement performed periodically by a {@link PowerMeter} on
+     * entities having a {@link PowerModel},
+     * such as {@link Datacenter}s and {@link Host}s.
      */
     public static final int POWER_MEASUREMENT = BASE + 70;
 
