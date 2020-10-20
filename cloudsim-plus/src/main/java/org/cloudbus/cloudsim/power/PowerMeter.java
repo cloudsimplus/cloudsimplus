@@ -84,14 +84,14 @@ public class PowerMeter extends CloudSimEntity {
     private void measurePowerConsumption() {
         try {
             final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities = powerAwareEntitiesFn.call();
-            final PowerMeasurement measurement =
+            final PowerMeasurement combinedMeasurement =
                 powerAwareEntities.stream()
                                   .map(PowerAware::getPowerModel)
                                   .map(PowerModel::getPowerMeasurement)
                                   .reduce(PowerMeasurement::add)
                                   .orElse(new PowerMeasurement());
 
-            powerMeasurements.add(measurement);
+            powerMeasurements.add(combinedMeasurement);
         } catch (Exception e) {
             // call() may raise, in this case we append an empty measurement
             e.printStackTrace();
