@@ -7,7 +7,7 @@ import java.util.Objects;
 /**
  * Power consumption measurement produced by a {@link PowerModel},
  * consisting of a static and a dynamic fraction (in Watts).
- * This measurement is related to the entity the PowerModel is related to,
+ * This measurement is performed on the entity the PowerModel is assigned to.
  *
  * <p>This is an <b>immutable</b> class providing operations
  * such as {@link #add(PowerMeasurement)} and {@link #multiply(double)} that returns a new instance.</p>
