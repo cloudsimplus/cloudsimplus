@@ -26,6 +26,7 @@ public class PowerMeter extends CloudSimEntity {
     private final Callable<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn;
 
     private double measurementInterval;
+    /** @see #getStartTime() */
     private double startTime;
 
     private final List<PowerMeasurement> powerMeasurements = new LinkedList<>();
@@ -130,13 +131,18 @@ public class PowerMeter extends CloudSimEntity {
     }
 
     /**
-     * Gets the time the power meter started to collect measurements.
+     * Gets the time the power meter has to start to collect measurements.
      * @return
      */
     public double getStartTime() {
         return startTime;
     }
 
+    /**
+     * Sets the time the power meter has to start to collect measurements.
+     * @param startTime the desired start time
+     * @return
+     */
     public void setStartTime(final double startTime) {
         this.startTime = startTime;
     }
