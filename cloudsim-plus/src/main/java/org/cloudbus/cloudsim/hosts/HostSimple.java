@@ -1215,10 +1215,9 @@ public class HostSimple implements Host {
 
     @Override
     public final void setPowerModel(final PowerModelHost powerModel) {
-        if(powerModel == null){
-            this.powerModel = PowerModelHost.NULL;
-            return;
-        }
+        Objects.requireNonNull(powerModel,
+            "powerModel cannot be null. You could provide a " +
+            PowerModelHost.class.getSimpleName() + ".NULL instead.");
 
         if(powerModel.getHost() != null && powerModel.getHost() != Host.NULL && !this.equals(powerModel.getHost())){
             throw new IllegalStateException("The given PowerModel is already assigned to another Host. Each Host must have its own PowerModel instance.");
