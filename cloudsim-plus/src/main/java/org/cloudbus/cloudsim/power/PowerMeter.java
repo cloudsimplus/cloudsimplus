@@ -35,7 +35,7 @@ public class PowerMeter extends CloudSimEntity {
      * Initializes a {@link PowerMeter} to measure power consumption of a single {@link PowerAware} entity.
      */
     public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
-        this(simulation, new ArrayList<>(Arrays.asList(powerAwareEntity)));
+        this(simulation, Arrays.asList(powerAwareEntity));
     }
 
     /**
