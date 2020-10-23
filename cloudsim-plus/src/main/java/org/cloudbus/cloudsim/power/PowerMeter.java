@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static org.cloudbus.cloudsim.core.CloudSimTags.POWER_MEASUREMENT;
@@ -55,7 +56,7 @@ public class PowerMeter extends CloudSimEntity {
      */
     public PowerMeter(final Simulation simulation, final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier) {
         super(simulation);
-        this.powerAwareEntitiesSupplier = powerAwareEntitiesSupplier;
+        this.powerAwareEntitiesSupplier = Objects.requireNonNull(powerAwareEntitiesSupplier, "powerAwareEntitiesSupplier cannot be null");
     }
 
     @Override
