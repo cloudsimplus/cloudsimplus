@@ -25,22 +25,29 @@ public class PowerMeter extends CloudSimEntity {
 
     private final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier;
 
+    /** @see #getMeasurementInterval() */
     private double measurementInterval;
 
+    /** @see #getPowerMeasurements() () */
     private final List<PowerMeasurement> powerMeasurements = new LinkedList<>();
 
     /**
-     * Initializes a {@link PowerMeter} to measure power consumption of a single {@link PowerAware} entity.
+     * Initializes a {@link PowerMeter} to periodically measure power consumption of a single {@link PowerAware} entity.
+     * @param simulation The simulation instance the Entity is related to
+     * @param powerAwareEntity an entity to have its power consumption measured
      */
     public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
         this(simulation, Arrays.asList(powerAwareEntity));
     }
 
     /**
-     * Initializes a {@link PowerMeter} to measure the combined power consumption of a list of {@link PowerAware} entities.
+     * Initializes a {@link PowerMeter} to periodically measure the
+     * combined power consumption of a list of {@link PowerAware} entities.
      *
      * <p>If you want to compute power consumption individually for each entity,
      * check {@link #PowerMeter(Simulation, PowerAware)}.</p>
+     * @param simulation The simulation instance the Entity is related to
+     * @param powerAwareEntities a list of entities to have their combined power consumption measured
      */
     public PowerMeter(final Simulation simulation, final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities) {
         this(simulation, () -> powerAwareEntities);
@@ -48,11 +55,14 @@ public class PowerMeter extends CloudSimEntity {
 
     /**
      * Initializes a {@link PowerMeter} with a function that supplies a list of {@link PowerAware} entities
-     * to have their combined power consumption measured.
-     * This is useful if the list of entities varies during a simulation run.
+     * to have their combined power consumption periodically measured.
+     * This is useful if the list of entities varies during the simulation run.
      *
      * <p>If you want to compute power consumption individually for each entity,
      * check {@link #PowerMeter(Simulation, PowerAware)}.</p>
+     * @param simulation The simulation instance the Entity is related to
+     * @param powerAwareEntitiesSupplier a {@link Supplier} that provides a list of entities
+     *                                   to have their combined power consumption measured
      */
     public PowerMeter(final Simulation simulation, final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier) {
         super(simulation);
