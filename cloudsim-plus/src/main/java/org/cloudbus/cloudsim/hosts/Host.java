@@ -10,7 +10,8 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.power.PowerAware;
+import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -44,7 +45,7 @@ import java.util.SortedMap;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Host extends Machine, Comparable<Host> {
+public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHost> {
     Logger LOGGER = LoggerFactory.getLogger(Host.class.getSimpleName());
 
     /**
@@ -657,25 +658,23 @@ public interface Host extends Machine, Comparable<Host> {
     SortedMap<Double, Double> getUtilizationHistorySum();
 
     /**
-     * Gets the {@link PowerModel} used by the host
+     * Gets the {@link PowerModelHost} used by the host
      * to define how it consumes power.
      * A Host just provides power usage data if a PowerModel is set.
      *
-     * @return the Host's {@link PowerModel}
+     * @return the Host's {@link PowerModelHost}
      */
-    PowerModel getPowerModel();
+    PowerModelHost getPowerModel();
 
     /**
-     * Sets the {@link PowerModel} used by the host
+     * Sets the {@link PowerModelHost} used by the host
      * to define how it consumes power.
      * A Host just provides power usage data if a PowerModel is set.
      *
-     * @param powerModel the {@link PowerModel} to set
+     * @param powerModel the {@link PowerModelHost} to set
      * @return
      */
-    Host setPowerModel(PowerModel powerModel);
-
-    double getPreviousUtilizationOfCpu();
+    void setPowerModel(PowerModelHost powerModel);
 
     /**
      * Enables storing Host state history.

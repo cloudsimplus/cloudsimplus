@@ -69,7 +69,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
 
     /**
      * Sets the CloudSim instance that represents the simulation the Entity is related to.
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation The simulation instance the Entity is related to
      * @return
      */
     SimEntity setSimulation(Simulation simulation);

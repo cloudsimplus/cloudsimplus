@@ -10,8 +10,7 @@ import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.ChangeableId;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.datacenters.DatacenterPowerSupply;
-import org.cloudbus.cloudsim.power.models.PowerModel;
+import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
@@ -57,7 +56,7 @@ public class HostSimple implements Host {
     private final List<HostStateHistoryEntry> stateHistory;
 
     /**@see #getPowerModel() */
-    private PowerModel powerModel;
+    private PowerModelHost powerModel;
 
     /** @see #getId() */
     private long id;
@@ -133,11 +132,6 @@ public class HostSimple implements Host {
 
     private List<ResourceProvisioner> provisioners;
     private final List<Vm> vmCreatedList;
-
-    /**
-     * The previous amount of MIPS used.
-     */
-    private double previousUtilizationMips;
 
     /** @see #getFreePesNumber() */
     private int freePesNumber;
@@ -278,7 +272,7 @@ public class HostSimple implements Host {
         this.provisioners = new ArrayList<>();
         this.vmsMigratingIn = new HashSet<>();
         this.vmsMigratingOut = new HashSet<>();
-        this.powerModel = PowerModel.NULL;
+        this.powerModel = PowerModelHost.NULL;
         this.stateHistory = new LinkedList<>();
     }
 
@@ -336,14 +330,6 @@ public class HostSimple implements Host {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     @Override
     public double updateProcessing(final double currentTime) {
-        /*The previous utilization mips is just used when there is a DatacenterPowerSupply instance
-        attached to the datacenter. Since getting the utilization of CPU is an expensive
-        operation in large scale experiments, if a Datacenter power supply is not set,
-        the value is not stored.*/
-        if(datacenter.getPowerSupply() != DatacenterPowerSupply.NULL) {
-            setPreviousUtilizationMips(getCpuMipsUtilization());
-        }
-
         if (!vmList.isEmpty()) {
             lastBusyTime = simulation.clock();
         } else if(isIdleEnough(idleShutdownDeadline)){
@@ -1223,25 +1209,22 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public PowerModel getPowerModel() {
+    public PowerModelHost getPowerModel() {
         return powerModel;
     }
 
     @Override
-    public Host setPowerModel(final PowerModel powerModel) {
-        requireNonNull(powerModel);
-        if(powerModel.getHost() != null && powerModel.getHost() != Host.NULL && !powerModel.getHost().equals(this)){
+    public final void setPowerModel(final PowerModelHost powerModel) {
+        Objects.requireNonNull(powerModel,
+            "powerModel cannot be null. You could provide a " +
+            PowerModelHost.class.getSimpleName() + ".NULL instead.");
+
+        if(powerModel.getHost() != null && powerModel.getHost() != Host.NULL && !this.equals(powerModel.getHost())){
             throw new IllegalStateException("The given PowerModel is already assigned to another Host. Each Host must have its own PowerModel instance.");
         }
 
         this.powerModel = powerModel;
         powerModel.setHost(this);
-        return this;
-    }
-
-    @Override
-    public double getPreviousUtilizationOfCpu() {
-        return computeCpuUtilizationPercent(previousUtilizationMips);
     }
 
     @Override
@@ -1257,16 +1240,6 @@ public class HostSimple implements Host {
     @Override
     public boolean isStateHistoryEnabled() {
         return this.stateHistoryEnabled;
-    }
-
-    /**
-     * Sets the previous utilization of CPU in mips.
-     *
-     * @param previousUtilizationMips the new previous utilization of CPU in
-     * mips
-     */
-    private void setPreviousUtilizationMips(final double previousUtilizationMips) {
-        this.previousUtilizationMips = previousUtilizationMips;
     }
 
     @Override

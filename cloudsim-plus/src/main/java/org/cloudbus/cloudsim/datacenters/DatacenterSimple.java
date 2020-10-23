@@ -17,6 +17,8 @@ import org.cloudbus.cloudsim.core.events.PredicateType;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.network.IcmpPacket;
+import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
+import org.cloudbus.cloudsim.power.models.PowerModelDatacenterSimple;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -86,9 +88,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     private final List<EventListener<HostEventInfo>> onHostAvailableListeners;
 
-    /** @see #setPowerSupply(DatacenterPowerSupply) */
-    private DatacenterPowerSupply powerSupply;
-
     /**
      * @see #getTimeZone()
      */
@@ -97,6 +96,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /** @see #getHostSearchForMigrationDelay() */
     private double hostSearchForMigrationDelay;
+
+    private PowerModelDatacenter powerModel = PowerModelDatacenter.NULL;
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
@@ -179,11 +180,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     {
         super(simulation);
         setHostList(hostList);
-        this.powerSupply = DatacenterPowerSupply.NULL;
-
         setLastProcessTime(0.0);
         setSchedulingInterval(0);
         setDatacenterStorage(storage);
+        setPowerModel(new PowerModelDatacenterSimple(this));
 
         this.onHostAvailableListeners = new ArrayList<>();
         this.characteristics = new DatacenterCharacteristicsSimple(this);
@@ -466,7 +466,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         // if this cloudlet is in the exec queue
         if (estimatedFinishTime > 0.0 && !Double.isInfinite(estimatedFinishTime)) {
-             send(this,
+            send(this,
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
@@ -737,8 +737,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return nextSimulationDelay;
         }
 
-        powerSupply.computePowerUtilizationForTimeSpan(lastProcessTime);
-
         return nextSimulationDelay;
     }
 
@@ -873,7 +871,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     protected void startEntity() {
-        LOGGER.info("{} is starting...", getName());
+        LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), getName());
         sendNow(getSimulation().getCloudInfoService(), CloudSimTags.DATACENTER_REGISTRATION_REQUEST, this);
     }
 
@@ -1072,24 +1070,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         this.bandwidthPercentForMigration = bandwidthPercentForMigration;
     }
 
-    /**
-     * {@inheritDoc}
-     * @return {@inheritDoc}
-     * @throws UnsupportedOperationException if Datacenter's power consumption computation was not enabled before the simulation start
-     */
-    @Override
-    public double getPower() throws UnsupportedOperationException{
-        final double power = powerSupply.getPower();
-        if(power < 0){
-            throw new UnsupportedOperationException(
-                "The power consumption for " + this +
-                " cannot be computed because a DatacenterPowerSupply object was not given." +
-                " Call the setPowerSupply() before the simulation start to provide one. This enables power consumption computation.");
-        }
-
-        return power;
-    }
-
     @Override
     public Datacenter addOnHostAvailableListener(final EventListener<HostEventInfo> listener) {
         onHostAvailableListeners.add(requireNonNull(listener));
@@ -1121,12 +1101,22 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public void setPowerSupply(final DatacenterPowerSupply powerSupply) {
-        this.powerSupply = powerSupply == null ? DatacenterPowerSupply.NULL : powerSupply.setDatacenter(this);
+    public PowerModelDatacenter getPowerModel() {
+        return powerModel;
     }
 
     @Override
-    public DatacenterPowerSupply getPowerSupply(){ return powerSupply; }
+    public final void setPowerModel(final PowerModelDatacenter powerModel) {
+        Objects.requireNonNull(powerModel,
+            "powerModel cannot be null. You could provide a " +
+            PowerModelDatacenter.class.getSimpleName() + ".NULL instead");
+
+        if(powerModel.getDatacenter() != null && powerModel.getDatacenter() != Datacenter.NULL && !this.equals(powerModel.getDatacenter())){
+            throw new IllegalStateException("The given PowerModel is already assigned to another Datacenter. Each Datacenter must have its own PowerModel instance.");
+        }
+
+        this.powerModel = powerModel;
+    }
 
     @Override
     public double getHostSearchForMigrationDelay() {

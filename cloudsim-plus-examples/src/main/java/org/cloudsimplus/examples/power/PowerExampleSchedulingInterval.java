@@ -34,14 +34,14 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.power.models.PowerAware;
-import org.cloudbus.cloudsim.power.models.PowerModelLinear;
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -83,13 +83,12 @@ public class PowerExampleSchedulingInterval {
     private static final int CLOUDLET_LENGTH = 50000;
 
     /**
-     * Defines the minimum percentage of power a Host uses,
-     * even when it's idle.
+     * Defines the power a Host uses, even if it's idle (in Watts).
      */
-    private static final double STATIC_POWER_PERCENT = 0.7;
+    private static final double STATIC_POWER = 35;
 
     /**
-     * The max power (in W) a Host uses.
+     * The max power a Host uses (in Watts).
      */
     private static final int MAX_POWER = 50;
 
@@ -183,11 +182,11 @@ public class PowerExampleSchedulingInterval {
 
         System.out.printf(
             "Total Host %d Power Consumption in %.0f s: %.0f Ws (%.5f kWh)%n",
-            host.getId(), simulation.clock(), totalWattsSec, PowerAware.wattsSecToKWattsHour(totalWattsSec));
+            host.getId(), simulation.clock(), totalWattsSec, Conversion.wattSecondsToKWattHours(totalWattsSec));
         final double powerWattsSecMean = totalWattsSec / simulation.clock();
         System.out.printf(
             "Mean %.2f Ws for %d usage samples (%.5f kWh)%n",
-            powerWattsSecMean, utilizationPercentHistory.size(), PowerAware.wattsSecToKWattsHour(powerWattsSecMean));
+            powerWattsSecMean, utilizationPercentHistory.size(), Conversion.wattSecondsToKWattHours(powerWattsSecMean));
     }
 
     private Datacenter createDatacenterSimple() {
@@ -212,11 +211,10 @@ public class PowerExampleSchedulingInterval {
         final long storage = 1000000; //in Megabytes
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.setPowerModel(new PowerModelLinear(MAX_POWER, STATIC_POWER_PERCENT));
-        host
-            .setRamProvisioner(new ResourceProvisionerSimple())
-            .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(new VmSchedulerTimeShared());
+        host.setPowerModel(new PowerModelHostSimple(MAX_POWER, STATIC_POWER));
+        host.setRamProvisioner(new ResourceProvisionerSimple());
+        host.setBwProvisioner(new ResourceProvisionerSimple());
+        host.setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 

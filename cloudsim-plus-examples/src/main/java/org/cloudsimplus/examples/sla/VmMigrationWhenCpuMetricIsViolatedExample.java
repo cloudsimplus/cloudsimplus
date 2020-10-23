@@ -34,7 +34,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.power.models.PowerModelLinear;
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
@@ -287,10 +287,10 @@ public final class VmMigrationWhenCpuMetricIsViolatedExample {
     private Host createHost(final int numberOfPes, final long mipsByPe) {
         final List<Pe> peList = createPeList(numberOfPes, mipsByPe);
         final Host host = new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
-        host.setPowerModel(new PowerModelLinear(1000, 0.7))
-                .setRamProvisioner(new ResourceProvisionerSimple())
-                .setBwProvisioner(new ResourceProvisionerSimple())
-                .setVmScheduler(new VmSchedulerTimeShared());
+        host.setPowerModel(new PowerModelHostSimple(1000, 700));
+        host.setRamProvisioner(new ResourceProvisionerSimple());
+        host.setBwProvisioner(new ResourceProvisionerSimple());
+        host.setVmScheduler(new VmSchedulerTimeShared());
         return host;
     }
 

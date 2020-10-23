@@ -202,4 +202,13 @@ public final class Conversion {
     public static int boolToInt(final boolean bool){
         return bool ? 1 : 0;
     }
+
+    /**
+     * Converts watt-seconds (joule) to kWh.
+     * @param power the power in Ws
+     * @return the power in kWh
+     */
+    public static double wattSecondsToKWattHours(final double power) {
+        return power * KILO / 3600.0;
+    }
 }

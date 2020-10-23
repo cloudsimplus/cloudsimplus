@@ -4,6 +4,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.SimEntityNullBase;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
@@ -44,17 +45,15 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     @Override public void setDatacenterStorage(DatacenterStorage datacenterStorage) {/**/}
     @Override public double getBandwidthPercentForMigration() { return 0; }
     @Override public void setBandwidthPercentForMigration(double bandwidthPercentForMigration) {/**/}
-    @Override public double getPower() { return 0; }
     @Override public Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener) { return this; }
     @Override public boolean isMigrationsEnabled() { return false; }
     @Override public Datacenter enableMigrations() { return this; }
     @Override public Datacenter disableMigrations() { return this; }
-    @Override public void setPowerSupply(DatacenterPowerSupply powerSupply) {}
-    @Override public DatacenterPowerSupply getPowerSupply() { return DatacenterPowerSupply.NULL; }
     @Override public double getHostSearchForMigrationDelay() { return 0; }
     @Override public Datacenter setHostSearchRetryDelay(double hostSearchDelay) { return this; }
-    @Override public double getPowerInKWatts() { return 0; }
     @Override public String toString() { return "Datacenter.NULL"; }
     @Override public double getTimeZone() { return Integer.MAX_VALUE; }
     @Override public TimeZoned setTimeZone(double timeZone) { return this; }
+    @Override public PowerModelDatacenter getPowerModel() { return PowerModelDatacenter.NULL; }
+    @Override public void setPowerModel(PowerModelDatacenter powerModel) {/**/}
 }
