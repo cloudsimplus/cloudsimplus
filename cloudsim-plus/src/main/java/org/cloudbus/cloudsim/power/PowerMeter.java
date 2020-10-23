@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
 import static org.cloudbus.cloudsim.core.CloudSimTags.POWER_MEASUREMENT;
 
@@ -23,7 +23,7 @@ import static org.cloudbus.cloudsim.core.CloudSimTags.POWER_MEASUREMENT;
  */
 public class PowerMeter extends CloudSimEntity {
 
-    private final Callable<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn;
+    private final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn;
 
     private double measurementInterval;
 
@@ -33,7 +33,7 @@ public class PowerMeter extends CloudSimEntity {
      * Initializes a {@link PowerMeter} to measure power consumption of a single {@link PowerAware} entity.
      */
     public PowerMeter(final Simulation simulation, final PowerAware<? extends PowerModel> powerAwareEntity) {
-        this(simulation, new ArrayList<>(Arrays.asList(powerAwareEntity)));
+        this(simulation, Arrays.asList(powerAwareEntity));
     }
 
     /**
@@ -54,7 +54,7 @@ public class PowerMeter extends CloudSimEntity {
      * <p>If you want to compute power consumption individually for each entity,
      * check {@link #PowerMeter(Simulation, PowerAware)}.</p>
      */
-    public PowerMeter(final Simulation simulation, final Callable<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn) {
+    public PowerMeter(final Simulation simulation, final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn) {
         super(simulation);
         this.powerAwareEntitiesFn = powerAwareEntitiesFn;
     }
@@ -86,22 +86,13 @@ public class PowerMeter extends CloudSimEntity {
      * it's returned the combined power consumption of such entities.
      */
     private void measurePowerConsumption() {
-        try {
-            final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities = powerAwareEntitiesFn.call();
-            final PowerMeasurement measurement =
-                powerAwareEntities.stream()
-                                  .map(PowerAware::getPowerModel)
-                                  .map(PowerModel::getPowerMeasurement)
-                                  .reduce(PowerMeasurement::add)
-                                  .orElse(new PowerMeasurement());
-
-            powerMeasurements.add(measurement);
-        } catch (Exception e) {
-            // call() may raise, in this case we append an empty measurement
-            e.printStackTrace();
-            powerMeasurements.add(new PowerMeasurement());
-        }
-
+        final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities = powerAwareEntitiesFn.get();
+        final PowerMeasurement measurement = powerAwareEntities.stream()
+            .map(PowerAware::getPowerModel)
+            .map(PowerModel::getPowerMeasurement)
+            .reduce(PowerMeasurement::add)
+            .orElse(new PowerMeasurement());
+        powerMeasurements.add(measurement);
         schedule(this, measurementInterval, POWER_MEASUREMENT);
     }
 
