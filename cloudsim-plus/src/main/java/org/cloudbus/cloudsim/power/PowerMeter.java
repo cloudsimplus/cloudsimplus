@@ -22,7 +22,7 @@ import static org.cloudbus.cloudsim.core.CloudSimTags.POWER_MEASUREMENT;
  */
 public class PowerMeter extends CloudSimEntity {
 
-    private final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn;
+    private final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier;
 
     private double measurementInterval;
 
@@ -53,9 +53,9 @@ public class PowerMeter extends CloudSimEntity {
      * <p>If you want to compute power consumption individually for each entity,
      * check {@link #PowerMeter(Simulation, PowerAware)}.</p>
      */
-    public PowerMeter(final Simulation simulation, final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesFn) {
+    public PowerMeter(final Simulation simulation, final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier) {
         super(simulation);
-        this.powerAwareEntitiesFn = powerAwareEntitiesFn;
+        this.powerAwareEntitiesSupplier = powerAwareEntitiesSupplier;
     }
 
     @Override
@@ -85,7 +85,7 @@ public class PowerMeter extends CloudSimEntity {
      * it's returned the combined power consumption of such entities.
      */
     private void measurePowerConsumption() {
-        final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities = powerAwareEntitiesFn.get();
+        final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities = powerAwareEntitiesSupplier.get();
         final PowerMeasurement measurement = powerAwareEntities.stream()
             .map(PowerAware::getPowerModel)
             .map(PowerModel::getPowerMeasurement)
