@@ -91,15 +91,15 @@ public class NetworkExample2 {
         //Maps CloudSim entities to BRITE entities
         //Datacenter0 will correspond to BRITE node 0
         int briteNode = 0;
-        networkTopology.mapNode(datacenterList.get(0).getId(), briteNode);
+        networkTopology.mapNode(datacenterList.get(0), briteNode);
 
         //Datacenter1 will correspond to BRITE node 2
         briteNode = 2;
-        networkTopology.mapNode(datacenterList.get(1).getId(), briteNode);
+        networkTopology.mapNode(datacenterList.get(1), briteNode);
 
         //Broker will correspond to BRITE node 3
         briteNode = 3;
-        networkTopology.mapNode(broker.getId(), briteNode);
+        networkTopology.mapNode(broker, briteNode);
     }
 
     private void createAndSubmitCloudlets() {

@@ -7,6 +7,8 @@
  */
 package org.cloudbus.cloudsim.network.topologies;
 
+import org.cloudbus.cloudsim.core.SimEntity;
+
 /**
  **
  * Implements a network layer by reading the topology from a file in a specific format
@@ -30,44 +32,40 @@ public interface NetworkTopology {
      * Adds a new link in the network topology. The CloudSim entities that
      * represent the source and destination of the link will be mapped to BRITE
      * entities.
-     *  @param srcId ID of the CloudSim entity that represents the link's source
+     *  @param src CloudSim entity that represents the link's source
      * node
-     * @param destId ID of the CloudSim entity that represents the link's
+     * @param dest CloudSim entity that represents the link's
      * destination node
      * @param bw Link's bandwidth
      * @param lat link's latency
-     * @TODO It should receive entities instead of IDs
      */
-    void addLink(long srcId, long destId, double bw, double lat);
+    void addLink(SimEntity src, SimEntity dest, double bw, double lat);
 
     /**
      * Maps a CloudSim entity to a BRITE node in the network topology.
-     * @param cloudSimEntityID ID of the entity being mapped
+     * @param entity CloudSim entity being mapped
      * @param briteID ID of the BRITE node that corresponds to the CloudSim
-     * @TODO It should receive an CloudSim entity instead of an ID
      */
-    void mapNode(long cloudSimEntityID, int briteID);
+    void mapNode(SimEntity entity, int briteID);
 
     /**
      * Un-maps a previously mapped CloudSim entity to a BRITE node in the network
      * topology.
      *
-     * @param cloudSimEntityID ID of the entity being unmapped
-     * @TODO It should receive an CloudSim entity instead of an ID
+     * @param entity CloudSim entity being unmapped
      */
-    void unmapNode(long cloudSimEntityID);
+    void unmapNode(SimEntity entity);
 
     /**
      * Calculates the delay between two nodes.
      *
-     * @param srcID ID of the CloudSim entity that represents the link's source
+     * @param src CloudSim entity that represents the link's source
      * node
-     * @param destID ID of the CloudSim entity that represents the link's
+     * @param dest CloudSim entity that represents the link's
      * destination node
      * @return communication delay between the two nodes
-     * @TODO It should receive entities instead of IDs
      */
-    double getDelay(long srcID, long destID);
+    double getDelay(SimEntity src, SimEntity dest);
 
     /**
      * Checks if the network simulation is working. If there were some problem

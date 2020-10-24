@@ -449,7 +449,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
         // only considers network delay when sending messages between different entities
         if (dest.getId() != getId()) {
-            delay += getNetworkDelay(getId(), dest.getId());
+            delay += getNetworkDelay(this, dest);
         }
 
         schedule(dest, delay, cloudSimTag, data);
@@ -502,7 +502,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param dst destination of the message
      * @return delay to send a message from src to dst
      */
-    private double getNetworkDelay(final long src, final long dst) {
+    private double getNetworkDelay(final SimEntity src, final SimEntity dst) {
         return getSimulation().getNetworkTopology().getDelay(src, dst);
     }
 
