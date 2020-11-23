@@ -63,16 +63,16 @@ public interface VmAllocationPolicy {
     void setDatacenter(Datacenter datacenter);
 
     /**
-     * Allocates a host for a given {@link Vm} or {@link VmGroup}.
+     * Tries to allocate a host for a given {@link Vm} or {@link VmGroup}.
      *
      * @param vm the {@link Vm} or {@link VmGroup} to allocate a host to
-     * @return true if the host could be allocated; false otherwise
+     * @return true if a host could be allocated; false otherwise
      * @see VmGroup
      */
     boolean allocateHostForVm(Vm vm);
 
     /**
-     * Allocates a specified host for a given {@link Vm} or {@link VmGroup}.
+     * Tries to allocate a specified host for a given {@link Vm} or {@link VmGroup}.
      *
      * @param vm the {@link Vm} or {@link VmGroup} to allocate a host to
      * @param host the host to allocate to the given {@link Vm} or {@link VmGroup}
