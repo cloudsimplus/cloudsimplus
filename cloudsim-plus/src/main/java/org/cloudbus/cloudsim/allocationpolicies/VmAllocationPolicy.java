@@ -15,6 +15,7 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -80,6 +81,16 @@ public interface VmAllocationPolicy {
      * @see VmGroup
      */
     boolean allocateHostForVm(Vm vm, Host host);
+
+    /**
+     * Tries to allocate hosts for a collection of {@link Vm}s or {@link VmGroup}s.
+     *
+     * @param vmCollection the {@link Vm} or {@link VmGroup} collection to allocate hosts to
+     * @return an empty list if hosts were allocated to all VMs
+     *         or a list of Vms that a suitable host couldn't be found.
+     * @see VmGroup
+     */
+    <T extends Vm> List<T> allocateHostForVm(Collection<T> vmCollection);
 
     /**
      * Try to scale some Vm's resource vertically up or down, respectively if:

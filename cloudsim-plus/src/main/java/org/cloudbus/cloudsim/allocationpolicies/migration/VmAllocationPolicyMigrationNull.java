@@ -7,10 +7,7 @@ import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 
 /**
@@ -29,6 +26,7 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
     @Override public boolean allocateHostForVm(Vm vm, Host host) {
         return false;
     }
+    @Override public <T extends Vm> List<T> allocateHostForVm(Collection<T> vmCollection) { return Collections.emptyList(); }
     @Override public boolean scaleVmVertically(VerticalVmScaling scaling) {
         return false;
     }

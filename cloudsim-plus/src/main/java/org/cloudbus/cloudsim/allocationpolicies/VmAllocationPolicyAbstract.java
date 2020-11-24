@@ -19,10 +19,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.stream.LongStream;
 
@@ -287,6 +284,13 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
         LOGGER.warn("{}: {}: No suitable host found for {} in {}", vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, datacenter);
         return false;
+    }
+
+    @Override
+    public <T extends Vm> List<T> allocateHostForVm(final Collection<T> vmCollection) {
+        Objects.requireNonNull(vmCollection, "The list of VMs to allocate a host to cannot be null");
+        final List<T> notCreateVmList = vmCollection.stream().filter(vm -> !allocateHostForVm(vm)).collect(toList());
+        return notCreateVmList;
     }
 
     @Override
