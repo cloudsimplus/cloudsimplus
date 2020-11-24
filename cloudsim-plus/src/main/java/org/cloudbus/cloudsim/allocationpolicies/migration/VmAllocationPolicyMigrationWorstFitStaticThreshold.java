@@ -50,7 +50,8 @@ public class VmAllocationPolicyMigrationWorstFitStaticThreshold extends VmAlloca
     public VmAllocationPolicyMigrationWorstFitStaticThreshold(
         final VmSelectionPolicy vmSelectionPolicy,
         final double overUtilizationThreshold,
-        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
+        final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
+    {
         super(vmSelectionPolicy, overUtilizationThreshold, findHostForVmFunction);
     }
 
