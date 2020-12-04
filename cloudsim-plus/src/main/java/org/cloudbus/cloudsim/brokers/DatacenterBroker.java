@@ -414,9 +414,9 @@ public interface DatacenterBroker extends SimEntity {
     List<Cloudlet> getCloudletSubmittedList();
 
     /**
-     * Gets a List of VMs submitted to the broker that are failed to be created inside
+     * Gets a List of VMs submitted to the broker that have failed to be created inside
      * some Datacenter due to lack of suitable Hosts.
-     * <b>VMs are just moved to that list if {@code retryFailedVms} is set to true.</b>
+     * <b>VMs are just moved to that list if {@code retryFailedVms} is not enabled.</b>
      *
      * @param <T> the class of VMs inside the list
      * @return the list of failed VMs
