@@ -111,6 +111,13 @@ public interface DatacenterBroker extends SimEntity {
     <T extends Vm> List<T> getVmExecList();
 
     /**
+     * Gets the total number of VMs submitted to the broker, including created, waiting and failed VMs.
+     *
+     * @return
+     */
+    int getVmsNumber();
+
+    /**
      * Checks if a VM is idle VM and request it to be destroyed at the time defined by
      * the {@link #getVmDestructionDelayFunction()}.
      * The request will be sent if the given delay function returns a value

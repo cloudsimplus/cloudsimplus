@@ -707,13 +707,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return lastSelectedDc != Datacenter.NULL;
     }
 
-    /**
-     * Gets the total number of broker's VMs, including created and waiting ones.
-     *
-     * @return
-     */
-    private int getVmsNumber() {
-        return vmCreatedList.size() + vmWaitingList.size();
+    @Override
+    public int getVmsNumber() {
+        return vmCreatedList.size() + vmWaitingList.size() + vmFailedList.size();
     }
 
     /**
