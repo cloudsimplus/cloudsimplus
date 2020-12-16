@@ -11,7 +11,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.network.NetworkCloudlet;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 
 import java.util.ArrayList;
@@ -79,11 +78,6 @@ public class NetworkVm extends VmSimple {
     /** Indicates if the VM is free or not. */
     public boolean isFree() {
         return free;
-    }
-
-    @Override
-    public int compareTo(final Vm o) {
-        return Double.compare(this.finishTime, ((NetworkVm) o).finishTime);
     }
 
     /**

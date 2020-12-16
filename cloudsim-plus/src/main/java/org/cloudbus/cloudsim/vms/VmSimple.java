@@ -800,18 +800,28 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      */
     @Override
     public int compareTo(final Vm o) {
-        return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity());
+        if(this.equals(Objects.requireNonNull(o))) {
+            return 0;
+        }
+
+        return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity()) +
+               Long.compare(this.getId(), o.getId()) +
+               this.getBroker().compareTo(o.getBroker());
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         final VmSimple vmSimple = (VmSimple) o;
+        return vmSimple.getId() == getId() && getBroker().equals(vmSimple.getBroker());
+    }
 
-        if (getId() != vmSimple.getId()) return false;
-        return getBroker().equals(vmSimple.getBroker());
+    @Override
+    public int hashCode() {
+        int result = getBroker().hashCode();
+        result = 31 * result + Long.hashCode(getId());
+        return result;
     }
 
     @Override
