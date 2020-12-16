@@ -274,7 +274,7 @@ public class HostFaultInjection extends CloudSimEntity {
         Just re-schedule more failures if there are other events to be processed.
         Otherwise, the simulation has finished and no more failures should be scheduled.
 
-        The 2nd condition is a complex operation that must be called only when necessary
+        The 2nd condition may be a complex operation that must be called only when necessary
         in the short-circuit below.
         */
         if (sim.clock() < getMaxTimeToFailInSecs() || sim.isThereAnyFutureEvt(otherEventsPredicate)) {
