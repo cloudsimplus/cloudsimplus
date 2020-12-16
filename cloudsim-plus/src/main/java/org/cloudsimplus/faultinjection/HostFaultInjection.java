@@ -28,6 +28,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -44,11 +45,13 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
+import static org.cloudbus.cloudsim.core.CloudSimTags.HOST_FAILURE;
 
 /**
  * Generates random failures for the {@link Pe}'s of {@link Host}s
@@ -264,17 +267,17 @@ public class HostFaultInjection extends CloudSimEntity {
      * to inject a Host PEs failure.
      */
     private void scheduleFaultInjection() {
-        final long numOfOtherEvents =
-            getSimulation()
-                .getNumberOfFutureEvents(
-                    evt -> evt.getTag() != CloudSimTags.HOST_FAILURE);
+        final Simulation sim = getSimulation();
+
+        //This is a complex operation that must be called only when necessary in the short-circuit condition below
+        final Supplier<Long> otherEventsNum = () -> sim.getNumberOfFutureEvents(evt -> evt.getTag() != HOST_FAILURE);
+
         /*
         Just re-schedule more failures if there are other events to be processed.
         Otherwise, the simulation has finished and no more failures should be scheduled.
         */
-
-        if (numOfOtherEvents > 0 || getSimulation().clock() < getMaxTimeToFailInSecs()) {
-            schedule(this, getTimeDelayForNextFault(), CloudSimTags.HOST_FAILURE);
+        if (sim.clock() < getMaxTimeToFailInSecs() || otherEventsNum.get() > 0 ) {
+            schedule(this, getTimeDelayForNextFault(), HOST_FAILURE);
         }
     }
 
@@ -292,7 +295,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
     @Override
     public void processEvent(final SimEvent evt) {
-        if (evt.getTag() == CloudSimTags.HOST_FAILURE) {
+        if (evt.getTag() == HOST_FAILURE) {
             generateHostFaultAndScheduleNext();
         }
     }
