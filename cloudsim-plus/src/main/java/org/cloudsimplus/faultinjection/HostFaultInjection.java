@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -268,15 +268,16 @@ public class HostFaultInjection extends CloudSimEntity {
      */
     private void scheduleFaultInjection() {
         final Simulation sim = getSimulation();
-
-        //This is a complex operation that must be called only when necessary in the short-circuit condition below
-        final Supplier<Long> otherEventsNum = () -> sim.getNumberOfFutureEvents(evt -> evt.getTag() != HOST_FAILURE);
+        final Predicate<SimEvent> otherEventsPredicate = evt -> evt.getTag() != HOST_FAILURE;
 
         /*
         Just re-schedule more failures if there are other events to be processed.
         Otherwise, the simulation has finished and no more failures should be scheduled.
+
+        The 2nd condition is a complex operation that must be called only when necessary
+        in the short-circuit below.
         */
-        if (sim.clock() < getMaxTimeToFailInSecs() || otherEventsNum.get() > 0 ) {
+        if (sim.clock() < getMaxTimeToFailInSecs() || sim.isThereAnyFutureEvt(otherEventsPredicate)) {
             schedule(this, getTimeDelayForNextFault(), HOST_FAILURE);
         }
     }

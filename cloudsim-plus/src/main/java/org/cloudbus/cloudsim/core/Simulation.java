@@ -482,6 +482,13 @@ public interface Simulation {
     long getNumberOfFutureEvents(Predicate<SimEvent> predicate);
 
     /**
+     * Checks if there is any event in the future queue that matches a given predicate.
+     * @param predicate the predicate to selected the desired events
+     * @return true if any event matching the given predicate is found, false otherwise
+     */
+    boolean isThereAnyFutureEvt(Predicate<SimEvent> predicate);
+
+    /**
      * Gets the last time (in seconds) some Cloudlet was processed in the simulation.
      */
     double getLastCloudletProcessingUpdate();

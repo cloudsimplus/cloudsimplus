@@ -37,7 +37,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "CloudSim Plus 5.5.1";
+    public static final String VERSION = "CloudSim Plus 5.5.2";
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
@@ -934,6 +934,11 @@ public class CloudSim implements Simulation {
         return future.stream()
                 .filter(predicate)
                 .count();
+    }
+
+    @Override
+    public boolean isThereAnyFutureEvt(final Predicate<SimEvent> predicate){
+        return future.stream().anyMatch(predicate);
     }
 
     private boolean isThereFutureEvtsAndNextOneHappensAfterTimeToPause() {

@@ -18,6 +18,7 @@ import java.util.function.Predicate;
  * @see Simulation#NULL
  */
 final class SimulationNull implements Simulation {
+    @Override public boolean isThereAnyFutureEvt(Predicate<SimEvent> predicate) { return false; }
     @Override public boolean isTerminationTimeSet() { return false; }
     @Override public void abort() {/**/}
     @Override public void addEntity(CloudSimEntity entity) {/**/}
