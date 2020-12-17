@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -169,6 +170,9 @@ public class CloudSim implements Simulation {
     private final Set<EventListener<EventInfo>> onClockTickListeners;
     private final Set<EventListener<EventInfo>> onSimulationStartListeners;
     private boolean processEventsInParallel;
+
+    private long lastPurge = System.currentTimeMillis();
+    private List<CloudSimEntity> removeEntityList = new LinkedList();
 
     /**
      * Creates a CloudSim simulation.
@@ -583,6 +587,18 @@ public class CloudSim implements Simulation {
             if (ent.getState() == SimEntity.State.RUNNABLE) {
                 ent.run(until);
             }
+        }
+
+        /*
+        Since entities never get removed from the entities list, this can create
+        a memory leak with severe performance implications. This hacky fix
+        periodically purges finished entities to enable large-scale experiments.
+        */
+        long now = System.currentTimeMillis();
+        if (now - lastPurge > 1000) {
+            removeEntityList.forEach(entities::remove);
+            removeEntityList = entities.stream().filter(CloudSimEntity::isFinished).collect(Collectors.toList());
+            lastPurge = now;
         }
     }
 
