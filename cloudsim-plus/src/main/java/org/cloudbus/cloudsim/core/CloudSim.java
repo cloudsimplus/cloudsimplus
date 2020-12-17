@@ -589,11 +589,15 @@ public class CloudSim implements Simulation {
             }
         }
 
-        /*
-        Since entities never get removed from the entities list, this can create
-        a memory leak with severe performance implications. This hacky fix
-        periodically purges finished entities to enable large-scale experiments.
-        */
+        purgeEntities();
+    }
+
+    /**
+     * Since entities never get removed from the entities list, this can create
+     * a memory leak with severe performance implications. This hacky fix
+     * periodically purges finished entities to enable large-scale experiments.
+    */
+    private void purgeEntities() {
         final long now = System.currentTimeMillis();
         if (now - lastPurge > 1000) {
             entities.removeAll(removeEntityList);
