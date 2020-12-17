@@ -172,7 +172,8 @@ public class CloudSim implements Simulation {
     private boolean processEventsInParallel;
 
     private long lastPurge = System.currentTimeMillis();
-    private List<CloudSimEntity> removeEntityList = new LinkedList();
+    private List<CloudSimEntity> removeEntityList = new LinkedList<>();
+    private final boolean purgeFinishedEntities;
 
     /**
      * Creates a CloudSim simulation.
@@ -182,7 +183,21 @@ public class CloudSim implements Simulation {
      * @see #CloudSim(double)
      */
     public CloudSim(){
-        this(0.1);
+        this(false);
+    }
+
+    /**
+     * Creates a CloudSim simulation that enables purging finished entities,
+     * in order to reduce memory utilization and increase performance for large
+     * scale simulations.
+     * Internally it creates a CloudInformationService.
+     *
+     * @see CloudInformationService
+     * @see #CloudSim(double)
+     * @param purgeFinishedEntities true to remove finished entities from the entity list, false to keep them
+     */
+    public CloudSim(final boolean purgeFinishedEntities){
+        this(0.1, purgeFinishedEntities);
     }
 
     /**
@@ -195,6 +210,10 @@ public class CloudSim implements Simulation {
      * @see CloudInformationService
      */
     public CloudSim(final double minTimeBetweenEvents) {
+        this(minTimeBetweenEvents, false);
+    }
+
+    private CloudSim(final double minTimeBetweenEvents, final boolean purgeFinishedEntities) {
         this.entities = new ArrayList<>();
         this.future = new FutureQueue();
         this.deferred = new DeferredQueue();
@@ -207,6 +226,7 @@ public class CloudSim implements Simulation {
         this.onSimulationPauseListeners = new HashSet<>();
         this.onClockTickListeners = new HashSet<>();
         this.onSimulationStartListeners = new HashSet<>();
+        this.purgeFinishedEntities = purgeFinishedEntities;
 
         // NOTE: the order for the lines below is important
         this.calendar = Calendar.getInstance();
@@ -598,6 +618,10 @@ public class CloudSim implements Simulation {
      * periodically purges finished entities to enable large-scale experiments.
     */
     private void purgeEntities() {
+        if(!purgeFinishedEntities){
+            return;
+        }
+
         final long now = System.currentTimeMillis();
         if (now - lastPurge > 1000) {
             entities.removeAll(removeEntityList);
