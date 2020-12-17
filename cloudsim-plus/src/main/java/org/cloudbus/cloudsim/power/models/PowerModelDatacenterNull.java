@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.power.models;
 
+import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
 
 /**
@@ -12,6 +13,11 @@ class PowerModelDatacenterNull extends PowerModelDatacenter {
     @Override
     public PowerMeasurement getPowerMeasurement() {
         return new PowerMeasurement();
+    }
+
+    @Override
+    public Datacenter getDatacenter() {
+        return Datacenter.NULL;
     }
 
 }
