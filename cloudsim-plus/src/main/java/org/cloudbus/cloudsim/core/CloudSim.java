@@ -561,13 +561,11 @@ public class CloudSim implements Simulation {
         processEvent(firstEvent);
         future.remove(firstEvent);
 
-        //Uses iterator to increase efficiency and avoid ConcurrentModificationException while removing
-        for(final Iterator<SimEvent> it = future.iterator(); it.hasNext();){
-            SimEvent evt = it.next();
-            if(evt.getTime() == firstEvent.getTime()){
-                processEvent(evt);
-                it.remove();
-            }
+        while(!future.isEmpty()) {
+            SimEvent evt = future.first();
+            if(evt.getTime() != firstEvent.getTime()) break;
+            processEvent(evt);
+            future.remove(evt);
         }
     }
 
