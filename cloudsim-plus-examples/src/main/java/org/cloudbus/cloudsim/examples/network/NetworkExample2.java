@@ -85,7 +85,7 @@ public class NetworkExample2 {
 
     private void configureNetwork() {
         //Configures network by loading the network topology file
-        NetworkTopology networkTopology = BriteNetworkTopology.getInstance(NETWORK_TOPOLOGY_FILE);
+        BriteNetworkTopology networkTopology = BriteNetworkTopology.getInstance(NETWORK_TOPOLOGY_FILE);
         simulation.setNetworkTopology(networkTopology);
 
         //Maps CloudSim entities to BRITE entities

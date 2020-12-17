@@ -58,7 +58,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     private double[][] bwMatrix;
 
     /**
-     * The Topological Graph of the network.
+     * @see #getTopologicalGraph()
      */
     private TopologicalGraph graph;
 
@@ -167,7 +167,6 @@ public final class BriteNetworkTopology implements NetworkTopology {
         return mtx;
     }
 
-
     @Override
     public void addLink(final SimEntity src, final SimEntity dest, final double bandwidth, final double latency) {
         if (getTopologicalGraph() == null) {
@@ -188,6 +187,11 @@ public final class BriteNetworkTopology implements NetworkTopology {
         generateMatrices();
     }
 
+    @Override
+    public void removeLink(SimEntity src, SimEntity dest) {
+        throw new UnsupportedOperationException("Removing links is not yet supported on BriteNetworkTopologies");
+    }
+
     private void addNodeMapping(final SimEntity entity) {
         if (entitiesMap.putIfAbsent(entity, nextIdx) == null) {
             getTopologicalGraph().addNode(new TopologicalNode(nextIdx));
@@ -195,7 +199,11 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
     }
 
-    @Override
+    /**
+     * Maps a CloudSim entity to a BRITE node in the network topology.
+     * @param entity CloudSim entity being mapped
+     * @param briteID ID of the BRITE node that corresponds to the CloudSim
+     */
     public void mapNode(final SimEntity entity, final int briteID) {
         if (!networkEnabled) {
             return;
@@ -214,7 +222,12 @@ public final class BriteNetworkTopology implements NetworkTopology {
         entitiesMap.put(entity, briteID);
     }
 
-    @Override
+    /**
+     * Un-maps a previously mapped CloudSim entity to a BRITE node in the network
+     * topology.
+     *
+     * @param entity CloudSim entity being unmapped
+     */
     public void unmapNode(final SimEntity entity) {
         if (!networkEnabled) {
             return;
@@ -236,12 +249,21 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
     }
 
-    @Override
+    /**
+     * Checks if the network simulation is working. If there were some problem
+     * during creation of network (e.g., during parsing of BRITE file) that does
+     * not allow a proper simulation of the network, this method returns false.
+     *
+     * @return $true if network simulation is working, $false otherwise
+     */
     public boolean isNetworkEnabled() {
         return networkEnabled;
     }
 
-    @Override
+    /**
+     * Gets the Topological Graph of the network.
+     * @return
+     */
     public TopologicalGraph getTopologicalGraph() {
         return graph;
     }
