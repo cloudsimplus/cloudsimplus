@@ -562,8 +562,9 @@ public class CloudSim implements Simulation {
         future.remove(firstEvent);
 
         while(!future.isEmpty()) {
-            SimEvent evt = future.first();
-            if(evt.getTime() != firstEvent.getTime()) break;
+            final SimEvent evt = future.first();
+            if(evt.getTime() != firstEvent.getTime())
+                break;
             processEvent(evt);
             future.remove(evt);
         }
