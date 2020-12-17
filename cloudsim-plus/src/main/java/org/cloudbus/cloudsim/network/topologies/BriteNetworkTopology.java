@@ -167,7 +167,6 @@ public final class BriteNetworkTopology implements NetworkTopology {
         return mtx;
     }
 
-
     @Override
     public void addLink(final SimEntity src, final SimEntity dest, final double bandwidth, final double latency) {
         if (getTopologicalGraph() == null) {
@@ -188,6 +187,11 @@ public final class BriteNetworkTopology implements NetworkTopology {
         generateMatrices();
     }
 
+    @Override
+    public void removeLink(SimEntity src, SimEntity dest) {
+        throw new UnsupportedOperationException("Removing links is not yet supported on BriteNetworkTopologies");
+    }
+
     private void addNodeMapping(final SimEntity entity) {
         if (entitiesMap.putIfAbsent(entity, nextIdx) == null) {
             getTopologicalGraph().addNode(new TopologicalNode(nextIdx));
@@ -195,7 +199,6 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
     }
 
-    @Override
     public void mapNode(final SimEntity entity, final int briteID) {
         if (!networkEnabled) {
             return;
@@ -214,7 +217,6 @@ public final class BriteNetworkTopology implements NetworkTopology {
         entitiesMap.put(entity, briteID);
     }
 
-    @Override
     public void unmapNode(final SimEntity entity) {
         if (!networkEnabled) {
             return;
@@ -236,12 +238,10 @@ public final class BriteNetworkTopology implements NetworkTopology {
         }
     }
 
-    @Override
     public boolean isNetworkEnabled() {
         return networkEnabled;
     }
 
-    @Override
     public TopologicalGraph getTopologicalGraph() {
         return graph;
     }

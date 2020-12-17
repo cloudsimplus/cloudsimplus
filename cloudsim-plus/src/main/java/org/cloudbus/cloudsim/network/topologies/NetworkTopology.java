@@ -18,7 +18,6 @@ import org.cloudbus.cloudsim.core.SimEntity;
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
  *
- * @see BriteNetworkTopology
  * @since CloudSim Plus 1.0
  */
 public interface NetworkTopology {
@@ -41,20 +40,7 @@ public interface NetworkTopology {
      */
     void addLink(SimEntity src, SimEntity dest, double bw, double lat);
 
-    /**
-     * Maps a CloudSim entity to a BRITE node in the network topology.
-     * @param entity CloudSim entity being mapped
-     * @param briteID ID of the BRITE node that corresponds to the CloudSim
-     */
-    void mapNode(SimEntity entity, int briteID);
-
-    /**
-     * Un-maps a previously mapped CloudSim entity to a BRITE node in the network
-     * topology.
-     *
-     * @param entity CloudSim entity being unmapped
-     */
-    void unmapNode(SimEntity entity);
+    void removeLink(SimEntity src, SimEntity dest);
 
     /**
      * Calculates the delay between two nodes.
@@ -67,17 +53,4 @@ public interface NetworkTopology {
      */
     double getDelay(SimEntity src, SimEntity dest);
 
-    /**
-     * Checks if the network simulation is working. If there were some problem
-     * during creation of network (e.g., during parsing of BRITE file) that does
-     * not allow a proper simulation of the network, this method returns false.
-     *
-     * @return $true if network simulation is working, $false otherwise
-     */
-    boolean isNetworkEnabled();
-
-    /**
-     * @return the graph
-     */
-    TopologicalGraph getTopologicalGraph();
 }
