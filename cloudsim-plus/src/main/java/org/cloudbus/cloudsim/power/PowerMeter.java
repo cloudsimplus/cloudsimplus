@@ -112,7 +112,7 @@ public class PowerMeter extends CloudSimEntity {
      */
     private void scheduleMeasurement() {
         if (getSimulation().isThereAnyFutureEvt(evt -> evt.getTag() != POWER_MEASUREMENT)) {
-            schedule(this, measurementInterval, POWER_MEASUREMENT);
+            schedule(measurementInterval, POWER_MEASUREMENT);
         }
     }
 
