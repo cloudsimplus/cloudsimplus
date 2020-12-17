@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.power.models;
 
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
 
 /**
@@ -16,5 +17,10 @@ class PowerModelHostNull extends PowerModelHost {
     @Override
     public double getPower(double utilizationFraction) throws IllegalArgumentException {
         return 0;
+    }
+
+    @Override
+    public Host getHost() {
+        return Host.NULL;
     }
 }

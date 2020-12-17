@@ -26,7 +26,7 @@ public class PowerMeter extends CloudSimEntity {
     private final Supplier<List<? extends PowerAware<? extends PowerModel>>> powerAwareEntitiesSupplier;
 
     /** @see #getMeasurementInterval() */
-    private double measurementInterval;
+    private double measurementInterval = 1;
 
     /** @see #getPowerMeasurements() () */
     private final List<PowerMeasurement> powerMeasurements = new LinkedList<>();
@@ -136,11 +136,12 @@ public class PowerMeter extends CloudSimEntity {
      * @param measurementInterval the value to set
      * @return
      */
-    public void setMeasurementInterval(final double measurementInterval) {
+    public PowerMeter setMeasurementInterval(final double measurementInterval) {
         if(measurementInterval <= 0){
             throw new IllegalArgumentException("measurementInterval must be a positive number.");
         }
 
         this.measurementInterval = measurementInterval;
+        return this;
     }
 }
