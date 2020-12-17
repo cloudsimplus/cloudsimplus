@@ -594,9 +594,9 @@ public class CloudSim implements Simulation {
         a memory leak with severe performance implications. This hacky fix
         periodically purges finished entities to enable large-scale experiments.
         */
-        long now = System.currentTimeMillis();
+        final long now = System.currentTimeMillis();
         if (now - lastPurge > 1000) {
-            removeEntityList.forEach(entities::remove);
+            entities.removeAll(removeEntityList);
             removeEntityList = entities.stream().filter(CloudSimEntity::isFinished).collect(Collectors.toList());
             lastPurge = now;
         }
