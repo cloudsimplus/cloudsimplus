@@ -79,6 +79,7 @@ public class PowerMeter extends CloudSimEntity {
         switch (evt.getTag()) {
             case POWER_MEASUREMENT:
                 measurePowerConsumption();
+                scheduleMeasurement();
                 break;
             case CloudSimTags.END_OF_SIMULATION:
                 this.shutdownEntity();
@@ -103,7 +104,16 @@ public class PowerMeter extends CloudSimEntity {
             .reduce(PowerMeasurement::add)
             .orElse(new PowerMeasurement());
         powerMeasurements.add(measurement);
-        schedule(this, measurementInterval, POWER_MEASUREMENT);
+    }
+
+    /**
+     * Just re-schedule measurements if there are other events to be processed.
+     * Otherwise, the simulation has finished and no more measurements should be scheduled.
+     */
+    private void scheduleMeasurement() {
+        if (getSimulation().isThereAnyFutureEvt(evt -> evt.getTag() != POWER_MEASUREMENT)) {
+            schedule(measurementInterval, POWER_MEASUREMENT);
+        }
     }
 
     @Override
