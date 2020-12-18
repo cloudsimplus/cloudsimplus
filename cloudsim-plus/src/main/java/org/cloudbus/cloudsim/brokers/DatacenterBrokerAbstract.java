@@ -39,6 +39,12 @@ import static java.util.Objects.requireNonNull;
  * @author Manoel Campos da Silva Filho
  */
 public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements DatacenterBroker {
+    /**
+     * A message tag used for the broker to send a message to itself requesting the shutdown.
+     * That ensures a graceful shutdown, after other broker events are processed.
+     */
+    public static final int SHUTDOWN = -2;
+
     private boolean selectClosestDatacenter;
 
     /**
@@ -133,6 +139,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #getVmDestructionDelayFunction()
      */
     private Function<Vm, Double> vmDestructionDelayFunction;
+
+    /**
+     * Indicates if a shutdown request was already sent or not.
+     */
+    private boolean shutdownRequested;
 
     /**
      * Creates a DatacenterBroker giving a specific name.
@@ -484,7 +495,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return true;
         }
 
-        if (evt.getTag() == CloudSimTags.END_OF_SIMULATION) {
+        if (evt.getTag() == SHUTDOWN || evt.getTag() == CloudSimTags.END_OF_SIMULATION) {
             shutdownEntity();
             return true;
         }
@@ -805,11 +816,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             }
         }
 
-        if (isTimeToShutdownBroker() && isBrokerIdle()) {
-            shutdownEntity();
-        }
-
+        shutDownIfIdle();
         return this;
+    }
+
+    @Override
+    public void shutDownIfIdle() {
+        if (!shutdownRequested && isTimeToShutdownBroker()) {
+            schedule(SHUTDOWN);
+            shutdownRequested = true;
+        }
     }
 
     @Override
@@ -862,9 +878,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return false;
     }
 
+    /**
+     * Checks if the broker is still alive and it's idle, so that it may be shutdown
+     * @return
+     */
     private boolean isTimeToShutdownBroker() {
         return isAlive() &&
-            (!getSimulation().isTerminationTimeSet() || getSimulation().isTimeToTerminateSimulationUnderRequest());
+               (!getSimulation().isTerminationTimeSet() || getSimulation().isTimeToTerminateSimulationUnderRequest())
+               && isBrokerIdle();
     }
 
     private boolean isBrokerIdle() {

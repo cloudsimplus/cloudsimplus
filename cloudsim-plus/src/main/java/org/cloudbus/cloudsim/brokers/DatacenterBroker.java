@@ -131,6 +131,11 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker requestIdleVmDestruction(Vm vm);
 
     /**
+     * Requests the broker shutdown if it's idle.
+    */
+    void shutDownIfIdle();
+
+    /**
      * Destroys the passed VM.
      *
      * @param vm Virtual machine to be destroyed
