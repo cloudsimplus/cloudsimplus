@@ -170,8 +170,6 @@ public class CloudSim implements Simulation {
     private final Set<EventListener<EventInfo>> onSimulationStartListeners;
     private boolean processEventsInParallel;
 
-    private long lastPurge = System.currentTimeMillis();;
-
     /**
      * Creates a CloudSim simulation.
      * Internally it creates a CloudInformationService.
@@ -503,6 +501,10 @@ public class CloudSim implements Simulation {
         }
     }
 
+    protected void removeFinishedEntity(final CloudSimEntity entity){
+        entities.remove(entity);
+    }
+
     /**
      * Run one tick of the simulation, processing and removing the
      * events in the {@link #future future event queue} that happen
@@ -589,21 +591,6 @@ public class CloudSim implements Simulation {
             if (ent.getState() == SimEntity.State.RUNNABLE) {
                 ent.run(until);
             }
-        }
-
-        purgeEntities();
-    }
-
-    /**
-     * Since entities never get removed from the entities list, this can create
-     * a memory leak with severe performance implications. This hacky fix
-     * periodically purges finished entities to enable large-scale experiments.
-    */
-    private void purgeEntities() {
-        final long now = System.currentTimeMillis();
-        if (now - lastPurge > 1000) {
-            entities.removeIf(CloudSimEntity::isFinished);
-            lastPurge = now;
         }
     }
 
