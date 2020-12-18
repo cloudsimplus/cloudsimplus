@@ -15,41 +15,20 @@ import java.util.Objects;
  */
 public class PowerMeasurement {
 
-    /** @see #getStaticUsage() */
-    private double staticUsage;
+    /** @see #getStaticPower() */
+    private double staticPower;
 
-    /** @see #getDynamicUsage() */
-    private double dynamicUsage;
+    /** @see #getDynamicPower() */
+    private double dynamicPower;
 
     /**
      * Instantiates a power measurement with a given static and dynamic power consumption.
-     * @param staticUsage power (in watts) the entity consumes when idle
-     * @param dynamicUsage power (in watts) the entity consumes according to its load
+     * @param staticPower power (in watts) the entity consumes when idle
+     * @param dynamicPower power (in watts) the entity consumes according to its load
      */
-    public PowerMeasurement(final double staticUsage, final double dynamicUsage) {
-        this.staticUsage = validatePower(staticUsage, "staticPower");
-        this.dynamicUsage = validatePower(dynamicUsage, "maxPower");
-    }
-
-    /**
-     * Checks if a power value (in Watts) is valid.
-     * @param power the value to validate
-     * @param fieldName the name of the field/variable storing the value
-     * @return the given power if it's valid
-     * @throws IllegalArgumentException when the value is smaller than 1
-     */
-    public static double validatePower(final double power, final String fieldName) {
-        if (power < 0) {
-            throw new IllegalArgumentException(fieldName+" cannot be negative");
-        }
-
-        if(power < 1){
-            throw new IllegalArgumentException(
-                fieldName +
-                " must be in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.");
-        }
-
-        return power;
+    public PowerMeasurement(final double staticPower, final double dynamicPower) {
+        this.staticPower = staticPower;
+        this.dynamicPower = dynamicPower;
     }
 
     /**
@@ -63,24 +42,24 @@ public class PowerMeasurement {
      * Gets the total power consumed by the entity (in Watts)
      * @return
      */
-    public double getTotalUsage() {
-        return staticUsage + dynamicUsage;
+    public double getTotalPower() {
+        return staticPower + dynamicPower;
     }
 
     /**
      * Gets the static power the entity consumes even if it's idle (in Watts).
      * @return
      */
-    public double getStaticUsage() {
-        return staticUsage;
+    public double getStaticPower() {
+        return staticPower;
     }
 
     /**
      * Gets the dynamic power the entity consumes according to its load (in Watts).
      * @return
      */
-    public double getDynamicUsage() {
-        return dynamicUsage;
+    public double getDynamicPower() {
+        return dynamicPower;
     }
 
     /**
@@ -92,8 +71,8 @@ public class PowerMeasurement {
     public PowerMeasurement add(final PowerMeasurement measurement) {
         Objects.requireNonNull(measurement, "measurement cannot be null");
         return new PowerMeasurement(
-            staticUsage + measurement.getStaticUsage(),
-            dynamicUsage + measurement.getDynamicUsage()
+            staticPower + measurement.getStaticPower(),
+            dynamicPower + measurement.getDynamicPower()
         );
     }
 
@@ -105,8 +84,8 @@ public class PowerMeasurement {
      */
     public PowerMeasurement multiply(final double factor) {
         return new PowerMeasurement(
-            staticUsage * factor,
-            dynamicUsage * factor
+            staticPower * factor,
+            dynamicPower * factor
         );
     }
 }

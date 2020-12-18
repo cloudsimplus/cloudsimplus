@@ -25,7 +25,7 @@ public interface PowerModel {
      * representing the Watts consumed.
      */
     default double getPower() {
-        return getPowerMeasurement().getTotalUsage();
+        return getPowerMeasurement().getTotalPower();
     }
 }
 
