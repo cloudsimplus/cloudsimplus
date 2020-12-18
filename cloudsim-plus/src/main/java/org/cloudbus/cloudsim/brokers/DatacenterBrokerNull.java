@@ -44,7 +44,7 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     }
     @Override public int getVmsNumber() { return 0; }
     @Override public DatacenterBroker requestIdleVmDestruction(Vm vm) { return this; }
-    @Override public void shutDownIfIdle() {/**/}
+    @Override public void requestShutdownWhenIdle() {/**/}
     @Override public List<Cloudlet> destroyVm(Vm vm) { return Collections.emptyList(); }
     @Override public <T extends Vm> List<T> getVmCreatedList() { return Collections.emptyList(); }
     @Override public DatacenterBroker setDatacenterMapper(BiFunction<Datacenter, Vm, Datacenter> datacenterMapper) { return this; }

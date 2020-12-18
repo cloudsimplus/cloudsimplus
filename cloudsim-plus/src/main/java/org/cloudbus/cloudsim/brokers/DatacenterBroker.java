@@ -133,7 +133,7 @@ public interface DatacenterBroker extends SimEntity {
     /**
      * Requests the broker shutdown if it's idle.
     */
-    void shutDownIfIdle();
+    void requestShutdownWhenIdle();
 
     /**
      * Destroys the passed VM.

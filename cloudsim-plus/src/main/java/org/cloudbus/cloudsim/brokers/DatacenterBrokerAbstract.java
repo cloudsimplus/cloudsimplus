@@ -820,12 +820,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             }
         }
 
-        shutDownIfIdle();
+        requestShutdownWhenIdle();
         return this;
     }
 
     @Override
-    public void shutDownIfIdle() {
+    public void requestShutdownWhenIdle() {
         if (!shutdownRequested && isTimeToShutdownBroker()) {
             schedule(SHUTDOWN);
             shutdownRequested = true;

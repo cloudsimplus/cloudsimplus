@@ -605,7 +605,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             LOGGER.info(msg);
         else LOGGER.warn(msg);
 
-        vm.getBroker().shutDownIfIdle();
+        vm.getBroker().requestShutdownWhenIdle();
     }
 
     private String generateNotFinishedCloudletsWarning(final Vm vm) {
