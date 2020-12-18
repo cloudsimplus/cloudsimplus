@@ -109,7 +109,7 @@ class FinishedEntitiesPurgeTest {
     @BeforeAll
     void setUp() {
         buildAndStartSimulation();
-        printFinishedCloudlets();
+        //printFinishedCloudlets();
     }
 
     /**
