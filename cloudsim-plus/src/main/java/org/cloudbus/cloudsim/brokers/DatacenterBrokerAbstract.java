@@ -145,6 +145,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private boolean shutdownRequested;
 
+    /** @see #isShutdownWhenIdle()  */
+    private boolean shutdownWhenIdle;
+
     /**
      * Creates a DatacenterBroker giving a specific name.
      * Subclasses usually should provide this constructor and
@@ -164,6 +167,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.lastSubmittedVm = Vm.NULL;
         this.lastSelectedVm = Vm.NULL;
         this.lastSelectedDc = Datacenter.NULL;
+        this.shutdownWhenIdle = true;
 
         vmCreationRequests = 0;
         vmCreationAcks = 0;
@@ -885,7 +889,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private boolean isTimeToShutdownBroker() {
         return isAlive() &&
                (!getSimulation().isTerminationTimeSet() || getSimulation().isTimeToTerminateSimulationUnderRequest())
-               && isBrokerIdle();
+               && shutdownWhenIdle && isBrokerIdle();
     }
 
     private boolean isBrokerIdle() {
@@ -1250,5 +1254,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void setRetryFailedVms(final boolean retryFailedVms) {
         this.retryFailedVms = retryFailedVms;
+    }
+
+    @Override
+    public boolean isShutdownWhenIdle() {
+        return shutdownWhenIdle;
+    }
+
+    @Override
+    public DatacenterBroker setShutdownWhenIdle(final boolean shutdownWhenIdle) {
+        this.shutdownWhenIdle = shutdownWhenIdle;
+        return this;
     }
 }

@@ -458,4 +458,16 @@ public interface DatacenterBroker extends SimEntity {
      * </ul>
      */
     void setRetryFailedVms(boolean retryFailedVms);
+
+    /**
+     * Checks if the broker must be shut down after becoming idle.
+     * @return
+     */
+    boolean isShutdownWhenIdle();
+
+    /**
+     * Indicates if the broker must be shut down after becoming idle.
+     * @return
+     */
+    DatacenterBroker setShutdownWhenIdle(boolean shutdownWhenIdle);
 }
