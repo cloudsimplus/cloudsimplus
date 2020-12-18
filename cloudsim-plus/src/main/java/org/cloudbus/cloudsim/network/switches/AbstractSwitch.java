@@ -98,7 +98,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     @Override
-    protected void startEntity() {
+    protected void startInternal() {
         LOGGER.info("{} is starting...", getName());
         schedule(this, 0, CloudSimTags.DATACENTER_LIST_REQUEST);
     }
@@ -269,8 +269,8 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     @Override
-    public void shutdownEntity() {
-        super.shutdownEntity();
+    public void shutdown() {
+        super.shutdown();
         LOGGER.info("{} is shutting down...", getName());
     }
 

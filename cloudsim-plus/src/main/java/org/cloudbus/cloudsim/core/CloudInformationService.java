@@ -59,7 +59,7 @@ public class CloudInformationService extends CloudSimEntity {
      * The method has no effect at the current class.
      */
     @Override
-    protected void startEntity() {/**/}
+    protected void startInternal() {/**/}
 
     @Override
     public void processEvent(SimEvent evt) {
@@ -84,8 +84,8 @@ public class CloudInformationService extends CloudSimEntity {
     }
 
     @Override
-    public void shutdownEntity() {
-        super.shutdownEntity();
+    public void shutdown() {
+        super.shutdown();
         LOGGER.info("{}: Notify all CloudSim Plus entities to shutdown.{}", super.getName(), System.lineSeparator());
 
         signalShutdown(datacenterList);

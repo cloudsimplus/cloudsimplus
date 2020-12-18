@@ -240,7 +240,7 @@ public class CloudSim implements Simulation {
             entitiesAlive.forEach(SimEntity::run);
         }
 
-        entitiesAlive.forEach(SimEntity::shutdownEntity);
+        entitiesAlive.forEach(SimEntity::shutdown);
         running = false;
 
         printSimulationFinished();

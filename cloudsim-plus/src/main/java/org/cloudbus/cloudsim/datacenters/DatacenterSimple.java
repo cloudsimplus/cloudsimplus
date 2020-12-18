@@ -267,7 +267,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 getSimulation().clockStr(), getClass().getSimpleName(), host.getId(), this);
             fault.generateHostFault(host);
         } finally{
-            fault.shutdownEntity();
+            fault.shutdown();
         }
 
         /*If the Host was found in this Datacenter, cancel the message sent to others
@@ -866,13 +866,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public void shutdownEntity() {
-        super.shutdownEntity();
+    public void shutdown() {
+        super.shutdown();
         LOGGER.info("{}: {} is shutting down...", getSimulation().clockStr(), getName());
     }
 
     @Override
-    protected void startEntity() {
+    protected void startInternal() {
         LOGGER.info("{}: {} is starting...", getSimulation().clockStr(), getName());
         sendNow(getSimulation().getCloudInfoService(), CloudSimTags.DATACENTER_REGISTRATION_REQUEST, this);
     }

@@ -70,7 +70,7 @@ public class PowerMeter extends CloudSimEntity {
     }
 
     @Override
-    protected void startEntity() {
+    protected void startInternal() {
         schedule(POWER_MEASUREMENT);
     }
 
@@ -82,7 +82,7 @@ public class PowerMeter extends CloudSimEntity {
                 scheduleMeasurement();
                 break;
             case CloudSimTags.END_OF_SIMULATION:
-                this.shutdownEntity();
+                this.shutdown();
                 break;
             default:
                 throw new RuntimeException("Unknown Event: " + evt);

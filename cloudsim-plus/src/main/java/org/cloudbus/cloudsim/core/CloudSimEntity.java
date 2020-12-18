@@ -94,18 +94,18 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * {@inheritDoc}.
      * It performs general initialization tasks that are common for every entity
-     * and executes the specific entity startup code by calling {@link #startEntity()}.
+     * and executes the specific entity startup code by calling {@link #startInternal()}.
      *
-     * @see #startEntity()
+     * @see #startInternal()
      */
     @Override
     public void start() {
-        startEntity();
+        startInternal();
         this.setStarted(true);
     }
 
     @Override
-    public void shutdownEntity() {
+    public void shutdown() {
         setState(State.FINISHED);
         this.shutdownTime = simulation.clock();
     }
@@ -113,7 +113,7 @@ public abstract class CloudSimEntity implements SimEntity {
     /**
      * Defines the logic to be performed by the entity when the simulation starts.
      */
-    protected abstract void startEntity();
+    protected abstract void startInternal();
 
     @Override
     public boolean schedule(final SimEntity dest, final double delay, final int tag, final Object data) {

@@ -500,7 +500,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         if (evt.getTag() == SHUTDOWN || evt.getTag() == CloudSimTags.END_OF_SIMULATION) {
-            shutdownEntity();
+            shutdown();
             return true;
         }
 
@@ -683,7 +683,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             LOGGER.error(
                 "{}: {}: None of the requested {} VMs could be created because suitable Hosts weren't found in any available Datacenter. Shutting broker down...",
                 getSimulation().clockStr(), getName(), vmWaitingList.size());
-            shutdownEntity();
+            shutdown();
             return;
         }
 
@@ -1018,14 +1018,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     @Override
-    public void shutdownEntity() {
-        super.shutdownEntity();
+    public void shutdown() {
+        super.shutdown();
         LOGGER.info("{}: {} is shutting down...", getSimulation().clockStr(), getName());
         requestVmDestructionAfterAllCloudletsFinished();
     }
 
     @Override
-    public void startEntity() {
+    public void startInternal() {
         LOGGER.info("{} is starting...", getName());
         schedule(getSimulation().getCloudInfoService(), 0, CloudSimTags.DATACENTER_LIST_REQUEST);
     }

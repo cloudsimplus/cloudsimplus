@@ -258,7 +258,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     @Override
-    protected void startEntity() {
+    protected void startInternal() {
         scheduleFaultInjection();
     }
 

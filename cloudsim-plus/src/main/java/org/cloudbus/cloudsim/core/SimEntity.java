@@ -171,7 +171,7 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * before the simulation finishes. If you want to save data in log files
      * this is the method in which the corresponding code would be placed.
      */
-    void shutdownEntity();
+    void shutdown();
 
     /**
      * Sets the Entity name.
