@@ -243,7 +243,7 @@ class FinishedEntitiesPurgeTest {
         Log.setLevel(Level.WARN);
         final double startTime = TimeUtil.currentTimeSecs();
 
-        simulation = new CloudSim(true);
+        simulation = new CloudSim();
         datacenter0 = createDatacenter();
         createBrokers();
         simulation.addOnClockTickListener(this::onClockTickListener);
