@@ -31,4 +31,5 @@ public interface SimEntityNullBase extends SimEntity {
     @Override default SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override default String getName() {  return ""; }
     @Override default long getId() { return -1; }
+    @Override default double getShutdownTime(){ return -1; };
 }

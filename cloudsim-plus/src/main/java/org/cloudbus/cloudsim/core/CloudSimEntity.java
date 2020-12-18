@@ -53,6 +53,9 @@ public abstract class CloudSimEntity implements SimEntity {
      */
     private State state;
 
+    /** @see #getShutdownTime() */
+    private double shutdownTime;
+
     /**
      * Creates a new entity.
      *
@@ -65,6 +68,7 @@ public abstract class CloudSimEntity implements SimEntity {
         state = State.RUNNABLE;
         this.simulation.addEntity(this);
         this.started = false;
+        this.shutdownTime = -1;
     }
 
     /**
@@ -103,6 +107,7 @@ public abstract class CloudSimEntity implements SimEntity {
     @Override
     public void shutdownEntity() {
         setState(State.FINISHED);
+        this.shutdownTime = simulation.clock();
     }
 
     /**
@@ -551,5 +556,10 @@ public abstract class CloudSimEntity implements SimEntity {
         int result = simulation.hashCode();
         result = 31 * result + Long.hashCode(id);
         return result;
+    }
+
+    @Override
+    public double getShutdownTime() {
+        return shutdownTime;
     }
 }

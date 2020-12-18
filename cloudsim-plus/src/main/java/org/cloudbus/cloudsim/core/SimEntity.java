@@ -19,6 +19,14 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  */
 public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
     /**
+     * Gets the time the entity was shutdown (in seconds).
+     * If the entity {@link #isAlive()} yet,
+     * the method returns -1.
+     * @return
+     */
+    double getShutdownTime();
+
+    /**
      * Defines the event state.
      */
     enum State {RUNNABLE, WAITING, HOLDING, FINISHED}
