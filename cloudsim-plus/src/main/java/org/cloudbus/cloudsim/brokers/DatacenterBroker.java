@@ -390,7 +390,7 @@ public interface DatacenterBroker extends SimEntity {
 
     /**
      * Sets the delay after which an idle VM should be destroyed.
-     * Using such a method defines the same delay for any VM that becomes idle.
+     * Using such a method, it defines the same delay for any VM that becomes idle.
      * If you need to define different delays for distinct VMs
      * use the {@link #setVmDestructionDelayFunction(Function)} method.
      *
@@ -406,9 +406,9 @@ public interface DatacenterBroker extends SimEntity {
      * The Function must receive a {@link Vm} and return the delay to wait (in seconds),
      * after the VM becomes idle, to destroy it.
      *
-     * <p>By defining a {@link Function} to define when idle VMs should be destroyed
+     * <p>By providing a {@link Function} to define when idle VMs should be destroyed
      * enables you to define different delays for every VM that becomes idle,
-     * according to desired conditions. </p>
+     * according to desired conditions.</p>
      *
      * @param function the {@link Function} to set (if null is given, no idle VM will be automatically destroyed)
      * @return
