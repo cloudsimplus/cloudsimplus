@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -172,7 +171,6 @@ public class CloudSim implements Simulation {
     private boolean processEventsInParallel;
 
     private long lastPurge = System.currentTimeMillis();
-    private List<CloudSimEntity> removeEntityList = new LinkedList<>();
     private final boolean purgeFinishedEntities;
 
     /**
@@ -624,8 +622,7 @@ public class CloudSim implements Simulation {
 
         final long now = System.currentTimeMillis();
         if (now - lastPurge > 1000) {
-            entities.removeAll(removeEntityList);
-            removeEntityList = entities.stream().filter(CloudSimEntity::isFinished).collect(Collectors.toList());
+            entities.removeIf(CloudSimEntity::isFinished);
             lastPurge = now;
         }
     }
