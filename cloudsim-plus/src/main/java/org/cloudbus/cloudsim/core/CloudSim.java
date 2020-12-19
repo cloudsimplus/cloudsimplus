@@ -191,10 +191,6 @@ public class CloudSim implements Simulation {
      * @see CloudInformationService
      */
     public CloudSim(final double minTimeBetweenEvents) {
-        this(minTimeBetweenEvents, false);
-    }
-
-    private CloudSim(final double minTimeBetweenEvents, final boolean purgeFinishedEntities) {
         this.entities = new ArrayList<>();
         this.future = new FutureQueue();
         this.deferred = new DeferredQueue();
