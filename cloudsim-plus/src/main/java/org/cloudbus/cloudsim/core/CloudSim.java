@@ -498,6 +498,11 @@ public class CloudSim implements Simulation {
     }
 
     protected void removeFinishedEntity(final CloudSimEntity entity){
+        if(entity.isAlive()){
+            throw new IllegalStateException(
+                String.format("Alive entity %s cannot be removed from the simulation entity list.", entity)
+            );
+        }
         entities.remove(entity);
     }
 
