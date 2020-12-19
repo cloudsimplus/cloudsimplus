@@ -304,6 +304,8 @@ class FinishedEntitiesPurgeTest {
             dynamicCloudletsSubmitted = true;
             createCloudlets(broker0, BASE_CLOUDLET_LENGTH);
         } else if(evt.getTime() >= SCHEDULING_INTERVAL_SECS*2){
+            /* After some time has passed since the static cloudlets submitted to the first broker
+             * have finished, enable broker shutdown when it become idle. */
             broker0.setShutdownWhenIdle(true);
         }
 
