@@ -115,7 +115,7 @@ public abstract class CloudSimEntity implements SimEntity {
          * Here the finished entity is purged from that list
          * to improve performance of large-scale experiments.
          */
-        ((CloudSim)this.simulation).removeFinishedEntity(this);
+        ((CloudSim)simulation).removeFinishedEntity(this);
     }
 
     /**
