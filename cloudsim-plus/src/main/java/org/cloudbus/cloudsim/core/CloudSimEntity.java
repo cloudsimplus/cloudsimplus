@@ -108,6 +108,14 @@ public abstract class CloudSimEntity implements SimEntity {
     public void shutdown() {
         setState(State.FINISHED);
         this.shutdownTime = simulation.clock();
+
+        /*
+         * Since entities never get removed from the entities list, this can create
+         * a memory leak with severe performance implications.
+         * Here the finished entity is purged from that list
+         * to improve performance of large-scale experiments.
+         */
+        ((CloudSim)simulation).removeFinishedEntity(this);
     }
 
     /**
