@@ -106,6 +106,10 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public void shutdown() {
+        if(this.state == State.FINISHED){
+            return;
+        }
+
         setState(State.FINISHED);
         this.shutdownTime = simulation.clock();
 
