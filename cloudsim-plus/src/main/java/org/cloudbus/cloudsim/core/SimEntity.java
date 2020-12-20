@@ -19,6 +19,12 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  */
 public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
     /**
+     * Gets the time the entity was started.
+     * @return the entity start time or -1 if it haven't started yet.
+     */
+    double getStartTime();
+
+    /**
      * Gets the time the entity was shutdown (in seconds).
      * If the entity {@link #isAlive()} yet,
      * the method returns -1.
@@ -163,8 +169,9 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
     /**
      * Starts the entity during simulation start.
      * This method is invoked by the {@link CloudSim} class when the simulation is started.
+     * @return true if the entity started successfully, false if it was already started
      */
-    void start();
+    boolean start();
 
     /**
      * Shuts down the entity. This method is invoked by the {@link CloudSim}

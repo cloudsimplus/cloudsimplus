@@ -26,10 +26,11 @@ public interface SimEntityNullBase extends SimEntity {
     @Override default boolean schedule(int tag, Object data) { return false; }
     @Override default boolean schedule(double delay, int tag) { return false; };
     @Override default void run() {/**/}
-    @Override default void start() {/**/}
+    @Override default boolean start() { return false; }
     @Override default void shutdown() {/**/}
     @Override default SimEntity setName(String newName) throws IllegalArgumentException { return this; }
     @Override default String getName() {  return ""; }
     @Override default long getId() { return -1; }
     @Override default double getShutdownTime(){ return -1; };
+    @Override default double getStartTime(){ return -1; };
 }

@@ -26,10 +26,8 @@ import java.util.function.Predicate;
 public abstract class CloudSimEntity implements SimEntity {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudSimEntity.class.getSimpleName());
 
-    /**
-     * @see #isStarted()
-     */
-    private boolean started;
+    /** @see #getStartTime() */
+    private double startTime;
 
     /**
      * @see #getSimulation()
@@ -67,7 +65,7 @@ public abstract class CloudSimEntity implements SimEntity {
         setId(-1);
         state = State.RUNNABLE;
         this.simulation.addEntity(this);
-        this.started = false;
+        this.startTime = -1;
         this.shutdownTime = -1;
     }
 
@@ -97,11 +95,17 @@ public abstract class CloudSimEntity implements SimEntity {
      * and executes the specific entity startup code by calling {@link #startInternal()}.
      *
      * @see #startInternal()
+     * @return {@inheritDoc}
      */
     @Override
-    public void start() {
+    public final boolean start() {
+        if(this.isStarted()){
+            return false;
+        }
+
         startInternal();
-        this.setStarted(true);
+        this.startTime = simulation.clock();
+        return true;
     }
 
     @Override
@@ -525,7 +529,7 @@ public abstract class CloudSimEntity implements SimEntity {
 
     @Override
     public boolean isStarted() {
-        return started;
+        return startTime > -1;
     }
 
     @Override
@@ -536,15 +540,6 @@ public abstract class CloudSimEntity implements SimEntity {
     @Override
     public boolean isFinished() {
         return state == State.FINISHED;
-    }
-
-    /**
-     * Defines if the entity has already started or not.
-     *
-     * @param started the start state to set
-     */
-    protected void setStarted(final boolean started) {
-        this.started = started;
     }
 
     @Override
@@ -573,5 +568,10 @@ public abstract class CloudSimEntity implements SimEntity {
     @Override
     public double getShutdownTime() {
         return shutdownTime;
+    }
+
+    @Override
+    public double getStartTime() {
+        return startTime;
     }
 }

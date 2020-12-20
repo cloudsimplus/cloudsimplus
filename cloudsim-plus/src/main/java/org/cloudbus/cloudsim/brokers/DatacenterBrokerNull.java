@@ -73,4 +73,5 @@ final class DatacenterBrokerNull implements DatacenterBroker, SimEntityNullBase 
     @Override public DatacenterBroker submitVm(Vm vm) { return this; }
     @Override public DatacenterBroker submitVmList(List<? extends Vm> list) { return this; }
     @Override public DatacenterBroker submitVmList(List<? extends Vm> list, double submissionDelay) { return this; }
+    @Override public double getStartTime() { return -1; }
 }
