@@ -226,8 +226,10 @@ public class HostSimpleTest {
 
         final List<Vm> vms = new ArrayList<>(numberOfVms);
         for (int i = 0; i < numberOfVms; i++) {
-            final Vm vm = VmTestUtil.createVm(
-                i, HOST_MIPS / numberOfVms, 1, RAM / numberOfVms, BW / numberOfVms, STORAGE / numberOfVms, cloudsim);
+            final Vm vm =
+                VmTestUtil.createVm(
+                    i, HOST_MIPS / numberOfVms, 1, RAM / numberOfVms,
+                    BW / numberOfVms, STORAGE / numberOfVms, cloudsim);
             if (i == 0) {
                 /*considers that one of the migrating in VMs already was placed at the host,
                 thus, it will not be added again to the host vm list.
