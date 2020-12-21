@@ -79,9 +79,11 @@ public final class TimeUtil {
     }
 
     /**
-     * Gets the elapsed time from the given time in seconds.
-     * @param startTimeSeconds the start time in seconds
-     * @return the elapsed time in seconds
+     * Gets the real elapsed time from the given time in seconds.
+     * This is not a simulated time, but the actual time
+     * some operation you want to measure took to finish.
+     * @param startTimeSeconds the start time in seconds you may got from {@link #currentTimeSecs()}
+     * @return the real elapsed time in seconds
      */
     public static double elapsedSeconds(final double startTimeSeconds){
         return currentTimeSecs() - startTimeSeconds;
