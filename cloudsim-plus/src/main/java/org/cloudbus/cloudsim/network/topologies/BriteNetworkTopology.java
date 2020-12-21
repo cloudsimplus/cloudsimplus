@@ -64,7 +64,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
     /**
      * The entitiesMap between CloudSim entities and BRITE entities.
-     * Each key is a CloudSim entity ID and each value the corresponding BRITE entity ID.
+     * Each key is a CloudSim entity and each value the corresponding BRITE entity ID.
      */
     private Map<SimEntity, Integer> entitiesMap;
 
