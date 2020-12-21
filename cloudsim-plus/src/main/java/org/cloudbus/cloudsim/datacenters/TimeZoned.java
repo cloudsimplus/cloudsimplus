@@ -92,7 +92,7 @@ public interface TimeZoned {
             currentDc = it.next();
             /*Since the Datacenter list is expected to be sorted, after finding the first DC with a
             distance larger than the previous one, the previous is the closest one.*/
-            if(distance(vm, currentDc) > distance(vm, previousDc)){
+            if(vm.distance(currentDc) > vm.distance(previousDc)){
                 return previousDc;
             }
 
@@ -103,15 +103,14 @@ public interface TimeZoned {
     }
 
     /**
-     * Computes the distance between two TimeZoned objects,
+     * Computes the distance between this and other {@link TimeZoned} object,
      * considering their timezone offset values.
      *
-     * @param o1 the first object
-     * @param o2 the second object
+     * @param other the other {@link TimeZoned} object to check the distance to
      * @return a positive integer value representing the distance between the objects
      */
-    static double distance(final TimeZoned o1, final TimeZoned o2) {
-        return Math.abs(o2.getTimeZone() - o1.getTimeZone());
+    default double distance(final TimeZoned other) {
+        return Math.abs(other.getTimeZone() - this.getTimeZone());
     }
 
     static String format(final double timeZone){
