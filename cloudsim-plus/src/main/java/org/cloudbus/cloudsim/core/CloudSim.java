@@ -22,7 +22,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * The main class of the simulation API, that manages Cloud Computing simulations providing all methods to
@@ -204,14 +203,12 @@ public class CloudSim implements Simulation {
         notifyEndOfSimulationToEntities();
         LOGGER.info("Simulation: No more future events{}", System.lineSeparator());
 
-        final List<SimEntity> entitiesAlive = entities.stream().filter(CloudSimEntity::isAlive).collect(toList());
-
         // Allow all entities to exit their body method
         if (!abortRequested) {
-            entitiesAlive.forEach(SimEntity::run);
+            entities.forEach(SimEntity::run);
         }
 
-        entitiesAlive.forEach(SimEntity::shutdown);
+        shutdownEntities();
         running = false;
 
         printSimulationFinished();
@@ -219,6 +216,15 @@ public class CloudSim implements Simulation {
         LOGGER.debug(
             "DeferredQueue >> max size: {} added to middle: {} added to tail: {}",
             deferred.getMaxSize(), deferred.getAddedToMiddle(), deferred.getAddedToTail());
+    }
+
+    /**
+     * Shuts down remaining entities before finishing the simulation.
+     */
+    private void shutdownEntities() {
+        for (final SimEntity entity : entities) {
+            entity.shutdown();
+        }
     }
 
     @Override
