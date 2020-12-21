@@ -1128,7 +1128,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public Datacenter setHostSearchRetryDelay(final double delay) {
         if(delay == 0){
-            throw new IllegalArgumentException("hostSearchDelay cannot be 0. Set a positive value to define an actual delay or a negative value to indicate a new Host search must be tried as soon as possible.");
+            throw new IllegalArgumentException("hostSearchRetryDelay cannot be 0. Set a positive value to define an actual delay or a negative value to indicate a new Host search must be tried as soon as possible.");
         }
 
         this.hostSearchRetryDelay = delay;
