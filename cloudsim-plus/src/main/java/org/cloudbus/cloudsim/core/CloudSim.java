@@ -884,9 +884,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public long getNumberOfFutureEvents(final Predicate<SimEvent> predicate){
-        return future.stream()
-                .filter(predicate)
-                .count();
+        return future.stream().filter(predicate).count();
     }
 
     @Override
