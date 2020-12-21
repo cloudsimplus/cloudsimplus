@@ -32,6 +32,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class VmSchedulerTimeSharedTest {
     private static final double MIPS = 1000;
+    private static final int VM_PES_NUMBER = 2;
     private VmScheduler vmScheduler;
     private Vm vm0;
     private Vm vm1;
@@ -51,9 +52,9 @@ public class VmSchedulerTimeSharedTest {
 
     @BeforeEach
     public void setUp() {
-        vmScheduler = createVmScheduler(MIPS, 2);
-        vm0 = VmTestUtil.createVm(0, MIPS / 4, 2);
-        vm1 = VmTestUtil.createVm(1, MIPS / 2, 2);
+        vmScheduler = createVmScheduler(MIPS,  VM_PES_NUMBER);
+        vm0 = VmTestUtil.createVm(0, MIPS / 4, VM_PES_NUMBER);
+        vm1 = VmTestUtil.createVm(1, MIPS / 2, VM_PES_NUMBER);
     }
 
     @Test
