@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.core.events.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.cloudbus.cloudsim.util.TimeUtil;
+import org.cloudbus.cloudsim.util.Util;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.slf4j.Logger;
@@ -875,10 +876,7 @@ public class CloudSim implements Simulation {
 
     private void waitsForSimulationToBeResumedIfPaused() {
         while (paused) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException ignored) {
-            }
+            Util.sleep(100);
         }
 
         pauseAt = -1;
