@@ -803,11 +803,11 @@ public class CloudSim implements Simulation {
     public boolean pause(final double time) {
         if (time < clock) {
             return false;
-        } else {
-            pauseAt = time;
-            LOGGER.info("{}: Pausing simulation under request", clockStr());
-            return true;
         }
+
+        pauseAt = time;
+        LOGGER.info("{}: Pausing simulation under request", clockStr());
+        return true;
     }
 
     @Override
