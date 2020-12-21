@@ -293,31 +293,32 @@ public class CloudSim implements Simulation {
      *         or a termination time was set and the clock reached that time
      */
     private boolean processEvents(final double until) {
-        if (runClockTickAndProcessFutureEvents(until) || isToWaitClockToReachTerminationTime()) {
-            notifyOnSimulationStartListeners(); //it's ensured to run just once.
-            if (logSimulationAborted()) {
+        if (!runClockTickAndProcessFutureEvents(until) && !isToWaitClockToReachTerminationTime()) {
+            return false;
+        }
+
+        notifyOnSimulationStartListeners(); //it's ensured to run just once.
+        if (logSimulationAborted()) {
+            return false;
+        }
+
+        /* If it's time to terminate the simulation, sets a new termination time
+         * so that events to finish Cloudlets with a negative length are received.
+         * Cloudlets with a negative length must keep running
+         * until a CLOUDLET_FINISH event is sent to the broker or the termination time is reached*/
+        if (isTimeToTerminateSimulationUnderRequest()) {
+            if(newTerminationTime != -1 && clock >= newTerminationTime){
                 return false;
             }
 
-            /* If it's time to terminate the simulation, sets a new termination time
-             * so that events to finish Cloudlets with a negative length are received.
-             * Cloudlets with a negative length must keep running
-             * until a CLOUDLET_FINISH event is sent to the broker or the termination time is reached*/
-            if (isTimeToTerminateSimulationUnderRequest()) {
-                if(newTerminationTime != -1 && clock >= newTerminationTime){
-                    return false;
-                }
-
-                if(newTerminationTime == -1) {
-                    newTerminationTime = Math.max(terminationTime, clock) + minTimeBetweenEvents*2;
-                }
+            if(newTerminationTime == -1) {
+                newTerminationTime = Math.max(terminationTime, clock) + minTimeBetweenEvents*2;
             }
-
-            checkIfSimulationPauseRequested();
-            return true;
         }
 
-        return false;
+        checkIfSimulationPauseRequested();
+        return true;
+
     }
 
     private boolean logSimulationAborted() {
