@@ -240,7 +240,7 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * Enable VM migrations.
      *
      * @return
-     * @see #getHostSearchForMigrationDelay()
+     * @see #getHostSearchRetryDelay()
      */
     Datacenter enableMigrations();
 
@@ -256,16 +256,16 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * from an under or overload Host again.
      * @return the Host search delay (in seconds)
      */
-    double getHostSearchForMigrationDelay();
+    double getHostSearchRetryDelay();
 
     /**
      * Sets the time interval before trying to find suitable Hosts to migrate VMs
      * from an under or overload Host again.
-     * @param hostSearchDelay the new delay to set (in seconds).
-     *                        Give a positive value to define an actual delay or
-     *                        a negative value to indicate a new Host search for VM migration
-     *                        must be tried as soon as possible
+     * @param delay the new delay to set (in seconds).
+     *              Give a positive value to define an actual delay or
+     *              a negative value to indicate a new Host search for VM migration
+     *              must be tried as soon as possible
      * @return
      */
-    Datacenter setHostSearchRetryDelay(double hostSearchDelay);
+    Datacenter setHostSearchRetryDelay(double delay);
 }
