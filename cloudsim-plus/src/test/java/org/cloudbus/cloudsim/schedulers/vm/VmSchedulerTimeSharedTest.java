@@ -199,6 +199,6 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler.deallocatePesFromVm(vm0, HOST_PES);
         //Since only the PEs for vm0 were deallocated, the PEs from vm1 have to be busy yet
         final long expectedBusyPes = vm1.getNumberOfPes();
-        assertEquals(expectedBusyPes, vmScheduler.getHost().getBusyPeList().size());
+        assertEquals(expectedBusyPes, vmScheduler.getHost().getBusyPeList().size(), "Number of busy Host PEs:");
     }
 }
