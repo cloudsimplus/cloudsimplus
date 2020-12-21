@@ -169,7 +169,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
     @Override
     public void addLink(final SimEntity src, final SimEntity dest, final double bandwidth, final double latency) {
-        if (getTopologicalGraph() == null) {
+        if (graph == null) {
             graph = new TopologicalGraph();
         }
 
@@ -182,7 +182,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
         addNodeMapping(dest);
 
         // generate a new link
-        getTopologicalGraph().addLink(new TopologicalLink(entitiesMap.get(src), entitiesMap.get(dest), (float) latency, (float) bandwidth));
+        graph.addLink(new TopologicalLink(entitiesMap.get(src), entitiesMap.get(dest), (float) latency, (float) bandwidth));
 
         generateMatrices();
     }
@@ -194,7 +194,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
     private void addNodeMapping(final SimEntity entity) {
         if (entitiesMap.putIfAbsent(entity, nextIdx) == null) {
-            getTopologicalGraph().addNode(new TopologicalNode(nextIdx));
+            graph.addNode(new TopologicalNode(nextIdx));
             nextIdx++;
         }
     }
