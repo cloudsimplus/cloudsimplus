@@ -756,16 +756,16 @@ public class CloudSim implements Simulation {
         }
 
         final CloudSimEntity destEnt = (CloudSimEntity)evt.getDestination();
-        if (destEnt.getState() == SimEntity.State.WAITING) {
-            final Predicate<SimEvent> p = waitPredicates.get(destEnt);
-            if (p == null || evt.getTag() == 9999 || p.test(evt)) {
-                destEnt.setEventBuffer(new CloudSimEvent(evt));
-                destEnt.setState(SimEntity.State.RUNNABLE);
-                waitPredicates.remove(destEnt);
-            } else {
-                deferred.addEvent(evt);
-            }
+        if (destEnt.getState() != SimEntity.State.WAITING) {
+            deferred.addEvent(evt);
+            return;
+        }
 
+        final Predicate<SimEvent> p = waitPredicates.get(destEnt);
+        if (p == null || evt.getTag() == 9999 || p.test(evt)) {
+            destEnt.setEventBuffer(new CloudSimEvent(evt));
+            destEnt.setState(SimEntity.State.RUNNABLE);
+            waitPredicates.remove(destEnt);
             return;
         }
 
