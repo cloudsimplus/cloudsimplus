@@ -220,6 +220,8 @@ public class HostSimpleTest {
             mocker.isTerminationTimeSet().once();
             mocker.addEntity().anyTimes();
             mocker.clockStr().anyTimes();
+            //Broker shutdown event
+            mocker.send();
         });
 
         final List<Vm> vms = new ArrayList<>(numberOfVms);
@@ -236,7 +238,6 @@ public class HostSimpleTest {
             host.addMigratingInVm(vm);
             vms.add(vm);
         }
-
 
         host.reallocateMigratingInVms();
         final List<Vm> result = host.getVmList();

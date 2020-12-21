@@ -163,6 +163,11 @@ public final class CloudSimMocker {
         EasyMock.expectLastCall();
     }
 
+    public void send() {
+        mock.send(EasyMock.anyObject());
+        EasyMock.expectLastCall();
+    }
+
     /**
      * Finishes the mocking process, making the mocked CloudSim class ready to
      * use. The method is used just internally as the final step in the
