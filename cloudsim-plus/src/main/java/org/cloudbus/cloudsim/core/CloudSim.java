@@ -596,10 +596,6 @@ public class CloudSim implements Simulation {
         }
     }
 
-    private void executeRunnableEntities() {
-        executeRunnableEntities(Double.MAX_VALUE);
-    }
-
     private void sendNow(final SimEntity dest, final int tag) {
         sendNow(cis, dest, tag, null);
     }
