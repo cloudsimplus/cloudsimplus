@@ -529,24 +529,25 @@ public class CloudSim implements Simulation {
     }
 
     private boolean isToWaitClockToReachTerminationTime() {
-        if(isTerminationTimeSet()){
-            final double increment = minDatacentersSchedulingInterval();
-            final String info = increment == minTimeBetweenEvents
-                ? "using getMinTimeBetweenEvents() since a Datacenter schedulingInterval was not set"
-                : "Datacenter.getSchedulingInterval()";
-
-            /*If a termination time is set, even if there is no events to process,
-            * the simulation must keep running waiting for dynamic events
-            * (such as the dynamic arrival of VMs or Cloudlets).
-            * Without increasing the time, the simulation stops due to lack of new events.*/
-            LOGGER.info(
-                "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set). Checking new events in {} seconds ({})",
-                clockStr(), terminationTime, increment, info);
-            setClock(clock + increment);
-            return true;
+        if (!isTerminationTimeSet()) {
+            return false;
         }
 
-        return false;
+        final double increment = minDatacentersSchedulingInterval();
+        final String info = increment == minTimeBetweenEvents
+            ? "using getMinTimeBetweenEvents() since a Datacenter schedulingInterval was not set"
+            : "Datacenter.getSchedulingInterval()";
+
+        /*If a termination time is set, even if there is no events to process,
+        * the simulation must keep running waiting for dynamic events
+        * (such as the dynamic arrival of VMs or Cloudlets).
+        * Without increasing the time, the simulation stops due to lack of new events.*/
+        LOGGER.info(
+            "{}: Simulation: Waiting more events or the clock to reach {} (the termination time set). Checking new events in {} seconds ({})",
+            clockStr(), terminationTime, increment, info);
+        setClock(clock + increment);
+        return true;
+
     }
 
     /**
