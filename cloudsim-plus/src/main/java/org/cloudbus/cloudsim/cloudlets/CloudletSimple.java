@@ -12,6 +12,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.Objects;
+
 /**
  * Cloudlet implements the basic features of an application/job/task to be executed
  * by a {@link Vm} on behalf of a given user. It stores, despite all the
@@ -98,6 +100,20 @@ public class CloudletSimple extends CloudletAbstract {
      */
     @Override
     public int compareTo(final Cloudlet o) {
-        return Long.compare(getLength(), o.getLength());
+        if(this.equals(Objects.requireNonNull(o))) {
+            return 0;
+        }
+
+        return Double.compare(getLength(), o.getLength()) +
+            Long.compare(this.getId(), o.getId()) +
+            this.getBroker().compareTo(o.getBroker());
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final CloudletSimple other = (CloudletSimple) o;
+        return other.getId() == getId() && getBroker().equals(other.getBroker());
     }
 }
