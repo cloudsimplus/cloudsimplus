@@ -9,6 +9,10 @@ public final class Util {
     /** A private default constructor to avoid class instantiation. */
     private Util(){/**/}
 
+    /**
+     * Makes the current thread to sleep for a given amount ot milliseconds.
+     * @param millis the time to sleep in milliseconds
+     */
     public static void sleep(final long millis) {
         try {
             Thread.sleep(millis);
