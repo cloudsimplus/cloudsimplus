@@ -275,8 +275,8 @@ public class CloudSim implements Simulation {
         }
     }
 
-    private void notifyEventListeners(Set<EventListener<EventInfo>> onSimulationStartListeners, double clock) {
-        onSimulationStartListeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
+    private void notifyEventListeners(final Set<EventListener<EventInfo>> eventListeners, final double clock) {
+        eventListeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
     }
 
     /**
