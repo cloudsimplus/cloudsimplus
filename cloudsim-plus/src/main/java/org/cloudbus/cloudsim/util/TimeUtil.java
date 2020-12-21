@@ -21,7 +21,7 @@ public final class TimeUtil {
     private static final double YEAR_SECS   = 12 * MONTH_SECS;
 
     /** A private default constructor to avoid class instantiation. */
-    private TimeUtil(){}
+    private TimeUtil(){/**/}
 
     /**
      * Converts a given amount of seconds to the most suitable unit, i.e.,

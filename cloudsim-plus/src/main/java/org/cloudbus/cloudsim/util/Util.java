@@ -7,7 +7,7 @@ package org.cloudbus.cloudsim.util;
  */
 public final class Util {
     /** A private default constructor to avoid class instantiation. */
-    private Util(){}
+    private Util(){/**/}
 
     public static void sleep(final long millis) {
         try {

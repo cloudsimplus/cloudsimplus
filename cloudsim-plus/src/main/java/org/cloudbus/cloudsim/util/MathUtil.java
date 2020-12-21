@@ -31,7 +31,7 @@ public final class MathUtil {
     /**
      * A private constructor to avoid class instantiation.
      */
-    private MathUtil(){}
+    private MathUtil(){/**/}
 
     /**
      * Sums a list of numbers.
