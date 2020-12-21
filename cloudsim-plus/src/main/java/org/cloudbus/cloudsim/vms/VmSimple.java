@@ -818,13 +818,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public int hashCode() {
-        int result = getBroker().hashCode();
-        result = 31 * result + Long.hashCode(getId());
-        return result;
-    }
-
-    @Override
     public void setFailed(final boolean failed) {
         this.failed = failed;
 
