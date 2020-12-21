@@ -42,27 +42,9 @@ public class CloudSim implements Simulation {
     public static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
     /**
-     * An array that works as a circular queue with capacity for just 2 elements
-     * (defined in the constructor). When a new element is added to the queue,
-     * the first element is removed to open space for that new one.
-     * This queue stores the last 2 simulation clock values.
-     * It is used to know when it's time to notify listeners that
-     * the simulation clock has increased.
-     *
-     * <p>The head (value at index 0) of the queue is the oldest simulation time stored,
-     * the tail (value at index 1) is the newest one.</p>
-     *
-     * <p>Such a structure is required because multiple events
-     * can be received consecutively for the same simulation time.
-     * When the head of the queue is lower than the tail,
-     * it means the last event for that head time
-     * was already processed and a more recent event
-     * has just arrived.
-     * </p>
-     *
      * @see #notifyOnClockTickListenersIfClockChanged()
      */
-    private final double[] circularClockTimeQueue;
+    private final CircularTimeQueue clockQueue;
 
     /**
      * The last time OnClockTickListeners were updated.
@@ -215,7 +197,7 @@ public class CloudSim implements Simulation {
         this.minTimeBetweenEvents = minTimeBetweenEvents;
 
         this.lastClockTickListenersUpdate = minTimeBetweenEvents;
-        this.circularClockTimeQueue = new double[]{minTimeBetweenEvents, minTimeBetweenEvents};
+        this.clockQueue = new CircularTimeQueue(minTimeBetweenEvents);
     }
 
     /**
@@ -747,22 +729,13 @@ public class CloudSim implements Simulation {
      */
     private void notifyOnClockTickListenersIfClockChanged() {
         if(clock > lastClockTickListenersUpdate) {
-            addCurrentTimeToCircularQueue();
-            if (circularClockTimeQueue[0] < circularClockTimeQueue[1])
+            clockQueue.addTime(clock);
+            if (clockQueue.isPreviousTimeOlder())
             {
-                lastClockTickListenersUpdate = circularClockTimeQueue[0];
+                lastClockTickListenersUpdate = clockQueue.previous();
                 notifyEventListeners(onClockTickListeners, lastClockTickListenersUpdate);
             }
         }
-    }
-
-    /**
-     * Makes the circular queue to rotate, removing the first time,
-     * then adding the current clock time.
-     */
-    private void addCurrentTimeToCircularQueue() {
-        circularClockTimeQueue[0] = circularClockTimeQueue[1];
-        circularClockTimeQueue[1] = clock;
     }
 
     private void processEventByType(final SimEvent evt) {
