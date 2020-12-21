@@ -23,14 +23,19 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.cloudsimplus.listeners.EventListener;
+
+import java.util.function.Consumer;
+
 /**
  * A static-sized queue that removes the oldest time value when it's full.
  * It keeps track of the last two simulation events time to check whether they happened at different times,
  * meaning the simulation clock has changed
- * and some events should be fired.
+ * and the simulation Clock Tick Listeners are fired
  *
  * @since CloudSim Plus 6.0.0
  * @author Manoel Campos da Silva Filho
+ * @see Simulation#addOnClockTickListener(EventListener)
  */
 class CircularTimeQueue {
     /**
@@ -55,34 +60,78 @@ class CircularTimeQueue {
      *
      */
     private final double[] queue;
+    private final Simulation simulation;
+
+    /**
+     * Last time the clock has effectively changed and the
+     * Clock Tick Listeners were updated.
+     */
+    private double lastClockTickUpdate;
 
     /**
      * Creates the time queue.
-     * @param currentTime the current simulation time to store in the queue.
+     * @param simulation the simulation instance.
      */
-    public CircularTimeQueue(final double currentTime){
-        this.queue = new double[]{currentTime, currentTime};
+    public CircularTimeQueue(final Simulation simulation){
+        this.simulation = simulation;
+        this.lastClockTickUpdate = simulation.getMinTimeBetweenEvents();
+        this.queue = new double[]{lastClockTickUpdate, lastClockTickUpdate};
     }
 
     /**
-     * Adds a new time value to the queue, making it rotate, i.e.:
-     * removing the first time value, then adding a new one.
+     * Tries to notify all Listeners about onClockTick event when the simulation clock changes.
+     * If multiple events are received consecutively but for the same simulation time,
+     * it will only notify the Listeners when the last event for that time is received.
+     * It ensures when Listeners receive the notification, all the events
+     * for such a simulation time were already processed and then,
+     * the Listeners will have access to the most updated simulation state.
+     *
+     * @param notifyClockTickListeners a {@link Consumer} that will receive the <b>previous clock time</b>
+     *                                and update the listeners for that time.
      */
-    public void addTime(final double time) {
-        queue[0] = queue[1];
-        queue[1] = time;
+    public void tryToUpdateListeners(final Consumer<Double> notifyClockTickListeners) {
+        if(!isTimeToUpdateClockTickListeners()) {
+            return;
+        }
+
+        addCurrentTime();
+        if (isPreviousTimeOlder()) {
+            lastClockTickUpdate = previous();
+            notifyClockTickListeners.accept(lastClockTickUpdate);
+        }
     }
 
-    public double previous(){
+    /**
+     * Adds the current clock time to the queue, making it rotate, i.e.:
+     * removing the first time value, then adding a new one.
+     */
+    private void addCurrentTime() {
+        queue[0] = queue[1];
+        queue[1] = simulation.clock();
+    }
+
+    /**
+     * Checks if the previous stored time is older than the newest one.
+     * @return
+     */
+    private boolean isPreviousTimeOlder(){
+        return queue[0] < queue[1];
+    }
+
+    /**
+     * Gets the previous stored time
+     * @return
+     */
+    private double previous(){
         return queue[0];
     }
 
     /**
-     * Checks if the previous time value is older then the newest one.
+     * Checks if the simulation current time is newer than the last Clock Tick Listener update,
+     * indicating those listeners should be updated.
      * @return
      */
-    public boolean isPreviousTimeOlder(){
-        return queue[0] < queue[1];
+    private boolean isTimeToUpdateClockTickListeners(){
+        return simulation.clock() > lastClockTickUpdate;
     }
-
 }

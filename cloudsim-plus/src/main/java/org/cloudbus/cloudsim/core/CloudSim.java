@@ -41,16 +41,7 @@ public class CloudSim implements Simulation {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
-    /**
-     * @see #notifyOnClockTickListenersIfClockChanged()
-     */
     private final CircularTimeQueue clockQueue;
-
-    /**
-     * The last time OnClockTickListeners were updated.
-     * @see #addOnClockTickListener(EventListener)
-     */
-    private double lastClockTickListenersUpdate;
 
     /**
      * @see #getNetworkTopology()
@@ -195,9 +186,7 @@ public class CloudSim implements Simulation {
         }
 
         this.minTimeBetweenEvents = minTimeBetweenEvents;
-
-        this.lastClockTickListenersUpdate = minTimeBetweenEvents;
-        this.clockQueue = new CircularTimeQueue(minTimeBetweenEvents);
+        this.clockQueue = new CircularTimeQueue(this);
     }
 
     /**
@@ -451,7 +440,7 @@ public class CloudSim implements Simulation {
     private double setClock(final double newTime){
         final double oldTime = clock;
         this.clock = newTime;
-        notifyOnClockTickListenersIfClockChanged();
+        clockQueue.tryToUpdateListeners(previousTime -> notifyEventListeners(onClockTickListeners, previousTime));
         return oldTime;
     }
 
@@ -717,25 +706,6 @@ public class CloudSim implements Simulation {
         if(processEventsInParallel)
             synchronized(this){ runnable.run(); }
         else runnable.run();
-    }
-
-    /**
-     * Notifies all Listeners about onClockTick event when the simulation clock changes.
-     * If multiple events are received consecutively but for the same simulation time,
-     * it will only notify the Listeners when the last event for that time is received.
-     * It ensures when Listeners receive the notification, all the events
-     * for such a simulation time were already processed and then,
-     * the Listeners will have access to the most updated simulation state.
-     */
-    private void notifyOnClockTickListenersIfClockChanged() {
-        if(clock > lastClockTickListenersUpdate) {
-            clockQueue.addTime(clock);
-            if (clockQueue.isPreviousTimeOlder())
-            {
-                lastClockTickListenersUpdate = clockQueue.previous();
-                notifyEventListeners(onClockTickListeners, lastClockTickListenersUpdate);
-            }
-        }
     }
 
     private void processEventByType(final SimEvent evt) {
