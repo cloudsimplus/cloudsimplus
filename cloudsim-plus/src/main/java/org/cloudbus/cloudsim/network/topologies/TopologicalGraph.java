@@ -95,7 +95,7 @@ public class TopologicalGraph {
         for (final TopologicalNode node : nodeList) {
             builder.append(
                 String.format("%d | %s%n",
-                node.getNodeId(), node.getWorldCoordinates()));
+                node.getId(), node.getWorldCoordinates()));
         }
 
         builder.append(String.format("%n%n node-link-information:%n"));

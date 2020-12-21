@@ -18,11 +18,8 @@ import java.util.Objects;
  * @since CloudSim Toolkit 1.0
  */
 public class TopologicalNode {
-
-    private int nodeId;
-
+    private int id;
     private String nodeName;
-
     private Point2D worldCoordinates;
 
     /**
@@ -35,32 +32,32 @@ public class TopologicalNode {
     /**
      * Creates a network topology node with a specific ID.
      *
-     * @param nodeId The BRITE id of the node inside the network
+     * @param id The BRITE id of the node inside the network
      */
-    public TopologicalNode(final int nodeId) {
-        this(nodeId, new Point2D());
+    public TopologicalNode(final int id) {
+        this(id, new Point2D());
     }
 
     /**
      * Creates a network topology node including world-coordinates.
      *
-     * @param nodeId The BRITE id of the node inside the network
+     * @param id The BRITE id of the node inside the network
      * @param worldCoordinates  the x,y world-coordinates of the Node
      */
-    public TopologicalNode(final int nodeId, final Point2D worldCoordinates) {
-        this(nodeId, String.valueOf(nodeId), worldCoordinates);
+    public TopologicalNode(final int id, final Point2D worldCoordinates) {
+        this(id, String.valueOf(id), worldCoordinates);
     }
 
     /**
      * Creates a network topology node including world-coordinates and the nodeName.
      *
-     * @param nodeId   The BRITE id of the node inside the network
+     * @param id   The BRITE id of the node inside the network
      * @param nodeName The name of the node inside the network
      * @param worldCoordinates    the x,y world-coordinates of the Node
      */
-    public TopologicalNode(final int nodeId, final String nodeName, final Point2D worldCoordinates) {
+    public TopologicalNode(final int id, final String nodeName, final Point2D worldCoordinates) {
         this.worldCoordinates = Objects.requireNonNull(worldCoordinates);
-        this.nodeId = nodeId;
+        this.id = id;
         this.nodeName = nodeName;
     }
 
@@ -69,12 +66,12 @@ public class TopologicalNode {
      *
      * @return the nodeId
      */
-    public int getNodeId() {
-        return nodeId;
+    public int getId() {
+        return id;
     }
 
-    public void setNodeId(final int nodeId) {
-        this.nodeId = nodeId;
+    public void setId(final int id) {
+        this.id = id;
     }
 
     /**
@@ -102,4 +99,16 @@ public class TopologicalNode {
         this.worldCoordinates = worldCoordinates;
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final TopologicalNode other = (TopologicalNode) o;
+        return other.id == id;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * Long.hashCode(id);
+    }
 }
