@@ -40,7 +40,7 @@ public class DelayMatrix {
 	 * @param graph the network topological graph
 	 * @param directed indicates if an directed matrix should be computed (true) or not (false)
 	 */
-	public DelayMatrix(TopologicalGraph graph, boolean directed) {
+	public DelayMatrix(final TopologicalGraph graph, final boolean directed) {
 
 		// lets pre-initialize the Delay-Matrix
 		createDelayMatrix(graph, directed);
@@ -56,7 +56,7 @@ public class DelayMatrix {
 	 * @param destID the id of the destination node
 	 * @return the delay between the given two nodes
 	 */
-	public double getDelay(int srcID, int destID) {
+	public double getDelay(final int srcID, final int destID) {
 		// check the nodeIDs against internal array-boundaries
 		if (srcID > mTotalNodeNum || destID > mTotalNodeNum) {
 			throw new ArrayIndexOutOfBoundsException("srcID or destID is higher than highest stored node-ID!");
@@ -73,7 +73,7 @@ public class DelayMatrix {
 	 * @param graph the network topological graph
 	 * @param directed indicates if an directed matrix should be computed (true) or not (false)
 	 */
-	private void createDelayMatrix(TopologicalGraph graph, boolean directed) {
+	private void createDelayMatrix(final TopologicalGraph graph, final boolean directed) {
 
 		// number of nodes inside the network
 		mTotalNodeNum = graph.getNumberOfNodes();
