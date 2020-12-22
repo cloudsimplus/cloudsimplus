@@ -1,14 +1,11 @@
 language: java
-install: mvn clean install -B -V -Pintegration-tests
+install: mvn clean verify -B -V -Pintegration-tests
 script:
-  - cd cloudsim-plus && mvn clean test -Pintegration-tests jacoco:report; cd ..
+  - cd cloudsim-plus && mvn jacoco:report
+  #Upload the coverage report to codacy.com. It requires the CODACY_PROJECT_TOKEN environment variable
+  - bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r target/site/jacoco/jacoco.xml
 cache:
   directories:
   - $HOME/.m2
 jdk:
   - openjdk8
-after_script:
-    - cd cloudsim-plus && mvn jacoco:report; cd ..
-    - curl -L https://oss.sonatype.org/service/local/repositories/releases/content/com/codacy/codacy-coverage-reporter/4.0.0/codacy-coverage-reporter-4.0.0-assembly.jar > codacy.jar
-    #Upload the coverage report to codacy.com. It requires the CODACY_PROJECT_TOKEN environment variable
-    - java -jar codacy.jar report -l Java -r cloudsim-plus/target/site/jacoco/jacoco.xml
