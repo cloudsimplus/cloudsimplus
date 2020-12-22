@@ -131,7 +131,6 @@ The light yellow ones were introduced just to better organize existing CloudSim 
 
 ![CloudSim Plus Packages](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/package-structure-reduced.png)
 
-
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # 4. How to Use CloudSim Plus 
@@ -142,10 +141,7 @@ There are 4 ways to use CloudSim Plus. It can be downloaded and executed:
 (iv) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) 
 since you include it as a dependency inside your own project.
 
-You can watch the video below ([high quality version here](https://youtu.be/k2enNoxTYVw)) 
-or follow the instructions in one of the next subsections.
-
-![Downloading CloudSim Plus and running Examples using NetBeans](https://github.com/manoelcampos/cloudsim-plus/raw/master/docs/images/cloudsim-plus-netbeans.gif)
+You can check [this video](https://youtu.be/k2enNoxTYVw)) or follow the instructions in one of the next subsections.
 
 ## 4.1 Via Command Line
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
