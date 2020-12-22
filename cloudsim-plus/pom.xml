@@ -81,9 +81,6 @@
                             <excludes>
                                 <exclude>**/integrationtests/*.java</exclude>
                             </excludes>
-                            <!-- Forking the process was causing runtime exceptions
-                             when running tests with Java 10+ -->
-                            <forkCount>0</forkCount>
                         </configuration>
                     </plugin>
 
@@ -116,11 +113,6 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <!-- Forking the process was causing runtime exceptions
-                             when running tests with Java 10+ -->
-                            <forkCount>0</forkCount>
-                        </configuration>
                     </plugin>
 
                     <plugin>
@@ -268,7 +260,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <!-- There is some problem with the version 2.19.1 or with
                     Netbeans 8.0.2 that the JUnit GUI is not shown at the IDE-->
-                    <version>2.22.0</version>
+                    <version>3.0.0-M5</version>
                 </plugin>
 
                 <plugin>
@@ -331,18 +323,11 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.3</version>
+                <version>0.8.6</version>
                 <executions>
                     <execution>
-                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>prepare-package</phase>
-                        <goals>
                             <goal>report</goal>
                         </goals>
                     </execution>
