@@ -141,7 +141,7 @@ There are 4 ways to use CloudSim Plus. It can be downloaded and executed:
 (iv) from [Maven Central](https://maven-badges.herokuapp.com/maven-central/org.cloudsimplus/cloudsim-plus) 
 since you include it as a dependency inside your own project.
 
-You can check [this video](https://youtu.be/k2enNoxTYVw)) or follow the instructions in one of the next subsections.
+You can check [this video](https://youtu.be/k2enNoxTYVw) or follow the instructions in one of the next subsections.
 
 ## 4.1 Via Command Line
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
