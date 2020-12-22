@@ -257,22 +257,6 @@
                 </plugins>
             </build>
         </profile>
-
-        <profile>
-            <!--
-            A profile used to deploy the project to GitHub Packages.
-            To execute use: mvn clean deploy -P github
-            -->
-            <id>github</id>
-
-            <distributionManagement>
-                <repository>
-                    <id>github</id>
-                    <name>GitHub manoelcampos Apache Maven Packages</name>
-                    <url>https://maven.pkg.github.com/manoelcampos/cloudsim-plus</url>
-                </repository>
-            </distributionManagement>
-        </profile>
     </profiles>
 
     <build>
