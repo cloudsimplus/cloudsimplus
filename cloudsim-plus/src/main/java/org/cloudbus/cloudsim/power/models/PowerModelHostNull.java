@@ -9,18 +9,7 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
  * @since CloudSim Plus 6.0.0
  */
 class PowerModelHostNull extends PowerModelHost {
-    @Override
-    public PowerMeasurement getPowerMeasurement() {
-        return new PowerMeasurement();
-    }
-
-    @Override
-    public double getPower(double utilizationFraction) throws IllegalArgumentException {
-        return 0;
-    }
-
-    @Override
-    public Host getHost() {
-        return Host.NULL;
-    }
+    @Override public PowerMeasurement getPowerMeasurement() { return new PowerMeasurement(); }
+    @Override public double getPower(double utilizationFraction) throws IllegalArgumentException { return 0; }
+    @Override public Host getHost() { return Host.NULL; }
 }
