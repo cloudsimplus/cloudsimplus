@@ -73,4 +73,20 @@ public class PowerModelHostSimple extends PowerModelHost {
         return power;
     }
 
+    /**
+     * Gets the maximum power (in watts) the host consumes under full load.
+     * @return
+     */
+    public double getMaxPower() {
+        return maxPower;
+    }
+
+    /**
+     * Gets the static power (in watts) the host consumes when idle.
+     *
+     * @return
+     */
+    public double getStaticPower() {
+        return staticPower;
+    }
 }
