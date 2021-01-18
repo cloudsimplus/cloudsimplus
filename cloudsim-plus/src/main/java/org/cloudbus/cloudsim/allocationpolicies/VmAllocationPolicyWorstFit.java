@@ -32,8 +32,8 @@ import java.util.stream.Stream;
 
 /**
  * A Worst Fit VmAllocationPolicy implementation that chooses, as
- * the host for a VM, that one with the least number of PEs in use,
- * which are enough for the VM.
+ * the host for a VM, the one with the least number of PEs in use,
+ * which has enough free PEs for the VM.
  *
  * <p>This is a really computationally complex policy since the worst-case complexity
  * to allocate a Host for a VM is O(N), where N is the number of Hosts.
