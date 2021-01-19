@@ -296,7 +296,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     @Override
     public boolean allocateHostForVm(final Vm vm, final Host host) {
         if(vm instanceof VmGroup){
-            return createVmsFromGroup((VmGroup)vm, host);
+            return createVmsFromGroup((VmGroup) vm, host);
         }
 
         return createVm(vm, host);

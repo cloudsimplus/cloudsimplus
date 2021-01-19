@@ -833,9 +833,25 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     @Override
-    public void requestVmMigration(final Vm sourceVm, final Host targetHost) {
+    public void requestVmMigration(final Vm sourceVm) {
+        requestVmMigration(sourceVm, Host.NULL);
+    }
+
+    @Override
+    public void requestVmMigration(final Vm sourceVm, Host targetHost) {
         final String currentTime = getSimulation().clockStr();
         final Host sourceHost = sourceVm.getHost();
+
+        //If Host.NULL is given, it must try to find a target host
+        if(targetHost == Host.NULL){
+            targetHost = vmAllocationPolicy.findHostForVm(sourceVm).orElse(Host.NULL);
+        }
+
+        //If a host couldn't be found yet
+        if(targetHost == Host.NULL) {
+            LOGGER.warn("{}: {}: No suitable host found for {} in {}", sourceVm.getSimulation().clockStr(), getClass().getSimpleName(), sourceVm, this);
+            return;
+        }
 
         final double delay = timeToMigrateVm(sourceVm, targetHost);
         final String msg1 =

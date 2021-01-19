@@ -31,6 +31,7 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
         return VmAllocationPolicy.NULL;
     }
     @Override public void requestVmMigration(Vm sourceVm, Host targetHost) {/**/}
+    @Override public void requestVmMigration(Vm sourceVm) {/**/}
     @Override public Host getHost(final int index) { return Host.NULL; }
     @Override public long getActiveHostsNumber() { return 0; }
     @Override public long size() { return 0; }
