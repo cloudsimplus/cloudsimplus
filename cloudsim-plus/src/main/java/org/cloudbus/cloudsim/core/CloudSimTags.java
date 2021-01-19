@@ -255,9 +255,7 @@ public final class CloudSimTags {
     /**
      * Denotes a request to finish the migration of a new VM in a {@link Datacenter} with
      * acknowledgement information sent by the Datacenter.
-     * When an event of this type is sent, the {@link SimEvent#getData()}
-     * must be a {@code Map.Entry<Vm, Host>} representing to which Host
-     * a VM must be migrated.
+     * @see #VM_MIGRATE
      */
     public static final int VM_MIGRATE_ACK = BASE + 36;
 
