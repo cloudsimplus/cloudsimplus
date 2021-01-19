@@ -628,6 +628,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param evt information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
+     * @see CloudSimTags#VM_MIGRATE
      */
     protected void finishVmMigration(final SimEvent evt, final boolean ack) {
         if (!(evt.getData() instanceof Map.Entry<?, ?>)) {
