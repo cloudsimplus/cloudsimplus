@@ -168,11 +168,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
             final List<? extends Vm> vmsToMigrateFromHost = getVmsToMigrateFromUnderUtilizedHost(underloadedHost);
             if (!vmsToMigrateFromHost.isEmpty()) {
-                if(LOGGER.isInfoEnabled()) {
-                    LOGGER.info("{}: VmAllocationPolicy: VMs to be reallocated from the underloaded {}: {}",
-                        getDatacenter().getSimulation().clockStr(), underloadedHost, getVmIds(vmsToMigrateFromHost));
-                }
-
+                logVmsToBeReallocated(underloadedHost, vmsToMigrateFromHost);
                 final Map<Vm, Host> newVmPlacement = getNewVmPlacementFromUnderloadedHost(
                         vmsToMigrateFromHost,
                         ignoredTargetHosts);
@@ -180,6 +176,13 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
                 ignoredSourceHosts.addAll(extractHostListFromMigrationMap(newVmPlacement));
                 migrationMap.putAll(newVmPlacement);
             }
+        }
+    }
+
+    private void logVmsToBeReallocated(final Host underloadedHost, final List<? extends Vm> migratingOutVms) {
+        if(LOGGER.isInfoEnabled()) {
+            LOGGER.info("{}: VmAllocationPolicy: VMs to be reallocated from the underloaded {}: {}",
+                getDatacenter().getSimulation().clockStr(), underloadedHost, getVmIds(migratingOutVms));
         }
     }
 
