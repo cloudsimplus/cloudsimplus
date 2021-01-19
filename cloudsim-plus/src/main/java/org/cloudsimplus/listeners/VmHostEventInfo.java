@@ -54,7 +54,7 @@ public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
      * @param listener the listener to be notified about the event
      * @param vm {@link Vm} that fired the event
      */
-    static VmHostEventInfo of(final EventListener<? extends EventInfo> listener, final Vm vm) {
+    static VmHostEventInfo of(final EventListener<VmHostEventInfo> listener, final Vm vm) {
         return of(listener, vm, vm.getHost());
     }
 
@@ -71,7 +71,7 @@ public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
      *                         {@link Vm#addOnHostAllocationListener(EventListener)} OnHostAllocation} or
      *                         {@link Vm#addOnHostDeallocationListener(EventListener)} OnHostDeallocation}
      */
-    static VmHostEventInfo of(final EventListener<? extends EventInfo> listener, final Vm vm, final Host host) {
+    static VmHostEventInfo of(final EventListener<VmHostEventInfo> listener, final Vm vm, final Host host) {
         final double time = vm.getSimulation().clock();
         return new VmHostEventInfo() {
             @Override public Host getHost() { return host; }
