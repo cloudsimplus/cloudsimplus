@@ -52,7 +52,8 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     double DEF_BW_PERCENT_FOR_MIGRATION = 0.5;
 
     /**
-     * Sends an event to request the migration of a {@link Vm} to a given target {@link Host}.
+     * Sends an event to request the migration of a {@link Vm} to a given target {@link Host}
+     * on this Datacenter.
      * If you want VM migrations to be performed automatically,
      * use a {@link VmAllocationPolicyMigration}.
      *
