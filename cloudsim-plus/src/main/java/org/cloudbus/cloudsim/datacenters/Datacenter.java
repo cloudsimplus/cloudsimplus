@@ -59,9 +59,23 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      *
      * @param sourceVm the VM to be migrated
      * @param targetHost the target Host to migrate the VM to
+     * @see #requestVmMigration(Vm)
      * @see #getVmAllocationPolicy()
      */
     void requestVmMigration(Vm sourceVm, Host targetHost);
+
+    /**
+     * Sends an event to request the migration of a {@link Vm} to some suitable {@link Host}
+     * on this Datacenter. A suitable Host will try to be found when the migration request message
+     * is processed by the Datacenter.
+     * If you want VM migrations to be performed automatically,
+     * use a {@link VmAllocationPolicyMigration}.
+     *
+     * @param sourceVm the VM to be migrated
+     * @see #requestVmMigration(Vm, Host)
+     * @see #getVmAllocationPolicy()
+     */
+    void requestVmMigration(Vm sourceVm);
 
     /**
      * Gets an <b>unmodifiable</b> host list.
