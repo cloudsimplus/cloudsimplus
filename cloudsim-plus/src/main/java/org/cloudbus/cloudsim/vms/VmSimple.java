@@ -95,12 +95,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     /** @see #getSubmissionDelay() */
     private double submissionDelay;
 
-    private final Set<EventListener<VmHostEventInfo>> onMigrationStartListeners;
-    private final Set<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
-    private final Set<EventListener<VmHostEventInfo>> onHostAllocationListeners;
-    private final Set<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
-    private final Set<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
-    private final Set<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
+    private final List<EventListener<VmHostEventInfo>> onMigrationStartListeners;
+    private final List<EventListener<VmHostEventInfo>> onMigrationFinishListeners;
+    private final List<EventListener<VmHostEventInfo>> onHostAllocationListeners;
+    private final List<EventListener<VmHostEventInfo>> onHostDeallocationListeners;
+    private final List<EventListener<VmHostEventInfo>> onUpdateProcessingListeners;
+    private final List<EventListener<VmDatacenterEventInfo>> onCreationFailureListeners;
 
     private VerticalVmScaling ramVerticalScaling;
     private VerticalVmScaling bwVerticalScaling;
@@ -229,12 +229,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         setVmm("Xen");
         stateHistory = new LinkedList<>();
 
-        this.onMigrationStartListeners = new HashSet<>();
-        this.onMigrationFinishListeners = new HashSet<>();
-        this.onHostAllocationListeners = new HashSet<>();
-        this.onHostDeallocationListeners = new HashSet<>();
-        this.onCreationFailureListeners = new HashSet<>();
-        this.onUpdateProcessingListeners = new HashSet<>();
+        this.onMigrationStartListeners = new ArrayList<>();
+        this.onMigrationFinishListeners = new ArrayList<>();
+        this.onHostAllocationListeners = new ArrayList<>();
+        this.onHostDeallocationListeners = new ArrayList<>();
+        this.onCreationFailureListeners = new ArrayList<>();
+        this.onUpdateProcessingListeners = new ArrayList<>();
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
@@ -647,7 +647,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param targetHost the Host the VM is migrating to
      */
     public void updateMigrationStartListeners(final Host targetHost){
-        onMigrationStartListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this, targetHost)));
+        //Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onMigrationStartListeners.size(); i++) {
+            final EventListener<VmHostEventInfo> l = onMigrationStartListeners.get(i);
+            l.update(VmHostEventInfo.of(l, this, targetHost));
+        }
     }
 
     /**
@@ -655,7 +659,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param targetHost the Host the VM has just migrated to
      */
     public void updateMigrationFinishListeners(final Host targetHost){
-        onMigrationFinishListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this, targetHost)));
+        //Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onMigrationFinishListeners.size(); i++) {
+            final EventListener<VmHostEventInfo> l = onMigrationFinishListeners.get(i);
+            l.update(VmHostEventInfo.of(l, this, targetHost));
+        }
     }
 
     @Override
@@ -858,26 +866,42 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public void notifyOnHostAllocationListeners() {
-        onHostAllocationListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this)));
+        //Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onHostAllocationListeners.size(); i++) {
+            final EventListener<VmHostEventInfo> l = onHostAllocationListeners.get(i);
+            l.update(VmHostEventInfo.of(l, this));
+        }
     }
 
     @Override
     public void notifyOnHostDeallocationListeners(final Host deallocatedHost) {
         requireNonNull(deallocatedHost);
-        onHostDeallocationListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this, deallocatedHost)));
+        //Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onHostDeallocationListeners.size(); i++) {
+            final EventListener<VmHostEventInfo> l = onHostDeallocationListeners.get(i);
+            l.update(VmHostEventInfo.of(l, this, deallocatedHost));
+        }
     }
 
     /**
      * Notifies all registered listeners when the processing of the Vm is updated in its {@link Host}.
      */
     public void notifyOnUpdateProcessingListeners() {
-        onUpdateProcessingListeners.forEach(l -> l.update(VmHostEventInfo.of(l, this)));
+        //Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onUpdateProcessingListeners.size(); i++) {
+            final EventListener<VmHostEventInfo> l = onUpdateProcessingListeners.get(i);
+            l.update(VmHostEventInfo.of(l, this));
+        }
     }
 
     @Override
     public void notifyOnCreationFailureListeners(final Datacenter failedDatacenter) {
         requireNonNull(failedDatacenter);
-        onCreationFailureListeners.forEach(l -> l.update(VmDatacenterEventInfo.of(l, this, failedDatacenter)));
+        //Uses indexed for to avoid ConcurrentModificationException
+        for (int i = 0; i < onCreationFailureListeners.size(); i++) {
+            final EventListener<VmDatacenterEventInfo> l = onCreationFailureListeners.get(i);
+            l.update(VmDatacenterEventInfo.of(l, this, failedDatacenter));
+        }
     }
 
     @Override
