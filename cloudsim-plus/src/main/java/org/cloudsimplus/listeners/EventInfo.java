@@ -64,7 +64,7 @@ public interface EventInfo {
      * Gets the listener that was notified about the event.
      * @return
      */
-    EventListener<? extends EventInfo> getListener();
+    <T extends EventInfo> EventListener<T> getListener();
 
     /**
      * Gets a EventInfo instance from the given parameters.
@@ -73,10 +73,10 @@ public interface EventInfo {
      * @param time the time the event happened
      * @return
      */
-    static EventInfo of(final EventListener<? extends EventInfo> listener, final double time) {
+    static EventInfo of(final EventListener<EventInfo> listener, final double time) {
         return new EventInfo() {
             @Override public double getTime() { return time; }
-            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
+            @Override public EventListener<EventInfo> getListener() { return listener; }
         };
     }
 

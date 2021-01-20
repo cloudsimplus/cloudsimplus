@@ -77,7 +77,7 @@ public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
             @Override public Host getHost() { return host; }
             @Override public Vm getVm() { return vm; }
             @Override public double getTime() { return time; }
-            @Override public EventListener<? extends EventInfo> getListener() { return listener; }
+            @Override public EventListener<VmHostEventInfo> getListener() { return listener; }
         };
     }
 }
