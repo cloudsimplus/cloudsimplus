@@ -64,12 +64,12 @@ public interface VmHostEventInfo extends VmEventInfo, HostEventInfo {
      *
      * @param listener the listener to be notified about the event
      * @param vm {@link Vm} that fired the event
-     * @param host {@link Host} that the {@link Vm} is related to.
-     *                         Such a Host can be that one where the Vm is or was placed,
-     *                         or where the Vm was tried to be be created,
-     *                         depending on the fired event, such as the
-     *                         {@link Vm#addOnHostAllocationListener(EventListener)} OnHostAllocation} or
-     *                         {@link Vm#addOnHostDeallocationListener(EventListener)} OnHostDeallocation}
+     * @param host {@link Host} the {@link Vm} is related to.
+     *             Such a Host can be that one where the Vm is or was placed,
+     *             or where the Vm was tried to be be created,
+     *             depending on the fired event, such as the
+     *             {@link Vm#addOnHostAllocationListener(EventListener)} OnHostAllocation} or
+     *             {@link Vm#addOnHostDeallocationListener(EventListener)} OnHostDeallocation}
      */
     static VmHostEventInfo of(final EventListener<VmHostEventInfo> listener, final Vm vm, final Host host) {
         final double time = vm.getSimulation().clock();
