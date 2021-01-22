@@ -451,6 +451,7 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 1. [CloudSim Plus Automation: defining CloudSim Plus simulation scenarios into a YAML file.](http://manoelcampos.github.io/cloudsim-plus-automation/)
 1. [LEAF: Simulator for modeling Large Energy-Aware Fog computing environments](https://github.com/birnbaum/LEAF)
 1. [EPCSAC: Extensible Platform for Cloud Scheduling Algorithm Comparison.](https://github.com/TNanukem/EPCSAC)
+1. [SatEdgeSim: A Toolkit for Modeling and Simulation of Performance Evaluation in Satellite Edge Computing Environments.](https://github.com/wjy491156866/SatEdgeSim)
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
