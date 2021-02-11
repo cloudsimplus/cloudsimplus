@@ -222,9 +222,11 @@ public class CloudSim implements Simulation {
     /**
      * Shuts down remaining entities before finishing the simulation.
      */
+    @SuppressWarnings("ForLoopReplaceableByForEach")
     private void shutdownEntities() {
-        for (final SimEntity entity : entities) {
-            entity.shutdown();
+        //Uses indexed loop to avoid ConcurrentModificationException
+        for (int i = 0; i < entities.size(); i++) {
+            entities.get(i).shutdown();
         }
     }
 
