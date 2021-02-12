@@ -620,11 +620,6 @@ public class HostSimple implements Host {
         return peList.size();
     }
 
-    @Override
-    public int getFreePesNumber() {
-        return freePesNumber;
-    }
-
     /**
      * Gets the MIPS share of each Pe that is allocated to a given VM.
      *
@@ -997,8 +992,18 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public int getFreePesNumber() {
+        return freePesNumber;
+    }
+
+    @Override
     public int getWorkingPesNumber() {
         return peList.size() - getFailedPesNumber();
+    }
+
+    @Override
+    public int getBusyPesNumber() {
+        return getWorkingPesNumber() - getFreePesNumber();
     }
 
     @Override

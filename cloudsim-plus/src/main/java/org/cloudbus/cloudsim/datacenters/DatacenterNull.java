@@ -12,6 +12,7 @@ import org.cloudsimplus.listeners.HostEventInfo;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * A class that implements the Null Object Design Pattern for
@@ -32,6 +33,7 @@ final class DatacenterNull implements Datacenter, SimEntityNullBase {
     }
     @Override public void requestVmMigration(Vm sourceVm, Host targetHost) {/**/}
     @Override public void requestVmMigration(Vm sourceVm) {/**/}
+    @Override public Stream<? extends Host> getActiveHostStream() { return Stream.empty(); }
     @Override public Host getHost(final int index) { return Host.NULL; }
     @Override public long getActiveHostsNumber() { return 0; }
     @Override public long size() { return 0; }

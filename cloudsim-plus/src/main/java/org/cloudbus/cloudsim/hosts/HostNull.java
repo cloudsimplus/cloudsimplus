@@ -143,6 +143,7 @@ final class HostNull implements Host {
     @Override public int getWorkingPesNumber() {
         return 0;
     }
+    @Override public int getBusyPesNumber() { return 0; }
     @Override public String toString() {
         return "Host.NULL";
     }

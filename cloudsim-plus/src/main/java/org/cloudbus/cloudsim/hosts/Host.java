@@ -245,6 +245,14 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     int getWorkingPesNumber();
 
     /**
+     * Gets the number of PEs that are {@link Pe.Status#BUSY}.
+     * That is, the number of PEs that aren't FAIL.
+     *
+     * @return the number of working pes
+     */
+    int getBusyPesNumber();
+
+    /**
      * Gets the number of PEs that have failed.
      *
      * @return the number of failed pes

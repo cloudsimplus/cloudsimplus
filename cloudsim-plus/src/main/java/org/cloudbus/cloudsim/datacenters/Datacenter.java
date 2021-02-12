@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * An interface to be implemented by each class that provides Datacenter
@@ -84,6 +85,14 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * @return the host list
      */
     <T extends Host> List<T> getHostList();
+
+    /**
+     * Gets a {@link Stream} containing the active Hosts inside the Datacenter.
+     *
+     * @param <T> The generic type
+     * @return the active host Stream
+     */
+    Stream<? extends Host> getActiveHostStream();
 
     /**
      * Gets a Host in a given position inside the Host List.

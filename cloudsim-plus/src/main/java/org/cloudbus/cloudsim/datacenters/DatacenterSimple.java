@@ -33,6 +33,7 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -897,6 +898,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public <T extends Host> List<T> getHostList() {
         return (List<T>)Collections.unmodifiableList(hostList);
+    }
+
+    @Override
+    public Stream<? extends Host> getActiveHostStream() {
+        return hostList.stream().filter(Host::isActive);
     }
 
     @Override
