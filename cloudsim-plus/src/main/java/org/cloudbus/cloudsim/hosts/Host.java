@@ -81,8 +81,23 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      *
      * @param vm the Vm to check
      * @return true if is suitable for Vm, false otherwise
+     * @see #getSuitabilityFor(Vm)
      */
     boolean isSuitableForVm(Vm vm);
+
+    /**
+     * Checks if the host is suitable for a Vm
+     * (if it has enough resources to attend the Vm)
+     * and the Host is not failed,
+     * <b>providing fine-grained information
+     * about each individual Host's resource suitability</b>.
+     *
+     * @param vm the Vm to check
+     * @return a {@link HostSuitability} object containing
+     * indicating the Host's resources that
+     * are suitable or not for the given Vm.
+     */
+    HostSuitability getSuitabilityFor(Vm vm);
 
     /**
      * Checks if the Host is powered-on or not.

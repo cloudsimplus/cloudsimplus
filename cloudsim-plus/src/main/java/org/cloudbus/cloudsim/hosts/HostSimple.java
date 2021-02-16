@@ -398,7 +398,7 @@ public class HostSimple implements Host {
      * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
      */
     private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
-        if(!isSuitableForVm(vm, inMigration, true)) {
+        if(!isSuitableForVm(vm, inMigration, true).fully()) {
             return false;
         }
 
@@ -415,19 +415,21 @@ public class HostSimple implements Host {
         vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
     }
 
-    private boolean logAllocationError(
-        final Vm vm, final boolean inMigration, final String resourceUnit,
+    private void logAllocationError(
+        final boolean showFailureLog, final Vm vm,
+        final boolean inMigration, final String resourceUnit,
         final Resource pmResource, final Resource vmRequestedResource)
     {
+        if(!showFailureLog){
+            return;
+        }
+
         final String migration = inMigration ? "VM Migration" : "VM Creation";
         final String msg = pmResource.getAvailableResource() > 0 ? "just "+pmResource.getAvailableResource()+" " + resourceUnit : "no amount";
         LOGGER.error(
             "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
             simulation.clockStr(), getClass().getSimpleName(), migration, vm, this,
             pmResource.getClass().getSimpleName(), vmRequestedResource.getCapacity(), msg);
-
-        //Always return false to indicate an error.
-        return false;
     }
 
     @Override
@@ -443,6 +445,11 @@ public class HostSimple implements Host {
 
     @Override
     public boolean isSuitableForVm(final Vm vm) {
+        return getSuitabilityFor(vm).fully();
+    }
+
+    @Override
+    public HostSuitability getSuitabilityFor(final Vm vm) {
         return isSuitableForVm(vm, false, false);
     }
 
@@ -455,22 +462,30 @@ public class HostSimple implements Host {
      * @param inMigration If the VM is migrating into the Host or it is being just created for the first time,
      *                    in this case, just for logging purposes.
      * @param showFailureLog indicates if a error log must be shown when the Host is not suitable
-     * @return
+     * @return a {@link HostSuitability} object that indicate for which resources the Host is suitable or not for the given VM
      */
-    private boolean isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
-        if (!storage.isAmountAvailable(vm.getStorage())) {
-            return showFailureLog && logAllocationError(vm, inMigration, "MB", this.getStorage(), vm.getStorage());
+    private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
+        final HostSuitability suitability = new HostSuitability(vm);
+
+        suitability.setForStorage(storage.isAmountAvailable(vm.getStorage()));
+        if (!suitability.forStorage()) {
+            logAllocationError(showFailureLog, vm, inMigration, "MB", this.getStorage(), vm.getStorage());
+            return suitability;
         }
 
-        if (!ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam())) {
-            return showFailureLog && logAllocationError(vm, inMigration, "MB", this.getRam(), vm.getRam());
+        suitability.setForRam(ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()));
+        if (!suitability.forRam()) {
+            logAllocationError(showFailureLog, vm, inMigration, "MB", this.getRam(), vm.getRam());
+            return suitability;
         }
 
-        if (!bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw())) {
-            return showFailureLog && logAllocationError(vm, inMigration, "Mbps", this.getBw(), vm.getBw());
+        suitability.setForBw(bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()));
+        if (!suitability.forBw()) {
+            logAllocationError(showFailureLog, vm, inMigration, "Mbps", this.getBw(), vm.getBw());
+            return suitability;
         }
 
-        return vmScheduler.isSuitableForVm(vm);
+        return suitability.setForPes(vmScheduler.isSuitableForVm(vm));
     }
 
     @Override

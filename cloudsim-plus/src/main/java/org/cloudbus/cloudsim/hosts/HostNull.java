@@ -100,6 +100,7 @@ final class HostNull implements Host {
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
+    @Override public HostSuitability getSuitabilityFor(Vm vm) { return new HostSuitability(Vm.NULL); }
     @Override public boolean isActive() { return false; }
     @Override public boolean hasEverStarted() { return false; }
     @Override public Host setActive(boolean activate) { return this; }
