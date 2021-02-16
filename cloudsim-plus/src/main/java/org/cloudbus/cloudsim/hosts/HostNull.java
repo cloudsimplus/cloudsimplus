@@ -168,6 +168,8 @@ final class HostNull implements Host {
     @Override public List<HostStateHistoryEntry> getStateHistory() { return Collections.emptyList(); }
     @Override public List<Vm> getFinishedVms() { return Collections.emptyList(); }
     @Override public List<Vm> getMigratableVms() { return Collections.emptyList(); }
+    @Override public boolean isLazySuitabilityEvaluation() { return false; }
+    @Override public Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation) { return this; }
     @Override public double getTotalUpTime() { return 0; }
     @Override public double getTotalUpTimeHours() { return 0; }
     @Override public void setShutdownTime(double shutdownTime) {/**/}

@@ -139,6 +139,8 @@ public class HostSimple implements Host {
     /** @see #getFailedPesNumber() */
     private int failedPesNumber;
 
+    private boolean lazySuitabilityEvaluation;
+
     /**
      * Creates and powers on a Host without a pre-defined ID,
      * 10GB of RAM, 1000Mbps of Bandwidth and 500GB of Storage.
@@ -250,6 +252,7 @@ public class HostSimple implements Host {
         this.setSimulation(Simulation.NULL);
         this.setActive(activate);
         this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
+        this.lazySuitabilityEvaluation = true;
 
         this.ram = new Ram(ram);
         this.bw = new Bandwidth(bw);
@@ -470,19 +473,22 @@ public class HostSimple implements Host {
         suitability.setForStorage(storage.isAmountAvailable(vm.getStorage()));
         if (!suitability.forStorage()) {
             logAllocationError(showFailureLog, vm, inMigration, "MB", this.getStorage(), vm.getStorage());
-            return suitability;
+            if(lazySuitabilityEvaluation)
+                return suitability;
         }
 
         suitability.setForRam(ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()));
         if (!suitability.forRam()) {
             logAllocationError(showFailureLog, vm, inMigration, "MB", this.getRam(), vm.getRam());
-            return suitability;
+            if(lazySuitabilityEvaluation)
+                return suitability;
         }
 
         suitability.setForBw(bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()));
         if (!suitability.forBw()) {
             logAllocationError(showFailureLog, vm, inMigration, "Mbps", this.getBw(), vm.getBw());
-            return suitability;
+            if(lazySuitabilityEvaluation)
+                return suitability;
         }
 
         return suitability.setForPes(vmScheduler.isSuitableForVm(vm));
@@ -1360,5 +1366,21 @@ public class HostSimple implements Host {
         return vmList.stream()
             .filter(vm -> !vm.isInMigration())
             .collect(Collectors.toList());
+    }
+
+    /**
+     * {@inheritDoc}
+     * <p><b>It's enabled by default.</b></p>
+     * @return {@inheritDoc}
+     */
+    @Override
+    public boolean isLazySuitabilityEvaluation() {
+        return lazySuitabilityEvaluation;
+    }
+
+    @Override
+    public Host setLazySuitabilityEvaluation(final boolean lazySuitabilityEvaluation) {
+        this.lazySuitabilityEvaluation = lazySuitabilityEvaluation;
+        return this;
     }
 }

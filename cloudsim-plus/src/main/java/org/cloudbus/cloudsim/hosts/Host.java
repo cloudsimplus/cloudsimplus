@@ -738,4 +738,26 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * @return the list of migratable VMs
      */
     List<Vm> getMigratableVms();
+
+    /**
+     * Checks if the suitability evaluation of this Host for a given Vm
+     * is to be performed lazily by methods such as {@link #isSuitableForVm(Vm)}.
+     * It means that the method will return as soon as some resource requirement is not met
+     * and the suitability for other VM requirements is not evaluated.
+     * This laziness improves performance but provides less information
+     * when calling {@link #getSuitabilityFor(Vm)}.
+     *
+     * @return true if the lazy evaluation is enabled, false otherwise
+     */
+    boolean isLazySuitabilityEvaluation();
+
+    /**
+     * Defines if the suitability evaluation of this Host for a given Vm
+     * is to be performed lazily by methods such as {@link #isSuitableForVm(Vm)}.
+     * It means that the method will return as soon as some resource requirement is not met
+     * and the suitability for other VM requirements is not evaluated.
+     * This laziness improves performance but provides less information
+     * when calling {@link #getSuitabilityFor(Vm)}.
+     */
+    Host setLazySuitabilityEvaluation(boolean lazySuitabilityEvaluation);
 }
