@@ -29,6 +29,7 @@ public final class HostSuitability {
      * @return true if it's suitable;
      *         false if it's unsuitable or this specific requirement
      *         was not even evaluated since other one was already not met.
+     * @see Host#setLazySuitabilityEvaluation(boolean)
      */
     public boolean forStorage() {
         return forStorage;
@@ -46,6 +47,7 @@ public final class HostSuitability {
      * @return true if it's suitable;
      *         false if it's unsuitable or this specific requirement
      *         was not even evaluated since other one was already not met.
+     * @see Host#setLazySuitabilityEvaluation(boolean)
      */
     public boolean forRam() {
         return forRam;
@@ -63,6 +65,7 @@ public final class HostSuitability {
      * @return true if it's suitable;
      *         false if it's unsuitable or this specific requirement
      *         was not even evaluated since other one was already not met.
+     * @see Host#setLazySuitabilityEvaluation(boolean)
      */
     public boolean forBw() {
         return forBw;
@@ -80,6 +83,7 @@ public final class HostSuitability {
      * @return true if it's suitable;
      *         false if it's unsuitable or this specific requirement
      *         was not even evaluated since other one was already not met.
+     * @see Host#setLazySuitabilityEvaluation(boolean)
      */
     public boolean forPes() {
         return forPes;
