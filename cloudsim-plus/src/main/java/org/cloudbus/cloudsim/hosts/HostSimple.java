@@ -447,11 +447,14 @@ public class HostSimple implements Host {
     }
 
     /**
+     * Checks if the host is suitable for vm
+     * (if it has enough resources to attend the VM)
+     * and the Host is not failed.
      *
-     * @param vm
+     * @param vm the VM to check
      * @param inMigration If the VM is migrating into the Host or it is being just created for the first time,
      *                    in this case, just for logging purposes.
-     * @param showFailureLog
+     * @param showFailureLog indicates if a error log must be shown when the Host is not suitable
      * @return
      */
     private boolean isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {

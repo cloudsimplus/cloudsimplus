@@ -77,7 +77,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     /**
      * Checks if the host is suitable for vm
      * (if it has enough resources to attend the VM)
-     * and it's not failed.
+     * and the Host is not failed.
      *
      * @param vm the vm to check
      * @return true if is suitable for vm, false otherwise
