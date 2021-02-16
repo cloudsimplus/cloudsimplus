@@ -25,7 +25,11 @@ public final class HostSuitability {
         this.vm = Objects.requireNonNull(vm);
     }
 
-    /** Checks if the Host has storage suitability for the size of the VM. */
+    /** Checks if the Host has storage suitability for the size of the VM.
+     * @return true if it's suitable;
+     *         false if it's unsuitable or this specific requirement
+     *         was not even evaluated since other one was already not met.
+     */
     public boolean forStorage() {
         return forStorage;
     }
@@ -38,7 +42,11 @@ public final class HostSuitability {
         return this;
     }
 
-    /** Checks if the Host has RAM suitability for running the VM. */
+    /** Checks if the Host has RAM suitability for running the VM.
+     * @return true if it's suitable;
+     *         false if it's unsuitable or this specific requirement
+     *         was not even evaluated since other one was already not met.
+     */
     public boolean forRam() {
         return forRam;
     }
@@ -51,7 +59,11 @@ public final class HostSuitability {
         return this;
     }
 
-    /** Checks if the Host has bandwidth suitability for running the VM. */
+    /** Checks if the Host has bandwidth suitability for running the VM.
+     * @return true if it's suitable;
+     *         false if it's unsuitable or this specific requirement
+     *         was not even evaluated since other one was already not met.
+     */
     public boolean forBw() {
         return forBw;
     }
@@ -64,7 +76,11 @@ public final class HostSuitability {
         return this;
     }
 
-    /** Checks if the Host has {@link Pe} suitability for running the VM. */
+    /** Checks if the Host has {@link Pe} suitability for running the VM.
+     * @return true if it's suitable;
+     *         false if it's unsuitable or this specific requirement
+     *         was not even evaluated since other one was already not met.
+     */
     public boolean forPes() {
         return forPes;
     }
@@ -80,7 +96,8 @@ public final class HostSuitability {
     /**
      * Checks if the Host is totally suitable or not for the given Vm
      * in terms of required storage, ram, bandwidth and number of PEs.
-     * @return
+     * If any of the requirements is not met, it means the host is not suitable at all.
+     * @return true if all resource requirements are met, false otherwise.
      */
     public boolean fully(){
         return forStorage && forRam && forBw && forPes;
