@@ -75,12 +75,12 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     void setDatacenter(Datacenter datacenter);
 
     /**
-     * Checks if the host is suitable for vm
-     * (if it has enough resources to attend the VM)
+     * Checks if the host is suitable for a Vm
+     * (if it has enough resources to attend the Vm)
      * and the Host is not failed.
      *
-     * @param vm the vm to check
-     * @return true if is suitable for vm, false otherwise
+     * @param vm the Vm to check
+     * @return true if is suitable for Vm, false otherwise
      */
     boolean isSuitableForVm(Vm vm);
 
