@@ -96,6 +96,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * @return a {@link HostSuitability} object containing
      * indicating the Host's resources that
      * are suitable or not for the given Vm.
+     * @see #setLazySuitabilityEvaluation(boolean)
      */
     HostSuitability getSuitabilityFor(Vm vm);
 
