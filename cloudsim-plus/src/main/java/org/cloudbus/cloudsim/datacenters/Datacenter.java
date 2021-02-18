@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.core.Sizeable;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
@@ -36,7 +37,7 @@ import java.util.stream.Stream;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>, TimeZoned {
+public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>, TimeZoned, Sizeable {
     Logger LOGGER = LoggerFactory.getLogger(Datacenter.class.getSimpleName());
 
     /**
