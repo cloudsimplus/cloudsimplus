@@ -145,6 +145,7 @@ final class HostNull implements Host {
         return 0;
     }
     @Override public int getBusyPesNumber() { return 0; }
+    @Override public double getUsedPesPercent() { return 0; }
     @Override public String toString() {
         return "Host.NULL";
     }

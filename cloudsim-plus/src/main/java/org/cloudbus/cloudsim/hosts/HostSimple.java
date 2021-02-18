@@ -1031,6 +1031,11 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public double getUsedPesPercent() {
+        return getBusyPesNumber() / (double)getNumberOfPes();
+    }
+
+    @Override
     public int getFailedPesNumber() {
         return failedPesNumber;
     }
