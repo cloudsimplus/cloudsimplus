@@ -109,7 +109,8 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     long getActiveHostsNumber();
 
     /**
-     * Gets the total number of existing Hosts in this Datacenter.
+     * Gets the total number of existing Hosts in this Datacenter,
+     * which indicates the Datacenter's size.
      * @return
      */
     long size();
