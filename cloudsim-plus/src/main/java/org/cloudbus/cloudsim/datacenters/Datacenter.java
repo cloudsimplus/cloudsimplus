@@ -90,7 +90,6 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     /**
      * Gets a {@link Stream} containing the active Hosts inside the Datacenter.
      *
-     * @param <T> The generic type
      * @return the active host Stream
      */
     Stream<? extends Host> getActiveHostStream();
