@@ -1031,7 +1031,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public double getUsedPesPercent() {
+    public double getBusyPesPercent() {
         return getBusyPesNumber() / (double)getNumberOfPes();
     }
 

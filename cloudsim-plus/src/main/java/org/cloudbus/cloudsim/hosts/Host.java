@@ -273,7 +273,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * according to the {@link #getNumberOfPes() total number of PEs}.
      * @return
      */
-    double getUsedPesPercent();
+    double getBusyPesPercent();
 
     /**
      * Gets the number of PEs that have failed.
