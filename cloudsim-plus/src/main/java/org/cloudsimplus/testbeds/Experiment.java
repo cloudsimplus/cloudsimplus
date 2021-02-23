@@ -513,7 +513,7 @@ public abstract class Experiment implements Runnable {
         this.vmAllocationPolicySupplier = Objects.requireNonNull(vmAllocationPolicySupplier);
     }
 
-    private VmAllocationPolicy newVmAllocationPolicy() {
+    protected final VmAllocationPolicy newVmAllocationPolicy() {
         return vmAllocationPolicySupplier == null ? new VmAllocationPolicySimple() : vmAllocationPolicySupplier.get();
     }
 
