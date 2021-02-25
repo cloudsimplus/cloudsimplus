@@ -224,6 +224,18 @@ public final class TimeUtil {
     }
 
     /**
+     * Converts a value in days to hours.
+     * <p>The existing {@link java.util.concurrent.TimeUnit} and {@link java.time.Duration} classes
+     * don't provide the double precision required here.</p>
+     *
+     * @param days the value in days
+     * @return the value in hours
+     */
+    public static double daysToHours(final double days) {
+        return days * 24;
+    }
+
+    /**
      * Converts a value in months to an <b>approximated</b> number of seconds,
      * since it considers every month has 30 days.
      *
