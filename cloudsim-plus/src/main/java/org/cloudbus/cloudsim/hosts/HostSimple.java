@@ -1163,6 +1163,10 @@ public class HostSimple implements Host {
 
     @Override
     public SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory() {
+        /*TODO: This method has a very high computational complexity for large
+        *  scale experiments, consumes to much memory and is not suitable
+        * in such scenarios. The same issue happens with vm.getUtilizationHistory(). */
+
         //Gets a Stream containing the utilization entries for every Vm inside the Host
         final Stream<Entry<Double, Double>> utilizationEntriesStream = this.vmCreatedList
             .stream()
