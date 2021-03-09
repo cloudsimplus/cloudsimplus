@@ -17,6 +17,7 @@ import org.cloudbus.cloudsim.power.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudsimplus.listeners.DatacenterVmMigrationEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 import org.slf4j.Logger;
@@ -253,6 +254,15 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * @return
      */
     Datacenter addOnHostAvailableListener(EventListener<HostEventInfo> listener);
+
+    /**
+     * Adds a {@link EventListener} object that will be notified every time
+     * a VM migration is finished either successfully or not.
+     *
+     * @param listener the event listener to add
+     * @return
+     */
+    Datacenter addOnVmMigrationFinishListener(EventListener<DatacenterVmMigrationEventInfo> listener);
 
     /**
      * Checks if migrations are enabled.

@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
+import org.cloudsimplus.listeners.DatacenterVmMigrationEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 
@@ -88,6 +89,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 	private DatacenterStorage datacenterStorage;
 
     private final List<EventListener<HostEventInfo>> onHostAvailableListeners;
+    private final List<EventListener<DatacenterVmMigrationEventInfo>> onVmMigrationFinishListeners;
 
     /**
      * @see #getTimeZone()
@@ -187,6 +189,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         setPowerModel(new PowerModelDatacenterSimple(this));
 
         this.onHostAvailableListeners = new ArrayList<>();
+        this.onVmMigrationFinishListeners = new ArrayList<>();
         this.characteristics = new DatacenterCharacteristicsSimple(this);
         this.bandwidthPercentForMigration = DEF_BW_PERCENT_FOR_MIGRATION;
         this.migrationsEnabled = true;
@@ -669,6 +672,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (migrated)
             LOGGER.info("{}: Migration of {} to {} is completed", getSimulation().clockStr(), vm, targetHost);
         else LOGGER.error("{}: {}: Allocation of {} to the destination Host failed!", getSimulation().clockStr(), this, vm);
+
+        onVmMigrationFinishListeners.forEach(listener -> listener.update(DatacenterVmMigrationEventInfo.of(listener, vm, migrated)));
     }
 
     /**
@@ -1098,6 +1103,12 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     @Override
     public Datacenter addOnHostAvailableListener(final EventListener<HostEventInfo> listener) {
         onHostAvailableListeners.add(requireNonNull(listener));
+        return this;
+    }
+
+    @Override
+    public Datacenter addOnVmMigrationFinishListener(final EventListener<DatacenterVmMigrationEventInfo> listener) {
+        onVmMigrationFinishListeners.add(requireNonNull(listener));
         return this;
     }
 
