@@ -41,7 +41,6 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -160,12 +159,11 @@ public class VerticalVmCpuScalingDynamicThreshold {
     private void onClockTickListener(EventInfo evt) {
         vmList.forEach(vm -> {
             System.out.printf(
-                "\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%02d) Upper Threshold: %.2f History Entries: %d%n",
+                "\t\tTime %6.1f: Vm %d CPU Usage: %6.2f%% (%2d vCPUs. Running Cloudlets: #%02d) Upper Threshold: %.2f%n",
                 evt.getTime(), vm.getId(), vm.getCpuPercentUtilization()*100.0,
                 vm.getNumberOfPes(),
                 vm.getCloudletScheduler().getCloudletExecList().size(),
-                vm.getPeVerticalScaling().getUpperThresholdFunction().apply(vm),
-                vm.getUtilizationHistory().getHistory().size());
+                vm.getPeVerticalScaling().getUpperThresholdFunction().apply(vm));
         });
     }
 
@@ -238,8 +236,6 @@ public class VerticalVmCpuScalingDynamicThreshold {
         final Vm vm = new VmSimple(id, 1000, VM_PES)
             .setRam(VM_RAM).setBw(1000).setSize(10000)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
-
-        vm.getUtilizationHistory().enable();
         return vm;
     }
 
@@ -331,8 +327,7 @@ public class VerticalVmCpuScalingDynamicThreshold {
      * @see #createVerticalPeScaling()
      */
     private double upperCpuUtilizationThreshold(final Vm vm) {
-        final List<Double> history = new ArrayList<>(vm.getUtilizationHistory().getHistory().values());
-        return history.size() > 10 ? MathUtil.median(history) * 1.2 : 0.7;
+        return vm.getCpuUtilizationStats().count() > 10 ? vm.getCpuUtilizationStats().getMean() * 1.2 : 0.7;
     }
 
     /**

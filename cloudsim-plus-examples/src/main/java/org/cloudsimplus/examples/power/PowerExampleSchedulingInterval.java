@@ -41,18 +41,16 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
+import org.cloudbus.cloudsim.vms.HostResourceStats;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.util.Log;
 
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
-import java.util.Map;
 
 /**
  * An example to show how the accuracy of power consumption may change
@@ -72,7 +70,7 @@ import java.util.Map;
  * @since CloudSim Plus 4.0.0
  */
 public class PowerExampleSchedulingInterval {
-    private static final int HOSTS = 1;
+    private static final int HOSTS = 2;
     private static final int HOST_PES = 8;
 
     private static final int VMS = 2;
@@ -93,7 +91,6 @@ public class PowerExampleSchedulingInterval {
     private static final int MAX_POWER = 50;
 
     private final int schedulingInterval;
-    private boolean showAllHostUtilizationHistoryEntries;
 
     private CloudSim simulation;
     private DatacenterBroker broker0;
@@ -106,20 +103,16 @@ public class PowerExampleSchedulingInterval {
         Log.setLevel(Level.WARN);
         final int[] SCHEDULING_INTERVALS_SECS = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 100};
         for(final int interval : SCHEDULING_INTERVALS_SECS) {
-            new PowerExampleSchedulingInterval(interval, false);
+            new PowerExampleSchedulingInterval(interval);
         }
     }
 
     /**
      * Instantiates and run the example with a specific configuration.
      * @param schedulingInterval the {@link Datacenter#getSchedulingInterval()} (in seconds)
-     * @param showAllHostUtilizationHistoryEntries show all host CPU utilization history or just when the values change
+     *
      */
-    private PowerExampleSchedulingInterval(
-        final int schedulingInterval,
-        final boolean showAllHostUtilizationHistoryEntries)
-    {
-        this.showAllHostUtilizationHistoryEntries = showAllHostUtilizationHistoryEntries;
+    private PowerExampleSchedulingInterval(final int schedulingInterval) {
         simulation = new CloudSim();
         hostList = new ArrayList<>(HOSTS);
         this.schedulingInterval = schedulingInterval;
@@ -139,12 +132,6 @@ public class PowerExampleSchedulingInterval {
         System.out.println();
     }
 
-    /**
-     * <p>The Host CPU Utilization History is only computed
-     * if VMs utilization history is enabled by calling
-     * {@code vm.getUtilizationHistory().enable()}
-     * </p>*
-     */
     private void printHostsCpuUtilizationAndPowerConsumption() {
         System.out.println();
         for (final Host host : hostList) {
@@ -153,45 +140,19 @@ public class PowerExampleSchedulingInterval {
     }
 
     private void printHostCpuUtilizationAndPowerConsumption(final Host host) {
-        System.out.printf("Host %d CPU utilization and power consumption%n", host.getId());
-        final Map<Double, DoubleSummaryStatistics> utilizationPercentHistory = host.getUtilizationHistory();
-        double totalWattsSec = 0;
-        double prevUtilizationPercent = -1, prevWattsSec = -1;
-        //time difference from the current to the previous line in the history
-        double utilizationHistoryTimeInterval;
-        double prevTime=0;
-        for (Map.Entry<Double, DoubleSummaryStatistics> entry : utilizationPercentHistory.entrySet()) {
-            utilizationHistoryTimeInterval = entry.getKey() - prevTime;
-            //The total Host's CPU utilization for the time specified by the map key
-            final double utilizationPercent = entry.getValue().getSum();
-            final double watts = host.getPowerModel().getPower(utilizationPercent);
-            //Energy consumption in the time interval
-            final double wattsSec = watts*utilizationHistoryTimeInterval;
-            //Energy consumption in the entire simulation time
-            totalWattsSec += wattsSec;
-            //only prints when the next utilization is different from the previous one, or it's the first one
-            if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsSec != wattsSec) {
-                System.out.printf(
-                    "\tTime %8.2f | CPU Utilization %6.2f%% | Power Consumption: %8.0f W * %.0f s = %.0f Ws%n",
-                    entry.getKey(), utilizationPercent * 100, watts, utilizationHistoryTimeInterval, wattsSec);
-            }
-            prevUtilizationPercent = utilizationPercent;
-            prevWattsSec = wattsSec;
-            prevTime = entry.getKey();
-        }
+        final HostResourceStats cpuStats = host.getCpuUtilizationStats();
 
+        //The total Host's CPU utilization for the time specified by the map key
+        final double utilizationPercentMean = cpuStats.getMean();
+        final double watts = host.getPowerModel().getPower(utilizationPercentMean);
         System.out.printf(
-            "Total Host %d Power Consumption in %.0f s: %.0f Ws (%.5f kWh)%n",
-            host.getId(), simulation.clock(), totalWattsSec, Conversion.wattSecondsToKWattHours(totalWattsSec));
-        final double powerWattsSecMean = totalWattsSec / simulation.clock();
-        System.out.printf(
-            "Mean %.2f Ws for %d usage samples (%.5f kWh)%n",
-            powerWattsSecMean, utilizationPercentHistory.size(), Conversion.wattSecondsToKWattHours(powerWattsSecMean));
+            "\tHost %d CPU Usage mean: %6.1f%% | Power Consumption mean: %8.0f W%n",
+            host.getId(), utilizationPercentMean * 100, watts);
     }
 
     private Datacenter createDatacenterSimple() {
         for(int i = 0; i < HOSTS; i++) {
-            Host host = createPowerHost();
+            Host host = createPowerHost(i);
             hostList.add(host);
         }
 
@@ -200,7 +161,7 @@ public class PowerExampleSchedulingInterval {
         return dc;
     }
 
-    private Host createPowerHost() {
+    private Host createPowerHost(final int id) {
         final List<Pe> peList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
@@ -211,10 +172,13 @@ public class PowerExampleSchedulingInterval {
         final long storage = 1000000; //in Megabytes
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.setPowerModel(new PowerModelHostSimple(MAX_POWER, STATIC_POWER));
-        host.setRamProvisioner(new ResourceProvisionerSimple());
-        host.setBwProvisioner(new ResourceProvisionerSimple());
-        host.setVmScheduler(new VmSchedulerTimeShared());
+        host
+            .setRamProvisioner(new ResourceProvisionerSimple())
+            .setBwProvisioner(new ResourceProvisionerSimple())
+            .setVmScheduler(new VmSchedulerTimeShared())
+            .setPowerModel(new PowerModelHostSimple(MAX_POWER, STATIC_POWER));
+        host.setId(id);
+        host.enableUtilizationStats();
         return host;
     }
 
@@ -224,7 +188,7 @@ public class PowerExampleSchedulingInterval {
             final Vm vm = new VmSimple(i, 1000, VM_PES);
             vm.setRam(512).setBw(1000).setSize(10000);
             vm.setCloudletScheduler(new CloudletSchedulerTimeShared());
-            vm.getUtilizationHistory().enable();
+            vm.enableUtilizationStats();
             list.add(vm);
         }
 

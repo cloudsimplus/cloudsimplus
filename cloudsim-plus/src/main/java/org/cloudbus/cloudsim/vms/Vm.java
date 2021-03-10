@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.CustomerEntity;
+import org.cloudbus.cloudsim.core.ResourceStatsComputer;
 import org.cloudbus.cloudsim.core.UniquelyIdentifiable;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.TimeZoned;
@@ -41,7 +42,7 @@ import java.util.function.Predicate;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned {
+public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned, ResourceStatsComputer<VmResourceStats> {
     Logger LOGGER = LoggerFactory.getLogger(Vm.class.getSimpleName());
 
     /**
@@ -349,6 +350,13 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      * @return total utilization percentage for the current time, in scale from 0 to 1
      */
     double getCpuPercentUtilization();
+
+    /**
+     * {@inheritDoc}
+     * If you enable the statistics for the Host where the VM is placed,
+     * that will automatically enable the statistics for every VM on that Host.
+     */
+    void enableUtilizationStats();
 
     /**
      * Computes the relative percentage of the RAM the VM is using from the Host's total Capacity
@@ -731,24 +739,6 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      * @see #isCreated()
      */
     Vm setStopTime(double stopTime);
-
-    /**
-     * Gets the object containing CPU utilization percentage history (between [0 and 1], where 1 is 100%).
-     * The history can be obtained by calling {@link VmUtilizationHistory#getHistory()}.
-     * Initially, the data collection is disabled.
-     * To enable it call {@link VmUtilizationHistory#enable()}.
-     *
-     * <p>Utilization history for Hosts, obtained by
-     * calling {@link Host#getUtilizationHistory()} is just available
-     * if the utilization history for its VM is enabled.</p>
-     *
-     * <p>The time interval in which utilization is collected is defined
-     * by the {@link Datacenter#getSchedulingInterval()}.</p>
-     *
-     * @return
-     * @see UtilizationHistory#enable()
-     */
-    UtilizationHistory getUtilizationHistory();
 
     /**
      * Gets the time zone offset, a value between  [-12 and 12],

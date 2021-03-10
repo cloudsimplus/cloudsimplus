@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.ChangeableId;
+import org.cloudbus.cloudsim.core.ResourceStatsComputer;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
@@ -24,16 +25,11 @@ import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
 import java.util.*;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static java.util.Map.Entry;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A Host class that implements the most basic features of a Physical Machine
@@ -140,6 +136,7 @@ public class HostSimple implements Host {
     private int failedPesNumber;
 
     private boolean lazySuitabilityEvaluation;
+    private HostResourceStats cpuUtilizationStats;
 
     /**
      * Creates and powers on a Host without a pre-defined ID,
@@ -269,6 +266,7 @@ public class HostSimple implements Host {
         this.onUpdateProcessingListeners = new HashSet<>();
         this.onStartupListeners = new HashSet<>();
         this.onShutdownListeners = new HashSet<>();
+        this.cpuUtilizationStats = HostResourceStats.NULL;
 
         this.resources = new ArrayList<>();
         this.vmCreatedList = new ArrayList<>();
@@ -350,6 +348,7 @@ public class HostSimple implements Host {
         }
 
         notifyOnUpdateProcessingListeners(currentTime);
+        cpuUtilizationStats.add(currentTime);
         addStateHistory(currentTime);
 
         return nextSimulationDelay;
@@ -1162,88 +1161,22 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory() {
-        /*TODO: This method has a very high computational complexity for large
-        *  scale experiments, consumes to much memory and is not suitable
-        * in such scenarios. The same issue happens with vm.getUtilizationHistory(). */
-
-        //Gets a Stream containing the utilization entries for every Vm inside the Host
-        final Stream<Entry<Double, Double>> utilizationEntriesStream = this.vmCreatedList
-            .stream()
-            .map(Vm::getUtilizationHistory)
-            .map(this::remapUtilizationHistory)
-            .flatMap(vmUtilization -> vmUtilization.entrySet().stream());
-
-        //Groups the CPU utilization entries by the time the values were collected
-        return utilizationEntriesStream
-                    .collect(
-                        groupingBy(Entry::getKey, TreeMap::new, summarizingDouble(Entry::getValue))
-                    );
+    public HostResourceStats getCpuUtilizationStats() {
+        return cpuUtilizationStats;
     }
 
     @Override
-    public SortedMap<Double, Double> getUtilizationHistorySum() {
-        /*Remaps the value of an entry inside the Utilization History map
-        from DoubleSummaryStatistics to the sum of all values
-        inside the that DoubleSummaryStatistics.*/
-        final Function<Entry<Double, DoubleSummaryStatistics>, Double> valueMapper = entry -> entry.getValue().getSum();
+    public void enableUtilizationStats() {
+        if (cpuUtilizationStats != null && cpuUtilizationStats != HostResourceStats.NULL) {
+            return;
+        }
 
-        return getUtilizationHistory()
-                    .entrySet()
-                    .stream()
-                    .collect(toMap(Entry::getKey, valueMapper, this::mergeFunction, TreeMap::new));
-    }
-
-    /**
-     * Remaps the entire Vm's {@link UtilizationHistory} by updating the CPU utilization value in each entry
-     * to correspond to the relative percentage of the Host CPU capacity that Vm is using.
-     * This is required since the {@link UtilizationHistory} contains the VM's CPU utilization
-     * relative to the VM's capacity.
-     *
-     * @param utilizationHistory the VM {@link UtilizationHistory} with the history entries
-     * @return
-     */
-    private SortedMap<Double, Double> remapUtilizationHistory(final UtilizationHistory utilizationHistory) {
-        return utilizationHistory
-                    .getHistory()
-                    .entrySet()
-                    .stream()
-                    .collect(
-                        toMap(Entry::getKey, vmUtilizationMapper(utilizationHistory), this::mergeFunction, TreeMap::new)
-                    );
-    }
-
-    /**
-     * A merge {@link BinaryOperator} used to resolve conflicts when remapping the values of the utilization history map
-     * using the {@link Collectors#toMap(Function, Function, BinaryOperator, Supplier)}.
-     *
-     * If there are two values for the same key, the last value is used.
-     * However, since we are just remapping an existing map, there won't be such a situation.
-     *
-     * @param usage1 the 1st CPU utilization value found for a key
-     * @param usage2 the 2dn CPU utilization value found for the same key
-     * @return the higher value between the given two ones
-     *
-     * @see #getUtilizationHistorySum()
-     * @see #remapUtilizationHistory(UtilizationHistory)
-     */
-    private double mergeFunction(final double usage1, final double usage2) {
-        return Math.max(usage1, usage2);
-    }
-
-    /**
-     * Receives a Vm {@link UtilizationHistory} and returns a {@link Function} that
-     * requires a map entry from the history (representing a VM's CPU utilization for a given time),
-     * and returns the percentage of the Host CPU capacity that such a Vm is using at that time.
-     * This way, the value that represents how much of the VM's CPU is being used
-     * will be converted to how much that VM is using from the Host's CPU.
-     *
-     * @param utilizationHistory the VM {@link UtilizationHistory} with the history entries
-     * @return
-     */
-    private Function<Entry<Double, Double>, Double> vmUtilizationMapper(final UtilizationHistory utilizationHistory) {
-        //The entry key is the time and the value is the percentage of the VM CPU that is being used
-        return entry ->  getExpectedRelativeCpuUtilization(utilizationHistory.getVm(), entry.getValue());
+        this.cpuUtilizationStats = new HostResourceStats(this, Host::getCpuPercentUtilization);
+        if(vmList.isEmpty()){
+            final String host = this.getId() > -1 ? this.toString() : "Host";
+            LOGGER.info("Automatically enabling computation of utilization statistics for VMs on {} could not be performed because it doesn't have VMs yet. You need to enable it for each VM created.", host);
+        }
+        else vmList.forEach(ResourceStatsComputer::enableUtilizationStats);
     }
 
     @Override

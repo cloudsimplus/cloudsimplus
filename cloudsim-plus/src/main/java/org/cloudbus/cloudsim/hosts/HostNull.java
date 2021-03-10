@@ -8,12 +8,15 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.vms.HostResourceStats;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link Host}
@@ -159,8 +162,8 @@ final class HostNull implements Host {
     @Override public double getCpuMipsUtilization() { return 0.0; }
     @Override public long getBwUtilization() { return 0; }
     @Override public long getRamUtilization() { return 0; }
-    @Override public SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory() { return Collections.emptySortedMap(); }
-    @Override public SortedMap<Double, Double> getUtilizationHistorySum() { return Collections.emptySortedMap(); }
+    @Override public HostResourceStats getCpuUtilizationStats() { return new HostResourceStats(this, host -> 0.0); }
+    @Override public void enableUtilizationStats() {/**/}
     @Override public PowerModelHost getPowerModel() { return PowerModelHost.NULL; }
     @Override public void setPowerModel(PowerModelHost powerModel) {/**/}
     @Override public void enableStateHistory() {/**/}

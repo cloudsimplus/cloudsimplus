@@ -48,7 +48,6 @@ import org.cloudsimplus.builders.tables.TextTableColumn;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * An example showing how to create a Datacenter with two hosts and run
@@ -72,7 +71,7 @@ public class VmsCpuUsageExample {
     private List<Vm> vmlist;
     private DatacenterBroker broker;
     private static final int VMS = 2;
-    private static final int HOSTS = 2;
+    private static final int HOSTS = 3;
 
     /**
      * Starts the example execution.
@@ -112,13 +111,13 @@ public class VmsCpuUsageExample {
         broker.submitVmList(vmlist);
         broker.submitCloudletList(cloudletList);
 
-        final double finishTime = simulation.start();
+        simulation.start();
 
         new CloudletsTableBuilder(broker.getCloudletFinishedList())
-            .addColumn(7, new TextTableColumn("VM MIPS"), cloudlet -> cloudlet.getVm().getMips())
+            .addColumn(7, new TextTableColumn("VM MIPS"), cl -> cl.getVm().getMips())
             .build();
 
-        showCpuUtilizationForAllVms(finishTime);
+        printCpuUtilizationForAllVms();
 
         System.out.println(getClass().getSimpleName() + " finished!");
     }
@@ -156,32 +155,15 @@ public class VmsCpuUsageExample {
         vm.setRam(ram).setBw(bw)
             .setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
-        vm.getUtilizationHistory().enable();;
+        vm.enableUtilizationStats();
         return vm;
     }
 
-    private void showCpuUtilizationForAllVms(final double simulationFinishTime) {
-        System.out.printf("%nHosts CPU utilization history for the entire simulation period%n%n");
-        int numberOfUsageHistoryEntries = 0;
+    private void printCpuUtilizationForAllVms() {
+        System.out.printf("%nVMs CPU utilization mean%n");
         for (Vm vm : vmlist) {
-            System.out.printf("VM %d%n", vm.getId());
-            if (vm.getUtilizationHistory().getHistory().isEmpty()) {
-                System.out.println("\tThere isn't any usage history");
-                continue;
-            }
-
-            for (Map.Entry<Double, Double> entry : vm.getUtilizationHistory().getHistory().entrySet()) {
-                final double time = entry.getKey();
-                final double vmCpuUsage = entry.getValue()*100;
-                if (vmCpuUsage > 0) {
-                    numberOfUsageHistoryEntries++;
-                    System.out.printf("\tTime: %2.0f CPU Utilization: %6.2f%%%n", time, vmCpuUsage);
-                }
-            }
-        }
-
-        if (numberOfUsageHistoryEntries == 0) {
-            System.out.println("No CPU usage history was found");
+            final double vmCpuUsageMean = vm.getCpuUtilizationStats().getMean()*100;
+            System.out.printf("\tVM %d CPU Utilization mean: %6.2f%%%n", vm.getId(), vmCpuUsageMean);
         }
     }
 
@@ -198,7 +180,7 @@ public class VmsCpuUsageExample {
         final int pesNumber = 4;
         final int mips = 1000;
         for (int i = 1; i <= HOSTS; i++) {
-            Host host = createHost(pesNumber, mips*i);
+            Host host = createHost(i, pesNumber, mips*i);
             hostList.add(host);
         }
 
@@ -207,7 +189,7 @@ public class VmsCpuUsageExample {
         return dc;
     }
 
-    private static Host createHost(final int pesNumber, final long mips) {
+    private static Host createHost(final int id, final int pesNumber, final long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
@@ -221,6 +203,7 @@ public class VmsCpuUsageExample {
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
+        host.setId(id);
         host.enableStateHistory();
         return host;
     }

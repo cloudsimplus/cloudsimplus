@@ -242,7 +242,7 @@ public final class MigrationExample1 {
         new CloudletsTableBuilder(finishedList).build();
         System.out.printf("%nHosts CPU usage History (when the allocated MIPS is lower than the requested, it is due to VM migration overhead)%n");
 
-        hostList.stream().filter(h -> h.getId() <= 2).forEach(this::printHostHistory);
+        hostList.stream().filter(h -> h.getId() <= 2).forEach(this::printHostStateHistory);
         System.out.printf("Number of VM migrations: %d%n", migrationsNumber);
         System.out.println(getClass().getSimpleName() + " finished!");
     }
@@ -311,7 +311,7 @@ public final class MigrationExample1 {
             time, host, host.getTotalAllocatedMips(), host.getTotalMipsCapacity());
     }
 
-    private void printHostHistory(Host host) {
+    private void printHostStateHistory(final Host host) {
         new HostHistoryTableBuilder(host).setTitle(host.toString()).build();
     }
 

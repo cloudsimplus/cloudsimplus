@@ -22,7 +22,7 @@ public interface Machine extends AbstractMachine {
 
     /**
      * Computes what would be the relative percentage of the CPU the VM is using from a Machine's total MIPS Capacity,
-     * considering that the VM 's CPU load is at a given percentage.
+     * considering that the VM's CPU load is at a given percentage.
      * @param vm the VM to get its relative percentage of CPU utilization
      * @param vmCpuUtilizationPercent the VM's CPU utilization percentage for a given time
      * @return the relative VM CPU usage percent (from 0 to 1)

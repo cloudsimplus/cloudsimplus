@@ -131,7 +131,8 @@ class VmNull implements Vm {
     @Override public double getIdleInterval() { return 0; }
     @Override public boolean isIdle() { return false; }
     @Override public boolean isIdleEnough(double time) { return false; }
-    @Override public UtilizationHistory getUtilizationHistory() { return UtilizationHistory.NULL; }
+    @Override public VmResourceStats getCpuUtilizationStats() { return new VmResourceStats(Vm.NULL, vm -> 0.0); }
+    @Override public void enableUtilizationStats() {/**/}
     @Override public String getVmm() {
         return "";
     }

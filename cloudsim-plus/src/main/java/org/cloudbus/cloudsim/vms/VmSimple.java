@@ -48,8 +48,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private static long defaultBwCapacity = 100;
     /** @see #setDefaultStorageCapacity(long) */
     private static long defaultStorageCapacity = 1024;
-    /** @see #getUtilizationHistory() */
-    private final UtilizationHistory utilizationHistory;
+    /** @see #getCpuUtilizationStats() */
+    private VmResourceStats cpuUtilizationStats;
 
     /** @see #getStateHistory() */
     private final List<VmStateHistoryEntry> stateHistory;
@@ -240,8 +240,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
         this.setPeVerticalScaling(VerticalVmScaling.NULL);
 
-        //By default, the VM doesn't store utilization history. This has to be enabled by the user as wanted
-        utilizationHistory = new VmUtilizationHistory(this, false);
+        cpuUtilizationStats = VmResourceStats.NULL;
 
         //initiate number of free PEs as number of PEs of VM
         freePesNumber = numberOfPes;
@@ -287,7 +286,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
          * before the utilization drop.
          */
         final double decimals = currentTime - (int) currentTime;
-        utilizationHistory.addUtilizationHistory(currentTime);
+        cpuUtilizationStats.add(currentTime);
         getBroker().requestIdleVmDestruction(this);
         if (nextSimulationDelay == Double.MAX_VALUE) {
             return nextSimulationDelay;
@@ -994,8 +993,15 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public UtilizationHistory getUtilizationHistory() {
-        return utilizationHistory;
+    public VmResourceStats getCpuUtilizationStats() {
+        return cpuUtilizationStats;
+    }
+
+    @Override
+    public void enableUtilizationStats(){
+        if(cpuUtilizationStats == null || cpuUtilizationStats == VmResourceStats.NULL) {
+            this.cpuUtilizationStats = new VmResourceStats(this, vm -> vm.getCpuPercentUtilization(getSimulation().clock()));
+        }
     }
 
     /**

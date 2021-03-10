@@ -22,7 +22,6 @@ import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.cloudbus.cloudsim.vms.UtilizationHistory;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
@@ -32,7 +31,8 @@ import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -133,60 +133,6 @@ public class HostSimpleTest {
         vm.setBw(BW);
         vm.setSize(storage);
         return vm;
-    }
-
-    @Test
-    public void testGetUtilizationHistory(){
-        final int VMS = 4;
-        final List<Vm> vmList = createMockVmsWithUtilizationHistory(VMS);
-        vmList.forEach(vm -> host.addVmToCreatedList(vm));
-
-        final double[] expected = {0.0, 0.75, 0.5, 0.25};
-        final double[] result = host.getUtilizationHistory().values().stream().mapToDouble(DoubleSummaryStatistics::getSum).toArray();
-        assertEquals(expected.length, result.length, "The number of history entries is not equal");
-        for (int i = 0; i < result.length; i++) {
-            assertEquals(expected[i], result[i], "Utilization History at position " + i);
-        }
-    }
-
-    private List<Vm> createMockVmsWithUtilizationHistory(final int vmsNumber) {
-        final List<Vm> list = new ArrayList<>(vmsNumber);
-
-        for (int i = 0; i < vmsNumber; i++) {
-            final Vm vm = EasyMock.createMock(Vm.class);
-            EasyMock.expect(vm.getExpectedHostCpuUtilization(0.0)).andReturn(0.0).anyTimes();
-            EasyMock.expect(vm.getExpectedHostCpuUtilization(1.0)).andReturn(0.25).anyTimes();
-
-            /*
-            A history map where keys are times and values are CPU utilization percentage for that time.
-            The map will be created as below:
-
-            vm	time 0	time 1	time 2	time 3
-            0	0	    0	    0	    0
-            1	0	    1	    0	    0
-            2	0	    1	    1	    0
-            3	0	    1	    1	    1
-            avg 0	    0.75    0.5	    0.25
-            */
-            final SortedMap<Double, Double> history = new TreeMap<>();
-            for (double j = 0; j < i + 1; j++) {
-                history.put(j, j == 0 ? 0 : 1.0);
-            }
-
-
-            final UtilizationHistory vmUtilizationHistory = EasyMock.createMock(UtilizationHistory.class);
-            EasyMock.expect(vmUtilizationHistory.getVm()).andReturn(vm).anyTimes();
-            EasyMock.expect(vmUtilizationHistory.getHistory()).andReturn(history).anyTimes();
-            EasyMock.expect(vm.getUtilizationHistory()).andReturn(vmUtilizationHistory).anyTimes();
-            EasyMock.expect(vm.getTotalMipsCapacity()).andReturn(TOTAL_HOST_MIPS/vmsNumber).anyTimes();
-
-            EasyMock.replay(vm);
-            EasyMock.replay(vmUtilizationHistory);
-
-            list.add(vm);
-        }
-
-        return list;
     }
 
     @Test

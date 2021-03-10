@@ -48,7 +48,6 @@ import org.cloudsimplus.builders.tables.TextTableColumn;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * An example showing how to create a Datacenter with two hosts,
@@ -123,7 +122,9 @@ public class HostsCpuUsageExample {
             .addColumn(7, new TextTableColumn("VM MIPS"), cloudlet -> cloudlet.getVm().getMips())
             .build();
 
-        showCpuUtilizationForAllHosts();
+        System.out.printf("%nHosts CPU utilization statistics%n");
+        printCpuUtilizationForAllHosts();
+        printCpuUtilizationForAllVms();
         System.out.println(getClass().getSimpleName() + " finished!");
     }
 
@@ -153,30 +154,28 @@ public class HostsCpuUsageExample {
         Vm vm = new VmSimple(mips, pesNumber)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
-        vm.getUtilizationHistory().enable();
+        vm.enableUtilizationStats();
         return vm;
     }
 
     /**
-     * Shows CPU utilization of all hosts into a given Datacenter.
+     * Shows CPU utilization mean of all hosts into a given Datacenter.
      */
-    private void showCpuUtilizationForAllHosts() {
-        System.out.printf("%nHosts CPU utilization history for the entire simulation period%n");
-        int numberOfUsageHistoryEntries = 0;
+    private void printCpuUtilizationForAllHosts() {
         for (Host host : hostList) {
-            double mipsByPe = host.getTotalMipsCapacity() / (double)host.getNumberOfPes();
-            System.out.printf("Host %d: Number of PEs %2d, MIPS by PE %.0f%n", host.getId(), host.getNumberOfPes(), mipsByPe);
-            for (Map.Entry<Double, Double> entry : host.getUtilizationHistorySum().entrySet()) {
-                final double time = entry.getKey();
-                final double cpuUsage = entry.getValue()*100;
-                numberOfUsageHistoryEntries++;
-                System.out.printf("\tTime: %4.1f CPU Utilization: %6.2f%%%n", time, cpuUsage);
-            }
-            System.out.println("--------------------------------------------------");
+            final double mipsByPe = host.getTotalMipsCapacity() / (double)host.getNumberOfPes();
+            final double cpuUsageMean = host.getCpuUtilizationStats().getMean()*100;
+            System.out.printf(
+                "\tHost %d: PEs number: %2d MIPS by PE: %.0f CPU Utilization mean: %6.2f%%%n",
+                host.getId(), host.getNumberOfPes(), mipsByPe, cpuUsageMean);
         }
+    }
 
-        if(numberOfUsageHistoryEntries == 0) {
-            System.out.println("No CPU usage history was found");
+    private void printCpuUtilizationForAllVms() {
+        System.out.printf("%nVMs CPU utilization mean%n");
+        for (Vm vm : vmlist) {
+            final double vmCpuUsageMean = vm.getCpuUtilizationStats().getMean()*100;
+            System.out.printf("\tVM %d CPU Utilization mean: %6.2f%%%n", vm.getId(), vmCpuUsageMean);
         }
     }
 
@@ -192,7 +191,7 @@ public class HostsCpuUsageExample {
         final int pesNumber = 1;
         final int mips = 2000;
         for (int i = 1; i <= 2; i++) {
-            Host host = createHost(pesNumber, mips*i);
+            Host host = createHost(i, pesNumber, mips*i);
             hostList.add(host);
         }
 
@@ -201,7 +200,7 @@ public class HostsCpuUsageExample {
         return dc;
     }
 
-    private Host createHost(final int pesNumber, final long mips) {
+    private Host createHost(final int id, final int pesNumber, final long mips) {
         List<Pe> peList = new ArrayList<>();
         for (int i = 0; i < pesNumber; i++) {
             peList.add(new PeSimple(mips, new PeProvisionerSimple()));
@@ -216,6 +215,8 @@ public class HostsCpuUsageExample {
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared());
+        host.setId(id);
+        host.enableUtilizationStats();
         return host;
     }
 }

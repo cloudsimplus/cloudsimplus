@@ -738,16 +738,6 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         this.underUtilizationThreshold = underUtilizationThreshold;
     }
 
-    /**
-     * Gets all CPU utilization values from the {@link Host#getUtilizationHistorySum()}
-     * as an array.
-     * @param host the Host to get the CPU utilization values
-     * @return the utilization values array
-     */
-    protected double[] getHostCpuUsageArray(final Host host) {
-        return host.getUtilizationHistorySum().values().stream().mapToDouble(cpuUsage -> cpuUsage).toArray();
-    }
-
     @Override
     public final boolean isVmMigrationSupported() {
         return true;

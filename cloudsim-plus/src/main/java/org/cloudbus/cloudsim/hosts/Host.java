@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.Machine;
+import org.cloudbus.cloudsim.core.ResourceStatsComputer;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.PowerAware;
@@ -19,18 +20,16 @@ import org.cloudbus.cloudsim.resources.Pe.Status;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
+import org.cloudbus.cloudsim.vms.HostResourceStats;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.cloudbus.cloudsim.vms.VmUtilizationHistory;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostEventInfo;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.DoubleSummaryStatistics;
 import java.util.List;
 import java.util.Set;
-import java.util.SortedMap;
 
 /**
  * An interface to be implemented by each class that provides
@@ -45,7 +44,7 @@ import java.util.SortedMap;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHost> {
+public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHost>, ResourceStatsComputer<HostResourceStats> {
     Logger LOGGER = LoggerFactory.getLogger(Host.class.getSimpleName());
 
     /**
@@ -608,6 +607,25 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     double getCpuPercentUtilization();
 
     /**
+     * {@inheritDoc}
+     * It uses the utilization statistics from its VMs to provide the overall Host's CPU utilization.
+     * However, for this method to return any data, you need to enable
+     * the statistics computation for every VM it owns.
+     * @return {@inheritDoc}
+     */
+    HostResourceStats getCpuUtilizationStats();
+
+    /**
+     * {@inheritDoc}
+     * It iterates over all existing VMs enabling the statistics computation on every one.
+     * But keep in mind that when a Host is created, it has no VM.
+     * Therefore, you need to call this method for every VM if you are enabling
+     * the computation before the simulation starts and VM placement is performed.
+     */
+    void enableUtilizationStats();
+
+
+    /**
      * Gets the current total utilization of CPU in MIPS,
      * considering the usage of all its PEs.
      *
@@ -628,65 +646,6 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * @return
      */
     long getRamUtilization();
-
-    /**
-     * <p>Gets a map containing the host CPU utilization percentage history (between [0 and 1]),
-     * based on its VM utilization history.
-     * Each key is a time when the data collection was performed
-     * and each value is a {@link DoubleSummaryStatistics}
-     * from where some operations over the CPU utilization entries for every VM inside the Host
-     * can be performed. Such operations include counting, summing, averaging, etc.
-     * For instance, if you call the {@link DoubleSummaryStatistics#getSum()},
-     * you'll get the total Host's CPU utilization for the time specified
-     * by the map key.
-     * </p>
-     *
-     * <p>
-     * There is an entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
-     * <b>This way, it's required to set a Datacenter scheduling interval with the desired value.</b>
-     * </p>
-     *
-     * <p><b>In order to enable the Host to get utilization history,
-     * its VMs' utilization history must be enabled
-     * by calling {@link VmUtilizationHistory#enable() enable()} from
-     * the {@link Vm#getUtilizationHistory()}.</b>
-     * </p>
-     *
-     * @return a Map where keys are the data collection time
-     * and each value is a {@link DoubleSummaryStatistics} objects
-     * that provides lots of useful methods to get
-     * max, min, average, count and sum of utilization values.
-     *
-     * @see #getUtilizationHistorySum()
-     */
-    SortedMap<Double, DoubleSummaryStatistics> getUtilizationHistory();
-
-    /**
-     * <p>Gets a map containing the total Host's CPU utilization (between [0 and 1])
-     * along simulation time, based on its VM utilization history.
-     * Each key is a time when the data collection was performed
-     * and each value is the sum of all CPU utilization of the VMs running inside this Host for that time.
-     * This way, the value represents the total Host's CPU utilization for each time
-     * that data was collected.
-     * </p>
-     *
-     * <p>
-     * There is an entry for each time multiple of the {@link Datacenter#getSchedulingInterval()}.
-     * <b>This way, it's required to set a Datacenter scheduling interval with the desired value.</b>
-     * </p>
-     *
-     * <p><b>In order to enable the Host to get utilization history,
-     * its VMs' utilization history must be enabled
-     * by calling {@link VmUtilizationHistory#enable() enable()} from
-     * the {@link Vm#getUtilizationHistory()}.</b>
-     * </p>
-     *
-     * @return a Map where keys are the data collection time
-     * and each value is the total Host's CPU utilization for each time.
-     *
-     * @see #getUtilizationHistory()
-     */
-    SortedMap<Double, Double> getUtilizationHistorySum();
 
     /**
      * Gets the {@link PowerModelHost} used by the host

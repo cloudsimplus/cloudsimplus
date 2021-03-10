@@ -45,21 +45,22 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
-import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
-import org.cloudbus.cloudsim.vms.UtilizationHistory;
+import org.cloudbus.cloudsim.vms.HostResourceStats;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmResourceStats;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.examples.resourceusage.VmsRamAndBwUsageExample;
 import org.cloudsimplus.util.Log;
 
 import java.util.ArrayList;
-import java.util.DoubleSummaryStatistics;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
+
+import static java.util.Comparator.comparingLong;
 
 /**
  * An example to show power consumption of Hosts and VMs.
@@ -135,21 +136,12 @@ public class PowerExample {
     private Datacenter datacenter0;
     private final List<Host> hostList;
 
-    /**
-     * If set to false, consecutive lines with the the same CPU utilization and power consumption
-     * will be shown only once, at the time that such metrics started to return those values.
-     * The last history line is always shown, independent of any condition.
-     */
-    private boolean showAllHostUtilizationHistoryEntries;
-
-
     public static void main(String[] args) {
-        new PowerExample(true);
+        new PowerExample();
     }
 
-    private PowerExample(boolean showAllHostUtilizationHistoryEntries) {
+    private PowerExample() {
         Log.setLevel(Level.WARN);
-        this.showAllHostUtilizationHistoryEntries = showAllHostUtilizationHistoryEntries;
 
         simulation = new CloudSim();
         hostList = new ArrayList<>(HOSTS);
@@ -166,6 +158,8 @@ public class PowerExample {
 
         System.out.println("------------------------------- SIMULATION FOR SCHEDULING INTERVAL = " + SCHEDULING_INTERVAL+" -------------------------------");
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        final Comparator<Cloudlet> hostComparator = comparingLong(cl -> cl.getVm().getHost().getId());
+        finishedCloudlets.sort(hostComparator.thenComparing(cl -> cl.getVm().getId()));
 
         new CloudletsTableBuilder(finishedCloudlets).build();
         printHostsCpuUtilizationAndPowerConsumption();
@@ -173,16 +167,13 @@ public class PowerExample {
     }
 
     /**
-     * Prints the following information from VM's history:
+     * Prints the following information from VM's utilization stats:
      * <ul>
-     *   <li>VM's CPU utilization relative to the total Host's CPU utilization.
-     *       For instance, if there are 2 equal VMs using 100% of their CPU, the utilization
+     *   <li>VM's mean CPU utilization relative to the total Host's CPU utilization.
+     *       For instance, if the CPU utilization mean of two equal VMs is 100% of their CPU, the utilization
      *       of each one corresponds to 50% of the Host's CPU utilization.</li>
      *   <li>VM's power consumption relative to the total Host's power consumption.</li>
      * </ul>
-     *
-     * If we just get the percentage of CPU the VM is using from the Host
-     * (as demonstrated above) and compute the VM power consumption we'll get an wrong value.
      *
      * <p>A Host, even if idle, may consume a static amount of power.
      * Lets say it consumes 20 W in idle state and that for each 1% of CPU use it consumes 1 W more.
@@ -207,22 +198,19 @@ public class PowerExample {
      * </p>
      */
     private void printVmsCpuUtilizationAndPowerConsumption() {
+        vmList.sort(comparingLong(vm -> vm.getHost().getId()));
         for (Vm vm : vmList) {
-            System.out.println("Vm " + vm.getId() + " at Host " + vm.getHost().getId() + " CPU Usage and Power Consumption");
-            System.out.println("----------------------------------------------------------------------------------------------------------------------");
-            double vmPower; // W
-            double utilizationHistoryTimeInterval, prevTime = 0;
-            final UtilizationHistory history = vm.getUtilizationHistory();
-            for (final double time : history.getHistory().keySet()) {
-                utilizationHistoryTimeInterval = time - prevTime;
-                vmPower = history.powerConsumption(time);
-                final double wattsPerInterval = vmPower*utilizationHistoryTimeInterval;
-                System.out.printf(
-                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f W * %6.0f s = %10.2f Ws%n",
-                    time, history.getHostCpuUtilization(time) *100, vmPower, utilizationHistoryTimeInterval, wattsPerInterval);
-                prevTime = time;
-            }
-            System.out.println();
+            final PowerModelHost powerModel = vm.getHost().getPowerModel();
+            final double hostStaticPower = powerModel instanceof PowerModelHostSimple ? ((PowerModelHostSimple)powerModel).getStaticPower() : 0;
+            final double hostStaticPowerByVm = hostStaticPower / vm.getHost().getVmCreatedList().size();
+
+            //VM CPU utilization relative to the host capacity
+            final double vmRelativeCpuUtilization = vm.getCpuUtilizationStats().getMean() / vm.getHost().getVmCreatedList().size();
+            final double vmPower = powerModel.getPower(vmRelativeCpuUtilization) - hostStaticPower + hostStaticPowerByVm; // W
+            final VmResourceStats cpuStats = vm.getCpuUtilizationStats();
+            System.out.printf(
+                "Vm   %2d CPU Usage Mean: %6.1f%% | Power Consumption Mean: %8.0f W%n",
+                vm.getId(), cpuStats.getMean() *100, vmPower);
         }
     }
 
@@ -236,45 +224,18 @@ public class PowerExample {
         for (final Host host : hostList) {
             printHostCpuUtilizationAndPowerConsumption(host);
         }
+        System.out.println();
     }
 
     private void printHostCpuUtilizationAndPowerConsumption(final Host host) {
-        System.out.printf("Host %d CPU utilization and power consumption%n", host.getId());
-        System.out.println("----------------------------------------------------------------------------------------------------------------------");
-        final Map<Double, DoubleSummaryStatistics> utilizationPercentHistory = host.getUtilizationHistory();
-        double totalWattsSec = 0;
-        double prevUtilizationPercent = -1, prevWattsSec = -1;
-        //time difference from the current to the previous line in the history
-        double utilizationHistoryTimeInterval;
-        double prevTime=0;
-        for (Map.Entry<Double, DoubleSummaryStatistics> entry : utilizationPercentHistory.entrySet()) {
-            utilizationHistoryTimeInterval = entry.getKey() - prevTime;
-            //The total Host's CPU utilization for the time specified by the map key
-            final double utilizationPercent = entry.getValue().getSum();
-            final double watts = host.getPowerModel().getPower(utilizationPercent);
-            //Energy consumption in the time interval
-            final double wattsSec = watts*utilizationHistoryTimeInterval;
-            //Energy consumption in the entire simulation time
-            totalWattsSec += wattsSec;
-            //only prints when the next utilization is different from the previous one, or it's the first one
-            if(showAllHostUtilizationHistoryEntries || prevUtilizationPercent != utilizationPercent || prevWattsSec != wattsSec) {
-                System.out.printf(
-                    "\tTime %8.1f | Host CPU Usage: %6.1f%% | Power Consumption: %8.0f W * %6.0f s = %10.2f Ws%n",
-                    entry.getKey(), utilizationPercent * 100, watts, utilizationHistoryTimeInterval, wattsSec);
-            }
-            prevUtilizationPercent = utilizationPercent;
-            prevWattsSec = wattsSec;
-            prevTime = entry.getKey();
-        }
+        final HostResourceStats cpuStats = host.getCpuUtilizationStats();
 
+        //The total Host's CPU utilization for the time specified by the map key
+        final double utilizationPercentMean = cpuStats.getMean();
+        final double watts = host.getPowerModel().getPower(utilizationPercentMean);
         System.out.printf(
-            "Total Host %d Power Consumption in %.0f s: %.0f Ws (%.5f kWh)%n",
-            host.getId(), simulation.clock(), totalWattsSec, Conversion.wattSecondsToKWattHours(totalWattsSec));
-        final double powerWattsSecMean = totalWattsSec / simulation.clock();
-        System.out.printf(
-            "Mean %.2f Ws for %d usage samples (%.5f kWh)%n",
-            powerWattsSecMean, utilizationPercentHistory.size(), Conversion.wattSecondsToKWattHours(powerWattsSecMean));
-        System.out.printf("----------------------------------------------------------------------------------------------------------------------%n%n");
+            "Host %2d CPU Usage mean: %6.1f%% | Power Consumption mean: %8.0f W%n",
+            host.getId(), utilizationPercentMean * 100, watts);
     }
 
     /**
@@ -282,7 +243,7 @@ public class PowerExample {
      */
     private Datacenter createDatacenterSimple() {
         for(int i = 0; i < HOSTS; i++) {
-            Host host = createPowerHost();
+            Host host = createPowerHost(i);
             hostList.add(host);
         }
 
@@ -291,7 +252,7 @@ public class PowerExample {
         return dc;
     }
 
-    private Host createPowerHost() {
+    private Host createPowerHost(final int id) {
         final List<Pe> peList = new ArrayList<>(HOST_PES);
         //List of Host's CPUs (Processing Elements, PEs)
         for (int i = 0; i < HOST_PES; i++) {
@@ -308,10 +269,13 @@ public class PowerExample {
         final VmScheduler vmScheduler = new VmSchedulerTimeShared();
 
         final Host host = new HostSimple(ram, bw, storage, peList);
-        host.setPowerModel(powerModel);
-        host.setRamProvisioner(ramProvisioner);
-        host.setBwProvisioner(bwProvisioner);
-        host.setVmScheduler(vmScheduler);
+        host
+            .setRamProvisioner(ramProvisioner)
+            .setBwProvisioner(bwProvisioner)
+            .setVmScheduler(vmScheduler)
+            .setPowerModel(powerModel);
+        host.setId(id);
+        host.enableUtilizationStats();
         return host;
     }
 
@@ -324,7 +288,7 @@ public class PowerExample {
             Vm vm = new VmSimple(i, 1000, VM_PES);
             vm.setRam(512).setBw(1000).setSize(10000)
               .setCloudletScheduler(new CloudletSchedulerTimeShared());
-            vm.getUtilizationHistory().enable();
+            vm.enableUtilizationStats();
             list.add(vm);
         }
 
