@@ -587,7 +587,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
             Log.setLevel(Level.INFO);
         }
 
-        System.out.printf("%n------------------------------------------------------------------%n");
+        System.out.printf("%nFinal simulation results for all executions (%d metrics) -------------------%n", metricsMap.size());
         metricsMap.entrySet().forEach(this::computeAndPrintFinalResults);
         System.out.printf("%nExperiments finished in %d seconds!%n", getExperimentsFinishTime());
     }
