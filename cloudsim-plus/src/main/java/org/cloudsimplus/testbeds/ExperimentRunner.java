@@ -28,6 +28,7 @@ import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
+import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.util.Log;
 
@@ -452,7 +453,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * @see UniformDistr#isApplyAntitheticVariates()
      * @see #createRandomGen(int, double, double)
      */
-    public <T extends ContinuousDistribution> T createRandomGen(final int experimentIndex, final Function<Long, T> randomGenCreator) {
+    public <T extends StatisticalDistribution> T createRandomGen(final int experimentIndex, final Function<Long, T> randomGenCreator) {
         Objects.requireNonNull(randomGenCreator, "The Function to instantiate the Random Number Generator cannot be null.");
 
         if(seeds.isEmpty()){

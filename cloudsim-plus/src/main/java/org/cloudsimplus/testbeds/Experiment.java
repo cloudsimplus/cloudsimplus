@@ -50,7 +50,7 @@ import java.util.function.Supplier;
  * @since CloudSim Plus 1.0
  */
 public abstract class Experiment implements Runnable {
-    private final ExperimentRunner runner;
+    protected final ExperimentRunner runner;
     private final CloudSim simulation;
     private final List<Datacenter> datacenterList;
     private final List<DatacenterBroker> brokerList;
