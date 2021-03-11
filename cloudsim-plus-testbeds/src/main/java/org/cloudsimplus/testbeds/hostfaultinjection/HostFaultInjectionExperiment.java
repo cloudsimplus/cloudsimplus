@@ -550,13 +550,6 @@ final class HostFaultInjectionExperiment extends Experiment {
     }
 
     /**
-     * Gets the price per hour for the AWS EC2 Template to be used for a given customer.
-     */
-    public Double getTemplatesMap(final DatacenterBroker broker) {
-        return templatesMap.get(broker).getPricePerHour();
-    }
-
-    /**
      * A main method just for test purposes.
      *
      * @param args
@@ -581,11 +574,4 @@ final class HostFaultInjectionExperiment extends Experiment {
         return faultInjection;
     }
 
-    /**
-     * A map containing the {@link SlaContract} associated to each
-     * {@link DatacenterBroker} representing a customer.
-     */
-    public Map<DatacenterBroker, SlaContract> getContractsMap() {
-        return contractsMap;
-    }
 }

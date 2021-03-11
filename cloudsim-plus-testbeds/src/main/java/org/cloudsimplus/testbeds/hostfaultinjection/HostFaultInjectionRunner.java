@@ -50,7 +50,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
-    static final long[] CLOUDLET_LENGTHS = {1000_000_000L, 1800_000_000L, 2800_000_000L };
+    static final long[] CLOUDLET_LENGTHS = {1000_000_000L, 1800_000_000L, 2800_000_000L};
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -128,7 +128,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     protected HostFaultInjectionExperiment createExperiment(final int i) {
         final HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(i, this);
         exp.setVerbose(experimentVerbose)
-            .setAfterExperimentFinish(this::afterExperimentFinish);
+           .setAfterExperimentFinish(this::afterExperimentFinish);
         return exp;
     }
 
@@ -149,17 +149,14 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
         //The availability for each broker for a single experiment.
         final Map<DatacenterBroker, Double> brokersAvailabilities = exp.getBrokerList()
             .stream()
-            .sorted()
             .collect(toMap(b -> b, faultInjection::availability));
 
         final Map<DatacenterBroker, Double> costBrokers = exp.getBrokerList()
             .stream()
-            .sorted()
             .collect(toMap(b -> b, exp::getTotalCost));
 
         final Map<DatacenterBroker, Double> getCustomerActualPricePerHour = exp.getBrokerList()
             .stream()
-            .sorted()
             .collect(toMap(b -> b, exp::getCustomerActualPricePerHour));
 
         /*
