@@ -203,7 +203,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     }
 
     @Override
-    protected void printFinalResults(String metricName, SummaryStatistics stats) {
+    protected void printFinalResults(final String metricName, final SummaryStatistics stats) {
         System.out.printf("%n# %s for %d simulation runs%n", metricName, getSimulationRuns());
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
@@ -214,7 +214,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
         }
     }
 
-    private void showConfidenceInterval(SummaryStatistics stats) {
+    private void showConfidenceInterval(final SummaryStatistics stats) {
         // Computes 95% confidence interval
         double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
         double lower = stats.getMean() - intervalSize;
