@@ -417,21 +417,16 @@ public abstract class Experiment implements Runnable {
 
     /**
      * Sets a {@link Consumer} object that will receive the experiment instance
-     * after the experiment finishes executing and performs some post-processing
+     * after the experiment finishes, then it performs some post-processing
      * tasks. These tasks are defined by the developer using the current class
      * and can include collecting data for statistical analysis.
-     *
-     * <p>The consumer may be used to collect this statistical data
-     * to be stored further in the metrics map
-     * by the {@link ExperimentRunner#createMetricsMap()} method.
-     * For each metric into this map, the consumer most have a list
-     * where a new value will be added when an experiment finishes.
-     * </p>
+     * <p>Inside this Consumer, you must call {@link ExperimentRunner#addMetricValue(String, double)}
+     * to collect values for each desired metric.</p>
      *
      * <p>Setting a Consumer object is optional.</p>
      *
      * @param <T> the class of the experiment
-     * @param afterExperimentFinishConsumer a {@link Consumer} instance to set.
+     * @param afterExperimentFinishConsumer a {@link Consumer} instance to set
      * @return
      */
     public <T extends Experiment> Experiment setAfterExperimentFinish(final Consumer<T> afterExperimentFinishConsumer) {

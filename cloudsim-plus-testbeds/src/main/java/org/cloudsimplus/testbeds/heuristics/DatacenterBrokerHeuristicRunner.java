@@ -34,11 +34,6 @@ import org.cloudsimplus.heuristics.Heuristic;
 import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Runs the {@link DatacenterBrokerHeuristicExperiment} the number of times
  * defines by {@link #getSimulationRuns()} and compute statistics.
@@ -79,11 +74,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     private int vmPesArray[];
 
     /**
-     * The cost to map Cloudlets to VMs for each executed experiment.
-     */
-    private List<Double> experimentCosts;
-
-    /**
      * An object that compute statistics about experiment execution time of all
      * executed experiment runs.
      */
@@ -103,7 +93,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     private DatacenterBrokerHeuristicRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
-        experimentCosts = new ArrayList<>();
         runtimeStats = new SummaryStatistics();
         vmPesArray = new int[0];
         cloudletPesArray = new int[0];
@@ -169,16 +158,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     }
 
     /**
-     * Adds the computed cost to map Cloudlets to a VM for the current
-     * experiment to the list of mapping costs.
-     *
-     * @param cost the cost to add
-     */
-    public void addExperimentCost(double cost) {
-        experimentCosts.add(cost);
-    }
-
-    /**
      * Adds the run time that the simulated annealing heuristic spent to compute
      * the mapping of Cloudlets to a VM for the current experiment to the list
      * of run times.
@@ -203,7 +182,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
 
     @Override
     protected void setup() {
-        experimentCosts = new ArrayList<>(getSimulationRuns());
         vmPesArray = createVmPesArray();
         cloudletPesArray = createCloudletPesArray();
     }
@@ -217,16 +195,12 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      */
     private void afterExperimentFinish(DatacenterBrokerHeuristicExperiment experiment) {
         final CloudletToVmMappingSolution solution = experiment.getHeuristic().getBestSolutionSoFar();
-        addExperimentCost(solution.getCost());
+
+        // The cost to map Cloudlets to VMs for each executed experiment.
+        addMetricValue("Experiments Cost", solution.getCost());
+
         addSimulatedAnnealingRuntime(solution.getHeuristic().getSolveTime());
         createRoundRobinSolutionIfNotCreatedYet(experiment);
-    }
-
-    @Override
-    protected Map<String, List<Double>> createMetricsMap() {
-        final Map<String, List<Double>> map = new HashMap<>();
-        map.put("Experiments Cost", experimentCosts);
-        return map;
     }
 
     @Override

@@ -26,11 +26,6 @@ package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Runs the {@link CloudletTaskCompletionTimeMinimizationExperiment} the number of
  * times defines by {@link #getSimulationRuns()} and compute statistics.
@@ -48,22 +43,6 @@ final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunne
     static final int[] MIPS_VM = {1000};
     static final int VMS = 30;
     static final int CLOUDLETS = 40;
-
-    /**
-     * The Task Completion Time average for all the experiments.
-     */
-    private List<Double> cloudletTaskCompletionTime;
-
-    /**
-     * The percentage of cloudlets meeting Task Completion Time average for all the
-     * experiments.
-     */
-    private List<Double> percentageOfCloudletsMeetingTaskCompletionTime;
-
-    /**
-     * Amount of cloudlet PE per PE of vm.
-     */
-    private List<Double> ratioOfVmPesToRequiredCloudletPesList;
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -86,9 +65,6 @@ final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunne
 
     private CloudletTaskCompletionTimeMinimizationRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
         super(antitheticVariatesTechnique, baseSeed);
-        cloudletTaskCompletionTime = new ArrayList<>();
-        percentageOfCloudletsMeetingTaskCompletionTime = new ArrayList<>();
-        ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
     }
 
     @Override
@@ -109,23 +85,18 @@ final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunne
      * @param exp the finished experiment
      */
     private void afterExperimentFinish(CloudletTaskCompletionTimeMinimizationExperiment exp) {
-        cloudletTaskCompletionTime.add(exp.getTaskCompletionTimeAverage());
-        percentageOfCloudletsMeetingTaskCompletionTime.add(
-                exp.getPercentageOfCloudletsMeetingTaskCompletionTime());
-        ratioOfVmPesToRequiredCloudletPesList.add(exp.getRatioOfExistingVmPesToRequiredCloudletPes());
+        //The Task Completion Time average for all the experiments.
+        addMetricValue("Cloudlet Task Completion Time", exp.getTaskCompletionTimeAverage());
+
+        // The percentage of cloudlets meeting Task Completion Time average for all the experiments.
+        addMetricValue("Percentage Of Cloudlets Meeting the Task Completion Time", exp.getPercentageOfCloudletsMeetingTaskCompletionTime());
+
+        // Amount of cloudlet PE per PE of vm.
+        addMetricValue("Average of vPEs/CloudletsPEs", exp.getRatioOfExistingVmPesToRequiredCloudletPes());
     }
 
     @Override
     protected void setup() {/**/
-    }
-
-    @Override
-    protected Map<String, List<Double>> createMetricsMap() {
-        Map<String, List<Double>> map = new HashMap<>();
-        map.put("Cloudlet Task Completion Time", cloudletTaskCompletionTime);
-        map.put("Percentage Of Cloudlets Meeting the Task Completion Time", percentageOfCloudletsMeetingTaskCompletionTime);
-        map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
-        return map;
     }
 
     @Override

@@ -26,11 +26,6 @@ package org.cloudsimplus.testbeds.sla.taskcompletiontime;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * Runs the {@link CloudletTaskCompletionTimeWorkLoadMinimizationExperiment} the number of
  * times defines by {@link #getSimulationRuns()} and compute statistics.
@@ -42,21 +37,6 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
     static final int[] VM_MIPS = {10000, 15000, 28000};
     public static final int VMS = 30;
     public static final int CLOUDLETS = 300;
-
-    /**
-     * The Task Completion Time average for all the experiments.
-     */
-    private List<Double> cloudletsCompletionTime;
-
-     /**
-     * The percentage of cloudlets meeting task completion time average for all the experiments.
-     */
-    private List<Double> percentOfCloudletsMeetingCompletionTime;
-
-    /**
-     * Amount of cloudlet PE per PE of vm.
-     */
-    private List<Double> ratioOfVmPesToRequiredCloudletPesList;
 
     /**
      * Indicates if each experiment will output execution logs or not.
@@ -79,9 +59,6 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
 
     private CloudletTaskCompletionTimeWorkLoadMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
-        cloudletsCompletionTime = new ArrayList<>();
-        percentOfCloudletsMeetingCompletionTime = new ArrayList<>();
-        ratioOfVmPesToRequiredCloudletPesList = new ArrayList<>();
     }
 
     @Override
@@ -100,22 +77,12 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
      * performs some post-processing such as collection of data for statistic
      * analysis.
      *
-     * @param experiment the finished experiment
+     * @param exp the finished experiment
      */
-    private void afterExperimentFinish(final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment experiment) {
-        cloudletsCompletionTime.add(experiment.getTaskCompletionTimeAverage());
-        percentOfCloudletsMeetingCompletionTime.add(
-                experiment.getPercentageOfCloudletsMeetingCompletionTime());
-        ratioOfVmPesToRequiredCloudletPesList.add(experiment.getRatioOfExistingVmPesToRequiredCloudletPes());
-    }
-
-    @Override
-    protected Map<String, List<Double>> createMetricsMap() {
-        final Map<String, List<Double>> map = new HashMap<>();
-        map.put("Task Completion Time", cloudletsCompletionTime);
-        map.put("Percentage Of Cloudlets Meeting Task Completion Time", percentOfCloudletsMeetingCompletionTime);
-        map.put("Average of vPEs/CloudletsPEs", ratioOfVmPesToRequiredCloudletPesList);
-        return map;
+    private void afterExperimentFinish(final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment exp) {
+        addMetricValue("Task Completion Time", exp.getTaskCompletionTimeAverage());
+        addMetricValue("Percentage Of Cloudlets Meeting Task Completion Time", exp.getPercentageOfCloudletsMeetingCompletionTime());
+        addMetricValue("Average of vPEs/CloudletsPEs", exp.getRatioOfExistingVmPesToRequiredCloudletPes());
     }
 
     @Override

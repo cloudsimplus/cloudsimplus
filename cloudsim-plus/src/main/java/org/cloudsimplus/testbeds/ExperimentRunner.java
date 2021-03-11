@@ -32,10 +32,7 @@ import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.util.Log;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -85,6 +82,22 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
     private int numberOfBatches;
 
     /**
+     * A Map containing a List of values for each metric to be computed.
+     * The computation of final experiments results are performed on this map.
+     *
+     * <p>Each key is the metric name and each value is a List of Double
+     * containing the values collected for that metric, for each experiment run.
+     * These values will be then summarized to compute the final value
+     * for each metric.</p>
+     *
+     * <p>The values to be added for each metric on this map
+     * should be collected by the experiment finish listener.
+     * The listener can be set inside the runner's {@link #createExperiment(int)}.</p>
+     * @see Experiment#setAfterExperimentFinish(Consumer)
+     */
+    private final Map<String, List<Double>> metricsMap;
+
+    /**
      * Creates an experiment runner, setting the
      * {@link #getBaseSeed() base seed} as the current time.
      * @param antitheticVariatesTechnique indicates if it's to be applied the
@@ -101,10 +114,11 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * @param baseSeed the seed to be used as base for each experiment seed
      */
     public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
-        seeds = new ArrayList<>();
+        this.seeds = new ArrayList<>();
         setBaseSeed(baseSeed);
         setNumberOfBatches(0);
         setApplyAntitheticVariatesTechnique(antitheticVariatesTechnique);
+        this.metricsMap = new HashMap<>();
     }
 
     /**
@@ -573,28 +587,26 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
             Log.setLevel(Level.INFO);
         }
 
-        final Map<String, List<Double>> metricsMap = createMetricsMap();
         System.out.printf("%n------------------------------------------------------------------%n");
         metricsMap.entrySet().forEach(this::computeAndPrintFinalResults);
         System.out.printf("%nExperiments finished in %d seconds!%n", getExperimentsFinishTime());
     }
 
     /**
-     * Creates a Map adding a List of values for each metric to be computed.
-     * The computation of final experiments results are performed on this map.
+     * Add a value to a given metric inside the {@link #metricsMap}.
      *
-     * <p>Each key is the name of metric and each value is a List of Double
-     * containing the values collected for that metric, for each experiment run.
-     * These values will be then summarized to compute the final value
-     * for each metric.</p>
-     *
-     * <p>The list of values to be added for each metric on this map
-     * should be collected by the experiment finish listener.
+     * <p>This method must be called for each metric inside the experiment finish listener.
      * The listener can be set inside the runner's {@link #createExperiment(int)}.</p>
-     * @return the populated metricsMap
      * @see Experiment#setAfterExperimentFinish(Consumer)
      */
-    protected abstract Map<String, List<Double>> createMetricsMap();
+    protected final void addMetricValue(final String metricName, final double value){
+        final List<Double> metricValues = getMetricValues(metricName);
+        metricValues.add(value);
+    }
+
+    protected final List<Double> getMetricValues(final String metricName) {
+        return metricsMap.compute(metricName, (key, values) -> values == null ? new ArrayList<>(simulationRuns) : values);
+    }
 
     /**
      * Creates an experiment to be run for the i'th time.

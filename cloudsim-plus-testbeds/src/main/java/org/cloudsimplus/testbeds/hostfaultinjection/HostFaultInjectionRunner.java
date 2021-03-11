@@ -58,11 +58,6 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     private final boolean experimentVerbose = false;
 
     /**
-     * Datacenter availability for each experiment.
-     */
-    private final List<Double> availability;
-
-    /**
      * A map of each availability achieved by each broker for each experiment.
      * The key is a broker's name and the List for that key represents the availability
      * reached by that broker in each experiment, for instance:
@@ -82,16 +77,6 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
      * </p>
      */
     private Map<String, List<Double>> availabilityByBroker;
-
-    /**
-     * Percentage of brokers meeting Availability average for each experiment.
-     */
-    private List<Double> percentageOfBrokersMeetingAvailability;
-
-    /**
-     * Average number of VMs for each existing Host.
-     */
-    private final List<Double> ratioVmsPerHost;
 
     /**
      * Gets the cost total of each broker.
@@ -117,9 +102,6 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     private HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(applyAntitheticVariatesTechnique, baseSeed);
         availabilityByBroker = new HashMap<>();
-        availability = new ArrayList<>();
-        percentageOfBrokersMeetingAvailability = new ArrayList<>();
-        ratioVmsPerHost = new ArrayList<>();
         costTotal = new HashMap<>();
         template = new HashMap<>();
     }
@@ -142,9 +124,10 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     private void afterExperimentFinish(HostFaultInjectionExperiment exp) {
         final HostFaultInjection faultInjection = exp.getFaultInjection();
 
-        availability.add(faultInjection.availability() * 100);
-        ratioVmsPerHost.add(exp.getRatioVmsPerHost());
-        percentageOfBrokersMeetingAvailability.add(exp.getPercentageOfAvailabilityMeetingSla() * 100);
+        // Datacenter availability for each experiment.
+        addMetricValue("Average of Total Availability of Simulation", faultInjection.availability() * 100);
+        addMetricValue("VMs/Hosts Ratio: ", exp.getRatioVmsPerHost());
+        addMetricValue("Percentagem of brokers meeting the Availability: ", exp.getPercentageOfAvailabilityMeetingSla() * 100);
 
         //The availability for each broker for a single experiment.
         final Map<DatacenterBroker, Double> brokersAvailabilities = exp.getBrokerList()
@@ -205,16 +188,6 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     }
 
     @Override protected void setup() {/**/}
-
-    @Override
-    protected Map<String, List<Double>> createMetricsMap() {
-        final Map<String, List<Double>> map = new HashMap<>();
-        map.put("Average of Total Availability of Simulation", availability);
-        map.put("VMs/Hosts Ratio: ", ratioVmsPerHost);
-        map.put("Percentagem of brokers meeting the Availability: ", percentageOfBrokersMeetingAvailability);
-
-        return map;
-    }
 
     @Override
     protected void printSimulationParameters() {
