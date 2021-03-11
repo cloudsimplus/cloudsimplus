@@ -421,6 +421,13 @@ public abstract class Experiment implements Runnable {
      * tasks. These tasks are defined by the developer using the current class
      * and can include collecting data for statistical analysis.
      *
+     * <p>The consumer may be used to collect this statistical data
+     * to be stored further in the metrics map
+     * by the {@link ExperimentRunner#createMetricsMap()} method.
+     * For each metric into this map, the consumer most have a list
+     * where a new value will be added when an experiment finishes.
+     * </p>
+     *
      * <p>Setting a Consumer object is optional.</p>
      *
      * @param <T> the class of the experiment

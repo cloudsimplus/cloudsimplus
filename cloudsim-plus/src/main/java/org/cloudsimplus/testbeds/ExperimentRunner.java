@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -586,7 +587,12 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * containing the values collected for that metric, for each experiment run.
      * These values will be then summarized to compute the final value
      * for each metric.</p>
+     *
+     * <p>The list of values to be added for each metric on this map
+     * should be collected by the experiment finish listener.
+     * The listener can be set inside the runner's {@link #createExperiment(int)}.</p>
      * @return the populated metricsMap
+     * @see Experiment#setAfterExperimentFinish(Consumer)
      */
     protected abstract Map<String, List<Double>> createMetricsMap();
 
