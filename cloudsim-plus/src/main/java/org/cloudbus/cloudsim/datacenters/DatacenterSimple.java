@@ -671,7 +671,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         if (migrated)
             LOGGER.info("{}: Migration of {} to {} is completed", getSimulation().clockStr(), vm, targetHost);
-        else LOGGER.error("{}: {}: Allocation of {} to the destination Host failed!", getSimulation().clockStr(), this, vm);
+        else LOGGER.error("{}: {}: Allocation of {} to the destination {} failed!", getSimulation().clockStr(), this, vm, targetHost);
 
         onVmMigrationFinishListeners.forEach(listener -> listener.update(DatacenterVmMigrationEventInfo.of(listener, vm, migrated)));
     }

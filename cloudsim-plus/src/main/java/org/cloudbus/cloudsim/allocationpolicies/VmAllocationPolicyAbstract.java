@@ -319,7 +319,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return true;
         }
 
-        LOGGER.error("{}: Creation of {} on {} failed", vm.getSimulation().clockStr(), vm, host);
+        LOGGER.error("{}: {} Creation of {} on {} failed", vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
         return false;
     }
 
