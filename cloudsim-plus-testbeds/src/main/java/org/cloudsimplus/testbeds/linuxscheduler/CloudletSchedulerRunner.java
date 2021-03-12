@@ -82,22 +82,14 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
     }
 
     @Override
-    protected void printFinalResults(String metricName, SummaryStatistics stats) {
-        System.out.printf("Results for metric %s%n", metricName);
+    protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
+        final SummaryStatistics stats = super.computeAndPrintFinalResults(metricName, metricValues);
         final List<Double> cloudletsNumber = getMetricValues(CLOUDLETS_NUMBER);
         System.out.printf("  Mean Number of Cloudlets:         %.2f%n", cloudletsNumber.stream().mapToDouble(n -> n).average().orElse(0.0));
         System.out.printf("  Cloudlet Completion Time Avg:     %.2f | Std dev:      %.2f%n", stats.getMean(), stats.getStandardDeviation());
         System.out.printf("  Cloudlet Completion Min Avg Time: %.2f | Max avg time: %.2f%n", stats.getMin(), stats.getMax());
         System.out.println();
-    }
 
-    @Override
-    protected SummaryStatistics computeFinalStatistics(List<Double> values) {
-        final SummaryStatistics stats = new SummaryStatistics();
-        final List<Double> cloudletsCompletionTimeMeans = getMetricValues(CLOUDLETS_COMPLETION_TIME_MEANS);
-        for (final double cloudletExecutionTimeMean : cloudletsCompletionTimeMeans) {
-            stats.addValue(cloudletExecutionTimeMean);
-        }
         return stats;
     }
 

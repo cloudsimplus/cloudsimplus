@@ -34,6 +34,8 @@ import org.cloudsimplus.heuristics.Heuristic;
 import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
+import java.util.List;
+
 /**
  * Runs the {@link DatacenterBrokerHeuristicExperiment} the number of times
  * defines by {@link #getSimulationRuns()} and compute statistics.
@@ -224,11 +226,8 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     }
 
     @Override
-    protected void printFinalResults(String metricName, SummaryStatistics stats) {
-        System.out.printf("%n# %s for %d simulation runs%n", metricName, getSimulationRuns());
-        if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
-            System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
-        }
+    protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
+        final SummaryStatistics stats = super.computeAndPrintFinalResults(metricName, metricValues);
         System.out.printf(
                 "\tRound-robin solution used by DatacenterBrokerSimple - Cost: %.2f%n",
                 roundRobinSolution.getCost());
@@ -237,12 +236,13 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
             System.out.printf(
                     "\tHeuristic solutions - Mean cost: %.2f Std. Dev.: %.2f%n",
                     stats.getMean(), stats.getStandardDeviation());
-            showConfidenceInterval(stats);
             System.out.printf(
                     "%n\tThe mean cost of heuristic solutions represent %.2f%% of the Round-robin mapping used by the DatacenterBrokerSimple%n",
                     heuristicSolutionCostPercentageOfRoundRobinSolution(stats.getMean()));
             System.out.printf("Experiment execution mean time: %.2f seconds%n", runtimeStats.getMean());
         }
+
+        return stats;
     }
 
 
@@ -256,16 +256,6 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      */
     private double heuristicSolutionCostPercentageOfRoundRobinSolution(double heuristicCost) {
         return heuristicCost * 100.0 / roundRobinSolution.getCost();
-    }
-
-    private void showConfidenceInterval(SummaryStatistics stats) {
-        // Calculate 95% confidence interval
-        final double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
-        final double lower = stats.getMean() - intervalSize;
-        final double upper = stats.getMean() + intervalSize;
-        System.out.printf(
-                "\tSolution cost mean 95%% Confidence Interval: %.2f ∓ %.2f, that is [%.2f to %.2f]%n",
-                stats.getMean(), intervalSize, lower, upper);
     }
 
     /**

@@ -25,7 +25,6 @@
  */
 package org.cloudsimplus.testbeds.hostfaultinjection;
 
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudsimplus.faultinjection.HostFaultInjection;
 import org.cloudsimplus.testbeds.ExperimentRunner;
@@ -201,28 +200,4 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
             System.out.printf("\tBatch Size: %d%n", batchSizeCeil());
         }
     }
-
-    @Override
-    protected void printFinalResults(final String metricName, final SummaryStatistics stats) {
-        System.out.printf("%n# %s for %d simulation runs%n", metricName, getSimulationRuns());
-        if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
-            System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
-        }
-
-        if (getSimulationRuns() > 1) {
-            showConfidenceInterval(stats);
-        }
-    }
-
-    private void showConfidenceInterval(final SummaryStatistics stats) {
-        // Computes 95% confidence interval
-        double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
-        double lower = stats.getMean() - intervalSize;
-        double upper = stats.getMean() + intervalSize;
-        System.out.printf(
-            "\tThis METRIC mean 95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
-            stats.getMean(), intervalSize, lower, upper);
-        System.out.printf("\tStandard Deviation: %.4f%n", stats.getStandardDeviation());
-    }
-
 }
