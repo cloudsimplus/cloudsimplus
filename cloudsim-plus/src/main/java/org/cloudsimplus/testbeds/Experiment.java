@@ -49,7 +49,7 @@ import java.util.function.Supplier;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class Experiment implements Runnable {
+public abstract class Experiment extends AbstractExperiment {
     protected final ExperimentRunner runner;
     private final CloudSim simulation;
     private final List<Datacenter> datacenterList;
@@ -63,7 +63,6 @@ public abstract class Experiment implements Runnable {
     private int brokersNumber;
 
     private final int index;
-    private boolean verbose;
     private int lastVmId;
     private int lastCloudletId;
 
@@ -114,12 +113,12 @@ public abstract class Experiment implements Runnable {
      * @see #setDatacentersNumber(int)
      */
     protected Experiment(final int index, final ExperimentRunner runner, final long seed) {
+        super();
         if(seed == -1){
             Objects.requireNonNull(runner);
         }
         this.brokersNumber = 1;
         this.datacentersNumber = 1;
-        this.verbose = false;
         this.simulation = new CloudSim();
         this.vmList = new ArrayList<>();
         this.index = index;
@@ -160,39 +159,11 @@ public abstract class Experiment implements Runnable {
     }
 
     /**
-     * Defines if simulation results of the experiment have to be output or not.
-     *
-     * @param verbose true if the results have to be output, false otherwise
-     * @return
-     */
-    public Experiment setVerbose(final boolean verbose) {
-        this.verbose = verbose;
-        return this;
-    }
-
-    /**
      * The index that identifies the current experiment run.
      * @return
      */
     public int getIndex() {
         return index;
-    }
-
-    /**
-     * Indicates if simulation results of the experiment don't have to be
-     * output.
-     * @return
-     */
-    public boolean isNotVerbose() {
-        return !verbose;
-    }
-
-    /**
-     * Indicates if simulation results of the experiment have to be output.
-     * @return
-     */
-    public boolean isVerbose() {
-        return verbose;
     }
 
     /**
@@ -519,56 +490,4 @@ public abstract class Experiment implements Runnable {
         return vmAllocationPolicySupplier == null ? new VmAllocationPolicySimple() : vmAllocationPolicySupplier.get();
     }
 
-    /**
-     * Prints a line break only if {@link #isVerbose()}.
-     */
-    public Experiment println(){
-        return println("");
-    }
-
-    /**
-     * Prints a message and a line break only if {@link #isVerbose()}.
-     * @param msg the message to print
-     */
-    public Experiment println(final String msg){
-        if(verbose){
-            System.out.println(msg);
-        }
-
-        return this;
-    }
-
-    /**
-     * Prints a formatted message and a line break only if {@link #isVerbose()}.
-     * @param format the message format
-     * @param args the values to print
-     */
-    public Experiment println(final String format, final Object ...args){
-        return print(format + "%n", args);
-    }
-
-    /**
-     * Prints a message only if {@link #isVerbose()}.
-     * @param msg the message to print
-     */
-    public Experiment print(final String msg){
-        if(verbose){
-            System.out.print(msg);
-        }
-
-        return this;
-    }
-
-    /**
-     * Prints a formatted message only if {@link #isVerbose()}.
-     * @param format the message format
-     * @param args the values to print
-     */
-    public Experiment print(final String format, final Object ...args){
-        if(verbose){
-            System.out.printf(format, args);
-        }
-
-        return this;
-    }
 }

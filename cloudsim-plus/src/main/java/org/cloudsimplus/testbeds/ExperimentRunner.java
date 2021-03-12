@@ -47,9 +47,7 @@ import java.util.stream.IntStream;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public abstract class ExperimentRunner<T extends Experiment> implements Runnable {
-    private boolean verbose;
-
+public abstract class ExperimentRunner<T extends Experiment> extends AbstractExperiment {
     /**
      * @see #getBaseSeed()
      */
@@ -722,29 +720,6 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
 
     public final ExperimentRunner setBaseSeed(final long baseSeed) {
         this.baseSeed = baseSeed;
-        return this;
-    }
-
-    /**
-     * Indicates if the runner will output execution logs or not. This doesn't
-     * affect the verbosity of individual experiments executed. Each
-     * {@link Experiment} has its own verbose attribute.
-     * @return
-     */
-    public boolean isVerbose() {
-        return verbose;
-    }
-
-    /**
-     * Defines if the runner will output execution logs or not. This doesn't
-     * affect the verbosity of individual experiments executed. Each
-     * {@link Experiment} has its own verbose attribute.
-     *
-     * @param verbose true if results have to be output, false otherwise
-     * @return
-     */
-    public ExperimentRunner setVerbose(final boolean verbose) {
-        this.verbose = verbose;
         return this;
     }
 }
