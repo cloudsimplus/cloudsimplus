@@ -68,7 +68,7 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
     }
 
     @Override
-    protected void setup() {
+    protected void setupInternal() {
         cloudletsNumberPrng = new UniformDistr(VM_PES / 2, VM_PES + 1, getBaseSeed());
     }
 

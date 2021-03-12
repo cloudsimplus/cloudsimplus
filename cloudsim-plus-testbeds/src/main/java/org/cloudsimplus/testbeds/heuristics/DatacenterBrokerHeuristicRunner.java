@@ -171,7 +171,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     }
 
     @Override
-    protected DatacenterBrokerHeuristicExperiment createExperiment(int i) {
+    protected DatacenterBrokerHeuristicExperiment createExperimentInternal(int i) {
         final DatacenterBrokerHeuristicExperiment exp
                 = new DatacenterBrokerHeuristicExperiment(i, this, vmPesArray)
                         .setCloudletPesArray(cloudletPesArray);
@@ -184,7 +184,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     }
 
     @Override
-    protected void setup() {
+    protected void setupInternal() {
         vmPesArray = createVmPesArray();
         cloudletPesArray = createCloudletPesArray();
     }

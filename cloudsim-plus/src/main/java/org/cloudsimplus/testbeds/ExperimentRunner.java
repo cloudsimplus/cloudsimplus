@@ -37,6 +37,10 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A base class to run a given experiment a defined number of times and collect
@@ -49,13 +53,20 @@ import java.util.stream.IntStream;
  */
 public abstract class ExperimentRunner<T extends Experiment> extends AbstractExperiment {
     /**
+     * If experiments are executed in parallel, each experiment verbosity is disabled,
+     * otherwise, you'll see mixed log messages from different
+     * experiment runs.
+     */
+    private final boolean parallel;
+
+    /**
      * @see #getBaseSeed()
      */
     private long baseSeed;
 
     /** List of seeds used for each experiment.
      * @see #addSeed(long)  */
-    private List<Long> seeds;
+    private final List<Long> seeds;
 
     /**
      * @see #getSimulationRuns()
@@ -93,7 +104,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      *
      * <p>The values to be added for each metric on this map
      * should be collected by the experiment finish listener.
-     * The listener can be set inside the runner's {@link #createExperiment(int)}.</p>
+     * The listener can be set inside the runner's {@link #createExperimentInternal(int)}.</p>
      * @see Experiment#setAfterExperimentFinish(Consumer)
      */
     private final Map<String, List<Double>> metricsMap;
@@ -115,14 +126,43 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param baseSeed the seed to be used as base for each experiment seed
      */
     public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
+        this(antitheticVariatesTechnique, baseSeed, false);
+    }
+
+
+    /**
+     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}.
+     * @param antitheticVariatesTechnique indicates if it's to be applied the
+     *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
+     * @param baseSeed the seed to be used as base for each experiment seed
+     */
+    public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed, final boolean parallel) {
         setBaseSeed(baseSeed);
         setBatchesNumber(0);
+        this.parallel = parallel;
         setApplyAntitheticVariatesTechnique(antitheticVariatesTechnique);
 
         /*Since experiments may run in parallel and these fields are shared across them,
         * we need to synchronize these collections.*/
-        this.seeds = Collections.synchronizedList(new ArrayList<>());
-        this.metricsMap = Collections.synchronizedMap(new HashMap<>());
+        this.seeds = parallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
+        this.metricsMap = parallel ? Collections.synchronizedMap(new HashMap<>()) : new HashMap<>();
+    }
+
+    /**
+     * A template setup method that performs base setup for every experiment
+     * runner and call the additional {@link #setupInternal()} method that has to be
+     * implemented by child classes.
+     */
+    private void setup() {
+        if (isApplyBatchMeansMethod() || isApplyAntitheticVariatesTechnique()) {
+            setSimulationRunsAndBatchesToEvenNumber();
+        }
+
+        if (isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches()) {
+            setNumberOfSimulationRunsAsMultipleOfNumberOfBatches();
+        }
+
+        setupInternal();
     }
 
     /**
@@ -147,25 +187,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * setSeed is called after the constructor, the PRNG will not be update to
      * use the new seed.</p>
      */
-    protected abstract void setup();
-
-    /**
-     * An internal setup method that performs base setup for every experiment
-     * runner and call the additional {@link #setup()} method that has to be
-     * implemented by child classes.
-     */
-    private void setupInternal() {
-        if (isApplyBatchMeansMethod() || isApplyAntitheticVariatesTechnique()) {
-            setSimulationRunsAndBatchesToEvenNumber();
-        }
-
-        if (isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches()) {
-            setNumberOfSimulationRunsAsMultipleOfNumberOfBatches();
-        }
-
-        setup();
-        seeds = new ArrayList<>(getSimulationRuns());
-    }
+    protected abstract void setupInternal();
 
     /**
      *
@@ -411,12 +433,12 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
 
         if (isToReuseSeedFromFirstHalfOfExperiments(experimentIndex)) {
             final int expIndexFromFirstHalf = experimentIndex - halfSimulationRuns();
-            final T prng = randomGenCreator.apply(seeds.get(expIndexFromFirstHalf));
+            final T prng = randomGenCreator.apply(getSeed(expIndexFromFirstHalf));
             prng.setApplyAntitheticVariates(true);
             return prng;
         }
 
-        return randomGenCreator.apply(seeds.get(experimentIndex));
+        return randomGenCreator.apply(getSeed(experimentIndex));
     }
 
     /**
@@ -497,38 +519,23 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     /**
-     * Setups and starts the execution of all experiments sequentially.
-     * @see #runInParallel()
+     * Setups and starts the execution of all experiments sequentially or in {@link #parallel}.
      */
     @Override
     public void run() {
-        runInternal(false);
-    }
-
-    /**
-     * Setups and starts the execution of all experiments in parallel.
-     * In this case, each experiment verbosity is disabled,
-     * otherwise, you'll see mixed log messages from different
-     * experiment runs.
-     * @see #run()
-     */
-    public void runInParallel() {
-        runInternal(true);
-    }
-
-    private void runInternal(final boolean parallel) {
-        setupInternal();
+        setup();
         printSimulationParameters();
 
         Log.setLevel(Level.OFF);
         try {
             experimentsStartTimeSecs = Math.round(System.currentTimeMillis()/1000.0);
-            final IntStream range = getIntStream(simulationRuns, parallel);
-            range.forEach(i -> {
-                print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
-                final Experiment exp = createExperiment(i);
-                exp.setVerbose(exp.isVerbose() && !parallel).run();
-            });
+            /* Since experiments may execute in parallel and during execution
+            * they access the shared seeds list, all experiments have to
+            * be created before starting execution.
+            * Otherwise, if they are run in parallel, we get IndexOutOfBoundsException's.
+            */
+            final List<Experiment> experiments = IntStream.range(0, simulationRuns).mapToObj(this::createExperiment).collect(toList());
+            getStream(experiments).forEach(Experiment::run);
             System.out.println();
             experimentsExecutionTimeSecs = TimeUtil.elapsedSeconds(experimentsStartTimeSecs);
         } finally {
@@ -547,10 +554,32 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
             simulationRuns, TimeUtil.secondsToStr(experimentsExecutionTimeSecs));
     }
 
-    private IntStream getIntStream(final int endExclusive, final boolean parallel) {
-        final IntStream stream = IntStream.range(0, endExclusive);
-        return parallel ? stream.parallel() : stream;
+    private Stream<Experiment> getStream(final List<Experiment> experiments) {
+        return parallel ? experiments.stream().parallel() : experiments.stream();
     }
+
+    /**
+     * Template method that creates an experiment to be run for the i'th time.
+     *
+     * @param i a number that identifies the experiment
+     * @return the created experiment
+     * @see #createExperimentInternal(int) (int)
+     */
+    private Experiment createExperiment(final int i) {
+        print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
+        final Experiment exp = createExperimentInternal(i);
+        exp.setVerbose(exp.isVerbose() && !parallel);
+        return exp;
+    }
+
+    /**
+     * Creates an experiment to be run for the i'th time.
+     *
+     * @param i a number that identifies the experiment
+     * @return the created experiment
+     * @see #createExperiment(int)
+     */
+    protected abstract T createExperimentInternal(final int i);
 
     /**
      * Computes and prints final simulation results, including mean, standard deviations and
@@ -562,7 +591,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
         final SummaryStatistics stats = computeFinalStatistics(metricValues);
-        System.out.printf("# %s: %.2f (samples: %s)%n", metricName, stats.getMean(), metricValues);
+        final String valuesStr = metricValues.stream().map(v -> String.format("%.2f", v)).collect(joining(", "));
+        System.out.printf("# %s: %.2f (samples: %s)%n", metricName, stats.getMean(), valuesStr);
 
         if (simulationRuns > 1) {
             showConfidenceInterval(stats);
@@ -683,7 +713,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * Add a value to a given metric inside the {@link #metricsMap}.
      *
      * <p>This method must be called for each metric inside the experiment finish listener.
-     * The listener can be set inside the runner's {@link #createExperiment(int)}.</p>
+     * The listener can be set inside the runner's {@link #createExperimentInternal(int)}.</p>
      * @see Experiment#setAfterExperimentFinish(Consumer)
      */
     protected final void addMetricValue(final String metricName, final double value){
@@ -694,14 +724,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     protected final List<Double> getMetricValues(final String metricName) {
         return metricsMap.compute(metricName, (key, values) -> values == null ? new ArrayList<>(simulationRuns) : values);
     }
-
-    /**
-     * Creates an experiment to be run for the i'th time.
-     *
-     * @param i a number that identifies the experiment
-     * @return the created experiment
-     */
-    protected abstract T createExperiment(final int i);
 
     /**
      * <p>

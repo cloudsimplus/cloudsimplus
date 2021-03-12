@@ -67,7 +67,7 @@ final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunne
     }
 
     @Override
-    protected CloudletTaskCompletionTimeMinimizationExperiment createExperiment(int i) {
+    protected CloudletTaskCompletionTimeMinimizationExperiment createExperimentInternal(int i) {
         CloudletTaskCompletionTimeMinimizationExperiment exp
                 = new CloudletTaskCompletionTimeMinimizationExperiment(i, this);
 
@@ -94,7 +94,7 @@ final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunne
     }
 
     @Override
-    protected void setup() {/**/
+    protected void setupInternal() {/**/
     }
 
     @Override

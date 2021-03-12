@@ -41,7 +41,7 @@ class CloudletSchedulerTimeSharedRunner extends CloudletSchedulerRunner<Cloudlet
     }
 
     @Override
-    protected CloudletSchedulerTimeSharedExperiment createExperiment(int i) {
+    protected CloudletSchedulerTimeSharedExperiment createExperimentInternal(int i) {
         final CloudletSchedulerTimeSharedExperiment exp = new CloudletSchedulerTimeSharedExperiment(i, this);
         final ContinuousDistribution cloudletPesPrng = createRandomGen(i, 1, MAX_CLOUDLET_PES);
 

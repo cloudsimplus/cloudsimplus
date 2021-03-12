@@ -45,7 +45,7 @@ class CompletelyFairSchedulerRunner extends CloudletSchedulerRunner<CompletelyFa
     }
 
     @Override
-    protected CompletelyFairSchedulerExperiment createExperiment(int i) {
+    protected CompletelyFairSchedulerExperiment createExperimentInternal(int i) {
         final CompletelyFairSchedulerExperiment exp = new CompletelyFairSchedulerExperiment(i, this);
         final ContinuousDistribution cloudletPesPrng = createRandomGen(i, 1, MAX_CLOUDLET_PES);
 

@@ -106,7 +106,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     }
 
     @Override
-    protected HostFaultInjectionExperiment createExperiment(final int i) {
+    protected HostFaultInjectionExperiment createExperimentInternal(final int i) {
         final HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(i, this);
         exp.setAfterExperimentFinish(this::afterExperimentFinish).setVerbose(experimentVerbose);
         return exp;
@@ -185,7 +185,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
         return template.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(priceCustomerPerHour);
     }
 
-    @Override protected void setup() {/**/}
+    @Override protected void setupInternal() {/**/}
 
     @Override
     protected void printSimulationParameters() {

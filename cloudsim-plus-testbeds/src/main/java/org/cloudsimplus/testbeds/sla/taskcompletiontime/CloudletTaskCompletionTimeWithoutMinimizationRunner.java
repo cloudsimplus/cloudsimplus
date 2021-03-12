@@ -65,7 +65,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunn
     }
 
     @Override
-    protected CloudletTaskCompletionTimeWithoutMinimizationExperiment createExperiment(int i) {
+    protected CloudletTaskCompletionTimeWithoutMinimizationExperiment createExperimentInternal(int i) {
         CloudletTaskCompletionTimeWithoutMinimizationExperiment exp
                 = new CloudletTaskCompletionTimeWithoutMinimizationExperiment(i, this);
         exp.setAfterExperimentFinish(this::afterExperimentFinish).setVerbose(experimentVerbose);
@@ -76,7 +76,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunn
      * There is no setup for this runner.
      */
     @Override
-    protected void setup() {/**/}
+    protected void setupInternal() {/**/}
 
     /**
      * Method automatically called after every experiment finishes running.

@@ -61,7 +61,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
     }
 
     @Override
-    protected CloudletTaskCompletionTimeWorkLoadMinimizationExperiment createExperiment(final int i) {
+    protected CloudletTaskCompletionTimeWorkLoadMinimizationExperiment createExperimentInternal(final int i) {
         final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment exp
                 = new CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(i, this);
         exp.setAfterExperimentFinish(this::afterExperimentFinish).setVerbose(experimentVerbose);
@@ -69,7 +69,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
     }
 
     @Override
-    protected void setup() {}
+    protected void setupInternal() {}
 
     /**
      * Method automatically called after every experiment finishes running. It
