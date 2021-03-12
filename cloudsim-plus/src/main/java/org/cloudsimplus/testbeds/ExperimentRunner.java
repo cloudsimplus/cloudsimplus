@@ -517,7 +517,10 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
         }
 
         System.out.printf("%nFinal simulation results for all executions (%d metrics) -------------------%n", metricsMap.size());
-        metricsMap.entrySet().forEach(this::computeAndPrintFinalResults);
+        if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
+            System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
+        }
+        metricsMap.forEach(this::computeAndPrintFinalResults);
         System.out.printf("%nExperiments finished in %d seconds!%n", getExperimentsFinishTime());
     }
 
@@ -525,41 +528,27 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * Computes and prints final simulation results such as means, standard deviations and
      * confidence intervals.
      *
-     * @param metricEntry a Map Entry where the key is the name of the metric to print results
-     * and the value is a {@link SummaryStatistics} object containing means of each
-     * experiment run that will be used to computed an overall mean and other
-     * statistics
-     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics)
+     * @param metricName the name of the metric to print results
+     * @param metricValues the value of that metric across multiple simulation runs
+     * @return
      */
-    private void computeAndPrintFinalResults(final Map.Entry<String, List<Double>> metricEntry){
-        printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
-    }
-
-    /**
-     * Prints final simulation results such as means, standard deviations and
-     * confidence intervals.
-     *
-     * @param metricName the name of the metric to be printed
-     * @param stats the {@link SummaryStatistics} containing means of each
-     * experiment run that will be used to computed an overall mean and other
-     * statistics
-     */
-    protected void printFinalResults(final String metricName, final SummaryStatistics stats) {
+    protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
         System.out.printf("%n# %s for %d simulation runs%n", metricName, getSimulationRuns());
-        if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
-            System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
-        }
+        final SummaryStatistics stats = computeFinalStatistics(metricValues);
+        System.out.printf("Avg: %.2f | Min: %.2f | Max: %.2f%n", stats.getMean(), stats.getMin(), stats.getMax());
 
         if (getSimulationRuns() > 1) {
             showConfidenceInterval(stats);
         }
+
+        return stats;
     }
 
     private void showConfidenceInterval(final SummaryStatistics stats) {
         // Computes 95% confidence interval
-        double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
-        double lower = stats.getMean() - intervalSize;
-        double upper = stats.getMean() + intervalSize;
+        final double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
+        final double lower = stats.getMean() - intervalSize;
+        final double upper = stats.getMean() + intervalSize;
         System.out.printf(
             "\tThis METRIC mean 95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
             stats.getMean(), intervalSize, lower, upper);
@@ -652,7 +641,7 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
      * the double values, after applying the the techniques for
      * variance reduction.
      */
-    protected SummaryStatistics computeFinalStatistics(final List<Double> values) {
+    protected final SummaryStatistics computeFinalStatistics(final List<Double> values) {
         final SummaryStatistics stats = new SummaryStatistics();
         final List<Double> adjustedValues = computeAntitheticMeans(computeBatchMeans(values));
         adjustedValues.forEach(stats::addValue);
