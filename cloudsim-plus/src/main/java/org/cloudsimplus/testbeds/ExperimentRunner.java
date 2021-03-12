@@ -30,6 +30,7 @@ import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
+import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudsimplus.util.Log;
 
 import java.util.*;
@@ -516,26 +517,27 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
             Log.setLevel(Level.INFO);
         }
 
-        System.out.printf("%nFinal simulation results for all executions (%d metrics) -------------------%n", metricsMap.size());
+        System.out.printf(
+            "%nFinal simulation results for %d metrics in %d simulation runs -------------------%n",
+            metricsMap.size(), getSimulationRuns());
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
-            System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
+            System.out.println("Batch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
         metricsMap.forEach(this::computeAndPrintFinalResults);
-        System.out.printf("%nExperiments finished in %d seconds!%n", getExperimentsFinishTime());
+        System.out.printf("%nExperiments finished in %s!%n", TimeUtil.secondsToStr(getExperimentsFinishTime()));
     }
 
     /**
-     * Computes and prints final simulation results such as means, standard deviations and
-     * confidence intervals.
+     * Computes and prints final simulation results, including mean, standard deviations and
+     * confidence intervals for a given metric computed across all simulation runs.
      *
      * @param metricName the name of the metric to print results
-     * @param metricValues the value of that metric across multiple simulation runs
-     * @return
+     * @param metricValues the list of values of that metric across multiple simulation runs
+     * @return the computed {@link SummaryStatistics} from the provided values for the metric
      */
     protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
-        System.out.printf("%n# %s for %d simulation runs%n", metricName, getSimulationRuns());
         final SummaryStatistics stats = computeFinalStatistics(metricValues);
-        System.out.printf("Avg: %.2f | Min: %.2f | Max: %.2f%n", stats.getMean(), stats.getMin(), stats.getMax());
+        System.out.printf("# %s: %.2f%n", metricName, stats.getMean());
 
         if (getSimulationRuns() > 1) {
             showConfidenceInterval(stats);
@@ -544,6 +546,33 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
         return stats;
     }
 
+    /**
+     * Creates a SummaryStatistics object from a list of
+     * Double values, allowing computation of statistics
+     * such as mean over these values.
+     * The method also checks if the
+     * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
+     * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
+     * are enabled and then apply them over the given list of Doubles.
+     * These techniques are used for variance reduction.
+     *
+     * @param values the List of values to add to the {@link SummaryStatistics} object
+     * @return the {@link SummaryStatistics} object containing
+     * the double values, after applying the the techniques for
+     * variance reduction.
+     */
+    protected final SummaryStatistics computeFinalStatistics(final List<Double> values) {
+        final SummaryStatistics stats = new SummaryStatistics();
+        final List<Double> adjustedValues = computeAntitheticMeans(computeBatchMeans(values));
+        adjustedValues.forEach(stats::addValue);
+        return stats;
+    }
+
+    /**
+     * Shows confidence interval for the average value of a given metric for all executed simulations.
+     * @param stats a {@link SummaryStatistics} computed from the list of values for a metric across all simulation runs
+     * @see #computeFinalStatistics(List)
+     */
     private void showConfidenceInterval(final SummaryStatistics stats) {
         // Computes 95% confidence interval
         final double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
@@ -624,28 +653,6 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
         } catch (MathIllegalArgumentException e) {
             return Double.NaN;
         }
-    }
-
-    /**
-     * Creates a SummaryStatistics object from a list of
-     * Double values, allowing computation of statistics
-     * such as mean over these values.
-     * The method also checks if the
-     * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
-     * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
-     * are enabled and then apply them over the given list of Doubles.
-     * These techniques are used for variance reduction.
-     *
-     * @param values the List of values to add to the {@link SummaryStatistics} object
-     * @return the {@link SummaryStatistics} object containing
-     * the double values, after applying the the techniques for
-     * variance reduction.
-     */
-    protected final SummaryStatistics computeFinalStatistics(final List<Double> values) {
-        final SummaryStatistics stats = new SummaryStatistics();
-        final List<Double> adjustedValues = computeAntitheticMeans(computeBatchMeans(values));
-        adjustedValues.forEach(stats::addValue);
-        return stats;
     }
 
     /**
