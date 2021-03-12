@@ -299,77 +299,6 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
     }
 
     /**
-     * <p>
-     * Computes the confidence interval error margin for a given set of samples
-     * in order to enable finding the interval lower and upper bound around a
-     * mean value. By this way, the confidence interval can be computed as [mean
-     * + errorMargin .. mean - errorMargin].
-     * </p>
-     *
-     * <p>
-     * To reduce the confidence interval by half, one have to execute the
-     * experiments 4 more times. This is called the "Replication Method" and
-     * just works when the samples are i.i.d. (independent and identically
-     * distributed). Thus, if you have correlation between samples of each
-     * simulation run, a different method such as a bias compensation,
-     * {@link #isApplyBatchMeansMethod() batch means} or regenerative method has
-     * to be used. </p>
-     *
-     * <b>NOTE:</b> How to compute the error margin is a little bit confusing.
-     * The Harry Perros' book states that if less than 30 samples are collected,
-     * the t-Distribution has to be used to that purpose.
-     *
-     * However, this article
-     * <a href="https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps">Wikipedia
-     * article</a>
-     * says that if the standard deviation of the real population is known, it
-     * has to be used the z-value from the Standard Normal Distribution.
-     * Otherwise, it has to be used the t-value from the t-Distribution to
-     * calculate the critical value for defining the error margin (also called
-     * standard error). The book "Numeric Computation and Statistical Data
-     * Analysis on the Java Platform" confirms the last statement and such
-     * approach was followed.
-     *
-     * @param stats the statistic object with the values to compute the error
-     * margin of the confidence interval
-     * @param confidenceLevel the confidence level, in the interval from ]0 to
-     * 1[, such as 0.95 to indicate 95% of confidence.
-     * @return the error margin to compute the lower and upper bound of the
-     * confidence interval
-     *
-     * @see
-     * <a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">Critical
-     * Values of the Student's t Distribution</a>
-     * @see
-     * <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-Distribution</a>
-     * @see <a href="http://www4.ncsu.edu/~hp/files/simulation.pdf">Harry
-     * Perros, "Computer Simulation Techniques: The definitive introduction!,"
-     * 2009</a>
-     * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
-     * Computation and Statistical Data Analysis on the Java Platform</a>
-     */
-    protected double computeConfidenceErrorMargin(final SummaryStatistics stats, final double confidenceLevel) {
-        try {
-            // Creates a T-Distribution with N-1 degrees of freedom
-            final double degreesOfFreedom = stats.getN() - 1;
-
-            /*
-		    The t-Distribution is used to determine the probability that
-		    the real population mean lies in a given interval.
-             */
-            final TDistribution tDist = new TDistribution(degreesOfFreedom);
-            final double significance = 1.0 - confidenceLevel;
-            final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
-            System.out.printf("%n\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
-
-            // Calculates the confidence interval error margin
-            return criticalValue * stats.getStandardDeviation() / Math.sqrt(stats.getN());
-        } catch (MathIllegalArgumentException e) {
-            return Double.NaN;
-        }
-    }
-
-    /**
      * Checks if the "Antithetic Variates Technique" is to be applied to reduce
      * results variance.
      *
@@ -593,6 +522,144 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
     }
 
     /**
+     * Computes and prints final simulation results such as means, standard deviations and
+     * confidence intervals.
+     *
+     * @param metricEntry a Map Entry where the key is the name of the metric to print results
+     * and the value is a {@link SummaryStatistics} object containing means of each
+     * experiment run that will be used to computed an overall mean and other
+     * statistics
+     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics)
+     */
+    private void computeAndPrintFinalResults(final Map.Entry<String, List<Double>> metricEntry){
+        printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
+    }
+
+    /**
+     * Prints final simulation results such as means, standard deviations and
+     * confidence intervals.
+     *
+     * @param metricName the name of the metric to be printed
+     * @param stats the {@link SummaryStatistics} containing means of each
+     * experiment run that will be used to computed an overall mean and other
+     * statistics
+     */
+    protected void printFinalResults(final String metricName, final SummaryStatistics stats) {
+        System.out.printf("%n# %s for %d simulation runs%n", metricName, getSimulationRuns());
+        if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
+            System.out.println("\tBatch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
+        }
+
+        if (getSimulationRuns() > 1) {
+            showConfidenceInterval(stats);
+        }
+    }
+
+    private void showConfidenceInterval(final SummaryStatistics stats) {
+        // Computes 95% confidence interval
+        double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
+        double lower = stats.getMean() - intervalSize;
+        double upper = stats.getMean() + intervalSize;
+        System.out.printf(
+            "\tThis METRIC mean 95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
+            stats.getMean(), intervalSize, lower, upper);
+        System.out.printf("\tStandard Deviation: %.4f%n", stats.getStandardDeviation());
+    }
+
+    /**
+     * <p>
+     * Computes the confidence interval error margin for a given set of samples
+     * in order to enable finding the interval lower and upper bound around a
+     * mean value. By this way, the confidence interval can be computed as [mean
+     * + errorMargin .. mean - errorMargin].
+     * </p>
+     *
+     * <p>
+     * To reduce the confidence interval by half, one have to execute the
+     * experiments 4 more times. This is called the "Replication Method" and
+     * just works when the samples are i.i.d. (independent and identically
+     * distributed). Thus, if you have correlation between samples of each
+     * simulation run, a different method such as a bias compensation,
+     * {@link #isApplyBatchMeansMethod() batch means} or regenerative method has
+     * to be used. </p>
+     *
+     * <b>NOTE:</b> How to compute the error margin is a little bit confusing.
+     * The Harry Perros' book states that if less than 30 samples are collected,
+     * the t-Distribution has to be used to that purpose.
+     *
+     * However, this article
+     * <a href="https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps">Wikipedia
+     * article</a>
+     * says that if the standard deviation of the real population is known, it
+     * has to be used the z-value from the Standard Normal Distribution.
+     * Otherwise, it has to be used the t-value from the t-Distribution to
+     * calculate the critical value for defining the error margin (also called
+     * standard error). The book "Numeric Computation and Statistical Data
+     * Analysis on the Java Platform" confirms the last statement and such
+     * approach was followed.
+     *
+     * @param stats the statistic object with the values to compute the error
+     * margin of the confidence interval
+     * @param confidenceLevel the confidence level, in the interval from ]0 to
+     * 1[, such as 0.95 to indicate 95% of confidence.
+     * @return the error margin to compute the lower and upper bound of the
+     * confidence interval
+     *
+     * @see
+     * <a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">Critical
+     * Values of the Student's t Distribution</a>
+     * @see
+     * <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-Distribution</a>
+     * @see <a href="http://www4.ncsu.edu/~hp/files/simulation.pdf">Harry
+     * Perros, "Computer Simulation Techniques: The definitive introduction!,"
+     * 2009</a>
+     * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
+     * Computation and Statistical Data Analysis on the Java Platform</a>
+     */
+    protected double computeConfidenceErrorMargin(final SummaryStatistics stats, final double confidenceLevel) {
+        try {
+            // Creates a T-Distribution with N-1 degrees of freedom
+            final double degreesOfFreedom = stats.getN() - 1;
+
+            /*
+		    The t-Distribution is used to determine the probability that
+		    the real population mean lies in a given interval.
+             */
+            final TDistribution tDist = new TDistribution(degreesOfFreedom);
+            final double significance = 1.0 - confidenceLevel;
+            final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
+            System.out.printf("%n\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
+
+            // Calculates the confidence interval error margin
+            return criticalValue * stats.getStandardDeviation() / Math.sqrt(stats.getN());
+        } catch (MathIllegalArgumentException e) {
+            return Double.NaN;
+        }
+    }
+
+    /**
+     * Creates a SummaryStatistics object from a list of
+     * Double values, allowing computation of statistics
+     * such as mean over these values.
+     * The method also checks if the
+     * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
+     * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
+     * are enabled and then apply them over the given list of Doubles.
+     * These techniques are used for variance reduction.
+     *
+     * @param values the List of values to add to the {@link SummaryStatistics} object
+     * @return the {@link SummaryStatistics} object containing
+     * the double values, after applying the the techniques for
+     * variance reduction.
+     */
+    protected SummaryStatistics computeFinalStatistics(final List<Double> values) {
+        final SummaryStatistics stats = new SummaryStatistics();
+        final List<Double> adjustedValues = computeAntitheticMeans(computeBatchMeans(values));
+        adjustedValues.forEach(stats::addValue);
+        return stats;
+    }
+
+    /**
      * Add a value to a given metric inside the {@link #metricsMap}.
      *
      * <p>This method must be called for each metric inside the experiment finish listener.
@@ -656,54 +723,6 @@ public abstract class ExperimentRunner<T extends Experiment> implements Runnable
     }
 
     protected abstract void printSimulationParameters();
-
-    /**
-     * Creates a SummaryStatistics object from a list of
-     * Double values, allowing computation of statistics
-     * such as mean over these values.
-     * The method also checks if the
-     * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
-     * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
-     * are enabled and then apply them over the given list of Doubles.
-     * These techniques are used for variance reduction.
-     *
-     * @param values the List of values to add to the {@link SummaryStatistics} object
-     * @return the {@link SummaryStatistics} object containing
-     * the double values, after applying the the techniques for
-     * variance reduction.
-     */
-    protected SummaryStatistics computeFinalStatistics(List<Double> values) {
-        final SummaryStatistics stats = new SummaryStatistics();
-        values = computeBatchMeans(values);
-        values = computeAntitheticMeans(values);
-        values.forEach(stats::addValue);
-        return stats;
-    }
-
-    /**
-     * Computes and prints final simulation results such as means, standard deviations and
-     * confidence intervals.
-     *
-     * @param metricEntry a Map Entry where the key is the name of the metric to print results
-     * and the value is a {@link SummaryStatistics} object containing means of each
-     * experiment run that will be used to computed an overall mean and other
-     * statistics
-     * @see #printFinalResults(java.lang.String, org.apache.commons.math3.stat.descriptive.SummaryStatistics)
-     */
-    private void computeAndPrintFinalResults(final Map.Entry<String, List<Double>> metricEntry){
-        printFinalResults(metricEntry.getKey(), computeFinalStatistics(metricEntry.getValue()));
-    }
-
-    /**
-     * Prints final simulation results such as means, standard deviations and
-     * confidence intervals.
-     *
-     * @param metricName the name of the metric to be printed
-     * @param stats the {@link SummaryStatistics} containing means of each
-     * experiment run that will be used to computed an overall mean and other
-     * statistics
-     */
-    protected abstract void printFinalResults(String metricName, SummaryStatistics stats);
 
     public final ExperimentRunner setBaseSeed(final long baseSeed) {
         this.baseSeed = baseSeed;
