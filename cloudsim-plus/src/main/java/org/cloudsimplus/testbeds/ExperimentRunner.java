@@ -61,14 +61,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     private int simulationRuns;
 
     /**
-     * @see #getExperimentsStartTime()
+     * @see #getExperimentsStartTimeSecs()
      */
-    private long experimentsStartTime;
+    private long experimentsStartTimeSecs;
 
     /**
-     * @see #getExperimentsFinishTime()
+     * @see #getExperimentsExecutionTimeSecs()
      */
-    private long experimentsFinishTime;
+    private long experimentsExecutionTimeSecs;
 
     /**
      * @see #isApplyAntitheticVariatesTechnique()
@@ -476,53 +476,75 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     /**
-     * Time in seconds the experiments finished.
+     * Time in seconds the experiments took to finish.
      * @return
      */
-    public long getExperimentsFinishTime() {
-        return experimentsFinishTime;
+    public long getExperimentsExecutionTimeSecs() {
+        return experimentsExecutionTimeSecs;
     }
 
     /**
      * Time in seconds the experiments started.
      * @return
      */
-    public long getExperimentsStartTime() {
-        return experimentsStartTime;
+    public long getExperimentsStartTimeSecs() {
+        return experimentsStartTimeSecs;
     }
 
     /**
-     * Setups and starts the execution of all experiments.
+     * Setups and starts the execution of all experiments sequentially.
+     * @see #runInParallel()
      */
     @Override
     public void run() {
-        setupInternal();
+        runInternal(false);
+    }
 
+    /**
+     * Setups and starts the execution of all experiments in parallel.
+     * In this case, each experiment verbosity is disabled,
+     * otherwise, you'll see mixed log messages from different
+     * experiment runs.
+     * @see #run()
+     */
+    public void runInParallel() {
+        runInternal(true);
+    }
+
+    private void runInternal(final boolean parallel) {
+        setupInternal();
         printSimulationParameters();
 
         Log.setLevel(Level.OFF);
         try {
-            experimentsStartTime = System.currentTimeMillis();
-            for (int i = 0; i < getSimulationRuns(); i++) {
-                if (isVerbose()) {
-                    System.out.print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
-                }
-                createExperiment(i).run();
-            }
+            experimentsStartTimeSecs = Math.round(System.currentTimeMillis()/1000.0);
+            final IntStream range = getIntStream(simulationRuns, parallel);
+            range.forEach(i -> {
+                print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
+                final Experiment exp = createExperiment(i);
+                exp.setVerbose(exp.isVerbose() && !parallel).run();
+            });
             System.out.println();
-            experimentsFinishTime = (System.currentTimeMillis() - experimentsStartTime) / 1000;
+            experimentsExecutionTimeSecs = TimeUtil.elapsedSeconds(experimentsStartTimeSecs);
         } finally {
             Log.setLevel(Level.INFO);
         }
 
         System.out.printf(
             "%nFinal simulation results for %d metrics in %d simulation runs -------------------%n",
-            metricsMap.size(), getSimulationRuns());
+            metricsMap.size(), simulationRuns);
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("Batch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
         metricsMap.forEach(this::computeAndPrintFinalResults);
-        System.out.printf("%nExperiments finished in %s!%n", TimeUtil.secondsToStr(getExperimentsFinishTime()));
+        System.out.printf(
+            "%nExperiments for %d runs finished in %s!%n",
+            simulationRuns, TimeUtil.secondsToStr(experimentsExecutionTimeSecs));
+    }
+
+    private IntStream getIntStream(final int endExclusive, final boolean parallel) {
+        final IntStream stream = IntStream.range(0, endExclusive);
+        return parallel ? stream.parallel() : stream;
     }
 
     /**
@@ -577,7 +599,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         final double lower = stats.getMean() - intervalSize;
         final double upper = stats.getMean() + intervalSize;
         System.out.printf(
-            "\tThis METRIC mean 95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
+            "\t95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
             stats.getMean(), intervalSize, lower, upper);
         System.out.printf("\tStandard Deviation: %.4f%n", stats.getStandardDeviation());
     }
@@ -644,7 +666,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
             final TDistribution tDist = new TDistribution(degreesOfFreedom);
             final double significance = 1.0 - confidenceLevel;
             final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
-            System.out.printf("%n\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
+            System.out.printf("\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
 
             // Calculates the confidence interval error margin
             return criticalValue * stats.getStandardDeviation() / Math.sqrt(stats.getN());
