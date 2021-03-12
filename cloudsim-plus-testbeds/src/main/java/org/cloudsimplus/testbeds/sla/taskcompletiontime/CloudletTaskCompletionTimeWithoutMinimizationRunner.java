@@ -68,7 +68,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunn
     protected CloudletTaskCompletionTimeWithoutMinimizationExperiment createExperiment(int i) {
         CloudletTaskCompletionTimeWithoutMinimizationExperiment exp
                 = new CloudletTaskCompletionTimeWithoutMinimizationExperiment(i, this);
-        exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
+        exp.setAfterExperimentFinish(this::afterExperimentFinish).setVerbose(experimentVerbose);
         return exp;
     }
 
@@ -79,9 +79,8 @@ class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunn
     protected void setup() {/**/}
 
     /**
-     * Method automatically called after every experiment finishes running. It
-     * performs some post-processing such as collection of data for statistic
-     * analysis.
+     * Method automatically called after every experiment finishes running.
+     * It performs some post-processing such as collection of data for statistic analysis.
      *
      * @param experiment the finished experiment
      */

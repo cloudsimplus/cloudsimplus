@@ -63,7 +63,7 @@ class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends Experi
     protected CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment createExperiment(int i) {
         CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment exp
                 = new CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment(i, this);
-        exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
+        exp.setAfterExperimentFinish(this::afterExperimentFinish).setVerbose(experimentVerbose);
         return exp;
     }
 

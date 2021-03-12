@@ -64,7 +64,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
     protected CloudletTaskCompletionTimeWorkLoadMinimizationExperiment createExperiment(final int i) {
         final CloudletTaskCompletionTimeWorkLoadMinimizationExperiment exp
                 = new CloudletTaskCompletionTimeWorkLoadMinimizationExperiment(i, this);
-        exp.setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
+        exp.setAfterExperimentFinish(this::afterExperimentFinish).setVerbose(experimentVerbose);
         return exp;
     }
 

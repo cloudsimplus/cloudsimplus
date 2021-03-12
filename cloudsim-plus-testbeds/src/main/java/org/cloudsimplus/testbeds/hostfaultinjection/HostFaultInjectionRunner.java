@@ -108,8 +108,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
     @Override
     protected HostFaultInjectionExperiment createExperiment(final int i) {
         final HostFaultInjectionExperiment exp = new HostFaultInjectionExperiment(i, this);
-        exp.setVerbose(experimentVerbose)
-           .setAfterExperimentFinish(this::afterExperimentFinish);
+        exp.setAfterExperimentFinish(this::afterExperimentFinish).setVerbose(experimentVerbose);
         return exp;
     }
 
