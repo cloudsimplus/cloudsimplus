@@ -53,6 +53,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private long baseSeed;
 
+    /** List of seeds used for each experiment.
+     * @see #addSeed(long)  */
     private List<Long> seeds;
 
     /**
@@ -113,11 +115,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param baseSeed the seed to be used as base for each experiment seed
      */
     public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
-        this.seeds = new ArrayList<>();
         setBaseSeed(baseSeed);
         setBatchesNumber(0);
         setApplyAntitheticVariatesTechnique(antitheticVariatesTechnique);
-        this.metricsMap = new HashMap<>();
+
+        /*Since experiments may run in parallel and these fields are shared across them,
+        * we need to synchronize these collections.*/
+        this.seeds = Collections.synchronizedList(new ArrayList<>());
+        this.metricsMap = Collections.synchronizedMap(new HashMap<>());
     }
 
     /**
