@@ -76,9 +76,9 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     private boolean applyAntitheticVariatesTechnique;
 
     /**
-     * @see #getNumberOfBatches()
+     * @see #getBatchesNumber()
      */
-    private int numberOfBatches;
+    private int batchesNumber;
 
     /**
      * A Map containing a List of values for each metric to be computed.
@@ -115,7 +115,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
         this.seeds = new ArrayList<>();
         setBaseSeed(baseSeed);
-        setNumberOfBatches(0);
+        setBatchesNumber(0);
         setApplyAntitheticVariatesTechnique(antitheticVariatesTechnique);
         this.metricsMap = new HashMap<>();
     }
@@ -174,7 +174,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
             setSimulationRuns(getSimulationRuns() + 1);
         }
 
-        if (getSimulationRuns() % getNumberOfBatches()  != 0) {
+        if (getSimulationRuns() % getBatchesNumber()  != 0) {
             setSimulationRunsAsMultipleOfBatchNumber();
         }
     }
@@ -187,7 +187,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * will be even too.
      */
     private void setNumberOfSimulationRunsAsMultipleOfNumberOfBatches() {
-        setSimulationRuns(batchSizeCeil() * getNumberOfBatches());
+        setSimulationRuns(batchSizeCeil() * getBatchesNumber());
     }
 
     /**
@@ -195,14 +195,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * simulation runs is not multiple of the number of batches.
      */
     private boolean isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches() {
-        return isApplyBatchMeansMethod() && getSimulationRuns() % getNumberOfBatches() != 0;
+        return isApplyBatchMeansMethod() && getSimulationRuns() % getBatchesNumber() != 0;
     }
 
     /**
      * @return the batch size rounded by the {@link Math#ceil(double)} method.
      */
     public int batchSizeCeil() {
-        return (int) Math.ceil(getSimulationRuns() / (double) getNumberOfBatches());
+        return (int) Math.ceil(getSimulationRuns() / (double) getBatchesNumber());
     }
 
     /**
@@ -212,8 +212,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @return
      */
     public boolean simulationRunsAndNumberOfBatchesAreCompatible() {
-        final boolean batchesGreaterThan1 = getNumberOfBatches() > 1;
-        final boolean numSimulationRunsGraterThanBatches = getSimulationRuns() > getNumberOfBatches();
+        final boolean batchesGreaterThan1 = getBatchesNumber() > 1;
+        final boolean numSimulationRunsGraterThanBatches = getSimulationRuns() > getBatchesNumber();
         return batchesGreaterThan1 && numSimulationRunsGraterThanBatches;
     }
 
@@ -236,7 +236,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      *                Samples size is defined by the {@link #getSimulationRuns()}.
      * @return the samples list after applying the "Batch Means Method", in case
      * the method is enabled to be applied, which will reduce the array to the
-     * number of batches defined by {@link #getNumberOfBatches()} (each value in
+     * number of batches defined by {@link #getBatchesNumber()} (each value in
      * the returned array will be the mean of every sample batch). Otherwise,
      * returns the same given array
      */
@@ -245,13 +245,13 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
             return samples;
         }
 
-        final List<Double> batchMeans = new ArrayList<>(getNumberOfBatches());
-        for (int i = 0; i < getNumberOfBatches(); i++) {
+        final List<Double> batchMeans = new ArrayList<>(getBatchesNumber());
+        for (int i = 0; i < getBatchesNumber(); i++) {
             batchMeans.add(getBatchAverage(samples, i));
         }
 
         System.out.printf(
-                "\tBatch Means Method applied. The number of samples was reduced to %d after computing the mean for each batch.%n", getNumberOfBatches());
+                "\tBatch Means Method applied. The number of samples was reduced to %d after computing the mean for each batch.%n", getBatchesNumber());
 
         return batchMeans;
     }
@@ -332,7 +332,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @return
      */
     protected ExperimentRunner setSimulationRunsAsMultipleOfBatchNumber() {
-         setSimulationRuns(getNumberOfBatches() * (int)Math.ceil(getSimulationRuns() / getNumberOfBatches()));
+         setSimulationRuns(getBatchesNumber() * (int)Math.ceil(getSimulationRuns() / getBatchesNumber()));
          return this;
     }
 
@@ -348,19 +348,19 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * reduce the correlation between experiment runs.
      * @return
      */
-    public int getNumberOfBatches() {
-        return numberOfBatches;
+    public int getBatchesNumber() {
+        return batchesNumber;
     }
 
     /**
      * Sets the number of batches in which the simulation runs will be divided.
      *
-     * @param numberOfBatches number of simulation run batches
+     * @param batchesNumber number of simulation run batches
      * @return
-     * @see #getNumberOfBatches()
+     * @see #getBatchesNumber()
      */
-    public final ExperimentRunner setNumberOfBatches(final int numberOfBatches) {
-        this.numberOfBatches = numberOfBatches;
+    public final ExperimentRunner setBatchesNumber(final int batchesNumber) {
+        this.batchesNumber = batchesNumber;
         return this;
     }
 
@@ -557,9 +557,9 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
         final SummaryStatistics stats = computeFinalStatistics(metricValues);
-        System.out.printf("# %s: %.2f%n", metricName, stats.getMean());
+        System.out.printf("# %s: %.2f (samples: %s)%n", metricName, stats.getMean(), metricValues);
 
-        if (getSimulationRuns() > 1) {
+        if (simulationRuns > 1) {
             showConfidenceInterval(stats);
         }
 
@@ -595,7 +595,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private void showConfidenceInterval(final SummaryStatistics stats) {
         // Computes 95% confidence interval
-        final double intervalSize = computeConfidenceErrorMargin(stats, 0.95);
+        final double intervalSize = confidenceErrorMargin(stats, 0.95);
         final double lower = stats.getMean() - intervalSize;
         final double upper = stats.getMean() + intervalSize;
         System.out.printf(
@@ -654,21 +654,20 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
      * Computation and Statistical Data Analysis on the Java Platform</a>
      */
-    protected double computeConfidenceErrorMargin(final SummaryStatistics stats, final double confidenceLevel) {
+    protected double confidenceErrorMargin(final SummaryStatistics stats, final double confidenceLevel) {
         try {
             // Creates a T-Distribution with N-1 degrees of freedom
-            final double degreesOfFreedom = stats.getN() - 1;
+            final double freedomDegrees = stats.getN() - 1;
 
             /*
 		    The t-Distribution is used to determine the probability that
 		    the real population mean lies in a given interval.
              */
-            final TDistribution tDist = new TDistribution(degreesOfFreedom);
+            final TDistribution tDist = new TDistribution(freedomDegrees);
             final double significance = 1.0 - confidenceLevel;
             final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
             System.out.printf("\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
 
-            // Calculates the confidence interval error margin
             return criticalValue * stats.getStandardDeviation() / Math.sqrt(stats.getN());
         } catch (MathIllegalArgumentException e) {
             return Double.NaN;

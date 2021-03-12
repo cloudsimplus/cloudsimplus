@@ -92,10 +92,10 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
      */
     public static void main(String[] args) {
         new HostFaultInjectionRunner(true, 1475098589732L)
-            .setSimulationRuns(400)
-            .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
-            .setVerbose(true)
-            .run();
+                .setSimulationRuns(400)
+                .setBatchesNumber(5) //Comment this or set to 0 to disable the "Batch Means Method"
+                .setVerbose(true)
+                .run();
     }
 
     private HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
@@ -196,7 +196,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
         System.out.printf("\tApply Antithetic Variates Technique: %b%n", isApplyAntitheticVariatesTechnique());
         if (isApplyBatchMeansMethod()) {
             System.out.println("\tApply Batch Means Method to reduce simulation results correlation: true");
-            System.out.printf("\tNumber of Batches for Batch Means Method: %d", getNumberOfBatches());
+            System.out.printf("\tNumber of Batches for Batch Means Method: %d", getBatchesNumber());
             System.out.printf("\tBatch Size: %d%n", batchSizeCeil());
         }
     }

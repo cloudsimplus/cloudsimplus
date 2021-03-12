@@ -51,7 +51,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
     public static void main(String[] args) {
         new CloudletTaskCompletionTimeWorkLoadMinimizationRunner(true, 1475098589732L)
                 .setSimulationRuns(300)
-                .setNumberOfBatches(5) //Comment this or set to 0 to disable the "Batch Means Method"
+                .setBatchesNumber(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
@@ -92,7 +92,7 @@ class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends ExperimentRun
         System.out.printf("\tApply Antithetic Variates Technique: %b%n", isApplyAntitheticVariatesTechnique());
         if (isApplyBatchMeansMethod()) {
             System.out.println("\tApply Batch Means Method to reduce simulation results correlation: true");
-            System.out.printf("\tNumber of Batches for Batch Means Method: %d", getNumberOfBatches());
+            System.out.printf("\tNumber of Batches for Batch Means Method: %d", getBatchesNumber());
             System.out.printf("\tBatch Size: %d%n", batchSizeCeil());
         }
     }

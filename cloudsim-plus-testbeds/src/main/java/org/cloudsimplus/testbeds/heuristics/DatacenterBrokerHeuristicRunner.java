@@ -116,7 +116,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
          */
         new DatacenterBrokerHeuristicRunner(true, 1475098589732L)
                 .setSimulationRuns(1200)
-                .setNumberOfBatches(6) //Comment this or set to 0 to disable the "Batch Means Method"
+                .setBatchesNumber(6) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
@@ -178,7 +178,8 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
         final ContinuousDistribution prng = createRandomGen(i, 0, 1);
 
         exp.setRandomGen(prng)
-           .setVerbose(experimentVerbose).setAfterExperimentFinish(this::afterExperimentFinish);
+           .setAfterExperimentFinish(this::afterExperimentFinish)
+           .setVerbose(experimentVerbose);
         return exp;
     }
 
@@ -213,7 +214,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
         System.out.printf("\tApply Antithetic Variates Technique: %b%n", isApplyAntitheticVariatesTechnique());
         if (isApplyBatchMeansMethod()) {
             System.out.println("\tApply Batch Means Method to reduce simulation results correlation: true");
-            System.out.printf("\tNumber of Batches for Batch Means Method: %d", getNumberOfBatches());
+            System.out.printf("\tNumber of Batches for Batch Means Method: %d", getBatchesNumber());
             System.out.printf("\tBatch Size: %d%n", batchSizeCeil());
         }
         System.out.printf("%nSimulated Annealing Parameters%n");
