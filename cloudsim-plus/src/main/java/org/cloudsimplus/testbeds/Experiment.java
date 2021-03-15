@@ -183,6 +183,10 @@ public abstract class Experiment extends AbstractExperiment {
         printResultsInternal();
     }
 
+    public boolean isFirstExperimentCreated(){
+        return index == runner.getFirstExperimentCreated();
+    }
+
     /**
      * Checks if {@link #isVerbose()} in order to call {@link #printResults()}
      * to print the experiment results.

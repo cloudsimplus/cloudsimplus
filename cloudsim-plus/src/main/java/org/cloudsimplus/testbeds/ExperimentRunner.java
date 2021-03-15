@@ -59,6 +59,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private final boolean parallel;
 
+    private int firstExperimentCreated = -1;
+
     /**
      * @see #getBaseSeed()
      */
@@ -567,6 +569,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private Experiment createExperiment(final int i) {
         print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
+        setFirstExperimentCreated(i);
         final Experiment exp = createExperimentInternal(i);
         exp.setVerbose(exp.isVerbose() && !parallel);
         return exp;
@@ -769,5 +772,15 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     public final ExperimentRunner setBaseSeed(final long baseSeed) {
         this.baseSeed = baseSeed;
         return this;
+    }
+
+    public void setFirstExperimentCreated(final int firstExperimentCreated) {
+        if(this.firstExperimentCreated < 0) {
+            this.firstExperimentCreated = firstExperimentCreated;
+        }
+    }
+
+    public int getFirstExperimentCreated() {
+        return firstExperimentCreated;
     }
 }
