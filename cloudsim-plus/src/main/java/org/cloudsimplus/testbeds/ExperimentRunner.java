@@ -201,7 +201,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
             setSimulationRuns(getSimulationRuns() + 1);
         }
 
-        if (getSimulationRuns() % getBatchesNumber()  != 0) {
+        if (getBatchesNumber() > 0 && getSimulationRuns() % getBatchesNumber()  != 0) {
             setSimulationRunsAsMultipleOfBatchNumber();
         }
     }
@@ -563,7 +563,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      *
      * @param i a number that identifies the experiment
      * @return the created experiment
-     * @see #createExperimentInternal(int) (int)
+     * @see #createExperimentInternal(int)
      */
     private Experiment createExperiment(final int i) {
         print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
