@@ -145,7 +145,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         /*Since experiments may run in parallel and these fields are shared across them,
         * we need to synchronize these collections.*/
         this.seeds = parallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
-        this.metricsMap = parallel ? Collections.synchronizedMap(new HashMap<>()) : new HashMap<>();
+        this.metricsMap = parallel ? Collections.synchronizedMap(new TreeMap<>()) : new TreeMap<>();
     }
 
     /**
