@@ -320,13 +320,14 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Enables or disables the resource utilization history,
-     * so that utilization values is stored along all the simulation execution.
-     * Check information about trade-off between memory and CPU utilization in {@link #setHistoryEnabled(boolean)}.
+     * Allow the model to always generate a new random utilization value when {@link #getUtilization()} methods are called,
+     * even if the simulation clock hasn't changed since the last call.
      *
-     * @param alwaysGenerateNewRandomUtilization true to enable the utilization history, false to disable
+     * @param alwaysGenerateNewRandomUtilization true to allow generating a new random value for each time the resource utilization is required, false to disable
      * @return
      * @see #isAlwaysGenerateNewRandomUtilization()
+     * @see #getUtilization()
+     * @see #getUtilization(double)
      */
     public UtilizationModelStochastic setAlwaysGenerateNewRandomUtilization(final boolean alwaysGenerateNewRandomUtilization) {
         this.alwaysGenerateNewRandomUtilization = alwaysGenerateNewRandomUtilization;
