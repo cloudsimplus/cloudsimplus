@@ -33,6 +33,7 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudsimplus.util.Log;
 
+import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -52,6 +53,11 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Plus 1.0
  */
 public abstract class ExperimentRunner<T extends Experiment> extends AbstractExperiment {
+    /**
+     * The confidence level for computing confidence interval.
+     */
+    public static final double CONFIDENCE_LEVEL = 0.95;
+
     /**
      * If experiments are executed in parallel, each experiment verbosity is disabled,
      * otherwise, you'll see mixed log messages from different
@@ -110,6 +116,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @see Experiment#setAfterExperimentFinish(Consumer)
      */
     private final Map<String, List<Double>> metricsMap;
+
+    /**@see #setDescription(String) */
+    private String description;
+
+    /**@see #setResultsTableId(String) */
+    private String resultsTableId;
+
+    private boolean generateLatexResultsTable;
 
     /**
      * Creates an experiment runner, setting the
@@ -526,6 +540,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     @Override
     public void run() {
         setup();
+        final String desc = description != null && !description.isEmpty() ? String.format(" - %s", description) : "";
+        System.out.printf("Started %s at %s (real local time)%s%n", getClass().getSimpleName(), LocalTime.now(), desc);
         printSimulationParameters();
 
         Log.setLevel(Level.OFF);
@@ -550,10 +566,70 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
             System.out.println("Batch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
-        metricsMap.forEach(this::computeAndPrintFinalResults);
+
+        computeAndPrintFinalResults();
+
         System.out.printf(
             "%nExperiments for %d runs finished in %s!%n",
             simulationRuns, TimeUtil.secondsToStr(experimentsExecutionTimeSecs));
+    }
+
+    private void computeAndPrintFinalResults() {
+        final Map<String, SummaryStatistics> statsMap = new TreeMap<>();
+        metricsMap.entrySet().forEach(e -> statsMap.put(e.getKey(), computeAndPrintFinalResults(e)));
+        buildLatexMetricsResultTable(statsMap);
+    }
+
+    /**
+     * Generates the latex table for metrics results.
+     * @param statsMap a Map where each key is a metric name and it value is
+     *                 a statistics object summarizing the metric results for all
+     *                 simulation runs.
+     */
+    private void buildLatexMetricsResultTable(final Map<String, SummaryStatistics> statsMap) {
+        if(!generateLatexResultsTable) {
+            return;
+        }
+
+        if (simulationRuns == 1) {
+            System.out.println("Latex table with metrics' results is just built when the number of simulation runs is greater than 1.");
+            return;
+        }
+
+        final StringBuilder latex = startLatexTable();
+        statsMap.forEach((metric, stats) -> latexRow(latex, metric, stats));
+        latex.append("  \\end{tabular}\n").append("\\end{table}\n");
+        System.out.println();
+        System.out.println(latex);
+    }
+
+    /**
+     * Creates a row for the latex table containing the result metrics
+     * @param latex the StringBuilder where the latex table is being built
+     * @param metricName the name of the current metric to be presented as a table row
+     * @param stats summary statistics for this metric
+     */
+    private void latexRow(final StringBuilder latex, final String metricName, final SummaryStatistics stats) {
+        final double errorMargin = confidenceErrorMargin(stats, CONFIDENCE_LEVEL);
+        latex.append(metricName)
+             .append(" & ")
+             .append(String.format("%.2f", stats.getMean()))
+             .append(" $\\pm$ & ")
+             .append(errorMargin)
+             .append(" & ")
+             .append(String.format("%.4f", stats.getStandardDeviation()))
+             .append("\\\\ \\hline\n");
+    }
+
+    private StringBuilder startLatexTable() {
+        final StringBuilder latex = new StringBuilder();
+        latex.append("\\begin{table}[hbt]\n")
+             .append(String.format("  \\caption{%s}\n", description))
+             .append(String.format("  \\label{%s}\n", resultsTableId))
+             .append("  \\begin{tabular}{|l|rr|>{\\raggedleft\\arraybackslash}p{1.5cm}|}\n")
+             .append("      \\hline\n")
+             .append("      \\textbf{Metric} & \\textbf{95\\% Confidence} & \\textbf{Interval} & \\textbf{Standard Deviation*} \\\\ \\hline\n");
+        return latex;
     }
 
     private Stream<Experiment> getStream(final List<Experiment> experiments) {
@@ -588,14 +664,15 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * Computes and prints final simulation results, including mean, standard deviations and
      * confidence intervals for a given metric computed across all simulation runs.
      *
-     * @param metricName the name of the metric to print results
-     * @param metricValues the list of values of that metric across multiple simulation runs
+     * @param metricEntry a map entry represented by the name of the metric and
+     *                    its list of values across multiple simulation runs
      * @return the computed {@link SummaryStatistics} from the provided values for the metric
      */
-    protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
+    protected SummaryStatistics computeAndPrintFinalResults(final Map.Entry<String, List<Double>> metricEntry){
+        final List<Double> metricValues = metricEntry.getValue();
         final SummaryStatistics stats = computeFinalStatistics(metricValues);
         final String valuesStr = metricValues.stream().map(v -> String.format("%.2f", v)).collect(joining(", "));
-        System.out.printf("# %s: %.2f (samples: %s)%n", metricName, stats.getMean(), valuesStr);
+        System.out.printf("# %s: %.2f (samples: %s)%n", metricEntry.getKey(), stats.getMean(), valuesStr);
 
         if (simulationRuns > 1) {
             showConfidenceInterval(stats);
@@ -633,7 +710,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private void showConfidenceInterval(final SummaryStatistics stats) {
         // Computes 95% confidence interval
-        final double intervalSize = confidenceErrorMargin(stats, 0.95);
+        final double intervalSize = confidenceErrorMargin(stats, CONFIDENCE_LEVEL);
         final double lower = stats.getMean() - intervalSize;
         final double upper = stats.getMean() + intervalSize;
         System.out.printf(
@@ -782,5 +859,37 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
 
     public int getFirstExperimentCreated() {
         return firstExperimentCreated;
+    }
+
+    /**
+     * Sets a description for this experiment which is shown when it starts.
+     * It's also used to generate a caption for the Latex table.
+     * @param description the description to set
+     * @see #enableLatexResultsTableGeneration()
+     */
+    public ExperimentRunner setDescription(final String description) {
+        this.description = description;
+        return this;
+    }
+
+    /**
+     * An id used to identify the experiment results table generated in formats such as Latex
+     * for computed metrics.
+     * @param resultsTableId the name to set
+     * @see #enableLatexResultsTableGeneration()
+     */
+    public ExperimentRunner setResultsTableId(final String resultsTableId) {
+        this.resultsTableId = resultsTableId;
+        return this;
+    }
+
+    /**
+     * Enables the generation of a result table in Latex format
+     * for computed metrics
+     * @return
+     */
+    public ExperimentRunner enableLatexResultsTableGeneration() {
+        this.generateLatexResultsTable = true;
+        return this;
     }
 }

@@ -35,6 +35,7 @@ import org.cloudsimplus.testbeds.Experiment;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Runs the {@link DatacenterBrokerHeuristicExperiment} the number of times
@@ -227,8 +228,8 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     }
 
     @Override
-    protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
-        final SummaryStatistics stats = super.computeAndPrintFinalResults(metricName, metricValues);
+    protected SummaryStatistics computeAndPrintFinalResults(final Map.Entry<String, List<Double>> metricEntry){
+        final SummaryStatistics stats = super.computeAndPrintFinalResults(metricEntry);
         System.out.printf(
                 "\tRound-robin solution used by DatacenterBrokerSimple - Cost: %.2f%n",
                 roundRobinSolution.getCost());

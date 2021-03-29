@@ -31,6 +31,7 @@ import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudsimplus.testbeds.ExperimentRunner;
 
 import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
 import static org.cloudsimplus.testbeds.linuxscheduler.CloudletSchedulerExperiment.*;
@@ -82,8 +83,8 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
     }
 
     @Override
-    protected SummaryStatistics computeAndPrintFinalResults(final String metricName, final List<Double> metricValues){
-        final SummaryStatistics stats = super.computeAndPrintFinalResults(metricName, metricValues);
+    protected SummaryStatistics computeAndPrintFinalResults(final Map.Entry<String, List<Double>> metricEntry){
+        final SummaryStatistics stats = super.computeAndPrintFinalResults(metricEntry);
         final List<Double> cloudletsNumber = getMetricValues(CLOUDLETS_NUMBER);
         System.out.printf("  Mean Number of Cloudlets:         %.2f%n", cloudletsNumber.stream().mapToDouble(n -> n).average().orElse(0.0));
         System.out.printf("  Cloudlet Completion Time Avg:     %.2f | Std dev:      %.2f%n", stats.getMean(), stats.getStandardDeviation());
