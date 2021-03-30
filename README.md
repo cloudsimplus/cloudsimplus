@@ -450,7 +450,7 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 1. [CloudSim Plus Py4j gateway: building CloudSim Plus simulations in Python](https://github.com/pkoperek/cloudsimplus-gateway)
 1. [RECAP Discrete Event Simulation Framework an extension for CloudSimPlus](https://bitbucket.org/RECAP-DES/recap-des/)
 1. [CloudSim Plus Automation: defining CloudSim Plus simulation scenarios into a YAML file.](http://manoelcampos.github.io/cloudsim-plus-automation/)
-1. [LEAF: Simulator for modeling Large Energy-Aware Fog computing environments](https://github.com/birnbaum/LEAF)
+1. [LEAF: Simulator for modeling Large Energy-Aware Fog computing environments](https://github.com/dos-group/leaf-java)
 1. [EPCSAC: Extensible Platform for Cloud Scheduling Algorithm Comparison.](https://github.com/TNanukem/EPCSAC)
 1. [SatEdgeSim: A Toolkit for Modeling and Simulation of Performance Evaluation in Satellite Edge Computing Environments.](https://github.com/wjy491156866/SatEdgeSim)
 
