@@ -456,39 +456,9 @@ If you want your project to be listed here, send us a Pull Request. Make sure yo
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# 10. Contributors
-
-## Code Contributors
-
-This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
-<a href="https://github.com/manoelcampos/cloudsim-plus/graphs/contributors"><img src="https://opencollective.com/cloudsim-plus/contributors.svg?width=890&button=false" /></a>
-
-## Financial Contributors
-
-Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/cloudsim-plus/contribute)]
-
-### Individuals
-
-<a href="https://opencollective.com/cloudsim-plus"><img src="https://opencollective.com/cloudsim-plus/individuals.svg?width=890"></a>
-
-### Organizations
-
-Support this project with your organization. Your logo will show up here with a link to your website. [[Contribute](https://opencollective.com/cloudsim-plus/contribute)]
-
-<a href="https://opencollective.com/cloudsim-plus/organization/0/website"><img src="https://opencollective.com/cloudsim-plus/organization/0/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/1/website"><img src="https://opencollective.com/cloudsim-plus/organization/1/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/2/website"><img src="https://opencollective.com/cloudsim-plus/organization/2/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/3/website"><img src="https://opencollective.com/cloudsim-plus/organization/3/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/4/website"><img src="https://opencollective.com/cloudsim-plus/organization/4/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/5/website"><img src="https://opencollective.com/cloudsim-plus/organization/5/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/6/website"><img src="https://opencollective.com/cloudsim-plus/organization/6/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/7/website"><img src="https://opencollective.com/cloudsim-plus/organization/7/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/8/website"><img src="https://opencollective.com/cloudsim-plus/organization/8/avatar.svg"></a>
-<a href="https://opencollective.com/cloudsim-plus/organization/9/website"><img src="https://opencollective.com/cloudsim-plus/organization/9/avatar.svg"></a>
-
 <a id="license"></a>
 
-# 11. License
+# 10. License
 
 This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0), as defined inside CloudSim 3 source files.
 
@@ -496,7 +466,7 @@ This project is licensed under [GNU GPLv3](http://www.gnu.org/licenses/gpl-3.0),
 
 <a id="contributing"></a>
 
-# 12. Contributing
+# 11. Contributing
 
 You are welcome to contribute to the project. 
 However, make sure you read the [contribution guide](CONTRIBUTING.md) before starting. 
