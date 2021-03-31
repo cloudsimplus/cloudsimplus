@@ -610,8 +610,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param stats summary statistics for this metric
      */
     private void latexRow(final StringBuilder latex, final String metricName, final SummaryStatistics stats) {
-        final double errorMargin = confidenceErrorMargin(stats, CONFIDENCE_LEVEL);
-        latex.append(metricName)
+        final String errorMargin = String.format("%.4f", confidenceErrorMargin(stats, CONFIDENCE_LEVEL));
+        //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
+        final String escapedMetricName = metricName.replaceAll("%", "\\%");
+        latex.append(escapedMetricName)
              .append(" & ")
              .append(String.format("%.2f", stats.getMean()))
              .append(" $\\pm$ & ")
