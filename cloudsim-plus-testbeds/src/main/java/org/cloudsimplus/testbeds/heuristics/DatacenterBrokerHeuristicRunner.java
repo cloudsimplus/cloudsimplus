@@ -95,7 +95,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     private final boolean experimentVerbose = false;
 
     private DatacenterBrokerHeuristicRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
-        super(applyAntitheticVariatesTechnique, baseSeed);
+        super(baseSeed, 1200, 6, applyAntitheticVariatesTechnique);
         runtimeStats = new SummaryStatistics();
         vmPesArray = new int[0];
         cloudletPesArray = new int[0];
@@ -108,16 +108,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
      * @param args command line arguments
      */
     public static void main(String[] args) {
-        /*
-        Values used for CloudSim Plus Paper:
-            NumberOfSimulationRuns: 1200
-            ApplyAntitheticVariatesTechnique: true
-            NumberOfBatches: 6
-            BaseSeed: 1475098589732L
-         */
         new DatacenterBrokerHeuristicRunner(true, 1475098589732L)
-                .setSimulationRuns(1200)
-                .setBatchesNumber(6) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
@@ -185,7 +176,7 @@ final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterB
     }
 
     @Override
-    protected void setupInternal() {
+    protected void setup() {
         vmPesArray = createVmPesArray();
         cloudletPesArray = createCloudletPesArray();
     }

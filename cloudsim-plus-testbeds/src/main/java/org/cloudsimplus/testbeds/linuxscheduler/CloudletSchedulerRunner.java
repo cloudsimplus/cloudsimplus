@@ -54,22 +54,12 @@ abstract class CloudletSchedulerRunner<T extends CloudletSchedulerExperiment> ex
      * this class.
      */
     CloudletSchedulerRunner() {
-        /*
-	    Values used for CloudSim Plus Paper:
-	        NumberOfSimulationRuns: 1200
-	        ApplyAntitheticVariatesTechnique: true
-	        NumberOfBatches: 6
-	        BaseSeed: 1475098589732L
-         */
-        super(false,1475098589732L);
-
-        this.setSimulationRuns(1200)
-                //.setNumberOfBatches(6) //Comment this or set to 0 to disable the "Batch Means Method"
-                .setVerbose(true);
+        super(1475098589732L, 1200);
+        this.setVerbose(true);
     }
 
     @Override
-    protected void setupInternal() {
+    protected void setup() {
         cloudletsNumberPrng = new UniformDistr(VM_PES / 2, VM_PES + 1, getBaseSeed());
     }
 

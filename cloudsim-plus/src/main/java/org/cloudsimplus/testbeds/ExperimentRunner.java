@@ -70,7 +70,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**
      * @see #getBaseSeed()
      */
-    private long baseSeed;
+    private final long baseSeed;
 
     /** List of seeds used for each experiment.
      * @see #addSeed(long)  */
@@ -94,7 +94,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**
      * @see #isApplyAntitheticVariatesTechnique()
      */
-    private boolean applyAntitheticVariatesTechnique;
+    private final boolean applyAntitheticVariatesTechnique;
 
     /**
      * @see #getBatchesNumber()
@@ -123,53 +123,75 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**@see #setResultsTableId(String) */
     private String resultsTableId;
 
-    private boolean generateLatexResultsTable;
+    private boolean latexTableResultsGeneration;
+    private final List<Experiment> experiments;
 
     /**
-     * Creates an experiment runner, setting the
-     * {@link #getBaseSeed() base seed} as the current time.
+     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
+     * that runs sequentially.
+     * @param baseSeed the seed to be used as base for each experiment seed
+     * @param simulationRuns the number of times the experiment will be executed
+     */
+    protected ExperimentRunner(final long baseSeed, final int simulationRuns) {
+        this(baseSeed, simulationRuns, false);
+    }
+
+    /**
+     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
+     * that runs sequentially.
+     * @param baseSeed the seed to be used as base for each experiment seed
+     * @param simulationRuns the number of times the experiment will be executed
      * @param antitheticVariatesTechnique indicates if it's to be applied the
      *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
      */
-    public ExperimentRunner(final boolean antitheticVariatesTechnique) {
-        this(antitheticVariatesTechnique, System.currentTimeMillis());
+    protected ExperimentRunner(final long baseSeed, final int simulationRuns, final boolean antitheticVariatesTechnique) {
+        this(baseSeed, simulationRuns, 0, antitheticVariatesTechnique, false, false);
+    }
+
+    /**
+     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
+     * that runs sequentially.
+     * @param baseSeed the seed to be used as base for each experiment seed
+     * @param simulationRuns the number of times the experiment will be executed
+     * @param batchesNumber number of simulation run batches (zero disables the batch means method)
+     * @param antitheticVariatesTechnique indicates if it's to be applied the
+     *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
+     */
+    protected ExperimentRunner(final long baseSeed, final int simulationRuns, final int batchesNumber, final boolean antitheticVariatesTechnique) {
+        this(baseSeed, simulationRuns, batchesNumber, antitheticVariatesTechnique, false, false);
     }
 
     /**
      * Creates an experiment runner with a given {@link #getBaseSeed() base seed}.
+     * @param baseSeed the seed to be used as base for each experiment seed
+     * @param simulationRuns the number of times the experiment will be executed
+     * @param batchesNumber number of simulation run batches (zero disables the batch means method)
      * @param antitheticVariatesTechnique indicates if it's to be applied the
      *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
-     * @param baseSeed the seed to be used as base for each experiment seed
+     * @param parallel whether experiments will run in parallel or sequentially
+     * @param latexTableResultsGeneration Enables/disables the generation of a result table in Latex format for computed metrics.
      */
-    public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed) {
-        this(antitheticVariatesTechnique, baseSeed, false);
-    }
+    protected ExperimentRunner(
+        final long baseSeed, final int simulationRuns, final int batchesNumber, final boolean antitheticVariatesTechnique,
+        final boolean parallel, final boolean latexTableResultsGeneration)
+    {
+        this.baseSeed = baseSeed;
+        this.applyAntitheticVariatesTechnique = antitheticVariatesTechnique;
+        if(simulationRuns <= 0)
+            throw new IllegalArgumentException("Simulation runs must be greater than 0.");
+        this.simulationRuns = simulationRuns;
 
-
-    /**
-     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}.
-     * @param antitheticVariatesTechnique indicates if it's to be applied the
-     *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
-     * @param baseSeed the seed to be used as base for each experiment seed
-     */
-    public ExperimentRunner(final boolean antitheticVariatesTechnique, final long baseSeed, final boolean parallel) {
-        setBaseSeed(baseSeed);
-        setBatchesNumber(0);
+        if(batchesNumber < 0)
+            throw new IllegalArgumentException("Batches cannot be negative. Use 0 to disable the Batch Means method.");
+        this.batchesNumber = batchesNumber;
         this.parallel = parallel;
-        setApplyAntitheticVariatesTechnique(antitheticVariatesTechnique);
+        this.latexTableResultsGeneration = latexTableResultsGeneration;
 
         /*Since experiments may run in parallel and these fields are shared across them,
         * we need to synchronize these collections.*/
         this.seeds = parallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
         this.metricsMap = parallel ? Collections.synchronizedMap(new TreeMap<>()) : new TreeMap<>();
-    }
 
-    /**
-     * A template setup method that performs base setup for every experiment
-     * runner and call the additional {@link #setupInternal()} method that has to be
-     * implemented by child classes.
-     */
-    private void setup() {
         if (isApplyBatchMeansMethod() || isApplyAntitheticVariatesTechnique()) {
             setSimulationRunsAndBatchesToEvenNumber();
         }
@@ -178,7 +200,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
             setNumberOfSimulationRunsAsMultipleOfNumberOfBatches();
         }
 
-        setupInternal();
+        setup();
+
+        /* Since experiments may execute in parallel and during execution
+         * they access the shared seeds list, all experiments have to
+         * be created before starting execution.
+         * Otherwise, if they are run in parallel, we get IndexOutOfBoundsException's.
+         */
+        this.experiments = IntStream.range(0, simulationRuns).mapToObj(this::createExperiment).collect(toList());
     }
 
     /**
@@ -203,7 +232,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * setSeed is called after the constructor, the PRNG will not be update to
      * use the new seed.</p>
      */
-    protected abstract void setupInternal();
+    protected abstract void setup();
 
     /**
      *
@@ -214,7 +243,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private void setSimulationRunsAndBatchesToEvenNumber() {
         if (getSimulationRuns() % 2 != 0) {
-            setSimulationRuns(getSimulationRuns() + 1);
+            simulationRuns++;
         }
 
         if (getBatchesNumber() > 0 && getSimulationRuns() % getBatchesNumber()  != 0) {
@@ -230,7 +259,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * will be even too.
      */
     private void setNumberOfSimulationRunsAsMultipleOfNumberOfBatches() {
-        setSimulationRuns(batchSizeCeil() * getBatchesNumber());
+        simulationRuns = batchSizeCeil() * getBatchesNumber();
     }
 
     /**
@@ -245,7 +274,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @return the batch size rounded by the {@link Math#ceil(double)} method.
      */
     public int batchSizeCeil() {
-        return (int) Math.ceil(getSimulationRuns() / (double) getBatchesNumber());
+        return (int) Math.ceil(simulationRuns / (double) batchesNumber);
     }
 
     /**
@@ -255,8 +284,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @return
      */
     public boolean simulationRunsAndNumberOfBatchesAreCompatible() {
-        final boolean batchesGreaterThan1 = getBatchesNumber() > 1;
-        final boolean numSimulationRunsGraterThanBatches = getSimulationRuns() > getBatchesNumber();
+        final boolean batchesGreaterThan1 = batchesNumber > 1;
+        final boolean numSimulationRunsGraterThanBatches = simulationRuns > batchesNumber;
         return batchesGreaterThan1 && numSimulationRunsGraterThanBatches;
     }
 
@@ -364,24 +393,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         return simulationRuns;
     }
 
-    protected ExperimentRunner setSimulationRuns(final int simulationRuns) {
-        this.simulationRuns = simulationRuns;
-        return this;
-    }
-
     /**
      * Adjusts the current number of simulations to be equal to its closer
      * multiple of the number of batches.
      * @return
      */
-    protected ExperimentRunner setSimulationRunsAsMultipleOfBatchNumber() {
-         setSimulationRuns(getBatchesNumber() * (int)Math.ceil(getSimulationRuns() / getBatchesNumber()));
+    private ExperimentRunner setSimulationRunsAsMultipleOfBatchNumber() {
+         simulationRuns = getBatchesNumber() * (int)Math.ceil(getSimulationRuns() / getBatchesNumber());
          return this;
-    }
-
-    private ExperimentRunner setApplyAntitheticVariatesTechnique(final boolean applyAntitheticVariatesTechnique) {
-        this.applyAntitheticVariatesTechnique = applyAntitheticVariatesTechnique;
-        return this;
     }
 
     /**
@@ -393,18 +412,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     public int getBatchesNumber() {
         return batchesNumber;
-    }
-
-    /**
-     * Sets the number of batches in which the simulation runs will be divided.
-     *
-     * @param batchesNumber number of simulation run batches
-     * @return
-     * @see #getBatchesNumber()
-     */
-    public final ExperimentRunner setBatchesNumber(final int batchesNumber) {
-        this.batchesNumber = batchesNumber;
-        return this;
     }
 
     /**
@@ -539,7 +546,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     @Override
     public void run() {
-        setup();
         final String desc = description != null && !description.isEmpty() ? String.format(" - %s", description) : "";
         System.out.printf("Started %s at %s (real local time)%s%n", getClass().getSimpleName(), LocalTime.now(), desc);
         printSimulationParameters();
@@ -547,13 +553,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         Log.setLevel(Level.OFF);
         try {
             experimentsStartTimeSecs = Math.round(System.currentTimeMillis()/1000.0);
-            /* Since experiments may execute in parallel and during execution
-            * they access the shared seeds list, all experiments have to
-            * be created before starting execution.
-            * Otherwise, if they are run in parallel, we get IndexOutOfBoundsException's.
-            */
-            final List<Experiment> experiments = IntStream.range(0, simulationRuns).mapToObj(this::createExperiment).collect(toList());
-            getStream(experiments).forEach(Experiment::run);
+            getStream(this.experiments).forEach(Experiment::run);
             System.out.println();
             experimentsExecutionTimeSecs = TimeUtil.elapsedSeconds(experimentsStartTimeSecs);
         } finally {
@@ -587,7 +587,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      *                 simulation runs.
      */
     private void buildLatexMetricsResultTable(final Map<String, SummaryStatistics> statsMap) {
-        if(!generateLatexResultsTable) {
+        if(!latexTableResultsGeneration) {
             return;
         }
 
@@ -858,11 +858,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
 
     protected abstract void printSimulationParameters();
 
-    public final ExperimentRunner setBaseSeed(final long baseSeed) {
-        this.baseSeed = baseSeed;
-        return this;
-    }
-
     public void setFirstExperimentCreated(final int firstExperimentCreated) {
         if(this.firstExperimentCreated < 0) {
             this.firstExperimentCreated = firstExperimentCreated;
@@ -888,20 +883,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * An id used to identify the experiment results table generated in formats such as Latex
      * for computed metrics.
      * @param resultsTableId the name to set
-     * @see #enableLatexResultsTableGeneration()
+     * @see #latexTableResultsGeneration
      */
     public ExperimentRunner setResultsTableId(final String resultsTableId) {
         this.resultsTableId = resultsTableId;
-        return this;
-    }
-
-    /**
-     * Enables the generation of a result table in Latex format
-     * for computed metrics
-     * @return
-     */
-    public ExperimentRunner enableLatexResultsTableGeneration() {
-        this.generateLatexResultsTable = true;
         return this;
     }
 }

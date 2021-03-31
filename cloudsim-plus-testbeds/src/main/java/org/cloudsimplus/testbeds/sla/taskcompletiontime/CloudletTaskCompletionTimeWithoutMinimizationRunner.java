@@ -54,14 +54,12 @@ class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunn
      */
     public static void main(String[] args) {
         new CloudletTaskCompletionTimeWithoutMinimizationRunner(true, 1475098589732L)
-                .setSimulationRuns(300)
-                .setBatchesNumber(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
 
     private CloudletTaskCompletionTimeWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
-        super(applyAntitheticVariatesTechnique, baseSeed);
+        super(baseSeed, 300, 5, applyAntitheticVariatesTechnique);
     }
 
     @Override
@@ -76,7 +74,7 @@ class CloudletTaskCompletionTimeWithoutMinimizationRunner extends ExperimentRunn
      * There is no setup for this runner.
      */
     @Override
-    protected void setupInternal() {/**/}
+    protected void setup() {/**/}
 
     /**
      * Method automatically called after every experiment finishes running.

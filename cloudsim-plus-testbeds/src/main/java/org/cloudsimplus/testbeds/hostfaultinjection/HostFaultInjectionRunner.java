@@ -92,14 +92,12 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
      */
     public static void main(String[] args) {
         new HostFaultInjectionRunner(true, 1475098589732L)
-                .setSimulationRuns(400)
-                .setBatchesNumber(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
 
     private HostFaultInjectionRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
-        super(applyAntitheticVariatesTechnique, baseSeed);
+        super(baseSeed, 400, 5, applyAntitheticVariatesTechnique);
         availabilityByBroker = new HashMap<>();
         costTotal = new HashMap<>();
         template = new HashMap<>();
@@ -185,7 +183,7 @@ final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjection
         return template.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(priceCustomerPerHour);
     }
 
-    @Override protected void setupInternal() {/**/}
+    @Override protected void setup() {/**/}
 
     @Override
     protected void printSimulationParameters() {

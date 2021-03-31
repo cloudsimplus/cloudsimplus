@@ -49,14 +49,12 @@ class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends Experi
      */
     public static void main(String[] args) {
         new CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner(true, 1475098589732L)
-                .setSimulationRuns(100)
-                .setBatchesNumber(5) //Comment this or set to 0 to disable the "Batch Means Method"
                 .setVerbose(true)
                 .run();
     }
 
     private CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
-        super(applyAntitheticVariatesTechnique, baseSeed);
+        super(baseSeed, 100, 5, applyAntitheticVariatesTechnique);
     }
 
     @Override
@@ -71,7 +69,7 @@ class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends Experi
      * There is no setup for this experiment.
      */
     @Override
-    protected void setupInternal() {/**/}
+    protected void setup() {/**/}
 
     /**
      * Method automatically called after every experiment finishes running. It
