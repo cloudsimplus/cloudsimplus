@@ -610,7 +610,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param stats summary statistics for this metric
      */
     private void latexRow(final StringBuilder latex, final String metricName, final SummaryStatistics stats) {
-        final String errorMargin = String.format("%.4f", confidenceErrorMargin(stats, CONFIDENCE_LEVEL));
+        final String errorMargin = String.format("%.4f", confidenceErrorMargin(stats));
         //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
         final String escapedMetricName = metricName.replaceAll("%", "\\%");
         latex.append(escapedMetricName)
@@ -712,7 +712,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private void showConfidenceInterval(final SummaryStatistics stats) {
         // Computes 95% confidence interval
-        final double intervalSize = confidenceErrorMargin(stats, CONFIDENCE_LEVEL);
+        final double intervalSize = confidenceErrorMargin(stats);
+        final double criticalValue = getConfidenceIntervalCriticalValue(stats.getN());
+        System.out.printf("\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
+
         final double lower = stats.getMean() - intervalSize;
         final double upper = stats.getMean() + intervalSize;
         System.out.printf(
@@ -755,8 +758,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      *
      * @param stats the statistic object with the values to compute the error
      * margin of the confidence interval
-     * @param confidenceLevel the confidence level, in the interval from ]0 to
-     * 1[, such as 0.95 to indicate 95% of confidence.
      * @return the error margin to compute the lower and upper bound of the
      * confidence interval
      *
@@ -771,24 +772,33 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
      * Computation and Statistical Data Analysis on the Java Platform</a>
      */
-    protected double confidenceErrorMargin(final SummaryStatistics stats, final double confidenceLevel) {
+    protected double confidenceErrorMargin(final SummaryStatistics stats) {
         try {
-            // Creates a T-Distribution with N-1 degrees of freedom
-            final double freedomDegrees = stats.getN() - 1;
-
-            /*
-		    The t-Distribution is used to determine the probability that
-		    the real population mean lies in a given interval.
-             */
-            final TDistribution tDist = new TDistribution(freedomDegrees);
-            final double significance = 1.0 - confidenceLevel;
-            final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
-            System.out.printf("\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
-
-            return criticalValue * stats.getStandardDeviation() / Math.sqrt(stats.getN());
+            final long samples = stats.getN();
+            final double criticalValue = getConfidenceIntervalCriticalValue(samples);
+            return criticalValue * stats.getStandardDeviation() / Math.sqrt(samples);
         } catch (MathIllegalArgumentException e) {
             return Double.NaN;
         }
+    }
+
+    /**
+     * Computes the confidence interval critical value for a given number of samples and conficende level.
+     * @param samples number of collected samples
+     * @return
+     */
+    private double getConfidenceIntervalCriticalValue(final long samples) {
+        /* Creates a T-Distribution with N-1 degrees of freedom
+        * since were are computing the sample's confidence interval
+        * instead of the entire population. */
+        final double freedomDegrees = samples - 1;
+
+        /* The t-Distribution is used to determine the probability that
+        the real population mean lies in a given interval. */
+        final TDistribution tDist = new TDistribution(freedomDegrees);
+        final double significance = 1.0 - CONFIDENCE_LEVEL;
+        final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
+        return criticalValue;
     }
 
     /**
