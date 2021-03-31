@@ -123,6 +123,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**@see #setResultsTableId(String) */
     private String resultsTableId;
 
+    /** @see #enableLatexTableResultsGeneration()*/
     private boolean latexTableResultsGeneration;
     private final List<Experiment> experiments;
 
@@ -134,6 +135,18 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     protected ExperimentRunner(final long baseSeed, final int simulationRuns) {
         this(baseSeed, simulationRuns, false);
+    }
+
+    /**
+     * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
+     * that runs sequentially.
+     * @param baseSeed the seed to be used as base for each experiment seed
+     * @param simulationRuns the number of times the experiment will be executed
+     * @param latexTableResultsGeneration Enables/disables the generation of a result table in Latex format for computed metrics.
+     * @param parallel whether experiments will run in parallel or sequentially
+     */
+    protected ExperimentRunner(final long baseSeed, final int simulationRuns, final boolean latexTableResultsGeneration, final boolean parallel) {
+        this(baseSeed, simulationRuns, 0, false, parallel, latexTableResultsGeneration);
     }
 
     /**
@@ -872,7 +885,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * Sets a description for this experiment which is shown when it starts.
      * It's also used to generate a caption for the Latex table.
      * @param description the description to set
-     * @see #enableLatexResultsTableGeneration()
+     * @see #enableLatexTableResultsGeneration()
      */
     public ExperimentRunner setDescription(final String description) {
         this.description = description;
@@ -887,6 +900,15 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     public ExperimentRunner setResultsTableId(final String resultsTableId) {
         this.resultsTableId = resultsTableId;
+        return this;
+    }
+
+    /**
+     * Enables the generation of a result table in Latex format for computed metrics.
+     * @return
+     */
+    public ExperimentRunner enableLatexTableResultsGeneration(){
+        this.latexTableResultsGeneration = true;
         return this;
     }
 }
