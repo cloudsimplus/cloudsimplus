@@ -71,7 +71,6 @@ import java.util.List;
  *  VMs will just fail due to lack of PEs.
  *  For the current scenario with {@link VmSchedulerTimeShared}, some VMs will fail due to lack
  *  of MIPS capacity only if we increase the number of VMs.</p>
- *  </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 5.1.4

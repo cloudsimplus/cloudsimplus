@@ -114,7 +114,7 @@ import java.util.List;
  *
  * @author Manoel Campos da Silva Filho
  *
- * @TODO Verify if inter-datacenter VM migration is working by default using the DatacenterBroker class.
+ * TODO Verify if inter-datacenter VM migration is working by default using the DatacenterBroker class.
  */
 public final class MigrationExample1 {
     /**
