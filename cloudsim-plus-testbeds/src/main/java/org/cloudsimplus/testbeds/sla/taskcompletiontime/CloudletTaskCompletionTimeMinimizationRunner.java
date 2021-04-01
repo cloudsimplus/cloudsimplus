@@ -31,7 +31,7 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  *
  * @author raysaoliveira
  */
-final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeMinimizationExperiment> {
+public final class CloudletTaskCompletionTimeMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeMinimizationExperiment> {
 
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.

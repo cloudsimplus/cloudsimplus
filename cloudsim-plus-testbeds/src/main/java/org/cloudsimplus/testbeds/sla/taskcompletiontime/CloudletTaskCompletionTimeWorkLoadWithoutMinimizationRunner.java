@@ -31,7 +31,7 @@ import org.cloudsimplus.testbeds.ExperimentRunner;
  *
  * @author raysaoliveira
  */
-class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment> {
+public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends ExperimentRunner<CloudletTaskCompletionTimeWorkLoadWithoutMinimizationExperiment> {
     private static final int CLOUDLETS = 100;
     static final int VMS = 30;
     static final int[] VM_PES = {2, 4};

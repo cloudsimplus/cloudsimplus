@@ -45,7 +45,7 @@ import static java.util.stream.Collectors.toMap;
  *
  * @author raysaoliveira
  */
-final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment> {
+public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultInjectionExperiment> {
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */

@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @author Manoel Campos da Silva Filho
  */
-final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterBrokerHeuristicExperiment> {
+public final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<DatacenterBrokerHeuristicExperiment> {
 
     /**
      * Number of Cloudlets to create for each experiment.
