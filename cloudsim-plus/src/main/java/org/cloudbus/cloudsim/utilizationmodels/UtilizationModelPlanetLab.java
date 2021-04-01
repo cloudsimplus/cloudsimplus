@@ -58,8 +58,10 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     private double schedulingInterval;
 
     /**
-     * The resource utilization utilization for an entire day, in intervals of 5
-     * minutes. The size of the array is defined according to the number of utilization samples
+     * The resource utilization for an entire day, in intervals
+     * defined by {@link #schedulingInterval}
+     * (each line on available trace files represent resource utilization for a time interval of 5 minutes).
+     * The size of the array is defined according to the number of utilization samples
      * specified in the constructor.
      *
      * <p>If there is a {@link #mapper} Function set,
@@ -69,7 +71,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      *
      * @see #readWorkloadFile(InputStreamReader, int)
      */
-    private final double[] utilization;
+    protected final double[] utilization;
 
     /**
      * Instantiates a new PlanetLab utilization model from a trace
@@ -239,6 +241,43 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
         setSchedulingInterval(schedulingInterval);
         this.mapper = Objects.requireNonNull(mapper);
         utilization = readWorkloadFile(sreader, dataSamples);
+    }
+
+    /**
+     * A constructor that enables creating a PlanetLab UtilizationModel
+     * where the utilization data is provided directly utilization array parameter.
+     * This can be used when you don't want to load the utilization data from a file.
+     *
+     * @param utilization the resource utilization data for an entire day, in intervals
+     *        defined by a scheduling interval.
+     *        If the data inside the array represents resource utilization in intervals
+     *        of 5 minutes, your scheduling interval must be 300 seconds.
+     * @param schedulingInterval the time interval in which precise utilization can be got from the file
+     * @param mapper A {@link UnaryOperator} Function that will be used to map the utilization values
+     * read from the trace value to a different value.
+     * That Function is useful when you don't want to use the values from the trace as they are,
+     * but you want to scale the values applying any mathematical operation over them.
+     * For instance, you can provide a mapper Function that scale the values in 10 times,
+     * by giving a Lambda Expression such as {@code value -> value * 10}.
+     *
+     * <p>If a mapper Function is not set, the values are used as read from the trace file,
+     * without any change (except that the scale is always converted to [0..1]).</p>
+     * @throws NumberFormatException when a value inside the side is not a valid number
+     */
+    public UtilizationModelPlanetLab(
+        final double[] utilization,
+        final double schedulingInterval,
+        final UnaryOperator<Double> mapper) throws NumberFormatException
+    {
+        super();
+        setSchedulingInterval(schedulingInterval);
+        this.mapper = Objects.requireNonNull(mapper);
+
+        Objects.requireNonNull(utilization, "Utilization array cannot be null.");
+        if(utilization.length <= 1){
+            throw new IllegalArgumentException("The number of utilization samples must be greater than 1.");
+        }
+        this.utilization = utilization;
     }
 
     /**
