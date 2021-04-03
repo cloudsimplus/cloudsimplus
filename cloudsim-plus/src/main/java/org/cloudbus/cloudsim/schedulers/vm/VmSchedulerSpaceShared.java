@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,9 +52,9 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips) {
+    protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips) {
         final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
-        return selectedPes.size() >= requestedMips.size();
+        return selectedPes.size() >= requestedMips.pes();
     }
 
     /**
@@ -63,8 +64,8 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      *         lower than the size of the requestedMips, it means there aren't enough PEs
      *         with requested MIPS to be allocated to the VM
      */
-    private List<Pe> getTotalCapacityToBeAllocatedToVm(final List<Double> requestedMips) {
-        if (getHost().getWorkingPesNumber() < requestedMips.size()) {
+    private List<Pe> getTotalCapacityToBeAllocatedToVm(final MipsShare requestedMips) {
+        if (getHost().getWorkingPesNumber() < requestedMips.pes()) {
             return getHost().getWorkingPeList();
         }
 
@@ -76,8 +77,8 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
 
         final Iterator<Pe> peIterator = freePeList.iterator();
         Pe pe = peIterator.next();
-        for (final double mips : requestedMips) {
-            if (mips <= pe.getCapacity()) {
+        for (int i = 0; i < requestedMips.pes(); i++) {
+            if (requestedMips.mips() <= pe.getCapacity()) {
                 selectedPes.add(pe);
                 if (!peIterator.hasNext()) {
                     break;
@@ -90,9 +91,9 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVmInternal(final Vm vm, final List<Double> requestedMips) {
+    public boolean allocatePesForVmInternal(final Vm vm, final MipsShare requestedMips) {
         final List<Pe> selectedPes = getTotalCapacityToBeAllocatedToVm(requestedMips);
-        if(selectedPes.size() < requestedMips.size()){
+        if(selectedPes.size() < requestedMips.pes()){
             return false;
         }
 

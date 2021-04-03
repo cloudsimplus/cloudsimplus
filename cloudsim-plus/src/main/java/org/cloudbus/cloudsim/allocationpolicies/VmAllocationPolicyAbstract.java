@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmGroup;
@@ -21,7 +22,6 @@ import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.stream.LongStream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -160,10 +160,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     private boolean isNotHostPesSuitableToUpScaleVm(final VerticalVmScaling scaling) {
         final Vm vm = scaling.getVm();
-        final double numberOfPesForScaling = scaling.getResourceAmountToScale();
-        final List<Double> additionalVmMips =
-            LongStream.range(0, (long) numberOfPesForScaling).mapToObj(i -> vm.getMips()).collect(toList());
-
+        final long numberOfPesForScaling = (long)scaling.getResourceAmountToScale();
+        final MipsShare additionalVmMips = new MipsShare(numberOfPesForScaling, vm.getMips());
         return !vm.getHost().getVmScheduler().isSuitableForVm(vm, additionalVmMips);
     }
 

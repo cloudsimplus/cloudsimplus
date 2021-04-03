@@ -17,6 +17,7 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.TimeZoned;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -109,19 +110,12 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
     long getCurrentRequestedBw();
 
     /**
-     * Gets the current requested max MIPS among all virtual {@link Pe PEs}.
-     *
-     * @return the current requested max MIPS
-     */
-    double getCurrentRequestedMaxMips();
-
-    /**
      * Gets a  <b>copy</b> list of current requested MIPS of each virtual {@link Pe},
      * avoiding the original list to be changed.
      *
      * @return the current requested MIPS of each Pe
      */
-    List<Double> getCurrentRequestedMips();
+    MipsShare getCurrentRequestedMips();
 
     /**
      * Gets the current requested ram.
@@ -212,7 +206,7 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      *
      * @param listener the listener to add
      * @return
-     * @see #updateProcessing(double, List)
+     * @see #updateProcessing(double, MipsShare)
      */
     Vm addOnCreationFailureListener(EventListener<VmDatacenterEventInfo> listener);
 
@@ -222,7 +216,7 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      *
      * @param listener the listener to add
      * @return
-     * @see #updateProcessing(double, List)
+     * @see #updateProcessing(double, MipsShare)
      */
     Vm addOnUpdateProcessingListener(EventListener<VmHostEventInfo> listener);
 
@@ -514,7 +508,7 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
-    double updateProcessing(double currentTime, List<Double> mipsShare);
+    double updateProcessing(double currentTime, MipsShare mipsShare);
 
     /**
      * Updates the processing of cloudlets running on this VM at the current simulation time.
@@ -525,7 +519,7 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
-    double updateProcessing(List<Double> mipsShare);
+    double updateProcessing(MipsShare mipsShare);
 
     /**
      * Sets the Cloudlet scheduler the Vm uses to schedule cloudlets execution.

@@ -7,15 +7,13 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
-
-import static java.util.stream.Collectors.toList;
 
 /**
  * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM), also called Hypervisor,
@@ -76,7 +74,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    public boolean allocatePesForVmInternal(final Vm vm, final List<Double> requestedMips) {
+    public boolean allocatePesForVmInternal(final Vm vm, final MipsShare requestedMips) {
         if(!allocateMipsShareForVmInternal(vm, requestedMips)) {
             return false;
         }
@@ -93,7 +91,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @param requestedMips the list of mips share requested by the vm
      * @return true if successful, false otherwise
      */
-    private boolean allocateMipsShareForVmInternal(final Vm vm, final List<Double> requestedMips) {
+    private boolean allocateMipsShareForVmInternal(final Vm vm, final MipsShare requestedMips) {
         if (!isSuitableForVm(vm, requestedMips)) {
             return false;
         }
@@ -109,11 +107,11 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      *
      * @param vm the VM to allocate MIPS to
      * @param requestedMipsReduced the list of MIPS to allocate to the VM,
-     * after it being adjusted by the {@link #getMipsShareRequestedReduced(Vm, List)} method.
-     * @see #getMipsShareRequestedReduced(Vm, List)
+     * after it being adjusted by the {@link VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, MipsShare)} method.
+     * @see VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, MipsShare)
      */
-    protected void allocateMipsShareForVm(final Vm vm, final List<Double> requestedMipsReduced) {
-        final List<Double> mipsShare = getMipsShareToAllocate(vm, requestedMipsReduced);
+    protected void allocateMipsShareForVm(final Vm vm, final MipsShare requestedMipsReduced) {
+        final MipsShare mipsShare = getMipsShareToAllocate(vm, requestedMipsReduced);
         putAllocatedMipsMap(vm, mipsShare);
     }
 
@@ -122,7 +120,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     private void updatePesAllocationForAllVms() {
         clearAllocationOfPesForAllVms();
-        getAllocatedMipsMap().entrySet().forEach(this::allocatePesListForVm);
+        getAllocatedMipsMap().forEach(this::allocatePesListForVm);
     }
 
     /**
@@ -138,17 +136,15 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     /**
      * Allocates Host PEs for a given VM.
-     * @param entry an entry from the {@link #getAllocatedMipsMap()} containing a VM and
-     *              the list of MIPS to be allocated for each of its PEs
+     * @param vm the VM to allocate MIPS for its PEs
+     * @param mipsShare the {@link #getAllocatedMipsMap()} for that VM
      */
-    private void allocatePesListForVm(final Map.Entry<Vm, List<Double>> entry) {
-        final Vm vm = entry.getKey();
+    private void allocatePesListForVm(final Vm vm, final MipsShare mipsShare) {
         final Iterator<Pe> hostPesIterator = getWorkingPeList().iterator();
-        //Iterate over the list of MIPS requested by each VM PE
-        for (final double requestedMipsForVmPe : entry.getValue()) {
-            final double allocatedMipsForVmPe = allocateMipsFromHostPesToGivenVirtualPe(vm, requestedMipsForVmPe, hostPesIterator);
-            if(requestedMipsForVmPe > 0.1 && allocatedMipsForVmPe <= 0.1){
-                logMipsUnavailable(vm, requestedMipsForVmPe, allocatedMipsForVmPe);
+        for (int i = 0; i < mipsShare.pes(); i++) {
+            final double allocatedPeMips = allocateMipsFromHostPesToGivenVirtualPe(vm, mipsShare.mips(), hostPesIterator);
+            if(mipsShare.mips() > 0.1 && allocatedPeMips <= 0.1){
+                logMipsUnavailable(vm, mipsShare.mips(), allocatedPeMips);
             }
         }
     }
@@ -270,14 +266,14 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
-     * The non-emptiness of the list is ensured by the {@link #isSuitableForVm(Vm, List)} method.
+     * The non-emptiness of the list is ensured by the {@link VmScheduler#isSuitableForVm(Vm, MipsShare)} method.
      */
     @Override
-    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips) {
-        final double totalRequestedMips = requestedMips.get(0) * requestedMips.size();
+    protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips) {
+        final double totalRequestedMips = requestedMips.totalMips();
 
         // This scheduler does not allow over-subscription of PEs' MIPS
-        return getHost().getWorkingPesNumber() >= requestedMips.size() && getTotalAvailableMips() >= totalRequestedMips;
+        return getHost().getWorkingPesNumber() >= requestedMips.pes() && getTotalAvailableMips() >= totalRequestedMips;
     }
 
     /**
@@ -291,21 +287,21 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     /**
-     * Gets the actual MIPS that will be allocated to each vPE (Virtual PE),
+     * Gets the actual MIPS share that will be allocated to VM's PEs,
      * considering the VM migration status.
      * If the VM is in migration, this will cause overhead, reducing
      * the amount of MIPS allocated to the VM.
      *
      * @param vm the VM requesting allocation of MIPS
      * @param requestedMips the list of MIPS requested for each vPE
-     * @return the List of MIPS allocated to the VM
+     * @return the allocated MIPS share to the VM
      */
-    protected List<Double> getMipsShareToAllocate(final Vm vm, final List<Double> requestedMips) {
+    protected MipsShare getMipsShareToAllocate(final Vm vm, final MipsShare requestedMips) {
         return getMipsShareToAllocate(requestedMips, percentOfMipsToRequest(vm));
     }
 
     /**
-     * Gets the actual MIPS that will be allocated to each vPE (Virtual PE),
+     * Gets the actual MIPS share that will be allocated to VM's PEs,
      * considering the VM migration status.
      * If the VM is in migration, this will cause overhead, reducing
      * the amount of MIPS allocated to the VM.
@@ -313,17 +309,14 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @param requestedMips the list of MIPS requested for each vPE
      * @param scalingFactor the factor that will be used to reduce the amount of MIPS
      * allocated to each vPE (which is a percentage value between [0 .. 1]) in case the VM is in migration
-     * @return the List of MIPS allocated to the VM
+     * @return the MIPS share allocated to the VM
      */
-    protected List<Double> getMipsShareToAllocate(final List<Double> requestedMips, final double scalingFactor) {
+    protected MipsShare getMipsShareToAllocate(final MipsShare requestedMips, final double scalingFactor) {
         if(scalingFactor == 1){
             return requestedMips;
         }
 
-        return requestedMips
-                .stream()
-                .map(mips -> mips*scalingFactor)
-                .collect(toList());
+        return new MipsShare(requestedMips.pes(), requestedMips.mips()*scalingFactor);
     }
 
     @Override
@@ -332,7 +325,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         removePesFromMap(vm, getAllocatedMipsMap(), pesToRemove);
 
         //After removing some PEs from a VM, updates the MIPS allocation for all VMs on this scheduler
-        for (final Map.Entry<Vm, List<Double>> entry : getRequestedMipsMap().entrySet()) {
+        for (final Map.Entry<Vm, MipsShare> entry : getRequestedMipsMap().entrySet()) {
             allocateMipsShareForVmInternal(entry.getKey(), entry.getValue());
         }
 

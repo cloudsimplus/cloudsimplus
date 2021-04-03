@@ -40,6 +40,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicyMinimumUtilization;
@@ -279,12 +280,11 @@ public final class MigrationExample1 {
         });
     }
 
-    private void showVmAllocatedMips(Vm vm, Host targetHost, final double time) {
+    private void showVmAllocatedMips(final Vm vm, final Host targetHost, final double time) {
         final String msg = String.format("# %.2f: %s in %s: total allocated", time, vm, targetHost);
-        final List<Double> allocatedMips = targetHost.getVmScheduler().getAllocatedMips(vm);
-        final double totalMips = allocatedMips.stream().findFirst().orElse(0.0) * allocatedMips.size();
-        final String msg2 = totalMips == VM_MIPS * 0.9 ? " - reduction due to migration overhead" : "";
-        System.out.printf("%s %.0f MIPs (divided by %d PEs)%s\n", msg, totalMips, allocatedMips.size(), msg2);
+        final MipsShare allocatedMips = targetHost.getVmScheduler().getAllocatedMips(vm);
+        final String msg2 = allocatedMips.totalMips() == VM_MIPS * 0.9 ? " - reduction due to migration overhead" : "";
+        System.out.printf("%s %.0f MIPs (divided by %d PEs)%s\n", msg, allocatedMips.totalMips(), allocatedMips.pes(), msg2);
     }
 
     /**

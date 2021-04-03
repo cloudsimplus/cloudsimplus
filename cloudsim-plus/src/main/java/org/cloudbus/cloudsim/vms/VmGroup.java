@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.resources.Resource;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
 import java.util.List;
@@ -166,8 +167,8 @@ public class VmGroup extends VmSimple {
     }
 
     @Override
-    public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
-        //The given mipsShare is ignore because we need to get the mipsShare for each VM inside the group
+    public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
+        //The given mipsShare is ignored because we need to get the mipsShare for each VM inside the group
         double minNextEventDelay = Double.MAX_VALUE;
         for (final Vm vm : vmList) {
             final double nextEventDelay = vm.updateProcessing(currentTime, vm.getHost().getVmScheduler().getAllocatedMips(vm));

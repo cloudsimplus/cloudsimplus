@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
@@ -296,8 +297,7 @@ public class HostSimpleTest {
     public void testUpdateVmProcessing() {
         final int numberOfVms = 4;
 
-        final List<Double> mipsShare = new ArrayList<>(1);
-        mipsShare.add(HOST_MIPS / numberOfVms);
+        final MipsShare mipsShare = new MipsShare(HOST_MIPS / numberOfVms);
         final double time = 0;
 
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
@@ -330,11 +330,10 @@ public class HostSimpleTest {
     }
 
     private List<Vm> createListOfMockVms(
-        final int numberOfVms, final List<Double> mipsShare,
+        final int numberOfVms, final MipsShare mipsShare,
         final double simulationClock)
     {
         final List<Vm> vmList = new ArrayList<>(numberOfVms);
-        final double totalMipsCapacity = mipsShare.stream().mapToDouble(mips -> mips).sum();
         for(int i = 0; i < numberOfVms; i++) {
             final double nextCloudletCompletionTimeOfCurrentVm = i+1;
 

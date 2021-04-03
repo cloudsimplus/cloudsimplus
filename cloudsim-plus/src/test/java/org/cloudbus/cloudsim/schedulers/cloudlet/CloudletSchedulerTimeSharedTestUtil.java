@@ -5,10 +5,9 @@ import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.easymock.EasyMock;
-
-import java.util.List;
 
 /**
  * An utility class used by Vm tests.
@@ -36,8 +35,7 @@ final class CloudletSchedulerTimeSharedTestUtil {
 
     /* default */ static CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(final int pesNumber, final long mips) {
         final CloudletSchedulerTimeShared scheduler = new CloudletSchedulerTimeShared();
-        final List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pesNumber, mips);
-        scheduler.setCurrentMipsShare(mipsList);
+        scheduler.setCurrentMipsShare(new MipsShare(pesNumber, mips));
         scheduler.setVm(new VmSimple(0, mips, pesNumber));
         return scheduler;
     }
