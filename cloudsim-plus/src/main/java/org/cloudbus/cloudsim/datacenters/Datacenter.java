@@ -186,7 +186,9 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * interval, faster will be the simulation execution.
      *
      * <p>The default value is zero, which indicates no scheduling interval
-     * is set and the simulation state is updated only when a cloudlet is finished.</p>
+     * is set and the simulation state is updated only when a cloudlet is finished.
+     * That ensures the highest performance but may not be desired
+     * if you want to collect some simulation data in a defined time interval.</p>
      *
      * @return the scheduling interval (in seconds)
      */
