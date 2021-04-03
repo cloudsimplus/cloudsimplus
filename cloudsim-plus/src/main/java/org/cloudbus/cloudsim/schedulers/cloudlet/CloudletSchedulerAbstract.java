@@ -136,7 +136,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * to Cloudlets as requested.
      *
      * @return the current mips share list, where each item represents
-     * the MIPS capacity of a {@link Pe}. that is available to the scheduler.
+     * the MIPS capacity of a {@link Pe} which is available to the scheduler.
      *
      */
     public List<Double> getCurrentMipsShare() {
