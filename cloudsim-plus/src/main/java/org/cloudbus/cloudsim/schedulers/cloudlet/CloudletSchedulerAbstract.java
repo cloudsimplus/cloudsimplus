@@ -153,8 +153,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected void setCurrentMipsShare(final MipsShare currentMipsShare) {
         if(currentMipsShare.pes() > vm.getNumberOfPes()){
             LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.pes(), vm, vm.getNumberOfPes());
+            this.currentMipsShare = new MipsShare(vm.getNumberOfPes(), currentMipsShare.mips());
         }
-        this.currentMipsShare = currentMipsShare;
+        else this.currentMipsShare = currentMipsShare;
     }
 
     /**
