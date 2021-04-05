@@ -14,6 +14,7 @@ import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
@@ -24,11 +25,8 @@ import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 
 import java.util.*;
-import java.util.stream.DoubleStream;
-import java.util.stream.LongStream;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Implements the basic features of a Virtual Machine (VM) that runs inside a
@@ -262,12 +260,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double updateProcessing(List<Double> mipsShare) {
+    public double updateProcessing(MipsShare mipsShare) {
         return updateProcessing(getSimulation().clock(), mipsShare);
     }
 
     @Override
-    public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
+    public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
         requireNonNull(mipsShare);
 
         if (!cloudletScheduler.isEmpty()) {
@@ -392,28 +390,17 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double getCurrentRequestedMaxMips() {
-        return getCurrentRequestedMipsStream().max().orElse(0.0);
-    }
-
-    @Override
     public double getCurrentRequestedTotalMips() {
-        return getCurrentRequestedMipsStream().sum();
-    }
-
-    private DoubleStream getCurrentRequestedMipsStream() {
-        return getCurrentRequestedMips().stream().mapToDouble(mips -> mips);
+        return getCurrentRequestedMips().totalMips();
     }
 
     @Override
-    public List<Double> getCurrentRequestedMips() {
+    public MipsShare getCurrentRequestedMips() {
         if (isCreated()) {
             return host.getVmScheduler().getRequestedMips(this);
         }
 
-        return LongStream.range(0, getNumberOfPes())
-            .mapToObj(i -> getMips())
-            .collect(toList());
+        return new MipsShare(getNumberOfPes(), getMips());
     }
 
     @Override

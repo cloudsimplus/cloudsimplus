@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
@@ -147,7 +148,7 @@ public interface CloudletScheduler extends Serializable {
      *
      * @param pesToRemove number of PEs to deallocate
      */
-    void deallocatePesFromVm(int pesToRemove);
+    void deallocatePesFromVm(long pesToRemove);
 
     /**
      /**
@@ -227,7 +228,7 @@ public interface CloudletScheduler extends Serializable {
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
-    double updateProcessing(double currentTime, List<Double> mipsShare);
+    double updateProcessing(double currentTime, MipsShare mipsShare);
 
     /**
      * Gets the Vm that uses the scheduler.

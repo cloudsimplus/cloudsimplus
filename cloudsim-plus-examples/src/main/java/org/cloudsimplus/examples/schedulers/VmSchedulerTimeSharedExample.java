@@ -140,7 +140,7 @@ public class VmSchedulerTimeSharedExample {
         hostList.forEach(this::printHostStateHistory);
 
         for (Vm vm : vmList) {
-            System.out.printf("%s: Requested MIPS: %.0f Allocated MIPS: %.0f%n", vm, vm.getCurrentRequestedMaxMips(), vm.getMips());
+            System.out.printf("%s: Requested MIPS: %.0f Allocated MIPS: %.0f%n", vm, vm.getCurrentRequestedMips(), vm.getMips());
         }
     }
 

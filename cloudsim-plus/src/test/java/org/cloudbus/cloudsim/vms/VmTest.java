@@ -2,10 +2,9 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.junit.jupiter.api.Test;
-
-import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +26,7 @@ public class VmTest {
             () -> assertEquals(-1, instance.getId()),
             () -> assertSame(DatacenterBroker.NULL, instance.getBroker()),
             () -> assertEquals("", instance.getVmm()),
-            () -> assertEquals(0, instance.updateProcessing(0, Collections.EMPTY_LIST))
+            () -> assertEquals(0, instance.updateProcessing(0, MipsShare.NULL))
         );
     }
 
@@ -52,8 +51,6 @@ public class VmTest {
         final Vm instance = Vm.NULL;
         assertAll(
             () -> assertEquals(0, instance.getBw().getAllocatedResource()),
-            () -> assertEquals(0, instance.getCurrentRequestedMaxMips()),
-            () -> assertEquals(0, instance.getCurrentRequestedTotalMips()),
             () -> assertEquals(0, instance.getMips()),
             () -> assertEquals(0, instance.getNumberOfPes()),
             () -> assertEquals(0, instance.getCpuPercentUtilization(0)),

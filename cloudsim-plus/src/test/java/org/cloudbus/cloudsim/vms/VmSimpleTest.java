@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.listeners.EventListener;
@@ -21,9 +22,6 @@ import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.easymock.EasyMock.createMock;
 import static org.junit.jupiter.api.Assertions.*;
@@ -215,10 +213,8 @@ public class VmSimpleTest {
 
     @Test
     public void testUpdateVmProcessing() {
-        final List<Double> mipsShare1 = new ArrayList<>(1);
-        final List<Double> mipsShare2 = new ArrayList<>(1);
-        mipsShare1.add(1.0);
-        mipsShare2.add(1.0);
+        final MipsShare mipsShare1 = new MipsShare(1.0);
+        final MipsShare mipsShare2 = new MipsShare(1.0);
         final double expectedNextCompletionTime = cloudletScheduler.updateProcessing(0, mipsShare1);
         final double actualNextCompletionTime = vm.updateProcessing(0, mipsShare2);
         assertEquals(expectedNextCompletionTime, actualNextCompletionTime);

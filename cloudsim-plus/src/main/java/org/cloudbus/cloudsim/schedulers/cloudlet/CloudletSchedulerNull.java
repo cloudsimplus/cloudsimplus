@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
@@ -54,7 +55,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public boolean isThereTaskScheduler() {
         return false;
     }
-    @Override public double updateProcessing(double currentTime, List<Double> mipsShare) {
+    @Override public double updateProcessing(double currentTime, MipsShare mipsShare) {
         return 0.0;
     }
     @Override public Vm getVm() { return Vm.NULL; }
@@ -67,7 +68,7 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public List<CloudletExecution> getCloudletFinishedList() { return Collections.emptyList(); }
     @Override public boolean isEmpty() { return false; }
     @Override public List<CloudletExecution> getCloudletWaitingList() { return Collections.emptyList(); }
-    @Override public void deallocatePesFromVm(int pesToRemove) {/**/}
+    @Override public void deallocatePesFromVm(long pesToRemove) {/**/}
     @Override public List<Cloudlet> getCloudletList() { return Collections.emptyList(); }
     @Override public void clear() { }
     @Override public CloudletScheduler addOnCloudletResourceAllocationFail(EventListener<CloudletResourceAllocationFailEventInfo> listener) { return this; }

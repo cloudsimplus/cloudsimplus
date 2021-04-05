@@ -9,11 +9,10 @@ package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Resource;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.List;
 
 /**
  * An interface that represents the policy used by a
@@ -60,7 +59,7 @@ public interface VmScheduler {
      *       if the total requested mips is available, while only the difference has
      *       to be checked. It has to be added some tests to check this issue.
      */
-    boolean allocatePesForVm(Vm vm, List<Double> requestedMips);
+    boolean allocatePesForVm(Vm vm, MipsShare requestedMips);
 
     /**
      * Requests the allocation of PEs for a VM, according
@@ -101,7 +100,7 @@ public interface VmScheduler {
      * @param vm the vm to get the MIPS share
      * @return
      */
-    List<Double> getAllocatedMips(Vm vm);
+    MipsShare getAllocatedMips(Vm vm);
 
     /**
      * Gets the total amount of MIPS that is currently free.
@@ -119,7 +118,7 @@ public interface VmScheduler {
      * @param vm the VM to get the List of requested MIPS
      * @return
      */
-    List<Double> getRequestedMips(Vm vm);
+    MipsShare getRequestedMips(Vm vm);
 
     /**
      * Checks if the PM using this scheduler has enough MIPS capacity
@@ -151,7 +150,7 @@ public interface VmScheduler {
      * @param requestedMips a list of MIPS requested by a VM
      * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
      */
-    boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips);
+    boolean isSuitableForVm(final Vm vm, final MipsShare requestedMips);
 
     /**
      * Gets the actual total allocated MIPS for a VM along all its allocated PEs.

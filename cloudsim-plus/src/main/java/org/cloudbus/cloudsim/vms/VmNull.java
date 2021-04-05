@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudsimplus.autoscaling.HorizontalVmScaling;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -44,11 +45,8 @@ class VmNull implements Vm {
     @Override public long getCurrentRequestedBw() {
         return 0;
     }
-    @Override public double getCurrentRequestedMaxMips() {
-        return 0.0;
-    }
-    @Override public List<Double> getCurrentRequestedMips() {
-        return Collections.emptyList();
+    @Override public MipsShare getCurrentRequestedMips() {
+        return MipsShare.NULL;
     }
     @Override public long getCurrentRequestedRam() {
         return 0;
@@ -155,8 +153,8 @@ class VmNull implements Vm {
     @Override public Vm setSize(long size) {
         return this;
     }
-    @Override public double updateProcessing(double currentTime, List<Double> mipsShare) { return 0.0; }
-    @Override public double updateProcessing(List<Double> mipsShare) { return 0; }
+    @Override public double updateProcessing(double currentTime, MipsShare mipsShare) { return 0.0; }
+    @Override public double updateProcessing(MipsShare mipsShare) { return 0; }
     @Override public Vm setCloudletScheduler(CloudletScheduler cloudletScheduler) {
         return this;
     }

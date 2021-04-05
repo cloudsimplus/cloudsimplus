@@ -3,10 +3,9 @@ package org.cloudbus.cloudsim.schedulers.cloudlet;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-
-import java.util.List;
 
 /**
  * An utility class used by {@link CloudletSchedulerSpaceShared} tests.
@@ -25,8 +24,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
 
     private static CloudletSchedulerSpaceShared createCloudletSchedulerWithMipsList(int pes, long mips) {
         final CloudletSchedulerSpaceShared instance = createScheduler(mips, pes);
-        final List<Double> mipsList = CloudletSchedulerUtil.createMipsList(pes, mips);
-        instance.setCurrentMipsShare(mipsList);
+        instance.setCurrentMipsShare(new MipsShare(pes, mips));
         return instance;
     }
 
@@ -77,7 +75,7 @@ final class CloudletSchedulerSpaceSharedTestUtil {
     /* default */ static CloudletSchedulerSpaceShared createScheduler(final Vm vm) {
         final CloudletSchedulerSpaceShared scheduler = new CloudletSchedulerSpaceShared();
         scheduler.setVm(vm);
-        scheduler.setCurrentMipsShare(CloudletSchedulerUtil.createMipsList((int)vm.getNumberOfPes(), vm.getMips()));
+        scheduler.setCurrentMipsShare(new MipsShare(vm.getNumberOfPes(), vm.getMips()));
         return scheduler;
     }
 }

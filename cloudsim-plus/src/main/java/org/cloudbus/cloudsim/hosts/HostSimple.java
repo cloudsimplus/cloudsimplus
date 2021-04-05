@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.util.Conversion;
@@ -649,7 +650,7 @@ public class HostSimple implements Host {
      * @param vm the vm
      * @return an array containing the amount of MIPS of each pe that is available to the VM
      */
-    protected List<Double> getAllocatedMipsForVm(final Vm vm) {
+    protected MipsShare getAllocatedMipsForVm(final Vm vm) {
         return vmScheduler.getAllocatedMips(vm);
     }
 

@@ -6,12 +6,12 @@
  */
 package org.cloudbus.cloudsim.schedulers.vm;
 
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -69,20 +69,20 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * @param vm {@inheritDoc}
      * @param requestedMips {@inheritDoc}
      * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
-     * @see #allocateMipsShareForVm(Vm, List)
+     * @see VmSchedulerTimeShared#allocateMipsShareForVm(Vm, MipsShare)
      */
     @Override
-    protected boolean isSuitableForVmInternal(final Vm vm, final List<Double> requestedMips){
-        return getHost().getWorkingPesNumber() >= requestedMips.size();
+    protected boolean isSuitableForVmInternal(final Vm vm, final MipsShare requestedMips){
+        return getHost().getWorkingPesNumber() >= requestedMips.pes();
     }
 
     @Override
-    protected void allocateMipsShareForVm(final Vm vm, final List<Double> requestedMipsReduced) {
+    protected void allocateMipsShareForVm(final Vm vm, final MipsShare requestedMipsReduced) {
         if(requestedMipsReduced.isEmpty()){
             return;
         }
 
-        final double totalRequestedMips = requestedMipsReduced.get(0) * requestedMipsReduced.size();
+        final double totalRequestedMips = requestedMipsReduced.totalMips();
         if (getTotalAvailableMips() >= totalRequestedMips) {
             super.allocateMipsShareForVm(vm, requestedMipsReduced);
             return;
@@ -106,14 +106,14 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      */
     private void redistributeMipsDueToOverSubscription() {
         // First, we calculate the scaling factor - the MIPS allocation for all VMs will be scaled proportionally
-        final Map<Vm, List<Double>> mipsMapRequestedReduced = getNewTotalRequestedMipsByAllVms();
+        final Map<Vm, MipsShare> mipsMapRequestedReduced = getNewTotalRequestedMipsByAllVms();
 
         final double scalingFactor = getVmsMipsScalingFactor(mipsMapRequestedReduced);
 
         getAllocatedMipsMap().clear();
-        for (final Entry<Vm, List<Double>> entry : mipsMapRequestedReduced.entrySet()) {
+        for (final Entry<Vm, MipsShare> entry : mipsMapRequestedReduced.entrySet()) {
             final Vm vm = entry.getKey();
-            List<Double> updatedMipsAllocation = getMipsShareToAllocate(vm, entry.getValue());
+            MipsShare updatedMipsAllocation = getMipsShareToAllocate(vm, entry.getValue());
             updatedMipsAllocation = getMipsShareToAllocate(updatedMipsAllocation, scalingFactor);
             putAllocatedMipsMap(vm, updatedMipsAllocation);
         }
@@ -130,9 +130,9 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      *                                adjusted to avoid allocating more MIPS for a vPE
      *                                than there is in the physical PE
      * @return the scaling factor to apply for VMs requested MIPS (a percentage value in scale from 0 to 1)
-     * @see #getMipsShareRequestedReduced(Vm, List)
+     * @see VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, MipsShare)
      */
-    private double getVmsMipsScalingFactor(final Map<Vm, List<Double>> mipsMapRequestedReduced) {
+    private double getVmsMipsScalingFactor(final Map<Vm, MipsShare> mipsMapRequestedReduced) {
         final double totalMipsCapacity = getHost().getTotalMipsCapacity();
         final double totalMipsToAllocateForAllVms = getTotalMipsToAllocateForAllVms(mipsMapRequestedReduced);
         return Math.min(1, totalMipsCapacity / totalMipsToAllocateForAllVms);
@@ -146,11 +146,11 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * @return the new map of requested MIPS for all VMs
      * @see #getRequestedMipsMap()
      */
-    private Map<Vm, List<Double>> getNewTotalRequestedMipsByAllVms() {
-        final Map<Vm, List<Double>> mipsMapRequestedReduced = new HashMap<>(getRequestedMipsMap().entrySet().size());
-        for (final Entry<Vm, List<Double>> entry : getRequestedMipsMap().entrySet()) {
+    private Map<Vm, MipsShare> getNewTotalRequestedMipsByAllVms() {
+        final Map<Vm, MipsShare> mipsMapRequestedReduced = new HashMap<>(getRequestedMipsMap().entrySet().size());
+        for (final Entry<Vm, MipsShare> entry : getRequestedMipsMap().entrySet()) {
             final Vm vm = entry.getKey();
-            final List<Double> requestedMipsReduced = getMipsShareRequestedReduced(entry.getKey(), entry.getValue());
+            final MipsShare requestedMipsReduced = getMipsShareRequestedReduced(entry.getKey(), entry.getValue());
             mipsMapRequestedReduced.put(vm, requestedMipsReduced);
         }
 
@@ -169,9 +169,9 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      *                                than there is in the physical PE
      * @return the total MIPS to be allocated for all VMs, considering the
      * VMs migrating into the Host.
-     * @see #getMipsShareRequestedReduced(Vm, List)
+     * @see VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, MipsShare)
      */
-    private double getTotalMipsToAllocateForAllVms(final Map<Vm, List<Double>> mipsMapRequestedReduced){
+    private double getTotalMipsToAllocateForAllVms(final Map<Vm, MipsShare> mipsMapRequestedReduced){
         return mipsMapRequestedReduced.entrySet()
             .stream()
             .mapToDouble(this::getMipsToBeAllocatedForVmPes)
@@ -187,16 +187,16 @@ public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared
      * @return the sum of required MIPS by all vPEs, considering the VMs
      * in migration process to the Host.
      */
-    private double getMipsToBeAllocatedForVmPes(final Map.Entry<Vm, List<Double>> entry){
-        final double requiredMipsByThisVm = entry.getValue().stream().reduce(0.0, Double::sum);
+    private double getMipsToBeAllocatedForVmPes(final Entry<Vm, MipsShare> entry){
+        final double vmTotalRequiredMips = entry.getValue().totalMips();
         if (getHost().getVmsMigratingIn().contains(entry.getKey())) {
             /*
             the destination host only experiences a percentage of the migrating VM's MIPS
             which is the migration CPU overhead.
             */
-            return requiredMipsByThisVm * getVmMigrationCpuOverhead();
+            return vmTotalRequiredMips * getVmMigrationCpuOverhead();
         }
 
-        return requiredMipsByThisVm;
+        return vmTotalRequiredMips;
     }
 }

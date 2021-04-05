@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -27,7 +28,6 @@ import org.cloudsimplus.listeners.EventListener;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -73,7 +73,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     /**
      * @see #getCurrentMipsShare()
      */
-    private List<Double> currentMipsShare;
+    private MipsShare currentMipsShare;
     /**
      * @see #getCloudletExecList()
      */
@@ -110,7 +110,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         cloudletFailedList = new ArrayList<>();
         cloudletWaitingList = new ArrayList<>();
         cloudletReturnedList = new HashSet<>();
-        currentMipsShare = new ArrayList<>();
+        currentMipsShare = new MipsShare();
         taskScheduler = CloudletTaskScheduler.NULL;
         resourceAllocationFailListeners = new ArrayList<>();
     }
@@ -131,28 +131,28 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets a <b>read-only</b> list of current mips capacity from the VM that will be
-     * made available to the scheduler. This mips share will be allocated
+     * Gets current MIPS capacity from the VM that will be
+     * made available to the scheduler. This MIPS share will be allocated
      * to Cloudlets as requested.
      *
-     * @return the current mips share list, where each item represents
+     * @return the current MIPS share, where each item represents
      * the MIPS capacity of a {@link Pe} which is available to the scheduler.
      *
      */
-    public List<Double> getCurrentMipsShare() {
-        return Collections.unmodifiableList(currentMipsShare);
+    public MipsShare getCurrentMipsShare() {
+        return currentMipsShare;
     }
 
     /**
-     * Sets the list of current mips share available for the VM using the
+     * Sets current MIPS share available for the VM using the
      * scheduler.
      *
-     * @param currentMipsShare the new current mips share
+     * @param currentMipsShare the new current MIPS share
      * @see #getCurrentMipsShare()
      */
-    protected void setCurrentMipsShare(final List<Double> currentMipsShare) {
-        if(currentMipsShare.size() > vm.getNumberOfPes()){
-            LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.size(), vm, vm.getNumberOfPes());
+    protected void setCurrentMipsShare(final MipsShare currentMipsShare) {
+        if(currentMipsShare.pes() > vm.getNumberOfPes()){
+            LOGGER.warn("Requested {} PEs but {} has just {}", currentMipsShare.pes(), vm, vm.getNumberOfPes());
         }
         this.currentMipsShare = currentMipsShare;
     }
@@ -180,7 +180,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     public double getAvailableMipsByPe(){
         final long totalPesOfAllExecCloudlets = totalPesOfAllExecCloudlets();
-        if(totalPesOfAllExecCloudlets > currentMipsShare.size()) {
+        if(totalPesOfAllExecCloudlets > currentMipsShare.pes()) {
             return getTotalMipsShare() / totalPesOfAllExecCloudlets;
         }
 
@@ -188,7 +188,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     private Double getPeCapacity() {
-        return currentMipsShare.stream().findFirst().orElse(0.0);
+        return currentMipsShare.mips();
     }
 
     /**
@@ -202,7 +202,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     private double getTotalMipsShare(){
-        return currentMipsShare.stream().mapToDouble(mips -> mips).sum();
+        return currentMipsShare.totalMips();
     }
 
     @Override
@@ -502,7 +502,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public double updateProcessing(final double currentTime, final List<Double> mipsShare) {
+    public double updateProcessing(final double currentTime, final MipsShare mipsShare) {
         setCurrentMipsShare(mipsShare);
 
         if (isEmpty()) {
@@ -815,7 +815,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * <p>
      * <p>
      * This method is called internally by the
-     * {@link CloudletScheduler#updateProcessing(double, List)}.</p>
+     * {@link CloudletScheduler#updateProcessing(double, MipsShare)}.</p>
      * @param currentTime current simulation time
      * @return the predicted completion time of the earliest finishing cloudlet
      * (which is a relative delay from the current simulation time),
@@ -913,7 +913,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     @Override
     public long getFreePes() {
-        return currentMipsShare.size() - getUsedPes();
+        return currentMipsShare.pes() - getUsedPes();
     }
 
     /**
@@ -1064,10 +1064,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public void deallocatePesFromVm(int pesToRemove) {
-        pesToRemove = Math.min(pesToRemove, currentMipsShare.size());
-        removeUsedPes(pesToRemove);
-        IntStream.range(0, pesToRemove).forEach(idx -> currentMipsShare.remove(0));
+    public void deallocatePesFromVm(final long pesToRemove) {
+        final long removedPes = currentMipsShare.remove(pesToRemove);
+        removeUsedPes(removedPes);
     }
 
     @Override

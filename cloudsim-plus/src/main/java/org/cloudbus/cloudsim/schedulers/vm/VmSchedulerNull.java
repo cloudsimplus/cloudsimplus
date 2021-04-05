@@ -1,10 +1,8 @@
 package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link VmScheduler}
@@ -14,18 +12,17 @@ import java.util.List;
  * @see VmScheduler#NULL
  */
 final class VmSchedulerNull implements VmScheduler {
-    @Override public boolean allocatePesForVm(Vm vm, List<Double> requestedMips) {
+    @Override public boolean allocatePesForVm(Vm vm, MipsShare requestedMips) {
         return false;
     }
     @Override public boolean allocatePesForVm(Vm vm) { return false; }
-    @Override public List<Double> getAllocatedMips(Vm vm) {
-        return Collections.emptyList();
+    @Override public MipsShare getAllocatedMips(Vm vm) {
+        return MipsShare.NULL;
     }
     @Override public double getTotalAvailableMips() {
         return 0.0;
     }
-    @Override public List<Double> getRequestedMips(Vm vm) { return Collections.EMPTY_LIST; }
-
+    @Override public MipsShare getRequestedMips(Vm vm) { return MipsShare.NULL; }
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;
     }
@@ -33,7 +30,7 @@ final class VmSchedulerNull implements VmScheduler {
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
-    @Override public boolean isSuitableForVm(Vm vm, List<Double> requestedMips) { return false; }
+    @Override public boolean isSuitableForVm(Vm vm, MipsShare requestedMips) { return false; }
     @Override public double getVmMigrationCpuOverhead() { return 0.0; }
     @Override public Host getHost() {
         return Host.NULL;

@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,10 +21,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 
-import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -89,21 +88,14 @@ public class VmSchedulerTimeSharedTest {
 
     @Test
     public void testAllocatePesForVm() {
-        final List<Double> mipsShare1 = new ArrayList<>(1);
-        mipsShare1.add(250.0);
-
-        assertTrue(vmScheduler.allocatePesForVm(vm0, mipsShare1));
+        assertTrue(vmScheduler.allocatePesForVm(vm0, new MipsShare(250)));
         assertEquals(1750, vmScheduler.getTotalAvailableMips());
-        assertEquals(MIPS / 4, vmScheduler.getTotalAllocatedMipsForVm(vm0));
+        assertEquals(250, vmScheduler.getTotalAllocatedMipsForVm(vm0));
 
-        final List<Double> mipsShare2 = new ArrayList<>(2);
-        mipsShare2.add(500.0);
-        mipsShare2.add(125.0);
+        assertTrue(vmScheduler.allocatePesForVm(vm1, new MipsShare(2,300)));
 
-        assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare2));
-
-        assertEquals(1125, vmScheduler.getTotalAvailableMips());
-        assertEquals(625, vmScheduler.getTotalAllocatedMipsForVm(vm1));
+        assertEquals(1150, vmScheduler.getTotalAvailableMips());
+        assertEquals(600, vmScheduler.getTotalAllocatedMipsForVm(vm1));
 
         vmScheduler.deallocatePesForAllVms();
 
@@ -134,10 +126,7 @@ public class VmSchedulerTimeSharedTest {
         final Vm vm0 = VmTestUtil.createVm(0, vmMips, 2);
         vmScheduler.getHost().addVmMigratingOut(vm0);
 
-        final List<Double> mipsShare = new ArrayList<>(1);
-        mipsShare.add(vmMips);
-
-        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        vmScheduler.allocatePesForVm(vm0, new MipsShare(vmMips));
         assertTrue(vmScheduler.getHost().getVmsMigratingOut().isEmpty());
     }
 
@@ -148,9 +137,7 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler = createVmScheduler(MIPS, HOST_PES);
         final Vm vm = VmTestUtil.createVm(0, MIPS, VM_PES);
 
-        final List<Double> mipsShare = IntStream.range(0, VM_PES).mapToObj(i -> MIPS).collect(toList());
-
-        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        vmScheduler.allocatePesForVm(vm0, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm, 2);
         final int expectedBusyPes = 2;
         assertEquals(expectedBusyPes, vmScheduler.getHost().getBusyPeList().size());
@@ -163,9 +150,7 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler = createVmScheduler(MIPS, HOST_PES);
         vm0 = VmTestUtil.createVm(0, MIPS, VM_PES);
 
-        final List<Double> mipsShare = IntStream.range(0, VM_PES).mapToObj(i -> MIPS).collect(toList());
-
-        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        vmScheduler.allocatePesForVm(vm0, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm0);
         final int expectedBusyPes = 0;
         assertEquals(expectedBusyPes, vmScheduler.getHost().getBusyPeList().size());
@@ -178,9 +163,8 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler = createVmScheduler(MIPS, HOST_PES);
         vm0 = VmTestUtil.createVm(0, MIPS, VM_PES);
 
-        final List<Double> mipsShare = IntStream.range(0, VM_PES).mapToObj(i -> MIPS).collect(toList());
 
-        vmScheduler.allocatePesForVm(vm0, mipsShare);
+        vmScheduler.allocatePesForVm(vm0, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm0, VM_PES);
         final int expectedBusyPes = 0;
         assertEquals(expectedBusyPes, vmScheduler.getHost().getBusyPeList().size());
@@ -191,7 +175,7 @@ public class VmSchedulerTimeSharedTest {
         final int HOST_PES = 8;
         vmScheduler = createVmScheduler(MIPS, HOST_PES);
 
-        final List<Double> mipsShare = LongStream.range(0, vm0.getNumberOfPes()).mapToObj(i -> MIPS).collect(toList());
+        final MipsShare mipsShare = new MipsShare(vm0.getNumberOfPes(), MIPS);
 
         vmScheduler.allocatePesForVm(vm0, mipsShare);
         vmScheduler.allocatePesForVm(vm1, mipsShare);

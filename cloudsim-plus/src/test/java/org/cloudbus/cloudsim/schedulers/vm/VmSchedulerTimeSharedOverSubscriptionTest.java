@@ -13,13 +13,13 @@ import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.LongStream;
 
@@ -72,21 +72,14 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
 
     @Test
     public void testAllocatePesForVm() {
-        final List<Double> mipsShare1 = new ArrayList<>();
-        mipsShare1.add(250.0);
 
-        assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
+        assertTrue(vmScheduler.allocatePesForVm(vm1, new MipsShare(250)));
         assertEquals(1750, vmScheduler.getTotalAvailableMips());
-        assertEquals(MIPS / 4, vmScheduler.getTotalAllocatedMipsForVm(vm1));
+        assertEquals(250, vmScheduler.getTotalAllocatedMipsForVm(vm1));
 
-        final List<Double> mipsShare2 = new ArrayList<>();
-        mipsShare2.add(500.0);
-        mipsShare2.add(125.0);
-
-        assertTrue(vmScheduler.allocatePesForVm(vm2, mipsShare2));
-
-        assertEquals(1125.0, vmScheduler.getTotalAvailableMips());
-        assertEquals(625.0, vmScheduler.getTotalAllocatedMipsForVm(vm2));
+        assertTrue(vmScheduler.allocatePesForVm(vm2, new MipsShare(750)));
+        assertEquals(1000, vmScheduler.getTotalAvailableMips());
+        assertEquals(750, vmScheduler.getTotalAllocatedMipsForVm(vm2));
 
         vmScheduler.deallocatePesForAllVms();
 
@@ -120,31 +113,19 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         final Vm vm3 = VmTestUtil.createVm(2, 10, 1);
         final Vm vm4 = VmTestUtil.createVm(3, 2000, 1);
 
-        final List<Double> mipsShare1 = new ArrayList<>();
-        mipsShare1.add(170.0);
-
-        final List<Double> mipsShare2 = new ArrayList<>();
-        mipsShare2.add(2000.0);
-
-        final List<Double> mipsShare3 = new ArrayList<>();
-        mipsShare3.add(10.0);
-
-        final List<Double> mipsShare4 = new ArrayList<>();
-        mipsShare4.add(2000.0);
-
-        assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
+        assertTrue(vmScheduler.allocatePesForVm(vm1, new MipsShare(170)));
         assertEquals(3330, vmScheduler.getTotalAvailableMips());
         assertEquals(170, vmScheduler.getTotalAllocatedMipsForVm(vm1));
 
-        assertTrue(vmScheduler.allocatePesForVm(vm2, mipsShare2));
+        assertTrue(vmScheduler.allocatePesForVm(vm2, new MipsShare(2000)));
         assertEquals(1330, vmScheduler.getTotalAvailableMips());
         assertEquals(2000, vmScheduler.getTotalAllocatedMipsForVm(vm2));
 
-        assertTrue(vmScheduler.allocatePesForVm(vm3, mipsShare3));
+        assertTrue(vmScheduler.allocatePesForVm(vm3, new MipsShare(10)));
         assertEquals(1320, vmScheduler.getTotalAvailableMips());
         assertEquals(10, vmScheduler.getTotalAllocatedMipsForVm(vm3));
 
-        assertTrue(vmScheduler.allocatePesForVm(vm4, mipsShare4));
+        assertTrue(vmScheduler.allocatePesForVm(vm4, new MipsShare(2000)));
         assertEquals(0, vmScheduler.getTotalAvailableMips());
         assertEquals(1674, vmScheduler.getTotalAllocatedMipsForVm(vm4), 0.7);
 
@@ -160,25 +141,16 @@ public class VmSchedulerTimeSharedOverSubscriptionTest {
         final VmSimple vm2 = VmTestUtil.createVm(1, 1000, 1);
         final VmSimple vm3 = VmTestUtil.createVm(2, 1000, 1);
 
-        final List<Double> mipsShare1 = new ArrayList<>(1);
-        mipsShare1.add(1500.0);
-
-        final List<Double> mipsShare2 = new ArrayList<>(1);
-        mipsShare2.add(1000.0);
-
-        final List<Double> mipsShare3 = new ArrayList<>(1);
-        mipsShare3.add(1000.0);
-
-        assertTrue(vmScheduler.allocatePesForVm(vm1, mipsShare1));
+        assertTrue(vmScheduler.allocatePesForVm(vm1, new MipsShare(1500)));
         assertEquals(0, vmScheduler.getTotalAvailableMips());
         assertEquals(1000, vmScheduler.getTotalAllocatedMipsForVm(vm1));
 
-        assertTrue(vmScheduler.allocatePesForVm(vm2, mipsShare2));
+        assertTrue(vmScheduler.allocatePesForVm(vm2, new MipsShare(1000)));
         assertEquals(0, vmScheduler.getTotalAvailableMips());
         assertEquals(500, vmScheduler.getTotalAllocatedMipsForVm(vm1));
         assertEquals(500, vmScheduler.getTotalAllocatedMipsForVm(vm2));
 
-        assertTrue(vmScheduler.allocatePesForVm(vm3, mipsShare3));
+        assertTrue(vmScheduler.allocatePesForVm(vm3, new MipsShare(1000)));
         assertEquals(0, vmScheduler.getTotalAvailableMips());
         assertEquals(333, vmScheduler.getTotalAllocatedMipsForVm(vm1), 0.4);
         assertEquals(333, vmScheduler.getTotalAllocatedMipsForVm(vm2), 0.4);

@@ -9,11 +9,12 @@ package org.cloudbus.cloudsim.schedulers.vm;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.*;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -37,7 +38,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
      * @see #getRequestedMipsMap()
      */
-    private final Map<Vm, List<Double>> requestedMipsMap;
+    private final Map<Vm, MipsShare> requestedMipsMap;
 
     /**
      * @see #getHost()
@@ -47,7 +48,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     /**
      * @see #getAllocatedMipsMap()
      */
-    private Map<Vm, List<Double>> allocatedMipsMap;
+    private Map<Vm, MipsShare> allocatedMipsMap;
 
     /**
      * @see #getVmMigrationCpuOverhead()
@@ -75,7 +76,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public final boolean isSuitableForVm(final Vm vm, final List<Double> requestedMips) {
+    public final boolean isSuitableForVm(final Vm vm, final MipsShare requestedMips) {
         if(requestedMips.isEmpty()){
             LOGGER.warn(
                 "{}: {}: It was requested an empty list of PEs for {} in {}",
@@ -91,24 +92,20 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         return isSuitableForVmInternal(vm, requestedMips);
     }
 
-    protected abstract boolean isSuitableForVmInternal(Vm vm, List<Double> requestedMips);
+    protected abstract boolean isSuitableForVmInternal(Vm vm, MipsShare requestedMips);
 
     @Override
     public final boolean allocatePesForVm(final Vm vm) {
-        final List<Double> mipsShareRequested =
-                LongStream.range(0, vm.getNumberOfPes())
-                        .mapToObj(idx -> vm.getMips())
-                        .collect(toList());
-        return allocatePesForVm(vm, mipsShareRequested);
+        return allocatePesForVm(vm, new MipsShare(vm.getNumberOfPes(), vm.getMips()));
     }
 
     @Override
-    public final boolean allocatePesForVm(final Vm vm, final List<Double> requestedMips) {
+    public final boolean allocatePesForVm(final Vm vm, final MipsShare requestedMips) {
         if (!vm.isInMigration() && host.getVmsMigratingOut().contains(vm)) {
             host.removeVmMigratingOut(vm);
         }
 
-        requestedMipsMap.put(vm, new ArrayList<>(requestedMips));
+        requestedMipsMap.put(vm, new MipsShare(requestedMips));
         if(allocatePesForVmInternal(vm, requestedMips)) {
             updateStatusOfHostPesUsedByVm(vm, getHost().getFreePeList(), Pe.Status.BUSY);
             return true;
@@ -146,7 +143,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         ((HostSimple)host).setPeStatus(selectedPes, newStatus);
     }
 
-    protected abstract boolean allocatePesForVmInternal(Vm vm, List<Double> mipsShareRequested);
+    protected abstract boolean allocatePesForVmInternal(Vm vm, MipsShare mipsShareRequested);
 
     @Override
     public void deallocatePesFromVm(final Vm vm) {
@@ -169,7 +166,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      */
     private void updateHostUsedPesToFree() {
         //Gets the total virtual PEs of currently created VMs
-        final long totalVirtualPes = getAllocatedMipsMap().values().stream().mapToLong(Collection::size).sum();
+        final long totalVirtualPes = getAllocatedMipsMap().values().stream().mapToLong(MipsShare::pes).sum();
         final List<Pe> busyPeList = host.getBusyPeList();
         final long virtualPesToFree = Math.max(busyPeList.size() - totalVirtualPes, 0);
         updateStatusOfHostPesUsedByVm(busyPeList, Pe.Status.FREE, virtualPesToFree);
@@ -183,27 +180,23 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * <p>In other words, the map can be {@code Map<Vm, List<Double>>}
      * or {@code Map<Vm, List<Pe>>}.</p>
      *
-     * @param <T> the type of the elements into the List associated to each map key,
-     *            which can be a MIPS number (Double) or an actual {@link Pe} object.
      * @param vm the VM to remove PEs from
      * @param map the map where the PEs will be removed
      * @param pesToRemove the number of PEs to remove from the List of PEs associated to the Vm
      * @return the number of removed PEs
      */
-    protected <T> int removePesFromMap(final Vm vm, final Map<Vm, List<T>> map, int pesToRemove) {
-        final List<T> values = map.getOrDefault(vm, new ArrayList<>());
-        if(values.isEmpty()){
+    protected long removePesFromMap(final Vm vm, final Map<Vm, MipsShare> map, final long pesToRemove) {
+        final MipsShare mipsShare = map.getOrDefault(vm, new MipsShare());
+        if(mipsShare.isEmpty()){
             return 0;
         }
 
-        pesToRemove = Math.min((int)vm.getNumberOfPes(), pesToRemove);
-        pesToRemove = Math.min(pesToRemove, values.size());
-        IntStream.range(0, pesToRemove).forEach(idx -> values.remove(0));
-        if(values.isEmpty()){
+        final long removedPes = mipsShare.remove(Math.min(vm.getNumberOfPes(), pesToRemove));
+        if(mipsShare.isEmpty()){
             map.remove(vm);
         }
 
-        return pesToRemove;
+        return removedPes;
     }
 
     protected abstract void deallocatePesFromVmInternal(Vm vm, int pesToRemove);
@@ -215,8 +208,9 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
     }
 
     @Override
-    public List<Double> getAllocatedMips(final Vm vm) {
-        final List<Double> list = allocatedMipsMap.getOrDefault(vm, new ArrayList<>());
+    public MipsShare getAllocatedMips(final Vm vm) {
+        final MipsShare mipsShare = allocatedMipsMap.getOrDefault(vm, new MipsShare());
+
         /*
         When a VM is migrating out of the source Host, its allocated MIPS
         is reduced due to migration overhead.
@@ -224,7 +218,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         experience overhead, but for the first time the VM is allocated into
         the target Host, the allocated MIPS is stored already considering this overhead.
          */
-        return host.getVmsMigratingOut().contains(vm) ? getMipsShareRequestedReduced(vm, list) : list;
+        return host.getVmsMigratingOut().contains(vm) ? getMipsShareRequestedReduced(vm, mipsShare) : mipsShare;
     }
 
     /**
@@ -233,18 +227,18 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      *
      * @param vm the VM to get the MIPS requested
      * @param mipsShareRequested the VM requested MIPS List
-     * @return the VM requested MIPS List without MIPS higher than the PE capacity.
+     * @return a new VM requested MIPS share with adjusted MIPS capacity
      */
-    protected List<Double> getMipsShareRequestedReduced(final Vm vm, final List<Double> mipsShareRequested){
+    protected MipsShare getMipsShareRequestedReduced(final Vm vm, final MipsShare mipsShareRequested){
         final double peMips = getPeCapacity();
-        return mipsShareRequested.stream()
-                .map(mips -> Math.min(mips, peMips)*percentOfMipsToRequest(vm))
-                .collect(toList());
+        final long requestedPes = mipsShareRequested.pes();
+        final double requestedMips = mipsShareRequested.mips();
+        return new MipsShare(requestedPes, Math.min(requestedMips, peMips)*percentOfMipsToRequest(vm));
     }
 
     @Override
     public double getTotalAllocatedMipsForVm(final Vm vm) {
-        return getAllocatedMips(vm).stream().mapToDouble(v -> v).sum();
+        return getAllocatedMips(vm).totalMips();
     }
 
     /**
@@ -279,13 +273,13 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      *
      * @return the requested MIPS map
      */
-    protected Map<Vm, List<Double>> getRequestedMipsMap() {
+    protected Map<Vm, MipsShare> getRequestedMipsMap() {
         return requestedMipsMap;
     }
 
     @Override
-    public List<Double> getRequestedMips(final Vm vm) {
-        return requestedMipsMap.getOrDefault(vm, Collections.emptyList());
+    public MipsShare getRequestedMips(final Vm vm) {
+        return requestedMipsMap.getOrDefault(vm, new MipsShare());
     }
 
     /**
@@ -302,12 +296,12 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @see #getAllocatedMips(Vm)
      * @see #getRequestedMipsMap()
      */
-    protected Map<Vm, List<Double>> getAllocatedMipsMap() {
+    protected Map<Vm, MipsShare> getAllocatedMipsMap() {
         return allocatedMipsMap;
     }
 
     /** @see #getAllocatedMips(Vm) */
-    protected final void putAllocatedMipsMap(final Vm vm, final List<Double> requestedMips) {
+    protected final void putAllocatedMipsMap(final Vm vm, final MipsShare requestedMips) {
         allocatedMipsMap.put(vm, requestedMips);
     }
 
@@ -336,9 +330,9 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * @return the actual requested MIPS sum across all VM PEs,
      * including the CPU overhead of the VM is in migration to this Host
      */
-    private double actualVmTotalRequestedMips(final Map.Entry<Vm, List<Double>> entry) {
-        final List<Double> vmMipsList = entry.getValue() == null ? new ArrayList<>() : entry.getValue();
-        final double totalVmRequestedMips = vmMipsList.stream().reduce(0.0, Double::sum);
+    private double actualVmTotalRequestedMips(final Map.Entry<Vm, MipsShare> entry) {
+        final MipsShare vmMipsShare = entry.getValue() == null ? new MipsShare() : entry.getValue();
+        final double totalVmRequestedMips = vmMipsShare.totalMips();
 
         /*If the VM is migrating in or out this Host,
         there is a migration overhead.
