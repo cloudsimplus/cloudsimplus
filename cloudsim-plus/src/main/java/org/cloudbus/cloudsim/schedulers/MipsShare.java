@@ -37,7 +37,7 @@ public class MipsShare {
     private double mips;
 
     /**
-     * Creates an empty MIPS share, with no PE.
+     * Creates an empty MIPS share, with no PEs.
      */
     public MipsShare() {
         this(0,0);

@@ -131,11 +131,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Gets a <b>read-only</b> list of current mips capacity from the VM that will be
+     * Gets current MIPS capacity from the VM that will be
      * made available to the scheduler. This MIPS share will be allocated
      * to Cloudlets as requested.
      *
-     * @return the current mips share, where each item represents
+     * @return the current MIPS share, where each item represents
      * the MIPS capacity of a {@link Pe} which is available to the scheduler.
      *
      */
@@ -144,10 +144,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     /**
-     * Sets the list of current mips share available for the VM using the
+     * Sets current MIPS share available for the VM using the
      * scheduler.
      *
-     * @param currentMipsShare the new current mips share
+     * @param currentMipsShare the new current MIPS share
      * @see #getCurrentMipsShare()
      */
     protected void setCurrentMipsShare(final MipsShare currentMipsShare) {
