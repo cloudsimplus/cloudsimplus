@@ -35,8 +35,8 @@ final class CloudletSchedulerTimeSharedTestUtil {
 
     /* default */ static CloudletSchedulerTimeShared createCloudletSchedulerWithMipsList(final int pesNumber, final long mips) {
         final CloudletSchedulerTimeShared scheduler = new CloudletSchedulerTimeShared();
-        scheduler.setCurrentMipsShare(new MipsShare(pesNumber, mips));
         scheduler.setVm(new VmSimple(0, mips, pesNumber));
+        scheduler.setCurrentMipsShare(new MipsShare(pesNumber, mips));
         return scheduler;
     }
 
