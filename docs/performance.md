@@ -3,13 +3,13 @@
 This document provides some data about the performance of different simulation
 scenarios in CloudSim and CloudSim Plus. 
 Each row in the tables below is the results from a single simulation.
-This way, they aren't scentifically valid and are only intended to provide a 
+This way, they aren't scientifically valid and are only intended to provide a 
 glimpse of how the latest versions of CloudSim Plus outperform CloudSim.
 
-The results were generated using [CloudSim Plus Automation](http://github.com/manoelcampos/cloudsim-plus-automation) tool 
-in a computer powered by a dual-core 2.8 GHz Hyper-Threading Intel i7-4558U processor.
-Each results was generated from a simulation scenario defined in a YML file.
-
+The results were generated using the [Cloud Simulation Comparison project](https://github.com/manoelcampos/cloud-simulation-comparison),
+which relies on [CloudSim Plus Automation](http://github.com/manoelcampos/cloudsim-plus-automation) tool.
+The experiments were executed in a personal computer powered by a dual-core 2.8 GHz Hyper-Threading Intel i7-4558U processor with 8GB of RAM.
+Each result was generated from a simulation scenario defined in a YML file.
 
 ## Cloudlet's UtilizationModel
 
