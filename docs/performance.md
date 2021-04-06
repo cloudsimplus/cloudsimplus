@@ -14,7 +14,7 @@ Each result was generated from a simulation scenario defined in a YML file.
 ## Cloudlet's UtilizationModel
 
 - Cloudlet's UtilizationModel for CPU: UtilizationModelStochastic (1 instance for each Cloudlet, history enabled)
-- Scenario File: [CloudEnvironment6.yml](https://github.com/manoelcampos/cloudsim-plus-automation/blob/master/CloudEnvironment6.yml)
+- Scenario File: [scenario6.yml](https://github.com/manoelcampos/cloud-simulation-comparison/blob/master/scenario6.yml)
 
 | Framework          |Simulation Time (min)|VmAllocationPolicy|DCs|Hosts|VMs   |Cloudlets|
 |--------------------|---------------------|------------------|---|-----|------|---------|
