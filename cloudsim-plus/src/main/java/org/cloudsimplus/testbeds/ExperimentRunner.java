@@ -24,6 +24,7 @@
 package org.cloudsimplus.testbeds;
 
 import ch.qos.logback.classic.Level;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
@@ -625,7 +626,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     private void latexRow(final StringBuilder latex, final String metricName, final SummaryStatistics stats) {
         final String errorMargin = String.format("%.4f", confidenceErrorMargin(stats));
         //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
-        final String escapedMetricName = metricName.replaceAll("%", "\\%");
+
+        final String escapedMetricName = StringUtils.replace(metricName,"%", "\\%");
         latex.append(escapedMetricName)
              .append(" & ")
              .append(String.format("%.2f", stats.getMean()))
@@ -638,12 +640,12 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
 
     private StringBuilder startLatexTable() {
         final StringBuilder latex = new StringBuilder();
-        latex.append("\\begin{table}[hbt]\n")
+        latex.append("\\begin{table}[!hbt]\n")
              .append(String.format("  \\caption{%s}\n", description))
              .append(String.format("  \\label{%s}\n", resultsTableId))
              .append("  \\begin{tabular}{|l|rr|>{\\raggedleft\\arraybackslash}p{1.3cm}|}\n")
              .append("      \\hline\n")
-             .append("      textbf{Metric} & \\multicolumn{2}{c|}{\\textbf{95\\% Confidence Interval}} & \\textbf{*Standard Deviation} \\\\ \\hline\n");
+             .append("      \\textbf{Metric} & \\multicolumn{2}{c|}{\\textbf{95\\% Confidence Interval}} & \\textbf{*Standard Deviation} \\\\ \\hline\n");
         return latex;
     }
 
