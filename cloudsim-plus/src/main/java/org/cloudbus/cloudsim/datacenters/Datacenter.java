@@ -48,8 +48,8 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
     Datacenter NULL = new DatacenterNull();
 
     /**
-     * The default percentage of bandwidth allocated for VM migration, is
-     * a value is not set.
+     * The default percentage ([0..1]) of bandwidth allocated for VM migration,
+     * if a value is not set.
      * @see #setBandwidthPercentForMigration(double)
      */
     double DEF_BW_PERCENT_FOR_MIGRATION = 0.5;
