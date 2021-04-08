@@ -643,7 +643,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         latex.append("\\begin{table}[!hbt]\n")
              .append(String.format("  \\caption{%s}\n", description))
              .append(String.format("  \\label{%s}\n", resultsTableId))
-             .append("  \\begin{tabular}{|p{3cm}|rr|>{\\raggedleft\\arraybackslash}p{1.3cm}|}\n")
+             .append("  \\begin{tabular}{|p{3.2cm}|rr|>{\\raggedleft\\arraybackslash}p{1.3cm}|}\n")
              .append("      \\hline\n")
              .append("      \\textbf{Metric} & \\multicolumn{2}{c|}{\\textbf{95\\% Confidence Interval}} & \\textbf{*Standard Deviation} \\\\ \\hline\n");
         return latex;
