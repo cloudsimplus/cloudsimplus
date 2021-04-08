@@ -66,9 +66,6 @@ public class CloudletTaskCompletionTimeWorkLoadMinimizationRunner extends Experi
         return exp;
     }
 
-    @Override
-    protected void setup() {}
-
     /**
      * Method automatically called after every experiment finishes running. It
      * performs some post-processing such as collection of data for statistic

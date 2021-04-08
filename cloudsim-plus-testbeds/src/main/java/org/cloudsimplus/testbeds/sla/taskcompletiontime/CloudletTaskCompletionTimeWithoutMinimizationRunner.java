@@ -71,12 +71,6 @@ public class CloudletTaskCompletionTimeWithoutMinimizationRunner extends Experim
     }
 
     /**
-     * There is no setup for this runner.
-     */
-    @Override
-    protected void setup() {/**/}
-
-    /**
      * Method automatically called after every experiment finishes running.
      * It performs some post-processing such as collection of data for statistic analysis.
      *

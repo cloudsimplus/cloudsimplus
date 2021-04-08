@@ -66,12 +66,6 @@ public class CloudletTaskCompletionTimeWorkLoadWithoutMinimizationRunner extends
     }
 
     /**
-     * There is no setup for this experiment.
-     */
-    @Override
-    protected void setup() {/**/}
-
-    /**
      * Method automatically called after every experiment finishes running. It
      * performs some post-processing such as collection of data for statistic
      * analysis.

@@ -97,8 +97,8 @@ public final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Data
     private DatacenterBrokerHeuristicRunner(final boolean applyAntitheticVariatesTechnique, final long baseSeed) {
         super(baseSeed, 1200, 6, applyAntitheticVariatesTechnique);
         runtimeStats = new SummaryStatistics();
-        vmPesArray = new int[0];
-        cloudletPesArray = new int[0];
+        vmPesArray = createVmPesArray();
+        cloudletPesArray = createCloudletPesArray();
     }
 
     /**
@@ -121,12 +121,10 @@ public final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Data
      * @return the created cloudlet PEs array
      */
     private int[] createCloudletPesArray() {
-        int[] pesArray = new int[CLOUDLETS_TO_CREATE];
-        int totalNumberOfPes = 0;
+        final int[] pesArray = new int[CLOUDLETS_TO_CREATE];
         final ContinuousDistribution random = new NormalDistr(2, 0.6, getBaseSeed());
         for (int i = 0; i < CLOUDLETS_TO_CREATE; i++) {
             pesArray[i] = (int) random.sample() + 1;
-            totalNumberOfPes += pesArray[i];
         }
 
         return pesArray;
@@ -141,11 +139,9 @@ public final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Data
      */
     private int[] createVmPesArray() {
         final UniformDistr random = new UniformDistr(0, VM_PES_NUMBERS.length, getBaseSeed());
-        int[] pesArray = new int[VMS_TO_CREATE];
-        int totalNumberOfPes = 0;
+        final int[] pesArray = new int[VMS_TO_CREATE];
         for (int i = 0; i < VMS_TO_CREATE; i++) {
             pesArray[i] = VM_PES_NUMBERS[(int) random.sample()];
-            totalNumberOfPes += pesArray[i];
         }
 
         return pesArray;
@@ -173,12 +169,6 @@ public final class DatacenterBrokerHeuristicRunner extends ExperimentRunner<Data
            .setAfterExperimentFinish(this::afterExperimentFinish)
            .setVerbose(experimentVerbose);
         return exp;
-    }
-
-    @Override
-    protected void setup() {
-        vmPesArray = createVmPesArray();
-        cloudletPesArray = createCloudletPesArray();
     }
 
     /**

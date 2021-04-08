@@ -126,7 +126,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
 
     /** @see #enableLatexTableResultsGeneration()*/
     private boolean latexTableResultsGeneration;
-    private final List<Experiment> experiments;
+    private List<Experiment> experiments;
 
     /**
      * Creates an experiment runner with a given {@link #getBaseSeed() base seed}
@@ -186,7 +186,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param latexTableResultsGeneration Enables/disables the generation of a result table in Latex format for computed metrics.
      */
     protected ExperimentRunner(
-        final long baseSeed, final int simulationRuns, final int batchesNumber, final boolean antitheticVariatesTechnique,
+        final long baseSeed, final int simulationRuns, final int batchesNumber,
+        final boolean antitheticVariatesTechnique,
         final boolean parallel, final boolean latexTableResultsGeneration)
     {
         this.baseSeed = baseSeed;
@@ -213,41 +214,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         if (isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches()) {
             setNumberOfSimulationRunsAsMultipleOfNumberOfBatches();
         }
-
-        setup();
-
-        /* Since experiments may execute in parallel and during execution
-         * they access the shared seeds list, all experiments have to
-         * be created before starting execution.
-         * Otherwise, if they are run in parallel, we get IndexOutOfBoundsException's.
-         */
-        this.experiments = IntStream.range(0, simulationRuns).mapToObj(this::createExperiment).collect(toList());
     }
-
-    /**
-     * <p>
-     * Setup experiment attributes considering the dependency between each
-     * other. The method is called by the {@link #run()} method, just after all
-     * the attributes were set and before experiments to be run are created.
-     * This way, it initializes internal attributes
-     * and validates other ones.</p>
-     *
-     * <p>
-     * <b>NOTE:</b> As a good practice, it is tried to reduce the number of
-     * parameters for the class constructor, as it tends to increase as the
-     * experiment code evolves. Accordingly, all the parameters have to be
-     * defined using the corresponding setters. By this way,
-     * <b>it has to be avoided setting up attributes inside the constructor,
-     * once they can become invalid or out-of-date because dependency between
-     * parameters.</b>
-     * The constructor has just to initialize objects to avoid
-     * {@link NullPointerException}. This way, one have to set all the
-     * parameters inside this method. For instance, if the constructor creates
-     * and Random Number Generator (PRNG) using a default seed but the method
-     * setSeed is called after the constructor, the PRNG will not be update to
-     * use the new seed.</p>
-     */
-    protected abstract void setup();
 
     /**
      *
@@ -561,6 +528,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     @Override
     public void run() {
+        createAllExperimentsBeforeFirstRun();
+
         final String desc = description != null && !description.isEmpty() ? String.format(" - %s", description) : "";
         System.out.printf("Started %s at %s (real local time)%s%n", getClass().getSimpleName(), LocalTime.now(), desc);
         printSimulationParameters();
@@ -587,6 +556,17 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         System.out.printf(
             "%nExperiments for %d runs finished in %s!%n",
             simulationRuns, TimeUtil.secondsToStr(experimentsExecutionTimeSecs));
+    }
+
+    /** Since experiments may execute in parallel and during execution
+     * they access the shared seeds list, all experiments have to
+     * be created before starting execution.
+     * Otherwise, if they are run in parallel, we get IndexOutOfBoundsException's.
+     */
+    private void createAllExperimentsBeforeFirstRun() {
+        if(experiments == null) {
+            experiments = IntStream.range(0, simulationRuns).mapToObj(this::createExperiment).collect(toList());
+        }
     }
 
     private void computeAndPrintFinalResults() {
@@ -914,4 +894,5 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         this.latexTableResultsGeneration = true;
         return this;
     }
+
 }

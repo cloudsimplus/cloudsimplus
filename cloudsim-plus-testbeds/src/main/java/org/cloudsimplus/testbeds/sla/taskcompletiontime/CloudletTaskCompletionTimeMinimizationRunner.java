@@ -92,10 +92,6 @@ public final class CloudletTaskCompletionTimeMinimizationRunner extends Experime
     }
 
     @Override
-    protected void setup() {/**/
-    }
-
-    @Override
     protected void printSimulationParameters() {
         System.out.printf("Executing %d experiments. Please wait ... It may take a while.%n", getSimulationRuns());
         System.out.println("Experiments configurations:");

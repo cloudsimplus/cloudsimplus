@@ -183,8 +183,6 @@ public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultIn
         return template.computeIfAbsent(broker.getName(), name -> new ArrayList<>()).add(priceCustomerPerHour);
     }
 
-    @Override protected void setup() {/**/}
-
     @Override
     protected void printSimulationParameters() {
         System.out.printf("Executing %d experiments. Please wait ... It may take a while.%n", getSimulationRuns());
