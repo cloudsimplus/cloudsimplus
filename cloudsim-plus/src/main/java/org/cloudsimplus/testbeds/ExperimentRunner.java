@@ -228,7 +228,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * <p>
      * Setup experiment attributes considering the dependency between each
      * other. The method is called by the {@link #run()} method, just after all
-     * the attributes were set. By this way, it initializes internal attributes
+     * the attributes were set and before experiments to be run are created.
+     * This way, it initializes internal attributes
      * and validates other ones.</p>
      *
      * <p>
