@@ -137,7 +137,7 @@ public class HostSimple implements Host {
     private int failedPesNumber;
 
     private boolean lazySuitabilityEvaluation;
-    private HostResourceStats cpuUtilizationStats;
+    protected HostResourceStats cpuUtilizationStats;
 
     /**
      * Creates and powers on a Host without a pre-defined ID,

@@ -152,4 +152,8 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
     protected final boolean isNotEntireSecondElapsed(final double time) {
         return Math.floor(time) == previousTime && !machine.isIdle();
     }
+
+    protected T getMachine(){
+        return machine;
+    }
 }
