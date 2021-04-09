@@ -182,7 +182,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param batchesNumber number of simulation run batches (zero disables the batch means method)
      * @param antitheticVariatesTechnique indicates if it's to be applied the
      *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
-     * @param parallel whether experiments will run in parallel or sequentially
+     * @param parallel whether experiments will run in parallel or sequentially. It's just actually enabled when the simulation runs
+     *                 is larger than 1.
      * @param latexTableResultsGeneration Enables/disables the generation of a result table in Latex format for computed metrics.
      */
     protected ExperimentRunner(
@@ -195,11 +196,12 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         if(simulationRuns <= 0)
             throw new IllegalArgumentException("Simulation runs must be greater than 0.");
         this.simulationRuns = simulationRuns;
+        this.parallel = parallel && simulationRuns > 1;
 
-        if(batchesNumber < 0)
-            throw new IllegalArgumentException("Batches cannot be negative. Use 0 to disable the Batch Means method.");
+        if(batchesNumber < 0 || batchesNumber == 1) {
+            throw new IllegalArgumentException("Batches number must be greater than 1. Use 0 just to disable the Batch Means method.");
+        }
         this.batchesNumber = batchesNumber;
-        this.parallel = parallel;
         this.latexTableResultsGeneration = latexTableResultsGeneration;
 
         /*Since experiments may run in parallel and these fields are shared across them,
@@ -260,25 +262,17 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     /**
-     * Checks if the number of simulation runs and the number of batches are
-     * compatible
-     *
-     * @return
-     */
-    public boolean simulationRunsAndNumberOfBatchesAreCompatible() {
-        final boolean batchesGreaterThan1 = batchesNumber > 1;
-        final boolean numSimulationRunsGraterThanBatches = simulationRuns > batchesNumber;
-        return batchesGreaterThan1 && numSimulationRunsGraterThanBatches;
-    }
-
-    /**
      *
      * Checks if the "Batch Means Method" is to be applied to reduce correlation
      * between the results for different experiment runs.
+     * That happens if the number of simulation runs and the number of batches are
+     * compatible.
      * @return
      */
     public boolean isApplyBatchMeansMethod() {
-        return simulationRunsAndNumberOfBatchesAreCompatible();
+        final boolean batchesGreaterThan1 = batchesNumber > 1;
+        final boolean numSimulationRunsGraterThanBatches = simulationRuns > batchesNumber;
+        return batchesGreaterThan1 && numSimulationRunsGraterThanBatches;
     }
 
     /**
@@ -530,8 +524,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     public void run() {
         createAllExperimentsBeforeFirstRun();
 
-        final String desc = description != null && !description.isEmpty() ? String.format(" - %s", description) : "";
-        System.out.printf("Started %s at %s (real local time)%s%n", getClass().getSimpleName(), LocalTime.now(), desc);
+        System.out.printf("Started %s for %d runs at %s (real local time)%n", getClass().getSimpleName(), simulationRuns, LocalTime.now());
+        if(description != null && !description.trim().isEmpty()){
+            System.out.println(description);
+        }
         printSimulationParameters();
 
         Log.setLevel(Level.OFF);
@@ -547,10 +543,9 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         System.out.printf(
             "%nFinal simulation results for %d metrics in %d simulation runs -------------------%n",
             metricsMap.size(), simulationRuns);
-        if (!simulationRunsAndNumberOfBatchesAreCompatible()) {
+        if (batchesNumber > 1 && !isApplyBatchMeansMethod()) {
             System.out.println("Batch means method was not be applied because the number of simulation runs is not greater than the number of batches.");
         }
-
         computeAndPrintFinalResults();
 
         System.out.printf(
