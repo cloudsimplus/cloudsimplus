@@ -22,4 +22,14 @@ public class HostResourceStats extends AbstractResourceStats<Host> {
     public HostResourceStats(final Host machine, final Function<Host, Double> resourceUtilizationFunction) {
         super(machine, resourceUtilizationFunction);
     }
+
+    /**
+     * {@inheritDoc}.
+     * The method is automatically called when the Host processing is updated.
+     * @param time {@inheritDoc}
+     */
+    @Override
+    public void add(final double time) {
+        super.add(time);
+    }
 }
