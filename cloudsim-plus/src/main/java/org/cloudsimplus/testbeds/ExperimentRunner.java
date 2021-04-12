@@ -28,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
@@ -524,7 +525,9 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     public void run() {
         createAllExperimentsBeforeFirstRun();
 
-        System.out.printf("Started %s for %d runs at %s (real local time)%n", getClass().getSimpleName(), simulationRuns, LocalTime.now());
+        System.out.printf(
+            "Started %s for %d runs using %s (real local time: %s)%n",
+            getClass().getSimpleName(), simulationRuns, CloudSim.VERSION, LocalTime.now());
         if(description != null && !description.trim().isEmpty()){
             System.out.println(description);
         }
@@ -549,8 +552,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         computeAndPrintFinalResults();
 
         System.out.printf(
-            "%nExperiments for %d runs finished in %s!%n",
-            simulationRuns, TimeUtil.secondsToStr(experimentsExecutionTimeSecs));
+            "%nExperiments for %d runs finished in %s (real local time: %s)!%n",
+            simulationRuns, TimeUtil.secondsToStr(experimentsExecutionTimeSecs), LocalTime.now());
     }
 
     /** Since experiments may execute in parallel and during execution
