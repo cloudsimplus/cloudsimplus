@@ -9,7 +9,7 @@ import java.util.function.Function;
  * @since CloudSim Plus 6.1.0
  */
 public class VmResourceStats extends AbstractResourceStats<Vm> {
-    public static final VmResourceStats NULL = new VmResourceStats(Vm.NULL, vm -> 0.0) { @Override public void add(double time) {/**/}};
+    public static final VmResourceStats NULL = new VmResourceStats(Vm.NULL, vm -> 0.0) { @Override public boolean add(double time) { return false; }};
 
     /**
      * Creates a VmResourceStats to collect resource utilization statistics for a VM.

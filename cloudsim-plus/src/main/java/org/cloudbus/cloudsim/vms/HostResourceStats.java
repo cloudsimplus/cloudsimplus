@@ -11,7 +11,7 @@ import java.util.function.Function;
  * @since CloudSim Plus 6.1.0
  */
 public class HostResourceStats extends AbstractResourceStats<Host> {
-    public static final HostResourceStats NULL = new HostResourceStats(Host.NULL, host -> 0.0) { @Override public void add(double time) {/**/}};
+    public static final HostResourceStats NULL = new HostResourceStats(Host.NULL, host -> 0.0) { @Override public boolean add(double time) { return false; }};
 
     /**
      * Creates a HostResourceStats to collect resource utilization statistics for a Host.
@@ -27,9 +27,10 @@ public class HostResourceStats extends AbstractResourceStats<Host> {
      * {@inheritDoc}.
      * The method is automatically called when the Host processing is updated.
      * @param time {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
-    public void add(final double time) {
-        super.add(time);
+    public boolean add(final double time) {
+        return super.add(time);
     }
 }

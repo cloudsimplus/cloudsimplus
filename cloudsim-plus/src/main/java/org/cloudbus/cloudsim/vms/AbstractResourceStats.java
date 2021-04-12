@@ -38,10 +38,11 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
      * Collects the current resource utilization percentage (in scale from 0 to 1)
      * for the given time to the statistics.
      * @param time current simulation time
+     * @returnn true if data was collected, false otherwise (meaning it's not time to collect data).
      */
-    public void add(final double time) {
+    public boolean add(final double time) {
         if (isNotTimeToAddHistory(time)) {
-            return;
+            return false;
         }
 
         final double utilization = resourceUtilizationFunction.apply(machine);
@@ -54,13 +55,14 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
         * If that utilization is collected, the mean won't be 100% anymore.*/
         if(utilization == 0 && previousUtilization != 0 || machine.isIdle()) {
             this.previousUtilization = utilization;
-            return;
+            return false;
         }
 
         final double normalizedTime = machine.isIdle() ? time : (int)time;
         this.stats.addValue(utilization);
         this.previousTime = normalizedTime;
         this.previousUtilization = utilization;
+        return true;
     }
 
     /**
