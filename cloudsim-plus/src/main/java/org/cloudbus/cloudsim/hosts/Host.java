@@ -389,7 +389,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     void setShutdownTime(double shutdownTime);
 
     /**
-     * Gets the elapsed time since the last time the Host was powered on
+     * Gets the elapsed time since the last power on.
      * @return the elapsed time (in seconds)
      * @see #getUpTimeHours()
      * @see #getTotalUpTime()
@@ -398,7 +398,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     double getUpTime();
 
     /**
-     * Gets the elapsed time since the last time the Host was powered on
+     * Gets the elapsed time in hours since the last power on.
      * @return the elapsed time (in hours)
      * @see #getUpTime()
      * @see #getTotalUpTime()
@@ -409,7 +409,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     /**
      * Gets the total time the Host stayed active (powered on).
      * Since the Host can be powered on and off according to demand,
-     * this method returns the sum of all interval that the Host
+     * this method returns the sum of all intervals the Host
      * was active (in seconds).
      *
      * @return the total up time (in seconds)
@@ -424,7 +424,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     /**
      * Gets the total time the Host stayed active (powered on).
      * Since the Host can be powered on and off according to demand,
-     * this method returns the sum of all interval that the Host
+     * this method returns the sum of all intervals the Host
      * was active (in hours).
      *
      * @return the total up time (in hours)
