@@ -23,8 +23,7 @@ import java.util.Map;
  * Implements a network layer by reading the topology from a file in the
  * <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE
  * format</a>, the <b>B</b>oston university
- * <b>R</b>epresentative <b>I</b>nternet <b>T</b>opology g<b>E</b>nerator
- * <a href="http://www.cs.bu.edu/brite/">(http://www.cs.bu.edu/brite/)</a>,
+ * <b>R</b>epresentative <b>I</b>nternet <b>T</b>opology g<b>E</b>nerator,
  * and generates a topological network
  * from it. Information of this network is used to simulate latency in network
  * traffic of CloudSim.
@@ -39,6 +38,8 @@ import java.util.Map;
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 1.0
  * @see #getInstance(String)
+ * @see <a href="http://www.cs.bu.edu/brite/">Brite Oficial Website (shut down)</a>
+ * @see <a href="https://web.archive.org/web/20200119144536/http://www.cs.bu.edu:80/brite/">Web archieve of Brite Oficial Website</a>
  */
 public final class BriteNetworkTopology implements NetworkTopology {
     private static final Logger LOGGER = LoggerFactory.getLogger(BriteNetworkTopology.class.getSimpleName());
