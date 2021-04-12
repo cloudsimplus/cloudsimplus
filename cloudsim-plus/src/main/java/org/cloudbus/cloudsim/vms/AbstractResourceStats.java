@@ -45,8 +45,8 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
         }
 
         final double utilization = resourceUtilizationFunction.apply(machine);
-        /*If the previous utilization is zero and the current utilization is also zero
-        * and that doesn't change, it means the machine has finished
+        /*If the previous and current utilization are zero
+        * and those values don't change, it means the machine has finished
         * and this utilization must not be collected.
         * If that happens, it may reduce accuracy of the utilization mean.
         * For instance, if a machine uses 100% of a resource all the time,
