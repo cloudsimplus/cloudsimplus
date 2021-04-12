@@ -53,7 +53,7 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
         * For instance, if a machine uses 100% of a resource all the time,
         * when it finishes, the utilization will be zero.
         * If that utilization is collected, the mean won't be 100% anymore.*/
-        if(utilization == 0 && previousUtilization != 0 || machine.isIdle()) {
+        if((previousUtilization != 0 && utilization == 0) || machine.isIdle()) {
             this.previousUtilization = utilization;
             return false;
         }
