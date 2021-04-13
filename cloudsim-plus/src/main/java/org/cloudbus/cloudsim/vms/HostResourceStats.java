@@ -31,6 +31,6 @@ public class HostResourceStats extends AbstractResourceStats<Host> {
      */
     @Override
     public boolean add(final double time) {
-        return super.add(time);
+        return super.add(time) && getMachine().isActive();
     }
 }

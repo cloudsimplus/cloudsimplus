@@ -332,9 +332,7 @@ public class HostSimple implements Host {
     @SuppressWarnings("ForLoopReplaceableByForEach")
     @Override
     public double updateProcessing(final double currentTime) {
-        if (!vmList.isEmpty()) {
-            lastBusyTime = simulation.clock();
-        } else if(isIdleEnough(idleShutdownDeadline)){
+        if(vmList.isEmpty() && isIdleEnough(idleShutdownDeadline)){
             setActive(false);
         }
 
@@ -351,6 +349,9 @@ public class HostSimple implements Host {
         notifyOnUpdateProcessingListeners(currentTime);
         cpuUtilizationStats.add(currentTime);
         addStateHistory(currentTime);
+        if (!vmList.isEmpty()) {
+            lastBusyTime = currentTime;
+        }
 
         return nextSimulationDelay;
     }

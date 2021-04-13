@@ -41,28 +41,30 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
      * @returnn true if data was collected, false otherwise (meaning it's not time to collect data).
      */
     public boolean add(final double time) {
-        if (isNotTimeToAddHistory(time)) {
-            return false;
-        }
+        try {
+            if (isNotTimeToAddHistory(time)) {
+                return false;
+            }
 
-        final double utilization = resourceUtilizationFunction.apply(machine);
-        /*If (i) the previous utilization is not zero and the current utilization is zero
-        * and (ii) those values don't change, it means the machine has finished
-        * and this utilization must not be collected.
-        * If that happens, it may reduce accuracy of the utilization mean.
-        * For instance, if a machine uses 100% of a resource all the time,
-        * when it finishes, the utilization will be zero.
-        * If that utilization is collected, the mean won't be 100% anymore.*/
-        if((previousUtilization != 0 && utilization == 0) || machine.isIdle()) {
+            final double utilization = resourceUtilizationFunction.apply(machine);
+            /*If (i) the previous utilization is not zero and the current utilization is zero
+            * and (ii) those values don't change, it means the machine has finished
+            * and this utilization must not be collected.
+            * If that happens, it may reduce accuracy of the utilization mean.
+            * For instance, if a machine uses 100% of a resource all the time,
+            * when it finishes, the utilization will be zero.
+            * If that utilization is collected, the mean won't be 100% anymore.*/
+            if((previousUtilization != 0 && utilization == 0) || (machine.isIdle() && previousUtilization > 0)) {
+                this.previousUtilization = utilization;
+                return false;
+            }
+
+            this.stats.addValue(utilization);
             this.previousUtilization = utilization;
-            return false;
+            return true;
+        } finally {
+            this.previousTime = machine.isIdle() ? time : (int)time;
         }
-
-        final double normalizedTime = machine.isIdle() ? time : (int)time;
-        this.stats.addValue(utilization);
-        this.previousTime = normalizedTime;
-        this.previousUtilization = utilization;
-        return true;
     }
 
     /**
@@ -157,5 +159,13 @@ public abstract class AbstractResourceStats<T extends AbstractMachine> {
 
     protected T getMachine(){
         return machine;
+    }
+
+    /**
+     * Gets the previous time that resource statistics were computed.
+     * @return
+     */
+    protected double getPreviousTime() {
+        return previousTime;
     }
 }
