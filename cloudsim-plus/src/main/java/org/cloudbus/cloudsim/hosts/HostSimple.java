@@ -506,6 +506,10 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setActive(final boolean activate) {
+        if(this.active == activate){
+            return this;
+        }
+
         if(isFailed() && activate){
             throw new IllegalStateException("The Host is failed and cannot be activated.");
         }
