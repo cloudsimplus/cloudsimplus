@@ -371,6 +371,15 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     /**
+     * Checks if the experiment will run a single time or not.
+     * @return true if the experiment will run a single time,
+     *         false if there are multiple simulation runs.
+     */
+    public boolean isSingleRun(){
+        return simulationRuns == 1;
+    }
+
+    /**
      * Adjusts the current number of simulations to be equal to its closer
      * multiple of the number of batches.
      * @return
