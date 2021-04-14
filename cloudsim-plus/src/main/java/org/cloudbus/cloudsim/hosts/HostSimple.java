@@ -1041,6 +1041,12 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public double getBusyPesPercent(final boolean hundredScale) {
+        final double scale = hundredScale ? 100 : 1;
+        return getBusyPesPercent() * scale;
+    }
+
+    @Override
     public int getFailedPesNumber() {
         return failedPesNumber;
     }

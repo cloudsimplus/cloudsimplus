@@ -271,8 +271,19 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * Gets the current percentage (from 0..1) of used (busy) PEs,
      * according to the {@link #getNumberOfPes() total number of PEs}.
      * @return
+     * @see #getBusyPesPercent(boolean)
      */
     double getBusyPesPercent();
+
+    /**
+     * Gets the current percentage of used (busy) PEs,
+     * according to the {@link #getNumberOfPes() total number of PEs}.
+     * @param hundredScale if true, result is provided from 0..100 scale;
+     *                     otherwise, it's returned in scale from 0..1.
+     * @return the percentage of busy PEs in the defined scale
+     * @see #getBusyPesPercent()
+     */
+    double getBusyPesPercent(boolean hundredScale);
 
     /**
      * Gets the number of PEs that have failed.
