@@ -135,6 +135,12 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     <T extends Vm> Set<T> getVmsMigratingIn();
 
     /**
+     * Checks if there is any VMs migrating in or out this host.
+     * @return
+     */
+    boolean hasMigratingVms();
+
+    /**
      * Try to add a VM migrating into the current host
      * if there is enough resources for it.
      * In this case, the resources are allocated

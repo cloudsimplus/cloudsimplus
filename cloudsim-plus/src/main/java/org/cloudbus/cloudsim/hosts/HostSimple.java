@@ -935,6 +935,11 @@ public class HostSimple implements Host {
     }
 
     @Override
+    public boolean hasMigratingVms(){
+        return !(vmsMigratingIn.isEmpty() && vmsMigratingOut.isEmpty());
+    }
+
+    @Override
     public boolean addMigratingInVm(final Vm vm) {
         /* TODO: Instead of keeping a list of VMs which are migrating into a Host,
         *  which requires searching in such a list every time a VM is requested to be migrated

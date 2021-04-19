@@ -110,6 +110,7 @@ final class HostNull implements Host {
     @Override public <T extends Vm> Set<T> getVmsMigratingIn() {
         return Collections.emptySet();
     }
+    @Override public boolean hasMigratingVms() { return false; }
     @Override public void reallocateMigratingInVms() {/**/}
     @Override public void removeMigratingInVm(Vm vm) {/**/}
     @Override public void setDatacenter(Datacenter datacenter) {/**/}
