@@ -23,7 +23,7 @@
  */
 package org.cloudsimplus.autoscaling.resources;
 
-import org.cloudbus.cloudsim.util.MathUtil;
+import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
@@ -62,14 +62,17 @@ public class ResourceScalingInstantaneous implements ResourceScaling {
         final Function<Vm, Double> thresholdFunction = vmScaling.getResourceUsageThresholdFunction();
         /* Computes the size to which the resource has to be scaled to move it from the
         * under or overload state.*/
-        final double resourceSizeToScale =
-            Math.ceil(vmScaling.getResource().getAllocatedResource() * MathUtil.HUNDRED_PERCENT / thresholdFunction.apply(vmScaling.getVm()));
+        final Resource res = vmScaling.getResource();
+        //The new total capacity to move the VM resource from under/overloaded.
+        final double newTotalCapacity = Math.ceil(res.getAllocatedResource() / thresholdFunction.apply(vmScaling.getVm()));
+        //The difference to add/remove from the current capacity so that the resource capacity will be equal to that just computed.
+        final double scaleCapacity = newTotalCapacity - res.getCapacity();
 
         /*Includes and additional resource amount for safety, according to the scaling factor.
         * This way, if the resource usage increases again up to this extra amount,
         * there is no need to re-scale the resource.
         * If the scale factor is zero, no extra safety amount is included.*/
         final double extraSafetyCapacity = GRADUAL.getResourceAmountToScale(vmScaling);
-        return resourceSizeToScale + extraSafetyCapacity;
+        return scaleCapacity + extraSafetyCapacity;
     }
 }

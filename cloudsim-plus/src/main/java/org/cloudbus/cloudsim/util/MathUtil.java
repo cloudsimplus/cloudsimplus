@@ -24,11 +24,6 @@ import java.util.*;
  */
 public final class MathUtil {
     /**
-     * 100% represented in scale [0 .. 1].
-     */
-    public static final double HUNDRED_PERCENT = 0.1;
-
-    /**
      * A private constructor to avoid class instantiation.
      */
     private MathUtil(){/**/}
