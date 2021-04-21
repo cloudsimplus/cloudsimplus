@@ -34,7 +34,6 @@ import java.util.stream.Stream;
  *
  * @see VmAllocationPolicyFirstFit
  * @see VmAllocationPolicyBestFit
- * @see VmAllocationPolicyWorstFit
  */
 public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
     /**

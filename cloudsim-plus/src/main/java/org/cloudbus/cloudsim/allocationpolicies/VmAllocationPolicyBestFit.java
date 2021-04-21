@@ -45,7 +45,7 @@ import java.util.stream.Stream;
  * @since CloudSim Plus 3.0.1
  *
  * @see VmAllocationPolicyFirstFit
- * @see VmAllocationPolicyWorstFit
+ * @see VmAllocationPolicySimple
  */
 public class VmAllocationPolicyBestFit extends VmAllocationPolicyAbstract {
     /**

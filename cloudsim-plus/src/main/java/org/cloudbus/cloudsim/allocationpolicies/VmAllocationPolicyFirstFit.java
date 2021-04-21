@@ -28,7 +28,7 @@ import java.util.Optional;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0.0
  * @see VmAllocationPolicyBestFit
- * @see VmAllocationPolicyWorstFit
+ * @see VmAllocationPolicySimple
  */
 public class VmAllocationPolicyFirstFit extends VmAllocationPolicyAbstract implements VmAllocationPolicy {
     /** @see #getLastHostIndex() */
