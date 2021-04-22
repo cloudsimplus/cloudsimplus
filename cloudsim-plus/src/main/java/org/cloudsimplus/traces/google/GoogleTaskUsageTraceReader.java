@@ -320,32 +320,30 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     }
 
     /**
-     * Process the {@link #getFilePath() trace file} request to change the resource usage of {@link Cloudlet}s
+     * Process {@link #getFilePath() trace file} requests to change resource usage of {@link Cloudlet}s
      * as described in the file. It returns the List of all processed {@link Cloudlet}s.
      *
-     * <p>If the Cloudlets created by a {@link GoogleTaskEventsTraceReader}
-     * use a {@link UtilizationModelFull} to define that the CPUs required
-     * by the Cloudlets will be used 100%,
-     * when the "task usage" file is read, a different CPU usage can be set.
+     * <p>When using a {@link GoogleTaskEventsTraceReader}
+     * and you create Cloudlets with an {@link UtilizationModelFull} to define that required CPUs
+     * will be used in 100% of their capacity,
+     * if the "task usage" file is read, a different CPU usage can be set.
      * In regular simulations, if this value is smaller,
      * a Cloudlet will spend more time to finish.
      * However, since the "task events" file defines the exact time to finish
-     * each Cloudlet, using less than 100% won't make the Cloudlet to finish
-     * earlier (as in simulations not using the Google Cluster Data).
+     * each Cloudlet, using less than 100% of the CPU capacity won't make the Cloudlet to finish
+     * later (as in simulations not using the Google Cluster Data).
      * Each Cloudlet will just have a smaller length at the end of the simulation.</p>
      *
      * <p>These trace files don't define the length of the Cloudlet (task).
-     * This way, the Cloudlets are created with an indefinite length
+     * This way, Cloudlets are created with an indefinite length
      * (see {@link Cloudlet#setLength(long)}) and the length is increased
      * as the Cloudlet is executed. Therefore, if the Cloudlet is using
      * a higher percentage of the CPU capacity, it will execute
-     * more instructions in a given time interval.
-     * If it's using a lower percentage of the CPU capacity, it will execute
-     * less instructions in that interval.</p>
+     * more instructions in a given time interval.</p>
      *
      * <p>In conclusion, the exec and finish time of Cloudlets created
      * from Google Cluster trace files won't change according
-     * to the percentage of CPU the Cloudlets are using.</p>
+     * to the percentage of CPU capacity the Cloudlets are using.</p>
      *
      * @return the Set of all {@link Cloudlet}s processed according to a line in the trace file
      */
