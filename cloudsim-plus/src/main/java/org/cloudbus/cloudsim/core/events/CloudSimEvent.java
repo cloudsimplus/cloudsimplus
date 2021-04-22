@@ -196,19 +196,27 @@ public final class CloudSimEvent implements SimEvent {
 
     @Override
     public int compareTo(final SimEvent evt) {
+        if (this == evt) {
+            return 0;
+        }
+
         if (evt == null || evt == SimEvent.NULL) {
             return 1;
-        } else if (time < evt.getTime()) {
+        }
+
+        if (time < evt.getTime()) {
             return -1;
-        } else if (time > evt.getTime()) {
-            return 1;
-        } else if (serial < evt.getSerial()) {
-            return -1;
-        } else if (this == evt) {
-            return 0;
-        } else {
+        }
+
+        if (time > evt.getTime()) {
             return 1;
         }
+
+        if (serial < evt.getSerial()) {
+            return -1;
+        }
+
+        return 1;
     }
 
     @Override
