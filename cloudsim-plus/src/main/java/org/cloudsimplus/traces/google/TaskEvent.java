@@ -133,10 +133,10 @@ public final class TaskEvent extends TaskData {
      *
      * <p>This field can be used to define the max resource utilization percentage for a
      * UtilizationModel when creating the Cloudlet.
-     * Since there are "task usage" trace files, they can used used to
+     * Since there are "task usage" trace files, they can be used to
      * define the RAM utilization along the time.
      * In this case, a {@link UtilizationModelDynamic} is required for the Cloudlet's
-     * RAM UtilizationModel. Using a different class will raise an runtime exception
+     * RAM UtilizationModel. Using a different class will raise a runtime exception
      * when trying to create the Cloudlets.
      * </p>
      * @return
