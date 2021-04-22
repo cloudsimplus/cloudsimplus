@@ -589,7 +589,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private void logCloudletStatusChange(final Cloudlet cloudlet, final String status) {
         final String msg = cloudlet.getJobId() > 0 ? String.format("(job %d) ", cloudlet.getJobId()) : "";
-        LOGGER.info("{}: {}: Request to {} {} {}received.", getSimulation().clockStr(), this, status, cloudlet, msg);
+        LOGGER.info("{}: {}: Request to {} {} {}received.", getSimulation().clockStr(), getName(), status, cloudlet, msg);
     }
 
     private void processCloudletFail(final SimEvent evt){
