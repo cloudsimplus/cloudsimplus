@@ -162,7 +162,7 @@ public class GoogleTaskEventsExample1 {
         so you don't have to submit them manually.*/
         cloudlets = reader.process();
         brokers = reader.getBrokers();
-        System.out.printf("%d Cloudlets and %d Brokers created from the %s trace file.%s%n",
+        System.out.printf("%d Cloudlets and %d Brokers created from the %s trace file.%n",
             cloudlets.size(), brokers.size(), TRACE_FILENAME);
     }
 
