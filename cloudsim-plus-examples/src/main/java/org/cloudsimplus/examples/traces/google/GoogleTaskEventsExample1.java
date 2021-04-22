@@ -106,7 +106,7 @@ public class GoogleTaskEventsExample1 {
      * event is received by the {@link DatacenterBroker}.
      * Check out {@link Cloudlet#setLength(long)} for details.
      */
-    private static final int  CLOUDLET_LENGTH = -10000;
+    private static final int  CLOUDLET_LENGTH = -10_000;
 
     private static final long VM_PES = 4;
     private static final int  VM_MIPS = 1000;
