@@ -446,6 +446,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
         *       for instance when the task is submitted. It's just know when it starts to execute.
         */
         event
+            .setType(FieldIndex.EVENT_TYPE.getValue(this))
             .setTimestamp(FieldIndex.TIMESTAMP.getValue(this))
             .setResourceRequestForCpuCores(FieldIndex.RESOURCE_REQUEST_FOR_CPU_CORES.getValue(this))
             .setResourceRequestForLocalDiskSpace(FieldIndex.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.getValue(this))

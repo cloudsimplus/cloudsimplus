@@ -60,6 +60,7 @@ import java.util.function.Function;
 public final class TaskEvent extends TaskData {
     private int priority;
     private int schedulingClass;
+    private TaskEventType type;
     private double resourceRequestForCpuCores;
     private double resourceRequestForRam;
     private double resourceRequestForLocalDiskSpace;
@@ -219,6 +220,24 @@ public final class TaskEvent extends TaskData {
 
     /* default */ TaskEvent setSchedulingClass(final int schedulingClass) {
         this.schedulingClass = schedulingClass;
+        return this;
+    }
+
+    /**
+     * Gets the event type.
+     * @return
+     */
+    public TaskEventType getType() {
+        return type;
+    }
+
+    /**
+     * Sets the {@link TaskEventType} according to the enum ordinal.
+     * @param type the int value of the task event type
+     * @return
+     */
+    public TaskEvent setType(final int type) {
+        this.type = TaskEventType.getValue(type);
         return this;
     }
 }
