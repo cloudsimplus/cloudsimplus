@@ -135,6 +135,11 @@ public class GoogleTaskEventsExample1 {
         brokers.forEach(broker -> broker.submitVmList(createVms()));
         readTaskUsageTraceFile();
 
+        System.out.println("Brokers:");
+        brokers.stream().sorted().forEach(b -> System.out.printf("\t%d - %s%n", b.getId(), b.getName()));
+        System.out.println("Cloudlets:");
+        cloudlets.stream().sorted().forEach(c -> System.out.printf("\t%s (job %d)%n", c, c.getJobId()));
+
         simulation.start();
 
         brokers.forEach(this::printCloudlets);
