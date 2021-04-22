@@ -65,8 +65,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
-
 /**
  * An example showing how to create Cloudlets (tasks) from a Google Task Events
  * Trace using a {@link GoogleTaskEventsTraceReader}. Then it uses a
@@ -193,7 +191,7 @@ public class GoogleTaskEventsExample1 {
         final long pesNumber = event.actualCpuCores(VM_PES) > 0 ? event.actualCpuCores(VM_PES) : VM_PES;
 
         final double maxRamUsagePercent = event.getResourceRequestForRam() > 0 ? event.getResourceRequestForRam() : Conversion.HUNDRED_PERCENT;
-        final UtilizationModelDynamic utilizationRam = new UtilizationModelDynamic(Unit.PERCENTAGE, 0, maxRamUsagePercent);
+        final UtilizationModelDynamic utilizationRam = new UtilizationModelDynamic(0, maxRamUsagePercent);
 
         final long sizeInBytes = (long) Math.ceil(Conversion.megaBytesToBytes(event.getResourceRequestForLocalDiskSpace()*VM_SIZE + 1));
         return new CloudletSimple(CLOUDLET_LENGTH, pesNumber)
