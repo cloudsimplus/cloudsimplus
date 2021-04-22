@@ -34,6 +34,8 @@ public class FutureQueue implements EventQueue {
     /** @see #getSerial() */
     private long serial;
 
+    private long lowestSerial;
+
     /** @see #getMaxEventsNumber() */
     private long maxEventsNumber;
 
@@ -50,7 +52,7 @@ public class FutureQueue implements EventQueue {
      * @param newEvent The event to be put in the queue.
      */
     public void addEventFirst(final SimEvent newEvent) {
-        newEvent.setSerial(0);
+        newEvent.setSerial(--lowestSerial);
         sortedSet.add(newEvent);
     }
 

@@ -196,46 +196,38 @@ public final class CloudSimEvent implements SimEvent {
 
     @Override
     public int compareTo(final SimEvent evt) {
-        if (this == evt) {
-            return 0;
-        }
-
         if (evt == null || evt == SimEvent.NULL) {
             return 1;
         }
 
-        if (time < evt.getTime()) {
-            return -1;
+        if (this == evt) {
+            return 0;
         }
 
-        if (time > evt.getTime()) {
-            return 1;
+        int res = Double.compare(time, evt.getTime());
+        if (res != 0) {
+            return res;
         }
 
-        if (serial < evt.getSerial()) {
-            return -1;
+        res = Integer.compare(tag, evt.getTag());
+        if (res != 0) {
+            return res;
         }
 
-        return 1;
+        return Long.compare(serial, evt.getSerial());
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         final CloudSimEvent that = (CloudSimEvent) o;
-
-        if (Double.compare(that.time, time) != 0) return false;
-        return serial == that.serial;
+        return Double.compare(that.getTime(), getTime()) == 0 && getTag() == that.getTag() && getSerial() == that.getSerial();
     }
 
     @Override
     public int hashCode() {
-        final long temp = Double.doubleToLongBits(time);
-        int result = (int) (temp ^ (temp >>> 32));
-        result = 31 * result + (int) (serial ^ (serial >>> 32));
-        return result;
+        return Objects.hash(getTime(), getTag(), getSerial());
     }
 
     @Override
