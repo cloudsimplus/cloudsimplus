@@ -24,7 +24,6 @@
 package org.cloudsimplus.examples.traces.google;
 
 import ch.qos.logback.classic.Level;
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
@@ -34,12 +33,8 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
-import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
 import org.cloudbus.cloudsim.util.Conversion;
@@ -229,7 +224,8 @@ public class GoogleTaskEventsExample1 {
             hostList.add(host);
         }
 
-        return new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
+        //Uses a VmAllocationPolicySimple by default
+        return new DatacenterSimple(simulation, hostList);
     }
 
     private long getVmSize(final Cloudlet cloudlet) {
@@ -242,21 +238,18 @@ public class GoogleTaskEventsExample1 {
 
     private Host createHost() {
         final List<Pe> peList = createPesList(HOST_PES);
-        final ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();
-        final ResourceProvisioner bwProvisioner = new ResourceProvisionerSimple();
         final VmScheduler vmScheduler = new VmSchedulerTimeShared();
+        //Uses a ResourceProvisionerSimple for RAM and BW
         final Host host = new HostSimple(HOST_RAM, HOST_BW, HOST_STORAGE, peList);
-        host
-            .setRamProvisioner(ramProvisioner)
-            .setBwProvisioner(bwProvisioner)
-            .setVmScheduler(vmScheduler);
+        host.setVmScheduler(vmScheduler);
         return host;
     }
 
     private List<Pe> createPesList(final int count) {
         final List<Pe> cpuCoresList = new ArrayList<>(count);
         for(int i = 0; i < count; i++){
-            cpuCoresList.add(new PeSimple(HOST_MIPS, new PeProvisionerSimple()));
+            //Uses a PeProvisionerSimple by default
+            cpuCoresList.add(new PeSimple(HOST_MIPS));
         }
 
         return cpuCoresList;
@@ -267,9 +260,8 @@ public class GoogleTaskEventsExample1 {
     }
 
     private Vm createVm(final int id) {
-        return new VmSimple(VM_MIPS, VM_PES)
-            .setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE)
-            .setCloudletScheduler(new CloudletSchedulerTimeShared());
+        //Uses a CloudletSchedulerTimeShared by default
+        return new VmSimple(VM_MIPS, VM_PES).setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE);
     }
 
     private void printCloudlets(final DatacenterBroker broker) {
