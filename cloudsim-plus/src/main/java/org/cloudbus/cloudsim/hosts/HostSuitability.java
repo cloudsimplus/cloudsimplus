@@ -36,10 +36,10 @@ public final class HostSuitability {
     }
 
     /** Sets if the Host has disk suitability for storing the VM.
-     * @param forStorage true to indicate it's suitable according to VM's size requirements, false otherwise
+     * @param suitable true to indicate it's suitable according to VM's size requirements, false otherwise
      * */
-    HostSuitability setForStorage(final boolean forStorage) {
-        this.forStorage = forStorage;
+    HostSuitability setForStorage(final boolean suitable) {
+        this.forStorage = suitable;
         return this;
     }
 
@@ -54,10 +54,10 @@ public final class HostSuitability {
     }
 
     /** Sets if the Host has RAM suitability for running the VM.
-     * @param forRam true to indicate it's suitable according to VM's RAM requirements, false otherwise
+     * @param suitable true to indicate it's suitable according to VM's RAM requirements, false otherwise
      * */
-    HostSuitability setForRam(final boolean forRam) {
-        this.forRam = forRam;
+    HostSuitability setForRam(final boolean suitable) {
+        this.forRam = suitable;
         return this;
     }
 
@@ -72,10 +72,10 @@ public final class HostSuitability {
     }
 
     /** Sets if the Host has bandwidth suitability for running the VM.
-     * @param forBw true to indicate it's suitable according to VM's BW requirements, false otherwise
+     * @param suitable true to indicate it's suitable according to VM's BW requirements, false otherwise
      * */
-    HostSuitability setForBw(final boolean forBw) {
-        this.forBw = forBw;
+    HostSuitability setForBw(final boolean suitable) {
+        this.forBw = suitable;
         return this;
     }
 
