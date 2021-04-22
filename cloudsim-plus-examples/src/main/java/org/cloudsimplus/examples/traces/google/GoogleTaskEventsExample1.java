@@ -142,7 +142,7 @@ public class GoogleTaskEventsExample1 {
 
         simulation.start();
 
-        brokers.forEach(this::printCloudlets);
+        brokers.stream().sorted().forEach(this::printCloudlets);
         System.out.printf("Simulation finished at %s. Execution time: %.2f seconds%n", LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
     }
 
@@ -278,7 +278,7 @@ public class GoogleTaskEventsExample1 {
             .addColumn(7, new TextTableColumn("VM Size", "MB"), this::getVmSize)
             .addColumn(8, new TextTableColumn("Cloudlet Size", "MB"), this::getCloudletSizeInMB)
             .addColumn(10, new TextTableColumn("Waiting Time", "Seconds").setFormat("%.0f"), Cloudlet::getWaitingTime)
-            .setTitle("Simulation results for Broker representing the username " + username)
+            .setTitle("Simulation results for Broker " + broker.getId() + " representing the username " + username)
             .build();
     }
 }
