@@ -162,8 +162,8 @@ public class GoogleTaskEventsExample1 {
         so you don't have to submit them manually.*/
         cloudlets = reader.process();
         brokers = reader.getBrokers();
-        System.out.printf("%d Cloudlets and %d Brokers created from the %s trace file.%s",
-            cloudlets.size(), brokers.size(), TRACE_FILENAME, System.lineSeparator());
+        System.out.printf("%d Cloudlets and %d Brokers created from the %s trace file.%s%n",
+            cloudlets.size(), brokers.size(), TRACE_FILENAME);
     }
 
     /**
@@ -213,15 +213,14 @@ public class GoogleTaskEventsExample1 {
         final GoogleTaskUsageTraceReader reader =
             GoogleTaskUsageTraceReader.getInstance(brokers, fileName);
         final Set<Cloudlet> processedCloudlets = reader.process();
-        System.out.printf("%d Cloudlets processed from the %s trace file.%s", processedCloudlets.size(), fileName, System.lineSeparator());
+        System.out.printf("%d Cloudlets processed from the %s trace file.%n", processedCloudlets.size(), fileName);
         System.out.println();
     }
 
     private Datacenter createDatacenter() {
         final List<Host> hostList = new ArrayList<>(HOSTS);
         for(int i = 0; i < HOSTS; i++) {
-            Host host = createHost();
-            hostList.add(host);
+            hostList.add(createHost());
         }
 
         //Uses a VmAllocationPolicySimple by default
