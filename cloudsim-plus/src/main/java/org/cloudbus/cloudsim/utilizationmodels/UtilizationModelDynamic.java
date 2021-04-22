@@ -113,6 +113,20 @@ public class UtilizationModelDynamic extends UtilizationModelAbstract {
     }
 
     /**
+     * Creates a UtilizationModelDynamic with an initial resource utilization
+     * and max resource utilization, where the {@link Unit} is set as {@link Unit#PERCENTAGE}.
+     *
+     * <p><b>The utilization will not be dynamically incremented
+     * until that an increment function is defined by the {@link #setUtilizationUpdateFunction(Function)}.</b></p>
+     * @param initialUtilization the initial resource utilization, that the unit depends
+     *                           on the {@code unit} parameter
+     * @param maxResourceUtilization the maximum resource utilization
+     */
+    public UtilizationModelDynamic(final double initialUtilization, final double maxResourceUtilization) {
+        this(Unit.PERCENTAGE, initialUtilization, maxResourceUtilization);
+    }
+
+    /**
      * Creates a UtilizationModelDynamic that the initial resource utilization
      * and the {@link Unit} will be defined according to the given parameters.
      *
