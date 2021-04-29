@@ -61,7 +61,6 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 **NOTE**
 
 > If you are using CloudSim Plus in your research, please make sure you cite this paper: M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire. [CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,](https://doi.org/10.23919/INM.2017.7987304) in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7.
----
 
 ---
 **IMPORTANT**
