@@ -75,7 +75,6 @@ public class DynamicVmsArrival {
      */
     private static final int VMS = 4;
 
-
     /** Number of Cloudlets to create simultaneously. */
     private static final int CLOUDLETS = VMS;
     /** The length of each Cloudlet in number of Million Instructions (MI)*/
@@ -83,11 +82,16 @@ public class DynamicVmsArrival {
     private static final int CLOUDLET_PES = 1;
 
     /**
+     * The time to wait before destroying a VM after it becomes idle (in seconds).
+     */
+    public static final int IDLE_VM_DESTRUCTION_DELAY = 1;
+
+    /**
      * The time the Cloudlets are expected to finish,
-     * when the creation of new VMs will be requested.
+     * when the creation of new VMs will be requested (in seconds).
      * After at that time, there will be suitable Hosts available.
      */
-    private static final double EXPECTED_CLOUDLET_FINISH_TIME = CLOUDLET_LENGTH/HOST_MIPS + 1;
+    private static final double EXPECTED_CLOUDLET_FINISH_TIME = CLOUDLET_LENGTH/HOST_MIPS + IDLE_VM_DESTRUCTION_DELAY + 1;
 
     private final List<Host> hostList;
     private final List<Vm> vmList;
@@ -134,14 +138,14 @@ public class DynamicVmsArrival {
     }
 
     /**
-     * Creates a broker defining that idle VMs will be destructed right away,
+     * Creates a broker defining that idle VMs will be destructed after some delay,
      * instead of waiting the broker to shutdown to destroy them.
      * This enables freeing Hosts to place new VMs.
      * @return
      */
     private DatacenterBroker createBroker() {
         DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
-        broker.setVmDestructionDelay(0);
+        broker.setVmDestructionDelay(IDLE_VM_DESTRUCTION_DELAY);
         return broker;
     }
 
