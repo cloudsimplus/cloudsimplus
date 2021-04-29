@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.testbeds;
 
-import ch.qos.logback.classic.Level;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.apache.commons.math3.exception.MathIllegalArgumentException;
@@ -34,7 +33,6 @@ import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.Util;
-import org.cloudsimplus.util.Log;
 
 import java.time.LocalTime;
 import java.util.*;
@@ -551,16 +549,11 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         }
         printSimulationParameters();
 
-        Log.setLevel(Level.OFF);
-        try {
-            experimentsStartTimeSecs = Math.round(System.currentTimeMillis()/1000.0);
-            printProgress(0, isVerbose());
-            getStream(this.experiments).forEach(Experiment::run);
-            System.out.println();
-            experimentsExecutionTimeSecs = TimeUtil.elapsedSeconds(experimentsStartTimeSecs);
-        } finally {
-            Log.setLevel(Level.INFO);
-        }
+        experimentsStartTimeSecs = Math.round(System.currentTimeMillis()/1000.0);
+        printProgress(0, isVerbose());
+        getStream(this.experiments).forEach(Experiment::run);
+        System.out.println();
+        experimentsExecutionTimeSecs = TimeUtil.elapsedSeconds(experimentsStartTimeSecs);
 
         System.out.printf(
             "%nFinal simulation results for %d metrics in %d simulation runs -------------------%n",
