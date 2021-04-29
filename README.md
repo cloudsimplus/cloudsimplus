@@ -59,6 +59,14 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 
 > **NOTE**: If you are using CloudSim Plus in your research, please make sure you cite this paper: M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire. [CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,](https://doi.org/10.23919/INM.2017.7987304) in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7.
 
+---
+**IMPORTANT**
+- Developing and maintaining this project takes a huge effort. This way, any kind of [contribution](#contributing) is appreciated. You can start by giving it a star :star: using the button at the top of the GitHub page. And thanks in advance :clap:.
+- If you aren't intending to make changes and contribute back to the project, you shouldn't fork it. Your fork tends to become obsolete as the project is updated. 
+- If you're willing to use the framework to develop your own project on top of it, creating a fork is the worst way. You aren't supposed to change the framework code to implement your project, but to extend it by creating some subclasses. Unless you are planning to contribute your changes back, you'll end up with an incompatible and obsolete version of the framework. The project is constantly evolving and bugfixes are a priority. Your fork with personal changes will miss those updates and high performance improvements.
+- If you just came across this project and wants to check it latter, star it :star:, you'll wont regret that :wink:, it's a promise :pray:.
+---
+
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
 # 2. Main Exclusive Features
