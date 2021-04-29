@@ -534,9 +534,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     public void run() {
         createAllExperimentsBeforeFirstRun();
 
+        final String runWord = simulationRuns > 1 ? "runs" : "run";
         System.out.printf(
-            "Started %s for %d runs using %s (real local time: %s)%n",
-            getClass().getSimpleName(), simulationRuns, CloudSim.VERSION, LocalTime.now());
+            "Started %s for %d %s using %s (real local time: %s)%n",
+            getClass().getSimpleName(), simulationRuns, runWord, CloudSim.VERSION, LocalTime.now());
         if(description != null && !description.trim().isEmpty()){
             System.out.println(description);
         }
