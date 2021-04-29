@@ -976,17 +976,19 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void logPostponingCloudletExecution(final Cloudlet cloudlet) {
-        final String vmMsg = cloudlet.getVm() == Vm.NULL ?
+        final Vm vm = cloudlet.getVm();
+        final String vmMsg = vm == Vm.NULL ?
                                 "it couldn't be mapped to any VM" :
-                                String.format("bind Vm %d is not available", cloudlet.getVm().getId());
+                                String.format("bind Vm %d is not available", vm.getId());
 
         final String msg = String.format(
             "%s: %s: Postponing execution of Cloudlet %d because {}.",
             getSimulation().clockStr(), getName(), cloudlet.getId());
 
-        if(cloudlet.getVm().getSubmissionDelay() > 0)
-            LOGGER.info(msg, String.format("bind Vm %d was requested to be created with some delay", cloudlet.getVm().getId()));
-        else LOGGER.warn(msg, vmMsg);
+        if(vm.getSubmissionDelay() > 0) {
+            final String secs = vm.getSubmissionDelay() > 1 ? "seconds" : "second";
+            LOGGER.info(msg, String.format("bind Vm %d was requested to be created with %.2f %s delay", vm.getId(), vm.getSubmissionDelay(), secs));
+        } else LOGGER.warn(msg, vmMsg);
     }
 
     private void logCloudletCreationRequest(final Cloudlet cloudlet) {
