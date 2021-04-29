@@ -33,10 +33,12 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.StatisticalDistribution;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.util.TimeUtil;
+import org.cloudbus.cloudsim.util.Util;
 import org.cloudsimplus.util.Log;
 
 import java.time.LocalTime;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.IntStream;
@@ -67,6 +69,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private final boolean parallel;
 
+    private boolean showProgress;
+
     private int firstExperimentCreated = -1;
 
     /**
@@ -82,6 +86,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @see #getSimulationRuns()
      */
     private int simulationRuns;
+
+    private AtomicInteger finishedRuns;
 
     /**
      * @see #getExperimentsStartTimeSecs()
@@ -197,7 +203,9 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         if(simulationRuns <= 0)
             throw new IllegalArgumentException("Simulation runs must be greater than 0.");
         this.simulationRuns = simulationRuns;
+        this.finishedRuns = new AtomicInteger();
         this.parallel = parallel && simulationRuns > 1;
+        this.showProgress = true;
 
         if(batchesNumber < 0 || batchesNumber == 1) {
             throw new IllegalArgumentException("Batches number must be greater than 1. Use 0 just to disable the Batch Means method.");
@@ -546,6 +554,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         Log.setLevel(Level.OFF);
         try {
             experimentsStartTimeSecs = Math.round(System.currentTimeMillis()/1000.0);
+            printProgress(0, isVerbose());
             getStream(this.experiments).forEach(Experiment::run);
             System.out.println();
             experimentsExecutionTimeSecs = TimeUtil.elapsedSeconds(experimentsStartTimeSecs);
@@ -903,4 +912,43 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         return this;
     }
 
+    /**
+     * Checks if a progress bar is to be printed to show when each experiment run finishes.
+     * It's just printed when the number of simulations is greater than 1
+     * and experiments are not set as verbose. It's shown by default if those conditions are met.
+     * @return
+     */
+    public boolean isShowProgress() {
+        return showProgress;
+    }
+
+    /**
+     * Enable or disables a progress bar to show when each experiment run finishes.
+     * It's just printed when the number of simulations is greater than 1
+     * and experiments are not set as verbose.
+     * @param showProgress true to enable the progress bar, false to disable
+     * @return
+     */
+    public ExperimentRunner<T> setShowProgress(final boolean showProgress) {
+        this.showProgress = showProgress;
+        return this;
+    }
+
+    public int getFinishedRuns() {
+        return finishedRuns.get();
+    }
+
+    /**
+     * Increments the number of finished runs and returns the updated value.
+     * @return
+     */
+    final int incFinishedRuns() {
+        return finishedRuns.incrementAndGet();
+    }
+
+    final void printProgress(final int current, final boolean verbose) {
+        if(!verbose && simulationRuns > 1 && showProgress) {
+            Util.printProgress(current, simulationRuns);
+        }
+    }
 }

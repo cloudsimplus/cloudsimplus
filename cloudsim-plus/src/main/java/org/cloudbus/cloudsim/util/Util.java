@@ -1,5 +1,9 @@
 package org.cloudbus.cloudsim.util;
 
+import org.apache.commons.lang3.StringUtils;
+
+import static org.cloudbus.cloudsim.util.MathUtil.percent;
+
 /**
  * A class with general purpose utilities.
  * @author Manoel Campos da Silva Filho
@@ -18,5 +22,28 @@ public final class Util {
             Thread.sleep(millis);
         } catch (InterruptedException ignored) {
         }
+    }
+
+    /**
+     * Prints a progress bar at the command line for any general process
+     * represented by several tasks (steps).
+     * You can use it like the sample below:
+     * <pre>
+     * <code>
+     *
+     * final int total = 100;
+     * for (int i = 0; i <= total; i++) {
+     *     Util.sleep(120); //simulates some task (use your own code here)
+     *     Util.printProgress(i, total);
+     * }
+     * </code>
+     * </pre>
+     * @param current the index of the current finished task (step)
+     * @param total the total number of tasks (steps)
+     */
+    public static void printProgress(final int current, final int total){
+        final String progress = StringUtils.repeat('#', current);
+        final String format = "[%-"+total+"s]";
+        System.out.printf(format+" %3.0f%% (%d/%d)\r", progress, percent(current, total), current, total);
     }
 }

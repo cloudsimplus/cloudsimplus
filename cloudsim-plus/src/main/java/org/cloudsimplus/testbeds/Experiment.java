@@ -181,6 +181,9 @@ public abstract class Experiment extends AbstractExperiment {
         simulation.start();
         afterExperimentFinish(this);
         printResultsInternal();
+        if(runner != null) {
+            runner.printProgress(runner.incFinishedRuns(), isVerbose());
+        }
     }
 
     public boolean isFirstExperimentCreated(){
