@@ -43,7 +43,7 @@ without concerning the low-level details related to Cloud-based infrastructures 
  
 CloudSim Plus is a fork of CloudSim 3, 
 re-engineered primarily to avoid code duplication,
-provide [code reusability](https://en.wikipedia.org/wiki/Code_reuse) and ensure 
+provide [code reuse](https://en.wikipedia.org/wiki/Code_reuse) and ensure 
 compliance with software engineering principles and recommendations for extensibility improvements and accuracy. It's currently the state-of-the-art in cloud computing simulation framework. 
 
 The efforts dedicated to this project have been recognized by the [EU/Brasil Cloud FORUM](https://eubrasilcloudforum.eu). 
