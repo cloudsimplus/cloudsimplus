@@ -439,11 +439,11 @@ public final class MathUtil {
 
     /**
      * Computes the percentage of a current value related to a total value.
-     * @param current the current value to compute the percentage
+     * @param partial the partial value to compute the percentage
      * @param total the total value that represents 100%
      * @return the percentage of the current value in scale from 0 to 100%
      */
-    public static double percent(final double current, final double total){
-        return (current/total)*100.0;
+    public static double percent(final double partial, final double total){
+        return (partial/total)*100.0;
     }
 }
