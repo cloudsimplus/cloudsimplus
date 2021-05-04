@@ -3,6 +3,8 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.Objects;
+
 /**
  * A class that stores information about the suitability of
  * a {@link Host} for placing a {@link Vm}.
@@ -19,12 +21,21 @@ public final class HostSuitability {
     private boolean forRam;
     private boolean forBw;
     private boolean forPes;
+
+    /**
+     * The reason the Host is not suitable for a VM.
+     */
     private String reason;
 
-    public HostSuitability(){}
+    public HostSuitability(){/**/}
 
+    /**
+     * Creates a HostSuitability object.
+     * @param reason the reason the Host is not suitable for a VM.
+     * @see #toString()
+     */
     public HostSuitability(final String reason){
-        this.reason = reason;
+        this.reason = Objects.requireNonNull(reason);
     }
 
     /**
