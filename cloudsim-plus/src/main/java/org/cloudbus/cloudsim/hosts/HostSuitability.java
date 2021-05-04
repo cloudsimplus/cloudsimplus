@@ -137,13 +137,13 @@ public final class HostSuitability {
             return reason;
 
         reason = "lack of";
-        if(forPes)
+        if(!forPes)
             reason += " PEs,";
-        if(forRam)
+        if(!forRam)
             reason += " RAM,";
-        if(forStorage)
+        if(!forStorage)
             reason += " Storage,";
-        if(forBw)
+        if(!forBw)
             reason += " BW,";
 
         return reason.substring(0, reason.length()-1);
