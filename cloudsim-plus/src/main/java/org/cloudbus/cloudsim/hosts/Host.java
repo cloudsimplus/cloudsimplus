@@ -505,9 +505,10 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * Try to allocate resources to a new VM in the Host.
      *
      * @param vm Vm being started
-     * @return $true if the VM could be started in the host; $false otherwise
+     * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
+     * (if the Host doesn't have enough resources to allocate the Vm)
      */
-    boolean createVm(Vm vm);
+    HostSuitability createVm(Vm vm);
 
     /**
      * Destroys a VM running in the host and removes it from the {@link #getVmList()}.
@@ -529,10 +530,11 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * with the booking, no other VM will be selected to that Host.
      *
      * @param vm Vm being started
-     * @return $true if the VM could be started in the host; $false otherwise
+     * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
+     * (if the Host doesn't have enough resources to allocate the Vm)
      * @TODO: https://github.com/manoelcampos/cloudsim-plus/issues/94
      */
-    boolean createTemporaryVm(Vm vm);
+    HostSuitability createTemporaryVm(Vm vm);
 
     /**
      * Destroys a temporary VM created into the Host to book resources.

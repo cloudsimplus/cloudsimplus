@@ -366,19 +366,19 @@ public class HostSimpleTest {
     public void testVmCreate() {
         final VmSimple vm0 = VmTestUtil.createVm(0, HOST_MIPS / 2, 1, RAM / 2, BW / 2,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-        assertTrue(host.createVm(vm0));
+        assertTrue(host.createVm(vm0).fully());
 
         final VmSimple vm1 = VmTestUtil.createVm(1, HOST_MIPS, 1, RAM, BW,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-        assertFalse(host.createVm(vm1));
+        assertFalse(host.createVm(vm1).fully());
 
         final VmSimple vm2 = VmTestUtil.createVm(2, HOST_MIPS * 2, 1, RAM, BW,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-        assertFalse(host.createVm(vm2));
+        assertFalse(host.createVm(vm2).fully());
 
         final VmSimple vm3 = VmTestUtil.createVm(3, HOST_MIPS / 2, 2, RAM / 2, BW / 2,
                 A_QUARTER_STORAGE, new CloudletSchedulerTimeShared());
-        assertTrue(host.createVm(vm3));
+        assertTrue(host.createVm(vm3).fully());
     }
 
     @Test
@@ -388,7 +388,7 @@ public class HostSimpleTest {
                 VmTestUtil.createVm(
                         0, HOST_MIPS, 1, RAM, BW, STORAGE*2,
                         CloudletScheduler.NULL);
-        assertFalse(host.createVm(vm));
+        assertFalse(host.createVm(vm).fully());
     }
 
     @Test
@@ -398,7 +398,7 @@ public class HostSimpleTest {
                 VmTestUtil.createVm(
                         0, HOST_MIPS, 1, RAM, BW*2, STORAGE,
                         CloudletScheduler.NULL);
-        assertFalse(host.createVm(vm));
+        assertFalse(host.createVm(vm).fully());
     }
 
     @Test
@@ -454,7 +454,7 @@ public class HostSimpleTest {
                 VmTestUtil.createVm(
                         0, HOST_MIPS, 1, RAM*2, BW, STORAGE,
                         CloudletScheduler.NULL);
-        assertFalse(host.createVm(vm));
+        assertFalse(host.createVm(vm).fully());
     }
 
     @Test
@@ -464,7 +464,7 @@ public class HostSimpleTest {
                 VmTestUtil.createVm(
                         0, HOST_MIPS *2, 1, RAM, BW, STORAGE,
                         CloudletScheduler.NULL);
-        assertFalse(host.createVm(vm));
+        assertFalse(host.createVm(vm).fully());
     }
 
     @Test
@@ -478,7 +478,7 @@ public class HostSimpleTest {
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, b -> EasyMock.expect(b.getVmExecList()).andReturn(vmExecList));
         vm.setBroker(broker);
 
-        assertTrue(host.createVm(vm));
+        assertTrue(host.createVm(vm).fully());
         assertEquals(HOST_MIPS, host.getVmScheduler().getTotalAvailableMips());
 
         host.destroyVm(vm);
@@ -499,10 +499,10 @@ public class HostSimpleTest {
                 new CloudletSchedulerTimeShared());
         vm1.setBroker(broker);
 
-        assertTrue(host.createVm(vm0));
+        assertTrue(host.createVm(vm0).fully());
         assertEquals(HOST_MIPS, host.getVmScheduler().getTotalAvailableMips());
 
-        assertTrue(host.createVm(vm1));
+        assertTrue(host.createVm(vm1).fully());
         assertEquals(0, host.getVmScheduler().getTotalAvailableMips());
 
         host.destroyAllVms();

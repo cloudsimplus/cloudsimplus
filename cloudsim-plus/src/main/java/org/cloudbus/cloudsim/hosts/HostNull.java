@@ -103,7 +103,7 @@ final class HostNull implements Host {
     @Override public boolean isSuitableForVm(Vm vm) {
         return false;
     }
-    @Override public HostSuitability getSuitabilityFor(Vm vm) { return new HostSuitability(Vm.NULL); }
+    @Override public HostSuitability getSuitabilityFor(Vm vm) { return new HostSuitability(); }
     @Override public boolean isActive() { return false; }
     @Override public boolean hasEverStarted() { return false; }
     @Override public Host setActive(boolean activate) { return this; }
@@ -117,10 +117,10 @@ final class HostNull implements Host {
     @Override public double updateProcessing(double currentTime) {
         return 0.0;
     }
-    @Override public boolean createVm(Vm vm) {
-        return false;
+    @Override public HostSuitability createVm(Vm vm) {
+        return HostSuitability.NULL;
     }
-    @Override public boolean createTemporaryVm(Vm vm) { return false; }
+    @Override public HostSuitability createTemporaryVm(Vm vm) { return HostSuitability.NULL; }
     @Override public void destroyTemporaryVm(Vm vm) {/**/}
     @Override public void destroyVm(Vm vm) {/**/}
     @Override public void destroyAllVms() {/**/}

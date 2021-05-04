@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.PredicateType;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenterSimple;
@@ -572,7 +573,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private boolean processVmCreate(final SimEvent evt) {
         final Vm vm = (Vm) evt.getData();
 
-        final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm);
+        final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm).fully();
         if (hostAllocatedForVm) {
             vm.updateProcessing(vm.getHost().getVmScheduler().getAllocatedMips(vm));
         }
@@ -651,8 +652,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         vmAllocationPolicy.deallocateHostForVm(vm);
 
         targetHost.removeMigratingInVm(vm);
-        final boolean migrated = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
-        if(migrated) {
+        final HostSuitability suitability = vmAllocationPolicy.allocateHostForVm(vm, targetHost);
+        if(suitability.fully()) {
             ((VmSimple)vm).updateMigrationFinishListeners(targetHost);
             /*When the VM is destroyed from the source host, it's removed from the vmExecList.
             After migration, we need to add it again.*/
@@ -669,11 +670,13 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             updateHostsProcessing();
         }
 
-        if (migrated)
+        if (suitability.fully())
             LOGGER.info("{}: Migration of {} to {} is completed", getSimulation().clockStr(), vm, targetHost);
-        else LOGGER.error("{}: {}: Allocation of {} to the destination {} failed!", getSimulation().clockStr(), this, vm, targetHost);
+        else LOGGER.error(
+            "{}: {}: Allocation of {} to the destination {} failed due to {}!",
+            getSimulation().clockStr(), this, vm, targetHost, suitability);
 
-        onVmMigrationFinishListeners.forEach(listener -> listener.update(DatacenterVmMigrationEventInfo.of(listener, vm, migrated)));
+        onVmMigrationFinishListeners.forEach(listener -> listener.update(DatacenterVmMigrationEventInfo.of(listener, vm, suitability)));
     }
 
     /**

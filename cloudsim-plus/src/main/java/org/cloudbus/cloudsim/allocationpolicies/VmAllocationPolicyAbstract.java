@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigration;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
@@ -263,16 +264,16 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @return {@inheritDoc}
      */
     @Override
-    public boolean allocateHostForVm(final Vm vm) {
+    public HostSuitability allocateHostForVm(final Vm vm) {
         if (getHostList().isEmpty()) {
             LOGGER.error(
                 "{}: {}: {} could not be allocated because there isn't any Host for Datacenter {}",
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, getDatacenter().getId());
-            return false;
+            return new HostSuitability("Datacenter has no host.");
         }
 
         if (vm.isCreated()) {
-            return false;
+            return new HostSuitability("VM is already created");
         }
 
         final Optional<Host> optional = findHostForVm(vm);
@@ -281,18 +282,17 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         }
 
         LOGGER.warn("{}: {}: No suitable host found for {} in {}", vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, datacenter);
-        return false;
+        return new HostSuitability("No suitable host found");
     }
 
     @Override
     public <T extends Vm> List<T> allocateHostForVm(final Collection<T> vmCollection) {
         Objects.requireNonNull(vmCollection, "The list of VMs to allocate a host to cannot be null");
-        final List<T> notCreateVmList = vmCollection.stream().filter(vm -> !allocateHostForVm(vm)).collect(toList());
-        return notCreateVmList;
+        return vmCollection.stream().filter(vm -> !allocateHostForVm(vm).fully()).collect(toList());
     }
 
     @Override
-    public boolean allocateHostForVm(final Vm vm, final Host host) {
+    public HostSuitability allocateHostForVm(final Vm vm, final Host host) {
         if(vm instanceof VmGroup){
             return createVmsFromGroup((VmGroup) vm, host);
         }
@@ -300,25 +300,32 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         return createVm(vm, host);
     }
 
-    private boolean createVmsFromGroup(final VmGroup vmGroup, final Host host) {
-        final int createdVms = vmGroup.getVmList().stream().mapToInt(vm -> Conversion.boolToInt(createVm(vm, host))).sum();
+    private HostSuitability createVmsFromGroup(final VmGroup vmGroup, final Host host) {
+        int createdVms = 0;
+        final HostSuitability totalSuitability = new HostSuitability();
+        for (final Vm vm : vmGroup.getVmList()) {
+            final HostSuitability suitability = createVm(vm, host);
+            totalSuitability.setSuitability(suitability);
+            int i = Conversion.boolToInt(suitability.fully());
+            createdVms += i;
+        }
+
         vmGroup.setCreated(createdVms > 0);
         if(vmGroup.isCreated()) {
             vmGroup.setHost(host);
         }
-        return vmGroup.isCreated();
+
+        return totalSuitability;
     }
 
-    private boolean createVm(final Vm vm, final Host host) {
-        if (host.createVm(vm)) {
+    private HostSuitability createVm(final Vm vm, final Host host) {
+        final HostSuitability suitability = host.createVm(vm);
+        if (suitability.fully()) {
             LOGGER.info(
                 "{}: {}: {} has been allocated to {}",
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
-            return true;
-        }
-
-        LOGGER.error("{}: {} Creation of {} on {} failed", vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
-        return false;
+        } else LOGGER.error("{}: {} Creation of {} on {} failed", vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, host);
+        return suitability;
     }
 
     @Override

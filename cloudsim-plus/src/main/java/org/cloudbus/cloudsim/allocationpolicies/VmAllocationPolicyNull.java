@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
 
@@ -23,11 +24,11 @@ final class VmAllocationPolicyNull implements VmAllocationPolicy {
     @Override public boolean scaleVmVertically(VerticalVmScaling scaling) {
         return false;
     }
-    @Override public boolean allocateHostForVm(Vm vm) {
-        return false;
+    @Override public HostSuitability allocateHostForVm(Vm vm) {
+        return HostSuitability.NULL;
     }
-    @Override public boolean allocateHostForVm(Vm vm, Host host) {
-        return false;
+    @Override public HostSuitability allocateHostForVm(Vm vm, Host host) {
+        return HostSuitability.NULL;
     }
     @Override public <T extends Vm> List<T> allocateHostForVm(Collection<T> vmCollection) { return Collections.emptyList(); }
     @Override public void deallocateHostForVm(Vm vm) {/**/}

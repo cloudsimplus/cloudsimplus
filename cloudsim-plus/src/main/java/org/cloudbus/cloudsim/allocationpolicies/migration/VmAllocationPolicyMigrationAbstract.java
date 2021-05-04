@@ -245,7 +245,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     private boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
         final Vm tempVm = new VmSimple(vm);
 
-        if (!host.createTemporaryVm(tempVm)) {
+        if (!host.createTemporaryVm(tempVm).fully()) {
             return false;
         }
 
@@ -638,7 +638,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
         for (final Vm vm : savedAllocation.keySet()) {
             final Host host = savedAllocation.get(vm);
-            if (host.createTemporaryVm(vm))
+            if (host.createTemporaryVm(vm).fully())
                 vm.setCreated(true);
             else LOGGER.error("VmAllocationPolicy: Couldn't restore {} on {}", vm, host);
         }

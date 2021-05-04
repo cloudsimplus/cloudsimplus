@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.hosts.network;
 
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.hosts.HostSimple;
+import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
@@ -196,10 +197,10 @@ public class NetworkHost extends HostSimple {
      * @return {@inheritDoc}
      */
     @Override
-    public boolean createVm(final Vm vm) {
-        final boolean isVmCreated = super.createVm(vm);
+    public HostSuitability createVm(final Vm vm) {
+        final HostSuitability suitability = super.createVm(vm);
         setPacketScheduler(vm);
-        return isVmCreated;
+        return suitability;
     }
 
     private void setPacketScheduler(final Vm vm) {

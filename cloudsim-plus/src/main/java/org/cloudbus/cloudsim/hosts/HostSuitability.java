@@ -3,8 +3,6 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.Objects;
-
 /**
  * A class that stores information about the suitability of
  * a {@link Host} for placing a {@link Vm}.
@@ -15,14 +13,25 @@ import java.util.Objects;
  * @since CloudSim Plus 6.0.2
  */
 public final class HostSuitability {
-    private final Vm vm;
+    public static final HostSuitability NULL = new HostSuitability();
+
     private boolean forStorage;
     private boolean forRam;
     private boolean forBw;
     private boolean forPes;
+    private String reason;
 
-    HostSuitability(final Vm vm){
-        this.vm = Objects.requireNonNull(vm);
+    public HostSuitability(){}
+
+    public HostSuitability(final String reason){
+        this.reason = reason;
+    }
+
+    public void setSuitability(final HostSuitability other){
+        forPes = forPes && other.forPes;
+        forRam = forRam && other.forRam;
+        forBw = forBw && other.forBw;
+        forStorage = forStorage && other.forStorage;
     }
 
     /** Checks if the Host has storage suitability for the size of the VM.
@@ -105,5 +114,29 @@ public final class HostSuitability {
      */
     public boolean fully(){
         return forStorage && forRam && forBw && forPes;
+    }
+
+    /**
+     * Gets the reason the VM cannot be allocated to a host.
+     * @return the reason or a empty string if the VM can be allocated.
+     */
+    @Override
+    public String toString(){
+        if(fully())
+            return "";
+        if(reason != null)
+            return reason;
+
+        reason = "lack of";
+        if(forPes)
+            reason += " PEs,";
+        if(forRam)
+            reason += " RAM,";
+        if(forStorage)
+            reason += " Storage,";
+        if(forBw)
+            reason += " BW,";
+
+        return reason.substring(0, reason.length()-1);
     }
 }

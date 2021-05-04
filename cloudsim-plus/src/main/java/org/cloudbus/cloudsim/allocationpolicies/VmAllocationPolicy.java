@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.allocationpolicies;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmGroup;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -67,20 +68,22 @@ public interface VmAllocationPolicy {
      * Tries to allocate a host for a given {@link Vm} or {@link VmGroup}.
      *
      * @param vm the {@link Vm} or {@link VmGroup} to allocate a host to
-     * @return true if a host could be allocated; false otherwise
+     * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
+     * (if the Host doesn't have enough resources to allocate the Vm)
      * @see VmGroup
      */
-    boolean allocateHostForVm(Vm vm);
+    HostSuitability allocateHostForVm(Vm vm);
 
     /**
      * Tries to allocate a specified host for a given {@link Vm} or {@link VmGroup}.
      *
      * @param vm the {@link Vm} or {@link VmGroup} to allocate a host to
      * @param host the host to allocate to the given {@link Vm} or {@link VmGroup}
-     * @return true if the host could be allocated; false otherwise
+     * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
+     * (if the Host doesn't have enough resources to allocate the Vm)
      * @see VmGroup
      */
-    boolean allocateHostForVm(Vm vm, Host host);
+    HostSuitability allocateHostForVm(Vm vm, Host host);
 
     /**
      * Tries to allocate hosts for a collection of {@link Vm}s or {@link VmGroup}s.

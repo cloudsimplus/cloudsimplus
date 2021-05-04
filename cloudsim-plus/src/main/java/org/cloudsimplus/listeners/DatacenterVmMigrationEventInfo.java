@@ -24,6 +24,7 @@
 package org.cloudsimplus.listeners;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -48,14 +49,20 @@ public interface DatacenterVmMigrationEventInfo extends VmDatacenterEventInfo {
     boolean isMigrationSuccessful();
 
     /**
+     * Gets information about the suitability of the Host for the given VM.
+     * @return
+     */
+    HostSuitability getHostSuitability();
+
+    /**
      * Gets a VmDatacenterEventInfo instance from the given parameters.
      * The {@link #getDatacenter() Datacenter} attribute is defined as the {@link Datacenter} where the {@link Vm}
      * is running and the {@link #getTime()} is the current simulation time..
-     *
      * @param listener the listener to be notified about the event
      * @param vm the {@link Vm} that fired the event
+     * @param suitability information about the suitability of the Host for the given VM.
      */
-    static DatacenterVmMigrationEventInfo of(final EventListener<DatacenterVmMigrationEventInfo> listener, final Vm vm, final boolean migrated) {
+    static DatacenterVmMigrationEventInfo of(final EventListener<DatacenterVmMigrationEventInfo> listener, final Vm vm, final HostSuitability suitability) {
         final double time = vm.getSimulation().clock();
         return new DatacenterVmMigrationEventInfo() {
             @Override
@@ -70,12 +77,17 @@ public interface DatacenterVmMigrationEventInfo extends VmDatacenterEventInfo {
 
             @Override
             public boolean isMigrationSuccessful() {
-                return migrated;
+                return suitability.fully();
             }
 
             @Override
             public double getTime() {
                 return time;
+            }
+
+            @Override
+            public HostSuitability getHostSuitability() {
+                return suitability;
             }
 
             @Override

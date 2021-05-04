@@ -3,6 +3,7 @@ package org.cloudbus.cloudsim.allocationpolicies.migration;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.autoscaling.VerticalVmScaling;
@@ -20,11 +21,9 @@ import java.util.function.BiFunction;
 final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigration {
     @Override public Datacenter getDatacenter() { return Datacenter.NULL; }
     @Override public void setDatacenter(Datacenter datacenter) {/**/}
-    @Override public boolean allocateHostForVm(Vm vm) {
-        return false;
-    }
-    @Override public boolean allocateHostForVm(Vm vm, Host host) {
-        return false;
+    @Override public HostSuitability allocateHostForVm(Vm vm) { return HostSuitability.NULL; }
+    @Override public HostSuitability allocateHostForVm(Vm vm, Host host) {
+        return HostSuitability.NULL;
     }
     @Override public <T extends Vm> List<T> allocateHostForVm(Collection<T> vmCollection) { return Collections.emptyList(); }
     @Override public boolean scaleVmVertically(VerticalVmScaling scaling) {

@@ -361,8 +361,9 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public boolean createVm(final Vm vm) {
-        if(createVmInternal(vm)) {
+    public HostSuitability createVm(final Vm vm) {
+        final HostSuitability suitability = createVmInternal(vm);
+        if(suitability.fully()) {
             addVmToCreatedList(vm);
             vm.setHost(this);
             vm.setCreated(true);
@@ -370,28 +371,27 @@ public class HostSimple implements Host {
             if(vm.getStartTime() < 0) {
                vm.setStartTime(getSimulation().clock());
             }
-
-            return true;
         }
 
-        return false;
+        return suitability;
     }
 
     @Override
-    public boolean createTemporaryVm(final Vm vm) {
+    public HostSuitability createTemporaryVm(final Vm vm) {
         return createVmInternal(vm);
     }
 
-    private boolean createVmInternal(final Vm vm) {
+    private HostSuitability createVmInternal(final Vm vm) {
         if(vm instanceof VmGroup){
-            return false;
+            return new HostSuitability("Just internal VMs inside a VmGroup can be created, not the VmGroup itself.");
         }
 
-        if(!allocateResourcesForVm(vm, false)){
-            return false;
+        final HostSuitability suitability = allocateResourcesForVm(vm, false);
+        if(suitability.fully()){
+            vmList.add(vm);
         }
 
-        return vmList.add(vm);
+        return suitability;
     }
 
     /**
@@ -399,17 +399,19 @@ public class HostSimple implements Host {
      *
      * @param vm the VM to try allocating resources to
      * @param inMigration If the VM is migrating into the Host or it is being just created for the first time.
-     * @return true if the Vm was placed into the host, false if the Host doesn't have enough resources to allocate the Vm
+     * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
+     * (if the Host doesn't have enough resources to allocate the Vm)
      */
-    private boolean allocateResourcesForVm(final Vm vm, final boolean inMigration){
-        if(!isSuitableForVm(vm, inMigration, true).fully()) {
-            return false;
+    private HostSuitability allocateResourcesForVm(final Vm vm, final boolean inMigration){
+        final HostSuitability suitability = isSuitableForVm(vm, inMigration, true);
+        if(!suitability.fully()) {
+            return suitability;
         }
 
         vm.setInMigration(inMigration);
         allocateResourcesForVm(vm);
 
-        return true;
+        return suitability;
     }
 
     private void allocateResourcesForVm(Vm vm) {
@@ -469,7 +471,7 @@ public class HostSimple implements Host {
      * @return a {@link HostSuitability} object that indicate for which resources the Host is suitable or not for the given VM
      */
     private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
-        final HostSuitability suitability = new HostSuitability(vm);
+        final HostSuitability suitability = new HostSuitability();
 
         suitability.setForStorage(storage.isAmountAvailable(vm.getStorage()));
         if (!suitability.forStorage()) {
@@ -951,7 +953,7 @@ public class HostSimple implements Host {
         }
 
         vmsMigratingIn.add(vm);
-        if(!allocateResourcesForVm(vm, true)){
+        if(!allocateResourcesForVm(vm, true).fully()){
             vmsMigratingIn.remove(vm);
             return false;
         }

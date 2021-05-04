@@ -63,7 +63,7 @@ public class VmAllocationPolicySimpleTest {
     @Test
     public void allocateHostForVm_WhenOneVmIsGiven_AllocateHostWithLessUsedPesToIt() {
         final Vm vm = VmTestUtil.createVm(0, 1000, 2);
-        assertTrue(policy.allocateHostForVm(vm));
+        assertTrue(policy.allocateHostForVm(vm).fully());
 
         final Host allocatedHostForVm = vm.getHost();
         final Host hostWithLessPes = policy.getDatacenter().getHostList().get(2);
@@ -76,7 +76,7 @@ public class VmAllocationPolicySimpleTest {
         final Vm vm = VmTestUtil.createVm(
             0, 1000, 2, 1, 1,
             HOST_BASE_STORAGE, CloudletScheduler.NULL);
-        assertTrue(policy.allocateHostForVm(vm), vm + " couldn't be allocated to " + hostWithMoreFreePes);
+        assertTrue(policy.allocateHostForVm(vm).fully(), vm + " couldn't be allocated to " + hostWithMoreFreePes);
 
         final Host allocatedHostForVm = vm.getHost();
         assertEquals(hostWithMoreFreePes, allocatedHostForVm);
@@ -85,6 +85,6 @@ public class VmAllocationPolicySimpleTest {
     @Test
     public void allocateHostForVm_WhenOneVmIsGivenAndNoHostHasResourcesToRunIt() {
         final Vm vm = VmTestUtil.createVm(0, 1000, 10);
-        assertFalse(policy.allocateHostForVm(vm));
+        assertFalse(policy.allocateHostForVm(vm).fully());
     }
 }
