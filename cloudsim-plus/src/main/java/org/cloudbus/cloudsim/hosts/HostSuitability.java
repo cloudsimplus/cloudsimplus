@@ -133,19 +133,20 @@ public final class HostSuitability {
     public String toString(){
         if(fully())
             return "";
+
         if(reason != null)
             return reason;
 
-        reason = "lack of";
+        String msg = "lack of";
         if(!forPes)
-            reason += " PEs,";
+            msg += " PEs,";
         if(!forRam)
-            reason += " RAM,";
+            msg += " RAM,";
         if(!forStorage)
-            reason += " Storage,";
+            msg += " Storage,";
         if(!forBw)
-            reason += " BW,";
+            msg += " BW,";
 
-        return reason.substring(0, reason.length()-1);
+        return msg.substring(0, msg.length()-1);
     }
 }
