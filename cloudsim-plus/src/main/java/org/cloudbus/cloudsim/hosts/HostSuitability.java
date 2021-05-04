@@ -27,6 +27,15 @@ public final class HostSuitability {
         this.reason = reason;
     }
 
+    /**
+     * Update the Host suitability based on another instance,
+     * making this object represent a combined suitability of
+     * different VMs for a single Host.
+     * If at the end the {@link #fully() suitability} is false,
+     * that means the Host was not suitable for some VM(s) from other suitability instances.
+     * @param other
+     * @see org.cloudbus.cloudsim.vms.VmGroup
+     */
     public void setSuitability(final HostSuitability other){
         forPes = forPes && other.forPes;
         forRam = forRam && other.forRam;
