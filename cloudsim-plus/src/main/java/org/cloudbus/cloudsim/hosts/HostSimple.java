@@ -368,9 +368,7 @@ public class HostSimple implements Host {
             vm.setHost(this);
             vm.setCreated(true);
             vm.notifyOnHostAllocationListeners();
-            if(vm.getStartTime() < 0) {
-               vm.setStartTime(getSimulation().clock());
-            }
+            vm.setStartTime(getSimulation().clock());
         }
 
         return suitability;

@@ -694,7 +694,8 @@ public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm
     double getStartTime();
 
     /**
-     * Sets the time the VM was created into some Host for the first time.
+     * Sets the time the VM was created into some Host for the first time
+     * if the VM was never created yet in any host.
      * The value -1 means the VM was not created yet.
      *
      * @param startTime the start time to set (in seconds)
