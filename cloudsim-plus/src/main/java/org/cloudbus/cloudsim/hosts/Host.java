@@ -530,7 +530,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      *
      * @param vm Vm being started
      * @return $true if the VM could be started in the host; $false otherwise
-     * @TODO https://github.com/manoelcampos/cloudsim-plus/issues/94
+     * TODO: https://github.com/manoelcampos/cloudsim-plus/issues/94
      */
     boolean createTemporaryVm(Vm vm);
 
@@ -539,7 +539,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      *
      * @param vm the VM
      * @see #createTemporaryVm(Vm)
-     * @TODO https://github.com/manoelcampos/cloudsim-plus/issues/94
+     * TODO: https://github.com/manoelcampos/cloudsim-plus/issues/94
      */
     void destroyTemporaryVm(Vm vm);
 
