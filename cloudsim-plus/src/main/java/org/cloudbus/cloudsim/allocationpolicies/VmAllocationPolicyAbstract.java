@@ -302,10 +302,10 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     private HostSuitability createVmsFromGroup(final VmGroup vmGroup, final Host host) {
         int createdVms = 0;
-        final HostSuitability totalSuitability = new HostSuitability();
+        final HostSuitability hostSuitabilityForVmGroup = new HostSuitability();
         for (final Vm vm : vmGroup.getVmList()) {
             final HostSuitability suitability = createVm(vm, host);
-            totalSuitability.setSuitability(suitability);
+            hostSuitabilityForVmGroup.setSuitability(suitability);
             int i = Conversion.boolToInt(suitability.fully());
             createdVms += i;
         }
@@ -315,7 +315,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             vmGroup.setHost(host);
         }
 
-        return totalSuitability;
+        return hostSuitabilityForVmGroup;
     }
 
     private HostSuitability createVm(final Vm vm, final Host host) {
