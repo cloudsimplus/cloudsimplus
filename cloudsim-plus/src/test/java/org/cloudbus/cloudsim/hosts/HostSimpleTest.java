@@ -14,8 +14,10 @@ import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
+import org.cloudbus.cloudsim.resources.Bandwidth;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.resources.Ram;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
@@ -33,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -525,5 +528,46 @@ public class HostSimpleTest {
             broker.getVmExecList().contains(vm),
             vm + " was destroyed into the Host but was not removed from the broker's VM exec List.");
     }
+
+    @Test
+    public void testGetRelativeRamUtilization() {
+        final Host host = createHostSimple(0, 2);
+        final Vm vm = EasyMock.createMock(Vm.class);
+        //Considers the VM has half of the host capacity
+        final long vmRamCapacity = RAM / 2;
+        final Ram ram = new Ram(vmRamCapacity);
+        //Considers the VM is using half of its BW capacity
+        ram.allocateResource(vmRamCapacity/2);
+
+        EasyMock.expect(vm.getRam()).andReturn(ram).anyTimes();
+        EasyMock.expect(vm.getResources()).andReturn(Collections.singletonList(ram)).once();
+        EasyMock.replay(vm);
+
+        //This way, the VM is using a quarter of the Host capacity
+        final double expected = 0.25;
+        final double actual = host.getRelativeRamUtilization(vm);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void testGetRelativeBwUtilization() {
+        final Host host = createHostSimple(0, 2);
+        final Vm vm = EasyMock.createMock(Vm.class);
+        //Considers the VM has half of the host capacity
+        final long vmBwCapacity = BW / 2;
+        final Bandwidth bw = new Bandwidth(vmBwCapacity);
+        //Considers the VM is using half of its BW capacity
+        bw.allocateResource(vmBwCapacity/2);
+
+        EasyMock.expect(vm.getBw()).andReturn(bw).anyTimes();
+        EasyMock.expect(vm.getResources()).andReturn(Collections.singletonList(bw)).once();
+        EasyMock.replay(vm);
+
+        //This way, the VM is using a quarter of the Host capacity
+        final double expected = 0.25;
+        final double actual = host.getRelativeBwUtilization(vm);
+        assertEquals(expected, actual);
+    }
+
 }
 

@@ -48,7 +48,7 @@ public interface Machine extends AbstractMachine {
      * @return the relative VM RAM usage percent (from 0 to 1)
      */
     default double getRelativeRamUtilization(final Vm vm){
-        return vm.getRam().getPercentUtilization() * getRam().getPercentUtilization();
+        return vm.getRam().getAllocatedResource() / (double)getRam().getCapacity();
     }
 
     /**
@@ -59,6 +59,6 @@ public interface Machine extends AbstractMachine {
      * @return the relative VM BW usage percent (from 0 to 1)
      */
     default double getRelativeBwUtilization(final Vm vm){
-        return vm.getBw().getPercentUtilization() * getBw().getPercentUtilization();
+        return vm.getBw().getAllocatedResource() / (double)getBw().getCapacity();
     }
 }
