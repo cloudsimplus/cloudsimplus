@@ -44,7 +44,7 @@ public final class Util {
     public static void printProgress(final int current, final int total){
         final String progress = StringUtils.repeat('#', current);
 
-        final String format = "%120s[%-"+total+"s] %3.0f%% (%d/%d)\n";
+        final String format = "%120s[%-"+total+"s] %3.0f%% (%d/%d)\r";
         System.out.printf(format, " ", progress, percent(current, total), current, total);
     }
 }
