@@ -561,6 +561,8 @@ public class HostSimpleTest {
         final Vm vm = EasyMock.createMock(Vm.class);
         vmResource.allocateResource(usedResource);
 
+        /* When the given VM resource function is called during tests,
+        * it must return the provided resource instance. */
         EasyMock.expect(vmResourceFunction.apply(vm)).andReturn(vmResource).once();
         EasyMock.expect(vm.getResources()).andReturn(Collections.singletonList(vmResource)).once();
         EasyMock.replay(vm);
