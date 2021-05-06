@@ -680,7 +680,11 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         final List<Double> metricValues = metricEntry.getValue();
         final SummaryStatistics stats = computeFinalStatistics(metricValues);
         final String valuesStr = metricValues.stream().map(v -> String.format("%.2f", v)).collect(joining(", "));
-        System.out.printf("# %s: %.2f (samples: %s)%n", metricEntry.getKey(), stats.getMean(), valuesStr);
+        final String sampleWord = metricValues.size() > 1 ? "samples" : "sample";
+        System.out.printf(
+            "# %s: %.2f (%d %s: %s)%n",
+            metricEntry.getKey(), stats.getMean(),
+            metricValues.size(), sampleWord, valuesStr);
 
         if (simulationRuns > 1) {
             showConfidenceInterval(stats);
