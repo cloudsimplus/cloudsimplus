@@ -14,10 +14,7 @@ import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.Bandwidth;
-import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
@@ -37,6 +34,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -531,16 +529,8 @@ public class HostSimpleTest {
     @Test
     public void testGetRelativeRamUtilization() {
         final Host host = createHostSimple(0, 2);
-        final Vm vm = EasyMock.createMock(Vm.class);
-        //Considers the VM has half of the host capacity
-        final long vmRamCapacity = RAM / 2;
-        final Ram ram = new Ram(vmRamCapacity);
-        //Considers the VM is using half of its BW capacity
-        ram.allocateResource(vmRamCapacity/2);
-
-        EasyMock.expect(vm.getRam()).andReturn(ram).once();
-        EasyMock.expect(vm.getResources()).andReturn(Collections.singletonList(ram)).once();
-        EasyMock.replay(vm);
+        //Considers the VM has half of the host RAM as capacity and is using half of that capacity
+        final Vm vm = createMockVm(new Ram(RAM/2), Vm::getRam, RAM/4);
 
         //This way, the VM is using a quarter of the Host capacity
         final double expected = 0.25;
@@ -551,21 +541,31 @@ public class HostSimpleTest {
     @Test
     public void testGetRelativeBwUtilization() {
         final Host host = createHostSimple(0, 2);
-        final Vm vm = EasyMock.createMock(Vm.class);
-        //Considers the VM has half of the host capacity
-        final long vmBwCapacity = BW / 2;
-        final Bandwidth bw = new Bandwidth(vmBwCapacity);
-        //Considers the VM is using half of its BW capacity
-        bw.allocateResource(vmBwCapacity/2);
-
-        EasyMock.expect(vm.getBw()).andReturn(bw).once();
-        EasyMock.expect(vm.getResources()).andReturn(Collections.singletonList(bw)).once();
-        EasyMock.replay(vm);
+        //Considers the VM has half of the host BW as capacity and is using half of that capacity
+        final Vm vm = createMockVm(new Bandwidth(BW/2), Vm::getBw, BW/4);
 
         //This way, the VM is using a quarter of the Host capacity
         final double expected = 0.25;
         final double actual = host.getRelativeBwUtilization(vm);
         assertEquals(expected, actual);
+    }
+
+    /**
+     * Creates a mock VM to test the utilization of some resource
+     * @param vmResource a new instance of a resource to be attached to the VM and to be tested
+     * @param vmResourceFunction the VM function that is able to get the provided resource stored on the VM
+     * @param usedResource the amount of resource to be allocated from the total capacity
+     * @return
+     */
+    private Vm createMockVm(final ResourceManageable vmResource, final Function<Vm, Resource> vmResourceFunction, final long usedResource){
+        final Vm vm = EasyMock.createMock(Vm.class);
+        vmResource.allocateResource(usedResource);
+
+        EasyMock.expect(vmResourceFunction.apply(vm)).andReturn(vmResource).once();
+        EasyMock.expect(vm.getResources()).andReturn(Collections.singletonList(vmResource)).once();
+        EasyMock.replay(vm);
+
+        return vm;
     }
 
 }
