@@ -71,6 +71,23 @@ public interface AbstractMachine extends ChangeableId, Resourceful {
     Simulation getSimulation();
 
     /**
+     * Gets the last time the machine was started up (in seconds).
+     * The value -1 means it was not started yet.
+     *
+     * @return
+     */
+    double getStartTime();
+
+    /**
+     * Sets the current machine startup time.
+     * The value -1 means it was not started yet.
+     *
+     * @param startTime the start time to set (in seconds)
+     * @return
+     */
+    AbstractMachine setStartTime(double startTime);
+
+    /**
      * Checks if the Machine has been idle for a given amount of time (in seconds).
      * @param time the time interval to check if the Machine has been idle (in seconds).
      *             If time is zero, it will be checked if the Machine is currently idle.

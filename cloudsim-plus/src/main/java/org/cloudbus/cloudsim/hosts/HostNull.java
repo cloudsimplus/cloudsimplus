@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.hosts;
 
+import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
@@ -94,8 +95,8 @@ final class HostNull implements Host {
         return Host.NULL;
     }
     @Override public double getStartTime() { return -1; }
+    @Override public AbstractMachine setStartTime(double startTime) { return this; }
     @Override public double getFirstStartTime() { return -1; }
-    @Override public void setStartTime(double startTime) {/**/}
     @Override public double getShutdownTime() { return 0; }
     @Override public boolean isFailed() {
         return false;

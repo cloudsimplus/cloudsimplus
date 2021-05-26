@@ -767,7 +767,7 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public void setStartTime(final double startTime) {
+    public Host setStartTime(final double startTime) {
         if(startTime < 0){
             throw new IllegalArgumentException("Host start time cannot be negative");
         }
@@ -779,6 +779,7 @@ public class HostSimple implements Host {
 
         //If the Host is being activated or re-activated, the shutdown time is reset
         this.shutdownTime = -1;
+        return this;
     }
 
     @Override

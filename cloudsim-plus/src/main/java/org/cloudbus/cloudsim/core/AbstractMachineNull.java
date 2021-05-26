@@ -33,6 +33,8 @@ final class AbstractMachineNull implements AbstractMachine {
     @Override public Simulation getSimulation() {
         return Simulation.NULL;
     }
+    @Override public double getStartTime() { return 0; }
+    @Override public AbstractMachine setStartTime(double startTime) { return this; }
     @Override public double getLastBusyTime() { return 0; }
     @Override public boolean isIdle() { return true; }
     @Override public void setId(long id) {/**/}
