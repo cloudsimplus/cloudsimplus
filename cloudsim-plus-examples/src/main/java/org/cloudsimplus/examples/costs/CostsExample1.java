@@ -52,7 +52,7 @@ import java.util.List;
  * other ones won't be created due to lack of available Hosts.
  *
  * @author Manoel Campos da Silva Filho
- * @since CloudSim Plus 6.2.6
+ * @since CloudSim Plus 6.2.7
  */
 public class CostsExample1 {
     /**
