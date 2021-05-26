@@ -94,7 +94,7 @@ public class VmCost {
                                     getDcCharacteristics().getCostPerSecond()/hostMips :
                                     0.0;
 
-        return costPerMI * getVm().getTotalMipsCapacity() * getVm().getTotalExecutionTime();
+        return costPerMI * vm.getTotalMipsCapacity() * vm.getTotalExecutionTime();
     }
 
     /**
