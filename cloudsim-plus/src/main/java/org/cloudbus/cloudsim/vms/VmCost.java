@@ -26,7 +26,7 @@ package org.cloudbus.cloudsim.vms;
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
 
 /**
- * Computes the monetary cost to run a given VM,
+ * Computes the monetary ($) cost to run a given VM,
  * including the {@link #getTotalCost() total cost}
  * and individual resource cost, namely:
  * the processing power, bandwidth, memory and storage cost.
@@ -39,7 +39,7 @@ public class VmCost {
     private final Vm vm;
 
     /**
-     * Creates a VmCost object to compute the monetary cost to run a given VM.
+     * Creates an instance to compute the monetary cost ($) to run a given VM.
      * @param vm the VM to compute its monetary cost
      */
     public VmCost(Vm vm) {
@@ -64,7 +64,7 @@ public class VmCost {
     }
 
     /**
-     * Gets the total monetary cost of the VM's allocated memory.
+     * Gets the total monetary cost ($) of the VM's allocated memory.
      *
      * @return
      */
@@ -73,7 +73,7 @@ public class VmCost {
     }
 
     /**
-     * Gets the total monetary cost of the VM's allocated BW.
+     * Gets the total monetary cost ($) of the VM's allocated BW.
      *
      * @return
      */
@@ -82,7 +82,7 @@ public class VmCost {
     }
 
     /**
-     * Gets the total monetary cost of processing power allocated from the PM hosting the VM.
+     * Gets the total monetary cost ($) of processing power allocated from the PM hosting the VM.
      *
      * @return
      */
@@ -97,7 +97,7 @@ public class VmCost {
     }
 
     /**
-     * Gets the total monetary cost of the VM's allocated storage.
+     * Gets the total monetary cost ($) of the VM's allocated storage.
      *
      * @return getStorageCost
      */
@@ -106,7 +106,7 @@ public class VmCost {
     }
 
     /**
-     * Gets the total monetary cost of all resources allocated to the VM,
+     * Gets the total monetary cost ($) of all resources allocated to the VM,
      * namely the processing power, bandwidth, memory and storage.
      *
      * @return
