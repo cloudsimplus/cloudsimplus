@@ -82,7 +82,8 @@ public class VmCost {
     }
 
     /**
-     * Gets the total monetary cost ($) of processing power allocated from the PM hosting the VM.
+     * Gets the total monetary cost ($) of processing power allocated from the PM hosting the VM,
+     * considering the VM's PEs number and total execution time.
      *
      * @return
      */
@@ -93,7 +94,7 @@ public class VmCost {
                                     getDcCharacteristics().getCostPerSecond()/hostMips :
                                     0.0;
 
-        return costPerMI * getVm().getTotalMipsCapacity();
+        return costPerMI * getVm().getTotalMipsCapacity() * getVm().getTotalExecutionTime();
     }
 
     /**
