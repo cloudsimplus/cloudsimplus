@@ -24,7 +24,6 @@
 package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.datacenters.DatacenterCharacteristics;
-import org.cloudbus.cloudsim.resources.Pe;
 
 /**
  * Computes the monetary cost to run a given VM,
@@ -88,16 +87,13 @@ public class VmCost {
      * @return
      */
     public double getProcessingCost() {
-        final double hostMips = vm.getHost().getPeList().stream()
-                .findFirst()
-                .map(Pe::getCapacity)
-                .orElse(0L);
+        final double hostMips = vm.getHost().getMips();
 
         final double costPerMI = hostMips > 0 ?
                                     getDcCharacteristics().getCostPerSecond()/hostMips :
                                     0.0;
 
-        return costPerMI * getVm().getMips() * getVm().getNumberOfPes();
+        return costPerMI * getVm().getTotalMipsCapacity();
     }
 
     /**
