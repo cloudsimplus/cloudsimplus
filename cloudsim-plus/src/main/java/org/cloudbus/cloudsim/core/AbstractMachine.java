@@ -91,7 +91,7 @@ public interface AbstractMachine extends ChangeableId, Resourceful {
     }
 
     /**
-     * Gets the interval interval the Machine has been idle.
+     * Gets the time interval the Machine has been idle.
      * @return the idle time interval (in seconds) or 0 if the Machine is not idle
      */
     default double getIdleInterval() {
