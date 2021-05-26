@@ -63,6 +63,27 @@ public class VmSimpleTest {
     }
 
     @Test
+    public void testSetStartTimeValid0() {
+        final int expected = 0;
+        vm.setStartTime(expected);
+        assertEquals(expected, vm.getStartTime());
+    }
+
+    @Test
+    public void testSetStartTimeValid1() {
+        final int expected = 1;
+        vm.setStartTime(expected);
+        assertEquals(expected, vm.getStartTime());
+    }
+
+    @Test
+    public void testSetStartTimeInvalid() {
+        final int invalid = -2;
+        vm.setStartTime(invalid);
+        assertNotEquals(invalid, vm.getStartTime());
+    }
+
+    @Test
     public void testSetRam() {
         vm.setRam(VmTestUtil.RAM / 2);
         assertEquals(VmTestUtil.RAM / 2, vm.getRam().getCapacity());
