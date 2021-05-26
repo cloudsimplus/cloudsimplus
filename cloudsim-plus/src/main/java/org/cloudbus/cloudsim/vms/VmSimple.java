@@ -438,6 +438,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         }
 
         this.startTime = startTime;
+        setLastBusyTime(startTime);
         return this;
     }
 
@@ -468,6 +469,10 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     private void setLastBusyTime() {
         this.lastBusyTime = getSimulation().clock();
+    }
+
+    private void setLastBusyTime(final double time) {
+        this.lastBusyTime = time;
     }
 
     @Override

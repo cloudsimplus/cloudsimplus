@@ -84,6 +84,13 @@ public class VmSimpleTest {
     }
 
     @Test
+    public void testSetLastBusyTimeForCreatedVm() {
+        final int expected = 1;
+        vm.setStartTime(expected);
+        assertEquals(expected, vm.getLastBusyTime());
+    }
+
+    @Test
     public void testSetRam() {
         vm.setRam(VmTestUtil.RAM / 2);
         assertEquals(VmTestUtil.RAM / 2, vm.getRam().getCapacity());
