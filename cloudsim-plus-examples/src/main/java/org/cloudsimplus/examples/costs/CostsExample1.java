@@ -205,17 +205,22 @@ public class CostsExample1 {
         System.out.println();
         double totalCost = 0.0;
         int totalNonIdleVms = 0;
+        double processingTotalCost = 0, memoryTotaCost = 0, storageTotalCost = 0, bwTotalCost = 0;
         for (final Vm vm : broker0.getVmCreatedList()) {
             final VmCost cost = new VmCost(vm);
+            processingTotalCost += cost.getProcessingCost();
+            memoryTotaCost += cost.getMemoryCost();
+            storageTotalCost += cost.getStorageCost();
+            bwTotalCost += cost.getBwCost();
+
             totalCost += cost.getTotalCost();
             totalNonIdleVms += vm.getTotalExecutionTime() > 0 ? 1 : 0;
-            /*If you want to access the values for each printed cost,
-            * check the getters available on the class. */
             System.out.println(cost);
         }
 
         System.out.printf(
-            "Total cost ($) for %d created VMs from %d in %s: %69.2f$%n",
-            totalNonIdleVms, broker0.getVmsNumber(), datacenter0, totalCost);
+            "Total cost ($) for %3d created VMs from %3d in DC %d: %8.2f$ %13.2f$ %17.2f$ %12.2f$ %15.2f$%n",
+            totalNonIdleVms, broker0.getVmsNumber(), datacenter0.getId(),
+            processingTotalCost, memoryTotaCost, storageTotalCost, bwTotalCost, totalCost);
     }
 }
