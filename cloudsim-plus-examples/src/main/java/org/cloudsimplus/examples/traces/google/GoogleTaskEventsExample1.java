@@ -115,7 +115,7 @@ public class GoogleTaskEventsExample1 {
     private static final int  VM_MIPS = 1000;
     private static final long VM_RAM = 500; //in Megabytes
     private static final long VM_BW = 100; //in Megabits/s
-    private static final long VM_SIZE = 1000; //in Megabytes
+    private static final long VM_SIZE_MB = 1000; //in Megabytes
 
     private final CloudSim simulation;
     private List<DatacenterBroker> brokers;
@@ -203,7 +203,7 @@ public class GoogleTaskEventsExample1 {
         final double maxRamUsagePercent = positive(event.getResourceRequestForRam(), Conversion.HUNDRED_PERCENT);
         final UtilizationModelDynamic utilizationRam = new UtilizationModelDynamic(0, maxRamUsagePercent);
 
-        final double sizeInMB    = event.getResourceRequestForLocalDiskSpace() * VM_SIZE + 1;
+        final double sizeInMB    = event.getResourceRequestForLocalDiskSpace() * VM_SIZE_MB + 1;
         final long   sizeInBytes = (long) Math.ceil(megaBytesToBytes(sizeInMB));
         return new CloudletSimple(CLOUDLET_LENGTH, pesNumber)
             .setFileSize(sizeInBytes)
@@ -275,7 +275,7 @@ public class GoogleTaskEventsExample1 {
 
     private Vm createVm(final int id) {
         //Uses a CloudletSchedulerTimeShared by default
-        return new VmSimple(VM_MIPS, VM_PES).setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE);
+        return new VmSimple(VM_MIPS, VM_PES).setRam(VM_RAM).setBw(VM_BW).setSize(VM_SIZE_MB);
     }
 
     private void printCloudlets(final DatacenterBroker broker) {
