@@ -203,7 +203,8 @@ public class GoogleTaskEventsExample1 {
         final double maxRamUsagePercent = positive(event.getResourceRequestForRam(), Conversion.HUNDRED_PERCENT);
         final UtilizationModelDynamic utilizationRam = new UtilizationModelDynamic(0, maxRamUsagePercent);
 
-        final long sizeInBytes = (long) Math.ceil(megaBytesToBytes(event.getResourceRequestForLocalDiskSpace()*VM_SIZE + 1));
+        final double sizeInMB    = event.getResourceRequestForLocalDiskSpace() * VM_SIZE + 1;
+        final long   sizeInBytes = (long) Math.ceil(megaBytesToBytes(sizeInMB));
         return new CloudletSimple(CLOUDLET_LENGTH, pesNumber)
             .setFileSize(sizeInBytes)
             .setOutputSize(sizeInBytes)
