@@ -446,4 +446,27 @@ public final class MathUtil {
     public static double percent(final double partial, final double total){
         return (partial/total)*100.0;
     }
+
+    /**
+     * Returns the first positive long value given.
+     * @param first the first value to check
+     * @param second the first value to check
+     * @return
+     */
+    public static long positive(final long first, final long second){
+        //Overloaded methods just change the types to avoid boxing
+        return first > 0 ? first : second;
+    }
+
+    /**
+     * Returns the first positive double value given.
+     * @param first the first value to check
+     * @param second the first value to check
+     * @return
+     */
+    public static double positive(final double first, final double second){
+        //Overloaded methods just change the types to avoid boxing
+        return first > 0 ? first : second;
+    }
+
 }
