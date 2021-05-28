@@ -195,7 +195,7 @@ public class GoogleTaskEventsExample1 {
         This is different from the CPU UtilizationModel, which is defined
         in the "task usage" trace files.
         */
-        final long pesNumber = event.actualCpuCores(VM_PES) > 0 ? event.actualCpuCores(VM_PES) : VM_PES;
+        final long pesNumber = positiveOrElse(event.actualCpuCores(VM_PES), VM_PES);
 
         final double maxRamUsagePercent = event.getResourceRequestForRam() > 0 ? event.getResourceRequestForRam() : Conversion.HUNDRED_PERCENT;
         final UtilizationModelDynamic utilizationRam = new UtilizationModelDynamic(0, maxRamUsagePercent);
@@ -209,6 +209,16 @@ public class GoogleTaskEventsExample1 {
             .setUtilizationModelRam(utilizationRam);
     }
 
+    /**
+     * Returns the provided value if it's positive,
+     * otherwise, returns a default value.
+     * @param value the value to check
+     * @param defaultValue the default to return if the value is not positive
+     * @return
+     */
+    private long positiveOrElse(final long value, final long defaultValue){
+        return value > 0 ? value : defaultValue;
+    }
 
     /**
      * Process a "task usage" trace file from the Google Cluster Data that
