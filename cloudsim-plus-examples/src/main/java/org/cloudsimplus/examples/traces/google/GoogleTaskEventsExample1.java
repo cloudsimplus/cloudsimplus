@@ -158,6 +158,12 @@ public class GoogleTaskEventsExample1 {
      * that will be called internally to actually create the Cloudlets.
      * This function is the {@link #createCloudlet(TaskEvent)}.*
      * </p>
+     *
+     * <p>
+     * If you want to improve simulation performance and use the same broker
+     * for all created cloudlets, avoiding the reader to create brokers based on the
+     * username field of the trace file, call {@link GoogleTaskEventsTraceReader#setDefaultBroker(DatacenterBroker)}.
+     * </p>
      */
     private void createCloudletsAndBrokersFromTraceFile() {
         final GoogleTaskEventsTraceReader reader =

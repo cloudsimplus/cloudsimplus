@@ -44,6 +44,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -303,8 +304,16 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
     private Function<TaskEvent, Cloudlet> cloudletCreationFunction;
 
     /**
+     * A default broker to be used by all created Cloudlets.
+     * @see #setDefaultBroker(DatacenterBroker)
+     * @see #brokersMap
+     */
+    private DatacenterBroker defaultBroker;
+
+    /**
      * A map of brokers created according to the username from the trace file,
      * representing a customer. Each key is the username field and the value the created broker.
+     * If a default {@link #defaultBroker} is set, the map is empty.
      * @see #getBrokers()
      */
     private final Map<String, DatacenterBroker> brokersMap;
@@ -633,18 +642,36 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      * Gets the List of brokers created according to the username from the trace file,
      * representing a customer.
      * @return
+     * @see #setDefaultBroker(DatacenterBroker)
      */
     public List<DatacenterBroker> getBrokers() {
-        return new ArrayList<>(brokersMap.values());
+        return defaultBroker == null ? new ArrayList<>(brokersMap.values()) : Collections.singletonList(defaultBroker);
     }
 
     /**
-     * Creates a new broker if one with the specified username was not created yet
-     * @param username the username of the broker
-     * @return an already existing broker with the given username or a new one if there was no broker with such an username
+     * Defines a default broker to will be used for all created Cloudlets.
+     * This way, the username field inside the trace file won't be used
+     * to dynamically create brokers.
+     * The {@link #getBrokers()} will only return an unitary list containing this broker.
+     *
+     * @param broker the broker for all created cloudlets, representing a single username (customer)
+     * @return
      */
-    protected DatacenterBroker createBrokerIfAbsent(final String username){
-        return brokersMap.computeIfAbsent(username, this::createBroker);
+    public GoogleTaskEventsTraceReader setDefaultBroker(final DatacenterBroker broker) {
+        this.defaultBroker = Objects.requireNonNull(broker);
+        brokersMap.clear();
+        return this;
+    }
+
+    /**
+     * Gets a {@link #setDefaultBroker(DatacenterBroker) default broker (if ones was set)}
+     * or the one with the specified username (creating it if not yet).
+     * @param username the username of the broker
+     * @return (i) an already existing broker with the given username or a new one if not created yet;
+     *         (ii) the default broker if one was set.
+     */
+    protected DatacenterBroker getOrCreateBroker(final String username){
+        return getBroker(() -> brokersMap.computeIfAbsent(username, this::createBroker));
     }
 
     private DatacenterBroker createBroker(final String username) {
@@ -652,12 +679,24 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
     }
 
     /**
-     * Gets an {@link DatacenterBroker} instance representing a given username.
+     * Gets an {@link DatacenterBroker} instance represented by a given username.
+     * If a {@link #setDefaultBroker(DatacenterBroker) default broker was set to be used for all created Cloudlets},
+     * that one is returned, ignoring the username given.
+     *
      * @param username the name of the user read from a trace line
-     * @return the {@link DatacenterBroker} instance for the given username
+     * @return the {@link DatacenterBroker} instance for the given username or the default broker (if it was set)
      */
     private DatacenterBroker getBroker(final String username){
-        return brokersMap.get(username);
+        return getBroker(() -> brokersMap.get(username));
+    }
+
+    /**
+     * Gets the default broker or the one returned by the provided supplier
+     * @param supplier a broker {@link Supplier} Function.
+     * @return
+     */
+    private DatacenterBroker getBroker(final Supplier<DatacenterBroker> supplier){
+        return defaultBroker == null ? supplier.get() : defaultBroker;
     }
 
     /**
@@ -665,7 +704,8 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      * @return the {@link DatacenterBroker} instance
      */
     protected DatacenterBroker getBroker(){
-        return getBroker(FieldIndex.USERNAME.getValue(this));
+        final String value = FieldIndex.USERNAME.getValue(this);
+        return getBroker(value);
     }
 
     public Simulation getSimulation() {

@@ -60,7 +60,7 @@ public enum TaskEventType {
             The execution must start only after a SCHEDULE event happens. */
             cloudlet.setStatus(Cloudlet.Status.FROZEN);
 
-            final DatacenterBroker broker = reader.createBrokerIfAbsent(event.getUserName());
+            final DatacenterBroker broker = reader.getOrCreateBroker(event.getUserName());
             broker.submitCloudlet(cloudlet);
             return reader.addAvailableObject(cloudlet);
         }
