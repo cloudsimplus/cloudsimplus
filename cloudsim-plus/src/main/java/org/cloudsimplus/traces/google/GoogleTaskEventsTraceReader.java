@@ -639,7 +639,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
     }
 
     /**
-     * Creates a new broker if a previous one with the specified username was not created
+     * Creates a new broker if one with the specified username was not created yet
      * @param username the username of the broker
      * @return an already existing broker with the given username or a new one if there was no broker with such an username
      */
