@@ -65,7 +65,7 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# 2. Main Exclusive Features
+# 2. 🧰 ️Main Exclusive Features
 
 CloudSim Plus provides lots of exclusive features, from the most basic ones to build simple simulations, 
 to advanced features for simulating more realistic cloud scenarios: 
@@ -453,7 +453,7 @@ CloudSim Plus supports modeling and simulation of:
 
 <a id="projects"></a>
 
-# 9. Related Projects
+# 9. 🧩 Related Projects
 
 Here, it's presented a list of some projects based on CloudSim Plus, which trust in its accuracy, performance, maintainability and extensibility.
 If you want your project to be listed here, send us a Pull Request. Make sure your project has a descriptive README.
