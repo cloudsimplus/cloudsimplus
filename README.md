@@ -9,7 +9,7 @@
 |
 <b><a href="#usage">How to use</a></b>
 |
-<b><a href="example">Example</a></b>
+<b><a href="#example">Example</a></b>
 |
 <b><a href="#docs-help">Docs and Help</a></b>
 |
