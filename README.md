@@ -180,7 +180,7 @@ dependencies {
 }
 ```
 
-## 4.2 Via Command Line
+## 4.2 Downloading sources via Command Line
 
 Considering that you have [git](https://git-scm.com) and [maven](http://maven.apache.org) installed on your operating system, 
 download the project source by cloning the repository issuing the command `git clone https://github.com/manoelcampos/cloudsim-plus.git` 
