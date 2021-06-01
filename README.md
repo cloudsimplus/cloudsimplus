@@ -65,7 +65,7 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# 2. 🧰 ️Main Exclusive Features
+# 2. 🧰 Main Exclusive Exclusive Features
 
 CloudSim Plus provides lots of exclusive features, from the most basic ones to build simple simulations, 
 to advanced features for simulating more realistic cloud scenarios: 
