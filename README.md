@@ -219,7 +219,7 @@ Below are the steps to start using the project:
 
 <a id="example"></a>
 
-# 5. 👨‍🔬 A Minimal but Complete Simulation Example
+# 5. ⚙️ A Minimal but Complete Simulation Example
 
 In order to build a simulation scenario, you have to create at least:
  
