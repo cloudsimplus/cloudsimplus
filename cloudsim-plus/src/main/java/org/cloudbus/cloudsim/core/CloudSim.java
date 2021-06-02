@@ -23,6 +23,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
+import static org.cloudbus.cloudsim.util.TimeUtil.secondsToStr;
 
 /**
  * The main class of the simulation API, that manages Cloud Computing simulations providing all methods to
@@ -361,10 +362,10 @@ public class CloudSim implements Simulation {
 
         if(terminationTime > 0 && clock > lastCloudletProcessingUpdate + TimeUtil.minutesToSeconds(60)){
             LOGGER.warn(
-                "Your simulation termination time was set to {} but the last time a Cloudlet has processed was {}. "+
+                "Your simulation termination time was set to {}. Current time is {} but the last time a Cloudlet has processed was {} ago. "+
                 "If you think your simulation is taking to long to finish, " +
                 "maybe it's because you set a too long termination time and new events aren't arriving so far.",
-                terminationTime, lastCloudletProcessingUpdate);
+                secondsToStr(terminationTime), secondsToStr(clock), secondsToStr(clock-lastCloudletProcessingUpdate));
         }
         LOGGER.info("{}================== {}{} =================={}", System.lineSeparator(), msg1, msg2, System.lineSeparator());
 
