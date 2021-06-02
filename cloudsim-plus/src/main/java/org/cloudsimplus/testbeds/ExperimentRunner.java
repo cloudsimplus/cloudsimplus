@@ -655,9 +655,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     private Experiment createExperiment(final int i) {
         print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
         setFirstExperimentCreated(i);
-        final Experiment exp = createExperimentInternal(i);
-        exp.setVerbose(exp.isVerbose() && !parallel);
-        return exp;
+        return createExperimentInternal(i);
     }
 
     /**
@@ -953,5 +951,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     public ExperimentRunner<T> setProgressBarInNewLine(final boolean progressBarInNewLine) {
         this.progressBarInNewLine = progressBarInNewLine;
         return this;
+    }
+
+    @Override
+    public boolean isVerbose() {
+        return super.isVerbose()  && !parallel;
     }
 }

@@ -197,7 +197,7 @@ public abstract class Experiment extends AbstractExperiment {
      * @see #printResults()
      */
     private void printResultsInternal() {
-        if (isVerbose()) {
+        if (verbose) {
             printResults();
         }
     }

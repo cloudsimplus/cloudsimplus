@@ -7,7 +7,7 @@ package org.cloudsimplus.testbeds;
  * @since CloudSim Plus 6.1.0
  */
 public abstract class AbstractExperiment implements Runnable {
-    private boolean verbose;
+    protected boolean verbose;
 
     public AbstractExperiment() {
         this.verbose = false;
