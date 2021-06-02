@@ -68,6 +68,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     private final boolean parallel;
 
     private boolean showProgress;
+    private boolean progressBarInNewLine;
 
     private int firstExperimentCreated = -1;
 
@@ -945,7 +946,12 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
 
     final void printProgress(final int current, final boolean verbose) {
         if(!verbose && simulationRuns > 1 && showProgress) {
-            Util.printProgress(current, simulationRuns);
+            Util.printProgress(current, simulationRuns, progressBarInNewLine);
         }
+    }
+
+    public ExperimentRunner<T> setProgressBarInNewLine(final boolean progressBarInNewLine) {
+        this.progressBarInNewLine = progressBarInNewLine;
+        return this;
     }
 }
