@@ -69,10 +69,8 @@ public final class Util {
     public static void printProgress(final int current, final int total, final boolean progressBarInNewLine){
         final String progress = StringUtils.repeat('#', current);
 
-        final String start = progressBarInNewLine ? "%n" :   "";
-        final String end   = progressBarInNewLine ?   "" : "\n";
-
-        final String format = start + "%120s[%-"+total+"s] %3.0f%% (%d/%d)" + end;
+        final String end = progressBarInNewLine ? "%n" : "\r";
+        final String format = "%120s[%-"+total+"s] %3.0f%% (%d/%d)" + end;
         System.out.printf(format, " ", progress, percent(current, total), current, total);
     }
 }
