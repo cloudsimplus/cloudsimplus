@@ -26,6 +26,29 @@ public final class Util {
 
     /**
      * Prints a progress bar at the command line for any general process
+     * represented by several tasks (steps). The bar is updated at the current line.
+     * If nothing is printed between updates, the bar is shown at the same place.
+     * You can use it like the sample below:
+     * <pre>
+     * <code>
+     *
+     * final int total = 100;
+     * for (int i = 0; i <= total; i++) {
+     *     Util.sleep(120); //simulates some task (use your own code here)
+     *     Util.printProgress(i, total);
+     * }
+     * </code>
+     * </pre>
+     * @param current the index of the current finished task (step)
+     * @param total the total number of tasks (steps)
+     * @see #printProgress(int, int, boolean)
+     */
+    public static void printProgress(final int current, final int total){
+        printProgress(current, total, false);
+    }
+
+    /**
+     * Prints a progress bar at the command line for any general process
      * represented by several tasks (steps).
      * You can use it like the sample below:
      * <pre>
@@ -40,11 +63,16 @@ public final class Util {
      * </pre>
      * @param current the index of the current finished task (step)
      * @param total the total number of tasks (steps)
+     * @param progressBarInNewLine indicates if the progress bar will be printed in a new line or not
+     * @see #printProgress(int, int)
      */
-    public static void printProgress(final int current, final int total){
+    public static void printProgress(final int current, final int total, final boolean progressBarInNewLine){
         final String progress = StringUtils.repeat('#', current);
 
-        final String format = "%120s[%-"+total+"s] %3.0f%% (%d/%d)\r";
+        final String start = progressBarInNewLine ? "%n" :   "";
+        final String end   = progressBarInNewLine ?   "" : "\n";
+
+        final String format = start + "%120s[%-"+total+"s] %3.0f%% (%d/%d)" + end;
         System.out.printf(format, " ", progress, percent(current, total), current, total);
     }
 }
