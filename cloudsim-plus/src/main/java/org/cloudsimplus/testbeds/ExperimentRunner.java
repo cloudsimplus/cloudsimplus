@@ -60,11 +60,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     public static final double CONFIDENCE_LEVEL = 0.95;
 
-    /**
-     * If experiments are executed in parallel, each experiment verbosity is disabled,
-     * otherwise, you'll see mixed log messages from different
-     * experiment runs.
-     */
+    /**@see #isParallel() */
     private final boolean parallel;
 
     private boolean showProgress;
@@ -953,8 +949,26 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     * If {@link #isParallel() parallel} execution is enabled,
+     * you may consider disabling verbosity for individual {@link Experiment}s created,
+     * since messages from different runs will be mixed up
+     * and may cause confusion.
+     *
+     * @return {@inheritDoc}
+     */
     @Override
     public boolean isVerbose() {
-        return super.isVerbose()  && !parallel;
+        return super.isVerbose();
+    }
+
+    /**
+     * If experiments are executed in parallel, each experiment verbosity is disabled,
+     * otherwise, you'll see mixed log messages from different
+     * experiment runs.
+     */
+    public boolean isParallel() {
+        return parallel;
     }
 }
