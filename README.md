@@ -3,7 +3,7 @@
 <p align="center">
 <b><a href="#overview">Overview</a></b>
 |
-<b><a href="#2-main-exclusive-features">Exclusive Features</a></b>
+<b><a href="#exclusive-features">Exclusive Features</a></b>
 |
 <b><a href="#structure">Structure</a></b>
 |
@@ -65,7 +65,9 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
 
-# 2. 🧰 Main Exclusive Exclusive Features
+<a id="exclusive-features"></a>
+
+# 2. 🧰 Main Exclusive Features
 
 CloudSim Plus provides lots of exclusive features, from the most basic ones to build simple simulations, 
 to advanced features for simulating more realistic cloud scenarios: 
