@@ -405,20 +405,23 @@ Datacenter dc0 = new DatacenterSimple(cloudsim, hostList, new VmAllocationPolicy
 ```
 
 The way you instantiate a host has changed too. The classes `RamProvisionerSimple` and `BwProvisionerSimple` don't exist anymore. 
-Now you just have the generic class `ResourceProvisionerSimple` and you can just use its default no-args constructor. 
+Now you just have the generic class `ResourceProvisionerSimple` with a default no-args constructor.
+And you don't even need to creating instances of this class, since the Hosts use it as default.
+ 
 RAM and bandwidth capacity of the host now are given in the constructor, as it already was for storage. 
-A `VmScheduler` constructor doesn't require any parameter. You don't need to set an ID for each Host, since
+A `VmScheduler` constructor doesn't require any parameter and the `VmSchedulerSpaceShared`
+is used by default. You don't need to set an ID for each Host, since
 if one is not given, when the List of hosts is attached to a Datacenter, it will generate an ID for those hosts. 
-Instantiating a host should be now similar to:
+Instantiating a host now should be similar to:
 
 ```java
 long ram = 20480; //in MB
 long bw = 1000000; //in Megabits/s
 long storage = 1000000; //in MB
+//Uses ResourceProvisionerSimple by default for RAM and BW provisioning
+//Uses VmSchedulerSpaceShared by default for VM scheduling
 Host host = new HostSimple(ram, bw, storage, pesList);
-host.setRamProvisioner(new ResourceProvisionerSimple())
-    .setBwProvisioner(new ResourceProvisionerSimple())
-    .setVmScheduler(new VmSchedulerTimeShared());
+host.setRamProvisioner(new ResourceProvisionerSimple());
 ``` 
 
 Additionally, the interface `Storage` was renamed to `FileStorage` and its implementations are 
