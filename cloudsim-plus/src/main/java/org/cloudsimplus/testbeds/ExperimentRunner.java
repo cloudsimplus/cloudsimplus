@@ -551,7 +551,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         printSimulationParameters();
 
         experimentsStartTimeSecs = Math.round(System.currentTimeMillis()/1000.0);
-        printProgress(0, isVerbose());
+        printProgress(0);
         getStream(this.experiments).forEach(Experiment::run);
         System.out.println();
         experimentsExecutionTimeSecs = TimeUtil.elapsedSeconds(experimentsStartTimeSecs);
@@ -942,8 +942,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         return finishedRuns.incrementAndGet();
     }
 
-    final void printProgress(final int current, final boolean verbose) {
-        if(!verbose && simulationRuns > 1 && showProgress) {
+    final void printProgress(final int current) {
+        if(simulationRuns > 1 && showProgress) {
             Util.printProgress(current, simulationRuns, progressBarInNewLine);
         }
     }

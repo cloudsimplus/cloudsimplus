@@ -182,7 +182,7 @@ public abstract class Experiment extends AbstractExperiment {
         afterExperimentFinish(this);
         printResultsInternal();
         if(runner != null) {
-            runner.printProgress(runner.incFinishedRuns(), isVerbose());
+            runner.printProgress(runner.incFinishedRuns());
         }
     }
 
