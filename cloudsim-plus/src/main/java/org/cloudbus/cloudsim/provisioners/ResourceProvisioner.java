@@ -110,7 +110,7 @@ public interface ResourceProvisioner {
      *
      * @param vm the vm to check if there is enough available resource on the host to
      * change the allocated amount for the VM
-     * @param newVmTotalAllocatedResource the new total amount of resource to allocate for the VM.
+     * @param newVmTotalAllocatedResource the new total amount of resource to be allocated for the VM.
      *
      * @return true, if it is possible to allocate the new total VM resource; false otherwise
      */
