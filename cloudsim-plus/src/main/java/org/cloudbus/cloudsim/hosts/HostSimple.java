@@ -478,14 +478,14 @@ public class HostSimple implements Host {
                 return suitability;
         }
 
-        suitability.setForRam(ramProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedRam()));
+        suitability.setForRam(ramProvisioner.isSuitableForVm(vm, vm.getRam()));
         if (!suitability.forRam()) {
             logAllocationError(showFailureLog, vm, inMigration, "MB", this.getRam(), vm.getRam());
             if(lazySuitabilityEvaluation)
                 return suitability;
         }
 
-        suitability.setForBw(bwProvisioner.isSuitableForVm(vm, vm.getCurrentRequestedBw()));
+        suitability.setForBw(bwProvisioner.isSuitableForVm(vm, vm.getBw()));
         if (!suitability.forBw()) {
             logAllocationError(showFailureLog, vm, inMigration, "Mbps", this.getBw(), vm.getBw());
             if(lazySuitabilityEvaluation)
