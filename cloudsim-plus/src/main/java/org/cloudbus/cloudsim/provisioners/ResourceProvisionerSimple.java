@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -114,5 +115,10 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         final long currentAllocatedResource = getAllocatedResourceForVm(vm);
         final long allocationDifference = newVmTotalAllocatedResource - currentAllocatedResource;
         return getResource().getAvailableResource() >=  allocationDifference;
+    }
+
+    @Override
+    public boolean isSuitableForVm(final Vm vm, final Resource resource) {
+        return isSuitableForVm(vm, resource.getCapacity());
     }
 }

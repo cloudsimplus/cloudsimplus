@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.provisioners;
 
+import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
 
@@ -27,6 +28,7 @@ class ResourceProvisionerNull implements ResourceProvisioner {
     @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {
         return false;
     }
+    @Override public boolean isSuitableForVm(Vm vm, Resource resource) { return false; }
     @Override public ResourceManageable getResource() {
         return ResourceManageable.NULL;
     }

@@ -117,6 +117,18 @@ public interface ResourceProvisioner {
     boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource);
 
     /**
+     * Checks if it is possible to change the current allocated resource for a given VM
+     * to a new amount, depending on the available physical resource remaining.
+     *
+     * @param vm the vm to check if there is enough available resource on the host to
+     * change the allocated amount for the VM
+     * @param resource the resource where its capacity it to be allocated for the VM.
+     *
+     * @return true, if it is possible to allocate the new total VM resource; false otherwise
+     */
+    boolean isSuitableForVm(Vm vm, Resource resource);
+
+    /**
      * Gets the resource being managed by the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
      * @return the resource managed by this provisioner
      */
