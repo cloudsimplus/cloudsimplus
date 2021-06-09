@@ -612,17 +612,17 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param stats summary statistics for this metric
      */
     private void latexRow(final StringBuilder latex, final String metricName, final SummaryStatistics stats) {
-        final String errorMargin = String.format("%.4f", confidenceErrorMargin(stats));
+        final String errorMargin = String.format("%.6f", confidenceErrorMargin(stats));
         //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
 
         final String escapedMetricName = StringUtils.replace(metricName,"%", "\\%");
         latex.append(escapedMetricName)
              .append(" & ")
-             .append(String.format("%.2f", stats.getMean()))
+             .append(String.format("%.6f", stats.getMean()))
              .append(" $\\pm$ & ")
              .append(errorMargin)
              .append(" & ")
-             .append(String.format("%.4f", stats.getStandardDeviation()))
+             .append(String.format("%.6f", stats.getStandardDeviation()))
              .append("\\\\ \\hline\n");
     }
 
@@ -677,7 +677,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         final String valuesStr = metricValues.stream().map(v -> String.format("%.2f", v)).collect(joining(", "));
         final String sampleWord = metricValues.size() > 1 ? "samples" : "sample";
         System.out.printf(
-            "# %s: %.2f (%d %s: %s)%n",
+            "# %s: %.6f (%d %s: %s)%n",
             metricEntry.getKey(), stats.getMean(),
             metricValues.size(), sampleWord, valuesStr);
 
