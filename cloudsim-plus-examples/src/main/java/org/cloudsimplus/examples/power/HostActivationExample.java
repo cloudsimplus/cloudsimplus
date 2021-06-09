@@ -137,7 +137,8 @@ public class HostActivationExample {
 
         /*Indicates that idle VMs must be destroyed right away (0 delay).
         * This forces the Host to become idle*/
-        broker.setVmDestructionDelay(0.0);
+        //broker.setVmDestructionDelay(0.0);
+        broker.setVmDestructionDelay(1.0);			//The delay should be larger then the simulation minTimeBetweenEvents to ensure VMs are gracefully shutdown.
         return broker;
     }
 

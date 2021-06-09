@@ -333,6 +333,11 @@ public final class CloudSimTags {
     public static final int POWER_MEASUREMENT = BASE + 70;
 
     /**
+     * Denotes a the tag for power on or off of a {@link Host}s in {@link Datacenter}s.
+     */
+    public static final int HOST_POWER_ON_OFF = BASE + 71;
+
+    /**
      * Private constructor to avoid class instantiation.
      */
     private CloudSimTags() {

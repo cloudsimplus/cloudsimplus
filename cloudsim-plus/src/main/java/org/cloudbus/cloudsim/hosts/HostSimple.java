@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.AbstractMachine;
 import org.cloudbus.cloudsim.core.ChangeableId;
+import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.ResourceStatsComputer;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -525,6 +526,7 @@ public class HostSimple implements Host {
 
         this.active = activate;
         notifyStartupOrShutdown(activate, wasActive);
+        this.getSimulation().send(datacenter, datacenter, 10, CloudSimTags.HOST_POWER_ON_OFF, null);
         return this;
     }
 
