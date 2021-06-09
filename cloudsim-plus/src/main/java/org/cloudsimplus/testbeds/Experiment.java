@@ -68,6 +68,7 @@ public abstract class Experiment extends AbstractExperiment {
 
     private Consumer<? extends Experiment> beforeExperimentRun;
     private Consumer<? extends Experiment> afterExperimentFinish;
+    private Consumer<? extends Experiment> beforeExperimentBuild;
     private Consumer<? extends Experiment> afterExperimentBuild;
 
     /**@see #setVmsByBrokerFunction(Function) */
@@ -130,6 +131,7 @@ public abstract class Experiment extends AbstractExperiment {
 
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
         afterExperimentFinish = exp -> {};
+        beforeExperimentBuild = exp -> {};
         afterExperimentBuild = exp -> {};
         beforeExperimentRun = exp -> {};
 
@@ -219,6 +221,8 @@ public abstract class Experiment extends AbstractExperiment {
      * Creates the simulation scenario to run the experiment.
      */
     protected final void build() {
+        beforeExperimentBuild(this);
+
         createDatacenters();
         createBrokers();
 
@@ -376,6 +380,23 @@ public abstract class Experiment extends AbstractExperiment {
      */
     public List<DatacenterBroker> getBrokerList() {
         return brokerList;
+    }
+
+    /**
+     * Sets a {@link Consumer} that will be called before the simulation scenario is built.
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     * @param <T> the class of the experiment
+     * @param beforeExperimentBuild the beforeExperimentBuild Consumer to set
+     * @return
+     */
+    public <T extends Experiment> T setBeforeExperimentBuild(final Consumer<T> beforeExperimentBuild) {
+        this.beforeExperimentBuild = Objects.requireNonNull(beforeExperimentBuild);
+        return (T)this;
+    }
+
+    private <T extends Experiment> void beforeExperimentBuild(final T experiment) {
+        ((Consumer<T>)this.beforeExperimentBuild).accept(experiment);
     }
 
     /**
