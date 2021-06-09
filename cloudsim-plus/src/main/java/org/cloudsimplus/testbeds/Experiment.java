@@ -384,7 +384,7 @@ public abstract class Experiment extends AbstractExperiment {
      *
      * <p>Setting a Consumer object is optional.</p>
      * @param <T> the class of the experiment
-     * @param afterExperimentBuild the afterExperimentBuild to set
+     * @param afterExperimentBuild the afterExperimentBuild Consumer to set
      * @return
      */
     public <T extends Experiment> Experiment setAfterExperimentBuild(final Consumer<T> afterExperimentBuild) {
@@ -396,6 +396,14 @@ public abstract class Experiment extends AbstractExperiment {
         ((Consumer<T>)this.afterExperimentBuild).accept(experiment);
     }
 
+    /**
+     * Sets a {@link Consumer} that will be called before starting the simulation.
+     *
+     * <p>Setting a Consumer object is optional.</p>
+     * @param <T> the class of the experiment
+     * @param beforeExperimentRun the beforeExperimentRun Consumer to set
+     * @return
+     */
     public <T extends Experiment> T setBeforeExperimentRun(final Consumer<T> beforeExperimentRun) {
         this.beforeExperimentRun = Objects.requireNonNull(beforeExperimentRun);
         return (T)this;
