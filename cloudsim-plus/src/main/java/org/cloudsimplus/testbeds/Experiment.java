@@ -66,6 +66,7 @@ public abstract class Experiment extends AbstractExperiment {
     private int lastVmId;
     private int lastCloudletId;
 
+    private Consumer<? extends Experiment> beforeExperimentRun;
     private Consumer<? extends Experiment> afterExperimentFinish;
     private Consumer<? extends Experiment> afterExperimentBuild;
 
@@ -130,6 +131,7 @@ public abstract class Experiment extends AbstractExperiment {
         //Defines an empty Consumer to avoid NullPointerException if an actual one is not set
         afterExperimentFinish = exp -> {};
         afterExperimentBuild = exp -> {};
+        beforeExperimentRun = exp -> {};
 
         this.seed = validateSeed(seed);
     }
@@ -178,6 +180,7 @@ public abstract class Experiment extends AbstractExperiment {
         }
 
         build();
+        beforeExperimentRun(this);
         simulation.start();
         afterExperimentFinish(this);
         printResultsInternal();
@@ -393,6 +396,15 @@ public abstract class Experiment extends AbstractExperiment {
         ((Consumer<T>)this.afterExperimentBuild).accept(experiment);
     }
 
+    public <T extends Experiment> T setBeforeExperimentRun(final Consumer<T> beforeExperimentRun) {
+        this.beforeExperimentRun = Objects.requireNonNull(beforeExperimentRun);
+        return (T)this;
+    }
+
+    private <T extends Experiment> void beforeExperimentRun(final T experiment) {
+        ((Consumer<T>)this.beforeExperimentRun).accept(experiment);
+    }
+
     /**
      * Sets a {@link Consumer} object that will receive the experiment instance
      * after the experiment finishes, then it performs some post-processing
@@ -496,5 +508,4 @@ public abstract class Experiment extends AbstractExperiment {
     protected final VmAllocationPolicy newVmAllocationPolicy() {
         return vmAllocationPolicySupplier == null ? new VmAllocationPolicySimple() : vmAllocationPolicySupplier.get();
     }
-
 }
