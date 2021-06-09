@@ -436,7 +436,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param <T> the class of VMs inside the list
      * @return the list of failed VMs
-     * @see #setRetryFailedVms(boolean)}
+     * @see #setFailedVmsRetryDelay(double) }
      */
     <T extends Vm> List<T> getVmFailedList();
 
@@ -448,20 +448,37 @@ public interface DatacenterBroker extends SimEntity {
     boolean isRetryFailedVms();
 
     /**
-     * Sets if the broker has to retry allocating VMs
-     * that couldn't be placed due to lack of suitable Hosts.
+     * Gets a delay (in seconds) for the broker to retry allocating VMs
+     * that couldn't be placed due to lack of suitable active Hosts.
      *
-     * Setting the attribute to:
+     * @return
      * <ul>
-     *  <li>{@code true}, the broker will retry to place the failed VM as soon as new VMs or Cloudlets
-     * are submitted.</li>
-     * <li>{@code false}, the VM will be just added to the {@link #getVmFailedList()} and the user simulation
+     *  <li>a value larger than zero to indicate the broker will retry to place failed VM as soon as new VMs or Cloudlets
+     * are submitted or after the given delay.</li>
+     * <li>otherwise, to indicate failed VMs will be just added to the {@link #getVmFailedList()} and the user simulation
      * have to deal with it.
      * If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
-     * the VM will be notified about the failure.</li>
+     * it will be notified about the failure.</li>
      * </ul>
      */
-    void setRetryFailedVms(boolean retryFailedVms);
+    double getFailedVmsRetryDelay();
+
+    /**
+     * Sets a delay (in seconds) for the broker to retry allocating VMs
+     * that couldn't be placed due to lack of suitable active Hosts.
+     *
+     * Setting the attribute as:
+     * <ul>
+     *  <li>larger than zero, the broker will retry to place failed VM as soon as new VMs or Cloudlets
+     * are submitted or after the given delay.</li>
+     * <li>otherwise, failed VMs will be just added to the {@link #getVmFailedList()} and the user simulation
+     * have to deal with it.
+     * If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
+     * it will be notified about the failure.</li>
+     * </ul>
+     * @param failedVmsRetryDelay
+     */
+    void setFailedVmsRetryDelay(double failedVmsRetryDelay);
 
     /**
      * Checks if the broker must be shut down after becoming idle.

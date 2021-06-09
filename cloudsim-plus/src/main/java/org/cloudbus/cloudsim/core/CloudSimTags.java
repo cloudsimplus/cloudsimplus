@@ -7,6 +7,7 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -220,7 +221,12 @@ public final class CloudSimTags {
     public static final int CLOUDLET_UPDATE_ATTRIBUTES = BASE + 27;
 
     /**
-     * Denotes a request to create a new VM in a {@link Datacenter} with
+     * Denotes a request to retry creating waiting VMs from a {@link DatacenterBroker}.
+     */
+    public static final int VM_CREATE_RETRY = BASE + 31;
+
+    /**
+     * Denotes a request to create a new VM in a {@link Datacenter}
      * where the {@link SimEvent#getData()} of the reply event
      * is a {@link Vm} object.
      * Using this tag, the Datacenter acknowledges the reception of the request.
@@ -331,6 +337,20 @@ public final class CloudSimTags {
      * such as {@link Datacenter}s and {@link Host}s.
      */
     public static final int POWER_MEASUREMENT = BASE + 70;
+
+    /**
+     * Denotes a tag for starting up a {@link Host} inside a {@link Datacenter}.
+     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
+     * must be a {@link Host} object.
+     */
+    public static final int HOST_POWER_ON = BASE + 71;
+
+    /**
+     * Denotes a tag for shutting down a {@link Host} inside a {@link Datacenter}.
+     * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
+     * must be a {@link Host} object.
+     */
+    public static final int HOST_POWER_OFF = BASE + 72;
 
     /**
      * Private constructor to avoid class instantiation.

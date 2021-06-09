@@ -277,7 +277,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         }
 
         final Optional<Host> optional = findHostForVm(vm);
-        if (optional.isPresent()) {
+        if (optional.filter(Host::isActive).isPresent()) {
             return allocateHostForVm(vm, optional.get());
         }
 

@@ -112,6 +112,18 @@ public class PowerExample {
     private static final int HOSTS = 2;
     private static final int HOST_PES = 8;
 
+    /** Indicates the time (in seconds) the Host takes to start up. */
+    private static final double HOST_START_UP_DELAY = 5;
+
+    /** Indicates the time (in seconds) the Host takes to shut down. */
+    private static final double HOST_SHUT_DOWN_DELAY = 3;
+
+    /** Indicates Host power consumption (in Watts) during startup. */
+    private static final double HOST_START_UP_POWER = 5;
+
+    /** Indicates Host power consumption (in Watts) during shutdown. */
+    private static final double HOST_SHUT_DOWN_POWER = 3;
+
     private static final int VMS = 4;
     private static final int VM_PES = 4;
 
@@ -259,8 +271,6 @@ public class PowerExample {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
 
-        final PowerModelHost powerModel = new PowerModelHostSimple(MAX_POWER, STATIC_POWER);
-
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
         final long storage = 1000000; //in Megabytes
@@ -269,6 +279,13 @@ public class PowerExample {
         final VmScheduler vmScheduler = new VmSchedulerTimeShared();
 
         final Host host = new HostSimple(ram, bw, storage, peList);
+
+        final PowerModelHost powerModel = new PowerModelHostSimple(MAX_POWER, STATIC_POWER);
+        powerModel.setStartupDelay(HOST_START_UP_DELAY)
+                  .setShutDownDelay(HOST_SHUT_DOWN_DELAY)
+                  .setStartupPower(HOST_START_UP_POWER)
+                  .setShutDownPower(HOST_SHUT_DOWN_POWER);
+
         host
             .setRamProvisioner(ramProvisioner)
             .setBwProvisioner(bwProvisioner)
@@ -276,6 +293,7 @@ public class PowerExample {
             .setPowerModel(powerModel);
         host.setId(id);
         host.enableUtilizationStats();
+
         return host;
     }
 
