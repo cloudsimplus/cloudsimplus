@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.power.models.PowerModel;
  * and other entities that can be introduced.
  *
  * @since CloudSim Plus 6.0.0
+ * @param <T> type of the {@link PowerModel} objects the entity will use.
  */
 public interface PowerAware<T extends PowerModel> {
     /**

@@ -79,8 +79,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private Datacenter lastSelectedDc;
 
-    /** @see #isRetryFailedVms() */
-    private boolean retryFailedVms;
+    /** @see #setFailedVmsRetryDelay(double)  */
+    private double failedVmsRetryDelay;
 
     /** @see #getVmFailedList() */
     private final List<Vm> vmFailedList;
@@ -124,10 +124,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private int vmCreationRequests;
     /**
-     * @see #getVmCreationAcks()
-     */
-    private int vmCreationAcks;
-    /**
      * @see #getDatacenterList()
      */
     private List<Datacenter> datacenterList;
@@ -147,6 +143,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     /** @see #isShutdownWhenIdle()  */
     private boolean shutdownWhenIdle;
+    private boolean vmCreationRetrySent;
 
     /**
      * Creates a DatacenterBroker giving a specific name.
@@ -169,10 +166,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         this.lastSelectedDc = Datacenter.NULL;
         this.shutdownWhenIdle = true;
 
-        vmCreationRequests = 0;
-        vmCreationAcks = 0;
-
-        this.retryFailedVms = true;
+        this.vmCreationRequests = 0;
+        this.failedVmsRetryDelay = 5;
         this.vmFailedList = new ArrayList<>();
         this.vmWaitingList = new ArrayList<>();
         this.vmExecList = new ArrayList<>();
@@ -239,7 +234,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             LOGGER.info(
                 "{}: {}: List of {} VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.",
                 getSimulation().clockStr(), getName(), list.size());
-            requestDatacenterToCreateWaitingVms(false);
+            if(!vmCreationRetrySent)
+                lastSelectedDc = null;
+                requestDatacenterToCreateWaitingVms(false, false);
         }
 
         return this;
@@ -482,6 +479,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private boolean processVmEvents(final SimEvent evt) {
         switch (evt.getTag()) {
+            case CloudSimTags.VM_CREATE_RETRY:
+                vmCreationRetrySent = false;
+                requestDatacenterToCreateWaitingVms(false, true);
+                return true;
             case CloudSimTags.VM_CREATE_ACK:
                 processVmCreateResponseFromDatacenter(evt);
                 return true;
@@ -617,7 +618,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void processDatacenterListRequest(final SimEvent evt) {
         setDatacenterList((Set<Datacenter>) evt.getData());
         LOGGER.info("{}: {}: List of {} datacenters(s) received.", getSimulation().clockStr(), getName(), datacenterList.size());
-        requestDatacenterToCreateWaitingVms(false);
+        requestDatacenterToCreateWaitingVms(false, false);
     }
 
     /**
@@ -629,14 +630,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private boolean processVmCreateResponseFromDatacenter(final SimEvent evt) {
         final Vm vm = (Vm) evt.getData();
-        vmCreationAcks++;
 
         //if the VM was successfully created in the requested Datacenter
         if (vm.isCreated()) {
+            requestDatacentersToCreateWaitingCloudlets();
+            notifyOnVmsCreatedListeners();
             processSuccessVmCreationInDatacenter(vm);
         } else {
             vm.setFailed(true);
-            if(!retryFailedVms){
+            if(!isRetryFailedVms()){
                 vmWaitingList.remove(vm);
                 vmFailedList.add(vm);
                 LOGGER.warn("{}: {}: {} has been moved to the failed list because creation retry is not enabled.", getSimulation().clockStr(), getName(), vm);
@@ -645,10 +647,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             vm.notifyOnCreationFailureListeners(lastSelectedDc);
         }
 
-        if (allNonDelayedVmsCreated()) {
-            requestDatacentersToCreateWaitingCloudlets();
-            notifyOnVmsCreatedListeners();
-        } else if (vmCreationRequests == vmCreationAcks) {
+        //Decreases to indicate an ack for the request was received (either if the VM was created or not)
+        vmCreationRequests--;
+
+        if (vmCreationRequests == 0) {
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
 
@@ -673,25 +675,30 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     private void requestCreationOfWaitingVmsToFallbackDatacenter() {
         this.lastSelectedDc = Datacenter.NULL;
-        if (requestDatacenterToCreateWaitingVms(true)) {
+        if (vmWaitingList.isEmpty() || requestDatacenterToCreateWaitingVms(false, true)) {
             return;
         }
 
-        /* If it gets here, it means that all datacenters were already queried
-         * and not all VMs could be created. */
-        if (vmExecList.isEmpty()) {
-            LOGGER.error(
-                "{}: {}: None of the requested {} VMs could be created because suitable Hosts weren't found in any available Datacenter. Shutting broker down...",
-                getSimulation().clockStr(), getName(), vmWaitingList.size());
-            shutdown();
+        final String msg =
+            "{}: {}: {} of the requested {} VMs couldn't be created because suitable Hosts weren't found in any available Datacenter."
+            + (vmExecList.isEmpty() && !isRetryFailedVms() ? " Shutting broker down..." : "");
+        LOGGER.error(msg, getSimulation().clockStr(), getName(), vmWaitingList.size(), getVmsNumber());
+
+        /* If it gets here, it means that all datacenters were already queried and not all VMs could be created. */
+        if (!vmWaitingList.isEmpty()) {
+            processVmCreationFailure();
             return;
         }
-
-        LOGGER.error(
-            "{}: {}: {} of the requested {} VMs couldn't be created because suitable Hosts weren't found in any available Datacenter.",
-            getSimulation().clockStr(), getName(), vmWaitingList.size(), getVmsNumber());
 
         requestDatacentersToCreateWaitingCloudlets();
+    }
+
+    private void processVmCreationFailure() {
+        if (isRetryFailedVms()) {
+            lastSelectedDc = datacenterList.get(0);
+            this.vmCreationRetrySent = true;
+            schedule(failedVmsRetryDelay, CloudSimTags.VM_CREATE_RETRY);
+        } else shutdown();
     }
 
     /**
@@ -711,11 +718,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *         and not all VMs could be created
      * @see #submitVmList(java.util.List)
      */
-    private boolean requestDatacenterToCreateWaitingVms(final boolean isFallbackDatacenter) {
+    private boolean requestDatacenterToCreateWaitingVms(final boolean isFallbackDatacenter, final boolean creationRetry) {
         for (final Vm vm : vmWaitingList) {
             this.lastSelectedDc = isFallbackDatacenter && selectClosestDatacenter ?
                                         defaultDatacenterMapper(lastSelectedDc, vm) :
                                         datacenterMapper.apply(lastSelectedDc, vm);
+            if(creationRetry) {
+                vm.setLastTriedDatacenter(Datacenter.NULL);
+            }
             this.vmCreationRequests += requestVmCreation(lastSelectedDc, isFallbackDatacenter, vm);
         }
 
@@ -798,7 +808,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         it defines one that always return 0 to indicate
         idle VMs must be destroyed immediately.
         */
-        requestDatacenterToCreateWaitingVms(false);
+        requestDatacenterToCreateWaitingVms(false, false);
     }
 
     @Override
@@ -1095,18 +1105,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * Gets the number of acknowledges (ACKs) received from Datacenters
-     * in response to requests to create VMs.
-     * The number of acks doesn't mean the number of created VMs,
-     * once Datacenters can respond informing that a Vm could not be created.
-     *
-     * @return the number vm creation acks
-     */
-    protected int getVmCreationAcks() {
-        return vmCreationAcks;
-    }
-
-    /**
      * Gets the list of available datacenters.
      *
      * @return the dc list
@@ -1255,12 +1253,17 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public boolean isRetryFailedVms() {
-        return retryFailedVms;
+        return failedVmsRetryDelay > 0;
     }
 
     @Override
-    public void setRetryFailedVms(final boolean retryFailedVms) {
-        this.retryFailedVms = retryFailedVms;
+    public double getFailedVmsRetryDelay() {
+        return failedVmsRetryDelay;
+    }
+
+    @Override
+    public void setFailedVmsRetryDelay(final double failedVmsRetryDelay) {
+        this.failedVmsRetryDelay = failedVmsRetryDelay;
     }
 
     @Override

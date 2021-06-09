@@ -34,6 +34,8 @@ import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
+import org.cloudbus.cloudsim.power.models.PowerModelHost;
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
@@ -42,6 +44,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.listeners.EventInfo;
 
 import java.util.ArrayList;
@@ -85,9 +88,32 @@ public class HostActivationExample {
     private static final int HOSTS = 5;
     private static final int HOST_PES = 8;
 
-    private static final int MAX_VMS = 6;
+    /**
+     * Defines the power a Host uses, even if it's idle (in Watts).
+     */
+    private static final double STATIC_POWER = 35;
+
+    /**
+     * The max power a Host uses (in Watts).
+     */
+    private static final int MAX_POWER = 50;
+
+    /** Indicates the time (in seconds) the Host takes to start up.
+     * Setting a value larger than 0 makes the VM placement to wait for the Host initialization. */
+    private static final double HOST_START_UP_DELAY = 20;
+
+    /** Indicates the time (in seconds) the Host takes to shut down. */
+    private static final double HOST_SHUT_DOWN_DELAY = 10;
+
+    /** The deadline (in seconds) after the Host becoming idle that it will be shutdown
+     * automatically.
+     * @see Host#setIdleShutdownDeadline(double) */
+    private static final int HOST_IDLE_SECONDS_TO_SHUTDOWN = 5;
+    private static final int HOST_MIPS = 1000;
+
+    private static final int MIN_VMS = 2;
+    private static final int MAX_VMS = 4;
     private static final int VM_PES = 4;
-    private static final int VM_MIPS = 1000;
 
     private static final int CLOUDLET_LENGTH = 20000;
 
@@ -97,7 +123,6 @@ public class HostActivationExample {
     private List<Cloudlet> cloudletList;
     private Datacenter datacenter0;
     private double lastClockTime;
-    private long currentActiveHosts;
 
     public static void main(String[] args) {
         new HostActivationExample();
@@ -114,19 +139,22 @@ public class HostActivationExample {
 
         vmList = new ArrayList<>(MAX_VMS);
         cloudletList = new ArrayList<>(MAX_VMS);
-        createAndSubmitVmsAndCloudlets(1);
+        createAndSubmitVmsAndCloudlets();
         simulation.addOnClockTickListener(this::clockTickListener);
 
         simulation.start();
 
         final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
         finishedCloudlets.sort(Comparator.comparingLong(Cloudlet::getLength).reversed());
-        new CloudletsTableBuilder(finishedCloudlets).build();
+        new CloudletsTableBuilder(finishedCloudlets)
+            .addColumn(4, new TextTableColumn("Start up time", "Seconds"), cl -> cl.getVm().getHost().getStartTime())
+            .addColumn(7, new TextTableColumn("Submission delay", "Seconds"), cl -> cl.getVm().getSubmissionDelay())
+            .build();
         printHostsUpTime();
     }
 
     private void printHostsUpTime() {
-        System.out.printf("%nHosts' up time%n");
+        System.out.printf("%nHosts' up time (total time each Host was powered on)%n");
         for (Host host : datacenter0.getHostList()) {
             System.out.printf("\tHost %4d Total up time: %15.0f seconds%n", host.getId(), host.getTotalUpTime());
         }
@@ -135,9 +163,17 @@ public class HostActivationExample {
     private DatacenterBroker createBroker() {
         final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(simulation);
 
-        /*Indicates that idle VMs must be destroyed right away (0 delay).
-        * This forces the Host to become idle*/
-        broker.setVmDestructionDelay(0.0);
+        /*Indicates that idle VMs must be destroyed after some seconds.
+        * This forces the Host to become idle.
+        * The delay should be larger then the simulation minTimeBetweenEvents to ensure VMs are gracefully shutdown. */
+        broker.setVmDestructionDelay(1.0);
+
+        /*
+         * Ensures that VMs which couldn't be created due to lack of suitable and active Hosts
+         * will be retried to be placed after some time.
+         */
+        broker.setFailedVmsRetryDelay(HOST_START_UP_DELAY+1);
+
         return broker;
     }
 
@@ -150,36 +186,21 @@ public class HostActivationExample {
      */
     private void clockTickListener(final EventInfo info) {
         final double time = Math.floor(info.getTime());
-        if(time > lastClockTime && time % SCHEDULING_INTERVAL == 0) {
+        if(time > lastClockTime && time > broker0.getFailedVmsRetryDelay() && time % SCHEDULING_INTERVAL == 0) {
             if(vmList.size() < MAX_VMS) {
-                createAndSubmitVmsAndCloudlets(1);
+                createAndSubmitVmsAndCloudlets();
             }
-            printHostsStatistics();
         }
         lastClockTime = time;
     }
 
-    private void printHostsStatistics() {
-        currentActiveHosts =
-            datacenter0
-                .getHostList()
-                .stream()
-                .filter(Host::isActive)
-                .count();
+    private void createAndSubmitVmsAndCloudlets() {
+        final List<Vm> newVmList = new ArrayList<>(MIN_VMS);
+        final List<Cloudlet> newCloudletList = new ArrayList<>(MIN_VMS);
 
-        System.out.printf("# %.2f: %d Active Host(s):%n", simulation.clock(), currentActiveHosts);
-        datacenter0
-            .getHostList()
-            .forEach(host -> System.out.printf("\tHost %3d | VMs: %4d | Active: %s %n", host.getId(), host.getVmList().size(), host.isActive()));
-        System.out.println();
-    }
-
-    private void createAndSubmitVmsAndCloudlets(final int vmNumber) {
-        final List<Vm> newVmList = new ArrayList<>(vmNumber);
-        final List<Cloudlet> newCloudletList = new ArrayList<>(vmNumber);
-
-        for (int i = 0; i < vmNumber; i++) {
-            final Vm vm = createVm();
+        for (int i = 0; i < MIN_VMS; i++) {
+            final Vm vm = new VmSimple(HOST_MIPS, VM_PES);
+            //vm.setSubmissionDelay(2.0);
             final Cloudlet cloudlet = createCloudlet(vm);
             vmList.add(vm);
             newVmList.add(vm);
@@ -212,26 +233,19 @@ public class HostActivationExample {
         final List<Pe> peList = new ArrayList<>(HOST_PES);
         //List of Host's CPUs (Processing Elements, PEs)
         for (int i = 0; i < HOST_PES; i++) {
-            peList.add(new PeSimple(1000));
+            peList.add(new PeSimple(HOST_MIPS));
         }
 
         //Indicates if the Host will be powered on or not after creation
-        final boolean activateHost = false;
+        final boolean activate = false;
+        final Host host = new HostSimple(peList, activate);
+        final PowerModelHost powerModel = new PowerModelHostSimple(MAX_POWER, STATIC_POWER);
+        powerModel.setStartupDelay(HOST_START_UP_DELAY)
+                  .setShutDownDelay(HOST_SHUT_DOWN_DELAY);
 
-        //The deadline (in seconds) after the Host becoming idle that it will be shutdown
-        final int shutdownDeadlineSeconds = 1;
-
-        final Host host = new HostSimple(peList, activateHost);
-        host.setIdleShutdownDeadline(shutdownDeadlineSeconds);
+        host.setIdleShutdownDeadline(HOST_IDLE_SECONDS_TO_SHUTDOWN)
+            .setPowerModel(powerModel);
         return host;
-    }
-
-    /**
-     * Creates one VM
-     * @return
-     */
-    private Vm createVm() {
-        return new VmSimple(VM_MIPS, VM_PES);
     }
 
     /**

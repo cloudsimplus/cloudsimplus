@@ -113,16 +113,19 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     boolean hasEverStarted();
 
     /**
-     * Sets the powered state of the Host, to indicate if it's powered on or off.
-     * When a Host is powered off, no VMs will be submitted to it.
+     * Requests the Host to be powered on or off.
+     * If there is no {@link PowerModelHost#getStartupDelay()}
+     * or {@link PowerModelHost#getShutDownDelay()} (which is the default),
+     * those operations will happen immediately.
      *
-     * <p>If it is set to powered off while VMs are running inside it,
-     * it is simulated a scheduled shutdown, so that, all running
-     * VMs will finish, but not more VMs will be submitted to this Host.</p>
+     * <p>If the Host is set to be powered off while it has running VMs,
+     * it is simulated a scheduled shutdown, so that those VMs will finish,
+     * but new ones won't be submitted to this Host.</p>
      *
-     * @param activate define the Host activation status: true to power on, false to power off
+     * @param activate true to power on, false to power off
      * @return this Host instance
      * @throws IllegalStateException when trying to activate a {@link #isFailed() failed} host.
+     * @see #setPowerModel(PowerModelHost)
      */
     Host setActive(boolean activate);
 
@@ -637,7 +640,6 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * the computation before the simulation starts and VM placement is performed.
      */
     void enableUtilizationStats();
-
 
     /**
      * Gets the current total utilization of CPU in MIPS,

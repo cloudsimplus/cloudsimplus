@@ -16,6 +16,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.PredicateType;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
 import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
@@ -231,6 +232,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         } else if (evt.getTag() == CloudSimTags.HOST_REMOVE) {
             processHostRemovalRequest(evt);
             return true;
+        } else if (evt.getTag() == CloudSimTags.HOST_POWER_ON || evt.getTag() == CloudSimTags.HOST_POWER_OFF) {
+            final HostSimple host = (HostSimple)evt.getData();
+            host.processHostActivation(evt.getTag() == CloudSimTags.HOST_POWER_ON);
         }
 
         return false;

@@ -49,28 +49,11 @@ public class PowerModelHostSimple extends PowerModelHost {
             throw new IllegalArgumentException("utilizationFraction has to be between [0 and 1]");
         }
 
-        return staticPower + (maxPower - staticPower) * utilizationFraction;
-    }
-
-    /**
-     * Checks if a power value (in Watts) is valid.
-     * @param power the value to validate
-     * @param fieldName the name of the field/variable storing the value
-     * @return the given power if it's valid
-     * @throws IllegalArgumentException when the value is smaller than 1
-     */
-    private static double validatePower(final double power, final String fieldName) {
-        if (power < 0) {
-            throw new IllegalArgumentException(fieldName+" cannot be negative");
-        }
-
-        if(power < 1){
-            throw new IllegalArgumentException(
-                fieldName +
-                    " must be in watts. A value smaller than 1 may indicate you're trying to give a percentage value instead.");
-        }
-
-        return power;
+        /* TODO: This is not considering the host may be started and shut down multiple times.
+        *  Only one occurrence of such events is being considered to add up the power consumed by them. */
+        final double startupPower = getHost().hasEverStarted() ? getStartupPower() : 0;
+        final double shutDownPower = getHost().hasEverStarted() && !getHost().isActive() ? getShutDownPower() : 0;
+        return staticPower + (maxPower - staticPower) * utilizationFraction + startupPower + shutDownPower;
     }
 
     /**

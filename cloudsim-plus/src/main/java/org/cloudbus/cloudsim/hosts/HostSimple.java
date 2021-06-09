@@ -6,10 +6,7 @@
  */
 package org.cloudbus.cloudsim.hosts;
 
-import org.cloudbus.cloudsim.core.AbstractMachine;
-import org.cloudbus.cloudsim.core.ChangeableId;
-import org.cloudbus.cloudsim.core.ResourceStatsComputer;
-import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
@@ -256,7 +253,6 @@ public class HostSimple implements Host {
     private HostSimple(final long ram, final long bw, final HarddriveStorage storage, final List<Pe> peList, final boolean activate) {
         this.setId(-1);
         this.setSimulation(Simulation.NULL);
-        this.setActive(activate);
         this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
         this.lazySuitabilityEvaluation = true;
 
@@ -284,6 +280,8 @@ public class HostSimple implements Host {
         this.vmsMigratingOut = new HashSet<>();
         this.powerModel = PowerModelHost.NULL;
         this.stateHistory = new LinkedList<>();
+
+        this.setActive(activate);
     }
 
     /**
@@ -523,17 +521,35 @@ public class HostSimple implements Host {
             throw new IllegalStateException("The Host is failed and cannot be activated.");
         }
 
-        final boolean wasActive = this.active;
-
-        if(activate && !this.active) {
-            setStartTime(getSimulation().clock());
-        } else if(!activate && this.active){
-            setShutdownTime(getSimulation().clock());
+        final double delay = activate ? powerModel.getStartupDelay() : powerModel.getShutDownDelay();
+        if (delay == 0) {
+           //If there is no delay, start up or shutdown the Host right away.
+           processHostActivation(activate);
+           return this;
         }
+
+        final String msg = (activate ? "on" : "off") + " (expected time: {} seconds).";
+        final int tag = activate ? CloudSimTags.HOST_POWER_ON : CloudSimTags.HOST_POWER_OFF;
+        LOGGER.info("{}: {} is being powered " + msg, getSimulation().clockStr(), this, delay);
+        datacenter.schedule(delay, tag, this);
+
+        return this;
+    }
+
+    /**
+     * Process an event for actually powering the {@link Host} <b>on</b> or <b>off</b>
+     * after any defined start up/shutdown delay (if some delay is set).
+     * @param activate true to start the Host up, false to shut it down
+     * @see #setActive(boolean)
+     */
+    public final void processHostActivation(final boolean activate) {
+        final boolean wasActive = this.active;
+        if(activate)
+            setStartTime(getSimulation().clock());
+        else setShutdownTime(getSimulation().clock());
 
         this.active = activate;
         notifyStartupOrShutdown(activate, wasActive);
-        return this;
     }
 
     /**
@@ -550,12 +566,12 @@ public class HostSimple implements Host {
         }
 
         if(activate && !wasActive){
-            LOGGER.info("{}: {} is being powered on.", getSimulation().clockStr(), this);
+            LOGGER.info("{}: {} is powered on.", getSimulation().clockStr(), this);
             onStartupListeners.forEach(l -> l.update(HostEventInfo.of(l, this, simulation.clock())));
         }
         else if(!activate && wasActive){
             final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
-            LOGGER.info("{}: {} is being powered off{}.", getSimulation().clockStr(), this, reason);
+            LOGGER.info("{}: {} is powered off{}.", getSimulation().clockStr(), this, reason);
             onShutdownListeners.forEach(l -> l.update(HostEventInfo.of(l, this, simulation.clock())));
         }
     }
