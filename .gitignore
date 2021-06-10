@@ -1,5 +1,6 @@
 target/
 output/
+install.sh
 
 #Ignore IntelliJ IDEA project files
 .idea/
