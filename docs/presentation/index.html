@@ -63,7 +63,7 @@
 						- [Modules](#/6)
 						- [Main Packages](#/7)
 					- [Main Exclusive Features](#/8)
-					- [Conclusions and Future Work](#/19)
+					- [Conclusions and Future Work](#/18)
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -109,7 +109,7 @@
 					- <!-- .element: class="fragment" --> [Fully documented: totally reviewed and extended docs](https://cloudsimplus.org/#docs-help). 
 					- <!-- .element: class="fragment" --> [Lots of meaningful examples to get you started](https://github.com/manoelcampos/cloudsim-plus/tree/master/cloudsim-plus-examples).
 					- <!-- .element: class="fragment" --> [+ 20 contributors and counting...](https://github.com/manoelcampos/cloudsim-plus/graphs/contributors)
-					- <!-- .element: class="fragment" --> [Used to build lots of recent and relevant tools](https://cloudsimplus.org/#projects), and counting...
+					- <!-- .element: class="fragment" --> [Used to build lots of recent and relevant tools](https://cloudsimplus.org/#projects).
 					- <!-- .element: class="fragment" --> Actively maintained since 2016.
 					- <!-- .element: class="fragment" --> Download available from [Maven Central](https://cloudsimplus.org/docs/maven.html).
 
@@ -139,14 +139,14 @@
 
 					- <!-- .element: class="fragment" --> **API**: independent and only one required for building simulations.
 					- <!-- .element: class="fragment" --> **Examples**: exclusive examples, refactored previous ones.
-					- <!-- .element: class="fragment" --> **Testbeds**: multiple-run simulations for  scientifically valid data collection. 
+					- <!-- .element: class="fragment" --> **Testbeds**: multi-run simulations forscientifically valid data collection. 
 					- <!-- .element: class="fragment" --> **Benchmarks**: performance assessment of features such as heuristics.
 
 					# Notes
 					Compounded of 4 modules.
 					- API: All other modules depend on it. Dark yellow are exclusive to CloudSim Plus.
 					- Examples updated. Exclusive examples.
-					- Execution of multiple-run simulations using pseudo random number generators.
+					- Multi-run simulations using pseudo random number generators (PRNGs).
 					- Assessment of heuristics and algorithms for tunning, such as Tabu Search for finding sub-optimal solutions for problems.
 				</script></section>
 
@@ -168,20 +168,20 @@
 						<img src="images/Jquery-swiss-army-knife.png"/>
 					</div>
 					
-					1. <!-- .element: class="fragment" --> Joint power- and network-aware simulations;
+					1. <!-- .element: class="fragment" --> Joint power- and network-aware simulations*;
 					2. <!-- .element: class="fragment" --> Vertical and Horizontal VM Scaling;
-					3. <!-- .element: class="fragment" --> Host power on and off according to demand;
+					3. <!-- .element: class="fragment" --> Host power on and off according to demand*;
 					4. <!-- .element: class="fragment" --> Parallel execution of simulations;
 					5. <!-- .element: class="fragment" --> Delayed and dynamic creation of VMs/Cloudlets;
 					6. <!-- .element: class="fragment" --> Event Listeners for monitoring and data collection; 
 					7. <!-- .element: class="fragment" --> Strongly Object-oriented Framework;
 					8. <!-- .element: class="fragment" --> Interfaces and Classes for implementation of [Heuristics](http://en.wikipedia.org/wiki/Heuristic); 
-					9. <!-- .element: class="fragment" --> Host Fault Injection Mechanism;
-					10. <!-- .element: class="fragment" --> Addition of Hosts at Simulation Runtime;
-					11. <!-- .element: class="fragment" -->  Linux Completely Fair Scheduler and more ...
+					9. <!-- .element: class="fragment" --> Host Fault Injection Mechanism*;
+					10. <!-- .element: class="fragment" --> Addition of Hosts at Simulation Runtime*;
+					11. <!-- .element: class="fragment" -->  Linux Completely Fair Scheduler (CFS) and more ...
 
 					# Notes
-					- Details in next sections
+					- Details in next sections | * = topicos not covered.
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
@@ -279,7 +279,7 @@
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
-					## 7. Classes/Interfaces for Heuristics
+					## 7. Interfaces/Classes for Heuristics
 					<a href="https://commons.wikimedia.org/wiki/File:Knapsack.svg" id="logo"><img id="transparent" title="Source: https://commons.wikimedia.org/wiki/File:Knapsack.svg" src="images/277px-Knapsack.png"/></a>
 
 					- <!-- .element: class="fragment" --> Contract to implement heuristics in some steps:
@@ -297,7 +297,7 @@
 				</script></section>
 
 				<section data-markdown data-separator-notes="^# Notes"><script type="text/template">
-					## 8. Implementation of the Linux Completely Fair Scheduler
+					## 8. Linux Completely Fair Scheduler (CFS)
 					<img id="logo-bottom" title="Source: http://www.mimastech.com/2016/11/13/how-to-setup-ntp-server-on-centos-765-linux-systems/" src="images/linux-clock.png"/>
 
 					- <!-- .element: class="fragment" --> `CloudletScheduler`: how a Vm schedules the execution of Cloudlets
