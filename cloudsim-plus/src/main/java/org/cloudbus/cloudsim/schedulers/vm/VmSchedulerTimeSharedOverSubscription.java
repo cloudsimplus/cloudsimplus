@@ -8,8 +8,6 @@ package org.cloudbus.cloudsim.schedulers.vm;
 
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +32,6 @@ import java.util.Map.Entry;
  * @since CloudSim Toolkit 3.0
  */
 public class VmSchedulerTimeSharedOverSubscription extends VmSchedulerTimeShared {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VmSchedulerTimeSharedOverSubscription.class.getSimpleName());
 
     /**
      * Creates a time-shared over-subscription VM scheduler.

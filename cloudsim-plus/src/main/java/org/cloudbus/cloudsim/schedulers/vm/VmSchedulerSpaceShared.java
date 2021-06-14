@@ -10,8 +10,6 @@ package org.cloudbus.cloudsim.schedulers.vm;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,7 +29,6 @@ import java.util.List;
  * @since CloudSim Toolkit 1.0
  */
 public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
-    private static final Logger LOGGER = LoggerFactory.getLogger(VmSchedulerSpaceShared.class.getSimpleName());
 
     /**
      * Creates a space-shared VM scheduler.
