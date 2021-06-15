@@ -76,7 +76,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private List<ResourceManageable> resources;
 
     /** @see #getStorage() */
-    private Storage storage;
+    private SimpleStorage storage;
 
     /** @see #getRam() */
     private Ram ram;
@@ -126,7 +126,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param numberOfPes  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
-     * @see #setStorage(Storage)
+     * @see #setStorage(SimpleStorage)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
@@ -147,7 +147,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param numberOfPes  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
-     * @see #setStorage(Storage)
+     * @see #setStorage(SimpleStorage)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
@@ -175,7 +175,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param numberOfPes  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
-     * @see #setStorage(Storage)
+     * @see #setStorage(SimpleStorage)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
@@ -198,7 +198,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @param numberOfPes  amount of {@link Pe} (CPU cores)
      * @see #setRam(long)
      * @see #setBw(long)
-     * @see #setStorage(Storage)
+     * @see #setStorage(SimpleStorage)
      * @see #setDefaultRamCapacity(long)
      * @see #setDefaultBwCapacity(long)
      * @see #setDefaultStorageCapacity(long)
@@ -221,7 +221,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
         setRam(new Ram(defaultRamCapacity));
         setBw(new Bandwidth(defaultBwCapacity));
-        setStorage(new Storage(defaultStorageCapacity));
+        setStorage(new SimpleStorage(defaultStorageCapacity));
 
         setSubmissionDelay(0);
         setVmm("Xen");
@@ -566,11 +566,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     /**
-     * Sets a new {@link Storage} resource for the Vm.
+     * Sets a new {@link SimpleStorage} resource for the Vm.
      *
      * @param storage the RawStorage resource to set
      */
-    private void setStorage(final Storage storage) {
+    private void setStorage(final SimpleStorage storage) {
         this.storage = requireNonNull(storage);
     }
 
@@ -579,7 +579,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         if (this.isCreated()) {
             throw new UnsupportedOperationException("Storage size can just be changed when the Vm was not created inside a Host yet.");
         }
-        setStorage(new Storage(size));
+        setStorage(new SimpleStorage(size));
         return this;
     }
 

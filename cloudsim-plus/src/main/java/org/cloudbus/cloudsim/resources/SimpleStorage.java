@@ -32,12 +32,12 @@ package org.cloudbus.cloudsim.resources;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public final class Storage extends ResourceManageableAbstract {
+public final class SimpleStorage extends ResourceManageableAbstract {
     /**
      * Creates a new Storage device.
      * @param capacity the storage capacity in Megabytes
      */
-    public Storage(long capacity) {
+    public SimpleStorage(long capacity) {
         super(capacity);
     }
 }

@@ -21,7 +21,7 @@ import org.cloudbus.cloudsim.network.IcmpPacket;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenterSimple;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
-import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.SanStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.MathUtil;
@@ -162,7 +162,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         final Simulation simulation,
         final List<? extends Host> hostList,
         final VmAllocationPolicy vmAllocationPolicy,
-        final List<FileStorage> storageList)
+        final List<SanStorage> storageList)
     {
         this(simulation, hostList, vmAllocationPolicy, new DatacenterStorage(storageList));
     }

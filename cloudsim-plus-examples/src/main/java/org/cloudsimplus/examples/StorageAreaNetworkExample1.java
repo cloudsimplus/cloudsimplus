@@ -36,7 +36,10 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
-import org.cloudbus.cloudsim.resources.*;
+import org.cloudbus.cloudsim.resources.File;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.resources.SanStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
@@ -136,8 +139,8 @@ import java.util.List;
      * @return the List of storage devices (the SAN array)
      * @see <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>
      */
-    private List<FileStorage> createSanArray() {
-        List<FileStorage> sanList = new ArrayList<>(SAN_COUNT);
+    private List<SanStorage> createSanArray() {
+        final List<SanStorage> sanList = new ArrayList<>(SAN_COUNT);
         int initialFileNumber = 0;
         for (int i = 0; i < SAN_COUNT; i++) {
             SanStorage san = new SanStorage("san"+i, SAN_CAPACITY_MB, SAN_BANDWIDTH_Mbps, NETWORK_LATENCY_SEC);

@@ -5,6 +5,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
+import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
@@ -80,8 +81,8 @@ final class HostNull implements Host {
     @Override public Host setRamProvisioner(ResourceProvisioner ramProvisioner) {
         return Host.NULL;
     }
-    @Override public Resource getStorage() {
-        return Resource.NULL;
+    @Override public FileStorage getStorage() {
+        return FileStorage.NULL;
     }
     @Override public double getTotalAllocatedMipsForVm(Vm vm) {
         return 0.0;

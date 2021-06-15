@@ -1,5 +1,6 @@
 package org.cloudbus.cloudsim.core;
 
+import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
@@ -8,11 +9,11 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
-public interface Machine extends AbstractMachine {
+public interface Machine extends AbstractMachine<FileStorage> {
     /**
      * Computes the current relative percentage of the CPU the VM is using from the Machine's total MIPS Capacity.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
-     * of the Machines's capacity.
+     * of the Machines' capacity.
      *
      * @return the relative VM CPU usage percent (from 0 to 1)
      */

@@ -25,7 +25,7 @@ import static java.util.Objects.requireNonNull;
 public class DatacenterStorage {
 
 	/** @see #getStorageList() */
-    private List<FileStorage> storageList;
+    private List<SanStorage> storageList;
 
     /** @see #getDatacenter() */
 	private Datacenter datacenter;
@@ -41,7 +41,7 @@ public class DatacenterStorage {
      * Creates a DatacenterStorage with a given {@link #getStorageList() storage list}.
      * @param storageList the storage list to set
      */
-	public DatacenterStorage(final List<FileStorage> storageList){
+	public DatacenterStorage(final List<SanStorage> storageList){
     	this.storageList = storageList;
     }
 
@@ -74,7 +74,7 @@ public class DatacenterStorage {
      * which is like a <a href="https://en.wikipedia.org/wiki/Disk_array">Disk Array</a>.
      * @return
      */
-    public List<FileStorage> getStorageList() {
+    public List<SanStorage> getStorageList() {
         return Collections.unmodifiableList(storageList);
     }
 
@@ -85,7 +85,7 @@ public class DatacenterStorage {
      * @param storageList the new storage list
      * @return
      */
-    public final DatacenterStorage setStorageList(final List<FileStorage> storageList) {
+    public final DatacenterStorage setStorageList(final List<SanStorage> storageList) {
         this.storageList = requireNonNull(storageList);
         setAllFilesOfAllStoragesToThisDatacenter();
 
@@ -97,7 +97,7 @@ public class DatacenterStorage {
      */
     public void setAllFilesOfAllStoragesToThisDatacenter() {
         storageList.stream()
-                .map(FileStorage::getFileList)
+                .map(SanStorage::getFileList)
                 .flatMap(List::stream)
                 .forEach(file -> file.setDatacenter(this.getDatacenter()));
     }
@@ -131,17 +131,17 @@ public class DatacenterStorage {
      * and computes the time to transfer it from that device.
      *
      * @param fileName the name of the file to try finding and get the transfer time
-     * @return the time to transfer the file or {@link FileStorage#FILE_NOT_FOUND} if not found.
+     * @return the time to transfer the file or {@link SanStorage#FILE_NOT_FOUND} if not found.
      */
     private double timeToTransferFileFromStorage(final String fileName) {
-        for (final FileStorage storage: getStorageList()) {
+        for (final SanStorage storage: getStorageList()) {
             final double transferTime = storage.getTransferTime(fileName);
-            if (transferTime != FileStorage.FILE_NOT_FOUND) {
+            if (transferTime != SanStorage.FILE_NOT_FOUND) {
                 return transferTime;
             }
         }
 
-        return FileStorage.FILE_NOT_FOUND;
+        return SanStorage.FILE_NOT_FOUND;
     }
 
     /**
@@ -161,7 +161,7 @@ public class DatacenterStorage {
             return DataCloudTags.FILE_ADD_ERROR_STORAGE_FULL;
         }
 
-        for (final FileStorage storage : getStorageList()) {
+        for (final SanStorage storage : getStorageList()) {
             if (storage.isAmountAvailable((long) file.getSize())) {
                 storage.addFile(file);
                 return DataCloudTags.FILE_ADD_SUCCESSFUL;
