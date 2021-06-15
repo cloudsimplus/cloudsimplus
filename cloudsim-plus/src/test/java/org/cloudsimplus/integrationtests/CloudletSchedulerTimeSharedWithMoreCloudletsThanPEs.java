@@ -89,6 +89,7 @@ public final class CloudletSchedulerTimeSharedWithMoreCloudletsThanPEs {
             .setLength(CLOUDLET_LENGTH)
             .setUtilizationModelCpu(utilizationModel)
             .setUtilizationModelRam(new UtilizationModelDynamic(0.25))
+            .setUtilizationModelBw(new UtilizationModelDynamic(0.25))
             .setPEs(CLOUDLET_PES)
             .createAndSubmit(NUMBER_OF_CLOUDLETS);
     }
