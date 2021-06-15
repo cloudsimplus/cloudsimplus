@@ -12,7 +12,10 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet.Status;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.resources.*;
+import org.cloudbus.cloudsim.resources.Bandwidth;
+import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.Ram;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.util.Conversion;
@@ -23,6 +26,8 @@ import org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo;
 import org.cloudsimplus.listeners.EventListener;
 
 import java.util.*;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -673,7 +678,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Computes the length of a given cloudlet, in number
      * of Instructions (I), which has been executed since the last time cloudlet
      * processing was updated. The number of executed instructions also takes in consideration
-     * if the cloudlet is using virtual memory (swap).
+     * if the cloudlet is using virtual memory (VMem / swap).
      *
      * <p>
      * This method considers the delay for actually starting the Cloudlet
@@ -708,12 +713,33 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final double processingTime = hasCloudletFileTransferTimePassed(cle, currentTime) ? timeSpan(cle, currentTime) : 0;
         final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime);
 
-        return cloudletUsedMips * getVirtualMemoryDelay(cle, processingTime) * Conversion.MILLION;
+        final double vMemDelay = getVirtualMemoryDelay(cle, processingTime);
+        final double reducedBwDelay = getBandwidthOverSubscriptionDelay(cle, processingTime);
+        /*If delay is negative, resource was not allocated.
+        If RAM and BW could not be allocated, just returns 0 to indicate no processing was performed
+        due to lack of other resources.*/
+        if(vMemDelay == Double.MIN_VALUE && reducedBwDelay == Double.MIN_VALUE)
+            return 0;
+
+        final double actualProcessingTime = processingTime - (validateDelay(vMemDelay) + validateDelay(reducedBwDelay));
+        return cloudletUsedMips * actualProcessingTime * Conversion.MILLION;
+    }
+
+    /**
+     * Validates some delay value. The delay can be related to virtual memory swap
+     * or reduction in allocated BW due to over-subscription.
+     * When the delay is {@link Double#MIN_VALUE}, it means there is no delay.
+     * @param delay the delay to validate
+     * @return the given delay when it's valid or 0 to indicate there is no delay
+     * when the given value is {@link Double#MIN_VALUE}
+     */
+    private double validateDelay(final double delay) {
+        return delay == Double.MIN_VALUE ? 0 : delay;
     }
 
     /**
      * Gets the delayed processing time considering possible access to virtual memory (VMem / swap), if required
-     * when there is no enough available RAM.
+     * when there is no enough available RAM, which is, when RAM is oversubscribed.
      * Use of VMem is performed by swapping memory data, belonging to processes not currently using CPU,
      * from RAM to disk to open up RAM space. Since the disk is way slower than the RAM, that causes
      * the process to wait for that swap to complete.
@@ -737,33 +763,104 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param cle the cloudlet being processed
      * @param processingTime current Cloudlet processing time
-     * @return (i) the delayed processing time (considering VMem access);
-     * (ii) the actual processing time if there is available physical RAM (in seconds);
-     * (iii) or 0 if the cloudlet is requesting more RAM then the total VM capacity.
+     * @return (i) the delayed processing time in seconds (considering VMem access);
+     * (ii) 0 if there is available physical RAM (no over-subscription);
+     * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more RAM then the total VM capacity.
      * @see <a href="https://www.kernel.org/doc/gorman/html/understand/understand014.html">Linux Kernel Swap Management</a>
      */
     private double getVirtualMemoryDelay(final CloudletExecution cle, final double processingTime) {
-        final ResourceManageable vmRam = vm.getResource(Ram.class);
-        final double requestedRam = getCloudletResourceAbsoluteUtilization(cle.getCloudlet(), Ram.class, vmRam);
+        return getResourceOverSubscriptionDelay(
+            cle, processingTime, Ram.class,
 
-        /*
-         * Since using VMem requires some portion of the RAM to be swapped between the disk
-         * to open up RAM space, the required RAM cannot be higher then the RAM capacity
-         * neither than the available disk space.
-         */
-        if(requestedRam > vmRam.getCapacity() || requestedRam > vm.getStorage().getAvailableResource())
-            return 0;
+            /*
+             * Since using VMem requires some portion of the RAM to be swapped between the disk
+             * to open up RAM space, the required RAM cannot be higher then the RAM capacity
+             * neither than the available disk space.
+             */
+            (vmRam, requestedRam) -> requestedRam <= vmRam.getCapacity() && requestedRam <= vm.getStorage().getAvailableResource(),
 
-        /* Amount of RAM that was not allocated to the Cloudlet due to lack of VM capacity.
-        * This way, that extra amount will require virtual memory,
-        * delaying cloudlet execution due to Host's drive read latency. */
-        final double notAllocatedRam = requestedRam - vmRam.getAvailableResource();
-        if(notAllocatedRam > 0) {
-            final FileStorage hostStorage = cle.getCloudlet().getVm().getHost().getStorage();
-            return processingTime - hostStorage.getTransferTime((int)notAllocatedRam);
+            /* Amount of RAM that was not allocated to the Cloudlet due to lack of VM capacity.
+             * This way, that extra amount will require virtual memory,
+             * delaying cloudlet execution due to Host's drive read latency. */
+            (notAllocatedRam, __) -> diskTransferTime(cle, notAllocatedRam));
+    }
+
+    /**
+     * Gets the time to transfer hard drive from the Host where the VM running a cloudlet is placed.
+     * @param cle Cloudlet being processed
+     * @param dataSize the size of the data to read from the VM disk (in MB),
+     *                 considering the read speed of the underlying Host disk.
+     * @return
+     */
+    private double diskTransferTime(final CloudletExecution cle, final Double dataSize) {
+        return cle.getCloudlet().getVm().getHost().getStorage().getTransferTime(dataSize.intValue());
+    }
+
+    private double getBandwidthOverSubscriptionDelay(final CloudletExecution cle, final double processingTime) {
+        return getResourceOverSubscriptionDelay(
+            cle, processingTime, Bandwidth.class,
+            (vmBw, requestedBw) -> requestedBw <= vmBw.getCapacity(),
+
+            /* When some BW cannot be allocated to the Cloudlet (due to over-subscription),
+            the delay is computed based on the time needed to use
+            the required bandwidth after the reduced allocation.
+            For instance, if the required bandwidth is 10mbps, that means
+            the cloudlet is willing to transfer 10 mbits in one second.
+            If just 8 mbps is allocated to the cloudlet,
+            to transfer the same 10 mbits it will take 0,25 second more.
+            */
+            (notAllocatedBw, requestedBw) -> requestedBw/(requestedBw-notAllocatedBw) - 1);
+    }
+
+    /**
+     * Gets the cloudlet processing time, including a delay when a given
+     * resource is oversubscribed, which will cause overhead for cloudlet processing,
+     * delaying its completion.
+     * If the resource the cloudlet is request is RAM and it's oversubscribed, that
+     * will activate virtual memory (swap).
+     * If the resource is bandwidth, less data is supposed to be transferred
+     * (the bandwidth for cloudlets doesn't transfer actual data, just simulate bandwidth requirements)
+     * and the cloudlet execution is delayed too, since the data transfer will take longer.
+     *
+     * @param cle the Cloudlet being processed
+     * @param processingTime the processing time span according to the last time the cloudlet was processed
+     * @param vmResourceClass the class of VM resource the cloudlet is requesting (that will be check if it's oversubscribed)
+     * @param suitableCapacityPredicate a {@link BiPredicate} that receives the VM resource being requested and
+     *                                  the amount of requested resources,
+     *                                  then indicates if the requested capacity can be allocated or not
+     *                                  (even total or partially). If the predicate returns false,
+     *                                  that means the requested amount exceeds the total resource capacity.
+     * @param delayFunction a {@link BiFunction} that receives the amount of resources that couldn't be allocated to the cloudlet
+     *                      and the amount requested,
+     *                      then returning the additional delay in cloudlet processing caused by that
+     * @return (i) the delayed processing time in seconds;
+     * (ii) 0 if there is available physical resource (no over-subscription);
+     * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more resource then the total VM capacity.
+     */
+    private double getResourceOverSubscriptionDelay(
+        final CloudletExecution cle, final double processingTime,
+        final Class<? extends ResourceManageable> vmResourceClass,
+        final BiPredicate<ResourceManageable, Double> suitableCapacityPredicate,
+        final BiFunction<Double, Double, Double> delayFunction)
+    {
+        final ResourceManageable vmResource = vm.getResource(vmResourceClass);
+        final double requestedResource = getCloudletResourceAbsoluteUtilization(cle.getCloudlet(), vmResourceClass, vmResource);
+
+        /* If the requested resource is not suitable (even for over-subscription),
+        considering the total VM capacity.
+        Returns a negative value to indicate the allocation was not possible*/
+        if(!suitableCapacityPredicate.test(vmResource, requestedResource))
+            return Double.MIN_VALUE;
+
+        /* Amount of resource that was not allocated to the Cloudlet due to lack of VM capacity.
+         * This way, that extra amount will cause delay in cloudlet execution,
+         * since the cloudlet will wait for that non-allocated resource until the next processing time. */
+        final double notAllocatedResource = Math.max(requestedResource - vmResource.getAvailableResource(), 0);
+        if (notAllocatedResource > 0) {
+            return delayFunction.apply(notAllocatedResource, requestedResource);
         }
 
-        return processingTime;
+        return 0;
     }
 
     /**
