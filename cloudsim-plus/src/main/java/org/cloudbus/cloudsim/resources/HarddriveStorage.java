@@ -11,13 +11,6 @@ package org.cloudbus.cloudsim.resources;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.util.Conversion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * An implementation of a Hard Drive (HD) storage device. It simulates the behavior of a typical hard drive.
@@ -36,59 +29,37 @@ import java.util.Objects;
  * @since CloudSim Toolkit 1.0
  */
 public class HarddriveStorage implements FileStorage {
-    private static final double DEF_LATENCY_SECS = 0.00417;
-    private static final double DEF_SEEK_TIME_SECS = 0.009;
-    private static final int    DEF_MAX_TRANSFER_RATE_MBITS_SEC = 133*8;
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(HarddriveStorage.class.getSimpleName());
-
-    /** The internal storage that just manages
-     * the HD capacity and used space.
-     * The {@link HarddriveStorage} (HD) does not extends such class
-     * to avoid its capacity and available amount of space
-     * to be changed indiscriminately.
-     * The available space is update according to files added or removed
-     * from the HD.
-     */
-    private final Storage storage;
+    /** @see #getStorage() */
+    private final SimpleStorage storage;
 
     /**
-     * An storage just to control the amount of space previously allocated
-     * to add reserved files. When the reserved files are effectively added
-     * to the Hard Drive, the reserved space for the file is remove for
-     * this attribute. The attribute is used to avoid adding a reserved file
-     * that the space wasn't previously reserved, what results in
-     * wrong allocated space.
-     * @see #reserveSpace(int)
-     * @see #addReservedFile(File)
+     * @see #getName()
      */
-    private final Storage reservedStorage;
-
-    /** @see #getFileNameList()   */
-    private List<String> fileNameList;
-
-    /** A list with all files stored on the hard drive. */
-    private List<File> fileList;
-
-    /** @see #getName()  */
     private final String name;
-
-    /** A number generator required to randomize the seek time. */
+    /**
+     * A number generator required to randomize the seek time.
+     */
     private ContinuousDistribution gen;
 
-    /** @see #getMaxTransferRate()  */
+    /**
+     * @see #getMaxTransferRate()
+     */
     private double maxTransferRate;
 
-    /** @see #getLatency()  */
+    /**
+     * @see #getLatency()
+     */
     private double latency;
 
-    /** @see #getAvgSeekTime()  */
+    /**
+     * @see #getAvgSeekTime()
+     */
     private double avgSeekTime;
 
     /**
      * Creates a new hard drive storage with a given name and capacity.
      *
-     * @param name the name of the new hard drive storage
+     * @param name     the name of the new hard drive storage
      * @param capacity the capacity in MByte
      * @throws IllegalArgumentException when the name and the capacity are not valid
      */
@@ -97,11 +68,8 @@ public class HarddriveStorage implements FileStorage {
             throw new IllegalArgumentException("Storage name cannot be empty.");
         }
 
-        this.fileList = new ArrayList<>();
-        this.fileNameList = new ArrayList<>();
-        this.storage = new Storage(capacity);
-        this.reservedStorage = new Storage(capacity);
         this.name = name;
+        this.storage = new SimpleStorage(capacity);
 
         init();
     }
@@ -128,76 +96,11 @@ public class HarddriveStorage implements FileStorage {
         setMaxTransferRate(DEF_MAX_TRANSFER_RATE_MBITS_SEC);
     }
 
-    @Override
-    public int getNumStoredFile() {
-        return fileList.size();
-    }
-
-    @Override
-    public boolean reserveSpace(int fileSize) {
-        if(storage.allocateResource((long)fileSize)){
-            reservedStorage.allocateResource((long)fileSize);
-            return true;
-        }
-
-        return false;
-    }
-
-    @Override
-    public double addReservedFile(final File file) {
-        Objects.requireNonNull(file);
-
-        if(!reservedStorage.isResourceAmountBeingUsed((long)file.getSize())){
-            throw new IllegalStateException("The file size wasn't previously reserved in order to add a reserved file.");
-        }
-
-        final long fileSize = file.getSize();
-        storage.deallocateResource(fileSize);
-        reservedStorage.deallocateResource(fileSize);
-        final double result = addFile(file);
-
-        // if add file fails, then set the current size back to its old value
-        if (result == 0.0) {
-            storage.allocateResource(fileSize);
-        }
-
-        return result;
-    }
-
-    @Override
-    public boolean hasPotentialAvailableSpace(final int fileSize) {
-        if (fileSize <= 0) {
-            return false;
-        }
-
-        if (storage.isAmountAvailable((long)fileSize)) {
-            return true;
-        }
-
-        return getDeletedFilesTotalSize() > fileSize;
-    }
-
-    @Override
-    public boolean hasFile(final String fileName) {
-        return getFile(fileName) != null;
-    }
-
-    private int getDeletedFilesTotalSize() {
-        return fileList.stream().filter(File::isDeleted).mapToInt(File::getSize).sum();
-    }
-
-    @Override
+    /**
+     * @return the name of the storage device
+     */
     public String getName() {
         return name;
-    }
-
-    @Override
-    public void setLatency(final double latency) {
-        if (latency < 0) {
-            throw new IllegalArgumentException("Latency must be greater than zero.");
-        }
-
-        this.latency = latency;
     }
 
     @Override
@@ -206,12 +109,13 @@ public class HarddriveStorage implements FileStorage {
     }
 
     @Override
-    public void setMaxTransferRate(final double maxTransferRate) {
-        if (maxTransferRate <= 0) {
-            throw new IllegalArgumentException("Max transfer rate must be greater than zero.");
+    public FileStorage setLatency(final double latency) {
+        if (latency < 0) {
+            throw new IllegalArgumentException("Latency must be greater than zero.");
         }
 
-        this.maxTransferRate = maxTransferRate;
+        this.latency = latency;
+        return this;
     }
 
     @Override
@@ -219,14 +123,23 @@ public class HarddriveStorage implements FileStorage {
         return maxTransferRate;
     }
 
+    @Override
+    public FileStorage setMaxTransferRate(final double maxTransferRate) {
+        if (maxTransferRate <= 0) {
+            throw new IllegalArgumentException("Max transfer rate must be greater than zero.");
+        }
+
+        this.maxTransferRate = maxTransferRate;
+        return this;
+    }
+
     /**
      * Sets the average seek time of the storage in seconds.
      *
      * @param seekTime the average seek time in seconds
-     * @return true if the values is greater than zero and was set successfully,
-     * false otherwise
+     * @return
      */
-    public boolean setAvgSeekTime(final double seekTime) {
+    public FileStorage setAvgSeekTime(final double seekTime) {
         return setAvgSeekTime(seekTime, null);
     }
 
@@ -235,18 +148,17 @@ public class HarddriveStorage implements FileStorage {
      * determines a randomized seek time.
      *
      * @param seekTime the average seek time in seconds
-     * @param gen the ContinuousGenerator which generates seek times
-     * @return true if the values is greater than zero and was set successfully,
-     * false otherwise
+     * @param gen      the ContinuousGenerator which generates seek times
+     * @return
      */
-    public boolean setAvgSeekTime(final double seekTime, final ContinuousDistribution gen) {
-        if (seekTime <= 0.0) {
-            return false;
+    public FileStorage setAvgSeekTime(final double seekTime, final ContinuousDistribution gen) {
+        if (seekTime < 0) {
+            throw new IllegalArgumentException("Seek time cannot be negative.");
         }
 
         avgSeekTime = seekTime;
         this.gen = gen;
-        return true;
+        return this;
     }
 
     /**
@@ -258,42 +170,6 @@ public class HarddriveStorage implements FileStorage {
         return avgSeekTime;
     }
 
-    @Override
-    public File getFile(final String fileName) {
-        if (!File.isValid(fileName)) {
-            LOGGER.warn("{}.getFile(): Invalid file name {}.", name, fileName);
-            return null;
-        }
-
-        int size = 0;
-
-        // find the file in the disk
-        for(final File currentFile: fileList) {
-            size += currentFile.getSize();
-            if (currentFile.getName().equals(fileName)) {
-                // if the file is found, then determine the time taken to get it
-                final double seekTime = getSeekTime(size);
-                final double transferTime = getTransferTime(currentFile.getSize());
-
-                // total time for this operation
-                currentFile.setTransactionTime(seekTime + transferTime);
-                return currentFile;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
-    public List<String> getFileNameList() {
-        return Collections.unmodifiableList(fileNameList);
-    }
-
-    @Override
-    public List<File> getFileList(){
-        return Collections.unmodifiableList(fileList);
-    }
-
     /**
      * Get the seek time for a file with the defined size. Given a file size in MByte, this method
      * returns a seek time for the file in seconds.
@@ -301,7 +177,7 @@ public class HarddriveStorage implements FileStorage {
      * @param fileSize the size of a file in MByte
      * @return the seek time in seconds
      */
-    private double getSeekTime(final int fileSize) {
+    public double getSeekTime(final int fileSize) {
         double result = 0;
 
         if (gen != null) {
@@ -309,25 +185,10 @@ public class HarddriveStorage implements FileStorage {
         }
 
         if (fileSize > 0 && storage.getCapacity() != 0) {
-            result += fileSize / (double)storage.getCapacity();
+            result += fileSize / (double) storage.getCapacity();
         }
 
         return result;
-    }
-
-    @Override
-    public double getTransferTime(final String fileName) {
-        final File file = getFile(fileName);
-        if(file == null){
-            return FILE_NOT_FOUND;
-        }
-
-        return getTransferTime(file);
-    }
-
-    @Override
-    public double getTransferTime(final File file) {
-        return getTransferTime(file.getSize());
     }
 
     @Override
@@ -341,144 +202,11 @@ public class HarddriveStorage implements FileStorage {
      * according to a given transfer speed (in Mbits/sec).
      *
      * @param fileSize the size of the file to compute the transfer time (in MBytes)
-     * @param speed the speed (in MBits/sec) to compute the time to transfer the file
+     * @param speed    the speed (in MBits/sec) to compute the time to transfer the file
      * @return the transfer time in seconds
      */
-    protected final double getTransferTime(final int fileSize, final double speed){
-        return Conversion.bytesToBits(fileSize)/speed;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>First, the method checks if there is enough space on the storage,
-     * then it checks if the file with the same name is already taken to avoid duplicate filenames.</p>
-     *
-     * @param file {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public double addFile(final File file) {
-        double result = 0.0;
-        if (!File.isValid(file)) {
-            LOGGER.warn("{}.addFile(): Invalid file {}", name, file);
-            return result;
-        }
-
-       // check the capacity
-        if (!storage.isAmountAvailable((long)file.getSize())) {
-            LOGGER.error("{}.addFile(): Not enough space to store {}", name, file.getName());
-            return result;
-        }
-
-        // check if the same file name is already taken
-        if (!contains(file.getName())) {
-            fileList.add(file);               // add the file into the HD
-            fileNameList.add(file.getName());     // add the name to the name list
-            storage.allocateResource((long)file.getSize());    // increment the current HD space
-            result = getTotalFileAddTime(file);
-            file.setTransactionTime(result);
-        }
-        return result;
-    }
-
-    /**
-     * Gets the total time to add a file to the storage.
-     * @param file the file to compute the total addition time
-     * @return
-     */
-    private double getTotalFileAddTime(final File file) {
-        final double seekTime = getSeekTime(file.getSize());
-        final double transferTime = getTransferTime(file.getSize());
-        return seekTime + transferTime;
-    }
-
-    @Override
-    public double addFile(final List<File> list) {
-        Objects.requireNonNull(list);
-        if (list.isEmpty()) {
-            LOGGER.debug("{}.addFile(): File list is empty.", getName());
-            return 0.0;
-        }
-
-        return list.stream().mapToDouble(this::addFile).sum();
-    }
-
-    @Override
-    public File deleteFile(final String fileName) {
-        if (!File.isValid(fileName)) {
-            return null;
-        }
-
-        final int i = fileNameList.indexOf(fileName);
-        if(i != -1){
-            final File file = fileList.get(i);
-            final double result = deleteFile(file);
-            file.setTransactionTime(result);
-            return file;
-        }
-
-        return null;
-    }
-
-    @Override
-    public double deleteFile(final File file) {
-        // check if the file is valid or not
-        if (!File.isValid(file)) {
-            return 0.0;
-        }
-
-        // check if the file is in the storage
-        if (contains(file)) {
-            fileList.remove(file);            // remove the file HD
-            fileNameList.remove(file.getName());  // remove the name from name list
-            storage.deallocateResource((long)file.getSize());    // decrement the current HD space
-            final double result = getTotalFileAddTime(file);  // total time
-            file.setTransactionTime(result);
-            return result;
-        }
-
-        return 0.0;
-    }
-
-    @Override
-    public boolean contains(final String fileName) {
-        if (StringUtils.isBlank(fileName)) {
-            LOGGER.warn("{}.contains(): Invalid file name {}", name, fileName);
-            return false;
-        }
-
-        return fileNameList.contains(fileName);
-    }
-
-    @Override
-    public boolean contains(final File file) {
-        if (!File.isValid(file)) {
-            return false;
-        }
-
-        return contains(file.getName());
-    }
-
-    @Override
-    public boolean renameFile(final File file, final String newName) {
-        //check whether the new filename is conflicting with existing ones or not
-        if (contains(newName)) {
-            return false;
-        }
-
-        final String oldName = file.getName();
-        // replace the file name in the file (physical) list
-        final File renamedFile = getFile(oldName);
-        if (renamedFile != null) {
-            renamedFile.setName(newName);
-            renamedFile.setTransactionTime(0);
-            fileNameList.remove(oldName);
-            fileNameList.add(newName);
-            return true;
-        }
-
-        return false;
+    protected final double getTransferTime(final int fileSize, final double speed) {
+        return Conversion.bytesToBits(fileSize) / speed;
     }
 
     @Override
@@ -503,11 +231,24 @@ public class HarddriveStorage implements FileStorage {
 
     @Override
     public boolean isAmountAvailable(double amountToCheck) {
-        return isAmountAvailable((long)amountToCheck);
+        return isAmountAvailable((long) amountToCheck);
     }
 
     @Override
     public boolean isFull() {
         return storage.isFull();
+    }
+
+    /**
+     * The internal storage that just manages
+     * the HD capacity and used space.
+     * The {@link HarddriveStorage} (HD) does not extends such class
+     * to avoid its capacity and available amount of space
+     * to be changed indiscriminately.
+     * The available space is update according to files added or removed
+     * from the HD.
+     */
+    public SimpleStorage getStorage() {
+        return storage;
     }
 }

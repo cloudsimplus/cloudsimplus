@@ -86,7 +86,7 @@ public class HostSimple implements Host {
     private final Bandwidth bw;
 
     /** @see #getStorage() */
-    private Storage storage;
+    private final HarddriveStorage disk;
 
     /** @see #getRamProvisioner() */
     private ResourceProvisioner ramProvisioner;
@@ -225,6 +225,10 @@ public class HostSimple implements Host {
      * @see #setVmScheduler(VmScheduler)
      */
     public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList) {
+        this(ram, bw, new HarddriveStorage(storage), peList);
+    }
+
+    public HostSimple(final long ram, final long bw, final HarddriveStorage storage, final List<Pe> peList) {
         this(ram, bw, storage, peList, true);
     }
 
@@ -246,6 +250,10 @@ public class HostSimple implements Host {
      * @see #setVmScheduler(VmScheduler)
      */
     public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList, final boolean activate) {
+        this(ram, bw, new HarddriveStorage(storage), peList, activate);
+    }
+
+    private HostSimple(final long ram, final long bw, final HarddriveStorage storage, final List<Pe> peList, final boolean activate) {
         this.setId(-1);
         this.setSimulation(Simulation.NULL);
         this.setActive(activate);
@@ -254,7 +262,7 @@ public class HostSimple implements Host {
 
         this.ram = new Ram(ram);
         this.bw = new Bandwidth(bw);
-        this.setStorage(storage);
+        this.disk = Objects.requireNonNull(storage);
         this.setRamProvisioner(new ResourceProvisionerSimple());
         this.setBwProvisioner(new ResourceProvisionerSimple());
 
@@ -415,7 +423,7 @@ public class HostSimple implements Host {
     private void allocateResourcesForVm(Vm vm) {
         ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
         bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
-        storage.allocateResource(vm.getStorage());
+        disk.getStorage().allocateResource(vm.getStorage());
         vmScheduler.allocatePesForVm(vm, vm.getCurrentRequestedMips());
     }
 
@@ -471,7 +479,7 @@ public class HostSimple implements Host {
     private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
         final HostSuitability suitability = new HostSuitability();
 
-        suitability.setForStorage(storage.isAmountAvailable(vm.getStorage()));
+        suitability.setForStorage(disk.isAmountAvailable(vm.getStorage()));
         if (!suitability.forStorage()) {
             logAllocationError(showFailureLog, vm, inMigration, "MB", this.getStorage(), vm.getStorage());
             if(lazySuitabilityEvaluation)
@@ -584,7 +592,7 @@ public class HostSimple implements Host {
         ramProvisioner.deallocateResourceForVm(vm);
         bwProvisioner.deallocateResourceForVm(vm);
         vmScheduler.deallocatePesFromVm(vm);
-        storage.deallocateResource(vm.getStorage());
+        disk.getStorage().deallocateResource(vm.getStorage());
     }
 
     @Override
@@ -592,7 +600,7 @@ public class HostSimple implements Host {
         deallocateResourcesOfAllVms();
         for (final Vm vm : vmList) {
             vm.setCreated(false);
-            storage.deallocateResource(vm.getStorage());
+            disk.getStorage().deallocateResource(vm.getStorage());
         }
 
         vmList.clear();
@@ -698,8 +706,8 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public Resource getStorage() {
-        return storage;
+    public FileStorage getStorage() {
+        return disk;
     }
 
     @Override
@@ -1023,7 +1031,7 @@ public class HostSimple implements Host {
 
     @Override
     public long getAvailableStorage() {
-        return storage.getAvailableResource();
+        return disk.getAvailableResource();
     }
 
     @Override
@@ -1055,11 +1063,6 @@ public class HostSimple implements Host {
     @Override
     public int getFailedPesNumber() {
         return failedPesNumber;
-    }
-
-    private Host setStorage(final long size) {
-        this.storage = new Storage(size);
-        return this;
     }
 
     @Override

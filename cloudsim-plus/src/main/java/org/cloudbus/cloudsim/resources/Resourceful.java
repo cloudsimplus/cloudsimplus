@@ -32,7 +32,7 @@ import java.util.List;
 /**
  * An interface to be implemented by a machine such as a {@link Host} or {@link Vm},
  * that provides a polymorphic way to access a given resource
- * like {@link Ram}, {@link Bandwidth}, {@link Storage}
+ * like {@link Ram}, {@link Bandwidth}, {@link SimpleStorage}
  * or {@link Pe} from a List containing such different resources.
  *
  * @author Manoel Campos da Silva Filho

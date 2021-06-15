@@ -27,7 +27,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.File;
-import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.resources.SanStorage;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
@@ -77,7 +76,7 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 
     private DatacenterBroker broker;
 	private List<File> files;
-	private FileStorage storage;
+	private SanStorage storage;
     private CloudSim simulation;
 
 	@BeforeEach

@@ -43,7 +43,7 @@ import java.util.function.Predicate;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Vm extends AbstractMachine, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned, ResourceStatsComputer<VmResourceStats> {
+public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Comparable<Vm>, CustomerEntity, TimeZoned, ResourceStatsComputer<VmResourceStats> {
     Logger LOGGER = LoggerFactory.getLogger(Vm.class.getSimpleName());
 
     /**

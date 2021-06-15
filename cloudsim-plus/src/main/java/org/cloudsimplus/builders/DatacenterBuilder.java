@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.resources.FileStorage;
+import org.cloudbus.cloudsim.resources.SanStorage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +53,7 @@ public class DatacenterBuilder implements Builder {
 
     private final List<Datacenter> datacenters;
     private int createdDatacenters;
-	private List<FileStorage> storageList;
+	private List<SanStorage> storageList;
 	private Function<List<Host>, Datacenter> datacenterCreationFunction;
 
 	public DatacenterBuilder(final SimulationScenarioBuilder scenario) {
@@ -166,12 +166,12 @@ public class DatacenterBuilder implements Builder {
         return this;
     }
 
-	public DatacenterBuilder setStorageList(final List<FileStorage> storageList) {
+	public DatacenterBuilder setStorageList(final List<SanStorage> storageList) {
 		this.storageList = storageList;
 		return this;
 	}
 
-	public DatacenterBuilder addStorageToList(final FileStorage storage) {
+	public DatacenterBuilder addStorageToList(final SanStorage storage) {
 		this.storageList.add(storage);
 		return this;
 	}
