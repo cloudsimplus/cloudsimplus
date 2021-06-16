@@ -26,6 +26,7 @@ package org.cloudsimplus.examples.resourceusage;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
@@ -35,6 +36,7 @@ import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.HarddriveStorage;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
+import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerAbstract;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -83,6 +85,13 @@ import java.util.stream.IntStream;
  * the cloudlet is willing to transfer 10 mbits in one second.
  * If just 8 mbps is allocated to the cloudlet,
  * to transfer the same 10 mbits it will take 0,25 second more.
+ * </p>
+ *
+ * <p>Check the following docs for specific implementation details you may be aware of:
+ * <ul>
+ *     <li>{@link CloudletSchedulerAbstract#getVirtualMemoryDelay(CloudletExecution, double)}</li>
+ *     <li>{@link CloudletSchedulerAbstract#getBandwidthOverSubscriptionDelay(CloudletExecution, double)}</li>
+ * </ul>
  * </p>
  *
  * @author Manoel Campos da Silva Filho

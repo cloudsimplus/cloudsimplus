@@ -836,6 +836,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return (i) the delayed processing time in seconds;
      * (ii) 0 if there is available physical resource (no over-subscription);
      * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more resource then the total VM capacity.
+     * @see #getVirtualMemoryDelay(CloudletExecution, double)
+     * @see #getBandwidthOverSubscriptionDelay(CloudletExecution, double)
      */
     private double getResourceOverSubscriptionDelay(
         final CloudletExecution cle, final double processingTime,
