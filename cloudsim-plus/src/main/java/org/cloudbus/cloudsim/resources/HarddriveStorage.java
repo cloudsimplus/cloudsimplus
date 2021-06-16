@@ -13,7 +13,8 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.util.Conversion;
 
 /**
- * An implementation of a Hard Drive (HD) storage device. It simulates the behavior of a typical hard drive.
+ * An implementation of a Hard Drive (HD) storage device with a specific capacity (in Megabytes).
+ * It simulates the behavior of a typical hard drive.
  * The default values for this storage are those of a
  * "<a href='https://www.seagate.com/files/staticfiles/maxtor/en_us/documentation/data_sheets/diamondmax_10_data_sheet.pdf'>Maxtor DiamondMax 10 ATA</a>"
  * hard disk with the following parameters:

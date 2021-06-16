@@ -52,7 +52,7 @@ import java.util.stream.IntStream;
 
 /**
  * An example showing how the processing of some Cloudlets is delayed
- * due to lack of available RAM.
+ * due to lack of available RAM and BW.
  *
  * <p>The example creates VMs with different number of Cloudlets.
  * Those Cloudlets have different {@link UtilizationModel}s for RAM.
