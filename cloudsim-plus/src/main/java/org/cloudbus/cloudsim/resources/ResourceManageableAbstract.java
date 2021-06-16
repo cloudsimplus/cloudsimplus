@@ -27,8 +27,8 @@ public abstract class ResourceManageableAbstract extends ResourceAbstract implem
     /** @see #getAvailableResource() */
     private long availableResource;
 
-    public ResourceManageableAbstract(final long capacity) {
-        super(capacity);
+    public ResourceManageableAbstract(final long capacity, final String unit) {
+        super(capacity, unit);
         this.availableResource = capacity;
     }
 

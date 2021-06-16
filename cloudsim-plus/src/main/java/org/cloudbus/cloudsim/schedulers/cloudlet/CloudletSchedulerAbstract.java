@@ -608,22 +608,22 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final long available = resource.getAvailableResource();
         if(requested > resource.getCapacity()){
             LOGGER.warn(
-                "{}: {}: {} requested {} MB of {} but that is >= the VM capacity ({})",
-                vm.getSimulation().clockStr(), getClass().getSimpleName(),
-                cloudlet, requested, resource.getClass().getSimpleName(), resource.getCapacity());
+                "{}: {}: {} requested {} {} of {} but that is >= the VM capacity ({})",
+                vm.getSimulation().clockStr(), getClass().getSimpleName(), cloudlet,
+                requested, resource.getUnit(), resource.getClass().getSimpleName(), resource.getCapacity());
             return;
         }
 
         if(requested > available){
             final String msg1 =
                     available > 0 ?
-                    String.format("just %d was available.", available):
+                    String.format("just %d was available", available):
                     "no amount is available.";
-            final String msg2 = resourceClass == Ram.class ? " Using Virtual Memory, which delays Cloudlet processing." : "";
+            final String msg2 = resourceClass == Ram.class ? ". Using Virtual Memory," : ",";
             LOGGER.warn(
-                "{}: {}: {} requested {} MB of {} but {}{}",
-                vm.getSimulation().clockStr(), getClass().getSimpleName(),
-                cloudlet, requested, resource.getClass().getSimpleName(), msg1, msg2);
+                "{}: {}: {} requested {} {} of {} but {}{} which delays Cloudlet processing.",
+                vm.getSimulation().clockStr(), getClass().getSimpleName(), cloudlet,
+                requested, resource.getUnit(), resource.getClass().getSimpleName(), msg1, msg2);
 
             updateOnResourceAllocationFailListeners(resource, cloudlet, requested, available);
         }

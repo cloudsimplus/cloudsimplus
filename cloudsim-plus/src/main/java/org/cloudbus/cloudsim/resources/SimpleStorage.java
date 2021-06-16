@@ -24,7 +24,7 @@
 package org.cloudbus.cloudsim.resources;
 
 /**
- * A simple storage that just manages the device capacity and raw allocated (used) space.
+ * A simple storage that just manages the device capacity and raw allocated (used) space (in Megabytes).
  * It doesn't deals with files neither with file system operations such as
  * file inclusion or deletion.
  * Such a class allows managing the Storage capacity and allocation.
@@ -38,6 +38,6 @@ public final class SimpleStorage extends ResourceManageableAbstract {
      * @param capacity the storage capacity in Megabytes
      */
     public SimpleStorage(long capacity) {
-        super(capacity);
+        super(capacity, "MB");
     }
 }

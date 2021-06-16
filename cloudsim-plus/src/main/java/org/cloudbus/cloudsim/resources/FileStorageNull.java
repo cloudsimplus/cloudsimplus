@@ -17,5 +17,6 @@ final class FileStorageNull implements FileStorage {
     @Override public long getAvailableResource() { return 0; }
     @Override public long getAllocatedResource() { return 0; }
     @Override public boolean isAmountAvailable(long amountToCheck) { return false; }
+    @Override public String getUnit() { return ""; }
     @Override public long getCapacity() { return 0; }
 }

@@ -74,7 +74,7 @@ public class PeSimple extends ResourceManageableAbstract implements Pe {
      * @see #PeSimple()
      */
     public PeSimple(final double mipsCapacity, final PeProvisioner peProvisioner) {
-        super((long)mipsCapacity);
+        super((long)mipsCapacity, "Unit");
         setId(-1);
         setPeProvisioner(peProvisioner);
 

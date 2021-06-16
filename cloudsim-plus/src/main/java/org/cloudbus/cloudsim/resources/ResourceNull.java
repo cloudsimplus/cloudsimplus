@@ -15,6 +15,7 @@ final class ResourceNull implements Resource {
     @Override public boolean isAmountAvailable(long amountToCheck) {
         return false;
     }
+    @Override public String getUnit() { return ""; }
     @Override public boolean isFull() {
         return false;
     }

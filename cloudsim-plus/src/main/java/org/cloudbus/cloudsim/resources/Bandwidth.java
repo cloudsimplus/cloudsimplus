@@ -36,6 +36,6 @@ public final class Bandwidth extends ResourceManageableAbstract {
      * @param capacity the bandwidth capacity in in Megabits/s
      */
     public Bandwidth(final long capacity) {
-        super(capacity);
+        super(capacity, "Mbps");
     }
 }

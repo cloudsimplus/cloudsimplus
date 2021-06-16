@@ -36,6 +36,6 @@ public final class Ram extends ResourceManageableAbstract {
      * @param capacity the RAM capacity in Megabytes
      */
     public Ram(final long capacity) {
-        super(capacity);
+        super(capacity, "MB");
     }
 }

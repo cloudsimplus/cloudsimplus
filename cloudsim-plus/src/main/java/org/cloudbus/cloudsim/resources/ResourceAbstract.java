@@ -23,6 +23,8 @@
  */
 package org.cloudbus.cloudsim.resources;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * An abstract implementation of a {@link Resource}.
  *
@@ -30,14 +32,20 @@ package org.cloudbus.cloudsim.resources;
  * @since CloudSim Plus 1.2.0
  */
 public abstract class ResourceAbstract implements Resource {
+    private String unit;
+
     /** @see #getCapacity() */
     protected long capacity;
 
-    public ResourceAbstract(final long capacity){
+    public ResourceAbstract(final long capacity, final String unit){
         if(!isCapacityValid(capacity)) {
             throw new IllegalArgumentException("Capacity cannot be negative");
         }
 
+        if(unit == null || StringUtils.isBlank(unit))
+            throw new IllegalArgumentException("Resource measurement unit cannot be null or empty");
+
+        this.unit = unit;
         this.capacity = capacity;
     }
 
@@ -76,5 +84,10 @@ public abstract class ResourceAbstract implements Resource {
 
         final long allocationDifference = newTotalAllocatedResource - getAllocatedResource();
         return isAmountAvailable(allocationDifference);
+    }
+
+    @Override
+    public String getUnit() {
+        return unit;
     }
 }

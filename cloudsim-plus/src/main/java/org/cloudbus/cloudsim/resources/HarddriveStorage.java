@@ -252,4 +252,9 @@ public class HarddriveStorage implements FileStorage {
     public SimpleStorage getStorage() {
         return storage;
     }
+
+    @Override
+    public String getUnit() {
+        return storage.getUnit();
+    }
 }

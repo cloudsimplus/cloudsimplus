@@ -33,7 +33,7 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @since CloudSim Plus 1.0
  */
 public final class Processor extends ResourceManageableAbstract {
-    public static final Processor NULL = new Processor();
+    public static final Processor NULL = new Processor(0);
     private Vm vm;
 
     /** @see #getMips() */
@@ -46,14 +46,14 @@ public final class Processor extends ResourceManageableAbstract {
      * @param pesMips MIPS of each {@link Pe}
      * @param numberOfPes number of {@link Pe}s (the processor {@link #getCapacity() capacity})
      */
-    public Processor(Vm vm, double pesMips, long numberOfPes) {
-        super(numberOfPes);
+    public Processor(final Vm vm, final double pesMips, final long numberOfPes) {
+        this(numberOfPes);
         this.vm = vm;
         setMips(pesMips);
     }
 
-    private Processor(){
-        super(0);
+    private Processor(final long numberOfPes){
+        super(numberOfPes, "Unit");
     }
 
     /**

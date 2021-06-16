@@ -72,6 +72,12 @@ public interface Resource extends ResourceCapacity {
     boolean isAmountAvailable(long amountToCheck);
 
     /**
+     * Gets the measurement unit of this resource.
+     * @return
+     */
+    String getUnit();
+
+    /**
      * Checks if there is a specific amount of resource available (free),
      * where such amount is a double value that will be converted to long.
      *

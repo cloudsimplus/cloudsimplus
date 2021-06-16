@@ -20,6 +20,7 @@ final class PeNull implements Pe {
     @Override public boolean isAmountAvailable(long amountToCheck) {
         return false;
     }
+    @Override public String getUnit() { return "Unit"; }
     @Override public boolean isAmountAvailable(double amountToCheck) {
         return false;
     }
