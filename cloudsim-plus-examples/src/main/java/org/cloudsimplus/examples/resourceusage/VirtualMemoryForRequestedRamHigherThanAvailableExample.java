@@ -161,6 +161,19 @@ public class VirtualMemoryForRequestedRamHigherThanAvailableExample {
         new CloudletsTableBuilder(finishedCloudlets)
             .addColumn(7, new TextTableColumn("VM RAM", "MB"), cl -> cl.getVm().getRam().getCapacity())
             .build();
+
+        printOverSubscriptionDelay();
+    }
+
+    private void printOverSubscriptionDelay() {
+        final String format = "%s exec time: %6.2f | RAM/BW over-subscription delay: %6.2f secs | Expected finish time (if no over-subscription): %6.2f secs%n";
+        for (Vm vm : vmList) {
+            vm.getCloudletScheduler()
+              .getCloudletFinishedList()
+              .stream()
+              .filter(CloudletExecution::hasOverSubscription)
+              .forEach(cle -> System.out.printf(format, cle, cle.getCloudlet().getActualCpuTime(), cle.getOverSubscriptionDelay(), cle.getExpectedFinishTime()));
+        }
     }
 
     private void createCloudlets() {

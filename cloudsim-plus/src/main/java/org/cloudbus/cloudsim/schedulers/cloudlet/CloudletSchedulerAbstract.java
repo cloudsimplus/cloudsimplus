@@ -865,15 +865,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         /* If the requested resource is not suitable (even for over-subscription),
         considering the total VM capacity.
         Returns a negative value to indicate the allocation was not possible*/
-        if(!suitableCapacityPredicate.test(vmResource, requestedResource))
+        if(!suitableCapacityPredicate.test(vmResource, requestedResource)) {
+            cle.incOverSubscriptionDelay(processingTimeSpan);
             return Double.MIN_VALUE;
+        }
 
         /* Amount of resource that was not allocated to the Cloudlet due to lack of VM capacity.
          * This way, that extra amount will cause delay in cloudlet execution,
          * since the cloudlet will wait for that non-allocated resource until the next processing time. */
         final double notAllocatedResource = Math.max(requestedResource - vmResource.getAvailableResource(), 0);
         if (notAllocatedResource > 0) {
-            return delayFunction.apply(notAllocatedResource, requestedResource);
+            final double delay = delayFunction.apply(notAllocatedResource, requestedResource);
+            cle.incOverSubscriptionDelay(delay);
+            return delay;
         }
 
         return 0;

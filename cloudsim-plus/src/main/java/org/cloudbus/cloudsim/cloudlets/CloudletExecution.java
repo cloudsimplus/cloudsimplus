@@ -63,6 +63,9 @@ public class CloudletExecution {
      */
     private double finishedTime;
 
+    /** @see #getOverSubscriptionDelay() */
+    private double overSubscriptionDelay;
+
     /**
      * The time a request was sent to the broker to finish the Cloudlet
      * when it has a negative length.
@@ -507,5 +510,42 @@ public class CloudletExecution {
         if(lastAllocatedMips > 0) {
             this.lastAllocatedMips = lastAllocatedMips;
         }
+    }
+
+    /** Gets the total processing delay imposed to the cloudlet processing
+     * due to over-subscription of RAM and/or BW.
+     * If there is resource over-subscription,
+     * the {@see #getFinishTime finish time} already includes the imposed delay. */
+    public double getOverSubscriptionDelay() {
+        return overSubscriptionDelay;
+    }
+
+    /**
+     * Gets the expected cloudlet finish time (in seconds) if no RAM or BW over-subscription occurs.
+     * @return
+     * @see #getOverSubscriptionDelay()
+     */
+    public double getExpectedFinishTime() {
+        return getCloudlet().getActualCpuTime() - overSubscriptionDelay;
+    }
+
+    /**
+     * Checks if Cloudlet's RAM or BW has been over-subscribed, causing
+     * processing delay.
+     * @return returns the over-subscription delay or 0 if there was no over-subscription up to now.
+     */
+    public boolean hasOverSubscription(){
+        return overSubscriptionDelay > 0;
+    }
+
+    /**
+     * Increments the total delay caused by RAM/BW over-subscription
+     * @param newDelay the new delay to add (in seconds)
+     */
+    public void incOverSubscriptionDelay(final double newDelay) {
+        if(newDelay < 0)
+            throw new IllegalArgumentException("Over-subscription delay cannot be negative");
+
+        this.overSubscriptionDelay += newDelay;
     }
 }
