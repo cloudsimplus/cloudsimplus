@@ -89,7 +89,7 @@ import java.util.stream.IntStream;
  *
  * <p>Check the following docs for specific implementation details you may be aware of:
  * <ul>
- *     <li>{@link CloudletSchedulerAbstract#getVirtualMemoryDelay(CloudletExecution, double)}</li>
+ *     <li>{@link CloudletSchedulerAbstract#getVirtualMemoryDelay(CloudletExecution, double)} </li>
  *     <li>{@link CloudletSchedulerAbstract#getBandwidthOverSubscriptionDelay(CloudletExecution, double)}</li>
  * </ul>
  * </p>
@@ -164,9 +164,6 @@ public class VirtualMemoryForRequestedRamHigherThanAvailableExample {
     }
 
     private void createCloudlets() {
-        //UtilizationModel defining that Cloudlets require 50% of the RAM capacity each one all the time
-        cloudletList = createCloudlets(vmList.get(0), 2, new UtilizationModelDynamic(0.5));
-
         /*
          * Defines the UtilizationModels for BW that will be used for the next 2 Cloudlets.
          * If you change these 2 models to use 50% (0.5) of BW for each cloudlet,
@@ -177,7 +174,10 @@ public class VirtualMemoryForRequestedRamHigherThanAvailableExample {
                 new UtilizationModelDynamic(0.2),
                 new UtilizationModelDynamic(1.0));
 
-        /* UtilizationModel defining that Cloudlets require 60% of the RAM capacity each one all the time.
+        //UtilizationModelDynamic defining that Cloudlets require 50% of the RAM capacity each one all the time
+        cloudletList = createCloudlets(vmList.get(0), new UtilizationModelDynamic(0.5), utilizationModelBwList);
+
+        /* UtilizationModelDynamic defining that Cloudlets require 60% of the RAM capacity each one all the time.
          * This this adds up to 120%, virtual memory will be used for the second cloudlet. */
         final UtilizationModel utilizationModelRam = new UtilizationModelDynamic(0.6);
         final List<Cloudlet> newList = createCloudlets(vmList.get(1), utilizationModelRam, utilizationModelBwList);
