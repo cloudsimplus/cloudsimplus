@@ -3,7 +3,7 @@ on:
   push:
     branches: [ master, main ]
     tags:
-      - v*.*.*
+      - 'v*.*.*'
 jobs:
   publish:
     runs-on: ubuntu-latest
