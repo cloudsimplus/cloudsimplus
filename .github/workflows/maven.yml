@@ -1,0 +1,27 @@
+name: maven
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        java: [ '8', '15' ]
+    name: Java ${{ matrix.Java }} Build
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Java
+        uses: actions/setup-java@v2
+        env:
+          CODACY_PROJECT_TOKEN: ${{ secrets.CODACY_PROJECT_TOKEN }}
+        with:
+          distribution: 'adopt'
+          java-version: ${{ matrix.java }}
+      - run: |
+          mvn clean verify -B -V -Pintegration-tests
+          cd cloudsim-plus && mvn jacoco:report
+          CODACY_PROJECT_TOKEN=${{ secrets.CODACY_PROJECT_TOKEN }} bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r target/site/jacoco/jacoco.xml
