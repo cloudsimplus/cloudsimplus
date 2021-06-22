@@ -415,6 +415,10 @@ public interface DatacenterBroker extends SimEntity {
      * enables you to define different delays for every VM that becomes idle,
      * according to desired conditions.</p>
      *
+     * <p>
+     *     <b>WARNING:</b> The delay returned by the given function should be larger then the simulation minTimeBetweenEvents to ensure VMs are gracefully shutdown.
+     * </p>
+     *
      * @param function the {@link Function} to set (if null is given, no idle VM will be automatically destroyed)
      * @return
      * @see #DEF_VM_DESTRUCTION_DELAY
