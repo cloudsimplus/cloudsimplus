@@ -149,7 +149,7 @@ public class KeepSimulationRunningExample {
         createVms();
         createCloudlets();
 
-        broker0.setVmDestructionDelayFunction(vm -> 0.0);
+        broker0.setVmDestructionDelayFunction(vm -> 0.2);
         broker0.submitVmList(vmList);
         broker0.submitCloudletList(cloudletList);
 
