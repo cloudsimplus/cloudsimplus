@@ -111,6 +111,7 @@ public class CloudletSimple extends CloudletAbstract {
 
     @Override
     public boolean equals(final Object o) {
+        //Appropriated hashCode() is implemented by superclass
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final CloudletSimple other = (CloudletSimple) o;

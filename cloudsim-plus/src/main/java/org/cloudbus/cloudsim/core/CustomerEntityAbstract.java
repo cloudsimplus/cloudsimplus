@@ -59,7 +59,7 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     }
 
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         int result = broker.hashCode();
         result = 31 * result + Long.hashCode(id);
         return result;
