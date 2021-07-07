@@ -1,6 +1,6 @@
 package org.cloudbus.cloudsim.network.topologies;
 
-import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.network.NetworkAsset;
 
 /**
  * A class that implements the Null Object Design Pattern for {@link NetworkTopology}
@@ -12,9 +12,9 @@ import org.cloudbus.cloudsim.core.SimEntity;
 final class NetworkTopologyNull implements NetworkTopology {
     private static final TopologicalGraph GRAPH = new TopologicalGraph();
 
-    @Override public void addLink(SimEntity src, SimEntity dest, double bandwidth, double lat) {/**/}
-    @Override public void removeLink(SimEntity src, SimEntity dest) {/**/}
-    @Override public double getDelay(SimEntity src, SimEntity dest) {
+    @Override public void addLink(NetworkAsset src, NetworkAsset dest, double bandwidth, double lat) {/**/}
+    @Override public void removeLink(NetworkAsset src, NetworkAsset dest) {/**/}
+    @Override public double getDelay(NetworkAsset src, NetworkAsset dest) {
         return 0;
     }
 }

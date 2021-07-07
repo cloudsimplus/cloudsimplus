@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.core.Machine;
 import org.cloudbus.cloudsim.core.ResourceStatsComputer;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.network.NetworkAsset;
 import org.cloudbus.cloudsim.power.PowerAware;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
@@ -44,7 +45,7 @@ import java.util.Set;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.0
  */
-public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHost>, ResourceStatsComputer<HostResourceStats> {
+public interface Host extends Machine, Comparable<Host>, NetworkAsset, PowerAware<PowerModelHost>, ResourceStatsComputer<HostResourceStats> {
     Logger LOGGER = LoggerFactory.getLogger(Host.class.getSimpleName());
 
     /**

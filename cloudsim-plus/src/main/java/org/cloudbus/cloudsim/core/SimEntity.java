@@ -7,6 +7,7 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.network.NetworkAsset;
 
 /**
  * An interface that represents a simulation entity. An entity handles events and can
@@ -17,7 +18,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @see CloudSimEntity
  * @since CloudSim Plus 1.0
  */
-public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
+public interface SimEntity extends Nameable, Cloneable, Runnable, NetworkAsset, Comparable<SimEntity> {
     /**
      * Gets the time the entity was started.
      * @return the entity start time or -1 if it haven't started yet.

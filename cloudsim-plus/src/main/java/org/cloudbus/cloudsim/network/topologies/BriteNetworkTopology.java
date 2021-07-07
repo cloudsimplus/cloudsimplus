@@ -9,6 +9,7 @@ package org.cloudbus.cloudsim.network.topologies;
 
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.network.DelayMatrix;
+import org.cloudbus.cloudsim.network.NetworkAsset;
 import org.cloudbus.cloudsim.network.topologies.readers.TopologyReaderBrite;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.slf4j.Logger;
@@ -28,11 +29,11 @@ import java.util.Map;
  * from it. Information of this network is used to simulate latency in network
  * traffic of CloudSim.
  *
- * <p>The topology file may contain more nodes than the number of entities in the
+ * <p>The topology file may contain more nodes than the number of {@link NetworkAsset}s in the
  * simulation. It allows users to increase the scale of the simulation without
- * changing the topology file. Nevertheless, each CloudSim entity must be mapped
+ * changing the topology file. Nevertheless, each {@link NetworkAsset} must be mapped
  * to one (and only one) BRITE node to allow proper work of the network
- * simulation. Each BRITE node can be mapped to only one entity at a time.</p>
+ * simulation. Each BRITE node can be mapped to only one {@link NetworkAsset} at a time.</p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -65,10 +66,10 @@ public final class BriteNetworkTopology implements NetworkTopology {
     private TopologicalGraph graph;
 
     /**
-     * The entitiesMap between CloudSim entities and BRITE entities.
-     * Each key is a CloudSim entity and each value the corresponding BRITE entity ID.
+     * The map between {@link NetworkAsset}s and BRITE entities.
+     * Each key is a {@link NetworkAsset} and each value the corresponding BRITE entity ID.
      */
-    private Map<SimEntity, Integer> entitiesMap;
+    private Map<NetworkAsset, Integer> entitiesMap;
 
     /**
      * Instantiates a Network Topology from a file inside the <b>application's resource directory</b>.
@@ -96,7 +97,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     /**
      * Instantiates a Network Topology if a given file exists and can be successfully
      * parsed. File is written in the BRITE format and contains
-     * topological information on simulation entities.
+     * topological information on simulation {@link NetworkAsset}s.
      *
      * @param filePath the path of the BRITE file
      * @see #BriteNetworkTopology()
@@ -111,7 +112,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     /**
      * Creates a network topology from a given input stream reader.
      * The file is written in the BRITE format and contains
-     * topological information on simulation entities.
+     * topological information on simulation {@link NetworkAsset}s.
      *
      * @param reader the reader for the topology file
      * @see #BriteNetworkTopology()
@@ -127,7 +128,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
     /**
      * Generates the matrices used internally to set latency and bandwidth
-     * between elements.
+     * between {@link NetworkAsset}s.
      */
     private void generateMatrices() {
         // creates the delay matrix
@@ -141,7 +142,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
 
     /**
      * Creates the matrix containing the available bandwidth between every pair
-     * of nodes.
+     * of {@link NetworkAsset}s.
      *
      * @param graph topological graph describing the topology
      * @param directed true if the graph is directed; false otherwise
@@ -170,7 +171,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public void addLink(final SimEntity src, final SimEntity dest, final double bandwidth, final double latency) {
+    public void addLink(final NetworkAsset src, final NetworkAsset dest, final double bandwidth, final double latency) {
         if (graph == null) {
             graph = new TopologicalGraph();
         }
@@ -190,11 +191,11 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public void removeLink(SimEntity src, SimEntity dest) {
+    public void removeLink(final NetworkAsset src, final NetworkAsset dest) {
         throw new UnsupportedOperationException("Removing links is not yet supported on BriteNetworkTopologies");
     }
 
-    private void addNodeMapping(final SimEntity entity) {
+    private void addNodeMapping(final NetworkAsset entity) {
         if (entitiesMap.putIfAbsent(entity, nextIdx) == null) {
             graph.addNode(new TopologicalNode(nextIdx));
             nextIdx++;
@@ -206,13 +207,13 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * @param entity {@link SimEntity} being mapped
      * @param briteID ID of the BRITE node that corresponds to the CloudSim
      */
-    public void mapNode(final SimEntity entity, final int briteID) {
+    public void mapNode(final NetworkAsset entity, final int briteID) {
         if (!networkEnabled) {
             return;
         }
 
         if (entitiesMap.containsKey(entity)) {
-            LOGGER.warn("Network mapping: CloudSim entity {} already mapped.", entity);
+            LOGGER.warn("Network mapping: Network Asset {} already mapped.", entity);
             return;
         }
 
@@ -230,7 +231,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      *
      * @param entity {@link SimEntity} being unmapped
      */
-    public void unmapNode(final SimEntity entity) {
+    public void unmapNode(final NetworkAsset entity) {
         if (!networkEnabled) {
             return;
         }
@@ -239,7 +240,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     @Override
-    public double getDelay(final SimEntity src, final SimEntity dest) {
+    public double getDelay(final NetworkAsset src, final NetworkAsset dest) {
         if (!networkEnabled) {
             return 0.0;
         }

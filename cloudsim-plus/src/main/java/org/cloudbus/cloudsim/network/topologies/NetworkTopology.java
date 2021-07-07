@@ -8,6 +8,7 @@
 package org.cloudbus.cloudsim.network.topologies;
 
 import org.cloudbus.cloudsim.core.SimEntity;
+import org.cloudbus.cloudsim.network.NetworkAsset;
 
 /**
  **
@@ -36,9 +37,9 @@ public interface NetworkTopology {
      * @param bw link's bandwidth (in Megabits/s)
      * @param lat link's latency (in seconds)
      */
-    void addLink(SimEntity src, SimEntity dest, double bw, double lat);
+    void addLink(NetworkAsset src, NetworkAsset dest, double bw, double lat);
 
-    void removeLink(SimEntity src, SimEntity dest);
+    void removeLink(NetworkAsset src, NetworkAsset dest);
 
     /**
      * Calculates the delay (in seconds) between two nodes.
@@ -47,5 +48,5 @@ public interface NetworkTopology {
      * @param dest {@link SimEntity} that represents the link's destination node
      * @return communication delay (in seconds) between the two nodes
      */
-    double getDelay(SimEntity src, SimEntity dest);
+    double getDelay(NetworkAsset src, NetworkAsset dest);
 }

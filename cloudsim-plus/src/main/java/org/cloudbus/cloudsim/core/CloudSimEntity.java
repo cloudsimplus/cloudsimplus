@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.core;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
+import org.cloudbus.cloudsim.network.NetworkAsset;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -523,7 +524,7 @@ public abstract class CloudSimEntity implements SimEntity {
      * @param dst destination of the message
      * @return delay to send a message from src to dst
      */
-    private double getNetworkDelay(final SimEntity src, final SimEntity dst) {
+    private double getNetworkDelay(final NetworkAsset src, final NetworkAsset dst) {
         return getSimulation().getNetworkTopology().getDelay(src, dst);
     }
 
