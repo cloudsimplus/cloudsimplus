@@ -47,7 +47,7 @@ public class TopologicalGraph {
      *
      * @param edge the topological link
      */
-    public void addLink(TopologicalLink edge) {
+    public void addLink(final TopologicalLink edge) {
         linksList.add(edge);
     }
 
@@ -56,7 +56,7 @@ public class TopologicalGraph {
      *
      * @param node the topological node to add
      */
-    public void addNode(TopologicalNode node) {
+    public void addNode(final TopologicalNode node) {
         nodeList.add(node);
     }
 
