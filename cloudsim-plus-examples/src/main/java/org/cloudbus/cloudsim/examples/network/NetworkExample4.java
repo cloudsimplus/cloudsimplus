@@ -36,7 +36,7 @@ import java.util.List;
 
 /**
  * A simple example showing how to create a Datacenter with 1 host and a network
- * topology and and run 1 cloudlet on it. Here, instead of using a BRITE file
+ * topology, running 1 cloudlet on it. Here, instead of using a BRITE file
  * describing the links, they are just inserted in the code.
  */
 public class NetworkExample4 {

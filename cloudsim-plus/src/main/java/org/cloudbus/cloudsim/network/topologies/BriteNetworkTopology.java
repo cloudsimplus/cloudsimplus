@@ -270,7 +270,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Gets a<b>copy</b> of the matrix containing the bandwidth between every pair of nodes in the
+     * Gets a <b>copy</b> of the matrix containing the bandwidth between every pair of nodes in the
      * network.
      */
     public double[][] getBwMatrix() {

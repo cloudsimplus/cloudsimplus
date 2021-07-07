@@ -31,8 +31,7 @@ public interface NetworkTopology {
      * Adds a new link in the network topology. The CloudSim entities that
      * represent the source and destination of the link will be mapped to BRITE
      * entities.
-     *  @param src CloudSim entity that represents the link's source
-     * node
+     * @param src CloudSim entity that represents the link's source node
      * @param dest CloudSim entity that represents the link's
      * destination node
      * @param bw Link's bandwidth
@@ -45,12 +44,9 @@ public interface NetworkTopology {
     /**
      * Calculates the delay between two nodes.
      *
-     * @param src CloudSim entity that represents the link's source
-     * node
-     * @param dest CloudSim entity that represents the link's
-     * destination node
+     * @param src CloudSim entity that represents the link's source node
+     * @param dest CloudSim entity that represents the link's destination node
      * @return communication delay between the two nodes
      */
     double getDelay(SimEntity src, SimEntity dest);
-
 }
