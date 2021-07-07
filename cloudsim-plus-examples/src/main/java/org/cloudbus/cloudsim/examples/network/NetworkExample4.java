@@ -38,9 +38,22 @@ import java.util.List;
  * A simple example showing how to create a Datacenter with 1 host and a network
  * topology, running 1 cloudlet on it. Here, instead of using a BRITE file
  * describing the links, they are just inserted in the code.
+ *
+ * <p>The example defines a given latency for communication with the created broker.
+ * Since the broker receives multiple messages (such as for VM and Cloudlet creation),
+ * cloudlets start running just after such multiple messages are received.
+ * If 3 messages are sent to the broker for starting a Cloudlet,
+ * the total delay is the network latency multiplied by 3.</p>
  */
 public class NetworkExample4 {
     private static final int VM_PES = 1;
+
+    /** In Megabits/s. */
+    private static final double NETWORK_BW = 10.0;
+
+    /** In seconds. */
+    private static final double NETWORK_LATENCY = 10.0;
+
     private final DatacenterBroker broker;
     private final Datacenter datacenter0;
 
@@ -85,13 +98,13 @@ public class NetworkExample4 {
         //Configure network by mapping CloudSim entities to BRITE entities
         NetworkTopology networkTopology = new BriteNetworkTopology();
         simulation.setNetworkTopology(networkTopology);
-        networkTopology.addLink(datacenter0, broker, 10.0, 10);
+        networkTopology.addLink(datacenter0, broker, NETWORK_BW, NETWORK_LATENCY);
     }
 
     private void createAndSubmitCloudlets() {
-        final long length = 40000;
-        final long fileSize = 300;
-        final long outputSize = 300;
+        final long length = 100_000;
+        final long fileSize = 1000; // in bytes
+        final long outputSize = 1000;  // in bytes
         final UtilizationModel utilizationModel = new UtilizationModelFull();
 
         Cloudlet cloudlet1 =
@@ -106,7 +119,7 @@ public class NetworkExample4 {
     }
 
     private void createAndSubmitVms() {
-        final int mips = 250;
+        final int mips = 1000;
         final long size = 10000; //image size (Megabyte)
         final int ram = 512; //vm memory (Megabyte)
         final long bw = 1000;
