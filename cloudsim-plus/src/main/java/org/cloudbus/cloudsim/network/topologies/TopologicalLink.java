@@ -29,21 +29,21 @@ public class TopologicalLink {
     private final int destNodeID;
 
     /**
-     * The link delay of the connection.
+     * @see #getLinkDelay()
      */
     private final double linkDelay;
 
     /**
-     * The link bandwidth (bw).
+     * @see #getLinkBw()
      */
     private final double linkBw;
 
     /**
      * Creates a new Topological Link.
-     *  @param srcNode the BRITE id of the source node of the link.
+     * @param srcNode the BRITE id of the source node of the link.
      * @param destNode the BRITE id of the destination node of the link.
-     * @param delay the link delay of the connection.
-     * @param bandwidth the link bandwidth (bw)
+     * @param delay the link delay of the connection (in seconds).
+     * @param bandwidth the link bandwidth (in Megabits/s)
      */
     public TopologicalLink(final int srcNode, final int destNode, final double delay, final double bandwidth) {
         // lets initialize all internal attributes
@@ -74,7 +74,7 @@ public class TopologicalLink {
     /**
      * Gets the delay of the link.
      *
-     * @return the link delay
+     * @return the link delay (in seconds)
      */
     public double getLinkDelay() {
         return linkDelay;
@@ -83,7 +83,7 @@ public class TopologicalLink {
     /**
      * Gets the bandwidth of the link.
      *
-     * @return the bw
+     * @return the bandwidth in Megabits/s.
      */
     public double getLinkBw() {
         return linkBw;

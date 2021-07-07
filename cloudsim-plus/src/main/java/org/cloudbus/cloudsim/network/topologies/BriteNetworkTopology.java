@@ -52,10 +52,11 @@ public final class BriteNetworkTopology implements NetworkTopology {
     private boolean networkEnabled;
 
     /**
-     * A matrix containing the delay between every pair of nodes in the network.
+     * A matrix containing the delay (in seconds) between every pair of nodes in the network.
      */
     private DelayMatrix delayMatrix;
 
+    /** @see #getBwMatrix() */
     private double[][] bwMatrix;
 
     /**
@@ -201,8 +202,8 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Maps a CloudSim entity to a BRITE node in the network topology.
-     * @param entity CloudSim entity being mapped
+     * Maps a {@link SimEntity} to a BRITE node in the network topology.
+     * @param entity {@link SimEntity} being mapped
      * @param briteID ID of the BRITE node that corresponds to the CloudSim
      */
     public void mapNode(final SimEntity entity, final int briteID) {
@@ -224,10 +225,10 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Un-maps a previously mapped CloudSim entity to a BRITE node in the network
+     * Un-maps a previously mapped {@link SimEntity} to a BRITE node in the network
      * topology.
      *
-     * @param entity CloudSim entity being unmapped
+     * @param entity {@link SimEntity} being unmapped
      */
     public void unmapNode(final SimEntity entity) {
         if (!networkEnabled) {
@@ -255,7 +256,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      * during creation of network (e.g., during parsing of BRITE file) that does
      * not allow a proper simulation of the network, this method returns false.
      *
-     * @return $true if network simulation is working, $false otherwise
+     * @return true if network simulation is working, $false otherwise
      */
     public boolean isNetworkEnabled() {
         return networkEnabled;
@@ -270,8 +271,8 @@ public final class BriteNetworkTopology implements NetworkTopology {
     }
 
     /**
-     * Gets a <b>copy</b> of the matrix containing the bandwidth between every pair of nodes in the
-     * network.
+     * Gets a <b>copy</b> of the matrix containing the bandwidth (in Megabits/s)
+     * between every pair of {@link SimEntity}s in the network.
      */
     public double[][] getBwMatrix() {
         return Arrays.copyOf(bwMatrix, bwMatrix.length);
