@@ -10,7 +10,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-modules</artifactId>
-    <version>6.4.0</version>
+    <version>6.4-snapshot</version>
     <packaging>pom</packaging>
 
     <name>CloudSim Plus Modules (All)</name>
