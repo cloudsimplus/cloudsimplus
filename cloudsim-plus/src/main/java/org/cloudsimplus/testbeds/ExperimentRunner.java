@@ -612,7 +612,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param stats summary statistics for this metric
      */
     private void latexRow(final StringBuilder latex, final String metricName, final SummaryStatistics stats) {
-        final String errorMargin = String.format("%.6f", confidenceErrorMargin(stats));
+        final String errorMargin = confidenceErrorMargin(stats).map(margin -> String.format("%.6f", margin)).orElse("");
         //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
 
         final String escapedMetricName = StringUtils.replace(metricName,"%", "\\%");
@@ -717,15 +717,20 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private void showConfidenceInterval(final SummaryStatistics stats) {
         // Computes 95% confidence interval
-        final double intervalSize = confidenceErrorMargin(stats);
-        final double criticalValue = getConfidenceIntervalCriticalValue(stats.getN());
-        System.out.printf("\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
+        final Optional<Double> optional = confidenceErrorMargin(stats);
+        if(optional.isPresent()) {
+            final double intervalSize = optional.get();
+            final double criticalValue = getConfidenceIntervalCriticalValue(stats.getN());
+            System.out.printf("\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
 
-        final double lower = stats.getMean() - intervalSize;
-        final double upper = stats.getMean() + intervalSize;
-        System.out.printf(
-            "\t95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
-            stats.getMean(), intervalSize, lower, upper);
+            final double lower = stats.getMean() - intervalSize;
+            final double upper = stats.getMean() + intervalSize;
+            System.out.printf(
+                "\t95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
+                stats.getMean(), intervalSize, lower, upper);
+        }
+        else System.out.printf("\tValue for %d sample: %.6f%n", stats.getN(), stats.getMean());
+
         System.out.printf("\tStandard Deviation: %.4f%n", stats.getStandardDeviation());
     }
 
@@ -777,13 +782,16 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
      * Computation and Statistical Data Analysis on the Java Platform</a>
      */
-    protected double confidenceErrorMargin(final SummaryStatistics stats) {
+    protected Optional<Double> confidenceErrorMargin(final SummaryStatistics stats) {
+        final long samples = stats.getN();
+        if(samples < 1)
+            return Optional.empty();
+
         try {
-            final long samples = stats.getN();
             final double criticalValue = getConfidenceIntervalCriticalValue(samples);
-            return criticalValue * stats.getStandardDeviation() / Math.sqrt(samples);
+            return Optional.of(criticalValue * stats.getStandardDeviation() / Math.sqrt(samples));
         } catch (MathIllegalArgumentException e) {
-            return Double.NaN;
+            return Optional.empty();
         }
     }
 
