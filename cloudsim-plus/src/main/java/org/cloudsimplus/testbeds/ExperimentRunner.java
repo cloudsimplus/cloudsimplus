@@ -820,10 +820,16 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * <p>This method must be called for each metric inside the experiment finish listener.
      * The listener can be set inside the runner's {@link #createExperimentInternal(int)}.</p>
      * @see Experiment#setAfterExperimentFinish(Consumer)
+     * @param metricName the name of the metric to collect the data for a simulation run
+     * @param value the value for at metric for a given simulation run.
+     *              If null is given, that means no value was collected for that metric
+     *              in the run, but the metric entry must exist in the metrics map,
+     *              so that the final results table show the metric entry with 0.
      */
-    protected final void addMetricValue(final String metricName, final double value){
+    protected final void addMetricValue(final String metricName, final Double value){
         final List<Double> metricValues = getMetricValues(metricName);
-        metricValues.add(value);
+        if(value != null)
+            metricValues.add(value);
     }
 
     protected final List<Double> getMetricValues(final String metricName) {
