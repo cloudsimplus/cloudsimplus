@@ -69,7 +69,7 @@ import java.util.List;
  * This way, there will be over-subscription for physical PEs too,
  * as can be seen in the logs.</p>
  *
- * @author raysaoliveira
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.3.7
  */
 public class UtilizationModelDynamicOversubscriptionExample {
