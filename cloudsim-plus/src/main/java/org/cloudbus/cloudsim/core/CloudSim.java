@@ -214,10 +214,6 @@ public class CloudSim implements Simulation {
         running = false;
 
         printSimulationFinished();
-
-        LOGGER.debug(
-            "DeferredQueue >> max size: {} added to middle: {} added to tail: {}",
-            deferred.getMaxSize(), deferred.getAddedToMiddle(), deferred.getAddedToTail());
     }
 
     /**
