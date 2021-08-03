@@ -176,7 +176,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the amount of available MIPS for each Processor PE.
      *
      * @TODO Splitting the capacity of a CPU core among different applications
-     *       is not in fact possible. This was just an oversimplification
+     *       inside a VM is not in fact possible (unless containers are used).
+     *       This was just an oversimplification
      *       performed by the CloudletSchedulerTimeShared that may affect
      *       other schedulers such as the CloudletSchedulerCompletelyFair,
      *       which in fact performs task preemption.
