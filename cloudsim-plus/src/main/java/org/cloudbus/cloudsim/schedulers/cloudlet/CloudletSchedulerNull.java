@@ -44,7 +44,8 @@ final class CloudletSchedulerNull implements CloudletScheduler {
     @Override public double getPreviousTime() {
         return 0.0;
     }
-    @Override public double getRequestedCpuPercentUtilization(double time) { return 0.0; }
+    @Override public double getRequestedCpuPercent(double time) { return 0.0; }
+    @Override public double getAllocatedCpuPercent(double time) { return 0; }
     @Override public boolean hasFinishedCloudlets() {
         return false;
     }

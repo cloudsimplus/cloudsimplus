@@ -346,6 +346,30 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     double getCpuPercentUtilization();
 
     /**
+     * Gets the CPU requested percentage to be used by all Cloudlets running on this
+     * VM at the given time. It represents the percentage of MIPS requested for that time,
+     * which may be higher than the percentage used (allocated)
+     * due to lack of capacity.
+     *
+     * @param time the time to get the CPU requested percentage
+     * @return total CPU percentage requested
+     * @see #getCpuPercentRequested()
+     * @see #getCpuPercentUtilization()
+     */
+    double getCpuPercentRequested(double time);
+
+    /**
+     * Gets the CPU requested percentage to be used by all Cloudlets running on this
+     * VM at the current time. It represents the percentage of MIPS requested,
+     * which may be higher than the percentage used (allocated)
+     * due to lack of capacity.
+     *
+     * @return total CPU requested percentage
+     * @see #getCpuPercentRequested(double)
+     * @see #getCpuPercentUtilization(double)
+     */
+    double getCpuPercentRequested();
+    /**
      * {@inheritDoc}
      * If you enable the statistics for the Host where the VM is placed,
      * that will automatically enable the statistics for every VM on that Host.

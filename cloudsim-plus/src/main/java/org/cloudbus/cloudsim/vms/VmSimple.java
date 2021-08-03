@@ -356,7 +356,17 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public double getCpuPercentUtilization(final double time) {
-        return cloudletScheduler.getRequestedCpuPercentUtilization(time);
+        return cloudletScheduler.getAllocatedCpuPercent(time);
+    }
+
+    @Override
+    public double getCpuPercentRequested() {
+        return getCpuPercentRequested(getSimulation().clock());
+    }
+
+    @Override
+    public double getCpuPercentRequested(final double time) {
+        return cloudletScheduler.getRequestedCpuPercent(time);
     }
 
     @Override

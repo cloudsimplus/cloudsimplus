@@ -174,14 +174,24 @@ public interface CloudletScheduler extends Serializable {
     double getPreviousTime();
 
     /**
-     * Gets total CPU utilization percentage of all cloudlets,
+     * Gets total CPU percentage requested (from MIPS capacity) from all cloudlets,
      * according to CPU UtilizationModel of each one (in scale from 0 to 1,
      * where 1 is 100%).
      *
      * @param time the time to get the current CPU utilization
-     * @return the total CPU utilization percentage
+     * @return the total CPU percentage requested
      */
-    double getRequestedCpuPercentUtilization(double time);
+    double getRequestedCpuPercent(double time);
+
+    /**
+     * Gets total CPU utilization percentage allocated (from MIPS capacity) to all cloudlets,
+     * according to CPU UtilizationModel of each one (in scale from 0 to 1,
+     * where 1 is 100%).
+     *
+     * @param time the time to get the current CPU utilization
+     * @return the total CPU utilization percentage allocated
+     */
+    double getAllocatedCpuPercent(double time);
 
     /**
      * Informs if there is any cloudlet that finished to execute in the VM managed by this scheduler.

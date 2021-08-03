@@ -712,7 +712,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          * to be transferred from the Datacenter storage.
          */
         final double processingTimeSpan = hasCloudletFileTransferTimePassed(cle, currentTime) ? timeSpan(cle, currentTime) : 0;
-        final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime);
+        final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime, true);
 
         final double vMemDelay = getVirtualMemoryDelay(cle, processingTimeSpan);
         final double reducedBwDelay = getBandwidthOverSubscriptionDelay(cle, processingTimeSpan);
@@ -1139,10 +1139,19 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     @Override
-    public double getRequestedCpuPercentUtilization(final double time) {
+    public double getRequestedCpuPercent(final double time) {
+        return getRequestedOrAllocatedCpuPercentUtilization(time, true);
+    }
+
+    @Override
+    public double getAllocatedCpuPercent(final double time) {
+        return getRequestedOrAllocatedCpuPercentUtilization(time, false);
+    }
+
+    private double getRequestedOrAllocatedCpuPercentUtilization(final double time, final boolean requestedUtilization) {
         return cloudletExecList.stream()
             .map(CloudletExecution::getCloudlet)
-            .mapToDouble(cloudlet -> getAbsoluteCloudletCpuUtilizationForAllPes(time, cloudlet))
+            .mapToDouble(cloudlet -> getAbsoluteCloudletCpuUtilizationForAllPes(time, cloudlet, requestedUtilization))
             .sum() / vm.getTotalMipsCapacity();
     }
 
@@ -1154,10 +1163,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param cloudlet the Cloudlet to get the total CPU utilization
      * @return the total Cloudlet CPU utilization (in MIPS) across all PEs it is using
      */
-    private double getAbsoluteCloudletCpuUtilizationForAllPes(final double time, final Cloudlet cloudlet) {
+    private double getAbsoluteCloudletCpuUtilizationForAllPes(final double time, final Cloudlet cloudlet, final boolean requestedUtilization) {
         final double cloudletCpuUsageForOnePe =
             getAbsoluteCloudletResourceUtilization(
-                cloudlet.getUtilizationModelCpu(), time, getAvailableMipsByPe());
+                cloudlet, cloudlet.getUtilizationModelCpu(), time, getAvailableMipsByPe(), "CPU", requestedUtilization);
 
         return cloudletCpuUsageForOnePe * cloudlet.getNumberOfPes();
     }
@@ -1170,7 +1179,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the current requested mips for the given cloudlet
      */
     protected double getRequestedMipsForCloudlet(final CloudletExecution cle, final double time) {
-        return getAbsoluteCloudletResourceUtilization(cle.getCloudlet().getUtilizationModelCpu(), time, vm.getMips());
+        final Cloudlet cloudlet = cle.getCloudlet();
+        return getAbsoluteCloudletResourceUtilization(cloudlet, cloudlet.getUtilizationModelCpu(), time, vm.getMips(), "CPU", true);
     }
 
     /**
@@ -1181,15 +1191,28 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return the current allocated mips for cloudlet
      */
     public double getAllocatedMipsForCloudlet(final CloudletExecution cle, final double time) {
-        return getAbsoluteCloudletResourceUtilization(cle.getCloudlet().getUtilizationModelCpu(), time, getAvailableMipsByPe());
+        return getAllocatedMipsForCloudlet(cle, time, false);
+    }
+
+    /**
+     * Gets the current allocated MIPS for cloudlet.
+     *
+     * @param cle the ce
+     * @param time the time
+     * @param log Indicate if a log should be issued when the requested resource is larger than the capacity
+     * @return the current allocated mips for cloudlet
+     */
+    public double getAllocatedMipsForCloudlet(final CloudletExecution cle, final double time, final boolean log) {
+        final Cloudlet cloudlet = cle.getCloudlet();
+        final String resourceName = log ? "CPU" : "";
+        return getAbsoluteCloudletResourceUtilization(cloudlet, cloudlet.getUtilizationModelCpu(), time, getAvailableMipsByPe(), resourceName, false);
     }
 
     @Override
     public double getCurrentRequestedBwPercentUtilization() {
         return cloudletExecList.stream()
             .map(CloudletExecution::getCloudlet)
-            .map(Cloudlet::getUtilizationModelBw)
-            .mapToDouble(um -> getAbsoluteCloudletResourceUtilization(um, vm.getBw().getCapacity()))
+            .mapToDouble(cl -> getAbsoluteCloudletResourceUtilization(cl, cl.getUtilizationModelBw(), vm.getBw().getCapacity(), "BW"))
             .sum() / vm.getBw().getCapacity();
     }
 
@@ -1197,8 +1220,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     public double getCurrentRequestedRamPercentUtilization() {
         return cloudletExecList.stream()
             .map(CloudletExecution::getCloudlet)
-            .map(Cloudlet::getUtilizationModelRam)
-            .mapToDouble(um -> getAbsoluteCloudletResourceUtilization(um, vm.getRam().getCapacity()))
+            .mapToDouble(cl -> getAbsoluteCloudletResourceUtilization(cl, cl.getUtilizationModelRam(), vm.getRam().getCapacity(), "RAM"))
             .sum() / vm.getRam().getCapacity();
     }
 
@@ -1207,34 +1229,61 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * for the current simulation time, based on the maximum amount of resource that the Cloudlet can use
      * this time.
      *
+     * @param cloudlet Cloudlet requesting the resource
      * @param model                   the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
      * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
-     * @return the absolute amount of resource that the Cloudlet will use
-     */
-    private double getAbsoluteCloudletResourceUtilization(final UtilizationModel model, final double maxResourceAllowedToUse) {
-        return getAbsoluteCloudletResourceUtilization(model, vm.getSimulation().clock(), maxResourceAllowedToUse);
-    }
-
-    /**
-     * Computes the absolute amount of a resource used by a given Cloudlet
-     * for a given time, based on the maximum amount of resource that the Cloudlet can use
-     * this time.
-     *
-     * @param model                   the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
-     * @param time                    the simulation time
-     * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
+     * @param resource name of the resource being requested
      * @return the absolute amount of resource that the Cloudlet will use
      */
     private double getAbsoluteCloudletResourceUtilization(
+        final Cloudlet cloudlet, final UtilizationModel model,
+        final double maxResourceAllowedToUse, final String resource)
+    {
+        return getAbsoluteCloudletResourceUtilization(cloudlet, model, vm.getSimulation().clock(), maxResourceAllowedToUse, resource, true);
+    }
+
+    /**
+     * Computes the absolute amount of a resource used or requested by a given Cloudlet
+     * for a given time, based on the maximum amount of resource that the Cloudlet can use
+     * this time.
+     *
+     * @param cloudlet Cloudlet requesting the resource
+     * @param model                   the {@link UtilizationModel} to get the absolute amount of resource used by the Cloudlet
+     * @param time                    the simulation time
+     * @param maxResourceAllowedToUse the maximum absolute resource that the Cloudlet will be allowed to use
+     * @param resourceName name of the resource being requested. If an empty string is given, no
+     *                     warning is issued if the requested amount of resource is larger than its capacity
+     * @param requestedUtilization indicate if the actual requested resource utilization should be returned
+     *                             instead of just the allocated utilization.
+     *                             Consider the cloudlet is requesting more than 100% of the resource capacity, then if:
+     *                             i) this param is true, the total requested capacity is returned;
+     *                             ii) this param is false, the used capacity is returned.
+     * @return the absolute amount of resource that the Cloudlet is using or has requested
+     */
+    private double getAbsoluteCloudletResourceUtilization(
+        final Cloudlet cloudlet,
         final UtilizationModel model,
         final double time,
-        final double maxResourceAllowedToUse)
+        final double maxResourceAllowedToUse,
+        final String resourceName,
+        final boolean requestedUtilization)
     {
         if (model.getUnit() == Unit.ABSOLUTE) {
             return Math.min(model.getUtilization(time), maxResourceAllowedToUse);
         }
 
-        return model.getUtilization() * maxResourceAllowedToUse;
+        final double requestedPercent = model.getUtilization();
+        final double allocatedPercent = requestedUtilization ? requestedPercent : Math.min(requestedPercent, 1);
+
+        //Shows the log when the method is called to return the actual allocated resource amount (not the requested one)
+        if(requestedPercent > 1 && !requestedUtilization && !resourceName.isEmpty()) {
+            LOGGER.warn(
+                "{}: {}: {} is requesting {}% of the total {} capacity which cannot be allocated. Allocating {}%.",
+                vm.getSimulation().clockStr(), getClass().getSimpleName(), cloudlet,
+                requestedPercent*100, resourceName, allocatedPercent*100);
+        }
+
+        return allocatedPercent * maxResourceAllowedToUse;
     }
 
     /**

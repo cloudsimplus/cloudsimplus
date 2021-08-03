@@ -76,8 +76,8 @@ public abstract class UtilizationModelAbstract implements UtilizationModel {
             throw new IllegalArgumentException("Time cannot be negative.");
         }
 
-        final double utilization = getUtilizationInternal(time);
-        return unit == Unit.ABSOLUTE || overCapacityRequestAllowed ? utilization : Math.min(utilization, 1);
+        final double requested = getUtilizationInternal(time);
+        return unit == Unit.ABSOLUTE || overCapacityRequestAllowed ? requested : Math.min(requested, 1);
     }
 
     protected abstract double getUtilizationInternal(double time);
