@@ -330,16 +330,16 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
 
     /**
      * Gets the CPU utilization percentage of all Cloudlets running on this
-     * VM at the given time.
+     * VM at the given time. It represents the actual percentage of MIPS allocated for that time.
      *
-     * @param time the time
+     * @param time the time to get the CPU utilization percentage
      * @return total utilization percentage
      */
     double getCpuPercentUtilization(double time);
 
     /**
      * Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this
-     * VM.
+     * VM. It represents the actual percentage of MIPS allocated.
      *
      * @return total utilization percentage for the current time, in scale from 0 to 1
      */
