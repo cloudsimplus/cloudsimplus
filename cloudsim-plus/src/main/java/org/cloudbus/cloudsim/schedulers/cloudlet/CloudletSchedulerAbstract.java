@@ -165,7 +165,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * considering the currently executing cloudlets in this processor
      * and the number of PEs these cloudlets require.
      * This is the amount of MIPS that each Cloudlet is allowed to used,
-     * considering that the processor is shared among all executing
+     * since the processor is shared among all executing
      * cloudlets.
      *
      * <p>In the case of space shared schedulers,
