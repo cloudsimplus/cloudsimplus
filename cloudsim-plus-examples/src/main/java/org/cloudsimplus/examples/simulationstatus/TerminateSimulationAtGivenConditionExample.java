@@ -188,7 +188,7 @@ public class TerminateSimulationAtGivenConditionExample {
     }
 
     private Cloudlet createCloudlet(DatacenterBroker broker, Vm vm) {
-        long length = 10000; //in Million Structions (MI)
+        long length = 10000; //in Million Instructions (MI)
         long fileSize = 300; //Size (in bytes) before execution
         long outputSize = 300; //Size (in bytes) after execution
         long  numberOfCpuCores = vm.getNumberOfPes(); //cloudlet will use all the VM's CPU cores

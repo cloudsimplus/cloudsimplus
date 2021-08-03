@@ -239,7 +239,7 @@ public class DatacenterBrokerHeuristicExample {
     }
 
     private Cloudlet createCloudlet(final DatacenterBroker broker, final int numberOfPes) {
-        final long length = 400000; //in Million Structions (MI)
+        final long length = 400000; //in Million Instructions (MI)
         final long fileSize = 300; //Size (in bytes) before execution
         final long outputSize = 300; //Size (in bytes) after execution
 
