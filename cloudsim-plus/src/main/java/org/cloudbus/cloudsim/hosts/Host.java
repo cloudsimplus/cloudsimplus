@@ -603,10 +603,10 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     ResourceProvisioner getProvisioner(Class<? extends ResourceManageable> resourceClass);
 
     /**
-     * Gets current utilization of CPU in percentage (between [0 and 1]),
-     * considering the usage of all its PEs..
+     * Gets the current percentage of CPU capacity (MIPS %) used by all running VMs.
+     * It represents the actual percentage of MIPS allocated.
      *
-     * @return
+     * @return total CPU utilization percentage (between [0 and 1]) for the current time
      */
     double getCpuPercentUtilization();
 
