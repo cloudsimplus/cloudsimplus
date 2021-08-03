@@ -611,6 +611,16 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     double getCpuPercentUtilization();
 
     /**
+     * Gets the percentage of CPU capacity (MIPS %) requested by all running VMs at the current time.
+     * It represents the percentage of MIPS requested,
+     * which may be higher than the percentage used (allocated)
+     * due to lack of capacity.
+     *
+     * @return the percentage (between [0 and 1]) of CPU capacity requested
+     */
+    double getCpuPercentRequested();
+
+    /**
      * {@inheritDoc}
      * It uses the utilization statistics from its VMs to provide the overall Host's CPU utilization.
      * However, for this method to return any data, you need to enable
