@@ -583,7 +583,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     private double getHostTotalRequestedMips(final Host host) {
         return host.getVmList().stream()
-            .mapToDouble(Vm::getCurrentRequestedTotalMips)
+            .mapToDouble(Vm::getTotalCpuMipsRequested)
             .sum();
     }
 
@@ -674,7 +674,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return the power after allocation
      */
     protected double getMaxUtilizationAfterAllocation(final Host host, final Vm vm) {
-        final double requestedTotalMips = vm.getCurrentRequestedTotalMips();
+        final double requestedTotalMips = vm.getTotalCpuMipsRequested();
         final double hostUtilizationMips = getUtilizationOfCpuMips(host);
         final double hostPotentialMipsUse = hostUtilizationMips + requestedTotalMips;
         return hostPotentialMipsUse / host.getTotalMipsCapacity();

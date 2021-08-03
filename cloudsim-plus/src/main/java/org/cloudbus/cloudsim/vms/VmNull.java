@@ -51,7 +51,7 @@ class VmNull implements Vm {
     @Override public long getCurrentRequestedRam() {
         return 0;
     }
-    @Override public double getCurrentRequestedTotalMips() {
+    @Override public double getTotalCpuMipsRequested() {
         return 0.0;
     }
     @Override public Host getHost() {

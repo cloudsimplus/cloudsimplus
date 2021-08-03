@@ -400,7 +400,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public double getCurrentRequestedTotalMips() {
+    public double getTotalCpuMipsRequested() {
         return getCurrentRequestedMips().totalMips();
     }
 

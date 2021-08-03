@@ -131,7 +131,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      * @return the current requested total MIPS
      * @see #getCurrentRequestedMips()
      */
-    double getCurrentRequestedTotalMips();
+    double getTotalCpuMipsRequested();
 
     /**
      * Gets the {@link Host} where the Vm is or will be placed.

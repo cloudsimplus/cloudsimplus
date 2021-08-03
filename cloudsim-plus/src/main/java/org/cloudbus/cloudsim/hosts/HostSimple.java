@@ -1238,7 +1238,7 @@ public class HostSimple implements Host {
     public List<Vm> getFinishedVms() {
         return getVmList().stream()
             .filter(vm -> !vm.isInMigration())
-            .filter(vm -> vm.getCurrentRequestedTotalMips() == 0)
+            .filter(vm -> vm.getTotalCpuMipsRequested() == 0)
             .collect(toList());
     }
 
@@ -1255,7 +1255,7 @@ public class HostSimple implements Host {
             return totalAllocatedMips;
         }
 
-        final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
+        final double totalRequestedMips = vm.getTotalCpuMipsRequested();
         if (totalAllocatedMips + 0.1 < totalRequestedMips) {
             final String reason = getVmsMigratingOut().contains(vm) ? "migration overhead" : "capacity unavailability";
             final long notAllocatedMipsByPe = (long)((totalRequestedMips - totalAllocatedMips)/vm.getNumberOfPes());
@@ -1285,7 +1285,7 @@ public class HostSimple implements Host {
         double hostTotalRequestedMips = 0;
 
         for (final Vm vm : getVmList()) {
-            final double totalRequestedMips = vm.getCurrentRequestedTotalMips();
+            final double totalRequestedMips = vm.getTotalCpuMipsRequested();
             addVmResourceUseToHistoryIfNotMigratingIn(vm, currentTime);
             hostTotalRequestedMips += totalRequestedMips;
         }
