@@ -39,7 +39,7 @@ import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
-import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeSharedOverSubscription;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -63,6 +63,12 @@ import java.util.List;
  * If you, for instance, reduce the percentage of allocated CPU for each Cloudlet in
  * {@link #CLOUDLET_CPU_UTILIZATION} to 0.5 (50%), Cloudlets will take the double of previous time to finish.
  *
+ * <p>It uses a {@link VmSchedulerTimeSharedOverSubscription}
+ * to enable allocating a PE from a Host to more than
+ * one VM, creating multiple vPEs for a single physical PE.
+ * This way, there will be over-subscription for physical PEs too,
+ * as can be seen in the logs.</p>
+ *
  * @author raysaoliveira
  * @since CloudSim Plus 6.3.7
  */
@@ -70,7 +76,7 @@ public class UtilizationModelDynamicOversubscriptionExample {
     private static final double SCHEDULING_INTERVAL = 1; //in Seconds
 
     private static final int  HOSTS = 1;
-    private static final int  HOST_PES = 4;
+    private static final int  HOST_PES = 2;
     private static final long HOST_MIPS = 1000; // in Million Instructions per Second
 
     private static final int  VMS = 2;
@@ -87,6 +93,7 @@ public class UtilizationModelDynamicOversubscriptionExample {
     private static final double CLOUDLET_CPU_UTILIZATION = 2.0;
 
     private final CloudSim simulation;
+    private final Datacenter dc;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
@@ -109,7 +116,7 @@ public class UtilizationModelDynamicOversubscriptionExample {
         System.out.println("Starting " + getClass().getSimpleName());
         this.simulation = new CloudSim();
 
-        Datacenter datacenter0 = createDatacenter();
+        this.dc = createDatacenter();
         Log.setLevel(DatacenterBroker.LOGGER, Level.WARN);
 
         DatacenterBroker broker0 = new DatacenterBrokerSimple(simulation);
@@ -133,7 +140,8 @@ public class UtilizationModelDynamicOversubscriptionExample {
     }
 
     private void clockTickListener(final EventInfo evt) {
-        vmList.forEach(vm -> System.out.printf("%s: %s CPU MIPS -> Requested %.0f%% Allocated: %.0f%%%n", evt.getTime(), vm, vm.getCpuPercentRequested(evt.getTime())*100, vm.getCpuPercentUtilization()*100));
+        vmList.forEach(vm -> System.out.printf("%s: %s CPU MIPS -> Requested %.0f%% Allocated: %.0f%%%n", evt.getTime(), vm, vm.getCpuPercentRequested()*100, vm.getCpuPercentUtilization()*100));
+        dc.getHostList().forEach(host -> System.out.printf("%s: %s CPU MIPS -> Requested %.0f%% Allocated: %.0f%%%n", evt.getTime(), host, host.getCpuPercentRequested()*100, host.getCpuPercentUtilization()*100));
     }
 
     private Datacenter createDatacenter() {
@@ -163,7 +171,7 @@ public class UtilizationModelDynamicOversubscriptionExample {
         return new HostSimple(ram, bw, storage, peList)
             .setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
-            .setVmScheduler(new VmSchedulerTimeShared());
+            .setVmScheduler(new VmSchedulerTimeSharedOverSubscription());
     }
 
     private Vm createVm() {
