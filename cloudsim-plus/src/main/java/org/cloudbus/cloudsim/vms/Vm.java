@@ -329,46 +329,49 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     List<VmStateHistoryEntry> getStateHistory();
 
     /**
-     * Gets the CPU utilization percentage of all Cloudlets running on this
-     * VM at the given time. It represents the actual percentage of MIPS allocated for that time.
+     * Gets the percentage of CPU capacity (MIPS %) used by all Cloudlets
+     * running on this VM at the given time.
+     * It represents the actual percentage of MIPS allocated for that time.
      *
      * @param time the time to get the CPU utilization percentage
-     * @return total utilization percentage
+     * @return total CPU utilization percentage (between [0 and 1])
      */
     double getCpuPercentUtilization(double time);
 
     /**
-     * Gets the current CPU utilization percentage (in scale from 0 to 1) of all Cloudlets running on this
-     * VM. It represents the actual percentage of MIPS allocated.
+     * Gets the current percentage of CPU capacity (MIPS %) used by all Cloudlets
+     * running on this VM.
+     * It represents the actual percentage of MIPS allocated.
      *
-     * @return total utilization percentage for the current time, in scale from 0 to 1
+     * @return total CPU utilization percentage (between [0 and 1]) for the current time
      */
     double getCpuPercentUtilization();
 
     /**
-     * Gets the CPU requested percentage to be used by all Cloudlets running on this
+     * Gets the percentage of CPU capacity (MIPS %) requested by all Cloudlets running on this
      * VM at the given time. It represents the percentage of MIPS requested for that time,
      * which may be higher than the percentage used (allocated)
      * due to lack of capacity.
      *
      * @param time the time to get the CPU requested percentage
-     * @return total CPU percentage requested
+     * @return the percentage (between [0 and 1]) of CPU capacity requested for the current time
      * @see #getCpuPercentRequested()
      * @see #getCpuPercentUtilization()
      */
     double getCpuPercentRequested(double time);
 
     /**
-     * Gets the CPU requested percentage to be used by all Cloudlets running on this
+     * Gets the percentage of CPU capacity (MIPS %) requested by all Cloudlets running on this
      * VM at the current time. It represents the percentage of MIPS requested,
      * which may be higher than the percentage used (allocated)
      * due to lack of capacity.
      *
-     * @return total CPU requested percentage
+     * @return the percentage (between [0 and 1]) of CPU capacity requested
      * @see #getCpuPercentRequested(double)
      * @see #getCpuPercentUtilization(double)
      */
     double getCpuPercentRequested();
+
     /**
      * {@inheritDoc}
      * If you enable the statistics for the Host where the VM is placed,
