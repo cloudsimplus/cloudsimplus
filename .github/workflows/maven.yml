@@ -25,4 +25,4 @@ jobs:
         run: |
           mvn clean verify -B -V -Pintegration-tests
           cd cloudsim-plus && mvn jacoco:report
-          bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r target/site/jacoco/jacoco.xml
+          test -z $CODACY_PROJECT_TOKEN || bash <(curl -Ls https://coverage.codacy.com/get.sh) report -r target/site/jacoco/jacoco.xml
