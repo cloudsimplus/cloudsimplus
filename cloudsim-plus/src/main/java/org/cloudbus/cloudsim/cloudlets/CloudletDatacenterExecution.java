@@ -96,6 +96,10 @@ final class CloudletDatacenterExecution {
         this.finishedSoFar += partialFinishedMI;
     }
 
+    /* default */ void clearFinishedSoFar() {
+        this.finishedSoFar = 0;
+    }
+
     /**
      * a Datacenter where the Cloudlet will be executed
      */

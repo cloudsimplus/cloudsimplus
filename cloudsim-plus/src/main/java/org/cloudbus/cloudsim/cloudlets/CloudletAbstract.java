@@ -204,7 +204,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         this.execStartTime = 0.0;
         this.status = Status.INSTANTIATED;
         this.priority = 0;
-
+        getLastExecutionInDatacenterInfo().clearFinishedSoFar();
         this.lastExecutedDatacenterIdx = NOT_ASSIGNED;
         setBroker(DatacenterBroker.NULL);
         setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
