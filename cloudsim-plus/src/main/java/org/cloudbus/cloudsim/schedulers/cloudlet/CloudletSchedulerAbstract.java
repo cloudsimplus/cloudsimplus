@@ -51,7 +51,6 @@ import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo
  * @since CloudSim Toolkit 1.0
  */
 public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
-
     /**
      * @see #getCloudletPausedList()
      */
@@ -80,6 +79,13 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @see #getCloudletExecList()
      */
     private final List<CloudletExecution> cloudletExecList;
+
+    /** @see #enableCloudletSubmittedList() */
+    private boolean enableCloudletSubmittedList;
+
+    /** @see #getCloudletSubmittedList() */
+    private final List<Cloudlet> cloudletSubmittedList;
+
     /**
      * @see #getCloudletWaitingList()
      */
@@ -106,6 +112,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected CloudletSchedulerAbstract() {
         setPreviousTime(0.0);
         vm = Vm.NULL;
+        cloudletSubmittedList = new ArrayList<>();
         cloudletExecList = new ArrayList<>();
         cloudletPausedList = new ArrayList<>();
         cloudletFinishedList = new ArrayList<>();
@@ -214,6 +221,21 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         return Collections.unmodifiableList(cloudletExecList);
     }
 
+    @Override
+    public <T extends Cloudlet> List<T> getCloudletSubmittedList() {
+        if(cloudletSubmittedList.isEmpty() && !enableCloudletSubmittedList) {
+            LOGGER.warn("{}: The list of submitted Cloudlets for {} is empty maybe because you didn't enabled it by calling enableCloudletSubmittedList().", getClass().getSimpleName(), vm);
+        }
+
+        return (List<T>) cloudletSubmittedList;
+    }
+
+    @Override
+    public CloudletScheduler enableCloudletSubmittedList() {
+        this.enableCloudletSubmittedList = true;
+        return this;
+    }
+
     protected void addCloudletToWaitingList(final CloudletExecution cle) {
         if(requireNonNull(cle) == CloudletExecution.NULL){
             return;
@@ -268,6 +290,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
 
     @Override
     public final double cloudletSubmit(final Cloudlet cloudlet, final double fileTransferTime) {
+        if(enableCloudletSubmittedList) {
+            cloudletSubmittedList.add(cloudlet);
+        }
+
         return cloudletSubmitInternal(new CloudletExecution(cloudlet), fileTransferTime);
     }
 

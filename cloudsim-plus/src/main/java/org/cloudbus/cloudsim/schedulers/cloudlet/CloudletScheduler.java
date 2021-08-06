@@ -116,6 +116,25 @@ public interface CloudletScheduler extends Serializable {
     List<CloudletExecution> getCloudletExecList();
 
     /**
+     * Gets the list of all Cloudlets submitted for a VM so far.
+     * This can be used at the end of the simulation to know
+     * which Cloudlets have been sent to a VM.
+     *
+     * <p><b>WARNING: Keep in mind that the history in this List is just kept
+     * if {@link #enableCloudletSubmittedList()} is called.</b></p>
+     *
+     * @param <T> the class of Cloudlets inside the list
+     * @return the list of all submitted Cloudlets
+     */
+    <T extends Cloudlet> List<T> getCloudletSubmittedList();
+
+    /**
+     * Enables the history of all Cloudlets submitted so far.
+     * @see #getCloudletSubmittedList()
+     */
+    CloudletScheduler enableCloudletSubmittedList();
+
+    /**
      * Gets a <b>read-only</b> List of cloudlet waiting to be executed on the VM.
      *
      * @return the cloudlet waiting list
