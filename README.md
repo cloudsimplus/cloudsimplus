@@ -60,7 +60,7 @@ and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de
 - Developing and maintaining this project takes a huge effort. This way, any kind of [contribution](#contributing) is encouraged. Show your support by giving it a star :star: using the button at the top of the GitHub page. It takes no time, helps promoting the project and keeps it evolving. Thanks in advance :clap:.
 - If you aren't intending to make changes and contribute back to the project, you shouldn't fork it. Your fork tends to become obsolete as the project is updated. 
 - If you're willing to use the framework to develop your own project on top of it, creating a fork is the worst way. You aren't supposed to change the framework code to implement your project, but to extend it by creating some subclasses. Unless you are planning to contribute your changes back, you'll end up with an incompatible and obsolete version of the framework. The project is constantly evolving and bugfixes are a priority. Your fork with personal changes will miss those updates and high performance improvements.
-- If you just came across this project and wants to check it later, star it :star:, you won't regret that :wink:, it's a promise :pray:.
+- If you just came across this project and wants to check it later, star it :star:, we appreciate :clap:.
 ---
 
 <p align="right"><a href="#top">:arrow_up:</a></p>
