@@ -91,7 +91,8 @@ import static org.cloudbus.cloudsim.util.MathUtil.positive;
  *      Host specified in the trace file.
  */
 public class GoogleTaskEventsExample1 {
-    private static final String TRACE_FILENAME = "workload/google-traces/task-events-sample-1.csv";
+    private static final String TASK_EVENTS_FILE = "workload/google-traces/task-events-sample-1.csv";
+    private static final String TASK_USAGE_FILE = "workload/google-traces/task-usage-sample-1.csv";
 
     private static final int HOSTS = 10;
     private static final int VMS = 8;
@@ -168,7 +169,7 @@ public class GoogleTaskEventsExample1 {
      */
     private void createCloudletsAndBrokersFromTraceFile() {
         final GoogleTaskEventsTraceReader reader =
-            GoogleTaskEventsTraceReader.getInstance(simulation, TRACE_FILENAME, this::createCloudlet);
+            GoogleTaskEventsTraceReader.getInstance(simulation, TASK_EVENTS_FILE, this::createCloudlet);
 
         /*The created Cloudlets are automatically submitted to their respective brokers,
         so you don't have to submit them manually.*/
@@ -176,7 +177,7 @@ public class GoogleTaskEventsExample1 {
         brokers = reader.getBrokers();
         System.out.printf(
             "%d Cloudlets and %d Brokers created from the %s trace file.%n",
-            cloudlets.size(), brokers.size(), TRACE_FILENAME);
+            cloudlets.size(), brokers.size(), TASK_EVENTS_FILE);
     }
 
     /**
@@ -222,11 +223,10 @@ public class GoogleTaskEventsExample1 {
      * </p>
      */
     private void readTaskUsageTraceFile() {
-        final String fileName = "workload/google-traces/task-usage-sample-1.csv";
         final GoogleTaskUsageTraceReader reader =
-            GoogleTaskUsageTraceReader.getInstance(brokers, fileName);
+            GoogleTaskUsageTraceReader.getInstance(brokers, TASK_USAGE_FILE);
         final Set<Cloudlet> processedCloudlets = reader.process();
-        System.out.printf("%d Cloudlets processed from the %s trace file.%n", processedCloudlets.size(), fileName);
+        System.out.printf("%d Cloudlets processed from the %s trace file.%n", processedCloudlets.size(), TASK_USAGE_FILE);
         System.out.println();
     }
 
