@@ -72,7 +72,7 @@ public abstract class TraceReaderAbstract implements TraceReader {
         }
 
         this.fieldDelimiterRegex = "\\s+";
-        this.maxLinesToRead = -1;
+        this.setMaxLinesToRead(Integer.MAX_VALUE);
         this.inputStream = inputStream;
         this.filePath = filePath;
     }
@@ -114,7 +114,11 @@ public abstract class TraceReaderAbstract implements TraceReader {
     }
 
     @Override
-    public TraceReader setMaxLinesToRead(int maxLinesToRead) {
+    public final TraceReader setMaxLinesToRead(final int maxLinesToRead) {
+        if(maxLinesToRead <= 0) {
+            throw new IllegalArgumentException("Maximum number of lines to read from the trace must be greater than 0. If you want to read the entire file, provide Integer.MAX_VALUE.");
+        }
+
         this.maxLinesToRead = maxLinesToRead;
         return this;
     }
@@ -239,10 +243,11 @@ public abstract class TraceReaderAbstract implements TraceReader {
      * @param reader     the object that is reading the workload file
      * @param lineNumber the number of the line that that will be read from the workload file (starting from 0)
      * @return the line read; or null if there isn't any more lines to read or if
-     * the number of lines read reached the {@link #getMaxLinesToRead()}
+     * the number of lines to read  was reached
+     * @see #getMaxLinesToRead()
      */
     private String readNextLine(final BufferedReader reader, final int lineNumber) throws IOException {
-        if (reader.ready() && (maxLinesToRead == -1 || lineNumber <= maxLinesToRead-1)) {
+        if (reader.ready() && lineNumber <= maxLinesToRead - 1) {
             return reader.readLine();
         }
 
