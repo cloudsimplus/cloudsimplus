@@ -42,7 +42,6 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -415,7 +414,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      * @see #getBrokers()
      */
     @Override
-    public Set<Cloudlet> process() {
+    public Collection<Cloudlet> process() {
         if(!autoSubmitCloudlets) {
             LOGGER.info("{}: Auto-submission of Cloudlets from trace file is disabled. Don't forget to submitted them to the broker.", getClass().getSimpleName());
         }
@@ -483,23 +482,15 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
     /**
      * Send a message to the broker to request change in a Cloudlet status,
      * using some tags from {@link CloudSimTags} such as {@link CloudSimTags#CLOUDLET_READY}.
-     * @param cloudletLookupFunction a {@link BiFunction} that receives the broker to find the Cloudlet into
-     *                               and the unique ID of the Cloudlet (task),
-     *                               so that the Cloudlet status can be changed
-     * @param tag a tag from the {@link CloudSimTags} used to send a message to request the Cloudlet status change,
-     *            such as {@link CloudSimTags#CLOUDLET_FINISH}
+     * @param tag a CLOUDLET tag from the {@link CloudSimTags} used to send a message to request the Cloudlet status change
      * @return true if the request was created, false otherwise
      */
-    /* default */ boolean requestCloudletStatusChange(
-        final BiFunction<DatacenterBroker, Long, Optional<Cloudlet>> cloudletLookupFunction,
-        final int tag)
-    {
+    /* default */ boolean requestCloudletStatusChange(final int tag) {
         final TaskEvent taskEvent = createTaskEventFromTraceLine();
         final DatacenterBroker broker = getBroker(taskEvent.getUserName());
         final double delay = taskEvent.getTimestamp();
 
-        return cloudletLookupFunction
-                .apply(broker, taskEvent.getUniqueTaskId())
+        return findObject(taskEvent.getUniqueTaskId())
                 .map(cloudlet -> addCloudletStatusChangeEvents(new CloudSimEvent(delay, broker, tag, cloudlet), taskEvent))
                 .isPresent();
     }

@@ -42,8 +42,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -348,7 +348,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
      * @return the Set of all {@link Cloudlet}s processed according to a line in the trace file
      */
     @Override
-    public Set<Cloudlet> process() {
+    public Collection<Cloudlet> process() {
         return super.process();
     }
 

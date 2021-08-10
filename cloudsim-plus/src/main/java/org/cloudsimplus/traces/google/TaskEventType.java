@@ -27,8 +27,6 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 
-import java.util.Optional;
-
 import static org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader.FieldIndex;
 
 /**
@@ -54,13 +52,11 @@ public enum TaskEventType {
             }
 
             final Cloudlet cloudlet = reader.createCloudlet(event);
+            // Since Cloudlet id must be unique, it will be the concatenation of the job and task id
             cloudlet.setId(event.getUniqueTaskId());
             cloudlet.setJobId(event.getJobId());
             final double delay = FieldIndex.TIMESTAMP.getValue(reader);
             cloudlet.setSubmissionDelay(delay);
-
-            // Since Cloudlet id must be unique, it will be the concatenation of the job and task id
-            cloudlet.setId(event.getUniqueTaskId());
 
             /* Set status to FROZEN to avoid the cloudlet to start running after being submitted.
             The execution must start only after a SCHEDULE event happens. */
@@ -84,7 +80,7 @@ public enum TaskEventType {
     SCHEDULE{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(this::cloudletLookup, CloudSimTags.CLOUDLET_READY);
+            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_READY);
         }
     },
 
@@ -97,7 +93,7 @@ public enum TaskEventType {
     EVICT{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(this::cloudletLookup, CloudSimTags.CLOUDLET_PAUSE);
+            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_PAUSE);
         }
     },
 
@@ -108,7 +104,7 @@ public enum TaskEventType {
     FAIL{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(this::cloudletLookup, CloudSimTags.CLOUDLET_FAIL);
+            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_FAIL);
         }
     },
 
@@ -118,7 +114,7 @@ public enum TaskEventType {
     FINISH{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(this::cloudletLookup, CloudSimTags.CLOUDLET_FINISH);
+            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_FINISH);
         }
     },
 
@@ -129,7 +125,7 @@ public enum TaskEventType {
     KILL{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            return reader.requestCloudletStatusChange(this::cloudletLookup, CloudSimTags.CLOUDLET_CANCEL);
+            return reader.requestCloudletStatusChange(CloudSimTags.CLOUDLET_CANCEL);
         }
     },
 
@@ -165,18 +161,6 @@ public enum TaskEventType {
             return false;
         }
     };
-
-    /**
-     * Try to find a Cloudlet with a specific ID inside a given broker
-     * identified by the username read from the trace line.
-     *
-     * @param broker the broker to look the Cloudlet up
-     * @param uniqueId the Cloudlet unique ID read from the trace line
-     * @return an {@link Optional} containing the Cloudlet or an empty {@link Optional} if the Cloudlet was not found
-     */
-    protected Optional<Cloudlet> cloudletLookup(final DatacenterBroker broker, final long uniqueId) {
-        return broker.getCloudletSubmittedList().stream().filter(cloudlet -> cloudlet.getId() == uniqueId).findFirst();
-    }
 
     /**
      * Gets an enum instance from its ordinal value.

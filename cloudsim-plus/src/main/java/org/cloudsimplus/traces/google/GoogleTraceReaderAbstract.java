@@ -23,13 +23,12 @@
  */
 package org.cloudsimplus.traces.google;
 
+import org.cloudbus.cloudsim.core.Identifiable;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudsimplus.traces.TraceReaderBase;
 
 import java.io.InputStream;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An abstract class for creating <a href="https://github.com/google/cluster-data/blob/master/ClusterData2011_2.md">Google Cluster Trace</a>
@@ -42,7 +41,7 @@ import java.util.Set;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
+abstract class GoogleTraceReaderAbstract<T extends Identifiable> extends TraceReaderBase {
     /* default */ static final String VAL_SEPARATOR = " -> ";
     /* default */ static final String COL_SEPARATOR = " | ";
 
@@ -53,12 +52,12 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      * The {@link GoogleTaskEventsTraceReader} creates
      * {@link org.cloudbus.cloudsim.cloudlets.Cloudlet}s.
      */
-    private final Set<T> availableObjects;
+    private final Map<Long, T> availableObjectsMap;
 
     /* default */  GoogleTraceReaderAbstract(final String filePath, final InputStream reader) {
         super(filePath, reader);
         this.setFieldDelimiterRegex(",");
-        availableObjects = new HashSet<>();
+        availableObjectsMap = new HashMap();
     }
 
     /**
@@ -69,10 +68,10 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      *
      * @return the Set of created objects that were available at timestamp 0 inside the trace file.
      */
-    public Set<T> process() {
+    public Collection<T> process() {
         preProcess();
         //If the file was not processed yet, process it
-        if (availableObjects.isEmpty()) {
+        if (availableObjectsMap.isEmpty()) {
             try {
                 readFile(this::processParsedLine);
             } catch (Exception e) {
@@ -82,7 +81,7 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
             postProcess();
         }
 
-        return availableObjects;
+        return availableObjectsMap.values();
     }
 
     /**
@@ -132,10 +131,10 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      * Adds an object T to the list of available objects.
      * @param object the object T to add
      * @return true if the object was added, false otherwise
-     * @see #availableObjects
+     * @see #availableObjectsMap
      */
     /* default */ final boolean addAvailableObject(final T object){
-        return availableObjects.add(Objects.requireNonNull(object));
+        return availableObjectsMap.put(object.getId(), Objects.requireNonNull(object)) == null;
     }
 
     /**
@@ -143,10 +142,14 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
      * @return
      */
     protected final int availableObjectsCount(){
-        return availableObjects.size();
+        return availableObjectsMap.size();
     }
 
-    protected Set<T> getAvailableObjects(){
-        return availableObjects;
+    protected Collection<T> getAvailableObjects(){
+        return availableObjectsMap.values();
+    }
+
+    protected final Optional<T> findObject(final long id) {
+        return Optional.ofNullable(availableObjectsMap.get(id));
     }
 }

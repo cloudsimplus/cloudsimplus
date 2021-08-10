@@ -53,9 +53,9 @@ import org.cloudsimplus.util.Log;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -125,7 +125,7 @@ public class GoogleTaskEventsExample1 {
     private final CloudSim simulation;
     private List<DatacenterBroker> brokers;
     private Datacenter datacenter;
-    private Set<Cloudlet> cloudlets;
+    private Collection<Cloudlet> cloudlets;
 
     public static void main(String[] args) {
         new GoogleTaskEventsExample1();
@@ -238,7 +238,7 @@ public class GoogleTaskEventsExample1 {
     private void readTaskUsageTraceFile() {
         final GoogleTaskUsageTraceReader reader =
             GoogleTaskUsageTraceReader.getInstance(brokers, TASK_USAGE_FILE);
-        final Set<Cloudlet> processedCloudlets = reader.process();
+        final Collection<Cloudlet> processedCloudlets = reader.process();
         System.out.printf("%d Cloudlets processed from the %s trace file.%n", processedCloudlets.size(), TASK_USAGE_FILE);
         System.out.println();
     }

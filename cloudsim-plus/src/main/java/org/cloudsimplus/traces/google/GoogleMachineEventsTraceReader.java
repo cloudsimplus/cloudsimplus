@@ -40,8 +40,8 @@ import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -283,7 +283,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * @return the Set of {@link Host}s that were available at timestamp 0 inside the trace file.
      */
     @Override
-    public Set<Host> process() {
+    public Collection<Host> process() {
         return super.process();
     }
 
