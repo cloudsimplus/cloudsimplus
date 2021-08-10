@@ -47,6 +47,12 @@ public enum TaskEventType {
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
             final TaskEvent event = reader.createTaskEventFromTraceLine();
+            final DatacenterBroker broker = reader.getOrCreateBroker(event.getUserName());
+
+            if(!reader.allowCloudletCreation()) {
+                return false;
+            }
+
             final Cloudlet cloudlet = reader.createCloudlet(event);
             cloudlet.setId(event.getUniqueTaskId());
             cloudlet.setJobId(event.getJobId());
@@ -62,7 +68,6 @@ public enum TaskEventType {
                 cloudlet.setStatus(Cloudlet.Status.FROZEN);
             }
 
-            final DatacenterBroker broker = reader.getOrCreateBroker(event.getUserName());
             broker.submitCloudlet(cloudlet);
             return reader.addAvailableObject(cloudlet);
         }

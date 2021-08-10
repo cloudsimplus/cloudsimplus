@@ -110,6 +110,12 @@ public class GoogleTaskEventsExample1 {
      */
     private static final int  CLOUDLET_LENGTH = -10_000;
 
+    /**
+     * Max number of Cloudlets to create from the Google Task Events trace file.
+     * @see GoogleTaskEventsTraceReader#setMaxCloudletsToCreate(int)
+     */
+    private static final int MAX_CLOUDLETS = 8;
+
     private static final long VM_PES = 4;
     private static final int  VM_MIPS = 1000;
     private static final long VM_RAM = 500; //in Megabytes
@@ -144,8 +150,13 @@ public class GoogleTaskEventsExample1 {
 
         simulation.start();
 
+        System.out.printf("Total number of created Cloudlets: %d%n", getTotalCreatedCloudletsNumber());
         brokers.stream().sorted().forEach(this::printCloudlets);
         System.out.printf("Simulation finished at %s. Execution time: %.2f seconds%n", LocalTime.now(), TimeUtil.elapsedSeconds(startSecs));
+    }
+
+    private int getTotalCreatedCloudletsNumber() {
+        return brokers.stream().mapToInt(b -> b.getCloudletCreatedList().size()).sum();
     }
 
     /**
@@ -169,7 +180,9 @@ public class GoogleTaskEventsExample1 {
      */
     private void createCloudletsAndBrokersFromTraceFile() {
         final GoogleTaskEventsTraceReader reader =
-            GoogleTaskEventsTraceReader.getInstance(simulation, TASK_EVENTS_FILE, this::createCloudlet);
+            GoogleTaskEventsTraceReader
+                .getInstance(simulation, TASK_EVENTS_FILE, this::createCloudlet)
+                .setMaxCloudletsToCreate(MAX_CLOUDLETS);
 
         /*The created Cloudlets are automatically submitted to their respective brokers,
         so you don't have to submit them manually.*/

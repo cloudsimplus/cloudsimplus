@@ -73,6 +73,9 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 4.0.0
  */
 public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
+    /** @see #getMaxCloudletsToCreate() */
+    private int maxCloudletsToCreate;
+
     /**
      * Defines the type of information missing in the trace file.
      * It represents the possible values for the MISSING_INFO field.
@@ -392,6 +395,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
         this.cloudletCreationFunction = requireNonNull(cloudletCreationFunction);
         brokersMap = new HashMap<>();
         cloudletStatusChangeEvents = new ArrayList<>();
+        setMaxCloudletsToCreate(Integer.MAX_VALUE);
     }
 
     /**
@@ -710,5 +714,43 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
 
     public Simulation getSimulation() {
         return simulation;
+    }
+
+    /**
+     * Gets the maximum number of Cloudlets to create from the trace file.
+     * @return
+     * @see #setMaxCloudletsToCreate(int)
+     */
+    public int getMaxCloudletsToCreate() {
+        return maxCloudletsToCreate;
+    }
+
+    /**
+     * Sets the maximum number of Cloudlets to create from the trace file.
+     * Since the number of lines in the file may be greater to the number
+     * of Cloudlets that will be created from it (since there may be lines
+     * representing different cloudlet requests, such as creation, execution, pause, destruction, etc),
+     * using the {@link #setMaxLinesToRead(int)} may not ensure only a given number of
+     * Cloudlets will be created.
+     * @param maxCloudletsToCreate the maximum number of Cloudlets to create from the file.
+     *                             Use {@link Integer#MAX_VALUE} to disable this configuration.
+     * @return
+     * @see #setMaxLinesToRead(int)
+     */
+    public GoogleTaskEventsTraceReader setMaxCloudletsToCreate(final int maxCloudletsToCreate) {
+        if(maxCloudletsToCreate <= 0) {
+            throw new IllegalArgumentException("Maximum number of Cloudlets to create must be greater than 0. If you want to create all Cloudlets from the entire file, provide Integer.MAX_VALUE.");
+        }
+
+        this.maxCloudletsToCreate = maxCloudletsToCreate;
+        return this;
+    }
+
+    /**
+     * Checks if the maximum number of Cloudlets to create was not reached.
+     * @return true to indicate the Cloudlet is allowed to be created, false otherwise.
+     */
+    protected boolean allowCloudletCreation() {
+        return availableObjectsCount() < getMaxCloudletsToCreate();
     }
 }

@@ -137,4 +137,12 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
     /* default */ final boolean addAvailableObject(final T object){
         return availableObjects.add(Objects.requireNonNull(object));
     }
+
+    /**
+     * Gets the number of objects available (created) so far.
+     * @return
+     */
+    protected final int availableObjectsCount(){
+        return availableObjects.size();
+    }
 }
