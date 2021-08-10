@@ -948,6 +948,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
          * created Cloudlets into a separate list.
          * Cloudlets in such new list were removed just after the loop,
          * degrading performance in large scale simulations. */
+        int createdCloudlets = 0;
         for (final Iterator<Cloudlet> it = cloudletWaitingList.iterator(); it.hasNext(); ) {
             final CloudletSimple cloudlet = (CloudletSimple)it.next();
             if (!cloudlet.getLastTriedDatacenter().equals(Datacenter.NULL)) {
@@ -970,9 +971,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             cloudlet.setLastTriedDatacenter(getDatacenter(lastSelectedVm));
             cloudletsCreatedList.add(cloudlet);
             it.remove();
+            createdCloudlets++;
         }
 
-        allWaitingCloudletsSubmittedToVm();
+        allWaitingCloudletsSubmittedToVm(createdCloudlets);
     }
 
     private void logPostponingCloudletExecution(final Cloudlet cloudlet) {
@@ -1003,7 +1005,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             lastSelectedVm, lastSelectedVm.getHost(), delayMsg);
     }
 
-    private boolean allWaitingCloudletsSubmittedToVm() {
+    /**
+     * @param createdCloudlets number of Cloudlets previously waiting that have been just created
+     */
+    private boolean allWaitingCloudletsSubmittedToVm(final int createdCloudlets) {
         if (!cloudletWaitingList.isEmpty()) {
             return false;
         }
@@ -1011,8 +1016,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         //avoid duplicated notifications
         if (wereThereWaitingCloudlets) {
             LOGGER.info(
-                "{}: {}: All waiting Cloudlets submitted to some VM.",
-                getSimulation().clockStr(), getName());
+                "{}: {}: All {} waiting Cloudlets submitted to some VM.",
+                getSimulation().clockStr(), getName(), createdCloudlets);
             wereThereWaitingCloudlets = false;
         }
 
