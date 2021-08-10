@@ -58,7 +58,9 @@ public enum TaskEventType {
 
             /* Set status to FROZEN to avoid the cloudlet to start running after being submitted.
             The execution must start only after a SCHEDULE event happens. */
-            cloudlet.setStatus(Cloudlet.Status.FROZEN);
+            if(delay > 0) {
+                cloudlet.setStatus(Cloudlet.Status.FROZEN);
+            }
 
             final DatacenterBroker broker = reader.getOrCreateBroker(event.getUserName());
             broker.submitCloudlet(cloudlet);
