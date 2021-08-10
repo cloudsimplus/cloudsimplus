@@ -76,6 +76,9 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
     /** @see #getMaxCloudletsToCreate() */
     private int maxCloudletsToCreate;
 
+    /** @see #setAutoSubmitCloudlets(boolean) */
+    private boolean autoSubmitCloudlets;
+
     /**
      * Defines the type of information missing in the trace file.
      * It represents the possible values for the MISSING_INFO field.
@@ -393,6 +396,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
         super(filePath, reader);
         this.simulation = requireNonNull(simulation);
         this.cloudletCreationFunction = requireNonNull(cloudletCreationFunction);
+        this.autoSubmitCloudlets = true;
         brokersMap = new HashMap<>();
         cloudletStatusChangeEvents = new ArrayList<>();
         setMaxCloudletsToCreate(Integer.MAX_VALUE);
@@ -412,6 +416,10 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      */
     @Override
     public Set<Cloudlet> process() {
+        if(!autoSubmitCloudlets) {
+            LOGGER.info("{}: Auto-submission of Cloudlets from trace file is disabled. Don't forget to submitted them to the broker.", getClass().getSimpleName());
+        }
+
         return super.process();
     }
 
@@ -752,5 +760,24 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      */
     protected boolean allowCloudletCreation() {
         return availableObjectsCount() < getMaxCloudletsToCreate();
+    }
+
+    /**
+     * Checks if Cloudlets will be auto-submitted to the broker after created
+     * (default is true).
+     * @return true if auto-submit is enabled, false otherwise
+     */
+    public boolean isAutoSubmitCloudlets() {
+        return autoSubmitCloudlets;
+    }
+
+    /**
+     * Sets if Cloudlets must be auto-submitted to the broker after created
+     * (default is true).
+     * @param autoSubmitCloudlets true to auto-submit, false otherwise
+     */
+    public GoogleTaskEventsTraceReader setAutoSubmitCloudlets(final boolean autoSubmitCloudlets) {
+        this.autoSubmitCloudlets = autoSubmitCloudlets;
+        return this;
     }
 }

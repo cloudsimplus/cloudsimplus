@@ -375,7 +375,7 @@ public final class GoogleTaskUsageTraceReader extends GoogleTraceReaderAbstract<
     protected boolean processParsedLineInternal() {
         final TaskUsage taskUsage = createTaskUsageFromTraceLine();
         return brokers.stream()
-               .flatMap(broker -> broker.getCloudletSubmittedList().stream())
+               .flatMap(broker -> getAvailableObjects().stream())
                .filter(cloudlet -> cloudlet.getId() == taskUsage.getUniqueTaskId())
                .findFirst()
                .map(cloudlet -> requestCloudletUsageChange(cloudlet, taskUsage)).isPresent();

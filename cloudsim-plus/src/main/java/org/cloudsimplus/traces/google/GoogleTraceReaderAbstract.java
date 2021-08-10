@@ -145,4 +145,8 @@ abstract class GoogleTraceReaderAbstract<T> extends TraceReaderBase {
     protected final int availableObjectsCount(){
         return availableObjects.size();
     }
+
+    protected Set<T> getAvailableObjects(){
+        return availableObjects;
+    }
 }

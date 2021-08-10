@@ -7,6 +7,9 @@
  */
 package org.cloudbus.cloudsim.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A basic interface for classes that read specific trace file formats.
  *
@@ -14,6 +17,7 @@ package org.cloudbus.cloudsim.util;
  * @author Manoel Campos da Silva Filho
  */
 public interface TraceReader {
+    Logger LOGGER = LoggerFactory.getLogger(TraceReader.class.getSimpleName());
 
     /**
      * Gets the Strings that identifies the start of a comment line.

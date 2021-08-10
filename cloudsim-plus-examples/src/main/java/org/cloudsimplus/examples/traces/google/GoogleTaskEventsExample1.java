@@ -184,7 +184,7 @@ public class GoogleTaskEventsExample1 {
                 .getInstance(simulation, TASK_EVENTS_FILE, this::createCloudlet)
                 .setMaxCloudletsToCreate(MAX_CLOUDLETS);
 
-        /*The created Cloudlets are automatically submitted to their respective brokers,
+        /* Created Cloudlets are automatically submitted by default to their respective brokers,
         so you don't have to submit them manually.*/
         cloudlets = reader.process();
         brokers = reader.getBrokers();

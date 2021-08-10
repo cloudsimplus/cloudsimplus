@@ -68,7 +68,10 @@ public enum TaskEventType {
                 cloudlet.setStatus(Cloudlet.Status.FROZEN);
             }
 
-            broker.submitCloudlet(cloudlet);
+            if(reader.isAutoSubmitCloudlets()) {
+                broker.submitCloudlet(cloudlet);
+            }
+
             return reader.addAvailableObject(cloudlet);
         }
     },
