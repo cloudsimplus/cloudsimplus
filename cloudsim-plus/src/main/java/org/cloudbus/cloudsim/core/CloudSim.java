@@ -38,7 +38,7 @@ public class CloudSim implements Simulation {
     /**
      * CloudSim Plus current version.
      */
-    public static final String VERSION = "CloudSim Plus 6.3.8";
+    public static final String VERSION = "CloudSim Plus 6.3.9";
 
     public static final Logger LOGGER = LoggerFactory.getLogger(CloudSim.class.getSimpleName());
 
