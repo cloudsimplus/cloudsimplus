@@ -59,6 +59,11 @@ public class HostSimple implements Host {
     private boolean failed;
 
     private boolean active;
+
+    /**
+     * Indicates if a power on/off operation is in progress.
+     */
+    private boolean activationChangeInProgress;
     private boolean stateHistoryEnabled;
 
     /** @see #getStartTime() */
@@ -513,7 +518,8 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setActive(final boolean activate) {
-        if(this.active == activate){
+        final double delay = activate ? powerModel.getStartupDelay() : powerModel.getShutDownDelay();
+        if(this.active == activate || delay > 0 && activationChangeInProgress){
             return this;
         }
 
@@ -521,17 +527,17 @@ public class HostSimple implements Host {
             throw new IllegalStateException("The Host is failed and cannot be activated.");
         }
 
-        final double delay = activate ? powerModel.getStartupDelay() : powerModel.getShutDownDelay();
         if (delay == 0) {
            //If there is no delay, start up or shutdown the Host right away.
            processHostActivation(activate);
            return this;
         }
 
-        final String msg = (activate ? "on" : "off") + " (expected time: {} seconds).";
         final int tag = activate ? CloudSimTags.HOST_POWER_ON : CloudSimTags.HOST_POWER_OFF;
+        final String msg = (activate ? "on" : "off") + " (expected time: {} seconds).";
         LOGGER.info("{}: {} is being powered " + msg, getSimulation().clockStr(), this, delay);
         datacenter.schedule(delay, tag, this);
+        activationChangeInProgress = true;
 
         return this;
     }
@@ -549,6 +555,7 @@ public class HostSimple implements Host {
         else setShutdownTime(getSimulation().clock());
 
         this.active = activate;
+        activationChangeInProgress = false;
         notifyStartupOrShutdown(activate, wasActive);
     }
 
