@@ -143,7 +143,7 @@ public final class HostSuitability {
     @Override
     public String toString(){
         if(fully())
-            return "";
+            return "Host is fully suitable for the last requested VM";
 
         if(reason != null)
             return reason;
