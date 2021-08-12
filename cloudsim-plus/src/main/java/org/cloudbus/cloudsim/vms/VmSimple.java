@@ -870,6 +870,11 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
+    public boolean isDelayed() {
+        return submissionDelay > 0;
+    }
+
+    @Override
     public void notifyOnHostAllocationListeners() {
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onHostAllocationListeners.size(); i++) {

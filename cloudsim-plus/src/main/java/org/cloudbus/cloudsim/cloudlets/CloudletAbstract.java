@@ -816,6 +816,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
+    public boolean isDelayed() {
+        return submissionDelay > 0;
+    }
+
+    @Override
     public boolean isBoundToVm() {
         return vm != null && vm != Vm.NULL && !(vm instanceof VmGroup) && this.getBroker().equals(this.getVm().getBroker());
     }

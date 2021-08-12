@@ -25,6 +25,12 @@ public interface Delayable {
     double getSubmissionDelay();
 
     /**
+     * Checks if this object has a submission delay or not
+     * @return
+     */
+    boolean isDelayed();
+
+    /**
      * Sets the time (in seconds) that a {@link DatacenterBroker} will wait
      * to request the creation of the object.
      * This is a relative time from the current simulation time.

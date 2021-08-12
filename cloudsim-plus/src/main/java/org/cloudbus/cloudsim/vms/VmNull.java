@@ -34,6 +34,7 @@ class VmNull implements Vm {
     @Override public double getSubmissionDelay() {
         return 0;
     }
+    @Override public boolean isDelayed() { return false; }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
     @Override public void addStateHistoryEntry(VmStateHistoryEntry entry) {/**/}
     @Override public Resource getBw() {

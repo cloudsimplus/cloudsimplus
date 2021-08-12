@@ -193,6 +193,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }
     @Override public double getSubmissionDelay() { return 0; }
+    @Override public boolean isDelayed() { return false; }
     @Override public void setSubmissionDelay(double submissionDelay) {/**/}
     @Override public boolean isBoundToVm() { return false; }
     @Override public int compareTo(Cloudlet cloudlet) {
