@@ -46,7 +46,6 @@ import org.cloudsimplus.util.Log;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.function.Executable;
 
 import java.util.ArrayList;
@@ -70,7 +69,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.0
  */
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FinishedEntitiesPurgeTest {
     private static final int HOST_PES = 8;
     private static final int VM_PES = 2;
