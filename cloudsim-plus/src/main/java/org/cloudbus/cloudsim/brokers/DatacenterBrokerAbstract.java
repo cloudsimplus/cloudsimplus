@@ -633,9 +633,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         //if the VM was successfully created in the requested Datacenter
         if (vm.isCreated()) {
-            requestDatacentersToCreateWaitingCloudlets();
             notifyOnVmsCreatedListeners();
             processSuccessVmCreationInDatacenter(vm);
+            requestDatacentersToCreateWaitingCloudlets();
         } else {
             vm.setFailed(true);
             if(!isRetryFailedVms()){

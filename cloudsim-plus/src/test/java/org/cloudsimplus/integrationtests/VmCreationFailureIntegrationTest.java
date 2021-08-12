@@ -50,7 +50,6 @@ import org.slf4j.LoggerFactory;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  *
@@ -149,7 +148,7 @@ public final class VmCreationFailureIntegrationTest {
         final String msg = String.format(
                 "Only %d VMs should had failed to be created due to lack of resources but %d failed",
                 expectedFailedVms, numberOfVmCreationFailures);
-        assertTrue(expectedFailedVms == numberOfVmCreationFailures, msg);
+        assertEquals(expectedFailedVms, numberOfVmCreationFailures, msg);
     }
 
     /**
@@ -197,7 +196,9 @@ public final class VmCreationFailureIntegrationTest {
                     .getHosts()
         );
 
-        final BrokerBuilderDecorator brokerBuilder = scenario.getBrokerBuilder().create();
+        final BrokerBuilderDecorator brokerBuilder =
+            scenario.getBrokerBuilder()
+                    .create(b -> b.setFailedVmsRetryDelay(-1));
 
         brokerBuilder.getVmBuilder()
                 .setPes(1)

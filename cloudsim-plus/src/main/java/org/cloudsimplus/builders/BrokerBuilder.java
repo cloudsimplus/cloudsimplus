@@ -29,6 +29,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 /**
  * A Builder class to createBroker {@link DatacenterBrokerSimple} objects.
@@ -48,8 +49,14 @@ public class BrokerBuilder implements BrokerBuilderInterface {
 
     @Override
     public BrokerBuilderDecorator create() {
+        return create(b -> {});
+    }
+
+    @Override
+    public BrokerBuilderDecorator create(final Consumer<DatacenterBroker> brokerConsumer) {
         final DatacenterBrokerSimple broker = new DatacenterBrokerSimple(scenario.getSimulation());
         brokers.add(broker);
+        brokerConsumer.accept(broker);
         return new BrokerBuilderDecorator(this, broker);
     }
 

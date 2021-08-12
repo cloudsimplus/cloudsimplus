@@ -27,6 +27,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * An interface to classes that build {@link DatacenterBrokerSimple} objects.
@@ -36,6 +37,15 @@ import java.util.List;
  */
 public interface BrokerBuilderInterface extends Builder{
     BrokerBuilderDecorator create();
+
+    /**
+     * Creates a broker
+     * @param brokerConsumer a {@link Consumer} that will
+     *                       perform some configuration
+     *                       with the just created broker
+     * @return
+     */
+    BrokerBuilderDecorator create(Consumer<DatacenterBroker> brokerConsumer);
     DatacenterBroker findBroker(int id);
     List<DatacenterBroker> getBrokers();
     DatacenterBroker get(int index);

@@ -28,6 +28,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * <p>A class that implements the Decorator Design Pattern in order to
@@ -65,6 +66,11 @@ public class BrokerBuilderDecorator implements BrokerBuilderInterface {
     @Override
     public BrokerBuilderDecorator create() {
         return builder.create();
+    }
+
+    @Override
+    public BrokerBuilderDecorator create(final Consumer<DatacenterBroker> brokerConsumer) {
+        return builder.create(brokerConsumer);
     }
 
     @Override

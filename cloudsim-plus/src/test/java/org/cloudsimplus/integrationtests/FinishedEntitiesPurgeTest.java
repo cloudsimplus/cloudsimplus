@@ -46,10 +46,12 @@ import org.cloudsimplus.util.Log;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.function.Executable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -64,11 +66,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * However, the 1st broker receives the same number of previous cloudlets
  * after their previous ones have finished.
  * All Cloudlets for a given broker have the same length,
- * however, cloudlets in different brokers have a arithmetically progressing length.
+ * however, cloudlets in different brokers have an arithmetically progressing length.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.0
  */
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class FinishedEntitiesPurgeTest {
     private static final int HOST_PES = 8;
     private static final int VM_PES = 2;
@@ -303,7 +306,7 @@ class FinishedEntitiesPurgeTest {
             createCloudlets(broker0, BASE_CLOUDLET_LENGTH);
         } else if(evt.getTime() >= SCHEDULING_INTERVAL_SECS*2){
             /* After some time has passed since the static cloudlets submitted to the first broker
-             * have finished, enable broker shutdown when it become idle. */
+             * have finished, enable broker shutdown when it becomes idle. */
             broker0.setShutdownWhenIdle(true);
         }
 
@@ -338,9 +341,10 @@ class FinishedEntitiesPurgeTest {
     }
 
     private void createVmsAndCloudlets(final DatacenterBroker broker) {
-        createVms(broker);
+        final List<Vm> vmList = createVms(broker);
         final long length = BASE_CLOUDLET_LENGTH * brokerList.size();
-        createCloudlets(broker, length);
+        final List<Cloudlet> cloudlets = vmList.stream().map(vm -> createCloudlet(vm, length)).collect(Collectors.toList());
+        broker.submitCloudletList(cloudlets);
     }
 
     private Datacenter createDatacenter() {

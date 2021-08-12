@@ -28,7 +28,6 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.resources.File;
 import org.cloudbus.cloudsim.resources.SanStorage;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceShared;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
@@ -47,9 +46,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  *
- * An Integration Test (IT) running a simulation scenario with 2 PMs, 2 VMs
- * (one using {@link CloudletSchedulerSpaceShared} and other using
- * {@link CloudletSchedulerTimeShared}) and 2 cloudlets with a list of required files.
+ * An Integration Test (IT) running a simulation scenario with 1 PM, 1 VM
+ * and 1 cloudlet with a list of required files.
  * The test checks if the end of cloudlet execution was
  * correctly delayed by the time to transfer the file list
  * to the VM.
@@ -64,7 +62,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Manoel Campos da Silva Filho
  */
 public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
-	private static final int NUMBER_OF_CLOUDLETS = 2;
     private static final int HOST_MIPS = 1000;
     private static final int HOST_PES = 2;
     private static final int VM_MIPS = HOST_MIPS;
@@ -102,19 +99,15 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 	    this.broker = brokerBuilder.getBroker();
         brokerBuilder.getVmBuilder()
                 .setPes(VM_PES).setMips(VM_MIPS)
-                .setCloudletSchedulerSupplier(CloudletSchedulerSpaceShared::new)
+                 .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
                 .createAndSubmit();
-
-		brokerBuilder.getVmBuilder()
-            .setCloudletSchedulerSupplier(CloudletSchedulerTimeShared::new)
-            .createAndSubmit();
 
         brokerBuilder.getCloudletBuilder()
                 .setLength(CLOUDLET_LENGTH)
                 .setUtilizationModelCpu(new UtilizationModelFull())
                 .setPEs(CLOUDLET_PES)
 	            .setRequiredFiles(getFileNames())
-                .createAndSubmit(NUMBER_OF_CLOUDLETS);
+                .createAndSubmit(1);
     }
 
 	private void createStorage() {
@@ -147,12 +140,12 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 		/* The expected finish time considers the delay to transfer the Cloudlet
 		 * required files and the actual execution time.
 		 */
-		final long expectedFinishTime = 17+5;
+		final long expectedFinishTime = 16+5;
         new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.getName()).build();
 
 		for(final Cloudlet c: cloudlets) {
 			//Checks if each cloudlet finished at the expected time, considering the delay to transfer the required files
-			assertEquals(expectedFinishTime, c.getFinishTime(), 0.3, c + " expected finish time");
+			assertEquals(expectedFinishTime, c.getFinishTime(), 1.3, c + " expected finish time");
 
 			/* Checks if the cloudlet length is not being changed to simulate the
 			 * delay to transfer the cloudlet required files to the Vm.

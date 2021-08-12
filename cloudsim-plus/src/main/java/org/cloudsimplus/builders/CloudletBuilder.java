@@ -94,10 +94,10 @@ public class CloudletBuilder implements Builder {
 
     public CloudletBuilder createAndSubmit(final int amount, final int initialId) {
         final List<Cloudlet> localList = createCloudletsInternal(amount, initialId);
-        broker.submitCloudletList(localList);
         if(vm != Vm.NULL){
             localList.forEach(cloudlet -> broker.bindCloudletToVm(cloudlet, vm));
         }
+        broker.submitCloudletList(localList);
         return this;
     }
 
