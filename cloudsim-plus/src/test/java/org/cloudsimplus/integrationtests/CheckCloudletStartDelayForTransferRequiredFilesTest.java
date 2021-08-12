@@ -35,6 +35,7 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudsimplus.builders.BrokerBuilderDecorator;
 import org.cloudsimplus.builders.HostBuilder;
 import org.cloudsimplus.builders.SimulationScenarioBuilder;
+import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -147,19 +148,19 @@ public final class CheckCloudletStartDelayForTransferRequiredFilesTest {
 		 * required files and the actual execution time.
 		 */
 		final long expectedFinishTime = 17+5;
+        new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.getName()).build();
+
 		for(final Cloudlet c: cloudlets) {
 			//Checks if each cloudlet finished at the expected time, considering the delay to transfer the required files
-			assertEquals(expectedFinishTime, c.getFinishTime(), 0.3, c.toString() + " expected finish time");
+			assertEquals(expectedFinishTime, c.getFinishTime(), 0.3, c + " expected finish time");
 
 			/* Checks if the cloudlet length is not being changed to simulate the
 			 * delay to transfer the cloudlet required files to the Vm.
 			 * The transfer time has to be implemented delaying the cloudlet processing
 			 * not increasing the cloudlet length.
 			 */
-			assertEquals( CLOUDLET_LENGTH, c.getLength(), 0.1, c.toString());
+			assertEquals(CLOUDLET_LENGTH, c.getLength(), 0.1, c.toString());
 		}
-
-        //new CloudletsTableBuilder(broker.getCloudletFinishedList()).setTitle(broker.getName()).build();
     }
 
 }
