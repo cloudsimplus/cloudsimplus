@@ -785,6 +785,8 @@ public class HostSimple implements Host {
             firstStartTime = this.startTime;
         }
 
+        this.lastBusyTime = startTime;
+
         //If the Host is being activated or re-activated, the shutdown time is reset
         this.shutdownTime = -1;
         return this;
