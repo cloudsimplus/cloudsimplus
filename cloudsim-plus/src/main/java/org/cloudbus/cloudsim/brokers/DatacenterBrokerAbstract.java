@@ -146,6 +146,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private boolean vmCreationRetrySent;
 
     /**
+     * Indicates if new VMs have arrived during simulation runtime.
+     */
+    private boolean newVmsArrived;
+
+    /**
      * Creates a DatacenterBroker giving a specific name.
      * Subclasses usually should provide this constructor and
      * and overloaded version that just requires the {@link CloudSim} parameter.
@@ -225,6 +230,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     @Override
     public DatacenterBroker submitVmList(final List<? extends Vm> list) {
+        newVmsArrived = true;
         sortVmsIfComparatorIsSet(list);
         setBrokerForEntities(list);
         lastSubmittedVm = setIdForEntitiesWithoutOne(list, lastSubmittedVm);
@@ -234,9 +240,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             LOGGER.info(
                 "{}: {}: List of {} VMs submitted to the broker during simulation execution. VMs creation request sent to Datacenter.",
                 getSimulation().clockStr(), getName(), list.size());
-            if(!vmCreationRetrySent)
+            requestDatacentersToCreateWaitingCloudlets();
+            if(!vmCreationRetrySent) {
                 lastSelectedDc = null;
                 requestDatacenterToCreateWaitingVms(false, false);
+            }
         }
 
         return this;
@@ -367,7 +375,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @return
      */
     private boolean allNonDelayedVmsCreated() {
-        return vmWaitingList.stream().noneMatch(vm -> vm.getSubmissionDelay() == 0);
+        int delayed = 0;
+        for (final Vm vm : vmWaitingList) {
+            if (vm.getSubmissionDelay() == 0) {
+                return false;
+            }
+            delayed++;
+        }
+
+        return vmWaitingList.isEmpty() || delayed < vmWaitingList.size() || newVmsArrived;
     }
 
     /**
@@ -635,7 +651,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (vm.isCreated()) {
             notifyOnVmsCreatedListeners();
             processSuccessVmCreationInDatacenter(vm);
-            requestDatacentersToCreateWaitingCloudlets();
         } else {
             vm.setFailed(true);
             if(!isRetryFailedVms()){
@@ -650,7 +665,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         //Decreases to indicate an ack for the request was received (either if the VM was created or not)
         vmCreationRequests--;
 
-        if (vmCreationRequests == 0) {
+        if(allNonDelayedVmsCreated()) {
+            newVmsArrived = false;
+            requestDatacentersToCreateWaitingCloudlets();
+        } else if (vmCreationRequests == 0) {
             requestCreationOfWaitingVmsToFallbackDatacenter();
         }
 
