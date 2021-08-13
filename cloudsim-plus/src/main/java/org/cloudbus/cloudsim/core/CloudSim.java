@@ -130,6 +130,9 @@ public class CloudSim implements Simulation {
      */
     private boolean abortRequested;
 
+    /** @see #isAborted() */
+    private boolean aborted;
+
     /**
      * Indicates if the simulation already run once.
      * If yes, it can't run again.
@@ -250,6 +253,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public double start() {
+        aborted = false;
         startSync();
 
         while(processEvents(Double.MAX_VALUE)){
@@ -323,6 +327,7 @@ public class CloudSim implements Simulation {
 
     private boolean logSimulationAborted() {
         if(abortRequested){
+            aborted = true;
             LOGGER.info(
                 "{}================================================== Simulation aborted under request at time {} ==================================================",
                 System.lineSeparator(), clock);
@@ -912,6 +917,11 @@ public class CloudSim implements Simulation {
     public void abort() {
         abortRequested = true;
         running = false;
+    }
+
+    @Override
+    public boolean isAborted() {
+        return aborted;
     }
 
     @Override

@@ -54,6 +54,12 @@ public interface Simulation {
     void abort();
 
     /**
+     * Check if the simulation has been aborted.
+     * @return
+     */
+    boolean isAborted();
+
+    /**
      * Adds a new entity to the simulation. Each {@link CloudSimEntity} object
      * register itself when it is instantiated.
      *

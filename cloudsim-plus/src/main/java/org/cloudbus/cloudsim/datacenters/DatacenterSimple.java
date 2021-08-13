@@ -612,7 +612,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 getSimulation().clockStr(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
         if(warningMsg.isEmpty() || getSimulation().isTerminationTimeSet())
             LOGGER.info(msg);
-        else LOGGER.warn(msg);
+        else if(!getSimulation().isAborted())
+            LOGGER.warn(msg);
 
         vm.getBroker().requestShutdownWhenIdle();
     }
