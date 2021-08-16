@@ -606,16 +606,17 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             sendNow(vm.getBroker(), CloudSimTags.VM_DESTROY_ACK, vm);
         }
 
+        vm.getBroker().requestShutdownWhenIdle();
+        if(getSimulation().isAborted() || getSimulation().isAbortRequested())
+            return;
+
         final String warningMsg = generateNotFinishedCloudletsWarning(vm);
         final String msg = String.format(
                 "%s: %s: %s destroyed on %s. %s",
                 getSimulation().clockStr(), getClass().getSimpleName(), vm, vm.getHost(), warningMsg);
         if(warningMsg.isEmpty() || getSimulation().isTerminationTimeSet())
             LOGGER.info(msg);
-        else if(!getSimulation().isAborted())
-            LOGGER.warn(msg);
-
-        vm.getBroker().requestShutdownWhenIdle();
+        else LOGGER.warn(msg);
     }
 
     private String generateNotFinishedCloudletsWarning(final Vm vm) {

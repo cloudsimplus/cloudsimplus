@@ -103,5 +103,6 @@ final class SimulationNull implements Simulation {
     @Override public long getNumberOfFutureEvents(Predicate<SimEvent> predicate) { return 0; }
     @Override public double getLastCloudletProcessingUpdate() { return 0; }
     @Override public void setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate) {/**/}
+    @Override public boolean isAbortRequested() {return true;}
     @Override public boolean isAborted() {return true; }
 }

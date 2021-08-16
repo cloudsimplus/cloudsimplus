@@ -504,4 +504,6 @@ public interface Simulation {
      * @param lastCloudletProcessingUpdate the time to set (in seconds)
      */
     void setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate);
+
+    boolean isAbortRequested();
 }

@@ -124,10 +124,7 @@ public class CloudSim implements Simulation {
      */
     private double pauseAt = -1;
 
-    /**
-     * Indicates if an abrupt termination was requested.
-     * @see #abort()
-     */
+    /**@see #isAbortRequested() */
     private boolean abortRequested;
 
     /** @see #isAborted() */
@@ -999,5 +996,14 @@ public class CloudSim implements Simulation {
     /** Gets the total number of events generated in the {@link FutureQueue} */
     public long getGeneratedEventsNumber() {
         return future.getSerial();
+    }
+
+    /**
+     * Indicates if an abrupt termination was requested.
+     * @see #abort()
+     */
+    @Override
+    public boolean isAbortRequested() {
+        return abortRequested;
     }
 }
