@@ -675,6 +675,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private void notifyOnVmsCreatedListeners() {
+        if(!vmWaitingList.isEmpty())
+            return;
+
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onVmsCreatedListeners.size(); i++) {
             EventListener<DatacenterBrokerEventInfo> listener = onVmsCreatedListeners.get(i);
