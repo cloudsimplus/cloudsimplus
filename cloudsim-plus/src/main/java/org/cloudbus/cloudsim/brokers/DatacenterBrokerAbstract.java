@@ -61,9 +61,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private static final Function<Vm, Double> DEF_VM_DESTRUCTION_DELAY_FUNCTION = vm -> DEF_VM_DESTRUCTION_DELAY;
 
     /**
-     * A map of registered event listeners for the onVmsCreatedListeners event
-     * that the key is the Listener itself and the value indicates if it's a one
-     * time listener (which is removed from the list after being notified for the first time).
+     * A List of registered event listeners for the onVmsCreatedListeners event.
      *
      * @see #addOnVmsCreatedListener(EventListener)
      */
