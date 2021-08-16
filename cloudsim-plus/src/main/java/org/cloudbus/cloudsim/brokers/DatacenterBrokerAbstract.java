@@ -1006,6 +1006,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void logPostponingCloudletExecution(final Cloudlet cloudlet) {
+        if(getSimulation().isAborted() || getSimulation().isAbortRequested())
+            return;
+
         final Vm vm = cloudlet.getVm();
         final String vmMsg = vm == Vm.NULL ?
                                 "it couldn't be mapped to any VM" :
