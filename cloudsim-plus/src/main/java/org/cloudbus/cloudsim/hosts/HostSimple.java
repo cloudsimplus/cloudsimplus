@@ -590,8 +590,8 @@ public class HostSimple implements Host {
         }
 
         destroyVmInternal(vm);
-        vm.notifyOnHostDeallocationListeners(this);
         vm.setStopTime(getSimulation().clock());
+        vm.notifyOnHostDeallocationListeners(this);
     }
 
     @Override
