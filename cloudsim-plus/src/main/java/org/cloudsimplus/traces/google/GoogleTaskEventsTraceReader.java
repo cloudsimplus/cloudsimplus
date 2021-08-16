@@ -34,7 +34,6 @@ import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
-import org.cloudsimplus.listeners.EventInfo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -430,16 +429,12 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
 
     @Override
     protected void postProcess(){
-        simulation.addOnSimulationStartListener(this::onSimulationStart);
+        if(simulation.isRunning())
+            sendCloudletStatusChangeEvents();
+        else simulation.addOnSimulationStartListener(info -> sendCloudletStatusChangeEvents());
     }
 
-    /**
-     * Adds an event listener that is notified when the simulation starts,
-     * so that the messages to change Cloudlet status are sent.
-     *
-     * @param info the simulation start event information
-     */
-    private void onSimulationStart(final EventInfo info) {
+    private void sendCloudletStatusChangeEvents() {
         cloudletStatusChangeEvents.forEach(evt -> evt.getSource().schedule(evt));
     }
 
