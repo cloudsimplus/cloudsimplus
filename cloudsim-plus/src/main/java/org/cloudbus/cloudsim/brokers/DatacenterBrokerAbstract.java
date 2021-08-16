@@ -649,6 +649,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (vm.isCreated()) {
             notifyOnVmsCreatedListeners();
             processSuccessVmCreationInDatacenter(vm);
+            vm.notifyOnHostAllocationListeners();
         } else {
             vm.setFailed(true);
             if(!isRetryFailedVms()){
