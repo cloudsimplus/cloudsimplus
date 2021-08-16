@@ -35,10 +35,6 @@ public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
         super();
     }
 
-    /**
-     * @param broker the broker that the cloudlets will belong to
-     * @return
-     */
     @Override
     public List<NetworkCloudlet> createNetworkCloudlets(DatacenterBroker broker){
         final int NETCLOUDLETS_FOR_EACH_APP = 2;

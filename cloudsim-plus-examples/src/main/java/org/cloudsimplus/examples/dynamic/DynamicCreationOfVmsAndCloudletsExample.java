@@ -78,7 +78,6 @@ public class DynamicCreationOfVmsAndCloudletsExample {
 
     /**
      * Starts the simulation.
-     * @param args
      */
     public static void main(String[] args) {
         new DynamicCreationOfVmsAndCloudletsExample();

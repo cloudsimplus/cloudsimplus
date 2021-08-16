@@ -86,8 +86,6 @@ public class ParallelSimulationsExample implements Runnable {
     /**
      * Creates the simulation scenarios with different configurations and execute them,
      * printing the results for each one after all simulations have finished.
-     *
-     * @param args
      */
     public static void main(String[] args) {
         /*IT IS MANDATORY TO DISABLE THE LOG WHEN EXECUTING PARALLEL SIMULATIONS TO AVOID RUNTIME EXCEPTIONS.*/

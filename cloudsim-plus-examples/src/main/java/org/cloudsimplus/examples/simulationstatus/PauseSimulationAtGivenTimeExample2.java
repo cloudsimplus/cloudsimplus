@@ -107,7 +107,6 @@ public class PauseSimulationAtGivenTimeExample2 {
 
     /**
      * Starts the simulation.
-     * @param args
      */
     public static void main(String[] args) {
         new PauseSimulationAtGivenTimeExample2();

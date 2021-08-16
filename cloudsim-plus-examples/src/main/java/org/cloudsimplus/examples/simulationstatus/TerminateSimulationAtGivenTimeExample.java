@@ -69,7 +69,6 @@ public class TerminateSimulationAtGivenTimeExample {
 
     /**
      * Starts the simulation.
-     * @param args
      */
     public static void main(String[] args) {
         new TerminateSimulationAtGivenTimeExample();

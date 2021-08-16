@@ -81,7 +81,6 @@ public class TerminateSimulationAtGivenConditionExample {
 
     /**
      * Starts the simulation.
-     * @param args
      */
     public static void main(String[] args) {
         new TerminateSimulationAtGivenConditionExample();

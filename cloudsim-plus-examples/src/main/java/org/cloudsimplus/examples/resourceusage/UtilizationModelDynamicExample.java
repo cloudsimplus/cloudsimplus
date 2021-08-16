@@ -69,7 +69,6 @@ public class UtilizationModelDynamicExample {
 
     /**
      * Starts the example.
-     * @param args
      */
     public static void main(String[] args) {
         new UtilizationModelDynamicExample();

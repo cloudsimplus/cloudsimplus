@@ -87,12 +87,11 @@ import java.util.stream.IntStream;
  * to transfer the same 10 mbits it will take 0,25 second more.
  * </p>
  *
- * <p>Check the following docs for specific implementation details you may be aware of:
+ * Check the following docs for specific implementation details you may be aware of:
  * <ul>
  *     <li>{@link CloudletSchedulerAbstract#getVirtualMemoryDelay(CloudletExecution, double)} </li>
  *     <li>{@link CloudletSchedulerAbstract#getBandwidthOverSubscriptionDelay(CloudletExecution, double)}</li>
  * </ul>
- * </p>
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.3.0

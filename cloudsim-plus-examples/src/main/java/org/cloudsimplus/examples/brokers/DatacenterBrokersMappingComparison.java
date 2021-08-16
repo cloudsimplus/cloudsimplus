@@ -104,8 +104,6 @@ public class DatacenterBrokersMappingComparison {
 
     /**
      * Starts the simulation.
-     *
-     * @param args
      */
     public static void main(String[] args) {
         //Enables just some level of log messages.

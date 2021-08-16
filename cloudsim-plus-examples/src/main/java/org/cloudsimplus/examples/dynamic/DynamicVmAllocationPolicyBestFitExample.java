@@ -139,8 +139,6 @@ public final class DynamicVmAllocationPolicyBestFitExample {
 
     /**
      * Starts the example.
-     *
-     * @param args
      */
     public static void main(String[] args) {
         new DynamicVmAllocationPolicyBestFitExample();

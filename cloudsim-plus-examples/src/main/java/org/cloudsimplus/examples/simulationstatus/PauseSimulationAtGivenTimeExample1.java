@@ -99,7 +99,6 @@ public class PauseSimulationAtGivenTimeExample1 {
 
     /**
      * Starts the simulation.
-     * @param args
      */
     public static void main(String[] args) {
         new PauseSimulationAtGivenTimeExample1();

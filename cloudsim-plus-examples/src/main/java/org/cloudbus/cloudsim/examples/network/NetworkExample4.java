@@ -63,8 +63,6 @@ public class NetworkExample4 {
 
     /**
      * Starts the example.
-     *
-     * @param args
      */
     public static void main(String[] args) {
         new NetworkExample4();

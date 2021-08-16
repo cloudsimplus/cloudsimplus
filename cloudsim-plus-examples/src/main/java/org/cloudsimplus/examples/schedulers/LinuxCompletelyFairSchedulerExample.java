@@ -83,7 +83,6 @@ public class LinuxCompletelyFairSchedulerExample {
 
     /**
      * Starts the example.
-     * @param args
      */
     public static void main(String[] args) {
         new LinuxCompletelyFairSchedulerExample();

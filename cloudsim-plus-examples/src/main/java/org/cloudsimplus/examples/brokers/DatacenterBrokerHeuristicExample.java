@@ -108,7 +108,6 @@ public class DatacenterBrokerHeuristicExample {
 
     /**
      * Starts the simulation.
-     * @param args
      */
     public static void main(String[] args) {
         new DatacenterBrokerHeuristicExample();

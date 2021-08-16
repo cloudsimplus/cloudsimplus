@@ -139,8 +139,6 @@ public final class ManualMigrationExample1 {
 
     /**
      * Starts the example.
-     *
-     * @param args
      */
     public static void main(String[] args) {
         new ManualMigrationExample1();

@@ -113,7 +113,6 @@ public class SharingHostPEsUsingVmSchedulerSpaceSharedExample {
 
     /**
      * Starts the simulation.
-     * @param args
      */
     public static void main(String[] args) {
         new SharingHostPEsUsingVmSchedulerSpaceSharedExample();

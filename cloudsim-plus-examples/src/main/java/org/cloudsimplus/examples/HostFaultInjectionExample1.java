@@ -110,8 +110,6 @@ public final class HostFaultInjectionExample1 {
 
     /**
      * Starts the example.
-     *
-     * @param args
      */
     public static void main(String[] args) {
         new HostFaultInjectionExample1();
@@ -198,11 +196,6 @@ public final class HostFaultInjectionExample1 {
         return dc;
     }
 
-    /**
-     * Creates a Host.
-     *
-     * @return
-     */
     public Host createHost() {
         final List<Pe> pesList = createPeList(HOST_PES, HOST_MIPS_BY_PE);
         final ResourceProvisioner ramProvisioner = new ResourceProvisionerSimple();

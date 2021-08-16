@@ -75,7 +75,6 @@ public class VmsCpuUsageExample {
 
     /**
      * Starts the example execution.
-     * @param args
      */
     public static void main(String[] args) {
         new VmsCpuUsageExample();
