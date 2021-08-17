@@ -70,7 +70,7 @@ import static java.util.Objects.requireNonNull;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
+public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
     /** @see #getMaxCloudletsToCreate() */
     private int maxCloudletsToCreate;
 
@@ -300,7 +300,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      * Such events request a Cloudlet's status change or attributes change.
      * @see #addCloudletStatusChangeEvents(CloudSimEvent, TaskEvent)
      */
-    private final List<CloudSimEvent> cloudletStatusChangeEvents;
+    protected final Map<Cloudlet, List<CloudSimEvent>> cloudletEvents;
 
     /**
      * @see #setCloudletCreationFunction(Function)
@@ -385,7 +385,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      * @throws UncheckedIOException     when the file cannot be accessed (such as when it doesn't exist)
      * @see #process()
      */
-    private GoogleTaskEventsTraceReader(
+    protected GoogleTaskEventsTraceReader(
         final CloudSim simulation,
         final String filePath,
         final InputStream reader,
@@ -396,7 +396,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
         this.cloudletCreationFunction = requireNonNull(cloudletCreationFunction);
         this.autoSubmitCloudlets = true;
         brokersMap = new HashMap<>();
-        cloudletStatusChangeEvents = new ArrayList<>();
+        cloudletEvents = new HashMap<>();
         setMaxCloudletsToCreate(Integer.MAX_VALUE);
     }
 
@@ -413,7 +413,7 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      * @see #getBrokers()
      */
     @Override
-    public Collection<Cloudlet> process() {
+    public final Collection<Cloudlet> process() {
         if(!autoSubmitCloudlets) {
             LOGGER.info("{}: Auto-submission of Cloudlets from trace file is disabled. Don't forget to submitted them to the broker.", getClass().getSimpleName());
         }
@@ -430,12 +430,16 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
     @Override
     protected void postProcess(){
         if(simulation.isRunning())
-            sendCloudletStatusChangeEvents();
-        else simulation.addOnSimulationStartListener(info -> sendCloudletStatusChangeEvents());
+            sendCloudletEvents();
+        else simulation.addOnSimulationStartListener(info -> sendCloudletEvents());
     }
 
-    private void sendCloudletStatusChangeEvents() {
-        cloudletStatusChangeEvents.forEach(evt -> evt.getSource().schedule(evt));
+    private void sendCloudletEvents() {
+        cloudletEvents.values().forEach(this::sendCloudletEvents);
+    }
+
+    protected void sendCloudletEvents(final List<CloudSimEvent> events) {
+        events.forEach(evt -> evt.getSource().schedule(evt));
     }
 
     @Override
@@ -502,11 +506,11 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
      * @TODO This method is too large and confusing, thus it needs to be refactored
      */
     private Cloudlet addCloudletStatusChangeEvents(final CloudSimEvent statusChangeSimEvt, final TaskEvent taskEvent){
-        //Sends the event to change the Cloudlet status.
-        cloudletStatusChangeEvents.add(statusChangeSimEvt);
         /*The actual Cloudlet that needs to have its status and/or attributes changed
-        * by sending a request message to the broker.*/
+         * by sending a request message to the broker.*/
         final Cloudlet cloudlet = (Cloudlet)statusChangeSimEvt.getData();
+
+        addEventToSend(cloudlet, statusChangeSimEvt);
 
         /*
         Creates a temporary Cloudlet that will be discharged after the method finish.
@@ -584,9 +588,20 @@ public final class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract
                 CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES, attributesUpdateRunnable);
 
         //Sends the event to change the Cloudlet attributes
-        cloudletStatusChangeEvents.add(attrsChangeSimEvt);
+        addEventToSend(cloudlet, attrsChangeSimEvt);
 
         return cloudlet;
+    }
+
+    /**
+     * Adds a Cloudlet event to the map of events to send
+     * @param cloudlet
+     * @param evt
+     */
+    private void addEventToSend(final Cloudlet cloudlet, final CloudSimEvent evt) {
+        cloudletEvents
+            .compute(cloudlet, (key, list) -> list == null ? new LinkedList<>() : list)
+            .add(evt);
     }
 
     protected Cloudlet createCloudlet(final TaskEvent taskEvent) {
