@@ -359,9 +359,7 @@ public class HostSimple implements Host {
         /* Uses an indexed for to avoid ConcurrentModificationException,
          * e.g., in cases when Vm is destroyed during simulation execution.*/
         for (int i = 0; i < vmList.size(); i++) {
-            final Vm vm = vmList.get(i);
-            final double delay = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
-            nextSimulationDelay = delay > 0 ? Math.min(delay, nextSimulationDelay) : nextSimulationDelay;
+            nextSimulationDelay = updateVmProcessing(vmList.get(i), currentTime, nextSimulationDelay);
         }
 
         notifyOnUpdateProcessingListeners(currentTime);
@@ -372,6 +370,11 @@ public class HostSimple implements Host {
         }
 
         return nextSimulationDelay;
+    }
+
+    protected double updateVmProcessing(final Vm vm, final double currentTime, final double nextSimulationDelay) {
+        final double delay = vm.updateProcessing(currentTime, vmScheduler.getAllocatedMips(vm));
+        return delay > 0 ? Math.min(delay, nextSimulationDelay) : nextSimulationDelay;
     }
 
     private void notifyOnUpdateProcessingListeners(final double nextSimulationTime) {
