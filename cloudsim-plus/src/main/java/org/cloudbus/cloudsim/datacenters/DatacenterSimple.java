@@ -1043,7 +1043,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Update the number of active Hosts inside the datacenter
      * @param inc the value (positive or negative) to add to the number of active hosts
      */
-    public final void updateActiveHostsNumber(final int inc){
+    public void updateActiveHostsNumber(final int inc){
         if(inc <= 0 && activeHostsNumber == 0)
             return;
 
