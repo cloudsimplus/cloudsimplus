@@ -890,10 +890,11 @@ public class HostSimple implements Host {
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
         this.peList = peList;
 
-        long peId = this.peList.stream().mapToLong(Pe::getId).filter(id -> id > 0).max().orElse(-1);
-        final List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
-        for(final Pe pe: pesWithoutIds){
-            pe.setId(++peId);
+        long peId = Math.max(peList.get(peList.size()-1).getId(), -1);
+        for(final Pe pe: peList){
+            if(pe.getId() < 0) {
+                pe.setId(++peId);
+            }
             pe.setStatus(Pe.Status.FREE);
         }
 
