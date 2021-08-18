@@ -219,7 +219,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return hostList.get(hostList.size()-1).getId();
     }
 
-    private long setupHost(final Host host, long nextId) {
+    protected long setupHost(final Host host, long nextId) {
         nextId = Math.max(nextId, -1);
         if(host.getId() < 0) {
             host.setId(++nextId);
@@ -756,7 +756,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * (which is a relative delay from the current simulation time),
      * or {@link Double#MAX_VALUE} if there is no next Cloudlet to execute
      */
-    private double updateHostsProcessing() {
+    protected double updateHostsProcessing() {
         double nextSimulationDelay = Double.MAX_VALUE;
         for (final Host host : getHostList()) {
             final double delay = host.updateProcessing(clock());
@@ -1041,13 +1041,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Update the number of active Hosts inside the datacenter
-     * @param inc the value (positive or negative) to add to the number of active hosts
      */
-    public void updateActiveHostsNumber(final int inc){
-        if(inc <= 0 && activeHostsNumber == 0)
-            return;
-
-        activeHostsNumber += inc;
+    public void updateActiveHostsNumber(final Host host){
+        activeHostsNumber += host.isActive() ? 1 : -1;
     }
 
     @Override

@@ -561,15 +561,14 @@ public class HostSimple implements Host {
      * @param activate true to start the Host up, false to shut it down
      * @see #setActive(boolean)
      */
-    public final void processActivation(final boolean activate) {
+    public void processActivation(final boolean activate) {
         final boolean wasActive = this.active;
         if(activate)
             setStartTime(getSimulation().clock());
         else setShutdownTime(getSimulation().clock());
 
-        ((DatacenterSimple) datacenter).updateActiveHostsNumber(activate ? 1 : -1);
-
         this.active = activate;
+        ((DatacenterSimple) datacenter).updateActiveHostsNumber(this);
         activationChangeInProgress = false;
         notifyStartupOrShutdown(activate, wasActive);
     }
