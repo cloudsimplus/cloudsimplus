@@ -435,7 +435,22 @@ public class HostSimpleTest {
         final int numberOfPes = 2;
         final HostSimple host = createHostSimple(0, numberOfPes);
         host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.BUSY);
-        assertEquals(numberOfPes-1, host.getFreePesNumber());
+        assertAll(
+            () -> assertEquals(1, host.getFreePesNumber()),
+            () -> assertEquals(1, host.getBusyPesNumber())
+        );
+    }
+
+    @Test
+    public void testGetNumberOfWorkingPesWhenOneIsFailed() {
+        final int numberOfPes = 2;
+        final HostSimple host = createHostSimple(0, numberOfPes);
+        host.setPeStatus(host.getPeList().subList(0,1), Pe.Status.FAILED);
+        assertAll(
+            () -> assertEquals(1, host.getFreePesNumber()),
+            () -> assertEquals(1, host.getWorkingPesNumber()),
+            () -> assertEquals(1, host.getFailedPesNumber())
+        );
     }
 
     @Test

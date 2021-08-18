@@ -135,6 +135,12 @@ public class HostSimple implements Host {
     /** @see #getFreePesNumber() */
     private int freePesNumber;
 
+    /** @see #getBusyPesNumber() */
+    private int busyPesNumber;
+
+    /** @see #getWorkingPesNumber() */
+    private int workingPesNumber;
+
     /** @see #getFailedPesNumber() */
     private int failedPesNumber;
 
@@ -880,12 +886,13 @@ public class HostSimple implements Host {
         final List<Pe> pesWithoutIds = this.peList.stream().filter(pe -> pe.getId() < 0).collect(toList());
         for(final Pe pe: pesWithoutIds){
             pe.setId(++peId);
+            pe.setStatus(Pe.Status.FREE);
         }
 
         failedPesNumber = 0;
-        setPeStatus(peList, Pe.Status.FREE);
+        busyPesNumber = 0;
         freePesNumber = peList.size();
-
+        workingPesNumber = freePesNumber;
     }
 
     @Override
@@ -943,23 +950,39 @@ public class HostSimple implements Host {
 
     private void updatePeStatus(final Pe pe, final Pe.Status newStatus) {
         if(pe.getStatus() != newStatus) {
-            updateFailedAndFreePesNumber(pe.getStatus(), false);
-            updateFailedAndFreePesNumber(newStatus, true);
+            updatePeStatusCount(pe.getStatus(), false);
+            updatePeStatusCount(newStatus, true);
             pe.setStatus(newStatus);
         }
     }
 
     /**
-     * Update the number of Failed and Free PEs.
-     * @param newStatus the new status which is being set for a PE
-     * @param increment true to increment the numbers of Failed and Free PEs to 1, false to decrement
+     * Update the number of PEs for a given status.
+     * You must call the method before the Pe status change and after it
+     * so that the numbers for the previous and new PE status are updated.
+     * @param status the status of the PE to process (either a previous or new status)
+     * @param increment true to increment the numbers of PEs in the given status to 1, false to decrement
      */
-    private void updateFailedAndFreePesNumber(final Pe.Status newStatus, final boolean increment) {
+    private void updatePeStatusCount(final Pe.Status status, final boolean increment) {
         final int i = increment ? 1 : -1;
-        switch (newStatus) {
-            case FAILED: this.failedPesNumber += i; break;
-            case FREE:  this.freePesNumber += i; break;
+        switch (status) {
+            case FAILED: incFailedPesNumber(i); break;
+            case FREE:  incFreePesNumber(i); break;
+            case BUSY: incBusyPesNumber(i); break;
         }
+    }
+
+    protected void incFailedPesNumber(final int inc) {
+        this.failedPesNumber += inc;
+        workingPesNumber += -inc;
+    }
+
+    protected void incFreePesNumber(final int inc) {
+        this.freePesNumber += inc;
+    }
+
+    protected void incBusyPesNumber(final int inc) {
+        this.busyPesNumber += inc;
     }
 
     @Override
@@ -1065,12 +1088,12 @@ public class HostSimple implements Host {
 
     @Override
     public int getWorkingPesNumber() {
-        return peList.size() - getFailedPesNumber();
+        return workingPesNumber;
     }
 
     @Override
     public int getBusyPesNumber() {
-        return getWorkingPesNumber() - getFreePesNumber();
+        return busyPesNumber;
     }
 
     @Override
