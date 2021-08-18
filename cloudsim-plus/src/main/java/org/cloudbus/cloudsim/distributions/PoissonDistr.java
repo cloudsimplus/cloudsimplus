@@ -246,10 +246,13 @@ public class PoissonDistr implements DiscreteDistribution {
 
         /*
          * Mean number of customers that arrives per minute.
-         * The value of 0.4 customers per minute means that 1 customer will arrive
-         * at every 2.5 minutes.
-         * It means that 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes.
+         * The value of 0.4 customers per minute means that 1 customer will arrive at every 2.5 minutes
+         * (i.e. 1 minute / 0.4 customer per minute = 1 customer at every 2.5 minutes).
          * This is the inter-arrival time (in average).
+         *
+         * The time unit is irrelevant for the generator.
+         * If you are considering minutes, you just have to ensure your simulation
+         * clock is in minutes too.
          */
         final double MEAN_CUSTOMERS_ARRIVAL_MINUTE = 0.4;
 
@@ -258,7 +261,7 @@ public class PoissonDistr implements DiscreteDistribution {
          */
         final int SIMULATION_TIME_LENGTH = 25;
 
-        //If the arrival of each customers must be shown.
+        //If the arrival of each customer must be shown.
         final boolean showCustomerArrivals = true;
 
         /*
@@ -280,7 +283,7 @@ public class PoissonDistr implements DiscreteDistribution {
          * @return the number of arrived customers
          */
         final Function<PoissonDistr, Integer> runSimulation = poisson -> {
-            /*We want to check the probability of 1 customer to arrive at each
+            /*We want to check the probability of 1 customer (k) to arrive at each
             single minute. The default k value is 1, so we don't need to set it.*/
             final int totalArrivedCustomers =
                 IntStream.range(0, SIMULATION_TIME_LENGTH)
