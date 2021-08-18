@@ -49,6 +49,7 @@ public class HostSimple implements Host {
 
     /** @see #getStateHistory() */
     private final List<HostStateHistoryEntry> stateHistory;
+    private boolean activateOnDatacenterStartup;
 
     /**@see #getPowerModel() */
     private PowerModelHost powerModel;
@@ -292,8 +293,7 @@ public class HostSimple implements Host {
         this.vmsMigratingOut = new HashSet<>();
         this.powerModel = PowerModelHost.NULL;
         this.stateHistory = new LinkedList<>();
-
-        this.setActive(activate);
+        this.activateOnDatacenterStartup = activate;
     }
 
     /**
@@ -527,6 +527,10 @@ public class HostSimple implements Host {
 
     @Override
     public final Host setActive(final boolean activate) {
+        if(!activate) {
+            activateOnDatacenterStartup = false;
+        }
+
         final double delay = activate ? powerModel.getStartupDelay() : powerModel.getShutDownDelay();
         if(this.active == activate || delay > 0 && activationChangeInProgress){
             return this;
@@ -563,9 +567,7 @@ public class HostSimple implements Host {
             setStartTime(getSimulation().clock());
         else setShutdownTime(getSimulation().clock());
 
-        if (datacenter != Datacenter.NULL) {
-            ((DatacenterSimple) datacenter).updateActiveHostsNumber(activate ? 1 : -1);
-        }
+        ((DatacenterSimple) datacenter).updateActiveHostsNumber(activate ? 1 : -1);
 
         this.active = activate;
         activationChangeInProgress = false;
@@ -1413,5 +1415,14 @@ public class HostSimple implements Host {
     public Host setLazySuitabilityEvaluation(final boolean lazySuitabilityEvaluation) {
         this.lazySuitabilityEvaluation = lazySuitabilityEvaluation;
         return this;
+    }
+
+    /**
+     * Indicates if the Host must be automatically started up when
+     * when the assigned Datacenter is started up.
+     * @return
+     */
+    public boolean isActivateOnDatacenterStartup() {
+        return activateOnDatacenterStartup;
     }
 }

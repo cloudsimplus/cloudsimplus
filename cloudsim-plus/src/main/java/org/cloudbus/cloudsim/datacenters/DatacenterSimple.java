@@ -226,7 +226,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         host.setDatacenter(this);
-        updateActiveHostsNumber(host.isActive() ? 1 : 0);
+        host.setActive(((HostSimple)host).isActivateOnDatacenterStartup());
         host.setSimulation(getSimulation());
 
         return nextId;

@@ -61,16 +61,29 @@ public class HostSimpleTest {
     private HostSimple host;
 
     public static HostSimple createHostSimple(final int hostId, final int numberOfPes) {
-        return createHostSimple(hostId, numberOfPes, MIPS, RAM, BW, STORAGE);
+        return createHostSimple(hostId, numberOfPes, true);
+    }
+
+    public static HostSimple createHostSimple(final int hostId, final int numberOfPes, final boolean activate) {
+        return createHostSimple(hostId, numberOfPes, MIPS, RAM, BW, STORAGE, activate);
     }
 
     public static HostSimple createHostSimple(
-            final int hostId, final int numberOfPes,
-            final double mips, final long ram,
-            final long bw, final long storage) {
+        final int hostId, final int numberOfPes,
+        final double mips, final long ram,
+        final long bw, final long storage)
+    {
+        return createHostSimple(hostId, numberOfPes, mips, ram, bw, storage, true);
+    }
+
+    public static HostSimple createHostSimple(
+        final int hostId, final int numberOfPes,
+        final double mips, final long ram,
+        final long bw, final long storage, final boolean activate)
+    {
         final List<Pe> peList = createPes(numberOfPes, mips);
 
-        final HostSimple host = new HostSimple(ram, bw, storage, peList);
+        final HostSimple host = new HostSimple(ram, bw, storage, peList, activate);
         host.setRamProvisioner(new ResourceProvisionerSimple())
             .setBwProvisioner(new ResourceProvisionerSimple())
             .setVmScheduler(new VmSchedulerTimeShared())
@@ -485,10 +498,10 @@ public class HostSimpleTest {
         assertEquals(dc.size(), dc.getActiveHostsNumber());
     }
 
-    private List<Host> createHostList(final boolean autoPowerOn) {
+    private List<Host> createHostList(final boolean activate) {
         final int hostCount = 4;
         return IntStream.range(0, hostCount)
-                        .mapToObj(i -> createHostSimple(i, 1).setActive(autoPowerOn))
+                        .mapToObj(i -> createHostSimple(i, 1, activate))
                         .collect(Collectors.toList());
     }
 
