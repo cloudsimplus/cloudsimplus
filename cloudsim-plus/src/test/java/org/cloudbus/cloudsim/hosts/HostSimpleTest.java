@@ -446,14 +446,14 @@ public class HostSimpleTest {
 
     @Test
     public void testActiveHostNumberInDatacenterWhenHostsAreAutoPoweredOn(){
-        final List<HostSimple> hostList = createHostList(true);
+        final List<Host> hostList = createHostList(true);
         final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
         assertEquals(hostList.size(), dc.getActiveHostsNumber());
     }
 
     @Test
     public void testActiveHostNumberInDatacenterWhenHostsAreNotAutoPoweredOn(){
-        final List<HostSimple> hostList = createHostList(false);
+        final List<Host> hostList = createHostList(false);
         final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
         assertEquals(0, dc.getActiveHostsNumber());
     }
@@ -461,7 +461,7 @@ public class HostSimpleTest {
     @Test
     public void testActiveHostNumberInDatacenterWhenHalfHostsAreAutoPoweredOn(){
         final int hostsToPowerOff = 2;
-        final List<HostSimple> hostList = createHostList(true);
+        final List<Host> hostList = createHostList(true);
         hostList.stream().skip(hostsToPowerOff).forEach(h -> h.setActive(false));
         final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
         assertEquals(hostsToPowerOff, dc.getActiveHostsNumber());
@@ -469,7 +469,7 @@ public class HostSimpleTest {
 
     @Test
     public void testActiveHostNumberInDatacenterWhenAllHostsArePoweredOffAndNewOneIsAdded(){
-        final List<HostSimple> hostList = createHostList(false);
+        final List<Host> hostList = createHostList(false);
         final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
         dc.addHost(createHostSimple(hostList.size(), 1));
         assertEquals(1, dc.getActiveHostsNumber());
@@ -478,19 +478,18 @@ public class HostSimpleTest {
     @Test
     public void testActiveHostNumberInDatacenterWhenAllHostsArePoweredOnAndNewOneIsAdded(){
         //List before adding a new Host after creating the datacenter
-        final List<HostSimple> originalHostList = createHostList(true);
+        final List<Host> originalHostList = createHostList(true);
         final Datacenter dc = new DatacenterSimple(Simulation.NULL, new ArrayList<>(originalHostList));
         dc.addHost(createHostSimple(originalHostList.size(), 1));
         assertEquals(originalHostList.size()+1, dc.getActiveHostsNumber());
         assertEquals(dc.size(), dc.getActiveHostsNumber());
     }
 
-    private List<HostSimple> createHostList(final boolean autoPowerOn) {
+    private List<Host> createHostList(final boolean autoPowerOn) {
         final int hostCount = 4;
-        final List<HostSimple> hostList = IntStream.range(0, hostCount)
-                                             .mapToObj(i -> new HostSimple(Collections.emptyList(), autoPowerOn))
-                                             .collect(Collectors.toList());
-        return hostList;
+        return IntStream.range(0, hostCount)
+                        .mapToObj(i -> createHostSimple(i, 1).setActive(autoPowerOn))
+                        .collect(Collectors.toList());
     }
 
     @Test
