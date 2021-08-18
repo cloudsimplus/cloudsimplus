@@ -538,7 +538,7 @@ public class HostSimple implements Host {
 
         if (delay == 0) {
            //If there is no delay, start up or shutdown the Host right away.
-           processHostActivation(activate);
+           processActivation(activate);
            return this;
         }
 
@@ -557,7 +557,7 @@ public class HostSimple implements Host {
      * @param activate true to start the Host up, false to shut it down
      * @see #setActive(boolean)
      */
-    public final void processHostActivation(final boolean activate) {
+    public final void processActivation(final boolean activate) {
         final boolean wasActive = this.active;
         if(activate)
             setStartTime(getSimulation().clock());

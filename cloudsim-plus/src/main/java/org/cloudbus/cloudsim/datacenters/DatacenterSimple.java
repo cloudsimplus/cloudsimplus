@@ -250,7 +250,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return true;
         } else if (evt.getTag() == CloudSimTags.HOST_POWER_ON || evt.getTag() == CloudSimTags.HOST_POWER_OFF) {
             final HostSimple host = (HostSimple)evt.getData();
-            host.processHostActivation(evt.getTag() == CloudSimTags.HOST_POWER_ON);
+            host.processActivation(evt.getTag() == CloudSimTags.HOST_POWER_ON);
         }
 
         return false;
