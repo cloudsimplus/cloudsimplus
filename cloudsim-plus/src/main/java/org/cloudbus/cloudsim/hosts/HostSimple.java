@@ -883,7 +883,10 @@ public class HostSimple implements Host {
      * @param peList the new pe list
      */
     private void setPeList(final List<Pe> peList) {
-        requireNonNull(peList);
+        if(requireNonNull(peList).isEmpty()){
+            throw new IllegalArgumentException("The PE list for a Host cannot be empty");
+        }
+
         checkSimulationIsRunningAndAttemptedToChangeHost("List of PE");
         this.peList = peList;
 
