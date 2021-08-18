@@ -471,7 +471,7 @@ public class HostSimpleTest {
     public void testActiveHostNumberInDatacenterWhenAllHostsArePoweredOffAndNewOneIsAdded(){
         final List<HostSimple> hostList = createHostList(false);
         final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
-        dc.addHost(new HostSimple(Collections.emptyList(), true));
+        dc.addHost(createHostSimple(hostList.size(), 1));
         assertEquals(1, dc.getActiveHostsNumber());
     }
 
@@ -480,7 +480,7 @@ public class HostSimpleTest {
         //List before adding a new Host after creating the datacenter
         final List<HostSimple> originalHostList = createHostList(true);
         final Datacenter dc = new DatacenterSimple(Simulation.NULL, new ArrayList<>(originalHostList));
-        dc.addHost(new HostSimple(Collections.emptyList(), true));
+        dc.addHost(createHostSimple(originalHostList.size(), 1));
         assertEquals(originalHostList.size()+1, dc.getActiveHostsNumber());
         assertEquals(dc.size(), dc.getActiveHostsNumber());
     }
