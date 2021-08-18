@@ -1,12 +1,12 @@
 package org.cloudbus.cloudsim.allocationpolicies;
 
-import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -51,12 +51,7 @@ public class VmAllocationPolicySimpleTest {
         }
 
         final VmAllocationPolicySimple policy = new VmAllocationPolicySimple();
-
-        final Datacenter datacenter = EasyMock.createMock(Datacenter.class);
-        EasyMock.expect(datacenter.getHostList()).andReturn(hosts).anyTimes();
-        EasyMock.replay(datacenter);
-        policy.setDatacenter(datacenter);
-
+        policy.setDatacenter(new DatacenterSimple(Simulation.NULL, hosts));
         return policy;
     }
 
