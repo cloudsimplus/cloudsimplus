@@ -103,6 +103,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private double hostSearchRetryDelay;
 
     private PowerModelDatacenter powerModel = PowerModelDatacenter.NULL;
+    private long activeHostsNumber;
 
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
@@ -208,12 +209,27 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private void setupHosts() {
+        long lastHostId = getLastHostId();
         for (final Host host : hostList) {
-            host.setDatacenter(this);
-            host.setSimulation(getSimulation());
+            lastHostId = setupHost(host, lastHostId);
+        }
+    }
+
+    private long getLastHostId() {
+        return hostList.get(hostList.size()-1).getId();
+    }
+
+    private long setupHost(final Host host, long nextId) {
+        nextId = Math.max(nextId, -1);
+        if(host.getId() < 0) {
+            host.setId(++nextId);
         }
 
-        Simulation.setIdForEntitiesWithoutOne(this.hostList);
+        host.setDatacenter(this);
+        updateActiveHostsNumber(host.isActive() ? 1 : 0);
+        host.setSimulation(getSimulation());
+
+        return nextId;
     }
 
     @Override
@@ -1020,7 +1036,18 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public long getActiveHostsNumber(){
-        return hostList.stream().filter(Host::isActive).count();
+        return activeHostsNumber;
+    }
+
+    /**
+     * Update the number of active Hosts inside the datacenter
+     * @param inc the value (positive or negative) to add to the number of active hosts
+     */
+    public final void updateActiveHostsNumber(final int inc){
+        if(inc <= 0 && activeHostsNumber == 0)
+            return;
+
+        activeHostsNumber += inc;
     }
 
     @Override
@@ -1046,15 +1073,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             throw new IllegalStateException("A VmAllocationPolicy must be set before adding a new Host to the Datacenter.");
         }
 
-        if(host.getId() <= -1) {
-            host.setId(getHostList().size());
-        }
-
-        host.setDatacenter(this);
+        setupHost(host, getLastHostId());
         ((List<T>)hostList).add(host);
-
-        //Sets the Datacenter again so that the new Host is registered internally on the VmAllocationPolicy
-        vmAllocationPolicy.setDatacenter(this);
         return this;
     }
 

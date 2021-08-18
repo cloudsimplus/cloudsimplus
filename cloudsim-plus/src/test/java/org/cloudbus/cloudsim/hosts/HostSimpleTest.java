@@ -10,6 +10,9 @@ package org.cloudbus.cloudsim.hosts;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
+import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
@@ -439,6 +442,55 @@ public class HostSimpleTest {
             () -> assertEquals(1, host.getFreePesNumber()),
             () -> assertEquals(1, host.getBusyPesNumber())
         );
+    }
+
+    @Test
+    public void testActiveHostNumberInDatacenterWhenHostsAreAutoPoweredOn(){
+        final List<HostSimple> hostList = createHostList(true);
+        final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
+        assertEquals(hostList.size(), dc.getActiveHostsNumber());
+    }
+
+    @Test
+    public void testActiveHostNumberInDatacenterWhenHostsAreNotAutoPoweredOn(){
+        final List<HostSimple> hostList = createHostList(false);
+        final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
+        assertEquals(0, dc.getActiveHostsNumber());
+    }
+
+    @Test
+    public void testActiveHostNumberInDatacenterWhenHalfHostsAreAutoPoweredOn(){
+        final int hostsToPowerOff = 2;
+        final List<HostSimple> hostList = createHostList(true);
+        hostList.stream().skip(hostsToPowerOff).forEach(h -> h.setActive(false));
+        final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
+        assertEquals(hostsToPowerOff, dc.getActiveHostsNumber());
+    }
+
+    @Test
+    public void testActiveHostNumberInDatacenterWhenAllHostsArePoweredOffAndNewOneIsAdded(){
+        final List<HostSimple> hostList = createHostList(false);
+        final Datacenter dc = new DatacenterSimple(Simulation.NULL, hostList);
+        dc.addHost(new HostSimple(Collections.emptyList(), true));
+        assertEquals(1, dc.getActiveHostsNumber());
+    }
+
+    @Test
+    public void testActiveHostNumberInDatacenterWhenAllHostsArePoweredOnAndNewOneIsAdded(){
+        //List before adding a new Host after creating the datacenter
+        final List<HostSimple> originalHostList = createHostList(true);
+        final Datacenter dc = new DatacenterSimple(Simulation.NULL, new ArrayList<>(originalHostList));
+        dc.addHost(new HostSimple(Collections.emptyList(), true));
+        assertEquals(originalHostList.size()+1, dc.getActiveHostsNumber());
+        assertEquals(dc.size(), dc.getActiveHostsNumber());
+    }
+
+    private List<HostSimple> createHostList(final boolean autoPowerOn) {
+        final int hostCount = 4;
+        final List<HostSimple> hostList = IntStream.range(0, hostCount)
+                                             .mapToObj(i -> new HostSimple(Collections.emptyList(), autoPowerOn))
+                                             .collect(Collectors.toList());
+        return hostList;
     }
 
     @Test

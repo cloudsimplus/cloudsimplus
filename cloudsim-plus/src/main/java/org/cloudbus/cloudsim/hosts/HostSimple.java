@@ -8,6 +8,7 @@ package org.cloudbus.cloudsim.hosts;
 
 import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
@@ -558,6 +559,10 @@ public class HostSimple implements Host {
         if(activate)
             setStartTime(getSimulation().clock());
         else setShutdownTime(getSimulation().clock());
+
+        if (datacenter != Datacenter.NULL) {
+            ((DatacenterSimple) datacenter).updateActiveHostsNumber(activate ? 1 : -1);
+        }
 
         this.active = activate;
         activationChangeInProgress = false;
