@@ -124,7 +124,7 @@ public abstract class AbstractTable implements Table {
     }
 
     private void printRow(final List<Object> row) {
-        printRowOpening();
+        getPrintStream().printf(rowOpening());
         final List<TableColumn> cols =
             columns.stream()
                 .limit( Math.min(columns.size(), row.size()))
@@ -134,7 +134,7 @@ public abstract class AbstractTable implements Table {
         for(final TableColumn col: cols){
             getPrintStream().print(col.generateData(row.get(idxCol++)));
         }
-        printRowClosing();
+        getPrintStream().printf(rowClosing());
     }
 
     @Override
@@ -147,14 +147,19 @@ public abstract class AbstractTable implements Table {
     }
 
     protected void printColumnHeaders(){
-        printRowOpening();
-        columns.forEach(col -> getPrintStream().print(col.generateTitleHeader()));
-        printRowClosing();
+        printStream.printf(rowOpening());
+        columns.forEach(col -> printStream.print(col.generateTitleHeader()));
+        printStream.printf(rowClosing());
         if(isThereAnySubtitledColumn()){
-            printRowOpening();
-            columns.forEach(col -> System.out.print(col.generateSubtitleHeader()));
-            printRowClosing();
+            printSubtitleHeaders();
         }
+    }
+
+    private void printSubtitleHeaders() {
+        printStream.printf(subtitleHeaderOpening());
+        printStream.printf(rowOpening());
+        columns.forEach(col -> printStream.printf(col.generateSubtitleHeader()));
+        printStream.printf(rowClosing());
     }
 
     /**
@@ -168,14 +173,22 @@ public abstract class AbstractTable implements Table {
     protected abstract void printTitle();
 
     /**
-     * Prints the string that has to precede each printed row.
+     * Gets the string that has to precede each printed row.
+     * @return
      */
-    protected abstract void printRowOpening();
+    protected abstract String rowOpening();
 
     /**
-     * Prints the string to close a row.
+     * Gets the string to close a row.
+     * @return
      */
-    protected abstract void printRowClosing();
+    protected abstract String rowClosing();
+
+    /**
+     * Gets the string that has to precede subtitles head.
+     * @return
+     */
+    protected abstract String subtitleHeaderOpening();
 
     /**
      * Prints the string to close the table.

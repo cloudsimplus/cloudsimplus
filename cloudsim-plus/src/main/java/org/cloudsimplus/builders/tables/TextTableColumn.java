@@ -43,30 +43,17 @@ public class TextTableColumn extends CsvTableColumn {
         super(table, title, subTitle);
     }
 
-    public TextTableColumn(Table table, String title) {
+    public TextTableColumn(final Table table, final String title) {
         super(table, title);
     }
 
     @Override
-    public String generateData(Object data) {
+    public String generateData(final Object data) {
         return alignStringRight(super.generateData(data));
-    }
-
-    /**
-     * Align a string to the right side, based on the length of the title
-     * header of the column.
-     * @param str the string to be aligned
-     * @return the aligned string
-     */
-    private String alignStringRight(String str) {
-        final String fmt = String.format("%%%ds", generateTitleHeader().length());
-        return String.format(fmt, str);
     }
 
     @Override
     public String generateSubtitleHeader() {
         return alignStringRight(super.generateSubtitleHeader());
     }
-
-
 }
