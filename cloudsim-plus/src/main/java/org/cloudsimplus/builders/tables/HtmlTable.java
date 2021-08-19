@@ -35,7 +35,7 @@ public class HtmlTable extends AbstractTable {
     }
 
     /**
-     * Creates an Table
+     * Creates a Table
      * @param title Title of the table
      */
     public HtmlTable(final String title) {

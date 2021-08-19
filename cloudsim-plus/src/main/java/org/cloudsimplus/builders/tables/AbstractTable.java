@@ -59,7 +59,7 @@ public abstract class AbstractTable implements Table {
     }
 
     /**
-     * Creates an Table
+     * Creates a Table
      * @param title Title of the table
      */
     public AbstractTable(final String title){

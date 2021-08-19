@@ -36,7 +36,7 @@ public class TextTable extends CsvTable {
     }
 
     /**
-     * Creates an Table
+     * Creates a Table
      * @param title Title of the table
      */
     public TextTable(final String title) {
