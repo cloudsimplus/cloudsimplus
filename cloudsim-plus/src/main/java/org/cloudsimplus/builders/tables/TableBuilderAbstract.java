@@ -52,14 +52,14 @@ public abstract class TableBuilderAbstract<T> {
     private Table table;
 
     /**
-     * Instantiates a builder to print the list of objects T using the a
-     * default {@link TextTable}.
+     * Instantiates a builder to print the list of objects T using the
+     * default {@link MarkdownTable}.
      * To use a different {@link Table}, check the alternative constructors.
      *
      * @param list the list of objects T to print
      */
     public TableBuilderAbstract(final List<? extends T> list){
-        this(list, new TextTable());
+        this(list, new MarkdownTable());
     }
 
     /**

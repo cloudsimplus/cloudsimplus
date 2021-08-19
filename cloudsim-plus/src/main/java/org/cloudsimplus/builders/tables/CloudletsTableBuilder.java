@@ -47,7 +47,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
 
     /**
      * Instantiates a builder to print the list of Cloudlets using the a
-     * default {@link TextTable}.
+     * default {@link MarkdownTable}.
      * To use a different {@link Table}, check the alternative constructors.
      *
      * @param list the list of Cloudlets to print
@@ -57,7 +57,7 @@ public class CloudletsTableBuilder extends TableBuilderAbstract<Cloudlet> {
     }
 
     /**
-     * Instantiates a builder to print the list of Cloudlets using the a
+     * Instantiates a builder to print the list of Cloudlets using the
      * given {@link Table}.
      *
      * @param list the list of Cloudlets to print
