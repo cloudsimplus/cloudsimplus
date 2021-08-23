@@ -622,10 +622,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         final String escapedMetricName = StringUtils.replace(metricName,"%", "\\%");
         latex.append(escapedMetricName)
              .append(" & ")
-             .append(String.format("%.6f", stats.getMean()))
+             .append(String.format("%.4f", stats.getMean()))
              .append(errorMargin)
              .append(" & ")
-             .append(String.format("%.6f", stats.getStandardDeviation()))
+             .append(String.format("%.4f", stats.getStandardDeviation()))
              .append("\\\\ \\hline\n");
     }
 
