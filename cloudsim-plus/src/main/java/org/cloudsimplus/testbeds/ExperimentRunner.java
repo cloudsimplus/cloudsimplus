@@ -729,10 +729,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
             final double lower = stats.getMean() - intervalSize;
             final double upper = stats.getMean() + intervalSize;
             System.out.printf(
-                "\t95%% Confidence Interval: %.6f ∓ %.4f, that is [%.4f to %.4f]%n",
+                "\t95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]%n",
                 stats.getMean(), intervalSize, lower, upper);
         }
-        else System.out.printf("\tValue for %d sample: %.6f%n", stats.getN(), stats.getMean());
+        else System.out.printf("\tValue for %d sample: %.4f%n", stats.getN(), stats.getMean());
 
         System.out.printf("\tStandard Deviation: %.4f%n", stats.getStandardDeviation());
     }
