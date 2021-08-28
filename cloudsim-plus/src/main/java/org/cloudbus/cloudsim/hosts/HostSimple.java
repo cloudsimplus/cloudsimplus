@@ -974,7 +974,7 @@ public class HostSimple implements Host {
      * You must call the method before the Pe status change and after it
      * so that the numbers for the previous and new PE status are updated.
      * @param status the status of the PE to process (either a previous or new status)
-     * @param increment true to increment the numbers of PEs in the given status to 1, false to decrement
+     * @param increment true to increment the number of PEs in the given status to 1, false to decrement
      */
     private void updatePeStatusCount(final Pe.Status status, final boolean increment) {
         final int i = increment ? 1 : -1;
@@ -985,15 +985,30 @@ public class HostSimple implements Host {
         }
     }
 
+    /**
+     * Updates the number of failed (and working) PEs,
+     * decreasing it if a negative number of given, or increasing otherwise.
+     * @param inc the value to sum (positive or negative) to the number of busy PEs
+     */
     protected void incFailedPesNumber(final int inc) {
         this.failedPesNumber += inc;
         workingPesNumber += -inc;
     }
 
+    /**
+     * Updates the number of free PEs, decreasing it if a negative number of given,
+     * or increasing otherwise.
+     * @param inc the value to sum (positive or negative) to the number of busy PEs
+     */
     protected void incFreePesNumber(final int inc) {
         this.freePesNumber += inc;
     }
 
+    /**
+     * Updates the number of busy PEs, decreasing it if a negative number of given,
+     * or increasing otherwise.
+     * @param inc the value to sum (positive or negative) to the number of busy PEs
+     */
     protected void incBusyPesNumber(final int inc) {
         this.busyPesNumber += inc;
     }
