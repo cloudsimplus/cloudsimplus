@@ -615,17 +615,17 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         //if there is only one metric sample, it doesn't show the ± symbol (latex \pm), since there is no error margin
         final String errorMargin =
             confidenceErrorMargin(stats)
-                .map(margin -> String.format("$\\pm$ & %.6f", margin))
+                .map(margin -> String.format("$\\pm$ & %.3f", margin))
                 .orElse(" & ");
 
         //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
         final String escapedMetricName = StringUtils.replace(metricName,"%", "\\%");
         latex.append(escapedMetricName)
              .append(" & ")
-             .append(String.format("%.4f", stats.getMean()))
+             .append(String.format("%.3f", stats.getMean()))
              .append(errorMargin)
              .append(" & ")
-             .append(String.format("%.4f", stats.getStandardDeviation()))
+             .append(String.format("%.3f", stats.getStandardDeviation()))
              .append("\\\\ \\hline\n");
     }
 
