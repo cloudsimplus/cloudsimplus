@@ -51,38 +51,38 @@ public class PeProvisionerSimpleTest {
 
     @Test
     public void testAllocateMipsForVm() {
-        final Vm vm1 = VmTestUtil.createVm(0, HALF_MIPS, 1);
-        final Vm vm2 = VmTestUtil.createVm(1, HALF_MIPS, 1);
-        final Vm vm3 = VmTestUtil.createVm(2, HALF_MIPS, 2);
+        final Vm vm0 = VmTestUtil.createVm(0, HALF_MIPS, 1);
+        final Vm vm1 = VmTestUtil.createVm(1, HALF_MIPS, 1);
+        final Vm vm2 = VmTestUtil.createVm(2, HALF_MIPS, 2);
 
         assertAll(
-            () -> assertTrue(peProvisioner.allocateResourceForVm(vm1, HALF_MIPS)),
+            () -> assertTrue(peProvisioner.allocateResourceForVm(vm0, HALF_MIPS)),
             () -> assertEquals(HALF_MIPS, peProvisioner.getAvailableResource()),
             () -> assertEquals(HALF_MIPS, peProvisioner.getTotalAllocatedResource()),
             () -> assertEquals(0.5, peProvisioner.getUtilization()),
 
-            () -> assertTrue(peProvisioner.allocateResourceForVm(vm2, ONE_FORTH_MIPS)),
+            () -> assertTrue(peProvisioner.allocateResourceForVm(vm1, ONE_FORTH_MIPS)),
             () -> assertEquals(ONE_FORTH_MIPS, peProvisioner.getAvailableResource()),
             () -> assertEquals(THREE_FORTH_MIPS, peProvisioner.getTotalAllocatedResource()),
             () -> assertEquals(0.75, peProvisioner.getUtilization()),
 
-            () -> assertFalse(peProvisioner.allocateResourceForVm(vm3, HALF_MIPS)),
+            () -> assertFalse(peProvisioner.allocateResourceForVm(vm2, HALF_MIPS)),
             () -> assertEquals(ONE_FORTH_MIPS, peProvisioner.getAvailableResource()),
             () -> assertEquals(THREE_FORTH_MIPS, peProvisioner.getTotalAllocatedResource()),
             () -> assertEquals(0.75, peProvisioner.getUtilization())
         );
 
+        peProvisioner.deallocateResourceForVm(vm0);
         peProvisioner.deallocateResourceForVm(vm1);
-        peProvisioner.deallocateResourceForVm(vm2);
 
         assertAll(
-            () -> assertTrue(peProvisioner.allocateResourceForVm(vm3, ONE_FORTH_MIPS)),
+            () -> assertTrue(peProvisioner.allocateResourceForVm(vm2, ONE_FORTH_MIPS)),
             () -> assertEquals(THREE_FORTH_MIPS, peProvisioner.getAvailableResource()),
             () -> assertEquals(ONE_FORTH_MIPS, peProvisioner.getTotalAllocatedResource()),
             () -> assertEquals(0.25, peProvisioner.getUtilization()),
 
             //Allocating the same amount doesn't change anything
-            () -> assertTrue(peProvisioner.allocateResourceForVm(vm3, ONE_FORTH_MIPS)),
+            () -> assertTrue(peProvisioner.allocateResourceForVm(vm2, ONE_FORTH_MIPS)),
             () -> assertEquals(THREE_FORTH_MIPS, peProvisioner.getAvailableResource()),
             () -> assertEquals(ONE_FORTH_MIPS, peProvisioner.getTotalAllocatedResource()),
             () -> assertEquals(0.25, peProvisioner.getUtilization())

@@ -6,12 +6,8 @@
  */
 package org.cloudbus.cloudsim.vms;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
-import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
-import org.cloudbus.cloudsim.mocks.CloudSimMocker;
-import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
@@ -31,7 +27,6 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since CloudSim Toolkit 2.0
  */
 public class VmSimpleTest {
-
     private static final int BROKER_ID = 0;
     private CloudletSchedulerTimeShared cloudletScheduler;
     private VmSimple vm;
@@ -39,12 +34,10 @@ public class VmSimpleTest {
     @BeforeEach
     public void setUp() {
         cloudletScheduler = new CloudletSchedulerTimeShared();
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).anyTimes());
-        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, b -> EasyMock.expect(b.requestIdleVmDestruction(EasyMock.anyObject())).andReturn(b));
-        vm = VmTestUtil.createVm(cloudletScheduler);
-        vm.setBroker(broker);
+        vm = VmTestUtil.createVm(
+            cloudletScheduler,
+            b -> EasyMock.expect(b.requestIdleVmDestruction(EasyMock.anyObject())).andReturn(b));
     }
-
 
     @Test
     public void testGetMips() {

@@ -6,6 +6,8 @@ import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.easymock.EasyMock;
 
@@ -73,10 +75,18 @@ final class CloudletSchedulerTimeSharedTestUtil {
     /* default */ static CloudletSchedulerTimeShared newSchedulerWithRunningCloudlets(
         final long mips, final int vmPes, final int cloudlets, final int cloudletPes)
     {
+        final UtilizationModel ramBwModel = new UtilizationModelDynamic(1.0/cloudlets);
+        return newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, cloudletPes, ramBwModel);
+    }
+
+    /* default */ static CloudletSchedulerTimeShared newSchedulerWithRunningCloudlets(
+        final long mips, final int vmPes, final int cloudlets, final int cloudletPes, final UtilizationModel ramBwModel)
+    {
         final CloudletSchedulerTimeShared instance = createCloudletSchedulerWithMipsList(vmPes, mips);
 
         for(int i = 0; i < cloudlets; i++) {
             final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(i, mips, cloudletPes);
+            cloudlet.setUtilizationModelRam(ramBwModel).setUtilizationModelBw(ramBwModel);
             cloudlet.assignToDatacenter(Datacenter.NULL);
             instance.cloudletSubmit(cloudlet);
         }

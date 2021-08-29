@@ -58,7 +58,6 @@ public class VmSchedulerTimeSharedTest {
 
     @Test
     public void testInit() {
-        final List<Pe> peList = vmScheduler.getHost().getWorkingPeList();
         assertAll(
             () -> assertEquals(2000, vmScheduler.getTotalAvailableMips()),
             () -> assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm0))
@@ -68,6 +67,8 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testIsSuitableForVm0() {
         final Vm vm0 = VmTestUtil.createVm(0, MIPS / 4, 2);
+        vmScheduler.getHost().getVmList().add(vm0);
+
         vm0.setCreated(false);
         assertTrue(vmScheduler.isSuitableForVm(vm0));
     }
@@ -75,6 +76,8 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testIsSuitableForVm1() {
         final Vm vm1 = VmTestUtil.createVm(1, MIPS / 2, 2);
+        vmScheduler.getHost().getVmList().add(vm1);
+
         vm1.setCreated(false);
         assertTrue(vmScheduler.isSuitableForVm(vm1));
     }
@@ -82,12 +85,17 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testIsSuitableForVm2() {
         final Vm vm2 = VmTestUtil.createVm(2, MIPS * 2, 2);
+        vmScheduler.getHost().getVmList().add(vm2);
+
         vm2.setCreated(false);
         assertFalse(vmScheduler.isSuitableForVm(vm2));
     }
 
     @Test
     public void testAllocatePesForVm() {
+        vmScheduler.getHost().getVmList().add(vm0);
+        vmScheduler.getHost().getVmList().add(vm1);
+
         assertTrue(vmScheduler.allocatePesForVm(vm0, new MipsShare(250)));
         assertEquals(1750, vmScheduler.getTotalAvailableMips());
         assertEquals(250, vmScheduler.getTotalAllocatedMipsForVm(vm0));
@@ -97,7 +105,8 @@ public class VmSchedulerTimeSharedTest {
         assertEquals(1150, vmScheduler.getTotalAvailableMips());
         assertEquals(600, vmScheduler.getTotalAllocatedMipsForVm(vm1));
 
-        vmScheduler.deallocatePesForAllVms();
+        vmScheduler.deallocatePesFromVm(vm0);
+        vmScheduler.deallocatePesFromVm(vm1);
 
         assertEquals(2000, vmScheduler.getTotalAvailableMips());
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm1));
@@ -105,15 +114,16 @@ public class VmSchedulerTimeSharedTest {
 
     @Test
     public void testAllocatePesWhenVmMigrationIn() {
-        vm0.setInMigration(true);
+        final Vm vm = VmTestUtil.createVm(0, MIPS / 4, VM_PES_NUMBER);
+        vm.setInMigration(true);
 
-        vmScheduler.getHost().addMigratingInVm(vm0);
+        vmScheduler.getHost().addMigratingInVm(vm);
         assertEquals(1500, vmScheduler.getTotalAvailableMips());
         /*While the VM is being migrated, just 10% of its requested MIPS is allocated,
         * representing the CPU migration overhead.*/
-        assertEquals(50, vmScheduler.getTotalAllocatedMipsForVm(vm0));
+        assertEquals(50, vmScheduler.getTotalAllocatedMipsForVm(vm));
 
-        vmScheduler.deallocatePesForAllVms();
+        vmScheduler.deallocatePesFromVm(vm);
 
         assertEquals(2000, vmScheduler.getTotalAvailableMips());
         assertEquals(0, vmScheduler.getTotalAllocatedMipsForVm(vm1));
@@ -122,6 +132,8 @@ public class VmSchedulerTimeSharedTest {
     @Test
     public void testAllocatePesWhenVmMigrationOut() {
         vmScheduler = createVmScheduler(MIPS, 2);
+        vmScheduler.getHost().getVmList().add(vm0);
+
         final double vmMips = MIPS / 4;
         final Vm vm0 = VmTestUtil.createVm(0, vmMips, 2);
         vmScheduler.getHost().addVmMigratingOut(vm0);
@@ -134,21 +146,27 @@ public class VmSchedulerTimeSharedTest {
     public void testDeallocatePartialPesFromVm() {
         final int HOST_PES = 8;
         final int VM_PES = 4;
-        vmScheduler = createVmScheduler(MIPS, HOST_PES);
         final Vm vm = VmTestUtil.createVm(0, MIPS, VM_PES);
+        vmScheduler = createVmScheduler(MIPS, HOST_PES);
+        vmScheduler.getHost().getVmList().add(vm);
 
-        vmScheduler.allocatePesForVm(vm0, new MipsShare(VM_PES, MIPS));
+        final Host host = vmScheduler.getHost();
+        vm.setHost(host);
+        host.getVmList().add(vm);
+
+        vmScheduler.allocatePesForVm(vm, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm, 2);
         final int expectedBusyPes = 2;
-        assertEquals(expectedBusyPes, vmScheduler.getHost().getBusyPeList().size());
+        assertEquals(expectedBusyPes, host.getBusyPeList().size());
     }
 
     @Test
     public void testDeallocateAllPesFromVmOneArgMethod() {
         final int HOST_PES = 8;
         final int VM_PES = 4;
-        vmScheduler = createVmScheduler(MIPS, HOST_PES);
         vm0 = VmTestUtil.createVm(0, MIPS, VM_PES);
+        vmScheduler = createVmScheduler(MIPS, HOST_PES);
+        vmScheduler.getHost().getVmList().add(vm0);
 
         vmScheduler.allocatePesForVm(vm0, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm0);
@@ -160,9 +178,9 @@ public class VmSchedulerTimeSharedTest {
     public void testDeallocateAllPesFromVmTwoArgsMethod() {
         final int HOST_PES = 8;
         final int VM_PES = 4;
-        vmScheduler = createVmScheduler(MIPS, HOST_PES);
         vm0 = VmTestUtil.createVm(0, MIPS, VM_PES);
-
+        vmScheduler = createVmScheduler(MIPS, HOST_PES);
+        vmScheduler.getHost().getVmList().add(vm0);
 
         vmScheduler.allocatePesForVm(vm0, new MipsShare(VM_PES, MIPS));
         vmScheduler.deallocatePesFromVm(vm0, VM_PES);
@@ -174,6 +192,14 @@ public class VmSchedulerTimeSharedTest {
     public void testTryDeallocateMorePesThanAllocated() {
         final int HOST_PES = 8;
         vmScheduler = createVmScheduler(MIPS, HOST_PES);
+        vmScheduler.getHost().getVmList().add(vm0);
+        vmScheduler.getHost().getVmList().add(vm1);
+
+        final Host host = vmScheduler.getHost();
+        vm0.setHost(host);
+        vm1.setHost(host);
+        host.getVmList().add(vm0);
+        host.getVmList().add(vm1);
 
         final MipsShare mipsShare = new MipsShare(vm0.getNumberOfPes(), MIPS);
 
@@ -183,6 +209,6 @@ public class VmSchedulerTimeSharedTest {
         vmScheduler.deallocatePesFromVm(vm0, HOST_PES);
         //Since only the PEs for vm0 were deallocated, the PEs from vm1 have to be busy yet
         final long expectedBusyPes = vm1.getNumberOfPes();
-        assertEquals(expectedBusyPes, vmScheduler.getHost().getBusyPeList().size(), "Number of busy Host PEs:");
+        assertEquals(expectedBusyPes, host.getBusyPeList().size(), "Number of busy Host PEs:");
     }
 }

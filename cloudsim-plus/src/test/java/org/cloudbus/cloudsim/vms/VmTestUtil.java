@@ -7,6 +7,8 @@ import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 
+import java.util.function.Consumer;
+
 /**
  * An utility class used by Vm tests.
  *
@@ -52,6 +54,10 @@ public final class VmTestUtil {
      * @param cloudletScheduler
      * @return
      */
+    public static VmSimple createVm(final CloudletScheduler cloudletScheduler, final Consumer<DatacenterBroker> brokerMockerConsumer) {
+        return createVm(ID, MIPS, PES_NUMBER, RAM, BANDWIDTH, SIZE, cloudletScheduler, brokerMockerConsumer);
+    }
+
     public static VmSimple createVm(final CloudletScheduler cloudletScheduler) {
         return createVm(ID, MIPS, PES_NUMBER, RAM, BANDWIDTH, SIZE, cloudletScheduler);
     }
@@ -63,8 +69,16 @@ public final class VmTestUtil {
      * @param vmId
      * @param mips
      * @param pesNumber
+     * @param brokerMockerConsumer a consumer to configure internally created broker mock
      * @return
      */
+    public static VmSimple createVm(
+        final int vmId, final double mips, final int pesNumber,
+        final Consumer<DatacenterBroker> brokerMockerConsumer)
+    {
+        return createVm(vmId, mips, pesNumber, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL, brokerMockerConsumer);
+    }
+
     public static VmSimple createVm(final int vmId, final double mips, final int pesNumber) {
         return createVm(vmId, mips, pesNumber, RAM, BANDWIDTH, SIZE, CloudletScheduler.NULL);
     }
@@ -100,11 +114,33 @@ public final class VmTestUtil {
         final long ram, final long bw, final long storage,
         final CloudletScheduler scheduler)
     {
+        return createVm(vmId, mips, pesNumber, ram, bw, storage, scheduler, broker -> {});
+    }
+
+    /**
+     *
+     * @param vmId
+     * @param mips
+     * @param pesNumber
+     * @param ram
+     * @param bw
+     * @param storage
+     * @param scheduler
+     * @param brokerMockerConsumer a consumer to configure internally created broker mock
+     * @return
+     */
+    public static VmSimple createVm(
+        final int vmId,
+        final double mips, final int pesNumber,
+        final long ram, final long bw, final long storage,
+        final CloudletScheduler scheduler,
+        final Consumer<DatacenterBroker> brokerMockerConsumer)
+    {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
             mocker.clock(0).anyTimes();
             mocker.clockStr().anyTimes();
         });
-        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, brokerMockerConsumer);
         final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
         vm.setRam(ram).setBw(bw)
            .setSize(storage)
