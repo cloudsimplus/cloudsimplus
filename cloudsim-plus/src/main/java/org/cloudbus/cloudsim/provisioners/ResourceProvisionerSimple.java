@@ -57,7 +57,7 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         }
 
         /* Stores the resource allocation before changing the current allocation,
-         * this line, this line must be placed here and not at the end
+         * this line must be placed here and not at the end
          * where it's in fact used.*/
         final long prevVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
         if (getResourceAllocationMap().containsKey(vm)) {

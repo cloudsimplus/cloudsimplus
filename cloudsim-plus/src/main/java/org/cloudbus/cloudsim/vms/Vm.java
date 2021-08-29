@@ -81,7 +81,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     void addStateHistoryEntry(VmStateHistoryEntry entry);
 
     /**
-     * Gets the the Cloudlet scheduler the VM uses to schedule cloudlets
+     * Gets the Cloudlet scheduler the VM uses to schedule cloudlets
      * execution.
      *
      * @return the cloudlet scheduler

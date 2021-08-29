@@ -215,7 +215,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
         When a VM is migrating out of the source Host, its allocated MIPS
         is reduced due to migration overhead.
         When it is migrating into the target Host, it also
-        experience overhead, but for the first time the VM is allocated into
+        experiences overhead, but for the first time the VM is allocated into
         the target Host, the allocated MIPS is stored already considering this overhead.
          */
         return host.getVmsMigratingOut().contains(vm) ? getMipsShareRequestedReduced(vm, mipsShare) : mipsShare;

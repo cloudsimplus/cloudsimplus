@@ -129,13 +129,13 @@ public interface ResourceProvisioner {
     boolean isSuitableForVm(Vm vm, Resource resource);
 
     /**
-     * Gets the resource being managed by the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
+     * Gets the physical resource being managed by the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
      * @return the resource managed by this provisioner
      */
     ResourceManageable getResource();
 
     /**
-     * Sets the resource to be managed by the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
+     * Sets the physical resource to be managed by the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
      * @param resource the resource managed by this provisioner
      */
     void setResource(ResourceManageable resource);
