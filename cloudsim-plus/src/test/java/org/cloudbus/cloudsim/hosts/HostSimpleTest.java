@@ -35,7 +35,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -643,7 +642,6 @@ public class HostSimpleTest {
         /* When the given VM resource function is called during tests,
         * it must return the provided resource instance. */
         EasyMock.expect(vmResourceFunction.apply(vm)).andReturn(vmResource).once();
-        EasyMock.expect(vm.getResources()).andReturn(Collections.singletonList(vmResource)).once();
         EasyMock.replay(vm);
 
         return vm;

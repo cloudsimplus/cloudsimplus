@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.schedulers.vm;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -94,12 +95,12 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
             return false;
         }
 
-        putAllocatedMipsMap(vm, requestedMips);
+        ((VmSimple)vm).setAllocatedMips(requestedMips);
         return true;
     }
 
     @Override
-    protected void deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
-        removePesFromMap(vm, getAllocatedMipsMap(), pesToRemove);
+    protected long deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
+        return removePesFromVm(vm, ((VmSimple)vm).getAllocatedMips(), pesToRemove);
     }
 }

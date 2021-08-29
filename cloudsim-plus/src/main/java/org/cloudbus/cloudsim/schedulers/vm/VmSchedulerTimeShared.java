@@ -9,9 +9,9 @@ package org.cloudbus.cloudsim.schedulers.vm;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.vms.Vm;
+import org.cloudbus.cloudsim.vms.VmSimple;
 
 import java.util.Iterator;
-import java.util.Map;
 
 /**
  * VmSchedulerTimeShared is a Virtual Machine Monitor (VMM), also called Hypervisor,
@@ -75,14 +75,12 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
         if(!allocateMipsShareForVmInternal(vm, requestedMips)) {
             return false;
         }
-
-        updatePesAllocationForAllVms();
         return true;
     }
 
     /**
      * Try to allocate the MIPS requested by a VM
-     * and update the {@link #getRequestedMipsMap()}.
+     * and update the allocated MIPS share.
      *
      * @param vm the VM
      * @param requestedMips the list of mips share requested by the vm
@@ -109,32 +107,13 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      */
     protected void allocateMipsShareForVm(final Vm vm, final MipsShare requestedMipsReduced) {
         final MipsShare mipsShare = getMipsShareToAllocate(vm, requestedMipsReduced);
-        putAllocatedMipsMap(vm, mipsShare);
-    }
-
-    /**
-     * Update allocation of Host PEs for all VMs.
-     */
-    private void updatePesAllocationForAllVms() {
-        clearAllocationOfPesForAllVms();
-        getAllocatedMipsMap().forEach(this::allocatePesListForVm);
-    }
-
-    /**
-     * Clear the allocation of any PE for all VMs in order to start a new allocation.
-     * This way, a PE that was previously allocated to a given VM will be released
-     * and when the new allocation is performed, a different list of PEs can be allocated
-     * to that VM.
-     * @see #updatePesAllocationForAllVms()
-     */
-    private void clearAllocationOfPesForAllVms() {
-        getHost().getPeList().forEach(pe -> pe.getPeProvisioner().deallocateResourceForAllVms());
+        ((VmSimple)vm).setAllocatedMips(mipsShare);
     }
 
     /**
      * Allocates Host PEs for a given VM.
      * @param vm the VM to allocate MIPS for its PEs
-     * @param mipsShare the {@link #getAllocatedMipsMap()} for that VM
+     * @param mipsShare the share of MIPS for that VM
      */
     private void allocatePesListForVm(final Vm vm, final MipsShare mipsShare) {
         final Iterator<Pe> hostPesIterator = getWorkingPeList().iterator();
@@ -317,25 +296,9 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
     }
 
     @Override
-    protected void deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
-        removePesFromMap(vm, getRequestedMipsMap(), pesToRemove);
-        removePesFromMap(vm, getAllocatedMipsMap(), pesToRemove);
-
-        //After removing some PEs from a VM, updates the MIPS allocation for all VMs on this scheduler
-        for (final Map.Entry<Vm, MipsShare> entry : getRequestedMipsMap().entrySet()) {
-            allocateMipsShareForVmInternal(entry.getKey(), entry.getValue());
-        }
-
-        updatePesAllocationForAllVms();
+    protected long deallocatePesFromVmInternal(final Vm vm, final int pesToRemove) {
+        return Math.max(
+            removePesFromVm(vm, ((VmSimple)vm).getRequestedMips(), pesToRemove),
+            removePesFromVm(vm, ((VmSimple)vm).getAllocatedMips(), pesToRemove));
     }
-
-    /**
-     * Releases PEs allocated to all the VMs.
-     */
-    @Override
-    public void deallocatePesForAllVms() {
-        super.deallocatePesForAllVms();
-        getRequestedMipsMap().clear();
-    }
-
 }

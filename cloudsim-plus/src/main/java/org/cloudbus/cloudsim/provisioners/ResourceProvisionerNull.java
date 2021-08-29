@@ -4,6 +4,8 @@ import org.cloudbus.cloudsim.resources.Resource;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.function.Function;
+
 /**
  * A class that implements the Null Object Design Pattern for
  * {@link ResourceProvisioner} class.
@@ -21,19 +23,17 @@ class ResourceProvisionerNull implements ResourceProvisioner {
     @Override public long getTotalAllocatedResource() {
         return 0;
     }
-    @Override public boolean deallocateResourceForVm(Vm vm) {
-        return false;
+    @Override public long deallocateResourceForVm(Vm vm) {
+        return 0;
     }
-    @Override public void deallocateResourceForAllVms() {/**/}
     @Override public boolean isSuitableForVm(Vm vm, long newVmTotalAllocatedResource) {
         return false;
     }
     @Override public boolean isSuitableForVm(Vm vm, Resource resource) { return false; }
-    @Override public ResourceManageable getResource() {
+    @Override public ResourceManageable getPmResource() {
         return ResourceManageable.NULL;
     }
-    @Override public void setResource(ResourceManageable resource) {/**/}
+    @Override public void setResources(ResourceManageable pmResource, Function<Vm, ResourceManageable> vmResourceFunction) {/**/}
     @Override public long getCapacity() { return 0; }
     @Override public long getAvailableResource() { return 0; }
-    @Override public boolean isResourceAllocatedToVm(Vm vm) { return false; }
 }

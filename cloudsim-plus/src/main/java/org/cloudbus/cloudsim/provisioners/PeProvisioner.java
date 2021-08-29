@@ -52,15 +52,10 @@ public interface PeProvisioner extends ResourceProvisioner {
      * Releases the virtual Pe allocated to a given VM.
      *
      * @param vm the vm to release the virtual Pe
+     * @return
      */
     @Override
-    boolean deallocateResourceForVm(Vm vm);
-
-    /**
-     * Releases all virtual PEs allocated to all VMs.
-     */
-    @Override
-    void deallocateResourceForAllVms();
+    long deallocateResourceForVm(Vm vm);
 
     /**
      * Gets the total allocated MIPS from the physical Pe.

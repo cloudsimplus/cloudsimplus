@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * A best-effort {@link ResourceProvisioner} policy used by a {@link Host} to provide a resource to VMs:
@@ -33,19 +34,21 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
      * Creates a new ResourceProvisionerSimple which the {@link ResourceManageable}
      * it will manage have to be set further.
      *
-     * @see #setResource(ResourceManageable)
+     * @see ResourceProvisioner#setResources(ResourceManageable, Function)
      */
     public ResourceProvisionerSimple() {
-        super(ResourceManageable.NULL);
+        super(ResourceManageable.NULL, vm -> ResourceManageable.NULL);
     }
 
     /**
      * Creates a ResourceProvisionerSimple for a given {@link ResourceManageable}.
      *
      * @param resource the resource to be managed by the provisioner
+     * @param vmResourceFunction a {@link Function} that receives a {@link Vm} and returns
+     *                           the virtual resource corresponding to the {@link #getPmResource() PM resource}
      */
-    protected ResourceProvisionerSimple(final ResourceManageable resource) {
-        super(resource);
+    protected ResourceProvisionerSimple(final ResourceManageable resource, final Function<Vm, ResourceManageable> vmResourceFunction) {
+        super(resource, vmResourceFunction);
     }
 
     @Override
@@ -59,8 +62,9 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         /* Stores the resource allocation before changing the current allocation,
          * this line must be placed here and not at the end
          * where it's in fact used.*/
-        final long prevVmResourceAllocation = vm.getResource(getResourceClass()).getAllocatedResource();
-        if (getResourceAllocationMap().containsKey(vm)) {
+        final ResourceManageable vmResource = getVmResourceFunction().apply(vm);
+        final long prevVmResourceAllocation = vmResource.getAllocatedResource();
+        if (prevVmResourceAllocation > 0) {
             //De-allocates any amount of the resource assigned to the Vm in order to allocate a new capacity
             deallocateResourceForVm(vm);
         }
@@ -71,14 +75,14 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
         This way, if the resource is not found inside the VM
         and it is a Pe, it's OK (as it is expected)
         */
-        if(!getResource().isSubClassOf(Pe.class) && !vm.getResource(getResourceClass()).setCapacity(newTotalVmResourceCapacity)){
+        if(!getPmResource().isSubClassOf(Pe.class) && !vmResource.setCapacity(newTotalVmResourceCapacity)){
             return false;
         }
 
         //Allocates the requested resource from the physical resource
-        getResource().allocateResource(newTotalVmResourceCapacity);
-        getResourceAllocationMap().put(vm, newTotalVmResourceCapacity);
-        vm.getResource(getResourceClass()).setAllocatedResource(prevVmResourceAllocation);
+        getPmResource().allocateResource(newTotalVmResourceCapacity);
+        vmResource.setCapacity(newTotalVmResourceCapacity);
+        vmResource.setAllocatedResource(newTotalVmResourceCapacity);
         return true;
     }
 
@@ -88,33 +92,23 @@ public class ResourceProvisionerSimple extends ResourceProvisionerAbstract {
     }
 
     @Override
-    public boolean deallocateResourceForVm(final Vm vm) {
-        final long amountFreed = deallocateResourceForVmAndSetAllocationMapEntryToZero(vm);
-        getResourceAllocationMap().remove(vm);
-        return amountFreed > 0;
-    }
+    public long deallocateResourceForVm(final Vm vm) {
+        final ResourceManageable vmResource = getVmResourceFunction().apply(vm);
+        final long vmAllocatedResource = vmResource.getAllocatedResource();
 
-    @Override
-    protected long deallocateResourceForVmAndSetAllocationMapEntryToZero(final Vm vm) {
-        if (getResourceAllocationMap().containsKey(vm)) {
-            final long vmAllocatedResource = getResourceAllocationMap().get(vm);
-            getResourceAllocationMap().put(vm, 0L);
-            //De-allocates the virtual resource the VM was using
-            vm.deallocateResource(getResourceClass());
+        //De-allocates the virtual resource from the VM
+        vmResource.deallocateAllResources();
 
-            //De-allocates the virtual resource from the physical resource
-            getResource().deallocateResource(vmAllocatedResource);
-            return vmAllocatedResource;
-        }
-
-        return 0;
+        //De-allocates the virtual resource to make it free on the physical machine
+        getPmResource().deallocateResource(vmAllocatedResource);
+        return vmAllocatedResource;
     }
 
     @Override
     public boolean isSuitableForVm(final Vm vm, final long newVmTotalAllocatedResource) {
         final long currentAllocatedResource = getAllocatedResourceForVm(vm);
         final long allocationDifference = newVmTotalAllocatedResource - currentAllocatedResource;
-        return getResource().getAvailableResource() >=  allocationDifference;
+        return getPmResource().getAvailableResource() >=  allocationDifference;
     }
 
     @Override

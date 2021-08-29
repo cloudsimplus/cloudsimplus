@@ -41,8 +41,6 @@ final class AbstractMachineNull implements AbstractMachine {
     @Override public long getId() {
         return 0;
     }
-    @Override public List<ResourceManageable> getResources() {
-        return Collections.emptyList();
-    }
     @Override public double getTotalMipsCapacity() { return 0.0; }
+    @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
 }

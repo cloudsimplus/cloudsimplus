@@ -18,7 +18,6 @@ public class ResourceProvisionerTest {
             () -> assertFalse(instance.allocateResourceForVm(null, 0)),
             () -> assertEquals(0.0, instance.getAllocatedResourceForVm(null)),
             () -> assertEquals(0.0, instance.getTotalAllocatedResource()),
-            () -> assertFalse(instance.deallocateResourceForVm(null)),
             () -> assertFalse(instance.isSuitableForVm(null, 0)),
             () -> assertEquals(0.0, instance.getCapacity()),
             () -> assertEquals(0.0, instance.getAvailableResource())
