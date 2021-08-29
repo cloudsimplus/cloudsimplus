@@ -4,6 +4,8 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 import org.cloudbus.cloudsim.cloudlets.CloudletTestUtil;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeSharedTestUtil.newSchedulerWithRunningCloudlets;
 import static org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -143,7 +146,8 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetCurrentRequestedUtilizationOfRam() {
         final int cloudlets = 2;
-        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithRunningCloudlets(1000, 2, cloudlets, 1);
+        final UtilizationModel model = new UtilizationModelFull();
+        final CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(1000, 2, cloudlets, 1, model);
 
         final double expResult = 2.0; //200% of RAM usage
         final double result = instance.getCurrentRequestedRamPercentUtilization();
@@ -156,7 +160,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int numberOfVmPes = 1;
         final int numberOfCloudlets = numberOfVmPes;
         final int numberOfCloudletPes = 1;
-        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, numberOfVmPes, numberOfCloudlets, numberOfCloudletPes);
 
         final double expResult = 1.0;
         final double result = instance.getCurrentRequestedBwPercentUtilization();
@@ -236,7 +240,7 @@ public class CloudletSchedulerTimeSharedTest {
         final int cloudlets = 2;
         final int cloudletPes = 2;
 
-        final CloudletSchedulerTimeShared instance = CloudletSchedulerTimeSharedTestUtil.newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, cloudletPes);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithRunningCloudlets(mips, vmPes, cloudlets, cloudletPes);
 
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
@@ -251,13 +255,14 @@ public class CloudletSchedulerTimeSharedTest {
     @Test
     public void testGetCloudletExecListWhenEmptyAfterFinishedCloudletsForTwoSchedulerPes() {
         final long mips = 1000;
-        final int numberOfCloudlets = 2;
+        final int cloudlets = 2;
+        final int vmPes = cloudlets;
 
-        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfCloudlets, numberOfCloudlets);
+        final CloudletSchedulerTimeShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, vmPes, cloudlets);
 
         final double time = 1.0;
         instance.updateProcessing(time, instance.getCurrentMipsShare());
-        assertTrue(instance.getCloudletExecList().isEmpty());
+        assertEquals(0, instance.getCloudletExecList().size());
     }
 
     /**
@@ -278,8 +283,7 @@ public class CloudletSchedulerTimeSharedTest {
 
         final double time = 2.0;
         instance.updateProcessing(time, instance.getCurrentMipsShare());
-        assertTrue(instance.getCloudletExecList().isEmpty());
-
+        assertEquals(0, instance.getCloudletExecList().size());
     }
 
     @Test
@@ -287,7 +291,7 @@ public class CloudletSchedulerTimeSharedTest {
         final CloudletExecution cle = new CloudletExecution(Cloudlet.NULL);
         instance.addCloudletToExecList(cle);
         assertSame(cle, instance.removeCloudletFromExecList(cle));
-        assertTrue(instance.getCloudletExecList().isEmpty());
+        assertEquals(0, instance.getCloudletExecList().size());
     }
 
     @Test

@@ -227,11 +227,13 @@ public class HostSimpleTest {
     @Test
     public void testAddMigratingInVmAndCheckAvailableMipsAndStorage() {
         final int numberOfPes = 1;
-        final Host targetHost = createHostSimple(0, numberOfPes);
         final double VM_MIPS = 500;
         final VmSimple vm = VmTestUtil.createVm(
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
-            new CloudletSchedulerTimeShared());
+            new CloudletSchedulerTimeShared(),
+            b -> EasyMock.expect(b.requestIdleVmDestruction(EasyMock.anyObject())).andReturn(b));
+        final Host targetHost = createHostSimple(0, numberOfPes);
+
         assertEquals(MIPS, targetHost.getTotalAvailableMips());
         assertTrue(targetHost.addMigratingInVm(vm));
         final double availableMips = MIPS - VM_MIPS;

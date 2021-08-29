@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.mocks;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.easymock.EasyMock;
 
 import java.util.function.Consumer;
@@ -55,7 +56,7 @@ public final class MocksHelper {
      * @param consumer a {@link Runnable} that can be used to call additional {@link EasyMock#expect(Object)}
      * @return
      */
-    public static DatacenterBroker createMockBroker(final CloudSim cloudsim, final Consumer<DatacenterBroker> consumer) {
+    public static DatacenterBroker createMockBroker(final Simulation cloudsim, final Consumer<DatacenterBroker> consumer) {
         final DatacenterBroker broker = EasyMock.createMock(DatacenterBroker.class);
         EasyMock.expect(broker.getSimulation()).andReturn(cloudsim).anyTimes();
         EasyMock.expect(broker.getId()).andReturn(0L).anyTimes();
