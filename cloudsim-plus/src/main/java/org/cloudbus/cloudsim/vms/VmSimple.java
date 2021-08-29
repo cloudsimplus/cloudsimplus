@@ -110,6 +110,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private double lastBusyTime;
     private VmGroup group;
     private double timeZone;
+    private MipsShare allocatedMips;
+    private MipsShare requestedMips;
 
     /**
      * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
@@ -243,6 +245,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         //initiate number of free PEs as number of PEs of VM
         freePesNumber = numberOfPes;
         expectedFreePesNumber = numberOfPes;
+        allocatedMips = new MipsShare();
+        requestedMips = new MipsShare();
     }
 
     /**
@@ -524,7 +528,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public Resource getRam() {
+    public ResourceManageable getRam() {
         return ram;
     }
 
@@ -548,7 +552,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public Resource getBw() {
+    public ResourceManageable getBw() {
         return bw;
     }
 
@@ -712,22 +716,21 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public void allocateResource(final Class<? extends ResourceManageable> resourceClass, final long newTotalResourceAmount) {
-        getResource(resourceClass).allocateResource(newTotalResourceAmount);
-    }
-
-    @Override
-    public void deallocateResource(final Class<? extends ResourceManageable> resourceClass) {
-        getResource(resourceClass).deallocateAllResources();
-    }
-
-    @Override
     public List<ResourceManageable> getResources() {
         if (getSimulation().isRunning() && resources.isEmpty()) {
             resources = Arrays.asList(ram, bw, storage, processor);
         }
 
         return Collections.unmodifiableList(resources);
+    }
+
+    @Override
+    public ResourceManageable getResource(Class<? extends ResourceManageable> resourceClass) {
+        if(Pe.class.isAssignableFrom(resourceClass) || Processor.class.isAssignableFrom(resourceClass)) {
+            return processor;
+        }
+
+        return Vm.super.getResource(resourceClass);
     }
 
     @Override
@@ -1075,5 +1078,21 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public Vm setTimeZone(final double timeZone) {
         this.timeZone = validateTimeZone(timeZone);
         return this;
+    }
+
+    public MipsShare getAllocatedMips() {
+        return allocatedMips;
+    }
+
+    public void setAllocatedMips(final MipsShare allocatedMips) {
+        this.allocatedMips = Objects.requireNonNull(allocatedMips);
+    }
+
+    public MipsShare getRequestedMips() {
+        return requestedMips;
+    }
+
+    public void setRequestedMips(final MipsShare requestedMips) {
+        this.requestedMips = Objects.requireNonNull(requestedMips);
     }
 }

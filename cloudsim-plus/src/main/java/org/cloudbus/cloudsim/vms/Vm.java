@@ -144,20 +144,6 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     Host getHost();
 
     /**
-     * Changes the allocation of a given resource for a VM.
-     * The old allocated amount will be changed to the new given amount.
-     * @param resourceClass the class of the resource to change the allocation
-     * @param newTotalResourceAmount the new amount to change the current allocation to*/
-    void allocateResource(Class<? extends ResourceManageable> resourceClass, long newTotalResourceAmount);
-
-    /**
-     * Removes the entire amount of a given resource allocated to VM.
-     *
-     * @param resourceClass the class of the resource to deallocate from the VM
-     */
-    void deallocateResource(Class<? extends ResourceManageable> resourceClass);
-
-    /**
      * Adds a listener object that will be notified when a {@link Host}
      * is allocated to the Vm, that is, when the Vm is placed into a
      * given Host. That happens when the VM is placed for the first
@@ -590,15 +576,6 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
         * it may be because we have a large Datacenter's scheduling interval.*/
         return getCloudletScheduler().getCloudletExecList().isEmpty() && AbstractMachine.super.isIdleEnough(time);
     }
-
-    /**
-     * {@inheritDoc}
-     * Such resources represent virtual resources corresponding to physical resources
-     * from the Host where the VM is placed.
-     * @return {@inheritDoc}
-     */
-    @Override
-    List<ResourceManageable> getResources();
 
     /**
      * Gets a {@link HorizontalVmScaling} that will check if the Vm is overloaded,

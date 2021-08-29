@@ -12,6 +12,8 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.function.Function;
+
 /**
  * An interface that represents the provisioning policy used by a {@link Host}
  * to provide a given physical resource to its {@link Vm}s.
@@ -91,18 +93,11 @@ public interface ResourceProvisioner {
     long getTotalAllocatedResource();
 
     /**
-     * Releases all the allocated amount of the resource used by a VM.
-     *
-     * @param vm the vm
-     * @return true if the resource was deallocated; false if the related resource
-     * has never been allocated to the given VM.
+     * Deallocate the resource for the given VM.
+     * @param vm the VM to deallocate resource
+     * @return the amount of allocated VM resource or zero if VM is not found
      */
-    boolean deallocateResourceForVm(Vm vm);
-
-    /**
-     * Releases all the allocated amount of the resource used by all VMs.
-     */
-    void deallocateResourceForAllVms();
+    long deallocateResourceForVm(Vm vm);
 
     /**
      * Checks if it is possible to change the current allocated resource for a given VM
@@ -132,13 +127,15 @@ public interface ResourceProvisioner {
      * Gets the physical resource being managed by the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
      * @return the resource managed by this provisioner
      */
-    ResourceManageable getResource();
+    ResourceManageable getPmResource();
 
     /**
      * Sets the physical resource to be managed by the provisioner, such as {@link Ram}, {@link Pe}, {@link Bandwidth}, etc.
-     * @param resource the resource managed by this provisioner
+     * @param pmResource the resource managed by this provisioner
+     * @param vmResourceFunction a {@link Function} that receives a {@link Vm} and returns
+     *                           the virtual resource corresponding to the {@link #getPmResource() PM resource}
      */
-    void setResource(ResourceManageable resource);
+    void setResources(ResourceManageable pmResource, Function<Vm, ResourceManageable> vmResourceFunction);
 
     /**
      * Gets the total capacity of the physical resource from the Host that the provisioner manages.
@@ -153,11 +150,4 @@ public interface ResourceProvisioner {
      * @return the amount of free available physical resource
      */
     long getAvailableResource();
-
-    /**
-     * Checks if the resource the provisioner manages is allocated to a given Vm.
-     * @param vm the VM to check if the resource is allocated to
-     * @return true if the resource is allocated to the VM, false otherwise
-     */
-    boolean isResourceAllocatedToVm(Vm vm);
 }

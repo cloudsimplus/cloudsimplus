@@ -9,6 +9,8 @@ package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.ResourceManageable;
+import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Objects;
 
@@ -36,7 +38,7 @@ public class PeProvisionerSimple extends ResourceProvisionerSimple implements Pe
      * just at Pe instantiation.
      */
     public PeProvisionerSimple() {
-        super(Pe.NULL);
+        super(Pe.NULL, vm -> ResourceManageable.NULL);
     }
 
     /**
@@ -44,17 +46,17 @@ public class PeProvisionerSimple extends ResourceProvisionerSimple implements Pe
      *
      * @param pe
      */
-    public PeProvisionerSimple(Pe pe){
-        super(pe);
+    public PeProvisionerSimple(final Pe pe){
+        super(pe, Vm::getProcessor);
         pe.setPeProvisioner(this);
     }
 
     @Override
-    public void setPe(Pe pe){
+    public void setPe(final Pe pe){
         if(isOtherProvisionerAssignedToPe(pe)){
             throw new IllegalArgumentException("Pe already has a PeProvisioner assigned to it. Each Pe must have its own PeProvisioner instance.");
         }
-        setResource(pe);
+        setResources(pe, Vm::getProcessor);
     }
 
     @Override

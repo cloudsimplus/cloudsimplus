@@ -10,6 +10,7 @@ import org.cloudbus.cloudsim.core.*;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
+import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.provisioners.ResourceProvisionerSimple;
 import org.cloudbus.cloudsim.resources.*;
@@ -652,8 +653,11 @@ public class HostSimple implements Host {
 
     @Override
     public void destroyAllVms() {
-        deallocateResourcesOfAllVms();
+        final PeProvisioner peProvisioner = getPeList().get(0).getPeProvisioner();
         for (final Vm vm : vmList) {
+            ramProvisioner.deallocateResourceForVm(vm);
+            bwProvisioner.deallocateResourceForVm(vm);
+            peProvisioner.deallocateResourceForVm(vm);
             vm.setCreated(false);
             disk.getStorage().deallocateResource(vm.getStorage());
         }
@@ -689,15 +693,6 @@ public class HostSimple implements Host {
     @Override
     public boolean removeOnShutdownListener(final EventListener<HostEventInfo> listener) {
         return onShutdownListeners.remove(listener);
-    }
-
-    /**
-     * Deallocate all resources that all VMs were using.
-     */
-    protected void deallocateResourcesOfAllVms() {
-        ramProvisioner.deallocateResourceForAllVms();
-        bwProvisioner.deallocateResourceForAllVms();
-        vmScheduler.deallocatePesForAllVms();
     }
 
     /**
@@ -752,12 +747,12 @@ public class HostSimple implements Host {
 
     @Override
     public Resource getBw() {
-        return bwProvisioner.getResource();
+        return bwProvisioner.getPmResource();
     }
 
     @Override
     public Resource getRam() {
-        return ramProvisioner.getResource();
+        return ramProvisioner.getPmResource();
     }
 
     @Override
@@ -784,7 +779,7 @@ public class HostSimple implements Host {
     public final Host setRamProvisioner(final ResourceProvisioner ramProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("RAM");
         this.ramProvisioner = requireNonNull(ramProvisioner);
-        this.ramProvisioner.setResource(ram);
+        this.ramProvisioner.setResources(ram, vm -> ((VmSimple)vm).getRam());
         return this;
     }
 
@@ -803,7 +798,7 @@ public class HostSimple implements Host {
     public final Host setBwProvisioner(final ResourceProvisioner bwProvisioner) {
         checkSimulationIsRunningAndAttemptedToChangeHost("BW");
         this.bwProvisioner = requireNonNull(bwProvisioner);
-        this.bwProvisioner.setResource(bw);
+        this.bwProvisioner.setResources(bw, vm -> ((VmSimple)vm).getBw());
         return this;
     }
 
@@ -928,7 +923,7 @@ public class HostSimple implements Host {
 
     @Override
     public <T extends Vm> List<T> getVmList() {
-        return (List<T>) Collections.unmodifiableList(vmList);
+        return (List<T>) vmList;
     }
 
     @Override
@@ -1204,7 +1199,7 @@ public class HostSimple implements Host {
     @Override
     public List<ResourceManageable> getResources() {
         if(simulation.isRunning() && resources.isEmpty()){
-            resources = Arrays.asList(ramProvisioner.getResource(), bwProvisioner.getResource());
+            resources = Arrays.asList(ram, bw);
         }
 
         return Collections.unmodifiableList(resources);
@@ -1218,7 +1213,7 @@ public class HostSimple implements Host {
 
         return provisioners
             .stream()
-            .filter(provisioner -> provisioner.getResource().isSubClassOf(resourceClass))
+            .filter(provisioner -> provisioner.getPmResource().isSubClassOf(resourceClass))
             .findFirst()
             .orElse(ResourceProvisioner.NULL);
     }

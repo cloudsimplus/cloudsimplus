@@ -28,9 +28,6 @@ import java.util.Set;
  * @see Host#NULL
  */
 final class HostNull implements Host {
-    @Override public List<ResourceManageable> getResources() {
-        return Collections.emptyList();
-    }
     @Override public int compareTo(Host host) { return 0; }
     @Override public boolean addMigratingInVm(Vm vm) {
         return false;
@@ -48,7 +45,6 @@ final class HostNull implements Host {
         return 0;
     }
     @Override public double getTotalAllocatedMips() { return 0; }
-
     @Override public Resource getBw() {
         return Resource.NULL;
     }
@@ -186,4 +182,5 @@ final class HostNull implements Host {
     @Override public double getUpTimeHours() { return 0; }
     @Override public double getIdleShutdownDeadline() { return -1; }
     @Override public Host setIdleShutdownDeadline(double deadline) { return this; }
+    @Override public List<ResourceManageable> getResources() {return Collections.emptyList(); }
 }

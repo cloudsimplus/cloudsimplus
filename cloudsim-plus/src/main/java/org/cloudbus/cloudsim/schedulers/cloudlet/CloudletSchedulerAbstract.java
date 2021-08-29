@@ -557,8 +557,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * so that the allocation can be updated when running Cloudlets are processed.
      */
     private void deallocateVmResources() {
-        vm.getResource(Ram.class).deallocateAllResources();
-        vm.getResource(Bandwidth.class).deallocateAllResources();
+        ((VmSimple)vm).getRam().deallocateAllResources();
+        ((VmSimple)vm).getBw().deallocateAllResources();
     }
 
     /**
@@ -616,8 +616,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     protected long updateCloudletProcessing(final CloudletExecution cle, final double currentTime) {
         final double partialFinishedInstructions = cloudletExecutedInstructionsForTimeSpan(cle, currentTime);
         cle.updateProcessing(partialFinishedInstructions);
-        updateVmResourceAbsoluteUtilization(cle, Ram.class);
-        updateVmResourceAbsoluteUtilization(cle, Bandwidth.class);
+        updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
+        updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getBw());
 
         return (long)(partialFinishedInstructions/Conversion.MILLION);
     }
@@ -626,18 +626,17 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Updates the VM utilization of given resource, based on the current utilization of a
      * running Cloudlet, that depends on the Cloudlet's {@link UtilizationModel} for that resource.
      *
-     * @param resourceClass the kind of resource to updates its utilization (usually {@link Ram} or {@link Bandwidth}).
+     * @param vmResource the kind of resource to updates its utilization (usually {@link Ram} or {@link Bandwidth}).
      */
-    private void updateVmResourceAbsoluteUtilization(final CloudletExecution cle, final Class<? extends ResourceManageable> resourceClass) {
-        final ResourceManageable resource = vm.getResource(resourceClass);
+    private void updateVmResourceAbsoluteUtilization(final CloudletExecution cle, final ResourceManageable vmResource) {
         final Cloudlet cloudlet = cle.getCloudlet();
-        final long requested = (long) getCloudletResourceAbsoluteUtilization(cloudlet, resourceClass, resource);
-        final long available = resource.getAvailableResource();
-        if(requested > resource.getCapacity()){
+        final long requested = (long) getCloudletResourceAbsoluteUtilization(cloudlet, vmResource);
+        final long available = vmResource.getAvailableResource();
+        if(requested > vmResource.getCapacity()){
             LOGGER.warn(
                 "{}: {}: {} requested {} {} of {} but that is >= the VM capacity ({})",
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), cloudlet,
-                requested, resource.getUnit(), resource.getClass().getSimpleName(), resource.getCapacity());
+                requested, vmResource.getUnit(), vmResource.getClass().getSimpleName(), vmResource.getCapacity());
             return;
         }
 
@@ -646,16 +645,16 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
                     available > 0 ?
                     String.format("just %d was available", available):
                     "no amount is available.";
-            final String msg2 = resourceClass == Ram.class ? ". Using Virtual Memory," : ",";
+            final String msg2 = vmResource.getClass() == Ram.class ? ". Using Virtual Memory," : ",";
             LOGGER.warn(
                 "{}: {}: {} requested {} {} of {} but {}{} which delays Cloudlet processing.",
                 vm.getSimulation().clockStr(), getClass().getSimpleName(), cloudlet,
-                requested, resource.getUnit(), resource.getClass().getSimpleName(), msg1, msg2);
+                requested, vmResource.getUnit(), vmResource.getClass().getSimpleName(), msg1, msg2);
 
-            updateOnResourceAllocationFailListeners(resource, cloudlet, requested, available);
+            updateOnResourceAllocationFailListeners(vmResource, cloudlet, requested, available);
         }
 
-        resource.allocateResource(Math.min(requested, available));
+        vmResource.allocateResource(Math.min(requested, available));
     }
 
     private void updateOnResourceAllocationFailListeners(
@@ -687,15 +686,14 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * Gets the absolute utilization of a given Cloudlet's resource
      *
      * @param cloudlet the Cloudlet to get the absolute value of RAM utilization
-     * @param resourceClass the kind of resource to get its utilization (usually {@link Ram} or {@link Bandwidth}).
      * @param vmResource the VM resource the cloudlet is requesting
      * @return the current utilization of the requested Cloudlet's resource in absolute value
      */
     private double getCloudletResourceAbsoluteUtilization(
-        final Cloudlet cloudlet, Class<? extends ResourceManageable> resourceClass,
+        final Cloudlet cloudlet,
         final ResourceManageable vmResource)
     {
-        final UtilizationModel um = cloudlet.getUtilizationModel(resourceClass);
+        final UtilizationModel um = cloudlet.getUtilizationModel(vmResource.getClass());
         return um.getUnit() == Unit.ABSOLUTE ?
                 Math.min(um.getUtilization(), vmResource.getCapacity()) :
                 um.getUtilization() * vmResource.getCapacity();
@@ -794,11 +792,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * (ii) 0 if there is available physical RAM (no over-subscription);
      * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more RAM then the total VM capacity.
      * @see <a href="https://www.kernel.org/doc/gorman/html/understand/understand014.html">Linux Kernel Swap Management</a>
-     * @see #getResourceOverSubscriptionDelay(CloudletExecution, double, Class, BiPredicate, BiFunction)
+     * @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
      */
     private double getVirtualMemoryDelay(final CloudletExecution cle, final double processingTimeSpan) {
         return getResourceOverSubscriptionDelay(
-            cle, processingTimeSpan, Ram.class,
+            cle, processingTimeSpan, ((VmSimple)vm).getRam(),
 
             /*
              * Since using VMem requires some portion of the RAM to be swapped between the disk
@@ -836,11 +834,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @return (i) the processing delay in seconds (considering reduction in BW allocation);
      * (ii) 0 if there is available BW (no over-subscription);
      * (iii) or {@link Double#MIN_VALUE} if the cloudlet is requesting more BW then the total VM capacity.
-     * @see #getResourceOverSubscriptionDelay(CloudletExecution, double, Class, BiPredicate, BiFunction)
+     * @see #getResourceOverSubscriptionDelay(CloudletExecution, double, ResourceManageable, BiPredicate, BiFunction)
      */
     private double getBandwidthOverSubscriptionDelay(final CloudletExecution cle, final double processingTimeSpan) {
         return getResourceOverSubscriptionDelay(
-            cle, processingTimeSpan, Bandwidth.class,
+            cle, processingTimeSpan, ((VmSimple)vm).getBw(),
             (vmBw, requestedBw) -> requestedBw <= vmBw.getCapacity(),
 
             /* When some BW cannot be allocated to the Cloudlet (due to over-subscription),
@@ -865,7 +863,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *
      * @param cle the Cloudlet being processed
      * @param processingTimeSpan the current cloudlet processing time span
-     * @param vmResourceClass the class of VM resource the cloudlet is requesting (that will be check if it's oversubscribed)
+     * @param vmResource the VM resource the cloudlet is requesting (that will be checked if it's oversubscribed)
      * @param suitableCapacityPredicate a {@link BiPredicate} that receives the VM resource being requested and
      *                                  the amount of requested resources,
      *                                  then indicates if the requested capacity can be allocated or not
@@ -882,12 +880,11 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      */
     private double getResourceOverSubscriptionDelay(
         final CloudletExecution cle, final double processingTimeSpan,
-        final Class<? extends ResourceManageable> vmResourceClass,
+        final ResourceManageable vmResource,
         final BiPredicate<ResourceManageable, Double> suitableCapacityPredicate,
         final BiFunction<Double, Double, Double> delayFunction)
     {
-        final ResourceManageable vmResource = vm.getResource(vmResourceClass);
-        final double requestedResource = getCloudletResourceAbsoluteUtilization(cle.getCloudlet(), vmResourceClass, vmResource);
+        final double requestedResource = getCloudletResourceAbsoluteUtilization(cle.getCloudlet(), vmResource);
 
         /* If the requested resource is not suitable (even for over-subscription),
         considering the total VM capacity.

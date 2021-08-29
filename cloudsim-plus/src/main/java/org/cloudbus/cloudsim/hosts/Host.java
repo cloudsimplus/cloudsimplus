@@ -337,7 +337,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     Host setRamProvisioner(ResourceProvisioner ramProvisioner);
 
     /**
-     * Gets a <b>read-only</b> list of VMs currently assigned to the host.
+     * Gets as list of VMs currently assigned to the host.
      *
      * @param <T> The generic type
      * @return the read-only current vm list

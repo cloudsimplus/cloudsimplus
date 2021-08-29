@@ -165,8 +165,6 @@ class VmNull implements Vm {
     @Override public double getTotalMipsCapacity() {
         return 0.0;
     }
-    @Override public void allocateResource(Class<? extends ResourceManageable> clazz, long amount) {/**/}
-    @Override public void deallocateResource(Class<? extends ResourceManageable> clazz) {/**/}
     @Override public void setFailed(boolean failed) {/**/}
     @Override public boolean isFailed() {
         return true;
@@ -177,7 +175,6 @@ class VmNull implements Vm {
     }
     @Override public void setLastTriedDatacenter(Datacenter lastTriedDatacenter) {/**/}
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
-    @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
     @Override public String toString() { return "Vm.NULL"; }
     @Override public HorizontalVmScaling getHorizontalScaling() { return HorizontalVmScaling.NULL; }
     @Override public Vm setHorizontalScaling(HorizontalVmScaling scaling) throws IllegalArgumentException { return this; }
@@ -193,4 +190,5 @@ class VmNull implements Vm {
     @Override public VmGroup getGroup() { return null; }
     @Override public double getTimeZone() { return Integer.MAX_VALUE; }
     @Override public Vm setTimeZone(double timeZone) { return this; }
+    @Override public List<ResourceManageable> getResources() { return Collections.emptyList(); }
 }

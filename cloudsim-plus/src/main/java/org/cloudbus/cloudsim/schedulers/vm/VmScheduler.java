@@ -71,13 +71,6 @@ public interface VmScheduler {
     boolean allocatePesForVm(Vm vm);
 
     /**
-     * Releases PEs allocated to all the VMs of the host the VmScheduler
-     * is associated to. After that, all PEs will be available to be used on
-     * demand for requesting VMs.
-     */
-    void deallocatePesForAllVms();
-
-    /**
      * Releases all PEs allocated to a VM. After that, the PEs may be used on demand
      * by other VMs.
      *

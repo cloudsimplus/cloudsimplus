@@ -9,9 +9,7 @@
 package org.cloudbus.cloudsim.provisioners;
 
 import org.cloudbus.cloudsim.resources.Ram;
-import org.cloudbus.cloudsim.resources.ResourceManageable;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -40,16 +38,7 @@ public class ResourceProvisionerSimpleTest {
      * if it is for HOST_RAM, CPU, HOST_BW or any other possible resource.
      */
     private ResourceProvisionerSimple createSimpleProvisioner() {
-        return new ResourceProvisionerSimple(new Ram(CAPACITY));
-    }
-
-    private ResourceProvisionerSimple createSimpleProvisioner(ResourceManageable resource) {
-        return new ResourceProvisionerSimple(resource);
-    }
-
-    @Test()
-    public void testCreateProvisionerWhenResourceNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> createSimpleProvisioner(null));
+        return new ResourceProvisionerSimple(new Ram(CAPACITY), vm -> ((VmSimple)vm).getRam());
     }
 
     @Test
