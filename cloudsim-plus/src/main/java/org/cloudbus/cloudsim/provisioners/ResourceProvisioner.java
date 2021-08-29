@@ -70,7 +70,7 @@ public interface ResourceProvisioner {
      * @return $true if the resource could be allocated; $false otherwise
      * @see #allocateResourceForVm(Vm, long)
      */
-    default boolean allocateResourceForVm(Vm vm, double newTotalVmResource){
+    default boolean allocateResourceForVm(final Vm vm, final double newTotalVmResource){
         return allocateResourceForVm(vm, (long)newTotalVmResource);
     }
 

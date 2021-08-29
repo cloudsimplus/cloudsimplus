@@ -119,7 +119,7 @@ public interface ResourceManageable extends Resource {
      * @return true if newTotalAllocatedResource is not negative and there is
      * enough resource to allocate, false otherwise
      */
-    default boolean setAllocatedResource(double newTotalAllocatedResource){
+    default boolean setAllocatedResource(final double newTotalAllocatedResource){
         return setAllocatedResource((long)newTotalAllocatedResource);
     }
 
@@ -134,7 +134,7 @@ public interface ResourceManageable extends Resource {
      * deallocate, false otherwise
      * @see #deallocateResource(long)
      */
-    default boolean deallocateResource(Resource resource){
+    default boolean deallocateResource(final Resource resource){
         return deallocateResource(resource.getCapacity());
     }
 

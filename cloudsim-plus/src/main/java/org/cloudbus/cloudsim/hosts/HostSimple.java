@@ -432,7 +432,7 @@ public class HostSimple implements Host {
         return suitability;
     }
 
-    private void allocateResourcesForVm(Vm vm) {
+    private void allocateResourcesForVm(final Vm vm) {
         ramProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedRam());
         bwProvisioner.allocateResourceForVm(vm, vm.getCurrentRequestedBw());
         disk.getStorage().allocateResource(vm.getStorage());
