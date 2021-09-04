@@ -120,10 +120,10 @@ public class HostSimple implements Host {
     private final Set<EventListener<HostUpdatesVmsProcessingEventInfo>> onUpdateProcessingListeners;
 
     /** @see #addOnStartupListener(EventListener) (EventListener) */
-    private final Set<EventListener<HostEventInfo>> onStartupListeners;
+    private final List<EventListener<HostEventInfo>> onStartupListeners;
 
     /** @see #addOnShutdownListener(EventListener) (EventListener) */
-    private final Set<EventListener<HostEventInfo>> onShutdownListeners;
+    private final List<EventListener<HostEventInfo>> onShutdownListeners;
 
     /** @see #getSimulation() */
     private Simulation simulation;
@@ -282,8 +282,8 @@ public class HostSimple implements Host {
         this.setDatacenter(Datacenter.NULL);
 
         this.onUpdateProcessingListeners = new HashSet<>();
-        this.onStartupListeners = new HashSet<>();
-        this.onShutdownListeners = new HashSet<>();
+        this.onStartupListeners = new ArrayList<>();
+        this.onShutdownListeners = new ArrayList<>();
         this.cpuUtilizationStats = HostResourceStats.NULL;
 
         this.resources = new ArrayList<>();
@@ -592,12 +592,26 @@ public class HostSimple implements Host {
 
         if(activate && !wasActive){
             LOGGER.info("{}: {} is powered on.", getSimulation().clockStr(), this);
-            onStartupListeners.forEach(l -> l.update(HostEventInfo.of(l, this, simulation.clock())));
+            updateOnStartupListeners();
         }
         else if(!activate && wasActive){
             final String reason = isIdleEnough(idleShutdownDeadline) ? " after becoming idle" : "";
             LOGGER.info("{}: {} is powered off{}.", getSimulation().clockStr(), this, reason);
-            onShutdownListeners.forEach(l -> l.update(HostEventInfo.of(l, this, simulation.clock())));
+            updateOnShutdownListeners();
+        }
+    }
+
+    private void updateOnShutdownListeners() {
+        for (int i = 0; i < onShutdownListeners.size(); i++) {
+            final EventListener<HostEventInfo> l = onShutdownListeners.get(i);
+            l.update(HostEventInfo.of(l, this, simulation.clock()));
+        }
+    }
+
+    private void updateOnStartupListeners() {
+        for (int i = 0; i < onStartupListeners.size(); i++) {
+            final EventListener<HostEventInfo> l = onStartupListeners.get(i);
+            l.update(HostEventInfo.of(l, this, simulation.clock()));
         }
     }
 
