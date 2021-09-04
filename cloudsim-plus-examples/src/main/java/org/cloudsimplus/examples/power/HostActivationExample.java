@@ -48,7 +48,9 @@ import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.listeners.HostEventInfo;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.function.Function;
 
 /**
@@ -122,8 +124,6 @@ public class HostActivationExample {
 
     private static final int CLOUDLET_LENGTH = 20000;
 
-    private Map<Host, Integer> hostActivationMap;
-
     private final CloudSim simulation;
     private DatacenterBroker broker0;
     private List<Vm> vmList;
@@ -141,7 +141,6 @@ public class HostActivationExample {
         //Log.setLevel(ch.qos.logback.classic.Level.WARN);
 
         simulation = new CloudSim();
-        hostActivationMap = new HashMap<>();
         datacenter0 = createDatacenter();
 
         /*After Host 1 is shutdown, send new VMs to request it to startup again.*/
@@ -183,12 +182,18 @@ public class HostActivationExample {
 
     private void printHostsUpTime() {
         System.out.printf("%nHosts' up time (total time each Host was powered on)%n");
-        hostActivationMap.forEach((host, activations) -> {
+        datacenter0.getHostList().stream().filter(Host::hasEverStarted).forEach(host -> {
+            final PowerModelHost powerModel = host.getPowerModel();
+            System.out.printf("  Host %2d%n", host.getId());
+
             System.out.printf(
-                "\tHost %4d Total up time: %4.0f seconds | Startup power consumed: %4.0f watts | Shutdown power consumed: %4.0f watts | Activations: %d%n",
-                host.getId(), host.getTotalUpTime(),
-                host.getPowerModel().getTotalStartupPower(),
-                host.getPowerModel().getTotalShutDownPower(), activations);
+                "     Total Up time:  %3.0f secs |  Startup time: %3.0f secs | Startup power:  %3.0f watts%n",
+                host.getTotalUpTime(), powerModel.getTotalStartupTime(), powerModel.getTotalStartupPower());
+
+            System.out.printf(
+                "     Activations:    %3d      | Shutdown time: %3.0f secs | Shutdown power: %3.0f watts%n",
+                powerModel.getTotalStartups(), powerModel.getTotalShutDownTime(), powerModel.getTotalShutDownPower());
+
         });
     }
 
@@ -283,13 +288,7 @@ public class HostActivationExample {
 
         host.setIdleShutdownDeadline(HOST_IDLE_SECONDS_TO_SHUTDOWN)
             .setPowerModel(powerModel);
-        host.addOnStartupListener(this::computeHostActivation);
         return host;
-    }
-
-    private void computeHostActivation(final HostEventInfo info) {
-        final Host host = info.getHost();
-        hostActivationMap.compute(host, (key, activations) -> activations == null ? 1 : activations+1);
     }
 
     /**

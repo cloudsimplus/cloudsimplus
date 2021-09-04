@@ -44,6 +44,15 @@ public abstract class PowerModelHost implements PowerModel {
     /** @see #getTotalShutDownPower() */
     private double totalShutDownPower;
 
+    /** @see #getTotalStartupTime() */
+    private double totalStartupTime;
+
+    /** @see #getTotalShutDownTime() */
+    private double totalShutDownTime;
+
+    /** @see #getTotalStartups() */
+    private int totalStartups;
+
     /**
      * Checks if a power value (in Watts) is valid.
      * @param power the value to validate
@@ -173,6 +182,8 @@ public abstract class PowerModelHost implements PowerModel {
      */
     public void addStartupTotals() {
         totalStartupPower += startupPower;
+        totalStartupTime += startupDelay;
+        totalStartups++;
     }
 
     /**
@@ -189,6 +200,32 @@ public abstract class PowerModelHost implements PowerModel {
      */
     public void addShutDownTotals() {
         totalShutDownPower += shutDownPower;
+        totalShutDownTime += shutDownDelay;
     }
 
+    /**
+     * Gets the number of times the Host has started up.
+     * @return
+     * @see #getTotalStartupTime()
+     */
+    public int getTotalStartups() {
+        return totalStartups;
+    }
+
+    /**
+     * Get the total time (in seconds) the {@link Host} spent during startup.
+     * If the Host starts up multiple times, the time spent is summed up.
+     * @see #getTotalStartups()
+     */
+    public double getTotalStartupTime() {
+        return totalStartupTime;
+    }
+
+    /**
+     * Get the total time (in seconds) the {@link Host} spent during shut down.
+     * If the Host shuts down multiple times, the time spent is summed up.
+     */
+    public double getTotalShutDownTime() {
+        return totalShutDownTime;
+    }
 }
