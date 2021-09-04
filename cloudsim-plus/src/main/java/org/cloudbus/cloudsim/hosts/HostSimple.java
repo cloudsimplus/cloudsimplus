@@ -1174,15 +1174,13 @@ public class HostSimple implements Host {
         return this;
     }
 
-    /**
-     * Compare this Host with another one based on {@link #getTotalMipsCapacity()}.
-     *
-     * @param o the Host to compare to
-     * @return {@inheritDoc}
-     */
     @Override
     public int compareTo(final Host o) {
-        return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity());
+        if(this.equals(Objects.requireNonNull(o))) {
+            return 0;
+        }
+
+        return Long.compare(this.id, o.getId());
     }
 
     @Override
