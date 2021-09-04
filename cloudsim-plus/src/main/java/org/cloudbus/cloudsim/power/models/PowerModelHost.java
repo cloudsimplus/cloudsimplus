@@ -171,7 +171,7 @@ public abstract class PowerModelHost implements PowerModel {
      * After the Host is powered on, adds the consumed power to the total startup power.
      * If the Host is powered on/off multiple times, that power consumed is summed up.
      */
-    public void addTotalStartupPower() {
+    public void addStartupTotals() {
         totalStartupPower += startupPower;
     }
 
@@ -187,7 +187,7 @@ public abstract class PowerModelHost implements PowerModel {
      * After the Host is powered off, adds the consumed power to the total shutdown power.
      * If the Host is powered on/off multiple times, that power consumed is summed up.
      */
-    public void addTotalShutDownPower() {
+    public void addShutDownTotals() {
         totalShutDownPower += shutDownPower;
     }
 

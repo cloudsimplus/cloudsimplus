@@ -565,10 +565,10 @@ public class HostSimple implements Host {
         final boolean wasActive = this.active;
         if(activate) {
             setStartTime(getSimulation().clock());
-            powerModel.addTotalStartupPower();
+            powerModel.addStartupTotals();
         } else {
             setShutdownTime(getSimulation().clock());
-            powerModel.addTotalShutDownPower();
+            powerModel.addShutDownTotals();
         }
 
         this.active = activate;
