@@ -32,7 +32,7 @@ public class PowerModelHostSimple extends PowerModelHost {
         }
 
         final double utilizationFraction = getHost().getCpuMipsUtilization() / getHost().getTotalMipsCapacity();
-        return new PowerMeasurement(staticPower, (maxPower - staticPower) * utilizationFraction);
+        return new PowerMeasurement(staticPower, dynamicPower(utilizationFraction));
     }
 
     /**
@@ -49,11 +49,21 @@ public class PowerModelHostSimple extends PowerModelHost {
             throw new IllegalArgumentException("utilizationFraction has to be between [0 and 1]");
         }
 
+        return staticPower + dynamicPower(utilizationFraction);
+    }
+
+    /**
+     * Computes the dynamic power consumed according to the CPU utilization percentage.
+     * @param utilizationFraction the utilization percentage (between [0 and 1]) of the host.
+     * @return the dynamic power supply in Watts (W)
+     */
+    private double dynamicPower(final double utilizationFraction) {
         /* TODO: This is not considering the host may be started and shut down multiple times.
-        *  Only one occurrence of such events is being considered to add up the power consumed by them. */
+         *  Only one occurrence of such events is being considered to add up the power consumed by them. */
         final double startupPower = getHost().hasEverStarted() ? getStartupPower() : 0;
         final double shutDownPower = getHost().hasEverStarted() && !getHost().isActive() ? getShutDownPower() : 0;
-        return staticPower + (maxPower - staticPower) * utilizationFraction + startupPower + shutDownPower;
+        final double dynamicPower = (maxPower - staticPower) * utilizationFraction;
+        return startupPower + dynamicPower + shutDownPower;
     }
 
     /**
