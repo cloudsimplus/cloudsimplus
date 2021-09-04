@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-examples</artifactId>
-    <version>6.4.3</version>
+    <version>6.4.4</version>
 
     <name>CloudSim Plus Examples</name>
     <description>
