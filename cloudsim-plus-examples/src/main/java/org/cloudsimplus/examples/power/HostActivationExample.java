@@ -46,6 +46,7 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.listeners.EventInfo;
+import org.cloudsimplus.listeners.HostEventInfo;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -105,6 +106,12 @@ public class HostActivationExample {
     /** Indicates the time (in seconds) the Host takes to shut down. */
     private static final double HOST_SHUT_DOWN_DELAY = 10;
 
+    /** Indicates the power (in watts) the Host consumes for starting up. */
+    private static final double HOST_START_UP_POWER = 40;
+
+    /** Indicates the power (in watts) the Host consumes for shutting up. */
+    private static final double HOST_SHUT_DOWN_POWER = 15;
+
     /** The deadline (in seconds) after the Host becoming idle that it will be shutdown
      * automatically.
      * @see Host#setIdleShutdownDeadline(double) */
@@ -135,11 +142,14 @@ public class HostActivationExample {
 
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
+
+        /*After Host 1 is shutdown, send new VMs to request it to startup again.*/
+        datacenter0.getHost(1).addOnShutdownListener(this::hostShutdownListener);
         broker0 = createBroker();
 
         vmList = new ArrayList<>(MAX_VMS);
         cloudletList = new ArrayList<>(MAX_VMS);
-        createAndSubmitVmsAndCloudlets();
+        createAndSubmitVmsAndCloudlets(MIN_VMS);
         simulation.addOnClockTickListener(this::clockTickListener);
 
         simulation.start();
@@ -153,10 +163,31 @@ public class HostActivationExample {
         printHostsUpTime();
     }
 
+    /**
+     * After a Host is shutdown, send new VMs to force a new Host activation.
+     * This way, we can see the total power consumed during host startup and shutdown
+     * is larger for those Hosts which have started more than once.
+     * @param info
+     */
+    private void hostShutdownListener(final HostEventInfo info) {
+        final List<Vm> createVmList = createAndSubmitVmsAndCloudlets(MIN_VMS*2);
+        final Host host = info.getHost();
+        System.out.printf(
+            "%s: Sending new %d VMs after Host %d shutdown: %s.%n",
+            simulation.clockStr(), createVmList.size(), host.getId(), createVmList);
+
+        //Ensure the listener is fired only once.
+        host.removeOnShutdownListener(info.getListener());
+    }
+
     private void printHostsUpTime() {
         System.out.printf("%nHosts' up time (total time each Host was powered on)%n");
         for (Host host : datacenter0.getHostList()) {
-            System.out.printf("\tHost %4d Total up time: %15.0f seconds%n", host.getId(), host.getTotalUpTime());
+            System.out.printf(
+                "\tHost %4d Total up time: %4.0f seconds | Startup power consumed: %4.0f watts | Shutdown power consumed: %4.0f watts%n",
+                host.getId(), host.getTotalUpTime(),
+                host.getPowerModel().getTotalStartupPower(),
+                host.getPowerModel().getTotalShutDownPower());
         }
     }
 
@@ -188,17 +219,17 @@ public class HostActivationExample {
         final double time = Math.floor(info.getTime());
         if(time > lastClockTime && time > broker0.getFailedVmsRetryDelay() && time % SCHEDULING_INTERVAL == 0) {
             if(vmList.size() < MAX_VMS) {
-                createAndSubmitVmsAndCloudlets();
+                createAndSubmitVmsAndCloudlets(MIN_VMS);
             }
         }
         lastClockTime = time;
     }
 
-    private void createAndSubmitVmsAndCloudlets() {
-        final List<Vm> newVmList = new ArrayList<>(MIN_VMS);
-        final List<Cloudlet> newCloudletList = new ArrayList<>(MIN_VMS);
+    private List<Vm> createAndSubmitVmsAndCloudlets(final int vmsToCreate) {
+        final List<Vm> newVmList = new ArrayList<>(vmsToCreate);
+        final List<Cloudlet> newCloudletList = new ArrayList<>(vmsToCreate);
 
-        for (int i = 0; i < MIN_VMS; i++) {
+        for (int i = 0; i < vmsToCreate; i++) {
             final Vm vm = new VmSimple(HOST_MIPS, VM_PES);
             //vm.setSubmissionDelay(2.0);
             final Cloudlet cloudlet = createCloudlet(vm);
@@ -211,6 +242,7 @@ public class HostActivationExample {
 
         broker0.submitVmList(newVmList);
         broker0.submitCloudletList(newCloudletList);
+        return newVmList;
     }
 
     private Datacenter createDatacenter() {
@@ -241,7 +273,9 @@ public class HostActivationExample {
         final Host host = new HostSimple(peList, activate);
         final PowerModelHost powerModel = new PowerModelHostSimple(MAX_POWER, STATIC_POWER);
         powerModel.setStartupDelay(HOST_START_UP_DELAY)
-                  .setShutDownDelay(HOST_SHUT_DOWN_DELAY);
+                  .setShutDownDelay(HOST_SHUT_DOWN_DELAY)
+                  .setStartupPower(HOST_START_UP_POWER)
+                  .setShutDownPower(HOST_SHUT_DOWN_POWER);
 
         host.setIdleShutdownDeadline(HOST_IDLE_SECONDS_TO_SHUTDOWN)
             .setPowerModel(powerModel);

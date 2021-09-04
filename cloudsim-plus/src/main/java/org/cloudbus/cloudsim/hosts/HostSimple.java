@@ -563,9 +563,13 @@ public class HostSimple implements Host {
      */
     public void processActivation(final boolean activate) {
         final boolean wasActive = this.active;
-        if(activate)
+        if(activate) {
             setStartTime(getSimulation().clock());
-        else setShutdownTime(getSimulation().clock());
+            powerModel.addTotalStartupPower();
+        } else {
+            setShutdownTime(getSimulation().clock());
+            powerModel.addTotalShutDownPower();
+        }
 
         this.active = activate;
         ((DatacenterSimple) datacenter).updateActiveHostsNumber(this);

@@ -58,12 +58,8 @@ public class PowerModelHostSimple extends PowerModelHost {
      * @return the dynamic power supply in Watts (W)
      */
     private double dynamicPower(final double utilizationFraction) {
-        /* TODO: This is not considering the host may be started and shut down multiple times.
-         *  Only one occurrence of such events is being considered to add up the power consumed by them. */
-        final double startupPower = getHost().hasEverStarted() ? getStartupPower() : 0;
-        final double shutDownPower = getHost().hasEverStarted() && !getHost().isActive() ? getShutDownPower() : 0;
         final double dynamicPower = (maxPower - staticPower) * utilizationFraction;
-        return startupPower + dynamicPower + shutDownPower;
+        return getTotalStartupPower() + dynamicPower + getTotalShutDownPower();
     }
 
     /**

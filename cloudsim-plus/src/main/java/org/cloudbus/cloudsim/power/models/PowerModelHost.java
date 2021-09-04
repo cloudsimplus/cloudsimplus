@@ -33,10 +33,16 @@ public abstract class PowerModelHost implements PowerModel {
      */
     private double startupPower;
 
+    /** @see #getTotalStartupPower() */
+    private double totalStartupPower;
+
     /**
      * @see #getShutDownPower()
      */
     private double shutDownPower;
+
+    /** @see #getTotalShutDownPower() */
+    private double totalShutDownPower;
 
     /**
      * Checks if a power value (in Watts) is valid.
@@ -152,4 +158,37 @@ public abstract class PowerModelHost implements PowerModel {
         this.shutDownPower = validatePower(power, "Power");
         return this;
     }
+
+    /**
+     * Get the total power consumed (in Watts) during all the times the {@link Host} was powered on.
+     * If the Host has never started up, returns zero.
+     */
+    public double getTotalStartupPower() {
+        return totalStartupPower;
+    }
+
+    /**
+     * After the Host is powered on, adds the consumed power to the total startup power.
+     * If the Host is powered on/off multiple times, that power consumed is summed up.
+     */
+    public void addTotalStartupPower() {
+        totalStartupPower += startupPower;
+    }
+
+    /**
+     * Get the total power consumed (in Watts) during all the times the {@link Host} was powered off.
+     * If the Host has never started up then shutdown, returns zero.
+     */
+    public double getTotalShutDownPower() {
+        return totalShutDownPower;
+    }
+
+    /**
+     * After the Host is powered off, adds the consumed power to the total shutdown power.
+     * If the Host is powered on/off multiple times, that power consumed is summed up.
+     */
+    public void addTotalShutDownPower() {
+        totalShutDownPower += shutDownPower;
+    }
+
 }
