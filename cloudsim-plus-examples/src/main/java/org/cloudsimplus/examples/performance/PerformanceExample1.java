@@ -21,7 +21,7 @@
  *     You should have received a copy of the GNU General Public License
  *     along with CloudSim Plus. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.cloudsimplus.examples;
+package org.cloudsimplus.examples.performance;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicyFirstFit;
@@ -67,7 +67,7 @@ import static org.cloudbus.cloudsim.util.TimeUtil.secondsToStr;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.5.0
  */
-public class PerformanceExample {
+public class PerformanceExample1 {
     /**
      * Setting the scheduling interval as -1 drastically reduces simulation time,
      * but cloudlets processing is just updated when a cloudlet finishes,
@@ -104,10 +104,10 @@ public class PerformanceExample {
     private final List<Cloudlet> cloudletList;
 
     public static void main(String[] args) {
-        new PerformanceExample();
+        new PerformanceExample1();
     }
 
-    private PerformanceExample() {
+    private PerformanceExample1() {
         final double startSecs = TimeUtil.currentTimeSecs();
         System.out.printf("Start time: %s%n", LocalTime.now());
         Log.setLevel(ch.qos.logback.classic.Level.WARN);
