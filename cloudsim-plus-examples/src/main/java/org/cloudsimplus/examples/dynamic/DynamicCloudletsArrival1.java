@@ -40,10 +40,12 @@ import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
+import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
+import org.cloudsimplus.builders.tables.TextTableColumn;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,12 +65,12 @@ public class DynamicCloudletsArrival1 {
     /**
      * Number of Processor Elements (CPU Cores) of each Host.
      */
-    private static final int HOST_PES_NUMBER = 4;
+    private static final int HOST_PES_NUMBER = 8;
 
     /**
      * Number of Processor Elements (CPU Cores) of each VM and cloudlet.
      */
-    private static final int VM_PES_NUMBER = HOST_PES_NUMBER;
+    private static final int VM_PES_NUMBER = HOST_PES_NUMBER/2;
 
     /**
      * Number of Cloudlets to create simultaneously.
@@ -110,12 +112,17 @@ public class DynamicCloudletsArrival1 {
         this.datacenter = createDatacenter();
         this.broker = new DatacenterBrokerSimple(simulation);
 
-        Vm vm = createAndSubmitVmAndCloudlets();
+        createAndSubmitVmAndCloudlets(0);
 
         /*Defines a delay of 5 seconds and creates another group of cloudlets
         that will start executing inside a VM only after this delay expires.*/
-        double submissionDelay = 5;
-        createAndSubmitCloudlets(vm, submissionDelay);
+        Vm vm = createVm();
+        Cloudlet cl = createCloudlet(vm);
+        vm.setSubmissionDelay(5);
+        cl.setSubmissionDelay(5);
+
+        broker.submitVm(vm);
+        broker.submitCloudlet(cl);
 
         runSimulationAndPrintResults();
         System.out.println(getClass().getSimpleName() + " finished!");
@@ -124,7 +131,11 @@ public class DynamicCloudletsArrival1 {
     private void runSimulationAndPrintResults() {
         simulation.start();
         List<Cloudlet> cloudlets = broker.getCloudletFinishedList();
-        new CloudletsTableBuilder(cloudlets).build();
+        new CloudletsTableBuilder(cloudlets)
+            .addColumn(7, new TextTableColumn("VM Arrived", "Time"), cl -> cl.getVm().getArrivedTime())
+            .addColumn(8, new TextTableColumn("VM Creation", "Request"), cl -> cl.getVm().getCreationRequestTime())
+            .addColumn(9, new TextTableColumn("VM Wait", "Time"), cl -> cl.getVm().getWaitTime())
+            .build();
     }
 
     /**
@@ -134,13 +145,13 @@ public class DynamicCloudletsArrival1 {
      * @param vm Vm to run the cloudlets to be created
      * @param submissionDelay the delay the broker has to include when submitting the Cloudlets
      *
-     * @see #createCloudlet(int, Vm, DatacenterBroker)
+     * @see #createCloudlet(Vm)
      */
     private void createAndSubmitCloudlets(Vm vm, double submissionDelay) {
         int cloudletId = cloudletList.size();
         List<Cloudlet> list = new ArrayList<>(NUMBER_OF_CLOUDLETS);
         for(int i = 0; i < NUMBER_OF_CLOUDLETS; i++){
-            Cloudlet cloudlet = createCloudlet(cloudletId++, vm, broker);
+            Cloudlet cloudlet = createCloudlet(vm);
             list.add(cloudlet);
         }
 
@@ -151,38 +162,27 @@ public class DynamicCloudletsArrival1 {
     /**
      * Creates one Vm and a group of cloudlets to run inside it,
      * and submit the Vm and its cloudlets to the broker.
-     * @return the created VM
-     *
-     * @see #createVm(int, org.cloudbus.cloudsim.brokers.DatacenterBroker)
+     * @see #createVm()
      */
-    private Vm createAndSubmitVmAndCloudlets() {
+    private void createAndSubmitVmAndCloudlets(final double submissionDelay) {
         List<Vm> list = new ArrayList<>();
-        Vm vm = createVm(this.vmList.size(), broker);
+        Vm vm = createVm();
         list.add(vm);
 
-        broker.submitVmList(list);
+        broker.submitVmList(list, submissionDelay);
         this.vmList.addAll(list);
 
         //Submit cloudlets without delay
-        createAndSubmitCloudlets(vm, 0);
-        return vm;
+        createAndSubmitCloudlets(vm, submissionDelay);
     }
 
-    /**
-     * Creates a VM with pre-defined configuration.
-     *
-     * @param id the VM id
-     * @param broker the broker that will be submit the VM
-     * @return the created VM
-     *
-     */
-    private Vm createVm(int id, DatacenterBroker broker) {
+    private Vm createVm() {
         int mips = 1000;
         long size = 10000; // image size (Megabyte)
         int ram = 512; // vm memory (Megabyte)
         long bw = 1000;
 
-        return new VmSimple(id, mips, VM_PES_NUMBER)
+        return new VmSimple(mips, VM_PES_NUMBER)
             .setRam(ram).setBw(bw).setSize(size)
             .setCloudletScheduler(new CloudletSchedulerTimeShared());
     }
@@ -190,21 +190,22 @@ public class DynamicCloudletsArrival1 {
     /**
      * Creates a cloudlet with pre-defined configuration.
      *
-     * @param id Cloudlet id
      * @param vm vm to run the cloudlet
-     * @param broker the broker that will submit the cloudlets
      * @return the created cloudlet
      */
-    private Cloudlet createCloudlet(int id, Vm vm, DatacenterBroker broker) {
+    private Cloudlet createCloudlet(Vm vm) {
         long fileSize = 300;
         long outputSize = 300;
         long length = 10000; //in number of Million Instructions (MI)
         int pesNumber = 1;
         UtilizationModel utilizationModel = new UtilizationModelFull();
-        Cloudlet cloudlet = new CloudletSimple(id, length, pesNumber)
+        UtilizationModel utilizationModelDynamic = new UtilizationModelDynamic(0.05);
+        Cloudlet cloudlet = new CloudletSimple(length, pesNumber)
             .setFileSize(fileSize)
             .setOutputSize(outputSize)
-            .setUtilizationModel(utilizationModel)
+            .setUtilizationModelCpu(utilizationModel)
+            .setUtilizationModelBw(utilizationModelDynamic)
+            .setUtilizationModelRam(utilizationModelDynamic)
             .setVm(vm);
 
         return cloudlet;
