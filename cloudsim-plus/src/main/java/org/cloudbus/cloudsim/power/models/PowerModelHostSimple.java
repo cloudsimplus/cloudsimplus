@@ -36,8 +36,8 @@ public class PowerModelHostSimple extends PowerModelHost {
     }
 
     /**
-     * Computes the hosts power usage in Watts (W) at a certain degree of utilization.
-     * Mainly for backwards compatibility.
+     * Computes the host current power usage in Watts (W) at a certain degree of utilization
+     * (mainly for backwards compatibility).
      *
      * @param utilizationFraction the utilization percentage (between [0 and 1]) of the host.
      * @return the power supply in Watts (W)
