@@ -40,4 +40,39 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
 
     /** Gets the last Datacenter where entity was tried to be created. */
     Datacenter getLastTriedDatacenter();
+
+    /**
+     * Gets the absolute time the entity arrived at the broker, before being
+     * submitted to a Datacenter.
+     *
+     * @return the arrived time (in seconds)
+     * @see #getSubmissionDelay()
+     */
+    double getArrivedTime();
+
+    /**
+     * Sets the absolute time the entity arrived at the broker, before being
+     * submitted to a Datacenter.
+     *
+     * @param time the time to set
+     */
+    CustomerEntity setArrivedTime(double time);
+
+    /**
+     * Gets the absolute time the entity was requested to be created into a Datacenter.
+     *
+     * @return the creation request time (in seconds)
+     * @see #getSubmissionDelay()
+     */
+    double getCreationRequestTime();
+
+    /**
+     * Gets the total time the entity had to wait before being created,
+     * either due to a given {@link #getSubmissionDelay() submission delay}
+     * or because there was no suitable Host available after the VM submission.
+     *
+     * @return the total wait time (in seconds)
+     * @see #getSubmissionDelay()
+     */
+    double getWaitTime();
 }

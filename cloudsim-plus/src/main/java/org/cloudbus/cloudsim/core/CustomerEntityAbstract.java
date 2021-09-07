@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.util.TimeUtil;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,6 +16,11 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
      * @see #getId()
      */
     private long id;
+
+    /** @see #getArrivedTime() */
+    private double arrivedTime;
+    /** @see #getCreationRequestTime() */
+    private double creationRequestTime;
 
     /**
      * @see #getBroker()
@@ -51,6 +57,37 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     @Override
     public String getUid() {
         return UniquelyIdentifiable.getUid(broker.getId(), id);
+    }
+
+    @Override
+    public double getArrivedTime() {
+        return arrivedTime;
+    }
+
+    @Override
+    public CustomerEntity setArrivedTime(final double time) {
+        this.arrivedTime = TimeUtil.validateTime("Arrived time", time);
+        return this;
+    }
+
+    @Override
+    public double getCreationRequestTime() {
+        return creationRequestTime;
+    }
+
+    public CustomerEntity setCreationRequestTime() {
+        setCreationRequestTime(getSimulation().clock() + getSubmissionDelay());
+        return this;
+    }
+
+    public CustomerEntity setCreationRequestTime(final double time) {
+        this.creationRequestTime = TimeUtil.validateTime("Creation request time", time);
+        return this;
+    }
+
+    @Override
+    public double getWaitTime() {
+        return creationRequestTime - arrivedTime;
     }
 
     @Override

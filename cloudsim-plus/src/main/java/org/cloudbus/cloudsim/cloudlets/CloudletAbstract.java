@@ -210,6 +210,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         setFinishTime(NOT_ASSIGNED); // meaning this Cloudlet hasn't finished yet
         setVm(Vm.NULL);
         setExecStartTime(0.0);
+        setArrivedTime(0);
+        setCreationRequestTime(0);
 
         datacenterExecutionList.clear();
 

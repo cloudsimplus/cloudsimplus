@@ -2,6 +2,7 @@ package org.cloudbus.cloudsim.vms;
 
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
+import org.cloudbus.cloudsim.core.CustomerEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
@@ -126,6 +127,7 @@ class VmNull implements Vm {
     @Override public double getStartTime() { return 0; }
     @Override public Vm setStartTime(double startTime) { return this; }
     @Override public double getStopTime() { return 0; }
+    @Override public double getWaitTime() { return 0; }
     @Override public double getTotalExecutionTime() { return 0; }
     @Override public Vm setStopTime(double stopTime) { return this; }
     @Override public double getLastBusyTime() { return 0; }
@@ -175,6 +177,9 @@ class VmNull implements Vm {
     }
     @Override public void setLastTriedDatacenter(Datacenter lastTriedDatacenter) {/**/}
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
+    @Override public double getArrivedTime() { return 0; }
+    @Override public CustomerEntity setArrivedTime(double time) { return this; }
+    @Override public double getCreationRequestTime() { return 0; }
     @Override public String toString() { return "Vm.NULL"; }
     @Override public HorizontalVmScaling getHorizontalScaling() { return HorizontalVmScaling.NULL; }
     @Override public Vm setHorizontalScaling(HorizontalVmScaling scaling) throws IllegalArgumentException { return this; }
