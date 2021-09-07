@@ -260,4 +260,12 @@ public final class TimeUtil {
     public static double monthsToSeconds(final double months) {
         return daysToSeconds(months*30.0);
     }
+
+    public static double validateTime(final String fieldName, final double value){
+        if(value < 0) {
+            throw new IllegalArgumentException(fieldName + " cannot be negative");
+        }
+
+        return value;
+    }
 }
