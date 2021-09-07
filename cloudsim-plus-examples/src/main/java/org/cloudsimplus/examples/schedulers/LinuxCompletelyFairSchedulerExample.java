@@ -81,9 +81,6 @@ public class LinuxCompletelyFairSchedulerExample {
     private int numberOfCreatedCloudlets = 0;
     private int numberOfCreatedVms = 0;
 
-    /**
-     * Starts the example.
-     */
     public static void main(String[] args) {
         new LinuxCompletelyFairSchedulerExample();
     }

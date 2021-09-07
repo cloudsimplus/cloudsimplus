@@ -101,9 +101,6 @@ public class SharingHostPEsUsingVmSchedulerTimeSharedExample {
     private int numberOfCreatedVms = 0;
     private int numberOfCreatedHosts = 0;
 
-    /**
-     * Starts the simulation.
-     */
     public static void main(String[] args) {
         new SharingHostPEsUsingVmSchedulerTimeSharedExample();
     }

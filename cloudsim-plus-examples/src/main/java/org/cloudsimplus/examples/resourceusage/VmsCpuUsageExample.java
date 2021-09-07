@@ -73,9 +73,6 @@ public class VmsCpuUsageExample {
     private static final int VMS = 2;
     private static final int HOSTS = 3;
 
-    /**
-     * Starts the example execution.
-     */
     public static void main(String[] args) {
         new VmsCpuUsageExample();
     }

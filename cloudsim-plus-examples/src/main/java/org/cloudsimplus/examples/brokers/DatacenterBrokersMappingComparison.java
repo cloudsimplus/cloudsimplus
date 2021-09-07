@@ -102,9 +102,6 @@ public class DatacenterBrokersMappingComparison {
     private final List<Vm> vmList;
     private DatacenterBroker broker;
 
-    /**
-     * Starts the simulation.
-     */
     public static void main(String[] args) {
         //Enables just some level of log messages.
         Log.setLevel(Level.WARN);

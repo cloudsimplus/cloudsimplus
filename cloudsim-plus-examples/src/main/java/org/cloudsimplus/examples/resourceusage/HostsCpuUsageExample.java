@@ -72,9 +72,6 @@ public class HostsCpuUsageExample {
     private static final int NUMBER_OF_VMS = 2;
     private static final int NUMBER_OF_HOSTS = 2;
 
-    /**
-     * Starts the example execution
-     */
     public static void main(String[] args) {
         new HostsCpuUsageExample();
     }

@@ -67,9 +67,6 @@ public class UtilizationModelDynamicExample {
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
 
-    /**
-     * Starts the example.
-     */
     public static void main(String[] args) {
         new UtilizationModelDynamicExample();
     }

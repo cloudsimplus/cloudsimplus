@@ -55,9 +55,6 @@ public class NetworkExample1 {
     private List<Vm> vmlist;
     private CloudSim simulation;
 
-    /**
-     * Starts the example.
-     */
     public static void main(String[] args) {
         new NetworkExample1();
     }

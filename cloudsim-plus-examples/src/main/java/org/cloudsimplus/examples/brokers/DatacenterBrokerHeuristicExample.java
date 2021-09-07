@@ -106,9 +106,6 @@ public class DatacenterBrokerHeuristicExample {
      */
     private int createdHosts = 0;
 
-    /**
-     * Starts the simulation.
-     */
     public static void main(String[] args) {
         new DatacenterBrokerHeuristicExample();
     }

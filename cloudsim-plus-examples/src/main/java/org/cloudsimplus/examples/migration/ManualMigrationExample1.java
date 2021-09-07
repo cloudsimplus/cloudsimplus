@@ -137,9 +137,6 @@ public final class ManualMigrationExample1 {
     private List<Host> hostList;
     private boolean migrationRequested;
 
-    /**
-     * Starts the example.
-     */
     public static void main(String[] args) {
         new ManualMigrationExample1();
     }

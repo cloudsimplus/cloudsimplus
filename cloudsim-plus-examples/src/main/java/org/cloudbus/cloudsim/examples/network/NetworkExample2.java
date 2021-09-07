@@ -45,9 +45,6 @@ public class NetworkExample2 {
     private final CloudSim simulation;
     private final DatacenterBroker broker;
 
-    /**
-     * Starts the example.
-     */
     public static void main(String[] args) {
         new NetworkExample2();
     }

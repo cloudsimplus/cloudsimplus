@@ -108,9 +108,6 @@ public final class HostFaultInjectionExample1 {
      */
     private PoissonDistr poisson;
 
-    /**
-     * Starts the example.
-     */
     public static void main(String[] args) {
         new HostFaultInjectionExample1();
     }

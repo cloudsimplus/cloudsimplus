@@ -105,9 +105,6 @@ public class PauseSimulationAtGivenTimeExample2 {
     private List<Cloudlet> cloudletList;
     private List<Vm> vmList;
 
-    /**
-     * Starts the simulation.
-     */
     public static void main(String[] args) {
         new PauseSimulationAtGivenTimeExample2();
     }

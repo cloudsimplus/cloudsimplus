@@ -137,9 +137,6 @@ public final class DynamicVmAllocationPolicyBestFitExample {
     private CloudSim simulation;
     private List<Host> hostList;
 
-    /**
-     * Starts the example.
-     */
     public static void main(String[] args) {
         new DynamicVmAllocationPolicyBestFitExample();
     }

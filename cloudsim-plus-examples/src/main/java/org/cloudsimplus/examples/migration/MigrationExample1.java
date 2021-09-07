@@ -203,9 +203,6 @@ public final class MigrationExample1 {
     private List<Host> hostList;
     private int migrationsNumber = 0;
 
-    /**
-     * Starts the example.
-     */
     public static void main(String[] args) {
         new MigrationExample1();
     }
