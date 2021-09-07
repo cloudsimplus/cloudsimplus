@@ -59,8 +59,7 @@ public class PowerModelHostSimple extends PowerModelHost {
      * @return the dynamic power supply in Watts (W)
      */
     private double dynamicPower(final double utilizationFraction) {
-        final double dynamicPower = (maxPower - staticPower) * utilizationFraction;
-        return getTotalStartupPower() + dynamicPower + getTotalShutDownPower();
+        return (maxPower - staticPower) * utilizationFraction;
     }
 
     /**
