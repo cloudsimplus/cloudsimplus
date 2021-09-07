@@ -33,11 +33,11 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
     Simulation getSimulation();
 
     /**
-     * Sets the last Datacenter where VM was tried to be created.
+     * Sets the last Datacenter where entity was tried to be created.
      * @param lastTriedDatacenter
      */
     void setLastTriedDatacenter(Datacenter lastTriedDatacenter);
 
-    /** Gets the last Datacenter where VM was tried to be created. */
+    /** Gets the last Datacenter where entity was tried to be created. */
     Datacenter getLastTriedDatacenter();
 }
