@@ -615,17 +615,17 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         //if there is only one metric sample, it doesn't show the ± symbol (latex \pm), since there is no error margin
         final String errorMargin =
             confidenceErrorMargin(stats)
-                .map(margin -> String.format("$\\pm$ & %.3f", margin))
+                .map(margin -> String.format("$\\pm$ & %.2f", margin))
                 .orElse(" & ");
 
         //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
         final String escapedMetricName = StringUtils.replace(metricName,"%", "\\%");
         latex.append(escapedMetricName)
              .append(" & ")
-             .append(String.format("%.3f", stats.getMean()))
+             .append(String.format("%.2f", stats.getMean()))
              .append(errorMargin)
              .append(" & ")
-             .append(String.format("%.3f", stats.getStandardDeviation()))
+             .append(String.format("%.2f", stats.getStandardDeviation()))
              .append("\\\\ \\hline\n");
     }
 
@@ -634,7 +634,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         latex.append("\\begin{table}[!hbt]\n")
              .append(String.format("  \\caption{%s}\n", description))
              .append(String.format("  \\label{%s}\n", resultsTableId))
-             .append("  \\begin{tabular}{|p{2.5cm}|p{1.5cm}p{1.2cm}|>{\\raggedleft\\arraybackslash}p{1.3cm}|}\n")
+             .append("  \\begin{tabular}{|p{2.8cm}|p{1.3cm}p{1.3cm}|>{\\raggedleft\\arraybackslash}p{1.2cm}|}\n")
              .append("      \\hline\n")
              .append("      \\textbf{Metric} & \\multicolumn{2}{p{3.0cm}|}{\\textbf{95\\% Confidence Interval}} & \\textbf{*Std. Dev.} \\\\ \\hline\n");
         return latex;
