@@ -17,7 +17,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 public interface Delayable {
     /**
      * Gets the time (in seconds) that a {@link DatacenterBroker} will wait
-     * to request the creation of the object.
+     * to submit the entity to a Datacenter, in order to request the creation of the object.
      * This is a relative time from the current simulation time.
      *
      * @return the submission delay (in seconds)
@@ -32,7 +32,7 @@ public interface Delayable {
 
     /**
      * Sets the time (in seconds) that a {@link DatacenterBroker} will wait
-     * to request the creation of the object.
+     * to submit the entity to a Datacenter, in order to request the creation of the object.
      * This is a relative time from the current simulation time.
      *
      * @param submissionDelay the amount of seconds from the current simulation
