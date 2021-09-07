@@ -143,6 +143,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy)
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
+     * @see #addHost(Host)
      * @see #addHostList(List)
      */
     public DatacenterSimple(
@@ -216,7 +217,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private long getLastHostId() {
-        return hostList.get(hostList.size()-1).getId();
+        return hostList.isEmpty() ? -1 : hostList.get(hostList.size()-1).getId();
     }
 
     protected long setupHost(final Host host, long nextId) {
