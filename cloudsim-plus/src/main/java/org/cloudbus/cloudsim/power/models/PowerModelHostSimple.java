@@ -5,6 +5,7 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
 /**
  * Simple power model for hosts with linear power profile.
  * @since CloudSim Plus 6.0.0
+ * @see org.cloudbus.cloudsim.power.PowerMeter
  */
 public class PowerModelHostSimple extends PowerModelHost {
     private double maxPower;

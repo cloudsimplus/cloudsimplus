@@ -8,6 +8,7 @@ import java.util.Objects;
  * Abstract implementation of a host power model.
  *
  * @since CloudSim Plus 6.0.0
+ * @see org.cloudbus.cloudsim.power.PowerMeter
  */
 public abstract class PowerModelHost implements PowerModel {
     /**
