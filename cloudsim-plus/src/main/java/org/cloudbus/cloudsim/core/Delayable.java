@@ -25,7 +25,7 @@ public interface Delayable {
     double getSubmissionDelay();
 
     /**
-     * Sets the time (in seconds) that a {@link DatacenterBroker} will wait
+     * Sets a relative time (in seconds), from current simulation time, that a {@link DatacenterBroker} will wait
      * to submit the entity to a Datacenter, in order to request the creation of the object.
      * This is a relative time from the current simulation time.
      *
