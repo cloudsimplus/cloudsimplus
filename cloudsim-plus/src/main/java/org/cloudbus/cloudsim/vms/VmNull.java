@@ -179,7 +179,7 @@ class VmNull implements Vm {
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public double getArrivedTime() { return 0; }
     @Override public CustomerEntity setArrivedTime(double time) { return this; }
-    @Override public double getCreationRequestTime() { return 0; }
+    @Override public double getCreationTime() { return 0; }
     @Override public String toString() { return "Vm.NULL"; }
     @Override public HorizontalVmScaling getHorizontalScaling() { return HorizontalVmScaling.NULL; }
     @Override public Vm setHorizontalScaling(HorizontalVmScaling scaling) throws IllegalArgumentException { return this; }

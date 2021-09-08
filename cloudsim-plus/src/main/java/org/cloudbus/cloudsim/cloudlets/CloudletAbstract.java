@@ -211,7 +211,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         setVm(Vm.NULL);
         setExecStartTime(0.0);
         setArrivedTime(0);
-        setCreationRequestTime(0);
+        setCreationTime(0);
 
         datacenterExecutionList.clear();
 

@@ -133,7 +133,7 @@ public class DynamicCloudletsArrival1 {
         List<Cloudlet> cloudlets = broker.getCloudletFinishedList();
         new CloudletsTableBuilder(cloudlets)
             .addColumn(7, new TextTableColumn("VM Arrived", "Time"), cl -> cl.getVm().getArrivedTime())
-            .addColumn(8, new TextTableColumn("VM Creation", "Request"), cl -> cl.getVm().getCreationRequestTime())
+            .addColumn(8, new TextTableColumn("VM Creation", "Time"), cl -> cl.getVm().getCreationTime())
             .addColumn(9, new TextTableColumn("VM Wait", "Time"), cl -> cl.getVm().getWaitTime())
             .build();
     }

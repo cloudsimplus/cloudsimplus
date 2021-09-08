@@ -59,12 +59,12 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
     CustomerEntity setArrivedTime(double time);
 
     /**
-     * Gets the absolute time the entity was requested to be created into a Datacenter.
+     * Gets the absolute time the entity was created into a Datacenter.
      *
-     * @return the creation request time (in seconds)
+     * @return the creation time (in seconds)
      * @see #getSubmissionDelay()
      */
-    double getCreationRequestTime();
+    double getCreationTime();
 
     /**
      * Gets the total time the entity had to wait before being created,

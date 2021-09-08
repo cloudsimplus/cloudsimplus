@@ -688,6 +688,10 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public void setCreated(final boolean created) {
+        if(!this.created && created){
+            setCreationTime();
+        }
+
         this.created = created;
         this.setFailed(false);
     }

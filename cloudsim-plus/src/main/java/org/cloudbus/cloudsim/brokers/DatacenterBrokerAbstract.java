@@ -944,7 +944,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
 
         logVmCreationRequest(datacenter, isFallbackDatacenter, vm);
-        ((CustomerEntityAbstract)vm).setCreationRequestTime();
         send(datacenter, vm.getSubmissionDelay(), CloudSimTags.VM_CREATE_ACK, vm);
         vm.setLastTriedDatacenter(datacenter);
         return 1;
@@ -998,7 +997,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             logCloudletCreationRequest(cloudlet);
             cloudlet.setVm(lastSelectedVm);
-            cloudlet.setCreationRequestTime();
             send(getDatacenter(lastSelectedVm),
                 cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
             cloudlet.setLastTriedDatacenter(getDatacenter(lastSelectedVm));

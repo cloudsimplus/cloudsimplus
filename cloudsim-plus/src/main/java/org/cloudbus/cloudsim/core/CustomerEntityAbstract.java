@@ -19,8 +19,8 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
 
     /** @see #getArrivedTime() */
     private double arrivedTime;
-    /** @see #getCreationRequestTime() */
-    private double creationRequestTime;
+    /** @see #getCreationTime() */
+    private double creationTime;
 
     /**
      * @see #getBroker()
@@ -71,23 +71,23 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     }
 
     @Override
-    public double getCreationRequestTime() {
-        return creationRequestTime;
+    public double getCreationTime() {
+        return creationTime;
     }
 
-    public CustomerEntity setCreationRequestTime() {
-        setCreationRequestTime(getSimulation().clock() + getSubmissionDelay());
+    public CustomerEntity setCreationTime() {
+        setCreationTime(getSimulation().clock());
         return this;
     }
 
-    public CustomerEntity setCreationRequestTime(final double time) {
-        this.creationRequestTime = TimeUtil.validateTime("Creation request time", time);
+    public CustomerEntity setCreationTime(final double time) {
+        this.creationTime = TimeUtil.validateTime("Creation time", time);
         return this;
     }
 
     @Override
     public double getWaitTime() {
-        return creationRequestTime - arrivedTime;
+        return creationTime - arrivedTime;
     }
 
     @Override

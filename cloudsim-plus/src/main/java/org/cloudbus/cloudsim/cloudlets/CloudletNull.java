@@ -193,7 +193,7 @@ final class CloudletNull implements Cloudlet {
     @Override public Datacenter getLastTriedDatacenter() { return Datacenter.NULL; }
     @Override public double getArrivedTime() { return 0; }
     @Override public CustomerEntity setArrivedTime(double time) { return this; }
-    @Override public double getCreationRequestTime() { return 0; }
+    @Override public double getCreationTime() { return 0; }
     @Override public double getWaitTime() { return 0; }
     @Override public boolean removeOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return false; }
     @Override public Cloudlet addOnUpdateProcessingListener(EventListener<CloudletVmEventInfo> listener) { return Cloudlet.NULL; }

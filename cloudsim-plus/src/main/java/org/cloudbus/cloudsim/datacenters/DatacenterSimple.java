@@ -12,6 +12,7 @@ import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigr
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
+import org.cloudbus.cloudsim.core.CustomerEntityAbstract;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.PredicateType;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -496,6 +497,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 getCloudletProcessingUpdateInterval(estimatedFinishTime),
                 CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
+
+        ((CustomerEntityAbstract)cloudlet).setCreationTime();
+
 
         sendCloudletSubmitAckToBroker(cloudlet, ack);
     }
