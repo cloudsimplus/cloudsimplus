@@ -619,7 +619,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getRam());
         updateVmResourceAbsoluteUtilization(cle, ((VmSimple)vm).getBw());
 
-        return (long)(partialFinishedInstructions/Conversion.MILLION);
+        return (long)(partialFinishedInstructions/ Conversion.MILLION);
     }
 
     /**

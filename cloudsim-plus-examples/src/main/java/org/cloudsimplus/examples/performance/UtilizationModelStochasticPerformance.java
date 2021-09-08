@@ -36,7 +36,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.BytesConversion;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
@@ -180,7 +180,7 @@ public class UtilizationModelStochasticPerformance {
                              .mapToDouble(MemoryUsage::getUsed)
                              .sum();
 
-        return Conversion.bytesToGigaBytes(memoryBytes);
+        return BytesConversion.bytesToGigaBytes(memoryBytes);
     }
 
     private Datacenter createDatacenter() {

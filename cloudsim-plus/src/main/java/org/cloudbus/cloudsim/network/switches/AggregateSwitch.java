@@ -11,7 +11,7 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.network.HostPacket;
-import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.BytesConversion;
 
 /**
  * This class represents an Aggregate Switch in a Datacenter network. It
@@ -50,7 +50,7 @@ public class AggregateSwitch extends AbstractSwitch {
      * Default downlink bandwidth of {@link AggregateSwitch} in Megabits/s.
      * It also represents the uplink bandwidth of connected edge Datacenter.
      */
-    public static final long DOWNLINK_BW =  (long) Conversion.MEGA * 100 * 8;
+    public static final long DOWNLINK_BW =  (long) BytesConversion.MEGA * 100 * 8;
 
     /**
      * Default number of aggregation switch ports that defines the number of

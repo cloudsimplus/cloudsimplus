@@ -24,35 +24,53 @@
 package org.cloudbus.cloudsim.util;
 
 /**
- * Utility class that provides a set of methods for general data conversion.
+ * Utility class that provides a set of methods for power/energy conversion.
  *
  * @author Manoel Campos da Silva Filho
  * @see TimeUtil
  * @see MathUtil
  */
-public final class Conversion {
-    /**
-     * A value that represents 100% in a scale from 0 to 1.
-     */
-    public static final double HUNDRED_PERCENT = 1.0;
-
-    /** One million in absolute value,
-     * usually used to convert to and from
-     * Number of Instructions (I) and Million Instructions (MI) units. */
-    public static final int MILLION = 1_000_000;
+public final class PowerConversion {
+    private static final double KILO = 1000;
+    private static final double MEGA = KILO * KILO;
+    private static final double GIGA = MEGA * KILO;
+    private static final double TERA = GIGA * KILO;
 
     /**
      * A private constructor to avoid class instantiation.
      */
-    private Conversion(){}
+    private PowerConversion(){}
 
     /**
-     * Converts a boolean value to int
-     * @param bool the boolean value to convert
-     * @return 1 if the boolean value is true, 0 otherwise.
+     * Converts watt-seconds (joule) to kWh.
+     * @param power the power in Ws
+     * @return the power in kWh
      */
-    public static int boolToInt(final boolean bool){
-        return bool ? 1 : 0;
+    public static double wattSecondsToKWattHours(final double power) {
+        return power * KILO / 3600.0;
     }
 
+    public static double wattsToKilo(final double watts){ return watts / KILO; }
+
+    public static double wattsToMega(final double watts){ return watts / MEGA; }
+
+    public static double wattsToTera(final double watts){ return watts / TERA; }
+
+    public static double megaToGiga(final double mega){ return mega / KILO; }
+
+    public static double megaToTera(final double mega){
+        return mega / MEGA;
+    }
+
+    public static double gigaToMega(final double giga){
+        return giga * KILO;
+    }
+
+    public static double teraToMega(final double tera){
+        return teraToGiga(tera) * KILO;
+    }
+
+    public static double teraToGiga(final double tera){
+        return tera * KILO;
+    }
 }

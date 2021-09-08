@@ -17,7 +17,7 @@ import org.cloudbus.cloudsim.resources.*;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
-import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.BytesConversion;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.vms.*;
 import org.cloudsimplus.listeners.EventListener;
@@ -44,9 +44,9 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Toolkit 1.0
  */
 public class HostSimple implements Host {
-    private static long defaultRamCapacity = (long)Conversion.gigaToMega(10);
+    private static long defaultRamCapacity = (long) BytesConversion.gigaToMega(10);
     private static long defaultBwCapacity = 1000;
-    private static long defaultStorageCapacity = (long)Conversion.gigaToMega(500);
+    private static long defaultStorageCapacity = (long) BytesConversion.gigaToMega(500);
 
     /** @see #getStateHistory() */
     private final List<HostStateHistoryEntry> stateHistory;

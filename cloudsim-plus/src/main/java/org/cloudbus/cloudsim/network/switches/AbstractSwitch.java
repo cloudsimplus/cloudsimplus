@@ -15,7 +15,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
-import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.BytesConversion;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -249,7 +249,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     protected double packetTransferDelay(
         final HostPacket netPkt, final double bwCapacity, final int simultaneousPackets)
     {
-        return Conversion.bytesToMegaBits(netPkt.getSize()) / bandwidthByPacket(bwCapacity, simultaneousPackets);
+        return BytesConversion.bytesToMegaBits(netPkt.getSize()) / bandwidthByPacket(bwCapacity, simultaneousPackets);
     }
 
     /**

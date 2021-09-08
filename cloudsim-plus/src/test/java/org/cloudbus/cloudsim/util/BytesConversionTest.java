@@ -8,75 +8,75 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * @author Manoel Campos da Silva Filho
  */
-public class ConversionTest {
+public class BytesConversionTest {
     private static final double ONE_MEGABYTE_IN_BYTES = 1048576;
 
     @Test
     public void kilo(){
         final double expectedBytes = 1024;
-        assertEquals(expectedBytes, Conversion.KILO);
+        assertEquals(expectedBytes, BytesConversion.KILO);
     }
 
     @Test
     public void mega(){
         final double expectedBytes = ONE_MEGABYTE_IN_BYTES;
-        assertEquals(expectedBytes, Conversion.MEGA);
+        assertEquals(expectedBytes, BytesConversion.MEGA);
     }
 
     @Test
     public void giga(){
         final double expectedBytes = 1073741824;
-        assertEquals(expectedBytes, Conversion.GIGA);
+        assertEquals(expectedBytes, BytesConversion.GIGA);
     }
 
     @Test
     public void tera(){
         final double expectedBytes = 1099511627776.0;
-        assertEquals(expectedBytes, Conversion.TERA);
+        assertEquals(expectedBytes, BytesConversion.TERA);
     }
 
     @Test
     public void bytesToMegaBytes(){
         final float expectedMegaBytes = 1;
-        assertEquals(expectedMegaBytes, Conversion.bytesToMegaBytes(ONE_MEGABYTE_IN_BYTES));
+        assertEquals(expectedMegaBytes, BytesConversion.bytesToMegaBytes(ONE_MEGABYTE_IN_BYTES));
     }
 
     @Test
     public void bytesToMegaBites(){
         final double expectedMegaBits = 8;
-        assertEquals(expectedMegaBits, Conversion.bytesToMegaBits(ONE_MEGABYTE_IN_BYTES));
+        assertEquals(expectedMegaBits, BytesConversion.bytesToMegaBits(ONE_MEGABYTE_IN_BYTES));
     }
 
     @Test
     public void bytesToBites(){
         final double expectedBits = 8192;
-        assertEquals(expectedBits, Conversion.bytesToBits(1024));
+        assertEquals(expectedBits, BytesConversion.bytesToBits(1024));
     }
 
     @Test
     public void bitesToBytes(){
         final double expectedBytes = 128;
-        assertEquals(expectedBytes, Conversion.bitesToBytes(1024));
+        assertEquals(expectedBytes, BytesConversion.bitesToBytes(1024));
     }
 
     @Test
     public void gigaToMega(){
         final double giga = 1;
         final double expectedMB = 1024;
-        assertEquals(expectedMB, Conversion.gigaToMega(giga));
+        assertEquals(expectedMB, BytesConversion.gigaToMega(giga));
     }
 
     @Test
     public void teraToGiga(){
         final double tera = 1;
         final double expectedGB = 1024;
-        assertEquals(expectedGB, Conversion.teraToGiga(tera));
+        assertEquals(expectedGB, BytesConversion.teraToGiga(tera));
     }
 
     @Test
     public void teraToMega(){
         final double tera = 1;
         final double expectedMB = 1048576;
-        assertEquals(expectedMB, Conversion.teraToMega(tera));
+        assertEquals(expectedMB, BytesConversion.teraToMega(tera));
     }
 }

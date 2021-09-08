@@ -10,7 +10,7 @@ package org.cloudbus.cloudsim.resources;
 
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
-import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.BytesConversion;
 
 /**
  * An implementation of a Hard Drive (HD) storage device with a specific capacity (in Megabytes).
@@ -207,7 +207,7 @@ public class HarddriveStorage implements FileStorage {
      * @return the transfer time in seconds
      */
     protected final double getTransferTime(final int fileSize, final double speed) {
-        return Conversion.bytesToBits(fileSize) / speed;
+        return BytesConversion.bytesToBits(fileSize) / speed;
     }
 
     @Override

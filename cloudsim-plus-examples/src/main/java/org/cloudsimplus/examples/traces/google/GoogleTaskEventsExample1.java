@@ -37,6 +37,7 @@ import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmScheduler;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerTimeShared;
+import org.cloudbus.cloudsim.util.BytesConversion;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
@@ -60,7 +61,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.cloudbus.cloudsim.util.Conversion.megaBytesToBytes;
+import static org.cloudbus.cloudsim.util.BytesConversion.megaBytesToBytes;
 import static org.cloudbus.cloudsim.util.MathUtil.positive;
 
 /**
@@ -258,7 +259,7 @@ public class GoogleTaskEventsExample1 {
     }
 
     private long getCloudletSizeInMB(final Cloudlet cloudlet) {
-        return (long)Conversion.bytesToMegaBytes(cloudlet.getFileSize());
+        return (long) BytesConversion.bytesToMegaBytes(cloudlet.getFileSize());
     }
 
     private Host createHost() {

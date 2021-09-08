@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.util.Conversion;
+import org.cloudbus.cloudsim.util.BytesConversion;
 import org.cloudbus.cloudsim.util.ResourceLoader;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
@@ -261,7 +261,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
     {
         super(filePath, reader);
         this.setHostCreationFunction(hostCreationFunction);
-        this.setMaxRamCapacity((long) Conversion.gigaToMega(16));
+        this.setMaxRamCapacity((long) BytesConversion.gigaToMega(16));
         this.setMaxCpuCores(8);
         this.laterAvailableHosts = new ArrayList<>();
         this.hostsForRemoval = new ArrayList<>();
