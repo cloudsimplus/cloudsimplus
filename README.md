@@ -192,8 +192,8 @@ at a terminal.
 The project has a [bash script](script/bootstrap.sh) you can use to build and run CloudSim Plus examples. 
 This is a script for Unix-like systems such as Linux, FreeBSD and macOS.
 
-To run some example, type the following command at a terminal inside the project's root directory: `sh script/bootstrap.sh package.ExampleClassName`.
-For instance, to run the `CloudSimExample0` you can type: `sh script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample0`. 
+To run some example, type the following command at a terminal inside the project's root directory: `bash script/bootstrap.sh package.ExampleClassName`.
+For instance, to run the `CloudSimExample0` you can type: `bash script/bootstrap.sh org.cloudbus.cloudsim.examples.CloudSimExample0`. 
 
 The script checks if it is required to build the project, using maven in this case, making sure to download all dependencies. 
 To see which examples are available, just navigate through the [examples directory](/cloudsim-plus-examples/src/main/java/).
