@@ -28,7 +28,7 @@ if [ "$#" -eq 0 ]; then
     echo "	Build the project: $0 build"
     echo "	Run a specific example: $0 example_class"
     echo "		The 'example_class' has to be replaced by the fully qualified class name (that includes the package name), for instance:"
-    echo "		$0 org.cloudbus.cloudsim.examples.CloudSimExample1"
+    echo "		$0 org.cloudsimplus.examples.BasicFirstExample"
     echo "		If you try to run an example before building the project, it will be built automatically"
     echo ""
     exit -1
