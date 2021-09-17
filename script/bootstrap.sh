@@ -19,7 +19,6 @@ function get_examples_jar_file() {
     echo "`ls -t $BASEDIR/cloudsim-plus-examples/target/cloudsim-plus-examples-*-with-dependencies.jar | head -n 1`"
 }
 
-#call the function getting its output
 EXAMPLES_JAR=$(get_examples_jar_file)
 
 #No parameter was passed to the script. Show the usage help
@@ -50,8 +49,7 @@ if [ "$1" = "build" ] || [ "$EXAMPLES_JAR" = "" ]; then
 
     #If the script was built and the examples jar variable is empty,
 	#the user requested to run an example before building the project.
-	#The project was built, now call the function to get the jar file name again and 
-	#execute the requested example
+	#Here, the project was automatically built, then execute the requested example
     if [ "$EXAMPLES_JAR" = "" ]; then
 		EXAMPLES_JAR=$(get_examples_jar_file)
     	echo ""
