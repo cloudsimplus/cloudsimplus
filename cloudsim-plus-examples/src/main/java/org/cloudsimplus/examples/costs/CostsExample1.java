@@ -65,7 +65,7 @@ public class CostsExample1 {
     private static final int HOST_PES = 8;
     private static final int HOST_MIPS = 1000;
 
-    private static final int VMS = 6;
+    private static final int VMS = 4;
     private static final int VM_PES = 4;
     private static final int VM_RAM = 512;
     private static final int VM_BW = 1000;
