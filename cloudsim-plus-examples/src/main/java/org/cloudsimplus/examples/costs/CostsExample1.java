@@ -65,7 +65,7 @@ public class CostsExample1 {
     private static final int HOST_PES = 8;
     private static final int HOST_MIPS = 1000;
 
-    private static final int VMS = 4;
+    private static final int VMS = 6;
     private static final int VM_PES = 4;
     private static final int VM_RAM = 512;
     private static final int VM_BW = 1000;
@@ -97,6 +97,9 @@ public class CostsExample1 {
         broker0 = new DatacenterBrokerSimple(simulation);
         //Destroys idle VMs after some time
         broker0.setVmDestructionDelay(0.2);
+        //Disable VMs creation retry
+        //Failed VMs will be just added to the {@link #getVmFailedList()}
+        broker0.setFailedVmsRetryDelay(-1);
 
         vmList = createVms();
         broker0.submitVmList(vmList);
