@@ -6,8 +6,12 @@
  */
 package org.cloudbus.cloudsim.vms;
 
+import org.cloudbus.cloudsim.brokers.DatacenterBroker;
+import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.hosts.HostSimpleTest;
+import org.cloudbus.cloudsim.mocks.CloudSimMocker;
+import org.cloudbus.cloudsim.mocks.MocksHelper;
 import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
@@ -37,6 +41,53 @@ public class VmSimpleTest {
         vm = VmTestUtil.createVm(
             cloudletScheduler,
             b -> EasyMock.expect(b.requestIdleVmDestruction(EasyMock.anyObject())).andReturn(b));
+    }
+
+    @Test
+    public void testGetWaitTimeForNonCreateVmWithZeroArrivedTime() {
+        assertEquals(0, vm.getWaitTime());
+    }
+
+    @Test
+    public void testGetWaitTimeForNonCreateVmWithNonZeroClockAndZeroArrivedTime() {
+        final int clock = 10, arrivedTime = 0;
+        final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock).once());
+        final DatacenterBroker broker = MocksHelper.createMockBroker(simulation, b -> {});
+
+        final Vm vm = new VmSimple(this.vm);
+        vm.setBroker(broker);
+        vm.setArrivedTime(arrivedTime);
+        assertEquals(clock, vm.getWaitTime());
+    }
+
+    @Test
+    public void testGetWaitTimeForNonCreateVmWithNonZeroClockAndArrivedTime() {
+        final int clock = 10, arrivedTime = 2;
+        final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock).once());
+        final DatacenterBroker broker = MocksHelper.createMockBroker(simulation, b -> {});
+
+        final Vm vm = new VmSimple(this.vm);
+        vm.setBroker(broker);
+        vm.setArrivedTime(arrivedTime);
+        assertEquals(8, vm.getWaitTime());
+    }
+
+    @Test
+    public void testGetWaitTimeForCreateVmWithNonZeroClockAndZeroArrivedTime() {
+        final int clock = 10;
+        vm.setArrivedTime(0);
+        vm.setCreated(true);
+        vm.setCreationTime(clock);
+        assertEquals(clock, vm.getWaitTime());
+    }
+
+    @Test
+    public void testGetWaitTimeForCreateVmWithNonZeroClockAndArrivedTime() {
+        final int clock = 10;
+        vm.setArrivedTime(2);
+        vm.setCreated(true);
+        vm.setCreationTime(clock);
+        assertEquals(8, vm.getWaitTime());
     }
 
     @Test
