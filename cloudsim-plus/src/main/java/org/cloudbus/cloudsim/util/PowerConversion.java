@@ -54,6 +54,8 @@ public final class PowerConversion {
 
     public static double wattsToMega(final double watts){ return watts / MEGA; }
 
+    public static double wattsToGiga(final double watts){ return watts / GIGA; }
+
     public static double wattsToTera(final double watts){ return watts / TERA; }
 
     public static double megaToGiga(final double mega){ return mega / KILO; }
