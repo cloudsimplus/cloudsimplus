@@ -76,7 +76,7 @@ public class CostsExample1 {
     private static final int CLOUDLET_LENGTH = 100_000;
 
     private final CloudSim simulation;
-    private DatacenterBroker broker0;
+    private final DatacenterBroker broker0;
     private List<Vm> vmList;
     private List<Cloudlet> cloudletList;
     private Datacenter datacenter0;
@@ -92,14 +92,7 @@ public class CostsExample1 {
 
         simulation = new CloudSim();
         datacenter0 = createDatacenter();
-
-        //Creates a broker that is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets
-        broker0 = new DatacenterBrokerSimple(simulation);
-        //Destroys idle VMs after some time
-        broker0.setVmDestructionDelay(0.2);
-        //Disable VMs creation retry
-        //Failed VMs will be just added to the {@link #getVmFailedList()}
-        broker0.setFailedVmsRetryDelay(-1);
+        broker0 = createBroker();
 
         vmList = createVms();
         broker0.submitVmList(vmList);
@@ -118,6 +111,18 @@ public class CostsExample1 {
         new CloudletsTableBuilder(finishedCloudlets).build();
 
         printTotalVmsCost();
+    }
+
+    /**
+     * Creates a broker which is a software acting on behalf a cloud customer to manage his/her VMs and Cloudlets.
+     * It disables VMs creation retry, this way, failed VMs will be just added to the {@link DatacenterBroker#getVmFailedList()}.
+     */
+    private DatacenterBroker createBroker() {
+        final DatacenterBroker broker = new DatacenterBrokerSimple(simulation);
+        //Destroys idle VMs after some time (in seconds)
+        broker.setVmDestructionDelay(0.2);
+        broker.setFailedVmsRetryDelay(-1);
+        return broker;
     }
 
     /**
