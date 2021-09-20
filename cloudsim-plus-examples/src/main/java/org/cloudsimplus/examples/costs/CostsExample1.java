@@ -45,10 +45,10 @@ import java.util.Comparator;
 import java.util.List;
 
 /**
- * An simple example showing how to define datacenter resource utilization
+ * A simple example showing how to define datacenter resource utilization
  * and individual VM's costs ($).
- * It will create some VMs that will run some cloudlets.
- * Other VMs will just be idle all the time and
+ * It creates VMs that run some cloudlets.
+ * Some VMs will just be idle all the time and
  * other ones won't be created due to lack of available Hosts.
  *
  * @author Manoel Campos da Silva Filho
