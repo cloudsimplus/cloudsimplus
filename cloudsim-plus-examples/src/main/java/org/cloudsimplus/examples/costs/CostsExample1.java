@@ -97,6 +97,9 @@ public class CostsExample1 {
         broker0 = new DatacenterBrokerSimple(simulation);
         //Destroys idle VMs after some time
         broker0.setVmDestructionDelay(0.2);
+        //Disable VMs creation retry
+        //Failed VMs will be just added to the {@link #getVmFailedList()}
+        broker0.setFailedVmsRetryDelay(-1);
 
         vmList = createVms();
         broker0.submitVmList(vmList);
