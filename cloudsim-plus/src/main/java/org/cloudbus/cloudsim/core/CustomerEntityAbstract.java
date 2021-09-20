@@ -32,6 +32,7 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
 
     protected CustomerEntityAbstract(){
         lastTriedDatacenter = Datacenter.NULL;
+        creationTime = -1;
     }
 
     @Override
@@ -87,7 +88,7 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
 
     @Override
     public double getWaitTime() {
-        return creationTime - arrivedTime;
+        return creationTime < 0 ? getSimulation().clock() - arrivedTime : creationTime - arrivedTime;
     }
 
     @Override
