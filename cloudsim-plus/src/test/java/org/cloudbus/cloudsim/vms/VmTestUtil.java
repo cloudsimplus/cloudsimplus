@@ -140,6 +140,7 @@ public final class VmTestUtil {
             mocker.clock(0).anyTimes();
             mocker.clockStr().anyTimes();
         });
+
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, brokerMockerConsumer);
         final VmSimple vm = new VmSimple(vmId, mips, pesNumber);
         vm.setRam(ram).setBw(bw)
