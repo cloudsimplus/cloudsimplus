@@ -161,7 +161,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
 
         /*
          * Defines the Vm Destruction Delay Function as a lambda expression
-         * so that the broker will wait 10 seconds before destroying an idle VM.
+         * so that the broker will wait 10 seconds before destroying any idle VM.
          * By commenting this line, no down scaling will be performed
          * and idle VMs will be destroyed just after all running Cloudlets
          * are finished and there is no waiting Cloudlet. */
