@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.examples.autoscaling;
 
-import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.brokers.DatacenterBrokerSimple;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
@@ -119,16 +118,17 @@ public class LoadBalancerByHorizontalVmScalingExample {
     private static final int VMS = 4;
     private static final int CLOUDLETS = 6;
     private final CloudSim simulation;
-    private DatacenterBroker broker0;
-    private List<Host> hostList;
-    private List<Vm> vmList;
-    private List<Cloudlet> cloudletList;
+    private final Datacenter dc0;
+    private final DatacenterBroker broker0;
+    private final List<Host> hostList;
+    private final List<Vm> vmList;
+    private final List<Cloudlet> cloudletList;
 
     /**
      * Different lengths that will be randomly assigned to created Cloudlets.
      */
     private static final long[] CLOUDLET_LENGTHS = {2000, 4000, 10000, 16000, 2000, 30000, 20000};
-    private ContinuousDistribution rand;
+    private final ContinuousDistribution rand;
 
     private int createdCloudlets;
     private int createsVms;
@@ -156,16 +156,18 @@ public class LoadBalancerByHorizontalVmScalingExample {
         simulation = new CloudSim();
         simulation.addOnClockTickListener(this::createNewCloudlets);
 
-        createDatacenter();
+        dc0 = createDatacenter();
         broker0 = new DatacenterBrokerSimple(simulation);
 
-        /*
+        /**
          * Defines the Vm Destruction Delay Function as a lambda expression
          * so that the broker will wait 10 seconds before destroying any idle VM.
          * By commenting this line, no down scaling will be performed
          * and idle VMs will be destroyed just after all running Cloudlets
-         * are finished and there is no waiting Cloudlet. */
-        broker0.setVmDestructionDelayFunction(vm -> 10.0);
+         * are finished and there is no waiting Cloudlet.
+         * @see DatacenterBroker#setVmDestructionDelayFunction(Function)
+         * */
+        broker0.setVmDestructionDelay(10.0);
 
         vmList.addAll(createListOfScalableVms(VMS));
 
@@ -179,9 +181,9 @@ public class LoadBalancerByHorizontalVmScalingExample {
     }
 
     private void printSimulationResults() {
-        List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
-        Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
-        Comparator<Cloudlet> sortByStartTime = comparingDouble(c -> c.getExecStartTime());
+        final List<Cloudlet> finishedCloudlets = broker0.getCloudletFinishedList();
+        final Comparator<Cloudlet> sortByVmId = comparingDouble(c -> c.getVm().getId());
+        final Comparator<Cloudlet> sortByStartTime = comparingDouble(Cloudlet::getExecStartTime);
         finishedCloudlets.sort(sortByVmId.thenComparing(sortByStartTime));
 
         new CloudletsTableBuilder(finishedCloudlets).build();
@@ -199,16 +201,16 @@ public class LoadBalancerByHorizontalVmScalingExample {
      * to the {@link Simulation#addOnClockTickListener(EventListener)}.
      * The method is called every time the simulation clock advances.
      *
-     * @param eventInfo the information about the OnClockTick event that has happened
+     * @param info the information about the OnClockTick event that has happened
      */
-    private void createNewCloudlets(EventInfo eventInfo) {
-        final long time = (long) eventInfo.getTime();
+    private void createNewCloudlets(final EventInfo info) {
+        final long time = (long) info.getTime();
         if (time % CLOUDLETS_CREATION_INTERVAL == 0 && time <= 50) {
-            final int numberOfCloudlets = 4;
-            System.out.printf("\t#Creating %d Cloudlets at time %d.%n", numberOfCloudlets, time);
-            List<Cloudlet> newCloudlets = new ArrayList<>(numberOfCloudlets);
-            for (int i = 0; i < numberOfCloudlets; i++) {
-                Cloudlet cloudlet = createCloudlet();
+            final int cloudletsNumber = 4;
+            System.out.printf("\t#Creating %d Cloudlets at time %d.%n", cloudletsNumber, time);
+            final List<Cloudlet> newCloudlets = new ArrayList<>(cloudletsNumber);
+            for (int i = 0; i < cloudletsNumber; i++) {
+                final Cloudlet cloudlet = createCloudlet();
                 cloudletList.add(cloudlet);
                 newCloudlets.add(cloudlet);
             }
@@ -220,17 +222,16 @@ public class LoadBalancerByHorizontalVmScalingExample {
     /**
      * Creates a Datacenter and its Hosts.
      */
-    private void createDatacenter() {
+    private Datacenter createDatacenter() {
         for (int i = 0; i < HOSTS; i++) {
             hostList.add(createHost());
         }
 
-        Datacenter dc0 = new DatacenterSimple(simulation, hostList, new VmAllocationPolicySimple());
-        dc0.setSchedulingInterval(SCHEDULING_INTERVAL);
+        return new DatacenterSimple(simulation, hostList).setSchedulingInterval(SCHEDULING_INTERVAL);
     }
 
     private Host createHost() {
-        List<Pe> peList = new ArrayList<>(HOST_PES);
+        final List<Pe> peList = new ArrayList<>(HOST_PES);
         for (int i = 0; i < HOST_PES; i++) {
             peList.add(new PeSimple(1000, new PeProvisionerSimple()));
         }
@@ -248,14 +249,14 @@ public class LoadBalancerByHorizontalVmScalingExample {
      * Creates a list of initial VMs in which each VM is able to scale horizontally
      * when it is overloaded.
      *
-     * @param numberOfVms number of VMs to create
+     * @param vmsNumber number of VMs to create
      * @return the list of scalable VMs
      * @see #createHorizontalVmScaling(Vm)
      */
-    private List<Vm> createListOfScalableVms(final int numberOfVms) {
-        List<Vm> newList = new ArrayList<>(numberOfVms);
-        for (int i = 0; i < numberOfVms; i++) {
-            Vm vm = createVm();
+    private List<Vm> createListOfScalableVms(final int vmsNumber) {
+        final List<Vm> newList = new ArrayList<>(vmsNumber);
+        for (int i = 0; i < vmsNumber; i++) {
+            final Vm vm = createVm();
             createHorizontalVmScaling(vm);
             newList.add(vm);
         }
@@ -269,8 +270,8 @@ public class LoadBalancerByHorizontalVmScalingExample {
      * @param vm the VM for which the Horizontal Scaling will be created
      * @see #createListOfScalableVms(int)
      */
-    private void createHorizontalVmScaling(Vm vm) {
-        HorizontalVmScaling horizontalScaling = new HorizontalVmScalingSimple();
+    private void createHorizontalVmScaling(final Vm vm) {
+        final HorizontalVmScaling horizontalScaling = new HorizontalVmScalingSimple();
         horizontalScaling
              .setVmSupplier(this::createVm)
              .setOverloadPredicate(this::isVmOverloaded);
@@ -286,7 +287,7 @@ public class LoadBalancerByHorizontalVmScalingExample {
      * @return true if the VM is overloaded, false otherwise
      * @see #createHorizontalVmScaling(Vm)
      */
-    private boolean isVmOverloaded(Vm vm) {
+    private boolean isVmOverloaded(final Vm vm) {
         return vm.getCpuPercentUtilization() > 0.7;
     }
 
