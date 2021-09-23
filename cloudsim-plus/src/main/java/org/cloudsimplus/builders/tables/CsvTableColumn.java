@@ -78,7 +78,11 @@ public class CsvTableColumn extends AbstractTableColumn {
      * @return the aligned string
      */
     protected String alignStringRight(final String str) {
-        final String fmt = String.format("%%%ds", generateTitleHeader().length());
+        return alignStringRight(str, generateTitleHeader().length());
+    }
+
+    public static String alignStringRight(final String str, final int size) {
+        final String fmt = String.format("%%%ds", size);
         return String.format(fmt, str);
     }
 }
