@@ -24,8 +24,6 @@
 package org.cloudsimplus.testbeds;
 
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.math3.distribution.TDistribution;
-import org.apache.commons.math3.exception.MathIllegalArgumentException;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -42,8 +40,8 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
+import static org.cloudsimplus.builders.tables.CsvTableColumn.alignStringRight;
 
 /**
  * A base class to run a given experiment a defined number of times and collect
@@ -55,11 +53,6 @@ import static java.util.stream.Collectors.toList;
  * @since CloudSim Plus 1.0
  */
 public abstract class ExperimentRunner<T extends Experiment> extends AbstractExperiment {
-    /**
-     * The confidence level for computing confidence interval.
-     */
-    public static final double CONFIDENCE_LEVEL = 0.95;
-
     /**@see #isParallel() */
     private final boolean parallel;
 
@@ -577,18 +570,43 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     private void computeAndPrintFinalResults() {
-        final Map<String, SummaryStatistics> statsMap = new TreeMap<>();
-        metricsMap.entrySet().forEach(e -> statsMap.put(e.getKey(), computeAndPrintFinalResults(e)));
-        buildLatexMetricsResultTable(statsMap);
+        final List<ConfidenceInterval> confidenceIntervals =
+            metricsMap.entrySet()
+                      .stream()
+                      .map(this::computeFinalResults)
+                      .collect(toCollection(() -> new ArrayList<>(metricsMap.size())));
+
+        buildLatexMetricsResultTable(confidenceIntervals);
+        buildCsvResultsTable(confidenceIntervals);
+    }
+
+    private void buildCsvResultsTable(final List<ConfidenceInterval> confidenceIntervals) {
+        final String cols = confidenceIntervals.stream().map(ConfidenceInterval::getMetricName).collect(joining("; "));
+        System.out.printf("Type of Value;%s%n", cols);
+
+        final String format = "%.2f";
+        final String values =
+            confidenceIntervals
+                .stream()
+                .map(ci -> alignStringRight(String.format(format, ci.getValue()), ci.getMetricName().length()))
+                .collect(joining("; "));
+        System.out.printf("CI           ;%s%n", values);
+
+        final String errorMargins =
+            confidenceIntervals
+                .stream()
+                .map(ci -> alignStringRight(String.format(format, ci.getErrorMargin()), ci.getMetricName().length()))
+                .collect(joining("; "));
+        System.out.printf("Error Margin ;%s%n", errorMargins);
     }
 
     /**
      * Generates the latex table for metrics results.
-     * @param statsMap a Map where each key is a metric name and it value is
-     *                 a statistics object summarizing the metric results for all
-     *                 simulation runs.
+     * @param confidenceIntervals a List of
+     *                 {@link ConfidenceInterval} objects summarizing the results for different metrics
+     *                 from all simulation runs.
      */
-    private void buildLatexMetricsResultTable(final Map<String, SummaryStatistics> statsMap) {
+    private void buildLatexMetricsResultTable(final List<ConfidenceInterval> confidenceIntervals) {
         if(!latexTableResultsGeneration) {
             return;
         }
@@ -599,7 +617,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         }
 
         final StringBuilder latex = startLatexTable();
-        statsMap.forEach((metric, stats) -> latexRow(latex, metric, stats));
+        confidenceIntervals.forEach(ci -> latexRow(latex, ci));
         latex.append("  \\end{tabular}\n").append("\\end{table}\n");
         System.out.println();
         System.out.println(latex);
@@ -608,24 +626,20 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**
      * Creates a row for the latex table containing the result metrics
      * @param latex the StringBuilder where the latex table is being built
-     * @param metricName the name of the current metric to be presented as a table row
-     * @param stats summary statistics for this metric
+     * @param ci {@link ConfidenceInterval} summarizing results for this metric
      */
-    private void latexRow(final StringBuilder latex, final String metricName, final SummaryStatistics stats) {
+    private void latexRow(final StringBuilder latex, final ConfidenceInterval ci) {
         //if there is only one metric sample, it doesn't show the ± symbol (latex \pm), since there is no error margin
-        final String errorMargin =
-            confidenceErrorMargin(stats)
-                .map(margin -> String.format("$\\pm$ & %.2f", margin))
-                .orElse(" & ");
+        final String errorMargin = ci.isComputed() ? String.format(" & $\\pm$ %.2f", ci.getErrorMargin()) : " & ";
 
         //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
-        final String escapedMetricName = StringUtils.replace(metricName,"%", "\\%");
+        final String escapedMetricName = StringUtils.replace(ci.getMetricName(),"%", "\\%");
         latex.append(escapedMetricName)
              .append(" & ")
-             .append(String.format("%.2f", stats.getMean()))
+             .append(String.format("%.2f", ci.getValue()))
              .append(errorMargin)
              .append(" & ")
-             .append(String.format("%.2f", stats.getStandardDeviation()))
+             .append(String.format("%.2f", ci.getStdDev()))
              .append("\\\\ \\hline\n");
     }
 
@@ -667,28 +681,19 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     protected abstract T createExperimentInternal(final int i);
 
     /**
-     * Computes and prints final simulation results, including mean, standard deviations and
+     * Computes final simulation results, including mean, standard deviations and
      * confidence intervals for a given metric computed across all simulation runs.
      *
      * @param metricEntry a map entry represented by the name of the metric and
      *                    its list of values across multiple simulation runs
-     * @return the computed {@link SummaryStatistics} from the provided values for the metric
+     * @return the computed {@link ConfidenceInterval} from the provided values for the metric
      */
-    protected SummaryStatistics computeAndPrintFinalResults(final Map.Entry<String, List<Double>> metricEntry){
+    protected ConfidenceInterval computeFinalResults(final Map.Entry<String, List<Double>> metricEntry){
         final List<Double> metricValues = metricEntry.getValue();
         final SummaryStatistics stats = computeFinalStatistics(metricValues);
-        final String valuesStr = metricValues.stream().map(v -> String.format("%.2f", v)).collect(joining(", "));
-        final String sampleWord = metricValues.size() > 1 ? "samples" : "sample";
-        System.out.printf(
-            "# %s: %.6f (%d %s: %s)%n",
-            metricEntry.getKey(), stats.getMean(),
-            metricValues.size(), sampleWord, valuesStr);
+        //System.out.printf("# %s: %.6f (%d %s)%n", metricEntry.getKey(), stats.getMean(), metricValues.size(), metricValues.size() > 1 ? "samples" : "sample");
 
-        if (simulationRuns > 1) {
-            showConfidenceInterval(stats);
-        }
-
-        return stats;
+        return new ConfidenceInterval(stats, metricEntry.getKey());
     }
 
     /**
@@ -711,110 +716,6 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         final List<Double> adjustedValues = computeAntitheticMeans(computeBatchMeans(values));
         adjustedValues.forEach(stats::addValue);
         return stats;
-    }
-
-    /**
-     * Shows confidence interval for the average value of a given metric for all executed simulations.
-     * @param stats a {@link SummaryStatistics} computed from the list of values for a metric across all simulation runs
-     * @see #computeFinalStatistics(List)
-     */
-    private void showConfidenceInterval(final SummaryStatistics stats) {
-        // Computes 95% confidence interval
-        final Optional<Double> optional = confidenceErrorMargin(stats);
-        if(optional.isPresent()) {
-            final double intervalSize = optional.get();
-            final double criticalValue = getConfidenceIntervalCriticalValue(stats.getN());
-            System.out.printf("\tt-Distribution critical value for %d samples: %f%n", stats.getN(), criticalValue);
-
-            final double lower = stats.getMean() - intervalSize;
-            final double upper = stats.getMean() + intervalSize;
-            System.out.printf(
-                "\t95%% Confidence Interval: %.4f ∓ %.4f, that is [%.4f to %.4f]%n",
-                stats.getMean(), intervalSize, lower, upper);
-        }
-        else System.out.printf("\tValue for %d sample: %.4f%n", stats.getN(), stats.getMean());
-
-        System.out.printf("\tStandard Deviation: %.4f%n", stats.getStandardDeviation());
-    }
-
-    /**
-     * <p>
-     * Computes the confidence interval error margin for a given set of samples
-     * in order to enable finding the interval lower and upper bound around a
-     * mean value. By this way, the confidence interval can be computed as [mean
-     * + errorMargin .. mean - errorMargin].
-     * </p>
-     *
-     * <p>
-     * To reduce the confidence interval by half, one have to execute the
-     * experiments 4 more times. This is called the "Replication Method" and
-     * just works when the samples are i.i.d. (independent and identically
-     * distributed). Thus, if you have correlation between samples of each
-     * simulation run, a different method such as a bias compensation,
-     * {@link #isApplyBatchMeansMethod() batch means} or regenerative method has
-     * to be used. </p>
-     *
-     * <b>NOTE:</b> How to compute the error margin is a little bit confusing.
-     * The Harry Perros' book states that if less than 30 samples are collected,
-     * the t-Distribution has to be used to that purpose.
-     *
-     * However, this article
-     * <a href="https://en.wikipedia.org/wiki/Confidence_interval#Basic_Steps">Wikipedia
-     * article</a>
-     * says that if the standard deviation of the real population is known, it
-     * has to be used the z-value from the Standard Normal Distribution.
-     * Otherwise, it has to be used the t-value from the t-Distribution to
-     * calculate the critical value for defining the error margin (also called
-     * standard error). The book "Numeric Computation and Statistical Data
-     * Analysis on the Java Platform" confirms the last statement and such
-     * approach was followed.
-     *
-     * @param stats the statistic object with the values to compute the error
-     * margin of the confidence interval
-     * @return the error margin to compute the lower and upper bound of the
-     * confidence interval
-     *
-     * @see
-     * <a href="http://www.itl.nist.gov/div898/handbook/eda/section3/eda3672.htm">Critical
-     * Values of the Student's t Distribution</a>
-     * @see
-     * <a href="https://en.wikipedia.org/wiki/Student%27s_t-distribution">t-Distribution</a>
-     * @see <a href="http://www4.ncsu.edu/~hp/files/simulation.pdf">Harry
-     * Perros, "Computer Simulation Techniques: The definitive introduction!,"
-     * 2009</a>
-     * @see <a href="http://www.springer.com/gp/book/9783319285290">Numeric
-     * Computation and Statistical Data Analysis on the Java Platform</a>
-     */
-    protected Optional<Double> confidenceErrorMargin(final SummaryStatistics stats) {
-        final long samples = stats.getN();
-        if(samples < 1)
-            return Optional.empty();
-
-        try {
-            final double criticalValue = getConfidenceIntervalCriticalValue(samples);
-            return Optional.of(criticalValue * stats.getStandardDeviation() / Math.sqrt(samples));
-        } catch (MathIllegalArgumentException e) {
-            return Optional.empty();
-        }
-    }
-
-    /**
-     * Computes the confidence interval critical value for a given number of samples and conficende level.
-     * @param samples number of collected samples
-     * @return
-     */
-    private double getConfidenceIntervalCriticalValue(final long samples) {
-        /* Creates a T-Distribution with N-1 degrees of freedom
-        * since were are computing the sample's confidence interval
-        * instead of the entire population. */
-        final double freedomDegrees = samples - 1;
-
-        /* The t-Distribution is used to determine the probability that
-        the real population mean lies in a given interval. */
-        final TDistribution tDist = new TDistribution(freedomDegrees);
-        final double significance = 1.0 - CONFIDENCE_LEVEL;
-        final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
-        return criticalValue;
     }
 
     /**
