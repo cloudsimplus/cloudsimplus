@@ -590,7 +590,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
                 .stream()
                 .map(ci -> alignStringRight(String.format(format, ci.getValue()), ci.getMetricName().length()))
                 .collect(joining("; "));
-        System.out.printf("CI           ;%s%n", values);
+        final String valueType = simulationRuns > 1 ? "CI           " : "Mean         ";
+        System.out.printf("%s;%s%n", valueType, values);
 
         final String errorMargins =
             confidenceIntervals
