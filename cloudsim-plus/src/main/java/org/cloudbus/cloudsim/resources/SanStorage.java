@@ -426,16 +426,7 @@ public class SanStorage extends HarddriveStorage {
      * @return true if the file is in the storage, false otherwise
      */
     public boolean contains(final String fileName) {
-        return isFileNameValid(fileName) && fileNameList.contains(fileName);
-    }
-
-    private boolean isFileNameValid(final String fileName) {
-        if (StringUtils.isBlank(fileName)) {
-            LOGGER.warn("Invalid file name {}", getName(), fileName);
-            return false;
-        }
-
-        return true;
+        return !StringUtils.isBlank(fileName) && fileNameList.contains(fileName);
     }
 
     /**
