@@ -19,9 +19,9 @@ public class UtilizationModelPlanetLabTest {
     /**
      * Time interval (in seconds) in which the data inside a PlanetLab trace file is collected.
      */
-    public static final int SCHEDULING_INTERVAL = 300;
+    private static final int SCHEDULING_INTERVAL = 300;
 
-    public static final String FILE = "146-179_surfsnel_dsl_internl_net_colostate_557.dat";
+    private static final String FILE = "146-179_surfsnel_dsl_internl_net_colostate_557.dat";
 
     private UtilizationModelPlanetLab instance;
 
