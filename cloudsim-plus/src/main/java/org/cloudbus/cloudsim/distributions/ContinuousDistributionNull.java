@@ -12,11 +12,11 @@ import org.apache.commons.math3.exception.OutOfRangeException;
  */
 final class ContinuousDistributionNull implements ContinuousDistribution {
     @Override public double originalSample() { return 0; }
-    @Override public double probability(double v) { return 0; }
-    @Override public double density(double v) { return 0; }
-    @Override public double cumulativeProbability(double v) { return 0; }
-    @Override public double cumulativeProbability(double v, double v1) throws NumberIsTooLargeException { return 0; }
-    @Override public double inverseCumulativeProbability(double v) throws OutOfRangeException { return 0; }
+    @Override public double probability(double val) { return 0; }
+    @Override public double density(double val) { return 0; }
+    @Override public double cumulativeProbability(double val) { return 0; }
+    @Override public double cumulativeProbability(double val1, double val2) throws NumberIsTooLargeException { return 0; }
+    @Override public double inverseCumulativeProbability(double val) throws OutOfRangeException { return 0; }
     @Override public double getNumericalMean() { return 0; }
     @Override public double getNumericalVariance() { return 0; }
     @Override public double getSupportLowerBound() { return 0; }
@@ -24,9 +24,9 @@ final class ContinuousDistributionNull implements ContinuousDistribution {
     @Override public boolean isSupportLowerBoundInclusive() { return false; }
     @Override public boolean isSupportUpperBoundInclusive() { return false; }
     @Override public boolean isSupportConnected() { return false; }
-    @Override public void reseedRandomGenerator(long l) {/**/}
+    @Override public void reseedRandomGenerator(long val) {/**/}
     @Override public double sample() { return 0.0; }
-    @Override public double[] sample(int i) { return new double[0]; }
+    @Override public double[] sample(int val) { return new double[0]; }
     @Override public long getSeed() { return 0; }
     @Override public boolean isApplyAntitheticVariates() { return false; }
     @Override public ContinuousDistribution setApplyAntitheticVariates(boolean applyAntitheticVariates) { return this; }
