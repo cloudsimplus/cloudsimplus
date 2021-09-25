@@ -45,8 +45,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      */
     public static final int SHUTDOWN = -2;
 
-    private boolean selectClosestDatacenter;
-
     /**
      * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY} to indicate that any VM should not be
      * immediately destroyed after it becomes idle.
@@ -59,6 +57,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @see #setVmDestructionDelayFunction(Function)
      */
     private static final Function<Vm, Double> DEF_VM_DESTRUCTION_DELAY_FUNCTION = vm -> DEF_VM_DESTRUCTION_DELAY;
+
+    private boolean selectClosestDatacenter;
 
     /**
      * A List of registered event listeners for the onVmsCreatedListeners event.
@@ -924,9 +924,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private boolean isBrokerIdle() {
-        return cloudletWaitingList.isEmpty() &&
-               vmWaitingList.isEmpty() &&
-               vmExecList.isEmpty();
+        return cloudletWaitingList.isEmpty() && vmWaitingList.isEmpty() && vmExecList.isEmpty();
     }
 
     /**
