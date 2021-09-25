@@ -401,11 +401,11 @@ public class SanStorage extends HarddriveStorage {
      * can be found using {@link File#getTransactionTime()}.
      *
      * @param fileName the name of the file to be removed
-     * @return the deleted file.
+     * @return an {@link Optional} containing the deleted file if it is found; an empty Optional otherwise.
      */
-    public File deleteFile(final String fileName) {
+    public Optional<File> deleteFile(final String fileName) {
         if (!File.isValid(fileName)) {
-            return null;
+            return Optional.empty();
         }
 
         final int i = fileNameList.indexOf(fileName);
@@ -413,10 +413,10 @@ public class SanStorage extends HarddriveStorage {
             final File file = fileList.get(i);
             final double result = deleteFile(file);
             file.setTransactionTime(result);
-            return file;
+            return Optional.of(file);
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**

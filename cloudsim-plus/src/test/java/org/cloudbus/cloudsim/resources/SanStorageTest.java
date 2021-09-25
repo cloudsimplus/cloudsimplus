@@ -508,10 +508,10 @@ public class SanStorageTest {
         final SanStorage instance = createSanStorage();
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
-        fileList.forEach(file ->  assertEquals(file, instance.deleteFile(file.getName())));
+        fileList.forEach(file ->  assertEquals(Optional.of(file), instance.deleteFile(file.getName())));
 
-        assertEquals(null, instance.deleteFile(""));
-        assertEquals(null, instance.deleteFile(INEXISTENT_FILE));
+        assertEquals(Optional.empty(), instance.deleteFile(""));
+        assertEquals(Optional.empty(), instance.deleteFile(INEXISTENT_FILE));
     }
 
     @Test
