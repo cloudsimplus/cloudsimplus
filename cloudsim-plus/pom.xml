@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus</artifactId>
-    <version>6.6.1</version>
+    <version>7.0.0</version>
 
     <name>CloudSim Plus API</name>
     <description>CloudSim Plus: A modern, highly extensible and easier-to-use Java 8+ Framework for Modeling and Simulation of Cloud Computing Infrastructures and Services</description>
@@ -341,8 +341,7 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <release>17</release>
                 </configuration>
             </plugin>
 

@@ -8,17 +8,14 @@ on:
 jobs:
   build:
     runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        java: [ '8', '15' ]
-    name: Java ${{ matrix.Java }} Build
+    name: Java 17 Build
     steps:
       - uses: actions/checkout@v2
       - name: Setup Java
         uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: ${{ matrix.java }}
+          java-version: 17
           cache: 'maven'
       - name: Codacy coverage report upload
         env:
