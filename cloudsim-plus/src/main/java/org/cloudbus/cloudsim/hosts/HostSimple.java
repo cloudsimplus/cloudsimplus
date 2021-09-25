@@ -272,7 +272,7 @@ public class HostSimple implements Host {
 
         this.ram = new Ram(ram);
         this.bw = new Bandwidth(bw);
-        this.disk = Objects.requireNonNull(storage);
+        this.disk = requireNonNull(storage);
         this.setRamProvisioner(new ResourceProvisionerSimple());
         this.setBwProvisioner(new ResourceProvisionerSimple());
 
@@ -671,7 +671,7 @@ public class HostSimple implements Host {
             return this;
         }
 
-        onStartupListeners.add(Objects.requireNonNull(listener));
+        onStartupListeners.add(requireNonNull(listener));
         return this;
     }
 
@@ -686,7 +686,7 @@ public class HostSimple implements Host {
             return this;
         }
 
-        onShutdownListeners.add(Objects.requireNonNull(listener));
+        onShutdownListeners.add(requireNonNull(listener));
         return this;
     }
 
@@ -1171,7 +1171,7 @@ public class HostSimple implements Host {
 
     @Override
     public int compareTo(final Host o) {
-        if(this.equals(Objects.requireNonNull(o))) {
+        if(this.equals(requireNonNull(o))) {
             return 0;
         }
 
@@ -1302,7 +1302,7 @@ public class HostSimple implements Host {
 
     @Override
     public final void setPowerModel(final PowerModelHost powerModel) {
-        Objects.requireNonNull(powerModel,
+        requireNonNull(powerModel,
             "powerModel cannot be null. You could provide a " +
             PowerModelHost.class.getSimpleName() + ".NULL instead.");
 
