@@ -96,7 +96,7 @@ class FinishedEntitiesPurgeTest {
     /**
      * The maximum accepted difference in time results.
      */
-    public static final double MAX_TIME_DELTA = 0.25;
+    private static final double MAX_TIME_DELTA = 0.25;
 
     private CloudSim simulation;
     private List<DatacenterBroker> brokerList;
