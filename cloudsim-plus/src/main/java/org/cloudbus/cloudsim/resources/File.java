@@ -43,7 +43,7 @@ public class File {
     /**
      * A file attribute.
      */
-    private  FileAttribute attribute;
+    private FileAttribute attribute;
 
     /**
      * A transaction time for adding, deleting or getting the file.
@@ -73,6 +73,7 @@ public class File {
     	if (fileSize <= 0) {
             throw new IllegalArgumentException("File(): Error - size <= 0.");
         }
+
         datacenter = Datacenter.NULL;
         setName(fileName);
         transactionTime = 0;
@@ -469,5 +470,4 @@ public class File {
         this.datacenter = requireNonNull(datacenter);
         return this;
     }
-
 }
