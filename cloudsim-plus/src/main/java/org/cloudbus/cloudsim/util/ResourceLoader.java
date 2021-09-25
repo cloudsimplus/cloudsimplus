@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * An utility class that loads a resource file/directory that is contained inside
+ * A utility class that loads a resource file/directory that is contained inside
  * the directory of a given class.
  *
  * @author Manoel Campos da Silva Filho
@@ -52,6 +52,21 @@ public final class ResourceLoader {
     }
 
     /**
+     * Instantiates a {@link InputStreamReader} to read a file <b>outside</b> the resource directory.
+     *
+     * @param filePath the path to the file
+     * @return a {@link InputStreamReader} to read the resource
+     * @throws FileNotFoundException when the file doesn't exist
+     */
+    public static InputStreamReader newInputStreamReader(final String filePath) {
+        try {
+            return new InputStreamReader(new FileInputStream(filePath));
+        } catch (FileNotFoundException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    /**
      * Instantiates a {@link InputStream} to read a file,
      * trying to load the file from a jar file, in case the user is running simulations from a jar package.
      * If it cant get a reader directly, the simulation is not being executed from a jar package,
@@ -78,21 +93,6 @@ public final class ResourceLoader {
         //Try to load the resource from anywhere else than the resource directory
         try {
             return new FileInputStream(filePath);
-        } catch (FileNotFoundException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-    /**
-     * Instantiates a {@link InputStreamReader} to read a file <b>outside</b> the resource directory.
-     *
-     * @param filePath the path to the file
-     * @return a {@link InputStreamReader} to read the resource
-     * @throws FileNotFoundException when the file doesn't exist
-     */
-    public static InputStreamReader newInputStreamReader(final String filePath) {
-        try {
-            return new InputStreamReader(new FileInputStream(filePath));
         } catch (FileNotFoundException e) {
             throw new UncheckedIOException(e);
         }
