@@ -183,7 +183,7 @@ public class File {
      *
      * @param attribute file attribute
      */
-    protected void setAttribute(FileAttribute attribute) {
+    protected void setAttribute(final FileAttribute attribute) {
         this.attribute = attribute;
     }
 
@@ -224,7 +224,7 @@ public class File {
      * @param name the owner name
      * @return true if successful, false otherwise
      */
-    public boolean setOwnerName(String name) {
+    public boolean setOwnerName(final String name) {
         return attribute.setOwnerName(name);
     }
 
@@ -261,7 +261,7 @@ public class File {
      * @param fileSize the file size (in MBytes)
      * @return true if successful, false otherwise
      */
-    public boolean setSize(int fileSize) {
+    public boolean setSize(final int fileSize) {
         return attribute.setFileSize(fileSize);
     }
 
@@ -273,7 +273,7 @@ public class File {
      * @param time the last update time (in seconds)
      * @return true if successful, false otherwise
      */
-    public boolean setUpdateTime(double time) {
+    public boolean setUpdateTime(final double time) {
         return attribute.setUpdateTime(time);
     }
 
@@ -292,7 +292,7 @@ public class File {
      * @param id registration ID
      * @return true if successful, false otherwise
      */
-    public boolean setRegistrationID(int id) {
+    public boolean setRegistrationID(final int id) {
         return attribute.setRegistrationId(id);
     }
 
@@ -311,7 +311,7 @@ public class File {
      * @param type a file type
      * @return true if successful, false otherwise
      */
-    public boolean setType(int type) {
+    public boolean setType(final int type) {
         return attribute.setType(type);
     }
 
@@ -330,7 +330,7 @@ public class File {
      * @param checksum the checksum of this file
      * @return true if successful, false otherwise
      */
-    public boolean setChecksum(int checksum) {
+    public boolean setChecksum(final int checksum) {
         return attribute.setChecksum(checksum);
     }
 
@@ -349,7 +349,7 @@ public class File {
      * @param cost cost of this file
      * @return true if successful, false otherwise
      */
-    public boolean setCost(double cost) {
+    public boolean setCost(final double cost) {
         return attribute.setCost(cost);
     }
 
@@ -395,7 +395,7 @@ public class File {
      * @param masterCopy a flag denotes true for master copy or false for a
      *                   replica
      */
-    public void setMasterCopy(boolean masterCopy) {
+    public void setMasterCopy(final boolean masterCopy) {
         attribute.setMasterCopy(masterCopy);
     }
 
@@ -413,7 +413,7 @@ public class File {
      *
      * @param deleted true if it was deleted, false otherwise
      */
-    public void setDeleted(boolean deleted) {
+    public void setDeleted(final boolean deleted) {
         this.deleted = deleted;
     }
 
@@ -424,7 +424,7 @@ public class File {
      * @param time the transaction time (in second)
      * @return true if successful, false otherwise
      */
-    public boolean setTransactionTime(double time) {
+    public boolean setTransactionTime(final double time) {
         if (time < 0) {
             return false;
         }
@@ -465,7 +465,7 @@ public class File {
      * @param datacenter the Datacenter that will store the file
      * @return
      */
-    public final File setDatacenter(Datacenter datacenter) {
+    public final File setDatacenter(final Datacenter datacenter) {
         this.datacenter = requireNonNull(datacenter);
         return this;
     }
