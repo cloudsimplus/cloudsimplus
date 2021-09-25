@@ -662,8 +662,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     {
         //Uses reversed indexed for to avoid ConcurrentModificationException if some Listener is deregistered during loop
         for (int i = resourceAllocationFailListeners.size()-1; i >= 0; i--) {
-            EventListener<CloudletResourceAllocationFailEventInfo> l = resourceAllocationFailListeners.get(i);
-            l.update(of(l, cloudlet, resource.getClass(), requested, available, vm.getSimulation().clock()));
+            final var listener = resourceAllocationFailListeners.get(i);
+            listener.update(of(listener, cloudlet, resource.getClass(), requested, available, vm.getSimulation().clock()));
         }
     }
 
