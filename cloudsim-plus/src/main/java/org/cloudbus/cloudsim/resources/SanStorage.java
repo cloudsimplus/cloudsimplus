@@ -10,10 +10,7 @@ package org.cloudbus.cloudsim.resources;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * SanStorage represents a Storage Area Network (SAN) composed of a set of
@@ -31,7 +28,7 @@ import java.util.Objects;
  * TODO See the warning in class documentation.
  */
 public class SanStorage extends HarddriveStorage {
-    public static final int FILE_NOT_FOUND = -1;
+    public static final double FILE_NOT_FOUND = -1;
 
     /**
      * A storage just to control the amount of space previously allocated
@@ -310,7 +307,7 @@ public class SanStorage extends HarddriveStorage {
      * @return true if the storage device has the file, false otherwise.
      */
     public boolean hasFile(final String fileName) {
-        return getFile(fileName) != null;
+        return getFile(fileName).isPresent();
     }
 
     private int getDeletedFilesTotalSize() {
@@ -322,12 +319,12 @@ public class SanStorage extends HarddriveStorage {
      * file can also be found using {@link File#getTransactionTime()}.
      *
      * @param fileName the name of the needed file
-     * @return the file with the specified filename; null if not found
+     * @return an {@link Optional} containing the file if it was found; an empty Optional otherwise
      */
-    public File getFile(final String fileName) {
+    public Optional<File> getFile(final String fileName) {
         if (!File.isValid(fileName)) {
             LOGGER.warn("{}.getFile(): Invalid file name {}.", getName(), fileName);
-            return null;
+            return Optional.empty();
         }
 
         int size = 0;
@@ -342,11 +339,11 @@ public class SanStorage extends HarddriveStorage {
 
                 // total time for this operation
                 currentFile.setTransactionTime(seekTime + transferTime);
-                return currentFile;
+                return Optional.of(currentFile);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     /**
@@ -374,12 +371,7 @@ public class SanStorage extends HarddriveStorage {
      * @return the transfer time in seconds or {@link SanStorage#FILE_NOT_FOUND} if the file was not found in this storage device
      */
     public double getTransferTime(final String fileName) {
-        final File file = getFile(fileName);
-        if (file == null) {
-            return SanStorage.FILE_NOT_FOUND;
-        }
-
-        return getTransferTime(file);
+        return getFile(fileName).map(this::getTransferTime).orElse(SanStorage.FILE_NOT_FOUND);
     }
 
     /**
@@ -475,16 +467,14 @@ public class SanStorage extends HarddriveStorage {
         }
 
         final String oldName = file.getName();
-        // replace the file name in the file (physical) list
-        final File renamedFile = getFile(oldName);
-        if (renamedFile != null) {
-            renamedFile.setName(newName);
-            renamedFile.setTransactionTime(0);
-            fileNameList.remove(oldName);
-            fileNameList.add(newName);
-            return true;
-        }
-
-        return false;
+        // Search for the file and renames if it's found
+        return getFile(oldName)
+            .map(fileFound -> {
+                fileFound.setName(newName);
+                fileFound.setTransactionTime(0);
+                fileNameList.remove(oldName);
+                fileNameList.add(newName);
+                return fileFound;
+            }).isPresent();
     }
 }

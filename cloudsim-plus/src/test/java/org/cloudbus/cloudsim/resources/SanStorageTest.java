@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -457,12 +458,12 @@ public class SanStorageTest {
         final SanStorage instance = createSanStorage();
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
         //try to add the same files
-        assertFalse(instance.addFile(fileList)>0);
+        assertFalse(instance.addFile(fileList) > 0);
 
         //try to add already existing files, one by one
-        fileList.forEach(file -> assertFalse(instance.addFile(file)>0));
-        fileList.forEach(file -> assertEquals(file, instance.getFile(file.getName())));
-        assertEquals(null, instance.getFile(INEXISTENT_FILE));
+        fileList.forEach(file -> assertFalse(instance.addFile(file) > 0));
+        fileList.forEach(file -> assertEquals(Optional.of(file), instance.getFile(file.getName())));
+        assertEquals(Optional.empty(), instance.getFile(INEXISTENT_FILE));
     }
 
     @Test
@@ -476,9 +477,9 @@ public class SanStorageTest {
     @Test
     public void testGetFileWhenInvalidFile() {
         final SanStorage instance = createSanStorage();
-        assertEquals(null, instance.getFile("   "));
-        assertEquals(null, instance.getFile(""));
-        assertEquals(null, instance.getFile(null));
+        assertEquals(Optional.empty(), instance.getFile("   "));
+        assertEquals(Optional.empty(), instance.getFile(""));
+        assertEquals(Optional.empty(), instance.getFile(null));
     }
 
     /**
@@ -549,9 +550,9 @@ public class SanStorageTest {
             assertTrue(instance.renameFile(file, newName));
             assertFalse(instance.contains(oldName));
 
-            final File result = instance.getFile(newName);
-            assertEquals(file, result);
-            assertEquals(file.getName(), result.getName());
+            final Optional<File> optionalResult = instance.getFile(newName);
+            assertEquals(Optional.of(file), optionalResult);
+            assertEquals(file.getName(), optionalResult.get().getName());
         }
 
         final File file1 = new File(FILE1, 100), file2 = new File("file2.txt", 100);
