@@ -40,7 +40,7 @@ public class UtilizationModelPlanetLabTest {
         final OpenOption[] options = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING};
         final String dir = ResourceLoader.getResourcePath(getClass(), "./");
         Path path = Paths.get(dir, TEMP_TRACE);
-        try (final BufferedWriter writer = Files.newBufferedWriter(path, options)){
+        try (BufferedWriter writer = Files.newBufferedWriter(path, options)){
             if(includeHeaderWithLinesNumber){
                 writer.write("#" + numLines + System.lineSeparator());
             }
