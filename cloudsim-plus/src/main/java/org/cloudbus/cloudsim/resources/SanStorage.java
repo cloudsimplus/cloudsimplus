@@ -368,10 +368,10 @@ public class SanStorage extends HarddriveStorage {
      * Gets the transfer time of a given file.
      *
      * @param fileName the name of the file to compute the transfer time (where its size is defined in MByte)
-     * @return the transfer time in seconds or {@link SanStorage#FILE_NOT_FOUND} if the file was not found in this storage device
+     * @return the transfer time in seconds or {@link #FILE_NOT_FOUND} if the file was not found in this storage device
      */
     public double getTransferTime(final String fileName) {
-        return getFile(fileName).map(this::getTransferTime).orElse(SanStorage.FILE_NOT_FOUND);
+        return getFile(fileName).map(this::getTransferTime).orElse(FILE_NOT_FOUND);
     }
 
     /**
