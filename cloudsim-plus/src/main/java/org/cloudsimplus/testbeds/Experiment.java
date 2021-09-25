@@ -51,16 +51,16 @@ import java.util.function.Supplier;
  */
 public abstract class Experiment extends AbstractExperiment {
     protected final ExperimentRunner runner;
+    protected int hostsNumber;
+    private int datacentersNumber;
+    private int brokersNumber;
+
     private final CloudSim simulation;
     private final List<Datacenter> datacenterList;
     private final List<DatacenterBroker> brokerList;
     private final List<Vm> vmList;
     private final List<Cloudlet> cloudletList;
     private final long seed;
-
-    private int datacentersNumber;
-    protected int hostsNumber;
-    private int brokersNumber;
 
     private final int index;
     private int lastVmId;

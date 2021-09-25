@@ -88,5 +88,4 @@ public class TopologicalLink {
     public double getLinkBw() {
         return linkBw;
     }
-
 }
