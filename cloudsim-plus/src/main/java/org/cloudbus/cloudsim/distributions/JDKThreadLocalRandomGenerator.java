@@ -70,8 +70,8 @@ public final class JDKThreadLocalRandomGenerator implements RandomGenerator {
     }
 
     @Override
-    public int nextInt(final int n) {
-        return ThreadLocalRandom.current().nextInt(n);
+    public int nextInt(final int bound) {
+        return ThreadLocalRandom.current().nextInt(bound);
     }
 
     @Override
