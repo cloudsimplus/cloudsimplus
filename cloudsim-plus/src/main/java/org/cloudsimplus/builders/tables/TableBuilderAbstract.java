@@ -130,6 +130,23 @@ public abstract class TableBuilderAbstract<T> {
     }
 
     /**
+     * Dynamically adds a column to a specific position into the table to be built.
+     * @param index the position to insert the column.
+     * @param col the column to add
+     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
+     * @return
+     */
+    public TableBuilderAbstract<T> addColumn(final int index, final TableColumn col, final Function<T, Object> dataFunction){
+        requireNonNull(col);
+        requireNonNull(dataFunction);
+
+        col.setTable(getTable());
+        getTable().addColumn(index, col);
+        columnsDataFunctions.put(col, dataFunction);
+        return this;
+    }
+
+    /**
      * Removes columns from given positions.
      * @param indexes the indexes of the columns to remove
      * @return
@@ -150,23 +167,6 @@ public abstract class TableBuilderAbstract<T> {
      */
     public final TableBuilderAbstract<T> removeColumn(final int index){
         getTable().getColumns().remove(index);
-        return this;
-    }
-
-    /**
-     * Dynamically adds a column to a specific position into the table to be built.
-     * @param index the position to insert the column.
-     * @param col the column to add
-     * @param dataFunction a function that receives a Cloudlet and returns the data to be printed for the added column
-     * @return
-     */
-    public TableBuilderAbstract<T> addColumn(final int index, final TableColumn col, final Function<T, Object> dataFunction){
-        requireNonNull(col);
-        requireNonNull(dataFunction);
-
-        col.setTable(getTable());
-        getTable().addColumn(index, col);
-        columnsDataFunctions.put(col, dataFunction);
         return this;
     }
 

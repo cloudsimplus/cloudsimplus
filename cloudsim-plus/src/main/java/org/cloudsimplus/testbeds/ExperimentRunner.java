@@ -679,7 +679,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @return the created experiment
      * @see #createExperiment(int)
      */
-    protected abstract T createExperimentInternal(final int i);
+    protected abstract T createExperimentInternal(int i);
 
     /**
      * Computes final simulation results, including mean, standard deviations and

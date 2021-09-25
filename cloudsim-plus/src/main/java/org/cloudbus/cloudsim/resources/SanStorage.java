@@ -117,6 +117,24 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
+     * Adds a set of files to the storage. The time taken (in seconds) for adding each file can also
+     * be found using {@link File#getTransactionTime()}.
+     *
+     * @param list the files to be added
+     * @return the time taken (in seconds) for adding the specified file or zero if the
+     * file is invalid or there isn't available storage space.
+     */
+    public double addFile(final List<File> list) {
+        Objects.requireNonNull(list);
+        if (list.isEmpty()) {
+            LOGGER.debug("{}.addFile(): File list is empty.", getName());
+            return 0.0;
+        }
+
+        return list.stream().mapToDouble(this::addFile).sum();
+    }
+
+    /**
      * Adds a file to the storage. The time taken (in seconds) for adding the specified file can
      * also be found using {@link File#getTransactionTime()}.
      *
@@ -143,24 +161,6 @@ public class SanStorage extends HarddriveStorage {
         }
 
         return time + getTransferTime(file);
-    }
-
-    /**
-     * Adds a set of files to the storage. The time taken (in seconds) for adding each file can also
-     * be found using {@link File#getTransactionTime()}.
-     *
-     * @param list the files to be added
-     * @return the time taken (in seconds) for adding the specified file or zero if the
-     * file is invalid or there isn't available storage space.
-     */
-    public double addFile(final List<File> list) {
-        Objects.requireNonNull(list);
-        if (list.isEmpty()) {
-            LOGGER.debug("{}.addFile(): File list is empty.", getName());
-            return 0.0;
-        }
-
-        return list.stream().mapToDouble(this::addFile).sum();
     }
 
     /**
@@ -415,16 +415,6 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * Checks whether a file exists in the storage or not.
-     *
-     * @param fileName the name of the file we are looking for
-     * @return true if the file is in the storage, false otherwise
-     */
-    public boolean contains(final String fileName) {
-        return fileNameList.contains(fileName);
-    }
-
-    /**
      * Checks whether a file is stored in the storage or not.
      *
      * @param file the file we are looking for
@@ -432,6 +422,16 @@ public class SanStorage extends HarddriveStorage {
      */
     public boolean contains(final File file) {
         return file != null && contains(file.getName());
+    }
+
+    /**
+     * Checks whether a file exists in the storage or not.
+     *
+     * @param fileName the name of the file we are looking for
+     * @return true if the file is in the storage, false otherwise
+     */
+    public boolean contains(final String fileName) {
+        return fileNameList.contains(fileName);
     }
 
     /**
