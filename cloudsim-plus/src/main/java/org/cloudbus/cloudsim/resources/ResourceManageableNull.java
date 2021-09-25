@@ -45,10 +45,8 @@ final class ResourceManageableNull implements ResourceManageable {
     @Override public boolean isAmountAvailable(long amountToCheck) {
         return false;
     }
+    @Override public boolean isAmountAvailable(double amountToCheck) { return false; }
     @Override public String getUnit() { return ""; }
-    @Override public boolean isAmountAvailable(double amountToCheck) {
-        return false;
-    }
     @Override public boolean isFull() {
         return false;
     }

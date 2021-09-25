@@ -164,50 +164,6 @@ public class SanStorage extends HarddriveStorage {
     }
 
     /**
-     * {@inheritDoc}
-     * The network latency is added to the transfer time.
-     *
-     * @param fileSize {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public double getTransferTime(final int fileSize) {
-        //Gets the time to read the from the local storage device (such as an HD or SSD).
-        final double storageDeviceReadTime = super.getTransferTime(fileSize);
-
-        //Gets the time to transfer the file through the network
-        final double networkTransferTime = getTransferTime(fileSize, bandwidth);
-
-        return storageDeviceReadTime + networkTransferTime + getNetworkLatency();
-    }
-
-    /**
-     * Removes a file from the storage. The time taken (in seconds) for deleting the specified file
-     * can also be found using {@link File#getTransactionTime()}.
-     *
-     * @param file the file to be removed
-     * @return the time taken (in seconds) for deleting the specified file
-     */
-    public double deleteFile(final File file) {
-        File.validate(file);
-
-        double time = 0.0;
-        if (contains(file)) {
-            fileList.remove(file);
-            fileNameList.remove(file.getName());
-            getStorage().deallocateResource(file.getSize());
-            time = this.getTotalFileAddTime(file);
-            file.setTransactionTime(time);
-        }
-
-        if(time == 0) {
-            return time;
-        }
-
-        return time + getTransferTime(file);
-    }
-
-    /**
      * Gets the bandwidth of the SAN network (in Megabits/s).
      *
      * @return the bandwidth (in Megabits/s)
@@ -364,21 +320,39 @@ public class SanStorage extends HarddriveStorage {
     /**
      * Gets the transfer time of a given file.
      *
-     * @param fileName the name of the file to compute the transfer time (where its size is defined in MByte)
-     * @return the transfer time in seconds or {@link #FILE_NOT_FOUND} if the file was not found in this storage device
-     */
-    public double getTransferTime(final String fileName) {
-        return getFile(fileName).map(this::getTransferTime).orElse(FILE_NOT_FOUND);
-    }
-
-    /**
-     * Gets the transfer time of a given file.
-     *
      * @param file the file to compute the transfer time (where its size is defined in MByte)
      * @return the transfer time in seconds
      */
     public double getTransferTime(final File file) {
         return getTransferTime(file.getSize());
+    }
+
+    /**
+     * {@inheritDoc}
+     * The network latency is added to the transfer time.
+     *
+     * @param fileSize {@inheritDoc}
+     * @return {@inheritDoc}
+     */
+    @Override
+    public double getTransferTime(final int fileSize) {
+        //Gets the time to read the from the local storage device (such as an HD or SSD).
+        final double storageDeviceReadTime = super.getTransferTime(fileSize);
+
+        //Gets the time to transfer the file through the network
+        final double networkTransferTime = getTransferTime(fileSize, bandwidth);
+
+        return storageDeviceReadTime + networkTransferTime + getNetworkLatency();
+    }
+
+    /**
+     * Gets the transfer time of a given file.
+     *
+     * @param fileName the name of the file to compute the transfer time (where its size is defined in MByte)
+     * @return the transfer time in seconds or {@link #FILE_NOT_FOUND} if the file was not found in this storage device
+     */
+    public double getTransferTime(final String fileName) {
+        return getFile(fileName).map(this::getTransferTime).orElse(FILE_NOT_FOUND);
     }
 
     /**
@@ -412,6 +386,32 @@ public class SanStorage extends HarddriveStorage {
         }
 
         return Optional.empty();
+    }
+
+    /**
+     * Removes a file from the storage. The time taken (in seconds) for deleting the specified file
+     * can also be found using {@link File#getTransactionTime()}.
+     *
+     * @param file the file to be removed
+     * @return the time taken (in seconds) for deleting the specified file
+     */
+    public double deleteFile(final File file) {
+        File.validate(file);
+
+        double time = 0.0;
+        if (contains(file)) {
+            fileList.remove(file);
+            fileNameList.remove(file.getName());
+            getStorage().deallocateResource(file.getSize());
+            time = this.getTotalFileAddTime(file);
+            file.setTransactionTime(time);
+        }
+
+        if(time == 0) {
+            return time;
+        }
+
+        return time + getTransferTime(file);
     }
 
     /**
