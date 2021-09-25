@@ -8,8 +8,6 @@
 
 package org.cloudbus.cloudsim.resources;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.*;
 
 /**
@@ -128,9 +126,9 @@ public class SanStorage extends HarddriveStorage {
      */
     public double addFile(final File file) {
         double time = 0.0;
-        if (!File.isValid(file)) {
-            LOGGER.warn("{}.addFile(): Invalid file {}", getName(), file);
-        } else if (!getStorage().isAmountAvailable((long) file.getSize())) {
+        File.validate(file);
+
+        if (!getStorage().isAmountAvailable(file.getSize())) {
             LOGGER.error("{}.addFile(): Not enough space to store {}", getName(), file.getName());
         } else if (!contains(file.getName())) { // check if the same file name is already taken
             fileList.add(file);               // add the file into the HD
@@ -191,8 +189,10 @@ public class SanStorage extends HarddriveStorage {
      * @return the time taken (in seconds) for deleting the specified file
      */
     public double deleteFile(final File file) {
+        File.validate(file);
+
         double time = 0.0;
-        if (File.isValid(file) && contains(file)) {
+        if (contains(file)) {
             fileList.remove(file);
             fileNameList.remove(file.getName());
             getStorage().deallocateResource(file.getSize());
@@ -322,10 +322,7 @@ public class SanStorage extends HarddriveStorage {
      * @return an {@link Optional} containing the file if it was found; an empty Optional otherwise
      */
     public Optional<File> getFile(final String fileName) {
-        if (!File.isValid(fileName)) {
-            LOGGER.warn("{}.getFile(): Invalid file name {}.", getName(), fileName);
-            return Optional.empty();
-        }
+        File.validateFileName(fileName);
 
         int size = 0;
 
@@ -404,9 +401,7 @@ public class SanStorage extends HarddriveStorage {
      * @return an {@link Optional} containing the deleted file if it is found; an empty Optional otherwise.
      */
     public Optional<File> deleteFile(final String fileName) {
-        if (!File.isValid(fileName)) {
-            return Optional.empty();
-        }
+        File.validateFileName(fileName);
 
         final int i = fileNameList.indexOf(fileName);
         if (i != -1) {
@@ -426,7 +421,7 @@ public class SanStorage extends HarddriveStorage {
      * @return true if the file is in the storage, false otherwise
      */
     public boolean contains(final String fileName) {
-        return !StringUtils.isBlank(fileName) && fileNameList.contains(fileName);
+        return fileNameList.contains(fileName);
     }
 
     /**
@@ -436,11 +431,7 @@ public class SanStorage extends HarddriveStorage {
      * @return true if the file is in the storage, false otherwise
      */
     public boolean contains(final File file) {
-        if (!File.isValid(file)) {
-            return false;
-        }
-
-        return contains(file.getName());
+        return file != null && contains(file.getName());
     }
 
     /**

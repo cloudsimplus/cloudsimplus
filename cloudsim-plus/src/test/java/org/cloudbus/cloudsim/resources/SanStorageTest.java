@@ -178,13 +178,10 @@ public class SanStorageTest {
     public void testAddFileWhenParamIsFile() {
         final SanStorage instance = createSanStorageBw(BANDWIDTH);
 
-        //try invalid file
-        File file = null;
-        assertEquals(0, instance.addFile(file));
+        assertThrows(NullPointerException.class, () -> instance.addFile((File)null));
 
-        //add a valid file
-        file = new File(FILE1, FILE_SIZE);
-        assertTrue(instance.addFile(file) > FILE_TRANSFER_TIME);
+        final File validFile = new File(FILE1, FILE_SIZE);
+        assertTrue(instance.addFile(validFile) > FILE_TRANSFER_TIME);
     }
 
     @Test
@@ -290,12 +287,10 @@ public class SanStorageTest {
         final long available = fileSize;
         final SanStorage instance = createSanStorage(capacity);
 
-        //try to add invalid files
-        File file = null;
-        assertFalse(instance.addFile(file) > 0.0);
+        assertThrows(NullPointerException.class, () -> instance.addFile((File)null));
 
         int fileNumber = 0;
-        file = createNumberedFile(++fileNumber, fileSize);
+        File file = createNumberedFile(++fileNumber, fileSize);
         assertTrue(instance.addFile(file) > 0.0);
         assertEquals(available, instance.getAvailableResource());
 
@@ -477,9 +472,9 @@ public class SanStorageTest {
     @Test
     public void testGetFileWhenInvalidFile() {
         final SanStorage instance = createSanStorage();
-        assertEquals(Optional.empty(), instance.getFile("   "));
-        assertEquals(Optional.empty(), instance.getFile(""));
-        assertEquals(Optional.empty(), instance.getFile(null));
+        assertThrows(IllegalArgumentException.class, () -> instance.getFile("   "));
+        assertThrows(IllegalArgumentException.class, () -> instance.getFile(""));
+        assertThrows(NullPointerException.class, () -> instance.getFile(null));
     }
 
     /**
@@ -510,7 +505,7 @@ public class SanStorageTest {
 
         fileList.forEach(file ->  assertEquals(Optional.of(file), instance.deleteFile(file.getName())));
 
-        assertEquals(Optional.empty(), instance.deleteFile(""));
+        assertThrows(IllegalArgumentException.class, () -> instance.deleteFile(""));
         assertEquals(Optional.empty(), instance.deleteFile(INEXISTENT_FILE));
     }
 
@@ -522,8 +517,7 @@ public class SanStorageTest {
         fileList.forEach(file -> assertTrue(instance.contains(file.getName())));
 
         assertFalse(instance.contains(INEXISTENT_FILE));
-        final String nullStr = null;
-        assertFalse(instance.contains(nullStr));
+        assertFalse(instance.contains((String)null));
         assertFalse(instance.contains(""));
     }
 
@@ -533,10 +527,8 @@ public class SanStorageTest {
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
         fileList.forEach(file -> assertTrue(instance.contains(file)));
-
         assertFalse(instance.contains(new File(INEXISTENT_FILE, FILE_SIZE)));
-        final File nullFile = null;
-        assertFalse(instance.contains(nullFile));
+        assertFalse(instance.contains((File) null));
     }
 
     @Test

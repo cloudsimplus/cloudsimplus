@@ -10,6 +10,8 @@ package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 
+import java.util.Objects;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -109,24 +111,33 @@ public class File {
     }
 
     /**
-     * Check if the name of a file is valid or not.
-     *
-     * @param fileName the file name to be checked for validity
-     * @return true if the file name is valid, false otherwise
-     */
-    public static boolean isValid(final String fileName) {
-        return FileAttribute.isValid(fileName);
-    }
-
-    /**
-     * Check if a file object is valid or not. This method checks whether the given file object
+     * Check if a file object is valid or not, whether the given file object
      * itself and its file name are valid.
      *
      * @param file the file to be checked for validity
-     * @return true if the file is valid, false otherwise
+     * @throws NullPointerException if the given file is null
+     * @throws IllegalArgumentException if the name of the file is blank or null
      */
-    public static boolean isValid(final File file) {
-        return file != null && isValid(file.getName());
+    public static void validate(final File file) {
+        Objects.requireNonNull(file, "Given file cannot be null.");
+        validateFileName(file.getName());
+    }
+
+    /**
+     * Check if the name of a file is valid or not.
+     *
+     * @param fileName the file name to be checked for validity
+     * @return the given fileName if it's valid
+     * @throws NullPointerException if the file name is null
+     * @throws IllegalArgumentException if the file name is blank
+     */
+    public static String validateFileName(final String fileName) {
+        Objects.requireNonNull(fileName, "File name cannot be null.");
+        if(fileName.isBlank()) {
+            throw new IllegalArgumentException("File name cannot be blank");
+        }
+
+        return fileName;
     }
 
     protected void createAttribute(final int fileSize) {
@@ -213,10 +224,8 @@ public class File {
      *
      * @param name the file name
      */
-    public final void setName(String name) {
-        if (!isValid(name))
-            throw new IllegalArgumentException("File name cannot be null or empty");
-        this.name = name;
+    public final void setName(final String name) {
+        this.name = validateFileName(name);
     }
 
     /**

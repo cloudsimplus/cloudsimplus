@@ -374,14 +374,4 @@ public class FileAttribute {
     public boolean isMasterCopy() {
         return masterCopy;
     }
-
-    /**
-     * Check if the name of a file is valid or not.
-     *
-     * @param fileName the file name to be checked for validity
-     * @return true if the file name is valid, false otherwise
-     */
-    public static boolean isValid(final String fileName) {
-        return !StringUtils.isBlank(fileName);
-    }
 }
