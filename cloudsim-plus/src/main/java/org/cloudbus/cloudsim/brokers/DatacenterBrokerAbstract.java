@@ -918,9 +918,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @return
      */
     private boolean isTimeToShutdownBroker() {
-        return isAlive() &&
-               (!getSimulation().isTerminationTimeSet() || getSimulation().isTimeToTerminateSimulationUnderRequest())
-               && shutdownWhenIdle && isBrokerIdle();
+        return isAlive() && isTimeToTerminateSimulation() && shutdownWhenIdle && isBrokerIdle();
+    }
+
+    private boolean isTimeToTerminateSimulation() {
+        return !getSimulation().isTerminationTimeSet() || getSimulation().isTimeToTerminateSimulationUnderRequest();
     }
 
     private boolean isBrokerIdle() {
