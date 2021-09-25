@@ -24,15 +24,15 @@
 package org.cloudbus.cloudsim.mocks;
 
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.easymock.EasyMock;
-import org.easymock.IExpectationSetters;
+import org.mockito.Mockito;
+import org.mockito.stubbing.OngoingStubbing;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 /**
  * A class that provides a set of methods to mock the {@link CloudSim} class
- * using {@link EasyMock}. Each method in this class provides a mock for a
+ * using {@link Mockito}. Each method in this class provides a mock for a
  * method with the same name in the CloudSim class.
  *
  * @author Manoel Campos da Silva Filho
@@ -50,7 +50,7 @@ public final class CloudSimMocker {
      * Mocker object.
      */
     private CloudSimMocker() {
-        this.mock = EasyMock.createMock(CloudSim.class);
+        this.mock = Mockito.mock(CloudSim.class);
     }
 
     /**
@@ -90,8 +90,7 @@ public final class CloudSimMocker {
     public static CloudSim createMock(final Consumer<CloudSimMocker> consumer) {
         final CloudSimMocker mocker = new CloudSimMocker();
         consumer.accept(mocker);
-        EasyMock.expect(mocker.mock.isRunning()).andReturn(true).anyTimes();
-        CloudSimMocker.replay(mocker.mock);
+        Mockito.when(mocker.mock.isRunning()).thenReturn(true);
         return mocker.mock;
     }
 
@@ -103,33 +102,32 @@ public final class CloudSimMocker {
      * method must return
      * @return
      */
-    public IExpectationSetters<Double> clock(final double clockTimeToReturn) {
-        return EasyMock
-                .expect(mock.clock())
-                .andReturn(clockTimeToReturn);
+    public OngoingStubbing<Double> clock(final double clockTimeToReturn) {
+        return Mockito
+                .when(mock.clock())
+                .thenReturn(clockTimeToReturn);
     }
 
-    public IExpectationSetters<Boolean> isTerminationTimeSet() {
-        return EasyMock
-            .expect(mock.isTerminationTimeSet())
-            .andReturn(false);
+    public OngoingStubbing<Boolean> isTerminationTimeSet() {
+        return Mockito
+            .when(mock.isTerminationTimeSet())
+            .thenReturn(false);
     }
 
-    public IExpectationSetters<Integer> getNumEntities() {
-        return EasyMock
-            .expect(mock.getNumEntities())
-            .andReturn(1);
+    public OngoingStubbing<Integer> getNumEntities() {
+        return Mockito
+            .when(mock.getNumEntities())
+            .thenReturn(1);
     }
 
-    public IExpectationSetters<Integer> addEntity() {
-        mock.addEntity(EasyMock.anyObject());
-        return EasyMock.expectLastCall();
+    public void addEntity() {
+        Mockito.doNothing().when(mock).addEntity(Mockito.any());
     }
 
-    public IExpectationSetters<String> clockStr() {
-        return EasyMock
-            .expect(mock.clockStr())
-            .andReturn("0");
+    public OngoingStubbing<String> clockStr() {
+        return Mockito
+            .when(mock.clockStr())
+            .thenReturn("0");
     }
 
     /**
@@ -141,7 +139,7 @@ public final class CloudSimMocker {
      * method will return in each call
      */
     public void clock(final List<Integer> clockTimesToReturn) {
-        clockTimesToReturn.stream().mapToDouble(time -> time).forEach(t -> EasyMock.expect(mock.clock()).andReturn(t).once());
+        clockTimesToReturn.stream().mapToDouble(time -> time).forEach(t -> Mockito.when(mock.clock()).thenReturn(t));
     }
 
     /**
@@ -152,42 +150,19 @@ public final class CloudSimMocker {
      * method must return
      * @return
      */
-    public IExpectationSetters<Double> getMinTimeBetweenEvents(final double clockTimeToReturn) {
-        return EasyMock
-            .expect(mock.getMinTimeBetweenEvents())
-            .andReturn(clockTimeToReturn);
+    public OngoingStubbing<Double> getMinTimeBetweenEvents(final double clockTimeToReturn) {
+        return Mockito
+            .when(mock.getMinTimeBetweenEvents())
+            .thenReturn(clockTimeToReturn);
     }
 
     public void sendNow() {
-        mock.sendNow(EasyMock.anyObject(), EasyMock.anyObject(), EasyMock.anyInt(), EasyMock.anyObject());
-        EasyMock.expectLastCall();
+        Mockito.doNothing()
+               .when(mock)
+               .sendNow(Mockito.any(), Mockito.any(), Mockito.anyInt(), Mockito.any());
     }
 
     public void send() {
-        mock.send(EasyMock.anyObject());
-        EasyMock.expectLastCall();
+        Mockito.doNothing().when(mock).send(Mockito.any());
     }
-
-    /**
-     * Finishes the mocking process, making the mocked CloudSim class ready to
-     * use. The method is used just internally as the final step in the
-     * {@link #createMock(java.util.function.Consumer)} method.
-     * @param mock the created CloudSim mock to replay
-     */
-    private static void replay(CloudSim mock) {
-        EasyMock.replay(mock);
-    }
-
-    /**
-     * Checks if the expected calls to CloudSim class were in fact made. Calling
-     * this method is an optional step that might be performed, at the end of
-     * the test case using the mocked CloudSim class, to verify if the methods
-     * in CloudSim class that were expected to be called were in fact called the
-     * number of expected times.
-     * @param mock the created CloudSim mock to verify
-     */
-    public static void verify(CloudSim mock) {
-        EasyMock.verify(mock);
-    }
-
 }

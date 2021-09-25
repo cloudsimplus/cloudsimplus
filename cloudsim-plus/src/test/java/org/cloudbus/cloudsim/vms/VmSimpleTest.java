@@ -18,12 +18,11 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import static org.easymock.EasyMock.createMock;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -40,7 +39,7 @@ public class VmSimpleTest {
         cloudletScheduler = new CloudletSchedulerTimeShared();
         vm = VmTestUtil.createVm(
             cloudletScheduler,
-            b -> EasyMock.expect(b.requestIdleVmDestruction(EasyMock.anyObject())).andReturn(b));
+            b -> Mockito.when(b.requestIdleVmDestruction(Mockito.any())).thenReturn(b));
     }
 
     @Test
@@ -51,7 +50,7 @@ public class VmSimpleTest {
     @Test
     public void testGetWaitTimeForNonCreateVmWithNonZeroClockAndZeroArrivedTime() {
         final int clock = 10, arrivedTime = 0;
-        final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock).once());
+        final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock));
         final DatacenterBroker broker = MocksHelper.createMockBroker(simulation, b -> {});
 
         final Vm vm = new VmSimple(this.vm);
@@ -63,7 +62,7 @@ public class VmSimpleTest {
     @Test
     public void testGetWaitTimeForNonCreateVmWithNonZeroClockAndArrivedTime() {
         final int clock = 10, arrivedTime = 2;
-        final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock).once());
+        final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock));
         final DatacenterBroker broker = MocksHelper.createMockBroker(simulation, b -> {});
 
         final Vm vm = new VmSimple(this.vm);
@@ -302,19 +301,16 @@ public class VmSimpleTest {
     public void testGetCurrentRequestedBwWhenVmWasCreatedInsideHost() {
         final double currentBwUsagePercent = 0.5;
 
-        final CloudletScheduler cloudletScheduler = createMock(CloudletScheduler.class);
-        cloudletScheduler.setVm(EasyMock.anyObject());
-        EasyMock.expectLastCall().once();
-        EasyMock.expect(cloudletScheduler.getCurrentRequestedBwPercentUtilization())
-                .andReturn(currentBwUsagePercent);
-        EasyMock.replay(cloudletScheduler);
+        final CloudletScheduler scheduler = Mockito.mock(CloudletScheduler.class);
+        Mockito.doNothing().when(scheduler).setVm(Mockito.any());
+        Mockito.when(scheduler.getCurrentRequestedBwPercentUtilization())
+               .thenReturn(currentBwUsagePercent);
 
-        final Vm vm0 = VmTestUtil.createVm(cloudletScheduler);
+        final Vm vm0 = VmTestUtil.createVm(scheduler);
         vm0.setCreated(true);
 
         final long expectedCurrentBwUtilization = (long)(currentBwUsagePercent* VmTestUtil.BANDWIDTH);
         assertEquals(expectedCurrentBwUtilization, vm0.getCurrentRequestedBw());
-        EasyMock.verify(cloudletScheduler);
     }
 
     @Test
@@ -330,17 +326,15 @@ public class VmSimpleTest {
         final double currentRamUsagePercent = 0.5;
         final long expectedCurrentRamUsage = (long)(currentRamUsagePercent* VmTestUtil.RAM);
 
-        final CloudletScheduler  cloudletScheduler = createMock(CloudletScheduler.class);
-        cloudletScheduler.setVm(EasyMock.anyObject());
-        EasyMock.expectLastCall().once();
-        EasyMock.expect(cloudletScheduler.getCurrentRequestedRamPercentUtilization())
-                .andReturn(currentRamUsagePercent);
-        EasyMock.replay(cloudletScheduler);
+        final CloudletScheduler scheduler = Mockito.mock(CloudletScheduler.class);
+        Mockito.doNothing().when(scheduler).setVm(Mockito.any());
+        Mockito.when(scheduler.getCurrentRequestedRamPercentUtilization())
+                .thenReturn(currentRamUsagePercent);
 
-        final Vm vm0 = VmTestUtil.createVm(cloudletScheduler);
+        final Vm vm0 = VmTestUtil.createVm(scheduler);
         vm0.setCreated(true);
         assertEquals(expectedCurrentRamUsage, vm0.getCurrentRequestedRam());
-        EasyMock.verify(cloudletScheduler);
+        Mockito.verify(scheduler).getCurrentRequestedRamPercentUtilization();
     }
 
     @Test

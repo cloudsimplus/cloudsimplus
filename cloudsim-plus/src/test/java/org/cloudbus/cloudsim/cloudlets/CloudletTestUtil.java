@@ -66,7 +66,7 @@ public final class CloudletTestUtil {
     {
         final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
-            mocker.clock(0).anyTimes();
+            mocker.clock(0);
             mocker.sendNow();
         });
 

@@ -137,8 +137,8 @@ public final class VmTestUtil {
         final Consumer<DatacenterBroker> brokerMockerConsumer)
     {
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
-            mocker.clock(0).anyTimes();
-            mocker.clockStr().anyTimes();
+            mocker.clock(0);
+            mocker.clockStr();
         });
 
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, brokerMockerConsumer);

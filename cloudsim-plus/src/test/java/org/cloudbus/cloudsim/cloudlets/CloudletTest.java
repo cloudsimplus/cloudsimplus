@@ -6,8 +6,8 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.cloudsimplus.listeners.EventListener;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -58,8 +58,7 @@ public class CloudletTest {
         assertFalse(Cloudlet.NULL.requiresFiles());
         assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalInDatacenter());
         assertFalse(Cloudlet.NULL.removeOnFinishListener(null));
-        final EventListener listener = EasyMock.createMock(EventListener.class);
-        EasyMock.replay(listener);
+        final EventListener listener = Mockito.mock(EventListener.class);
         Cloudlet.NULL.addOnFinishListener(listener);
 
         assertFalse(Cloudlet.NULL.isBoundToVm());
@@ -102,8 +101,7 @@ public class CloudletTest {
 
     @Test
     public void testNullObjectUtilization2(){
-        final UtilizationModel model = EasyMock.createMock(UtilizationModel.class);
-        EasyMock.replay(model);
+        final UtilizationModel model = Mockito.mock(UtilizationModel.class);
         Cloudlet.NULL.setUtilizationModelBw(model);
         assertSame(UtilizationModel.NULL, Cloudlet.NULL.getUtilizationModelBw());
 

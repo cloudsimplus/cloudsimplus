@@ -16,7 +16,6 @@ import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelStochastic;
 import org.cloudsimplus.listeners.CloudletVmEventInfo;
 import org.cloudsimplus.listeners.EventListener;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -150,17 +149,15 @@ public class CloudletSimpleTest {
         cloudlet.setExecStartTime(execStartTime);
         cloudlet.setStatus(Cloudlet.Status.SUCCESS);
         assertEquals(actualCpuTime, cloudlet.getActualCpuTime());
-
-        EasyMock.verify(cloudsim);
     }
 
     @Test
     public void testGetProcessingCost() {
         final double costPerCpuSec = 4, costPerByteOfBw = 2;
         final Datacenter dc = DatacenterMocker.createMock(mocker -> {
-            mocker.getCharacteristics().times(2);
-            mocker.getCostPerSecond(costPerCpuSec).once();
-            mocker.getCostPerBw(costPerByteOfBw).once();
+            mocker.getCharacteristics();
+            mocker.getCostPerSecond(costPerCpuSec);
+            mocker.getCostPerBw(costPerByteOfBw);
         });
 
         final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(0, 10000, 2);

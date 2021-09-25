@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.junit.jupiter.api.Test;
 
+import static org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -26,14 +27,13 @@ public class CloudletSchedulerSpaceSharedTest {
         final double clockMethodReturnValue = 0;
         final int expectedClockCalls = 4;
         final CloudSim cloudsim = CloudSimMocker.createMock(
-                mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
+                mocker -> mocker.clock(clockMethodReturnValue));
         final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(0, 1000, 1);
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         final CloudletExecution cle = new CloudletExecution(cloudlet);
         final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
         instance.cloudletFinish(cle);
         assertEquals(Cloudlet.Status.SUCCESS, cloudlet.getStatus());
-        CloudSimMocker.verify(cloudsim);
     }
 
     @Test
@@ -41,8 +41,8 @@ public class CloudletSchedulerSpaceSharedTest {
         final double mips = 1000;
         final long cloudletLen = 10000;
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
-            mocker.clock(0).anyTimes();
-            mocker.getMinTimeBetweenEvents(0).anyTimes();
+            mocker.clock(0);
+            mocker.getMinTimeBetweenEvents(0);
         });
 
         final Vm vm = new VmSimple(0, mips, 1);
@@ -63,16 +63,14 @@ public class CloudletSchedulerSpaceSharedTest {
     @Test
     public void testCloudletFinishCheckCloudletMovedToFinishList() {
         final double clockMethodReturnValue = 0;
-        final int expectedClockCalls = 4;
         final CloudSim cloudsim = CloudSimMocker.createMock(
-                mocker -> mocker.clock(clockMethodReturnValue).times(expectedClockCalls));
+                mocker -> mocker.clock(clockMethodReturnValue));
         final Cloudlet cloudlet = CloudletTestUtil.createCloudlet(0, 1000, 1);
         cloudlet.setBroker(MocksHelper.createMockBroker(cloudsim));
         final CloudletExecution cle = new CloudletExecution(cloudlet);
         final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.createScheduler();
         instance.cloudletFinish(cle);
         assertTrue(instance.getCloudletFinishedList().contains(cle));
-        CloudSimMocker.verify(cloudsim);
     }
 
     @Test
@@ -330,7 +328,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int numberOfPes = 2;
         final int numberOfCloudlets = 4;
 
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerSpaceShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -341,7 +339,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int numberOfPes = 2;
         final int numberOfCloudlets = numberOfPes;
 
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletSchedulerSpaceShared instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
         final double expected = 1;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -352,7 +350,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int numberOfPes = 4;
         final int numberOfCloudlets = 2;
 
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletScheduler instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
         final double expected = 0.5;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -363,7 +361,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int numberOfPes = 4;
         final int numberOfCloudlets = 3;
 
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletScheduler instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
         final double expected = 0.75;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }
@@ -374,7 +372,7 @@ public class CloudletSchedulerSpaceSharedTest {
         final int numberOfPes = 5;
         final int numberOfCloudlets = 4;
 
-        final CloudletSchedulerSpaceShared instance = CloudletSchedulerSpaceSharedTestUtil.newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
+        final CloudletScheduler instance = newSchedulerWithSingleCoreRunningCloudlets(mips, numberOfPes, numberOfCloudlets);
         final double expected = 0.8;
         assertEquals(expected, instance.getRequestedCpuPercent(0));
     }

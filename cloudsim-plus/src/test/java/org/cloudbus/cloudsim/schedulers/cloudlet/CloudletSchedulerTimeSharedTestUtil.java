@@ -9,7 +9,7 @@ import org.cloudbus.cloudsim.schedulers.MipsShare;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelDynamic;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.easymock.EasyMock;
+import org.mockito.Mockito;
 
 /**
  * An utility class used by Vm tests.
@@ -29,9 +29,8 @@ final class CloudletSchedulerTimeSharedTestUtil {
      * @return the created mock Cloudlet
      */
     /* default */ static CloudletExecution createCloudletExecInfo(final long id){
-        final CloudletExecution cloudlet = EasyMock.createMock(CloudletExecution.class);
-        EasyMock.expect(cloudlet.getCloudletId()).andReturn(id).anyTimes();
-        EasyMock.replay(cloudlet);
+        final CloudletExecution cloudlet = Mockito.mock(CloudletExecution.class);
+        Mockito.when(cloudlet.getCloudletId()).thenReturn(id);
         return cloudlet;
     }
 

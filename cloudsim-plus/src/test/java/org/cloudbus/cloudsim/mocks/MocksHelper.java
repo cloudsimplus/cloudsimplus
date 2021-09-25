@@ -3,7 +3,7 @@ package org.cloudbus.cloudsim.mocks;
 import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.easymock.EasyMock;
+import org.mockito.Mockito;
 
 import java.util.function.Consumer;
 
@@ -40,9 +40,8 @@ public final class MocksHelper {
      * @return a mocked DatacenterBroker
      */
     public static DatacenterBroker createMockBroker(long brokerId, int expectedCallsToGetId) {
-        final DatacenterBroker broker = EasyMock.createMock(DatacenterBroker.class);
-        EasyMock.expect(broker.getId()).andReturn(brokerId).times(expectedCallsToGetId);
-        EasyMock.replay(broker);
+        final DatacenterBroker broker = Mockito.mock(DatacenterBroker.class);
+        Mockito.when(broker.getId()).thenReturn(brokerId);
         return broker;
     }
 
@@ -53,15 +52,14 @@ public final class MocksHelper {
     /**
      * Creates a DatacenterBroker mock object.
      * @param cloudsim the CloudSim instance or mock to use
-     * @param consumer a {@link Runnable} that can be used to call additional {@link EasyMock#expect(Object)}
+     * @param consumer a {@link Runnable} that can be used for additional {@link Mockito#when(Object) calls}
      * @return
      */
     public static DatacenterBroker createMockBroker(final Simulation cloudsim, final Consumer<DatacenterBroker> consumer) {
-        final DatacenterBroker broker = EasyMock.createMock(DatacenterBroker.class);
-        EasyMock.expect(broker.getSimulation()).andReturn(cloudsim).anyTimes();
-        EasyMock.expect(broker.getId()).andReturn(0L).anyTimes();
+        final DatacenterBroker broker = Mockito.mock(DatacenterBroker.class);
+        Mockito.when(broker.getSimulation()).thenReturn(cloudsim);
+        Mockito.when(broker.getId()).thenReturn(0L);
         consumer.accept(broker);
-        EasyMock.replay(broker);
         return broker;
     }
 }

@@ -30,9 +30,9 @@ import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.vms.VmTestUtil;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
-import org.easymock.EasyMock;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -177,11 +177,11 @@ public class HostSimpleTest {
         final HostSimple host = createHostSimple(0, numberOfVms);
 
         final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
-            mocker.clock(0).anyTimes();
-            mocker.getNumEntities().anyTimes();
-            mocker.isTerminationTimeSet().once();
-            mocker.addEntity().anyTimes();
-            mocker.clockStr().anyTimes();
+            mocker.clock(0);
+            mocker.getNumEntities();
+            mocker.isTerminationTimeSet();
+            mocker.addEntity();
+            mocker.clockStr();
             //Broker shutdown event
             mocker.send();
         });
@@ -231,7 +231,7 @@ public class HostSimpleTest {
         final VmSimple vm = VmTestUtil.createVm(
             0, VM_MIPS, numberOfPes, RAM, BW, STORAGE,
             new CloudletSchedulerTimeShared(),
-            b -> EasyMock.expect(b.requestIdleVmDestruction(EasyMock.anyObject())).andReturn(b));
+            b -> Mockito.when(b.requestIdleVmDestruction(Mockito.any())).thenReturn(b));
         final Host targetHost = createHostSimple(0, numberOfPes);
 
         assertEquals(MIPS, targetHost.getTotalAvailableMips());
@@ -319,31 +319,19 @@ public class HostSimpleTest {
 
         final List<Vm> vmList = createListOfMockVms(numberOfVms, mipsShare, time);
 
-        final VmScheduler vmScheduler = EasyMock.createMock(VmScheduler.class);
+        final VmScheduler vmScheduler = Mockito.mock(VmScheduler.class);
         final HostSimple host = createHostSimple(numberOfVms, VmScheduler.NULL);
 
-        EasyMock.expect(vmScheduler.getAllocatedMips(EasyMock.anyObject()))
-                .andReturn(mipsShare)
-                .times(numberOfVms);
-        EasyMock.expect(vmScheduler.setHost(EasyMock.anyObject()))
-            .andReturn(vmScheduler)
-            .once();
-        EasyMock.expect(vmScheduler.getHost()).andReturn(host).anyTimes();
+        Mockito.when(vmScheduler.getAllocatedMips(Mockito.any())).thenReturn(mipsShare);
+        Mockito.when(vmScheduler.setHost(Mockito.any())).thenReturn(vmScheduler);
+        Mockito.when(vmScheduler.getHost()).thenReturn(host);
 
-        EasyMock.replay(vmScheduler);
         host.setVmScheduler(vmScheduler);
-
         vmList.forEach(host::addVmToList);
 
         final int idx = 0;
-        final Vm vm = vmList.get(idx);
         final double nextCloudletCompletionTimeOfCurrentVm = idx+1;
-        assertEquals(
-                nextCloudletCompletionTimeOfCurrentVm,
-                host.updateProcessing(time));
-        EasyMock.verify(vm);
-
-        EasyMock.verify(vmScheduler);
+        assertEquals(nextCloudletCompletionTimeOfCurrentVm, host.updateProcessing(time));
     }
 
     private List<Vm> createListOfMockVms(
@@ -354,12 +342,10 @@ public class HostSimpleTest {
         for(int i = 0; i < numberOfVms; i++) {
             final double nextCloudletCompletionTimeOfCurrentVm = i+1;
 
-            final Vm vm = EasyMock.createMock(Vm.class);
-            EasyMock
-                    .expect(vm.updateProcessing(simulationClock, mipsShare))
-                    .andReturn(nextCloudletCompletionTimeOfCurrentVm)
-                    .times(1);
-            EasyMock.replay(vm);
+            final Vm vm = Mockito.mock(Vm.class);
+            Mockito
+                .when(vm.updateProcessing(simulationClock, mipsShare))
+                .thenReturn(nextCloudletCompletionTimeOfCurrentVm);
 
             vmList.add(vm);
         }
@@ -549,13 +535,13 @@ public class HostSimpleTest {
 
     @Test
     public void testVmDestroy() {
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
         final VmSimple vm = VmTestUtil.createVm(
                 0, MIPS, 1, RAM / 2, BW / 2, STORAGE,
                 new CloudletSchedulerTimeShared());
         final List<Vm> vmExecList = new ArrayList<>(1);
         vmExecList.add(vm);
-        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, b -> EasyMock.expect(b.getVmExecList()).andReturn(vmExecList));
+        final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim, b -> Mockito.when(b.getVmExecList()).thenReturn(vmExecList));
         vm.setBroker(broker);
 
         assertTrue(host.createVm(vm).fully());
@@ -568,7 +554,7 @@ public class HostSimpleTest {
 
     @Test
     public void testVmDestroyAll() {
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0).times(2));
+        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> mocker.clock(0));
         final DatacenterBroker broker = MocksHelper.createMockBroker(cloudsim);
         final Vm vm0 = VmTestUtil.createVm(
                 0, MIPS, 1, RAM / 2, BW / 2, HALF_STORAGE,
@@ -638,14 +624,12 @@ public class HostSimpleTest {
      * @return
      */
     private Vm createMockVm(final ResourceManageable vmResource, final Function<Vm, Resource> vmResourceFunction, final long usedResource){
-        final Vm vm = EasyMock.createMock(Vm.class);
+        final Vm vm = Mockito.mock(Vm.class);
         vmResource.allocateResource(usedResource);
 
         /* When the given VM resource function is called during tests,
         * it must return the provided resource instance. */
-        EasyMock.expect(vmResourceFunction.apply(vm)).andReturn(vmResource).once();
-        EasyMock.replay(vm);
-
+        Mockito.when(vmResourceFunction.apply(vm)).thenReturn(vmResource);
         return vm;
     }
 
