@@ -251,10 +251,6 @@ class FinishedEntitiesPurgeTest {
         simulation.start();
 
         final double endTimeSec = TimeUtil.elapsedSeconds(startTime);
-        System.out.printf(
-            "%nFinished %s. Simulated time: %s (%.2f secs). Actual execution time: %s%n",
-            getClass().getSimpleName(), TimeUtil.secondsToStr(simulation.clock()),
-            simulation.clock(), TimeUtil.secondsToStr(endTimeSec));
     }
 
     private void printFinishedCloudlets() {
@@ -312,7 +308,6 @@ class FinishedEntitiesPurgeTest {
 
         final int entitiesNumber = simulation.getEntityList().size();
         if(entitiesNumber != previousEntitiesNumber){
-            System.out.printf("Simulation time %s :: %d current entities%n", simulation.clockStr(), entitiesNumber);
             this.previousEntitiesNumber = entitiesNumber;
         }
     }
