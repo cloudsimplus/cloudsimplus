@@ -4,7 +4,7 @@
 
     <groupId>org.cloudsimplus</groupId>
     <artifactId>cloudsim-plus-benchmarks</artifactId>
-    <version>6.6.0</version>
+    <version>6.6.1</version>
     <name>CloudSim Plus Benchmarks</name>
     <description>A module containing benchmarks created using JMH (Java Microbenchmark Harness framework) to assess CloudSim Plus performance</description>
     <url>http://cloudsimplus.org</url>
@@ -88,7 +88,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.7.0</version>
+                <version>3.8.1</version>
                 <configuration>
                     <source>1.8</source>
                     <target>1.8</target>
@@ -98,7 +98,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
-                <version>2.4.3</version>
+                <version>3.2.4</version>
                 <executions>
                     <execution>
                         <phase>package</phase>
@@ -161,7 +161,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
-                <version>2.8.2</version>
+                <version>3.0.0-M1</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>
@@ -171,7 +171,7 @@
                 <!-- Checks if a required Maven version is being used to build the project -->
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-enforcer-plugin</artifactId>
-                <version>3.0.0-M1</version>
+                <version>3.0.0-M3</version>
                 <executions>
                     <execution>
                         <id>enforce-versions</id>
