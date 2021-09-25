@@ -206,35 +206,42 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @see #setDefaultStorageCapacity(long)
      */
     public VmSimple(final long id, final long mipsCapacity, final long numberOfPes) {
-        this.resources = new ArrayList<>(4);
-        setInMigration(false);
-        setHost(Host.NULL);
-        setCloudletScheduler(new CloudletSchedulerTimeShared());
-        this.processor = new Processor(this, mipsCapacity, numberOfPes);
-        this.description = "";
-        this.startTime = -1;
-        this.stopTime = -1;
-        this.lastBusyTime = Double.MAX_VALUE;
-
         setId(id);
-        setBroker(DatacenterBroker.NULL);
-        setMips(mipsCapacity);
-        setNumberOfPes(numberOfPes);
-
-        setRam(new Ram(defaultRamCapacity));
-        setBw(new Bandwidth(defaultBwCapacity));
-        setStorage(new SimpleStorage(defaultStorageCapacity));
-
-        setSubmissionDelay(0);
-        setVmm("Xen");
-        stateHistory = new LinkedList<>();
-
+        this.resources = new ArrayList<>(4);
         this.onMigrationStartListeners = new ArrayList<>();
         this.onMigrationFinishListeners = new ArrayList<>();
         this.onHostAllocationListeners = new ArrayList<>();
         this.onHostDeallocationListeners = new ArrayList<>();
         this.onCreationFailureListeners = new ArrayList<>();
         this.onUpdateProcessingListeners = new ArrayList<>();
+        this.stateHistory = new LinkedList<>();
+        this.allocatedMips = new MipsShare();
+        this.requestedMips = new MipsShare();
+
+        this.processor = new Processor(this, mipsCapacity, numberOfPes);
+        setMips(mipsCapacity);
+        setNumberOfPes(numberOfPes);
+
+        mutableAttributesInit();
+
+        //initiate number of free PEs as number of PEs of VM
+        freePesNumber = numberOfPes;
+        expectedFreePesNumber = numberOfPes;
+    }
+
+    private void mutableAttributesInit() {
+        this.description = "";
+        this.startTime = -1;
+        this.stopTime = -1;
+        this.lastBusyTime = Double.MAX_VALUE;
+        setBroker(DatacenterBroker.NULL);
+        setSubmissionDelay(0);
+        setVmm("Xen");
+
+        setInMigration(false);
+        setHost(Host.NULL);
+        setCloudletScheduler(new CloudletSchedulerTimeShared());
+
         this.setHorizontalScaling(HorizontalVmScaling.NULL);
         this.setRamVerticalScaling(VerticalVmScaling.NULL);
         this.setBwVerticalScaling(VerticalVmScaling.NULL);
@@ -242,11 +249,9 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
         cpuUtilizationStats = VmResourceStats.NULL;
 
-        //initiate number of free PEs as number of PEs of VM
-        freePesNumber = numberOfPes;
-        expectedFreePesNumber = numberOfPes;
-        allocatedMips = new MipsShare();
-        requestedMips = new MipsShare();
+        setRam(new Ram(defaultRamCapacity));
+        setBw(new Bandwidth(defaultBwCapacity));
+        setStorage(new SimpleStorage(defaultStorageCapacity));
     }
 
     /**
@@ -873,6 +878,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         if (submissionDelay < 0) {
             return;
         }
+
         this.submissionDelay = submissionDelay;
     }
 
