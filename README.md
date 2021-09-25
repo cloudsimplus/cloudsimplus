@@ -36,6 +36,12 @@
 
 [![Build Status](https://github.com/manoelcampos/cloudsimplus/actions/workflows/maven.yml/badge.svg)](https://github.com/manoelcampos/cloudsimplus/actions/workflows/maven.yml) [![Codacy Code Quality](https://app.codacy.com/project/badge/Grade/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/gh/manoelcampos/cloudsimplus/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=manoelcampos/cloudsimplus&amp;utm_campaign=Badge_Grade) [![Codacy Code Coverage](https://app.codacy.com/project/badge/Coverage/3f132b184d5e475dbbcd356ee84499fc)](https://www.codacy.com/gh/manoelcampos/cloudsimplus/dashboard?utm_source=github.com&utm_medium=referral&utm_content=manoelcampos/cloudsimplus&utm_campaign=Badge_Coverage) [![Maven Central](https://img.shields.io/maven-central/v/org.cloudsimplus/cloudsim-plus.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22org.cloudsimplus%22%20AND%20a:%22cloudsim-plus%22) [![Documentation Status](https://readthedocs.org/projects/cloudsimplus/badge/?version=latest)](http://cloudsimplus.rtfd.io/en/latest/?badge=latest) [![GPL licensed](https://img.shields.io/badge/license-GPL-blue.svg)](http://www.gnu.org/licenses/gpl-3.0) [![GitHub Repo stars](https://img.shields.io/github/stars/manoelcampos/cloudsim-plus?label=Contribute.%20Star%20it.)](https://github.com/manoelcampos/cloudsimplus) [![Twitter Follow](https://img.shields.io/twitter/follow/cloudsimplus?style=social)](http://twitter.com/cloudsimplus)
 
+**:warning: WARNING**
+---
+**This is the branch containing the last CloudSim Plus release for JDK 8. 
+Keep in mind it will not be updated and supported anymore.**
+---
+
 CloudSim Plus is a modern, up-to-date, full-featured and fully documented simulation framework. It's easy to use and extend, enabling modeling, simulation, and experimentation of Cloud computing infrastructures and application services. 
 It allows developers to focus on specific system design issues to be investigated, without concerning the low-level details related to Cloud-based infrastructures and services.
  
@@ -51,6 +57,7 @@ and the [Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFT
 It is partially supported by the Portuguese [Fundação para a Ciência e a Tecnologia (FCT)](https://www.fct.pt) 
 and by the [Brazilian foundation Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES)](http://www.capes.gov.br).
 
+You can find the last release for JDK 8 here, but it's not supported anymore.
 **NOTE**
 ---
 > If you are using CloudSim Plus in your research, please make sure you cite this paper: M. C. Silva Filho, R. L. Oliveira, C. C. Monteiro, P. R. M. Inácio, and M. M. Freire. [CloudSim Plus: a Cloud Computing Simulation Framework Pursuing Software Engineering Principles for Improved Modularity, Extensibility and Correctness,](https://doi.org/10.23919/INM.2017.7987304) in IFIP/IEEE International Symposium on Integrated Network Management, 2017, p. 7.
