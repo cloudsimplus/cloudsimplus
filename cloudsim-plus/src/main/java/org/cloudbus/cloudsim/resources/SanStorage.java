@@ -27,13 +27,14 @@ import java.util.Objects;
  *
  * @author Rodrigo N. Calheiros
  * @author Manoel Campos da Silva Filho
- * @TODO See the warning in class documentation.
  * @since CloudSim Toolkit 1.0
+ * TODO See the warning in class documentation.
  */
 public class SanStorage extends HarddriveStorage {
     public static final int FILE_NOT_FOUND = -1;
+
     /**
-     * An storage just to control the amount of space previously allocated
+     * A storage just to control the amount of space previously allocated
      * to add reserved files. When the reserved files are effectively added
      * to the Hard Drive, the reserved space for the file is remove for
      * this attribute. The attribute is used to avoid adding a reserved file
@@ -50,18 +51,14 @@ public class SanStorage extends HarddriveStorage {
      */
     private double bandwidth;
 
-    /**
-     * @see #getNetworkLatency()
-     */
+    /** @see #getNetworkLatency() */
     private double networkLatency;
-    /**
-     * @see #getFileNameList()
-     */
-    private List<String> fileNameList;
-    /**
-     * A list with all files stored on the hard drive.
-     */
-    private List<File> fileList;
+
+    /** @see #getFileNameList() */
+    private final List<String> fileNameList;
+
+    /** @see #getFileList() */
+    private final List<File> fileList;
 
     /**
      * Creates a new SAN with a given capacity, latency, and bandwidth of the network connection.
@@ -106,7 +103,7 @@ public class SanStorage extends HarddriveStorage {
     public double addReservedFile(final File file) {
         Objects.requireNonNull(file);
 
-        if (!reservedStorage.isResourceAmountBeingUsed((long) file.getSize())) {
+        if (!reservedStorage.isResourceAmountBeingUsed(file.getSize())) {
             throw new IllegalStateException("The file size wasn't previously reserved in order to add a reserved file.");
         }
 
@@ -151,7 +148,24 @@ public class SanStorage extends HarddriveStorage {
         }
 
         return time + getTransferTime(file);
+    }
 
+    /**
+     * Adds a set of files to the storage. The time taken (in seconds) for adding each file can also
+     * be found using {@link File#getTransactionTime()}.
+     *
+     * @param list the files to be added
+     * @return the time taken (in seconds) for adding the specified file or zero if the
+     * file is invalid or there isn't available storage space.
+     */
+    public double addFile(final List<File> list) {
+        Objects.requireNonNull(list);
+        if (list.isEmpty()) {
+            LOGGER.debug("{}.addFile(): File list is empty.", getName());
+            return 0.0;
+        }
+
+        return list.stream().mapToDouble(this::addFile).sum();
     }
 
     /**
@@ -163,7 +177,7 @@ public class SanStorage extends HarddriveStorage {
      */
     @Override
     public double getTransferTime(final int fileSize) {
-        //Gets the time to read the from from the local storage device (such as an HD or SSD).
+        //Gets the time to read the from the local storage device (such as an HD or SSD).
         final double storageDeviceReadTime = super.getTransferTime(fileSize);
 
         //Gets the time to transfer the file through the network
@@ -181,12 +195,11 @@ public class SanStorage extends HarddriveStorage {
      */
     public double deleteFile(final File file) {
         double time = 0.0;
-        // check if the file is valid and is in the storage
         if (File.isValid(file) && contains(file)) {
-            fileList.remove(file);            // remove the file HD
-            fileNameList.remove(file.getName());  // remove the name from name list
-            getStorage().deallocateResource((long) file.getSize());    // decrement the current HD space
-            time = this.getTotalFileAddTime(file);  // total time
+            fileList.remove(file);
+            fileNameList.remove(file.getName());
+            getStorage().deallocateResource(file.getSize());
+            time = this.getTotalFileAddTime(file);
             file.setTransactionTime(time);
         }
 
@@ -216,6 +229,7 @@ public class SanStorage extends HarddriveStorage {
         if (bandwidth <= 0) {
             throw new IllegalArgumentException("Bandwidth must be higher than zero");
         }
+
         this.bandwidth = bandwidth;
     }
 
@@ -238,30 +252,13 @@ public class SanStorage extends HarddriveStorage {
         if (networkLatency <= 0) {
             throw new IllegalArgumentException("Latency must be higher than zero");
         }
+
         this.networkLatency = networkLatency;
     }
 
     @Override
     public String toString() {
         return getName();
-    }
-
-    /**
-     * Adds a set of files to the storage. The time taken (in seconds) for adding each file can also
-     * be found using {@link File#getTransactionTime()}.
-     *
-     * @param list the files to be added
-     * @return the time taken (in seconds) for adding the specified file or zero if the
-     * file is invalid or there isn't available storage space.
-     */
-    public double addFile(final List<File> list) {
-        Objects.requireNonNull(list);
-        if (list.isEmpty()) {
-            LOGGER.debug("{}.addFile(): File list is empty.", getName());
-            return 0.0;
-        }
-
-        return list.stream().mapToDouble(this::addFile).sum();
     }
 
     /**
@@ -279,9 +276,9 @@ public class SanStorage extends HarddriveStorage {
      * @param fileSize the size to be reserved (in MByte)
      * @return true if reservation succeeded, false otherwise
      */
-    public boolean reserveSpace(int fileSize) {
-        if (getStorage().allocateResource((long) fileSize)) {
-            reservedStorage.allocateResource((long) fileSize);
+    public boolean reserveSpace(final int fileSize) {
+        if (getStorage().allocateResource(fileSize)) {
+            reservedStorage.allocateResource(fileSize);
             return true;
         }
 
