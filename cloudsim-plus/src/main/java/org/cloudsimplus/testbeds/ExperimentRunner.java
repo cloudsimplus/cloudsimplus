@@ -190,13 +190,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         this.seeds = parallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
         this.metricsMap = parallel ? Collections.synchronizedMap(new TreeMap<>()) : new TreeMap<>();
 
-        if (isApplyBatchMeansMethod() || isApplyAntitheticVariates()) {
-            setSimulationRunsAndBatchesToEvenNumber();
-        }
-
-        if (isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches()) {
-            setNumberOfSimulationRunsAsMultipleOfNumberOfBatches();
-        }
+        setSimulationRunsAndBatchesToEvenNumber();
+        setNumberOfSimulationRunsAsMultipleOfNumberOfBatches();
     }
 
     private int validateBatchesNumber(final int batchesNumber) {
@@ -216,13 +211,16 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     /**
-     *
-     * Sets the number of simulation runs and batches to a even number. The
+     * Sets the number of simulation runs and batches to an even number. The
      * "Antithetic Variates Technique" for variance reduction requires an even
      * number of simulation runs. Accordingly, if the "Batch Means Method" is
      * used simultaneously, the number of batches has to be even.
      */
     private void setSimulationRunsAndBatchesToEvenNumber() {
+        if (!(isApplyBatchMeansMethod() || isApplyAntitheticVariates())) {
+            return;
+        }
+
         if (getSimulationRuns() % 2 != 0) {
             simulationRuns++;
         }
@@ -240,7 +238,9 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * will be even too.
      */
     private void setNumberOfSimulationRunsAsMultipleOfNumberOfBatches() {
-        simulationRuns = batchSizeCeil() * getBatchesNumber();
+        if (isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches()) {
+            simulationRuns = batchSizeCeil() * getBatchesNumber();
+        }
     }
 
     /**
@@ -535,7 +535,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         System.out.printf(
             "Started %s for %d %s using %s (real local time: %s)%n",
             getClass().getSimpleName(), simulationRuns, runWord, CloudSim.VERSION, LocalTime.now());
-        if(description != null && !description.trim().isEmpty()){
+        if(description != null && !description.isBlank()){
             System.out.println(description);
         }
         printSimulationParameters();
