@@ -71,10 +71,11 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
         TableColumn col = getTable().addColumn("Time ").setFormat("%5.0f");
         addColumnDataFunction(col, HostStateHistoryEntry::getTime);
 
-        col = getTable().addColumn("Requested").setFormat("%9.0f");
+        final String format = "%9.0f";
+        col = getTable().addColumn("Requested").setFormat(format);
         addColumnDataFunction(col, HostStateHistoryEntry::getRequestedMips);
 
-        col = getTable().addColumn("Allocated").setFormat("%9.0f");
+        col = getTable().addColumn("Allocated").setFormat(format);
         addColumnDataFunction(col, HostStateHistoryEntry::getAllocatedMips);
 
         col = getTable().addColumn("Used").setFormat("%3.0f%%");
@@ -82,7 +83,7 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
 
         addColumnDataFunction(getTable().addColumn("Host Active"), HostStateHistoryEntry::isActive);
 
-        col = getTable().addColumn("Host Total MIPS").setFormat("%9.0f");
+        col = getTable().addColumn("Host Total MIPS").setFormat(format);
         addColumnDataFunction(col, history -> host.getTotalMipsCapacity());
 
         col = getTable().addColumn("Host Total Usage").setFormat("%5.1f%%");

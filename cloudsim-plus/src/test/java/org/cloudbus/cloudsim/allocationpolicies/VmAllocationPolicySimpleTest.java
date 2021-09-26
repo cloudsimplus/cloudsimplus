@@ -66,7 +66,7 @@ public class VmAllocationPolicySimpleTest {
     }
 
     @Test
-    public void allocateHostForVmWhenOneVmIsGivenAndSelectedHostDoesntHaveStorage_AllocateOtherHost() {
+    public void allocateHostForVmWhenOneVmIsGivenAndSelectedHostDoesntHaveStorageAllocateOtherHost() {
         final Host hostWithMoreFreePes = policy.getDatacenter().getHostList().get(2);
         final Vm vm = VmTestUtil.createVm(
             0, 1000, 2, 1, 1,
