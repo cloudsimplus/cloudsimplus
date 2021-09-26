@@ -108,6 +108,24 @@ public final class CloudSimMocker {
                 .thenReturn(clockTimeToReturn);
     }
 
+    /**
+     * Makes the {@link CloudSim#clock()} method from the mocked CloudSim class
+     * to return each one of the values inside the given List for each
+     * time it is called.
+     *
+     * @param clockTimesToReturn the values that the {@link CloudSim#clock()}
+     * method will return in each call
+     */
+    public void clock(final List<Integer> clockTimesToReturn) {
+        clockTimesToReturn.stream().mapToDouble(time -> time).forEach(t -> Mockito.when(mock.clock()).thenReturn(t));
+    }
+
+    public OngoingStubbing<String> clockStr() {
+        return Mockito
+            .when(mock.clockStr())
+            .thenReturn("0");
+    }
+
     public OngoingStubbing<Boolean> isTerminationTimeSet() {
         return Mockito
             .when(mock.isTerminationTimeSet())
@@ -122,24 +140,6 @@ public final class CloudSimMocker {
 
     public void addEntity() {
         Mockito.doNothing().when(mock).addEntity(Mockito.any());
-    }
-
-    public OngoingStubbing<String> clockStr() {
-        return Mockito
-            .when(mock.clockStr())
-            .thenReturn("0");
-    }
-
-    /**
-     * Makes the {@link CloudSim#clock()} method from the mocked CloudSim class
-     * to return each one of the values inside the given List for each
-     * time it is called.
-     *
-     * @param clockTimesToReturn the values that the {@link CloudSim#clock()}
-     * method will return in each call
-     */
-    public void clock(final List<Integer> clockTimesToReturn) {
-        clockTimesToReturn.stream().mapToDouble(time -> time).forEach(t -> Mockito.when(mock.clock()).thenReturn(t));
     }
 
     /**

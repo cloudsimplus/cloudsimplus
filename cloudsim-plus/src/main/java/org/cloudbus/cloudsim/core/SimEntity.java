@@ -19,6 +19,17 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  */
 public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
     /**
+     * Defines the event state.
+     */
+    enum State {RUNNABLE, WAITING, HOLDING, FINISHED}
+
+    /**
+     * An attribute that implements the Null Object Design Pattern for {@link SimEntity}
+     * objects.
+     */
+    SimEntity NULL = (SimEntityNullBase) (comparable) -> 0;
+
+    /**
      * Gets the time the entity was started.
      * @return the entity start time or -1 if it haven't started yet.
      */
@@ -31,17 +42,6 @@ public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<Sim
      * @return
      */
     double getShutdownTime();
-
-    /**
-     * Defines the event state.
-     */
-    enum State {RUNNABLE, WAITING, HOLDING, FINISHED}
-
-    /**
-     * An attribute that implements the Null Object Design Pattern for {@link SimEntity}
-     * objects.
-     */
-    SimEntity NULL = (SimEntityNullBase) (comparable) -> 0;
 
     /**
      * Gets the entity state.

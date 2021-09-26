@@ -71,12 +71,6 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 4.0.0
  */
 public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloudlet> {
-    /** @see #getMaxCloudletsToCreate() */
-    private int maxCloudletsToCreate;
-
-    /** @see #setAutoSubmitCloudlets(boolean) */
-    private boolean autoSubmitCloudlets;
-
     /**
      * Defines the type of information missing in the trace file.
      * It represents the possible values for the MISSING_INFO field.
@@ -301,6 +295,12 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @see #addCloudletStatusChangeEvents(CloudSimEvent, TaskEvent)
      */
     protected final Map<Cloudlet, List<CloudSimEvent>> cloudletEvents;
+
+    /** @see #getMaxCloudletsToCreate() */
+    private int maxCloudletsToCreate;
+
+    /** @see #setAutoSubmitCloudlets(boolean) */
+    private boolean autoSubmitCloudlets;
 
     /**
      * @see #setCloudletCreationFunction(Function)
