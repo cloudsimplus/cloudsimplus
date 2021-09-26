@@ -64,7 +64,8 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilizationWhenNegativeIncrement() {
-        final double increment = -0.1, initialUsage = 1;
+        final double increment = -0.1;
+        final double initialUsage = 1;
         final double expResult = 0.9;
         final int initialTime = 1;
         final var instance = createUtilizationModel(increment, initialUsage, initialTime);

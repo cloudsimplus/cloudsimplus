@@ -43,7 +43,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * A message tag used for the broker to send a message to itself requesting the shutdown.
      * That ensures a graceful shutdown, after other broker events are processed.
      */
-    public static final int SHUTDOWN = -2;
+    public static final int SHUTDOWN_TAG = -2;
 
     /**
      * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY} to indicate that any VM should not be
@@ -515,7 +515,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return true;
         }
 
-        if (evt.getTag() == SHUTDOWN || evt.getTag() == CloudSimTags.END_OF_SIMULATION) {
+        if (evt.getTag() == SHUTDOWN_TAG || evt.getTag() == CloudSimTags.END_OF_SIMULATION) {
             shutdown();
             return true;
         }
@@ -861,7 +861,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void requestShutdownWhenIdle() {
         if (!shutdownRequested && isTimeToShutdownBroker()) {
-            schedule(SHUTDOWN);
+            schedule(SHUTDOWN_TAG);
             shutdownRequested = true;
         }
     }
