@@ -143,7 +143,7 @@ public interface VmScheduler {
      * @param requestedMips a list of MIPS requested by a VM
      * @return true if the requested MIPS List is allowed to be allocated to the VM, false otherwise
      */
-    boolean isSuitableForVm(final Vm vm, final MipsShare requestedMips);
+    boolean isSuitableForVm(Vm vm, MipsShare requestedMips);
 
     /**
      * Gets the actual total allocated MIPS for a VM along all its allocated PEs.
