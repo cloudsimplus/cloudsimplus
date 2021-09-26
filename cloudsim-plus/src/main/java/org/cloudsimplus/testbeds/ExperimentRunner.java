@@ -260,8 +260,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     public boolean isApplyBatchMeansMethod() {
         final boolean batchesGreaterThan1 = batchesNumber > 1;
-        final boolean numSimulationRunsGraterThanBatches = simulationRuns > batchesNumber;
-        return batchesGreaterThan1 && numSimulationRunsGraterThanBatches;
+        final boolean runsIsGraterThanBatches = simulationRuns > batchesNumber;
+        return batchesGreaterThan1 && runsIsGraterThanBatches;
     }
 
     /**
@@ -305,12 +305,12 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      *
      * @param samples the list with samples to apply the "Batch Means Method".
      *                Samples size is defined by the {@link #getSimulationRuns()}.
-     * @param i the index of the batch to get it's values average
+     * @param index the index of the batch to get its values average
      * @return the average for the values of a given batch
      */
-    private double getBatchAverage(final List<Double> samples, final int i) {
+    private double getBatchAverage(final List<Double> samples, final int index) {
         final int k = batchSizeCeil();
-        return IntStream.range(0, k).mapToDouble(j -> samples.get(getBatchElementIndex(i, j))).average().orElse(0.0);
+        return IntStream.range(0, k).mapToDouble(j -> samples.get(getBatchElementIndex(index, j))).average().orElse(0.0);
     }
 
     /**

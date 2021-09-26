@@ -663,8 +663,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public void updateMigrationStartListeners(final Host targetHost){
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onMigrationStartListeners.size(); i++) {
-            final EventListener<VmHostEventInfo> l = onMigrationStartListeners.get(i);
-            l.update(VmHostEventInfo.of(l, this, targetHost));
+            final var listener = onMigrationStartListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this, targetHost));
         }
     }
 
@@ -675,8 +675,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public void updateMigrationFinishListeners(final Host targetHost){
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onMigrationFinishListeners.size(); i++) {
-            final EventListener<VmHostEventInfo> l = onMigrationFinishListeners.get(i);
-            l.update(VmHostEventInfo.of(l, this, targetHost));
+            final var listener = onMigrationFinishListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this, targetHost));
         }
     }
 
@@ -891,8 +891,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public void notifyOnHostAllocationListeners() {
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onHostAllocationListeners.size(); i++) {
-            final EventListener<VmHostEventInfo> l = onHostAllocationListeners.get(i);
-            l.update(VmHostEventInfo.of(l, this));
+            final var listener = onHostAllocationListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this));
         }
     }
 
@@ -901,8 +901,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         requireNonNull(deallocatedHost);
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onHostDeallocationListeners.size(); i++) {
-            final EventListener<VmHostEventInfo> l = onHostDeallocationListeners.get(i);
-            l.update(VmHostEventInfo.of(l, this, deallocatedHost));
+            final var listener = onHostDeallocationListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this, deallocatedHost));
         }
     }
 
@@ -912,8 +912,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     public void notifyOnUpdateProcessingListeners() {
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onUpdateProcessingListeners.size(); i++) {
-            final EventListener<VmHostEventInfo> l = onUpdateProcessingListeners.get(i);
-            l.update(VmHostEventInfo.of(l, this));
+            final var listener = onUpdateProcessingListeners.get(i);
+            listener.update(VmHostEventInfo.of(listener, this));
         }
     }
 
@@ -922,8 +922,8 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         requireNonNull(failedDatacenter);
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onCreationFailureListeners.size(); i++) {
-            final EventListener<VmDatacenterEventInfo> l = onCreationFailureListeners.get(i);
-            l.update(VmDatacenterEventInfo.of(l, this, failedDatacenter));
+            final var listener = onCreationFailureListeners.get(i);
+            listener.update(VmDatacenterEventInfo.of(listener, this, failedDatacenter));
         }
     }
 
@@ -1013,7 +1013,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     public void setGroup(final VmGroup group) {
-        this.group = Objects.requireNonNull(group);
+        this.group = requireNonNull(group);
     }
 
     @Override
@@ -1095,7 +1095,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     public void setAllocatedMips(final MipsShare allocatedMips) {
-        this.allocatedMips = Objects.requireNonNull(allocatedMips);
+        this.allocatedMips = requireNonNull(allocatedMips);
     }
 
     public MipsShare getRequestedMips() {
@@ -1103,6 +1103,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     public void setRequestedMips(final MipsShare requestedMips) {
-        this.requestedMips = Objects.requireNonNull(requestedMips);
+        this.requestedMips = requireNonNull(requestedMips);
     }
 }
