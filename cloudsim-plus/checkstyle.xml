@@ -5,6 +5,11 @@
     <property name="charset" value="UTF-8" />
     <property name="severity" value="warning"/>
 
+    <module name="JavadocPackage"/>
+    <module name="TreeWalker">
+        <module name="OneStatementPerLine"/>
+    </module>
+
     <!-- Tone down the checking for test code -->
     <module name="SuppressionSingleFilter">
         <property name="checks" value="JavadocPackage"/>
