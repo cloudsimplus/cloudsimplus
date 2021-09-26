@@ -719,17 +719,10 @@ public class CloudSim implements Simulation {
 
     private void processEventByType(final SimEvent evt) {
         switch (evt.getType()) {
-            case NULL:
-                throw new IllegalArgumentException("Event has a null type.");
-            case CREATE:
-                processCreateEvent(evt);
-            break;
-            case SEND:
-                processSendEvent(evt);
-            break;
-            case HOLD_DONE:
-                processHoldEvent(evt);
-            break;
+            case NULL -> throw new IllegalArgumentException("Event has a null type.");
+            case CREATE -> processCreateEvent(evt);
+            case SEND -> processSendEvent(evt);
+            case HOLD_DONE -> processHoldEvent(evt);
         }
     }
 
