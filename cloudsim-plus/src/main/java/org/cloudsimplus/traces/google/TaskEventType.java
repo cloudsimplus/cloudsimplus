@@ -43,12 +43,11 @@ public enum TaskEventType {
     SUBMIT{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            final var event = reader.createTaskEventFromTraceLine();
-
             if(!reader.allowCloudletCreation()) {
                 return false;
             }
 
+            final var event = reader.createTaskEventFromTraceLine();
             final var cloudlet = reader.createCloudlet(event);
             // Since Cloudlet id must be unique, it will be the concatenation of the job and task id
             cloudlet.setId(event.getUniqueTaskId());
