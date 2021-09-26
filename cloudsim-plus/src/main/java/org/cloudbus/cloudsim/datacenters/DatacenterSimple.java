@@ -356,40 +356,23 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private boolean processCloudletEvents(final SimEvent evt) {
-        switch (evt.getTag()) {
+        return switch (evt.getTag()) {
             // New Cloudlet arrives
-            case CloudSimTags.CLOUDLET_SUBMIT:
-                processCloudletSubmit(evt, false);
-                return true;
+            case CloudSimTags.CLOUDLET_SUBMIT -> processCloudletSubmit(evt, false);
             // New Cloudlet arrives, but the sender asks for an ack
-            case CloudSimTags.CLOUDLET_SUBMIT_ACK:
-                processCloudletSubmit(evt, true);
-                return true;
+            case CloudSimTags.CLOUDLET_SUBMIT_ACK -> processCloudletSubmit(evt, true);
             // Cancels a previously submitted Cloudlet
-            case CloudSimTags.CLOUDLET_CANCEL:
-                processCloudlet(evt, CloudSimTags.CLOUDLET_CANCEL);
-                return true;
+            case CloudSimTags.CLOUDLET_CANCEL -> processCloudlet(evt, CloudSimTags.CLOUDLET_CANCEL);
             // Pauses a previously submitted Cloudlet
-            case CloudSimTags.CLOUDLET_PAUSE:
-                processCloudlet(evt, CloudSimTags.CLOUDLET_PAUSE);
-                return true;
-            // Pauses a previously submitted Cloudlet, but the sender
-            // asks for an acknowledgement
-            case CloudSimTags.CLOUDLET_PAUSE_ACK:
-                processCloudlet(evt, CloudSimTags.CLOUDLET_PAUSE_ACK);
-                return true;
+            case CloudSimTags.CLOUDLET_PAUSE -> processCloudlet(evt, CloudSimTags.CLOUDLET_PAUSE);
+            // Pauses a previously submitted Cloudlet, but the sender asks for an acknowledgement
+            case CloudSimTags.CLOUDLET_PAUSE_ACK -> processCloudlet(evt, CloudSimTags.CLOUDLET_PAUSE_ACK);
             // Resumes a previously submitted Cloudlet
-            case CloudSimTags.CLOUDLET_RESUME:
-                processCloudlet(evt, CloudSimTags.CLOUDLET_RESUME);
-                return true;
-            // Resumes a previously submitted Cloudlet, but the sender
-            // asks for an acknowledgement
-            case CloudSimTags.CLOUDLET_RESUME_ACK:
-                processCloudlet(evt, CloudSimTags.CLOUDLET_RESUME_ACK);
-                return true;
-        }
-
-        return false;
+            case CloudSimTags.CLOUDLET_RESUME -> processCloudlet(evt, CloudSimTags.CLOUDLET_RESUME);
+            // Resumes a previously submitted Cloudlet, but the sender asks for an acknowledgement
+            case CloudSimTags.CLOUDLET_RESUME_ACK -> processCloudlet(evt, CloudSimTags.CLOUDLET_RESUME_ACK);
+            default -> false;
+        };
     }
 
     /**
@@ -408,17 +391,17 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Processes a Cloudlet based on the event type.
-     *
-     * @param evt information about the event just happened
+     *  @param evt information about the event just happened
      * @param type event type
+     * @return
      */
-    protected void processCloudlet(final SimEvent evt, final int type) {
-        Cloudlet cloudlet;
+    protected boolean processCloudlet(final SimEvent evt, final int type) {
+        final Cloudlet cloudlet;
         try {
             cloudlet = (Cloudlet) evt.getData();
         } catch (ClassCastException e) {
             LOGGER.error("{}: Error in processing Cloudlet: {}", super.getName(), e.getMessage());
-            return;
+            return false;
         }
 
         switch (type) {
@@ -431,23 +414,25 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 "{}: Unable to handle a request from {} with event tag = {}",
                 this, evt.getSource().getName(), evt.getTag());
         }
+
+        return true;
     }
     /**
      * Processes the submission of a Cloudlet by a DatacenterBroker.
-     *
      * @param evt information about the event just happened
      * @param ack indicates if the event's sender expects to receive an acknowledgement
-     *            message when the event finishes being processed
+     * @return
      */
-    protected void processCloudletSubmit(final SimEvent evt, final boolean ack) {
+    protected boolean processCloudletSubmit(final SimEvent evt, final boolean ack) {
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
         if (cloudlet.isFinished()) {
             notifyBrokerAboutAlreadyFinishedCloudlet(cloudlet, ack);
-            return;
+            return false;
         }
 
         cloudlet.assignToDatacenter(this);
         submitCloudletToVm(cloudlet, ack);
+        return true;
     }
 
     /**
