@@ -510,7 +510,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private boolean processGeneralEvents(final SimEvent evt) {
-        if (evt.getTag() == CloudSimTags.DATACENTER_LIST_REQUEST) {
+        if (evt.getTag() == CloudSimTags.DC_LIST_REQUEST) {
             processDatacenterListRequest(evt);
             return true;
         }
@@ -1071,7 +1071,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public void startInternal() {
         LOGGER.info("{} is starting...", getName());
-        schedule(getSimulation().getCloudInfoService(), 0, CloudSimTags.DATACENTER_LIST_REQUEST);
+        schedule(getSimulation().getCloudInfoService(), 0, CloudSimTags.DC_LIST_REQUEST);
     }
 
     @Override

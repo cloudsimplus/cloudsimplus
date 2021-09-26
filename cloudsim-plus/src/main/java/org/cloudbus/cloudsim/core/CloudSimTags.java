@@ -53,13 +53,13 @@ public final class CloudSimTags {
      * When such a {@link SimEvent} is sent, the {@link SimEvent#getData()}
      * must be a {@link Datacenter} object.
      */
-    public static final int DATACENTER_REGISTRATION_REQUEST = BASE + 2;
+    public static final int DC_REGISTRATION_REQUEST = BASE + 2;
 
     /**
      * Denotes a request from a broker to a {@link CloudInformationService} to get the list of all Datacenters,
      * including the ones that can support advanced reservation.
      */
-    public static final int DATACENTER_LIST_REQUEST = BASE + 4;
+    public static final int DC_LIST_REQUEST = BASE + 4;
 
     /**
      * Denotes a request to register a {@link CloudInformationService} entity as a regional CIS.

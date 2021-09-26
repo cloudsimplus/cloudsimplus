@@ -72,12 +72,12 @@ public class CloudInformationService extends CloudSimEntity {
                 super.send(evt.getSource(), 0, evt.getTag(), cisList);
             break;
 
-            case CloudSimTags.DATACENTER_REGISTRATION_REQUEST:
+            case CloudSimTags.DC_REGISTRATION_REQUEST:
                 datacenterList.add((Datacenter) evt.getData());
             break;
 
             // A Broker is requesting a list of all datacenters.
-            case CloudSimTags.DATACENTER_LIST_REQUEST:
+            case CloudSimTags.DC_LIST_REQUEST:
                 super.send(evt.getSource(), 0, evt.getTag(), datacenterList);
             break;
         }
