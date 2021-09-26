@@ -612,7 +612,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
 
         final StringBuilder latex = startLatexTable();
         confidenceIntervals.forEach(ci -> latexRow(latex, ci));
-        latex.append("  \\end{tabular}\n").append("\\end{table}\n");
+        latex.append("  \\end{tabular}\n\\end{table}\n");
         System.out.println();
         System.out.println(latex);
     }
