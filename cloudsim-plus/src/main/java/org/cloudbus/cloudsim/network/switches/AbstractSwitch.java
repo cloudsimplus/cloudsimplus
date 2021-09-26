@@ -106,20 +106,12 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     @Override
     public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
-            case CloudSimTags.NETWORK_EVENT_UP:
-                // process the packet from down switch or host
-                processPacketUp(evt);
-            break;
-            case CloudSimTags.NETWORK_EVENT_DOWN:
-                // process the packet from uplink
-                processPacketDown(evt);
-            break;
-            case CloudSimTags.NETWORK_EVENT_SEND:
-                processPacketForward();
-            break;
-            case CloudSimTags.NETWORK_EVENT_HOST:
-                processHostPacket(evt);
-            break;
+            // process the packet from down switch or host
+            case CloudSimTags.NETWORK_EVENT_UP -> processPacketUp(evt);
+            // process the packet from uplink
+            case CloudSimTags.NETWORK_EVENT_DOWN -> processPacketDown(evt);
+            case CloudSimTags.NETWORK_EVENT_SEND -> processPacketForward();
+            case CloudSimTags.NETWORK_EVENT_HOST -> processHostPacket(evt);
         }
     }
 
