@@ -11,8 +11,10 @@
         <property name="files" value=".*[\\/]src[\\/](test|it)[\\/]" />
     </module>
 
-    <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
-    <module name="SuppressionFilter">
-        <property name="file" value="checkstyle-suppressions.xml" />
+    <!-- Classes implementing the Null Object Pattern usually have methods with a single instruction
+    declared in a single line. -->
+    <module name="SuppressionSingleFilter">
+        <property name="checks" value="OneStatementPerLine"/>
+        <property name="files" value=".*\/.*Null.*\.java" />
     </module>
 </module>
