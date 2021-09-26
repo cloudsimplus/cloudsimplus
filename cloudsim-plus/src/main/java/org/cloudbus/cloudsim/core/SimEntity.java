@@ -17,7 +17,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @see CloudSimEntity
  * @since CloudSim Plus 1.0
  */
-public interface SimEntity extends Nameable, Cloneable, Runnable, Comparable<SimEntity> {
+public interface SimEntity extends Nameable, Runnable, Comparable<SimEntity> {
     /**
      * Defines the event state.
      */
