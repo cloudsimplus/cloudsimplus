@@ -17,6 +17,7 @@
         <module name="PackageName"/>
         <module name="ParameterNumber"/>
         <module name="RedundantImport"/>
+        <module name="CyclomaticComplexity"/>
         <module name="RedundantModifier"/>
         <module name="ThrowsCount"/>
         <module name="TodoComment"/>
