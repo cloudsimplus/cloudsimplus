@@ -64,22 +64,11 @@ public class CloudInformationService extends CloudSimEntity {
     @Override
     public void processEvent(SimEvent evt) {
         switch (evt.getTag()) {
-            case CloudSimTags.REGISTER_REGIONAL_CIS:
-                cisList.add((CloudInformationService) evt.getData());
-            break;
-
-            case CloudSimTags.REQUEST_REGIONAL_CIS:
-                super.send(evt.getSource(), 0, evt.getTag(), cisList);
-            break;
-
-            case CloudSimTags.DC_REGISTRATION_REQUEST:
-                datacenterList.add((Datacenter) evt.getData());
-            break;
-
+            case CloudSimTags.REGISTER_REGIONAL_CIS -> cisList.add((CloudInformationService) evt.getData());
+            case CloudSimTags.REQUEST_REGIONAL_CIS -> super.send(evt.getSource(), 0, evt.getTag(), cisList);
+            case CloudSimTags.DC_REGISTRATION_REQUEST -> datacenterList.add((Datacenter) evt.getData());
             // A Broker is requesting a list of all datacenters.
-            case CloudSimTags.DC_LIST_REQUEST:
-                super.send(evt.getSource(), 0, evt.getTag(), datacenterList);
-            break;
+            case CloudSimTags.DC_LIST_REQUEST -> super.send(evt.getSource(), 0, evt.getTag(), datacenterList);
         }
     }
 
