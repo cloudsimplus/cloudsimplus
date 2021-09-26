@@ -631,7 +631,6 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     private void updateVmResourceAbsoluteUtilization(final CloudletExecution cle, final ResourceManageable vmResource) {
         final Cloudlet cloudlet = cle.getCloudlet();
         final long requested = (long) getCloudletResourceAbsoluteUtilization(cloudlet, vmResource);
-        final long available = vmResource.getAvailableResource();
         if(requested > vmResource.getCapacity()){
             LOGGER.warn(
                 "{}: {}: {} requested {} {} of {} but that is >= the VM capacity ({})",
@@ -640,6 +639,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return;
         }
 
+        final long available = vmResource.getAvailableResource();
         if(requested > available){
             final String msg1 =
                     available > 0 ?

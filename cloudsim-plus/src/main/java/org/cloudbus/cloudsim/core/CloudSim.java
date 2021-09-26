@@ -569,7 +569,7 @@ public class CloudSim implements Simulation {
         /*Uses an indexed for instead of anything else to avoid
         ConcurrencyModificationException when a HostFaultInjection is created inside a Datacenter*/
         for (int i = 0; i < entities.size(); i++) {
-            CloudSimEntity ent = entities.get(i);
+            final CloudSimEntity ent = entities.get(i);
             if (ent.getState() == SimEntity.State.RUNNABLE) {
                 ent.run(until);
             }

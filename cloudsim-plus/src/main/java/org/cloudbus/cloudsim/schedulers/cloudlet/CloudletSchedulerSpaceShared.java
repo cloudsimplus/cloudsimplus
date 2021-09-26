@@ -41,15 +41,15 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     /**
      * Moves a Cloudlet that is being resumed to the exec or waiting List.
      *
-     * @param c the resumed Cloudlet to move
+     * @param cle the resumed Cloudlet to move
      * @return the time the cloudlet is expected to finish or zero if it was moved to the waiting list
      */
-    private double movePausedCloudletToExecListOrWaitingList(CloudletExecution c) {
-        getCloudletPausedList().remove(c);
+    private double movePausedCloudletToExecListOrWaitingList(final CloudletExecution cle) {
+        getCloudletPausedList().remove(cle);
 
         // it can go to the exec list
-        if (isThereEnoughFreePesForCloudlet(c)) {
-            return movePausedCloudletToExecList(c);
+        if (isThereEnoughFreePesForCloudlet(cle)) {
+            return movePausedCloudletToExecList(cle);
         }
 
         // No enough free PEs: go to the waiting queue
@@ -60,7 +60,7 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
          * It goes to the end of the waiting list because other cloudlets
          * could be waiting longer and have priority to execute.
          */
-        addCloudletToWaitingList(c);
+        addCloudletToWaitingList(cle);
         return 0.0;
     }
 
