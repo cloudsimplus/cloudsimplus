@@ -43,6 +43,42 @@ public interface Simulation {
      */
     Simulation NULL = new SimulationNull();
 
+    /**
+     * Defines IDs for a list of {@link ChangeableId} entities that don't
+     * have one already assigned. Such entities can be a {@link Cloudlet},
+     * {@link Vm} or any object that implements {@link ChangeableId}.
+     *
+     * @param <T> the type of entities to define an ID
+     * @param list list of objects to define an ID
+     * @param lastEntity the last created Entity which its ID will be used
+     *        as the base for the next IDs
+     * @return the last entity that had an id set
+     */
+    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(final List<? extends T> list, final T lastEntity){
+        Objects.requireNonNull(list);
+        if(list.isEmpty()){
+            return lastEntity;
+        }
+
+        long id = lastEntity == null ? list.get(list.size()-1).getId() : lastEntity.getId();
+        //if the ID is a negative number lower than -1, it's set as -1 to start the first ID as 0
+        id = Math.max(id, -1);
+        T entity = lastEntity;
+        for (int i = 0; i < list.size(); i++) {
+            entity = list.get(i);
+            if (entity.getId() < 0) {
+                entity.setId(++id);
+            }
+
+            if (entity instanceof VmGroup) {
+                entity = (T) setIdForEntitiesWithoutOne(((VmGroup) entity).getVmList(), entity);
+                id = entity.getId();
+            }
+        }
+
+        return entity;
+    }
+
     boolean isTerminationTimeSet();
 
     /**
@@ -63,29 +99,29 @@ public interface Simulation {
      * Adds a new entity to the simulation. Each {@link CloudSimEntity} object
      * register itself when it is instantiated.
      *
-     * @param e The new entity
+     * @param entity The new entity
      */
-    void addEntity(CloudSimEntity e);
+    void addEntity(CloudSimEntity entity);
 
     /**
      * Cancels the first event from the future event queue that matches a given predicate
      * and was sent by a given entity, then removes it from the queue.
      *
      * @param src Id of entity that scheduled the event
-     * @param p   the event selection predicate
+     * @param predicate   the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    SimEvent cancel(SimEntity src, Predicate<SimEvent> p);
+    SimEvent cancel(SimEntity src, Predicate<SimEvent> predicate);
 
     /**
      * Cancels all events from the future event queue that matches a given predicate
      * and were sent by a given entity, then removes those ones from the queue.
      *
      * @param src Id of entity that scheduled the event
-     * @param p   the event selection predicate
+     * @param predicate   the event selection predicate
      * @return true if at least one event has been cancelled; false otherwise
      */
-    boolean cancelAll(SimEntity src, Predicate<SimEvent> p);
+    boolean cancelAll(SimEntity src, Predicate<SimEvent> predicate);
 
     /**
      * Gets the current simulation time in seconds.
@@ -123,10 +159,10 @@ public interface Simulation {
      * Find first deferred event matching a predicate.
      *
      * @param dest Id of entity that the event has to be sent to
-     * @param p    the event selection predicate
+     * @param predicate    the event selection predicate
      * @return the first matched event or {@link SimEvent#NULL} if not found
      */
-    SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> p);
+    SimEvent findFirstDeferred(SimEntity dest, Predicate<SimEvent> predicate);
 
     /**
      * Gets a new copy of initial simulation Calendar.
@@ -283,10 +319,10 @@ public interface Simulation {
      * and removes it from the queue.
      *
      * @param dest entity that the event has to be sent to
-     * @param p    the event selection predicate
+     * @param predicate    the event selection predicate
      * @return the removed event or {@link SimEvent#NULL} if not found
      */
-    SimEvent select(SimEntity dest, Predicate<SimEvent> p);
+    SimEvent select(SimEntity dest, Predicate<SimEvent> predicate);
 
     /**
      * Sends an event where all data required is defined inside the event instance.
@@ -441,42 +477,6 @@ public interface Simulation {
      */
     static <T extends ChangeableId> T setIdForEntitiesWithoutOne(List<? extends T> list){
         return setIdForEntitiesWithoutOne(list, null);
-    }
-
-    /**
-     * Defines IDs for a list of {@link ChangeableId} entities that don't
-     * have one already assigned. Such entities can be a {@link Cloudlet},
-     * {@link Vm} or any object that implements {@link ChangeableId}.
-     *
-     * @param <T> the type of entities to define an ID
-     * @param list list of objects to define an ID
-     * @param lastEntity the last created Entity which its ID will be used
-     *        as the base for the next IDs
-     * @return the last entity that had an id set
-     */
-    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(final List<? extends T> list, final T lastEntity){
-        Objects.requireNonNull(list);
-        if(list.isEmpty()){
-            return lastEntity;
-        }
-
-        long id = lastEntity == null ? list.get(list.size()-1).getId() : lastEntity.getId();
-        //if the ID is a negative number lower than -1, it's set as -1 to start the first ID as 0
-        id = Math.max(id, -1);
-        T entity = lastEntity;
-        for (int i = 0; i < list.size(); i++) {
-            entity = list.get(i);
-            if (entity.getId() < 0) {
-                entity.setId(++id);
-            }
-
-            if (entity instanceof VmGroup) {
-                entity = (T) setIdForEntitiesWithoutOne(((VmGroup) entity).getVmList(), entity);
-                id = entity.getId();
-            }
-        }
-
-        return entity;
     }
 
     /**

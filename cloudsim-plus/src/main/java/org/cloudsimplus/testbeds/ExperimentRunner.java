@@ -343,7 +343,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @see
      * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic variates</a>
      */
-    public boolean isApplyAntitheticVariatesTechnique() {
+    public final boolean isApplyAntitheticVariatesTechnique() {
         return applyAntitheticVariatesTechnique;
     }
 
