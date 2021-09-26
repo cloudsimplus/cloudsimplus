@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.resources;
 import org.cloudbus.cloudsim.provisioners.PeProvisioner;
 import org.cloudbus.cloudsim.provisioners.PeProvisionerSimple;
 import org.cloudbus.cloudsim.resources.Pe.Status;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -77,12 +76,12 @@ public class PeTest {
     @Test()
     public void testSetPeProvisionerWhenNull() {
         final PeSimple pe = createPe();
-        Assertions.assertThrows(NullPointerException.class, () -> pe.setPeProvisioner(null));
+        assertThrows(NullPointerException.class, () -> pe.setPeProvisioner(null));
     }
 
     @Test()
     public void testNewPeWhenNullProvisioner() {
-        Assertions.assertThrows(NullPointerException.class, () -> createPe(null));
+        assertThrows(NullPointerException.class, () -> createPe(null));
     }
 
     @Test

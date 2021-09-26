@@ -196,13 +196,13 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     /**
      * Gets the data of a given index in a list.
      *
-     * @param v     a list
-     * @param index the location in a list
-     * @return the data
+     * @param dataList  a list containing the data
+     * @param index the location in the list
+     * @return the data from a given index
      */
-    private String getData(final List<Double> v, final int index) {
+    private String getData(final List<Double> dataList, final int index) {
         try {
-            final double id = v.get(index);
+            final double id = dataList.get(index);
             return num.format(id);
         } catch (final Exception e) {
             return "    N/A";

@@ -56,7 +56,7 @@ public class VmAllocationPolicySimpleTest {
     }
 
     @Test
-    public void allocateHostForVm_WhenOneVmIsGiven_AllocateHostWithLessUsedPesToIt() {
+    public void allocateHostForVmWhenOneVmIsGivenAllocateHostWithLessUsedPesToIt() {
         final Vm vm = VmTestUtil.createVm(0, 1000, 2);
         assertTrue(policy.allocateHostForVm(vm).fully());
 
@@ -66,7 +66,7 @@ public class VmAllocationPolicySimpleTest {
     }
 
     @Test
-    public void allocateHostForVm_WhenOneVmIsGivenAndSelectedHostDoesntHaveStorage_AllocateOtherHost() {
+    public void allocateHostForVmWhenOneVmIsGivenAndSelectedHostDoesntHaveStorage_AllocateOtherHost() {
         final Host hostWithMoreFreePes = policy.getDatacenter().getHostList().get(2);
         final Vm vm = VmTestUtil.createVm(
             0, 1000, 2, 1, 1,
@@ -78,7 +78,7 @@ public class VmAllocationPolicySimpleTest {
     }
 
     @Test
-    public void allocateHostForVm_WhenOneVmIsGivenAndNoHostHasResourcesToRunIt() {
+    public void allocateHostForVmWhenOneVmIsGivenAndNoHostHasResourcesToRunIt() {
         final Vm vm = VmTestUtil.createVm(0, 1000, 10);
         assertFalse(policy.allocateHostForVm(vm).fully());
     }

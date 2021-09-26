@@ -35,7 +35,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.PeSimple;
-import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
@@ -239,20 +238,16 @@ class FinishedEntitiesPurgeTest {
 
     private void buildAndStartSimulation() {
         Log.setLevel(Level.WARN);
-        final double startTime = TimeUtil.currentTimeSecs();
-
         simulation = new CloudSim();
         createDatacenter();
         createBrokers();
         simulation.addOnClockTickListener(this::onClockTickListener);
         simulation.start();
-
-        final double endTimeSec = TimeUtil.elapsedSeconds(startTime);
     }
 
     private void onClockTickListener(final EventInfo evt) {
         //The statically submitted cloudlets for the first broker finish in 1 second
-        final DatacenterBroker broker0 = brokerList.get(0);
+        final var broker0 = brokerList.get(0);
         if(evt.getTime() >= SCHEDULING_INTERVAL_SECS && !dynamicCloudletsSubmitted){
             dynamicCloudletsSubmitted = true;
             createCloudlets(broker0, BASE_CLOUDLET_LENGTH);
@@ -292,16 +287,16 @@ class FinishedEntitiesPurgeTest {
     }
 
     private void createVmsAndCloudlets(final DatacenterBroker broker) {
-        final List<Vm> vmList = createVms(broker);
+        final var vmList = createVms(broker);
         final long length = BASE_CLOUDLET_LENGTH * brokerList.size();
         final List<Cloudlet> cloudlets = vmList.stream().map(vm -> createCloudlet(vm, length)).collect(Collectors.toList());
         broker.submitCloudletList(cloudlets);
     }
 
     private Datacenter createDatacenter() {
-        final List<Host> hostList = new ArrayList<>(HOSTS_NUMBER);
+        final var hostList = new ArrayList<Host>(HOSTS_NUMBER);
         for(int i = 0; i < HOSTS_NUMBER; i++) {
-            Host host = createHost();
+            final var host = createHost();
             hostList.add(host);
         }
 
@@ -310,8 +305,8 @@ class FinishedEntitiesPurgeTest {
 
     private Host createHost() {
         final List<Pe> peList = IntStream.range(0, HOST_PES)
-                                         .mapToObj(i -> new PeSimple(HOST_MIPS))
-                                         .collect(toCollection(() -> new ArrayList<>(HOST_PES)));
+                                    .mapToObj(i -> new PeSimple(HOST_MIPS))
+                                    .collect(toCollection(() -> new ArrayList<>(HOST_PES)));
 
         final long ram = 2048; //in Megabytes
         final long bw = 10000; //in Megabits/s
@@ -321,12 +316,12 @@ class FinishedEntitiesPurgeTest {
     }
 
     private List<Vm> createVms(final DatacenterBroker broker) {
-        final List<Vm> list = IntStream.range(0, VMS_BY_BROKER)
-                                       .mapToObj(i -> createVm())
-                                       .collect(toCollection(() -> new ArrayList<>(VMS_BY_BROKER)));
+        final var vmList = IntStream.range(0, VMS_BY_BROKER)
+                                    .mapToObj(i -> createVm())
+                                    .collect(toCollection(() -> new ArrayList<>(VMS_BY_BROKER)));
 
-        broker.submitVmList(list);
-        return list;
+        broker.submitVmList(vmList);
+        return vmList;
     }
 
     private Vm createVm() {
@@ -340,15 +335,15 @@ class FinishedEntitiesPurgeTest {
     }
 
     private void createCloudlets(final DatacenterBroker broker, final Vm vm, final long length) {
-        final List<Cloudlet> list = IntStream.range(0, CLOUDLETS_BY_BROKER)
-                                             .mapToObj(i -> createCloudlet(vm, length))
-                                             .collect(toCollection(() -> new ArrayList<>(CLOUDLETS_BY_BROKER)));
+        final var cloudletList = IntStream.range(0, CLOUDLETS_BY_BROKER)
+                                          .mapToObj(i -> createCloudlet(vm, length))
+                                          .collect(toCollection(() -> new ArrayList<>(CLOUDLETS_BY_BROKER)));
 
-        broker.submitCloudletList(list);
+        broker.submitCloudletList(cloudletList);
     }
 
     private Cloudlet createCloudlet(final Vm vm, final long length) {
-        final Cloudlet cloudlet = new CloudletSimple(lastCloudletId++, length, CLOUDLET_PES);
+        final var cloudlet = new CloudletSimple(lastCloudletId++, length, CLOUDLET_PES);
         cloudlet.setUtilizationModel(new UtilizationModelFull()).setSizes(1024).setVm(vm);
         return cloudlet;
     }
