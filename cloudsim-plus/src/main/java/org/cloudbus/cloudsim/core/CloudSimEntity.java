@@ -363,7 +363,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * @throws CloneNotSupportedException when the entity doesn't support cloning
      */
     @Override
-    protected final Object clone() throws CloneNotSupportedException {
+    public final CloudSimEntity clone() throws CloneNotSupportedException {
         final CloudSimEntity copy = (CloudSimEntity) super.clone();
         copy.setName(name);
         copy.setSimulation(simulation);
