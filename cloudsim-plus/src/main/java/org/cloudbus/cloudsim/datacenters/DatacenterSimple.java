@@ -404,18 +404,19 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return false;
         }
 
-        switch (type) {
+        return switch (type) {
             case CloudSimTags.CLOUDLET_CANCEL -> processCloudletCancel(cloudlet);
             case CloudSimTags.CLOUDLET_PAUSE -> processCloudletPause(cloudlet, false);
             case CloudSimTags.CLOUDLET_PAUSE_ACK -> processCloudletPause(cloudlet, true);
             case CloudSimTags.CLOUDLET_RESUME -> processCloudletResume(cloudlet, false);
             case CloudSimTags.CLOUDLET_RESUME_ACK -> processCloudletResume(cloudlet, true);
-            default -> LOGGER.trace(
-                "{}: Unable to handle a request from {} with event tag = {}",
-                this, evt.getSource().getName(), evt.getTag());
-        }
-
-        return true;
+            default -> {
+                LOGGER.trace(
+                    "{}: Unable to handle a request from {} with event tag = {}",
+                    this, evt.getSource().getName(), evt.getTag());
+                yield false;
+            }
+        };
     }
     /**
      * Processes the submission of a Cloudlet by a DatacenterBroker.
@@ -498,12 +499,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Processes a Cloudlet resume request.
-     *
-     * @param cloudlet cloudlet to be resumed
+     *  @param cloudlet cloudlet to be resumed
      * @param ack indicates if the event's sender expects to receive an
-     * acknowledge message when the event finishes to be processed
+     * @return
      */
-    protected void processCloudletResume(final Cloudlet cloudlet, final boolean ack) {
+    protected boolean processCloudletResume(final Cloudlet cloudlet, final boolean ack) {
         final double estimatedFinishTime = cloudlet.getVm()
             .getCloudletScheduler().cloudletResume(cloudlet);
 
@@ -514,6 +514,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         sendAck(ack, cloudlet, CloudSimTags.CLOUDLET_RESUME_ACK);
+        return true;
     }
 
     private void sendAck(boolean ack, Cloudlet cloudlet, int cloudSimTagAck) {
@@ -524,24 +525,26 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Processes a Cloudlet pause request.
-     *
-     * @param cloudlet cloudlet to be paused
+     *  @param cloudlet cloudlet to be paused
      * @param ack indicates if the event's sender expects to receive an
-     * acknowledge message when the event finishes to be processed
+     * @return
      */
-    protected void processCloudletPause(final Cloudlet cloudlet, final boolean ack) {
+    protected boolean processCloudletPause(final Cloudlet cloudlet, final boolean ack) {
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
         sendAck(ack, cloudlet, CloudSimTags.CLOUDLET_PAUSE_ACK);
+        return true;
     }
 
     /**
      * Processes a Cloudlet cancel request.
      *
      * @param cloudlet cloudlet to be canceled
+     * @return
      */
-    protected void processCloudletCancel(final Cloudlet cloudlet) {
+    protected boolean processCloudletCancel(final Cloudlet cloudlet) {
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
         sendNow(cloudlet.getBroker(), CloudSimTags.CLOUDLET_CANCEL, cloudlet);
+        return true;
     }
 
     /**
