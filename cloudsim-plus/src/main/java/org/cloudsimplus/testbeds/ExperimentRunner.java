@@ -408,7 +408,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         return baseSeed;
     }
 
-    long getSeed(final int experimentIndex) {
+    public long getSeed(final int experimentIndex) {
         return seeds.get(experimentIndex);
     }
 
