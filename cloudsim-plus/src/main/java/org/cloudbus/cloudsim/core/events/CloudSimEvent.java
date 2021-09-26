@@ -218,10 +218,10 @@ public final class CloudSimEvent implements SimEvent {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final CloudSimEvent that = (CloudSimEvent) o;
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        final CloudSimEvent that = (CloudSimEvent) obj;
         return Double.compare(that.getTime(), getTime()) == 0 && getTag() == that.getTag() && getSerial() == that.getSerial();
     }
 

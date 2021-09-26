@@ -377,9 +377,9 @@ public class SanStorage extends HarddriveStorage {
     public Optional<File> deleteFile(final String fileName) {
         File.validateFileName(fileName);
 
-        final int i = fileNameList.indexOf(fileName);
-        if (i != -1) {
-            final File file = fileList.get(i);
+        final int index = fileNameList.indexOf(fileName);
+        if (index != -1) {
+            final File file = fileList.get(index);
             final double result = deleteFile(file);
             file.setTransactionTime(result);
             return Optional.of(file);

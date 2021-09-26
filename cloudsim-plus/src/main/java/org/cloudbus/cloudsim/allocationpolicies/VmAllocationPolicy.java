@@ -44,7 +44,7 @@ public interface VmAllocationPolicy {
      * Default minimum number of Hosts to start using parallel search.
      * @see #setHostCountForParallelSearch(int)
      */
-    int DEF_HOST_COUNT_FOR_PARALLEL_SEARCH = 20_000;
+    int DEF_HOST_COUNT_PARALLEL_SEARCH = 20_000;
 
     /**
      * A property that implements the Null Object Design Pattern for {@link VmAllocationPolicy}

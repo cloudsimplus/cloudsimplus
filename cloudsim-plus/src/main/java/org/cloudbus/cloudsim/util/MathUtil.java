@@ -173,13 +173,13 @@ public final class MathUtil {
      * @return the number of values different of zero at the beginning of the array
      */
     public static int countNonZeroBeginning(final double... data) {
-        int i = data.length - 1;
-        while (i >= 0) {
-            if (data[i--] != 0) {
+        int index = data.length - 1;
+        while (index >= 0) {
+            if (data[index--] != 0) {
                 break;
             }
         }
-        return i + 2;
+        return index + 2;
     }
 
     /**

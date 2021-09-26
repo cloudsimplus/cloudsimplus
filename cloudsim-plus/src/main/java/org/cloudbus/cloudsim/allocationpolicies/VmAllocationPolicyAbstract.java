@@ -74,7 +74,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     public VmAllocationPolicyAbstract(final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction) {
         setDatacenter(Datacenter.NULL);
         setFindHostForVmFunction(findHostForVmFunction);
-        this.hostCountForParallelSearch = DEF_HOST_COUNT_FOR_PARALLEL_SEARCH;
+        this.hostCountForParallelSearch = DEF_HOST_COUNT_PARALLEL_SEARCH;
     }
 
     @Override

@@ -56,7 +56,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @see #setVmDestructionDelayFunction(Function)
      */
-    private static final Function<Vm, Double> DEF_VM_DESTRUCTION_DELAY_FUNCTION = vm -> DEF_VM_DESTRUCTION_DELAY;
+    private static final Function<Vm, Double> DEF_VM_DESTRUCTION_DELAY_FUNC = vm -> DEF_VM_DESTRUCTION_DELAY;
 
     private boolean selectClosestDatacenter;
 
@@ -183,7 +183,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         setDatacenterMapper(this::defaultDatacenterMapper);
         setVmMapper(this::defaultVmMapper);
-        vmDestructionDelayFunction = DEF_VM_DESTRUCTION_DELAY_FUNCTION;
+        vmDestructionDelayFunction = DEF_VM_DESTRUCTION_DELAY_FUNC;
     }
 
 
@@ -682,7 +682,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onVmsCreatedListeners.size(); i++) {
-            EventListener<DatacenterBrokerEventInfo> listener = onVmsCreatedListeners.get(i);
+            final var listener = onVmsCreatedListeners.get(i);
             listener.update(DatacenterBrokerEventInfo.of(listener, this));
         }
     }
@@ -1219,7 +1219,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @Override
     public DatacenterBroker setVmDestructionDelayFunction(final Function<Vm, Double> function) {
-        this.vmDestructionDelayFunction = function == null ? DEF_VM_DESTRUCTION_DELAY_FUNCTION : function;
+        this.vmDestructionDelayFunction = function == null ? DEF_VM_DESTRUCTION_DELAY_FUNC : function;
         return this;
     }
 

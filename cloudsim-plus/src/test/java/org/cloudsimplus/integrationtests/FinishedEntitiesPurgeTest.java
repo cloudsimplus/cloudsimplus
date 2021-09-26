@@ -86,9 +86,10 @@ class FinishedEntitiesPurgeTest {
     private static final int HOST_MIPS = 1000;
 
     /**
-     * Total number of cloudlets created statically, before simulation start.
+     * Total number of cloudlets created statically, before simulation start,
+     * which are expected to finish.
      */
-    private static final double EXPECTED_STATIC_CLOUDLETS_FINISHED = 4000;
+    private static final double STATIC_CLOUDLETS_TO_FINISH = 4000;
 
     /**
      * The maximum accepted difference in time results.
@@ -118,7 +119,7 @@ class FinishedEntitiesPurgeTest {
     void staticCloudletExecTimeEqualFinishTime() {
         final Stream<Executable> executables =
             getAllBrokersCloudletStream()
-                .filter(cl -> cl.getId() < EXPECTED_STATIC_CLOUDLETS_FINISHED)
+                .filter(cl -> cl.getId() < STATIC_CLOUDLETS_TO_FINISH)
                 .map(cl -> () -> assertExecTimeEqualsToFinishTime(cl));
 
         assertAll(executables);
@@ -141,7 +142,7 @@ class FinishedEntitiesPurgeTest {
     void dynamicCloudletExecTimeEqualStartTime() {
         final Stream<Executable> executables =
             getAllBrokersCloudletStream()
-                .filter(cl -> cl.getId() >= EXPECTED_STATIC_CLOUDLETS_FINISHED)
+                .filter(cl -> cl.getId() >= STATIC_CLOUDLETS_TO_FINISH)
                 .map(cl -> () -> assertExecTimeEqualsToStartTime(cl));
 
         assertAll(executables);
@@ -170,7 +171,7 @@ class FinishedEntitiesPurgeTest {
      * */
     private void assertCloudletFinishTime(final Cloudlet cl) {
         final long brokerOrder = getBrokerOrder(cl);
-        final double expectedCloudletFinishTime = brokerOrder + (cl.getId() < EXPECTED_STATIC_CLOUDLETS_FINISHED ? 0 : brokerOrder);
+        final double expectedCloudletFinishTime = brokerOrder + (cl.getId() < STATIC_CLOUDLETS_TO_FINISH ? 0 : brokerOrder);
         assertEquals(
             expectedCloudletFinishTime,
             cl.getFinishTime(), 0.7,
@@ -192,7 +193,7 @@ class FinishedEntitiesPurgeTest {
     }
 
     private void assertCloudletStartTime(final Cloudlet cl) {
-        final double expectedCloudletStartTime = cl.getId() < EXPECTED_STATIC_CLOUDLETS_FINISHED ? 0 : getBrokerOrder(cl);
+        final double expectedCloudletStartTime = cl.getId() < STATIC_CLOUDLETS_TO_FINISH ? 0 : getBrokerOrder(cl);
         assertEquals(
             expectedCloudletStartTime,
             cl.getExecStartTime(), MAX_TIME_DELTA,

@@ -72,7 +72,6 @@ public final class CheckHostAvailableMipsTest {
     private static final int    FIRST_VM_FINISH_TIME = 6;
     private static final int    LAST_VM_FINISH_TIME = 10;
 
-    private SimulationScenarioBuilder scenario;
     private UtilizationModel utilizationModel;
     private CloudSim simulation;
 
@@ -80,7 +79,7 @@ public final class CheckHostAvailableMipsTest {
     public void setUp() {
         this.simulation = new  CloudSim();
         utilizationModel = new UtilizationModelFull();
-        scenario = new SimulationScenarioBuilder(simulation);
+        final var scenario = new SimulationScenarioBuilder(simulation);
         final List<Host> hosts = new HostBuilder()
             .setOnUpdateVmsProcessingListener(this::onUpdateVmsProcessing)
             .setPes(HOST_PES).setMips(HOST_MIPS)

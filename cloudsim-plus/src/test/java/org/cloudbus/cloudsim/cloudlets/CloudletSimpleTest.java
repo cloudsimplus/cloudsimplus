@@ -154,7 +154,8 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetProcessingCost() {
-        final double costPerCpuSec = 4, costPerByteOfBw = 2;
+        final double costPerCpuSec = 4;
+        final double costPerByteOfBw = 2;
         final Datacenter dc = DatacenterMocker.createMock(mocker -> {
             mocker.getCharacteristics();
             mocker.getCostPerSecond(costPerCpuSec);
