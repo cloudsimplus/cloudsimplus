@@ -1183,11 +1183,8 @@ public class HostSimple implements Host {
     public boolean equals(final Object obj) {
         if (this == obj) return true;
         if (obj == null || getClass() != obj.getClass()) return false;
-
         final HostSimple that = (HostSimple) obj;
-
-        if (id != that.id) return false;
-        return simulation.equals(that.simulation);
+        return this.getId() == that.getId() && this.simulation.equals(that.simulation);
     }
 
     @Override
