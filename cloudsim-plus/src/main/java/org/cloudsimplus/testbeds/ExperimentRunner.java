@@ -79,8 +79,8 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /** @see #getExperimentsExecutionTimeSecs() */
     private long experimentsExecutionTimeSecs;
 
-    /** @see #isApplyAntitheticVariatesTechnique() */
-    private final boolean applyAntitheticVariatesTechnique;
+    /** @see #isApplyAntitheticVariates() */
+    private final boolean applyAntitheticVariates;
 
     /** @see #getBatchesNumber() */
     private int batchesNumber;
@@ -138,11 +138,11 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * that runs sequentially.
      * @param baseSeed the seed to be used as base for each experiment seed
      * @param simulationRuns the number of times the experiment will be executed
-     * @param antitheticVariatesTechnique indicates if it's to be applied the
+     * @param applyAntitheticVariates indicates if it's to be applied the
      *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
      */
-    protected ExperimentRunner(final long baseSeed, final int simulationRuns, final boolean antitheticVariatesTechnique) {
-        this(baseSeed, simulationRuns, 0, antitheticVariatesTechnique, false, false);
+    protected ExperimentRunner(final long baseSeed, final int simulationRuns, final boolean applyAntitheticVariates) {
+        this(baseSeed, simulationRuns, 0, applyAntitheticVariates, false, false);
     }
 
     /**
@@ -151,11 +151,11 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param baseSeed the seed to be used as base for each experiment seed
      * @param simulationRuns the number of times the experiment will be executed
      * @param batchesNumber number of simulation run batches (zero disables the batch means method)
-     * @param antitheticVariatesTechnique indicates if it's to be applied the
+     * @param applyAntitheticVariates indicates if it's to be applied the
      *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
      */
-    protected ExperimentRunner(final long baseSeed, final int simulationRuns, final int batchesNumber, final boolean antitheticVariatesTechnique) {
-        this(baseSeed, simulationRuns, batchesNumber, antitheticVariatesTechnique, false, false);
+    protected ExperimentRunner(final long baseSeed, final int simulationRuns, final int batchesNumber, final boolean applyAntitheticVariates) {
+        this(baseSeed, simulationRuns, batchesNumber, applyAntitheticVariates, false, false);
     }
 
     /**
@@ -163,7 +163,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @param baseSeed the seed to be used as base for each experiment seed
      * @param simulationRuns the number of times the experiment will be executed
      * @param batchesNumber number of simulation run batches (zero disables the batch means method)
-     * @param antitheticVariatesTechnique indicates if it's to be applied the
+     * @param applyAntitheticVariates indicates if it's to be applied the
      *                                    <a href="https://en.wikipedia.org/wiki/Antithetic_variates">antithetic variates technique</a>.
      * @param parallel whether experiments will run in parallel or sequentially. It's just actually enabled when the simulation runs
      *                 is larger than 1.
@@ -171,12 +171,12 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     protected ExperimentRunner(
         final long baseSeed, final int simulationRuns, final int batchesNumber,
-        final boolean antitheticVariatesTechnique,
+        final boolean applyAntitheticVariates,
         final boolean parallel, final boolean latexTableResultsGeneration)
     {
         super();
         this.baseSeed = baseSeed;
-        this.applyAntitheticVariatesTechnique = antitheticVariatesTechnique;
+        this.applyAntitheticVariates = applyAntitheticVariates;
         if(simulationRuns <= 0) {
             throw new IllegalArgumentException("Simulation runs must be greater than 0.");
         }
@@ -198,7 +198,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         this.seeds = parallel ? Collections.synchronizedList(new ArrayList<>()) : new ArrayList<>();
         this.metricsMap = parallel ? Collections.synchronizedMap(new TreeMap<>()) : new TreeMap<>();
 
-        if (isApplyBatchMeansMethod() || isApplyAntitheticVariatesTechnique()) {
+        if (isApplyBatchMeansMethod() || isApplyAntitheticVariates()) {
             setSimulationRunsAndBatchesToEvenNumber();
         }
 
@@ -343,15 +343,15 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @see
      * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic variates</a>
      */
-    public final boolean isApplyAntitheticVariatesTechnique() {
-        return applyAntitheticVariatesTechnique;
+    public final boolean isApplyAntitheticVariates() {
+        return applyAntitheticVariates;
     }
 
     /**
      * Gets the number of times the experiment will be executed in order to get
      * values such as means and standard deviations. It has to be an even number
      * if the
-     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
      * is to be used.
      * @return
      */
@@ -410,7 +410,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * This method calls that Function just providing the seed to be used for the current experiment run.
      *
      * If it is to apply the
-     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
      * to reduce results variance, the second half of experiments will used the
      * seeds from the first half.
      *
@@ -442,7 +442,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**
      * Creates a pseudo random number generator (PRNG) for a experiment run that
      * generates uniform values between [0 and 1[. If it is to apply the
-     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
      * to reduce results variance, the second half of experiments will used the
      * seeds from the first half.
      *
@@ -459,7 +459,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**
      * Creates a pseudo random number generator (PRNG) for a experiment run that
      * generates uniform values between [min and max[. If it is to apply the
-     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique"}
+     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique"}
      * to reduce results' variance, the second half of experiments will use the
      * seeds from the first half.
      *
@@ -478,7 +478,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     public boolean isToReuseSeedFromFirstHalfOfExperiments(final int currentExperimentIndex) {
-        return isApplyAntitheticVariatesTechnique() &&
+        return isApplyAntitheticVariates() &&
                simulationRuns > 1 && currentExperimentIndex >= halfSimulationRuns();
     }
 
@@ -695,7 +695,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * Double values, allowing computation of statistics
      * such as mean over these values.
      * The method also checks if the
-     * {@link #isApplyAntitheticVariatesTechnique() Antithetic Variates}
+     * {@link #isApplyAntitheticVariates() Antithetic Variates}
      * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
      * are enabled and then apply them over the given list of Doubles.
      * These techniques are used for variance reduction.
@@ -737,7 +737,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**
      * <p>
      * Computes the antithetic means for the given samples if the
-     * {@link #isApplyAntitheticVariatesTechnique() "Antithetic Variates Technique" is to be applied}.
+     * {@link #isApplyAntitheticVariates() "Antithetic Variates Technique" is to be applied}.
      *
      * These values are the mean between the first half of samples with the
      * second half. By this way, the resulting value is an array with half of
@@ -756,7 +756,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * @see #createRandomGen(int, double, double)
      */
     protected List<Double> computeAntitheticMeans(final List<Double> samples) {
-        if (!isApplyAntitheticVariatesTechnique()) {
+        if (!isApplyAntitheticVariates()) {
             return samples;
         }
 

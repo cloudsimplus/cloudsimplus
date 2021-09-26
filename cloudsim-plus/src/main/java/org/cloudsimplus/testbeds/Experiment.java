@@ -320,7 +320,7 @@ public abstract class Experiment extends AbstractExperiment {
      * @see #createBrokers()
      */
     private DatacenterBroker createBrokerAndAddToList() {
-        DatacenterBroker broker = createBroker();
+        final var broker = createBroker();
         brokerList.add(broker);
         return broker;
     }

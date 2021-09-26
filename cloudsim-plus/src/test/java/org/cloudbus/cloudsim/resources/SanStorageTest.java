@@ -444,7 +444,6 @@ public class SanStorageTest {
         assertFalse(san.hasPotentialAvailableSpace(-1));
     }
 
-
     @Test
     public void testGetFileAfterAddFile() {
         final var san = createSanStorage();

@@ -21,6 +21,7 @@ public class PowerModelDatacenterSimple extends PowerModelDatacenter {
      * @param datacenter the Datacenter for which the power model will be defined
      */
     public PowerModelDatacenterSimple(final Datacenter datacenter) {
+        super();
         setDatacenter(datacenter);
     }
 

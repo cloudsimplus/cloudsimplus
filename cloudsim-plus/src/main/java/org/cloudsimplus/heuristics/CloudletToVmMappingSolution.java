@@ -232,7 +232,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
             return 0;
         }
 
-        return (diff > 0 ? -1 : 1);
+        return diff > 0 ? -1 : 1;
     }
 
     /**

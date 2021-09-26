@@ -188,7 +188,7 @@ public final class HostFaultInjectionRunner extends ExperimentRunner<HostFaultIn
         System.out.printf("Executing %d experiments. Please wait ... It may take a while.%n", getSimulationRuns());
         System.out.println("Experiments configurations:");
         System.out.printf("\tBase seed: %d %n", getBaseSeed());
-        System.out.printf("\tApply Antithetic Variates Technique: %b%n", isApplyAntitheticVariatesTechnique());
+        System.out.printf("\tApply Antithetic Variates Technique: %b%n", isApplyAntitheticVariates());
         if (isApplyBatchMeansMethod()) {
             System.out.println("\tApply Batch Means Method to reduce simulation results correlation: true");
             System.out.printf("\tNumber of Batches for Batch Means Method: %d", getBatchesNumber());

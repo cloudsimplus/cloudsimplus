@@ -204,7 +204,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         try {
             final double id = v.get(index);
             return num.format(id);
-        } catch (Exception e) {
+        } catch (final Exception e) {
             return "    N/A";
         }
     }

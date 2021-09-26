@@ -856,7 +856,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private boolean isTimeToSearchForSuitableHosts(){
         final double elapsedSecs = clock() - lastTimeUnderOrOverloadedHostsDetected;
-        return isMigrationsEnabled() && (elapsedSecs >= hostSearchRetryDelay);
+        return isMigrationsEnabled() && elapsedSecs >= hostSearchRetryDelay;
     }
 
     private boolean areThereUnderOrOverloadedHostsAndMigrationIsSupported(){
