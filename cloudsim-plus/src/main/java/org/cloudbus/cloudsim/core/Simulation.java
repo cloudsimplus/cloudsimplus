@@ -50,6 +50,19 @@ public interface Simulation {
      *
      * @param <T> the type of entities to define an ID
      * @param list list of objects to define an ID
+     * @return the last entity that had an id set
+     */
+    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(List<? extends T> list){
+        return setIdForEntitiesWithoutOne(list, null);
+    }
+
+    /**
+     * Defines IDs for a list of {@link ChangeableId} entities that don't
+     * have one already assigned. Such entities can be a {@link Cloudlet},
+     * {@link Vm} or any object that implements {@link ChangeableId}.
+     *
+     * @param <T> the type of entities to define an ID
+     * @param list list of objects to define an ID
      * @param lastEntity the last created Entity which its ID will be used
      *        as the base for the next IDs
      * @return the last entity that had an id set
@@ -465,19 +478,6 @@ public interface Simulation {
      * @param networkTopology the network topology to set
      */
     void setNetworkTopology(NetworkTopology networkTopology);
-
-    /**
-     * Defines IDs for a list of {@link ChangeableId} entities that don't
-     * have one already assigned. Such entities can be a {@link Cloudlet},
-     * {@link Vm} or any object that implements {@link ChangeableId}.
-     *
-     * @param <T> the type of entities to define an ID
-     * @param list list of objects to define an ID
-     * @return the last entity that had an id set
-     */
-    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(List<? extends T> list){
-        return setIdForEntitiesWithoutOne(list, null);
-    }
 
     /**
      * Gets the number of events in the future queue
