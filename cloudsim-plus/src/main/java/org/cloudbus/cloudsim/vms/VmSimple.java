@@ -114,6 +114,20 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     private MipsShare requestedMips;
 
     /**
+     * A copy constructor that creates a VM based on the configuration of another one.
+     * The created VM will have the same MIPS capacity, number of PEs,
+     * BW, RAM and size of the given VM, but a default CloudletScheduler and no broker.
+     * @param sourceVm the VM to be cloned
+     * @see #VmSimple(double, long)
+     */
+    public VmSimple(final Vm sourceVm) {
+        this(sourceVm.getMips(), sourceVm.getNumberOfPes());
+        this.setBw(sourceVm.getBw().getCapacity())
+            .setRam(sourceVm.getRam().getCapacity())
+            .setSize(sourceVm.getStorage().getCapacity());
+    }
+
+    /**
      * Creates a Vm with 1024 MEGA of RAM, 100 Megabits/s of Bandwidth and 1024 MEGA of Storage Size.
      * To change these values, use the respective setters. While the Vm {@link #isCreated()
      * is being instantiated}, such values can be changed freely.
@@ -252,20 +266,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         setRam(new Ram(defaultRamCapacity));
         setBw(new Bandwidth(defaultBwCapacity));
         setStorage(new SimpleStorage(defaultStorageCapacity));
-    }
-
-    /**
-     * A copy constructor that creates a VM based on the configuration of another one.
-     * The created VM will have the same MIPS capacity, number of PEs,
-     * BW, RAM and size of the given VM, but a default CloudletScheduler and no broker.
-     * @param sourceVm the VM to be cloned
-     * @see #VmSimple(double, long)
-     */
-    public VmSimple(final Vm sourceVm) {
-        this(sourceVm.getMips(), sourceVm.getNumberOfPes());
-        this.setBw(sourceVm.getBw().getCapacity())
-            .setRam(sourceVm.getRam().getCapacity())
-            .setSize(sourceVm.getStorage().getCapacity());
     }
 
     @Override

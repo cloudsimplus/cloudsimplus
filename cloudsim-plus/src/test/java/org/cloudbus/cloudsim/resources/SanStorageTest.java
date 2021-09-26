@@ -35,20 +35,20 @@ public class SanStorageTest {
         assertTrue(instance.addReservedFile(file) > FILE_TRANSFER_TIME);
     }
 
-    private static SanStorage createSanStorage(){
-        return createSanStorage(CAPACITY);
-    }
-
     private static SanStorage createSanStorageBw(final double bandwidth){
         return createSanStorage(bandwidth, NETWORK_LATENCY);
     }
 
-    private static SanStorage createSanStorage(final double bandwidth, final double networkLatency){
-        return createSanStorage(bandwidth, networkLatency, CAPACITY);
+    private static SanStorage createSanStorage(){
+        return createSanStorage(CAPACITY);
     }
 
     private static SanStorage createSanStorage(final long capacity){
         return createSanStorage(BANDWIDTH, NETWORK_LATENCY, capacity);
+    }
+
+    private static SanStorage createSanStorage(final double bandwidth, final double networkLatency){
+        return createSanStorage(bandwidth, networkLatency, CAPACITY);
     }
 
     private static SanStorage createSanStorage(final double bandwidth, final double networkLatency, final long capacity){
