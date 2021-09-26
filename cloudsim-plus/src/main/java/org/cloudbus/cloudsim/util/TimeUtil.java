@@ -15,9 +15,17 @@ package org.cloudbus.cloudsim.util;
 public final class TimeUtil {
     /** Number of seconds in one minute. */
     private static final double MINUTE_SECS = 60;
+
+    /** Number of seconds in one hour. */
     private static final double HOUR_SECS   = 60 * MINUTE_SECS;
+
+    /** Number of seconds in one day. */
     private static final double DAY_SECS    = 24 * HOUR_SECS;
+
+    /** Number of seconds in one month. */
     private static final double MONTH_SECS  = 30 * DAY_SECS;
+
+    /** Number of seconds in one year. */
     private static final double YEAR_SECS   = 12 * MONTH_SECS;
 
     /** A private default constructor to avoid class instantiation. */
@@ -35,12 +43,12 @@ public final class TimeUtil {
      *         (e.g. "2.6 days")
      */
     public static String secondsToStr(final double seconds) {
-        if(seconds < 60) {
+        if(seconds < MINUTE_SECS) {
             return convertSeconds(seconds, 1, "second");
         }
 
         if(seconds < HOUR_SECS) {
-            return convertSeconds(seconds, 60, "minute");
+            return convertSeconds(seconds, MINUTE_SECS, "minute");
         }
 
         if(seconds < DAY_SECS) {
