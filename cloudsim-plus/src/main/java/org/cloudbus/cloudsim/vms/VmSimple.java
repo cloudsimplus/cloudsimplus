@@ -835,14 +835,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final VmSimple vmSimple = (VmSimple) o;
-        return vmSimple.getId() == getId() && getBroker().equals(vmSimple.getBroker());
-    }
-
-    @Override
     public void setFailed(final boolean failed) {
         this.failed = failed;
 
@@ -1104,5 +1096,13 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     public void setRequestedMips(final MipsShare requestedMips) {
         this.requestedMips = requireNonNull(requestedMips);
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        final VmSimple that = (VmSimple) obj;
+        return this.getId() == that.getId() && this.getBroker().equals(that.getBroker());
     }
 }

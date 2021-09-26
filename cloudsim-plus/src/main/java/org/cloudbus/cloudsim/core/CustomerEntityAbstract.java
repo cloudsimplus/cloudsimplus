@@ -97,13 +97,6 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     }
 
     @Override
-    public final int hashCode() {
-        int result = broker.hashCode();
-        result = 31 * result + Long.hashCode(id);
-        return result;
-    }
-
-    @Override
     public void setLastTriedDatacenter(final Datacenter lastTriedDatacenter) {
         this.lastTriedDatacenter = lastTriedDatacenter;
     }
@@ -111,5 +104,12 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     @Override
     public Datacenter getLastTriedDatacenter() {
         return lastTriedDatacenter;
+    }
+
+    @Override
+    public final int hashCode() {
+        int result = broker.hashCode();
+        result = 31 * result + Long.hashCode(id);
+        return result;
     }
 }
