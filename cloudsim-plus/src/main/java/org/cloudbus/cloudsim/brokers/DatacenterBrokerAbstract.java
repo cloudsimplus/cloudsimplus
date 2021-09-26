@@ -487,20 +487,15 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private boolean processVmEvents(final SimEvent evt) {
-        switch (evt.getTag()) {
-            case CloudSimTags.VM_CREATE_RETRY:
+        return switch (evt.getTag()) {
+            case CloudSimTags.VM_CREATE_RETRY -> {
                 vmCreationRetrySent = false;
-                requestDatacenterToCreateWaitingVms(false, true);
-                return true;
-            case CloudSimTags.VM_CREATE_ACK:
-                processVmCreateResponseFromDatacenter(evt);
-                return true;
-            case CloudSimTags.VM_VERTICAL_SCALING:
-                requestVmVerticalScaling(evt);
-                return true;
-        }
-
-        return false;
+                yield requestDatacenterToCreateWaitingVms(false, true);
+            }
+            case CloudSimTags.VM_CREATE_ACK -> processVmCreateResponseFromDatacenter(evt);
+            case CloudSimTags.VM_VERTICAL_SCALING -> requestVmVerticalScaling(evt);
+            default -> false;
+        };
     }
 
     private boolean processGeneralEvents(final SimEvent evt) {
@@ -613,15 +608,16 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return true;
     }
 
-    private void requestVmVerticalScaling(final SimEvent evt) {
+    private boolean requestVmVerticalScaling(final SimEvent evt) {
         if (!(evt.getData() instanceof VerticalVmScaling)) {
-            return;
+            return false;
         }
 
         final VerticalVmScaling scaling = (VerticalVmScaling) evt.getData();
         getSimulation().sendNow(
             evt.getSource(), scaling.getVm().getHost().getDatacenter(),
             CloudSimTags.VM_VERTICAL_SCALING, scaling);
+        return true;
     }
 
     /**
