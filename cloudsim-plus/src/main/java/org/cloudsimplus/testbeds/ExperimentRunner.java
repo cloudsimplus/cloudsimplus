@@ -667,14 +667,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**
      * Template method that creates an experiment to be run for the i'th time.
      *
-     * @param i a number that identifies the experiment
+     * @param index a number that identifies the experiment
      * @return the created experiment
      * @see #createExperimentInternal(int)
      */
-    private Experiment createExperiment(final int i) {
-        print(((i + 1) % 100 == 0 ? String.format(". Run #%d%n", i + 1) : "."));
-        setFirstExperimentCreated(i);
-        return createExperimentInternal(i);
+    private Experiment createExperiment(final int index) {
+        print((index + 1) % 100 == 0 ? String.format(". Run #%d%n", index + 1) : ".");
+        setFirstExperimentCreated(index);
+        return createExperimentInternal(index);
     }
 
     /**

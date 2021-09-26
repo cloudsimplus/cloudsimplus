@@ -293,7 +293,7 @@ public abstract class Experiment extends AbstractExperiment {
         final int numVms = vmsByBrokerFunction.apply(broker);
         final List<Vm> newList = new ArrayList<>(numVms);
         for (int id = vmList.size(); id < vmList.size() + numVms; id++) {
-            Vm vm = createVm(broker, nextVmId());
+            final var vm = createVm(broker, nextVmId());
             newList.add(vm);
         }
 

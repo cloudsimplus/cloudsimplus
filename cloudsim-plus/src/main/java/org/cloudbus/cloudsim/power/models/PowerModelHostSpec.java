@@ -55,7 +55,7 @@ public class PowerModelHostSpec extends PowerModelHost {
         Objects.requireNonNull(powerSpec, "powerSpec cannot be null");
         if (powerSpec.size() >= 2) {
             throw new IllegalArgumentException("powerSpec has to contain at least 2 elements " +
-                "(utilizazion at 0% and 100% load)");
+                "(utilization at 0% and 100% load)");
         }
 
         this.powerSpec = powerSpec;
@@ -71,7 +71,7 @@ public class PowerModelHostSpec extends PowerModelHost {
 
     @Override
     public double getPower(final double utilizationFraction) throws IllegalArgumentException {
-        int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.size());
+        final int utilizationIndex = (int) Math.round(utilizationFraction * powerSpec.size());
         return powerSpec.get(utilizationIndex);
     }
 }

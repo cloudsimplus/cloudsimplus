@@ -220,6 +220,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      * @see #setDefaultStorageCapacity(long)
      */
     public VmSimple(final long id, final long mipsCapacity, final long numberOfPes) {
+        super();
         setId(id);
         this.resources = new ArrayList<>(4);
         this.onMigrationStartListeners = new ArrayList<>();

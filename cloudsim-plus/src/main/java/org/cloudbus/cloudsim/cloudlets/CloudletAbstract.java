@@ -172,6 +172,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * @param pesNumber number of PEs that Cloudlet will require
      */
     public CloudletAbstract(final long id, final long length, final long pesNumber) {
+        super();
+
         /*
         Normally, a Cloudlet is only executed on a Datacenter without being
         migrated to others. Hence, to reduce memory consumption, set the
