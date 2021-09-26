@@ -108,13 +108,4 @@ public class CloudletSimple extends CloudletAbstract {
             Long.compare(this.getId(), other.getId()) +
             this.getBroker().compareTo(other.getBroker());
     }
-
-    @Override
-    public boolean equals(final Object obj) {
-        //Appropriated hashCode() is implemented by superclass
-        if (this == obj) return true;
-        if (obj == null || getClass() != obj.getClass()) return false;
-        final CloudletSimple other = (CloudletSimple) obj;
-        return other.getId() == getId() && getBroker().equals(other.getBroker());
-    }
 }
