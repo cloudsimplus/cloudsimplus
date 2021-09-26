@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * A integration test to assess the correctness of the simulation
+ * An integration test to assess the correctness of the simulation
  * after purging finished entities.
  * It creates a set of brokers, where each broker has the same number of VMs and cloudlets.
  * However, the 1st broker receives the same number of previous cloudlets
@@ -86,12 +86,12 @@ class FinishedEntitiesPurgeTest {
     private static final int VMS_BY_BROKER = HOSTS_NUMBER / BROKERS_NUMBER * 4;
     private static final int CLOUDLETS_BY_BROKER = VMS_BY_BROKER;
     private static final int HOST_MIPS = 1000;
-    private static final boolean SHOW_ONLY_CLOUDLETS_WITH_DIFFERENT_RESULTS = true;
+    private static final boolean SHOW_ONLY_CLOUDLETS_WITH_DIFF_RESULTS = true;
 
     /**
      * Total number of cloudlets created statically, before simulation start.
      */
-    private static final double EXPECTED_TOTAL_STATIC_CLOUDLETS_FINISHED = 4000;
+    private static final double EXPECTED_STATIC_CLOUDLETS_FINISHED = 4000;
 
     /**
      * The maximum accepted difference in time results.
@@ -100,7 +100,6 @@ class FinishedEntitiesPurgeTest {
 
     private CloudSim simulation;
     private List<DatacenterBroker> brokerList;
-    private Datacenter datacenter0;
 
     private long lastVmId;
     private long lastCloudletId;
@@ -122,7 +121,7 @@ class FinishedEntitiesPurgeTest {
     void staticCloudletExecTimeEqualFinishTime() {
         final Stream<Executable> executables =
             getAllBrokersCloudletStream()
-                .filter(cl -> cl.getId() < EXPECTED_TOTAL_STATIC_CLOUDLETS_FINISHED)
+                .filter(cl -> cl.getId() < EXPECTED_STATIC_CLOUDLETS_FINISHED)
                 .map(cl -> () -> assertExecTimeEqualsToFinishTime(cl));
 
         assertAll(executables);
@@ -145,7 +144,7 @@ class FinishedEntitiesPurgeTest {
     void dynamicCloudletExecTimeEqualStartTime() {
         final Stream<Executable> executables =
             getAllBrokersCloudletStream()
-                .filter(cl -> cl.getId() >= EXPECTED_TOTAL_STATIC_CLOUDLETS_FINISHED)
+                .filter(cl -> cl.getId() >= EXPECTED_STATIC_CLOUDLETS_FINISHED)
                 .map(cl -> () -> assertExecTimeEqualsToStartTime(cl));
 
         assertAll(executables);
@@ -174,7 +173,7 @@ class FinishedEntitiesPurgeTest {
      * */
     private void assertCloudletFinishTime(final Cloudlet cl) {
         final long brokerOrder = getBrokerOrder(cl);
-        final double expectedCloudletFinishTime = brokerOrder + (cl.getId() < EXPECTED_TOTAL_STATIC_CLOUDLETS_FINISHED ? 0 : brokerOrder);
+        final double expectedCloudletFinishTime = brokerOrder + (cl.getId() < EXPECTED_STATIC_CLOUDLETS_FINISHED ? 0 : brokerOrder);
         assertEquals(
             expectedCloudletFinishTime,
             cl.getFinishTime(), 0.7,
@@ -196,7 +195,7 @@ class FinishedEntitiesPurgeTest {
     }
 
     private void assertCloudletStartTime(final Cloudlet cl) {
-        final double expectedCloudletStartTime = cl.getId() < EXPECTED_TOTAL_STATIC_CLOUDLETS_FINISHED ? 0 : getBrokerOrder(cl);
+        final double expectedCloudletStartTime = cl.getId() < EXPECTED_STATIC_CLOUDLETS_FINISHED ? 0 : getBrokerOrder(cl);
         assertEquals(
             expectedCloudletStartTime,
             cl.getExecStartTime(), MAX_TIME_DELTA,
@@ -245,7 +244,7 @@ class FinishedEntitiesPurgeTest {
         final double startTime = TimeUtil.currentTimeSecs();
 
         simulation = new CloudSim();
-        datacenter0 = createDatacenter();
+        createDatacenter();
         createBrokers();
         simulation.addOnClockTickListener(this::onClockTickListener);
         simulation.start();
@@ -255,7 +254,7 @@ class FinishedEntitiesPurgeTest {
 
     private void printFinishedCloudlets() {
         for (final DatacenterBroker b : brokerList) {
-            final List<Cloudlet> list = SHOW_ONLY_CLOUDLETS_WITH_DIFFERENT_RESULTS ?
+            final List<Cloudlet> list = SHOW_ONLY_CLOUDLETS_WITH_DIFF_RESULTS ?
                                             getFinishedCloudletsWithDifferentResults(b) :
                                             b.getCloudletFinishedList();
             new CloudletsTableBuilder(list)
