@@ -223,7 +223,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Load an utilization history from a file.
+     * Load a utilization history from a file.
      *
      * @param filename the filename
      * @throws UncheckedIOException when the file cannot be accessed
@@ -232,9 +232,9 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     public void loadHistory(final String filename) {
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             historyMap = (Map<Double, Double>) ois.readObject();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new UncheckedIOException(e);
-        } catch (ClassNotFoundException e) {
+        } catch (final ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

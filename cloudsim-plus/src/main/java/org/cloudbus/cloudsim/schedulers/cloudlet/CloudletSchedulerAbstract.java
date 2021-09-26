@@ -35,7 +35,6 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
-import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 import static org.cloudsimplus.listeners.CloudletResourceAllocationFailEventInfo.of;
 
 /**
@@ -673,7 +672,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             return this;
         }
 
-        resourceAllocationFailListeners.add(Objects.requireNonNull(listener));
+        resourceAllocationFailListeners.add(requireNonNull(listener));
         return this;
     }
 
@@ -694,7 +693,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final ResourceManageable vmResource)
     {
         final UtilizationModel um = cloudlet.getUtilizationModel(vmResource.getClass());
-        return um.getUnit() == Unit.ABSOLUTE ?
+        return um.getUnit() == UtilizationModel.Unit.ABSOLUTE ?
                 Math.min(um.getUtilization(), vmResource.getCapacity()) :
                 um.getUtilization() * vmResource.getCapacity();
     }
@@ -1291,7 +1290,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
         final String resourceName,
         final boolean requestedUtilization)
     {
-        if (model.getUnit() == Unit.ABSOLUTE) {
+        if (model.getUnit() == UtilizationModel.Unit.ABSOLUTE) {
             return Math.min(model.getUtilization(time), maxResourceAllowedToUse);
         }
 

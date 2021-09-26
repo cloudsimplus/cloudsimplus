@@ -10,8 +10,6 @@ import org.cloudbus.cloudsim.core.SimEntity;
  * @see NetworkTopology#NULL
  */
 final class NetworkTopologyNull implements NetworkTopology {
-    private static final TopologicalGraph GRAPH = new TopologicalGraph();
-
     @Override public void addLink(SimEntity src, SimEntity dest, double bandwidth, double lat) {/**/}
     @Override public void removeLink(SimEntity src, SimEntity dest) {/**/}
     @Override public double getDelay(SimEntity src, SimEntity dest) {

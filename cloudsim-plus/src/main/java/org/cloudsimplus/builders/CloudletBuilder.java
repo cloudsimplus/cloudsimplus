@@ -63,7 +63,7 @@ public class CloudletBuilder implements Builder {
     private final DatacenterBrokerSimple broker;
     private BiFunction<Long,Integer, Cloudlet> cloudletCreationFunction;
 
-    private EventListener<CloudletVmEventInfo> onCloudletFinishEventListener = EventListener.NULL;
+    private EventListener<CloudletVmEventInfo> onCloudletFinishListener = EventListener.NULL;
 	private List<String> requiredFiles;
 
 	public CloudletBuilder(final BrokerBuilderDecorator brokerBuilder, final DatacenterBrokerSimple broker) {
@@ -111,7 +111,7 @@ public class CloudletBuilder implements Builder {
                     .setUtilizationModelCpu(utilizationModelCpu)
                     .setUtilizationModelRam(utilizationModelRam)
                     .setUtilizationModelBw(utilizationModelBw)
-                    .addOnFinishListener(onCloudletFinishEventListener);
+                    .addOnFinishListener(onCloudletFinishListener);
             cloudlet.setId(cloudletId);
             cloudlet.setBroker(broker);
             cloudlet.addRequiredFiles(requiredFiles);
@@ -203,8 +203,8 @@ public class CloudletBuilder implements Builder {
         return brokerBuilder;
     }
 
-    public CloudletBuilder setOnCloudletFinishEventListener(final EventListener<CloudletVmEventInfo> defaultOnCloudletFinishEventListener) {
-        this.onCloudletFinishEventListener = defaultOnCloudletFinishEventListener;
+    public CloudletBuilder setOnCloudletFinishListener(final EventListener<CloudletVmEventInfo> listener) {
+        this.onCloudletFinishListener = listener;
         return this;
     }
 
