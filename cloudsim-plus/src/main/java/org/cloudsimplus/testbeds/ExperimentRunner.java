@@ -61,40 +61,28 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
 
     private int firstExperimentCreated = -1;
 
-    /**
-     * @see #getBaseSeed()
-     */
+    /** @see #getBaseSeed() */
     private final long baseSeed;
 
     /** List of seeds used for each experiment.
      * @see #addSeed(long)  */
     private final List<Long> seeds;
 
-    /**
-     * @see #getSimulationRuns()
-     */
+    /** @see #getSimulationRuns() */
     private int simulationRuns;
 
     private AtomicInteger finishedRuns;
 
-    /**
-     * @see #getExperimentsStartTimeSecs()
-     */
+    /** @see #getExperimentsStartTimeSecs() */
     private long experimentsStartTimeSecs;
 
-    /**
-     * @see #getExperimentsExecutionTimeSecs()
-     */
+    /** @see #getExperimentsExecutionTimeSecs() */
     private long experimentsExecutionTimeSecs;
 
-    /**
-     * @see #isApplyAntitheticVariatesTechnique()
-     */
+    /** @see #isApplyAntitheticVariatesTechnique() */
     private final boolean applyAntitheticVariatesTechnique;
 
-    /**
-     * @see #getBatchesNumber()
-     */
+    /** @see #getBatchesNumber() */
     private int batchesNumber;
 
     /**
@@ -113,10 +101,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      */
     private final Map<String, List<Double>> metricsMap;
 
-    /**@see #setDescription(String) */
+    /** @see #setDescription(String) */
     private String description;
 
-    /**@see #setResultsTableId(String) */
+    /** @see #setResultsTableId(String) */
     private String resultsTableId;
 
     /** @see #enableLatexTableResultsGeneration()*/
@@ -189,8 +177,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         super();
         this.baseSeed = baseSeed;
         this.applyAntitheticVariatesTechnique = antitheticVariatesTechnique;
-        if(simulationRuns <= 0)
+        if(simulationRuns <= 0) {
             throw new IllegalArgumentException("Simulation runs must be greater than 0.");
+        }
+
         this.simulationRuns = simulationRuns;
         this.finishedRuns = new AtomicInteger();
         this.parallel = parallel && simulationRuns > 1;
@@ -199,6 +189,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         if(batchesNumber < 0 || batchesNumber == 1) {
             throw new IllegalArgumentException("Batches number must be greater than 1. Use 0 just to disable the Batch Means method.");
         }
+
         this.batchesNumber = batchesNumber;
         this.latexTableResultsGeneration = latexTableResultsGeneration;
 
@@ -291,13 +282,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
             return samples;
         }
 
-        final List<Double> batchMeans = new ArrayList<>(getBatchesNumber());
+        final var batchMeans = new ArrayList<Double>(getBatchesNumber());
         for (int i = 0; i < getBatchesNumber(); i++) {
             batchMeans.add(getBatchAverage(samples, i));
         }
 
         System.out.printf(
-                "\tBatch Means Method applied. The number of samples was reduced to %d after computing the mean for each batch.%n", getBatchesNumber());
+            "\tBatch Means Method applied. The number of samples was reduced to %d after computing the mean for each batch.%n",
+            getBatchesNumber());
 
         return batchMeans;
     }
@@ -646,7 +638,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     private StringBuilder startLatexTable() {
-        final StringBuilder latex = new StringBuilder();
+        final var latex = new StringBuilder();
         latex.append("\\begin{table}[!hbt]\n")
              .append(String.format("  \\caption{%s}\n", description))
              .append(String.format("  \\label{%s}\n", resultsTableId))
@@ -714,7 +706,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * variance reduction.
      */
     protected final SummaryStatistics computeFinalStatistics(final List<Double> values) {
-        final SummaryStatistics stats = new SummaryStatistics();
+        final var stats = new SummaryStatistics();
         final List<Double> adjustedValues = computeAntitheticMeans(computeBatchMeans(values));
         adjustedValues.forEach(stats::addValue);
         return stats;
