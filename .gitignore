@@ -33,3 +33,4 @@ Test.java
 ~$*
 
 deploy.sh
+checkstyle.sh
