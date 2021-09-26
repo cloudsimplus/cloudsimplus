@@ -65,9 +65,9 @@ public final class CloudletTaskCompletionTimeMinimizationRunner extends Experime
     }
 
     @Override
-    protected CloudletTaskCompletionTimeMinimizationExperiment createExperimentInternal(int i) {
+    protected CloudletTaskCompletionTimeMinimizationExperiment createExperimentInternal(int index) {
         CloudletTaskCompletionTimeMinimizationExperiment exp
-                = new CloudletTaskCompletionTimeMinimizationExperiment(i, this);
+                = new CloudletTaskCompletionTimeMinimizationExperiment(index, this);
 
         exp.setAfterExperimentFinish(this::afterExperimentFinish).setVerbose(experimentVerbose);
         return exp;

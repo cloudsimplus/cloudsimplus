@@ -668,11 +668,11 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     /**
      * Creates an experiment to be run for the i'th time.
      *
-     * @param i a number that identifies the experiment
+     * @param index a number that identifies the experiment
      * @return the created experiment
      * @see #createExperiment(int)
      */
-    protected abstract T createExperimentInternal(int i);
+    protected abstract T createExperimentInternal(int index);
 
     /**
      * Computes final simulation results, including mean, standard deviations and
