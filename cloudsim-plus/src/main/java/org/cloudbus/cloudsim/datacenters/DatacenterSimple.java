@@ -463,8 +463,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Processes the submission of a Cloudlet by a DatacenterBroker.
      *
      * @param evt information about the event just happened
-     * @param ack indicates if the event's sender expects to receive an
-     * acknowledge message when the event finishes to be processed
+     * @param ack indicates if the event's sender expects to receive an acknowledgement
+     *            message when the event finishes being processed
      */
     protected void processCloudletSubmit(final SimEvent evt, final boolean ack) {
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
