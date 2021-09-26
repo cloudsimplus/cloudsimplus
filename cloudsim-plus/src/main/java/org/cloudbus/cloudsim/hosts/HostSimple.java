@@ -605,15 +605,15 @@ public class HostSimple implements Host {
 
     private void updateOnShutdownListeners() {
         for (int i = 0; i < onShutdownListeners.size(); i++) {
-            final EventListener<HostEventInfo> l = onShutdownListeners.get(i);
-            l.update(HostEventInfo.of(l, this, simulation.clock()));
+            final var listener = onShutdownListeners.get(i);
+            listener.update(HostEventInfo.of(listener, this, simulation.clock()));
         }
     }
 
     private void updateOnStartupListeners() {
         for (int i = 0; i < onStartupListeners.size(); i++) {
-            final EventListener<HostEventInfo> l = onStartupListeners.get(i);
-            l.update(HostEventInfo.of(l, this, simulation.clock()));
+            final var listener = onStartupListeners.get(i);
+            listener.update(HostEventInfo.of(listener, this, simulation.clock()));
         }
     }
 
