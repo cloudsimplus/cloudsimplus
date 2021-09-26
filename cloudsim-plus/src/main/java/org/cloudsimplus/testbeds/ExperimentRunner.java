@@ -177,20 +177,12 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         super();
         this.baseSeed = baseSeed;
         this.applyAntitheticVariates = applyAntitheticVariates;
-        if(simulationRuns <= 0) {
-            throw new IllegalArgumentException("Simulation runs must be greater than 0.");
-        }
-
-        this.simulationRuns = simulationRuns;
+        this.simulationRuns = validateSimulationRuns(simulationRuns);
         this.finishedRuns = new AtomicInteger();
         this.parallel = parallel && simulationRuns > 1;
         this.showProgress = true;
 
-        if(batchesNumber < 0 || batchesNumber == 1) {
-            throw new IllegalArgumentException("Batches number must be greater than 1. Use 0 just to disable the Batch Means method.");
-        }
-
-        this.batchesNumber = batchesNumber;
+        this.batchesNumber = validateBatchesNumber(batchesNumber);
         this.latexTableResultsGeneration = latexTableResultsGeneration;
 
         /*Since experiments may run in parallel and these fields are shared across them,
@@ -205,6 +197,22 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         if (isApplyBatchMeansAndSimulationRunsIsNotMultipleOfBatches()) {
             setNumberOfSimulationRunsAsMultipleOfNumberOfBatches();
         }
+    }
+
+    private int validateBatchesNumber(final int batchesNumber) {
+        if(batchesNumber < 0 || batchesNumber == 1) {
+            throw new IllegalArgumentException("Batches number must be greater than 1. Use 0 just to disable the Batch Means method.");
+        }
+
+        return batchesNumber;
+    }
+
+    private int validateSimulationRuns(final int simulationRuns) {
+        if(simulationRuns <= 0) {
+            throw new IllegalArgumentException("Simulation runs must be greater than 0.");
+        }
+
+        return simulationRuns;
     }
 
     /**
