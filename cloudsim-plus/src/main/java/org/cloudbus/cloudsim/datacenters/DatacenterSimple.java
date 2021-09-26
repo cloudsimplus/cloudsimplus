@@ -328,31 +328,16 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param evt the event to be processed
      */
     private boolean processVmEvents(final SimEvent evt) {
-        switch (evt.getTag()) {
-            case CloudSimTags.VM_CREATE_ACK:
-                processVmCreate(evt);
-                return true;
-            case CloudSimTags.VM_VERTICAL_SCALING:
-                requestVmVerticalScaling(evt);
-                return true;
-            case CloudSimTags.VM_DESTROY:
-                processVmDestroy(evt, false);
-                return true;
-            case CloudSimTags.VM_DESTROY_ACK:
-                processVmDestroy(evt, true);
-                return true;
-            case CloudSimTags.VM_MIGRATE:
-                finishVmMigration(evt, false);
-                return true;
-            case CloudSimTags.VM_MIGRATE_ACK:
-                finishVmMigration(evt, true);
-                return true;
-            case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING:
-                updateCloudletProcessing();
-                return true;
-        }
-
-        return false;
+        return switch (evt.getTag()) {
+            case CloudSimTags.VM_CREATE_ACK -> processVmCreate(evt);
+            case CloudSimTags.VM_VERTICAL_SCALING  -> requestVmVerticalScaling(evt);
+            case CloudSimTags.VM_DESTROY -> processVmDestroy(evt, false);
+            case CloudSimTags.VM_DESTROY_ACK -> processVmDestroy(evt, true);
+            case CloudSimTags.VM_MIGRATE -> finishVmMigration(evt, false);
+            case CloudSimTags.VM_MIGRATE_ACK -> finishVmMigration(evt, true);
+            case CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING -> updateCloudletProcessing() != Double.MAX_VALUE;
+            default -> false;
+        };
     }
 
     /**
@@ -602,12 +587,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Process the event sent by a Broker, requesting the destruction of a given VM
      * created in this Datacenter. This Datacenter may send, upon
      * request, the status back to the Broker.
-     *
-     * @param evt information about the event just happened
+     *  @param evt information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
-     * acknowledgement message when the event finishes being processed
+     * @return
      */
-    protected void processVmDestroy(final SimEvent evt, final boolean ack) {
+    protected boolean processVmDestroy(final SimEvent evt, final boolean ack) {
         final Vm vm = (Vm) evt.getData();
         vmAllocationPolicy.deallocateHostForVm(vm);
 
@@ -616,8 +600,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         vm.getBroker().requestShutdownWhenIdle();
-        if(getSimulation().isAborted() || getSimulation().isAbortRequested())
-            return;
+        if(getSimulation().isAborted() || getSimulation().isAbortRequested()) {
+            return true;
+        }
 
         final String warningMsg = generateNotFinishedCloudletsWarning(vm);
         final String msg = String.format(
@@ -626,6 +611,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if(warningMsg.isEmpty() || getSimulation().isTerminationTimeSet())
             LOGGER.info(msg);
         else LOGGER.warn(msg);
+        return true;
     }
 
     private String generateNotFinishedCloudletsWarning(final Vm vm) {
@@ -649,8 +635,9 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @param ack indicates if the event's sender expects to receive an
      * acknowledge message when the event finishes to be processed
      * @see CloudSimTags#VM_MIGRATE
+     * @return
      */
-    protected void finishVmMigration(final SimEvent evt, final boolean ack) {
+    protected boolean finishVmMigration(final SimEvent evt, final boolean ack) {
         if (!(evt.getData() instanceof Map.Entry<?, ?>)) {
             throw new ClassCastException("The data object must be Map.Entry<Vm, Host>");
         }
@@ -692,6 +679,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             getSimulation().clockStr(), this, vm, targetHost, suitability);
 
         onVmMigrationFinishListeners.forEach(listener -> listener.update(DatacenterVmMigrationEventInfo.of(listener, vm, suitability)));
+        return true;
     }
 
     /**
