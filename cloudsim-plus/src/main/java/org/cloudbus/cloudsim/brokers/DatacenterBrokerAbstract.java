@@ -461,32 +461,26 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private boolean processCloudletEvents(final SimEvent evt) {
-        switch (evt.getTag()) {
-            case CloudSimTags.CLOUDLET_RETURN:
-                processCloudletReturn(evt);
-                return true;
-            case CloudSimTags.CLOUDLET_READY:
-                processCloudletReady(evt);
-                return true;
+        return switch (evt.getTag()) {
+            case CloudSimTags.CLOUDLET_RETURN -> processCloudletReturn(evt);
+            case CloudSimTags.CLOUDLET_READY -> processCloudletReady(evt);
             /* The data of such a kind of event is a Runnable that has all
              * the logic to update the Cloudlet's attributes.
              * This way, it will be run to perform such an update.
              * Check the documentation of the tag below for details.*/
-            case CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES:
-                ((Runnable) evt.getData()).run();
-                return true;
-            case CloudSimTags.CLOUDLET_PAUSE:
-                processCloudletPause(evt);
-                return true;
-            case CloudSimTags.CLOUDLET_CANCEL:
-                processCloudletCancel(evt);
-                return true;
-            case CloudSimTags.CLOUDLET_FINISH:
-                processCloudletFinish(evt);
-                return true;
-            case CloudSimTags.CLOUDLET_FAIL:
-                processCloudletFail(evt);
-                return true;
+            case CloudSimTags.CLOUDLET_UPDATE_ATTRIBUTES -> executeRunnableEvent(evt);
+            case CloudSimTags.CLOUDLET_PAUSE -> processCloudletPause(evt);
+            case CloudSimTags.CLOUDLET_CANCEL -> processCloudletCancel(evt);
+            case CloudSimTags.CLOUDLET_FINISH -> processCloudletFinish(evt);
+            case CloudSimTags.CLOUDLET_FAIL -> processCloudletFail(evt);
+            default -> false;
+        };
+    }
+
+    private boolean executeRunnableEvent(final SimEvent evt){
+        if(evt.getData() instanceof Runnable runnable) {
+            runnable.run();
+            return true;
         }
 
         return false;
@@ -533,25 +527,28 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @param evt the event data
      */
-    private void processCloudletReady(final SimEvent evt){
+    private boolean processCloudletReady(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
         if(cloudlet.getStatus() == Cloudlet.Status.PAUSED)
              logCloudletStatusChange(cloudlet, "resume execution of");
         else logCloudletStatusChange(cloudlet, "start executing");
 
         cloudlet.getVm().getCloudletScheduler().cloudletReady(cloudlet);
+        return true;
     }
 
-    private void processCloudletPause(final SimEvent evt){
+    private boolean processCloudletPause(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
         logCloudletStatusChange(cloudlet, "de-schedule (pause)");
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
+        return true;
     }
 
-    private void processCloudletCancel(final SimEvent evt){
+    private boolean processCloudletCancel(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
         logCloudletStatusChange(cloudlet, "cancel execution of");
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
+        return true;
     }
 
     /**
@@ -559,7 +556,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * setting its length as the current number of processed MI.
      * @param evt the event data
      */
-    private void processCloudletFinish(final SimEvent evt){
+    private boolean processCloudletFinish(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
         logCloudletStatusChange(cloudlet, "finish running");
         /* If the executed length is zero, it means the cloudlet processing was not updated yet.
@@ -574,7 +571,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
          * This way, sets the Cloudlet as failed. */
         if(cloudlet.getFinishedLengthSoFar() == 0) {
             cloudlet.getVm().getCloudletScheduler().cloudletFail(cloudlet);
-            return;
+            return true;
         }
 
         final long prevLength = cloudlet.getLength();
@@ -593,6 +590,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             final Datacenter dc = cloudlet.getVm().getHost().getDatacenter();
             dc.schedule(delay, CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
         }
+
+        return true;
     }
 
     /**
@@ -608,9 +607,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         LOGGER.info("{}: {}: Request to {} {} {}received.", getSimulation().clockStr(), getName(), status, cloudlet, msg);
     }
 
-    private void processCloudletFail(final SimEvent evt){
+    private boolean processCloudletFail(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
         cloudlet.getVm().getCloudletScheduler().cloudletFail(cloudlet);
+        return true;
     }
 
     private void requestVmVerticalScaling(final SimEvent evt) {
@@ -792,7 +792,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @param evt a SimEvent object containing the cloudlet that has just finished executing and returned to the broker
      */
-    private void processCloudletReturn(final SimEvent evt) {
+    private boolean processCloudletReturn(final SimEvent evt) {
         final Cloudlet cloudlet = (Cloudlet) evt.getData();
         cloudletsFinishedList.add(cloudlet);
         ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getNumberOfPes());
@@ -800,10 +800,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         if (cloudlet.getVm().getCloudletScheduler().isEmpty()) {
             requestIdleVmDestruction(cloudlet.getVm());
-            return;
+            return true;
         }
 
         requestVmDestructionAfterAllCloudletsFinished();
+        return true;
     }
 
     /**
