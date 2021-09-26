@@ -215,7 +215,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @throws UncheckedIOException when the file cannot be accessed
      */
     public void saveHistory(final String filename) {
-        try (final ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(historyMap);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
