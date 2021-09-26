@@ -437,26 +437,14 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         switch (type) {
-            case CloudSimTags.CLOUDLET_CANCEL:
-                processCloudletCancel(cloudlet);
-                break;
-            case CloudSimTags.CLOUDLET_PAUSE:
-                processCloudletPause(cloudlet, false);
-                break;
-            case CloudSimTags.CLOUDLET_PAUSE_ACK:
-                processCloudletPause(cloudlet, true);
-                break;
-            case CloudSimTags.CLOUDLET_RESUME:
-                processCloudletResume(cloudlet, false);
-                break;
-            case CloudSimTags.CLOUDLET_RESUME_ACK:
-                processCloudletResume(cloudlet, true);
-                break;
-            default:
-                LOGGER.trace(
-                    "{}: Unable to handle a request from {} with event tag = {}",
-                    this, evt.getSource().getName(), evt.getTag());
-
+            case CloudSimTags.CLOUDLET_CANCEL -> processCloudletCancel(cloudlet);
+            case CloudSimTags.CLOUDLET_PAUSE -> processCloudletPause(cloudlet, false);
+            case CloudSimTags.CLOUDLET_PAUSE_ACK -> processCloudletPause(cloudlet, true);
+            case CloudSimTags.CLOUDLET_RESUME -> processCloudletResume(cloudlet, false);
+            case CloudSimTags.CLOUDLET_RESUME_ACK -> processCloudletResume(cloudlet, true);
+            default -> LOGGER.trace(
+                "{}: Unable to handle a request from {} with event tag = {}",
+                this, evt.getSource().getName(), evt.getTag());
         }
     }
     /**
