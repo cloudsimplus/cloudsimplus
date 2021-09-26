@@ -993,9 +993,9 @@ public class HostSimple implements Host {
     private void updatePeStatusCount(final Pe.Status status, final boolean increment) {
         final int i = increment ? 1 : -1;
         switch (status) {
-            case FAILED: incFailedPesNumber(i); break;
-            case FREE:  incFreePesNumber(i); break;
-            case BUSY: incBusyPesNumber(i); break;
+            case FAILED -> incFailedPesNumber(i);
+            case FREE   -> incFreePesNumber(i);
+            case BUSY   -> incBusyPesNumber(i);
         }
     }
 
