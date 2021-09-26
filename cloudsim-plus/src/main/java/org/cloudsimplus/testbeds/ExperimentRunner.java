@@ -638,7 +638,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     private StringBuilder startLatexTable() {
-        final var latex = new StringBuilder();
+        final var latex = new StringBuilder(260);
         latex.append("\\begin{table}[!hbt]\n")
              .append(String.format("  \\caption{%s}\n", description))
              .append(String.format("  \\label{%s}\n", resultsTableId))
