@@ -186,6 +186,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         final boolean antitheticVariatesTechnique,
         final boolean parallel, final boolean latexTableResultsGeneration)
     {
+        super();
         this.baseSeed = baseSeed;
         this.applyAntitheticVariatesTechnique = antitheticVariatesTechnique;
         if(simulationRuns <= 0)
