@@ -48,6 +48,8 @@ public class HostSimple implements Host {
     private static long defaultBwCapacity = 1000;
     private static long defaultStorageCapacity = (long) BytesConversion.gigaToMega(500);
 
+    protected HostResourceStats cpuUtilizationStats;
+
     /** @see #getStateHistory() */
     private final List<HostStateHistoryEntry> stateHistory;
     private boolean activateOnDatacenterStartup;
@@ -148,7 +150,6 @@ public class HostSimple implements Host {
     private int failedPesNumber;
 
     private boolean lazySuitabilityEvaluation;
-    protected HostResourceStats cpuUtilizationStats;
 
     /**
      * Creates and powers on a Host without a pre-defined ID,
@@ -473,11 +474,6 @@ public class HostSimple implements Host {
         return getSuitabilityFor(vm).fully();
     }
 
-    @Override
-    public HostSuitability getSuitabilityFor(final Vm vm) {
-        return isSuitableForVm(vm, false, false);
-    }
-
     /**
      * Checks if the host is suitable for vm
      * (if it has enough resources to attend the VM)
@@ -514,6 +510,11 @@ public class HostSimple implements Host {
         }
 
         return suitability.setForPes(vmScheduler.isSuitableForVm(vm));
+    }
+
+    @Override
+    public HostSuitability getSuitabilityFor(final Vm vm) {
+        return isSuitableForVm(vm, false, false);
     }
 
     @Override
