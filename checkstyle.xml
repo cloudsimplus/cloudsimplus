@@ -5,6 +5,12 @@
     <property name="charset" value="UTF-8" />
     <property name="severity" value="warning"/>
 
+    <!-- Tone down the checking for test code -->
+    <module name="SuppressionSingleFilter">
+        <property name="checks" value="JavadocPackage"/>
+        <property name="files" value=".*[\\/]src[\\/](test|it)[\\/]" />
+    </module>
+
     <!-- https://checkstyle.org/config_filters.html#SuppressionFilter -->
     <module name="SuppressionFilter">
         <property name="file" value="checkstyle-suppressions.xml" />

@@ -7,5 +7,5 @@
 
     <!-- Classes implementing the Null Object Pattern usually have methods with a single instruction
     declared in a single line. -->
-    <suppress checks="OneStatementPerLine" files="*\/.*Null.*\.java" />
+    <suppress checks="OneStatementPerLine" files=".*\/.*Null.*\.java" />
 </suppressions>
