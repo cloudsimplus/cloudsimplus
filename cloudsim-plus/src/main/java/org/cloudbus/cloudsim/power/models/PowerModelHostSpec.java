@@ -51,6 +51,7 @@ public class PowerModelHostSpec extends PowerModelHost {
      * when CPU utilization is between [0 .. 10%].</p>
      */
     public PowerModelHostSpec(final List<Double> powerSpec) {
+        super();
         Objects.requireNonNull(powerSpec, "powerSpec cannot be null");
         if (powerSpec.size() >= 2) {
             throw new IllegalArgumentException("powerSpec has to contain at least 2 elements " +

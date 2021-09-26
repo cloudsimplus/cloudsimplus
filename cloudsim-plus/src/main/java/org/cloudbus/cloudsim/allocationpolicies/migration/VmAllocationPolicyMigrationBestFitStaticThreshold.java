@@ -35,7 +35,7 @@ public class VmAllocationPolicyMigrationBestFitStaticThreshold extends VmAllocat
     /**
      * Creates a VmAllocationPolicyMigrationBestFitStaticThreshold.
      * It uses a {@link #DEF_OVER_UTILIZATION_THRESHOLD default over utilization threshold}
-     * and a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
+     * and a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      * @see #setUnderUtilizationThreshold(double)

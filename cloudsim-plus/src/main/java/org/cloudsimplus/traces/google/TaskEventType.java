@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 
@@ -44,14 +43,13 @@ public enum TaskEventType {
     SUBMIT{
         @Override
         protected boolean process(final GoogleTaskEventsTraceReader reader) {
-            final TaskEvent event = reader.createTaskEventFromTraceLine();
-            final DatacenterBroker broker = reader.getOrCreateBroker(event.getUserName());
+            final var event = reader.createTaskEventFromTraceLine();
 
             if(!reader.allowCloudletCreation()) {
                 return false;
             }
 
-            final Cloudlet cloudlet = reader.createCloudlet(event);
+            final var cloudlet = reader.createCloudlet(event);
             // Since Cloudlet id must be unique, it will be the concatenation of the job and task id
             cloudlet.setId(event.getUniqueTaskId());
             cloudlet.setJobId(event.getJobId());
@@ -64,6 +62,7 @@ public enum TaskEventType {
                 cloudlet.setStatus(Cloudlet.Status.FROZEN);
             }
 
+            final var broker = reader.getOrCreateBroker(event.getUserName());
             if(reader.isAutoSubmitCloudlets()) {
                 broker.submitCloudlet(cloudlet);
             }

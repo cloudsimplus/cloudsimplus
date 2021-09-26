@@ -8,8 +8,8 @@ import org.cloudbus.cloudsim.power.PowerMeasurement;
  * @see org.cloudbus.cloudsim.power.PowerMeter
  */
 public class PowerModelHostSimple extends PowerModelHost {
-    private double maxPower;
-    private double staticPower;
+    private final double maxPower;
+    private final double staticPower;
 
     /**
      * Instantiates a {@link PowerModelHostSimple} by specifying its static and max power usage.

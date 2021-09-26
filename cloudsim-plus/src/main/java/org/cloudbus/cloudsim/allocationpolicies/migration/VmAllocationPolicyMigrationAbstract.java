@@ -50,7 +50,7 @@ import static java.util.stream.Collectors.toSet;
  * @since CloudSim Toolkit 3.0
  */
 public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPolicyAbstract implements VmAllocationPolicyMigration {
-    public static final double DEF_UNDER_UTILIZATION_THRESHOLD = 0.35;
+    public static final double DEF_UNDERLOAD_THRESHOLD = 0.35;
 
     /** @see #getUnderUtilizationThreshold() */
     private double underUtilizationThreshold;
@@ -71,7 +71,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * Creates a VmAllocationPolicy.
-     * It uses a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
+     * It uses a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      */
@@ -81,7 +81,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     /**
      * Creates a new VmAllocationPolicy, changing the {@link Function} to select a Host for a Vm.
-     * It uses a {@link #DEF_UNDER_UTILIZATION_THRESHOLD default under utilization threshold}.
+     * It uses a {@link #DEF_UNDERLOAD_THRESHOLD default under utilization threshold}.
      *
      * @param vmSelectionPolicy the policy that defines how VMs are selected for migration
      * @param findHostForVmFunction a {@link Function} to select a Host for a given Vm.
@@ -94,7 +94,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         final BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction)
     {
         super(findHostForVmFunction);
-        this.underUtilizationThreshold = DEF_UNDER_UTILIZATION_THRESHOLD;
+        this.underUtilizationThreshold = DEF_UNDERLOAD_THRESHOLD;
         this.savedAllocation = new HashMap<>();
         setVmSelectionPolicy(vmSelectionPolicy);
     }
