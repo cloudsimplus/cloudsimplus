@@ -79,7 +79,6 @@ public class PowerMeter extends CloudSimEntity {
         switch (evt.getTag()) {
             case POWER_MEASUREMENT:
                 measurePowerConsumption();
-                scheduleMeasurement();
                 break;
             case CloudSimTags.END_OF_SIMULATION:
                 this.shutdown();
@@ -90,7 +89,7 @@ public class PowerMeter extends CloudSimEntity {
     }
 
     /**
-     * Measures the power consumption of entities.
+     * Measures the power consumption of entities and schedules next measurement.
      * If the entities list contains a single element,
      * the measurement is related to that entity.
      * If the list has multiples entities,
@@ -104,6 +103,7 @@ public class PowerMeter extends CloudSimEntity {
             .reduce(PowerMeasurement::add)
             .orElse(new PowerMeasurement());
         powerMeasurements.add(measurement);
+        scheduleMeasurement();
     }
 
     /**
