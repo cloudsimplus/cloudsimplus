@@ -131,7 +131,8 @@ public class CloudletSimpleTest {
 
     @Test
     public void testGetActualCPUTime() {
-        final double submissionTime = 0, execStartTime = 10;
+        final double submissionTime = 0;
+        final double execStartTime = 10;
         final double simulationClock = 100;
         final double actualCpuTime = simulationClock - execStartTime;
 

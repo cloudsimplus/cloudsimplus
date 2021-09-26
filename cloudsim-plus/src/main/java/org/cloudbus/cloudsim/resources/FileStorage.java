@@ -51,7 +51,7 @@ public interface FileStorage extends Resource {
      * Default maximum transfer rate of this storage system in <b>Mega-bits/sec</b>,
      * i.e., the physical device reading speed.
      */
-    int DEF_MAX_TRANSFER_RATE_MBITS_SEC = 133 * 8;
+    int DEF_MAX_TRANSF_RATE_MBITS_SEC = 133 * 8;
 
     /**
      * Gets the maximum local transfer rate of the storage in <b>Mega-bits/sec</b>,

@@ -767,7 +767,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     private void processSuccessVmCreationInDatacenter(final Vm vm) {
         if(vm instanceof VmGroup){
             int createdVms = 0;
-            final VmGroup vmGroup = ((VmGroup)vm);
+            final VmGroup vmGroup = (VmGroup)vm;
             for (final Vm nextVm : vmGroup.getVmList()) {
                 if (nextVm.isCreated()) {
                     processSuccessVmCreationInDatacenter(nextVm);

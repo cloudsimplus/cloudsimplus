@@ -94,7 +94,7 @@ public class HarddriveStorage implements FileStorage {
     private void init() {
         setLatency(DEF_LATENCY_SECS);
         setAvgSeekTime(DEF_SEEK_TIME_SECS);
-        setMaxTransferRate(DEF_MAX_TRANSFER_RATE_MBITS_SEC);
+        setMaxTransferRate(DEF_MAX_TRANSF_RATE_MBITS_SEC);
     }
 
     /**

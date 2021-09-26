@@ -26,7 +26,7 @@ public class PowerModelDatacenterSimple extends PowerModelDatacenter {
 
     @Override
     public PowerMeasurement getPowerMeasurement() {
-        PowerMeasurement measurement = getDatacenter().getHostList().stream()
+        final PowerMeasurement measurement = getDatacenter().getHostList().stream()
             .map(Host::getPowerModel)
             .map(PowerModelHost::getPowerMeasurement)
             .reduce(PowerMeasurement::add)

@@ -35,7 +35,7 @@ public abstract class ResourceAbstract implements Resource {
     /** @see #getCapacity() */
     protected long capacity;
 
-    private String unit;
+    private final String unit;
 
     public ResourceAbstract(final long capacity, final String unit){
         this.capacity = validateCapacity(capacity);

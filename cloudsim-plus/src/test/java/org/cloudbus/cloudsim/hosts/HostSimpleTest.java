@@ -335,17 +335,17 @@ public class HostSimpleTest {
     }
 
     private List<Vm> createListOfMockVms(
-        final int numberOfVms, final MipsShare mipsShare,
+        final int vmsNumber, final MipsShare mipsShare,
         final double simulationClock)
     {
-        final List<Vm> vmList = new ArrayList<>(numberOfVms);
-        for(int i = 0; i < numberOfVms; i++) {
-            final double nextCloudletCompletionTimeOfCurrentVm = i+1;
+        final List<Vm> vmList = new ArrayList<>(vmsNumber);
+        for(int i = 0; i < vmsNumber; i++) {
+            final double nextCloudletCompletionTime = i+1;
 
             final Vm vm = Mockito.mock(Vm.class);
             Mockito
                 .when(vm.updateProcessing(simulationClock, mipsShare))
-                .thenReturn(nextCloudletCompletionTimeOfCurrentVm);
+                .thenReturn(nextCloudletCompletionTime);
 
             vmList.add(vm);
         }

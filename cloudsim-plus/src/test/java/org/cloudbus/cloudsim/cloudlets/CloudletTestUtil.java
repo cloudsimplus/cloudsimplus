@@ -1,7 +1,5 @@
 package org.cloudbus.cloudsim.cloudlets;
 
-import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.mocks.CloudSimMocker;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 
@@ -65,10 +63,6 @@ public final class CloudletTestUtil {
         final long length, final int numberOfPes)
     {
         final CloudletSimple cloudlet = new CloudletSimple(id, length, numberOfPes);
-        final CloudSim cloudsim = CloudSimMocker.createMock(mocker -> {
-            mocker.clock(0);
-            mocker.sendNow();
-        });
 
         cloudlet
             .setFileSize(CLOUDLET_FILE_SIZE)

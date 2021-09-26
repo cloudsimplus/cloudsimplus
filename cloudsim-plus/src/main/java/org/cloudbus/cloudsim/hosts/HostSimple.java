@@ -988,14 +988,14 @@ public class HostSimple implements Host {
      * You must call the method before the Pe status change and after it
      * so that the numbers for the previous and new PE status are updated.
      * @param status the status of the PE to process (either a previous or new status)
-     * @param increment true to increment the number of PEs in the given status to 1, false to decrement
+     * @param isIncrement true to increment the number of PEs in the given status to 1, false to decrement
      */
-    private void updatePeStatusCount(final Pe.Status status, final boolean increment) {
-        final int i = increment ? 1 : -1;
+    private void updatePeStatusCount(final Pe.Status status, final boolean isIncrement) {
+        final int inc = isIncrement ? 1 : -1;
         switch (status) {
-            case FAILED -> incFailedPesNumber(i);
-            case FREE   -> incFreePesNumber(i);
-            case BUSY   -> incBusyPesNumber(i);
+            case FAILED -> incFailedPesNumber(inc);
+            case FREE   -> incFreePesNumber(inc);
+            case BUSY   -> incBusyPesNumber(inc);
         }
     }
 

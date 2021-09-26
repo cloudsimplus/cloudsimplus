@@ -287,7 +287,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
-        HostFaultInjection fault = new HostFaultInjection(this);
+        final var fault = new HostFaultInjection(this);
         try {
             LOGGER.error(
                 "{}: {}: Host {} removed from {} due to injected failure.",
@@ -875,7 +875,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public void requestVmMigration(final Vm sourceVm, Host targetHost) {
-        final String currentTime = getSimulation().clockStr();
         final Host sourceHost = sourceVm.getHost();
 
         //If Host.NULL is given, it must try to find a target host
@@ -895,6 +894,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 String.format("%s to %s", sourceVm, targetHost) :
                 String.format("%s from %s to %s", sourceVm, sourceHost, targetHost);
 
+        final String currentTime = getSimulation().clockStr();
         final String msg2 = String.format(
             "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.",
             delay, getBandwidthPercentForMigration()*100);
