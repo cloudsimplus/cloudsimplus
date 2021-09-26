@@ -284,6 +284,12 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
         final double nextSimulationDelay = cloudletScheduler.updateProcessing(currentTime, mipsShare);
         notifyOnUpdateProcessingListeners();
 
+        cpuUtilizationStats.add(currentTime);
+        getBroker().requestIdleVmDestruction(this);
+        if (nextSimulationDelay == Double.MAX_VALUE) {
+            return nextSimulationDelay;
+        }
+
         /* If the current time is some value with the decimals greater than x.0
          * (such as 45.1) and the next event delay is any integer number such as 5,
          * then the next simulation time would be 50.1.
@@ -294,12 +300,6 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
          * before the utilization drop.
          */
         final double decimals = currentTime - (int) currentTime;
-        cpuUtilizationStats.add(currentTime);
-        getBroker().requestIdleVmDestruction(this);
-        if (nextSimulationDelay == Double.MAX_VALUE) {
-            return nextSimulationDelay;
-        }
-
         return nextSimulationDelay - decimals < 0 ? nextSimulationDelay : nextSimulationDelay - decimals;
     }
 
