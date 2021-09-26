@@ -72,10 +72,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
 
     @Override
     public boolean allocatePesForVmInternal(final Vm vm, final MipsShare requestedMips) {
-        if(!allocateMipsShareForVmInternal(vm, requestedMips)) {
-            return false;
-        }
-        return true;
+        return allocateMipsShareForVmInternal(vm, requestedMips);
     }
 
     /**
@@ -106,7 +103,7 @@ public class VmSchedulerTimeShared extends VmSchedulerAbstract {
      * @see VmSchedulerAbstract#getMipsShareRequestedReduced(Vm, MipsShare)
      */
     protected void allocateMipsShareForVm(final Vm vm, final MipsShare requestedMipsReduced) {
-        final MipsShare mipsShare = getMipsShareToAllocate(vm, requestedMipsReduced);
+        final var mipsShare = getMipsShareToAllocate(vm, requestedMipsReduced);
         ((VmSimple)vm).setAllocatedMips(mipsShare);
     }
 

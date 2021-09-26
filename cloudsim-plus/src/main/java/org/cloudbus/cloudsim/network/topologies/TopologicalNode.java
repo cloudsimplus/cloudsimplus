@@ -100,10 +100,10 @@ public class TopologicalNode {
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final TopologicalNode other = (TopologicalNode) o;
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        final TopologicalNode other = (TopologicalNode) obj;
         return other.id == id;
     }
 

@@ -24,7 +24,7 @@ import java.util.Objects;
  * <p>The class may return different utilization values
  * for the same requested time.
  * For performance reasons, this behaviour is dependent of the {@link #isHistoryEnabled()}
- * and {@link #isAlwaysGenerateNewRandomUtilization()}.
+ * and {@link #isAlwaysGenerateNewRandUtilization()}.
  * </p>
  *
  * @author Anton Beloglazov
@@ -71,8 +71,8 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     /** @see #isHistoryEnabled() */
     private boolean historyEnabled;
 
-    /** @see #isAlwaysGenerateNewRandomUtilization() */
-    private boolean alwaysGenerateNewRandomUtilization;
+    /** @see #isAlwaysGenerateNewRandUtilization() */
+    private boolean alwaysGenerateNewRandUtilization;
 
     /**
      * Instantiates a utilization model stochastic
@@ -81,7 +81,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @see #setUnit(Unit)
      * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenerateNewRandomUtilization()
+     * @see #isAlwaysGenerateNewRandUtilization()
      */
     public UtilizationModelStochastic() {
         this(Unit.PERCENTAGE);
@@ -95,7 +95,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @param unit the {@link Unit} that determines how the resource is used (for instance, if
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenerateNewRandomUtilization()
+     * @see #isAlwaysGenerateNewRandUtilization()
      */
     public UtilizationModelStochastic(final Unit unit) {
         this(unit, StatisticalDistribution.defaultSeed());
@@ -110,7 +110,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param seed the seed to initialize the random number generator.
      * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenerateNewRandomUtilization()
+     * @see #isAlwaysGenerateNewRandUtilization()
      */
     public UtilizationModelStochastic(final Unit unit, final long seed) {
         this(unit, new UniformDistr(seed));
@@ -123,7 +123,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @param seed the seed to initialize the random number generator.
      * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenerateNewRandomUtilization()
+     * @see #isAlwaysGenerateNewRandUtilization()
      */
     public UtilizationModelStochastic(final long seed) {
         this(Unit.PERCENTAGE, new UniformDistr(seed));
@@ -137,7 +137,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
      * @see #setUnit(Unit)
      * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenerateNewRandomUtilization()
+     * @see #isAlwaysGenerateNewRandUtilization()
      */
     public UtilizationModelStochastic(final ContinuousDistribution prng) {
         this(Unit.PERCENTAGE, prng);
@@ -151,7 +151,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *             resource usage is defined in percentage of the Vm resource or in absolute values)
      * @param prng the Pseudo Random Number Generator (PRNG) to generate utilization values
      * @see #setHistoryEnabled(boolean)
-     * @see #isAlwaysGenerateNewRandomUtilization()
+     * @see #isAlwaysGenerateNewRandUtilization()
      */
     public UtilizationModelStochastic(final Unit unit, final ContinuousDistribution prng) {
         super(unit);
@@ -168,7 +168,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      */
     @Override
     protected double getUtilizationInternal(final double time) {
-        if (time == this.previousTime && !alwaysGenerateNewRandomUtilization) {
+        if (time == this.previousTime && !alwaysGenerateNewRandUtilization) {
             return this.previousUtilization;
         }
 
@@ -180,7 +180,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     private Double getOrGenerateUtilization(final double time) {
-        if(time > this.maxPreviousTime || alwaysGenerateNewRandomUtilization){
+        if(time > this.maxPreviousTime || alwaysGenerateNewRandUtilization){
             return generateUtilization(time);
         }
 
@@ -313,24 +313,24 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *         false if for the same requested time, the same utilization must be returned.
      *         In this last case, it's just ensured that, for a given time, the same utilization will always be returned,
      *         if the {@link #isHistoryEnabled() history is enabled}.
-     * @see #setAlwaysGenerateNewRandomUtilization(boolean)
+     * @see #setAlwaysGenerateNewRandUtilization(boolean)
      */
-    public boolean isAlwaysGenerateNewRandomUtilization() {
-        return alwaysGenerateNewRandomUtilization;
+    public boolean isAlwaysGenerateNewRandUtilization() {
+        return alwaysGenerateNewRandUtilization;
     }
 
     /**
      * Allow the model to always generate a new random utilization value when {@link #getUtilization()} methods are called,
      * even if the simulation clock hasn't changed since the last call.
      *
-     * @param alwaysGenerateNewRandomUtilization true to allow generating a new random value for each time the resource utilization is required, false to disable
+     * @param alwaysGenerateNewRandUtilization true to allow generating a new random value for each time the resource utilization is required, false to disable
      * @return
-     * @see #isAlwaysGenerateNewRandomUtilization()
+     * @see #isAlwaysGenerateNewRandUtilization()
      * @see #getUtilization()
      * @see #getUtilization(double)
      */
-    public UtilizationModelStochastic setAlwaysGenerateNewRandomUtilization(final boolean alwaysGenerateNewRandomUtilization) {
-        this.alwaysGenerateNewRandomUtilization = alwaysGenerateNewRandomUtilization;
+    public UtilizationModelStochastic setAlwaysGenerateNewRandUtilization(final boolean alwaysGenerateNewRandUtilization) {
+        this.alwaysGenerateNewRandUtilization = alwaysGenerateNewRandUtilization;
         return this;
     }
 }

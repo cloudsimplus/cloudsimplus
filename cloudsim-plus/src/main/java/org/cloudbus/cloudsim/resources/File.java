@@ -10,8 +10,6 @@ package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 
-import java.util.Objects;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -119,7 +117,7 @@ public class File {
      * @throws IllegalArgumentException if the name of the file is blank or null
      */
     public static void validate(final File file) {
-        Objects.requireNonNull(file, "Given file cannot be null.");
+        requireNonNull(file, "Given file cannot be null.");
         validateFileName(file.getName());
     }
 
@@ -132,7 +130,7 @@ public class File {
      * @throws IllegalArgumentException if the file name is blank
      */
     public static String validateFileName(final String fileName) {
-        Objects.requireNonNull(fileName, "File name cannot be null.");
+        requireNonNull(fileName, "File name cannot be null.");
         if(fileName.isBlank()) {
             throw new IllegalArgumentException("File name cannot be blank");
         }

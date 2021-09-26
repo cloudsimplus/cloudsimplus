@@ -67,12 +67,12 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
     /**
      * Moves a paused cloudlet to the execution list.
      *
-     * @param c the cloudlet to be moved
+     * @param cle the cloudlet to be moved
      * @return the time the cloudlet is expected to finish
      */
-    private double movePausedCloudletToExecList(CloudletExecution c) {
-        addCloudletToExecList(c);
-        return cloudletEstimatedFinishTime(c, getVm().getSimulation().clock());
+    private double movePausedCloudletToExecList(final CloudletExecution cle) {
+        addCloudletToExecList(cle);
+        return cloudletEstimatedFinishTime(cle, getVm().getSimulation().clock());
     }
 
     /**
@@ -82,11 +82,11 @@ public class CloudletSchedulerSpaceShared extends CloudletSchedulerAbstract {
      * completely. By this way, if there are more Cloudlets than PEs, some
      * Cloudlet will not be allowed to start executing immediately.
      *
-     * @param cloudlet {@inheritDoc}
+     * @param cle {@inheritDoc}
      * @return {@inheritDoc}
      */
     @Override
-    protected boolean canExecuteCloudletInternal(final CloudletExecution cloudlet) {
-        return isThereEnoughFreePesForCloudlet(cloudlet);
+    protected boolean canExecuteCloudletInternal(final CloudletExecution cle) {
+        return isThereEnoughFreePesForCloudlet(cle);
     }
 }

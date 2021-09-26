@@ -28,10 +28,10 @@ public class SanStorageTest {
 
     @Test
     public void testAddReservedFile() {
-        final SanStorage instance = createSanStorageBw(BANDWIDTH);
-        final File file = new File(FILE1, FILE_SIZE);
-        assertTrue(instance.reserveSpace(file.getSize()));
-        assertTrue(instance.addReservedFile(file) > FILE_TRANSFER_TIME);
+        final var san = createSanStorageBw(BANDWIDTH);
+        final var file = new File(FILE1, FILE_SIZE);
+        assertTrue(san.reserveSpace(file.getSize()));
+        assertTrue(san.addReservedFile(file) > FILE_TRANSFER_TIME);
     }
 
     private static SanStorage createSanStorageBw(final double bandwidth){
@@ -58,46 +58,46 @@ public class SanStorageTest {
     public void testGetMaxTransferRate1() {
         final double diskRateMbps = 10;
         final double bwMbps = diskRateMbps*100;
-        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
-        instance.setMaxTransferRate(diskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        san.setMaxTransferRate(diskRateMbps);
 
-        assertEquals(diskRateMbps, instance.getMaxTransferRate());
+        assertEquals(diskRateMbps, san.getMaxTransferRate());
     }
 
     @Test
     public void testGetMaxTransferRate2() {
         final double bwMbps = 10;
         final double diskRateMbps = 10*bwMbps;
-        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
-        instance.setMaxTransferRate(diskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        san.setMaxTransferRate(diskRateMbps);
 
-        assertEquals(diskRateMbps, instance.getMaxTransferRate());
+        assertEquals(diskRateMbps, san.getMaxTransferRate());
     }
 
     @Test
     public void testGetTransferTimeWhenDiskRateAndBwAreEqual() {
         final double bwMbps = 10;
         final double diskRateMbps = bwMbps;
-        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
-        instance.setMaxTransferRate(diskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        san.setMaxTransferRate(diskRateMbps);
 
         final int fileSizeMB = 100;
         //Includes storage device read time, network transfer time plus network latency
         final double expectedTime = 162;
-        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+        assertEquals(expectedTime, san.getTransferTime(fileSizeMB), 0.01);
     }
 
     @Test
     public void testGetTransferTimeWhenDiskReadTimeIsNegligible() {
         final double bwMbps = 10;
         final double diskRateMbps = 1000000;
-        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
-        instance.setMaxTransferRate(diskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        san.setMaxTransferRate(diskRateMbps);
 
         final int fileSizeMB = 100;
         //Includes storage device read time, network transfer time plus network latency
         final double expectedTime = 82.0008;
-        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+        assertEquals(expectedTime, san.getTransferTime(fileSizeMB), 0.01);
     }
 
     @Test
@@ -105,26 +105,26 @@ public class SanStorageTest {
         final double bwMbps = 1000000;
         final double diskRateMbps = 10;
         final double latency = 0.0001;
-        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, latency);
-        instance.setMaxTransferRate(diskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwMbps, latency);
+        san.setMaxTransferRate(diskRateMbps);
 
         final int fileSizeMB = 100;
         //Includes storage device read time, network transfer time plus network latency
         final double expectedTime = 80.0009;
-        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+        assertEquals(expectedTime, san.getTransferTime(fileSizeMB), 0.01);
     }
 
     @Test
     public void testGetTransferTimeWhenBwIsLowerThanDiskRate() {
         final double bwMbps = 10;
         final double diskRateMbps = bwMbps*10;
-        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
-        instance.setMaxTransferRate(diskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        san.setMaxTransferRate(diskRateMbps);
 
         final int fileSizeMB = 100;
         //Includes storage device read time, network transfer time plus network latency
         final double expectedTime = 90;
-        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+        assertEquals(expectedTime, san.getTransferTime(fileSizeMB), 0.01);
     }
 
     @Test
@@ -132,83 +132,81 @@ public class SanStorageTest {
         final double bwMbps = 10;
         final double diskRateMbps = bwMbps*10;
         final double latency = 0.0001;
-        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, latency);
-        instance.setMaxTransferRate(diskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwMbps, latency);
+        san.setMaxTransferRate(diskRateMbps);
 
         final int fileSizeMB = 100;
         //Includes storage device read time, network transfer time plus network latency
         final double expectedTime = 88.0;
-        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+        assertEquals(expectedTime, san.getTransferTime(fileSizeMB), 0.01);
     }
 
     @Test
     public void testGetTransferTimeWhenDiskRateIsLowerThanBw() {
         final double diskRateMbps = 10;
         final double bwMbps = diskRateMbps*100;
-        final SanStorage instance = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
-        instance.setMaxTransferRate(diskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwMbps, NETWORK_LATENCY);
+        san.setMaxTransferRate(diskRateMbps);
 
         final int fileSizeMB = 100;
         //Includes storage device read time, network transfer time plus network latency
         final double expectedTime = 82.8;
-        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.01);
+        assertEquals(expectedTime, san.getTransferTime(fileSizeMB), 0.01);
     }
 
     @Test
     public void testGetTransferTimeWhenBwIsEqualToDiskRate() {
         final double bwAndDiskRateMbps = 10;
-        final SanStorage instance = new SanStorage(CAPACITY, bwAndDiskRateMbps, NETWORK_LATENCY);
-        instance.setMaxTransferRate(bwAndDiskRateMbps);
+        final var san = new SanStorage(CAPACITY, bwAndDiskRateMbps, NETWORK_LATENCY);
+        san.setMaxTransferRate(bwAndDiskRateMbps);
 
         final int fileSizeMB = 100;
         //Includes storage device read time, network transfer time plus network latency
         final double expectedTime = 162;
-        assertEquals(expectedTime, instance.getTransferTime(fileSizeMB), 0.1);
+        assertEquals(expectedTime, san.getTransferTime(fileSizeMB), 0.1);
     }
 
     @Test
     public void testNewNamedSanStorage() {
         final String name = "san1";
-        final SanStorage san = new SanStorage(name, CAPACITY, BANDWIDTH, NETWORK_LATENCY);
+        final var san = new SanStorage(name, CAPACITY, BANDWIDTH, NETWORK_LATENCY);
         assertEquals(name, san.getName());
     }
 
     @Test
     public void testAddFileWhenParamIsFile() {
-        final SanStorage instance = createSanStorageBw(BANDWIDTH);
-
-        assertThrows(NullPointerException.class, () -> instance.addFile((File)null));
-
-        final File validFile = new File(FILE1, FILE_SIZE);
-        assertTrue(instance.addFile(validFile) > FILE_TRANSFER_TIME);
+        final var san = createSanStorageBw(BANDWIDTH);
+        assertThrows(NullPointerException.class, () -> san.addFile((File)null));
+        final var validFile = new File(FILE1, FILE_SIZE);
+        assertTrue(san.addFile(validFile) > FILE_TRANSFER_TIME);
     }
 
     @Test
     public void testAddFileWhenParamIsList() {
-        final SanStorage instance = createSanStorageBw(BANDWIDTH);
-        final List<File> list = SanStorageTest.createFileList(TOTAL_FILES, FILE_SIZE);
+        final var san = createSanStorageBw(BANDWIDTH);
+        final var fileList = SanStorageTest.createFileList(TOTAL_FILES, FILE_SIZE);
         final double transferTimeOfAllFiles = FILE_TRANSFER_TIME * TOTAL_FILES;
-        assertTrue(instance.addFile(list) > transferTimeOfAllFiles);
+        assertTrue(san.addFile(fileList) > transferTimeOfAllFiles);
     }
 
     @Test
     public void testDeleteFileWhenParamIsFile() {
-        final SanStorage instance = createSanStorageBw(BANDWIDTH);
-        final File file = new File(FILE1, FILE_SIZE);
-        instance.addFile(file);
-        assertTrue(instance.deleteFile(file) > FILE_TRANSFER_TIME);
+        final var san = createSanStorageBw(BANDWIDTH);
+        final var file = new File(FILE1, FILE_SIZE);
+        san.addFile(file);
+        assertTrue(san.deleteFile(file) > FILE_TRANSFER_TIME);
     }
 
     @Test
     public void testGetBandwidth() {
-        final SanStorage instance = createSanStorageBw(BANDWIDTH);
-        assertEquals(BANDWIDTH, instance.getBandwidth());
+        final var san = createSanStorageBw(BANDWIDTH);
+        assertEquals(BANDWIDTH, san.getBandwidth());
     }
 
     @Test
     public void testGetNetworkLatency() {
-        final SanStorage instance = createSanStorage(BANDWIDTH, NETWORK_LATENCY);
-        assertEquals(NETWORK_LATENCY, instance.getNetworkLatency());
+        final var san = createSanStorage(BANDWIDTH, NETWORK_LATENCY);
+        assertEquals(NETWORK_LATENCY, san.getNetworkLatency());
     }
 
     /**
@@ -218,7 +216,7 @@ public class SanStorageTest {
      * @return
      */
     public static List<File> createFileList(final int totalFiles, final int fileSize) {
-        final List<File> fileList = new ArrayList<>();
+        final var fileList = new ArrayList<File>();
         for(int i = 1; i <= totalFiles; i++){
             fileList.add(createNumberedFile(i, fileSize));
         }
@@ -239,43 +237,43 @@ public class SanStorageTest {
 
     @Test
     public void testGetNumStoredFile1() {
-        final SanStorage instance = createSanStorageBw(BANDWIDTH);
-        assertEquals(0, instance.getNumStoredFile());
+        final var san = createSanStorageBw(BANDWIDTH);
+        assertEquals(0, san.getNumStoredFile());
 
         final int totalFiles = 2;
         for(int i = 1; i <= totalFiles; i++){
-            assertTrue(instance.addFile(createNumberedFile(i, FILE_SIZE))>0);
+            assertTrue(san.addFile(createNumberedFile(i, FILE_SIZE))>0);
         }
-        assertEquals(totalFiles, instance.getNumStoredFile());
+        assertEquals(totalFiles, san.getNumStoredFile());
     }
 
     @Test
     public void testIsFull() {
         final int numberOfFiles = (int)(CAPACITY/FILE_SIZE);
-        final SanStorage instance = createSanStorage(CAPACITY+FILE_SIZE);
+        final var san = createSanStorage(CAPACITY+FILE_SIZE);
         IntStream.range(0, numberOfFiles).forEach(id -> {
-            instance.addFile(createNumberedFile(id, FILE_SIZE));
-            assertFalse(instance.isFull());
+            san.addFile(createNumberedFile(id, FILE_SIZE));
+            assertFalse(san.isFull());
         });
 
-        instance.addFile(createNumberedFile(numberOfFiles, FILE_SIZE));
-        assertTrue(instance.isFull());
+        san.addFile(createNumberedFile(numberOfFiles, FILE_SIZE));
+        assertTrue(san.isFull());
     }
 
     @Test
     public void testGetNumStoredFile2() {
-        final SanStorage instance = createSanStorageBw(BANDWIDTH);
-        assertEquals(0, instance.getNumStoredFile());
+        final var san = createSanStorageBw(BANDWIDTH);
+        assertEquals(0, san.getNumStoredFile());
 
         final int totalFiles = 4;
-        instance.addFile(createFileList(totalFiles, FILE_SIZE));
-        assertEquals(totalFiles, instance.getNumStoredFile());
+        san.addFile(createFileList(totalFiles, FILE_SIZE));
+        assertEquals(totalFiles, san.getNumStoredFile());
     }
 
     @Test()
     public void testGetNumStoredFileWhenNullList() {
-        final SanStorage instance = createSanStorageBw(BANDWIDTH);
-        assertThrows(NullPointerException.class, () -> instance.addFile((List<File>) null));
+        final var san = createSanStorageBw(BANDWIDTH);
+        assertThrows(NullPointerException.class, () -> san.addFile((List<File>) null));
     }
 
 
@@ -284,26 +282,26 @@ public class SanStorageTest {
         final int fileSize = FILE_SIZE;
         final long capacity = fileSize * 2;
         final long available = fileSize;
-        final SanStorage instance = createSanStorage(capacity);
+        final var san = createSanStorage(capacity);
 
-        assertThrows(NullPointerException.class, () -> instance.addFile((File)null));
+        assertThrows(NullPointerException.class, () -> san.addFile((File)null));
 
         int fileNumber = 0;
         File file = createNumberedFile(++fileNumber, fileSize);
-        assertTrue(instance.addFile(file) > 0.0);
-        assertEquals(available, instance.getAvailableResource());
+        assertTrue(san.addFile(file) > 0.0);
+        assertEquals(available, san.getAvailableResource());
 
-        assertTrue(instance.reserveSpace(fileSize));
+        assertTrue(san.reserveSpace(fileSize));
         /*there isn't more available space for the new file,
         because the available space was reserved*/
-        assertEquals(0, instance.getAvailableResource());
+        assertEquals(0, san.getAvailableResource());
         file = createNumberedFile(++fileNumber, fileSize);
-        assertFalse(instance.addFile(file) > 0.0);
+        assertFalse(san.addFile(file) > 0.0);
 
         //adds the file that the space was previously reserved
-        assertTrue(instance.addReservedFile(file)> 0);
+        assertTrue(san.addReservedFile(file)> 0);
 
-        assertFalse(instance.reserveSpace(FILE_SIZE*10));
+        assertFalse(san.reserveSpace(FILE_SIZE*10));
     }
 
     /**
@@ -315,53 +313,53 @@ public class SanStorageTest {
         final int fileSize = FILE_SIZE;
         final long capacity = fileSize * 2;
         final long available = fileSize;
-        final SanStorage instance = createSanStorage(capacity);
-        assertEquals(0, instance.getAllocatedResource());
+        final var san = createSanStorage(capacity);
+        assertEquals(0, san.getAllocatedResource());
 
         int fileNumber = 0;
         File file = createNumberedFile(++fileNumber, fileSize);
-        assertTrue(instance.addFile(file) > 0.0);
-        assertEquals(available, instance.getAvailableResource());
+        assertTrue(san.addFile(file) > 0.0);
+        assertEquals(available, san.getAvailableResource());
 
         //file larger than the available capacity
-        assertEquals(0, instance.addFile(new File("too-big-file.txt", FILE_SIZE*10)));
+        assertEquals(0, san.addFile(new File("too-big-file.txt", FILE_SIZE*10)));
 
         //accordingly, reserves space previously and then adds the reserved file
-        assertTrue(instance.reserveSpace(fileSize));
+        assertTrue(san.reserveSpace(fileSize));
         file = createNumberedFile(++fileNumber, fileSize);
-        assertTrue(instance.addReservedFile(file) > 0);
-        assertEquals(0, instance.getAvailableResource());
+        assertTrue(san.addReservedFile(file) > 0);
+        assertEquals(0, san.getAvailableResource());
     }
 
     @Test()
     public void testAddFileWhenNullFile() {
-        final SanStorage instance = createSanStorage(1);
-        assertThrows(NullPointerException.class, () -> instance.addReservedFile(null));
+        final var san = createSanStorage(1);
+        assertThrows(NullPointerException.class, () -> san.addReservedFile(null));
     }
 
 
     @Test
     public void testAddReservedFileWhenSpaceNotPreReserved() {
-        final SanStorage instance = createSanStorage(CAPACITY);
+        final var san = createSanStorage(CAPACITY);
         try{
-            instance.addReservedFile(new File(FILE1, 100));
+            san.addReservedFile(new File(FILE1, 100));
             fail(NO_PREVIOUS_SPACE);
         } catch(Exception e){
             /*if the exception was thrown, indicates that the file
             was accordingly not added.
             Now, checks the available space to see if remains unchanged.*/
-            assertEquals(CAPACITY, instance.getAvailableResource());
+            assertEquals(CAPACITY, san.getAvailableResource());
         }
     }
 
     @Test
     public void testAddReservedFileWhenFileAlreadyAdded() {
-        final SanStorage instance = createSanStorage(CAPACITY);
-        final File file = new File(FILE1, 100);
-        instance.reserveSpace(file.getSize());
-        instance.addReservedFile(file);
-        instance.reserveSpace(file.getSize());
-        assertFalse(instance.addReservedFile(file) > 0);
+        final var san = createSanStorage(CAPACITY);
+        final var file = new File(FILE1, 100);
+        san.reserveSpace(file.getSize());
+        san.addReservedFile(file);
+        san.reserveSpace(file.getSize());
+        assertFalse(san.addReservedFile(file) > 0);
     }
 
     /**
@@ -373,27 +371,27 @@ public class SanStorageTest {
         final int fileSize = FILE_SIZE;
         final long capacity = fileSize * 2L;
         long available = capacity;
-        final SanStorage instance = createSanStorage(capacity);
-        assertEquals(0, instance.getAllocatedResource());
+        final var san = createSanStorage(capacity);
+        assertEquals(0, san.getAllocatedResource());
 
         final File file = createNumberedFile(1, fileSize);
         try{
-            instance.addReservedFile(file);
+            san.addReservedFile(file);
             fail(NO_PREVIOUS_SPACE);
         } catch(Exception e){
             /*if the exception was thrown, indicates that the file
             was accordingly not added.
             Now, checks the available space to see if remains unchanged.*/
-            assertEquals(available, instance.getAvailableResource());
-            assertEquals(0, instance.getAllocatedResource());
+            assertEquals(available, san.getAvailableResource());
+            assertEquals(0, san.getAllocatedResource());
         }
 
         available = (long)fileSize;
         //accordingly, reserves space previously and then adds the reserved file
-        assertTrue(instance.reserveSpace(fileSize));
-        assertTrue(instance.addReservedFile(file) > 0);
-        assertEquals(available, instance.getAvailableResource());
-        assertEquals(available, instance.getAllocatedResource());
+        assertTrue(san.reserveSpace(fileSize));
+        assertTrue(san.addReservedFile(file) > 0);
+        assertEquals(available, san.getAvailableResource());
+        assertEquals(available, san.getAllocatedResource());
     }
 
     /**
@@ -407,73 +405,73 @@ public class SanStorageTest {
         final int halfFileSize = fileSize/2;
         final long capacity = fileSize;
         final long available = halfFileSize;
-        final SanStorage instance = createSanStorage(capacity);
-        assertEquals(0, instance.getAllocatedResource());
+        final var san = createSanStorage(capacity);
+        assertEquals(0, san.getAllocatedResource());
 
         final File file = createNumberedFile(1, fileSize);
-        assertTrue(instance.reserveSpace(halfFileSize));
+        assertTrue(san.reserveSpace(halfFileSize));
         try{
-            instance.addReservedFile(file);
+            san.addReservedFile(file);
             fail("The reserved file was added but its space was not totally reserved before.");
         } catch(Exception e){
             /*if the exception was thrown, indicates that the file
             was accordingly not added because not the entire space was previously
             reserved.
             Now, checks the available space to see if remains unchanged.*/
-            assertEquals(available, instance.getAvailableResource());
-            assertEquals(available,  instance.getAllocatedResource());
+            assertEquals(available, san.getAvailableResource());
+            assertEquals(available,  san.getAllocatedResource());
         }
 
         //accordingly, reserves space previously and then adds the reserved file
-        assertTrue(instance.reserveSpace(halfFileSize));
-        assertTrue(instance.addReservedFile(file) > 0);
-        assertEquals(0, instance.getAvailableResource());
-        assertEquals(capacity, instance.getAllocatedResource());
+        assertTrue(san.reserveSpace(halfFileSize));
+        assertTrue(san.addReservedFile(file) > 0);
+        assertEquals(0, san.getAvailableResource());
+        assertEquals(capacity, san.getAllocatedResource());
     }
 
     @Test
     public void testHasPotentialAvailableSpace() {
         final long fileSize = CAPACITY;
-        final SanStorage instance = createSanStorage();
-        assertTrue(instance.hasPotentialAvailableSpace(fileSize));
-        assertFalse(instance.hasPotentialAvailableSpace(fileSize*100));
+        final var san = createSanStorage();
+        assertTrue(san.hasPotentialAvailableSpace(fileSize));
+        assertFalse(san.hasPotentialAvailableSpace(fileSize*100));
     }
 
     @Test
     public void testHasPotentialAvailableSpaceWhenInvalidValue() {
-        final SanStorage instance = createSanStorage();
-        assertFalse(instance.hasPotentialAvailableSpace(0));
-        assertFalse(instance.hasPotentialAvailableSpace(-1));
+        final var san = createSanStorage();
+        assertFalse(san.hasPotentialAvailableSpace(0));
+        assertFalse(san.hasPotentialAvailableSpace(-1));
     }
 
 
     @Test
     public void testGetFileAfterAddFile() {
-        final SanStorage instance = createSanStorage();
-        final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
+        final var san = createSanStorage();
+        final var fileList = createListOfFilesAndAddToHardDrive(san);
         //try to add the same files
-        assertFalse(instance.addFile(fileList) > 0);
+        assertFalse(san.addFile(fileList) > 0);
 
         //try to add already existing files, one by one
-        fileList.forEach(file -> assertFalse(instance.addFile(file) > 0));
-        fileList.forEach(file -> assertEquals(Optional.of(file), instance.getFile(file.getName())));
-        assertEquals(Optional.empty(), instance.getFile(NON_EXISTENT_FILE));
+        fileList.forEach(file -> assertFalse(san.addFile(file) > 0));
+        fileList.forEach(file -> assertEquals(Optional.of(file), san.getFile(file.getName())));
+        assertEquals(Optional.empty(), san.getFile(NON_EXISTENT_FILE));
     }
 
     @Test
     public void testGetFileList() {
-        final SanStorage instance = createSanStorage();
-        final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
-        instance.addFile(fileList);
-        assertEquals(fileList, instance.getFileList());
+        final var san = createSanStorage();
+        final List<File> fileList = createListOfFilesAndAddToHardDrive(san);
+        san.addFile(fileList);
+        assertEquals(fileList, san.getFileList());
     }
 
     @Test
     public void testGetFileWhenInvalidFile() {
-        final SanStorage instance = createSanStorage();
-        assertThrows(IllegalArgumentException.class, () -> instance.getFile("   "));
-        assertThrows(IllegalArgumentException.class, () -> instance.getFile(""));
-        assertThrows(NullPointerException.class, () -> instance.getFile(null));
+        final var san = createSanStorage();
+        assertThrows(IllegalArgumentException.class, () -> san.getFile("   "));
+        assertThrows(IllegalArgumentException.class, () -> san.getFile(""));
+        assertThrows(NullPointerException.class, () -> san.getFile(null));
     }
 
     /**
@@ -482,88 +480,89 @@ public class SanStorageTest {
      * @return the list of created files
      */
     private List<File> createListOfFilesAndAddToHardDrive(SanStorage instance) {
-        final List<File> fileList = createFileList(TOTAL_FILES_TO_CREATE, FILE_SIZE);
+        final var fileList = createFileList(TOTAL_FILES_TO_CREATE, FILE_SIZE);
         assertTrue(instance.addFile(fileList)>0);
         return fileList;
     }
 
     @Test
     public void testGetFileNameList() {
-        final SanStorage instance = createSanStorage();
+        final var san = createSanStorage();
         final List<String> fileNameList = new ArrayList<>();
-        final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
+        final List<File> fileList = createListOfFilesAndAddToHardDrive(san);
 
         fileList.forEach(file -> fileNameList.add(file.getName()));
-        assertEquals(fileNameList, instance.getFileNameList());
+        assertEquals(fileNameList, san.getFileNameList());
     }
 
     @Test
     public void testDeleteFileWheParamString() {
-        final SanStorage instance = createSanStorage();
-        final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
+        final var san = createSanStorage();
+        final List<File> fileList = createListOfFilesAndAddToHardDrive(san);
 
-        fileList.forEach(file ->  assertEquals(Optional.of(file), instance.deleteFile(file.getName())));
+        fileList.forEach(file ->  assertEquals(Optional.of(file), san.deleteFile(file.getName())));
 
-        assertThrows(IllegalArgumentException.class, () -> instance.deleteFile(""));
-        assertEquals(Optional.empty(), instance.deleteFile(NON_EXISTENT_FILE));
+        assertThrows(IllegalArgumentException.class, () -> san.deleteFile(""));
+        assertEquals(Optional.empty(), san.deleteFile(NON_EXISTENT_FILE));
     }
 
     @Test
     public void testContainsWhenParamString() {
-        final SanStorage instance = createSanStorage();
-        final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
+        final var san = createSanStorage();
+        final var fileList = createListOfFilesAndAddToHardDrive(san);
 
-        fileList.forEach(file -> assertTrue(instance.contains(file.getName())));
+        fileList.forEach(file -> assertTrue(san.contains(file.getName())));
 
-        assertFalse(instance.contains(NON_EXISTENT_FILE));
-        assertFalse(instance.contains((String)null));
-        assertFalse(instance.contains(""));
+        assertFalse(san.contains(NON_EXISTENT_FILE));
+        assertFalse(san.contains((String)null));
+        assertFalse(san.contains(""));
     }
 
     @Test
     public void testContainsWhenParamIsFile() {
-        final SanStorage instance = createSanStorage();
-        final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
+        final var san = createSanStorage();
+        final var fileList = createListOfFilesAndAddToHardDrive(san);
 
-        fileList.forEach(file -> assertTrue(instance.contains(file)));
-        assertFalse(instance.contains(new File(NON_EXISTENT_FILE, FILE_SIZE)));
-        assertFalse(instance.contains((File) null));
+        fileList.forEach(file -> assertTrue(san.contains(file)));
+        assertFalse(san.contains(new File(NON_EXISTENT_FILE, FILE_SIZE)));
+        assertFalse(san.contains((File) null));
     }
 
     @Test
     public void testRenameFile() {
-        final SanStorage instance = createSanStorage();
-        final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
+        final var san = createSanStorage();
+        final var fileList = createListOfFilesAndAddToHardDrive(san);
         for(final File file: fileList){
             final String oldName = file.getName();
             final String newName = String.format("renamed-%s", oldName);
-            assertTrue(instance.contains(oldName));
-            assertTrue(instance.renameFile(file, newName));
-            assertFalse(instance.contains(oldName));
+            assertTrue(san.contains(oldName));
+            assertTrue(san.renameFile(file, newName));
+            assertFalse(san.contains(oldName));
 
-            final Optional<File> optionalResult = instance.getFile(newName);
+            final Optional<File> optionalResult = san.getFile(newName);
             assertEquals(Optional.of(file), optionalResult);
             assertEquals(file.getName(), optionalResult.get().getName());
         }
 
-        final File file1 = new File(FILE1, 100), file2 = new File("file2.txt", 100);
-        instance.addFile(file1);
-        instance.addFile(file2);
-        assertFalse(instance.renameFile(file1, file2.getName()));
+        final var file1 = new File(FILE1, 100);
+        final var file2 = new File("file2.txt", 100);
+        san.addFile(file1);
+        san.addFile(file2);
+        assertFalse(san.renameFile(file1, file2.getName()));
 
         final File notAddedFile = new File("file3.txt", 100);
-        assertFalse(instance.renameFile(notAddedFile, "new-name.txt"));
+        assertFalse(san.renameFile(notAddedFile, "new-name.txt"));
     }
 
     @Test
     public void testIsResourceAmountAvailable() {
-        final SanStorage instance = createSanStorage();
+        final var san = createSanStorage();
 
-        assertTrue(instance.isAmountAvailable(CAPACITY));
-        final File file = new File(FILE1, (int)CAPACITY);
-        assertTrue(instance.addFile(file) > 0);
-        assertFalse(instance.isAmountAvailable(CAPACITY));
-        assertTrue(instance.deleteFile(file) > 0);
-        assertTrue(instance.isAmountAvailable(CAPACITY));
+        assertTrue(san.isAmountAvailable(CAPACITY));
+        final var file = new File(FILE1, (int)CAPACITY);
+        assertTrue(san.addFile(file) > 0);
+        assertFalse(san.isAmountAvailable(CAPACITY));
+        assertTrue(san.deleteFile(file) > 0);
+        assertTrue(san.isAmountAvailable(CAPACITY));
     }
 }
