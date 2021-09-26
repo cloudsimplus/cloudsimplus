@@ -177,10 +177,7 @@ public abstract class Experiment extends AbstractExperiment {
      */
     @Override
     public final void run() {
-        if(vmsByBrokerFunction == null){
-            throw new NullPointerException("You need to set the function that indicates the number of VMs to create for each broker.");
-        }
-
+        Objects.requireNonNull(vmsByBrokerFunction, "You need to set the function that indicates the number of VMs to create for each broker.");
         build();
         beforeExperimentRun(this);
         simulation.start();
@@ -439,7 +436,7 @@ public abstract class Experiment extends AbstractExperiment {
      * after the experiment finishes, then it performs some post-processing
      * tasks. These tasks are defined by the developer using the current class
      * and can include collecting data for statistical analysis.
-     * <p>Inside this Consumer, you must call {@link ExperimentRunner#addMetricValue(String, double)}
+     * <p>Inside this Consumer, you must call {@link ExperimentRunner#addMetricValue(String, Double)}
      * to collect values for each desired metric.</p>
      *
      * <p>Setting a Consumer object is optional.</p>

@@ -355,7 +355,7 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
      * is to be used.
      * @return
      */
-    public int getSimulationRuns() {
+    public final int getSimulationRuns() {
         return simulationRuns;
     }
 

@@ -820,18 +820,18 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     /**
      * Compare this Vm with another one based on {@link #getTotalMipsCapacity()}.
      *
-     * @param o the Vm to compare to
+     * @param obj the Vm to compare to
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(final Vm o) {
-        if(this.equals(requireNonNull(o))) {
+    public int compareTo(final Vm obj) {
+        if(this.equals(requireNonNull(obj))) {
             return 0;
         }
 
-        return Double.compare(getTotalMipsCapacity(), o.getTotalMipsCapacity()) +
-               Long.compare(this.getId(), o.getId()) +
-               this.getBroker().compareTo(o.getBroker());
+        return Double.compare(getTotalMipsCapacity(), obj.getTotalMipsCapacity()) +
+               Long.compare(this.getId(), obj.getId()) +
+               this.getBroker().compareTo(obj.getBroker());
     }
 
     @Override

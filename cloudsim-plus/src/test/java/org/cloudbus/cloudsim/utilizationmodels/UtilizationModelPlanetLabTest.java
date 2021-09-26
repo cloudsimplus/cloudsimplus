@@ -8,7 +8,10 @@ import org.junit.jupiter.api.function.Executable;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.UncheckedIOException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.OpenOption;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -39,7 +42,7 @@ public class UtilizationModelPlanetLabTest {
     private String createTempTraceFile(final int numLines, boolean includeHeaderWithLinesNumber){
         final OpenOption[] options = {StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING};
         final String dir = ResourceLoader.getResourcePath(getClass(), "./");
-        Path path = Paths.get(dir, TEMP_TRACE);
+        final var path = Paths.get(dir, TEMP_TRACE);
         try (BufferedWriter writer = Files.newBufferedWriter(path, options)){
             if(includeHeaderWithLinesNumber){
                 writer.write("#" + numLines + System.lineSeparator());

@@ -107,7 +107,7 @@ public class UtilizationModelStochasticPerformance {
     private static final boolean MULTIPLE_UTILIZATION_MODELS = false;
 
     /**
-     * See {@link UtilizationModelStochastic#isAlwaysGenerateNewRandUtilization()}
+     * See {@link UtilizationModelStochastic#isAlwaysGenNewRandUtilization()}
      * for details.
      */
     private static final boolean ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION = false;
@@ -221,7 +221,7 @@ public class UtilizationModelStochasticPerformance {
             this.um = MULTIPLE_UTILIZATION_MODELS || this.um == null ? new UtilizationModelStochastic(SEED) : this.um;
             this.um
                 .setHistoryEnabled(STORE_CLOUDLETS_CPU_UTILIZATION_HISTORY)
-                .setAlwaysGenerateNewRandUtilization(ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION);
+                .setAlwaysGenNewRandUtilization(ALWAYS_GENERATE_NEW_RANDOM_UTILIZATION);
             cloudlet.setUtilizationModelCpu(um).setSizes(1024);
             cloudlets.add(cloudlet);
         }
