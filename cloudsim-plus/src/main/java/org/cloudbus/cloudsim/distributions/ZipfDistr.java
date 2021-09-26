@@ -98,12 +98,12 @@ public class ZipfDistr implements DiscreteDistribution {
         final double variate = rng.nextDouble();
         double num = 1;
         double nextNum = 1 + 1 / Math.pow(2, shape);
-        double i = 3;
+        double base = 3;
 
         while (variate > nextNum / den) {
             num = nextNum;
-            nextNum += 1 / Math.pow(i, shape);
-            i++;
+            nextNum += 1 / Math.pow(base, shape);
+            base++;
         }
 
         return num / den;
