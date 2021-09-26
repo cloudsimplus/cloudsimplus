@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<!DOCTYPE module PUBLIC "-//Checkstyle//DTD Checkstyle Configuration 1.3//EN" "https://checkstyle.org/dtds/configuration_1_3.dtd">
+
+<module name="Checker">
+    <property name="charset" value="UTF-8" />
+    <property name="severity" value="warning"/>
+
+    <module name="JavadocPackage"/>
+
+    <module name="NewlineAtEndOfFile">
+        <property name="fileExtensions" value="java, xml, yml"/>
+    </module>
+    <module name="TreeWalker">
+        <module name="OneTopLevelClass"/>
+        <module name="OverloadMethodsDeclarationOrder"/>
+        <module name="PackageDeclaration"/>
+        <module name="PackageName"/>
+        <module name="ParameterNumber"/>
+        <module name="RedundantImport"/>
+        <module name="RedundantModifier"/>
+        <module name="ThrowsCount"/>
+        <module name="TodoComment"/>
+        <module name="UnusedImports"/>
+        <module name="VariableDeclarationUsageDistance"/>
+        <module name="VisibilityModifier"/>
+        <module name="MissingJavadocPackage"/>
+        <module name="OneStatementPerLine"/>
+        <module name="DeclarationOrder"/>
+        <module name="ModifierOrder"/>
+        <module name="MultipleStringLiterals"/>
+        <module name="MultipleVariableDeclarations"/>
+        <module name="NPathComplexity"/>
+        <module name="NestedForDepth"/>
+        <module name="NestedTryDepth"/>
+        <module name="ExecutableStatementCount">
+            <property name="max" value="30"/>
+        </module>
+        <module name="AnonInnerLength">
+            <property name="max" value="20"/>
+        </module>
+        <module name="BooleanExpressionComplexity">
+            <property name="max" value="3"/>
+        </module>
+        <module name="FinalClass" />
+        <module name="HideUtilityClassConstructor" />
+        <module name="IllegalThrows" />
+        <module name="InnerTypeLast" />
+        <module name="MethodCount" />
+        <module name="MethodLength" />
+        <module name="ModifiedControlVariable" />
+    </module>
+    <module name="FileLength" />
+
+    <!-- Tone down the checking for test code -->
+    <module name="SuppressionSingleFilter">
+        <property name="checks" value="JavadocPackage"/>
+        <property name="files" value=".*[\\/]src[\\/](test|it)[\\/]" />
+    </module>
+
+    <!-- Classes implementing the Null Object Pattern usually have methods with a single instruction
+    declared in a single line. -->
+    <module name="SuppressionSingleFilter">
+        <property name="checks" value="OneStatementPerLine"/>
+        <property name="files" value=".*\/.*Null.*\.java" />
+    </module>
+</module>
