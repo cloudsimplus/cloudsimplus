@@ -605,7 +605,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      *
      * @param evt information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
-     * acknowledge message when the event finishes to be processed
+     * acknowledgement message when the event finishes being processed
      */
     protected void processVmDestroy(final SimEvent evt, final boolean ack) {
         final Vm vm = (Vm) evt.getData();
