@@ -655,7 +655,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             throw new ClassCastException("The data object must be Map.Entry<Vm, Host>");
         }
 
-        final Map.Entry<Vm, Host> entry = (Map.Entry<Vm, Host>) evt.getData();
+        final var entry = (Map.Entry<Vm, Host>) evt.getData();
 
         final Vm vm = entry.getKey();
         final Host targetHost = entry.getValue();
