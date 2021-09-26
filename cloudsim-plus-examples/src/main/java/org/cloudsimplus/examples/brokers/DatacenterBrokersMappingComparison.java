@@ -171,7 +171,7 @@ public class DatacenterBrokersMappingComparison {
             new CloudletToVmMappingSimulatedAnnealing(SA_INITIAL_TEMPERATURE, rand);
         heuristic.setColdTemperature(SA_COLD_TEMPERATURE);
         heuristic.setCoolingRate(SA_COOLING_RATE);
-        heuristic.setNeighborhoodSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
+        heuristic.setSearchesByIteration(SA_NUMBER_OF_NEIGHBORHOOD_SEARCHES);
         return heuristic;
     }
 

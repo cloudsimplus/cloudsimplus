@@ -36,7 +36,7 @@ public class VmSchedulerSpaceShared extends VmSchedulerAbstract {
      *
      */
     public VmSchedulerSpaceShared() {
-        this(DEFAULT_VM_MIGRATION_CPU_OVERHEAD);
+        this(DEF_VM_MIGRATION_CPU_OVERHEAD);
     }
 
     /**

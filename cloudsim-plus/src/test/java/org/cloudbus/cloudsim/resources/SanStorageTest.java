@@ -1,6 +1,5 @@
 package org.cloudbus.cloudsim.resources;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class SanStorageTest {
     private static final String NO_PREVIOUS_SPACE = "The reserved file was added but its space was not previously reserved.";
     private static final int TOTAL_FILES_TO_CREATE = 5;
-    private static final String INEXISTENT_FILE = "inexistent-file.txt";
+    private static final String NON_EXISTENT_FILE = "non-existent-file.txt";
 
     private static final long   CAPACITY = 100000L;
     private static final int    TOTAL_FILES = 10;
@@ -276,7 +275,7 @@ public class SanStorageTest {
     @Test()
     public void testGetNumStoredFileWhenNullList() {
         final SanStorage instance = createSanStorageBw(BANDWIDTH);
-        Assertions.assertThrows(NullPointerException.class, () -> instance.addFile((List<File>) null));
+        assertThrows(NullPointerException.class, () -> instance.addFile((List<File>) null));
     }
 
 
@@ -337,7 +336,7 @@ public class SanStorageTest {
     @Test()
     public void testAddFileWhenNullFile() {
         final SanStorage instance = createSanStorage(1);
-        Assertions.assertThrows(NullPointerException.class, () -> instance.addReservedFile(null));
+        assertThrows(NullPointerException.class, () -> instance.addReservedFile(null));
     }
 
 
@@ -458,7 +457,7 @@ public class SanStorageTest {
         //try to add already existing files, one by one
         fileList.forEach(file -> assertFalse(instance.addFile(file) > 0));
         fileList.forEach(file -> assertEquals(Optional.of(file), instance.getFile(file.getName())));
-        assertEquals(Optional.empty(), instance.getFile(INEXISTENT_FILE));
+        assertEquals(Optional.empty(), instance.getFile(NON_EXISTENT_FILE));
     }
 
     @Test
@@ -506,7 +505,7 @@ public class SanStorageTest {
         fileList.forEach(file ->  assertEquals(Optional.of(file), instance.deleteFile(file.getName())));
 
         assertThrows(IllegalArgumentException.class, () -> instance.deleteFile(""));
-        assertEquals(Optional.empty(), instance.deleteFile(INEXISTENT_FILE));
+        assertEquals(Optional.empty(), instance.deleteFile(NON_EXISTENT_FILE));
     }
 
     @Test
@@ -516,7 +515,7 @@ public class SanStorageTest {
 
         fileList.forEach(file -> assertTrue(instance.contains(file.getName())));
 
-        assertFalse(instance.contains(INEXISTENT_FILE));
+        assertFalse(instance.contains(NON_EXISTENT_FILE));
         assertFalse(instance.contains((String)null));
         assertFalse(instance.contains(""));
     }
@@ -527,7 +526,7 @@ public class SanStorageTest {
         final List<File> fileList = createListOfFilesAndAddToHardDrive(instance);
 
         fileList.forEach(file -> assertTrue(instance.contains(file)));
-        assertFalse(instance.contains(new File(INEXISTENT_FILE, FILE_SIZE)));
+        assertFalse(instance.contains(new File(NON_EXISTENT_FILE, FILE_SIZE)));
         assertFalse(instance.contains((File) null));
     }
 

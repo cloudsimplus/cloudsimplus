@@ -167,7 +167,8 @@ public class RamTest {
         assertEquals(instance.getCapacity(), instance.getAllocatedResource());
 
         //increase the capacity
-        final long oldCapacity = CAPACITY, newCapacity = oldCapacity + allocation;
+        final long oldCapacity = CAPACITY;
+        final long newCapacity = oldCapacity + allocation;
         assertTrue(instance.setCapacity(newCapacity));
         assertEquals(newCapacity, instance.getCapacity());
         assertEquals(allocation, instance.getAvailableResource());

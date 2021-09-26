@@ -38,7 +38,7 @@ class HeuristicNull<S extends HeuristicSolution<?>> implements Heuristic<S> {
     @Override public S createNeighbor(S source) { return (S)HeuristicSolution.NULL; }
     @Override public S solve() { return (S)HeuristicSolution.NULL; }
 	@Override public S getBestSolutionSoFar() { return (S)HeuristicSolution.NULL; }
-	@Override public int getNeighborhoodSearchesByIteration() { return 0; }
-	@Override public void setNeighborhoodSearchesByIteration(int neighborhoodSearches) {/**/}
+	@Override public int getSearchesByIteration() { return 0; }
+	@Override public void setSearchesByIteration(int neighborhoodSearches) {/**/}
 	@Override public double getSolveTime() { return 0; }
 }

@@ -113,19 +113,19 @@ public class HostSimpleTest {
     }
 
     @Test
-    public void isSuitableForVm_WhenThereIsAvailableStorage(){
+    public void isSuitableForVmWhenThereIsAvailableStorage(){
         final Vm vm = createVm(PES, MIPS, STORAGE);
         assertTrue(host.isSuitableForVm(vm));
     }
 
     @Test
-    public void isSuitableForVm_WhenThereIsNotAvailableStorage(){
+    public void isSuitableForVmWhenThereIsNotAvailableStorage(){
         final Vm vm = createVm(PES, MIPS, STORAGE * 2);
         assertFalse(host.isSuitableForVm(vm));
     }
 
     @Test
-    public void isSuitableForVm_WhenThereIsEnoughPes(){
+    public void isSuitableForVmWhenThereIsEnoughPes(){
         host.setVmScheduler(new VmSchedulerSpaceShared());
         final Vm vm = createVm(PES, MIPS, STORAGE);
         assertTrue(host.isSuitableForVm(vm));
@@ -137,7 +137,7 @@ public class HostSimpleTest {
      * PEs requested, the test must fail at least for a {@link VmSchedulerSpaceShared}.
      */
     @Test
-    public void isSuitableForVm_WhenThereIsNotEnoughPes(){
+    public void isSuitableForVmWhenThereIsNotEnoughPes(){
         host.setVmScheduler(new VmSchedulerSpaceShared());
         final Vm vm = createVm(4, 500, STORAGE);
         assertFalse(host.isSuitableForVm(vm));

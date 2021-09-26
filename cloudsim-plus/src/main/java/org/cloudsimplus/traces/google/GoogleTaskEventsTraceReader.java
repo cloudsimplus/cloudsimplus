@@ -671,7 +671,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @return
      */
     public GoogleTaskEventsTraceReader setDefaultBroker(final DatacenterBroker broker) {
-        this.defaultBroker = Objects.requireNonNull(broker);
+        this.defaultBroker = requireNonNull(broker);
         brokersMap.clear();
         return this;
     }

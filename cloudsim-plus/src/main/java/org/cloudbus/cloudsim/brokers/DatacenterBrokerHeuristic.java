@@ -59,7 +59,7 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
         */
         LOGGER.info(
                 "{} started the heuristic to get a suboptimal solution for mapping Cloudlets to Vm's running {} neighborhood searches by iteration.{}{}",
-                this, heuristic.getNeighborhoodSearchesByIteration(),
+                this, heuristic.getSearchesByIteration(),
                 System.lineSeparator(),
                 "Please wait... It may take a while, depending on heuristic parameters and number of Cloudlets and Vm's.");
 

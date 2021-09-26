@@ -46,22 +46,17 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
     private final Class<S> solutionClass;
 
 	private final ContinuousDistribution random;
-	/**
-	 * @see #getNeighborhoodSearchesByIteration()
-	 */
-    private int neighborhoodSearchesByIteration;
-	/**
-	 * @see #getBestSolutionSoFar()
-	 */
+
+	/** @see #getSearchesByIteration() */
+    private int searchesByIteration;
+
+	/** @see #getBestSolutionSoFar() */
     private S bestSolutionSoFar;
-	/**
-	 * @see #getNeighborSolution()
-	 */
+
+	/** @see #getNeighborSolution() */
     private S neighborSolution;
 
-	/**
-	 * @see #getSolveTime()
-	 */
+	/** @see #getSolveTime() */
 	private double solveTime;
 
 	/**
@@ -73,7 +68,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	/* default */ HeuristicAbstract(final ContinuousDistribution random, final Class<S> solutionClass){
 		this.solutionClass = solutionClass;
 		this.random = random;
-		this.neighborhoodSearchesByIteration = 1;
+		this.searchesByIteration = 1;
 		setBestSolutionSoFar(newSolutionInstance());
 		setNeighborSolution(bestSolutionSoFar);
 	}
@@ -138,7 +133,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 	}
 
     private void searchSolutionInNeighborhood() {
-        for (int i = 0; i < getNeighborhoodSearchesByIteration(); i++) {
+        for (int i = 0; i < getSearchesByIteration(); i++) {
             setNeighborSolution(createNeighbor(getBestSolutionSoFar()));
             if (getAcceptanceProbability() > getRandomValue(1)) {
                 setBestSolutionSoFar(getNeighborSolution());
@@ -166,25 +161,25 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 
 	/**
 	 * Sets a solution as the neighbor one.
-	 * @param neighborSolution the solution to set as the neighbor one.
+	 * @param solution the solution to set as the neighbor one.
 	 */
-    protected final void setNeighborSolution(final S neighborSolution) {
-        this.neighborSolution = neighborSolution;
+    protected final void setNeighborSolution(final S solution) {
+        this.neighborSolution = solution;
     }
 
     /**
      * Gets the number of neighborhood searches by each iteration of the heuristic.
      * @return
      */
-	public int getNeighborhoodSearchesByIteration() {
-        return neighborhoodSearchesByIteration;
+	public int getSearchesByIteration() {
+        return searchesByIteration;
     }
 
     /**
      * Sets the number of neighborhood searches by each iteration of the heuristic.
-     * @param neighborhoodSearches the number of neighborhood searches to set
+     * @param searches the number of neighborhood searches to set
      */
-	public void setNeighborhoodSearchesByIteration(final int neighborhoodSearches) {
-        this.neighborhoodSearchesByIteration = neighborhoodSearches;
+	public void setSearchesByIteration(final int searches) {
+        this.searchesByIteration = searches;
     }
 }

@@ -33,7 +33,7 @@ public abstract class VmSchedulerAbstract implements VmScheduler {
      * if one is not explicitly set.
      * @see #getVmMigrationCpuOverhead()
      */
-    public static final double DEFAULT_VM_MIGRATION_CPU_OVERHEAD = 0.1;
+    public static final double DEF_VM_MIGRATION_CPU_OVERHEAD = 0.1;
 
     /**
      * @see #getHost()
