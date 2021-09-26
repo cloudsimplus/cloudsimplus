@@ -230,7 +230,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      */
     @SuppressWarnings("unchecked")
     public void loadHistory(final String filename) {
-        try (final ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
             historyMap = (Map<Double, Double>) ois.readObject();
         } catch (IOException e) {
             throw new UncheckedIOException(e);
