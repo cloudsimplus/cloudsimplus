@@ -77,14 +77,9 @@ public class PowerMeter extends CloudSimEntity {
     @Override
     public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
-            case POWER_MEASUREMENT:
-                measurePowerConsumption();
-                break;
-            case CloudSimTags.END_OF_SIMULATION:
-                this.shutdown();
-                break;
-            default:
-                throw new RuntimeException("Unknown Event: " + evt);
+            case POWER_MEASUREMENT -> measurePowerConsumption();
+            case CloudSimTags.END_OF_SIMULATION -> shutdown();
+            default -> throw new RuntimeException("Unknown Event: " + evt);
         }
     }
 
