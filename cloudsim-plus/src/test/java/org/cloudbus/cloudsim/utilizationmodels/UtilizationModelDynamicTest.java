@@ -23,7 +23,8 @@ public class UtilizationModelDynamicTest {
 
     @Test
     public void testGetUtilizationWhenTwoParamConstructorAndDecreasingUtilization() {
-        final double usagePercentInc = -0.1, initialUtilization = 0.5;
+        final double usagePercentInc = -0.1;
+        final double initialUtilization = 0.5;
         final var instance = createUtilizationModel(usagePercentInc, initialUtilization);
         checkUtilization(initialUtilization, usagePercentInc, instance);
     }

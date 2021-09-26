@@ -87,7 +87,8 @@ public interface TimeZoned {
          * If it's positive, start looking from the end. */
         final ListIterator<Datacenter> it = vm.getTimeZone() <= 0 ? datacenters.listIterator() : new ReverseListIterator<>(datacenters);
 
-        Datacenter currentDc = Datacenter.NULL, previousDc = currentDc;
+        var currentDc = Datacenter.NULL;
+        var previousDc = currentDc;
         while(it.hasNext()) {
             currentDc = it.next();
             /*Since the Datacenter list is expected to be sorted, after finding the first DC with a

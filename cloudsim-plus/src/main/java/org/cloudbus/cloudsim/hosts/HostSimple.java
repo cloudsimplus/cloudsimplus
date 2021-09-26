@@ -26,7 +26,6 @@ import org.cloudsimplus.listeners.HostUpdatesVmsProcessingEventInfo;
 
 import java.util.*;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -1252,7 +1251,7 @@ public class HostSimple implements Host {
         }
 
         final double utilization = mipsUsage / totalMips;
-        return (utilization > 1 && utilization < 1.01 ? 1 : utilization);
+        return utilization > 1 && utilization < 1.01 ? 1 : utilization;
     }
 
     @Override
@@ -1419,9 +1418,7 @@ public class HostSimple implements Host {
 
     @Override
     public List<Vm> getMigratableVms() {
-        return vmList.stream()
-            .filter(vm -> !vm.isInMigration())
-            .collect(Collectors.toList());
+        return vmList.stream().filter(vm -> !vm.isInMigration()).collect(toList());
     }
 
     /**

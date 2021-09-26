@@ -731,16 +731,17 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
          * to be transferred from the Datacenter storage.
          */
         final double processingTimeSpan = hasCloudletFileTransferTimePassed(cle, currentTime) ? timeSpan(cle, currentTime) : 0;
-        final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime, true);
 
         final double vMemDelay = getVirtualMemoryDelay(cle, processingTimeSpan);
         final double reducedBwDelay = getBandwidthOverSubscriptionDelay(cle, processingTimeSpan);
         /*If delay is negative, resource was not allocated.
         If RAM and BW could not be allocated, just returns 0 to indicate no processing was performed
         due to lack of other resources.*/
-        if(vMemDelay == Double.MIN_VALUE && reducedBwDelay == Double.MIN_VALUE)
+        if(vMemDelay == Double.MIN_VALUE && reducedBwDelay == Double.MIN_VALUE) {
             return 0;
+        }
 
+        final double cloudletUsedMips = getAllocatedMipsForCloudlet(cle, currentTime, true);
         final double actualProcessingTime = processingTimeSpan - (validateDelay(vMemDelay) + validateDelay(reducedBwDelay));
         return cloudletUsedMips * actualProcessingTime * Conversion.MILLION;
     }

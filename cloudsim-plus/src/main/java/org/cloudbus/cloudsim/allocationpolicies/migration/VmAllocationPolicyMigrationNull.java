@@ -42,7 +42,7 @@ final class VmAllocationPolicyMigrationNull implements VmAllocationPolicyMigrati
     @Override public boolean isHostOverloaded(Host host) { return false; }
     @Override public boolean isHostUnderloaded(Host host) { return false; }
     @Override public double getOverUtilizationThreshold(Host host) { return 0; }
-    @Override public void setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy) { }
+    @Override public void setVmSelectionPolicy(VmSelectionPolicy vmSelectionPolicy) {/**/}
     @Override public VmSelectionPolicy getVmSelectionPolicy() {
         return VmSelectionPolicy.NULL;
     }

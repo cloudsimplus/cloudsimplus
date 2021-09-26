@@ -61,7 +61,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * time an under or overload condition is detected,
      * it will try immediately to find suitable Hosts for migration.</p>
      */
-    private double lastTimeUnderOrOverloadedHostsDetected = -Double.MAX_VALUE;
+    private double lastUnderOrOverloadedDetection = -Double.MAX_VALUE;
 
     /**
      * @see #getBandwidthPercentForMigration()
@@ -822,7 +822,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
         if(areThereUnderOrOverloadedHostsAndMigrationIsSupported()){
             logHostSearchRetry();
-            lastTimeUnderOrOverloadedHostsDetected = clock();
+            lastUnderOrOverloadedDetection = clock();
         }
     }
 
@@ -843,7 +843,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     private boolean isTimeToSearchForSuitableHosts(){
-        final double elapsedSecs = clock() - lastTimeUnderOrOverloadedHostsDetected;
+        final double elapsedSecs = clock() - lastUnderOrOverloadedDetection;
         return isMigrationsEnabled() && elapsedSecs >= hostSearchRetryDelay;
     }
 
@@ -863,8 +863,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public void requestVmMigration(final Vm sourceVm, Host targetHost) {
-        final Host sourceHost = sourceVm.getHost();
-
         //If Host.NULL is given, it must try to find a target host
         if(targetHost == Host.NULL){
             targetHost = vmAllocationPolicy.findHostForVm(sourceVm).orElse(Host.NULL);
@@ -876,6 +874,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
             return;
         }
 
+        final Host sourceHost = sourceVm.getHost();
         final double delay = timeToMigrateVm(sourceVm, targetHost);
         final String msg1 =
             sourceHost == Host.NULL ?
