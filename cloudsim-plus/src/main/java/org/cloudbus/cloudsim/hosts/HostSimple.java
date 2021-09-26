@@ -1171,20 +1171,20 @@ public class HostSimple implements Host {
     }
 
     @Override
-    public int compareTo(final Host o) {
-        if(this.equals(requireNonNull(o))) {
+    public int compareTo(final Host other) {
+        if(this.equals(requireNonNull(other))) {
             return 0;
         }
 
-        return Long.compare(this.id, o.getId());
+        return Long.compare(this.id, other.getId());
     }
 
     @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
 
-        final HostSimple that = (HostSimple) o;
+        final HostSimple that = (HostSimple) obj;
 
         if (id != that.id) return false;
         return simulation.equals(that.simulation);
