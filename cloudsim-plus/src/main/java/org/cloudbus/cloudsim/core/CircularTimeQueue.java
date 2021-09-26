@@ -37,7 +37,7 @@ import java.util.function.Consumer;
  * @author Manoel Campos da Silva Filho
  * @see Simulation#addOnClockTickListener(EventListener)
  */
-class CircularTimeQueue {
+final class CircularTimeQueue {
     /**
      * The simulation clock time queue.
      * It's an array that works as a circular queue with capacity for just 2 elements
@@ -72,7 +72,7 @@ class CircularTimeQueue {
      * Creates the time queue.
      * @param simulation the simulation instance.
      */
-    public CircularTimeQueue(final Simulation simulation){
+    /* default */ CircularTimeQueue(final Simulation simulation){
         this.simulation = simulation;
         this.lastClockTickUpdate = simulation.getMinTimeBetweenEvents();
         this.queue = new double[]{lastClockTickUpdate, lastClockTickUpdate};
@@ -89,7 +89,7 @@ class CircularTimeQueue {
      * @param notifyClockTickListeners a {@link Consumer} that will receive the <b>previous clock time</b>
      *                                and update the listeners for that time.
      */
-    public void tryToUpdateListeners(final Consumer<Double> notifyClockTickListeners) {
+    /* default */ void tryToUpdateListeners(final Consumer<Double> notifyClockTickListeners) {
         if(!isTimeToUpdateClockTickListeners()) {
             return;
         }
