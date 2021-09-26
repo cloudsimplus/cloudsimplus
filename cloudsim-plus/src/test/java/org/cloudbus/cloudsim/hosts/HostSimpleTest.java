@@ -330,8 +330,8 @@ public class HostSimpleTest {
         vmList.forEach(host::addVmToList);
 
         final int idx = 0;
-        final double nextCloudletCompletionTimeOfCurrentVm = idx+1;
-        assertEquals(nextCloudletCompletionTimeOfCurrentVm, host.updateProcessing(time));
+        final double nextCloudletCompletionTime = idx+1;
+        assertEquals(nextCloudletCompletionTime, host.updateProcessing(time));
     }
 
     private List<Vm> createListOfMockVms(

@@ -494,14 +494,10 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
             cle.setStatus(newStatus);
         }
 
-        switch (newStatus) {
-            case PAUSED:
-                cloudletPausedList.add(cle);
-            break;
-            case READY:
-                addCloudletToWaitingList(cle);
-            break;
-        }
+        if (newStatus == Status.PAUSED)
+            cloudletPausedList.add(cle);
+        else if (newStatus == Status.READY)
+            addCloudletToWaitingList(cle);
     }
 
     /**
