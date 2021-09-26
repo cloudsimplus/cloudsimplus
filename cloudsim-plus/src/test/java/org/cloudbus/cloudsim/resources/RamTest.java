@@ -372,6 +372,7 @@ public class RamTest {
         assertFalse(instance.isResourceAmountBeingUsed(CAPACITY));
     }
 
+    @Test
     public void testIsSuitable() {
         final Ram instance = createResource();
         assertEquals(0, instance.getAllocatedResource());
@@ -379,19 +380,7 @@ public class RamTest {
         assertTrue(instance.allocateResource(allocated));
         assertEquals(allocated, instance.getAllocatedResource());
 
-        assertFalse(instance.isSuitable(CAPACITY));
-
-        //if no new allocations is done, the request amount has be stay always availalbe
-        assertTrue(instance.isSuitable(HALF_CAPACITY));
-        assertTrue(instance.isSuitable(HALF_CAPACITY));
-        assertTrue(instance.isSuitable(HALF_CAPACITY));
-        assertTrue(instance.isSuitable(HALF_CAPACITY));
-
-        assertTrue(instance.isSuitable(THREE_QUARTERS_CAPACITY));
-
-        //allocate more resources
-        assertTrue(instance.allocateResource(QUARTER_CAPACITY));
-        assertFalse(instance.isSuitable(HALF_CAPACITY));
-        assertTrue(instance.isSuitable(QUARTER_CAPACITY));
+        assertTrue(instance.isSuitable(CAPACITY));
+        assertFalse(instance.isSuitable(CAPACITY*2));
     }
 }
