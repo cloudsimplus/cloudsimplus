@@ -66,7 +66,7 @@ public final class ConfidenceInterval {
         this.value = stats.getMean();
 
         if(optionalErrorMargin.isPresent()) {
-            this.criticalValue = criticalValue(samples);
+            this.criticalValue = computeCriticalValue(samples);
             this.errorMargin = optionalErrorMargin.get();
             this.lowerLimit = stats.getMean() - errorMargin;
             this.upperLimit = stats.getMean() + errorMargin;
@@ -136,7 +136,7 @@ public final class ConfidenceInterval {
         }
 
         try {
-            final double criticalValue = criticalValue(samples);
+            final double criticalValue = computeCriticalValue(samples);
             return Optional.of(criticalValue * stats.getStandardDeviation() / Math.sqrt(samples));
         } catch (final MathIllegalArgumentException e) {
             return Optional.empty();
@@ -149,7 +149,7 @@ public final class ConfidenceInterval {
      * @param samples number of collected samples
      * @return
      */
-    private static double criticalValue(final long samples) {
+    private static double computeCriticalValue(final long samples) {
         /* Creates a T-Distribution with N-1 degrees of freedom
          * since we are computing the sample's confidence interval
          * instead of using the entire population. */
@@ -159,8 +159,7 @@ public final class ConfidenceInterval {
         the real population mean lies in a given interval. */
         final TDistribution tDist = new TDistribution(freedomDegrees);
         final double significance = 1.0 - CONFIDENCE_LEVEL;
-        final double criticalValue = tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
-        return criticalValue;
+        return tDist.inverseCumulativeProbability(1.0 - significance / 2.0);
     }
 
     /**
