@@ -412,9 +412,9 @@ public interface Simulation {
      * This is done to avoid unnecessary context switch.
      *
      * @param src entity that scheduled the event
-     * @param p   the event selection predicate
+     * @param predicate   the event selection predicate
      */
-    void wait(CloudSimEntity src, Predicate<SimEvent> p);
+    void wait(CloudSimEntity src, Predicate<SimEvent> predicate);
 
     /**
      * Gets the network topology used for Network simulations.
