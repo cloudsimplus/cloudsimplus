@@ -287,7 +287,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public <T extends Vm> List<T> allocateHostForVm(final Collection<T> vmCollection) {
-        Objects.requireNonNull(vmCollection, "The list of VMs to allocate a host to cannot be null");
+        requireNonNull(vmCollection, "The list of VMs to allocate a host to cannot be null");
         return vmCollection.stream().filter(vm -> !allocateHostForVm(vm).fully()).collect(toList());
     }
 
@@ -306,8 +306,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
         for (final Vm vm : vmGroup.getVmList()) {
             final HostSuitability suitability = createVm(vm, host);
             hostSuitabilityForVmGroup.setSuitability(suitability);
-            int i = Conversion.boolToInt(suitability.fully());
-            createdVms += i;
+            createdVms += Conversion.boolToInt(suitability.fully());
         }
 
         vmGroup.setCreated(createdVms > 0);
