@@ -892,15 +892,4 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     public double getLastDatacenterArrivalTime() {
         return getLastExecutionInDatacenterInfo().getArrivalTime();
     }
-
-    @Override
-    public boolean equals(final Object other) {
-        if (this == other) return true;
-        if (!(other instanceof CloudletAbstract)) return false;
-
-        final CloudletAbstract that = (CloudletAbstract) other;
-
-        if (getId() != that.getId()) return false;
-        return getBroker().equals(that.getBroker());
-    }
 }

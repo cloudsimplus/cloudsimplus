@@ -107,6 +107,14 @@ public abstract class CustomerEntityAbstract implements CustomerEntity {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        final var that = (CustomerEntityAbstract) obj;
+        return this.getId() == that.getId() && this.getBroker().equals(that.getBroker());
+    }
+
+    @Override
     public final int hashCode() {
         int result = broker.hashCode();
         result = 31 * result + Long.hashCode(id);
