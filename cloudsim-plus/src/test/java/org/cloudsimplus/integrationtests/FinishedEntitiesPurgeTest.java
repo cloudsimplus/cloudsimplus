@@ -39,8 +39,6 @@ import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModelFull;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
-import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
-import org.cloudsimplus.builders.tables.TextTableColumn;
 import org.cloudsimplus.listeners.EventInfo;
 import org.cloudsimplus.util.Log;
 import org.junit.jupiter.api.BeforeAll;
@@ -86,7 +84,6 @@ class FinishedEntitiesPurgeTest {
     private static final int VMS_BY_BROKER = HOSTS_NUMBER / BROKERS_NUMBER * 4;
     private static final int CLOUDLETS_BY_BROKER = VMS_BY_BROKER;
     private static final int HOST_MIPS = 1000;
-    private static final boolean SHOW_ONLY_CLOUDLETS_WITH_DIFF_RESULTS = true;
 
     /**
      * Total number of cloudlets created statically, before simulation start.
@@ -250,47 +247,6 @@ class FinishedEntitiesPurgeTest {
         simulation.start();
 
         final double endTimeSec = TimeUtil.elapsedSeconds(startTime);
-    }
-
-    private void printFinishedCloudlets() {
-        for (final DatacenterBroker b : brokerList) {
-            final List<Cloudlet> list = SHOW_ONLY_CLOUDLETS_WITH_DIFF_RESULTS ?
-                                            getFinishedCloudletsWithDifferentResults(b) :
-                                            b.getCloudletFinishedList();
-            new CloudletsTableBuilder(list)
-                .setTitle(String.format("%s/%d :: %d Cloudlets", b, brokerList.size(), b.getCloudletFinishedList().size()))
-                .column(5, col -> col.setTitle("   VM"))
-                .removeColumn(11)
-                .removeColumn(10)
-                .removeColumn(8)
-                .removeColumn(6)
-                .removeColumn(4)
-                .removeColumn(2)
-                .addColumn(new TextTableColumn("FinishTime"), cl -> String.format("%.2f", cl.getFinishTime()))
-                .addColumn(new TextTableColumn("ExecTime"), cl -> (int)Math.floor(cl.getActualCpuTime()))
-                .build();
-        }
-    }
-
-    /**
-     * Gets only the cloudlets having different execution times,
-     * so that it reduces the number of results for cloudlets
-     * having the exact values for those times.
-     * @param b
-     * @return
-     */
-    private List<Cloudlet> getFinishedCloudletsWithDifferentResults(DatacenterBroker b) {
-        Cloudlet last = Cloudlet.NULL;
-        final List<Cloudlet> list = new ArrayList<>();
-        for (final Cloudlet cl : b.getCloudletFinishedList()) {
-           if(cl.getExecStartTime() != last.getExecStartTime()
-           && cl.getFinishTime() != last.getFinishTime()
-           && cl.getActualCpuTime() != last.getActualCpuTime()) {
-               list.add(cl);
-               last = cl;
-           }
-        }
-        return list;
     }
 
     private void onClockTickListener(final EventInfo evt) {
