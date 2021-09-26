@@ -101,15 +101,13 @@ class VmNull implements Vm {
     @Override public List<VmStateHistoryEntry> getStateHistory() {
         return Collections.emptyList();
     }
-    @Override public double getHostCpuUtilization(double time) { return 0; }
+    @Override public double getCpuPercentUtilization() { return 0; }
     @Override public double getCpuPercentUtilization(double time) {
         return 0.0;
     }
-    @Override public double getCpuPercentRequested(double time) { return 0; }
     @Override public double getCpuPercentRequested() { return 0; }
-    @Override public double getCpuPercentUtilization() {
-        return 0;
-    }
+    @Override public double getCpuPercentRequested(double time) { return 0; }
+    @Override public double getHostCpuUtilization(double time) { return 0; }
     @Override public double getExpectedHostCpuUtilization(double vmCpuUtilizationPercent) { return 0; }
     @Override public double getHostRamUtilization() { return 0; }
     @Override public double getHostBwUtilization() { return 0; }
