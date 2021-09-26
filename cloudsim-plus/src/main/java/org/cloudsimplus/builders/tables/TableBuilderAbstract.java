@@ -26,7 +26,6 @@ package org.cloudsimplus.builders.tables;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -103,7 +102,7 @@ public abstract class TableBuilderAbstract<T> {
      * @return this TableBuilder object
      */
     public final TableBuilderAbstract<T> column(final int index, Consumer<TableColumn> consumer){
-        Objects.requireNonNull(consumer);
+        requireNonNull(consumer);
         consumer.accept(table.getColumns().get(index));
         return this;
     }

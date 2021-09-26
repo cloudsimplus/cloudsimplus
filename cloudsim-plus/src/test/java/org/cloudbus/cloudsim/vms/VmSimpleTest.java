@@ -18,7 +18,6 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletSchedulerTimeShared;
 import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmDatacenterEventInfo;
 import org.cloudsimplus.listeners.VmHostEventInfo;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -49,7 +48,8 @@ public class VmSimpleTest {
 
     @Test
     public void testGetWaitTimeForNonCreateVmWithNonZeroClockAndZeroArrivedTime() {
-        final int clock = 10, arrivedTime = 0;
+        final int clock = 10;
+        final int arrivedTime = 0;
         final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock));
         final DatacenterBroker broker = MocksHelper.createMockBroker(simulation, b -> {});
 
@@ -61,7 +61,8 @@ public class VmSimpleTest {
 
     @Test
     public void testGetWaitTimeForNonCreateVmWithNonZeroClockAndArrivedTime() {
-        final int clock = 10, arrivedTime = 2;
+        final int clock = 10;
+        final int arrivedTime = 2;
         final Simulation simulation = CloudSimMocker.createMock(mock -> mock.clock(clock));
         final DatacenterBroker broker = MocksHelper.createMockBroker(simulation, b -> {});
 
@@ -190,12 +191,12 @@ public class VmSimpleTest {
 
     @Test()
     public void testRemoveOnHostAllocationListenerWhenNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> vm.removeOnHostAllocationListener(null));
+        assertThrows(NullPointerException.class, () -> vm.removeOnHostAllocationListener(null));
     }
 
     @Test()
     public void testRemoveOnHostDeallocationListenerWhenNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> vm.removeOnHostDeallocationListener(null));
+        assertThrows(NullPointerException.class, () -> vm.removeOnHostDeallocationListener(null));
     }
 
     @Test
@@ -207,7 +208,7 @@ public class VmSimpleTest {
 
     @Test()
     public void testRemoveOnVmCreationFailureListenerWhenNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> vm.removeOnCreationFailureListener(null));
+        assertThrows(NullPointerException.class, () -> vm.removeOnCreationFailureListener(null));
     }
 
     @Test
@@ -219,7 +220,7 @@ public class VmSimpleTest {
 
     @Test()
     public void testRemoveOnUpdateVmProcessingListenerWhenNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> vm.removeOnUpdateProcessingListener(null));
+        assertThrows(NullPointerException.class, () -> vm.removeOnUpdateProcessingListener(null));
     }
 
     @Test

@@ -95,26 +95,26 @@ public class CloudletSimple extends CloudletAbstract {
     /**
      * Compare this Cloudlet with another one based on {@link #getLength()}.
      *
-     * @param o the Cloudlet to compare to
+     * @param other the Cloudlet to compare to
      * @return {@inheritDoc}
      */
     @Override
-    public int compareTo(final Cloudlet o) {
-        if(this.equals(Objects.requireNonNull(o))) {
+    public int compareTo(final Cloudlet other) {
+        if(this.equals(Objects.requireNonNull(other))) {
             return 0;
         }
 
-        return Double.compare(getLength(), o.getLength()) +
-            Long.compare(this.getId(), o.getId()) +
-            this.getBroker().compareTo(o.getBroker());
+        return Double.compare(getLength(), other.getLength()) +
+            Long.compare(this.getId(), other.getId()) +
+            this.getBroker().compareTo(other.getBroker());
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(final Object obj) {
         //Appropriated hashCode() is implemented by superclass
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final CloudletSimple other = (CloudletSimple) o;
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        final CloudletSimple other = (CloudletSimple) obj;
         return other.getId() == getId() && getBroker().equals(other.getBroker());
     }
 }

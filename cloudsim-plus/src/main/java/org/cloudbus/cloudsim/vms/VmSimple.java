@@ -618,7 +618,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
 
     @Override
     public final void setHost(final Host host) {
-        if (Objects.requireNonNull(host) == Host.NULL) {
+        if (requireNonNull(host) == Host.NULL) {
             setCreated(false);
         }
         this.host = host;
@@ -681,7 +681,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
     }
 
     @Override
-    public boolean isCreated() {
+    public final boolean isCreated() {
         return created;
     }
 
@@ -825,7 +825,7 @@ public class VmSimple extends CustomerEntityAbstract implements Vm {
      */
     @Override
     public int compareTo(final Vm o) {
-        if(this.equals(Objects.requireNonNull(o))) {
+        if(this.equals(requireNonNull(o))) {
             return 0;
         }
 

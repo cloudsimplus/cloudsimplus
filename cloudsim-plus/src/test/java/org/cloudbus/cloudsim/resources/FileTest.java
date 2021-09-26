@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.resources;
 
 import org.cloudbus.cloudsim.util.DataCloudTags;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,14 +55,14 @@ public class FileTest {
 
     @Test()
     public void testCreateFileWhenEmptyName() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new File("", 100));
+        assertThrows(IllegalArgumentException.class, () -> new File("", 100));
     }
 
     @Test
     public void testMakeReplica() {
         final File instance = createFile();
         final File replica = instance.makeReplica();
-        Assertions.assertAll(
+        assertAll(
             () -> assertEquals(instance.getName(), replica.getName()),
             () -> assertEquals(instance.getSize(), replica.getSize()),
             () -> assertTrue(instance.isMasterCopy()),
@@ -96,7 +95,7 @@ public class FileTest {
     @Test()
     public void testSetDatacenterToNull() {
         final File instance = createFile();
-        Assertions.assertThrows(NullPointerException.class, () -> instance.setDatacenter(null));
+        assertThrows(NullPointerException.class, () -> instance.setDatacenter(null));
     }
 
     @Test

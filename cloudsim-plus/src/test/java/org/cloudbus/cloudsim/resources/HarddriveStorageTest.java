@@ -3,7 +3,6 @@ package org.cloudbus.cloudsim.resources;
 import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.distributions.ExponentialDistr;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,22 +16,22 @@ public class HarddriveStorageTest {
 
     @Test()
     public void testNewHarddriveStorageWhenOnlyWhiteSpacesName() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage("   ", CAPACITY));
+        assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage("   ", CAPACITY));
     }
 
     @Test()
     public void testNewHarddriveStorageWhenEmptyName() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage("", CAPACITY));
+        assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage("", CAPACITY));
     }
 
     @Test()
     public void testNewHarddriveStorageWheNullName() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage(null, CAPACITY));
+        assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage(null, CAPACITY));
     }
 
     @Test()
     public void testNewHarddriveStorageWhenNegativeSize() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage(-1));
+        assertThrows(IllegalArgumentException.class, () -> new HarddriveStorage(-1));
     }
 
     @Test
@@ -71,7 +70,7 @@ public class HarddriveStorageTest {
     @Test()
     public void testSetLatencyNegative() {
         final HarddriveStorage instance = createHardDrive();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> instance.setLatency(-1));
+        assertThrows(IllegalArgumentException.class, () -> instance.setLatency(-1));
     }
 
     @Test
@@ -101,13 +100,13 @@ public class HarddriveStorageTest {
     @Test()
     public void testSetMaxTransferRateNegative() {
         final HarddriveStorage instance = createHardDrive();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> instance.setMaxTransferRate(-1));
+        assertThrows(IllegalArgumentException.class, () -> instance.setMaxTransferRate(-1));
     }
 
     @Test()
     public void testSetMaxTransferRate0() {
         final HarddriveStorage instance = createHardDrive();
-        Assertions.assertThrows(IllegalArgumentException.class, () -> instance.setMaxTransferRate(0));
+        assertThrows(IllegalArgumentException.class, () -> instance.setMaxTransferRate(0));
     }
 
     @Test
