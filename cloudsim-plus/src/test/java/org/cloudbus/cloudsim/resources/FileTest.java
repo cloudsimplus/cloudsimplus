@@ -263,7 +263,8 @@ public class FileTest {
 
     @Test
     public void testSetTransactionTime() {
-        final double time1 = 1, zero = 0;
+        final double time1 = 1;
+        final double zero = 0;
         final File instance = createFile();
         assertEquals(zero, instance.getTransactionTime());
 
