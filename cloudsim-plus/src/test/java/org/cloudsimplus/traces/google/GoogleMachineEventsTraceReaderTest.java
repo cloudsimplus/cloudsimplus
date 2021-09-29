@@ -26,6 +26,7 @@ package org.cloudsimplus.traces.google;
 import org.cloudsimplus.traces.google.GoogleMachineEventsTraceReader.FieldIndex;
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -41,9 +42,11 @@ public class GoogleMachineEventsTraceReaderTest {
      */
     @Test
     public void testEventType(){
-        assertEquals(0, MachineEventType.ADD.ordinal());
-        assertEquals(1, MachineEventType.REMOVE.ordinal());
-        assertEquals(2, MachineEventType.UPDATE.ordinal());
+        assertAll(
+            () -> assertEquals(0, MachineEventType.ADD.ordinal()),
+            () -> assertEquals(1, MachineEventType.REMOVE.ordinal()),
+            () -> assertEquals(2, MachineEventType.UPDATE.ordinal())
+        );
     }
 
     /**
@@ -53,12 +56,14 @@ public class GoogleMachineEventsTraceReaderTest {
      */
     @Test
     public void testFieldIndex(){
-        assertEquals(0, FieldIndex.TIMESTAMP.ordinal());
-        assertEquals(1, FieldIndex.MACHINE_ID.ordinal());
-        assertEquals(2, FieldIndex.EVENT_TYPE.ordinal());
-        assertEquals(3, FieldIndex.PLATFORM_ID.ordinal());
-        assertEquals(4, FieldIndex.CPU_CAPACITY.ordinal());
-        assertEquals(5, FieldIndex.RAM_CAPACITY.ordinal());
+        assertAll(
+            () -> assertEquals(0, FieldIndex.TIMESTAMP.ordinal()),
+            () -> assertEquals(1, FieldIndex.MACHINE_ID.ordinal()),
+            () -> assertEquals(2, FieldIndex.EVENT_TYPE.ordinal()),
+            () -> assertEquals(3, FieldIndex.PLATFORM_ID.ordinal()),
+            () -> assertEquals(4, FieldIndex.CPU_CAPACITY.ordinal()),
+            () -> assertEquals(5, FieldIndex.RAM_CAPACITY.ordinal())
+        );
     }
 
 }
