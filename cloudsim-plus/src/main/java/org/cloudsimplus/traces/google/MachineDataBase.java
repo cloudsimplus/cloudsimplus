@@ -37,7 +37,7 @@ class MachineDataBase {
     /**
      * A protected construtor to avoid directly instantiation of this base class.
      */
-    protected MachineDataBase(){}
+    protected MachineDataBase(){/**/}
 
     /**
      * Gets the machineID that indicates the machine onto which the task was scheduled.
