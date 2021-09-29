@@ -23,6 +23,17 @@ import java.util.Objects;
  * @since CloudSim Plus 6.0.0
  */
 public class PowerModelHostSpec extends PowerModelHost {
+    /**
+     * A List where each element represents the
+     * power consumption (in Watts) of the entity for specific
+     * CPU utilization percentage.
+     * If the list has 10 items, each element represents
+     * the power consumption for 10% of CPU utilization.
+     * This way, the 1st item represents the power consumption for 10% of CPU utilization,
+     * the 2nd for 20% of CPU utilization and so on.
+     * If the list has 100 itens, each item represents the power consumption for 1% of
+     * CPU utilization and so no.
+     */
     private final List<Double> powerSpec;
 
     /**
@@ -31,12 +42,14 @@ public class PowerModelHostSpec extends PowerModelHost {
      * CPU utilization percentages.
      *
      * @param powerSpec a list where each element represents the
-     * power consumption of the entity for specific
-     * CPU utilization percentage.
-     * The index of the list represents
-     * the CPU utilization percentage and the
-     * value, the power consumption for that
-     * percentage.
+     *                  power consumption (in Watts) of the entity for specific
+     *                  CPU utilization percentage.
+     *                  If the list has 10 items, each element represents
+     *                  the power consumption for 10% of CPU utilization.
+     *                  This way, the 1st item represents the power consumption for 10% of CPU utilization,
+     *                  the 2nd for 20% of CPU utilization and so on.
+     *                  If the list has 100 itens, each item represents the power consumption for 1% of
+     *                  CPU utilization and so no.
      *
      * <p>If there are 100 elements in this list,
      * element at position 1 represents the power consumption
