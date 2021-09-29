@@ -79,13 +79,13 @@ public final class ResourceLoader {
      */
     public static InputStream newInputStream(final String filePath, final Class klass) {
         //Try to load the resource from the resource directory in the filesystem
-        InputStream input = klass.getClassLoader().getResourceAsStream("/"+filePath);
+        InputStream input = klass.getClassLoader().getResourceAsStream(File.separator+filePath);
         if(input != null){
             return input;
         }
 
         //Try to load the resource from a jar file
-        input = klass.getResourceAsStream("/"+filePath);
+        input = klass.getResourceAsStream(File.separator+filePath);
         if(input != null){
             return input;
         }
@@ -148,7 +148,7 @@ public final class ResourceLoader {
             final Path fullPath = uriToPath(resourceDir, uri);
             final List<String> list =
                 Files.walk(fullPath, 1)
-                     .map(path -> resourceDir + "/" + path.getFileName().toString())
+                     .map(path -> resourceDir + File.separator + path.getFileName().toString())
                      .collect(Collectors.toList());
 
             //Removes the first element which is the name of the containing directory
