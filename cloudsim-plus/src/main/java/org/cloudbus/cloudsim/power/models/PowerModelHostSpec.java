@@ -24,6 +24,16 @@ import java.util.Objects;
  */
 public class PowerModelHostSpec extends PowerModelHost {
     /**
+     * Since {@link #powerSpec} represents the power consumption data
+     * according to CPU utilization, as shorter the size of such a List,
+     * less accurate is the power consumption according to CPU utilization.
+     * Check mentioned attribute for details.
+     * Less than 2 entries doesn't make any sense,
+     * since for any CPU utilization, the power consumption will be the same.
+     */
+    public static final int MIN_POWER_CONSUMPTION_DATA_SIZE = 2;
+
+    /**
      * A List where each element represents the
      * power consumption (in Watts) of the entity for specific
      * CPU utilization percentage.
@@ -66,9 +76,11 @@ public class PowerModelHostSpec extends PowerModelHost {
     public PowerModelHostSpec(final List<Double> powerSpec) {
         super();
         Objects.requireNonNull(powerSpec, "powerSpec cannot be null");
-        if (powerSpec.size() >= 2) {
-            throw new IllegalArgumentException("powerSpec has to contain at least 2 elements " +
-                "(utilization at 0% and 100% load)");
+        if (powerSpec.size() > MIN_POWER_CONSUMPTION_DATA_SIZE) {
+            final var msg =
+                String.format("powerSpec has to contain at least %d elements (utilization at 0% and 100% load)",
+                MIN_POWER_CONSUMPTION_DATA_SIZE);
+            throw new IllegalArgumentException(msg);
         }
 
         this.powerSpec = powerSpec;
