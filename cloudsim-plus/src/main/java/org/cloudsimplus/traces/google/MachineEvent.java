@@ -41,7 +41,7 @@ import java.util.function.Function;
  * that creates Hosts according to the developer needs.</p>
  *
  * <p>The {@link GoogleMachineEventsTraceReader} cannot create the Hosts itself
- * by hardcoding some simulation specific parameters such as the {@link VmScheduler}
+ * by hard-coding some simulation specific parameters such as the {@link VmScheduler}
  * or {@link ResourceProvisioner}. This way, it request a {@link Function} implemented
  * by the developer using the {@link GoogleMachineEventsTraceReader} class
  * that has the custom logic to create Hosts.
@@ -54,7 +54,7 @@ import java.util.function.Function;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-public final class MachineEvent extends MachineDataAbstract {
+public final class MachineEvent extends MachineDataBase {
     private double timestamp;
     private long ram;
     private int cpuCores;
