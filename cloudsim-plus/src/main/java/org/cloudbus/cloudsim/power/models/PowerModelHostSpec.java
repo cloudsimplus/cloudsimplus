@@ -76,7 +76,7 @@ public class PowerModelHostSpec extends PowerModelHost {
     public PowerModelHostSpec(final List<Double> powerSpec) {
         super();
         Objects.requireNonNull(powerSpec, "powerSpec cannot be null");
-        if (powerSpec.size() > MIN_POWER_CONSUMPTION_DATA_SIZE) {
+        if (powerSpec.size() < MIN_POWER_CONSUMPTION_DATA_SIZE) {
             final var msg =
                 String.format("powerSpec has to contain at least %d elements (utilization at 0% and 100% load)",
                 MIN_POWER_CONSUMPTION_DATA_SIZE);
