@@ -5,7 +5,6 @@
  *
  * Copyright (c) 2009-2011, The University of Melbourne, Australia
  */
-
 package org.cloudbus.cloudsim.hosts;
 
 /**
