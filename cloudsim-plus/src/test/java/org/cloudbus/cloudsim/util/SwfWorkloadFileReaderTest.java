@@ -36,17 +36,17 @@ public class SwfWorkloadFileReaderTest {
 	    readFile(ZIP_FILE, JOBS_AT_SWF_LCG_FILE + JOBS_AT_SWF_NASA_FILE);
     }
 
-    private void readFile(String fileNameWithoutPath, int numberOfJobs) {
+    private void readFile(final String fileNameWithoutPath, final int jobsNumber) {
         final SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(fileNameWithoutPath, 1);
-        final long milisecs = System.currentTimeMillis();
-        final List<Cloudlet> cloudletlist = reader.generateWorkload();
-        final double seconds = (System.currentTimeMillis() - milisecs)/1000.0;
-        assertEquals(numberOfJobs, cloudletlist.size());
+        final long millisecs = System.currentTimeMillis();
+        final List<Cloudlet> cloudletList = reader.generateWorkload();
+        final double seconds = (System.currentTimeMillis() - millisecs)/1000.0;
+        assertEquals(jobsNumber, cloudletList.size());
         LOGGER.info(
             "Time taken to read the file {}: {} seconds",
             fileNameWithoutPath, seconds);
 
-        for (final Cloudlet cloudlet : cloudletlist) {
+        for (final Cloudlet cloudlet : cloudletList) {
             assertTrue(cloudlet.getLength() > 0);
         }
     }
