@@ -1402,7 +1402,7 @@ public class HostSimple implements Host {
         final HostStateHistoryEntry newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
         if (!stateHistory.isEmpty()) {
             final HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
-            if (previousState.getTime() == time) {
+            if (previousState.time() == time) {
                 stateHistory.set(stateHistory.size() - 1, newState);
                 return;
             }

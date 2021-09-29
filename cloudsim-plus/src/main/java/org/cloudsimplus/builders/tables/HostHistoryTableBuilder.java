@@ -69,24 +69,24 @@ public class HostHistoryTableBuilder extends TableBuilderAbstract<HostStateHisto
     @Override
     protected void createTableColumns() {
         TableColumn col = getTable().addColumn("Time ").setFormat("%5.0f");
-        addColumnDataFunction(col, HostStateHistoryEntry::getTime);
+        addColumnDataFunction(col, HostStateHistoryEntry::time);
 
         final String format = "%9.0f";
         col = getTable().addColumn("Requested").setFormat(format);
-        addColumnDataFunction(col, HostStateHistoryEntry::getRequestedMips);
+        addColumnDataFunction(col, HostStateHistoryEntry::requestedMips);
 
         col = getTable().addColumn("Allocated").setFormat(format);
-        addColumnDataFunction(col, HostStateHistoryEntry::getAllocatedMips);
+        addColumnDataFunction(col, HostStateHistoryEntry::allocatedMips);
 
         col = getTable().addColumn("Used").setFormat("%3.0f%%");
-        addColumnDataFunction(col, history -> history.getPercentUsage()*100);
+        addColumnDataFunction(col, history -> history.percentUsage()*100);
 
-        addColumnDataFunction(getTable().addColumn("Host Active"), HostStateHistoryEntry::isActive);
+        addColumnDataFunction(getTable().addColumn("Host Active"), HostStateHistoryEntry::active);
 
         col = getTable().addColumn("Host Total MIPS").setFormat(format);
         addColumnDataFunction(col, history -> host.getTotalMipsCapacity());
 
         col = getTable().addColumn("Host Total Usage").setFormat("%5.1f%%");
-        addColumnDataFunction(col, history -> history.getAllocatedMips()/host.getTotalMipsCapacity()*100);
+        addColumnDataFunction(col, history -> history.allocatedMips()/host.getTotalMipsCapacity()*100);
     }
 }

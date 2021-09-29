@@ -12,50 +12,19 @@ package org.cloudbus.cloudsim.hosts;
  *
  * @author Anton Beloglazov
  * @since CloudSim Toolkit 2.1.2
+ * @param time          the time the data in this history entry is related to
+ * @param allocatedMips the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time
+ * @param requestedMips the total MIPS requested by running VMs to all PEs of the Host at the recorded time
+ * @param active        if the Host is active at the given time
  */
-public final class HostStateHistoryEntry {
-
-    /**
-     * @see #getTime()
-     */
-    private final double time;
-
-    /**
-     * @see #getAllocatedMips()
-     */
-    private final double allocatedMips;
-
-    /**
-     * @see #getRequestedMips()
-     */
-    private final double requestedMips;
-
-    /**
-     * @see #isActive()
-     */
-    private final boolean active;
-
-    /**
-     * Instantiates a host state history entry.
-     *
-     * @param time          the time the data in this history entry is related to
-     * @param allocatedMips the total MIPS allocated from all PEs of the Host, to running VMs, at the recorded time
-     * @param requestedMips the total MIPS requested by running VMs to all PEs of the Host at the recorded time
-     * @param active        if the Host is active at the given time
-     */
-    public HostStateHistoryEntry(final double time, final double allocatedMips, final double requestedMips, final boolean active) {
-        this.time = time;
-        this.allocatedMips = allocatedMips;
-        this.requestedMips = requestedMips;
-        this.active = active;
-    }
+public record HostStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean active) {
 
     /**
      * Gets the time the data in this history entry is related to.
      *
      * @return
      */
-    public double getTime() {
+    public double time() {
         return time;
     }
 
@@ -64,7 +33,7 @@ public final class HostStateHistoryEntry {
      *
      * @return the allocated mips
      */
-    public double getAllocatedMips() {
+    public double allocatedMips() {
         return allocatedMips;
     }
 
@@ -73,16 +42,17 @@ public final class HostStateHistoryEntry {
      *
      * @return the requested mips
      */
-    public double getRequestedMips() {
+    public double requestedMips() {
         return requestedMips;
     }
 
     /**
      * Gets the percentage (in scale from 0 to 1) of allocated MIPS from the total requested.
+     *
      * @return
      */
-    public double getPercentUsage(){
-        return requestedMips > 0 ? allocatedMips/requestedMips : 0;
+    public double percentUsage() {
+        return requestedMips > 0 ? allocatedMips / requestedMips : 0;
     }
 
     /**
@@ -90,13 +60,13 @@ public final class HostStateHistoryEntry {
      *
      * @return true if is active, false otherwise
      */
-    public boolean isActive() {
+    public boolean active() {
         return active;
     }
 
     @Override
     public String toString() {
         return String.format("Time: %6.1f | Requested: %10.0f MIPS | Allocated: %10.0f MIPS | Used: %3.0f%% Host Active: %s%n",
-                            time, requestedMips, allocatedMips, getPercentUsage()*100, active);
+            time, requestedMips, allocatedMips, percentUsage() * 100, active);
     }
 }

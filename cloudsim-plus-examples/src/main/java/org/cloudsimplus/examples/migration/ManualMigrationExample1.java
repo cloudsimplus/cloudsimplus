@@ -198,7 +198,7 @@ public final class ManualMigrationExample1 {
         final boolean cpuUtilizationNotZero =
             host.getStateHistory()
                 .stream()
-                .map(HostStateHistoryEntry::getPercentUsage)
+                .map(HostStateHistoryEntry::percentUsage)
                 .anyMatch(cpuUtilization -> cpuUtilization > 0);
 
         if(cpuUtilizationNotZero) {
