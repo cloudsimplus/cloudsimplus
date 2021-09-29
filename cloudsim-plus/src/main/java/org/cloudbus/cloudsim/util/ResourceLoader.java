@@ -56,12 +56,12 @@ public final class ResourceLoader {
      *
      * @param filePath the path to the file
      * @return a {@link InputStreamReader} to read the resource
-     * @throws FileNotFoundException when the file doesn't exist
+     * @throws UncheckedIOException when the file doesn't exist or can't be accessed
      */
     public static InputStreamReader newInputStreamReader(final String filePath) {
         try {
-            return new InputStreamReader(new FileInputStream(filePath));
-        } catch (FileNotFoundException e) {
+            return new InputStreamReader(Files.newInputStream(Paths.get(filePath)));
+        } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
@@ -69,13 +69,13 @@ public final class ResourceLoader {
     /**
      * Instantiates a {@link InputStream} to read a file,
      * trying to load the file from a jar file, in case the user is running simulations from a jar package.
-     * If it cant get a reader directly, the simulation is not being executed from a jar package,
+     * If it can't get a reader directly, the simulation is not being executed from a jar package,
      * so try to load the file from a directory in the filesystem.
      *
      * @param filePath the path of the file to get a reader for it
      * @param klass a class from the project that will be used just to assist in getting the path of the given resource
      * @return a {@link InputStreamReader} to read the resource
-     * @throws UncheckedIOException when the file cannot be accessed (such as when it doesn't exist)
+     * @throws UncheckedIOException when the file doesn't exist or can't be accessed
      */
     public static InputStream newInputStream(final String filePath, final Class klass) {
         //Try to load the resource from the resource directory in the filesystem
@@ -92,8 +92,8 @@ public final class ResourceLoader {
 
         //Try to load the resource from anywhere else than the resource directory
         try {
-            return new FileInputStream(filePath);
-        } catch (FileNotFoundException e) {
+            return Files.newInputStream(Paths.get(filePath));
+        } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
