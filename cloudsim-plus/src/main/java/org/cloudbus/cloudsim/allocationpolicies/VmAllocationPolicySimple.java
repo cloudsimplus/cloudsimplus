@@ -14,7 +14,8 @@ import java.util.Comparator;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.stream.Stream;
+
+import static java.util.Comparator.comparing;
 
 /**
  * A VmAllocationPolicy implementation that chooses, as
@@ -60,13 +61,10 @@ public class VmAllocationPolicySimple extends VmAllocationPolicyAbstract {
      */
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final Comparator<Host> comparator = Comparator.comparing(Host::isActive)
-                                                      .thenComparingLong(Host::getFreePesNumber);
+        final Comparator<Host> comparator = comparing(Host::isActive).thenComparingLong(Host::getFreePesNumber);
 
-        final Stream<Host> stream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
-        return stream
-                .filter(host -> host.isSuitableForVm(vm))
-                .max(comparator);
+        final var hostStream = isParallelHostSearchEnabled() ? getHostList().stream().parallel() : getHostList().stream();
+        return hostStream.filter(host -> host.isSuitableForVm(vm)).max(comparator);
     }
 
 }
