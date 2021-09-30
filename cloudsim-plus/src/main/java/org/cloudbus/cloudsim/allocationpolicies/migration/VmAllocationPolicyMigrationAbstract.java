@@ -18,12 +18,10 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Comparator.comparingDouble;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * An abstract VM allocation policy that dynamically optimizes the
@@ -166,11 +164,11 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             ignoredSourceHosts.add(underloadedHost);
             ignoredTargetHosts.add(underloadedHost);
 
-            final List<? extends Vm> vmsToMigrateFromHost = getVmsToMigrateFromUnderUtilizedHost(underloadedHost);
-            if (!vmsToMigrateFromHost.isEmpty()) {
-                logVmsToBeReallocated(underloadedHost, vmsToMigrateFromHost);
+            final var vmsToMigrateList = getVmsToMigrateFromUnderUtilizedHost(underloadedHost);
+            if (!vmsToMigrateList.isEmpty()) {
+                logVmsToBeReallocated(underloadedHost, vmsToMigrateList);
                 final Map<Vm, Host> newVmPlacement = getNewVmPlacementFromUnderloadedHost(
-                        vmsToMigrateFromHost,
+                        vmsToMigrateList,
                         ignoredTargetHosts);
 
                 ignoredSourceHosts.addAll(extractHostListFromMigrationMap(newVmPlacement));
@@ -187,14 +185,14 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
     }
 
     private Set<Host> getIgnoredHosts(final Set<Host> overloadedHosts, final List<Host> switchedOffHosts) {
-        final Set<Host> ignoredHosts = new HashSet<>();
-        ignoredHosts.addAll(overloadedHosts);
-        ignoredHosts.addAll(switchedOffHosts);
-        return ignoredHosts;
+        final var ignoredHostsSet = new HashSet<Host>();
+        ignoredHostsSet.addAll(overloadedHosts);
+        ignoredHostsSet.addAll(switchedOffHosts);
+        return ignoredHostsSet;
     }
 
     private String getVmIds(final List<? extends Vm> vmList) {
-        return vmList.stream().map(vm -> String.valueOf(vm.getId())).collect(Collectors.joining(", "));
+        return vmList.stream().map(vm -> String.valueOf(vm.getId())).collect(joining(", "));
     }
 
     /**
@@ -204,7 +202,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      */
     private void printOverUtilizedHosts(final Set<Host> overloadedHosts) {
         if (!overloadedHosts.isEmpty() && LOGGER.isWarnEnabled()) {
-            final String hosts = overloadedHosts.stream().map(this::overloadedHostToString).collect(Collectors.joining(System.lineSeparator()));
+            final String hosts = overloadedHosts.stream().map(this::overloadedHostToString).collect(joining(System.lineSeparator()));
             LOGGER.warn("{}: VmAllocationPolicy: Overloaded hosts in {}:{}{}",
                 getDatacenter().getSimulation().clockStr(), getDatacenter(), System.lineSeparator(), hosts);
         }
@@ -243,7 +241,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      *         false otherwise
      */
     private boolean isNotHostOverloadedAfterAllocation(final Host host, final Vm vm) {
-        final Vm tempVm = new VmSimple(vm);
+        final var tempVm = new VmSimple(vm);
 
         if (!host.createTemporaryVm(tempVm).fully()) {
             return false;
@@ -299,9 +297,9 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
 
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final Set<Host> excludedHosts = new HashSet<>();
-        excludedHosts.add(vm.getHost());
-        return findHostForVm(vm, excludedHosts);
+        final var excludedHostsSet = new HashSet<Host>();
+        excludedHostsSet.add(vm.getHost());
+        return findHostForVm(vm, excludedHostsSet);
     }
 
     /**
@@ -339,13 +337,13 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @see #findHostForVmInternal(Vm, Stream)
      */
     private Optional<Host> findHostForVm(final Vm vm, final Set<? extends Host> excludedHosts, final Predicate<Host> predicate) {
-        final Stream<Host> stream = this.getHostList().stream()
+        final var hostStream = this.getHostList().stream()
             .filter(host -> !excludedHosts.contains(host))
             .filter(host -> host.isSuitableForVm(vm))
             .filter(host -> isNotHostOverloadedAfterAllocation(host, vm))
             .filter(predicate);
 
-        return findHostForVmInternal(vm, stream);
+        return findHostForVmInternal(vm, hostStream);
     }
 
     /**
@@ -390,12 +388,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             return  new HashMap<>();
         }
 
-        final List<Vm> vmsToMigrate = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
-        sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
-        final Map<Vm, Host> migrationMap = new HashMap<>();
+        final var vmsToMigrateList = getVmsToMigrateFromOverloadedHosts(overloadedHosts);
+        sortByCpuUtilization(vmsToMigrateList, getDatacenter().getSimulation().clock());
+        final var migrationMap = new HashMap<Vm, Host>();
 
-        final StringBuilder builder = new StringBuilder();
-        for (final Vm vm : vmsToMigrate) {
+        final var builder = new StringBuilder();
+        for (final Vm vm : vmsToMigrateList) {
             findHostForVm(vm, overloadedHosts).ifPresent(targetHost -> {
                 addVmToMigrationMap(migrationMap, vm, targetHost);
                 appendVmMigrationMsgToStringBuilder(builder, vm, targetHost);
@@ -422,18 +420,18 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @param vmsToMigrate the list of VMs to migrate from the underloaded Host
      * @param excludedHosts the list of hosts that aren't selected as
      * destination hosts
-     * @return the new vm placement for the given VMs
+     * @return the new vm placement for the given VMs or an empty Map if no suitable Host was found
      */
     private Map<Vm, Host> getNewVmPlacementFromUnderloadedHost(
         final List<? extends Vm> vmsToMigrate,
         final Set<? extends Host> excludedHosts)
     {
-        final Map<Vm, Host> migrationMap = new HashMap<>();
+        final var migrationMap = new HashMap<Vm, Host>();
         sortByCpuUtilization(vmsToMigrate, getDatacenter().getSimulation().clock());
         for (final Vm vm : vmsToMigrate) {
             //try to find a target Host to place a VM from an underloaded Host that is not underloaded too
             final Optional<Host> optional = findHostForVm(vm, excludedHosts, host -> !isHostUnderloaded(host));
-            if (!optional.isPresent()) {
+            if (optional.isEmpty()) {
                 LOGGER.warn(
                     "{}: VmAllocationPolicy: A new Host, which isn't also underloaded or won't be overloaded, couldn't be found to migrate {}. Migration of VMs from the underloaded {} cancelled.",
                     getDatacenter().getSimulation().clockStr(), vm, vm.getHost());
@@ -475,12 +473,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
      * @return the VMs to migrate from hosts
      */
     private List<Vm> getVmsToMigrateFromOverloadedHosts(final Set<Host> overloadedHosts) {
-        final List<Vm> vmsToMigrate = new LinkedList<>();
+        final var vmsToMigrateList = new LinkedList<Vm>();
         for (final Host host : overloadedHosts) {
-            vmsToMigrate.addAll(getVmsToMigrateFromOverloadedHost(host));
+            vmsToMigrateList.addAll(getVmsToMigrateFromOverloadedHost(host));
         }
 
-        return vmsToMigrate;
+        return vmsToMigrateList;
     }
 
     private List<Vm> getVmsToMigrateFromOverloadedHost(final Host host) {
@@ -489,13 +487,13 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         but it temporarily destroys VMs on such Hosts.
         See https://github.com/manoelcampos/cloudsim-plus/issues/94
         */
-        final List<Vm> vmsToMigrate = new LinkedList<>();
+        final var vmsToMigrateList = new LinkedList<Vm>();
         while (true) {
             final Vm vm = getVmSelectionPolicy().getVmToMigrate(host);
             if (Vm.NULL == vm) {
                 break;
             }
-            vmsToMigrate.add(vm);
+            vmsToMigrateList.add(vm);
             /*Temporarily destroys the selected VM into the overloaded Host so that
             the loop gets VMs from such a Host until it is not overloaded anymore.*/
             host.destroyTemporaryVm(vm);
@@ -504,7 +502,7 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
             }
         }
 
-        return vmsToMigrate;
+        return vmsToMigrateList;
     }
 
     /**
