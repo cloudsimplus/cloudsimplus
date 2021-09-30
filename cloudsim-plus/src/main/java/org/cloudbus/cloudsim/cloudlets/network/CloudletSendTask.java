@@ -72,7 +72,7 @@ public class CloudletSendTask extends CloudletTask {
             throw new IllegalStateException("The destination Cloudlet has to have an assigned VM.");
         }
 
-        final VmPacket packet = new VmPacket(
+        final var packet = new VmPacket(
                 getCloudlet().getVm(), destinationCloudlet.getVm(),
                 bytes, getCloudlet(), destinationCloudlet);
         packetsToSend.add(packet);
@@ -98,14 +98,10 @@ public class CloudletSendTask extends CloudletTask {
     public List<VmPacket> getPacketsToSend(final double sendTime) {
         packetsToSend.forEach(pkt ->  pkt.setSendTime(sendTime));
 
-        if(isFinished()) {
+        if(isFinished())
             packetsToSend.clear();
-        }
-        else {
-            setFinished(true);
-        }
+        else setFinished(true);
 
         return packetsToSend;
     }
-
 }
