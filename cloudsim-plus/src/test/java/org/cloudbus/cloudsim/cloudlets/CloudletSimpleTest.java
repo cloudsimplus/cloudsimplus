@@ -26,8 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since	CloudSim Toolkit 2.0
  */
 public class CloudletSimpleTest {
-
-    public static final int PES_NUMBER = 2;
+    static final int PES_NUMBER = 2;
 
     private CloudletSimple cloudlet;
     private UtilizationModel utilizationModelCpu;
