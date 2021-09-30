@@ -116,7 +116,7 @@ public class CloudletExecutionTask extends CloudletTask {
             return false;
         }
 
-        final long maxLengthToAdd = Math.min(partialFinishedMI, length-totalExecutedLength);
+        final long maxLengthToAdd = Math.min(partialFinishedMI, length - totalExecutedLength);
         this.totalExecutedLength += maxLengthToAdd;
         setFinished(this.totalExecutedLength == length);
         return true;
