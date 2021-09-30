@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.brokers.DatacenterBroker;
 import org.cloudbus.cloudsim.util.TimeUtil;
 
 /**
- * The index of each field in a {@link GoogleTaskEventsTraceReader} trace file.
+ * The index of each field in a Google Task Events trace file.
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
