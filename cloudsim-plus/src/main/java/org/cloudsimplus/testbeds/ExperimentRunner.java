@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.testbeds;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
@@ -40,8 +39,8 @@ import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.*;
-import static org.cloudsimplus.builders.tables.CsvTableColumn.alignStringRight;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A base class to run a given experiment a defined number of times and collect
@@ -577,87 +576,9 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
                       .map(this::computeFinalResults)
                       .collect(toCollection(() -> new ArrayList<>(metricsMap.size())));
 
-        buildLatexMetricsResultTable(confidenceIntervals);
-        buildCsvResultsTable(confidenceIntervals);
-    }
-
-    private void buildCsvResultsTable(final List<ConfidenceInterval> confidenceIntervals) {
-        final String cols = confidenceIntervals.stream().map(ConfidenceInterval::getMetricName).collect(joining("; "));
-        System.out.printf("Type of Value;%s%n", cols);
-
-        final String format = "%.2f";
-        final String values =
-            confidenceIntervals
-                .stream()
-                .map(ci -> alignStringRight(String.format(format, ci.getValue()), ci.getMetricName().length()))
-                .collect(joining("; "));
-        final String valueType = simulationRuns > 1 ? "CI           " : "Mean         ";
-        System.out.printf("%s;%s%n", valueType, values);
-
-        final String errorMargins =
-            confidenceIntervals
-                .stream()
-                .map(ci -> alignStringRight(String.format(format, ci.getErrorMargin()), ci.getMetricName().length()))
-                .collect(joining("; "));
-        System.out.printf("Error Margin ;%s%n", errorMargins);
-    }
-
-    /**
-     * Generates the latex table for metrics results.
-     * @param confidenceIntervals a List of
-     *                 {@link ConfidenceInterval} objects summarizing the results for different metrics
-     *                 from all simulation runs.
-     */
-    private void buildLatexMetricsResultTable(final List<ConfidenceInterval> confidenceIntervals) {
-        if(!latexTableResultsGeneration) {
-            return;
-        }
-
-        if (simulationRuns == 1) {
-            System.out.println("Latex table with metrics' results is just built when the number of simulation runs is greater than 1.");
-            return;
-        }
-
-        final StringBuilder latex = startLatexTable();
-        confidenceIntervals.forEach(ci -> latexRow(latex, ci));
-        latex.append("  \\end{tabular}\n\\end{table}\n");
-        System.out.println();
-        System.out.println(latex);
-    }
-
-    /**
-     * Creates a row for the latex table containing the result metrics
-     * @param latex the StringBuilder where the latex table is being built
-     * @param ci {@link ConfidenceInterval} summarizing results for this metric
-     */
-    private void latexRow(final StringBuilder latex, final ConfidenceInterval ci) {
-        //if there is only one metric sample, it doesn't show the ± symbol (latex \pm), since there is no error margin
-        final String errorMargin = ci.isComputed() ? String.format(" & $\\pm$ %.2f", ci.getErrorMargin()) : " & ";
-
-        //If there is a % in the metric name, that needs to be escaped to show on Latex, since % starts a Latex comment
-        final String escapedMetricName = StringUtils.replace(ci.getMetricName(),"%", "\\%");
-        latex.append(escapedMetricName)
-             .append(" & ")
-             .append(String.format("%.2f", ci.getValue()))
-             .append(errorMargin)
-             .append(" & ")
-             .append(String.format("%.2f", ci.getStdDev()))
-             .append("\\\\ \\hline\n");
-    }
-
-    private StringBuilder startLatexTable() {
-        final var latex = new StringBuilder(320);
-        latex.append("\\begin{table}[!hbt]\n")
-             .append(String.format("  \\caption{%s}\n", description))
-             .append(String.format("  \\label{%s}\n", resultsTableId))
-             .append(
-               """
-               \\begin{tabular}{|p{2.8cm}|p{1.3cm}p{1.3cm}|>{\\raggedleft\\arraybackslash}p{1.2cm}|}
-               \\hline
-               \\textbf{Metric} & \\multicolumn{2}{p{3.0cm}|}{\\textbf{95\\% Confidence Interval}} & \\textbf{*Std. Dev.} \\\\
-               \\hline
-               """);
-        return latex;
+        final var table = new ResultTable<>(this, confidenceIntervals);
+        table.buildLatexMetricsResultTable();
+        table.buildCsvResultsTable();
     }
 
     private Stream<Experiment> getStream(final List<Experiment> experiments) {
