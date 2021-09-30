@@ -4,6 +4,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudsimplus.heuristics.CloudletToVmMappingHeuristic;
+import org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing;
 import org.cloudsimplus.heuristics.CloudletToVmMappingSolution;
 import org.cloudsimplus.heuristics.Heuristic;
 
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 /**
  * <p>A simple implementation of {@link DatacenterBroker} that uses some heuristic
  * to get a suboptimal mapping among submitted cloudlets and Vm's.
- * Such heuristic can be, for instance, the {@link org.cloudsimplus.heuristics.CloudletToVmMappingSimulatedAnnealing}
+ * Such heuristic can be, for instance, the {@link CloudletToVmMappingSimulatedAnnealing}
  * that implements a Simulated Annealing algorithm.
  * The Broker then places the submitted Vm's at the first Datacenter found.
  * If there isn't capacity in that one, it will try the other ones.</p>
@@ -20,9 +21,7 @@ import java.util.stream.Collectors;
  * @author Manoel Campos da Silva Filho
  */
 public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
-    /**
-     * @see #getHeuristic()
-     */
+    /** @see #getHeuristic() */
     private CloudletToVmMappingHeuristic heuristic;
 
     /**
@@ -83,7 +82,6 @@ public class DatacenterBrokerHeuristic extends DatacenterBrokerSimple {
     }
 
     /**
-     *
      * @return the heuristic used to find a sub-optimal mapping between
      * Cloudlets and Vm's
      */
