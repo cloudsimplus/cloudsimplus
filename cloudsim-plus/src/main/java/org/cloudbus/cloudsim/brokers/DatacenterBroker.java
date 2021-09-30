@@ -26,9 +26,11 @@ import java.util.function.Function;
  * Represents a broker acting on behalf of a cloud customer.
  * It hides VM management such as vm creation, submission of cloudlets to VMs
  * and destruction of VMs.
+ *
  * <p>
  * A broker implements the policies for selecting a VM to run a Cloudlet
  * and a Datacenter to run the submitted VMs.
+ * </p>
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -48,21 +50,22 @@ public interface DatacenterBroker extends SimEntity {
      * A default delay value to indicate that <b>NO</b> VM should be
      * immediately destroyed after becoming idle.
      *
-     * <p>This is used as the value returned by the {@link #getVmDestructionDelayFunction()}
-     * if a {@link Function} is not set.</p>
+     * <p>This is used as the value returned by the
+     * {@link #getVmDestructionDelayFunction()} if a {@link Function} is not set.</p>
      *
      * @see #setVmDestructionDelayFunction(Function)
      */
     double DEF_VM_DESTRUCTION_DELAY = -1.0;
 
     /**
-     * Specifies that an already submitted cloudlet, which is in the {@link #getCloudletWaitingList() waiting list},
-     * must run in a specific virtual machine.
+     * Specifies that an already submitted cloudlet, which is in the
+     * {@link #getCloudletWaitingList() waiting list}, must run in a specific virtual machine.
      *
      * @param cloudlet the cloudlet to be bind to a given Vm
      * @param vm       the vm to bind the Cloudlet to
-     * @return true if the Cloudlet was found in the waiting list and was bind to the given Vm, false it the
-     * Cloudlet was not found in such a list (that may mean it wasn't submitted yet or was already created)
+     * @return true if the Cloudlet was found in the waiting list and was bind to the given Vm;
+     *         false if the Cloudlet was not found in such a list
+     *         (that may mean it wasn't submitted yet or was already created)
      */
     boolean bindCloudletToVm(Cloudlet cloudlet, Vm vm);
 
@@ -139,7 +142,8 @@ public interface DatacenterBroker extends SimEntity {
      * Destroys the passed VM.
      *
      * @param vm Virtual machine to be destroyed
-     * @return Cloudlets which were being queued or running on the target VM. All have reset state.
+     * @return Cloudlets which were being queued or running on the target VM.
+     *         Such cloudlets have their state reset.
      */
     List<Cloudlet> destroyVm(Vm vm);
 
@@ -156,8 +160,8 @@ public interface DatacenterBroker extends SimEntity {
     <T extends Vm> List<T> getVmCreatedList();
 
     /**
-     * Submits a single {@link Vm} or {@link VmGroup} to the broker.
-     * When a {@link VmGroup} is given, it will try to place all VMs inside it into the same Host.
+     * Submits a single {@link Vm} or {@link VmGroup} to the broker. When a {@link VmGroup} is given,
+     * it will try to place all VMs inside it into the same Host.
      *
      * @param vm the Vm to be submitted
      * @see VmGroup
@@ -166,11 +170,13 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker submitVm(Vm vm);
 
     /**
-     * Submits a list of {@link Vm} or {@link VmGroup} that their creation inside a Host will be requested to some
-     * {@link Datacenter}. The Datacenter that will be chosen to place a VM is
+     * Submits a list of {@link Vm} or {@link VmGroup} that their creation inside
+     * a Host will be requested to some {@link Datacenter}.
+     * The Datacenter that will be chosen to place a VM is
      * determined by the {@link #setDatacenterMapper(BiFunction)}.
      *
-     * <p>When a list of {@link VmGroup} is given, it will try to place all VMs from the same group into the same Host.</p>
+     * <p>When a list of {@link VmGroup} is given, it will try to place all VMs
+     * from the same group into the same Host.</p>
      *
      * @param list the list of VMs to request the creation
      * @see VmGroup
@@ -179,11 +185,13 @@ public interface DatacenterBroker extends SimEntity {
     DatacenterBroker submitVmList(List<? extends Vm> list);
 
     /**
-     * Submits a list of {@link Vm} or {@link VmGroup} to the broker so that their creation inside some Host will be requested just after a given delay.
+     * Submits a list of {@link Vm} or {@link VmGroup} to the broker so that their creation
+     * inside some Host will be requested just after a given delay.
      * Just the VMs that don't have a delay already assigned will have its submission delay changed.
      * All VMs will be added to the {@link #getVmWaitingList()}.
      *
-     * <p>When a list of {@link VmGroup} is given, it will try to place all VMs from the same group into the same Host.</p>
+     * <p>When a list of {@link VmGroup} is given,
+     * it will try to place all VMs from the same group into the same Host.</p>
      *
      * @param list            the list of VMs to request the creation
      * @param submissionDelay the delay the broker has to include when requesting the creation of VMs
@@ -272,14 +280,16 @@ public interface DatacenterBroker extends SimEntity {
      *
      * The provided BiFunction is accountable to define when the
      * last used Datacenter will be used for waiting VMs
-     * or a next one will be tried.</p>
+     * or a next one will be tried.
+     * </p>
      *
      * <p>When there are VMs in the waiting list, the provided Function
      * will be called. If it receives {@link Datacenter#NULL} it indicates
      * that a Datacenter was never selected to place VMs or the previous selected
      * Datacenter has not enough resources for all the waiting VMs.
      * The Function you provide here should consider that when returning
-     * the Datacenter where the creation of waiting VMs will be tried.</p>
+     * the Datacenter where the creation of waiting VMs will be tried.
+     * </p>
      *
      * @param datacenterMapper the datacenterMapper to set
      * @return
@@ -302,6 +312,7 @@ public interface DatacenterBroker extends SimEntity {
      * of submitted Cloudlets before mapping each Cloudlet to a Vm.
      * After sorting, the Cloudlet mapping will follow
      * the order of the sorted Cloudlet list.
+     *
      * @param comparator the Cloudlet Comparator to set
      */
     void setCloudletComparator(Comparator<Cloudlet> comparator);
@@ -366,6 +377,7 @@ public interface DatacenterBroker extends SimEntity {
      * If all VMs submitted at a given time cannot be created due to lack of suitable Hosts,
      * the event will not be fired for that submission.
      * </p>
+     *
      * @param listener the Listener that will be notified
      * @return
      * @see #getVmWaitingList()
@@ -416,7 +428,8 @@ public interface DatacenterBroker extends SimEntity {
      * according to desired conditions.</p>
      *
      * <p>
-     *     <b>WARNING:</b> The delay returned by the given function should be larger then the simulation minTimeBetweenEvents to ensure VMs are gracefully shutdown.
+     *     <b>WARNING:</b> The delay returned by the given function should be larger
+     *     then the simulation minTimeBetweenEvents to ensure VMs are gracefully shutdown.
      * </p>
      *
      * @param function the {@link Function} to set (if null is given, no idle VM will be automatically destroyed)
@@ -436,7 +449,7 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @param <T> the class of VMs inside the list
      * @return the list of failed VMs
-     * @see #setFailedVmsRetryDelay(double) }
+     * @see #setFailedVmsRetryDelay(double)
      */
     <T extends Vm> List<T> getVmFailedList();
 
@@ -453,12 +466,13 @@ public interface DatacenterBroker extends SimEntity {
      *
      * @return
      * <ul>
-     *  <li>a value larger than zero to indicate the broker will retry to place failed VM as soon as new VMs or Cloudlets
-     * are submitted or after the given delay.</li>
-     * <li>otherwise, to indicate failed VMs will be just added to the {@link #getVmFailedList()} and the user simulation
-     * have to deal with it.
-     * If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
-     * it will be notified about the failure.</li>
+     *  <li>a value larger than zero to indicate the broker will retry
+     *  to place failed VM as soon as new VMs or Cloudlets
+     *  are submitted or after the given delay.</li>
+     *  <li>otherwise, to indicate failed VMs will be just added to the
+     *  {@link #getVmFailedList()} and the user simulation have to deal with it.
+     *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
+     *  it will be notified about the failure.</li>
      * </ul>
      */
     double getFailedVmsRetryDelay();
@@ -470,11 +484,11 @@ public interface DatacenterBroker extends SimEntity {
      * Setting the attribute as:
      * <ul>
      *  <li>larger than zero, the broker will retry to place failed VM as soon as new VMs or Cloudlets
-     * are submitted or after the given delay.</li>
-     * <li>otherwise, failed VMs will be just added to the {@link #getVmFailedList()} and the user simulation
-     * have to deal with it.
-     * If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
-     * it will be notified about the failure.</li>
+     *  are submitted or after the given delay.</li>
+     *  <li>otherwise, failed VMs will be just added to the {@link #getVmFailedList()}
+     *  and the user simulation have to deal with it.
+     *  If the VM has an {@link Vm#addOnCreationFailureListener(EventListener) OnCreationFailureListener},
+     *  it will be notified about the failure.</li>
      * </ul>
      * @param failedVmsRetryDelay
      */
