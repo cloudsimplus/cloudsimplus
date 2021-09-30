@@ -11,7 +11,6 @@ import org.cloudbus.cloudsim.allocationpolicies.migration.VmAllocationPolicyMigr
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.HostSuitability;
-import org.cloudbus.cloudsim.provisioners.ResourceProvisioner;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.resources.Processor;
 import org.cloudbus.cloudsim.resources.ResourceManageable;
@@ -50,9 +49,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      */
     private BiFunction<VmAllocationPolicy, Vm, Optional<Host>> findHostForVmFunction;
 
-    /**
-     * @see #getDatacenter()
-     */
+    /** @see #getDatacenter() */
     private Datacenter datacenter;
 
     /**@see #getHostCountForParallelSearch() */
@@ -161,8 +158,8 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     private boolean isNotHostPesSuitableToUpScaleVm(final VerticalVmScaling scaling) {
         final Vm vm = scaling.getVm();
-        final long numberOfPesForScaling = (long)scaling.getResourceAmountToScale();
-        final MipsShare additionalVmMips = new MipsShare(numberOfPesForScaling, vm.getMips());
+        final long pesCountForScaling = (long)scaling.getResourceAmountToScale();
+        final MipsShare additionalVmMips = new MipsShare(pesCountForScaling, vm.getMips());
         return !vm.getHost().getVmScheduler().isSuitableForVm(vm, additionalVmMips);
     }
 
@@ -186,17 +183,17 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @see #upScaleVmVertically(VerticalVmScaling)
      */
     private boolean upScaleVmNonCpuResource(final VerticalVmScaling scaling) {
-        final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClass();
-        final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
+        final var resourceManageableClass = scaling.getResourceClass();
+        final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceManageableClass);
         final double extraAmountToAllocate = scaling.getResourceAmountToScale();
         if (!hostResource.isAmountAvailable(extraAmountToAllocate)) {
             return false;
         }
 
-        final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
-        final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
+        final var resourceProvisioner = scaling.getVm().getHost().getProvisioner(resourceManageableClass);
+        final var vmResource = scaling.getVm().getResource(resourceManageableClass);
         final double newTotalVmResource = (double) vmResource.getCapacity() + extraAmountToAllocate;
-        if (!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
+        if (!resourceProvisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
             showResourceIsUnavailable(scaling);
             return false;
         }
@@ -205,23 +202,23 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             "{}: {}: {} more {} allocated to {}: new capacity is {}. Current resource usage is {}%",
             scaling.getVm().getSimulation().clockStr(),
             scaling.getClass().getSimpleName(),
-            (long) extraAmountToAllocate, resourceClass.getSimpleName(),
+            (long) extraAmountToAllocate, resourceManageableClass.getSimpleName(),
             scaling.getVm(), vmResource.getCapacity(),
             vmResource.getPercentUtilization() * 100);
         return true;
     }
 
     private void showResourceIsUnavailable(final VerticalVmScaling scaling) {
-        final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClass();
-        final ResourceManageable hostResource = scaling.getVm().getHost().getResource(resourceClass);
+        final var resourceManageableClass = scaling.getResourceClass();
+        final var hostResource = scaling.getVm().getHost().getResource(resourceManageableClass);
         final double extraAmountToAllocate = scaling.getResourceAmountToScale();
         LOGGER.warn(
             "{}: {}: {} requested more {} of {} capacity but the {} has just {} of available {}",
             scaling.getVm().getSimulation().clockStr(),
             scaling.getClass().getSimpleName(),
             scaling.getVm(), (long) extraAmountToAllocate,
-            resourceClass.getSimpleName(), scaling.getVm().getHost(),
-            hostResource.getAvailableResource(), resourceClass.getSimpleName());
+            resourceManageableClass.getSimpleName(), scaling.getVm().getHost(),
+            hostResource.getAvailableResource(), resourceManageableClass.getSimpleName());
     }
 
     /**
@@ -232,18 +229,18 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
      * @see #downScaleVmVertically(VerticalVmScaling)
      */
     private boolean downScaleVmNonCpuResource(final VerticalVmScaling scaling) {
-        final Class<? extends ResourceManageable> resourceClass = scaling.getResourceClass();
-        final ResourceManageable vmResource = scaling.getVm().getResource(resourceClass);
+        final var resourceManageableClass = scaling.getResourceClass();
+        final var vmResource = scaling.getVm().getResource(resourceManageableClass);
         final double amountToDeallocate = scaling.getResourceAmountToScale();
-        final ResourceProvisioner provisioner = scaling.getVm().getHost().getProvisioner(resourceClass);
+        final var resourceProvisioner = scaling.getVm().getHost().getProvisioner(resourceManageableClass);
         final double newTotalVmResource = vmResource.getCapacity() - amountToDeallocate;
-        if (!provisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
+        if (!resourceProvisioner.allocateResourceForVm(scaling.getVm(), newTotalVmResource)) {
             LOGGER.error(
                 "{}: {}: {} requested to reduce {} capacity by {} but an unexpected error occurred and the resource was not resized",
                 scaling.getVm().getSimulation().clockStr(),
                 scaling.getClass().getSimpleName(),
                 scaling.getVm(),
-                resourceClass.getSimpleName(), (long) amountToDeallocate);
+                resourceManageableClass.getSimpleName(), (long) amountToDeallocate);
             return false;
         }
 
@@ -251,7 +248,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             "{}: {}: {} {} deallocated from {}: new capacity is {}. Current resource usage is {}%",
             scaling.getVm().getSimulation().clockStr(),
             scaling.getClass().getSimpleName(),
-            (long) amountToDeallocate, resourceClass.getSimpleName(),
+            (long) amountToDeallocate, resourceManageableClass.getSimpleName(),
             scaling.getVm(), vmResource.getCapacity(),
             vmResource.getPercentUtilization() * 100);
         return true;
@@ -276,9 +273,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
             return new HostSuitability("VM is already created");
         }
 
-        final Optional<Host> optional = findHostForVm(vm);
-        if (optional.filter(Host::isActive).isPresent()) {
-            return allocateHostForVm(vm, optional.get());
+        final var optionalHost = findHostForVm(vm);
+        if (optionalHost.filter(Host::isActive).isPresent()) {
+            return allocateHostForVm(vm, optionalHost.get());
         }
 
         LOGGER.warn("{}: {}: No suitable host found for {} in {}", vm.getSimulation().clockStr(), getClass().getSimpleName(), vm, datacenter);
@@ -302,11 +299,11 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     private HostSuitability createVmsFromGroup(final VmGroup vmGroup, final Host host) {
         int createdVms = 0;
-        final HostSuitability hostSuitabilityForVmGroup = new HostSuitability();
+        final var hostSuitabilityForVmGroup = new HostSuitability();
         for (final Vm vm : vmGroup.getVmList()) {
-            final HostSuitability suitability = createVm(vm, host);
-            hostSuitabilityForVmGroup.setSuitability(suitability);
-            createdVms += Conversion.boolToInt(suitability.fully());
+            final var hostSuitability = createVm(vm, host);
+            hostSuitabilityForVmGroup.setSuitability(hostSuitability);
+            createdVms += Conversion.boolToInt(hostSuitability.fully());
         }
 
         vmGroup.setCreated(createdVms > 0);
@@ -318,7 +315,7 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
     }
 
     private HostSuitability createVm(final Vm vm, final Host host) {
-        final HostSuitability suitability = host.createVm(vm);
+        final var suitability = host.createVm(vm);
         if (suitability.fully()) {
             LOGGER.info(
                 "{}: {}: {} has been allocated to {}",
@@ -351,9 +348,9 @@ public abstract class VmAllocationPolicyAbstract implements VmAllocationPolicy {
 
     @Override
     public final Optional<Host> findHostForVm(final Vm vm) {
-        final Optional<Host> optional = findHostForVmFunction == null ? defaultFindHostForVm(vm) : findHostForVmFunction.apply(this, vm);
+        final var optionalHost = findHostForVmFunction == null ? defaultFindHostForVm(vm) : findHostForVmFunction.apply(this, vm);
         //If the selected Host is not active, activate it (if it's already active, setActive has no effect)
-        return optional.map(host -> host.setActive(true));
+        return optionalHost.map(host -> host.setActive(true));
     }
 
     /**
