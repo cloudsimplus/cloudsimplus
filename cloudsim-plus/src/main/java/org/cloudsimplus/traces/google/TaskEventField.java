@@ -31,7 +31,7 @@ import org.cloudbus.cloudsim.util.TimeUtil;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-public enum FieldIndex implements TraceField<GoogleTaskEventsTraceReader> {
+public enum TaskEventField implements TraceField<GoogleTaskEventsTraceReader> {
     /**
      * 0: The index of the field containing the time the event happened (stored in microsecond
      * but converted to seconds when read from the file).

@@ -109,7 +109,7 @@ public final class BrokerManager {
      * @return the {@link DatacenterBroker} instance
      */
     protected DatacenterBroker getBroker(){
-        final String value = FieldIndex.USERNAME.getValue(reader);
+        final String value = TaskEventField.USERNAME.getValue(reader);
         return getBroker(value);
     }
 

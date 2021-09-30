@@ -99,7 +99,7 @@ public final class TaskEvent extends TaskData {
      * Such a value is defined by a "task usage" trace.
      * </p>
      * @return
-     * @see FieldIndex#RESOURCE_REQUEST_FOR_CPU_CORES
+     * @see TaskEventField#RESOURCE_REQUEST_FOR_CPU_CORES
      * @see GoogleTaskUsageTraceReader
      */
     public double getResourceRequestForCpuCores() {
@@ -141,7 +141,7 @@ public final class TaskEvent extends TaskData {
      * when trying to create the Cloudlets.
      * </p>
      * @return
-     * @see FieldIndex#RESOURCE_REQUEST_FOR_RAM
+     * @see TaskEventField#RESOURCE_REQUEST_FOR_RAM
      * @see GoogleTaskUsageTraceReader
      */
     public double getResourceRequestForRam() {
@@ -167,7 +167,7 @@ public final class TaskEvent extends TaskData {
      * when creating the Cloudlet, according to the researcher needs.
      * </p>
      * @return
-     * @see FieldIndex#RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE
+     * @see TaskEventField#RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE
      */
     public double getResourceRequestForLocalDiskSpace() {
         return resourceRequestForLocalDiskSpace;
@@ -181,7 +181,7 @@ public final class TaskEvent extends TaskData {
     /**
      * Gets the hashed username provided as an opaque base64-encoded string that can be tested for equality.
      * @return
-     * @see FieldIndex#USERNAME
+     * @see TaskEventField#USERNAME
      */
     public String getUserName() {
         return userName;
@@ -195,7 +195,7 @@ public final class TaskEvent extends TaskData {
     /**
      * Gets the time the event happened (converted to seconds).
      * @return
-     * @see FieldIndex#TIMESTAMP
+     * @see TaskEventField#TIMESTAMP
      */
     public double getTimestamp() {
         return timestamp;
@@ -212,7 +212,7 @@ public final class TaskEvent extends TaskData {
      * with 3 representing a more latency-sensitive task (e.g., serving revenue-generating user requests)
      * and 0 representing a non-production task (e.g., development, non-business-critical analyses, etc.).
      * @return
-     * @see FieldIndex#SCHEDULING_CLASS
+     * @see TaskEventField#SCHEDULING_CLASS
      */
     public int getSchedulingClass() {
         return schedulingClass;
@@ -255,16 +255,16 @@ public final class TaskEvent extends TaskData {
          *       for instance when the task is submitted. It's just know when it starts to execute.
          */
         event
-            .setType(FieldIndex.EVENT_TYPE.getValue(reader))
-            .setTimestamp(FieldIndex.TIMESTAMP.getValue(reader))
-            .setResourceRequestForCpuCores(FieldIndex.RESOURCE_REQUEST_FOR_CPU_CORES.getValue(reader))
-            .setResourceRequestForLocalDiskSpace(FieldIndex.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.getValue(reader))
-            .setResourceRequestForRam(FieldIndex.RESOURCE_REQUEST_FOR_RAM.getValue(reader))
-            .setPriority(FieldIndex.PRIORITY.getValue(reader))
-            .setSchedulingClass(FieldIndex.SCHEDULING_CLASS.getValue(reader))
-            .setUserName(FieldIndex.USERNAME.getValue(reader))
-            .setJobId(FieldIndex.JOB_ID.getValue(reader))
-            .setTaskIndex(FieldIndex.TASK_INDEX.getValue(reader));
+            .setType(TaskEventField.EVENT_TYPE.getValue(reader))
+            .setTimestamp(TaskEventField.TIMESTAMP.getValue(reader))
+            .setResourceRequestForCpuCores(TaskEventField.RESOURCE_REQUEST_FOR_CPU_CORES.getValue(reader))
+            .setResourceRequestForLocalDiskSpace(TaskEventField.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.getValue(reader))
+            .setResourceRequestForRam(TaskEventField.RESOURCE_REQUEST_FOR_RAM.getValue(reader))
+            .setPriority(TaskEventField.PRIORITY.getValue(reader))
+            .setSchedulingClass(TaskEventField.SCHEDULING_CLASS.getValue(reader))
+            .setUserName(TaskEventField.USERNAME.getValue(reader))
+            .setJobId(TaskEventField.JOB_ID.getValue(reader))
+            .setTaskIndex(TaskEventField.TASK_INDEX.getValue(reader));
         return event;
     }
 }

@@ -29,7 +29,7 @@ import org.cloudbus.cloudsim.core.CloudSimTags;
 /**
  * Defines the type of {@link TaskEvent} (a line) in the trace file
  * that represents the state of the job.
- * Each enum instance is a possible value for the {@link FieldIndex#EVENT_TYPE} field.
+ * Each enum instance is a possible value for the {@link TaskEventField#EVENT_TYPE} field.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
@@ -50,7 +50,7 @@ public enum TaskEventType {
             // Since Cloudlet id must be unique, it will be the concatenation of the job and task id
             cloudlet.setId(event.getUniqueTaskId());
             cloudlet.setJobId(event.getJobId());
-            final double delay = FieldIndex.TIMESTAMP.getValue(reader);
+            final double delay = TaskEventField.TIMESTAMP.getValue(reader);
             cloudlet.setSubmissionDelay(delay);
 
             /* Set status to FROZEN to avoid the cloudlet to start running after being submitted.
@@ -181,6 +181,6 @@ public enum TaskEventType {
      * @return the {@link MachineEventType} value
      */
     protected static TaskEventType of(final GoogleTaskEventsTraceReader reader) {
-        return getValue(FieldIndex.EVENT_TYPE.getValue(reader));
+        return getValue(TaskEventField.EVENT_TYPE.getValue(reader));
     }
 }

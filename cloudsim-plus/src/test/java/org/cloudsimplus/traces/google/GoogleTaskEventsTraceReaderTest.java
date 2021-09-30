@@ -70,19 +70,19 @@ public class GoogleTaskEventsTraceReaderTest {
      */
     @Test
     public void testFieldIndex(){
-        assertEquals(0, FieldIndex.TIMESTAMP.ordinal());
-        assertEquals(1, FieldIndex.MISSING_INFO.ordinal());
-        assertEquals(2, FieldIndex.JOB_ID.ordinal());
-        assertEquals(3, FieldIndex.TASK_INDEX.ordinal());
-        assertEquals(4, FieldIndex.MACHINE_ID.ordinal());
-        assertEquals(5, FieldIndex.EVENT_TYPE.ordinal());
-        assertEquals(6, FieldIndex.USERNAME.ordinal());
-        assertEquals(7, FieldIndex.SCHEDULING_CLASS.ordinal());
-        assertEquals(8, FieldIndex.PRIORITY.ordinal());
-        assertEquals(9, FieldIndex.RESOURCE_REQUEST_FOR_CPU_CORES.ordinal());
-        assertEquals(10, FieldIndex.RESOURCE_REQUEST_FOR_RAM.ordinal());
-        assertEquals(11, FieldIndex.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.ordinal());
-        assertEquals(12, FieldIndex.DIFFERENT_MACHINE_CONSTRAINT.ordinal());
+        assertEquals(0, TaskEventField.TIMESTAMP.ordinal());
+        assertEquals(1, TaskEventField.MISSING_INFO.ordinal());
+        assertEquals(2, TaskEventField.JOB_ID.ordinal());
+        assertEquals(3, TaskEventField.TASK_INDEX.ordinal());
+        assertEquals(4, TaskEventField.MACHINE_ID.ordinal());
+        assertEquals(5, TaskEventField.EVENT_TYPE.ordinal());
+        assertEquals(6, TaskEventField.USERNAME.ordinal());
+        assertEquals(7, TaskEventField.SCHEDULING_CLASS.ordinal());
+        assertEquals(8, TaskEventField.PRIORITY.ordinal());
+        assertEquals(9, TaskEventField.RESOURCE_REQUEST_FOR_CPU_CORES.ordinal());
+        assertEquals(10, TaskEventField.RESOURCE_REQUEST_FOR_RAM.ordinal());
+        assertEquals(11, TaskEventField.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.ordinal());
+        assertEquals(12, TaskEventField.DIFFERENT_MACHINE_CONSTRAINT.ordinal());
     }
 
 }
