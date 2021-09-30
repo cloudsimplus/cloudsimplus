@@ -42,6 +42,21 @@ import java.util.function.Predicate;
  * </ul>
  * </p>
  *
+ * <b>List of unused fields:</b>
+ * <p>
+ * <ul>
+ * <li>Required running time (index 8):
+ * This can be either runtime (measured in wall-clock seconds),
+ * or average CPU time per processor (also in seconds).
+ * The exact meaning is determined by a header comment.
+ * If a log contains a request for total CPU time, it is divided by the number of requested processors.
+ * </li>
+ *
+ * <li>User who submitted the job (index 11)</li>
+ * <li>Group of the user who submitted the job (index 12)</li>
+ * </ul>
+ * </p>
+ *
  * @see #getInstance(String, int)
  * @see #generateWorkload()
  *
@@ -79,24 +94,6 @@ public final class SwfWorkloadFileReader extends TraceReaderAbstract {
      * Field index of required number of processors.
      */
     private static final int REQ_NUM_PROC_INDEX = 7;
-
-    /**
-     * Field index of required running time.
-     * This can be either runtime (measured in wall-clock seconds), or average CPU time per processor (also in seconds)
-     * -- the exact meaning is determined by a header comment.
-     * If a log contains a request for total CPU time, it is divided by the number of requested processors.
-     */
-    private static final int REQ_RUN_TIME_INDEX = 8;
-
-    /**
-     * Field index of user who submitted the job.
-     */
-    private static final int USER_ID_INDEX = 11;
-
-    /**
-     * Field index of group of the user who submitted the job.
-     */
-    private static final int GROUP_ID_INDEX = 12;
 
     /**
      * Max number of fields in the trace reader.
