@@ -44,7 +44,7 @@ public class CloudletSendTask extends CloudletTask {
     /**
      * Creates a new task.
      *
-     * @param id task id
+     * @param id id to assign to the task
      */
     public CloudletSendTask(final int id) {
         super(id);
@@ -88,13 +88,12 @@ public class CloudletSendTask extends CloudletTask {
 
     /**
      * Gets the list of packets to send,
-     * updating the send time to the given time
+     * updating packets' send time to the given time
      * and clearing the list of packets, marking the
      * task as finished.
      *
-     * @param sendTime the send time to update all packets in the list
-     * @return the packet list with the send time
-     * updated to the given time
+     * @param sendTime packets' send time to set
+     * @return the packet list with their send time updated to the given time
      */
     public List<VmPacket> getPacketsToSend(final double sendTime) {
         packetsToSend.forEach(pkt ->  pkt.setSendTime(sendTime));
