@@ -21,13 +21,13 @@ import org.cloudbus.cloudsim.selectionpolicies.VmSelectionPolicy;
  */
 public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
     /**
-     * An attribute that implements the Null Object Design Pattern for {@link VmAllocationPolicyMigration}
-     * objects.
+     * An attribute that implements the Null Object Design Pattern for
+     * {@link VmAllocationPolicyMigration} objects.
      */
     VmAllocationPolicyMigration NULL = new VmAllocationPolicyMigrationNull();
 
     /**
-     * Checks if host is currently under utilized, according the the
+     * Checks if host is currently under utilized, according the
      * conditions defined by the Allocation Policy.
      *
      * @param host the host
@@ -36,7 +36,7 @@ public interface VmAllocationPolicyMigration extends VmAllocationPolicy {
     boolean isHostUnderloaded(Host host);
 
     /**
-     * Checks if host is currently over utilized, according the the
+     * Checks if host is currently over utilized, according the
      * conditions defined by the Allocation Policy.
      *
      * @param host the host to check

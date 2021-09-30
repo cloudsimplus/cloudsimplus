@@ -47,7 +47,8 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
      * when a host is overloaded. The overload detection is based
      * on a dynamic defined host utilization threshold.
      *
-     * <p>Such a threshold is computed based on the host's usage history using different statistical methods
+     * <p>Such a threshold is computed based on the host's usage
+     * history using different statistical methods
      * (such as Median absolute deviation - MAD, that is similar to the Standard Deviation)
      * depending on the implementing class, as defined by the method
      * {@link #computeHostUtilizationMeasure(Host)}.</p>
@@ -72,7 +73,8 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
      * </p>
      *
      * <p>
-     * Here, safer doesn't mean a more accurate overload detection but that the algorithm will use a lower host
+     * Here, safer doesn't mean a more accurate overload detection but that the
+     * algorithm will use a lower host
      * utilization threshold that may lead to lower SLA violations but higher
      * resource wastage. <b>Thus this parameter has to be tuned in order to
      * trade-off between SLA violation and resource wastage.</b></p>
@@ -80,10 +82,11 @@ public interface VmAllocationPolicyMigrationDynamicUpperThreshold extends VmAllo
     double getSafetyParameter();
 
     /**
-     * Computes the measure used to generate the dynamic host over utilization threshold using some statistical method
-     * (such as the Median absolute deviation - MAD, InterQuartileRange - IRQ, Local Regression, etc),
-     * depending on the implementing class. The method uses Host utilization history to compute
-     * such a metric.
+     * Computes the measure used to generate the dynamic host over utilization
+     * threshold using some statistical method (such as the
+     * Median absolute deviation - MAD, InterQuartileRange - IRQ, Local Regression, etc.),
+     * depending on the implementing class.
+     * The method uses Host utilization history to compute such a metric.
      *
      * @param host the host to get the current utilization
      * @return
