@@ -13,7 +13,7 @@ import java.util.List;
  * @since CloudSim Plus 7.0.1
  * @see <a href="https://en.wikipedia.org/wiki/Regression_analysis">Regression Analysis</a>
  */
-public class Regression {
+public final class Regression {
 
     /** A private constructor to avoid class instantiation. */
     private Regression(){/**/}
