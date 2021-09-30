@@ -30,7 +30,6 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.Pe;
 import org.cloudbus.cloudsim.util.BytesConversion;
 import org.cloudbus.cloudsim.util.ResourceLoader;
-import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.util.TraceReaderAbstract;
 
 import java.io.FileNotFoundException;
@@ -73,91 +72,6 @@ import static java.util.Objects.requireNonNull;
  * @since CloudSim Plus 4.0.0
  */
 public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstract<Host> {
-
-    /**
-     * The index of each field in the trace file.
-     */
-    public enum FieldIndex implements TraceField<GoogleMachineEventsTraceReader> {
-        /**
-         * 0: The index of the field containing the time the event happened (in microsecond).
-         */
-        TIMESTAMP{
-            /**
-             * Gets the timestamp converted to milliseconds.
-             * @param reader the reader for the trace file
-             * @return
-             */
-            @Override
-            public Double getValue(final GoogleMachineEventsTraceReader reader) {
-                return TimeUtil.microToSeconds(reader.getFieldDoubleValue(this));
-            }
-        },
-
-        /**
-         * 1: The index of the field containing the machine ID.
-         */
-        MACHINE_ID{
-            @Override
-            public Long getValue(final GoogleMachineEventsTraceReader reader) {
-                return reader.getFieldLongValue(this);
-            }
-        },
-
-        /**
-         * 2: The index of the field containing the type of event.
-         * The possible values for this field are the ordinal values of the enum {@link MachineEventType}.
-         */
-        EVENT_TYPE{
-            @Override
-            public Integer getValue(final GoogleMachineEventsTraceReader reader) {
-                return reader.getFieldIntValue(this);
-            }
-        },
-
-        /**
-         * 3: The platform ID is an opaque string representing the micro-architecture and chipset version of the machine.
-         */
-        PLATFORM_ID{
-            @Override
-            public Integer getValue(final GoogleMachineEventsTraceReader reader) {
-                return reader.getFieldIntValue(this);
-            }
-        },
-
-        /**
-         * 4: The index of the CPU capacity field in the trace,
-         * that represents a percentage (between 0 and 1)
-         * of the {@link #getMaxCpuCores()}.
-         */
-        CPU_CAPACITY{
-            /**
-             * Gets the actual number of {@link Pe}s (CPU cores) to be assigned to a Host,
-             * according the {@link GoogleMachineEventsTraceReader#getMaxCpuCores()}.
-             */
-            @Override
-            public Integer getValue(final GoogleMachineEventsTraceReader reader) {
-                final double fieldValue = reader.getFieldDoubleValue(this);
-                return (int) Math.round(fieldValue * reader.getMaxCpuCores());
-            }
-        },
-
-        /**
-         * 5: The index of the RAM capacity field in the trace,
-         * that represents a percentage (between 0 and 1)
-         * of the {@link #getMaxRamCapacity()} ()}.
-         */
-        RAM_CAPACITY{
-            /**
-             * Gets the actual RAM capacity to be assigned to a Host,
-             * according the {@link GoogleMachineEventsTraceReader#getMaxRamCapacity()}.
-             */
-            @Override
-            public Long getValue(final GoogleMachineEventsTraceReader reader) {
-                final double fieldValue = reader.getFieldDoubleValue(this);
-                return Math.round(fieldValue * reader.getMaxCpuCores());
-            }
-        }
-    }
 
     /**
      * @see #getMaxRamCapacity()
@@ -369,7 +283,7 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      * @return the {@link MachineEventType} value
      */
     private MachineEventType getEventType() {
-        return MachineEventType.getValue(FieldIndex.EVENT_TYPE.getValue(this));
+        return MachineEventType.getValue(MachineEventField.EVENT_TYPE.getValue(this));
     }
 
     /**
@@ -380,12 +294,12 @@ public final class GoogleMachineEventsTraceReader extends GoogleTraceReaderAbstr
      */
     protected Host createHostFromTraceLine() {
         final MachineEvent event = new MachineEvent();
-        event.setCpuCores(FieldIndex.CPU_CAPACITY.getValue(this))
-             .setRam(FieldIndex.RAM_CAPACITY.getValue(this))
-             .setTimestamp(FieldIndex.TIMESTAMP.getValue(this))
-             .setMachineId(FieldIndex.MACHINE_ID.getValue(this));
+        event.setCpuCores(MachineEventField.CPU_CAPACITY.getValue(this))
+             .setRam(MachineEventField.RAM_CAPACITY.getValue(this))
+             .setTimestamp(MachineEventField.TIMESTAMP.getValue(this))
+             .setMachineId(MachineEventField.MACHINE_ID.getValue(this));
         final Host host = hostCreationFunction.apply(event);
-        host.setId(FieldIndex.MACHINE_ID.getValue(this));
+        host.setId(MachineEventField.MACHINE_ID.getValue(this));
         return host;
     }
 

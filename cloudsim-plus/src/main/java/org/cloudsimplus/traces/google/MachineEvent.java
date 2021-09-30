@@ -64,7 +64,7 @@ public final class MachineEvent extends MachineDataBase {
      * according the {@link GoogleMachineEventsTraceReader#getMaxRamCapacity()}.
      *
      * @return
-     * @see GoogleMachineEventsTraceReader.FieldIndex#RAM_CAPACITY
+     * @see MachineEventField#RAM_CAPACITY
      */
     public long getRam(){
         return ram;
@@ -80,7 +80,7 @@ public final class MachineEvent extends MachineDataBase {
      * according the {@link GoogleMachineEventsTraceReader#getMaxCpuCores()}.
      *
      * @return
-     * @see GoogleMachineEventsTraceReader.FieldIndex#CPU_CAPACITY
+     * @see MachineEventField#CPU_CAPACITY
      */
     public int getCpuCores() {
         return cpuCores;
@@ -95,7 +95,7 @@ public final class MachineEvent extends MachineDataBase {
      * Gets the time the event happened (converted to seconds).
      *
      * @return
-     * @see GoogleMachineEventsTraceReader.FieldIndex#TIMESTAMP
+     * @see MachineEventField#TIMESTAMP
      */
     public double getTimestamp() {
         return timestamp;

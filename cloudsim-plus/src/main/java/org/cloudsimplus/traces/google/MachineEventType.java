@@ -24,12 +24,11 @@
 package org.cloudsimplus.traces.google;
 
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudsimplus.traces.google.GoogleMachineEventsTraceReader.FieldIndex;
 
 /**
  * Defines the type of an event (a line) in the trace file
  * that represents the operation to be performed with the {@link Host}.
- * Each enum instance is a possible value for the {@link FieldIndex#EVENT_TYPE} field.
+ * Each enum instance is a possible value for the {@link MachineEventField#EVENT_TYPE} field.
  *
  * <p>This enum defines a some methods to move the processing logic of each event type
  * to the enum value associated to it. Since the enum includes the {@link #process(GoogleMachineEventsTraceReader)}
@@ -48,7 +47,7 @@ public enum MachineEventType {
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
             final Host host = reader.createHostFromTraceLine();
-            host.setStartTime(FieldIndex.TIMESTAMP.getValue(reader));
+            host.setStartTime(MachineEventField.TIMESTAMP.getValue(reader));
             return host.getStartTime() == 0 ? reader.addAvailableObject(host) : reader.addLaterAvailableHost(host);
         }
     },
@@ -60,7 +59,7 @@ public enum MachineEventType {
         @Override
         protected boolean process(final GoogleMachineEventsTraceReader reader) {
             final Host host = reader.createHostFromTraceLine();
-            host.setShutdownTime(FieldIndex.TIMESTAMP.getValue(reader));
+            host.setShutdownTime(MachineEventField.TIMESTAMP.getValue(reader));
             return reader.addHostToRemovalList(host);
         }
     },

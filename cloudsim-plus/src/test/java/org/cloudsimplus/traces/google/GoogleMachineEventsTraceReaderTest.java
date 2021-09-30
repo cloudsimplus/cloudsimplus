@@ -23,7 +23,6 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudsimplus.traces.google.GoogleMachineEventsTraceReader.FieldIndex;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -57,12 +56,12 @@ public class GoogleMachineEventsTraceReaderTest {
     @Test
     public void testFieldIndex(){
         assertAll(
-            () -> assertEquals(0, FieldIndex.TIMESTAMP.ordinal()),
-            () -> assertEquals(1, FieldIndex.MACHINE_ID.ordinal()),
-            () -> assertEquals(2, FieldIndex.EVENT_TYPE.ordinal()),
-            () -> assertEquals(3, FieldIndex.PLATFORM_ID.ordinal()),
-            () -> assertEquals(4, FieldIndex.CPU_CAPACITY.ordinal()),
-            () -> assertEquals(5, FieldIndex.RAM_CAPACITY.ordinal())
+            () -> assertEquals(0, MachineEventField.TIMESTAMP.ordinal()),
+            () -> assertEquals(1, MachineEventField.MACHINE_ID.ordinal()),
+            () -> assertEquals(2, MachineEventField.EVENT_TYPE.ordinal()),
+            () -> assertEquals(3, MachineEventField.PLATFORM_ID.ordinal()),
+            () -> assertEquals(4, MachineEventField.CPU_CAPACITY.ordinal()),
+            () -> assertEquals(5, MachineEventField.RAM_CAPACITY.ordinal())
         );
     }
 
