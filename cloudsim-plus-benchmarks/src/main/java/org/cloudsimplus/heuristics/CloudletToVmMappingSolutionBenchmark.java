@@ -3,7 +3,7 @@
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2018 Universidade da Beira Interior (UBI, Portugal) and
+ *     Copyright (C) 2015-2021 Universidade da Beira Interior (UBI, Portugal) and
  *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
@@ -23,18 +23,13 @@
  */
 package org.cloudsimplus.heuristics;
 
-import java.util.stream.IntStream;
-
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
-import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudbus.cloudsim.distributions.UniformDistr;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
-import org.openjdk.jmh.annotations.Benchmark;
-import org.openjdk.jmh.annotations.BenchmarkMode;
-import org.openjdk.jmh.annotations.Mode;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.Setup;
-import org.openjdk.jmh.annotations.State;
+import org.cloudbus.cloudsim.vms.VmSimple;
+import org.openjdk.jmh.annotations.*;
+
+import java.util.stream.IntStream;
 
 /**
  * A set of benchmarks for the {@link CloudletToVmMappingSolution} class.

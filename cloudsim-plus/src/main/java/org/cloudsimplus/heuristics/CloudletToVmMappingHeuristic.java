@@ -3,7 +3,7 @@
  * Modeling and Simulation of Cloud Computing Infrastructures and Services.
  * http://cloudsimplus.org
  *
- *     Copyright (C) 2015-2018 Universidade da Beira Interior (UBI, Portugal) and
+ *     Copyright (C) 2015-2021 Universidade da Beira Interior (UBI, Portugal) and
  *     the Instituto Federal de Educação Ciência e Tecnologia do Tocantins (IFTO, Brazil).
  *
  *     This file is part of CloudSim Plus.
@@ -23,10 +23,10 @@
  */
 package org.cloudsimplus.heuristics;
 
-import java.util.List;
-
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.vms.Vm;
+
+import java.util.List;
 
 /**
  * Provides the methods to be used for implementing a heuristic to get
