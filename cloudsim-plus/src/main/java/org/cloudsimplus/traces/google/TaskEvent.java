@@ -240,4 +240,31 @@ public final class TaskEvent extends TaskData {
         this.type = TaskEventType.getValue(type);
         return this;
     }
+
+    /**
+     * Creates a TaskEvent from the current processed line from a Google Task Events trace file.
+     * @param reader
+     * @return
+     */
+    protected static TaskEvent of(final GoogleTaskEventsTraceReader reader) {
+        final TaskEvent event = new TaskEvent();
+        /*@TODO The tasks with the same username must run inside the same user's VM,
+         *       unless the machineID is different.
+         *       The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
+         *       The challenge here is because the task requirements are usually not known,
+         *       for instance when the task is submitted. It's just know when it starts to execute.
+         */
+        event
+            .setType(FieldIndex.EVENT_TYPE.getValue(reader))
+            .setTimestamp(FieldIndex.TIMESTAMP.getValue(reader))
+            .setResourceRequestForCpuCores(FieldIndex.RESOURCE_REQUEST_FOR_CPU_CORES.getValue(reader))
+            .setResourceRequestForLocalDiskSpace(FieldIndex.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.getValue(reader))
+            .setResourceRequestForRam(FieldIndex.RESOURCE_REQUEST_FOR_RAM.getValue(reader))
+            .setPriority(FieldIndex.PRIORITY.getValue(reader))
+            .setSchedulingClass(FieldIndex.SCHEDULING_CLASS.getValue(reader))
+            .setUserName(FieldIndex.USERNAME.getValue(reader))
+            .setJobId(FieldIndex.JOB_ID.getValue(reader))
+            .setTaskIndex(FieldIndex.TASK_INDEX.getValue(reader));
+        return event;
+    }
 }

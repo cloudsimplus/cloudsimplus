@@ -210,38 +210,8 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
 
     @Override
     protected boolean processParsedLineInternal() {
-        return getEventType().process(this);
-    }
-
-    /**
-     * Gets the enum value that represents the event type of the current trace line.
-     *
-     * @return the {@link MachineEventType} value
-     */
-    private TaskEventType getEventType() {
-        return TaskEventType.getValue(FieldIndex.EVENT_TYPE.getValue(this));
-    }
-
-    protected TaskEvent createTaskEventFromTraceLine() {
-        final TaskEvent event = new TaskEvent();
-        /*@TODO The tasks with the same username must run inside the same user's VM,
-        *       unless the machineID is different.
-        *       The task (cloudlet) needs to be mapped to a specific Host (according to the machineID).
-        *       The challenge here is because the task requirements are usually not known,
-        *       for instance when the task is submitted. It's just know when it starts to execute.
-        */
-        event
-            .setType(FieldIndex.EVENT_TYPE.getValue(this))
-            .setTimestamp(FieldIndex.TIMESTAMP.getValue(this))
-            .setResourceRequestForCpuCores(FieldIndex.RESOURCE_REQUEST_FOR_CPU_CORES.getValue(this))
-            .setResourceRequestForLocalDiskSpace(FieldIndex.RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE.getValue(this))
-            .setResourceRequestForRam(FieldIndex.RESOURCE_REQUEST_FOR_RAM.getValue(this))
-            .setPriority(FieldIndex.PRIORITY.getValue(this))
-            .setSchedulingClass(FieldIndex.SCHEDULING_CLASS.getValue(this))
-            .setUserName(FieldIndex.USERNAME.getValue(this))
-            .setJobId(FieldIndex.JOB_ID.getValue(this))
-            .setTaskIndex(FieldIndex.TASK_INDEX.getValue(this));
-        return event;
+        final var eventType = TaskEventType.of(this);
+        return eventType.process(this);
     }
 
     /**
@@ -251,7 +221,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * @return true if the request was created, false otherwise
      */
     /* default */ boolean requestCloudletStatusChange(final int tag) {
-        final TaskEvent taskEvent = createTaskEventFromTraceLine();
+        final TaskEvent taskEvent = TaskEvent.of(this);
         final DatacenterBroker broker = brokerManager.getBroker(taskEvent.getUserName());
         final double delay = taskEvent.getTimestamp();
 

@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 
 /**
- * Defines the type of event (a line) in the trace file
+ * Defines the type of {@link TaskEvent} (a line) in the trace file
  * that represents the state of the job.
  * Each enum instance is a possible value for the {@link FieldIndex#EVENT_TYPE} field.
  *
@@ -45,7 +45,7 @@ public enum TaskEventType {
                 return false;
             }
 
-            final var event = reader.createTaskEventFromTraceLine();
+            final var event = TaskEvent.of(reader);
             final var cloudlet = reader.createCloudlet(event);
             // Since Cloudlet id must be unique, it will be the concatenation of the job and task id
             cloudlet.setId(event.getUniqueTaskId());
@@ -174,4 +174,13 @@ public enum TaskEventType {
      * @return true if trace line for the event type was processed, false otherwise
      */
     protected abstract boolean process(GoogleTaskEventsTraceReader reader);
+
+    /**
+     * Gets the enum value that represents the event type of the current trace line.
+     *
+     * @return the {@link MachineEventType} value
+     */
+    protected static TaskEventType of(final GoogleTaskEventsTraceReader reader) {
+        return getValue(FieldIndex.EVENT_TYPE.getValue(reader));
+    }
 }
