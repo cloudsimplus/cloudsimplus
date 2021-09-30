@@ -96,7 +96,7 @@ public final class BrokerManager {
      * @return (i) an already existing broker with the given username or a new one if not created yet;
      *         (ii) the default broker if one was set.
      */
-    protected DatacenterBroker getOrCreateBroker(final String username){
+    DatacenterBroker getOrCreateBroker(final String username){
         return getBroker(() -> brokersMap.computeIfAbsent(username, this::createBroker));
     }
 
@@ -108,7 +108,7 @@ public final class BrokerManager {
      * Gets an {@link DatacenterBroker} instance representing the username from the last trace line read.
      * @return the {@link DatacenterBroker} instance
      */
-    protected DatacenterBroker getBroker(){
+    DatacenterBroker getBroker(){
         final String value = TaskEventField.USERNAME.getValue(reader);
         return getBroker(value);
     }
@@ -121,7 +121,7 @@ public final class BrokerManager {
      * @param username the name of the user read from a trace line
      * @return the {@link DatacenterBroker} instance for the given username or the default broker (if it was set)
      */
-    protected DatacenterBroker getBroker(final String username){
+    DatacenterBroker getBroker(final String username){
         return getBroker(() -> brokersMap.get(username));
     }
 
@@ -130,7 +130,7 @@ public final class BrokerManager {
      * @param supplier a broker {@link Supplier} Function.
      * @return
      */
-    protected DatacenterBroker getBroker(final Supplier<DatacenterBroker> supplier){
+    DatacenterBroker getBroker(final Supplier<DatacenterBroker> supplier){
         return defaultBroker == null ? supplier.get() : defaultBroker;
     }
 }
