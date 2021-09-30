@@ -338,6 +338,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         if (numberOfPes <= 0) {
             throw new IllegalArgumentException("Cloudlet number of PEs has to be greater than zero.");
         }
+
         this.numberOfPes = numberOfPes;
         return this;
     }
@@ -566,9 +567,11 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * or {@link CloudletDatacenterExecution#NULL} if the Cloudlet has never been executed there
      */
     private CloudletDatacenterExecution getDatacenterInfo(final long datacenterId) {
-        return datacenterExecutionList.stream()
-            .filter(info -> info.getDatacenter().getId() == datacenterId)
-            .findFirst().orElse(CloudletDatacenterExecution.NULL);
+        return datacenterExecutionList
+                .stream()
+                .filter(info -> info.getDatacenter().getId() == datacenterId)
+                .findFirst()
+                .orElse(CloudletDatacenterExecution.NULL);
     }
 
     /**
@@ -673,6 +676,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         for (final String fileName : fileNames) {
             atLeastOneFileAdded |= addRequiredFile(fileName);
         }
+
         return atLeastOneFileAdded;
     }
 
@@ -842,6 +846,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         if (outputSize <= 0) {
             throw new IllegalArgumentException("Cloudlet output size has to be greater than zero.");
         }
+
         this.outputSize = outputSize;
         return this;
     }
@@ -859,9 +864,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         dcInfo.setDatacenter(datacenter);
         dcInfo.setCostPerSec(datacenter.getCharacteristics().getCostPerSecond());
         datacenterExecutionList.add(dcInfo);
-
         setLastExecutedDatacenterIdx(getLastExecutedDatacenterIdx() + 1);
-
         this.setCostPerBw(datacenter.getCharacteristics().getCostPerBw());
         setAccumulatedBwCost(this.costPerBw * fileSize);
     }
