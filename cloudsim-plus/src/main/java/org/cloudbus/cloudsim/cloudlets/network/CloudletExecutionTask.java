@@ -29,7 +29,7 @@ package org.cloudbus.cloudsim.cloudlets.network;
  *
  * @since CloudSim Toolkit 1.0
  *
- * @TODO Each execution task must use just a single core.
+ * TODO Each execution task must use just a single core.
  * It may represent a thread (so the name of the class would be changed).
  * By this way, a execution task should use only one core.
  * However, tasks may be executed in parallel (considering there are multiple cores)
@@ -63,19 +63,15 @@ package org.cloudbus.cloudsim.cloudlets.network;
  */
 public class CloudletExecutionTask extends CloudletTask {
 
-    /**
-     * @see #getLength()
-     */
+    /** @see #getLength() */
     private long length;
 
-    /**
-     * @see #getTotalExecutedLength()
-     */
+    /** @see #getTotalExecutedLength() */
     private long totalExecutedLength;
 
     /**
      * Creates a new task.
-     * @param id task id
+     * @param id id to assign to the task
      * @param executionLength the execution length of the task (in MI)
      */
     public CloudletExecutionTask(final int id, final long executionLength) {
@@ -85,7 +81,6 @@ public class CloudletExecutionTask extends CloudletTask {
 
     /**
      * Gets the execution length of the task (in MI).
-     *
      * @return
      */
     public long getLength() {
@@ -112,6 +107,7 @@ public class CloudletExecutionTask extends CloudletTask {
     /**
      * Sets a given number of MI to the {@link #getTotalExecutedLength() total
      * MI executed so far} by the cloudlet.
+     *
      * @param partialFinishedMI the partial executed length of this Cloudlet (in MI)
      * @return {@inheritDoc}
      */
