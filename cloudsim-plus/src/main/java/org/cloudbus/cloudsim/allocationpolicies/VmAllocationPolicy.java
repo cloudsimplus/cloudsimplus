@@ -53,7 +53,7 @@ public interface VmAllocationPolicy {
     VmAllocationPolicy NULL = new VmAllocationPolicyNull();
 
     /**
-     * Gets the {@link Datacenter} associated to the VmAllocatioPolicy.
+     * Gets the {@link Datacenter} associated to the VmAllocationPolicy.
      * @return
      */
     Datacenter getDatacenter();
@@ -158,8 +158,8 @@ public interface VmAllocationPolicy {
      * Internally it may use a default implementation or one set in runtime.
      *
      * @param vm the vm to find a host for it
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty
-     *         {@link Optional} if no suitable Host was found
+     * @return an {@link Optional} containing a suitable Host to place the VM;
+     *         or an empty {@link Optional} if no suitable Host was found
      * @see #setFindHostForVmFunction(BiFunction)
      */
     Optional<Host> findHostForVm(Vm vm);
@@ -177,7 +177,7 @@ public interface VmAllocationPolicy {
 
     /**
      * Checks if Host's parallel search is enabled or not.
-     * @return true if a Host for a VM is to find in parallel,
+     * @return true if a Host for a VM is to find in parallel;
      *         false if it's to be found sequentially
      * @see #setHostCountForParallelSearch(int)
      */
