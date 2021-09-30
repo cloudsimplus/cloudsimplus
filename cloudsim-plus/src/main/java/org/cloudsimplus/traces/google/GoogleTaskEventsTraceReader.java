@@ -376,7 +376,7 @@ public class GoogleTaskEventsTraceReader extends GoogleTraceReaderAbstract<Cloud
      * The {@link Function} will receive a {@link TaskEvent} object containing
      * the task data read from the trace and should the created Cloudlet.
      * The provided function must instantiate the Host and defines Host's CPU cores and RAM
-     * capacity according the the received parameters.
+     * capacity according the received parameters.
      * For other Hosts configurations (such as storage capacity), the provided
      * function must define the value as desired, since the trace file
      * doesn't have any other information for such resources.
