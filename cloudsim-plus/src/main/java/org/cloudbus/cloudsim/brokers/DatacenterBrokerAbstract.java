@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.TimeZoned;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
+import org.cloudbus.cloudsim.util.InvalidEventDataTypeException;
 import org.cloudbus.cloudsim.utilizationmodels.UtilizationModel;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmGroup;
@@ -483,7 +484,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return true;
         }
 
-        return false;
+        throw new InvalidEventDataTypeException(evt, "CLOUDLET_UPDATE_ATTRIBUTES", "Runnable");
     }
 
     private boolean processVmEvents(final SimEvent evt) {
@@ -610,7 +611,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     private boolean requestVmVerticalScaling(final SimEvent evt) {
         if (!(evt.getData() instanceof VerticalVmScaling)) {
-            return false;
+            throw new InvalidEventDataTypeException(evt, "VM_VERTICAL_SCALING", "VerticalVmScaling");
         }
 
         final var scaling = (VerticalVmScaling) evt.getData();
@@ -627,9 +628,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param evt a CloudSimEvent object
      */
     private void processDatacenterListRequest(final SimEvent evt) {
-        setDatacenterList((Set<Datacenter>) evt.getData());
-        LOGGER.info("{}: {}: List of {} datacenters(s) received.", getSimulation().clockStr(), getName(), datacenterList.size());
-        requestDatacenterToCreateWaitingVms(false, false);
+        if(evt.getData() instanceof Set datacenterSet) {
+            setDatacenterList(datacenterSet);
+            LOGGER.info("{}: {}: List of {} datacenters(s) received.", getSimulation().clockStr(), getName(), datacenterList.size());
+            requestDatacenterToCreateWaitingVms(false, false);
+            return;
+        }
+
+        throw new InvalidEventDataTypeException(evt, "DC_LIST_REQUEST", "Set<Datacenter>");
     }
 
     /**
