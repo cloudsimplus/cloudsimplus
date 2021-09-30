@@ -53,13 +53,13 @@ public interface VmAllocationPolicy {
     VmAllocationPolicy NULL = new VmAllocationPolicyNull();
 
     /**
-     * Gets the {@link Datacenter} associated to the Allocation Policy.
+     * Gets the {@link Datacenter} associated to the VmAllocatioPolicy.
      * @return
      */
     Datacenter getDatacenter();
 
     /**
-     * Sets the Datacenter associated to the Allocation Policy
+     * Sets the Datacenter associated to the VmAllocationPolicy
      * @param datacenter the Datacenter to set
      */
     void setDatacenter(Datacenter datacenter);
@@ -147,7 +147,8 @@ public interface VmAllocationPolicy {
      * and returned is defined by each implementing class.
      *
      * @param vmList the list of VMs to be reallocated
-     * @return the new vm placement map, where each key is a VM and each value is the host where such a Vm has to be placed
+     * @return the new vm placement map, where each key is a VM and each value
+     *         is the host where such a Vm has to be placed
      *
      */
     Map<Vm, Host> getOptimizedAllocationMap(List<? extends Vm> vmList);
@@ -157,7 +158,8 @@ public interface VmAllocationPolicy {
      * Internally it may use a default implementation or one set in runtime.
      *
      * @param vm the vm to find a host for it
-     * @return an {@link Optional} containing a suitable Host to place the VM or an empty {@link Optional} if no suitable Host was found
+     * @return an {@link Optional} containing a suitable Host to place the VM or an empty
+     *         {@link Optional} if no suitable Host was found
      * @see #setFindHostForVmFunction(BiFunction)
      */
     Optional<Host> findHostForVm(Vm vm);
@@ -175,7 +177,8 @@ public interface VmAllocationPolicy {
 
     /**
      * Checks if Host's parallel search is enabled or not.
-     * @return true if a Host for a VM is to find in parallel, false if it's to be find sequentially
+     * @return true if a Host for a VM is to find in parallel,
+     *         false if it's to be found sequentially
      * @see #setHostCountForParallelSearch(int)
      */
     default boolean isParallelHostSearchEnabled(){
@@ -193,5 +196,4 @@ public interface VmAllocationPolicy {
      * @param hostCountForParallelSearch the value to set (use {@link Integer#MAX_VALUE} to disable parallel search)
      */
     void setHostCountForParallelSearch(int hostCountForParallelSearch);
-
 }
