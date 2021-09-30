@@ -253,7 +253,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param customerEntities the List of {@link CustomerEntity} to configure.
      */
     private void configureEntities(final List<? extends CustomerEntity> customerEntities) {
-        for (final CustomerEntity entity : customerEntities) {
+        for (final var entity : customerEntities) {
             entity.setBroker(this);
             entity.setArrivedTime(getSimulation().clock());
             if(entity instanceof VmGroup) {
@@ -288,9 +288,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return this;
         }
 
-        final List<Vm> newList = new ArrayList<>(1);
-        newList.add(vm);
-        return submitVmList(newList);
+        final var newVmList = new ArrayList<Vm>(1);
+        newVmList.add(vm);
+        return submitVmList(newVmList);
     }
 
     @Override
@@ -300,9 +300,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return this;
         }
 
-        final List<Cloudlet> newList = new ArrayList<>(1);
-        newList.add(cloudlet);
-        return submitCloudletList(newList);
+        final var newCloudletList = new ArrayList<Cloudlet>(1);
+        newCloudletList.add(cloudlet);
+        return submitCloudletList(newCloudletList);
     }
 
     @Override
@@ -406,8 +406,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         }
     }
 
-    private void setSimulationForCloudletUtilizationModels(final List<? extends Cloudlet> cloudlets) {
-        for (final Cloudlet cloudlet : cloudlets) {
+    private void setSimulationForCloudletUtilizationModels(final List<? extends Cloudlet> cloudletList) {
+        for (final var cloudlet : cloudletList) {
             setSimulationForUtilizationModel(cloudlet.getUtilizationModelCpu());
             setSimulationForUtilizationModel(cloudlet.getUtilizationModelBw());
             setSimulationForUtilizationModel(cloudlet.getUtilizationModelRam());
@@ -523,7 +523,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param evt the event to process
      */
     private boolean processCloudletReady(final SimEvent evt){
-        final Cloudlet cloudlet = (Cloudlet)evt.getData();
+        final var cloudlet = (Cloudlet)evt.getData();
         if(cloudlet.getStatus() == Cloudlet.Status.PAUSED)
              logCloudletStatusChange(cloudlet, "resume execution of");
         else logCloudletStatusChange(cloudlet, "start executing");
@@ -533,14 +533,14 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private boolean processCloudletPause(final SimEvent evt){
-        final Cloudlet cloudlet = (Cloudlet)evt.getData();
+        final var cloudlet = (Cloudlet)evt.getData();
         logCloudletStatusChange(cloudlet, "de-schedule (pause)");
         cloudlet.getVm().getCloudletScheduler().cloudletPause(cloudlet);
         return true;
     }
 
     private boolean processCloudletCancel(final SimEvent evt){
-        final Cloudlet cloudlet = (Cloudlet)evt.getData();
+        final var cloudlet = (Cloudlet)evt.getData();
         logCloudletStatusChange(cloudlet, "cancel execution of");
         cloudlet.getVm().getCloudletScheduler().cloudletCancel(cloudlet);
         return true;
@@ -552,7 +552,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param evt the event data
      */
     private boolean processCloudletFinish(final SimEvent evt){
-        final Cloudlet cloudlet = (Cloudlet)evt.getData();
+        final var cloudlet = (Cloudlet)evt.getData();
         logCloudletStatusChange(cloudlet, "finish running");
         /* If the executed length is zero, it means the cloudlet processing was not updated yet.
          * This way, calls the method to update the Cloudlet's processing.*/
@@ -603,7 +603,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private boolean processCloudletFail(final SimEvent evt){
-        final Cloudlet cloudlet = (Cloudlet)evt.getData();
+        final var cloudlet = (Cloudlet)evt.getData();
         cloudlet.getVm().getCloudletScheduler().cloudletFail(cloudlet);
         return true;
     }
@@ -613,7 +613,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return false;
         }
 
-        final VerticalVmScaling scaling = (VerticalVmScaling) evt.getData();
+        final var scaling = (VerticalVmScaling) evt.getData();
         getSimulation().sendNow(
             evt.getSource(), scaling.getVm().getHost().getDatacenter(),
             CloudSimTags.VM_VERTICAL_SCALING, scaling);
@@ -640,7 +640,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @return true if the VM was created successfully, false otherwise
      */
     private boolean processVmCreateResponseFromDatacenter(final SimEvent evt) {
-        final Vm vm = (Vm) evt.getData();
+        final var vm = (Vm) evt.getData();
 
         //if the VM was successfully created in the requested Datacenter
         if (vm.isCreated()) {
@@ -673,8 +673,9 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     @SuppressWarnings("ForLoopReplaceableByForEach")
     private void notifyOnVmsCreatedListeners() {
-        if(!vmWaitingList.isEmpty())
+        if(!vmWaitingList.isEmpty()) {
             return;
+        }
 
         //Uses indexed for to avoid ConcurrentModificationException
         for (int i = 0; i < onVmsCreatedListeners.size(); i++) {
@@ -696,7 +697,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             return;
         }
 
-        final String msg =
+        final var msg =
             "{}: {}: {} of the requested {} VMs couldn't be created because suitable Hosts weren't found in any available Datacenter."
             + (vmExecList.isEmpty() && !isRetryFailedVms() ? " Shutting broker down..." : "");
         LOGGER.error(msg, getSimulation().clockStr(), getName(), vmWaitingList.size(), getVmsNumber());
@@ -761,9 +762,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param vm id of the Vm that succeeded to be created inside the Datacenter
      */
     private void processSuccessVmCreationInDatacenter(final Vm vm) {
-        if(vm instanceof VmGroup){
+        if(vm instanceof VmGroup vmGroup){
             int createdVms = 0;
-            final VmGroup vmGroup = (VmGroup)vm;
             for (final Vm nextVm : vmGroup.getVmList()) {
                 if (nextVm.isCreated()) {
                     processSuccessVmCreationInDatacenter(nextVm);
@@ -789,7 +789,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * @param evt a SimEvent object containing the cloudlet that has just finished executing and returned to the broker
      */
     private boolean processCloudletReturn(final SimEvent evt) {
-        final Cloudlet cloudlet = (Cloudlet) evt.getData();
+        final var cloudlet = (Cloudlet) evt.getData();
         cloudletsFinishedList.add(cloudlet);
         ((VmSimple) cloudlet.getVm()).addExpectedFreePesNumber(cloudlet.getNumberOfPes());
         LOGGER.info("{}: {}: {} finished in {} and returned to broker.", getSimulation().clockStr(), getName(), cloudlet, cloudlet.getVm());
@@ -865,20 +865,20 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public List<Cloudlet> destroyVm(final Vm vm) {
         if(vm.isCreated()) {
-            final List<Cloudlet> cloudletsAffected = new ArrayList<>();
+            final var cloudletsAffectedList = new ArrayList<Cloudlet>();
 
-            for (final Iterator<Cloudlet> it = cloudletSubmittedList.iterator(); it.hasNext(); ) {
-                final Cloudlet cloudlet = it.next();
+            for (final var iterator = cloudletSubmittedList.iterator(); iterator.hasNext(); ) {
+                final Cloudlet cloudlet = iterator.next();
                 if(cloudlet.getVm().equals(vm) && !cloudlet.isFinished()) {
                     cloudlet.setVm(Vm.NULL);
-                    cloudletsAffected.add(cloudlet.reset());
-                    it.remove();
+                    cloudletsAffectedList.add(cloudlet.reset());
+                    iterator.remove();
                 }
             }
 
             vm.getHost().destroyVm(vm);
             vm.getCloudletScheduler().clear();
-            return cloudletsAffected;
+            return cloudletsAffectedList;
         }
 
         LOGGER.warn("Vm: " + vm.getId() + " does not belong to this broker! Broker: " + this.toString());
@@ -952,7 +952,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     private void logVmCreationRequest(final Datacenter datacenter, final boolean isFallbackDatacenter, final Vm vm) {
-        final String fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
+        final var fallbackMsg = isFallbackDatacenter ? " (due to lack of a suitable Host in previous one)" : "";
         if(vm.getSubmissionDelay() == 0)
             LOGGER.info(
                 "{}: {}: Trying to create {} in {}{}",
@@ -982,8 +982,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
          * Cloudlets in such new list were removed just after the loop,
          * degrading performance in large scale simulations. */
         int createdCloudlets = 0;
-        for (final Iterator<Cloudlet> it = cloudletWaitingList.iterator(); it.hasNext(); ) {
-            final CloudletSimple cloudlet = (CloudletSimple)it.next();
+        for (final var iterator = cloudletWaitingList.iterator(); iterator.hasNext(); ) {
+            final CloudletSimple cloudlet = (CloudletSimple)iterator.next();
             if (!cloudlet.getLastTriedDatacenter().equals(Datacenter.NULL)) {
                 continue;
             }
@@ -999,11 +999,11 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
             logCloudletCreationRequest(cloudlet);
             cloudlet.setVm(lastSelectedVm);
-            send(getDatacenter(lastSelectedVm),
-                cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
-            cloudlet.setLastTriedDatacenter(getDatacenter(lastSelectedVm));
+            final Datacenter dc = getDatacenter(lastSelectedVm);
+            send(dc, cloudlet.getSubmissionDelay(), CloudSimTags.CLOUDLET_SUBMIT, cloudlet);
+            cloudlet.setLastTriedDatacenter(dc);
             cloudletsCreatedList.add(cloudlet);
-            it.remove();
+            iterator.remove();
             createdCloudlets++;
         }
 
@@ -1025,7 +1025,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
         if(vm.getSubmissionDelay() > 0) {
             final String secs = vm.getSubmissionDelay() > 1 ? "seconds" : "second";
-            LOGGER.info(msg, String.format("bind Vm %d was requested to be created with %.2f %s delay", vm.getId(), vm.getSubmissionDelay(), secs));
+            final var reason = String.format("bind Vm %d was requested to be created with %.2f %s delay", vm.getId(), vm.getSubmissionDelay(), secs);
+            LOGGER.info(msg, reason);
         } else LOGGER.warn(msg, vmMsg);
     }
 
@@ -1224,7 +1225,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     @Override
     public DatacenterBroker setVmDestructionDelay(final double delay) {
         if(delay <= getSimulation().getMinTimeBetweenEvents()){
-            throw new IllegalArgumentException("The delay should be larger then the simulation minTimeBetweenEvents to ensure VMs are gracefully shutdown.");
+            final var msg = "The delay should be larger then the simulation minTimeBetweenEvents to ensure VMs are gracefully shutdown.";
+            throw new IllegalArgumentException(msg);
         }
 
         setVmDestructionDelayFunction(vm -> delay);
