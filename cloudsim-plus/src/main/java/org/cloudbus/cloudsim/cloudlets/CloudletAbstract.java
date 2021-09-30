@@ -349,6 +349,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public long getFinishedLengthSoFar(final Datacenter datacenter) {
+        Objects.requireNonNull(datacenter);
         return getDatacenterInfo(datacenter).getFinishedSoFar();
     }
 
@@ -411,7 +412,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     private void returnToBrokerIfFinished() {
         if(isFinished() && !isReturnedToBroker()){
             returnedToBroker = true;
-            getSimulation().sendNow(getSimulation().getCloudInfoService(), getBroker(), CloudSimTags.CLOUDLET_RETURN, this);
+            final var targetEntity = getSimulation().getCloudInfoService();
+            getSimulation().sendNow(targetEntity, getBroker(), CloudSimTags.CLOUDLET_RETURN, this);
             vm.getCloudletScheduler().addCloudletToReturnedList(this);
         }
     }
@@ -467,9 +469,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
             return false;
         }
 
-        final CloudletDatacenterExecution datacenter = getLastExecutionInDatacenterInfo();
-        datacenter.setWallClockTime(wallTime);
-        datacenter.setActualCpuTime(actualCpuTime);
+        final CloudletDatacenterExecution execution = getLastExecutionInDatacenterInfo();
+        execution.setWallClockTime(wallTime);
+        execution.setActualCpuTime(actualCpuTime);
 
         return true;
     }
@@ -627,15 +629,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public double getTotalCost() {
-        // cloudlet cost: execution cost...
-        double totalCost = getTotalCpuCostForAllDatacenters();
-
-        // ... plus input data transfer cost...
-        totalCost += accumulatedBwCost;
-
-        // ... plus output cost
-        totalCost += costPerBw * outputSize;
-        return totalCost;
+        return getTotalCpuCostForAllDatacenters() + accumulatedBwCost + costPerBw * outputSize;
     }
 
     /**
@@ -685,9 +679,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     @Override
     public boolean deleteRequiredFile(final String filename) {
         for (int i = 0; i < getRequiredFiles().size(); i++) {
-            final String temp = requiredFiles.get(i);
+            final String currentFile = requiredFiles.get(i);
 
-            if (temp.equals(filename)) {
+            if (currentFile.equals(filename)) {
                 requiredFiles.remove(i);
                 return true;
             }
