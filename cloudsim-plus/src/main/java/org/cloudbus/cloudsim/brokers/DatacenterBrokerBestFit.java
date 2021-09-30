@@ -13,7 +13,7 @@ import java.util.Comparator;
  * The Broker then places the submitted Vm's at the first Datacenter found.
  * If there isn't capacity in that one, it will try the other ones.
  *
- * @author Humaira Abdul Salam
+ * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.3.8
  */
 public class DatacenterBrokerBestFit extends DatacenterBrokerSimple {
