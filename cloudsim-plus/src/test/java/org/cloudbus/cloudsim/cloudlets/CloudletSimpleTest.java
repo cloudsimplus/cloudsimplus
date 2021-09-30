@@ -267,24 +267,17 @@ public class CloudletSimpleTest {
 
     @Test
     public void testSetNetServiceLevel() {
-        int valid = 1;
-        final String trueMsg = "Cloudlet.setNetServiceLevel should return true";
-        final String falseMsg = "Cloudlet.setNetServiceLevel should return false";
+        final int valid0 = 0;
+        cloudlet.setNetServiceLevel(valid0);
+        assertEquals(valid0, cloudlet.getNetServiceLevel());
 
-        assertTrue(cloudlet.setNetServiceLevel(valid), trueMsg);
-        assertEquals(valid, cloudlet.getNetServiceLevel());
-
-        final int invalid0 = 0;
-        assertFalse(cloudlet.setNetServiceLevel(invalid0), falseMsg);
-        assertEquals(valid, cloudlet.getNetServiceLevel());
+        final int valid1 = 1;
+        cloudlet.setNetServiceLevel(valid1);
+        assertEquals(valid1, cloudlet.getNetServiceLevel());
 
         final int invalidNegative = -1;
-        assertFalse(cloudlet.setNetServiceLevel(invalidNegative), falseMsg);
-        assertEquals(valid, cloudlet.getNetServiceLevel());
-
-        valid = 2;
-        assertTrue(cloudlet.setNetServiceLevel(valid), trueMsg);
-        assertEquals(valid, cloudlet.getNetServiceLevel());
+        assertThrows(IllegalArgumentException.class, () -> cloudlet.setNetServiceLevel(invalidNegative));
+        assertEquals(valid1, cloudlet.getNetServiceLevel());
     }
 
     @Test

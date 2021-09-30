@@ -298,13 +298,12 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public boolean setNetServiceLevel(final int netServiceLevel) {
-        if (netServiceLevel > 0) {
-            this.netServiceLevel = netServiceLevel;
-            return true;
+    public void setNetServiceLevel(final int netServiceLevel) {
+        if (netServiceLevel < 0) {
+            throw new IllegalArgumentException("Net Service Level cannot be negative");
         }
 
-        return false;
+        this.netServiceLevel = netServiceLevel;
     }
 
     @Override

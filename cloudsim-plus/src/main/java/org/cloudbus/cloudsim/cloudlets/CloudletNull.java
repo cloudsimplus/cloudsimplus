@@ -180,9 +180,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean setStatus(Status newStatus) {
         return false;
     }
-    @Override public boolean setNetServiceLevel(int netServiceLevel) {
-        return false;
-    }
+    @Override public void setNetServiceLevel(int netServiceLevel) {/**/}
     @Override public Cloudlet setNumberOfPes(long numberOfPes) {
         return Cloudlet.NULL;
     }

@@ -575,9 +575,8 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      * network.
      *
      * @param netServiceLevel the new type of service (ToS) of this cloudlet
-     * @return <code>true</code> if the netServiceLevel is valid, false otherwise.
      */
-    boolean setNetServiceLevel(int netServiceLevel);
+    void setNetServiceLevel(int netServiceLevel);
 
     /**
      * Sets the number of PEs required to run this Cloudlet. <br>
