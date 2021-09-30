@@ -806,6 +806,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         return this;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     /**
      * An id used to identify the experiment results table generated in formats such as Latex
      * for computed metrics.
@@ -817,6 +821,10 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
         return this;
     }
 
+    public String getResultsTableId() {
+        return resultsTableId;
+    }
+
     /**
      * Enables the generation of a result table in Latex format for computed metrics.
      * @return
@@ -824,6 +832,14 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     public ExperimentRunner enableLatexTableResultsGeneration(){
         this.latexTableResultsGeneration = true;
         return this;
+    }
+
+    /**
+     * Checks if generation of a result table in Latex format for computed metrics is enabled.
+     * @return
+     */
+    public boolean isLatexTableResultsGeneration() {
+        return latexTableResultsGeneration;
     }
 
     /**
