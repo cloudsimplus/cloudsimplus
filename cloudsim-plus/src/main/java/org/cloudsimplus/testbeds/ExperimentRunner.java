@@ -703,19 +703,17 @@ public abstract class ExperimentRunner<T extends Experiment> extends AbstractExp
     }
 
     /**
-     * Creates a SummaryStatistics object from a list of
-     * Double values, allowing computation of statistics
-     * such as mean over these values.
+     * Creates a {@link SummaryStatistics} object from a list of
+     * Double values, allowing computation of statistics such as mean over these values.
      * The method also checks if the
      * {@link #isApplyAntitheticVariates() Antithetic Variates}
      * and the {@link #isApplyBatchMeansMethod() Batch Means} techniques
-     * are enabled and then apply them over the given list of Doubles.
+     * are enabled, applying them over the given list of Doubles.
      * These techniques are used for variance reduction.
      *
      * @param values the List of values to add to the {@link SummaryStatistics} object
      * @return the {@link SummaryStatistics} object containing
-     * the double values, after applying the the techniques for
-     * variance reduction.
+     * the double values, after applying the techniques for variance reduction.
      */
     protected final SummaryStatistics computeFinalStatistics(final List<Double> values) {
         final var stats = new SummaryStatistics();
