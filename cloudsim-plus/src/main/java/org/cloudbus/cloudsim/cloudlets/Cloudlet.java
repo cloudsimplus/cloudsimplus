@@ -152,7 +152,7 @@ public interface Cloudlet extends UniquelyIdentifiable, Comparable<Cloudlet>, Cu
      *
      * @return true if required, false otherwise
      */
-    boolean requiresFiles();
+    boolean hasRequiresFiles();
 
     /**
      * Gets the list of required files to be used by the cloudlet (if any).

@@ -692,7 +692,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     @Override
-    public boolean requiresFiles() {
+    public boolean hasRequiresFiles() {
         return !getRequiredFiles().isEmpty();
     }
 

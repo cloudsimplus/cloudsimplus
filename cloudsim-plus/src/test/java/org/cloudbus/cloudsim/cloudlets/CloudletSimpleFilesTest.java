@@ -82,7 +82,7 @@ public class CloudletSimpleFilesTest {
             cloudlet.addRequiredFile(file);
         }
 
-        assertTrue(cloudlet.requiresFiles()); //it has required files
+        assertTrue(cloudlet.hasRequiresFiles()); //it has required files
     }
 
 }

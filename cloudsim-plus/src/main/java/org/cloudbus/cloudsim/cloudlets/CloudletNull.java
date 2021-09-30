@@ -163,7 +163,7 @@ final class CloudletNull implements Cloudlet {
     @Override public boolean isFinished() {
         return false;
     }
-    @Override public boolean requiresFiles() {
+    @Override public boolean hasRequiresFiles() {
         return false;
     }
     @Override public Cloudlet setPriority(int priority) { return this; }

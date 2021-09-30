@@ -55,7 +55,7 @@ public class CloudletTest {
         assertSame(DatacenterBroker.NULL, Cloudlet.NULL.getBroker());
 
         assertEquals(Vm.NULL, Cloudlet.NULL.getVm());
-        assertFalse(Cloudlet.NULL.requiresFiles());
+        assertFalse(Cloudlet.NULL.hasRequiresFiles());
         assertEquals(Cloudlet.NOT_ASSIGNED, Cloudlet.NULL.registerArrivalInDatacenter());
         assertFalse(Cloudlet.NULL.removeOnFinishListener(null));
         final EventListener listener = Mockito.mock(EventListener.class);
