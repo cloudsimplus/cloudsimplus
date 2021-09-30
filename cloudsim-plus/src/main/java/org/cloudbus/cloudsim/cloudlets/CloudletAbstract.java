@@ -24,7 +24,7 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A base class for {@link Cloudlet} implementations.
+ * An abstract class for {@link Cloudlet} implementations.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -40,14 +40,12 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * In case it starts and finishes executing in a single Datacenter, without
      * being migrated, this list will have only one item.
      *
-     * @TODO There isn't Cloudlet migration, so this attribute doesn't make sense.
-     *       But since a lot of methods uses it, it's removal has to be carefully assessed.
+     * TODO There isn't Cloudlet migration, so this attribute doesn't make sense.
+     *      But since a lot of methods uses it, it's removal has to be carefully assessed.
      */
     private final List<CloudletDatacenterExecution> datacenterExecutionList;
 
-    /**
-     * @see #getLength()
-     */
+    /** @see #getLength() */
     private long length;
 
     /** @see #getNumberOfPes() */
@@ -113,13 +111,15 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     private double submissionDelay;
 
     /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
-     * a {@link DatacenterBroker}. The file size and output size is defined as 1.
+     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is
+     * submitted to a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param length the length or size (in MI) of this cloudlet to be executed in a
+     *               VM (check out {@link #setLength(long)})
      * @param pesNumber number of PEs that Cloudlet will require
      * @param utilizationModel a {@link UtilizationModel} to define how the Cloudlet uses CPU, RAM and BW.
-     *                         To define an independent utilization model for each resource, call the respective setters.
+     *                         To define an independent utilization model for each resource,
+     *                         call the respective setters.
      *
      * @see #setUtilizationModelCpu(UtilizationModel)
      * @see #setUtilizationModelRam(UtilizationModel)
@@ -131,14 +131,16 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * Creates a Cloudlet with no priority or id.
+     * The id is defined when the Cloudlet is submitted to
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
      * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
      * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
      * To change the default values, use the respective setters.</p>
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     *               (check out {@link #setLength(long)})
      * @param pesNumber number of PEs that Cloudlet will require
      */
     public CloudletAbstract(final long length, final int pesNumber) {
@@ -153,7 +155,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
      * To change the default values, use the respective setters.</p>
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     *               (check out {@link #setLength(long)})
      * @param pesNumber number of PEs that Cloudlet will require
      */
     public CloudletAbstract(final long length, final long pesNumber) {
@@ -168,7 +171,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
      * To change the default values, use the respective setters.</p>
      *
      * @param id     id of the Cloudlet
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     *               (check out {@link #setLength(long)})
      * @param pesNumber number of PEs that Cloudlet will require
      */
     public CloudletAbstract(final long id, final long length, final long pesNumber) {
@@ -201,6 +205,10 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         onUpdateProcessingListeners = new HashSet<>();
     }
 
+    /**
+     * Resets the state of the Cloudlet.
+     * @return
+     */
     public final Cloudlet reset() {
         this.netServiceLevel = 0;
         this.execStartTime = 0.0;
@@ -469,7 +477,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public boolean setStatus(final Status newStatus) {
-        // if the new status is same as current one, then ignore the rest
         if (this.status == newStatus) {
             return false;
         }
@@ -514,8 +521,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     /**
-     * Gets the total execution time of this Cloudlet in a given Datacenter
-     * ID.
+     * Gets the total execution time of this Cloudlet in a given Datacenter ID.
      *
      * @param datacenter the Datacenter entity
      * @return the total execution time of this Cloudlet in the given Datacenter
@@ -540,8 +546,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     /**
-     * Gets the time of this Cloudlet resides in a given Datacenter (from
-     * arrival time until departure time).
+     * Gets the time of this Cloudlet resides in a given Datacenter
+     * (from arrival time until departure time).
      *
      * @param datacenter a Datacenter entity
      * @return the wall-clock time or 0 if the Cloudlet has never been executed there
@@ -635,7 +641,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     /**
      * Gets the total cost for using CPU on every Datacenter where the Cloudlet has executed.
-     *
      * @return
      */
     private double getTotalCpuCostForAllDatacenters() {
@@ -783,7 +788,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     /**
-     * Sets {@link #getCostPerBw() the cost of each byte of bandwidth (bw)} consumed.
+     * Sets {@link #getCostPerBw() the cost ($) of each byte of bandwidth (bw)} consumed.
      *
      * @param costPerBw the new cost per bw to set
      */
@@ -797,9 +802,9 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     /**
-     * Sets the {@link #getAccumulatedBwCost() accumulated bw cost}.
+     * Sets the {@link #getAccumulatedBwCost() accumulated bw cost ($)}.
      *
-     * @param accumulatedBwCost the accumulated bw cost to set
+     * @param accumulatedBwCost the accumulated bw cost ($) to set
      */
     protected final void setAccumulatedBwCost(final double accumulatedBwCost) {
         this.accumulatedBwCost = accumulatedBwCost;
@@ -860,8 +865,6 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
         final CloudletDatacenterExecution dcInfo = new CloudletDatacenterExecution();
         dcInfo.setDatacenter(datacenter);
         dcInfo.setCostPerSec(datacenter.getCharacteristics().getCostPerSecond());
-
-        // add into a list if moving to a new cloud Datacenter
         datacenterExecutionList.add(dcInfo);
 
         setLastExecutedDatacenterIdx(getLastExecutedDatacenterIdx() + 1);
@@ -883,8 +886,8 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
     }
 
     /**
-     * @return true if the cloudlet has even been assigned to a Datacenter
-     * in order to run, false otherwise.
+     * @return true if the cloudlet has even been assigned to a Datacenter in order to run;
+     *         false otherwise.
      */
     private boolean isAssignedToDatacenter() {
         return !datacenterExecutionList.isEmpty();
