@@ -51,8 +51,7 @@ public class VmAllocationPolicyMigrationStaticThreshold extends VmAllocationPoli
      * @see #setUnderUtilizationThreshold(double)
      * @see #setOverUtilizationThreshold(double)
      */
-    public VmAllocationPolicyMigrationStaticThreshold(final VmSelectionPolicy vmSelectionPolicy)
-    {
+    public VmAllocationPolicyMigrationStaticThreshold(final VmSelectionPolicy vmSelectionPolicy) {
         this(vmSelectionPolicy, DEF_OVER_UTILIZATION_THRESHOLD, null);
     }
 
