@@ -23,8 +23,6 @@
  */
 package org.cloudsimplus.traces.google;
 
-import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader.FieldIndex;
-import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader.MissingInfo;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

@@ -26,8 +26,6 @@ package org.cloudsimplus.traces.google;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 
-import static org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader.FieldIndex;
-
 /**
  * Defines the type of an event (a line) in the trace file
  * that represents the state of the job.

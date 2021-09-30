@@ -99,7 +99,7 @@ public final class TaskEvent extends TaskData {
      * Such a value is defined by a "task usage" trace.
      * </p>
      * @return
-     * @see GoogleTaskEventsTraceReader.FieldIndex#RESOURCE_REQUEST_FOR_CPU_CORES
+     * @see FieldIndex#RESOURCE_REQUEST_FOR_CPU_CORES
      * @see GoogleTaskUsageTraceReader
      */
     public double getResourceRequestForCpuCores() {
@@ -141,7 +141,7 @@ public final class TaskEvent extends TaskData {
      * when trying to create the Cloudlets.
      * </p>
      * @return
-     * @see GoogleTaskEventsTraceReader.FieldIndex#RESOURCE_REQUEST_FOR_RAM
+     * @see FieldIndex#RESOURCE_REQUEST_FOR_RAM
      * @see GoogleTaskUsageTraceReader
      */
     public double getResourceRequestForRam() {
@@ -167,7 +167,7 @@ public final class TaskEvent extends TaskData {
      * when creating the Cloudlet, according to the researcher needs.
      * </p>
      * @return
-     * @see GoogleTaskEventsTraceReader.FieldIndex#RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE
+     * @see FieldIndex#RESOURCE_REQUEST_FOR_LOCAL_DISK_SPACE
      */
     public double getResourceRequestForLocalDiskSpace() {
         return resourceRequestForLocalDiskSpace;
@@ -181,7 +181,7 @@ public final class TaskEvent extends TaskData {
     /**
      * Gets the hashed username provided as an opaque base64-encoded string that can be tested for equality.
      * @return
-     * @see GoogleTaskEventsTraceReader.FieldIndex#USERNAME
+     * @see FieldIndex#USERNAME
      */
     public String getUserName() {
         return userName;
@@ -195,7 +195,7 @@ public final class TaskEvent extends TaskData {
     /**
      * Gets the time the event happened (converted to seconds).
      * @return
-     * @see GoogleTaskEventsTraceReader.FieldIndex#TIMESTAMP
+     * @see FieldIndex#TIMESTAMP
      */
     public double getTimestamp() {
         return timestamp;
@@ -212,7 +212,7 @@ public final class TaskEvent extends TaskData {
      * with 3 representing a more latency-sensitive task (e.g., serving revenue-generating user requests)
      * and 0 representing a non-production task (e.g., development, non-business-critical analyses, etc.).
      * @return
-     * @see GoogleTaskEventsTraceReader.FieldIndex#SCHEDULING_CLASS
+     * @see FieldIndex#SCHEDULING_CLASS
      */
     public int getSchedulingClass() {
         return schedulingClass;
