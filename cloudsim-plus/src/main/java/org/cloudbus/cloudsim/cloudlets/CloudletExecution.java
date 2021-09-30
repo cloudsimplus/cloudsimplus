@@ -9,7 +9,6 @@ package org.cloudbus.cloudsim.cloudlets;
 
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
@@ -267,7 +266,7 @@ public class CloudletExecution {
      *        in <b>Number of Instructions (instead of Million Instructions)</b>
      */
     public void updateProcessing(final double partialFinishedInstructions) {
-        final Simulation simulation = cloudlet.getSimulation();
+        final var simulation = cloudlet.getSimulation();
         setLastProcessingTime(simulation.clock());
 
         final boolean terminate = simulation.isTimeToTerminateSimulationUnderRequest();
