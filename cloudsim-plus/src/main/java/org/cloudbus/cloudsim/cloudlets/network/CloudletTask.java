@@ -30,35 +30,25 @@ import org.cloudbus.cloudsim.core.Identifiable;
  * @author Saurabh Kumar Garg
  * @since CloudSim Toolkit 1.0
  *
- * @TODO Classes {@link CloudletTask}, {@link Cloudlet}
+ * TODO Classes {@link CloudletTask}, {@link Cloudlet}
  * and {@link CloudletExecution} share a common set of attributes that would be defined by a common interface.
  */
 public abstract class CloudletTask implements Identifiable {
     private boolean finished;
 
-    /**
-     * @see #getId()
-     */
+    /** @see #getId() */
     private long id;
 
-    /**
-     * @see #getStartTime()
-     */
+    /** @see #getStartTime() */
     private double startTime;
 
-    /**
-     * @see #getFinishTime()
-     */
+    /** @see #getFinishTime() */
     private double finishTime;
 
-    /**
-     * @see #getMemory()
-     */
+    /** @see #getMemory() */
     private long memory;
 
-    /**
-     * @see #getCloudlet()
-     */
+    /** @see #getCloudlet() */
     private NetworkCloudlet cloudlet;
 
     /**
@@ -109,7 +99,6 @@ public abstract class CloudletTask implements Identifiable {
     }
 
     /**
-     *
      * @return the time the task started executing, or -1 if not started yet.
      */
     public double getStartTime() {
@@ -177,7 +166,6 @@ public abstract class CloudletTask implements Identifiable {
     }
 
     /**
-     *
      * @return the time the task spent executing, or -1 if not finished yet
      */
     public double getExecutionTime(){
@@ -185,7 +173,6 @@ public abstract class CloudletTask implements Identifiable {
     }
 
     /**
-     *
      * @return the time the task finished or -1 if not finished yet.
      */
     public double getFinishTime() {
