@@ -92,18 +92,20 @@ final class ResultTable<T extends Experiment> {
     }
 
     private StringBuilder startLatexTable() {
-        final var latex = new StringBuilder(320);
-        latex.append("\\begin{table}[!hbt]\n")
-             .append(String.format("  \\caption{%s}\n", runner.getDescription()))
-             .append(String.format("  \\label{%s}\n", runner.getResultsTableId()))
-             .append(
-               """
-               \\begin{tabular}{|p{2.8cm}|p{1.3cm}p{1.3cm}|>{\\raggedleft\\arraybackslash}p{1.2cm}|}
-               \\hline
-               \\textbf{Metric} & \\multicolumn{2}{p{3.0cm}|}{\\textbf{95\\% Confidence Interval}} & \\textbf{*Std. Dev.} \\\\
-               \\hline
-               """);
-        return latex;
+        final var fmt =
+            """
+            \\begin{table}[!hbt]
+                \\caption{%s}
+                \\label{%s}
+
+                \\begin{tabular}{|p{2.8cm}|p{1.3cm}p{1.3cm}|>{\\raggedleft\\arraybackslash}p{1.2cm}|}
+                \\hline
+                \\textbf{Metric} & \\multicolumn{2}{p{3.0cm}|}{\\textbf{95\\% Confidence Interval}} & \\textbf{*Std. Dev.} \\\\
+                \\hline
+            """;
+
+        final var str = String.format(fmt, runner.getDescription(), runner.getResultsTableId());
+        return new StringBuilder(str);
     }
 
     /**
