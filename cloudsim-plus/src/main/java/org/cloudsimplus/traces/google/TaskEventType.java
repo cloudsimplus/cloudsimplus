@@ -59,7 +59,7 @@ public enum TaskEventType {
                 cloudlet.setStatus(Cloudlet.Status.FROZEN);
             }
 
-            final var broker = reader.getOrCreateBroker(event.getUserName());
+            final var broker = reader.getBrokerManager().getOrCreateBroker(event.getUserName());
             if(reader.isAutoSubmitCloudlets()) {
                 broker.submitCloudlet(cloudlet);
             }

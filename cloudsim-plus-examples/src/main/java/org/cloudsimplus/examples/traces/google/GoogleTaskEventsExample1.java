@@ -47,6 +47,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import org.cloudbus.cloudsim.vms.VmSimple;
 import org.cloudsimplus.builders.tables.CloudletsTableBuilder;
 import org.cloudsimplus.builders.tables.TextTableColumn;
+import org.cloudsimplus.traces.google.BrokerManager;
 import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 import org.cloudsimplus.traces.google.GoogleTaskUsageTraceReader;
 import org.cloudsimplus.traces.google.TaskEvent;
@@ -176,8 +177,9 @@ public class GoogleTaskEventsExample1 {
      * <p>
      * If you want to improve simulation performance and use the same broker
      * for all created cloudlets, avoiding the reader to create brokers based on the
-     * username field of the trace file, call {@link GoogleTaskEventsTraceReader#setDefaultBroker(DatacenterBroker)}.
+     * username field of the trace file, call {@link BrokerManager#setDefaultBroker(DatacenterBroker)}.
      * </p>
+     * @see GoogleTaskEventsTraceReader#getBrokerManager()
      */
     private void createCloudletsAndBrokersFromTraceFile() {
         final GoogleTaskEventsTraceReader reader =
@@ -188,7 +190,7 @@ public class GoogleTaskEventsExample1 {
         /* Created Cloudlets are automatically submitted by default to their respective brokers,
         so you don't have to submit them manually.*/
         cloudlets = reader.process();
-        brokers = reader.getBrokers();
+        brokers = reader.getBrokerManager().getBrokers();
         System.out.printf(
             "%d Cloudlets and %d Brokers created from the %s trace file.%n",
             cloudlets.size(), brokers.size(), TASK_EVENTS_FILE);
