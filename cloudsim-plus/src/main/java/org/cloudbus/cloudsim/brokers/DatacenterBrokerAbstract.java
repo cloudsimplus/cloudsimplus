@@ -32,7 +32,7 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An abstract class to be used as base for implementing a {@link DatacenterBroker}.
+ * An abstract class to be used for implementing a {@link DatacenterBroker}.
  *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
@@ -46,12 +46,12 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     public static final int SHUTDOWN_TAG = -2;
 
     /**
-     * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY} to indicate that any VM should not be
-     * immediately destroyed after it becomes idle.
+     * A default {@link Function} which always returns {@link #DEF_VM_DESTRUCTION_DELAY}
+     * to indicate that any VM should not be immediately destroyed after it becomes idle.
      * This way, using this Function the broker will destroy VMs only after:
      * <ul>
-     * <li>all submitted Cloudlets from all its VMs are finished and there are no waiting Cloudlets;</li>
-     * <li>or all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
+     *   <li>all submitted Cloudlets from all its VMs are finished and there are no waiting Cloudlets;</li>
+     *   <li>or all running Cloudlets are finished and there are some of them waiting their VMs to be created.</li>
      * </ul>
      *
      * @see #setVmDestructionDelayFunction(Function)
@@ -112,26 +112,25 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     /** @see #setDatacenterMapper(BiFunction) */
     private BiFunction<Datacenter, Vm, Datacenter> datacenterMapper;
 
+    /** @see #setVmMapper(Function) */
     private Function<Cloudlet, Vm> vmMapper;
 
+    /** @see #setVmComparator(Comparator) */
     private Comparator<Vm> vmComparator;
+
+    /** @see #setCloudletComparator(Comparator) */
     private Comparator<Cloudlet> cloudletComparator;
 
-    /**
-     * @see #getVmCreationRequests()
-     */
+    /** @see #getVmCreationRequests() */
     private int vmCreationRequests;
-    /**
-     * @see #getDatacenterList()
-     */
+
+    /** @see #getDatacenterList() */
     private List<Datacenter> datacenterList;
 
     private Cloudlet lastSubmittedCloudlet;
     private Vm lastSubmittedVm;
 
-    /**
-     * @see #getVmDestructionDelayFunction()
-     */
+    /** @see #getVmDestructionDelayFunction() */
     private Function<Vm, Double> vmDestructionDelayFunction;
 
     /**
@@ -224,7 +223,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @param list {@inheritDoc}
      * @see VmGroup
-     * @return
+     * @return {@inheritDoc}
      */
     @Override
     public DatacenterBroker submitVmList(final List<? extends Vm> list) {
@@ -337,7 +336,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      *
      * @param list {@inheritDoc}
      * @see #submitCloudletList(List, double)
-     * @return
+     * @return {@inheritDoc}
      */
     @Override
     public DatacenterBroker submitCloudletList(final List<? extends Cloudlet> list) {
@@ -520,7 +519,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * <p>This tag is commonly used when Cloudlets are created
      * from a trace file such as a {@link GoogleTaskEventsTraceReader Google Cluster Trace}.</p>
      *
-     * @param evt the event data
+     * @param evt the event to process
      */
     private boolean processCloudletReady(final SimEvent evt){
         final Cloudlet cloudlet = (Cloudlet)evt.getData();
@@ -636,7 +635,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * Process the ack received from a Datacenter to a broker's request for
      * creation of a Vm in that Datacenter.
      *
-     * @param evt a CloudSimEvent object
+     * @param evt a SimEvent object
      * @return true if the VM was created successfully, false otherwise
      */
     private boolean processVmCreateResponseFromDatacenter(final SimEvent evt) {
@@ -891,15 +890,17 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
      * That will happen when the {@link #getVmDestructionDelayFunction() VM destruction delay}
      * is set and is not multiple of the {@link Datacenter#getSchedulingInterval()}
      *
+     * <p>
      * In such situation, that means it is required to send additional events to check if a VM became idle.
      * No additional events are required when:
-     * - the VM destruction delay was not
-    set (VMs will be destroyed only when the broker is shutdown)
-     * - the delay was set and it's multiple of the scheduling interval
-     *   (VM idleness will be checked in the interval defined by the Datacenter scheduling).
+     * <ul>
+     *   <li>the VM destruction delay was not set (VMs will be destroyed only when the broker is shutdown);</li>
+     *   <li>the delay was set and it's multiple of the scheduling interval
+     *   (VM idleness will be checked in the interval defined by the Datacenter scheduling).</li>
+     * </ul>
      *
      * Avoiding additional messages improves performance of large scale simulations.
-     *
+     * </p>
      * @param vm the Vm to check
      * @return true if a message to check VM idleness has to be sent, false otherwise
      */
@@ -931,7 +932,8 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
 
     /**
      * Try to request the creation of a VM into a given datacenter
-     * @param datacenter the Datacenter to try creating the VM (or {@link Datacenter#NULL} if not Datacenter is available)
+     * @param datacenter the Datacenter to try creating the VM
+     *                   (or {@link Datacenter#NULL} if not Datacenter is available)
      * @param isFallbackDatacenter indicate if the given Datacenter was selected when
      *                             a previous one don't have enough capacity to place the requested VM
      * @param vm the VM to be placed
@@ -963,10 +965,10 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
     }
 
     /**
-     * <p>Request Datacenters to create the Cloudlets in the
+     * Request Datacenters to create the Cloudlets in the
      * {@link #getCloudletWaitingList() Cloudlets waiting list}.
      * If there aren't available VMs to host all cloudlets,
-     * the creation of some ones will be postponed.</p>
+     * the creation of some ones will be postponed.
      *
      * <p>This method is called after all submitted VMs are created
      * in some Datacenter.</p>
@@ -1171,12 +1173,26 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>If null is given, VMs won't be sorted and follow submission order.</p>
+     * @param comparator {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public DatacenterBroker setVmComparator(final Comparator<Vm> comparator) {
         this.vmComparator = comparator;
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>If null is given, Cloudlets won't be sorted and follow submission order.</p>
+     * @param comparator {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public void setCloudletComparator(final Comparator<Cloudlet> comparator) {
         this.cloudletComparator = comparator;
@@ -1214,6 +1230,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         return this;
     }
 
+    /**
+     * {@inheritDoc}
+     *
+     * <p>If null is given, the default VM destruction delay function will be used.</p>
+     * @param function {@inheritDoc}
+     * @return {@inheritDoc}
+     */
     @Override
     public DatacenterBroker setVmDestructionDelayFunction(final Function<Vm, Double> function) {
         this.vmDestructionDelayFunction = function == null ? DEF_VM_DESTRUCTION_DELAY_FUNC : function;
