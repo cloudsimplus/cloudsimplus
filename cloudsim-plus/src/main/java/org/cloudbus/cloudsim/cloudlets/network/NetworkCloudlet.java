@@ -37,7 +37,7 @@ import java.util.Optional;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Toolkit 1.0
  *
- * @TODO Check how to implement the NULL pattern for this class.
+ * TODO Check how to implement the NULL pattern for this class.
  */
 public class NetworkCloudlet extends CloudletSimple {
 
@@ -81,7 +81,6 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     /**
-     *
      * @return a read-only list of cloudlet's tasks.
      */
     public List<CloudletTask> getTasks() {
@@ -90,7 +89,7 @@ public class NetworkCloudlet extends CloudletSimple {
 
     /**
      * Gets the Cloudlet's RAM memory (in Megabytes).
-     * @TODO Required, allocated, used memory? It doesn't appear to be used.
+     * TODO Required, allocated, used memory? It doesn't appear to be used.
      */
     public long getMemory() {
         return memory;
@@ -99,7 +98,7 @@ public class NetworkCloudlet extends CloudletSimple {
     /**
      * Sets the Cloudlet's RAM memory.
      * @param memory amount of RAM to set (in Megabytes)
-     * @TODO Cloudlet has the {@link #getUtilizationModelRam()} that defines
+     * TODO Cloudlet has the {@link #getUtilizationModelRam()} that defines
      *       how RAM is used. This way, this attribute doesn't make sense
      *       since usage of RAM is dynamic.
      *       The attribute would be used to know what is the maximum
@@ -113,7 +112,7 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     /**
-     * Checks if the some Cloudlet Task has started yet.
+     * Checks if some Cloudlet Task has started yet.
      *
      * @return true if some task has started, false otherwise
      */
@@ -136,8 +135,7 @@ public class NetworkCloudlet extends CloudletSimple {
 
     /**
      * Gets an {@link Optional} containing the current task
-     * or an {@link Optional#empty()}.
-     *
+     * or an {@link Optional#empty()} if there is no current task yet.
      * @return
      */
     public Optional<CloudletTask> getCurrentTask() {
@@ -152,8 +150,8 @@ public class NetworkCloudlet extends CloudletSimple {
      * Gets an {@link Optional} containing the next task in the list if the current task is finished.
      *
      * @return the next task if the current one is finished;
-     * otherwise an {@link Optional#empty()} if the current task is already the last one
-     * or it is not finished yet.
+     *         otherwise an {@link Optional#empty()} if the current task is already the last one,
+     *         or it is not finished yet.
      */
     private Optional<CloudletTask> getNextTaskIfCurrentIfFinished(){
         if(getCurrentTask().filter(CloudletTask::isActive).isPresent()) {
