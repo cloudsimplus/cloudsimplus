@@ -89,8 +89,7 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     /**
-     * Gets the Cloudlet's RAM memory.
-     *
+     * Gets the Cloudlet's RAM memory (in Megabytes).
      * @TODO Required, allocated, used memory? It doesn't appear to be used.
      */
     public long getMemory() {
@@ -99,7 +98,7 @@ public class NetworkCloudlet extends CloudletSimple {
 
     /**
      * Sets the Cloudlet's RAM memory.
-     * @param memory amount of RAM to set
+     * @param memory amount of RAM to set (in Megabytes)
      * @TODO Cloudlet has the {@link #getUtilizationModelRam()} that defines
      *       how RAM is used. This way, this attribute doesn't make sense
      *       since usage of RAM is dynamic.

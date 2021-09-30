@@ -45,7 +45,7 @@ public class NetworkVmsExampleSimpleApp {
     private static final int CLOUDLET_OUTPUT_SIZE = 300;
     private static final long PACKET_DATA_LENGTH_IN_BYTES = 1000;
     private static final int NUMBER_OF_PACKETS_TO_SEND = 1;
-    private static final long TASK_RAM = 100;
+    private static final long TASK_RAM = 100; // in Megabytes
 
     private final CloudSim simulation;
 

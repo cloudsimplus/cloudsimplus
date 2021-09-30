@@ -118,9 +118,8 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     MipsShare getCurrentRequestedMips();
 
     /**
-     * Gets the current requested ram.
-     *
-     * @return the current requested ram
+     * Gets the current requested ram (in Megabytes).
+     * @return
      */
     long getCurrentRequestedRam();
 

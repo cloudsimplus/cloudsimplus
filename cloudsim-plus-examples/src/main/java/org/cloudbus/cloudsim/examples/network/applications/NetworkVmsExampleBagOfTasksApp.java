@@ -19,7 +19,7 @@ import java.util.List;
  * @author Manoel Campos da Silva Filho
  */
 public class NetworkVmsExampleBagOfTasksApp extends NetworkVmExampleAbstract {
-    private static final long CLOUDLET_TASK_MEMORY = 1000;
+    private static final long CLOUDLET_TASK_MEMORY = 1000; // in Megabytes
     private static final long NETWORK_CLOUDLET_LENGTH = 1;
 
     /**
