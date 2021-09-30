@@ -29,10 +29,12 @@ public class CloudletSimple extends CloudletAbstract {
      * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     *               (check out {@link #setLength(long)})
      * @param pesNumber number of PEs that Cloudlet will require
      * @param utilizationModel a {@link UtilizationModel} to define how the Cloudlet uses CPU, RAM and BW.
-     *                         To define an independent utilization model for each resource, call the respective setters.
+     *                         To define an independent utilization model for each resource,
+     *                         call the respective setters.
      *
      * @see #setUtilizationModelCpu(UtilizationModel)
      * @see #setUtilizationModelRam(UtilizationModel)
@@ -50,8 +52,9 @@ public class CloudletSimple extends CloudletAbstract {
      * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
      * To change the default values, use the respective setters.</p>
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
-     * @param pesNumber      number of PEs that Cloudlet will require
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     *               (check out {@link #setLength(long)})
+     * @param pesNumber number of PEs that Cloudlet will require
      */
     public CloudletSimple(final long length, final int pesNumber) {
         super(length, pesNumber);
@@ -65,8 +68,9 @@ public class CloudletSimple extends CloudletAbstract {
      * CPU utilization and a {@link UtilizationModel#NULL} for RAM and BW.
      * To change the default values, use the respective setters.</p>
      *
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
-     * @param pesNumber      number of PEs that Cloudlet will require
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     *               (check out {@link #setLength(long)})
+     * @param pesNumber number of PEs that Cloudlet will require
      */
     public CloudletSimple(final long length, final long pesNumber) {
         super(length, pesNumber);
@@ -80,7 +84,8 @@ public class CloudletSimple extends CloudletAbstract {
      * To change the default values, use the respective setters.</p>
      *
      * @param id  the unique ID of this cloudlet
-     * @param length the length or size (in MI) of this cloudlet to be executed in a VM (check out {@link #setLength(long)})
+     * @param length the length or size (in MI) of this cloudlet to be executed in a VM
+     *               (check out {@link #setLength(long)})
      * @param pesNumber the pes number
      */
     public CloudletSimple(final long id, final long length, final long pesNumber) {
