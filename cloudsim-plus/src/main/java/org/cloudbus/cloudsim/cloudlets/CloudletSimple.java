@@ -26,7 +26,8 @@ import java.util.Objects;
  */
 public class CloudletSimple extends CloudletAbstract {
     /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * Creates a Cloudlet with no priority or id.
+     * The id is defined when the Cloudlet is submitted to
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
      * @param length the length or size (in MI) of this cloudlet to be executed in a VM
@@ -45,7 +46,8 @@ public class CloudletSimple extends CloudletAbstract {
     }
 
     /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * Creates a Cloudlet with no priority or id.
+     * The id is defined when the Cloudlet is submitted to
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
      * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
@@ -61,7 +63,8 @@ public class CloudletSimple extends CloudletAbstract {
     }
 
     /**
-     * Creates a Cloudlet with no priority or id. The id is defined when the Cloudlet is submitted to
+     * Creates a Cloudlet with no priority or id.
+     * The id is defined when the Cloudlet is submitted to
      * a {@link DatacenterBroker}. The file size and output size is defined as 1.
      *
      * <p><b>NOTE:</b> By default, the Cloudlet will use a {@link UtilizationModelFull} to define
