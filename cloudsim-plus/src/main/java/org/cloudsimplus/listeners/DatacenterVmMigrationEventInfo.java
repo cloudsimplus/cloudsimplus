@@ -35,24 +35,60 @@ import org.cloudbus.cloudsim.vms.Vm;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.3
  */
-public interface DatacenterVmMigrationEventInfo extends VmDatacenterEventInfo {
+public final class DatacenterVmMigrationEventInfo implements VmDatacenterEventInfo {
+    private final double time;
+    private final Vm vm;
+    private final HostSuitability suitability;
+    private final EventListener<DatacenterVmMigrationEventInfo> listener;
+
+    private DatacenterVmMigrationEventInfo(
+        final Vm vm, final HostSuitability suitability,
+        final EventListener<DatacenterVmMigrationEventInfo> listener)
+    {
+        this.vm = vm;
+        this.time = vm.getSimulation().clock();
+        this.suitability = suitability;
+        this.listener = listener;
+    }
+
     /**
      * Gets the VM that started a migration process.
      * @return
      */
-    Vm getVm();
+    public Vm getVm() {
+        return vm;
+    }
+
+    @Override
+    public Datacenter getDatacenter() {
+        return vm.getHost().getDatacenter();
+    }
+
+    @Override
+    public double getTime() {
+        return time;
+    }
 
     /**
      * Indicates if the VM was successfully migrated or not.
      * @return
      */
-    boolean isMigrationSuccessful();
+    public boolean isMigrationSuccessful() {
+        return suitability.fully();
+    }
 
     /**
      * Gets information about the suitability of the Host for the given VM.
      * @return
      */
-    HostSuitability getHostSuitability();
+    public HostSuitability getHostSuitability() {
+        return suitability;
+    }
+
+    @Override
+    public EventListener<DatacenterVmMigrationEventInfo> getListener() {
+        return listener;
+    }
 
     /**
      * Gets a VmDatacenterEventInfo instance from the given parameters.
@@ -62,38 +98,7 @@ public interface DatacenterVmMigrationEventInfo extends VmDatacenterEventInfo {
      * @param vm the {@link Vm} that fired the event
      * @param suitability information about the suitability of the Host for the given VM.
      */
-    static DatacenterVmMigrationEventInfo of(final EventListener<DatacenterVmMigrationEventInfo> listener, final Vm vm, final HostSuitability suitability) {
-        final double time = vm.getSimulation().clock();
-        return new DatacenterVmMigrationEventInfo() {
-            @Override
-            public Datacenter getDatacenter() {
-                return vm.getHost().getDatacenter();
-            }
-
-            @Override
-            public Vm getVm() {
-                return vm;
-            }
-
-            @Override
-            public boolean isMigrationSuccessful() {
-                return suitability.fully();
-            }
-
-            @Override
-            public double getTime() {
-                return time;
-            }
-
-            @Override
-            public HostSuitability getHostSuitability() {
-                return suitability;
-            }
-
-            @Override
-            public EventListener<DatacenterVmMigrationEventInfo> getListener() {
-                return listener;
-            }
-        };
+    public static DatacenterVmMigrationEventInfo of(final EventListener<DatacenterVmMigrationEventInfo> listener, final Vm vm, final HostSuitability suitability) {
+        return new DatacenterVmMigrationEventInfo(vm, suitability, listener);
     }
 }
