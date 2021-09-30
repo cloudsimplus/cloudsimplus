@@ -27,7 +27,7 @@ import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 
 /**
- * Defines the type of an event (a line) in the trace file
+ * Defines the type of event (a line) in the trace file
  * that represents the state of the job.
  * Each enum instance is a possible value for the {@link FieldIndex#EVENT_TYPE} field.
  *
