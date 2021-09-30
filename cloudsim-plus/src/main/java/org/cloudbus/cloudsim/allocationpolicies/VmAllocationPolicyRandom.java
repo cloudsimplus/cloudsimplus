@@ -27,7 +27,6 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -71,13 +70,13 @@ public class VmAllocationPolicyRandom extends VmAllocationPolicyAbstract impleme
 
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final List<Host> hostList = getHostList();
+        final var hostList = getHostList();
         /* The for loop just defines the maximum number of Hosts to try.
          * When a suitable Host is found, the method returns immediately. */
         final int maxTries = hostList.size();
         for (int i = 0; i < maxTries; i++) {
             final int hostIndex = (int)(random.sample() * hostList.size());
-            final Host host = hostList.get(hostIndex);
+            final var host = hostList.get(hostIndex);
             if (host.isSuitableForVm(vm)) {
                 return Optional.of(host);
             }
