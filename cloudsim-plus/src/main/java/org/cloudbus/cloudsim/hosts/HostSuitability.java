@@ -148,16 +148,16 @@ public final class HostSuitability {
         if(reason != null)
             return reason;
 
-        String msg = "lack of";
+        final var builder = new StringBuilder("lack of");
         if(!forPes)
-            msg += " PEs,";
+            builder.append(" PEs,");
         if(!forRam)
-            msg += " RAM,";
+            builder.append(" RAM,");
         if(!forStorage)
-            msg += " Storage,";
+            builder.append(" Storage,");
         if(!forBw)
-            msg += " BW,";
+            builder.append(" BW,");
 
-        return msg.substring(0, msg.length()-1);
+        return builder.substring(0, builder.length()-1);
     }
 }
