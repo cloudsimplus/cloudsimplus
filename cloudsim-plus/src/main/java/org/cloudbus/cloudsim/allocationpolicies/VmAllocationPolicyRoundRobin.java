@@ -26,7 +26,6 @@ package org.cloudbus.cloudsim.allocationpolicies;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
-import java.util.List;
 import java.util.Optional;
 
 /**
@@ -60,12 +59,12 @@ public class VmAllocationPolicyRoundRobin extends VmAllocationPolicyAbstract imp
 
     @Override
     protected Optional<Host> defaultFindHostForVm(final Vm vm) {
-        final List<Host> hostList = getHostList();
+        final var hostList = getHostList();
         /* The for loop just defines the maximum number of Hosts to try.
          * When a suitable Host is found, the method returns immediately. */
         final int maxTries = hostList.size();
         for (int i = 0; i < maxTries; i++) {
-            final Host host = hostList.get(lastHostIndex);
+            final var host = hostList.get(lastHostIndex);
             //Different from the FirstFit policy, it always increments the host index.
             lastHostIndex = ++lastHostIndex % hostList.size();
             if (host.isSuitableForVm(vm)) {
