@@ -86,7 +86,7 @@ public class CloudletReceiveTask extends CloudletTask {
      * @param id task id
      * @param sourceVm the Vm where it is expected to receive packets from
      */
-    public CloudletReceiveTask(int id, Vm sourceVm) {
+    public CloudletReceiveTask(final int id, final Vm sourceVm) {
         super(id);
         this.packetsReceived = new ArrayList<>();
         this.sourceVm = sourceVm;
@@ -98,7 +98,7 @@ public class CloudletReceiveTask extends CloudletTask {
      *
      * @param packet the packet received
      */
-    public void receivePacket(VmPacket packet) {
+    public void receivePacket(final VmPacket packet) {
         packet.setReceiveTime(getCloudlet().getSimulation().clock());
         this.packetsReceived.add(packet);
         final boolean finished = this.packetsReceived.size() >= expectedPacketsToReceive;
@@ -137,7 +137,7 @@ public class CloudletReceiveTask extends CloudletTask {
      * is marked as finished.
      * @param expectedPacketsToReceive the number of expected packets to set
      */
-    public void setExpectedPacketsToReceive(long expectedPacketsToReceive) {
+    public void setExpectedPacketsToReceive(final long expectedPacketsToReceive) {
         this.expectedPacketsToReceive = expectedPacketsToReceive;
     }
 
