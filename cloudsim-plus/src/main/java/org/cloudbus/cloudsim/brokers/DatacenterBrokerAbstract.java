@@ -185,13 +185,13 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         vmDestructionDelayFunction = DEF_VM_DESTRUCTION_DELAY_FUNC;
     }
 
-
     @Override
     public final DatacenterBroker setSelectClosestDatacenter(final boolean select) {
         this.selectClosestDatacenter = select;
         if(select){
             setDatacenterMapper(this::closestDatacenterMapper);
         }
+
         return this;
     }
 
@@ -343,6 +343,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (list.isEmpty()) {
             return this;
         }
+
         sortCloudletsIfComparatorIsSet(list);
         configureEntities(list);
         lastSubmittedCloudlet = setIdForEntitiesWithoutOne(list, lastSubmittedCloudlet);
@@ -811,7 +812,6 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
             requestIdleVmDestruction(vmExecList.get(i));
         }
 
-
         if (cloudletWaitingList.isEmpty()) {
             return;
         }
@@ -1093,6 +1093,7 @@ public abstract class DatacenterBrokerAbstract extends CloudSimEntity implements
         if (index >= 0 && index < vmWaitingList.size()) {
             return vmWaitingList.get(index);
         }
+
         return Vm.NULL;
     }
 
