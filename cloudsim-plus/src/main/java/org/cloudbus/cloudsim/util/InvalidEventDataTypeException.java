@@ -26,6 +26,8 @@ package org.cloudbus.cloudsim.util;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 
+import java.io.Serial;
+
 /**
  * An exception to be raised when the type of the {@link SimEvent#getData()}
  * is not as expected for a given tag from {@link CloudSimTags}.
@@ -33,6 +35,9 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
  * @since CloudSim Plus 7.0.1
  */
 public class InvalidEventDataTypeException extends IllegalStateException {
+    @Serial
+    private static final long serialVersionUID = -3905805615156717344L;
+
     /**
      * Instantiates the exception
      * @param evt the event having invalid data type
