@@ -23,31 +23,31 @@ public class SwfWorkloadFileReaderTest {
 
     @Test
     public void readGz() {
-	    readFile(SWF_FILE+".gz", JOBS_AT_SWF_LCG_FILE);
+	    assertTrue(assertCreatedCloudletsFromTrace(SWF_FILE+".gz", JOBS_AT_SWF_LCG_FILE));
     }
 
     @Test
     public void readSwf() {
-	    readFile(SWF_FILE, JOBS_AT_SWF_LCG_FILE);
+	    assertTrue(assertCreatedCloudletsFromTrace(SWF_FILE, JOBS_AT_SWF_LCG_FILE));
     }
 
     @Test
     public void readZipWithTwoSwfFiles() {
-	    readFile(ZIP_FILE, JOBS_AT_SWF_LCG_FILE + JOBS_AT_SWF_NASA_FILE);
+	    assertTrue(assertCreatedCloudletsFromTrace(ZIP_FILE, JOBS_AT_SWF_LCG_FILE + JOBS_AT_SWF_NASA_FILE));
     }
 
-    private void readFile(final String fileNameWithoutPath, final int jobsNumber) {
+    private boolean assertCreatedCloudletsFromTrace(final String fileNameWithoutPath, final int jobsNumber) {
         final SwfWorkloadFileReader reader = SwfWorkloadFileReader.getInstance(fileNameWithoutPath, 1);
         final long millisecs = System.currentTimeMillis();
         final List<Cloudlet> cloudletList = reader.generateWorkload();
         final double seconds = (System.currentTimeMillis() - millisecs)/1000.0;
         assertEquals(jobsNumber, cloudletList.size());
-        LOGGER.info(
-            "Time taken to read the file {}: {} seconds",
-            fileNameWithoutPath, seconds);
+        LOGGER.info("Time taken to read the file {}: {} seconds", fileNameWithoutPath, seconds);
 
         for (final Cloudlet cloudlet : cloudletList) {
             assertTrue(cloudlet.getLength() > 0);
         }
+
+        return true;
     }
 }
