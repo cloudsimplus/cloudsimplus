@@ -7,14 +7,14 @@
  */
 package org.cloudbus.cloudsim.core;
 
-import org.apache.commons.lang3.StringUtils;
 import org.cloudbus.cloudsim.core.events.CloudSimEvent;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Objects;
 import java.util.function.Predicate;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a simulation entity. An entity handles events and can
@@ -239,7 +239,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * @param data  The data to be sent with the event.
      */
     public void scheduleFirst(final SimEntity dest, final double delay, final int tag, final Object data) {
-        final CloudSimEvent evt = new CloudSimEvent(delay, this, dest, tag, data);
+        final var evt = new CloudSimEvent(delay, this, dest, tag, data);
         if (!canSendEvent(evt)) {
             return;
         }
@@ -365,7 +365,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      */
     @Override
     public final CloudSimEntity clone() throws CloneNotSupportedException {
-        final CloudSimEntity copy = (CloudSimEntity) super.clone();
+        final var copy = (CloudSimEntity) super.clone();
         copy.setName(name);
         copy.setSimulation(simulation);
         copy.setEventBuffer(null);
@@ -379,13 +379,13 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
 
     @Override
     public final SimEntity setSimulation(final Simulation simulation) {
-        this.simulation = Objects.requireNonNull(simulation);
+        this.simulation = requireNonNull(simulation);
         return this;
     }
 
     @Override
     public SimEntity setName(final String name) throws IllegalArgumentException {
-        if (StringUtils.isBlank(name)) {
+        if (requireNonNull(name).isBlank()) {
             throw new IllegalArgumentException("Entity names cannot be empty.");
         }
 
@@ -551,7 +551,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
         if (this == object) return true;
         if (object == null || getClass() != object.getClass()) return false;
 
-        final CloudSimEntity that = (CloudSimEntity) object;
+        final var that = (CloudSimEntity) object;
 
         if (id != that.id) return false;
         return simulation.equals(that.simulation);
