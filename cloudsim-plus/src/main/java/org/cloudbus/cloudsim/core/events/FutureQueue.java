@@ -80,7 +80,7 @@ public class FutureQueue implements EventQueue {
      * Removes the event from the queue.
      *
      * @param event the event
-     * @return true, if successful
+     * @return true if successful; false if not event was removed
      */
     public boolean remove(final SimEvent event) {
         return sortedSet.remove(event);
@@ -90,7 +90,7 @@ public class FutureQueue implements EventQueue {
      * Removes all the events from the queue.
      *
      * @param events the events
-     * @return true, if successful
+     * @return true if successful; false if not event was removed
      */
     public boolean removeAll(final Collection<SimEvent> events) {
         return sortedSet.removeAll(events);
