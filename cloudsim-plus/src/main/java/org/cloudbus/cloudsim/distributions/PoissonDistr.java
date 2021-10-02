@@ -35,10 +35,11 @@ import java.util.stream.IntStream;
  * to happen a number of times in a given time interval.
  *
  * @author Manoel Campos da Silva Filho
- * @todo There is the {@link org.apache.commons.math3.distribution.PoissonDistribution} implementation already.
- * This class should simply extend it, as the other class on this package.
  * @see <a href="https://en.wikipedia.org/wiki/Poisson_distribution">Poisson Distribution</a>
  * @since CloudSim Plus 1.2.0
+ * TODO There is the {@link org.apache.commons.math3.distribution.PoissonDistribution}
+ * implementation already.
+ * This class should simply extend it, as the other class on this package do.
  */
 public class PoissonDistr implements DiscreteDistribution {
     /** @see #isApplyAntitheticVariates() */
@@ -142,8 +143,9 @@ public class PoissonDistr implements DiscreteDistribution {
     }
 
     /**
-     * Gets a random number that represents the next time (from current time or last generated event) that an event will happen,
-     * considering the events arrival rate defined by {@link #getLambda() lambda (λ)}.
+     * Gets a random number that represents the next time (from current time or last generated event)
+     * that an event will happen, considering events arrival rate defined
+     * by {@link #getLambda() lambda (λ)}.
      * The time unit (if seconds, minutes, hours, etc) is the same
      * considered when setting a value to the {@link #getLambda() lambda} attribute.
      *
@@ -155,7 +157,8 @@ public class PoissonDistr implements DiscreteDistribution {
      *   If you are generating all random event arrivals at the beginning of the simulation,
      *   you need to add the previous time to the next event arrival time.
      *   This way, the arrival time of the previous event is added to the next one.
-     *   For instance, if consecutive calls to this method return the values 60 and 25, from the current time, that means:
+     *   For instance, if consecutive calls to this method return the values 60 and 25,
+     *   from the current time, that means:
      *       (i) the first event will arrive in 60 seconds;
      *       (ii) the next event will arrive in 85 seconds, that is 25 seconds after the first one.
      *   </li>
@@ -167,7 +170,8 @@ public class PoissonDistr implements DiscreteDistribution {
      * </ul>
      * </p>
      *
-     * <p>Poisson inter-arrival times are independent and identically distributed exponential random variables with mean 1/λ.</p>
+     * <p>Poisson inter-arrival times are independent and identically distributed
+     * exponential random variables with mean 1/λ.</p>
      *
      * @return
      * @see <a href="https://books.google.com.br/books?isbn=1420076191">Monte Carlo Methods and Models in Finance and Insurance.
@@ -223,7 +227,7 @@ public class PoissonDistr implements DiscreteDistribution {
     /**
      * Gets the mean time between arrival of two events,
      * which is the inverse of {@link #getLambda() lambda (λ)}.
-     * The time unit (if seconds, minutes, hours, etc) is the same
+     * The time unit (if seconds, minutes, hours, etc.) is the same
      * considered when setting a value to the {@link #getLambda() lambda} attribute.
      *
      * @return

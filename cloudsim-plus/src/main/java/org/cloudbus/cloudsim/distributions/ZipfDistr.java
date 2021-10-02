@@ -29,9 +29,6 @@ public class ZipfDistr implements DiscreteDistribution {
      */
     private final double shape;
 
-    /**
-     * The den.
-     */
     private double den;
 
     /**

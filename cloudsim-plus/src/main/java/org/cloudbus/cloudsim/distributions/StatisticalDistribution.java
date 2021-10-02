@@ -22,7 +22,8 @@ public interface StatisticalDistribution {
      * instead.</p>
      *
      * @return the next pseudo random number in the sequence, following the
-     * implemented distribution, ignoring the {@link #isApplyAntitheticVariates() Antithetic Variates Technique}
+     * implemented distribution, ignoring the
+     * {@link #isApplyAntitheticVariates() Antithetic Variates Technique}
      * if enabled
      */
     double originalSample();
@@ -86,8 +87,8 @@ public interface StatisticalDistribution {
 
     /**
      * Indicates if the Pseudo-Random Number Generator (RNG) applies the
-     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
-     * of experiments using the generated numbers.
+     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a>
+     * in order to reduce variance of experiments using the generated numbers.
      *
      * This technique doesn't work for all the cases. However,
      * in the cases it can be applied, in order to it work, one have to
@@ -110,8 +111,8 @@ public interface StatisticalDistribution {
 
     /**
      * Indicates if the Pseudo-Random Number Generator (RNG) applies the
-     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a> in order to reduce variance
-     * of experiments using the generated numbers.
+     * <a href="https://en.wikipedia.org/wiki/Antithetic_variates">Antithetic Variates Technique</a>
+     * in order to reduce variance of experiments using the generated numbers.
      *
      * @param applyAntitheticVariates true if the technique is to be applied, false otherwise
      * @see #isApplyAntitheticVariates()
