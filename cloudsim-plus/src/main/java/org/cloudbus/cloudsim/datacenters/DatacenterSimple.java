@@ -24,8 +24,7 @@ import org.cloudbus.cloudsim.power.models.PowerModelDatacenter;
 import org.cloudbus.cloudsim.power.models.PowerModelDatacenterSimple;
 import org.cloudbus.cloudsim.resources.DatacenterStorage;
 import org.cloudbus.cloudsim.resources.SanStorage;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import org.cloudbus.cloudsim.util.BytesConversion;
+import org.cloudbus.cloudsim.util.InvalidEventDataTypeException;
 import org.cloudbus.cloudsim.util.MathUtil;
 import org.cloudbus.cloudsim.util.TimeUtil;
 import org.cloudbus.cloudsim.vms.Vm;
@@ -41,6 +40,7 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static org.cloudbus.cloudsim.util.BytesConversion.bitesToBytes;
 
 /**
  * Implements the basic features of a Virtualized Cloud Datacenter. It deals
@@ -302,8 +302,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private Optional<Host> getHostFromHostEvent(final SimEvent evt) {
-        if(evt.getData() instanceof Host){
-            return Optional.of((Host)evt.getData());
+        if(evt.getData() instanceof Host host){
+            return Optional.of(host);
         }
 
         return Optional.empty();
@@ -343,11 +343,11 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return true if the Vm was scaled, false otherwise
      */
     private boolean requestVmVerticalScaling(final SimEvent evt) {
-        if(!(evt.getData() instanceof VerticalVmScaling)){
-            return false;
+        if (evt.getData() instanceof VerticalVmScaling scaling) {
+            return vmAllocationPolicy.scaleVmVertically(scaling);
         }
 
-        return vmAllocationPolicy.scaleVmVertically((VerticalVmScaling)evt.getData());
+        throw new InvalidEventDataTypeException(evt, "VM_VERTICAL_SCALING", "VerticalVmScaling");
     }
 
     private boolean processCloudletEvents(final SimEvent evt) {
@@ -421,7 +421,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     protected boolean processCloudletSubmit(final SimEvent evt, final boolean ack) {
-        final Cloudlet cloudlet = (Cloudlet) evt.getData();
+        final var cloudlet = (Cloudlet) evt.getData();
         if (cloudlet.isFinished()) {
             notifyBrokerAboutAlreadyFinishedCloudlet(cloudlet, ack);
             return false;
@@ -443,7 +443,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         // time to transfer cloudlet's files
         final double fileTransferTime = getDatacenterStorage().predictFileTransferTime(cloudlet.getRequiredFiles());
 
-        final CloudletScheduler scheduler = cloudlet.getVm().getCloudletScheduler();
+        final var scheduler = cloudlet.getVm().getCloudletScheduler();
         final double estimatedFinishTime = scheduler.cloudletSubmit(cloudlet, fileTransferTime);
 
         // if this cloudlet is in the exec queue
@@ -510,7 +510,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         return true;
     }
 
-    private void sendAck(boolean ack, Cloudlet cloudlet, int cloudSimTagAck) {
+    private void sendAck(final boolean ack, final Cloudlet cloudlet, final int cloudSimTagAck) {
         if (ack) {
             sendNow(cloudlet.getBroker(), cloudSimTagAck, cloudlet);
         }
@@ -550,7 +550,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return true if a host was allocated to the VM; false otherwise
      */
     private boolean processVmCreate(final SimEvent evt) {
-        final Vm vm = (Vm) evt.getData();
+        final var vm = (Vm) evt.getData();
 
         final boolean hostAllocatedForVm = vmAllocationPolicy.allocateHostForVm(vm).fully();
         if (hostAllocatedForVm) {
@@ -574,7 +574,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     protected boolean processVmDestroy(final SimEvent evt, final boolean ack) {
-        final Vm vm = (Vm) evt.getData();
+        final var vm = (Vm) evt.getData();
         vmAllocationPolicy.deallocateHostForVm(vm);
 
         if (ack) {
@@ -621,7 +621,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     protected boolean finishVmMigration(final SimEvent evt, final boolean ack) {
         if (!(evt.getData() instanceof Map.Entry<?, ?>)) {
-            throw new ClassCastException("The data object must be Map.Entry<Vm, Host>");
+            throw new InvalidEventDataTypeException(evt, "VM_MIGRATE", "Map.Entry<Vm, Host>");
         }
 
         final var entry = (Map.Entry<Vm, Host>) evt.getData();
@@ -798,14 +798,16 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private void logHostSearchRetry() {
-        if(lastMigrationMap.isEmpty()) {
-            final String msg = hostSearchRetryDelay > 0 ?
-                                    "in " + TimeUtil.secondsToStr(hostSearchRetryDelay) :
-                                    "as soon as possible";
-            LOGGER.warn(
-                "{}: Datacenter: An under or overload situation was detected but currently, however there aren't suitable Hosts to manage that. Trying again {}.",
-                clock(), msg);
+        if (!lastMigrationMap.isEmpty()) {
+            return;
         }
+
+        final var msg = hostSearchRetryDelay > 0 ?
+                          "in " + TimeUtil.secondsToStr(hostSearchRetryDelay) :
+                          "as soon as possible";
+        LOGGER.warn(
+            "{}: Datacenter: An under or overload situation was detected but currently, however there aren't suitable Hosts to manage that. Trying again {}.",
+            clock(), msg);
     }
 
     /**
@@ -819,9 +821,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     private boolean areThereUnderOrOverloadedHostsAndMigrationIsSupported(){
-        if(vmAllocationPolicy instanceof VmAllocationPolicyMigration){
-            final VmAllocationPolicyMigration policy = (VmAllocationPolicyMigration) vmAllocationPolicy;
-            return policy.areHostsUnderOrOverloaded();
+        if(vmAllocationPolicy instanceof VmAllocationPolicyMigration migrationPolicy){
+            return migrationPolicy.areHostsUnderOrOverloaded();
         }
 
         return false;
@@ -853,9 +854,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
                 String.format("%s from %s to %s", sourceVm, sourceHost, targetHost);
 
         final String currentTime = getSimulation().clockStr();
-        final String msg2 = String.format(
-            "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.",
-            delay, getBandwidthPercentForMigration()*100);
+        final var fmt = "It's expected to finish in %.2f seconds, considering the %.0f%% of bandwidth allowed for migration and the VM RAM size.";
+        final String msg2 = String.format(fmt, delay, getBandwidthPercentForMigration()*100);
         LOGGER.info("{}: {}: Migration of {} is started. {}", currentTime, getName(), msg1, msg2);
 
         if(targetHost.addMigratingInVm(sourceVm)) {
@@ -873,7 +873,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return the time (in seconds) that is expected to migrate the VM
      */
     private double timeToMigrateVm(final Vm vm, final Host targetHost) {
-        return vm.getRam().getCapacity() / BytesConversion.bitesToBytes(targetHost.getBw().getCapacity() * getBandwidthPercentForMigration());
+        return vm.getRam().getCapacity() / bitesToBytes(targetHost.getBw().getCapacity() * getBandwidthPercentForMigration());
     }
 
     @Override
