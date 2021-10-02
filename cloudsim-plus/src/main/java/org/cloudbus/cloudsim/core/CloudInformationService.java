@@ -51,7 +51,7 @@ public class CloudInformationService extends CloudSimEntity {
      *
      * @param simulation The CloudSim instance that represents the simulation the Entity is related to
      */
-    CloudInformationService(CloudSim simulation) {
+    CloudInformationService(final CloudSim simulation) {
         super(simulation);
         datacenterList = new TreeSet<>();
         cisList = new TreeSet<>();
@@ -64,7 +64,7 @@ public class CloudInformationService extends CloudSimEntity {
     protected void startInternal() {/**/}
 
     @Override
-    public void processEvent(SimEvent evt) {
+    public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
             case CloudSimTags.REGISTER_REGIONAL_CIS -> cisList.add((CloudInformationService) evt.getData());
             case CloudSimTags.REQUEST_REGIONAL_CIS -> super.send(evt.getSource(), 0, evt.getTag(), cisList);
