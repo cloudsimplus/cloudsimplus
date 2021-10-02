@@ -270,8 +270,8 @@ public class CloudSim implements Simulation {
         }
     }
 
-    private void notifyEventListeners(final Set<EventListener<EventInfo>> eventListeners, final double clock) {
-        eventListeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
+    private void notifyEventListeners(final Set<EventListener<EventInfo>> listeners, final double clock) {
+        listeners.forEach(listener -> listener.update(EventInfo.of(listener, clock)));
     }
 
     /**
@@ -311,14 +311,15 @@ public class CloudSim implements Simulation {
     }
 
     private boolean logSimulationAborted() {
-        if(abortRequested){
-            aborted = true;
-            LOGGER.info(
-                "{}================================================== Simulation aborted under request at time {} ==================================================",
-                System.lineSeparator(), clock);
-            return true;
+        if (!abortRequested) {
+            return false;
         }
-        return false;
+
+        aborted = true;
+        LOGGER.info(
+            "{}================================================== Simulation aborted under request at time {} ==================================================",
+            System.lineSeparator(), clock);
+        return true;
     }
 
     /**
@@ -453,7 +454,7 @@ public class CloudSim implements Simulation {
     public void addEntity(final CloudSimEntity entity) {
         requireNonNull(entity);
         if (running) {
-            final SimEvent evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, SimEntity.NULL, -1, entity);
+            final var evt = new CloudSimEvent(SimEvent.Type.CREATE, 0, entity, SimEntity.NULL, -1, entity);
             future.addEvent(evt);
         }
 
@@ -465,9 +466,8 @@ public class CloudSim implements Simulation {
 
     protected void removeFinishedEntity(final CloudSimEntity entity){
         if(entity.isAlive()){
-            throw new IllegalStateException(
-                String.format("Alive entity %s cannot be removed from the simulation entity list.", entity)
-            );
+            final var msg = "Alive entity %s cannot be removed from the simulation entity list.";
+            throw new IllegalStateException(String.format(msg, entity));
         }
 
         entities.remove(entity);
@@ -673,12 +673,13 @@ public class CloudSim implements Simulation {
      */
     private void processEvent(final SimEvent evt) {
         if (evt.getTime() < clock) {
-            throw new IllegalArgumentException("Past event detected. Event time: " + evt.getTime() + " Simulation clock: " + clock);
+            final var msg = "Past event detected. Event time: %.2f Simulation clock: %.2f";
+            throw new IllegalArgumentException(String.format(msg, evt.getTime(), clock));
         }
 
         setClock(evt.getTime());
         processEventByType(evt);
-        for (final EventListener<SimEvent> listener : onEventProcessingListeners) {
+        for (final var listener : onEventProcessingListeners) {
             listener.update(evt);
         }
     }
@@ -808,11 +809,11 @@ public class CloudSim implements Simulation {
 
     @Override
     public void pauseEntity(final SimEntity src, final double delay) {
-        final SimEvent evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
+        final var evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
         addHoldingFutureEvent(src, evt);
     }
 
-    private void addHoldingFutureEvent(SimEntity src, SimEvent evt) {
+    private void addHoldingFutureEvent(final SimEntity src, final SimEvent evt) {
         future.addEvent(evt);
         src.setState(SimEntity.State.HOLDING);
     }
@@ -823,7 +824,7 @@ public class CloudSim implements Simulation {
      * @param delay How many seconds after the current time the entity has to be held
      */
     protected void holdEntity(final SimEntity src, final long delay) {
-        final SimEvent evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
+        final var evt = new CloudSimEvent(SimEvent.Type.HOLD_DONE, delay, src);
         addHoldingFutureEvent(src, evt);
     }
 
@@ -921,7 +922,7 @@ public class CloudSim implements Simulation {
 
     @Override
     public boolean removeOnSimulationPauseListener(final EventListener<EventInfo> listener) {
-        return this.onSimulationPauseListeners.remove(listener);
+        return this.onSimulationPauseListeners.remove(requireNonNull(listener));
     }
 
     @Override
