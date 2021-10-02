@@ -14,8 +14,8 @@ import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.util.BytesConversion;
 
 /**
- * This class represents an Aggregate Switch in a Datacenter network. It
- * interacts with other Datacenter in order to exchange packets.
+ * This class represents an Aggregate Switch in a Datacenter network.
+ * It interacts with other Datacenter in order to exchange packets.
  *
  * <p>Please refer to following publication for more details:
  * <ul>
@@ -62,7 +62,7 @@ public class AggregateSwitch extends AbstractSwitch {
      * Instantiates a Aggregate AbstractSwitch specifying the Datacenter that are
      * connected to its downlink and uplink ports and corresponding bandwidths.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
      * @param dc The Datacenter where the switch is connected to
      */
     public AggregateSwitch(CloudSim simulation, NetworkDatacenter dc) {
@@ -75,8 +75,8 @@ public class AggregateSwitch extends AbstractSwitch {
 
     @Override
     protected void processPacketDown(SimEvent evt) {
-        // packet is coming from root so need to be sent to edge switch
-        // find the id for edge switch
+        /* packet is coming from root switch,
+        so it needs to be sent to edge switch */
         super.processPacketDown(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
         final Switch downlinkSw = getVmEdgeSwitch(netPkt);
@@ -85,9 +85,7 @@ public class AggregateSwitch extends AbstractSwitch {
 
     @Override
     protected void processPacketUp(SimEvent evt) {
-        // packet is coming from edge router so need to be sent to
-        // either root or another edge switch
-        // find the id for edge switch
+        // packet is coming from edge router, so it needs to be sent to either root or another edge switch
         super.processPacketUp(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
         final Switch downlinkSw = getVmEdgeSwitch(netPkt);
