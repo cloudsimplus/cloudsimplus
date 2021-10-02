@@ -74,8 +74,8 @@ public interface AbstractMachine<T extends Resource> extends ChangeableId, Resou
     long getNumberOfPes();
 
     /**
-     * Gets the individual MIPS capacity of any machine's {@link Pe}, considering that all
-     * PEs have the same capacity.
+     * Gets the individual MIPS capacity of any machine's {@link Pe},
+     * considering that all PEs have the same capacity.
      *
      * @return the MIPS capacity of a single {@link Pe}
      */
@@ -89,7 +89,7 @@ public interface AbstractMachine<T extends Resource> extends ChangeableId, Resou
     double getTotalMipsCapacity();
 
     /**
-     * Gets the CloudSim instance that represents the simulation the Entity is related to.
+     * Gets the CloudSim instance that represents the simulation the Entity belongs to.
      * @return
      */
     Simulation getSimulation();
@@ -120,7 +120,7 @@ public interface AbstractMachine<T extends Resource> extends ChangeableId, Resou
      *             any operation when the machine becomes idle (for instance,
      *             if idle machines might be shut down and a negative value is given,
      *             they won't).
-     * @return true if the Machine has been idle as long as the given time,
+     * @return true if the Machine has been idle as long as the given time;
      *         false if it's active of isn't idle long enough
      */
     default boolean isIdleEnough(final double time) {
