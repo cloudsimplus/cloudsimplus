@@ -63,9 +63,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      */
     private double lastUnderOrOverloadedDetection = -Double.MAX_VALUE;
 
-    /**
-     * @see #getBandwidthPercentForMigration()
-     */
+    /** @see #getBandwidthPercentForMigration() */
     private double bandwidthPercentForMigration;
 
     /**
@@ -84,7 +82,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /** @see #getLastProcessTime() */
     private double lastProcessTime;
 
-
     /** @see #getSchedulingInterval() */
     private double schedulingInterval;
 
@@ -94,9 +91,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     private final List<EventListener<HostEventInfo>> onHostAvailableListeners;
     private final List<EventListener<DatacenterVmMigrationEventInfo>> onVmMigrationFinishListeners;
 
-    /**
-     * @see #getTimeZone()
-     */
+    /** @see #getTimeZone() */
     private double timeZone;
     private Map<Vm, Host> lastMigrationMap;
 
@@ -112,7 +107,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      *
      * <p><b>NOTE:</b> To change such attributes, just call the respective setters.</p>
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
      */
@@ -123,7 +118,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
@@ -140,7 +135,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * Creates a Datacenter with an empty {@link #getDatacenterStorage() storage}
      * and no Hosts.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy)
      * @see #DatacenterSimple(Simulation, List, VmAllocationPolicy, DatacenterStorage)
@@ -157,7 +152,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter attaching a given storage list to its {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storageList the storage list to attach to the {@link #getDatacenterStorage() datacenter storage}
@@ -174,7 +169,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     /**
      * Creates a Datacenter with a given {@link #getDatacenterStorage() storage}.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      * @param storage the {@link #getDatacenterStorage() storage} for this Datacenter
@@ -341,8 +336,8 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
     }
 
     /**
-     * Process a {@link CloudSimTags#VM_VERTICAL_SCALING} request, trying to scale
-     * a Vm resource.
+     * Process a {@link CloudSimTags#VM_VERTICAL_SCALING} request,
+     * trying to scale a Vm resource.
      *
      * @param evt the received  {@link CloudSimTags#VM_VERTICAL_SCALING} event
      * @return true if the Vm was scaled, false otherwise
@@ -459,8 +454,6 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         }
 
         ((CustomerEntityAbstract)cloudlet).setCreationTime();
-
-
         sendCloudletSubmitAckToBroker(cloudlet, ack);
     }
 
@@ -500,7 +493,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Processes a Cloudlet resume request.
-     *  @param cloudlet cloudlet to be resumed
+     * @param cloudlet cloudlet to be resumed
      * @param ack indicates if the event's sender expects to receive an
      * @return
      */
@@ -574,9 +567,10 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     /**
      * Process the event sent by a Broker, requesting the destruction of a given VM
-     * created in this Datacenter. This Datacenter may send, upon
-     * request, the status back to the Broker.
-     *  @param evt information about the event just happened
+     * created in this Datacenter. This Datacenter may send,
+     * upon request, the status back to the Broker.
+     *
+     * @param evt information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
      * @return
      */
@@ -622,7 +616,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      *
      * @param evt information about the event just happened
      * @param ack indicates if the event's sender expects to receive an
-     * acknowledge message when the event finishes to be processed
+     * acknowledgement message when the event finishes being processed
      * @see CloudSimTags#VM_MIGRATE
      * @return
      */
