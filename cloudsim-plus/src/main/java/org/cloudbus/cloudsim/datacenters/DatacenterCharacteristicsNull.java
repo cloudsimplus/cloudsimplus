@@ -67,7 +67,6 @@ final class DatacenterCharacteristicsNull implements DatacenterCharacteristics {
     @Override public long getNumberOfFailedHosts() {
         return 0;
     }
-
     @Override public int getNumberOfPes() {
         return 0;
     }
