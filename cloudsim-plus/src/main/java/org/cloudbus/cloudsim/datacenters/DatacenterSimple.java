@@ -498,8 +498,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
      * @return
      */
     protected boolean processCloudletResume(final Cloudlet cloudlet, final boolean ack) {
-        final double estimatedFinishTime = cloudlet.getVm()
-            .getCloudletScheduler().cloudletResume(cloudlet);
+        final double estimatedFinishTime = cloudlet.getVm().getCloudletScheduler().cloudletResume(cloudlet);
 
         if (estimatedFinishTime > 0.0 && estimatedFinishTime > clock()) {
             schedule(this,
@@ -755,6 +754,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
         if (!isTimeToUpdateCloudletsProcessing()){
             return Double.MAX_VALUE;
         }
+
         double nextSimulationDelay = updateHostsProcessing();
 
         if (nextSimulationDelay != Double.MAX_VALUE) {
@@ -1016,7 +1016,7 @@ public class DatacenterSimple extends CloudSimEntity implements Datacenter {
 
     @Override
     public Host getHostById(final long id) {
-        return hostList.stream().filter(host -> host.getId()==id).findFirst().map(host -> (Host)host).orElse(Host.NULL);
+        return hostList.stream().filter(host -> host.getId() == id).findFirst().map(host -> (Host)host).orElse(Host.NULL);
     }
 
     @Override
