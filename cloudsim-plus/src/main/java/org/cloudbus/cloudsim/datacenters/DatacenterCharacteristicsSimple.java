@@ -10,11 +10,11 @@ package org.cloudbus.cloudsim.datacenters;
 import org.cloudbus.cloudsim.hosts.Host;
 
 /**
- * Represents static properties of a Datacenter such as architecture, Operating
- * System (OS), management policy (time- or space-shared), cost and time zone at
- * which the resource is located along resource configuration. Each
- * {@link Datacenter} has to have its own instance of this class, since it
- * stores the Datacenter host list.
+ * Represents static properties of a Datacenter such as architecture,
+ * Operating System (OS), management policy (time- or space-shared),
+ * cost and time zone at which the resource is located along resource configuration.
+ * Each {@link Datacenter} has to have its own instance of this class,
+ * since it stores the Datacenter host list.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
@@ -23,40 +23,25 @@ import org.cloudbus.cloudsim.hosts.Host;
  * @since CloudSim Toolkit 1.0
  */
 public class DatacenterCharacteristicsSimple implements DatacenterCharacteristics {
-
-    /**
-     * @see #getArchitecture()
-     */
+    /** @see #getArchitecture() */
     private String architecture;
 
-    /**
-     * @see #getOs()
-     */
+    /** @see #getOs() */
     private String os;
 
-    /**
-     * @see #getCostPerSecond()
-     */
+    /** @see #getCostPerSecond() */
     private double costPerSecond;
 
-    /**
-     * @see #getVmm()
-     */
+    /** @see #getVmm() */
     private String vmm;
 
-    /**
-     * @see #getCostPerMem()
-     */
+    /** @see #getCostPerMem() */
     private double costPerMem;
 
-    /**
-     * @see #getCostPerStorage()
-     */
+    /** @see #getCostPerStorage() */
     private double costPerStorage;
 
-    /**
-     * @see #getCostPerBw()
-     */
+    /** @see #getCostPerBw() */
     private double costPerBw;
 
     /** @see #getDatacenter() */
@@ -65,8 +50,8 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     /**
      * Creates a DatacenterCharacteristics with default values
      * for {@link #getArchitecture() architecture}, {@link #getOs() OS} and
-     * {@link #getVmm() VMM}. The costs for {@link #getCostPerBw() BW}, {@link #getCostPerMem()} () RAM}
-     * and {@link #getCostPerStorage()} () Storage} are set to zero.
+     * {@link #getVmm() VMM}. The costs for {@link #getCostPerBw() BW},
+     * {@link #getCostPerMem()} () RAM} and {@link #getCostPerStorage()} () Storage} are set to zero.
      */
     public DatacenterCharacteristicsSimple(final Datacenter datacenter){
         setArchitecture(DEFAULT_ARCH);
@@ -194,5 +179,4 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     public Datacenter getDatacenter() {
         return datacenter;
     }
-
 }
