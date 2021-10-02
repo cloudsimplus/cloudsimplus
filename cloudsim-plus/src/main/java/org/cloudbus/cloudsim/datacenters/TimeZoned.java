@@ -27,7 +27,6 @@ import org.apache.commons.collections4.iterators.ReverseListIterator;
 import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Objects;
 
 import static org.cloudbus.cloudsim.util.TimeUtil.hoursToMinutes;
@@ -42,8 +41,11 @@ import static org.cloudbus.cloudsim.util.TimeUtil.hoursToMinutes;
  * @see <a href="https://en.wikipedia.org/wiki/Time_zone">Time zone</a>
  */
 public interface TimeZoned {
+    int MIN_TIME_ZONE_OFFSET = -12;
+    int MAX_TIME_ZONE_OFFSET =  14;
+
     /**
-     * Gets the time zone offset, a value between  [-12 and 12],
+     * Gets the time zone offset, a value between [{@link #MIN_TIME_ZONE_OFFSET} and {@link #MAX_TIME_ZONE_OFFSET}],
      * in which the object is physically located.
      *
      * @return the time zone offset
@@ -51,7 +53,7 @@ public interface TimeZoned {
     double getTimeZone();
 
     /**
-     * Sets the time zone offset between [-12 and 12].
+     * Sets the time zone offset between [{@link #MIN_TIME_ZONE_OFFSET} and {@link #MAX_TIME_ZONE_OFFSET}].
      *
      * @param timeZone the new time zone offset
      * @return
@@ -59,8 +61,9 @@ public interface TimeZoned {
     TimeZoned setTimeZone(double timeZone);
 
     default double validateTimeZone(final double timeZone) {
-        if(timeZone < -12 || timeZone > 13){
-            throw new IllegalArgumentException("Timezone offset must be between [-12 and 12].");
+        if(timeZone < MIN_TIME_ZONE_OFFSET || timeZone > MAX_TIME_ZONE_OFFSET){
+            final var msg = "Timezone offset must be between [%d and %d].";
+            throw new IllegalArgumentException(String.format(msg, MIN_TIME_ZONE_OFFSET, MAX_TIME_ZONE_OFFSET));
         }
 
         return timeZone;
@@ -86,12 +89,12 @@ public interface TimeZoned {
         /* Since the datacenter list is expected to be sorted,
          * if the VM timezone is negative or zero, start looking from the beginning of the list.
          * If it's positive, start looking from the end. */
-        final ListIterator<Datacenter> it = vm.getTimeZone() <= 0 ? datacenters.listIterator() : new ReverseListIterator<>(datacenters);
+        final var iterator = vm.getTimeZone() <= 0 ? datacenters.listIterator() : new ReverseListIterator<>(datacenters);
 
         var currentDc = Datacenter.NULL;
         var previousDc = currentDc;
-        while(it.hasNext()) {
-            currentDc = it.next();
+        while(iterator.hasNext()) {
+            currentDc = iterator.next();
             /* Since the Datacenter list is expected to be sorted, after finding the first
             DC with a distance larger than the previous one, the previous is the closest one. */
             if(vm.distance(currentDc) > vm.distance(previousDc)){
