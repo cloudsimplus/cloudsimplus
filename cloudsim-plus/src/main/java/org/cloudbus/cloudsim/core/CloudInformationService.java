@@ -22,9 +22,11 @@ import java.util.TreeSet;
  * readiness to process Cloudlets by registering themselves with this entity.
  * Other entities such as the broker can contact this class for
  * resource discovery service, which returns a list of registered resource.
+ *
  * <p>
  * In summary, it acts like a yellow page service.
  * An instance of this class is automatically created by CloudSim upon initialisation of the simulation.
+ * </p>
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
