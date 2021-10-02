@@ -35,7 +35,7 @@ import static java.util.stream.Collectors.toList;
  * (PM) inside a {@link Datacenter}. It executes actions related to management
  * of virtual machines (e.g., creation and destruction). A host has a defined
  * policy for provisioning memory and bw, as well as an allocation policy for
- * PEs to {@link Vm virtual machines}. A host is associated to a Datacenter and
+ * PEs to {@link Vm Virtual Machines}. A host is associated to a Datacenter and
  * can host virtual machines.
  *
  * @author Rodrigo N. Calheiros
@@ -198,7 +198,8 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Creates and powers on a Host with the given parameters and a {@link VmSchedulerSpaceShared} as default.
+     * Creates and powers on a Host with the given parameters and a
+     * {@link VmSchedulerSpaceShared} as default.
      *
      * @param ramProvisioner the ram provisioner with capacity in Megabytes
      * @param bwProvisioner the bw provisioner with capacity in Megabits/s
@@ -220,7 +221,8 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Creates and powers on a Host without a pre-defined ID. It uses a {@link ResourceProvisionerSimple}
+     * Creates and powers on a Host without a pre-defined ID.
+     * It uses a {@link ResourceProvisionerSimple}
      * for RAM and Bandwidth and also sets a {@link VmSchedulerSpaceShared} as default.
      * The ID is automatically set when a List of Hosts is attached
      * to a {@link Datacenter}.
@@ -414,10 +416,12 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Try to allocate all resources that a VM requires (Storage, RAM, BW and MIPS) to be placed at this Host.
+     * Try to allocate all resources that a VM requires (Storage, RAM, BW and MIPS)
+     * to be placed at this Host.
      *
      * @param vm the VM to try allocating resources to
-     * @param inMigration If the VM is migrating into the Host or it is being just created for the first time.
+     * @param inMigration indicates whether the VM is migrating into the Host
+     *                    or it is being just created for the first time.
      * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
      * (if the Host doesn't have enough resources to allocate the Vm)
      */
@@ -479,10 +483,12 @@ public class HostSimple implements Host {
      * and the Host is not failed.
      *
      * @param vm the VM to check
-     * @param inMigration If the VM is migrating into the Host or it is being just created for the first time,
-     *                    in this case, just for logging purposes.
+     * @param inMigration indicates whether the VM is migrating into the Host
+     *                    or it is being just created for the first time
+     *                    (in the last case, just for logging purposes).
      * @param showFailureLog indicates if a error log must be shown when the Host is not suitable
-     * @return a {@link HostSuitability} object that indicate for which resources the Host is suitable or not for the given VM
+     * @return a {@link HostSuitability} object that indicate for which resources the Host
+     *         is suitable or not for the given VM
      */
     private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
         final HostSuitability suitability = new HostSuitability();
@@ -1438,7 +1444,7 @@ public class HostSimple implements Host {
     }
 
     /**
-     * Indicates if the Host must be automatically started up when
+     * Indicates if the Host must be automatically started up
      * when the assigned Datacenter is started up.
      * @return
      */
