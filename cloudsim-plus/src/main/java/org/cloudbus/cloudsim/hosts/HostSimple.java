@@ -241,7 +241,10 @@ public class HostSimple implements Host {
         this(ram, bw, new HarddriveStorage(storage), peList);
     }
 
-    public HostSimple(final long ram, final long bw, final HarddriveStorage storage, final List<Pe> peList) {
+    public HostSimple(
+        final long ram, final long bw,
+        final HarddriveStorage storage, final List<Pe> peList)
+    {
         this(ram, bw, storage, peList, true);
     }
 
@@ -262,11 +265,17 @@ public class HostSimple implements Host {
      * @see #setBwProvisioner(ResourceProvisioner)
      * @see #setVmScheduler(VmScheduler)
      */
-    public HostSimple(final long ram, final long bw, final long storage, final List<Pe> peList, final boolean activate) {
+    public HostSimple(
+        final long ram, final long bw, final long storage,
+        final List<Pe> peList, final boolean activate)
+    {
         this(ram, bw, new HarddriveStorage(storage), peList, activate);
     }
 
-    private HostSimple(final long ram, final long bw, final HarddriveStorage storage, final List<Pe> peList, final boolean activate) {
+    private HostSimple(
+        final long ram, final long bw, final HarddriveStorage storage,
+        final List<Pe> peList, final boolean activate)
+    {
         this.setId(-1);
         this.setSimulation(Simulation.NULL);
         this.idleShutdownDeadline = DEF_IDLE_SHUTDOWN_DEADLINE;
@@ -454,7 +463,9 @@ public class HostSimple implements Host {
         }
 
         final String migration = inMigration ? "VM Migration" : "VM Creation";
-        final String msg = pmResource.getAvailableResource() > 0 ? "just "+pmResource.getAvailableResource()+" " + resourceUnit : "no amount";
+        final String msg = pmResource.getAvailableResource() > 0 ?
+                            "just "+pmResource.getAvailableResource()+" " + resourceUnit :
+                            "no amount";
         LOGGER.error(
             "{}: {}: [{}] Allocation of {} to {} failed due to lack of {}. Required {} but there is {} available.",
             simulation.clockStr(), getClass().getSimpleName(), migration, vm, this,
@@ -881,7 +892,6 @@ public class HostSimple implements Host {
     @Override
     public double getTotalUpTimeHours() {
         return TimeUtil.secondsToHours(getTotalUpTime());
-
     }
 
     @Override
