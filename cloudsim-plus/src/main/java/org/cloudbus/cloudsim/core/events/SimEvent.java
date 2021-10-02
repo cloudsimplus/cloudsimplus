@@ -88,7 +88,7 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
      * The actual class of this data is defined by the entity that generates the event.
      * The value defined for the {@link #getTag()} is used by an entity receiving the event
      * to know what is the class of the data associated to the event.
-     * After checking what is the event tag, te destination entity then
+     * After checking what is the event tag, te destination entity
      * can perform a typecast to convert the data to the expected class.
      *
      * @return a reference to the data object
@@ -114,8 +114,8 @@ public interface SimEvent extends Comparable<SimEvent>, EventInfo {
     /**
      * Gets the serial number that defines the order of received events when multiple
      * events are generated at the same time.
-     * If two events have the same {@link #getTag()}, to know what event is greater than other (i.e.
-     * that happens after other), the {@link #compareTo(SimEvent)} makes use of this field.
+     * If two events have the same {@link #getTag()}, to know what event is greater than other
+     * (i.e. that happens after other), the {@link #compareTo(SimEvent)} makes use of this field.
      *
      * @return
      */
