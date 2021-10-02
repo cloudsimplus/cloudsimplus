@@ -96,8 +96,9 @@ public interface Simulation {
 
     /**
      * Aborts the simulation without finishing the processing
-     * of entities in the {@link #getEntityList() entities list}, <b>which may give
-     * unexpected results</b>.
+     * of entities in the {@link #getEntityList() entities list},
+     * <b>which may give unexpected results</b>.
+     *
      * <p><b>Use this method just if you want to abandon the simulation an usually ignore the results.</b></p>
      */
     void abort();
@@ -130,7 +131,7 @@ public interface Simulation {
      * Cancels all events from the future event queue that matches a given predicate
      * and were sent by a given entity, then removes those ones from the queue.
      *
-     * @param src Id of entity that scheduled the event
+     * @param src id of entity that scheduled the event
      * @param predicate   the event selection predicate
      * @return true if at least one event has been cancelled; false otherwise
      */
@@ -171,7 +172,7 @@ public interface Simulation {
     /**
      * Find first deferred event matching a predicate.
      *
-     * @param dest Id of entity that the event has to be sent to
+     * @param dest id of entity that the event has to be sent to
      * @param predicate    the event selection predicate
      * @return the first matched event or {@link SimEvent#NULL} if not found
      */
@@ -199,7 +200,7 @@ public interface Simulation {
     List<SimEntity> getEntityList();
 
     /**
-     * Returns the minimum time between events (in seconds).
+     * Gets the minimum time between events (in seconds).
      * Events within shorter periods after the last event are discarded.
      *
      * @return the minimum time between events (in seconds).
@@ -257,7 +258,8 @@ public interface Simulation {
 
     /**
      * Adds a {@link EventListener} object that will be notified every time when the
-     * simulation clock advances. Notifications are sent in a second interval to avoid notification flood.
+     * simulation clock advances.
+     * Notifications are sent in a second interval to avoid notification flood.
      * Thus, if the clock changes, for instance, from 1.0, to 1.1, 2.0, 2.1, 2.2, 2.5 and then 3.2,
      * notifications will just be sent for the times 1, 2 and 3 that represent the integer
      * part of the simulation time.
@@ -284,7 +286,6 @@ public interface Simulation {
 
     /**
      * Checks if the simulation is paused.
-     *
      * @return
      */
     boolean isPaused();
@@ -307,21 +308,20 @@ public interface Simulation {
     boolean pause(double time);
 
     /**
-     * This method is called if one wants to resume the simulation that has
-     * previously been paused.
+     * Resumes the simulation if it has previously been paused.
      *
-     * @return true if the simulation has been restarted or false if it wasn't paused.
+     * @return true if the simulation has been restarted or false if it wasn't paused before.
      */
     boolean resume();
 
     /**
      * Check if the simulation is still running.
      * Even if the simulation {@link #isPaused() is paused},
-     * the method returns true to indicate that the simulation is
-     * in fact active yet.
+     * the method returns true to indicate that the simulation is in fact active yet.
+     *
      * <p>
-     * This method should be used by
-     * entities to check if they should continue executing.
+     * This method should be used by entities to check if they should continue executing.
+     * </p>
      *
      * @return
      */
@@ -361,7 +361,9 @@ public interface Simulation {
     void sendFirst(SimEvent evt);
 
     /**
-     * Sends an event from one entity to another, adding it to the beginning of the queue in order to give priority to it.
+     * Sends an event from one entity to another,
+     * adding it to the beginning of the queue in order to give priority to it.
+     *
      * @param src  entity that scheduled the event
      * @param dest  entity that the event will be sent to
      * @param delay How many seconds after the current simulation time the event should be sent
@@ -371,8 +373,8 @@ public interface Simulation {
     void sendFirst(SimEntity src, SimEntity dest, double delay, int tag, Object data);
 
     /**
-     * Sends an event from one entity to another without delaying
-     * the message.
+     * Sends an event from one entity to another without delaying the message.
+     *
      * @param src  entity that scheduled the event
      * @param dest entity that the event will be sent to
      * @param tag  the {@link SimEvent#getTag() tag} that classifies the event
@@ -384,8 +386,8 @@ public interface Simulation {
      * Runs the simulation for a specific period of time and then immediately returns.
      * In order to complete the whole simulation you need to invoke this method multiple times
      *
-     * <b>Note:</b> Should be used only in the <b>synchronous</b> mode (after starting the simulation
-     * with {@link #startSync()}).
+     * <b>Note:</b> Should be used only in the <b>synchronous</b> mode
+     * (after starting the simulation with {@link #startSync()}).
      *
      * @param interval The interval for which the simulation should be run (in seconds)
      * @return Clock at the end of simulation interval (in seconds)
@@ -393,9 +395,10 @@ public interface Simulation {
     double runFor(double interval);
 
     /**
-     * Starts simulation execution and <b>waits for
-     * all entities to finish</b>, i.e. until all entities threads reach
+     * Starts simulation execution and <b>waits for all entities to finish</b>,
+     * i.e. until all entities threads reach
      * non-RUNNABLE state or there are no more events in the future event queue.
+     *
      * <p>
      * <b>Note</b>: This method should be called only after all the entities
      * have been setup and added. The method blocks until the simulation is ended.
@@ -411,12 +414,11 @@ public interface Simulation {
     double start();
 
     /**
-     * Starts simulation execution in synchronous mode, retuning immediately. You need
-     * to call {@link #runFor(double)} method subsequently to actually process simulation steps.
+     * Starts simulation execution in synchronous mode, retuning immediately.
+     * You need to call {@link #runFor(double)} method subsequently to actually process simulation steps.
      *
-     * <b>Note</b>: This method should be called only after all the entities
-     * have been setup and added. The method returns immediately after preparing the
-     * internal state of the simulation.
+     * <b>Note</b>: This method should be called only after all entities have been set up and added.
+     * The method returns immediately after preparing the internal state of the simulation.
      * </p>
      *
      * @throws UnsupportedOperationException When the simulation has already run once.
@@ -445,9 +447,13 @@ public interface Simulation {
      * It keeps waiting for new dynamic events, such as the creation
      * of Cloudlets and VMs at runtime.
      * If no event happens, the clock is increased to simulate time passing.
-     * The clock increment is defined according to: (i) the lower {@link Datacenter#getSchedulingInterval()}
-     * between existing Datacenters;  or (ii) {@link #getMinTimeBetweenEvents()} in case
-     * no {@link Datacenter} has its schedulingInterval set.</p>
+     * The clock increment is defined according to:
+     * <ul>
+     *   <li>the lower {@link Datacenter#getSchedulingInterval()} between existing Datacenters;
+     *   <li>or {@link #getMinTimeBetweenEvents()} in case
+     *   no {@link Datacenter} has its schedulingInterval set.</li>
+     * </ul>
+     * </p>
      *
      * @param time the time at which the simulation has to be terminated (in seconds)
      * @return true if the time given is greater than the current simulation time, false otherwise
@@ -467,7 +473,6 @@ public interface Simulation {
 
     /**
      * Gets the network topology used for Network simulations.
-     *
      * @return
      */
     NetworkTopology getNetworkTopology();
@@ -480,8 +485,8 @@ public interface Simulation {
     void setNetworkTopology(NetworkTopology networkTopology);
 
     /**
-     * Gets the number of events in the future queue
-     * which match a given predicate.
+     * Gets the number of events in the future queue which match a given predicate.
+     *
      * @param predicate the predicate to filter the list of future events.
      * @return the number of future events which match the predicate
      */
@@ -489,6 +494,7 @@ public interface Simulation {
 
     /**
      * Checks if there is any event in the future queue that matches a given predicate.
+     *
      * @param predicate the predicate to selected the desired events
      * @return true if any event matching the given predicate is found, false otherwise
      */
@@ -505,5 +511,9 @@ public interface Simulation {
      */
     void setLastCloudletProcessingUpdate(double lastCloudletProcessingUpdate);
 
+    /**
+     * Checks if a request to abort the simulation was already sent.
+     * @return
+     */
     boolean isAbortRequested();
 }
