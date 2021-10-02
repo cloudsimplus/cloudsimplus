@@ -151,7 +151,8 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * Otherwise, the VM is not added.
      *
      * @param vm the vm
-     * @return true if the Vm was migrated in, false if the Host doesn't have enough resources to place the Vm
+     * @return true if the Vm was migrated in;
+     *         false if the Host doesn't have enough resources to place the Vm
      */
     boolean addMigratingInVm(Vm vm);
 
@@ -417,7 +418,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * this method returns the sum of all intervals the Host
      * was active (in seconds).
      *
-     * @return the total up time (in seconds)
+     * @return the total uptime (in seconds)
      * @see #setActive(boolean)
      * @see #setIdleShutdownDeadline(double)
      * @see #getTotalUpTimeHours()
@@ -432,7 +433,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
      * this method returns the sum of all intervals the Host
      * was active (in hours).
      *
-     * @return the total up time (in hours)
+     * @return the total uptime (in hours)
      * @see #setActive(boolean)
      * @see #setIdleShutdownDeadline(double)
      * @see #getTotalUpTime()
@@ -442,7 +443,7 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     double getTotalUpTimeHours();
 
     /**
-     * Gets the deadline to shutdown the Host when it become idle.
+     * Gets the deadline to shut down the Host when it becomes idle.
      * This is the time interval after the Host becoming idle that
      * it will be shutdown.
      * @see #DEF_IDLE_SHUTDOWN_DEADLINE
@@ -451,11 +452,11 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     double getIdleShutdownDeadline();
 
     /**
-     * Sets the deadline to shutdown the Host when it become idle.
+     * Sets the deadline to shutdown the Host when it becomes idle.
      * This is the time interval after the Host becoming idle that
      * it will be shutdown.
      *
-     * @param deadline the deadline to shutdown the Host after it becoming idle  (in seconds).
+     * @param deadline the deadline to shut down the Host after it becoming idle (in seconds).
      *                 A negative value disables idle host shutdown.
      * @see #DEF_IDLE_SHUTDOWN_DEADLINE
      * @see #getIdleShutdownDeadline()
@@ -509,18 +510,18 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     /**
      * Try to allocate resources to a new temporary VM in the Host.
      * The method is used only to book resources for a given VM.
-     * For instance, if is being chosen Hosts to migrate a set of VMs,
+     * For instance, if Hosts are being chosen to migrate a set of VMs,
      * when a Host is selected for a given VM, using this method,
      * the resources are reserved and then, when the next
      * VM is selected for the same Host, the
      * reserved resources already were reduced from the available
-     * amount. This way, it it was possible to place just one Vm into that Host,
+     * amount. This way, if it was possible to place just one Vm into that Host,
      * with the booking, no other VM will be selected to that Host.
      *
      * @param vm Vm being started
      * @return a {@link HostSuitability} to indicate if the Vm was placed into the host or not
      * (if the Host doesn't have enough resources to allocate the Vm)
-     * @TODO: https://github.com/manoelcampos/cloudsim-plus/issues/94
+     * TODO: https://github.com/manoelcampos/cloudsim-plus/issues/94
      */
     HostSuitability createTemporaryVm(Vm vm);
 
@@ -590,9 +591,9 @@ public interface Host extends Machine, Comparable<Host>, PowerAware<PowerModelHo
     boolean removeOnUpdateProcessingListener(EventListener<HostUpdatesVmsProcessingEventInfo> listener);
 
     /**
-     * Sets the CloudSim instance that represents the simulation the Entity is related to.
+     * Sets the CloudSim instance that represents the simulation the Entity belongs
      * Such attribute has to be set by the {@link Datacenter} that the host belongs to.
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation The CloudSim instance that represents the simulation the Entity belongs
      * @return
      */
     Host setSimulation(Simulation simulation);
