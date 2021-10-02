@@ -65,7 +65,7 @@ public class AggregateSwitch extends AbstractSwitch {
      * @param simulation the CloudSim instance that represents the simulation the Entity belongs
      * @param dc The Datacenter where the switch is connected to
      */
-    public AggregateSwitch(CloudSim simulation, NetworkDatacenter dc) {
+    public AggregateSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
         setUplinkBandwidth(RootSwitch.DOWNLINK_BW);
         setDownlinkBandwidth(DOWNLINK_BW);
@@ -74,7 +74,7 @@ public class AggregateSwitch extends AbstractSwitch {
     }
 
     @Override
-    protected void processPacketDown(SimEvent evt) {
+    protected void processPacketDown(final SimEvent evt) {
         /* packet is coming from root switch,
         so it needs to be sent to edge switch */
         super.processPacketDown(evt);
@@ -84,17 +84,15 @@ public class AggregateSwitch extends AbstractSwitch {
     }
 
     @Override
-    protected void processPacketUp(SimEvent evt) {
+    protected void processPacketUp(final SimEvent evt) {
         // packet is coming from edge router, so it needs to be sent to either root or another edge switch
         super.processPacketUp(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
         final Switch downlinkSw = getVmEdgeSwitch(netPkt);
 
-        if (findConnectedEdgeSwitch(downlinkSw)) {
+        if (findConnectedEdgeSwitch(downlinkSw))
             addPacketToSendToDownlinkSwitch(downlinkSw, netPkt);
-        } else { // send to up
-            addPacketToBeSentToFirstUplinkSwitch(netPkt);
-        }
+        else addPacketToBeSentToFirstUplinkSwitch(netPkt);
     }
 
     /**
@@ -102,7 +100,7 @@ public class AggregateSwitch extends AbstractSwitch {
      * @param edgeSwitch the id of the edge switch to check if the aggregate switch is connected to
      * @return true if the edge switch was found, false otherwise
      */
-    private boolean findConnectedEdgeSwitch(Switch edgeSwitch) {
+    private boolean findConnectedEdgeSwitch(final Switch edgeSwitch) {
         return getDownlinkSwitches().stream().anyMatch(edgeSwitch::equals);
     }
 
