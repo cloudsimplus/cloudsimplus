@@ -13,7 +13,6 @@ import org.cloudbus.cloudsim.datacenters.network.NetworkDatacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.hosts.network.NetworkHost;
 import org.cloudbus.cloudsim.network.HostPacket;
-import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,9 +95,9 @@ public class EdgeSwitch extends AbstractSwitch {
     }
 
     private HostPacket extractReceivedHostPacket(final SimEvent evt) {
-        final HostPacket pkt = (HostPacket) evt.getData();
-        final Vm receiverVm = pkt.getVmPacket().getDestination();
-        final NetworkHost host = getVmHost(receiverVm);
+        final var pkt = (HostPacket) evt.getData();
+        final var receiverVm = pkt.getVmPacket().getDestination();
+        final var host = getVmHost(receiverVm);
         pkt.setDestination(host);
         return pkt;
     }
