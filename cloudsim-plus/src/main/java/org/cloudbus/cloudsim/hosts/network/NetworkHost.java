@@ -14,7 +14,6 @@ import org.cloudbus.cloudsim.network.HostPacket;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.network.switches.EdgeSwitch;
 import org.cloudbus.cloudsim.resources.Pe;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskScheduler;
 import org.cloudbus.cloudsim.schedulers.cloudlet.network.CloudletTaskSchedulerSimple;
 import org.cloudbus.cloudsim.schedulers.vm.VmSchedulerSpaceShared;
@@ -204,7 +203,7 @@ public class NetworkHost extends HostSimple {
     }
 
     private void setPacketScheduler(final Vm vm) {
-        final CloudletScheduler scheduler = vm.getCloudletScheduler();
+        final var scheduler = vm.getCloudletScheduler();
         if(!scheduler.isThereTaskScheduler()){
             scheduler.setTaskScheduler(new CloudletTaskSchedulerSimple());
         }
@@ -233,12 +232,12 @@ public class NetworkHost extends HostSimple {
      * @see #collectListOfPacketsToSendFromVm(Vm)
      */
     private void collectPacketToSendFromVm(final VmPacket vmPkt) {
-        final HostPacket hostPkt = new HostPacket(this, vmPkt);
+        final var hostPkt = new HostPacket(this, vmPkt);
         final Vm receiverVm = vmPkt.getDestination();
 
         //If the VM is inside this Host, the packet doesn't travel through the network
-        final List<HostPacket> pktsToSend = getVmList().contains(receiverVm) ? pktsToSendForLocalVms : pktsToSendForExternalVms;
-        pktsToSend.add(hostPkt);
+        final var pktsToSendList = getVmList().contains(receiverVm) ? pktsToSendForLocalVms : pktsToSendForExternalVms;
+        pktsToSendList.add(hostPkt);
     }
 
     public int getTotalDataTransferBytes() {
