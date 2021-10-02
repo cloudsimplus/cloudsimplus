@@ -26,10 +26,12 @@ public interface DatacenterCharacteristics extends Identifiable {
      * The default Virtual Machine Monitor to be used if not one is set.
      */
     String DEFAULT_VMM = "Xen";
+
     /**
      * The default architecture of Datacenter Hosts to be used if not one is set.
      */
     String DEFAULT_ARCH = "x86";
+
     /**
      * The default Operating System of Datacenter Hosts to be used if not one is set.
      */
@@ -43,30 +45,27 @@ public interface DatacenterCharacteristics extends Identifiable {
 
     /**
      * Gets the Datacenter id.
-     *
-     * @return the id
+     * @return
      */
     @Override
     long getId();
 
     /**
      * Gets the {@link Datacenter} that owns these characteristics
-     * @return the Datacenter
+     * @return
      */
     Datacenter getDatacenter();
 
     /**
-     * Gets the Virtual Machine Monitor (VMM), also called hypervisor, used in the
-     * Datacenter.
+     * Gets the Virtual Machine Monitor (VMM), also called hypervisor, used in the Datacenter.
      *
      * @return the VMM name
      */
     String getVmm();
 
     /**
-     * Sets the vmm.
-     *
-     * @param vmm the new vmm
+     * Sets the VMM.
+     * @param vmm the new VMM
      */
     DatacenterCharacteristics setVmm(String vmm);
 
@@ -78,7 +77,7 @@ public interface DatacenterCharacteristics extends Identifiable {
     String getArchitecture();
 
     /**
-     * Sets the architecture.
+     * Sets the architecture of the Datacenter.
      *
      * @param architecture the new architecture
      */
@@ -128,7 +127,7 @@ public interface DatacenterCharacteristics extends Identifiable {
     boolean isWorking();
 
     /**
-     * Get the monetary cost to use each each Megabit of bandwidth in the Datacenter.
+     * Get the monetary cost to use each Megabit of bandwidth in the Datacenter.
      *
      * @return the cost ($) to use bw
      */
