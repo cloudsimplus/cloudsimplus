@@ -81,12 +81,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
 
     @Override
     public boolean isWorking() {
-        boolean result = false;
-        if (getNumberOfFailedHosts() == 0) {
-            result = true;
-        }
-
-        return result;
+        return getNumberOfFailedHosts() == 0;
     }
 
     @Override
@@ -142,7 +137,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final DatacenterCharacteristics setArchitecture(String architecture) {
+    public final DatacenterCharacteristics setArchitecture(final String architecture) {
         this.architecture = architecture;
         return this;
     }
@@ -153,7 +148,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final DatacenterCharacteristics setOs(String os) {
+    public final DatacenterCharacteristics setOs(final String os) {
         this.os = os;
         return this;
     }
@@ -164,7 +159,7 @@ public class DatacenterCharacteristicsSimple implements DatacenterCharacteristic
     }
 
     @Override
-    public final DatacenterCharacteristics setCostPerSecond(double costPerSecond) {
+    public final DatacenterCharacteristics setCostPerSecond(final double costPerSecond) {
         this.costPerSecond = costPerSecond;
         return this;
     }
