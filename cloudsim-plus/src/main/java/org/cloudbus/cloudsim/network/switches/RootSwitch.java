@@ -79,7 +79,7 @@ public class RootSwitch extends AbstractSwitch {
     }
 
     @Override
-    protected void processPacketUp(SimEvent evt) {
+    protected void processPacketUp(final SimEvent evt) {
         super.processPacketUp(evt);
         final HostPacket netPkt = (HostPacket) evt.getData();
         final Switch edgeSwitch = getVmEdgeSwitch(netPkt);
@@ -101,7 +101,7 @@ public class RootSwitch extends AbstractSwitch {
      * @return the id of the aggregate switch that is connected to the given
      * edge switch or {@link Switch#NULL} if not found.
      */
-    private Switch findAggregateSwitchConnectedToGivenEdgeSwitch(Switch edgeSwitch) {
+    private Switch findAggregateSwitchConnectedToGivenEdgeSwitch(final Switch edgeSwitch) {
         for (final Switch aggregateSw : getDownlinkSwitches()) {
             for (final Switch edgeSw : aggregateSw.getDownlinkSwitches()) {
                 if (edgeSw.getId() == edgeSwitch.getId()) {
