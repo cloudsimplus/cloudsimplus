@@ -29,9 +29,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
     /** @see #getStartTime() */
     private double startTime;
 
-    /**
-     * @see #getSimulation()
-     */
+    /** @see #getSimulation() */
     private Simulation simulation;
 
     private String name;
@@ -57,7 +55,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
     /**
      * Creates a new entity.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation The CloudSim instance that represents the simulation the Entity belongs to
      * @throws IllegalArgumentException when the entity name is invalid
      */
     public CloudSimEntity(final Simulation simulation) {
@@ -72,7 +70,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
     /**
      * Gets the name of this entity.
      *
-     * @return The entity's name
+     * @return the entity's name
      */
     @Override
     public String getName() {
@@ -82,7 +80,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
     /**
      * Gets the unique id number assigned to this entity.
      *
-     * @return The id number
+     * @return the id number
      */
     @Override
     public long getId() {
@@ -168,7 +166,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
     private boolean canSendEvent(final SimEvent evt) {
         /**
          * If the simulation has finished and an  {@link CloudSimTags#END_OF_SIMULATION}
-         * message is sent, it has to be processed to enable entities to shutdown.
+         * message is sent, it has to be processed to enable entities to shut down.
          */
         if (!simulation.isRunning() && evt.getTag() != CloudSimTags.END_OF_SIMULATION) {
             LOGGER.warn(
@@ -195,7 +193,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * Sends an event to another entity with <b>no</b> attached data and no delay.
      *
      * @param dest the destination entity
-     * @param tag  An user-defined number representing the type of event.
+     * @param tag  a user-defined number representing the type of event.
      */
     public void scheduleNow(final SimEntity dest, final int tag) {
         schedule(dest, 0, tag, null);
@@ -215,7 +213,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
     /**
      * Sends a high priority event to another entity with <b>no</b> attached data and no delay.
      * @param dest the destination entity
-     * @param tag  An user-defined number representing the type of event.
+     * @param tag  a user-defined number representing the type of event.
      */
     public void scheduleFirstNow(final SimEntity dest, final int tag) {
         scheduleFirst(dest, 0, tag, null);
@@ -226,7 +224,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      *
      * @param dest  the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
+     * @param tag   a user-defined number representing the type of event.
      */
     public void scheduleFirst(final SimEntity dest, final double delay, final int tag) {
         scheduleFirst(dest, delay, tag, null);
@@ -237,7 +235,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      *
      * @param dest  the destination entity
      * @param delay How many seconds after the current simulation time the event should be sent
-     * @param tag   An user-defined number representing the type of event.
+     * @param tag   a user-defined number representing the type of event.
      * @param data  The data to be sent with the event.
      */
     public void scheduleFirst(final SimEntity dest, final double delay, final int tag, final Object data) {
@@ -271,7 +269,8 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * deferred queue.
      *
      * @param predicate The event selection predicate
-     * @return the simulation event; or {@link SimEvent#NULL} if not found or the simulation is not running
+     * @return the simulation event;
+     *         or {@link SimEvent#NULL} if not found or the simulation is not running
      */
     public SimEvent selectEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
@@ -297,7 +296,8 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * none match, wait for a matching event to arrive.
      *
      * @param predicate The predicate to match
-     * @return the simulation event; or {@link SimEvent#NULL} if not found or the simulation is not running
+     * @return the simulation event;
+     *         or {@link SimEvent#NULL} if not found or the simulation is not running
      */
     public SimEvent getNextEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
@@ -311,7 +311,8 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * Gets the first event waiting in the entity's deferred queue, or if there
      * are none, wait for an event to arrive.
      *
-     * @return the simulation event; or {@link SimEvent#NULL} if not found or the simulation is not running
+     * @return the simulation event;
+     *         or {@link SimEvent#NULL} if not found or the simulation is not running
      */
     public SimEvent getNextEvent() {
         return getNextEvent(Simulation.ANY_EVT);
@@ -321,7 +322,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * Waits for an event matching a specific predicate. This method does not
      * check the entity's deferred queue.
      *
-     * @param predicate The predicate to match
+     * @param predicate the predicate to match
      */
     public void waitForEvent(final Predicate<SimEvent> predicate) {
         if (!simulation.isRunning()) {
@@ -439,8 +440,6 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
         buffer = evt;
     }
 
-    // --------------- EVENT / MESSAGE SEND WITH NETWORK DELAY METHODS ------------------
-
     /**
      * Sends an event/message to another entity by <b>delaying</b> the
      * simulation time from the current time, with a tag representing the event
@@ -449,11 +448,11 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * @param dest the destination entity
      * @param delay       How many seconds after the current simulation time the event should be sent.
      *                    If delay is a negative number, then it will be changed to 0
-     * @param cloudSimTag an user-defined number representing the type of an event/message
+     * @param cloudSimTag a user-defined number representing the type of an event/message
      * @param data        A reference to data to be sent with the event
      */
     protected void send(final SimEntity dest, double delay, final int cloudSimTag, final Object data) {
-        Objects.requireNonNull(dest);
+        requireNonNull(dest);
         if (dest.getId() < 0) {
             LOGGER.error("{}.send(): invalid entity id {} for {}", getName(), dest.getId(), dest);
             return;
@@ -484,7 +483,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * @param dest    the destination entity
      * @param delay       How many seconds after the current simulation time the event should be sent.
      *                    If delay is a negative number, then it will be changed to 0
-     * @param cloudSimTag an user-defined number representing the type of an
+     * @param cloudSimTag a user-defined number representing the type of an
      *                    event/message
      */
     protected void send(final SimEntity dest, final double delay, final int cloudSimTag) {
@@ -496,7 +495,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * event type.
      *
      * @param dest    the destination entity
-     * @param cloudSimTag an user-defined number representing the type of an
+     * @param cloudSimTag a user-defined number representing the type of an
      *                    event/message
      * @param data        A reference to data to be sent with the event
      */
@@ -509,7 +508,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      * event type.
      *
      * @param dest    the destination entity
-     * @param cloudSimTag an user-defined number representing the type of an event/message
+     * @param cloudSimTag a user-defined number representing the event/message type
      */
     protected void sendNow(final SimEntity dest, final int cloudSimTag) {
         send(dest, 0, cloudSimTag, null);
@@ -521,7 +520,7 @@ public abstract class CloudSimEntity implements SimEntity, Cloneable {
      *
      * @param src source of the message
      * @param dst destination of the message
-     * @return delay to send a message from src to dst
+     * @return the delay to send a message from src to dst
      */
     private double getNetworkDelay(final SimEntity src, final SimEntity dst) {
         return getSimulation().getNetworkTopology().getDelay(src, dst);
