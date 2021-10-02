@@ -22,9 +22,9 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 /**
- * NetworkDatacenter class is a {@link Datacenter} whose hostList are
- * virtualized and networked. It contains all the information about internal
- * network. For example, which VM is connected to what switch, etc.
+ * NetworkDatacenter class is a {@link Datacenter} whose hosts have network support.
+ * It contains all the information about internal network.
+ * For example, which VM is connected to what switch, etc.
  *
  * <p>Please refer to following publication for more details:
  * <ul>
@@ -41,26 +41,20 @@ import static java.util.stream.Collectors.toList;
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
- *
  */
 public class NetworkDatacenter extends DatacenterSimple {
 
-    /**
-     * @see #getSwitchMap()
-     */
+    /** @see #getSwitchMap() */
     private final List<Switch> switchMap;
 
     /**
      * Creates a NetworkDatacenter with the given parameters.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation The CloudSim instance that represents the simulation the Entity belongs to
      * @param hostList list of {@link Host}s that will compound the Datacenter
      * @param vmAllocationPolicy the policy to be used to allocate VMs into hosts
      *
-     * @throws IllegalArgumentException when this entity has zero number of PEs (Processing Elements).
-     * <br>
-     * No PEs mean the Cloudlets can't be processed. A CloudResource must
-     * contain one or more Machines. A Machine must contain one or more PEs.
+     * @throws IllegalArgumentException when this Host has zero number of PEs (Processing Elements).
      */
     public NetworkDatacenter(
         final Simulation simulation,
@@ -68,7 +62,6 @@ public class NetworkDatacenter extends DatacenterSimple {
         final VmAllocationPolicy vmAllocationPolicy)
     {
         super(simulation, hostList, vmAllocationPolicy);
-
         switchMap = new ArrayList<>();
     }
 
@@ -94,7 +87,7 @@ public class NetworkDatacenter extends DatacenterSimple {
     }
 
     /**
-     * Gets a <b>read-only</b> list of network Datacenter's Switches.
+     * Gets a <b>read-only</b> list of network Datacenter's {@link Switch}es.
      * @return
      */
     public List<Switch> getSwitchMap() {
