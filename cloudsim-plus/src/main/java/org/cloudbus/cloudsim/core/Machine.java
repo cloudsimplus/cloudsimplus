@@ -23,18 +23,20 @@
  */
 package org.cloudbus.cloudsim.core;
 
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.resources.FileStorage;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * An interface to be implemented by different kinds of Physical Machines (PMs).
+ * An interface to be implemented by different kinds of Physical Machines (PMs),
+ * such as {@link Host}s.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 1.2.0
  */
 public interface Machine extends AbstractMachine<FileStorage> {
     /**
-     * Computes the current relative percentage of the CPU the VM is using from the Machine's total MIPS Capacity.
+     * Computes the current relative percentage of the CPU the VM is using from the Machine's total MIPS capacity.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
      * of the Machines' capacity.
      *
@@ -45,8 +47,9 @@ public interface Machine extends AbstractMachine<FileStorage> {
     }
 
     /**
-     * Computes what would be the relative percentage of the CPU the VM is using from a Machine's total MIPS Capacity,
+     * Computes what would be the relative percentage of the CPU the VM is using from a Machine's total MIPS capacity,
      * considering that the VM's CPU load is at a given percentage.
+     *
      * @param vm the VM to get its relative percentage of CPU utilization
      * @param vmCpuUtilizationPercent the VM's CPU utilization percentage for a given time
      * @return the relative VM CPU usage percent (from 0 to 1)
@@ -65,7 +68,7 @@ public interface Machine extends AbstractMachine<FileStorage> {
     }
 
     /**
-     * Computes the relative percentage of the RAM a VM is using from a Machine's total Capacity
+     * Computes the relative percentage of the RAM a VM is using from a Machine's total capacity
      * for the current simulation time.
      *
      * @param vm the {@link Vm} to compute the relative utilization of RAM from this machine
@@ -76,7 +79,7 @@ public interface Machine extends AbstractMachine<FileStorage> {
     }
 
     /**
-     * Computes the relative percentage of the BW a VM is using from a Machine's total Capacity
+     * Computes the relative percentage of the BW a VM is using from a Machine's total capacity
      * for the current simulation time.
      *
      * @param vm the {@link Vm} to compute the relative utilization of BW from this machine
