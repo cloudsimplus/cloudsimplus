@@ -22,7 +22,8 @@ import org.cloudsimplus.traces.google.GoogleTaskEventsTraceReader;
 /**
  * Contains various static command tags that indicate a type of action that
  * needs to be undertaken by CloudSim entities when they receive or send events.
- * <b>NOTE:</b> To avoid conflicts with other tags, CloudSim reserves numbers lower than 300 and the number 9600.
+ * <b>NOTE:</b> To avoid conflicts with other tags,
+ * CloudSim reserves numbers lower than 300 and the number 9600.
  *
  * @author Manzur Murshed
  * @author Rajkumar Buyya
@@ -56,8 +57,8 @@ public final class CloudSimTags {
     public static final int DC_REGISTRATION_REQUEST = BASE + 2;
 
     /**
-     * Denotes a request from a broker to a {@link CloudInformationService} to get the list of all Datacenters,
-     * including the ones that can support advanced reservation.
+     * Denotes a request from a broker to a {@link CloudInformationService} to get
+     * the list of all Datacenters, including the ones that can support advanced reservation.
      */
     public static final int DC_LIST_REQUEST = BASE + 4;
 
@@ -150,8 +151,8 @@ public final class CloudSimTags {
      * Request a Cloudlet to be set as ready to start executing inside a VM.
      * This event is sent by a DatacenterBroker to itself to define the time when
      * a specific Cloudlet should start executing.
-     * This tag is commonly used when Cloudlets are created
-     * from a trace file such as a {@link GoogleTaskEventsTraceReader Google Cluster Trace}.
+     * This tag is commonly used when Cloudlets are created from a trace file
+     * such as a {@link GoogleTaskEventsTraceReader Google Cluster Trace}.
      *
      * <p>When the status of a Cloudlet is set to {@link Cloudlet.Status#READY},
      * the Cloudlet can be selected to start running as soon as possible
@@ -227,11 +228,12 @@ public final class CloudSimTags {
 
     /**
      * Denotes a request to create a new VM in a {@link Datacenter}
-     * where the {@link SimEvent#getData()} of the reply event
-     * is a {@link Vm} object.
-     * Using this tag, the Datacenter acknowledges the reception of the request.
+     * where the {@link SimEvent#getData()} of the reply event is a {@link Vm} object.
+     *
+     * <p>Using this tag, the Datacenter acknowledges the reception of the request.
      * To check if the VM was in fact created inside the requested Datacenter
      * one has only to call {@link Vm#isCreated()}.
+     * </p>
      */
     public static final int VM_CREATE_ACK = BASE + 32;
 
@@ -255,8 +257,11 @@ public final class CloudSimTags {
      * When an event of this type is sent, the {@link SimEvent#getData()}
      * must be a {@code Map.Entry<Vm, Host>} representing to which {@link Host}
      * a VM must be migrated.
+     *
+     * <p>
      * If {@link Host#NULL} is given, the Datacenter will try to find
      * a suitable Host when the migration request message is processed.
+     * </p>
      */
     public static final int VM_MIGRATE = BASE + 35;
 
@@ -270,12 +275,13 @@ public final class CloudSimTags {
     /**
      * Denotes an internal event generated in a {@link Datacenter}
      * to notify itself to update the processing of cloudlets.
-     * When an event of this type is sent, the {@link SimEvent#getData()}
+     *
+     * <p>When an event of this type is sent, the {@link SimEvent#getData()}
      * can be a {@link Host} object to indicate that just the Cloudlets
      * running in VMs inside such a Host must be updated.
      * The Host is an optional parameter which if omitted,
      * means that all Hosts from the Datacenter will have
-     * its cloudlets updated.
+     * its cloudlets updated.</p>
      */
     public static final int VM_UPDATE_CLOUDLET_PROCESSING = BASE + 41;
 
@@ -313,7 +319,7 @@ public final class CloudSimTags {
 
     /**
      * Denotes a request to a Datacenter to add a Host or list of Hosts to a Datacenter.
-     * The {@link SimEvent#getData()} must be a Host to be added to
+     * The {@link SimEvent#getData()} must be a Host to be added
      * to the Datacenter where the message is being sent to.
      * The source of such events is the {@link CloudInformationService}.
      */
@@ -323,18 +329,19 @@ public final class CloudSimTags {
      * Denotes a request to a Datacenter to remove a Host or list of Hosts from a Datacenter.
      * The {@link SimEvent#getData()} must be the ID of the Host that will be removed
      * from the Datacenter they belong to.
-     * For this event, it's used the ID instead of the Host itself because the Host instance
+     *
+     * <p>For this event, it's used the ID instead of the Host itself because the Host instance
      * with the specified ID should be looked into the Datacenter Host list in order to remove it.
-     * A Host should be removed in case of maintenance or failure but there isn't such a distinction yet,
-     * so a failure is simulated to remove the Host.
+     * A Host should be removed in case of maintenance or failure,
+     * but there isn't such a distinction yet, so a failure is simulated to remove the Host.
      * The source of such events is the {@link CloudInformationService}.
+     * </p>
      */
     public static final int HOST_REMOVE = BASE + 61;
 
     /**
      * Denotes a power measurement performed periodically by a {@link PowerMeter} on
-     * entities having a {@link PowerModel},
-     * such as {@link Datacenter}s and {@link Host}s.
+     * entities having a {@link PowerModel}, such as {@link Datacenter}s and {@link Host}s.
      */
     public static final int POWER_MEASUREMENT = BASE + 70;
 
