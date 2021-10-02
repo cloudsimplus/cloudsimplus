@@ -27,7 +27,6 @@ public interface CustomerEntity extends UniquelyIdentifiable, ChangeableId, Dela
 
     /**
      * Gets the CloudSim instance that represents the simulation the Entity is related to.
-     *
      * @return
      */
     Simulation getSimulation();
