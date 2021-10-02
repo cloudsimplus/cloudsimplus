@@ -106,7 +106,7 @@ public interface Switch extends SimEntity {
      * Gets the latency time the switch spends to process a received packet. This time is
      * considered constant no matter how many packets the switch have to
      * process (in seconds).
-     * @return the switching delay
+     * @return the switching delay (in seconds)
      */
     double getSwitchingDelay();
 
@@ -144,8 +144,8 @@ public interface Switch extends SimEntity {
 
     /**
      * Gets the level (layer) of the Switch in the network topology,
-     * depending if it is a root switch (layer 0), aggregate switch (layer 1)
-     * or edge switch (layer 2)
+     * depending on whether it is a {@link RootSwitch} (layer 0), {@link AggregateSwitch} (layer 1)
+     * or {@link EdgeSwitch} (layer 2).
      *
      * @return the switch network level
      */
