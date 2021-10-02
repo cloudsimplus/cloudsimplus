@@ -66,7 +66,7 @@ public record HostStateHistoryEntry(double time, double allocatedMips, double re
 
     @Override
     public String toString() {
-        return String.format("Time: %6.1f | Requested: %10.0f MIPS | Allocated: %10.0f MIPS | Used: %3.0f%% Host Active: %s%n",
-            time, requestedMips, allocatedMips, percentUsage() * 100, active);
+        final var msg = "Time: %6.1f | Requested: %10.0f MIPS | Allocated: %10.0f MIPS | Used: %3.0f%% Host Active: %s%n";
+        return String.format(msg, time, requestedMips, allocatedMips, percentUsage() * 100, active);
     }
 }
