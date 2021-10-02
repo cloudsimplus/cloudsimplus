@@ -179,11 +179,14 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
      * processing of such cloudlets, it only defines in which interval the processing
      * will be updated. For instance, if it is set an interval of 10 seconds, the
      * processing of cloudlets will be updated at every 10 seconds.
+     *
+     * <p>
      * Trying to get the amount of instructions the cloudlet has executed after
      * 5 seconds, by means of {@link Cloudlet#getFinishedLengthSoFar(Datacenter)},
      * won't return an updated value. This way, one should set the
-     * scheduling interval to 5 to get updated data. As longer is the
-     * interval, faster will be the simulation execution.
+     * scheduling interval to 5 to get updated data.
+     * As longer is the interval, faster will be the simulation execution.
+     * </p>
      *
      * <p>The default value is zero, which indicates no scheduling interval
      * is set and the simulation state is updated only when a cloudlet is finished.
@@ -206,8 +209,7 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
 
     /**
      * Gets the Datacenter characteristics.
-     *
-     * @return the Datacenter characteristics
+     * @return the characteristics
      */
     DatacenterCharacteristics getCharacteristics();
 
@@ -278,7 +280,6 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
 
     /**
      * Enable VM migrations.
-     *
      * @return
      * @see #getHostSearchRetryDelay()
      */
@@ -286,7 +287,6 @@ public interface Datacenter extends SimEntity, PowerAware<PowerModelDatacenter>,
 
     /**
      * Disable VM migrations.
-     *
      * @return
      */
     Datacenter disableMigrations();
