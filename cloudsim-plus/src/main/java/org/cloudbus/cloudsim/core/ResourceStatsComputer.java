@@ -24,10 +24,13 @@
 package org.cloudbus.cloudsim.core;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.AbstractResourceStats;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * An interface that enables machines (VMs or Hosts) to enable the computation of statistics for its resource utilization.
+ * An interface that enables machines ({@link Vm}s or {@link Host}s)
+ * to enable the computation of statistics for its resource utilization.
  * Since that computation may be computationally complex and increase memory consumption,
  * you have to explicitly enable that by calling {@link #enableUtilizationStats()}.
  *
