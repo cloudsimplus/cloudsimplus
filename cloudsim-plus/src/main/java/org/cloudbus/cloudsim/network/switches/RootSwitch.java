@@ -65,11 +65,11 @@ public class RootSwitch extends AbstractSwitch {
     private static final Logger LOGGER = LoggerFactory.getLogger(RootSwitch.class.getSimpleName());
 
     /**
-     * Instantiates a Root AbstractSwitch specifying what other Datacenter are connected
+     * Instantiates a Root Switch specifying what other Datacenter are connected
      * to its downlink ports, and corresponding bandwidths.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
-     * @param dc The Datacenter where the switch is connected to
+     * @param simulation the CloudSim instance that represents the simulation the Entity belongs
+     * @param dc the Datacenter where the switch is connected to
      */
     public RootSwitch(CloudSim simulation, NetworkDatacenter dc) {
         super(simulation, dc);
