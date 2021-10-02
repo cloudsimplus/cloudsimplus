@@ -49,7 +49,7 @@ public class CloudInformationService extends CloudSimEntity {
     /**
      * Instantiates a new CloudInformationService object.
      *
-     * @param simulation The CloudSim instance that represents the simulation the Entity is related to
+     * @param simulation CloudSim instance that represents the simulation the Entity belongs to
      */
     CloudInformationService(final CloudSim simulation) {
         super(simulation);
