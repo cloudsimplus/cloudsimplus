@@ -462,8 +462,8 @@ public class HostSimple implements Host {
             return;
         }
 
-        final String migration = inMigration ? "VM Migration" : "VM Creation";
-        final String msg = pmResource.getAvailableResource() > 0 ?
+        final var migration = inMigration ? "VM Migration" : "VM Creation";
+        final var msg = pmResource.getAvailableResource() > 0 ?
                             "just "+pmResource.getAvailableResource()+" " + resourceUnit :
                             "no amount";
         LOGGER.error(
@@ -502,7 +502,7 @@ public class HostSimple implements Host {
      *         is suitable or not for the given VM
      */
     private HostSuitability isSuitableForVm(final Vm vm, final boolean inMigration, final boolean showFailureLog) {
-        final HostSuitability suitability = new HostSuitability();
+        final var suitability = new HostSuitability();
 
         suitability.setForStorage(disk.isAmountAvailable(vm.getStorage()));
         if (!suitability.forStorage()) {
@@ -802,7 +802,8 @@ public class HostSimple implements Host {
 
     private void checkSimulationIsRunningAndAttemptedToChangeHost(final String resourceName) {
         if(simulation.isRunning()){
-            throw new IllegalStateException("It is not allowed to change a Host's "+resourceName+" after the simulation started.");
+            final var msg = "It is not allowed to change a Host's %s after the simulation started.";
+            throw new IllegalStateException(String.format(msg, resourceName));
         }
     }
 
@@ -1372,9 +1373,9 @@ public class HostSimple implements Host {
                 getSimulation().clockStr(), this, notAllocatedMipsByPe, vm.getNumberOfPes(), vm, reason);
         }
 
-        final VmStateHistoryEntry entry = new VmStateHistoryEntry(
-                                                currentTime, totalAllocatedMips, totalRequestedMips,
-                                                vm.isInMigration() && !getVmsMigratingIn().contains(vm));
+        final var entry = new VmStateHistoryEntry(
+                           currentTime, totalAllocatedMips, totalRequestedMips,
+                           vm.isInMigration() && !getVmsMigratingIn().contains(vm));
         vm.addStateHistoryEntry(entry);
 
         if (vm.isInMigration()) {
@@ -1415,7 +1416,7 @@ public class HostSimple implements Host {
         final double requestedMips,
         final boolean isActive)
     {
-        final HostStateHistoryEntry newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
+        final var newState = new HostStateHistoryEntry(time, allocatedMips, requestedMips, isActive);
         if (!stateHistory.isEmpty()) {
             final HostStateHistoryEntry previousState = stateHistory.get(stateHistory.size() - 1);
             if (previousState.time() == time) {
