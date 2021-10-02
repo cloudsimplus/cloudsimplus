@@ -52,7 +52,7 @@ public interface Simulation {
      * @param list list of objects to define an ID
      * @return the last entity that had an id set
      */
-    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(List<? extends T> list){
+    static <T extends ChangeableId> T setIdForEntitiesWithoutOne(final List<? extends T> list){
         return setIdForEntitiesWithoutOne(list, null);
     }
 
