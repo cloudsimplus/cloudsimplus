@@ -39,6 +39,7 @@ import static org.cloudbus.cloudsim.util.TimeUtil.hoursToMinutes;
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.6.0
+ * @see <a href="https://en.wikipedia.org/wiki/Time_zone">Time zone</a>
  */
 public interface TimeZoned {
     /**
@@ -91,8 +92,8 @@ public interface TimeZoned {
         var previousDc = currentDc;
         while(it.hasNext()) {
             currentDc = it.next();
-            /*Since the Datacenter list is expected to be sorted, after finding the first DC with a
-            distance larger than the previous one, the previous is the closest one.*/
+            /* Since the Datacenter list is expected to be sorted, after finding the first
+            DC with a distance larger than the previous one, the previous is the closest one. */
             if(vm.distance(currentDc) > vm.distance(previousDc)){
                 return previousDc;
             }
