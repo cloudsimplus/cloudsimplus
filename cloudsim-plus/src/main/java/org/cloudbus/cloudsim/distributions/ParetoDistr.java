@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.ParetoDistribution;
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
@@ -27,12 +26,7 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
     private long seed;
 
     /**
-     * Creates a Pareto Pseudo-Random Number Generator (RNG) using the current time as seed.
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a Pareto Pseudo-Random Number Generator (PRNG) using the current time as seed.
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
@@ -44,12 +38,7 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
     }
 
     /**
-     * Creates a Pareto Pseudo-Random Number Generator (RNG).
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a Pareto Pseudo-Random Number Generator (PRNG).
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
@@ -62,7 +51,8 @@ public class ParetoDistr extends ParetoDistribution implements ContinuousDistrib
     }
 
     /**
-     * Creates a Pareto Pseudo-Random Number Generator (RNG).
+     * Creates a Pareto Pseudo-Random Number Generator (PRNG).
+     *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator

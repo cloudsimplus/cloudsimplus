@@ -44,12 +44,7 @@ public class GammaDistr extends GammaDistribution implements ContinuousDistribut
     }
 
     /**
-     * Creates a Gamma Pseudo-Random Number Generator (RNG).
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a Gamma Pseudo-Random Number Generator (PRNG).
      *
      * @param shape the shape parameter of this distribution
      * @param scale the scale parameter of this distribution

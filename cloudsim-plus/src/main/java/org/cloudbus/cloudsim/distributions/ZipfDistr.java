@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.distributions;
 
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
@@ -36,12 +35,7 @@ public class ZipfDistr implements DiscreteDistribution {
     private double den;
 
     /**
-     * Creates a Zipf Pseudo-Random Number Generator (RNG).
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a Zipf Pseudo-Random Number Generator (PRNG).
      *
      * @param shape the shape distribution parameter
      * @param population the population distribution parameter
@@ -53,12 +47,7 @@ public class ZipfDistr implements DiscreteDistribution {
     }
 
     /**
-     * Creates a Zipf Pseudo-Random Number Generator (RNG).
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a Zipf Pseudo-Random Number Generator (PRNG).
      *
      * @param shape the shape distribution parameter
      * @param population the population distribution parameter
@@ -71,7 +60,8 @@ public class ZipfDistr implements DiscreteDistribution {
     }
 
     /**
-     * Creates a Zipf Pseudo-Random Number Generator (RNG).
+     * Creates a Zipf Pseudo-Random Number Generator (PRNG).
+     *
      * @param shape the shape distribution parameter
      * @param population the population distribution parameter
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator

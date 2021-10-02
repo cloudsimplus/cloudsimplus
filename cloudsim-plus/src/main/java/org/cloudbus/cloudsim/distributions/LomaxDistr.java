@@ -7,7 +7,6 @@
  */
 package org.cloudbus.cloudsim.distributions;
 
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
@@ -28,12 +27,7 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
     private final double shift;
 
     /**
-     * Creates a lomax Pseudo-Random Number Generator (RNG) using the current time as seed.
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a lomax Pseudo-Random Number Generator (PRNG) using the current time as seed.
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
@@ -46,12 +40,7 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
     }
 
     /**
-     * Creates a lomax Pseudo-Random Number Generator (RNG).
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a lomax Pseudo-Random Number Generator (PRNG).
      *
      * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
@@ -65,13 +54,9 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
     }
 
     /**
-     * Creates a lomax Pseudo-Random Number Generator (RNG).
+     * Creates a lomax Pseudo-Random Number Generator (PRNG).
      *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
-     *  @param shape the shape parameter of this distribution
+     * @param shape the shape parameter of this distribution
      * @param location the location parameter of this distribution
      * @param shift the shift parameter of this distribution
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator
@@ -106,5 +91,4 @@ public class LomaxDistr extends ParetoDistr implements ContinuousDistribution {
         super.reseedRandomGenerator(seed);
         this.seed = seed;
     }
-
 }

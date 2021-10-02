@@ -1,7 +1,6 @@
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.NormalDistribution;
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
@@ -16,12 +15,7 @@ public class NormalDistr extends NormalDistribution implements ContinuousDistrib
     private long seed;
 
     /**
-     * Creates a Normal (Gaussian) Pseudo-Random Number Generator (RNG) using the current time as seed.
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a Normal (Gaussian) Pseudo-Random Number Generator (PRNG) using the current time as seed.
      *
      * @param mean the mean for the distribution.
      * @param standardDeviation the standard deviation for the distribution.
@@ -33,12 +27,7 @@ public class NormalDistr extends NormalDistribution implements ContinuousDistrib
     }
 
     /**
-     * Creates a Normal (Gaussian) Pseudo-Random Number Generator (RNG).
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a Normal (Gaussian) Pseudo-Random Number Generator (PRNG).
      *
 	 * @param mean the mean for the distribution.
      * @param standardDeviation the standard deviation for the distribution.
@@ -51,7 +40,8 @@ public class NormalDistr extends NormalDistribution implements ContinuousDistrib
 	}
 
     /**
-     * Creates a Normal (Gaussian) Pseudo-Random Number Generator (RNG).
+     * Creates a Normal (Gaussian) Pseudo-Random Number Generator (PRNG).
+     *
      * @param mean the mean for the distribution.
      * @param standardDeviation the standard deviation for the distribution.
      * @param seed the seed <b>already used</b> to initialize the Pseudo-Random Number Generator

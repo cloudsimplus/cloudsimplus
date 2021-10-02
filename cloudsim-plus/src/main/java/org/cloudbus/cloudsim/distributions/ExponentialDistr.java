@@ -8,7 +8,6 @@
 package org.cloudbus.cloudsim.distributions;
 
 import org.apache.commons.math3.distribution.ExponentialDistribution;
-import org.apache.commons.math3.random.JDKRandomGenerator;
 import org.apache.commons.math3.random.RandomGenerator;
 
 /**
@@ -26,12 +25,7 @@ public class ExponentialDistr extends ExponentialDistribution implements Continu
     private long seed;
 
     /**
-     * Creates a exponential Pseudo-Random Number Generator (RNG).
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a exponential Pseudo-Random Number Generator (PRNG).
      *
      * @param mean the mean for the distribution.
      * @see #ExponentialDistr(double, long, RandomGenerator)
@@ -41,12 +35,7 @@ public class ExponentialDistr extends ExponentialDistribution implements Continu
     }
 
     /**
-     * Creates a exponential Pseudo-Random Number Generator (RNG).
-     *
-     * <p>Internally, it relies on the {@link JDKRandomGenerator},
-     * a wrapper for the {@link java.util.Random} class
-     * that doesn't have high-quality randomness properties
-     * but is very fast.</p>
+     * Creates a exponential Pseudo-Random Number Generator (PRNG).
      *
      * @param mean the mean for the distribution.
      *
