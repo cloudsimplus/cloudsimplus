@@ -31,8 +31,8 @@ import java.util.Objects;
 /**
  * A class that stores information about the suitability of
  * a {@link Host} for placing a {@link Vm}.
- * It provides fine-grained information to indicates if the Host is suitable in storage, ram,
- * bandwidth and number of PEs required by the given Vm.
+ * It provides fine-grained information to indicates if the Host is suitable in
+ * storage, ram, bandwidth and number of PEs required by the given Vm.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.0.2
@@ -67,7 +67,7 @@ public final class HostSuitability {
      * different VMs for a single Host.
      * If at the end the {@link #fully() suitability} is false,
      * that means the Host was not suitable for some VM(s) from other suitability instances.
-     * @param other
+     * @param other other object to copy attribute values from
      * @see org.cloudbus.cloudsim.vms.VmGroup
      */
     public void setSuitability(final HostSuitability other){
@@ -88,7 +88,8 @@ public final class HostSuitability {
     }
 
     /** Sets if the Host has disk suitability for storing the VM.
-     * @param suitable true to indicate it's suitable according to VM's size requirements, false otherwise
+     * @param suitable true to indicate it's suitable according to VM's size requirements;
+     *                 false otherwise
      * */
     HostSuitability setForStorage(final boolean suitable) {
         this.forStorage = suitable;
@@ -106,7 +107,8 @@ public final class HostSuitability {
     }
 
     /** Sets if the Host has RAM suitability for running the VM.
-     * @param suitable true to indicate it's suitable according to VM's RAM requirements, false otherwise
+     * @param suitable true to indicate it's suitable according to VM's RAM requirements;
+     *                 false otherwise
      * */
     HostSuitability setForRam(final boolean suitable) {
         this.forRam = suitable;
@@ -124,7 +126,8 @@ public final class HostSuitability {
     }
 
     /** Sets if the Host has bandwidth suitability for running the VM.
-     * @param suitable true to indicate it's suitable according to VM's BW requirements, false otherwise
+     * @param suitable true to indicate it's suitable according to VM's BW requirements;
+     *                 false otherwise
      * */
     HostSuitability setForBw(final boolean suitable) {
         this.forBw = suitable;
@@ -142,7 +145,8 @@ public final class HostSuitability {
     }
 
     /** Sets if the Host has {@link Pe} suitability for running the VM.
-     * @param forPes true to indicate it's suitable according to VM's number of PEs requirements, false otherwise
+     * @param forPes true to indicate it's suitable according to VM's number of PEs requirements;
+     *               false otherwise
      * */
     HostSuitability setForPes(final boolean forPes) {
         this.forPes = forPes;
