@@ -24,7 +24,7 @@ public class DeferredQueue implements EventQueue {
      * one, in such a case, the {@link LinkedList#add(Object)} provides
      * better performance, which is O(1).
      */
-    private final List<SimEvent> list = new LinkedList<>();
+    private final List<SimEvent> eventList = new LinkedList<>();
 
     /**
      * The max time that an added event is scheduled.
@@ -45,9 +45,9 @@ public class DeferredQueue implements EventQueue {
         // The event has to be inserted as the last of all events
         // with the same event_time(). Yes, this matters.
         final double eventTime = newEvent.getTime();
-        maxSize = Math.max(maxSize, list.size());
+        maxSize = Math.max(maxSize, eventList.size());
         if (eventTime >= maxTime) {
-            list.add(newEvent);
+            eventList.add(newEvent);
             maxTime = eventTime;
             addedToTail++;
             return;
@@ -62,17 +62,17 @@ public class DeferredQueue implements EventQueue {
          * Starting from the tail of the list will ensure the lowest number
          * of iterations on the best cases.
          * */
-        final ListIterator<SimEvent> reverseIterator = list.listIterator(list.size() - 1);
-        while (reverseIterator.hasPrevious()) {
-            if (reverseIterator.previous().getTime() <= eventTime) {
-                reverseIterator.next();
-                reverseIterator.add(newEvent);
+        final var reverseEvtIterator = eventList.listIterator(eventList.size() - 1);
+        while (reverseEvtIterator.hasPrevious()) {
+            if (reverseEvtIterator.previous().getTime() <= eventTime) {
+                reverseEvtIterator.next();
+                reverseEvtIterator.add(newEvent);
                 addedToMiddle++;
                 return;
             }
         }
 
-        list.add(newEvent);
+        eventList.add(newEvent);
     }
 
     /**
@@ -81,7 +81,7 @@ public class DeferredQueue implements EventQueue {
      * @return the iterator
      */
     public Iterator<SimEvent> iterator() {
-        return list.iterator();
+        return eventList.iterator();
     }
 
     /**
@@ -90,7 +90,7 @@ public class DeferredQueue implements EventQueue {
      * @return the stream
      */
     public Stream<SimEvent> stream() {
-        return list.stream();
+        return eventList.stream();
     }
 
     /**
@@ -99,12 +99,12 @@ public class DeferredQueue implements EventQueue {
      * @return the number of events in the queue.
      */
     public int size() {
-        return list.size();
+        return eventList.size();
     }
 
     @Override
     public boolean isEmpty() {
-        return list.isEmpty();
+        return eventList.isEmpty();
     }
 
     /**
@@ -114,7 +114,7 @@ public class DeferredQueue implements EventQueue {
      * @return true, if successful
      */
     public boolean remove(final SimEvent event) {
-        return list.remove(event);
+        return eventList.remove(event);
     }
 
     /**
@@ -124,27 +124,27 @@ public class DeferredQueue implements EventQueue {
      * @return true, if successful
      */
     public boolean removeAll(final Collection<SimEvent> events) {
-        return list.removeAll(events);
+        return eventList.removeAll(events);
     }
 
     public boolean removeIf(final Predicate<SimEvent> predicate) {
-        return list.removeIf(predicate);
+        return eventList.removeIf(predicate);
     }
 
     /**
      * Clears the queue.
      */
     public void clear() {
-        list.clear();
+        eventList.clear();
     }
 
     @Override
     public SimEvent first() throws NoSuchElementException {
-        if (list.isEmpty()) {
+        if (eventList.isEmpty()) {
             throw new NoSuchElementException("The Deferred Queue is empty.");
         }
 
-        return list.get(0);
+        return eventList.get(0);
     }
 
     /**
