@@ -18,7 +18,7 @@ import java.util.function.Predicate;
  * @since CloudSim Toolkit 1.0
  */
 public class PredicateType implements Predicate<SimEvent> {
-
+    /** The {@link SimEvent#getTag() tag} to match events. */
     private final int tag;
 
     /**
@@ -41,5 +41,4 @@ public class PredicateType implements Predicate<SimEvent> {
     public boolean test(final SimEvent evt) {
         return tag == evt.getTag();
     }
-
 }
