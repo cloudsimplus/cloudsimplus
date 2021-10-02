@@ -26,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A base class for implementing Network Switch.
+ * An abstract class for implementing Network {@link Switch}es.
  *
  * @author Saurabh Kumar Garg
  * @author Manoel Campos da Silva Filho
@@ -62,29 +62,19 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
      */
     private final List<Switch> downlinkSwitches;
 
-    /**
-     * @see #getUplinkBandwidth()
-     */
+    /** @see #getUplinkBandwidth() */
     private double uplinkBandwidth;
 
-    /**
-     * @see #getDownlinkBandwidth()
-     */
+    /** @see #getDownlinkBandwidth() */
     private double downlinkBandwidth;
 
-    /**
-     * @see #getPorts()
-     */
+    /** @see #getPorts() */
     private int ports;
 
-    /**
-     * @see #getDatacenter()
-     */
+    /** @see #getDatacenter() */
     private NetworkDatacenter datacenter;
 
-    /**
-     * @see #getSwitchingDelay()
-     */
+    /** @see #getSwitchingDelay() */
     private double switchingDelay;
 
     public AbstractSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
@@ -106,9 +96,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     @Override
     public void processEvent(final SimEvent evt) {
         switch (evt.getTag()) {
-            // process the packet from down switch or host
             case CloudSimTags.NETWORK_EVENT_UP -> processPacketUp(evt);
-            // process the packet from uplink
             case CloudSimTags.NETWORK_EVENT_DOWN -> processPacketDown(evt);
             case CloudSimTags.NETWORK_EVENT_SEND -> processPacketForward();
             case CloudSimTags.NETWORK_EVENT_HOST -> processHostPacket(evt);
@@ -118,7 +106,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Process a packet sent to a host.
      *
-     * @param evt The packet sent.
+     * @param evt the packet sent
      */
     protected void processHostPacket(final SimEvent evt) {
         final HostPacket pkt = (HostPacket) evt.getData();
@@ -127,9 +115,9 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Sends a packet to Datacenter connected through a downlink port.
+     * Sends a packet from uplink to Datacenter connected through a downlink port.
      *
-     * @param evt Event/packet to process
+     * @param evt event/packet to process
      */
     protected void processPacketDown(final SimEvent evt) {
         // Packet coming from up level router has to send downward.
@@ -147,7 +135,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Sends a packet to Datacenter connected through a uplink port.
+     * Sends a packet from down switch or host to Datacenter connected through an uplink port.
      *
      * @param evt Event/packet to process
      */
@@ -230,7 +218,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     }
 
     /**
-     * Computes the network delay to send a packet through the network,
+     * Computes the network delay for sending a packet through the network,
      * considering that a list of packets will be sent simultaneously.
      *
      * @param netPkt     the packet to be sent
@@ -247,8 +235,7 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Considering a list of packets to be sent,
      * gets the amount of available bandwidth for each packet,
-     * assuming that the bandwidth is shared equally among
-     * all packets.
+     * assuming that the bandwidth is shared equally among all packets.
      *
      * @param bwCapacity the total bandwidth capacity to share among
      *                   the packets to be sent (in Megabits/s)
