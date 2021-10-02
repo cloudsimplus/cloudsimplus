@@ -364,8 +364,8 @@ public abstract class AbstractSwitch extends CloudSimEntity implements Switch {
     /**
      * Computes a value for a multi-map, a map where values are a List.
      * @param map the map to compute a value (to add a value to a List mapped to a key)
-     * @param key
-     * @param valueToAdd
+     * @param key the key to access the mapped List
+     * @param valueToAdd the value to add to the List
      * @param <K> type of the map key
      * @param <V> type of the map value
      */
