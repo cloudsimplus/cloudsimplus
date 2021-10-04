@@ -96,4 +96,20 @@ public final class Util {
         final String format = "%120s[%-"+total+"s] %3.0f%% (%d/%d)" + end;
         System.out.printf(format, " ", progress, percent(current, total), current, total);
     }
+
+    /**
+     * Creates a square matrix with a given size
+     * @param size the matrix size, defining the number of columns and rows
+     * @return the new square matrix
+     */
+    public static double[][] newMatrix(final int size) {
+        final double[][] matrix = new double[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                matrix[i][j] = 0.0;
+            }
+        }
+
+        return matrix;
+    }
 }

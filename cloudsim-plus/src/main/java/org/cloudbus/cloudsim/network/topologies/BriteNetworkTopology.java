@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.network.DelayMatrix;
 import org.cloudbus.cloudsim.network.topologies.readers.TopologyReaderBrite;
 import org.cloudbus.cloudsim.util.ResourceLoader;
+import org.cloudbus.cloudsim.util.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -145,23 +146,12 @@ public final class BriteNetworkTopology implements NetworkTopology {
      */
     private double[][] createBwMatrix(final TopologicalGraph graph, final boolean directed) {
         final int nodes = graph.getNumberOfNodes();
-        final double[][] matrix = newMatrix(nodes);
+        final double[][] matrix = Util.newMatrix(nodes);
 
         for (final TopologicalLink edge : graph.getLinksList()) {
             matrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkBw();
             if (!directed) {
                 matrix[edge.getDestNodeID()][edge.getSrcNodeID()] = edge.getLinkBw();
-            }
-        }
-
-        return matrix;
-    }
-
-    private double[][] newMatrix(final int nodes) {
-        final double[][] matrix = new double[nodes][nodes];
-        for (int i = 0; i < nodes; i++) {
-            for (int j = 0; j < nodes; j++) {
-                matrix[i][j] = 0.0;
             }
         }
 
