@@ -37,10 +37,7 @@ import java.util.Objects;
  */
 public class HostPacket implements NetworkPacket<NetworkHost> {
 
-    /**
-     * Information about the virtual sender and receiver entities of the packet
-     * (the sender and receiver Cloudlet and their respective VMs).
-     */
+    /** @see #getVmPacket() */
     private final VmPacket vmPacket;
 
     /** @see #getSource() */
@@ -133,6 +130,11 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
         this.receiveTime = receiveTime;
     }
 
+    /**
+     * Gets information about the virtual sender and receiver entities of the packet
+     * (the sender and receiver Cloudlet and their respective VMs).
+     * @return
+     */
     public VmPacket getVmPacket() {
         return vmPacket;
     }
