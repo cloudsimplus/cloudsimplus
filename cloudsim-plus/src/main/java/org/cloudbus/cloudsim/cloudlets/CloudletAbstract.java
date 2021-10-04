@@ -855,7 +855,7 @@ public abstract class CloudletAbstract extends CustomerEntityAbstract implements
 
     @Override
     public void assignToDatacenter(final Datacenter datacenter) {
-        final CloudletDatacenterExecution dcInfo = new CloudletDatacenterExecution();
+        final var dcInfo = new CloudletDatacenterExecution();
         dcInfo.setDatacenter(datacenter);
         dcInfo.setCostPerSec(datacenter.getCharacteristics().getCostPerSecond());
         datacenterExecutionList.add(dcInfo);
