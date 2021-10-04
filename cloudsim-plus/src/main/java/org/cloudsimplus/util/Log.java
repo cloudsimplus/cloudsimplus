@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * An utility class to enable changing logging
+ * A utility class to enable changing logging
  * configuration such as the logging level.
  *
  * @since CloudSim Plus 3.0.0
