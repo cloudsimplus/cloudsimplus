@@ -193,11 +193,11 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
     }
 
     private UtilizationModelPlanetLab(
-        final InputStreamReader sreader,
+        final InputStreamReader reader,
         final double schedulingInterval,
         final int dataSamples) throws NumberFormatException
     {
-        this(sreader, schedulingInterval, dataSamples, UnaryOperator.identity());
+        this(reader, schedulingInterval, dataSamples, UnaryOperator.identity());
     }
 
     /**
@@ -290,7 +290,7 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * For instance, the line 0 represents a resource utilization percentage for
      * simulation time 0.
      *
-     * @param sreader the {@link InputStreamReader} to read the file
+     * @param reader the {@link InputStreamReader} to read the file
      * @param dataSamples number of samples to read from the workload file.
      *                    If -1 is given, it checks if the first line of the trace has a comment.
      *                    In this case, that comment is expected to represent the number of lines
@@ -303,14 +303,14 @@ public class UtilizationModelPlanetLab extends UtilizationModelAbstract {
      * @throws UncheckedIOException when the trace file cannot be read
      * @see #utilization
      */
-    private double[] readWorkloadFile(final InputStreamReader sreader, int dataSamples) {
-        Objects.requireNonNull(sreader);
+    private double[] readWorkloadFile(final InputStreamReader reader, int dataSamples) {
+        Objects.requireNonNull(reader);
         double[] utilization = {0};
 
-        try (BufferedReader reader = new BufferedReader(sreader)) {
+        try (var buffer = new BufferedReader(reader)) {
             int lineNum = 0;
             String line;
-            while((line=reader.readLine())!=null && lineNum < utilization.length){
+            while((line=buffer.readLine())!=null && lineNum < utilization.length){
                 if(lineNum == 0){
                     dataSamples = parseDataSamples(line, dataSamples);
                     utilization = createEmptyArray(dataSamples);
