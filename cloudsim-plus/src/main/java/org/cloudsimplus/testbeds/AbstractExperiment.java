@@ -24,7 +24,7 @@
 package org.cloudsimplus.testbeds;
 
 /**
- * A base class to to provide base features for {@link Experiment} and {@link ExperimentRunner}.
+ * An abstract class to provide base features for {@link Experiment} and {@link ExperimentRunner}.
  *
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 6.1.0
