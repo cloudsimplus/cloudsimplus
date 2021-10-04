@@ -9,10 +9,7 @@ package org.cloudbus.cloudsim.cloudlets.network;
 
 import org.cloudbus.cloudsim.cloudlets.CloudletSimple;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * NetworkCloudlet to support simulation of complex applications.
