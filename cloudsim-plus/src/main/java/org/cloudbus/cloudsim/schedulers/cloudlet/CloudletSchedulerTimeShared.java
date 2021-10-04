@@ -65,7 +65,6 @@ import java.util.List;
  * <p><b>WARNING</b>: Time-shared schedulers drastically degrade performance
  * of large scale simulations.</p>
  *
- *
  * @author Rodrigo N. Calheiros
  * @author Anton Beloglazov
  * @author Manoel Campos da Silva Filho
