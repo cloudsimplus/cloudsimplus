@@ -37,7 +37,7 @@ import java.util.function.UnaryOperator;
  * Enables cloning a {@link Vm} which was destroyed
  * due to a {@link HostFaultInjection Host Failure}.
  * It provides all the features to clone a Vm, simulating
- * the creating of another Vm from an snapshot of the failed one.
+ * the creating of another Vm from a snapshot of the failed one.
  * It also enables re-creating Cloudlets which were running
  * inside the failed VM.
  *
@@ -117,5 +117,16 @@ public interface VmCloner {
      */
     boolean isMaxClonesNumberReached();
 
+    /**
+     * Sets the maximum number of Vm clones to create.
+     * For instance, if this value is equal to 2,
+     * it means if all VMs from a given broker are destroyed multiple times,
+     * a clone will be created only 2 times. If all VMs are destroyed again
+     * for the 3rd time, no clone will be created.
+     * The default value is 1.
+     *
+     * @param maxClonesNumber the value to set
+     * @return
+     */
     VmCloner setMaxClonesNumber(int maxClonesNumber);
 }
