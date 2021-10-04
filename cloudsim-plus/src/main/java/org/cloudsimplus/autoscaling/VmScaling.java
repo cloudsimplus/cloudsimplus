@@ -29,7 +29,8 @@ import org.cloudsimplus.listeners.EventListener;
 import org.cloudsimplus.listeners.VmHostEventInfo;
 
 /**
- * An interface to allow implementing <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">horizontal and vertical scaling</a>
+ * An interface to allow implementing
+ * <a href="https://en.wikipedia.org/wiki/Scalability#Horizontal_and_vertical_scaling">horizontal and vertical scaling</a>
  * of {@link Vm}s.
  *
  * @author Manoel Campos da Silva Filho
@@ -62,15 +63,17 @@ public interface VmScaling {
     /**
      * Requests the Vm to be scaled up or down if it is over or underloaded, respectively.
      * The scaling request will be sent to the {@link DatacenterBroker} only
-     * if the under or overload condition is met, that depends of the implementation
+     * if the under or overload condition is met, that depends on the implementation
      * of the scaling mechanisms.
      *
-     * <p>The Vm to which this scaling object is related to, creates an {@link Vm#addOnUpdateProcessingListener(EventListener) UpdateProcessingListener}
-     * that will call this method to check if it time to perform an down or up scaling, every time
-     * the Vm processing is updated.</p>
+     * <p>The Vm to which this scaling object is related to, creates an
+     * {@link Vm#addOnUpdateProcessingListener(EventListener) UpdateProcessingListener}
+     * that will call this method to check if it time to perform an down or up scaling,
+     * every time the Vm processing is updated.</p>
      *
      * @param evt event information, including the current simulation time and the VM to be scaled
-     * @return true if the Vm is over or underloaded and up or down scaling request was sent to the broker, false otherwise
+     * @return true if the Vm is over or underloaded and up or down scaling request was sent
+     *         to the broker; false otherwise
      */
     boolean requestUpScalingIfPredicateMatches(VmHostEventInfo evt);
 }
