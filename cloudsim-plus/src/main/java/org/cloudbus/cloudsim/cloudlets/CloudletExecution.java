@@ -66,7 +66,7 @@ public class CloudletExecution {
     private double finishRequestTime;
 
     /**
-     * The length of Cloudlet finished so far in number of Instructions (I).
+     * The length of Cloudlet finished so far, in number of Instructions (I).
      * The attribute stores the execution length of the cloudlet
      * in previous datacenters. Thus, it represents the actual executed
      * length of the cloudlet (not just the executed length in the current Datacenter).
