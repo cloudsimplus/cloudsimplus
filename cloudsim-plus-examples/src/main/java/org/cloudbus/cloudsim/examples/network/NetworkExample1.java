@@ -52,7 +52,7 @@ public class NetworkExample1 {
     private final DatacenterBroker broker;
 
     private List<Cloudlet> cloudletList;
-    private List<Vm> vmlist;
+    private List<Vm> vmList;
     private CloudSim simulation;
 
     public static void main(String[] args) {
@@ -66,7 +66,7 @@ public class NetworkExample1 {
 
         System.out.println("Starting " + getClass().getSimpleName());
 
-        vmlist = new ArrayList<>();
+        vmList = new ArrayList<>();
         cloudletList = new ArrayList<>();
         simulation = new CloudSim();
 
@@ -128,9 +128,9 @@ public class NetworkExample1 {
                 .setRam(ram).setBw(bw).setSize(size)
                 .setCloudletScheduler(new CloudletSchedulerTimeShared());
 
-        vmlist.add(vm1);
+        vmList.add(vm1);
 
-        broker.submitVmList(vmlist);
+        broker.submitVmList(vmList);
     }
 
     private Datacenter createDatacenter() {
