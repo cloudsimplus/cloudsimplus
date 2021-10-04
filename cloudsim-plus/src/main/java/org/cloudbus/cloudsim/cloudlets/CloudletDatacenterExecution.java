@@ -39,7 +39,7 @@ final class CloudletDatacenterExecution {
     /**
      * Gets the time this Cloudlet resides in a Datacenter
      * (from arrival time until departure time, that may include waiting time).
-     * @return the wall-clock time
+     * @return the wall-clock time (in seconds)
      * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
      */
     double getWallClockTime() {
@@ -49,7 +49,7 @@ final class CloudletDatacenterExecution {
     /**
      * Sets the time this Cloudlet resides in a Datacenter
      * (from arrival time until departure time, that may include waiting time).
-     * @param wallClockTime the wall-clock time to set
+     * @param wallClockTime the wall-clock time to set (in seconds)
      * @see <a href="https://en.wikipedia.org/wiki/Elapsed_real_time">Elapsed real time (wall-clock time)</a>
      */
     void setWallClockTime(final double wallClockTime) {
@@ -57,7 +57,7 @@ final class CloudletDatacenterExecution {
     }
 
     /**
-     * Gets the total time the Cloudlet spent being executed in a Datacenter.
+     * Gets the total time the Cloudlet spent being executed in a Datacenter (in seconds).
      */
     double getActualCpuTime() {
         return actualCpuTime;
