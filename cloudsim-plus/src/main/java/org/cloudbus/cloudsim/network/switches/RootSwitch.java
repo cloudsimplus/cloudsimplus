@@ -15,6 +15,8 @@ import org.cloudbus.cloudsim.util.BytesConversion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Optional;
+
 /**
  * This class allows to simulate Root switch which connects Datacenters to
  * external network. It interacts with other Datacenter in order to exchange
@@ -81,33 +83,30 @@ public class RootSwitch extends AbstractSwitch {
     @Override
     protected void processPacketUp(final SimEvent evt) {
         super.processPacketUp(evt);
-        final HostPacket netPkt = (HostPacket) evt.getData();
-        final Switch edgeSwitch = getVmEdgeSwitch(netPkt);
+        final var netPkt = (HostPacket) evt.getData();
+        final var edgeSwitch = getVmEdgeSwitch(netPkt);
 
-        final Switch aggSwitch = findAggregateConnectedToEdgeSwitch(edgeSwitch);
-
-        if (aggSwitch == Switch.NULL) {
-            LOGGER.error("No destination switch for this packet");
-            return;
-        }
-
-        addPacketToSendToDownlinkSwitch(aggSwitch, netPkt);
+        final var optionalAggrSw = findAggregateConnectedToEdgeSwitch(edgeSwitch);
+        optionalAggrSw.ifPresentOrElse(
+            aggSw -> addPacketToSendToDownlinkSwitch(aggSw, netPkt),
+            () -> LOGGER.error("No destination switch for this packet")
+        );
     }
 
     /**
      * Finds which aggregate switch is connected to a given edge switch
      * @param edgeSwitch the id of the edge switch to find the aggregate switch
      * that it is connected to
-     * @return the id of the aggregate switch that is connected to the given
-     * edge switch or {@link Switch#NULL} if not found.
+     * @return an {@link Optional} with the aggregate switch that is connected to the given
+     * edge switch; or an empty Optional if not found.
      */
-    private Switch findAggregateConnectedToEdgeSwitch(final Switch edgeSwitch) {
+    private Optional<Switch> findAggregateConnectedToEdgeSwitch(final Switch edgeSwitch) {
+        //List of Aggregate Switches connected to this Root Switch
         final var aggregateSwitchList = getDownlinkSwitches();
         return aggregateSwitchList
                 .stream()
                 .filter(aggregateSw -> isEdgeConnectedToAggregatedSwitch(edgeSwitch, aggregateSw))
-                .findFirst()
-                .orElse(Switch.NULL);
+                .findFirst();
     }
 
     private boolean isEdgeConnectedToAggregatedSwitch(final Switch edgeSwitch, final Switch aggregateSw) {
