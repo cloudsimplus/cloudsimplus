@@ -146,7 +146,7 @@ public final class BriteNetworkTopology implements NetworkTopology {
      */
     private double[][] createBwMatrix(final TopologicalGraph graph, final boolean directed) {
         final int nodes = graph.getNumberOfNodes();
-        final double[][] matrix = Util.newMatrix(nodes);
+        final double[][] matrix = Util.newSquareMatrix(nodes);
 
         for (final TopologicalLink edge : graph.getLinksList()) {
             matrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkBw();

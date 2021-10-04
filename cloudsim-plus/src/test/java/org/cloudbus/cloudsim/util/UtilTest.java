@@ -35,7 +35,7 @@ class UtilTest {
     @Test
     void newSquareMatrixSize() {
         final int size = 10;
-        final var matrix = Util.newMatrix(size);
+        final var matrix = Util.newSquareMatrix(size);
         assertEquals(size, matrix.length);
         assertEquals(size, matrix[0].length);
     }
@@ -43,7 +43,7 @@ class UtilTest {
     @Test
     void newZeroedMatrix() {
         final int size = 10;
-        final var matrix = Util.newMatrix(size);
+        final var matrix = Util.newSquareMatrix(size);
         final var msg = "There is trash at position %d,%d instead of zero: %.2f";
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[i].length; j++) {

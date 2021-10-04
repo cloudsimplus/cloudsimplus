@@ -10,6 +10,7 @@ package org.cloudbus.cloudsim.network;
 
 import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
 import org.cloudbus.cloudsim.network.topologies.TopologicalLink;
+import org.cloudbus.cloudsim.util.Util;
 
 /**
  * This class represents a delay matrix between every pair or nodes
@@ -77,8 +78,7 @@ public class DelayMatrix {
 	 */
 	private void createDelayMatrix(final TopologicalGraph graph, final boolean directed) {
 		mTotalNodeNum = graph.getNumberOfNodes();
-
-		mDelayMatrix = new double[mTotalNodeNum][mTotalNodeNum];
+		mDelayMatrix = Util.newSquareMatrix(mTotalNodeNum);
 
 		// cleanup the complete distance-matrix with "0"s
 		for (int row = 0; row < mTotalNodeNum; ++row) {

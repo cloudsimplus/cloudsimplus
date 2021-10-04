@@ -102,7 +102,7 @@ public final class Util {
      * @param size the matrix size, defining the number of columns and rows
      * @return the new square matrix
      */
-    public static double[][] newMatrix(final int size) {
+    public static double[][] newSquareMatrix(final int size) {
         return new double[size][size];
     }
 }
