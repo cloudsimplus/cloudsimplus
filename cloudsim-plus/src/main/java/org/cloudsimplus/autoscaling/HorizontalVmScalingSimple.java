@@ -45,8 +45,8 @@ import java.util.function.Supplier;
  * <br>
  * <p>The overload condition has to be defined
  * by providing a {@link Predicate} using the {@link #setOverloadPredicate(Predicate)} method.
- * Check the {@link HorizontalVmScaling} documentation for details on how to enable horizontal down scaling
- * using the {@link DatacenterBroker}.
+ * Check the {@link HorizontalVmScaling} documentation for details on how to enable
+ * horizontal down scaling using the {@link DatacenterBroker}.
  * </p>
  *
  * @author Manoel Campos da Silva Filho
@@ -62,7 +62,7 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
     /**
      * The last number of cloudlet creation requests
      * received by the broker. This is not related to the VM,
-     * but the overall cloudlets creation requests.
+     * but the overall Cloudlets creation requests.
      */
     private long cloudletCreationRequests;
 
