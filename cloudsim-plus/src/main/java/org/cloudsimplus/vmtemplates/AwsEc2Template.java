@@ -176,6 +176,10 @@ public class AwsEc2Template implements Comparable<AwsEc2Template> {
      * @param pricePerHour the price to set
      */
     public void setPricePerHour(final double pricePerHour) {
+        if(pricePerHour < 0) {
+            throw new IllegalArgumentException("Price cannot be negative");
+        }
+
         this.pricePerHour = pricePerHour;
     }
 
