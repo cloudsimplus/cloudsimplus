@@ -96,7 +96,9 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     long getFreePesNumber();
 
     /**
-     * Gets the expected free pes number before the VM starts executing. This value is updated as cloudlets are assigned to VMs but not submitted to the broker yet for running.
+     * Gets the expected free pes number before the VM starts executing.
+     * This value is updated as cloudlets are assigned to VMs but not submitted to the
+     * broker yet for running.
      *
      * @return the expected free pes number
      */
@@ -373,7 +375,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     double getHostRamUtilization();
 
     /**
-     * Computes the relative percentage of the Bandwidth the VM is using from the Host's total Capacity
+     * Computes the relative percentage of the Bandwidth the VM is using from the Host's total capacity
      * for the current simulation time.
      *
      * @return the relative VM BW usage percent (from 0 to 1)
@@ -381,7 +383,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     double getHostBwUtilization();
 
     /**
-     * Computes the current relative percentage of the CPU the VM is using from the Host's total MIPS Capacity.
+     * Computes the current relative percentage of the CPU the VM is using from the Host's total MIPS capacity.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
      * of the Host's capacity.
      *
@@ -393,7 +395,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     }
 
     /**
-     * Computes the relative percentage of the CPU the VM is using from the Host's total MIPS Capacity
+     * Computes the relative percentage of the CPU the VM is using from the Host's total MIPS capacity
      * for the current simulation time.
      * If the capacity is 1000 MIPS and the VM is using 250 MIPS, it's equivalent to 25%
      * of the Host's capacity.
@@ -404,7 +406,7 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     double getHostCpuUtilization(double time);
 
     /**
-     * Computes what would be the relative percentage of the CPU the VM is using from a PM's total MIPS Capacity,
+     * Computes what would be the relative percentage of the CPU the VM is using from a PM's total MIPS capacity,
      * considering that the VM 's CPU load is at a given percentage.
      * @param vmCpuUtilizationPercent the VM's CPU utilization percentage for a given time
      * @return the relative VM CPU usage percent (from 0 to 1)
@@ -451,8 +453,8 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      *
      * @param cloudlet the candidate Cloudlet to run inside the VM
      * @return true if the VM can run the Cloudlet, false otherwise
-     *
-     * @TODO the Method is not being called anywhere to check if a VM has enough capacity to run a Cloudlet
+     * TODO the Method is not being called anywhere to check if a VM has
+     *      enough capacity to run a Cloudlet
      */
     boolean isSuitableForCloudlet(Cloudlet cloudlet);
 
@@ -597,8 +599,8 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      *
      * @param horizontalScaling the HorizontalVmScaling to set
      * @return
-     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
-     * its own HorizontalVmScaling object or none at all.
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm.
+     *         Each VM must have its own HorizontalVmScaling object or none at all.
      */
     Vm setHorizontalScaling(HorizontalVmScaling horizontalScaling) throws IllegalArgumentException;
 
@@ -621,8 +623,8 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      *
      * @param bwVerticalScaling the VerticalVmScaling to set
      * @return
-     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
-     * its own VerticalVmScaling objects or none at all.
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm.
+     * Each VM must have its own VerticalVmScaling objects or none at all.
      */
     Vm setBwVerticalScaling(VerticalVmScaling bwVerticalScaling) throws IllegalArgumentException;
 
@@ -636,8 +638,8 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
      *
      * @param peVerticalScaling the VerticalVmScaling to set
      * @return
-     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm. Each VM must have
-     * its own VerticalVmScaling objects or none at all.
+     * @throws IllegalArgumentException if the given VmScaling is already linked to a Vm.
+     * Each VM must have its own VerticalVmScaling objects or none at all.
      */
     Vm setPeVerticalScaling(VerticalVmScaling peVerticalScaling) throws IllegalArgumentException;
 
@@ -721,9 +723,9 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     Vm setStopTime(double stopTime);
 
     /**
-     * Gets the time zone offset, a value between  [-12 and 12],
-     * in which the VM is expected to be placed (if there is a {@link Datacenter}
-     * with enough capacity available at that timezone).
+     * {@inheritDoc}
+     * That is the timezone in which the VM is expected to be placed
+     * (if there is a {@link Datacenter} with enough capacity available at that timezone).
      *
      * <p>To know the actual timezone where the VM is placed,
      * check the {@link Datacenter#getTimeZone() timezone of the Datacenter
@@ -735,14 +737,13 @@ public interface Vm extends AbstractMachine<Resource>, UniquelyIdentifiable, Com
     double getTimeZone();
 
     /**
-     * Sets the time zone offset, a value between  [-12 and 12],
-     * in which the VM is expected to be placed (if there is a {@link Datacenter}
-     * with enough capacity available at that timezone).
+     * {@inheritDoc}
+     * That is the timezone in which the VM is expected to be placed
+     * (if there is a {@link Datacenter} with enough capacity available at that timezone).
      *
      * @param timeZone the new expected time zone offset
      * @return
      */
     @Override
     Vm setTimeZone(double timeZone);
-
 }
