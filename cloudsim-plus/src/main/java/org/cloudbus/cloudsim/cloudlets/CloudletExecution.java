@@ -460,9 +460,9 @@ public class CloudletExecution {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return obj instanceof CloudletExecution &&
-               ((CloudletExecution)obj).cloudlet.getId() == this.cloudlet.getId();
+    public boolean equals(final Object obj) {
+        return obj instanceof CloudletExecution that &&
+               that.cloudlet.getId() == this.cloudlet.getId();
     }
 
     @Override
