@@ -92,7 +92,7 @@ public class CloudletToVmMappingSimulatedAnnealing
     }
 
     @Override
-    public void setVmList(List<Vm> vmList) {
+    public void setVmList(final List<Vm> vmList) {
         this.vmList = vmList;
     }
 
@@ -120,5 +120,4 @@ public class CloudletToVmMappingSimulatedAnnealing
         clone.swapVmsOfTwoRandomSelectedMapEntries();
         return clone;
     }
-
 }
