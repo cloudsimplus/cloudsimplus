@@ -13,7 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
- * This class represents a graph containing vertices (nodes) and edges (links),
+ * Represents a graph containing vertices (nodes) and edges (links),
  * used for input with a network-layer.
  *
  * <p>Graphical-Output Restrictions:
@@ -28,14 +28,17 @@ import java.util.List;
  */
 public class TopologicalGraph {
     /**
-     * The list of links of the network graph.
+     * The list of links (edges) of the network graph.
      */
     private final List<TopologicalLink> linksList;
 
+    /**
+     * The list of nodes (vertices) of the network graph.
+     */
     private final List<TopologicalNode> nodeList;
 
     /**
-     * Creates an empty graph-object.
+     * Creates an empty network topology graph.
      */
     public TopologicalGraph() {
         linksList = new LinkedList<>();
@@ -43,7 +46,7 @@ public class TopologicalGraph {
     }
 
     /**
-     * Adds an link between two topological nodes.
+     * Adds a link between two topological nodes.
      *
      * @param edge the topological link
      */
@@ -52,7 +55,7 @@ public class TopologicalGraph {
     }
 
     /**
-     * Adds an Topological Node to this graph.
+     * Adds a Topological Node to this graph.
      *
      * @param node the topological node to add
      */
