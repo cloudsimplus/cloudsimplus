@@ -91,8 +91,8 @@ public class PowerMeter extends CloudSimEntity {
      * it's returned the combined power consumption of such entities.
      */
     private void measurePowerConsumption() {
-        final List<? extends PowerAware<? extends PowerModel>> powerAwareEntities = powerAwareEntitiesSupplier.get();
-        final PowerMeasurement measurement = powerAwareEntities.stream()
+        final var powerAwareEntitiesList = powerAwareEntitiesSupplier.get();
+        final PowerMeasurement measurement = powerAwareEntitiesList.stream()
             .map(PowerAware::getPowerModel)
             .map(PowerModel::getPowerMeasurement)
             .reduce(PowerMeasurement::add)
