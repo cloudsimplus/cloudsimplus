@@ -15,6 +15,9 @@
 package org.cloudbus.cloudsim.network;
 
 import org.cloudbus.cloudsim.core.Identifiable;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.network.switches.Switch;
+import org.cloudbus.cloudsim.vms.Vm;
 
 /**
  * Defines the structure for a network packet.
@@ -22,8 +25,8 @@ import org.cloudbus.cloudsim.core.Identifiable;
  * @author Gokul Poduval
  * @author Chen-Khong Tham, National University of Singapore
  * @author Manoel Campos da Silva Filho
- * @param <T> the class of objects involved in the packet transmission,
- *           if they are Hosts, VMs, Switches, etc.
+ * @param <T> the class of objects involved in the packet transmission.
+ *           if they are {@link Host}s, {@link Vm}s, {@link Switch}es, etc.
  *
  * @since CloudSim Toolkit 1.0
  */
