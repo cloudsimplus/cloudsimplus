@@ -10,7 +10,6 @@ package org.cloudbus.cloudsim.schedulers.cloudlet.network;
 import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.cloudlets.network.*;
 import org.cloudbus.cloudsim.core.CloudSimTags;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.network.VmPacket;
 import org.cloudbus.cloudsim.vms.Vm;
 import org.slf4j.Logger;
@@ -64,9 +63,9 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             return;
         }
 
-        final NetworkCloudlet netcl = (NetworkCloudlet) cloudlet;
-        if (!netcl.isTasksStarted()) {
-            scheduleNextTaskIfCurrentIsFinished(netcl);
+        final var netCloudlet = (NetworkCloudlet) cloudlet;
+        if (!netCloudlet.isTasksStarted()) {
+            scheduleNextTaskIfCurrentIsFinished(netCloudlet);
             return;
         }
 
@@ -74,11 +73,9 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
          * @TODO author: manoelcampos It should be used polymorphism to avoid
          *       including these if's for each type of task.
          */
-        if (isTimeToUpdateCloudletProcessing(netcl)) {
-            updateExecutionTask(netcl, partialFinishedMI);
-        } else {
-            updateNetworkTasks(netcl);
-        }
+        if (isTimeToUpdateCloudletProcessing(netCloudlet))
+            updateExecutionTask(netCloudlet, partialFinishedMI);
+        else updateNetworkTasks(netCloudlet);
     }
 
     private void updateExecutionTask(final NetworkCloudlet cloudlet, final long partialFinishedMI) {
@@ -214,7 +211,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
             return;
         }
 
-        final Datacenter dc = getVm().getHost().getDatacenter();
+        final var dc = getVm().getHost().getDatacenter();
         dc.schedule(dc, dc.getSimulation().getMinTimeBetweenEvents(), CloudSimTags.VM_UPDATE_CLOUDLET_PROCESSING);
     }
 
