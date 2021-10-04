@@ -71,7 +71,7 @@ public class RootSwitch extends AbstractSwitch {
      * @param simulation the CloudSim instance that represents the simulation the Entity belongs
      * @param dc the Datacenter where the switch is connected to
      */
-    public RootSwitch(CloudSim simulation, NetworkDatacenter dc) {
+    public RootSwitch(final CloudSim simulation, final NetworkDatacenter dc) {
         super(simulation, dc);
         setDownlinkBandwidth(DOWNLINK_BW);
         setSwitchingDelay(SWITCHING_DELAY);
@@ -84,7 +84,7 @@ public class RootSwitch extends AbstractSwitch {
         final HostPacket netPkt = (HostPacket) evt.getData();
         final Switch edgeSwitch = getVmEdgeSwitch(netPkt);
 
-        final Switch aggSwitch = findAggregateSwitchConnectedToGivenEdgeSwitch(edgeSwitch);
+        final Switch aggSwitch = findAggregateConnectedToEdgeSwitch(edgeSwitch);
 
         if (aggSwitch == Switch.NULL) {
             LOGGER.error("No destination switch for this packet");
@@ -101,16 +101,19 @@ public class RootSwitch extends AbstractSwitch {
      * @return the id of the aggregate switch that is connected to the given
      * edge switch or {@link Switch#NULL} if not found.
      */
-    private Switch findAggregateSwitchConnectedToGivenEdgeSwitch(final Switch edgeSwitch) {
-        for (final Switch aggregateSw : getDownlinkSwitches()) {
-            for (final Switch edgeSw : aggregateSw.getDownlinkSwitches()) {
-                if (edgeSw.getId() == edgeSwitch.getId()) {
-                    return aggregateSw;
-                }
-            }
-        }
+    private Switch findAggregateConnectedToEdgeSwitch(final Switch edgeSwitch) {
+        final var aggregateSwitchList = getDownlinkSwitches();
+        return aggregateSwitchList
+                .stream()
+                .filter(aggregateSw -> isEdgeConnectedToAggregatedSwitch(edgeSwitch, aggregateSw))
+                .findFirst()
+                .orElse(Switch.NULL);
+    }
 
-        return Switch.NULL;
+    private boolean isEdgeConnectedToAggregatedSwitch(final Switch edgeSwitch, final Switch aggregateSw) {
+        //List of Edge Switches connected to the given Aggregate Switch
+        final var edgeSwitchList = aggregateSw.getDownlinkSwitches();
+        return edgeSwitchList.stream().anyMatch(edgeSwitch::equals);
     }
 
     @Override
