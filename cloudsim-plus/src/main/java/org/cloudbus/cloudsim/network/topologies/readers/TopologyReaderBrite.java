@@ -22,7 +22,7 @@ import java.util.StringTokenizer;
 import java.util.function.Function;
 
 /**
- * A network graph (topology) readers that creates a network topology from
+ * A network graph (topology) reader that creates a network topology from
  * a file in the <a href="http://www.cs.bu.edu/brite/user_manual/node29.html">BRITE format</a>.
  * A BRITE file is structured as follows:<br>
  * <ul>
@@ -35,9 +35,17 @@ import java.util.function.Function;
  * @since CloudSim Toolkit 1.0
  */
 public class TopologyReaderBrite implements TopologyReader {
+    /**
+     * Represents the state indicating to just find the start of the node-declaration.
+     */
     private static final int PARSE_NOTHING = 0;
+
+    /** Represents the state indicating to retrieve all node-information. */
     private static final int PARSE_NODES = 1;
+
+    /** Represents the state indicating to retrieve all edges-information. */
     private static final int PARSE_EDGES = 2;
+
     private int state = PARSE_NOTHING;
 
     /**
@@ -56,19 +64,14 @@ public class TopologyReaderBrite implements TopologyReader {
         try(BufferedReader buffer = new BufferedReader(reader)) {
             String nextLine;
             while ((nextLine = buffer.readLine()) != null) {
-                // functionality to differentiate between all the parsing-states
-                // state that should just find the start of node-declaration
                 if (state == PARSE_NOTHING) {
                     if (nextLine.contains("Nodes:")) {
                         state = PARSE_NODES;
                     }
                 }
-                // the state to retrieve all node-information
                 else if (state == PARSE_NODES) {
-                    // perform the parsing of this node-line
                     parseNodeString(nextLine);
                 }
-                // the state to retrieve all edges-information
                 else if (state == PARSE_EDGES) {
                     parseEdgesString(nextLine);
                 }
