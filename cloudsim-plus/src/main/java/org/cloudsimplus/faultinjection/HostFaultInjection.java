@@ -65,9 +65,12 @@ import static org.cloudbus.cloudsim.core.CloudSimTags.HOST_FAILURE;
  * The events happens in the following order:
  * <ol>
  *  <li>a time to inject a Host failure is generated using a given Random Number Generator;</li>
- *  <li>a Host is randomly selected to fail at that time using an internal Uniform Random Number Generator with the same seed of the given generator;</li>
+ *  <li>a Host is randomly selected to fail at that time using an internal
+ *  Uniform Random Number Generator with the same seed of the given generator;</li>
  *  <li>the number of Host PEs to fail is randomly generated using the internal generator;</li>
- *  <li>failed physical PEs are removed from affected VMs, VMs with no remaining PEs and destroying and clones of them are submitted to the {@link DatacenterBroker} of the failed VMs;</li>
+ *  <li>failed physical PEs are removed from affected VMs, VMs with no remaining
+ *  PEs and destroying and clones of them are submitted to the {@link DatacenterBroker}
+ *  of the failed VMs;</li>
  *  <li>another failure is scheduled for a future time using the given generator;</li>
  *  <li>the process repeats until the end of the simulation.</li>
  * </ol>
@@ -139,9 +142,9 @@ import static org.cloudbus.cloudsim.core.CloudSimTags.HOST_FAILURE;
  * @since CloudSim Plus 1.2.0
  * @see <a href="https://blogs.sap.com/2014/07/21/equipment-availability-vs-reliability/">SAP Blog: Availability vs Reliability</a>
  *
- * @TODO The class has multiple responsibilities.
- *       The fault injection mechanism must be separated from
- *       the fault recovery. The cloner methods are fault recovery.
+ * TODO The class has multiple responsibilities.
+ *      The fault injection mechanism must be separated from
+ *      the fault recovery. The cloner methods are fault recovery.
  */
 public class HostFaultInjection extends CloudSimEntity {
     /**
@@ -221,8 +224,8 @@ public class HostFaultInjection extends CloudSimEntity {
     /**
      * Creates a fault injection mechanism for the Hosts of a given {@link Datacenter}.
      * The Hosts failures are randomly injected according to a {@link UniformDistr}
-     * pseudo random number generator, which indicates the mean of failures to be generated per <b>hour</b>,
-     * (which is also called <b>event rate</b> or <b>rate parameter</b>).
+     * pseudo random number generator, which indicates the mean of failures to be
+     * generated per <b>hour</b>, (which is also called <b>event rate</b> or <b>rate parameter</b>).
      *
      * @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
      * @see #HostFaultInjection(Datacenter, StatisticalDistribution)
@@ -234,8 +237,8 @@ public class HostFaultInjection extends CloudSimEntity {
     /**
      * Creates a fault injection mechanism for the Hosts of a given {@link Datacenter}.
      * The Hosts failures are randomly injected according to the given
-     * pseudo random number generator, that indicates the mean of failures to be generated per <b>minute</b>,
-     * (which is also called <b>event rate</b> or <b>rate parameter</b>).
+     * pseudo random number generator, that indicates the mean of failures to be generated
+     * per <b>minute</b>, (which is also called <b>event rate</b> or <b>rate parameter</b>).
      *  @param datacenter the Datacenter to which failures will be randomly injected for its Hosts
      *
      * @param faultArrivalHoursGenerator a Pseudo Random Number Generator which generates the
@@ -264,7 +267,7 @@ public class HostFaultInjection extends CloudSimEntity {
 
     /**
      * Schedules a message to be processed internally
-     * to inject a Host PEs failure.
+     * to try injecting a Host PEs failure.
      */
     private void scheduleFaultInjection() {
         final Simulation sim = getSimulation();
@@ -638,7 +641,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the Datacenter's availability as a percentage value between 0 to 1,
+     * Gets the Datacenter's availability as a percentage value between 0 and 1,
      * based on VMs' downtime (the times VMs took to be repaired).
      * @return
      */
@@ -647,7 +650,7 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the availability for a given broker as a percentage value between 0 to 1,
+     * Gets the availability for a given broker as a percentage value between 0 and 1,
      * based on VMs' downtime (the times VMs took to be repaired).
      *
      * @param broker the broker to get the availability of its VMs
@@ -691,8 +694,8 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Gets the average of the time (in minutes) all failed VMs belonging to a broker took to recovery
-     * from failure.
+     * Gets the average of the time (in minutes) all failed VMs belonging to a broker took
+     * to recovery from failure.
      * See the method {@link #createVmCloneIfAllVmsDestroyed(DatacenterBroker, Vm)}
      * to understand the logic of the values in the recovery times map.
      * @return
@@ -735,7 +738,7 @@ public class HostFaultInjection extends CloudSimEntity {
             return 0;
         }
 
-        //computes the differences between failure times t2 - t1
+        //Computes the differences between failure times t2 - t1
         double sum=0;
         double previous=faultTimes[0];
         for(final double time: faultTimes) {
@@ -851,9 +854,9 @@ public class HostFaultInjection extends CloudSimEntity {
      * between [1 and Number of PEs].
      */
     private int randomNumberOfFailedPes(final Host host) {
-        /*the random generator return values from [0 to 1]
+        /* The random generator return values from [0 to 1]
          and multiplying by the number of PEs we get a number between
-         0 and number of PEs*/
+         0 and number of PEs. */
         return (int) (random.sample() * host.getWorkingPesNumber()) + 1;
     }
 
@@ -876,8 +879,8 @@ public class HostFaultInjection extends CloudSimEntity {
     }
 
     /**
-     * Adds a {@link VmCloner} that creates a clone for the last failed {@link Vm} belonging to a given broker,
-     * when all VMs of that broker have failed.
+     * Adds a {@link VmCloner} that creates a clone for the last failed {@link Vm}
+     * belonging to a given broker, when all VMs of that broker have failed.
      *
      * <p>This is optional. If a {@link VmCloner} is not set,
      * VMs will not be recovered from failures.</p>
