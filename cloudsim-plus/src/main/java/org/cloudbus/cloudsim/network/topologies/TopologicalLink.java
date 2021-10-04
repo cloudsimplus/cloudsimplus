@@ -28,14 +28,10 @@ public class TopologicalLink {
      */
     private final int destNodeID;
 
-    /**
-     * @see #getLinkDelay()
-     */
+    /** @see #getLinkDelay() */
     private final double linkDelay;
 
-    /**
-     * @see #getLinkBw()
-     */
+    /** @see #getLinkBw() */
     private final double linkBw;
 
     /**
@@ -46,7 +42,6 @@ public class TopologicalLink {
      * @param bandwidth the link bandwidth (in Megabits/s)
      */
     public TopologicalLink(final int srcNode, final int destNode, final double delay, final double bandwidth) {
-        // lets initialize all internal attributes
         linkDelay = delay;
         srcNodeID = srcNode;
         destNodeID = destNode;
