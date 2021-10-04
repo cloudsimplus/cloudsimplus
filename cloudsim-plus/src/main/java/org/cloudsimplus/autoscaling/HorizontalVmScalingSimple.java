@@ -126,11 +126,11 @@ public class HorizontalVmScalingSimple extends VmScalingAbstract implements Hori
 
     @Override
     public final boolean requestUpScalingIfPredicateMatches(final VmHostEventInfo evt) {
-        if(!isTimeToCheckPredicate(evt.getTime())) {
-            return false;
+        if (isTimeToCheckPredicate(evt.getTime())) {
+            setLastProcessingTime(evt.getTime());
+            return overloadPredicate.test(getVm()) && requestUpScaling(evt.getTime());
         }
 
-        setLastProcessingTime(evt.getTime());
-        return overloadPredicate.test(getVm()) && requestUpScaling(evt.getTime());
+        return false;
     }
 }
