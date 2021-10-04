@@ -137,13 +137,14 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      * @return
      */
     private Map<Vm, List<Map.Entry<Cloudlet, Vm>>> groupCloudletsByVm() {
-        return cloudletVmMap.entrySet().stream()
-            .collect(Collectors.groupingBy(Map.Entry::getValue));
+        return cloudletVmMap
+                .entrySet()
+                .stream()
+                .collect(groupingBy(Map.Entry::getValue));
     }
 
     /**
      * {@inheritDoc}
-     *
      * It computes the cost of the entire mapping between Vm's and Cloudlets.
      *
      * @return {@inheritDoc}
@@ -208,9 +209,9 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     private long getTotalCloudletsPes(final List<Cloudlet> listOfCloudletsForVm) {
         return listOfCloudletsForVm
-            .stream()
-            .mapToLong(Cloudlet::getNumberOfPes)
-            .sum();
+                .stream()
+                .mapToLong(Cloudlet::getNumberOfPes)
+                .sum();
     }
 
     /**
@@ -226,7 +227,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     @Override
     public int compareTo(final HeuristicSolution solution) {
         final double diff = this.getCost() - solution.getCost();
-
         if(Math.abs(diff) <= MIN_DIFF) {
             return 0;
         }
@@ -314,10 +314,11 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      *         or an empty List in case no entry is found.
      */
     private List<Map.Entry<Cloudlet, Vm>> createListWithFirstMapEntry() {
-        return cloudletVmMap.entrySet()
-            .stream()
-            .limit(1)
-            .collect(Collectors.toList());
+        return cloudletVmMap
+                .entrySet()
+                .stream()
+                .limit(1)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -329,7 +330,6 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     private List<Map.Entry<Cloudlet, Vm>> createListWithTwoRandomEntries() {
         final int size = cloudletVmMap.entrySet().size();
-
         final int firstIdx = heuristic.getRandomValue(size);
         final int secondIdx = heuristic.getRandomValue(size);
 
