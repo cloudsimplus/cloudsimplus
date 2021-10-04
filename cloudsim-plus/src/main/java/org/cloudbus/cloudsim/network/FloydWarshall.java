@@ -59,6 +59,10 @@ public class FloydWarshall {
      * @param numVertices number of network nodes
      */
     public FloydWarshall(final int numVertices) {
+        if(numVertices < 0) {
+            throw new IllegalArgumentException("Number of vertices cannot be negative.");
+        }
+
         this.numVertices = numVertices;
         this.vertices = IntStream.range(0, numVertices).boxed().collect(toList());
         dk_minus_one = new double[numVertices][numVertices];
