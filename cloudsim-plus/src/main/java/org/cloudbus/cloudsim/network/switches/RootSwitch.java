@@ -18,8 +18,8 @@ import org.slf4j.LoggerFactory;
 import java.util.Optional;
 
 /**
- * This class allows to simulate Root switch which connects Datacenters to
- * external network. It interacts with other Datacenter in order to exchange
+ * Allows simulating a Root switch which connects Datacenters to
+ * an external network. It interacts with other Datacenter in order to exchange
  * packets.
  *
  * <p>Please refer to following publication for more details:
