@@ -121,7 +121,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         final SimEntity source, final SimEntity destination, final int netServiceLevel)
     {
         this.name = name;
-        packetId = packetID;
+        this.packetId = packetID;
         this.source = source;
         this.destination = destination;
         this.size = size;
@@ -131,10 +131,10 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
         this.exitTimes = new ArrayList<>();
         this.baudRateList = new ArrayList<>();
 
-        lastHop = this.source;
-        tag = CloudSimTags.ICMP_PKT_SUBMIT;
-        baudRate = UNSET_BAUD_RATE;
-        num = new DecimalFormat("#0.000#");
+        this.lastHop = this.source;
+        this.tag = CloudSimTags.ICMP_PKT_SUBMIT;
+        this.baudRate = UNSET_BAUD_RATE;
+        this.num = new DecimalFormat("#0.000#");
     }
 
     /**
