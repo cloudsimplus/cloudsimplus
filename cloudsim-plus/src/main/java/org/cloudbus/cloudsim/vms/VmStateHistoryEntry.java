@@ -35,7 +35,7 @@ public class VmStateHistoryEntry {
      * @param requestedMips the requested mips
      * @param inMigration if the VM was in migration for that time
      */
-    public VmStateHistoryEntry(double time, double allocatedMips, double requestedMips, boolean inMigration) {
+    public VmStateHistoryEntry(final double time, final double allocatedMips, final double requestedMips, final boolean inMigration) {
         setTime(time);
         setAllocatedMips(allocatedMips);
         setRequestedMips(requestedMips);
@@ -47,7 +47,7 @@ public class VmStateHistoryEntry {
      *
      * @param time the new time
      */
-    protected final void setTime(double time) {
+    protected final void setTime(final double time) {
         this.time = time;
     }
 
@@ -65,7 +65,7 @@ public class VmStateHistoryEntry {
      *
      * @param allocatedMips the new allocated mips
      */
-    protected final void setAllocatedMips(double allocatedMips) {
+    protected final void setAllocatedMips(final double allocatedMips) {
         this.allocatedMips = allocatedMips;
     }
 
@@ -83,7 +83,7 @@ public class VmStateHistoryEntry {
      *
      * @param requestedMips the new requested mips
      */
-    protected final void setRequestedMips(double requestedMips) {
+    protected final void setRequestedMips(final double requestedMips) {
         this.requestedMips = requestedMips;
     }
 
@@ -101,7 +101,7 @@ public class VmStateHistoryEntry {
      *
      * @param inMigration true if the Vm is in migration, false otherwise
      */
-    protected final void setInMigration(boolean inMigration) {
+    protected final void setInMigration(final boolean inMigration) {
         this.inMigration = inMigration;
     }
 
@@ -115,7 +115,7 @@ public class VmStateHistoryEntry {
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if(!(obj instanceof VmStateHistoryEntry)) {
             return false;
         }
