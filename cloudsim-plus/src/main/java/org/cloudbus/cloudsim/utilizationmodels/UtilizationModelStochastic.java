@@ -215,7 +215,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      * @throws UncheckedIOException when the file cannot be accessed
      */
     public void saveHistory(final String filename) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
+        try (var oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(historyMap);
         } catch (IOException e) {
             throw new UncheckedIOException(e);
@@ -230,7 +230,7 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      */
     @SuppressWarnings("unchecked")
     public void loadHistory(final String filename) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(filename))) {
+        try (var ois = new ObjectInputStream(new FileInputStream(filename))) {
             historyMap = (Map<Double, Double>) ois.readObject();
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
