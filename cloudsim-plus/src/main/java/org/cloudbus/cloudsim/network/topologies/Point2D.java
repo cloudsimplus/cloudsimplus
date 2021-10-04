@@ -8,7 +8,7 @@ public class Point2D {
     private final int y;
 
     /**
-     * Creates a origin point with coordinates 0,0.
+     * Creates an origin point with coordinates 0,0.
      */
     public Point2D(){
         this(0,0);
