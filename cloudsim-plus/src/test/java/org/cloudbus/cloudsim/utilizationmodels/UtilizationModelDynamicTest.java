@@ -3,8 +3,8 @@ package org.cloudbus.cloudsim.utilizationmodels;
 import org.cloudbus.cloudsim.util.Conversion;
 import org.junit.jupiter.api.Test;
 
-import static org.cloudbus.cloudsim.utilizationmodels.TestUtil.checkUtilization;
-import static org.cloudbus.cloudsim.utilizationmodels.TestUtil.createUtilizationModel;
+import static org.cloudbus.cloudsim.utilizationmodels.TestUtility.checkUtilization;
+import static org.cloudbus.cloudsim.utilizationmodels.TestUtility.createUtilizationModel;
 import static org.cloudbus.cloudsim.utilizationmodels.UtilizationModel.Unit;
 import static org.junit.jupiter.api.Assertions.*;
 

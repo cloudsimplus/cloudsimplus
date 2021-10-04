@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Manoel Campos da Silva Filho
  * @since CloudSim Plus 4.0.0
  */
-final class TestUtil {
+final class TestUtility {
     /**
      * The number of seconds that the utilization will be tested.
      * For each second from 0 to this number, a {@link UtilizationModelDynamic#getUtilization(double)}
@@ -50,7 +50,7 @@ final class TestUtil {
     /**
      * A private constructor to avoid class instantiation.
      */
-    private TestUtil(){/**/}
+    private TestUtility(){/**/}
 
     static UtilizationModelDynamic createUtilizationModel(final double usagePercentInc, final double initUsage) {
         return createUtilizationModel(usagePercentInc, initUsage, 0);
