@@ -58,7 +58,7 @@ public interface CloudletTaskScheduler {
     Vm getVm();
 
     /**
-     * Sets the Vm that the CloudletTaskScheduler will sent packets from or receive packets to.
+     * Sets the Vm that the CloudletTaskScheduler will send packets from or receive packets to.
      * It is not required to manually set a Vm for the CloudletTaskScheduler,
      * since the {@link NetworkHost} does it when it creates a Vm.
      *
