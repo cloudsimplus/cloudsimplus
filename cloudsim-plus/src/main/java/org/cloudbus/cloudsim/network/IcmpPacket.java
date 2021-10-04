@@ -341,7 +341,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     public void addBaudRate(final double baudRate) {
         baudRateList.add(baudRate);
-        if (this.bandwidth < 0 || baudRate < this.bandwidth) {
+        if (this.bandwidth < 0 || this.bandwidth > baudRate) {
             this.bandwidth = baudRate;
         }
     }
