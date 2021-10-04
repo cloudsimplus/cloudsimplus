@@ -125,5 +125,4 @@ public class CloudletSchedulerTimeShared extends CloudletSchedulerAbstract {
     protected boolean canExecuteCloudletInternal(final CloudletExecution cloudlet) {
         return true;
     }
-
 }

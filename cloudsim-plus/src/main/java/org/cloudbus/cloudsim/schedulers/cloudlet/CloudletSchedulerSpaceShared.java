@@ -12,7 +12,7 @@ import org.cloudbus.cloudsim.cloudlets.CloudletExecution;
 import org.cloudbus.cloudsim.resources.Pe;
 
 /**
- * CloudletSchedulerSpaceShared implements a policy of scheduling performed by a
+ * Implements a policy of scheduling performed by a
  * virtual machine to run its {@link Cloudlet Cloudlets}. It considers there
  * will be only one Cloudlet per VM. Other Cloudlets will be in a waiting list.
  * It also considers that the time to transfer Cloudlets to the Vm happens
