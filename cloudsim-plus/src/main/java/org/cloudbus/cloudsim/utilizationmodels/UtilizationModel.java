@@ -13,7 +13,7 @@ import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
 import org.cloudbus.cloudsim.vms.Vm;
 
 /**
- * The UtilizationModel interface needs to be implemented in order to provide a
+ * An interface to be implemented in order to provide a
  * fine-grained control over resource usage by a Cloudlet.
  * It also implements the Null Object Design
  * Pattern in order to start avoiding {@link NullPointerException}
@@ -34,17 +34,17 @@ public interface UtilizationModel {
          * in scale from 0..1 (where 1 is 100%).
          */
         PERCENTAGE,
+
         /**
          * Indicate that the resource utilization is defined in absolute values.
          */
         ABSOLUTE
     }
 
-
     /**
      * An attribute that implements the Null Object Design Pattern for {@link UtilizationModel}
-     * objects using a Lambda Expression. A {@link Cloudlet} using such a utilization model for one of its resources
-     * will not consume any amount of that resource ever.
+     * objects using a Lambda Expression. A {@link Cloudlet} using such a utilization model
+     * for one of its resources will not consume any amount of that resource ever.
      */
     UtilizationModel NULL = new UtilizationModelNull();
 
@@ -109,8 +109,8 @@ public interface UtilizationModel {
      *
      * <p>The VM's {@link CloudletScheduler} won't allocate more resources than there is available,
      * showing a warning if such a request is received.
-     * While requesting more than 100% of a resource may be useful to try simulating an overloading scenario,
-     * in other ones it may not be desired.
+     * While requesting more than 100% of a resource may be useful to try simulating
+     * an overloading scenario, in other ones it may not be desired.
      * You may want your Cloudlets to request the maximum of 100% of a given resource.
      * In such a case, you can disable this attribute and the {@link #getUtilization(double)}
      * method will only return values strictly between the closed range [0..1].
@@ -118,8 +118,9 @@ public interface UtilizationModel {
      * </p>
      *
      * <p>For specific implementations such as
-     * the {@link UtilizationModelPlanetLab} (which reads data from a trace file that may be manipulated)
-     * and {@link UtilizationModelStochastic} (which generates utilization values randomly),
+     * the {@link UtilizationModelPlanetLab} (which reads data from a trace file that
+     * may be manipulated) and {@link UtilizationModelStochastic}
+     * (which generates utilization values randomly),
      * the model may return values greater than 1 (100%).
      * In such cases, you may consider disabling this attribute
      * if you don't want such a behaviour.</p>
