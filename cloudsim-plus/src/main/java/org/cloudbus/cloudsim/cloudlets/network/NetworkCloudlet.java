@@ -81,7 +81,7 @@ public class NetworkCloudlet extends CloudletSimple {
     }
 
     /**
-     * @return a read-only list of cloudlet's tasks.
+     * @return a read-only list of Cloudlet's tasks.
      */
     public List<CloudletTask> getTasks() {
         return Collections.unmodifiableList(tasks);
