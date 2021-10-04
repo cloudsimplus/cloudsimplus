@@ -24,7 +24,7 @@
 package org.cloudsimplus.slametrics;
 
 /**
- * Represents a value for a specific metric of a SLA contract,
+ * Represents a value for a specific metric of an SLA contract,
  * following the format defined by the
  * <a href="http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/viewing_metrics_with_cloudwatch.html">AWS CloudWatch</a>.
  *
