@@ -37,7 +37,7 @@ public abstract class AbstractExperiment implements Runnable {
     }
 
     /**
-     * Indicates if simulation results of the experiment have to be output.
+     * Checks if simulation results of the experiment have to be output.
      * @return
      */
     public boolean isVerbose() {
@@ -98,7 +98,7 @@ public abstract class AbstractExperiment implements Runnable {
     }
 
     /**
-     * Indicates if simulation results of the experiment don't have to be
+     * Checks if simulation results of the experiment don't have to be
      * output.
      * @return
      */
