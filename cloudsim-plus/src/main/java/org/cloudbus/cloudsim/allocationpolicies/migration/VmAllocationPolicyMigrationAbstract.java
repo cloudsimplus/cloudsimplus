@@ -489,10 +489,12 @@ public abstract class VmAllocationPolicyMigrationAbstract extends VmAllocationPo
         */
         final var vmsToMigrateList = new LinkedList<Vm>();
         while (true) {
-            final Vm vm = getVmSelectionPolicy().getVmToMigrate(host);
-            if (Vm.NULL == vm) {
+            final var optionalVm = getVmSelectionPolicy().getVmToMigrate(host);
+            if (optionalVm.isEmpty()) {
                 break;
             }
+
+            final Vm vm = optionalVm.get();
             vmsToMigrateList.add(vm);
             /*Temporarily destroys the selected VM into the overloaded Host so that
             the loop gets VMs from such a Host until it is not overloaded anymore.*/

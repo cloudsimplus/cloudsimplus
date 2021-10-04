@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.Comparator.comparingDouble;
@@ -36,18 +37,17 @@ import static java.util.Comparator.comparingDouble;
  */
 public class VmSelectionPolicyMinimumUtilization implements VmSelectionPolicy {
     @Override
-    public Vm getVmToMigrate(final Host host) {
+    public Optional<Vm> getVmToMigrate(final Host host) {
         final List<Vm> migratableVms = host.getMigratableVms();
         if (migratableVms.isEmpty()) {
-            return Vm.NULL;
+            return Optional.empty();
         }
 
         final Predicate<Vm> inMigration = Vm::isInMigration;
         final Comparator<Vm> vmCpuUsageComparator = comparingDouble(Vm::getCpuPercentUtilization);
         return migratableVms.stream()
                             .filter(inMigration.negate())
-                            .min(vmCpuUsageComparator)
-                            .orElse(Vm.NULL);
+                            .min(vmCpuUsageComparator);
     }
 
 }

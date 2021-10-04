@@ -15,6 +15,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A VM selection policy that randomly select VMs to migrate from a host.
@@ -56,13 +57,13 @@ public class VmSelectionPolicyRandomSelection implements VmSelectionPolicy {
     }
 
 	@Override
-	public Vm getVmToMigrate(final Host host) {
+	public Optional<Vm> getVmToMigrate(final Host host) {
 		final List<Vm> migratableVms = host.getMigratableVms();
 		if (migratableVms.isEmpty()) {
-			return Vm.NULL;
+			return Optional.empty();
 		}
 
-		final int index = (int)rand.sample()*migratableVms.size();
-		return migratableVms.get(index);
+		final int index = (int)(rand.sample() * migratableVms.size());
+		return Optional.of(migratableVms.get(index));
 	}
 }

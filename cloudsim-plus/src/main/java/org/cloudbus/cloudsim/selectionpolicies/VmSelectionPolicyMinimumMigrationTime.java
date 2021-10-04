@@ -13,6 +13,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.Comparator.comparingLong;
@@ -35,10 +36,10 @@ import static java.util.Comparator.comparingLong;
  */
 public class VmSelectionPolicyMinimumMigrationTime implements VmSelectionPolicy {
 	@Override
-	public Vm getVmToMigrate(final Host host) {
+	public Optional<Vm> getVmToMigrate(final Host host) {
 		final List<Vm> migratableVms = host.getMigratableVms();
 		if (migratableVms.isEmpty()) {
-			return Vm.NULL;
+			return Optional.empty();
 		}
 
         /* TODO It must compute the migration time based on the current RAM usage, not the capacity.
@@ -48,8 +49,6 @@ public class VmSelectionPolicyMinimumMigrationTime implements VmSelectionPolicy 
         return migratableVms
                      .stream()
                      .filter(vmPredicate.negate())
-                     .min(vmComparator)
-                     .orElse(Vm.NULL);
+                     .min(vmComparator);
 	}
-
 }

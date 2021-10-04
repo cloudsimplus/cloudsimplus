@@ -11,6 +11,8 @@ package org.cloudbus.cloudsim.selectionpolicies;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.Optional;
+
 /**
  * An interface to be used to implement VM selection policies for a list of migratable VMs.
  * The selection is defined by sub-classes.
@@ -35,7 +37,8 @@ public interface VmSelectionPolicy {
      * Gets a VM to migrate from a given host.
      *
      * @param host the host to get a Vm to migrate from
-     * @return the vm to migrate or {@link Vm#NULL} if there is not Vm to migrate
+     * @return a {@link Optional} containing the selected vm to migrate;
+     *         or empty Optional if there is not Vm to migrate
      */
-    Vm getVmToMigrate(Host host);
+    Optional<Vm> getVmToMigrate(Host host);
 }
