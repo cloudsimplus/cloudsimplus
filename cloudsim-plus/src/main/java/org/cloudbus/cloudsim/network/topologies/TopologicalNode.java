@@ -11,8 +11,8 @@ package org.cloudbus.cloudsim.network.topologies;
 import java.util.Objects;
 
 /**
- * Represents an topological network node that retrieves its information from a
- * topological-generated file (eg. topology-generator)
+ * Represents a topological network node that retrieves its information from a
+ * topological-generated file (e.g. topology-generator)
  *
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
