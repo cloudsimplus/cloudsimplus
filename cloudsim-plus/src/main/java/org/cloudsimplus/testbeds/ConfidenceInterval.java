@@ -98,7 +98,7 @@ public final class ConfidenceInterval {
      * simulation run, a different method such as a bias compensation,
      * batch means or regenerative method has to be used. </p>
      *
-     * <b>NOTE:</b> How to compute the error margin is a little bit confusing.
+     * <b>NOTE:</b> How to compute the error margin is a little confusing.
      * The Harry Perros' book states that if less than 30 samples are collected,
      * the t-Distribution has to be used to that purpose.
      *
@@ -195,7 +195,7 @@ public final class ConfidenceInterval {
     /**
      * Gets the CI error margin, which defines the size of the interval in which
      * results may lay between.
-     * The interval is between {@link #getLowerLimit()} .. {@link #getUpperLimit()}.
+     * The interval is between {@link #getLowerLimit()} and {@link #getUpperLimit()}.
      */
     public double getErrorMargin() {
         return errorMargin;
@@ -228,7 +228,8 @@ public final class ConfidenceInterval {
      * Check if the CI was actually computed, if the number of samples is greater than 1.
      * Otherwise, the CI {@link #value} is just the mean for the experiment metric,
      * not the CI in fact.
-     * In that case, {@link #criticalValue}, {@link #errorMargin}, {@link #lowerLimit} and {@link #upperLimit}
+     * In that case, {@link #criticalValue}, {@link #errorMargin},
+     * {@link #lowerLimit} and {@link #upperLimit}
      * will be zero (corroborating there is no CI).
      *
      * @return
