@@ -36,38 +36,28 @@ import org.cloudbus.cloudsim.vms.Vm;
  */
 public class VmPacket implements NetworkPacket<Vm> {
 
-    /**
-     * @see NetworkPacket#getSource()
-     */
+    /** @see NetworkPacket#getSource() */
     private Vm sourceVm;
 
-    /**
-     * @see #getDestination()
-     */
+    /** @see #getDestination() */
     private Vm destinationVm;
 
-    /**
-     * @see #getSenderCloudlet()
-     */
+    /** @see #getSenderCloudlet() */
     private final Cloudlet senderCloudlet;
 
-    /**
-     * @see #getReceiverCloudlet()
-     */
+    /** @see #getReceiverCloudlet() */
     private final Cloudlet receiverCloudlet;
 
-    /**
-     * @see #getSize()
-     */
+    /** @see #getSize() */
     private final long size;
 
     /**
-     * The time the packet was sent.
+     * The time (in seconds) the packet was sent.
      */
     private double sendTime;
 
     /**
-     * The time the packet was received.
+     * The time (in seconds) the packet was received.
      */
     private double receiveTime;
 
@@ -127,7 +117,7 @@ public class VmPacket implements NetworkPacket<Vm> {
     }
 
     /**
-     * Sets the id of the VM sending the packet.
+     * Sets the VM sending the packet.
      * This is the VM where the {@link #getSenderCloudlet() sending cloudlet}
      * is running.
      *
@@ -139,7 +129,7 @@ public class VmPacket implements NetworkPacket<Vm> {
     }
 
     /**
-     * Gets the id of the VM that has to receive the packet.
+     * Gets the VM that has to receive the packet.
      * This is the VM where th {@link #getReceiverCloudlet() receiver cloudlet}
      * is running.
      *
@@ -151,7 +141,7 @@ public class VmPacket implements NetworkPacket<Vm> {
     }
 
     /**
-     * Sets the id of the VM that has to receive the packet.
+     * Sets the VM that has to receive the packet.
      * This is the VM where th {@link #getReceiverCloudlet() receiver cloudlet}
      * is running.
      *
