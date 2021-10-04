@@ -192,6 +192,7 @@ public class NetworkCloudlet extends CloudletSimple {
      * @return the NetworkCloudlet instance
      */
     public NetworkCloudlet addTask(final CloudletTask task) {
+        Objects.requireNonNull(task);
         task.setCloudlet(this);
         tasks.add(task);
         return this;
