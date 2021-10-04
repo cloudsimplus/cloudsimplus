@@ -191,7 +191,9 @@ public class CloudletExecution {
      * @return true if the cloudlet is NOT running, false if it is.
      */
     private static boolean isNotRunning(final Cloudlet.Status status) {
-        return status == Cloudlet.Status.CANCELED || status == Cloudlet.Status.PAUSED || status == Cloudlet.Status.SUCCESS;
+        return status == Cloudlet.Status.CANCELED ||
+               status == Cloudlet.Status.PAUSED ||
+               status == Cloudlet.Status.SUCCESS;
     }
 
     /**
