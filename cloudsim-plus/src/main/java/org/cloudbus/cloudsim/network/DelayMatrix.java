@@ -13,16 +13,16 @@ import org.cloudbus.cloudsim.network.topologies.TopologicalLink;
 import org.cloudbus.cloudsim.util.Util;
 
 /**
- * This class represents a delay matrix between every pair or nodes
- * inside a network topology, storing every distance between connected nodes.
+ * Represents matrix containing the delay (in seconds) between every pair or nodes
+ * inside a network topology. It stores every distance between connected nodes.
  *
  * @author Thomas Hohnstein
  * @since CloudSim Toolkit 1.0
  */
 public class DelayMatrix {
 
-	/**
-	 * Matrix holding delay information between any two nodes.
+    /**
+	 * Matrix holding delay between any pair of nodes (in seconds).
 	 */
     private double[][] mDelayMatrix;
 
@@ -39,17 +39,13 @@ public class DelayMatrix {
 	}
 
 	/**
-	 * Creates a correctly initialized double-Delay-Matrix.
+	 * Creates a Delay Matrix for a given network topology graph.
 	 *
 	 * @param graph the network topological graph
-	 * @param directed indicates if an directed matrix should be computed (true) or not (false)
+	 * @param directed indicates if a directed matrix should be computed (true) or not (false)
 	 */
 	public DelayMatrix(final TopologicalGraph graph, final boolean directed) {
-
-		// lets pre-initialize the Delay-Matrix
 		createDelayMatrix(graph, directed);
-
-		// now its time to calculate all possible connection-delays
 		calculateShortestPath();
 	}
 
@@ -90,7 +86,8 @@ public class DelayMatrix {
 	}
 
 	/**
-	 * Calculates the shortest path between all pairs of nodes.
+     * Calculates connection-delays between every pair or nodes
+	 * and the shortest path between them.
 	 */
 	private void calculateShortestPath() {
 		final FloydWarshall floyd = new FloydWarshall(mTotalNodeNum);
