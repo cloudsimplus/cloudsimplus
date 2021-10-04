@@ -83,7 +83,7 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     private CloudletToVmMappingSolution(final Heuristic heuristic, final Map<Cloudlet, Vm> cloudletVmMap){
-        this.heuristic = heuristic;
+        this.heuristic = Objects.requireNonNull(heuristic);
         this.cloudletVmMap = cloudletVmMap;
     }
 
@@ -116,12 +116,10 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
     }
 
     private void recomputeCostIfRequested() {
-        if(!this.recomputeCost) {
-            return;
+        if (this.recomputeCost) {
+            this.lastCost = computeCostOfAllVms();
+            this.recomputeCost = false;
         }
-
-        this.lastCost = computeCostOfAllVms();
-        this.recomputeCost = false;
     }
 
     private double computeCostOfAllVms() {
@@ -179,8 +177,8 @@ public class CloudletToVmMappingSolution implements HeuristicSolution<Map<Cloudl
      */
     public double getVmCost(final Map.Entry<Vm, List<Map.Entry<Cloudlet, Vm>>> entry) {
         final Vm vm = entry.getKey();
-        final List<Cloudlet> cloudlets = convertListOfMapEntriesToListOfCloudlets(entry.getValue());
-        return getVmCost(vm, cloudlets);
+        final var cloudletList = convertListOfMapEntriesToListOfCloudlets(entry.getValue());
+        return getVmCost(vm, cloudletList);
     }
 
     /**
