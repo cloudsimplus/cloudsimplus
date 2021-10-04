@@ -311,7 +311,8 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
      *
      * @return true if a new randomly generated utilization will always be returned;
      *         false if for the same requested time, the same utilization must be returned.
-     *         In this last case, it's just ensured that, for a given time, the same utilization will always be returned,
+     *         In this last case, it's just ensured that, for a given time,
+     *         the same utilization will always be returned,
      *         if the {@link #isHistoryEnabled() history is enabled}.
      * @see #setAlwaysGenNewRandUtilization(boolean)
      */
@@ -320,10 +321,13 @@ public class UtilizationModelStochastic extends UtilizationModelAbstract {
     }
 
     /**
-     * Allow the model to always generate a new random utilization value when {@link #getUtilization()} methods are called,
+     * Allow the model to always generate a new random utilization value when
+     * {@link #getUtilization()} methods are called,
      * even if the simulation clock hasn't changed since the last call.
      *
-     * @param alwaysGenNewRandUtilization true to allow generating a new random value for each time the resource utilization is required, false to disable
+     * @param alwaysGenNewRandUtilization true to allow generating a new random value for
+     *                                    each time the resource utilization is required;
+     *                                    false to disable
      * @return
      * @see #isAlwaysGenNewRandUtilization()
      * @see #getUtilization()
