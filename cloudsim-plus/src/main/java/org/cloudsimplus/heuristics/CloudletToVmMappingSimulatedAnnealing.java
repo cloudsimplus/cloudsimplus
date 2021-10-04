@@ -64,7 +64,7 @@ public class CloudletToVmMappingSimulatedAnnealing
     }
 
     private CloudletToVmMappingSolution generateRandomSolution() {
-        final CloudletToVmMappingSolution solution = new CloudletToVmMappingSolution(this);
+        final var solution = new CloudletToVmMappingSolution(this);
         cloudletList.forEach(cloudlet -> solution.bindCloudletToVm(cloudlet, getRandomVm()));
         return solution;
     }
@@ -116,7 +116,7 @@ public class CloudletToVmMappingSimulatedAnnealing
 
     @Override
     public CloudletToVmMappingSolution createNeighbor(final CloudletToVmMappingSolution source) {
-        final CloudletToVmMappingSolution clone = new CloudletToVmMappingSolution(source);
+        final var clone = new CloudletToVmMappingSolution(source);
         clone.swapVmsOfTwoRandomSelectedMapEntries();
         return clone;
     }
