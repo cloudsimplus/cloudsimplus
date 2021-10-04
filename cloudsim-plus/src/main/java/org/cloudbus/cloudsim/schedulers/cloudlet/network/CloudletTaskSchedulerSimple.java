@@ -20,11 +20,11 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * Implements a policy of scheduling performed by a
+ * A scheduling policy performed by a
  * virtual machine to process {@link CloudletTask}s
  * of a {@link NetworkCloudlet}.
  *
- * <p>It also schedules the network communication among the cloudlets,
+ * <p>It also schedules the network communication between cloudlets,
  * managing the time a cloudlet stays blocked waiting
  * the response of a network package sent to another cloudlet.</p>
  *
@@ -36,14 +36,10 @@ import java.util.stream.Collectors;
 public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudletTaskSchedulerSimple.class.getSimpleName());
 
-    /**
-     * @see #getVm()
-     */
+    /** @see #getVm() */
     private Vm vm;
 
-    /**
-     * @see #getVmPacketsToSend()
-     */
+    /** @see #getVmPacketsToSend() */
     private final List<VmPacket> vmPacketsToSend;
 
     /**
@@ -54,8 +50,7 @@ public class CloudletTaskSchedulerSimple implements CloudletTaskScheduler {
     private final Map<Vm, List<VmPacket>> vmPacketsReceivedMap;
 
     /**
-     * Creates a CloudletTaskSchedulerSimple object.
-     *
+     * Creates a CloudletTaskSchedulerSimple.
      */
     public CloudletTaskSchedulerSimple() {
         super();
