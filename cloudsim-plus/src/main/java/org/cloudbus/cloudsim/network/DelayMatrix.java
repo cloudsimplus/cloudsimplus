@@ -20,6 +20,10 @@ import org.cloudbus.cloudsim.util.Util;
  * @since CloudSim Toolkit 1.0
  */
 public class DelayMatrix {
+    /**
+     * A value to indicate that the delay for a given pair of nodes was not set.
+     */
+    private static final double DELAY_NOT_SET = Double.MAX_VALUE;
 
     /**
 	 * Matrix holding delay between any pair of nodes (in seconds).
@@ -74,7 +78,7 @@ public class DelayMatrix {
 	 */
 	private void createDelayMatrix(final TopologicalGraph graph, final boolean directed) {
 		mTotalNodeNum = graph.getNumberOfNodes();
-		mDelayMatrix = Util.newSquareMatrix(mTotalNodeNum, Double.MAX_VALUE);
+		mDelayMatrix = Util.newSquareMatrix(mTotalNodeNum, DELAY_NOT_SET);
 
         for (final TopologicalLink edge : graph.getLinksList()) {
 			mDelayMatrix[edge.getSrcNodeID()][edge.getDestNodeID()] = edge.getLinkDelay();
@@ -90,16 +94,14 @@ public class DelayMatrix {
 	 * and the shortest path between them.
 	 */
 	private void calculateShortestPath() {
-		final FloydWarshall floyd = new FloydWarshall(mTotalNodeNum);
+		final var floyd = new FloydWarshall(mTotalNodeNum);
 		mDelayMatrix = floyd.computeShortestPaths(mDelayMatrix);
 	}
 
 	@Override
 	public String toString() {
-		final StringBuilder builder = new StringBuilder(100);
-
-		builder.append(
-		    String.format("just a simple printout of the distance-aware-topology-class%ndelay-matrix is:%n"));
+		final var builder = new StringBuilder(100);
+		builder.append(String.format("DelayMatrix: %n"));
 
 		for (int column = 0; column < mTotalNodeNum; ++column) {
 			builder.append('\t').append(column);
@@ -109,11 +111,9 @@ public class DelayMatrix {
 			builder.append(System.lineSeparator()).append(row);
 
 			for (int col = 0; col < mTotalNodeNum; ++col) {
-				if (mDelayMatrix[row][col] == Double.MAX_VALUE) {
+				if (mDelayMatrix[row][col] == DELAY_NOT_SET)
 					builder.append("\t-");
-				} else {
-					builder.append('\t').append(mDelayMatrix[row][col]);
-				}
+				else builder.append('\t').append(mDelayMatrix[row][col]);
 			}
 		}
 
