@@ -15,8 +15,10 @@ import java.util.stream.IntStream;
 import static java.util.stream.Collectors.toList;
 
 /**
- * <a href="https://en.wikipedia.org/wiki/Floyd-Warshall_algorithm">Floyd-Warshall algorithm</a> to calculate the predecessor matrix and the delay
- * between all pairs of nodes. The delay represents the distance between the two vertices and it works as the weight for the Floyd-Warshall algorithm.
+ * <a href="https://en.wikipedia.org/wiki/Floyd-Warshall_algorithm">Floyd-Warshall algorithm</a>
+ * to calculate the predecessor matrix and the delay between all pairs of nodes.
+ * The delay represents the distance between the two vertices,
+ * working as the weight for the Floyd-Warshall algorithm.
  *
  * @author Rahul Simha
  * @author Weishuai Yang
@@ -31,7 +33,7 @@ public class FloydWarshall {
     private final int numVertices;
 
     /**
-     * List with the indexes of all vertices, from 0 to {@link #numVertices}-1.
+     * List with the indexes of all vertices, from 0 to {@link #numVertices} - 1.
      */
     private final List<Integer> vertices;
 
@@ -47,7 +49,7 @@ public class FloydWarshall {
     private final int[][] pk;
 
     /**
-     * (used for dynamic programming).
+     * Used for dynamic programming.
      */
     private final int[][] pk_minus_one;
 
