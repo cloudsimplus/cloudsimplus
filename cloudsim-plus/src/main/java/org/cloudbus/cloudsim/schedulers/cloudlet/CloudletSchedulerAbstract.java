@@ -472,11 +472,9 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      *      along the simulation run.
      */
     private void changeStatusOfCloudlet(final CloudletExecution cle, final Status currentStatus, final Status newStatus) {
-        if ((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cle.getCloudlet().isFinished()) {
+        if ((currentStatus == Status.INEXEC || currentStatus == Status.READY) && cle.getCloudlet().isFinished())
             cloudletFinish(cle);
-        } else {
-            cle.setStatus(newStatus);
-        }
+        else cle.setStatus(newStatus);
 
         if (newStatus == Status.PAUSED)
             cloudletPausedList.add(cle);
@@ -637,7 +635,8 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
     }
 
     private void updateOnResourceAllocationFailListeners(
-        final ResourceManageable resource, final Cloudlet cloudlet, final long requested, final long available)
+        final ResourceManageable resource, final Cloudlet cloudlet,
+        final long requested, final long available)
     {
         //Uses reversed indexed for to avoid ConcurrentModificationException if some Listener is deregistered during loop
         for (int i = resourceAllocationFailListeners.size()-1; i >= 0; i--) {
