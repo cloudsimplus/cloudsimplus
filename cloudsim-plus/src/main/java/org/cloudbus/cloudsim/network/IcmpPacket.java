@@ -41,9 +41,7 @@ import java.util.List;
  * @since CloudSim Toolkit 1.0
  */
 public class IcmpPacket implements NetworkPacket<SimEntity> {
-    /**
-     * @see #getTag()
-     */
+    /* @see #getTag() */
     private int tag;
 
     /**
@@ -51,9 +49,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     private final String name;
 
-    /**
-     * @see #getSize()
-     */
+    /** @see #getSize() */
     private long size;
 
     /**
@@ -71,49 +67,42 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     private SimEntity destination;
 
-    /**
-     * @see #getLastHop()
-     */
+    /** @see #getLastHop() */
     private SimEntity lastHop;
 
-    /**
-     * The level of service type.
-     */
+    /** @see #getNetServiceLevel() */
     private int netServiceLevel;
 
-    /**
-     * The bandwidth bottleneck.
-     */
+    /** @see #getBaudRate() */
     private double bandwidth;
 
     /**
-     * The list with IDs of entities where the packet
+     * The list with entities where the packet
      * traverses, such as Routers or Datacenters.
      */
     private final List<SimEntity> entities;
 
-    /**
-     * A list containing the time the packet arrived at every entity it has traversed.
-     */
+    /** @see #getDetailEntryTimes() */
     private final List<Double> entryTimes;
 
-    /**
-     * The list of exit times.
-     */
+    /** @see #getDetailExitTimes() */
     private final List<Double> exitTimes;
 
     /**
-     * The baud rate of each output link of entities where the packet traverses.
+     * The baud rate (in bits/s) of each output link of entities where the packet traverses.
      */
     private final List<Double> baudRates;
 
     private final DecimalFormat num;
 
+    /** @see #getSendTime() */
     private double sendTime;
+
+    /** @see #getReceiveTime() */
     private double receiveTime;
 
     /**
-     * Constructs a new ICMP packet.
+     * Creates an ICMP packet.
      *
      * @param name            Name of this packet
      * @param packetID        the ID of this packet
@@ -144,16 +133,15 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Returns the ID of this packet
-     *
-     * @return packet ID
+     * Gets the ID of this packet
+     * @return
      */
     public int getId() {
         return packetId;
     }
 
     /**
-     * Returns a human-readable information of this packet.
+     * Gets human-readable information of this packet.
      *
      * @return description of this packet
      */
@@ -217,7 +205,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     /**
      * Sets the size of the packet.
      *
-     * @param size the size to set
+     * @param size the size to set (in bytes)
      * @return true if a positive value was given, false otherwise
      */
     public boolean setSize(final long size) {
@@ -281,12 +269,12 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets the total time that the packet has spent in the network. This is
-     * basically the Round-Trip Time (RTT). Dividing this by half should be the
-     * approximate latency.
+     * Gets the total time that the packet has spent in the network (in seconds).
+     * This is basically the Round-Trip Time (RTT).
+     * Dividing this by half should be the approximate latency.
      * RTT is taken as the "final entry time" - "first exit time".
      *
-     * @return total round-trip time
+     * @return total round-trip time (in seconds)
      */
     public double getTotalResponseTime() {
         try {
@@ -301,7 +289,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     /**
      * Gets the bottleneck bandwidth between the source and the destination.
      *
-     * @return the bottleneck bandwidth
+     * @return the bottleneck bandwidth (in bits/s)
      */
     public double getBaudRate() {
         return bandwidth;
@@ -344,7 +332,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Register the baud rate of the output link where the current entity that
+     * Register the baud rate (in bits/s) of the output link where the current entity that
      * holds the IcmpPacket will send it next. Every entity that the IcmpPacket
      * traverses should add the baud rate of the link on which this packet will
      * be sent out next.
@@ -359,7 +347,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets a <b>read-only</b> list of all the bandwidths that this packet has traversed.
+     * Gets a <b>read-only</b> list of all the bandwidths (in bits/s) that this packet has traversed.
      *
      * @return
      */
@@ -378,7 +366,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets a <b>read-only</b> list of all entry times that the packet has traversed.
+     * Gets a <b>read-only</b> list containing the time (in seconds) the packet arrived at every entity it has traversed.
      *
      * @return
      */
@@ -387,7 +375,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets a <b>read-only</b> list of all exit times from all entities that the packet has
+     * Gets a <b>read-only</b> list of all exit times (in seconds) from all entities that the packet has
      * traversed.
      *
      * @return
@@ -415,9 +403,9 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     }
 
     /**
-     * Gets the network service type of this packet
+     * Gets the network service level of this packet
      *
-     * @return the network service type
+     * @return the network service level
      */
     public int getNetServiceLevel() {
         return netServiceLevel;
