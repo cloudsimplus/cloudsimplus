@@ -56,10 +56,7 @@ public class TopologyReaderBrite implements TopologyReader {
     public TopologicalGraph readGraphFile(final InputStreamReader reader) {
         graph = new TopologicalGraph();
         try(var buffer = new BufferedReader(reader)) {
-            String nextLine;
-            while ((nextLine = buffer.readLine()) != null) {
-                state.parse(this, nextLine);
-            }
+            buffer.lines().forEach(line -> state.parse(this, line));
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
