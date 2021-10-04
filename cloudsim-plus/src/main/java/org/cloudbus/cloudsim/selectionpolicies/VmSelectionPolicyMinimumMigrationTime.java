@@ -11,7 +11,11 @@ package org.cloudbus.cloudsim.selectionpolicies;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.vms.Vm;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
+
+import static java.util.Comparator.comparingLong;
 
 /**
  * A VM selection policy that selects for migration the VM with Minimum Migration Time (MMT).
@@ -37,23 +41,15 @@ public class VmSelectionPolicyMinimumMigrationTime implements VmSelectionPolicy 
 			return Vm.NULL;
 		}
 
-		Vm vmToMigrate = Vm.NULL;
-		double minMetric = Double.MAX_VALUE;
-		for (final Vm vm : migratableVms) {
-			if (vm.isInMigration()) {
-				continue;
-			}
-
-            /*@TODO It must compute the migration time based on the current RAM usage, not the capacity.
-            * It should also consider the VM size.*/
-			final double metric = vm.getRam().getCapacity();
-			if (metric < minMetric) {
-				minMetric = metric;
-				vmToMigrate = vm;
-			}
-		}
-
-		return vmToMigrate;
+        /* TODO It must compute the migration time based on the current RAM usage, not the capacity.
+         * It should also consider the VM size.*/
+        final Comparator<Vm> vmComparator = comparingLong(vm -> vm.getRam().getCapacity());
+        final Predicate<Vm> vmPredicate = Vm::isInMigration;
+        return migratableVms
+                     .stream()
+                     .filter(vmPredicate.negate())
+                     .min(vmComparator)
+                     .orElse(Vm.NULL);
 	}
 
 }
