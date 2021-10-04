@@ -19,8 +19,7 @@ import java.util.Objects;
  */
 public abstract class UtilizationModelAbstract implements UtilizationModel {
     /**
-     * A constant indicating that values lower or equal to this value
-     * will be considered as zero.
+     * Indicates that values lower or equal to this will be considered as zero.
      */
     public static final double ALMOST_ZERO = 0.0000000001;
 
