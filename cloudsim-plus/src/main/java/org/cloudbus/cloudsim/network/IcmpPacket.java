@@ -74,7 +74,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
     private int netServiceLevel;
 
     /** @see #getBaudRate() */
-    private double bandwidth;
+    private double baudRate;
 
     /**
      * The list with entities where the packet
@@ -128,7 +128,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
 
         lastHop = this.source;
         tag = CloudSimTags.ICMP_PKT_SUBMIT;
-        bandwidth = -1;
+        baudRate = -1;
         num = new DecimalFormat("#0.000#");
     }
 
@@ -176,7 +176,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
           .append(getNumberOfHops())
           .append(System.lineSeparator())
           .append("Bottleneck Bandwidth : ")
-          .append(bandwidth).append(" bits/s");
+          .append(baudRate).append(" bits/s");
 
         return sb.toString();
     }
@@ -292,7 +292,7 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      * @return the bottleneck bandwidth (in bits/s)
      */
     public double getBaudRate() {
-        return bandwidth;
+        return baudRate;
     }
 
     /**
@@ -341,8 +341,8 @@ public class IcmpPacket implements NetworkPacket<SimEntity> {
      */
     public void addBaudRate(final double baudRate) {
         baudRateList.add(baudRate);
-        if (this.bandwidth < 0 || this.bandwidth > baudRate) {
-            this.bandwidth = baudRate;
+        if (this.baudRate < 0 || this.baudRate > baudRate) {
+            this.baudRate = baudRate;
         }
     }
 
