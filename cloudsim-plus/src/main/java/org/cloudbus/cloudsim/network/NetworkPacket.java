@@ -34,7 +34,7 @@ public interface NetworkPacket<T extends Identifiable> {
     /**
      * Gets the size of the packet in bytes.
      *
-     * @return
+     * @return size of the packet in bytes.
      */
     long getSize();
 

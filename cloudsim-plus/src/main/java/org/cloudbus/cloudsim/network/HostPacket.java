@@ -41,31 +41,23 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      */
     private final VmPacket vmPacket;
 
-    /**
-     * Id of the sender host.
-     */
+    /** @see #getSource() */
     private NetworkHost senderHost;
 
-    /**
-     * Id of the receiver host.
-     */
+    /** @see #getDestination() */
     private NetworkHost receiverHost;
 
-    /**
-     * @see #getSendTime()
-     */
+    /** @see #getSendTime() */
     private double sendTime;
 
-    /**
-     * @see #getReceiveTime()
-     */
+    /** @see #getReceiveTime() */
     private double receiveTime;
 
     /**
-     * Creates a new packet to be sent through the network between two hosts.
+     * Creates a packet to be sent through the network between two hosts.
      *
-     * @param senderHost The id of the host sending the packet
-     * @param vmPacket The vm packet containing information of sender and receiver Cloudlets and their VMs.
+     * @param senderHost host sending the packet
+     * @param vmPacket vm packet containing information of sender and receiver Cloudlets and their VMs.
      */
     public HostPacket(NetworkHost senderHost, VmPacket vmPacket) {
         this.vmPacket = vmPacket;
@@ -84,7 +76,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     }
 
     /**
-     * Gets the ID of the {@link Host} that this packet is coming from (the sender).
+     * Gets the {@link Host} that this packet is coming from (the sender).
      * @return
      */
     @Override
@@ -93,7 +85,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     }
 
     /**
-     * Sets the ID of the {@link Host} that this packet is coming from (the sender).
+     * Sets the {@link Host} that this packet is coming from (the sender).
      * @param senderHost the source Host id to set
      */
     @Override
@@ -102,7 +94,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     }
 
     /**
-     * Gets the ID of the {@link Host} that the packet is going to.
+     * Gets the {@link Host} that the packet is going to.
      * @return
      */
     @Override
@@ -111,7 +103,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     }
 
     /**
-     * Sets the ID of the {@link Host} that the packet is going to.
+     * Sets the {@link Host} that the packet is going to.
      * @param receiverHost the receiver Host id to set
      */
     @Override
