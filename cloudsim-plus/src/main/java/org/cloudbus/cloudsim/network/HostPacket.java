@@ -59,7 +59,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      * @param senderHost host sending the packet
      * @param vmPacket vm packet containing information of sender and receiver Cloudlets and their VMs.
      */
-    public HostPacket(NetworkHost senderHost, VmPacket vmPacket) {
+    public HostPacket(final NetworkHost senderHost, final VmPacket vmPacket) {
         this.vmPacket = vmPacket;
         this.sendTime = vmPacket.getSendTime();
         this.senderHost = senderHost;
@@ -89,7 +89,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      * @param senderHost the source Host id to set
      */
     @Override
-    public void setSource(NetworkHost senderHost) {
+    public void setSource(final NetworkHost senderHost) {
         this.senderHost = senderHost;
     }
 
@@ -107,7 +107,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
      * @param receiverHost the receiver Host id to set
      */
     @Override
-    public void setDestination(NetworkHost receiverHost) {
+    public void setDestination(final NetworkHost receiverHost) {
         this.receiverHost = receiverHost;
     }
 
@@ -117,7 +117,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     }
 
     @Override
-    public void setSendTime(double sendTime) {
+    public void setSendTime(final double sendTime) {
         this.sendTime = sendTime;
     }
 
@@ -127,7 +127,7 @@ public class HostPacket implements NetworkPacket<NetworkHost> {
     }
 
     @Override
-    public void setReceiveTime(double receiveTime) {
+    public void setReceiveTime(final double receiveTime) {
         this.receiveTime = receiveTime;
     }
 
