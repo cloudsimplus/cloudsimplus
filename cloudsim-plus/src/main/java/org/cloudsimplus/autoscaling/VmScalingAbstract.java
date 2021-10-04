@@ -28,7 +28,7 @@ import org.cloudbus.cloudsim.vms.Vm;
 import java.util.Objects;
 
 /**
- * A base class for implementing {@link HorizontalVmScaling} and
+ * An abstract class for implementing {@link HorizontalVmScaling} and
  * {@link VerticalVmScaling}.
  *
  * @author Manoel Campos da Silva Filho
@@ -65,8 +65,9 @@ public abstract class VmScalingAbstract implements VmScaling {
 
     /**
      * Performs the actual request to scale the Vm up or down,
-     * depending if it is over or underloaded, respectively.
-     * This method is automatically called by {@link VmScaling#requestUpScalingIfPredicateMatches(org.cloudsimplus.listeners.VmHostEventInfo)}
+     * depending on whether it is over or underloaded, respectively.
+     * This method is automatically called by
+     * {@link VmScaling#requestUpScalingIfPredicateMatches(org.cloudsimplus.listeners.VmHostEventInfo)}
      * when it is verified that the Vm is over or underloaded.
      *
      * @param time current simulation time
