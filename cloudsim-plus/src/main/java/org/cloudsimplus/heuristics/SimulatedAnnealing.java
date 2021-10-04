@@ -26,7 +26,7 @@ package org.cloudsimplus.heuristics;
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
 /**
- * A base class for implementation of
+ * An abstract class for implementation of
  * <a href="http://en.wikipedia.org/wiki/Simulated_annealing">Simulated Annealing</a>
  * algorithms used to find a suboptimal solution for a problem defined by sub-classes of this one.
  *
@@ -41,7 +41,8 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  *  <li>Starts generating a random solution as you wish;</li>
  *  <li>Computes its fitness using some function (defined by the developer implementing the heuristic);</li>
  *  <li>Generates a neighbor random solution from the current solution and computes its fitness;</li>
- *  <li>Assesses the neighbor and current solution (the conditions below are ensured by the {@link #getAcceptanceProbability()} method):
+ *  <li>Assesses the neighbor and current solution
+ *  (the conditions below are ensured by the {@link #getAcceptanceProbability()} method):
  *      <ul>
  *          <li>{@code if neighbor.getFitness() > current.getFitness()} then move to the new solution;</li>
  *          <li>{@code if neighbor.getFitness() < current.getFitness()} then randomly decide if move to the new solution;</li>
@@ -54,7 +55,8 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * </p>
  *
  * @param <S> the class of solutions the heuristic will deal with, starting with a random solution
- *           and execute the solution search in order to achieve a satisfying solution (defined by a stop criteria)
+ *           and execute the solution search in order to achieve a satisfying solution
+ *           (defined by a stop criteria)
  * @author Manoel Campos da Silva Filho
  * @see <a href="https://doi.org/10.1109/101.17235">[1] R. A. Rutenbar,
  * “Simulated Annealing Algorithms: An overview,” IEEE Circuits Devices Mag., vol. 1, no. 5,
@@ -62,19 +64,13 @@ import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
  * @since CloudSim Plus 1.0
  */
 public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends HeuristicAbstract<S> {
-    /**
-     * @see #getColdTemperature()
-     */
+    /** @see #getColdTemperature() */
     private double coldTemperature;
 
-    /**
-     * @see #getCurrentTemperature()
-     */
+    /** @see #getCurrentTemperature() */
     private double currentTemperature;
 
-    /**
-     * @see #getCoolingRate()
-     */
+    /** @see #getCoolingRate() */
     private double coolingRate;
 
 	/**
@@ -123,7 +119,7 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
     /**
      * {@inheritDoc}
      *
-     * Cools the system at a the defined {@link #getCoolingRate() cooling rate}.
+     * Cools the system at a defined {@link #getCoolingRate() cooling rate}.
      * @see #getCurrentTemperature() ()
      */
     @Override
@@ -154,7 +150,6 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
 	}
 
 	/**
-     *
      * @return percentage rate in which the system will be cooled, in scale from [0 to 1[.
      */
     public double getCoolingRate() {
@@ -170,7 +165,6 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
     }
 
     /**
-     *
      * @return the temperature that defines the system is cold enough
      * and solution search may be stopped.
      */
@@ -187,5 +181,4 @@ public abstract class SimulatedAnnealing<S extends HeuristicSolution<?>> extends
     public void setColdTemperature(final double coldTemperature) {
         this.coldTemperature = coldTemperature;
     }
-
 }
