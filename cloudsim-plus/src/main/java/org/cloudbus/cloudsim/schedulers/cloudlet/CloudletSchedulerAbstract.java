@@ -606,7 +606,7 @@ public abstract class CloudletSchedulerAbstract implements CloudletScheduler {
      * @param vmResource the kind of resource to updates its utilization (usually {@link Ram} or {@link Bandwidth}).
      */
     private void updateVmResourceAbsoluteUtilization(final CloudletExecution cle, final ResourceManageable vmResource) {
-        final Cloudlet cloudlet = cle.getCloudlet();
+        final var cloudlet = cle.getCloudlet();
         final long requested = (long) getCloudletResourceAbsoluteUtilization(cloudlet, vmResource);
         if(requested > vmResource.getCapacity()){
             LOGGER.warn(
