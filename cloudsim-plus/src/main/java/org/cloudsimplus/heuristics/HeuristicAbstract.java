@@ -25,7 +25,6 @@ package org.cloudsimplus.heuristics;
 
 import org.cloudbus.cloudsim.distributions.ContinuousDistribution;
 
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -95,7 +94,7 @@ public abstract class HeuristicAbstract<S extends HeuristicSolution<?>>  impleme
 
 	private S newSolutionInstance() {
 	    try {
-	        final Constructor<S> constructor = solutionClass.getConstructor(Heuristic.class);
+	        final var constructor = solutionClass.getConstructor(Heuristic.class);
 	        return constructor.newInstance(this);
 	    } catch (IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | InstantiationException | IllegalAccessException ex) {
 	        throw new RuntimeException(ex);
