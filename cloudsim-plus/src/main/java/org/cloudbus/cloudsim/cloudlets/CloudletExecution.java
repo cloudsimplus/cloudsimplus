@@ -140,7 +140,7 @@ public class CloudletExecution {
      * @return true if the new status has been set, false otherwise
      */
     public boolean setStatus(final Cloudlet.Status newStatus) {
-        final Cloudlet.Status prevStatus = cloudlet.getStatus();
+        final var prevStatus = cloudlet.getStatus();
 
         if (prevStatus.equals(newStatus)) {
             return false;
